@@ -1,7 +1,7 @@
 # MyFlightbookWeb
 The website and service for MyFlightbook
 
-# Additional attributions and licenses
+## Additional attributions and licenses
 This source code is provided under the GNU license, but it incorporates other code as well from a variety of other sources, and each such work is covered by its respective license.  This includes, but is not limited to:
  * DayPilot (web-based calendar code, covered by the Apache license)
  * CSV utilities (free/unlicensed, from http://www.heikniemi.fi/jhlib/)
