@@ -21,6 +21,8 @@ MyFlightbook.ruleset
 [Ii]mages/[Bb]asicMed/
 [Ii]mages/[Ee]ndorsements/
 [Ii]mages/[Ff]lights
+[Ii]mages/rcDesktop.bat
+[Ii]mages/rcMac.bat
 
 #legacy stuff from SVN, including other projects that are now separately up on github
 MFBAndroid/
