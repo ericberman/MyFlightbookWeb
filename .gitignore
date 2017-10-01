@@ -15,7 +15,7 @@ debug.config
 email.config
 
 #Legacy bugs file - included personal details of people who report bugs or request features.
-Private/Bugs.txt
+Private/
 
 MyFlightbook.ruleset
 
