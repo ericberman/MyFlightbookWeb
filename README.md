@@ -17,8 +17,56 @@ This source code is provided under the GNU license, but it incorporates other co
  * [OverlappingMarkerSpiderfier](https://github.com/jawj/OverlappingMarkerSpiderfier) Enables cleaner handling of overlapping markers on Google Maps - click on one of the overlapping markers, and they spread out like spider-legs, so you can click on the one you want. (MIT License)
  * [Scribble-signature control](https://www.codeproject.com/Articles/432675/Building-a-Signature-Control-Using-Canvas) - Enables fingernail scribbling for signing flights using HTML 5 ([Code Project Open License](http://www.codeproject.com/info/cpol10.aspx))
  * [Todataurl-png.js](http://code.google.com/p/todataurl-png-js/) Converts a bitmap into a data URL which can be posted in a form. ("Other" open source license, but code is unmodified)
+ * [DotNetZip](https://dotnetzip.codeplex.com/) – Microsoft Public License
  * Numerous binary libraries (via NuGet), including Ajax libraries, iCal libraries, Zip, AWS, DropBox, OneDrive, etc.
  
  ## Getting Started
- (TBD)
+ * Install MySQL and import "MinimalDB-xxxx-xx-xx.sql" (in the Support folder), then apply any/all scripts in that folder that are after that date.
+ * Need to set packet size to at least 10-15MB:	show variables like 'max_allowed_packet';	SET GLOBAL max_allowed_packet=16777216;
+ * Install ASP.NET 4.5.  Make sure IIS has ASP turned on under "application development features"
+ * Install [WkHtmlToPdf](http://wkhtmltopdf.org/) to create PDFs; download link is [here](http://download.gna.org/wkhtmltopdf/0.12/0.12.4/wkhtmltox-0.12.4_mingw-w64-cross-win64.exe). 
+ * Populate the LocalConfig table with values for the relevant keys.  LocalConfig is for keys and secrets that I don't want to have in the code
+ * Add debug.config so that you can turn debug mode on/off locally:
+ ~~~~
+ <?xml version="1.0"?>
+<!-- 
+            Set compilation debug="true" to insert debugging 
+            symbols into the compiled page. Because this 
+            affects performance, set this value to true only 
+            during development.
+        -->
+<compilation defaultLanguage="c#" debug="true" targetFramework="4.6.1">
+  <assemblies>
+    <add assembly="System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
+    <add assembly="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+    <add assembly="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+    <add assembly="System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+    <add assembly="System.Xml.Linq, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+    <add assembly="System.Data.DataSetExtensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+    <add assembly="System.Net, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" />
+    <add assembly="System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" />
+    <add assembly="System.Net.Http.WebRequest, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" />
+    <add assembly="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+    <add assembly="System.Runtime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <add assembly="System.Threading.Tasks, Version=1.5.11.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <add assembly="System.IO, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <add assembly="System.ComponentModel.Composition, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
+  </assemblies>
+</compilation>
+~~~~
+ * Add email.config so that you can send email:
+~~~~
+<?xml version="1.0"?>
+<smtp deliveryMethod="Network" from="(your email address)">
+    <network defaultCredentials="false" port="587" host="..." userName="..." password="..." />
+</smtp>
+~~~~
+ * Add connection.config so that you can talk to the database:
+ ~~~~
+ <?xml version="1.0"?>
+  <connectionStrings>
+    <add name="logbookConnectionString" connectionString="server=...;User Id=...;password=...;Persist Security Info=false;database=logbook;Pooling=false" providerName="MySql.Data.MySqlClient" />
+  </connectionStrings>
+~~~~
 
+(More TBD)
