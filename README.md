@@ -18,6 +18,7 @@ This source code is provided under the GNU license, but it incorporates other co
  * [Scribble-signature control](https://www.codeproject.com/Articles/432675/Building-a-Signature-Control-Using-Canvas) - Enables fingernail scribbling for signing flights using HTML 5 ([Code Project Open License](http://www.codeproject.com/info/cpol10.aspx))
  * [Todataurl-png.js](http://code.google.com/p/todataurl-png-js/) Converts a bitmap into a data URL which can be posted in a form. ("Other" open source license, but code is unmodified)
  * [DotNetZip](https://dotnetzip.codeplex.com/) – Microsoft Public License
+ * [BxSlider](http://bxslider.com/) - Enables smooth slideshows of images. (MIT License)
  * Numerous binary libraries (via NuGet), including Ajax libraries, iCal libraries, Zip, AWS, DropBox, OneDrive, etc.
  
  ## Getting Started
