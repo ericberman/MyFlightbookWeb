@@ -112,6 +112,6 @@ This source code is provided under the GNU license, but it incorporates other co
 These are tasks to do ONLY on the live site; there should be no need to set them up on a development environment:
 * Set up a scheduled task to send nightly stats, delete drop-box cache, send nightly email.
 * Install root files (support directory) so that http://xxx/ will go straight to the default home page, and so that favicon.ico will work.  Need to edit the file and ensure that default.aspx is the top-level default doc.
-* ensure reverse DNS is set up for host so that AOL users can receive it.
+* Ensure reverse DNS is set up for host so that email can be received
 * Set up custom errors
 * Ensure that 3306 (database) port is closed, ensure that firewall is otherwise appropriately configured
