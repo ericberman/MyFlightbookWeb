@@ -22,11 +22,13 @@ This source code is provided under the GNU license, but it incorporates other co
  * Numerous binary libraries (via NuGet), including Ajax libraries, iCal libraries, Zip, AWS, DropBox, OneDrive, etc.
  
  ## Getting Started
- * Install MySQL and import "MinimalDB-xxxx-xx-xx.sql" (in the Support folder), then apply any/all scripts in that folder that are after that date.
- * Need to set packet size to at least 10-15MB:	show variables like 'max_allowed_packet';	SET GLOBAL max_allowed_packet=16777216;
- * Install ASP.NET 4.5.  Make sure IIS has ASP turned on under "application development features"
- * Install [WkHtmlToPdf](http://wkhtmltopdf.org/) to create PDFs; download link is [here](http://download.gna.org/wkhtmltopdf/0.12/0.12.4/wkhtmltox-0.12.4_mingw-w64-cross-win64.exe). 
- * Populate the LocalConfig table with values for the relevant keys.  LocalConfig is for keys and secrets that I don't want to have in the code
+ ### Setting up the website
+ * Run on any Windows machine with ASP.NET 4.5 or later.  Make sure IIS has ASP turned on under "application development features"
+* Create 4 folders under "Images": "Aircraft", "BasicMed", "Endorsements", "Flights", and "Telemetry".  Set permissions on them so that Network Service has full control (so that the website can write thumbnails to these folders).
+* Set up the virtual directory for "logbook" pointing to your working directory, convert it to an application.  Use ASP.NET 4.5 or later as your application pool.
+* Set up a certificate to enable https.
+* In Web.config, you probably 
+* Make sure that IIS is set up to serve .KML, .GPX, .PDF, .JPG, .DOCX, .APK (application/vnd.android.package-archive) etc.
  * Add debug.config so that you can turn debug mode on/off locally:
  ~~~~
  <?xml version="1.0"?>
@@ -69,5 +71,47 @@ This source code is provided under the GNU license, but it incorporates other co
     <add name="logbookConnectionString" connectionString="server=...;User Id=...;password=...;Persist Security Info=false;database=logbook;Pooling=false" providerName="MySql.Data.MySqlClient" />
   </connectionStrings>
 ~~~~
+ ### Setting up the database
+ * Install MySQL and import "MinimalDB-xxxx-xx-xx.sql" (in the Support folder), then apply any/all scripts in that folder that are after that date.
+* Populate the LocalConfig table with values for the relevant keys.  LocalConfig is for keys and secrets (e.g., oAuth access/secret pairs) that I don't want to have in the code, and this is necessary for mapping, social media, etc. to work.  A development site should work without most of these, but will have degraded functionality.  See below for LocalConfig settings and what they mean
+ * Need to set packet size to at least 10-15MB:	show variables like 'max_allowed_packet';	SET GLOBAL max_allowed_packet=16777216;
+ * Not a bad idea to bump up group_concat_max_len to somethign like 2048.
+ #### LocalConfig settings
+  * AdminAuthAccessKey - enables use of certain admin-only functionality 
+ * AuthorizedWebServiceClients - comma separated list of authorized clients of the web services.
+ * AWSAccessKey - Access key for Amazon Web services
+ * AWSSecretKey - Secret for Amazon Web Services
+ * DebugDomains - identifies local domains (e.g., http://localhost) from which oAuth requests may originate
+ * DropboxAccessID - Access key for Dropbox
+ * DropboxClientSecret - Secret for Dropbox
+ * ETSPipelineID - Amazon Elastic Transcoder ID for processing videos
+ * ETSPipelineIDDebug - Amazon Elastic Transcoder ID for processing videos from a debug/development website
+ * FacebookAccessID - Access key for Facebook
+ * FacebookClientSecret - Secret for Facebook
+ * GoogleDriveAccessID - Access key for Google Drive
+ * GoogleDriveClientSecret - Secret for Google Drive
+ * GoogleMapsKey - Key for using Google maps.  Get your own.
+ * GooglePlusAccessID - Access key for Google Plus
+ * GooglePlusAPIKey - API key for Google Plus
+ * GooglePlusClientSecret - Secret for Google Plus
+ * OneDriveAccessID - Access Key for OneDrive
+ * OneDriveClientSecret - Secret for OneDrive
+ * PeerRequestEncryptorKey - Key used for encrypting/decrypting requests between peer users
+ * SharedDataEncryptorKey - Key used to encrypt access to data being shared with the world.
+ * TwitterAccessID - Access key for Twitter
+ * TwitterClientSecret - Secret for Twitter
+ * UseAWSS3 - set to "yes" to migrate images to S3.  Best to leave this "no" for local debugging
+ * UserAccessEncryptorKey - used to share flights
+ * UserPasswordHashKey - Hash key used when storing hashed passwords in the database
+ * WebAccessEncryptorKey - key to encrypt/decrypt authorizations on the web service.
 
-(More TBD)
+ ### Additional items
+* Install [WKHtmlToPdf](http://wkhtmltopdf.org/) to create PDFs.  Download link is [here](http://download.gna.org/wkhtmltopdf/0.12/0.12.4/wkhtmltox-0.12.4_mingw-w64-cross-win64.exe)
+
+### Live Site Only
+These are tasks to do ONLY on the live site; there should be no need to set them up on a development environment:
+* Set up a scheduled task to send nightly stats, delete drop-box cache, send nightly email.
+* Install root files (support directory) so that http://xxx/ will go straight to the default home page, and so that favicon.ico will work.  Need to edit the file and ensure that default.aspx is the top-level default doc.
+* ensure reverse DNS is set up for host so that AOL users can receive it.
+* Set up custom errors
+* Ensure that 3306 (database) port is closed, ensure that firewall is otherwise appropriately configured
