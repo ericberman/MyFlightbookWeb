@@ -6,7 +6,7 @@ using System.Text;
 /******************************************************
  * 
  * Copyright (c) 2010-2016 MyFlightbook LLC
- * Contact myflightbook@gmail.com for more information
+ * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 

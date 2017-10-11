@@ -3,7 +3,7 @@
 /******************************************************
  * 
  * Copyright (c) 2007-2016 MyFlightbook LLC
- * Contact myflightbook@gmail.com for more information
+ * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 

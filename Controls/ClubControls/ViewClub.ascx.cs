@@ -12,7 +12,7 @@ using MyFlightbook.Airports;
 /******************************************************
  * 
  * Copyright (c) 2014-2016 MyFlightbook LLC
- * Contact myflightbook@gmail.com for more information
+ * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 

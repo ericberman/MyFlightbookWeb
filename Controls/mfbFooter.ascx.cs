@@ -5,7 +5,7 @@ using System.Web.UI;
 /******************************************************
  * 
  * Copyright (c) 2007-2017 MyFlightbook LLC
- * Contact myflightbook@gmail.com for more information
+ * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 

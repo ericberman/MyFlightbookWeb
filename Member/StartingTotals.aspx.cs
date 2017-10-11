@@ -9,7 +9,7 @@ using MyFlightbook.StartingFlight;
 /******************************************************
  * 
  * Copyright (c) 2012-2017 MyFlightbook LLC
- * Contact myflightbook@gmail.com for more information
+ * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 

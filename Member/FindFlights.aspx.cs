@@ -5,7 +5,7 @@ using MyFlightbook;
 /******************************************************
  * 
  * Copyright (c) 2009-2017 MyFlightbook LLC
- * Contact myflightbook@gmail.com for more information
+ * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 

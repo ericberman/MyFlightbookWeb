@@ -15,7 +15,7 @@ using System.Security.Cryptography;
 /******************************************************
  * 
  * Copyright (c) 2016-2017 MyFlightbook LLC
- * Contact myflightbook@gmail.com for more information
+ * Contact myflightbook-at-gmail.com for more information
  * 
  * Much of the code in this file came from DotNetOpenAuth.
  *
