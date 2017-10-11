@@ -1,0 +1,453 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="cmbStartTypeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvAircraftResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvAircraftResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label1Resource1.Text" xml:space="preserve">
+    <value>Totals AFTER changes are made</value>
+  </data>
+  <data name="Label1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAnswerWhyStartingFlightsResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAnswerWhyStartingFlightsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAnswerWhyStartingFlightsResource2.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAnswerWhyStartingFlightsResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCanUseAnonymousResource1.Text" xml:space="preserve">
+    <value>If you don't remember the tailnumber of an aircraft, or if you have flown many different aircraft of a particular model (such as an airline pilot might do), you may wish to create "anonymous" aircraft.  These aircraft have no specific tailnumber.</value>
+  </data>
+  <data name="lblCanUseAnonymousResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCurrentAircraftResource1.Text" xml:space="preserve">
+    <value>Your aircraft:</value>
+  </data>
+  <data name="lblCurrentAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDetailedResource1.Text" xml:space="preserve">
+    <value>Detailed</value>
+  </data>
+  <data name="lblDetailedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFillInFormResource1.Text" xml:space="preserve">
+    <value>Fill in your times below</value>
+  </data>
+  <data name="lblFillInFormResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblGranularityResource1.Text" xml:space="preserve">
+    <value>How would you like to enter your totals?</value>
+  </data>
+  <data name="lblGranularityResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblHeaderResource1.Text" xml:space="preserve">
+    <value>Starting Totals</value>
+  </data>
+  <data name="lblHeaderResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblInputAircraft2Resource1.Text" xml:space="preserve">
+    <value>If you have flown Boeing 747's and Bell R-22 helicopters, though, you probably want to capture those totals separately, so make sure that one of the 747's and one of the R-22's is in your list.</value>
+  </data>
+  <data name="lblInputAircraft2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblInputAircraft2Resource2.Text" xml:space="preserve">
+    <value>You don't need every aircraft, but you should have at least one that represents each type of total you would like to represent in your totals</value>
+  </data>
+  <data name="lblInputAircraft2Resource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblInputAircraft3Resource1.Text" xml:space="preserve">
+    <value>For example, if all of your flying is in single-engine aircraft, one of the C-172's that you've flown may be sufficient.</value>
+  </data>
+  <data name="lblInputAircraft3Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblInputAircraft4Resource1.Text" xml:space="preserve">
+    <value>If you have flown Boeing 747's and Bell R-22 helicopters, though, you probably want to capture those totals separately, so make sure that one of the 747's and one of the R-22's is in your list.</value>
+  </data>
+  <data name="lblInputAircraft4Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblInputAircraftResource1.Text" xml:space="preserve">
+    <value>First, Make sure that all of the aircraft that you've flown are in your account.</value>
+  </data>
+  <data name="lblInputAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblMediumDescResource1.Text" xml:space="preserve">
+    <value>Enter starting totals by category/class/type, but also by aircraft capabilities.  For example, you can break out retract or high-performance time.  This is more work than simple, but will provide a better approximation of your flying totals.</value>
+  </data>
+  <data name="lblMediumDescResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblMediumResource1.Text" xml:space="preserve">
+    <value>Enter starting totals by category/class/type, but also by aircraft capabilities.  For example, you can break out retract or high-performance time.  This is more work than simple, but will provide a better approximation of your flying totals.</value>
+  </data>
+  <data name="lblMediumResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblMediumResource2.Text" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="lblMediumResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblModelsDescResource1.Text" xml:space="preserve">
+    <value>Enter starting totals based on time in each model of aircraft you have flown.  This is the most complex, but will also provide the best approximation of your flying totals.</value>
+  </data>
+  <data name="lblModelsDescResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblModelsResource1.Text" xml:space="preserve">
+    <value>Enter starting totals based on time in each model of aircraft you have flown.  This is the most complex, but will also provide the best approximation of your flying totals.</value>
+  </data>
+  <data name="lblModelsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNoAircraftResource1.Text" xml:space="preserve">
+    <value>You do not currently have any aircraft set up for your account!</value>
+  </data>
+  <data name="lblNoAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNoAircraftResource2.Text" xml:space="preserve">
+    <value>No aircraft (other than training devices) are set up in your account.  To enter totals, please add some of the aircraft that you have flown.</value>
+  </data>
+  <data name="lblNoAircraftResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblOverview2Resource1.Text" xml:space="preserve">
+    <value>You can instead initialize your logbook with starting flights that represent your flying totals to date, so that your totals are up to date.</value>
+  </data>
+  <data name="lblOverview2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblOverviewResource1.Text" xml:space="preserve">
+    <value>Have a paper logbook with all of your historical flights?  While it's best to get them all in the system, that can be a lot of work.</value>
+  </data>
+  <data name="lblOverviewResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPickStartingDateResource1.Text" xml:space="preserve">
+    <value>Pick a date to use for the starting flights.  Good dates to choose are either (a) the date of your first flight, or (b) the date of the last flight in your logbook.</value>
+  </data>
+  <data name="lblPickStartingDateResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblSimpleDescResource1.Text" xml:space="preserve">
+    <value>Enter starting totals by category/class and, if appropriate, type.  This is the simplest to do, but is also the coarsest approximation of various categories of flying time.</value>
+  </data>
+  <data name="lblSimpleDescResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblSimpleResource1.Text" xml:space="preserve">
+    <value>Enter starting totals by category/class and, if appropriate, type.  This is the simplest to do, but is also the coarsest approximation of various categories of flying time.</value>
+  </data>
+  <data name="lblSimpleResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblSimpleResource2.Text" xml:space="preserve">
+    <value>Simple</value>
+  </data>
+  <data name="lblSimpleResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblTotalsBeforeResource1.Text" xml:space="preserve">
+    <value>Totals BEFORE changes are made</value>
+  </data>
+  <data name="lblTotalsBeforeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblUserNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblUserNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblViewExistingResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblViewExistingResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblWhyStartingFlightsResource1.Text" xml:space="preserve">
+    <value>Why use starting flights?</value>
+  </data>
+  <data name="lblWhyStartingFlightsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblWhyStartingFlightsResource2.Text" xml:space="preserve">
+    <value>Why use starting flights instead of just using starting values?</value>
+  </data>
+  <data name="lblWhyStartingFlightsResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListItemResource1.Text" xml:space="preserve">
+    <value>Simple</value>
+  </data>
+  <data name="ListItemResource1.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource2.Text" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="ListItemResource2.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ListItemResource3.Text" xml:space="preserve">
+    <value>Detailed</value>
+  </data>
+  <data name="ListItemResource3.Value" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="lnkAircraftResource1.Text" xml:space="preserve">
+    <value>Add/Edit/Import Aircraft</value>
+  </data>
+  <data name="lnkAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locWhyStartingFlightsResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locWhyStartingFlightsResource2.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PageResource1.Title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlExistingAircraftResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlExistingAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlWhyStartingFlightsResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlWhyStartingFlightsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlWhyStartingFlightsResource2.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlWhyStartingFlightsResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblStartTypeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbMediumResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbMediumResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbModelsResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbModelsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbSimpleResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbSimpleResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="stepFillInDataResource1.Title" xml:space="preserve">
+    <value>4. Specify Times</value>
+  </data>
+  <data name="stepInputAircraftResource1.Title" xml:space="preserve">
+    <value>2. Get aircraft ready</value>
+  </data>
+  <data name="stepIntroResource1.Title" xml:space="preserve">
+    <value>1. Overview</value>
+  </data>
+  <data name="stepPickDateResource1.Title" xml:space="preserve">
+    <value>3. Options</value>
+  </data>
+  <data name="stepPreviewResource1.Title" xml:space="preserve">
+    <value>5. Preview &amp; Finish</value>
+  </data>
+  <data name="tblStartingFlightsResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tblStartingFlightsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="wizStartingTotalsResource1.CancelButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="wizStartingTotalsResource1.FinishCompleteButtonText" xml:space="preserve">
+    <value>Finish</value>
+  </data>
+  <data name="wizStartingTotalsResource1.FinishPreviousButtonText" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="wizStartingTotalsResource1.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="wizStartingTotalsResource1.SkipLinkText" xml:space="preserve">
+    <value>Skip Navigation Links.</value>
+  </data>
+  <data name="wizStartingTotalsResource1.StartNextButtonText" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="wizStartingTotalsResource1.StepNextButtonText" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="wizStartingTotalsResource1.StepPreviousButtonText" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="wizStartingTotalsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+</root>

@@ -1,0 +1,1587 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="accordianAccountResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="accordianPrefsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpBackupResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpCertificatesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpCurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpCustomCurrenciesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpCustomDeadlinesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpEmailResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpFlightReviewsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpIPCsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpLocalPrefsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpMedicalResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpoAuthAppsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpPasswordResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpPropertiesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpQandAResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpSocialNetworkingResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource14.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource14.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource14.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource15.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource15.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource15.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource2.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource2.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource2.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource4.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource4.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource4.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource7.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource7.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource7.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource8.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource8.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource8.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource9.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource9.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource9.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnAddBasicMedEventResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnAddDeadlineResource1.Text" xml:space="preserve">
+    <value>Add Deadline</value>
+  </data>
+  <data name="btnAddDeadlineResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnBlackListResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnBlackListResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnChangeQAResource1.Text" xml:space="preserve">
+    <value>Change Security Question</value>
+  </data>
+  <data name="btnChangeQAResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnUpdateCurrencyPrefsResource1.Text" xml:space="preserve">
+    <value>Update Preferences</value>
+  </data>
+  <data name="btnUpdateCurrencyPrefsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnUpdateEmailPrefsResource1.Text" xml:space="preserve">
+    <value>Update Preferences</value>
+  </data>
+  <data name="btnUpdateEmailPrefsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnUpdateMedicalResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnUpdatenameResource1.Text" xml:space="preserve">
+    <value>Update Name and Email</value>
+  </data>
+  <data name="btnUpdatenameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnUpdatePassResource1.Text" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="btnUpdatePassResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnUpdatePilotInfoResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnUpdatePrefsResource1.Text" xml:space="preserve">
+    <value>Update Preferences</value>
+  </data>
+  <data name="btnUpdatePrefsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnWhiteListResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnWhiteListResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ck6157c4PrefResource1.Text" xml:space="preserve">
+    <value>Use loose interpretation of 61.57(c)(4)</value>
+  </data>
+  <data name="ck6157c4PrefResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckCanadianCurrencyResource1.Text" xml:space="preserve">
+    <value>Use Canadian currency rules</value>
+  </data>
+  <data name="ckCanadianCurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckDeadlineUseHoursResource1.Text" xml:space="preserve">
+    <value>Deadline is determined using aircraft hours, not a date</value>
+  </data>
+  <data name="ckDeadlineUseHoursResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckLAPLCurrencyResource1.Text" xml:space="preserve">
+    <value>Use EASA LAPL currency rules (Beta)</value>
+  </data>
+  <data name="ckLAPLCurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cklEmailSubscriptionsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckPerModelTotalsResource2.Text" xml:space="preserve">
+    <value>Show totals by model</value>
+  </data>
+  <data name="ckPerModelTotalsResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckShowTimesResource1.Text" xml:space="preserve">
+    <value>Hobbs time, flight times, and engine times for flights</value>
+  </data>
+  <data name="ckShowTimesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckSICResource1.Text" xml:space="preserve">
+    <value>Second in Command (SIC) time</value>
+  </data>
+  <data name="ckSICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckTrackCFITimeResource1.Text" xml:space="preserve">
+    <value>CFI Time</value>
+  </data>
+  <data name="ckTrackCFITimeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckUse117DutyTimeResource1.Text" xml:space="preserve">
+    <value>Show FAR 117 Duty Time Status</value>
+  </data>
+  <data name="ckUse117DutyTimeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckUse13526xCurrencyResource1.Text" xml:space="preserve">
+    <value>Show FAR 135.265/135.267 Progress</value>
+  </data>
+  <data name="ckUse13526xCurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckUse135CurrencyResource1.Text" xml:space="preserve">
+    <value>Show FAR 135.293, 297, 299 Status</value>
+  </data>
+  <data name="ckUse135CurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckUse135DutyTimeResource1.Text" xml:space="preserve">
+    <value>Show FAR 135 Duty Time Status</value>
+  </data>
+  <data name="ckUse135DutyTimeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckUse61217CurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckUseArmyCurrencyResource1.Text" xml:space="preserve">
+    <value>Show AR 95-1 (US Army) Currency</value>
+  </data>
+  <data name="ckUseArmyCurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbDeadlineAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbDefaultCloudResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbExpiredCurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbMonthsMedicalResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbRegenRangeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CommandFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CommandFieldResource1.CancelText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CommandFieldResource1.DeleteText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CommandFieldResource1.EditText" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="CommandFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CommandFieldResource1.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CommandFieldResource1.InsertText" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="CommandFieldResource1.NewText" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="CommandFieldResource1.SelectText" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="CommandFieldResource1.UpdateText" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="CommandFieldResource2.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CommandFieldResource2.CancelText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CommandFieldResource2.DeleteText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CommandFieldResource2.EditText" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="CommandFieldResource2.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CommandFieldResource2.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CommandFieldResource2.InsertText" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="CommandFieldResource2.NewText" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="CommandFieldResource2.SelectText" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="CommandFieldResource2.UpdateText" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="CommandFieldResource3.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CommandFieldResource3.CancelText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CommandFieldResource3.DeleteText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CommandFieldResource3.EditText" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="CommandFieldResource3.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CommandFieldResource3.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CommandFieldResource3.InsertText" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="CommandFieldResource3.NewText" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="CommandFieldResource3.SelectText" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="CommandFieldResource3.UpdateText" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="ConfirmNewPasswordLabelResource1.Text" xml:space="preserve">
+    <value>Confirm New Password</value>
+  </data>
+  <data name="ConfirmNewPasswordLabelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ConfirmNewPasswordResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ConfirmNewPasswordResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CurrentPasswordLabelResource1.Text" xml:space="preserve">
+    <value>Current Password</value>
+  </data>
+  <data name="CurrentPasswordLabelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CurrentPasswordResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CurrentPasswordResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CustomValidator1Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please specify the duration of your medical.</value>
+  </data>
+  <data name="CustomValidator1Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CustomValidator1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DropboxLogoResource1.AlternateText" xml:space="preserve">
+    <value>Dropbox</value>
+  </data>
+  <data name="DropboxLogoResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvBasicMedEventsResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvBasicMedEventsResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvBasicMedEventsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvBFRResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvBFRResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvBFRResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvCustomCurrencyResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvCustomCurrencyResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvCustomCurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvDonationsResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvDonationsResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvDonationsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvIPCResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvIPCResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvIPCResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvOAuthClientsResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvOAuthClientsResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvOAuthClientsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource1.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource2.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource2.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource2.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource2.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource3.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource3.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource3.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource3.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgFacebookResource1.AlternateText" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="imgFacebookResource1.ToolTip" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="imgMyFlightbookResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgMyFlightbookResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgTwitterResource1.AlternateText" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="imgTwitterResource1.ToolTip" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="Label1Resource1.Text" xml:space="preserve">
+    <value>Thank-you - your payment has been successfully applied!</value>
+  </data>
+  <data name="Label1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label2Resource1.Text" xml:space="preserve">
+    <value>Your payment was canceled.</value>
+  </data>
+  <data name="Label2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddBaiscMedEventResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddCustomCurrencyResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddCustomCurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddDeadlinesResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddDeadlinesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddressFinePrintResource1.Text" xml:space="preserve">
+    <value>(Only used when printing your logbook)</value>
+  </data>
+  <data name="lblAddressFinePrintResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblBasicMedErrResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblBasicMedErrResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblBFRHelpTextResource1.Text" xml:space="preserve">
+    <value>When you enter a flight, you can attach a variety of properties such as flight reviews or checkrides.  Most - but not all - checkrides count as reviews.</value>
+  </data>
+  <data name="lblBFRHelpTextResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCanTweetResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCanTweetResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCertFineprintResource1.Text" xml:space="preserve">
+    <value>(Only necessary if you want to have records of student endorsements)</value>
+  </data>
+  <data name="lblCertFineprintResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCurrencyPrefsResource1.Text" xml:space="preserve">
+    <value>Currency/Totals</value>
+  </data>
+  <data name="lblCurrencyPrefsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCurrencyPrefsUpdatedResource1.Text" xml:space="preserve">
+    <value>Preferences successfully updated</value>
+  </data>
+  <data name="lblCurrencyPrefsUpdatedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDeadlineAircraftOptionalResource1.Text" xml:space="preserve">
+    <value>(Optional)</value>
+  </data>
+  <data name="lblDeadlineAircraftOptionalResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDeadlineAircraftResource1.Text" xml:space="preserve">
+    <value>Associated Aircraft:</value>
+  </data>
+  <data name="lblDeadlineAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDeadlineDaysResource2.Text" xml:space="preserve">
+    <value>Extend the deadline by:</value>
+  </data>
+  <data name="lblDeadlineDaysResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDeadlineManualResource1.Text" xml:space="preserve">
+    <value>Manually update or delete the deadline</value>
+  </data>
+  <data name="lblDeadlineManualResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDeadlineNameResource1.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="lblDeadlineNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDeadlinesheader2Resource1.Text" xml:space="preserve">
+    <value>Examples include certificate/registration expirations, inspections mandated by airworthiness directives, employer-imposed deadlines, and such</value>
+  </data>
+  <data name="lblDeadlinesheader2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDeadlinesHeader3Resource1.Text" xml:space="preserve">
+    <value>A deadline may be due based on a calendar date, or, if associated with an aircraft, by the hours on that aircraft (typically hobbs or tachometer).</value>
+  </data>
+  <data name="lblDeadlinesHeader3Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDeadlinesHeaderResource1.Text" xml:space="preserve">
+    <value>You can define custom deadlines that will appear in your currency.  The difference from other currencies is that a deadline isn't impacted by your flying.</value>
+  </data>
+  <data name="lblDeadlinesHeaderResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDeadlinesSectionResource1.Text" xml:space="preserve">
+    <value>Custom Deadlines</value>
+  </data>
+  <data name="lblDeadlinesSectionResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDisplayResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDonateHeaderResource1.Text" xml:space="preserve">
+    <value>Donations</value>
+  </data>
+  <data name="lblDonateHeaderResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDonatePromptGratuityResource8.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDonatePromptResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDonatePromptResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDonationHistoryResource1.Text" xml:space="preserve">
+    <value>Your donation history</value>
+  </data>
+  <data name="lblDonationHistoryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblEmailNotifications1.Text" xml:space="preserve">
+    <value>Email Notifications</value>
+  </data>
+  <data name="lblEmailNotifications1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblEmailPrefsUpdatedResource1.Text" xml:space="preserve">
+    <value>Preferences successfully updated</value>
+  </data>
+  <data name="lblEmailPrefsUpdatedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblErrResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblErrResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFieldsToShowResource2.Text" xml:space="preserve">
+    <value>Show the following for flights:</value>
+  </data>
+  <data name="lblFieldsToShowResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblHoursResource1.Text" xml:space="preserve">
+    <value>Hours</value>
+  </data>
+  <data name="lblHoursResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblHoursTipResource1.Text" xml:space="preserve">
+    <value>(Typically tach or hobbs)</value>
+  </data>
+  <data name="lblHoursTipResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblInitialDueDateResource2.Text" xml:space="preserve">
+    <value>Deadline is due:</value>
+  </data>
+  <data name="lblInitialDueDateResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblIPCHelpTextResource1.Text" xml:space="preserve">
+    <value>When you enter a flight, attach a property for an IPC or an Instrument Checkride and it will count towards your instrument currency.</value>
+  </data>
+  <data name="lblIPCHelpTextResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblLicenseFineprintResource1.Text" xml:space="preserve">
+    <value>(Only used when printing your logbook)</value>
+  </data>
+  <data name="lblLicenseFineprintResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblMedicalInfoResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNameUpdatedResource1.Text" xml:space="preserve">
+    <value>Name and Email successfully updated</value>
+  </data>
+  <data name="lblNameUpdatedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNextBFRResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNextBFRResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNextMedicalResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNextMedicalResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNoDeadlinesResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNoDonationsResource1.Text" xml:space="preserve">
+    <value>You have not made any donations.</value>
+  </data>
+  <data name="lblNoDonationsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNoRulesResource1.Text" xml:space="preserve">
+    <value>You have not defined any currency rules.</value>
+  </data>
+  <data name="lblNoRulesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPassChangedResource1.Text" xml:space="preserve">
+    <value>Password successfully changed</value>
+  </data>
+  <data name="lblPassChangedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPickDefaultResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPilotInfoUpdatedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPrefDatesResource1.Text" xml:space="preserve">
+    <value>Interpret the date of flight as:</value>
+  </data>
+  <data name="lblPrefDatesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPrefsUpdatedResource1.Text" xml:space="preserve">
+    <value>Preferences successfully updated</value>
+  </data>
+  <data name="lblPrefsUpdatedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPrefTimesResource1.Text" xml:space="preserve">
+    <value>Format for times:</value>
+  </data>
+  <data name="lblPrefTimesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPropertyDescResource1.Text" xml:space="preserve">
+    <value>Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default.</value>
+  </data>
+  <data name="lblQAChangeSuccessResource1.Text" xml:space="preserve">
+    <value>Security question and answer successfully changed</value>
+  </data>
+  <data name="lblQAChangeSuccessResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblQuestionResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblQuestionResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblRegenExplainResource1.Text" xml:space="preserve">
+    <value>When the deadline has passed and you've done whatever is required:</value>
+  </data>
+  <data name="lblRegenExplainResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblRegenResource1.Text" xml:space="preserve">
+    <value>Regeneration:</value>
+  </data>
+  <data name="lblRegenResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblShowcurrencyResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblShowcurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblSocialNetworkingPromptResource1.Text" xml:space="preserve">
+    <value>Sharing and Social Networking</value>
+  </data>
+  <data name="lblSocialNetworkingPromptResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblSocNetworkPrefsUpdatedResource1.Text" xml:space="preserve">
+    <value>Preferences successfully updated</value>
+  </data>
+  <data name="lblSocNetworkPrefsUpdatedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblThankYouResource1.Text" xml:space="preserve">
+    <value>Thank-you for your support!</value>
+  </data>
+  <data name="lblThankYouResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListItemResource1.Text" xml:space="preserve">
+    <value>Use decimal</value>
+  </data>
+  <data name="ListItemResource1.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ListItemResource11.Text" xml:space="preserve">
+    <value>(Unspecified)</value>
+  </data>
+  <data name="ListItemResource11.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource12.Text" xml:space="preserve">
+    <value>6 Months</value>
+  </data>
+  <data name="ListItemResource12.Value" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="ListItemResource13.Text" xml:space="preserve">
+    <value>12 Months</value>
+  </data>
+  <data name="ListItemResource13.Value" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="ListItemResource14.Text" xml:space="preserve">
+    <value>24 Months</value>
+  </data>
+  <data name="ListItemResource14.Value" xml:space="preserve">
+    <value>24</value>
+  </data>
+  <data name="ListItemResource15.Text" xml:space="preserve">
+    <value>36 Months</value>
+  </data>
+  <data name="ListItemResource15.Value" xml:space="preserve">
+    <value>36</value>
+  </data>
+  <data name="ListItemResource16.Text" xml:space="preserve">
+    <value>48 Months</value>
+  </data>
+  <data name="ListItemResource16.Value" xml:space="preserve">
+    <value>48</value>
+  </data>
+  <data name="ListItemResource17.Text" xml:space="preserve">
+    <value>60 Months</value>
+  </data>
+  <data name="ListItemResource17.Value" xml:space="preserve">
+    <value>60</value>
+  </data>
+  <data name="ListItemResource18.Text" xml:space="preserve">
+    <value>The local date at the point/time of departure</value>
+  </data>
+  <data name="ListItemResource18.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ListItemResource19.Text" xml:space="preserve">
+    <value>The UTC date at the time of departure</value>
+  </data>
+  <data name="ListItemResource19.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource2.Text" xml:space="preserve">
+    <value>Use hours and minutes (HH:MM)</value>
+  </data>
+  <data name="ListItemResource2.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource20.Text" xml:space="preserve">
+    <value>(None)</value>
+  </data>
+  <data name="ListItemResource20.Value" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListItemResource21.Text" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="ListItemResource21.Value" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="ListItemResource22.Text" xml:space="preserve">
+    <value>Calendar Months</value>
+  </data>
+  <data name="ListItemResource22.Value" xml:space="preserve">
+    <value>CalendarMonths</value>
+  </data>
+  <data name="ListItemResource3.Text" xml:space="preserve">
+    <value>Show currency by Category/class/type</value>
+  </data>
+  <data name="ListItemResource3.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource4.Text" xml:space="preserve">
+    <value>Show currency for each make/model I have flown</value>
+  </data>
+  <data name="ListItemResource4.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ListItemResource5.Value" xml:space="preserve">
+    <value>AeromedicalCourse</value>
+  </data>
+  <data name="ListItemResource6.Value" xml:space="preserve">
+    <value>PhysicianVisit</value>
+  </data>
+  <data name="lnkAuthDropboxResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkAuthDropboxResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkCurrencyNotesResource1.Text" xml:space="preserve">
+    <value>(See notes on currency computations for details)</value>
+  </data>
+  <data name="lnkCurrencyNotesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkDeAuthDropboxResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkDeAuthDropboxResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkMyFlightsResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkMyFlightsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkNoFacebookResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkNoFacebookResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkNoTweetResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkNoTweetResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkSetUpFacebookResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkSetUpFacebookResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkSetUpTwitterResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkSetUpTwitterResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locAboutCloudStorageResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locAddressResource1.Text" xml:space="preserve">
+    <value>Mailing Address</value>
+  </data>
+  <data name="Localize1Resource1.Text" xml:space="preserve">
+    <value>(No Instrument Proficiency Checks were found)</value>
+  </data>
+  <data name="locBFRPromptResource1.Text" xml:space="preserve">
+    <value>Flight Reviews or Checkrides</value>
+  </data>
+  <data name="locBlackListedResource1.Text" xml:space="preserve">
+    <value>...but not these</value>
+  </data>
+  <data name="locCertPromptResource1.Text" xml:space="preserve">
+    <value>Instructor Certificate #</value>
+  </data>
+  <data name="locCloudStorageResource1.Text" xml:space="preserve">
+    <value>Cloud Backup</value>
+  </data>
+  <data name="locCurrentQuestionResource1.Text" xml:space="preserve">
+    <value>Current question: </value>
+  </data>
+  <data name="locCustCurrencyDescResource1.Text" xml:space="preserve">
+    <value>You can define your own currency rules (can be useful for FBO or insurance rules)</value>
+  </data>
+  <data name="locCustomCurrencyHeaderResource1.Text" xml:space="preserve">
+    <value>Custom Currency Rules</value>
+  </data>
+  <data name="locDropboxIsAuthedResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locEmailPromptResource1.Text" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="locExpirationResource1.Text" xml:space="preserve">
+    <value>Expiration</value>
+  </data>
+  <data name="locExpireCurrencyResource1.Text" xml:space="preserve">
+    <value>When a currency is expired, display it:</value>
+  </data>
+  <data name="locFBIsAuthorizedResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locFirstNamePromptResource1.Text" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="locFlightTimesResource1.Text" xml:space="preserve">
+    <value>Flight Entry</value>
+  </data>
+  <data name="locInstructionsResource1.Text" xml:space="preserve">
+    <value>Drag and drop between the two lists below if using a mouse; if using touch, press-and-hold to move an item between lists.</value>
+  </data>
+  <data name="locIPCPromptResource1.Text" xml:space="preserve">
+    <value>Instrument Proficiency Checks</value>
+  </data>
+  <data name="locLangProficiencyResource1.Text" xml:space="preserve">
+    <value>English Proficiency Check Expiration</value>
+  </data>
+  <data name="locLastMedicalPromptResource1.Text" xml:space="preserve">
+    <value>Date of Last Medical</value>
+  </data>
+  <data name="locLastNamePromptResource1.Text" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="locLicenseHeaderResource1.Text" xml:space="preserve">
+    <value>Pilot License</value>
+  </data>
+  <data name="locMedicalDurationPromptResource1.Text" xml:space="preserve">
+    <value>Medical is valid for</value>
+  </data>
+  <data name="locNewAnswerResource1.Text" xml:space="preserve">
+    <value>New Security Answer</value>
+  </data>
+  <data name="locNoBFRFoundResource1.Text" xml:space="preserve">
+    <value>(No flight reviews or checkrides found)</value>
+  </data>
+  <data name="locOAuthHeaderResource1.Text" xml:space="preserve">
+    <value>You have authorized the following applications to access your data:</value>
+  </data>
+  <data name="locPasswordPromptForQAResource1.Text" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="locPrefOAuthAppsResource1.Text" xml:space="preserve">
+    <value>Authorized Applications</value>
+  </data>
+  <data name="locPrefsheaderResource1.Text" xml:space="preserve">
+    <value>Features and preferences</value>
+  </data>
+  <data name="locPrevUsedResource1.Text" xml:space="preserve">
+    <value>Show these...</value>
+  </data>
+  <data name="locPropertiesHeaderResource1.Text" xml:space="preserve">
+    <value>Flight Properties</value>
+  </data>
+  <data name="locQuestionPromptResource1.Text" xml:space="preserve">
+    <value>New Security Question</value>
+  </data>
+  <data name="locRetypeEmailPromptResource1.Text" xml:space="preserve">
+    <value>Retype Email</value>
+  </data>
+  <data name="locShareAllFlightsDisclaimerResource1.Text" xml:space="preserve">
+    <value>This will ONLY show flights that you have designated to be shared.</value>
+  </data>
+  <data name="locShareAllFlightsPromptResource1.Text" xml:space="preserve">
+    <value>Share your public flights with this link:</value>
+  </data>
+  <data name="NewPasswordCompareResource1.ErrorMessage" xml:space="preserve">
+    <value>The Confirm New Password must match the New Password entry.</value>
+  </data>
+  <data name="NewPasswordCompareResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NewPasswordCompareResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NewPasswordLabelResource1.Text" xml:space="preserve">
+    <value>New Password</value>
+  </data>
+  <data name="NewPasswordLabelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NewPasswordResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NewPasswordResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PageResource1.Title" xml:space="preserve">
+    <value>Edit Profile</value>
+  </data>
+  <data name="pnlAddBasicMedEventResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddBasicMedEventResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddCustomCurrencyResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddCustomCurrencyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddDeadlinesResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddDeadlinesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlBasicMedResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlBasicMedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlCanTweetResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlCanTweetResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlCertificatesResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlCertificatesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlDefaultCloudResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlDefaultCloudResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFacebookAuthorizedResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFacebookAuthorizedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFreeDropboxGratuityResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFreeDropboxGratuityResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlMedicalResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlMedicalResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlNameAndEmailResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlNameAndEmailResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlNextBFRResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlNextBFRResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlNextMedicalResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlNextMedicalResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlPasswordResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlPasswordResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlPaypalCanceledResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlPaypalCanceledResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlPaypalSuccessResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlPaypalSuccessResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlQandAResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlQandAResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbl117RulesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblBasicMedActionResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblCurrencyPrefResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblDateEntryPreferencesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblTimeEntryPreferenceResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbRegenIntervalResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbRegenIntervalResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbRegenManualResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbRegenManualResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegularExpressionValidator1Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please enter a valid email address</value>
+  </data>
+  <data name="RegularExpressionValidator1Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegularExpressionValidator1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator10Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please type an answer for your question</value>
+  </data>
+  <data name="RequiredFieldValidator10Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator10Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator1Resource1.ErrorMessage" xml:space="preserve">
+    <value>An email address is required</value>
+  </data>
+  <data name="RequiredFieldValidator1Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator2Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please type your e-mail twice (avoids typos)</value>
+  </data>
+  <data name="RequiredFieldValidator2Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator5Resource1.ErrorMessage" xml:space="preserve">
+    <value>To change your password you must first correctly provide your current password.</value>
+  </data>
+  <data name="RequiredFieldValidator5Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator5Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator6Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please provide a new password</value>
+  </data>
+  <data name="RequiredFieldValidator6Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator6Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator7Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please retype your new password.  This reduces the likelihood of a typo.</value>
+  </data>
+  <data name="RequiredFieldValidator7Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator7Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator8Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please type your password</value>
+  </data>
+  <data name="RequiredFieldValidator8Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator8Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource3.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource3.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource3.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource4.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource4.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource4.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtAddressResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtAddressResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtAnswerResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtAnswerResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtBasicMedNotesResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtBasicMedNotesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCertificateResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCertificateResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtDeadlineNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtDeadlineNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtEmail2Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtEmail2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtEmailResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtEmailResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtFirstResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtFirstResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtLastResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtLastResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtLicenseResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtLicenseResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtPassQAResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtPassQAResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtPropIDResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtPropIDResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valCompareEmailResource1.ErrorMessage" xml:space="preserve">
+    <value>Please type your e-mail twice (avoids typos).</value>
+  </data>
+  <data name="valCompareEmailResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valCompareEmailResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valCurrentPasswordRequiredResource1.ErrorMessage" xml:space="preserve">
+    <value>To change your password, you must first correctly provide your current password</value>
+  </data>
+  <data name="valCurrentPasswordRequiredResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valCurrentPasswordRequiredResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valDeadlineNameResource1.ErrorMessage" xml:space="preserve">
+    <value>Please give this deadline a name.</value>
+  </data>
+  <data name="valDeadlineNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valDeadlineNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ValidateEmailOKResource1.ErrorMessage" xml:space="preserve">
+    <value>That email address is already in use by another account</value>
+  </data>
+  <data name="ValidateEmailOKResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ValidateEmailOKResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+</root>

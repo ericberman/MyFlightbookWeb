@@ -1,0 +1,504 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BoundFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource1.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource2.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource2.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource2.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnAddInstructorResource1.Text" xml:space="preserve">
+    <value>Add Instructor</value>
+  </data>
+  <data name="btnAddInstructorResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnAddStudentResource1.Text" xml:space="preserve">
+    <value>Add Student</value>
+  </data>
+  <data name="btnAddStudentResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnUploadImagesResource1.Text" xml:space="preserve">
+    <value>Upload Images</value>
+  </data>
+  <data name="btnUploadImagesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckCanViewLogbookResource1.Text" xml:space="preserve">
+    <value>Allow to view my logbook</value>
+  </data>
+  <data name="ckCanViewLogbookResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvFlightsAwaitingSignaturesResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvFlightsAwaitingSignaturesResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvFlightsAwaitingSignaturesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvInstructorsResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvInstructorsResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvInstructorsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvPendingFlightsToSignResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvPendingFlightsToSignResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvPendingFlightsToSignResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvStudentsResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvStudentsResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvStudentsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource1.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HyperLinkFieldResource1.Text" xml:space="preserve">
+    <value>View/Add Endorsements</value>
+  </data>
+  <data name="imgDeleteResource1.AlternateText" xml:space="preserve">
+    <value>Delete this student</value>
+  </data>
+  <data name="imgDeleteResource2.AlternateText" xml:space="preserve">
+    <value>Delete this instructor</value>
+  </data>
+  <data name="imgEndorsementResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddInstructorSuccessResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddInstructorSuccessResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddStudentSuccessResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddStudentSuccessResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblEmailDisclaimer2Resource1.Text" xml:space="preserve">
+    <value>This e-mail address will NOT be stored or used for any other purpose.</value>
+  </data>
+  <data name="lblEmailDisclaimer2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblEmailDisclaimerResource1.Text" xml:space="preserve">
+    <value>This e-mail address will NOT be stored or used for any other purpose.</value>
+  </data>
+  <data name="lblEmailDisclaimerResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFlightResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNoInstructorsResource1.Text" xml:space="preserve">
+    <value>You have no instructors.</value>
+  </data>
+  <data name="lblNoInstructorsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNoStudentsResource1.Text" xml:space="preserve">
+    <value>You have no students.</value>
+  </data>
+  <data name="lblNoStudentsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkAddOfflineEndorsementResource1.Text" xml:space="preserve">
+    <value>Record an endorsement given to a student off-line</value>
+  </data>
+  <data name="lnkAddOfflineEndorsementResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkFlightToSignResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkPrintFriendlyResource1.Text" xml:space="preserve">
+    <value>Printer Friendly View</value>
+  </data>
+  <data name="lnkPrintFriendlyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkRequestSignaturesResource1.Text" xml:space="preserve">
+    <value>Request Signatures</value>
+  </data>
+  <data name="lnkRequestSignaturesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkViewAllEndorsementsResource1.Text" xml:space="preserve">
+    <value>View all endorsements</value>
+  </data>
+  <data name="lnkViewAllEndorsementsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkViewProgressResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkViewStudentLogbookResource1.Text" xml:space="preserve">
+    <value>View logbook</value>
+  </data>
+  <data name="lnkViewStudentLogbookResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locAddInstructorPromptResource1.Text" xml:space="preserve">
+    <value>If you would like to track endorsements from your 
+                instructor, enter their email address below. They will confirm that they know 
+                you.</value>
+  </data>
+  <data name="locAddStudentPrmoptResource1.Text" xml:space="preserve">
+    <value>If you have a student and would like to track the endorsements you give to them,
+                enter the student's email address below. They will confirm that they know you.</value>
+  </data>
+  <data name="locEndorsementsPromptResource1.Text" xml:space="preserve">
+    <value>Your Endorsements</value>
+  </data>
+  <data name="locEndorsementsSectionPromptResource1.Text" xml:space="preserve">
+    <value>Endorsements</value>
+  </data>
+  <data name="locInstructorsPromptResource1.Text" xml:space="preserve">
+    <value>Your Instructors</value>
+  </data>
+  <data name="locRequestSigDescriptionResource1.Text" xml:space="preserve">
+    <value>Take a lesson, flight-review, or checkout and want the CFI to sign flights that you've already entered?</value>
+  </data>
+  <data name="locRequestSignatureHeadingResource1.Text" xml:space="preserve">
+    <value>Request Signatures</value>
+  </data>
+  <data name="locScannedEndorsementDescResource1.Text" xml:space="preserve">
+    <value>You can scan your paper logbook endorsements and upload them here so that you always have access to them.</value>
+  </data>
+  <data name="locScannedEndorsementsHeaderResource1.Text" xml:space="preserve">
+    <value>Images of physical endorsements</value>
+  </data>
+  <data name="locStudentsPromptResource1.Text" xml:space="preserve">
+    <value>Your Students</value>
+  </data>
+  <data name="PageResource1.Title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddInstructorResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddInstructorResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddStudentResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddStudentResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlViewAllEndorsementsResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlViewAllEndorsementsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlViewLogbookResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlViewLogbookResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlViewProgressResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlViewProgressResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegularExpressionValidator2Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please provide a valid email address</value>
+  </data>
+  <data name="RegularExpressionValidator2Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegularExpressionValidator2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegularExpressionValidator3Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please provide a valid email address</value>
+  </data>
+  <data name="RegularExpressionValidator3Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegularExpressionValidator3Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator3Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please provide a valid email address</value>
+  </data>
+  <data name="RequiredFieldValidator3Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator3Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator4Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please provide a valid email address</value>
+  </data>
+  <data name="RequiredFieldValidator4Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator4Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.HeaderText" xml:space="preserve">
+    <value>Flights Awaiting Signature</value>
+  </data>
+  <data name="TemplateFieldResource10.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource10.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource10.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource3.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource3.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource3.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource4.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource4.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource4.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource5.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource5.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource5.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource6.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource6.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource6.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource7.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource7.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource7.HeaderText" xml:space="preserve">
+    <value>Flights Awaiting Signature</value>
+  </data>
+  <data name="TemplateFieldResource8.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource8.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource8.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource9.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource9.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource9.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtInstructorEmailResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtInstructorEmailResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtStudentEmailResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtStudentEmailResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+</root>

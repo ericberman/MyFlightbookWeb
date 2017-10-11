@@ -1,0 +1,12 @@
+﻿Dear {0}:
+
+The backup of your logbook on %APP_NAME% to Dropbox was not successful.  
+
+The error message was:
+   {1}
+
+{2}
+
+Please contact us using the "Contact Us" link on the website at http://%APP_URL% if you have any questions about this.
+
+Thank-you.

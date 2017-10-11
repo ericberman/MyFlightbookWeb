@@ -1,0 +1,13 @@
+﻿<p>In a paper logbook, you can simply copy the ending totals from your old book into the first line of your new book and pick up from there.</p>
+<p>That doesn't work so well, however, in the electronic environment, for two reasons:</p>
+<ul>
+	<li><span style="font-weight:bold">%APP_NAME% doesn't have a pre-defined set of totals</span>; all of the various categories of totals are generated dynamically based on the flying that you've done.  So the list of possible starting totals is quite literally infinite.</li>
+	<li><span style="font-weight:bold">Paper has no concept of sub-totals.</span>  This leads to problems when doing totals based on search criteria.  For example, if you search for your year-to-date totals, should starting totals be included or not?</li>
+</ul>
+<p>For these reasons, %APP_NAME% lets you use one or more starting flights in various aircraft as a way of approximating your totals.</p>
+<p>The aircraft you use for these flights - and the dates used for these flights - determines 
+the nature of the totals (e.g., how much time is in helicopters, how much is in single-engine land planes, etc.).</p>
+<p>And, because these are flights like any other in your logbook, they make sub-totals behave predictably and 
+are also easy to edit (just like any other flight!) as necessary over time (for example, if you incrementally enter your older flights.)</p>
+<p>Ultimately, though, starting flights are just an approximation - they yield rough edges depending on the sorts of searches you use for your totals.  
+The only way to avoid any approximation is to enter all of your flights into the system.</p>

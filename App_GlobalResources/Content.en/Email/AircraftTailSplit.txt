@@ -1,0 +1,29 @@
+﻿Dear {0}
+
+You have the aircraft "{1}" in your account on %APP_NAME%.
+
+Sometimes, aircraft registrations are re-assigned from one aircraft to another.  When this happens, we create multiple versions of the aircraft in the system.
+
+This aircraft had been identified as being:
+
+     {2}
+
+However, a new version has been created which is:
+
+     {3}
+
+The version used for your account is:
+
+     {4}
+
+If this is correct, there is no action to take.
+
+If it is NOT correct, please go to http://%APP_URL% and click on the "Aircraft" tab, then on the tailnumber for this aircraft.  You will see the other versions of the aircraft there and will have the opportunity to switch to the correct one.
+{5}
+If you have any questions, please do not hesitate to contact us (use the "Contact Us" link at http://%APP_URL%).
+
+Thank-you,
+
+The %APP_NAME% Team
+
+PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

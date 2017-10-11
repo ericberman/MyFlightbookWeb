@@ -1,0 +1,37 @@
+﻿using System;
+
+/******************************************************
+ * 
+ * Copyright (c) 2013-2016 MyFlightbook LLC
+ * Contact myflightbook@gmail.com for more information
+ *
+*******************************************************/
+
+public partial class Controls_fbComment : System.Web.UI.UserControl
+{
+    private Uri m_szURI = null;
+
+    /// <summary>
+    /// The ABSOLUTE URI to use.  If it is empty, the current page's URL will be used
+    /// </summary>
+    public Uri URI 
+    {
+        get { return m_szURI; }
+        set
+        {
+            m_szURI = value;
+            litCommentBox.Text = String.Format(System.Globalization.CultureInfo.InvariantCulture, "<fb:comments href=\"{0}\"{1}></fb:comments>",
+            (value == null) ? Request.Url.OriginalString : value.AbsoluteUri,
+            NumberOfPosts > 0 ? String.Format(System.Globalization.CultureInfo.InvariantCulture, " num_posts=\"{0}\"", NumberOfPosts) : String.Empty);
+        }
+    }
+
+    /// <summary>
+    /// Number of posts to show.  If 0, uses the default.
+    /// </summary>
+    public int NumberOfPosts { get; set; }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+    }
+}

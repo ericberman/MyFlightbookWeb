@@ -1,0 +1,497 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BFRFromProfile" xml:space="preserve">
+    <value>BFR entered via Profile</value>
+  </data>
+  <data name="errAnswerTooLong" xml:space="preserve">
+    <value>Security answer is too long.</value>
+  </data>
+  <data name="errBadPasswordLength" xml:space="preserve">
+    <value>Password must be between 6 and 20 characters long.</value>
+  </data>
+  <data name="errEmailInUse" xml:space="preserve">
+    <value>'{0}' is already used for an account.</value>
+  </data>
+  <data name="errGenericCreateAccountError" xml:space="preserve">
+    <value>An error has occured creating the account: {0}</value>
+  </data>
+  <data name="errGenericUpdateError" xml:space="preserve">
+    <value>An error has occured saving the account: {0}</value>
+  </data>
+  <data name="errInvalidAnswer" xml:space="preserve">
+    <value>'{0}' is not a valid answer.</value>
+  </data>
+  <data name="errInvalidEmail" xml:space="preserve">
+    <value>'{0}' does not appear to be a valid email address</value>
+    <comment>{0} is replaced by the provided address</comment>
+  </data>
+  <data name="errInvalidPassword" xml:space="preserve">
+    <value>Please provide a valid password</value>
+  </data>
+  <data name="errInvalidQuestion" xml:space="preserve">
+    <value>'{0}' is not a valid question</value>
+  </data>
+  <data name="errNoAnswer" xml:space="preserve">
+    <value>Please provide a security answer.</value>
+  </data>
+  <data name="errNoPassword" xml:space="preserve">
+    <value>Please provide a password.</value>
+  </data>
+  <data name="errNoQuestion" xml:space="preserve">
+    <value>Please provide a security question.</value>
+  </data>
+  <data name="errQuestionTooLong" xml:space="preserve">
+    <value>Security question is too long.</value>
+  </data>
+  <data name="ProfileCurrencyStatusClose" xml:space="preserve">
+    <value>Due in {0} day(s)</value>
+  </data>
+  <data name="ProfileCurrencyStatusNotCurrent" xml:space="preserve">
+    <value>Expired {0} day(s) ago</value>
+  </data>
+  <data name="WelcomeTitle" xml:space="preserve">
+    <value>Welcome to {0}</value>
+    <comment>{0} is replaced by the app name ("MyFlightbook")</comment>
+  </data>
+  <data name="EditProfileDeleteCFIConfirmation" xml:space="preserve">
+    <value>Are you sure you want to remove this instructor?</value>
+  </data>
+  <data name="EditProfileDeleteCFITooltip" xml:space="preserve">
+    <value>Delete this instructor</value>
+  </data>
+  <data name="EditProfileDeleteStudentConfirmation" xml:space="preserve">
+    <value>Are you sure you want to remove this student?</value>
+  </data>
+  <data name="EditProfileDeleteStudentTooltip" xml:space="preserve">
+    <value>Delete this student</value>
+  </data>
+  <data name="EditProfileHeader" xml:space="preserve">
+    <value>Profile for {0}</value>
+  </data>
+  <data name="EditProfileRequestHasBeenSent" xml:space="preserve">
+    <value>A request has been sent to {0}.  Their name will appear here when they accept your invitation.&lt;br /&gt;</value>
+  </data>
+  <data name="EmailChangedSubjectLine" xml:space="preserve">
+    <value>E-mail Address Change Notification</value>
+    <comment>subject line for email that confirms an email change</comment>
+  </data>
+  <data name="errBadPasswordToChange" xml:space="preserve">
+    <value>Incorrect password supplied; you must provide your current password in order to change it.</value>
+  </data>
+  <data name="errChangePasswordFailed" xml:space="preserve">
+    <value>Change password failed.</value>
+  </data>
+  <data name="errChangeQandAFailed" xml:space="preserve">
+    <value>Change question/answer failed.</value>
+  </data>
+  <data name="errIncorrectPassword" xml:space="preserve">
+    <value>Incorrect password</value>
+  </data>
+  <data name="errNeedBothQandA" xml:space="preserve">
+    <value>To change your secret question and answer, you must type BOTH a new question and a new answer</value>
+  </data>
+  <data name="errPasswordsDontMatch" xml:space="preserve">
+    <value>You must successfully type your new password twice</value>
+  </data>
+  <data name="errPleaseTypeNewQandA" xml:space="preserve">
+    <value>Please type a new secret question and answer</value>
+  </data>
+  <data name="EndorsementDisclaimer" xml:space="preserve">
+    <value>This functionality provides a record of an endorsement only.</value>
+  </data>
+  <data name="EndorsementRequest" xml:space="preserve">
+    <value>Let us know what we should add.</value>
+  </data>
+  <data name="EndorsementRequestPrompt" xml:space="preserve">
+    <value>Don't see a template you need?</value>
+  </data>
+  <data name="EndorsementReturnToProfile" xml:space="preserve">
+    <value>Return to Profile</value>
+    <comment>Shown when there is an error.</comment>
+  </data>
+  <data name="EndorsementsExistingEndorsementHeader" xml:space="preserve">
+    <value>Existing endorsements for {0}:</value>
+  </data>
+  <data name="EndorsementsHeader" xml:space="preserve">
+    <value>Endorsements for {0}</value>
+  </data>
+  <data name="EndorsementsNewEndorsementHeader" xml:space="preserve">
+    <value>New endorsement for {0}:</value>
+  </data>
+  <data name="errNoCFICertificate" xml:space="preserve">
+    <value>You must have a CFI/CFII/GI certificate number in your profile in order to endorse students.</value>
+  </data>
+  <data name="errNoCFIExpiration" xml:space="preserve">
+    <value>You must provide an expiration date for your CFI/CFII/GI certificate in your profile in order to endorse students.</value>
+  </data>
+  <data name="errNotAuthorizedToEndorse" xml:space="preserve">
+    <value>You are not authorized to endorse this user.  Please establish a student/instructor relationship first.</value>
+  </data>
+  <data name="errNoUserSpecified" xml:space="preserve">
+    <value>No user specified</value>
+  </data>
+  <data name="SignInNewUserPrompt" xml:space="preserve">
+    <value>Don't have an account?</value>
+  </data>
+  <data name="WelcomeTitleWithDescription" xml:space="preserve">
+    <value>{0} - Free online logbook for pilots!</value>
+    <comment>{0} is the app name</comment>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AppDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\AppDescription.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="NewAccountPromo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\NewAccountPromo.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="AccountIsLockedSubject" xml:space="preserve">
+    <value>{0} - Account is locked</value>
+    <comment>{0} is the app name</comment>
+  </data>
+  <data name="AccountUnlockedSubject" xml:space="preserve">
+    <value>{0} - Account is now unlocked</value>
+    <comment>{0} is the app name</comment>
+  </data>
+  <data name="EmailCurrencyHeader" xml:space="preserve">
+    <value>Your currency as of {0}</value>
+  </data>
+  <data name="EmailCurrencyName" xml:space="preserve">
+    <value>Currency (Weekly)</value>
+  </data>
+  <data name="EmailTotalsHeader" xml:space="preserve">
+    <value>Your totals as of {0}</value>
+  </data>
+  <data name="EmailTotalsName" xml:space="preserve">
+    <value>Totals (Weekly)</value>
+  </data>
+  <data name="EmailWeeklyMailIntro" xml:space="preserve">
+    <value>Your weekly stats from {0}</value>
+    <comment>{0} is the app name</comment>
+  </data>
+  <data name="EmailWeeklyMailSubject" xml:space="preserve">
+    <value>Your weekly flying status</value>
+  </data>
+  <data name="EmailWeeklyMailUnsubscribeLink" xml:space="preserve">
+    <value>Click here to manage your email subscription settings.</value>
+  </data>
+  <data name="ReturnToProfile" xml:space="preserve">
+    <value>← Return to Students</value>
+  </data>
+  <data name="EmailMonthlyMailIntro" xml:space="preserve">
+    <value>Your monthly flying report from {0}</value>
+    <comment>{0} is the app name</comment>
+  </data>
+  <data name="EmailMonthlyName" xml:space="preserve">
+    <value>Totals &amp; Currency (Monthly)</value>
+  </data>
+  <data name="EmailMonthlySubject" xml:space="preserve">
+    <value>Your flying totals for {0}</value>
+    <comment>{0} is the name of the month.</comment>
+  </data>
+  <data name="EmailTotalsPriorMonthHeader" xml:space="preserve">
+    <value>Totals for {0} {1}</value>
+    <comment>{0} is the name of the month, {1} is the year.</comment>
+  </data>
+  <data name="EmailTotalsPriorYearHeader" xml:space="preserve">
+    <value>Your totals for all of {0}</value>
+    <comment>{0} is the year</comment>
+  </data>
+  <data name="EmailTotalsYTDHeader" xml:space="preserve">
+    <value>Your year-to-date totals for {0}</value>
+    <comment>{0} is the year</comment>
+  </data>
+  <data name="EmailQuickUnsubscribeLink" xml:space="preserve">
+    <value>Unsubscribe from all subscribed email.</value>
+  </data>
+  <data name="errUnsubscribeNoEmail" xml:space="preserve">
+    <value>No email address was provided.</value>
+  </data>
+  <data name="errUnsubscribeNotFound" xml:space="preserve">
+    <value>The specified email address was not found.</value>
+  </data>
+  <data name="UnsubscribeHeader" xml:space="preserve">
+    <value>Unsubscribe</value>
+  </data>
+  <data name="UnsubscribeSuccessful" xml:space="preserve">
+    <value>All subscribed email for {0} has been cancelled.</value>
+  </data>
+  <data name="errNotConfiguredDropBox" xml:space="preserve">
+    <value>You are not configured for Dropbox.  Please set this up in your preferences (under Profile)</value>
+  </data>
+  <data name="CFILicenseTemplate" xml:space="preserve">
+    <value>CFI/CFII/GI Certificate: {0} (Expiration: {1})</value>
+  </data>
+  <data name="LicenseTemplate" xml:space="preserve">
+    <value>License: {0}</value>
+  </data>
+  <data name="CFIExpirationUnknown" xml:space="preserve">
+    <value>(unknown)</value>
+  </data>
+  <data name="errNotConfiguredOneDrive" xml:space="preserve">
+    <value>You are not configured for OneDrive.  Please set this up in your preferences (under Profile)</value>
+  </data>
+  <data name="errNotConfiguredGoogleDrive" xml:space="preserve">
+    <value>You are not configured for GoogleDrive.  Please set this up in your preferences (under Profile)</value>
+  </data>
+  <data name="BasicMedCurrencyTitle" xml:space="preserve">
+    <value>Medical Due (BasicMed)</value>
+  </data>
+  <data name="BasicMedErrMedicalNotFound" xml:space="preserve">
+    <value>Need an FAA Medical dated on or after July 15, 2006</value>
+  </data>
+  <data name="BasicMedErrNoMedicalCourseWithin2Years" xml:space="preserve">
+    <value>Need to take a medical factors course</value>
+  </data>
+  <data name="BasicMedErrNoPhysicalWithin4Years" xml:space="preserve">
+    <value>Need a visit to a physician</value>
+  </data>
+  <data name="BasicMedAddEvent" xml:space="preserve">
+    <value>Add BasicMed event</value>
+  </data>
+  <data name="BasicMedAddEventPrompt" xml:space="preserve">
+    <value>(Click to record a BasicMed event)</value>
+  </data>
+  <data name="BasicMedAttachDocumentation" xml:space="preserve">
+    <value>Upload a photo or PDF record of your course completion or physician checklist</value>
+  </data>
+  <data name="BasicMedConfirmDelete" xml:space="preserve">
+    <value>Are you sure you want to delete this record?  It cannot be undone.</value>
+  </data>
+  <data name="BasicMedDeleteTooltip" xml:space="preserve">
+    <value>Deletes this record</value>
+  </data>
+  <data name="BasicMedDescription" xml:space="preserve">
+    <value>Under BasicMed, you can do some types of flying without a current medical certificate if you meet a set of conditions, including (among others) the following (see 14 CFR 61.23 for more details):</value>
+  </data>
+  <data name="BasicMedErrEventInFuture" xml:space="preserve">
+    <value>This date is in the future</value>
+  </data>
+  <data name="BasicMedErrEventTooFarBack" xml:space="preserve">
+    <value>This date is from before BasicMed went into effect</value>
+  </data>
+  <data name="BasicMedErrNoDate" xml:space="preserve">
+    <value>Please provide a date</value>
+  </data>
+  <data name="BasicMedEventDate" xml:space="preserve">
+    <value>Date:</value>
+  </data>
+  <data name="BasicMedEventDescription" xml:space="preserve">
+    <value>Notes:</value>
+  </data>
+  <data name="BasicMedExpiration" xml:space="preserve">
+    <value>Valid until: </value>
+  </data>
+  <data name="BasicMedHeader" xml:space="preserve">
+    <value>FAA BasicMed</value>
+  </data>
+  <data name="BasicMedMedicalCourse" xml:space="preserve">
+    <value>Passed medical course</value>
+  </data>
+  <data name="BasicMedNoEvents" xml:space="preserve">
+    <value>You have not entered any courses or physician visits</value>
+  </data>
+  <data name="BasicMedPhysicianVisit" xml:space="preserve">
+    <value>Visited Physician</value>
+  </data>
+  <data name="ProfilePilotInfoCertificates" xml:space="preserve">
+    <value>Certificates</value>
+  </data>
+  <data name="ProfilePilotInfoCertificatesUpdate" xml:space="preserve">
+    <value>Update Certificates</value>
+  </data>
+  <data name="ProfilePilotInfoCertificatesUpdated" xml:space="preserve">
+    <value>Certificate information successfully updated</value>
+  </data>
+  <data name="ProfilePilotInfoMedical" xml:space="preserve">
+    <value>Medical</value>
+  </data>
+  <data name="ProfilePilotInfoMedicalUpdate" xml:space="preserve">
+    <value>Update Medical</value>
+  </data>
+  <data name="ProfilePilotInfoMedicalUpdated" xml:space="preserve">
+    <value>Medical information successfully updated</value>
+  </data>
+  <data name="BasicMedDescriptionA" xml:space="preserve">
+    <value>You have held a valid medical at some point since July 15, 2006</value>
+  </data>
+  <data name="BasicMedDescriptionB" xml:space="preserve">
+    <value>You have taken a course on aero-medical issues within the prior 24 calendar months</value>
+  </data>
+  <data name="BasicMedDescriptionC" xml:space="preserve">
+    <value>You have visited a state-licensed physician and completed a checklist within the prior 4 years.  </value>
+  </data>
+  <data name="BasicMedEventActivity" xml:space="preserve">
+    <value>Activity:</value>
+  </data>
+  <data name="TrainingHeader" xml:space="preserve">
+    <value>Training for {0}</value>
+  </data>
+  <data name="AboutCloudStorage" xml:space="preserve">
+    <value>%APP_NAME% can save a backup spreadsheet of your logbook to your cloud drive account</value>
+  </data>
+  <data name="AuthorizeDropbox" xml:space="preserve">
+    <value>Authorize %APP_NAME% to save backups to your Dropbox account</value>
+  </data>
+  <data name="AuthorizeFacebook" xml:space="preserve">
+    <value>Authorize %APP_NAME% to post selected flights to your account on Facebook</value>
+  </data>
+  <data name="AuthorizeGDrive" xml:space="preserve">
+    <value>Authorize %APP_NAME% to save backups to your Google Drive account</value>
+  </data>
+  <data name="AuthorizeOneDrive" xml:space="preserve">
+    <value>Authorize %APP_NAME% to save backups to your OneDrive account</value>
+  </data>
+  <data name="AuthorizeTwitter" xml:space="preserve">
+    <value>Authorize %APP_NAME% to tweet selected flights to your feed on Twitter</value>
+  </data>
+  <data name="DeAuthDropbox" xml:space="preserve">
+    <value>De-authorize %APP_NAME% to save backups to your Dropbox account</value>
+  </data>
+  <data name="DeAuthFacebook" xml:space="preserve">
+    <value>Click here to de-authorize %APP_NAME% on Facebook</value>
+  </data>
+  <data name="DeAuthGDrive" xml:space="preserve">
+    <value>Deauthorize %APP_NAME% to save backups to your Google Drive account</value>
+  </data>
+  <data name="DeAuthOneDrive" xml:space="preserve">
+    <value>Deauthorize %APP_NAME% to save backups to your OneDrive account</value>
+  </data>
+  <data name="DeAuthTwitter" xml:space="preserve">
+    <value>Click here to de-authorize %APP_NAME% on Twitter</value>
+  </data>
+  <data name="DropboxIsAuthed" xml:space="preserve">
+    <value>You have authorized %APP_NAME% to save backups to your Dropbox account.</value>
+  </data>
+  <data name="FacebookIsAuthed" xml:space="preserve">
+    <value>You have authorized %APP_NAME% to post the flights you select on Facebook.</value>
+  </data>
+  <data name="GDriveIsAuthed" xml:space="preserve">
+    <value>You have authorized %APP_NAME% to save backups to your Google Drive account.</value>
+  </data>
+  <data name="OneDriveIsAuthed" xml:space="preserve">
+    <value>You have authorized %APP_NAME% to save backups to your OneDrive account.</value>
+  </data>
+  <data name="TwitterIsAuthed" xml:space="preserve">
+    <value>You have authorized %APP_NAME% to tweet the flights you select on Twitter.</value>
+  </data>
+  <data name="ReturnToStudent" xml:space="preserve">
+    <value>← Return to logbook for student {0}</value>
+  </data>
+</root>

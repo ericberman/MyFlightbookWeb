@@ -1,0 +1,18 @@
+    <p>Take %APP_NAME% in-flight with you to make it easier to enter flights and view your logbook while on the go.</p>
+    <p>With <b>%APP_NAME% applications</b>, you can:</p>
+    <ul>
+        <li>Enter new flights, including autofill of nearest airports</li>
+        <li>Auto-detect take-offs and landings</li>
+		<li>Record flight telemetry</li>
+        <li>Attach pictures to a flight.  (If you take pictures within the app, they are even geo-tagged.)</li>
+        <li>View or edit previous flights.</li>
+        <li>Share flights with your friends on Facebook or Twitter</li>
+        <li>View flying totals for criteria you specify</li>
+        <li>View your FAA flying currency</li>
+		<li>Find flights
+		<li>Update maintenance records for aircraft you fly</li>
+		<li>See the airports you have visited
+    </ul>
+    <p>
+        Like %APP_NAME%, the mobile apps are <b>FREE</b>!
+    </p>

@@ -1,0 +1,833 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CustomCurrencyDeleteConfirmation" xml:space="preserve">
+    <value>Are you sure you want to delete this currency rule?  This cannot be undone!</value>
+  </data>
+  <data name="CustomCurrencyDeleteTooltip" xml:space="preserve">
+    <value>Delete this rule</value>
+  </data>
+  <data name="CustomCurrencyWatermarkName" xml:space="preserve">
+    <value>Name for rule</value>
+  </data>
+  <data name="DisclaimerLink" xml:space="preserve">
+    <value>Important notes</value>
+    <comment>Disclaimer link</comment>
+  </data>
+  <data name="DiscrepancyTemplate" xml:space="preserve">
+    <value>(Short by {0} {1})</value>
+    <comment>Template for discrepancy in a custom currency rule.  E.g., "Short by 2 approaches"</comment>
+  </data>
+  <data name="DiscrepancyTemplateIFR" xml:space="preserve">
+    <value>(Short by {0} {1} and {2} {3})</value>
+    <comment>Template for what you're short by for IFR, e.g., "(Short by 2 approaches and 1 hold)"</comment>
+  </data>
+  <data name="DiscrepancyTemplateNight" xml:space="preserve">
+    <value>(Short by {0} {1}; ensure required takeoffs have been done!)</value>
+    <comment>Template for what you're short by for night; e.g., "Short by 2 landings"</comment>
+  </data>
+  <data name="errCusotmCurrencyBadTimeSpan" xml:space="preserve">
+    <value>Time span for events must be greater than 0</value>
+  </data>
+  <data name="errCustomCurrencyBadRequiredEvents" xml:space="preserve">
+    <value>At least one or more events (landings, hours, flights, etc.) must be specified.</value>
+  </data>
+  <data name="errCustomCurrencyNoName" xml:space="preserve">
+    <value>Custom currency rule requires a name</value>
+  </data>
+  <data name="FlyingStatus" xml:space="preserve">
+    <value>Your flying status</value>
+    <comment>Header for currency</comment>
+  </data>
+  <data name="FormatCurrent" xml:space="preserve">
+    <value>Current Until: {0}</value>
+    <comment>If you're current, how much longer are you so?</comment>
+  </data>
+  <data name="FormatExpired" xml:space="preserve">
+    <value>Expired: {0}</value>
+    <comment>If you expired, when did your currency expire?</comment>
+  </data>
+  <data name="FormatNeverCurrent" xml:space="preserve">
+    <value>Never current!</value>
+    <comment>If you've never been current, this is your status</comment>
+  </data>
+  <data name="GeneralDisclaimer" xml:space="preserve">
+    <value>You and only you are responsible for ensuring that you have met all of the requirements for a given flight</value>
+    <comment>General "I'm not responsible for you being current or not" disclaimer.</comment>
+  </data>
+  <data name="Hold" xml:space="preserve">
+    <value>Hold</value>
+    <comment>Holding procedures (1 hold, 2 holds)</comment>
+  </data>
+  <data name="Holds" xml:space="preserve">
+    <value>Holds</value>
+    <comment>Multiple holding procedures</comment>
+  </data>
+  <data name="IFR" xml:space="preserve">
+    <value>IFR</value>
+    <comment>Currency is for IFR in the particular category</comment>
+  </data>
+  <data name="IFRGlider" xml:space="preserve">
+    <value>IFR - Glider</value>
+    <comment>Currency is for IFR operations in a glider (proving the holder to be insane)</comment>
+  </data>
+  <data name="IFRGliderNoPassengers" xml:space="preserve">
+    <value>(No Passengers)</value>
+    <comment>Whether IFR glider pilot can not carry passengers</comment>
+  </data>
+  <data name="IFRGliderPassengers" xml:space="preserve">
+    <value>(Passengers)</value>
+    <comment>Whether IFR glider pilot can carry passengers</comment>
+  </data>
+  <data name="IPCRequired" xml:space="preserve">
+    <value>IPC is required.</value>
+    <comment>You've been out of IFR currency for long enough that an InstrumentProficiencyCheck is required</comment>
+  </data>
+  <data name="NextFlightReview" xml:space="preserve">
+    <value>Flight Review Due</value>
+    <comment>Next BFR</comment>
+  </data>
+  <data name="NextMedical" xml:space="preserve">
+    <value>Medical Due</value>
+    <comment>Next Medical</comment>
+  </data>
+  <data name="NextPICProficiencyCheck" xml:space="preserve">
+    <value>PIC Proficiency Check (61.58): {0}</value>
+    <comment>When is the next PIC proficiency check, per 61.58, due?</comment>
+  </data>
+  <data name="Night" xml:space="preserve">
+    <value>Night</value>
+    <comment>Currency is for night</comment>
+  </data>
+  <data name="NightTakeoffReminder" xml:space="preserve">
+    <value>Required night takeoffs not found; ensure they have actually been done!</value>
+    <comment>We don't require nighttime takeoffs to be logged, but they are required for currency</comment>
+  </data>
+  <data name="NightVision" xml:space="preserve">
+    <value>Night Vision</value>
+    <comment>Currency is for night-vision operations</comment>
+  </data>
+  <data name="NoStatus" xml:space="preserve">
+    <value>(No status to display)</value>
+    <comment>Message when no status is available</comment>
+  </data>
+  <data name="Passengers" xml:space="preserve">
+    <value>Passengers</value>
+    <comment>Currency is for carrying passengers</comment>
+  </data>
+  <data name="Priveleges" xml:space="preserve">
+    <value>Flight Privilege</value>
+    <comment>Header for flight priveleges</comment>
+  </data>
+  <data name="StatusTitle" xml:space="preserve">
+    <value>Status</value>
+    <comment>Title for "Status" column</comment>
+  </data>
+  <data name="Tailwheel" xml:space="preserve">
+    <value>Tailwheel</value>
+    <comment>Currency is for tailwheel aircraft</comment>
+  </data>
+  <data name="Takeoff" xml:space="preserve">
+    <value>takeoff</value>
+    <comment>1 takeoff</comment>
+  </data>
+  <data name="Takeoffs" xml:space="preserve">
+    <value>takeoffs</value>
+    <comment>2 or more takeoffs</comment>
+  </data>
+  <data name="CurrencyImportantNotes" xml:space="preserve">
+    <value>Some important notes about currency calculations!</value>
+  </data>
+  <data name="RSSHeader" xml:space="preserve">
+    <value>Flying Currency for {0} as of {1}</value>
+    <comment>{0} is user, {1} is date.  E.g., "Flying currency for John Smith as of May 12, 2012"</comment>
+  </data>
+  <data name="RSSNoUser" xml:space="preserve">
+    <value>No user specified.  Please sign in to get an RSS feed for your account.</value>
+  </data>
+  <data name="RSSTitle" xml:space="preserve">
+    <value>Flying Currency from {0}</value>
+    <comment>{0} is app name.</comment>
+  </data>
+  <data name="CustomCurrencyAircraft" xml:space="preserve">
+    <value>Aircraft: {0};</value>
+  </data>
+  <data name="CustomCurrencyApplication" xml:space="preserve">
+    <value>(Applies only to: {0})</value>
+    <comment>e.g., "Applies only to: aircraft N1234</comment>
+  </data>
+  <data name="CustomCurrencyCatClass" xml:space="preserve">
+    <value>Category/class: {0};</value>
+  </data>
+  <data name="CustomCurrencyCategory" xml:space="preserve">
+    <value>Aircraft category: {0};</value>
+  </data>
+  <data name="CustomCurrencyDays" xml:space="preserve">
+    <value>days</value>
+  </data>
+  <data name="CustomCurrencyDescription" xml:space="preserve">
+    <value>Rule: {0} {1} {2} within the preceding {3} {4}.</value>
+    <comment>{0} = "At least" or "At Most", {1} = # of events, {2} = the event, {3} = number of time units, {4} = time unit.  E.g., "At least 3 landings within the preceding 4 calendar months."</comment>
+  </data>
+  <data name="CustomCurrencyEventFlight" xml:space="preserve">
+    <value>flight</value>
+  </data>
+  <data name="CustomCurrencyEventFlights" xml:space="preserve">
+    <value>flights</value>
+  </data>
+  <data name="CustomCurrencyEventHour" xml:space="preserve">
+    <value>hour (PIC)</value>
+  </data>
+  <data name="CustomCurrencyEventHours" xml:space="preserve">
+    <value>hours (PIC)</value>
+  </data>
+  <data name="CustomCurrencyEventLanding" xml:space="preserve">
+    <value>landing</value>
+  </data>
+  <data name="CustomCurrencyEventLandings" xml:space="preserve">
+    <value>landings</value>
+  </data>
+  <data name="CustomCurrencyModel" xml:space="preserve">
+    <value>Aircraft models: {0};</value>
+  </data>
+  <data name="CustomCurrencyMonths" xml:space="preserve">
+    <value>calendar months</value>
+  </data>
+  <data name="CertificateExpiration" xml:space="preserve">
+    <value>CFI Certificate Expiration</value>
+  </data>
+  <data name="NextLanguageProficiency" xml:space="preserve">
+    <value>English Proficiency Check Due</value>
+    <comment>When is your next English proficiency check?</comment>
+  </data>
+  <data name="CustomCurrencyEventApproach" xml:space="preserve">
+    <value>instrument approach</value>
+  </data>
+  <data name="CustomCurrencyEventApproaches" xml:space="preserve">
+    <value>instrument approaches</value>
+  </data>
+  <data name="CustomCurrencyEventInstrumentHour" xml:space="preserve">
+    <value>IMC Hour (simulated or real)</value>
+  </data>
+  <data name="CustomCurrencyEventInstrumentHours" xml:space="preserve">
+    <value>IMC Hours (simulated or real)</value>
+  </data>
+  <data name="DiscrepancyTemplateGliderIFRPassengers" xml:space="preserve">
+    <value>(Short by {0} hour(s) per 61.57(c)(6)(i)(A) and {1} hour(s) per 61.57(c)(6)(ii)(B)</value>
+    <comment>Template for what you're short by for glider IFR.</comment>
+  </data>
+  <data name="IPCMayBeRequired" xml:space="preserve">
+    <value>Gap from {0} to {1}; IPC needed?</value>
+    <comment>If you have a 6+ month gap in currency, technically you need an IPC.  We'll treat this same as night takeoffs for now - not preventing currency, but putting it in as a warning.</comment>
+  </data>
+  <data name="NextFlightReviewR22" xml:space="preserve">
+    <value>SFAR73 Flight Review (R22) Due</value>
+    <comment>Per SFAR 73, you are only current in an R22 only if you have an unexpired flight review in an R22</comment>
+  </data>
+  <data name="NextFlightReviewR44" xml:space="preserve">
+    <value>SFAR73 Flight Review (R44) Due</value>
+    <comment>Per SFAR 73, you are only current in an R44 only if you have an unexpired flight review in an R44</comment>
+  </data>
+  <data name="CustomCurrencyEventBaseCheck" xml:space="preserve">
+    <value>base check/check-out</value>
+  </data>
+  <data name="CustomCurrencyEventBaseChecks" xml:space="preserve">
+    <value>base checks/check-outs</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>hour</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>hours</value>
+  </data>
+  <data name="deadlineDeleteConfirmation" xml:space="preserve">
+    <value>Are you sure you want to delete this deadline?  This cannot be undone.</value>
+  </data>
+  <data name="deadlineDeleteTooltip" xml:space="preserve">
+    <value>Delete this deadline.</value>
+  </data>
+  <data name="deadlineDisplayFormat" xml:space="preserve">
+    <value>{0} - Due {1} {2}</value>
+    <comment>{0} = name, {1} is due date, {2} is the regeneration rule</comment>
+  </data>
+  <data name="deadlineRegenDays" xml:space="preserve">
+    <value>(When done, reset for {0} day(s) after completion date)</value>
+  </data>
+  <data name="deadlineRegenManual" xml:space="preserve">
+    <value>(When done, manually set a new due date)</value>
+  </data>
+  <data name="deadlineRegenMonths" xml:space="preserve">
+    <value>(When done, reset for {0} calendar month(s) after completion date)</value>
+  </data>
+  <data name="errDeadlineNoName" xml:space="preserve">
+    <value>Please provide a name for this deadline</value>
+  </data>
+  <data name="errDeadlineNoSpan" xml:space="preserve">
+    <value>Please indicate the timespan to use when recreating this deadline</value>
+  </data>
+  <data name="deadlineDueTemplateDate" xml:space="preserve">
+    <value>Due: {0:d}</value>
+  </data>
+  <data name="deadlineRegenPromptDays" xml:space="preserve">
+    <value>New expiration is {0} day(s) from: </value>
+  </data>
+  <data name="deadlineRegenPromptMonths" xml:space="preserve">
+    <value>New expiration is {0} month(s) from: </value>
+  </data>
+  <data name="deadlineRegenPromptNone" xml:space="preserve">
+    <value>New expiration date is:</value>
+  </data>
+  <data name="CustomCurrencyEventLaunch" xml:space="preserve">
+    <value>unmanned aerial system (UAS) launch</value>
+  </data>
+  <data name="CustomCurrencyEventLaunches" xml:space="preserve">
+    <value>unmanned aerial system (UAS) launches</value>
+  </data>
+  <data name="CustomCurrencyEventRecoveries" xml:space="preserve">
+    <value>unmanned aerial system (UAS) recoveries</value>
+  </data>
+  <data name="CustomCurrencyEventRecovery" xml:space="preserve">
+    <value>unmanned aerial system (UAS) recovery</value>
+  </data>
+  <data name="errDeadlineNoDate" xml:space="preserve">
+    <value>Please indicate when the deadline is due.</value>
+  </data>
+  <data name="FAR11723b1" xml:space="preserve">
+    <value>FAR 117.23(b)(1): Flight hours in prior 672 hours</value>
+  </data>
+  <data name="FAR11723b2" xml:space="preserve">
+    <value>FAR 117.23(b)(2): Flight hours in prior 365 days</value>
+  </data>
+  <data name="FAR11723c1" xml:space="preserve">
+    <value>FAR 117.23(c)(1): Flight duty hours in prior 168 hours</value>
+  </data>
+  <data name="FAR11723c2" xml:space="preserve">
+    <value>FAR 117.23(c)(2): Flight duty hours in prior 672 hours</value>
+  </data>
+  <data name="FAR11725b" xml:space="preserve">
+    <value>FAR 117.25: Longest consecutive rest in prior 168 hours</value>
+  </data>
+  <data name="FAR117CurrentRest" xml:space="preserve">
+    <value>FAR 117: Current rest period</value>
+  </data>
+  <data name="FAR117HoursAvailable" xml:space="preserve">
+    <value>({0:0.0} more hours available)</value>
+  </data>
+  <data name="FAR117HoursOver" xml:space="preserve">
+    <value>(Over by {0:0.0} hours)</value>
+  </data>
+  <data name="FAR117HoursTemplate" xml:space="preserve">
+    <value>{0:0.0} hours</value>
+  </data>
+  <data name="CustomCurrencyEventNightLanding" xml:space="preserve">
+    <value>night landing (full stop)</value>
+  </data>
+  <data name="CustomCurrencyEventNightLandings" xml:space="preserve">
+    <value>night landings (full stop)</value>
+  </data>
+  <data name="CustomCurrencyEventNightTakeoff" xml:space="preserve">
+    <value>night takeoff</value>
+  </data>
+  <data name="CustomCurrencyEventNightTakeoffs" xml:space="preserve">
+    <value>night takeoffs</value>
+  </data>
+  <data name="currencyExpiration10Years" xml:space="preserve">
+    <value>For 10 years</value>
+  </data>
+  <data name="currencyExpiration1Year" xml:space="preserve">
+    <value>For 1 year</value>
+  </data>
+  <data name="currencyExpiration2Years" xml:space="preserve">
+    <value>For 2 years</value>
+  </data>
+  <data name="currencyExpiration3Years" xml:space="preserve">
+    <value>For 3 years</value>
+  </data>
+  <data name="currencyExpiration5Years" xml:space="preserve">
+    <value>For 5 years</value>
+  </data>
+  <data name="currencyExpirationNone" xml:space="preserve">
+    <value>Forever</value>
+  </data>
+  <data name="NVNoPassengers" xml:space="preserve">
+    <value>(No Passengers)</value>
+    <comment>Whether Night vision pilot can not carry passengers, by category/class</comment>
+  </data>
+  <data name="NVPassengers" xml:space="preserve">
+    <value>(Passengers)</value>
+    <comment>Whether Night vision pilot can carry passengers, by category/class</comment>
+  </data>
+  <data name="NVGoggleOperation" xml:space="preserve">
+    <value>NV Goggle Operation</value>
+  </data>
+  <data name="NVGoggleOperations" xml:space="preserve">
+    <value>NV Goggle Operations</value>
+  </data>
+  <data name="NVHeliOrPoweredLift" xml:space="preserve">
+    <value>(Helicopter) </value>
+  </data>
+  <data name="NVNotCurrent" xml:space="preserve">
+    <value>Not Current</value>
+  </data>
+  <data name="NVPIC" xml:space="preserve">
+    <value>NV PIC {0}{1}</value>
+    <comment>{0} is a helicopter restriction, {1} is passengers or not</comment>
+  </data>
+  <data name="NVProficiencyCheckRequired" xml:space="preserve">
+    <value>Night Vision Proficiency Check Required</value>
+  </data>
+  <data name="NVAirplane" xml:space="preserve">
+    <value>(Except Helicopter) </value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="CurrencyDisclaimer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\currencydisclaimer.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="CustomCurrencyEventLandingPIC" xml:space="preserve">
+    <value>landing as PIC</value>
+  </data>
+  <data name="CustomCurrencyEventLandingsPIC" xml:space="preserve">
+    <value>landings as PIC</value>
+  </data>
+  <data name="CustomCurrencyEventNightLandingPIC" xml:space="preserve">
+    <value>night Landing (Full-stop) as PIC</value>
+  </data>
+  <data name="CustomCurrencyEventNightLandingsPIC" xml:space="preserve">
+    <value>night Landings (Full-stop) as PIC</value>
+  </data>
+  <data name="CanadaNoPICTime" xml:space="preserve">
+    <value>Must log some PIC or SIC time, or have flight review.</value>
+  </data>
+  <data name="Part135293aTitle" xml:space="preserve">
+    <value>135.293(a) - Knowledge Test</value>
+  </data>
+  <data name="Part135293bTitle" xml:space="preserve">
+    <value>135.293(b) - Competency Check</value>
+  </data>
+  <data name="Part135297aTitle" xml:space="preserve">
+    <value>135.297(a) - IPC</value>
+  </data>
+  <data name="Part135299aTitle" xml:space="preserve">
+    <value>135.299(a) - Flight Check</value>
+  </data>
+  <data name="CustomCurrencyEventBackSeatHour" xml:space="preserve">
+    <value>hour of back-seat time</value>
+  </data>
+  <data name="CustomCurrencyEventBackSeatHours" xml:space="preserve">
+    <value>hours of back-seat time</value>
+  </data>
+  <data name="CustomCurrencyEventFrontSeatHour" xml:space="preserve">
+    <value>hour of front-seat time</value>
+  </data>
+  <data name="CustomCurrencyEventFrontSeatHours" xml:space="preserve">
+    <value>hours of front-seat time</value>
+  </data>
+  <data name="CustomCurrencyEventSimulatorHour" xml:space="preserve">
+    <value>hour of ground simulator</value>
+  </data>
+  <data name="CustomCurrencyEventSimulatorHours" xml:space="preserve">
+    <value>hours of ground simulator</value>
+  </data>
+  <data name="CustomCurrencyEventTotalHour" xml:space="preserve">
+    <value>hour (total)</value>
+  </data>
+  <data name="CustomCurrencyEventTotalHours" xml:space="preserve">
+    <value>hours (total)</value>
+  </data>
+  <data name="CustomCurrencyHoistOperation" xml:space="preserve">
+    <value>hoist operation</value>
+  </data>
+  <data name="CustomCurrencyHoistOperations" xml:space="preserve">
+    <value>hoist operations</value>
+  </data>
+  <data name="CustomCurrencyEventNVHour" xml:space="preserve">
+    <value>hour of night vision time</value>
+  </data>
+  <data name="CustomCurrencyEventNVHours" xml:space="preserve">
+    <value>hours of night vision time</value>
+  </data>
+  <data name="FAR195aDiscrepancy" xml:space="preserve">
+    <value>{0} hours remaining out of 8 hours</value>
+  </data>
+  <data name="FAR195aPastLimit" xml:space="preserve">
+    <value>{0} hours over the 8 hour limit</value>
+  </data>
+  <data name="FAR195aStatus" xml:space="preserve">
+    <value>{0} hours of instruction given in past 24 hours</value>
+  </data>
+  <data name="FAR195aTitle" xml:space="preserve">
+    <value>FAR 61.195(a) - CFI Limit</value>
+  </data>
+  <data name="CustomCurrencyEventNVGHour" xml:space="preserve">
+    <value>hour of night vision time (goggles)</value>
+  </data>
+  <data name="CustomCurrencyEventNVGHours" xml:space="preserve">
+    <value>hours of night vision time (goggles)</value>
+  </data>
+  <data name="CustomCurrencyEventNVSHour" xml:space="preserve">
+    <value>hour of night vision time (FLIR)</value>
+  </data>
+  <data name="CustomCurrencyEventNVSHours" xml:space="preserve">
+    <value>hours of night vision time (FLIR)</value>
+  </data>
+  <data name="CustomCurrencyEventHighAltitudeLanding" xml:space="preserve">
+    <value>Landing - High Altitude</value>
+  </data>
+  <data name="CustomCurrencyEventHighAltitudeLandings" xml:space="preserve">
+    <value>Landings - High Altitude</value>
+  </data>
+  <data name="CustomCurrency12Month" xml:space="preserve">
+    <value>12 months, aligned {0}</value>
+    <comment>{0} is 1st of the month for each of 12 months</comment>
+  </data>
+  <data name="CustomCurrency3Month" xml:space="preserve">
+    <value>3 months, aligned {0}/{1}/{2}/{3}</value>
+  </data>
+  <data name="CustomCurrency4Month" xml:space="preserve">
+    <value>4 months, aligned {0}/{1}/{2}</value>
+  </data>
+  <data name="CustomCurrency6Month" xml:space="preserve">
+    <value>6 months aligned {0}/{1}</value>
+  </data>
+  <data name="CustomCurrencyAlignedDueDate" xml:space="preserve">
+    <value>(Due by {0})</value>
+  </data>
+  <data name="CustomCurrencyAlignedStatusCompleted" xml:space="preserve">
+    <value>Completed: {0} {1} by {2}</value>
+  </data>
+  <data name="CustomCurrencyAlignedStatusIncomplete" xml:space="preserve">
+    <value>{0} of {1} {2} found</value>
+  </data>
+  <data name="CustomCurrencyDescriptionAligned" xml:space="preserve">
+    <value>Rule: {0} {1} {2} within {3}.</value>
+  </data>
+  <data name="Part135267a1Title" xml:space="preserve">
+    <value>135.267(a)(1) - 500hrs/Quarter</value>
+  </data>
+  <data name="Part135267a2Title" xml:space="preserve">
+    <value>135.267(a)(2) - 800hrs/2-Quarters</value>
+  </data>
+  <data name="Part135267a3Title" xml:space="preserve">
+    <value>135.267(a)(3) - 1,400hrs/Year</value>
+  </data>
+  <data name="Part135267DiscrepancyGettingClose" xml:space="preserve">
+    <value>{0:F2} flight hours remaining</value>
+  </data>
+  <data name="Part135267DiscrepancyOver" xml:space="preserve">
+    <value>Exceeded by {0:F2} flight hours</value>
+  </data>
+  <data name="Part135267FormatStatus24Hours" xml:space="preserve">
+    <value>{0:F2} hours in past 24 hours</value>
+  </data>
+  <data name="Part135267FormatStatus2Quarters" xml:space="preserve">
+    <value>{0:F2} of 800 flight hours</value>
+  </data>
+  <data name="Part135267FormatStatusQuarter" xml:space="preserve">
+    <value>{0:F2} of 500 flight hours</value>
+  </data>
+  <data name="Part135267FormatStatusYear" xml:space="preserve">
+    <value>{0:F2} of 1400 flight hours</value>
+  </data>
+  <data name="LAPLA" xml:space="preserve">
+    <value>LAPL(A)</value>
+    <comment>Light Aircraft Pilot License (Airplane)</comment>
+  </data>
+  <data name="LAPLH" xml:space="preserve">
+    <value>LAPL(H)</value>
+    <comment>Light Aircraft Pilot License (Helicopter)</comment>
+  </data>
+  <data name="LAPLProficiencyCheckRequired" xml:space="preserve">
+    <value>Proficiency check or supervised flying required</value>
+  </data>
+  <data name="UASCurrencyTitle" xml:space="preserve">
+    <value>UAS 107.65 Currency</value>
+  </data>
+  <data name="UASDiscrepancy" xml:space="preserve">
+    <value>Knowledge test required per 107.65</value>
+  </data>
+  <data name="CustomCurrencyEventNightHour" xml:space="preserve">
+    <value>hour of night flight</value>
+  </data>
+  <data name="CustomCurrencyEventNightHours" xml:space="preserve">
+    <value>hours of night flight</value>
+  </data>
+  <data name="Currency117AllFlights" xml:space="preserve">
+    <value>All flights contribute to Part 117 limits</value>
+  </data>
+  <data name="Currency117OnlyDutyTimeFlights" xml:space="preserve">
+    <value>Only flights with or between specified duty start/end apply to Part 117 limits</value>
+  </data>
+  <data name="CurrencyPrefsHeader" xml:space="preserve">
+    <value>Currency computation:</value>
+  </data>
+  <data name="CurrencyTotalsDisplayHeader" xml:space="preserve">
+    <value>Display:</value>
+  </data>
+  <data name="Part135265a1FormatStatus" xml:space="preserve">
+    <value>{0:F2} of 1,200 flight hours</value>
+  </data>
+  <data name="Part135265a1Title" xml:space="preserve">
+    <value>135.265(a)(1) - 1,200hrs/Calendar Year</value>
+  </data>
+  <data name="Part135265a2FormatStatus" xml:space="preserve">
+    <value>{0:F2} of 120 flight hours</value>
+  </data>
+  <data name="Part135265a2Title" xml:space="preserve">
+    <value>135.265(a)(2) - 120hrs/Calendar Month</value>
+  </data>
+  <data name="Part135265a3FormatStatus" xml:space="preserve">
+    <value>{0:F2} of 34 flight hours</value>
+  </data>
+  <data name="Part135265a3Title" xml:space="preserve">
+    <value>135.265(a)(3) - 34hrs/7 days</value>
+  </data>
+  <data name="Part135265a4FormatStatus" xml:space="preserve">
+    <value>{0:F2} of 8 flight hours</value>
+  </data>
+  <data name="Part135265a4Title" xml:space="preserve">
+    <value>135.265(a)(4) - 8hrs/24</value>
+  </data>
+  <data name="Part135265a5FormatStatus" xml:space="preserve">
+    <value>{0:F2} of 8 hours</value>
+  </data>
+  <data name="Part135265a5Title" xml:space="preserve">
+    <value>135.265(a)(5) - 8hrs rest</value>
+  </data>
+  <data name="Part61217Option" xml:space="preserve">
+    <value>Show 61.217 (Ground Instructor) Status</value>
+  </data>
+  <data name="Part61217Title" xml:space="preserve">
+    <value>61.217 - Ground Instruction</value>
+  </data>
+  <data name="DeadlineChangedDate" xml:space="preserve">
+    <value>{0} - Due date updated from {1:d} to {2:d}</value>
+  </data>
+  <data name="DeadlineChangedHours" xml:space="preserve">
+    <value>{0} - Updated from due at {1:#,##0.0#} to {2:#,##0.0#}</value>
+  </data>
+  <data name="deadlineDisplayFormatAircraft" xml:space="preserve">
+    <value>{0} - {1} - {2} {3}</value>
+    <comment>{0} = Aircraft, {1} = name, {2} is due date, {3} is the regeneration rule, </comment>
+  </data>
+  <data name="deadlineDueTemplateHours" xml:space="preserve">
+    <value>Due at: {0:#,##0.0#} hours</value>
+  </data>
+  <data name="deadlineRegenHours" xml:space="preserve">
+    <value>(Due every {0} hours)</value>
+  </data>
+  <data name="deadlineRegenPromptHours" xml:space="preserve">
+    <value>New expiration is {0} hours (tach/hobbs) from: </value>
+  </data>
+  <data name="deadlinesHeaderDeadlines" xml:space="preserve">
+    <value>Deadlines</value>
+  </data>
+  <data name="deadlinesNoDeadlinesDefined" xml:space="preserve">
+    <value>No deadlines found</value>
+  </data>
+  <data name="errDeadlineHoursOrDate" xml:space="preserve">
+    <value>Please choose a due date, or aircraft hours, but not both</value>
+  </data>
+  <data name="errDeadlineHoursWithoutAircraft" xml:space="preserve">
+    <value>Can't have a deadline based on aircraft hours without an aircraft!</value>
+  </data>
+  <data name="CustomCurrencyAddRule" xml:space="preserve">
+    <value>Add Currency Rule</value>
+  </data>
+  <data name="CustomCurrencyEditTooltip" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="CustomCurrencyErrBadRange" xml:space="preserve">
+    <value>Time frame must be a number between 1 and 1000</value>
+  </data>
+  <data name="CustomCurrencyErrInvalidTimeFrame" xml:space="preserve">
+    <value>Please provide a valid timeframe</value>
+  </data>
+  <data name="CustomCurrencyErrNeedName" xml:space="preserve">
+    <value>Please provide a name for this currency rule</value>
+  </data>
+  <data name="CustomCurrencyMinEventsPrompt" xml:space="preserve">
+    <value>At least</value>
+  </data>
+  <data name="CustomCurrencyNamePrompt" xml:space="preserve">
+    <value>Name for rule</value>
+  </data>
+  <data name="CustomCurrencyNeedShorterName" xml:space="preserve">
+    <value>Please choose a shorter name.</value>
+  </data>
+  <data name="CustomCurrencyPrecedingPrompt" xml:space="preserve">
+    <value>Within the preceding</value>
+  </data>
+  <data name="CustomCurrencyRestrictAircraft" xml:space="preserve">
+    <value>These aircraft</value>
+  </data>
+  <data name="CustomCurrencyRestrictAny" xml:space="preserve">
+    <value>Any</value>
+  </data>
+  <data name="CustomCurrencyRestrictCatClass" xml:space="preserve">
+    <value>This category/class</value>
+  </data>
+  <data name="CustomCurrencyRestrictCategory" xml:space="preserve">
+    <value>This category</value>
+  </data>
+  <data name="CustomCurrencyRestrictModels" xml:space="preserve">
+    <value>These models</value>
+  </data>
+  <data name="CustomCurrencyRestrictPrompt" xml:space="preserve">
+    <value>Apply this rule only to flights in:</value>
+  </data>
+  <data name="RSSHeaderTotals" xml:space="preserve">
+    <value>Flying Totals for {0} as of {1}</value>
+    <comment>{0} is user, {1} is date.</comment>
+  </data>
+  <data name="RSSTitleTotals" xml:space="preserve">
+    <value>Flying Totals from {0}</value>
+    <comment>{0} is app name</comment>
+  </data>
+  <data name="CustomCurrencyMaxEventsPrompt" xml:space="preserve">
+    <value>At most</value>
+  </data>
+  <data name="CustomCurrencyPerformPrompt" xml:space="preserve">
+    <value>Perform</value>
+    <comment>i.e., "Perform at least" or "Perform at most"</comment>
+  </data>
+  <data name="CustomCurrencyStatusLimitExceeded" xml:space="preserve">
+    <value>Met or exceeded until {0}</value>
+  </data>
+  <data name="CustomCurrencyStatusLimitOK" xml:space="preserve">
+    <value>{0} of {1} {2} remaining</value>
+  </data>
+  <data name="errCustomCurrencyInvalidEventCount" xml:space="preserve">
+    <value>Please provide a number of events between 1 and 2000</value>
+  </data>
+  <data name="CustomCurrencyNoneDefined" xml:space="preserve">
+    <value>You haven't yet defined any custom currency rules</value>
+  </data>
+  <data name="CustomCurrencyEventCap5Checkride" xml:space="preserve">
+    <value>CAP Form 5 Checkride</value>
+  </data>
+  <data name="CustomCurrencyEventCap5Checkrides" xml:space="preserve">
+    <value>CAP Form 5 Checkrides</value>
+  </data>
+  <data name="CustomCurrencyEventCap91Checkride" xml:space="preserve">
+    <value>CAP Form 91 Checkride</value>
+  </data>
+  <data name="CustomCurrencyEventCap91Checkrides" xml:space="preserve">
+    <value>CAP Form 91 Checkrides</value>
+  </data>
+</root>

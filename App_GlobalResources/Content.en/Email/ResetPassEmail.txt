@@ -1,0 +1,9 @@
+﻿You have requested a new password on %APP_NAME%.
+
+To reset your password, please visit <% RESET_LINK %>  
+
+IMPORTANT: you will need to know the answer to the secret question that you provided when you created your account, including capitalization and any spaces!
+
+Thank-you for using %APP_NAME%!
+
+(Please do not reply to this mail - the mailbox is not monitored).

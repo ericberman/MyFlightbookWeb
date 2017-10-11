@@ -1,0 +1,79 @@
+
+        <p>
+            We don't really want your personal data, but an email address and password are 
+            required to provide a degree of security 
+            and a way to reach you for service-related issues.&nbsp; We are not going
+        to sell it, rent it, or otherwise disclose it.&nbsp; We are now hosting this in a secure environment, so
+        thugs need to go through at least a normal level of data-center security to get
+        at your data, but hey, there's a reason we limit this to email/password.&nbsp;
+        &nbsp;We do need an email to contact you about site related stuff and for things
+        like password reminders.&nbsp; We will not spam
+        you.&nbsp; Nor will anyone else as a result of your use of this site.&nbsp; And 
+            the only reason we ask for your name is so that the site can use it when 
+            addressing you.</p>
+        <p>
+            As for the data that you put on the site (i.e., your flights, airplanes you fly, 
+            the date of your last medical, etc.): we do not share this data with anybody 
+            either without your explicit consent or an appropriate legal process.&nbsp;</p>
+		<p>For example, you can tweet your 
+            flights on Twitter or post them on Facebook, and you can mark any flight as 
+            &quot;public&quot; in which case you are explicitly making it public data.&nbsp; (If you 
+            tweet a flight but do not make it public, then the date and route of your flight 
+            are shared, but other details - such as your name and the aircraft you flew - are not shared).&nbsp; In tracking problems on the 
+            site, however, we may need to occasionally dive into the database to make a 
+            diagnosis, and that means that we will see your data.&nbsp; Of course, as 
+            explained above, we dont&#39; want (nor do we request) a lot of personal information 
+            about you, so this data cannot be tied to a person beyond your email address.&nbsp; </p>
+		<p>
+            Your passwords, by the way, are stored in the database using a one-way hash.&nbsp; 
+            (When you authenticate, we hash the password you provide and compare that with 
+            the saved hashed password).&nbsp; We cannot recover a password for you, nor can 
+            we see your password in the database.  Ditto the answer to your secret question.  (We obviously
+			can't one-way hash the question itself, since we need to be able to show it to you
+			to recover your password.)</p>
+    <p>
+            If you use one of the mobile apps, these apps may collect GPS position data.&nbsp; 
+            On some platforms, you can choose whether to grant permission for this; on 
+            others, it is a condition of using the application.&nbsp; This position 
+            information is used for the following functions:</p>
+    <ul>
+        <li>Helping you to fill out your logbook entry (appending the nearest airport to 
+            your route of flight, detecting takeoff/landing, determining day/night, and so 
+            forth)</li>
+        <li>Recording your route of flight (at your option on all mobile devices)</li>
+        <li>Geotagging any images that you take from within the application so that you can 
+            later see where you were when you took the picture</li>
+    </ul>
+    <p>
+        This location information is not stored other than as described above, nor is it 
+        shared other than as above.&nbsp; Note that if you share a flight (&quot;Public&quot;, as 
+        above), then visitors to %APP_NAME% will be able to see the geo-tagged image 
+        and/or the recorded flight path.&nbsp; But if you don&#39;t share it, they won&#39;t be 
+        able to see it.</p>
+                <p>
+                    There is now a Facebook group for %APP_NAME%, and %APP_NAME% may include 
+                    Facebook widgets on the site, and these widgets may use Facebook cookies to 
+                    determine things like your status as a fan and such.&nbsp; If you are a member 
+                    of Facebook, Facebook may be able to deduce that you use %APP_NAME%.&nbsp; Please see the <a href="http://www.facebook.com/home.php#/policy.php?ref=pf">Facebook Privacy Policy</a> for more information 
+                    about their privacy policy.&nbsp; %APP_NAME% never, however, explicitly shares 
+                    any information with Facebook.</p>
+        <p>
+            Now, there is one important exception to the above that I do need to call out.&nbsp; 
+            I use Google Ads on the site, and they use cookies.&nbsp; In fact, they are now 
+            doing &quot;interest based&quot; advertising, which means that they will probably figure 
+            out that this is an aviation-oriented web site, and may conclude that you are 
+            interested in aviation.&nbsp; Here is some slightly more legalese detailed 
+            information:</p>
+        <ul>
+            <li>%APP_NAME% uses third-party advertising companies to serve ads when you 
+                visit our website. These companies may use information (not including your name, 
+                address, email address, or telephone number) about your visits to this and other 
+                websites in order to provide advertisements about goods and services of interest 
+                to you.
+            </li>
+            <li>Google, as a third party vendor, uses cookies to serve ads on this site.
+            </li>
+            <li>Google's use of the <a href="http://www.doubleclick.com/privacy/faq.aspx">DART cookie</a> enables it to serve ads to 
+                you based on your visit to this site and other sites on the Internet. </li>
+            <li>You may opt out of the use of the DART cookie by visiting the <a href="http://www.google.com/privacy_ads.html">Google ad and content network privacy policy</a>. </li>
+        </ul>

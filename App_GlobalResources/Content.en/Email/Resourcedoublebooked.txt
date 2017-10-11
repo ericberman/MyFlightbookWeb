@@ -1,0 +1,8 @@
+﻿This is an automated notification to let you know that <% Creator %> has created or edited an item on the schedule for <% Resource %> on %APP_NAME% which conflicts with another item on the schedule.
+
+The following items are now simultaneously scheduled:
+  <% ScheduleDetail %>
+
+Thank-you.
+
+Please do not reply to this message.

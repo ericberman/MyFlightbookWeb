@@ -1,0 +1,639 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnAddMakeResource1.Text" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="btnAddMakeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnCancelDupeResource1.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="btnCancelDupeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnIReallyMeanItResource1.Text" xml:space="preserve">
+    <value>None of these match - Create it!</value>
+  </data>
+  <data name="btnIReallyMeanItResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnManCancelResource1.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="btnManCancelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnManOKResource1.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="btnManOKResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnUseThisResource1.Text" xml:space="preserve">
+    <value>Use this</value>
+  </data>
+  <data name="btnUseThisResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckAllGlassResource1.Text" xml:space="preserve">
+    <value>All aircraft of this model have glass cockpits.</value>
+  </data>
+  <data name="ckAllGlassResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckComplexResource1.Text" xml:space="preserve">
+    <value>Complex</value>
+  </data>
+  <data name="ckComplexResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckConstantPropResource1.Text" xml:space="preserve">
+    <value>Constant Speed Prop</value>
+  </data>
+  <data name="ckConstantPropResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckCowlFlapsResource1.Text" xml:space="preserve">
+    <value>Flaps</value>
+  </data>
+  <data name="ckCowlFlapsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckHighPerfResource1.Text" xml:space="preserve">
+    <value>High Performance</value>
+  </data>
+  <data name="ckHighPerfResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckHighPerfResource2.Text" xml:space="preserve">
+    <value>High-Performance</value>
+  </data>
+  <data name="ckHighPerfResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckIsSimOnlyResource1.Text" xml:space="preserve">
+    <value>All Aircraft of this make MUST NOT be real aircraft (i.e., sim only)</value>
+  </data>
+  <data name="ckIsSimOnlyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckLegacyHighPerfResource1.Text" xml:space="preserve">
+    <value>High Performance only until 1997</value>
+  </data>
+  <data name="ckLegacyHighPerfResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckMultiHeliResource1.Text" xml:space="preserve">
+    <value>Multi-engine</value>
+  </data>
+  <data name="ckMultiHeliResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckRetractResource1.Text" xml:space="preserve">
+    <value>Retractable Landing Gear</value>
+  </data>
+  <data name="ckRetractResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckSinglePilotResource1.Text" xml:space="preserve">
+    <value>This model is certified for single-pilot operations</value>
+  </data>
+  <data name="ckSinglePilotResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckTailwheelResource1.Text" xml:space="preserve">
+    <value>Tailwheel</value>
+  </data>
+  <data name="ckTailwheelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckTMGResource1.Text" xml:space="preserve">
+    <value>Motor Glider/Touring Motor Glider (TMG)</value>
+  </data>
+  <data name="ckTMGResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckTurbineResource1.Text" xml:space="preserve">
+    <value>Turbine Aircraft</value>
+  </data>
+  <data name="ckTurbineResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbCatClassResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbManufacturerResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvDupesResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvDupesResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvDupesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label1Resource1.Text" xml:space="preserve">
+    <value>An optional informal or market name for an aircraft.</value>
+  </data>
+  <data name="Label1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAboutModel2Resource1.Text" xml:space="preserve">
+    <value>E.g., "B737-700" or "PA28-161"</value>
+  </data>
+  <data name="lblAboutModel2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAboutModelResource1.Text" xml:space="preserve">
+    <value>This is typically the FAA designator, possibly with a model variant.</value>
+  </data>
+  <data name="lblAboutModelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddManufacturerResource1.Text" xml:space="preserve">
+    <value>Add a new manufacturer:</value>
+  </data>
+  <data name="lblAddManufacturerResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddNewManufacturerResource1.Text" xml:space="preserve">
+    <value>Add a new manufacturer</value>
+  </data>
+  <data name="lblAddNewManufacturerResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAdminSimRestrictionsResource1.Text" xml:space="preserve">
+    <value>ADMIN Sim/Anon Restrictions</value>
+  </data>
+  <data name="lblAdminSimRestrictionsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCatClassResource1.Text" xml:space="preserve">
+    <value>Category/Class:</value>
+  </data>
+  <data name="lblCatClassResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDummyResource1.Text" xml:space="preserve">
+    <value>Required for popup</value>
+  </data>
+  <data name="lblDummyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblEngineTypeResource1.Text" xml:space="preserve">
+    <value>Engine Type:</value>
+  </data>
+  <data name="lblEngineTypeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblErrorResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblErrorResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFamilyDesc1Resource1.Text" xml:space="preserve">
+    <value>Theis is typically the FAA designator or the base model.</value>
+  </data>
+  <data name="lblFamilyDesc1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFamilyDesc2Resource1.Text" xml:space="preserve">
+    <value>E.g., a PA28-161 and a PA28-180 are both "PA28".</value>
+  </data>
+  <data name="lblFamilyDesc2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFamilyNameResource1.Text" xml:space="preserve">
+    <value>Family Name:</value>
+  </data>
+  <data name="lblFamilyNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblHintResource1.Text" xml:space="preserve">
+    <value>On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp.  So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp each (for 400hp total), went from being high-performance to not high performance as of that date.  Checking this option will cause flights in this model prior to be treated as high-performance prior to, but not after, that date.</value>
+  </data>
+  <data name="lblHintResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblLegacyDescResource1.Text" xml:space="preserve">
+    <value>*On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp.  So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp, went from being high-performance to not as of that date.</value>
+  </data>
+  <data name="lblLegacyDescResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblMakeFeaturesResource1.Text" xml:space="preserve">
+    <value>Features:</value>
+  </data>
+  <data name="lblMakeFeaturesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblManufacturerResource1.Text" xml:space="preserve">
+    <value>Manufacturer:</value>
+  </data>
+  <data name="lblManufacturerResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblMDS1Resource1.Text" xml:space="preserve">
+    <value>All aircraft with a common MDS will contribute to AR 95-1 currency for that group</value>
+  </data>
+  <data name="lblMDS1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblMDS2Resource1.Text" xml:space="preserve">
+    <value>If you type an MDS identifier here, all aircraft with that MDS will contribute to AR 95-1 for that identifier.</value>
+  </data>
+  <data name="lblMDS2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblMDSResource1.Text" xml:space="preserve">
+    <value>Military Mission/Design/Series:</value>
+  </data>
+  <data name="lblMDSResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblModelNameExampleResource1.Text" xml:space="preserve">
+    <value>E.g., "Skyhawk" for a C-172, but blank for a Boeing 737</value>
+  </data>
+  <data name="lblModelNameExampleResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblModelNameResource1.Text" xml:space="preserve">
+    <value>Marketing Name:</value>
+  </data>
+  <data name="lblModelNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblModelResource1.Text" xml:space="preserve">
+    <value>Model ID:</value>
+  </data>
+  <data name="lblModelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPossibleMatchHeaderResource1.Text" xml:space="preserve">
+    <value>Possible match!</value>
+  </data>
+  <data name="lblPossibleMatchHeaderResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPossibleMatchResource1.Text" xml:space="preserve">
+    <value>The make/model you are creating looks like it could be one of the following.  Please re-use one of these if it is a match (you may need to scroll):</value>
+  </data>
+  <data name="lblPossibleMatchResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblTypeDesc1Resource1.Text" xml:space="preserve">
+    <value>Leave this blank unless the aircraft requires a type-rating (typically jet or over 12,500lbs). </value>
+  </data>
+  <data name="lblTypeDesc1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblTypeDesc2Resource1.Text" xml:space="preserve">
+    <value>Use the same type ID for models that share a common type rating.</value>
+  </data>
+  <data name="lblTypeDesc2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblTypeDescExampleResource1.Text" xml:space="preserve">
+    <value>E.g., "B737" for a Boeing 737, blank for a C-172.</value>
+  </data>
+  <data name="lblTypeDescExampleResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblTypeResource1.Text" xml:space="preserve">
+    <value>Type ID:</value>
+  </data>
+  <data name="lblTypeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListItemResource1.Text" xml:space="preserve">
+    <value>(Please select)</value>
+  </data>
+  <data name="ListItemResource1.Value" xml:space="preserve">
+    <value>-1</value>
+  </data>
+  <data name="ListItemResource10.Text" xml:space="preserve">
+    <value>High-Performance (Has an engine &gt; 200hp)</value>
+  </data>
+  <data name="ListItemResource10.Value" xml:space="preserve">
+    <value>HighPerf</value>
+  </data>
+  <data name="ListItemResource11.Text" xml:space="preserve">
+    <value>Total horsepower &gt; 200hp, but no engine &gt; 200hp (High performance until Aug 4, 1997)</value>
+  </data>
+  <data name="ListItemResource11.Value" xml:space="preserve">
+    <value>Is200HP</value>
+  </data>
+  <data name="ListItemResource12.Text" xml:space="preserve">
+    <value>Legacy High-Performance*</value>
+  </data>
+  <data name="ListItemResource12.Value" xml:space="preserve">
+    <value>Is200HP</value>
+  </data>
+  <data name="ListItemResource13.Text" xml:space="preserve">
+    <value>Electric</value>
+  </data>
+  <data name="ListItemResource13.Value" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="ListItemResource2.Text" xml:space="preserve">
+    <value>Piston</value>
+  </data>
+  <data name="ListItemResource2.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource3.Text" xml:space="preserve">
+    <value>Turboprop</value>
+  </data>
+  <data name="ListItemResource3.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ListItemResource4.Text" xml:space="preserve">
+    <value>Jet</value>
+  </data>
+  <data name="ListItemResource4.Value" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="ListItemResource5.Text" xml:space="preserve">
+    <value>Turbine (Unspecified)</value>
+  </data>
+  <data name="ListItemResource5.Value" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="ListItemResource6.Text" xml:space="preserve">
+    <value>No Restrictions</value>
+  </data>
+  <data name="ListItemResource6.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource7.Text" xml:space="preserve">
+    <value>All Aircraft of this make MUST NOT be real aircraft (i.e., sim only)</value>
+  </data>
+  <data name="ListItemResource7.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ListItemResource8.Text" xml:space="preserve">
+    <value>Can be sim or anonymous, but not real.</value>
+  </data>
+  <data name="ListItemResource8.Value" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="ListItemResource9.Text" xml:space="preserve">
+    <value>Not High-Performance</value>
+  </data>
+  <data name="ListItemResource9.Value" xml:space="preserve">
+    <value>NotHighPerf</value>
+  </data>
+  <data name="Panel2Resource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Panel2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlConflictsResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlConflictsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlDupesFoundResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlDupesFoundResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlHighPerfBlockResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlHighPerfBlockResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlLegacyHighPerfResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlLegacyHighPerfResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlManufacturerResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlManufacturerResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlSinglePilotOpsResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlSinglePilotOpsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RadioButtonList1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RangeValidator1Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please select a manufacturer from the list.  You can add one if needed.</value>
+  </data>
+  <data name="RangeValidator1Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RangeValidator1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblHighPerfTypeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblTurbineTypeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator1Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please enter a model name</value>
+  </data>
+  <data name="RequiredFieldValidator1Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource3.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource3.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource3.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtArmyMDSResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtArmyMDSResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtFamilyNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtFamilyNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtManufacturerResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtManufacturerResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtModelResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtModelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtTypeResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtTypeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+</root>

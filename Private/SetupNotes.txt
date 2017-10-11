@@ -1,0 +1,130 @@
+﻿- Install MySQL and import "MinimalDB-2014-12-10.sql" (in the Support folder), apply any/all scripts in that folder that are after that date.
+
+Need to set packet size to at least 10-15MB:
+	show variables like 'max_allowed_packet';
+	SET GLOBAL max_allowed_packet=16777216;
+
+- Install ASP.NET 4.5.  Make sure IIS has ASP turned on under "application development features"
+- Install TortoiseSVN 1.6.16, MySql
+- Copy the configs (debug, connection, email) appropriate for the configuration.  Need to give IIS_IUSRS permission to logbook folder (yes)?  Give it a separate AppPool, specifying ASP.NET 4 
+    - IUSR, Network service, system: read, modify (modify may not be necessary)
+	- IIS_IUSRS: read, modify <== this seems to be enough to make images work.
+	- Need to create telemetry folder (under images) and give the the relevant permissions, and add this web.config to it:
+			<?xml version="1.0"?>
+			<configuration>
+			  <system.webServer>
+				<authorization>
+				  <deny users="?" />
+				  <deny users="*"/>
+				</authorization>
+			  </system.webServer>
+			</configuration>
+- (Test: do we need MySql ODBC/ASP.net drivers?) <== No.
+- Put the following config files into the root directory, since they are instance specific; these have passwords in them too:
+
+   debug.config:
+
+   <?xml version="1.0"?>
+	<!-- 
+				Set compilation debug="true" to insert debugging 
+				symbols into the compiled page. Because this 
+				affects performance, set this value to true only 
+				during development.
+        -->
+<compilation defaultLanguage="c#" debug="true" targetFramework="4.6.1">
+  <assemblies>
+    <add assembly="System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
+    <add assembly="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+    <add assembly="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+    <add assembly="System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+    <add assembly="System.Xml.Linq, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+    <add assembly="System.Data.DataSetExtensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
+    <add assembly="System.Net, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" />
+    <add assembly="System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" />
+    <add assembly="System.Net.Http.WebRequest, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" />
+    <add assembly="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+    <add assembly="System.Runtime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <add assembly="System.Threading.Tasks, Version=1.5.11.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <add assembly="System.IO, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <add assembly="System.ComponentModel.Composition, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
+  </assemblies>
+</compilation>
+
+  email.config:
+  <?xml version="1.0"?>
+	<smtp deliveryMethod="Network" from="x@y.com">
+		<network defaultCredentials="false" port="587" host="smtp.gmail.com" userName="x@y.com" password="xxxxxx" />
+	</smtp>
+  
+  connection.config:
+
+  <?xml version="1.0"?>
+  <connectionStrings>
+    <add name="logbookConnectionString" connectionString="server=xxxxxx;User Id=root;password=xxxxx;Persist Security Info=false;database=logbook;Pooling=false"
+      providerName="MySql.Data.MySqlClient" />
+  </connectionStrings>
+
+- Install http://wkhtmltopdf.org/ to create PDFs.  http://download.gna.org/wkhtmltopdf/0.12/0.12.4/wkhtmltox-0.12.4_mingw-w64-cross-win64.exe 
+- Populate the LocalConfig table with values for the relevant keys.  LocalConfig is for keys and secrets that I don't want to have in the code
+- Copy the images, set permissions (everyone/full-control seems to work.  Network Service is supposed to be adequate)
+- Set up the virtual directory for logbook, convert it to an application!
+- Import the myflightbook.com (or relevant debug) certificate, attach it to the site.  EXPORT THIS FROM EXISTING SITE AND RE-IMPORT ON NEW SITE; DON'T CREATE A NEW CSR FOR MFB - import is easy.
+- Set up a scheduled task to send nightly stats, delete drop-box cache, send nightly email.
+- Make sure that server is set up to serve .KML, .GPX, .PDF, .JPG, .DOCX, .APK (application/vnd.android.package-archive) etc.
+- Install root files (support directory) so that http://xxx/ will go straight to the default home page, and so that favicon.ico will work.  Need to edit the file and ensure that default.aspx is the top-level default doc.
+- ensure reverse DNS is set up for host so that AOL users can receive it.
+- Set up custom errors
+- Verify that the right DLLs are installed for MySQL (home page should work and stats page should work)
+
+Email checks for request host "localhost" to decide whether or not to use SSL.
+
+Double check that email is working!  SMTP Service may be tied to the wrong IP address.
+Double check that scheduled tasks are set up
+Double check that the certificate is set up.
+Double check authentication (forms and not).
+MAKE SURE THAT YOU CAN'T SEE PRIVATE DIRECTORY, Telemetry directory, THAT HTTPS/HTTP SWITCHING WORKS!
+MAKE SURE ALL PORTS ARE CLOSED BESIDES 80, 443, AND RDP!  3306 in particular.
+TURN OFF NIGHTLY JOBS on old servers.
+UNINSTALL DROPBOX from old servers.
+RUN scheduled jobs that didn't run.
+
+To back up the database:  mysqldump.exe --defaults-extra-file="c:\users\eric\appdata\local\temp\tmpiaq2dd.cnf"  --user=root --max_allowed_packet=1G --host=hothpark02 --port=3306 --default-character-set=utf8 "logbook" "flightproperties" "custompropertytypes" "maintenancelog" "images" "aircrafttombstones" "custcurrencyref" "wsevents" "aircraftinstancetypes" "endorsementtemplates" "deadlines" "models" "flights" "customcurrency" "countrycodes" "faq" "users" "manufacturers" "students" "endorsements" "useraircraft" "aircraft" "usersinroles" "flightdatacolumns" "eventcounts" "airports" "roles" "months" "categoryclass" "loctext" "navaidtypes" "payments" "airports2"
+
+Migration: TURN OFF email, other scheduled jobs on old server!
+
+(On azure: 
+ - need to add endpoints for 80/443, remove a few sections from web.config if it's ASP.NET 4.0.
+ - IIS 7 - enable Anonymous Authentication, disable other authentications
+ - Need to remove remaining references to DataVisualization
+ - Need to copy the MySQL dlls (MySql.Data.dll, MySql.Data.Entity.dll, MySql.Web.dll) from .NET connector (in Program Files (x86)\MySql) to Bin Directory
+ Need this in web.config:
+ <system.data>
+<DbProviderFactories>
+<clear />
+<remove invariant="MySql.Data.MySqlClient"/>
+<add name="MySql.Data.MySqlClient" invariant="MySql.Data.MySqlClient" description=".Net Framework Data Provider for MySQL" type="MySql.Data.MySqlClient.MySqlClientFactory, MySql.Data,Version=6.7.4.0, Culture=neutral,PublicKeyToken=c5687fc88969c44d"/>
+</DbProviderFactories>
+ - Turn on both Anonymous Authentication and Forms Authentication.
+)
+
+
+Here is how to install the certificate:
+http://support.godaddy.com/help/article/4801/installing-an-ssl-certificate-in-microsoft-iis-7?pc_split_value=2
+
+Notes, tips, and potential gotchas:
+Logging queries: in MySql do 
+SET GLOBAL general_log = 'ON'
+, then do the queries.  Turn it off again when done.
+log is at C:\ProgramData\MySQL\MySQL Server 5.5\data (on hothpark02).  Right now, home page (believe it or not) is most expensive public page!
+For slow queries: 
+show variables like 'log_slow_queries';
+SET GLOBAL log_slow_queries = 'On';
+Log is in same location (programdata\mysql)
+user agent for iphone is wsdltoobjc, for android is ksoap2.  Yay!
+
+Connection.config: may need to turn off pooling (add "Pooling=false") to avoid the weirdness where we get no results or sign-in fails.
+
+Install MySql .Net Connector (6.x) - but make sure to copy the v2.0 versions of the .DLL files (MySql.Data.dll and MySql.Data.Entity.dll), as in .NET 2.0-3.5, unless v4 is running..
+SVN has the right versions (for .net 2.0) right now.
+
+Font for logo is Impact ~23pt.

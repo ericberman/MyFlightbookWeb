@@ -1,0 +1,13 @@
+﻿Your account on %APP_NAME% was locked due to too many failed sign-in or failed password attempts in a short period of time.
+
+Once locked, you cannot sign in, even with the correct password.
+
+We have unlocked your account, so you can try again.  If you need to reset your password, you can do that, but you will need to know the secret answer to the question that you provided when you set up your account.  
+
+If you still cannot sign in, please use the "Contact Us" link on the website at http://%APP_URL% to let us know, and we will reset your password and e-mail it to you; you can then sign in and change it.
+
+Thank-you
+
+--The %APP_NAME% Team
+
+PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

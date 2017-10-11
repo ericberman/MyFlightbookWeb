@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Approach" xml:space="preserve">
+    <value>Approach</value>
+    <comment>1 approach</comment>
+  </data>
+  <data name="Approaches" xml:space="preserve">
+    <value>Approaches</value>
+    <comment>2 or more approaches.</comment>
+  </data>
+  <data name="CFI" xml:space="preserve">
+    <value>CFI</value>
+    <comment>CFI total</comment>
+  </data>
+  <data name="Complex" xml:space="preserve">
+    <value>Complex</value>
+    <comment>Time in Complex</comment>
+  </data>
+  <data name="CrossCountry" xml:space="preserve">
+    <value>Cross Country</value>
+    <comment>Cross Country total</comment>
+  </data>
+  <data name="Dual" xml:space="preserve">
+    <value>Dual</value>
+    <comment>Dual total</comment>
+  </data>
+  <data name="Ground" xml:space="preserve">
+    <value>Ground Simulator</value>
+    <comment>Ground Simulator total</comment>
+  </data>
+  <data name="HighPerf" xml:space="preserve">
+    <value>High Performance</value>
+    <comment>Time in high-performance aircraft</comment>
+  </data>
+  <data name="IMC" xml:space="preserve">
+    <value>IMC</value>
+    <comment>IMC total</comment>
+  </data>
+  <data name="Landing" xml:space="preserve">
+    <value>Landing</value>
+    <comment>1 landing</comment>
+  </data>
+  <data name="Landings" xml:space="preserve">
+    <value>Landings</value>
+    <comment>2 or more landings</comment>
+  </data>
+  <data name="lnkHideMatchingFlights" xml:space="preserve">
+    <value>Hide matching flights</value>
+  </data>
+  <data name="lnkShowMatchingFlights" xml:space="preserve">
+    <value>Show matching flights</value>
+  </data>
+  <data name="Night" xml:space="preserve">
+    <value>Night</value>
+    <comment>Night total</comment>
+  </data>
+  <data name="PIC" xml:space="preserve">
+    <value>PIC</value>
+    <comment>Pilot in Command time</comment>
+  </data>
+  <data name="PICTotal" xml:space="preserve">
+    <value>PIC/Total</value>
+    <comment>PIC subtotal</comment>
+  </data>
+  <data name="Retract" xml:space="preserve">
+    <value>Retract</value>
+    <comment>Time in retract</comment>
+  </data>
+  <data name="SIC" xml:space="preserve">
+    <value>SIC</value>
+    <comment>Second-in-command time</comment>
+  </data>
+  <data name="SICTotal" xml:space="preserve">
+    <value>SIC/Total</value>
+    <comment>SIC subtotal</comment>
+  </data>
+  <data name="SimIMC" xml:space="preserve">
+    <value>Simulated Instrument</value>
+    <comment>Simulated Instrument total</comment>
+  </data>
+  <data name="Tailwheel" xml:space="preserve">
+    <value>Tailwheel</value>
+    <comment>Time in tailwheel aircraft</comment>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+    <comment>Total (short)</comment>
+  </data>
+  <data name="TotalForAllCatClass" xml:space="preserve">
+    <value>[Total for all]</value>
+    <comment>Total time for a given catclass</comment>
+  </data>
+  <data name="TotalTime" xml:space="preserve">
+    <value>Total Time</value>
+    <comment>Total time</comment>
+  </data>
+  <data name="Turbine" xml:space="preserve">
+    <value>Turbine</value>
+    <comment>Time in turbine aircraft</comment>
+  </data>
+  <data name="DayLanding" xml:space="preserve">
+    <value>Day</value>
+    <comment>Day landings - i.e., "14 landings (3 Day)"</comment>
+  </data>
+  <data name="NightLanding" xml:space="preserve">
+    <value>Night</value>
+    <comment>Night landings - i.e., "14 landings (2 Night)"</comment>
+  </data>
+  <data name="NoTotals" xml:space="preserve">
+    <value>(No totals)</value>
+  </data>
+  <data name="EngineTime" xml:space="preserve">
+    <value>Engine Time</value>
+  </data>
+  <data name="FlightTime" xml:space="preserve">
+    <value>Flight Time</value>
+  </data>
+  <data name="Hobbs" xml:space="preserve">
+    <value>Hobbs</value>
+  </data>
+  <data name="HiddenAlignment" xml:space="preserve">
+    <value>:00</value>
+    <comment>Text (not shown) to align integers with times in hh:mm format.</comment>
+  </data>
+</root>

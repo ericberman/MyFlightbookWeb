@@ -1,0 +1,30 @@
+﻿Dear {0}
+
+You have indicated on %APP_NAME% that you fly the aircraft with the tailnumber "{1}".
+
+This aircraft had been identified as being this model:
+
+     {2}
+
+However, another pilot has just changed it to be this model:
+
+     {3}
+
+The change in model could affect your totals and your flying currency computations.
+
+Often, this is a minor change, such as specifying a specific variant of a model.  E.g., changing a
+Cessna 172 to be a Cessna 172-S.
+
+Sometimes, aircraft identifiers are reused, and the change of model may be an indication of this.
+If that is the case, please contact us (use the "Contact Us" link at http://%APP_URL%) and we can 
+address this.
+
+If you believe that this change was made in error, or if this could possibly be the
+result of a tailnumber being re-assigned to a new aircraft, please contact us at 
+http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx and we can help resolve this.
+
+Thank-you,
+
+The %APP_NAME% Team
+
+PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

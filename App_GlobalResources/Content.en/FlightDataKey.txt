@@ -1,0 +1,26 @@
+<p>You can attach fairly arbitrary data for your flight.  With newer glass cockpits collecting a variety of telemetry data, this is a great way to analyze your flight.</p>
+    <p>
+        %APP_NAME% can understand many popular GPS-track formats, including:
+    </p>
+    <ul>
+        <li><a href="http://en.wikipedia.org/wiki/Kml" Target="_blank">KML</a></li>
+        <li><a href="http://en.wikipedia.org/wiki/GPS_eXchange_Format" target="_blank">GPX</a></li>
+		<li><a href="http://carrier.csi.cam.ac.uk/forsterlewis/soaring/igc_file_format/igc_format_2008.html" target="_blank">IGC</a></li>
+		<li><a href="http://www.gpsinformation.org/dale/nmea.htm" target="_blank">NMEA</a></li>
+    </ul>
+    <p>Or, you can update pretty much any data you like in <a href="http://en.wikipedia.org/wiki/Comma-separated_values" target="new">CSV format</a></p>
+    <p>Uploading data is really quite simple:</p>
+    <ul>
+        <li>Create a <a href="http://en.wikipedia.org/wiki/Comma-separated_values" target="new">
+                CSV file</a> with your data.&nbsp; This must be text based: ASCII, Unicode, 
+            or UTF-8.&nbsp; See below for column names that %APP_NAME% can understand 
+            (although you can add any data you like).</li>
+        <li>The first row MUST be the names of the data columns.&nbsp; See below for column 
+            names that %APP_NAME% understands.</li>
+        <li>You can upload the file when you enter or edit a flight.  Each flight may have at most one telemetry file.</li>
+    </ul>
+	<p>Note: if you use one of the mobile apps, they can automatically generate telemetry data for you.  You&#39;ll want to turn on the option to record your flight (and generally the option to automatically detect takeoffs and landings).  Then, as long as you have an "in-progress" flight (i.e., an engine-start time or a flight-start time without an engine-end time), the app will listen to the GPS and create a telemetry file for you.
+	</p>
+    <h2>Known columns (for CSV)</h2>
+    <p>%APP_NAME% knows the names and datatype (and can perform some very simple validation) on columns with the following names.&nbsp; 
+        Each row represents a unique sample of these data points.</p>

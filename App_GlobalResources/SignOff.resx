@@ -1,0 +1,385 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="errAlreadyInstructor" xml:space="preserve">
+    <value>User {0} is already an instructor of user {1}</value>
+  </data>
+  <data name="errAlreadyStudent" xml:space="preserve">
+    <value>User {0} is already a student of user {1}</value>
+  </data>
+  <data name="errCantTeachSelf" xml:space="preserve">
+    <value>You can't be your own student or your own instructor.</value>
+  </data>
+  <data name="errCommitFailed" xml:space="preserve">
+    <value>Error committing endorsement: </value>
+  </data>
+  <data name="errExpiredCertificate" xml:space="preserve">
+    <value>Instructor's certificate has expired.</value>
+  </data>
+  <data name="errGetFailed" xml:space="preserve">
+    <value>Unable to get endorsements for student {1} and/or instructor {2}; exception: {2}</value>
+  </data>
+  <data name="errInvalidRequest" xml:space="preserve">
+    <value>Invalid request</value>
+  </data>
+  <data name="errNeedCertificate" xml:space="preserve">
+    <value>You must enter your certificate to be an instructor so that endorsements you create can include it.</value>
+  </data>
+  <data name="errNoCertificate" xml:space="preserve">
+    <value>Instructor for endorsement does not have a valid certificate specified.</value>
+  </data>
+  <data name="errNoEndorsement" xml:space="preserve">
+    <value>No endorsement specified.</value>
+  </data>
+  <data name="errNoInstructor" xml:space="preserve">
+    <value>No instructor provided.</value>
+  </data>
+  <data name="errNoRelationship" xml:space="preserve">
+    <value>{0} is not an instructor of {1}</value>
+  </data>
+  <data name="errNoStudent" xml:space="preserve">
+    <value>No student provided.</value>
+  </data>
+  <data name="errNoStudentOrInstructor" xml:space="preserve">
+    <value>Must specify either a student or an instructor.</value>
+  </data>
+  <data name="errNoTitle" xml:space="preserve">
+    <value>Endorsement does not have required title.</value>
+  </data>
+  <data name="errUnknownRequestor" xml:space="preserve">
+    <value>Unknown requesting user</value>
+  </data>
+  <data name="errWrongAddress" xml:space="preserve">
+    <value>This request is for a different email address</value>
+  </data>
+  <data name="InvitationMessageSubject" xml:space="preserve">
+    <value>{0} - Request from {1}</value>
+    <comment>{0} is the name of the app, {1} is the name of the requestor.</comment>
+  </data>
+  <data name="RoleInstructor" xml:space="preserve">
+    <value>instructor</value>
+  </data>
+  <data name="RoleStudent" xml:space="preserve">
+    <value>student</value>
+  </data>
+  <data name="EmailSenderAddress" xml:space="preserve">
+    <value>{0} on behalf of {1}</value>
+    <comment>E.g., From "John Smith on behalf of Alice Johnson"</comment>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="RoleInvitation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\Email\RoleInvitation.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ViewStudentLogbookHeader" xml:space="preserve">
+    <value>Logbook for student: {0}</value>
+  </data>
+  <data name="ViewStudentLogbookUnauthorized" xml:space="preserve">
+    <value>You are not authorized to view this logbook!</value>
+  </data>
+  <data name="ViewStudentNoSuchStudent" xml:space="preserve">
+    <value>No valid student of yours was requested.</value>
+  </data>
+  <data name="CancelSignFlight" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="errSignExpiredCertificate" xml:space="preserve">
+    <value>You must have an unexpired CFI Certificate to sign a flight.</value>
+  </data>
+  <data name="errSignNoCertificate" xml:space="preserve">
+    <value>You must have an unexpired CFI Certificate to sign a flight.</value>
+  </data>
+  <data name="errSignNotInstructorOfStudent" xml:space="preserve">
+    <value>You are not authorized to sign this student's logbook entries.  Please set up a student-instructor relationship first.</value>
+  </data>
+  <data name="LogbookResign" xml:space="preserve">
+    <value>Re-sign this entry</value>
+  </data>
+  <data name="LogbookSign" xml:space="preserve">
+    <value>Sign this entry</value>
+  </data>
+  <data name="SignFlight" xml:space="preserve">
+    <value>Sign Flight</value>
+  </data>
+  <data name="FlightSignatureInvalid" xml:space="preserve">
+    <value>Flight has been modified since being signed; signature is no longer valid.</value>
+  </data>
+  <data name="FlightSignatureTemplate" xml:space="preserve">
+    <value>Signed on {0} by {1} (CFI # {2}, Expiration {3})</value>
+    <comment>e.g. "Signed on {date} by {CFI Name} (CFI #1234, Expiration Mar 22, 2013)"</comment>
+  </data>
+  <data name="errSignNotAuthorized" xml:space="preserve">
+    <value>The pilot has not authorized you to view or sign that flight. </value>
+  </data>
+  <data name="CFICertificate" xml:space="preserve">
+    <value>CFI Certificate</value>
+  </data>
+  <data name="CFIComments" xml:space="preserve">
+    <value>Instructor Comments</value>
+  </data>
+  <data name="CFIExpiration" xml:space="preserve">
+    <value>CFI Expiration</value>
+  </data>
+  <data name="FlightSignatureValid" xml:space="preserve">
+    <value>The signature for this flight is valid.</value>
+  </data>
+  <data name="CFIEmail" xml:space="preserve">
+    <value>CFI Email</value>
+  </data>
+  <data name="errSignNoDigitizedSignature" xml:space="preserve">
+    <value>You must provide a digitized signature of the CFI</value>
+  </data>
+  <data name="ChooseInstructorsPrompt" xml:space="preserve">
+    <value>Choose an instructor: </value>
+  </data>
+  <data name="EditEndorsementAddEndorsement" xml:space="preserve">
+    <value>Add Endorsement</value>
+  </data>
+  <data name="EditEndorsementCFIPrompt" xml:space="preserve">
+    <value>CFI/CFII/GI #:</value>
+  </data>
+  <data name="EditEndorsementDatePrompt" xml:space="preserve">
+    <value>Date of endorsement:</value>
+  </data>
+  <data name="EditEndorsementDisclaimer" xml:space="preserve">
+    <value>&lt;span style="font-weight:bold"&gt;Note: &lt;/span&gt;These endorsements are shown for informational and record-keeping purposes only.</value>
+  </data>
+  <data name="EditEndorsementEndorsementPrompt" xml:space="preserve">
+    <value>Endorsement:</value>
+  </data>
+  <data name="EditEndorsementExpirationPrompt" xml:space="preserve">
+    <value>Expiration:</value>
+  </data>
+  <data name="EditEndorsementFARPrompt" xml:space="preserve">
+    <value>Relevant FAR:</value>
+  </data>
+  <data name="EditEndorsementInstructorPrompt" xml:space="preserve">
+    <value>Instructor:</value>
+  </data>
+  <data name="EditEndorsementRequiredField" xml:space="preserve">
+    <value>{0} is a required field.  Please type in a value.&lt;br /&gt;</value>
+  </data>
+  <data name="EditEndorsementStudentNamePrompt" xml:space="preserve">
+    <value>Student Name</value>
+  </data>
+  <data name="EditEndorsementStudentPrompt" xml:space="preserve">
+    <value>Student:</value>
+  </data>
+  <data name="errAcceptDisclaimer" xml:space="preserve">
+    <value>You must indicate your acceptance to continue.</value>
+  </data>
+  <data name="NewInstructor" xml:space="preserve">
+    <value>(New Instructor)</value>
+  </data>
+  <data name="SignAcceptResponsibility" xml:space="preserve">
+    <value>I agree</value>
+  </data>
+  <data name="SignDisclaimerAgreement1" xml:space="preserve">
+    <value>%APP_NAME% cannot verify that a signature is actually from the instructor it claims to be from.</value>
+  </data>
+  <data name="SigningSuccess" xml:space="preserve">
+    <value>The flight has been successfully signed</value>
+  </data>
+  <data name="SignReEnterPassword" xml:space="preserve">
+    <value>Please enter the password for CFI {0}:</value>
+    <comment>{0} is the name of the CFI</comment>
+  </data>
+  <data name="SignedFlightDisclaimer" xml:space="preserve">
+    <value>%APP_NAME% provides facilities for an instructor to sign a logbook on another pilot's behalf, with that pilot's permission.  While every attempt is made to ensure the integrity of this process, it has not been vetted by the FAA or other similar agencies, and may therefore not be acceptible to these agencies.</value>
+  </data>
+  <data name="SignDisclaimerAgreement2" xml:space="preserve">
+    <value>By using this, you agree that the instructor identified by the license/certificate (and not you or anybody else) is the one who is actually producing the handwritten signature.</value>
+  </data>
+  <data name="SignFlightIgnore" xml:space="preserve">
+    <value>Ignore</value>
+    <comment>Ignore a request to sign a flight.</comment>
+  </data>
+  <data name="SignInvitationExisting" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\signinvitationexisting.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="SignRequestSubject" xml:space="preserve">
+    <value>Request to sign logbook entries for {0} on {1}</value>
+    <comment>Subject line for a request to sign logbook entries.  {0} is student name, {1} is app name.</comment>
+  </data>
+  <data name="errUpdatePilotPrefs" xml:space="preserve">
+    <value>Update your CFI Certificate and Expiration</value>
+  </data>
+  <data name="SignFlightHeader" xml:space="preserve">
+    <value>Sign flight for {0}</value>
+    <comment>{0} is student name</comment>
+  </data>
+  <data name="SignFlightCopy" xml:space="preserve">
+    <value>Add this flight to {0}'s logbook</value>
+    <comment>{0} is the name of the CFI</comment>
+  </data>
+  <data name="EditEndorsementDateCreatedPrompt" xml:space="preserve">
+    <value>Date endorsement created:</value>
+  </data>
+  <data name="errNoBackDating" xml:space="preserve">
+    <value>You cannot back-date an endorsement so far in the past.</value>
+  </data>
+  <data name="errNoPostDating" xml:space="preserve">
+    <value>You cannot post-date an endorsement.</value>
+  </data>
+  <data name="CFISigsLinkLabel" xml:space="preserve">
+    <value>More information on the use of digital signatures/endorsements (English only).</value>
+  </data>
+  <data name="NoExistingEndorsements" xml:space="preserve">
+    <value>There are no existing endorsements to display</value>
+  </data>
+  <data name="errCantDeleteMemberEndorsement" xml:space="preserve">
+    <value>You cannot delete this endorsement because it is in the logbook of another pilot in the system.  Endorsements cannot be revoked.</value>
+  </data>
+  <data name="ExternalEndorsementConfirmDelete" xml:space="preserve">
+    <value>Are you sure you want to delete this?  (The student will still have the endorsement record in whatever form you originally gave it to them; this will simply delete your record.)</value>
+  </data>
+  <data name="ExternalEndorsementDeleteTooltip" xml:space="preserve">
+    <value>Delete this record of an endorsement you have given.</value>
+  </data>
+  <data name="ExternalEndorsementDisclaimer" xml:space="preserve">
+    <value>This is a record of an endorsement that you have given outside of %APP_NAME%.  The recipient was not a member of %APP_NAME% when it was created and did not receive a copy of it from %APP_NAME%.</value>
+  </data>
+  <data name="InstructorEditFlightPrompt" xml:space="preserve">
+    <value>Edit this flight...</value>
+  </data>
+  <data name="RequestSignatureReSign" xml:space="preserve">
+    <value>This flight has been previously signed.  Requesting a new signature will remove the old signature.</value>
+  </data>
+  <data name="SignFlightAffirmation" xml:space="preserve">
+    <value>Signed by</value>
+  </data>
+  <data name="DownloadCSVEndorsements" xml:space="preserve">
+    <value>Download as a spreadsheet</value>
+  </data>
+  <data name="DownloadEndorsementFARRef" xml:space="preserve">
+    <value>FAR Reference</value>
+  </data>
+  <data name="DownloadEndorsementsAllStudents" xml:space="preserve">
+    <value>AllStudents</value>
+  </data>
+  <data name="DownloadEndorsementsFilename" xml:space="preserve">
+    <value>Endorsements</value>
+  </data>
+  <data name="DownloadEndorsementText" xml:space="preserve">
+    <value>Text of endorsement</value>
+  </data>
+  <data name="StudentNameTemplate" xml:space="preserve">
+    <value>Student: {0}. {1}</value>
+    <comment>{0} is the student's name, {1} are any other comments/remarks</comment>
+  </data>
+</root>

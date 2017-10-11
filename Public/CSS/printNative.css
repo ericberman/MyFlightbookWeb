@@ -1,0 +1,64 @@
+﻿.pageTable {
+    width:100%; 
+    border-collapse:collapse; 
+    border-spacing:0; 
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:9pt;
+}
+.pageTable td {
+    padding: 5px;
+}
+
+tr.bordered {
+    page-break-inside:avoid;
+}
+
+tr.bordered td {
+    padding: 3px;
+    border:1px solid black;
+    page-break-inside:avoid;
+    font-size: smaller;
+}
+
+tr.subtotal td {
+    padding: 2px;
+    border: 1px solid gray;
+    page-break-inside:avoid;
+    font-weight:bold;
+}
+
+tr.subtotal td.subtotalLabel {
+    text-align:right;
+    width: 150px;
+}
+
+tr.subtotal td.noborder {
+    border:none;
+}
+
+thead.header th {
+    height: 40px;
+    white-space: nowrap;
+}
+
+thead.header th > div {
+    -webkit-transform: rotate(315deg);
+    -moz-transform: rotate(315deg);
+    -o-transform: rotate(315deg);
+    -ms-transform: rotate(315deg);
+    transform: rotate(315deg);
+    width: .6cm;
+}
+
+.header {
+    font-weight:bold;
+    text-align:left;
+}
+
+.numericColumn {
+    width: .6cm;
+}
+
+@media screen {
+    tr.bordered td { background-color:#ffffcc; }
+}

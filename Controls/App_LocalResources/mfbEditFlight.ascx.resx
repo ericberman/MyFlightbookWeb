@@ -1,0 +1,711 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnAddFlightResource1.Text" xml:space="preserve">
+    <value>Add Flight</value>
+  </data>
+  <data name="btnAddFlightResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckFacebookResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckFacebookResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckHoldResource1.Text" xml:space="preserve">
+    <value>Hold</value>
+  </data>
+  <data name="ckHoldResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckPublicResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckPublicResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckUpdateTwitterResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckUpdateTwitterResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbCatClassesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Image2Resource1.AlternateText" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="Image2Resource1.ToolTip" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="Image5Resource1.AlternateText" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="Image5Resource1.ToolTip" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="imgMFBPublicResource1.AlternateText" xml:space="preserve">
+    <value>Share Flight Details</value>
+  </data>
+  <data name="imgMFBPublicResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label10Resource1.Text" xml:space="preserve">
+    <value>Comments:</value>
+  </data>
+  <data name="Label10Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label11Resource1.Text" xml:space="preserve">
+    <value>Approaches</value>
+  </data>
+  <data name="Label11Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label12Resource1.Text" xml:space="preserve">
+    <value>Total Landings</value>
+  </data>
+  <data name="Label12Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label13Resource1.Text" xml:space="preserve">
+    <value>Full Stop (Day):</value>
+  </data>
+  <data name="Label13Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label14Resource1.Text" xml:space="preserve">
+    <value>Full Stop (Night):</value>
+  </data>
+  <data name="Label14Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label15Resource1.Text" xml:space="preserve">
+    <value>Cross-Country</value>
+  </data>
+  <data name="Label15Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label16Resource1.Text" xml:space="preserve">
+    <value>Night</value>
+  </data>
+  <data name="Label16Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label17Resource1.Text" xml:space="preserve">
+    <value>Simulated Instrument</value>
+  </data>
+  <data name="Label17Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label18Resource1.Text" xml:space="preserve">
+    <value>IMC</value>
+  </data>
+  <data name="Label18Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label19Resource1.Text" xml:space="preserve">
+    <value>Ground Sim</value>
+  </data>
+  <data name="Label19Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label1Resource1.Text" xml:space="preserve">
+    <value>Times and Telemetry</value>
+  </data>
+  <data name="Label1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label20Resource1.Text" xml:space="preserve">
+    <value>Dual</value>
+  </data>
+  <data name="Label20Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label21Resource1.Text" xml:space="preserve">
+    <value>CFI (Instructor)</value>
+  </data>
+  <data name="Label21Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label22Resource1.Text" xml:space="preserve">
+    <value>SIC (Second in Command)</value>
+  </data>
+  <data name="Label22Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label23Resource1.Text" xml:space="preserve">
+    <value>PIC</value>
+  </data>
+  <data name="Label23Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label24Resource1.Text" xml:space="preserve">
+    <value>Total Time</value>
+  </data>
+  <data name="Label24Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label25Resource1.Text" xml:space="preserve">
+    <value>Cross-fill total time to:</value>
+  </data>
+  <data name="Label25Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label26Resource1.Text" xml:space="preserve">
+    <value>Share details such as route, comments, and pictures with others</value>
+  </data>
+  <data name="Label26Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label2Resource1.Text" xml:space="preserve">
+    <value>[?]</value>
+  </data>
+  <data name="Label2Resource2.Text" xml:space="preserve">
+    <value>[?]</value>
+  </data>
+  <data name="Label3Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label3Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label3Resource2.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label3Resource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label3Resource3.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label3Resource3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label3Resource4.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label3Resource4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label3Resource5.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label3Resource5.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label4Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label4Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label4Resource2.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label4Resource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label4Resource3.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label4Resource3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label4Resource4.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label4Resource4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label4Resource5.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label4Resource5.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label5Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label5Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label5Resource2.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label5Resource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label5Resource3.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label5Resource3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label5Resource4.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label5Resource4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label5Resource5.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label5Resource5.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label6Resource1.Text" xml:space="preserve">
+    <value>General Flight Info</value>
+  </data>
+  <data name="Label6Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label7Resource1.Text" xml:space="preserve">
+    <value>Date of Flight</value>
+  </data>
+  <data name="Label7Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label8Resource1.Text" xml:space="preserve">
+    <value>Aircraft:</value>
+  </data>
+  <data name="Label8Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Label9Resource1.Text" xml:space="preserve">
+    <value>Route:</value>
+  </data>
+  <data name="Label9Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAltCatClassInfoResource1.Text" xml:space="preserve">
+    <value>[?]</value>
+  </data>
+  <data name="lblAltCatClassInfoResource1.ToolTip" xml:space="preserve">
+    <value>Useful for amphibian aircraft or aircraft that are part-time on floats and part-time on wheels.  For a flight that begins on water and lands on wheels (or vice-versa), record two separate flights.</value>
+  </data>
+  <data name="lblErrorResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblErrorResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblExpandCollapseResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblExpandCollapseResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFacebookResource1.Text" xml:space="preserve">
+    <value>Post this flight on Facebook</value>
+  </data>
+  <data name="lblFacebookResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblInfoResource1.Text" xml:space="preserve">
+    <value>[?]</value>
+  </data>
+  <data name="lblInfoResource1.ToolTip" xml:space="preserve">
+    <value>You can specify approach types with additional properties, below.</value>
+  </data>
+  <data name="lblPixForFlightResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPixForFlightResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPublicResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPublicResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblSharingPromptResource1.Text" xml:space="preserve">
+    <value>Sharing</value>
+  </data>
+  <data name="lblSharingPromptResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblShowCatClassResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblShowCatClassResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblShowLandingDetailsResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblShowLandingDetailsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblTwitterResource1.Text" xml:space="preserve">
+    <value>Tweet this flight on Twitter</value>
+  </data>
+  <data name="lblTwitterResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblXFillResource1.Text" xml:space="preserve">
+    <value>Cross-fill</value>
+  </data>
+  <data name="lblXFillResource1.ToolTip" xml:space="preserve">
+    <value>Click to copy total time into other fields for this entry.</value>
+  </data>
+  <data name="lnkAddAircraftResource1.Text" xml:space="preserve">
+    <value>(Add...)</value>
+  </data>
+  <data name="lnkAddAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkCFIResource1.Text" xml:space="preserve">
+    <value>CFI</value>
+  </data>
+  <data name="lnkCFIResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkCrossCountryResource1.Text" xml:space="preserve">
+    <value>Cross-country</value>
+  </data>
+  <data name="lnkCrossCountryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkDualResource1.Text" xml:space="preserve">
+    <value>Dual</value>
+  </data>
+  <data name="lnkDualResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkIMCResource1.Text" xml:space="preserve">
+    <value>IMC</value>
+  </data>
+  <data name="lnkIMCResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkNightResource1.Text" xml:space="preserve">
+    <value>Night</value>
+  </data>
+  <data name="lnkNightResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkPICResource1.Text" xml:space="preserve">
+    <value>PIC</value>
+  </data>
+  <data name="lnkPICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkSetUpFacebookResource1.Text" xml:space="preserve">
+    <value>Set up to post selected flights to your account on Facebook</value>
+  </data>
+  <data name="lnkSetUpFacebookResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkSetUpTwitterResource1.Text" xml:space="preserve">
+    <value>Set up to tweet selected flights to your feed on Twitter</value>
+  </data>
+  <data name="lnkSetUpTwitterResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkSICResource1.Text" xml:space="preserve">
+    <value>SIC</value>
+  </data>
+  <data name="lnkSICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkSimIMCResource1.Text" xml:space="preserve">
+    <value>Simulated IMC</value>
+  </data>
+  <data name="lnkSimIMCResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locTimesHeaderResource1.Text" xml:space="preserve">
+    <value>Times</value>
+  </data>
+  <data name="pnlAltCatClassResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAltCatClassResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlContainerResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlContainerResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFlightDetailsContainerResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFlightDetailsContainerResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFlightDetailsResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFlightDetailsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFlightInfoResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFlightInfoResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFlightTimesResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFlightTimesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlLandingDetailsResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlLandingDetailsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlPicturesResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlPicturesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlSubmitResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlSubmitResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTwitterResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTwitterResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlXFillResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlXFillResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator2Resource1.ErrorMessage" xml:space="preserve">
+    <value>Please select an aircraft, or click "Add" to add a new one</value>
+  </data>
+  <data name="RequiredFieldValidator2Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCommentsResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCommentsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtRouteResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtRouteResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valCheckFullStopResource1.ErrorMessage" xml:space="preserve">
+    <value>Total landings must be greater than or equal to the number of full stop landings</value>
+  </data>
+  <data name="valCheckFullStopResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valCheckFullStopResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valCheckNightResource1.ErrorMessage" xml:space="preserve">
+    <value>In order to have night landings, there must be night flying.</value>
+  </data>
+  <data name="valCheckNightResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valCheckNightResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valDateResource1.ErrorMessage" xml:space="preserve">
+    <value>Date of flight should be today or in the past.</value>
+  </data>
+  <data name="valDateResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="valDateResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="xfCFIResource1.Text" xml:space="preserve">
+    <value>CFI</value>
+  </data>
+  <data name="xfCFIResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="xfDualResource1.Text" xml:space="preserve">
+    <value>Dual</value>
+  </data>
+  <data name="xfDualResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="xfGroundSimResource1.Text" xml:space="preserve">
+    <value>Ground Sim</value>
+  </data>
+  <data name="xfGroundSimResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="xfIMCResource1.Text" xml:space="preserve">
+    <value>IMC</value>
+  </data>
+  <data name="xfIMCResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="xfNightResource1.Text" xml:space="preserve">
+    <value>Night</value>
+  </data>
+  <data name="xfNightResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="xfPICResource1.Text" xml:space="preserve">
+    <value>PIC</value>
+  </data>
+  <data name="xfPICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="xfSICResource1.Text" xml:space="preserve">
+    <value>SIC</value>
+  </data>
+  <data name="xfSICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="xfSimIMCResource1.Text" xml:space="preserve">
+    <value>Simulated IMC</value>
+  </data>
+  <data name="xfSimIMCResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="xfXCResource1.Text" xml:space="preserve">
+    <value>Cross-Country</value>
+  </data>
+  <data name="xfXCResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+</root>

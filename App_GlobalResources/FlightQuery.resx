@@ -1,0 +1,325 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AircraftFeatureComplex" xml:space="preserve">
+    <value>Complex</value>
+  </data>
+  <data name="AircraftFeatureConstantSpeedProp" xml:space="preserve">
+    <value>Constant speed props</value>
+  </data>
+  <data name="AircraftFeatureFlaps" xml:space="preserve">
+    <value>Flaps</value>
+  </data>
+  <data name="AircraftFeatureGlass" xml:space="preserve">
+    <value>Glass Cockpit</value>
+  </data>
+  <data name="AircraftFeatureHighPerformance" xml:space="preserve">
+    <value>High performance</value>
+  </data>
+  <data name="AircraftFeatureRetractableGear" xml:space="preserve">
+    <value>Retractable gear</value>
+  </data>
+  <data name="AircraftFeatureTailwheel" xml:space="preserve">
+    <value>Tailwheel</value>
+  </data>
+  <data name="AircraftFeatureTurbine" xml:space="preserve">
+    <value>Turbine (Any)</value>
+  </data>
+  <data name="AircraftFeatureType" xml:space="preserve">
+    <value>Aircraft type</value>
+  </data>
+  <data name="CategoryClass" xml:space="preserve">
+    <value>Category/class is one of</value>
+  </data>
+  <data name="ContainsAircraft" xml:space="preserve">
+    <value>Aircraft</value>
+  </data>
+  <data name="ContainsAirports" xml:space="preserve">
+    <value>Airports</value>
+  </data>
+  <data name="ContainsMakeModel" xml:space="preserve">
+    <value>Make/model</value>
+  </data>
+  <data name="ContainsText" xml:space="preserve">
+    <value>Contains words</value>
+  </data>
+  <data name="DatesAfter" xml:space="preserve">
+    <value>After {0}</value>
+  </data>
+  <data name="DatesAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="DatesBefore" xml:space="preserve">
+    <value>Before: {0}</value>
+  </data>
+  <data name="DatesBetween" xml:space="preserve">
+    <value>Between {0} and {1}</value>
+  </data>
+  <data name="DatesPrev12Month" xml:space="preserve">
+    <value>Past 12 months</value>
+  </data>
+  <data name="DatesPrev6Month" xml:space="preserve">
+    <value>Past 6 months</value>
+  </data>
+  <data name="DatesPrevMonth" xml:space="preserve">
+    <value>Previous month</value>
+  </data>
+  <data name="DatesPrevYear" xml:space="preserve">
+    <value>Previous year</value>
+  </data>
+  <data name="DatesThisMonth" xml:space="preserve">
+    <value>This month</value>
+  </data>
+  <data name="DatesYearToDate" xml:space="preserve">
+    <value>Year to date</value>
+  </data>
+  <data name="FlightCharacteristics" xml:space="preserve">
+    <value>Flight characteristics</value>
+    <comment>Has all of the flight features.</comment>
+  </data>
+  <data name="FlightFeatureaHolds" xml:space="preserve">
+    <value>Holding procedures</value>
+  </data>
+  <data name="FlightFeatureApproaches" xml:space="preserve">
+    <value>Approaches</value>
+  </data>
+  <data name="FlightFeatureCFI" xml:space="preserve">
+    <value>CFI time</value>
+  </data>
+  <data name="FlightFeatureDual" xml:space="preserve">
+    <value>Dual time</value>
+  </data>
+  <data name="FlightFeatureFSLanding" xml:space="preserve">
+    <value>Full-stop landings</value>
+  </data>
+  <data name="FlightFeatureFSNightLanding" xml:space="preserve">
+    <value>Full-stop nighttime landings</value>
+  </data>
+  <data name="FlightFeatureGroundsim" xml:space="preserve">
+    <value>Ground simulator time</value>
+  </data>
+  <data name="FlightFeatureHasTelemetry" xml:space="preserve">
+    <value>Has telemetry</value>
+  </data>
+  <data name="FlightFeatureIMC" xml:space="preserve">
+    <value>Actual IMC time</value>
+  </data>
+  <data name="FlightFeatureNight" xml:space="preserve">
+    <value>Night flight</value>
+  </data>
+  <data name="FlightFeaturePIC" xml:space="preserve">
+    <value>PIC time</value>
+  </data>
+  <data name="FlightFeaturePublic" xml:space="preserve">
+    <value>Shared</value>
+  </data>
+  <data name="FlightFeatureSIC" xml:space="preserve">
+    <value>SICtime</value>
+  </data>
+  <data name="FlightFeatureSimIMC" xml:space="preserve">
+    <value>Simulated IMC time</value>
+  </data>
+  <data name="FlightFeatureXC" xml:space="preserve">
+    <value>Cross-country time</value>
+  </data>
+  <data name="FlightHasProperties" xml:space="preserve">
+    <value>Flight has any of these properties</value>
+  </data>
+  <data name="FlightRangeLocal" xml:space="preserve">
+    <value>Local flights only</value>
+  </data>
+  <data name="FlightRangeNonLocal" xml:space="preserve">
+    <value>Non-local flights only</value>
+  </data>
+  <data name="AircraftFeatureMotorGlider" xml:space="preserve">
+    <value>Motor Glider or TMG</value>
+  </data>
+  <data name="DatesPrev30Days" xml:space="preserve">
+    <value>Past 30 days</value>
+  </data>
+  <data name="DatesPrev90Days" xml:space="preserve">
+    <value>Past 90 days</value>
+  </data>
+  <data name="FlightFeatureIsSigned" xml:space="preserve">
+    <value>Signed</value>
+  </data>
+  <data name="AircraftFeatureJet" xml:space="preserve">
+    <value>Jet</value>
+  </data>
+  <data name="AircraftFeaturePiston" xml:space="preserve">
+    <value>Piston</value>
+  </data>
+  <data name="AircraftFeatureReal" xml:space="preserve">
+    <value>Real Aircraft</value>
+  </data>
+  <data name="AircraftFeatureTrainingDevice" xml:space="preserve">
+    <value>Training Device (Simulator, FTD, ATD)</value>
+  </data>
+  <data name="AircraftFeatureTurboprop" xml:space="preserve">
+    <value>Turboprop</value>
+  </data>
+  <data name="AircraftFeatureMultiEngineHelicopter" xml:space="preserve">
+    <value>Multi-engine Helicopter</value>
+  </data>
+  <data name="AircraftFeatureElectric" xml:space="preserve">
+    <value>Electric</value>
+  </data>
+  <data name="ContainsMakeModelText" xml:space="preserve">
+    <value>Make/model contains</value>
+  </data>
+  <data name="ContainsMakeModelTextOR" xml:space="preserve">
+    <value>OR make/model contains</value>
+  </data>
+  <data name="FilterDate" xml:space="preserve">
+    <value>Dates</value>
+  </data>
+  <data name="FilterFlightRange" xml:space="preserve">
+    <value>Flight range</value>
+  </data>
+  <data name="FilterNone" xml:space="preserve">
+    <value>All Flights</value>
+  </data>
+  <data name="ContainsType" xml:space="preserve">
+    <value>Type is</value>
+  </data>
+  <data name="ContainsTypeMultiple" xml:space="preserve">
+    <value>Type is one of</value>
+  </data>
+  <data name="FlightFeatureAnyInstrument" xml:space="preserve">
+    <value>Instrument time</value>
+  </data>
+  <data name="FlightFeatureAnyLandings" xml:space="preserve">
+    <value>Landings</value>
+  </data>
+  <data name="FlightFeatureTotalTime" xml:space="preserve">
+    <value>Total Time</value>
+  </data>
+  <data name="SaveQueryNamePrompt" xml:space="preserve">
+    <value>Name this query for future use:</value>
+  </data>
+  <data name="SaveQueryPrompt" xml:space="preserve">
+    <value>Save...</value>
+  </data>
+  <data name="SaveQueryNoSavedQueries" xml:space="preserve">
+    <value>You have no saved queries</value>
+  </data>
+  <data name="FlightFeatureHasImages" xml:space="preserve">
+    <value>Has images or videos</value>
+  </data>
+</root>

@@ -1,0 +1,10 @@
+﻿Your account on %APP_NAME% has been locked due to too many failed attempts to sign in or to reset the password.
+
+Until it is unlocked, you will be unable to sign in or reset your password, even if you use the correct existing password.
+
+The site administrators have been notified and will unlock it for you shortly.  Or, you can use the Contact link on the website (http://%APP_URL%) to ask for help resetting your password.
+
+Thank-you,
+The %APP_NAME% Team
+
+PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

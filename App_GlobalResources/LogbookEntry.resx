@@ -1,0 +1,849 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="errApproachesFewerThanSpecificApproaches" xml:space="preserve">
+    <value>Cannot have more precision + non-precision approaches than total approaches.</value>
+  </data>
+  <data name="errApproachPropertiesExceedApproachCount" xml:space="preserve">
+    <value>Flight has {0} total approach(es), but {1} individual approach(es) described by flight properties.</value>
+  </data>
+  <data name="errHobbsTimesNegative" xml:space="preserve">
+    <value>Hobbs times cannot be negative.</value>
+  </data>
+  <data name="errInvalidAircraft" xml:space="preserve">
+    <value>Invalid aircraft for flight.</value>
+  </data>
+  <data name="errInvalidEngineTimes" xml:space="preserve">
+    <value>Engine start time must be prior to engine end time.</value>
+  </data>
+  <data name="errInvalidFlightDateEarly" xml:space="preserve">
+    <value>{0} is before the first powered flight.  Please check the date.</value>
+  </data>
+  <data name="errInvalidFlightDateFuture" xml:space="preserve">
+    <value>{0} is in the future.  You should fly the flight before recording it.</value>
+  </data>
+  <data name="errInvalidFlightTimes" xml:space="preserve">
+    <value>Flight start time must be prior to flight end time.</value>
+  </data>
+  <data name="errInvalidHobbs" xml:space="preserve">
+    <value>Hobbs end time must be greater than start time.</value>
+  </data>
+  <data name="errInvalidTime" xml:space="preserve">
+    <value>Times cannot be negative.</value>
+  </data>
+  <data name="errInvalidUser" xml:space="preserve">
+    <value>Invalid Username.</value>
+  </data>
+  <data name="errNoNightFlight" xml:space="preserve">
+    <value>Nighttime fullstop landings are indicated with no nighttime flying.</value>
+  </data>
+  <data name="errTooManyFSLandings" xml:space="preserve">
+    <value>Cannot have more full stop landings than total landings.</value>
+  </data>
+  <data name="FlightDistanceLong" xml:space="preserve">
+    <value>Flight distance: {0:#,#.0}nm, Route distance (Airport-to-Airport): {1:#,#.0}nm</value>
+  </data>
+  <data name="FlightDistancePathOnly" xml:space="preserve">
+    <value>Path distance: {0:#,#.0}nm</value>
+  </data>
+  <data name="FlightDistanceRouteOnly" xml:space="preserve">
+    <value>Route distance (Airport-to-Airport): {0:#,#.0}nm</value>
+  </data>
+  <data name="PropertyNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="PropertyYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="SocialNetworkPostLong" xml:space="preserve">
+    <value>{0} {1}</value>
+    <comment>{0} has the comment, {1} has the link to the flight</comment>
+  </data>
+  <data name="SocialNetworkPostShort" xml:space="preserve">
+    <value>Went Flying {0}</value>
+    <comment>{0} has the link to the flight</comment>
+  </data>
+  <data name="TelemetryEmailSubject" xml:space="preserve">
+    <value>{0}  - Telemetry data for your flight</value>
+    <comment>{0} has the app name.</comment>
+  </data>
+  <data name="FieldApproaches" xml:space="preserve">
+    <value>Approaches</value>
+  </data>
+  <data name="FieldCatClassType" xml:space="preserve">
+    <value>Cat/&lt;br /&gt;Class&lt;br /&gt;/Type</value>
+  </data>
+  <data name="FieldCFI" xml:space="preserve">
+    <value>CFI</value>
+  </data>
+  <data name="FieldComments" xml:space="preserve">
+    <value>Comments</value>
+  </data>
+  <data name="FieldDual" xml:space="preserve">
+    <value>Dual</value>
+  </data>
+  <data name="FieldEngine" xml:space="preserve">
+    <value>Engine</value>
+  </data>
+  <data name="FieldEngineEnd" xml:space="preserve">
+    <value>Engine End</value>
+  </data>
+  <data name="FieldEngineStart" xml:space="preserve">
+    <value>Engine Start</value>
+  </data>
+  <data name="FieldFlight" xml:space="preserve">
+    <value>Flight</value>
+  </data>
+  <data name="FieldFlightEnd" xml:space="preserve">
+    <value>Flight End</value>
+  </data>
+  <data name="FieldFlightStart" xml:space="preserve">
+    <value>Flight Start</value>
+  </data>
+  <data name="FieldFlightTime" xml:space="preserve">
+    <value>Flight</value>
+  </data>
+  <data name="FieldGroundSim" xml:space="preserve">
+    <value>Grnd.&lt;br /&gt;Sim.</value>
+  </data>
+  <data name="FieldHold" xml:space="preserve">
+    <value>Hold</value>
+  </data>
+  <data name="FieldIMC" xml:space="preserve">
+    <value>IMC</value>
+  </data>
+  <data name="FieldLanding" xml:space="preserve">
+    <value>Landings</value>
+  </data>
+  <data name="FieldNight" xml:space="preserve">
+    <value>Night</value>
+  </data>
+  <data name="FieldPIC" xml:space="preserve">
+    <value>PIC</value>
+  </data>
+  <data name="FieldRoute" xml:space="preserve">
+    <value>Route</value>
+  </data>
+  <data name="FieldSIC" xml:space="preserve">
+    <value>SIC</value>
+  </data>
+  <data name="FieldSimIMC" xml:space="preserve">
+    <value>Sim.&lt;br /&gt;Inst.</value>
+  </data>
+  <data name="FieldTail" xml:space="preserve">
+    <value>Tail</value>
+  </data>
+  <data name="FieldTotal" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="FieldXCountry" xml:space="preserve">
+    <value>X-C</value>
+  </data>
+  <data name="LogbookAltCatClassTooltip" xml:space="preserve">
+    <value>This flight was recorded with a DIFFERENT category/class than usual for the airplane.  This could be appropriate, for example, if the plane on floats part-time, or is amphibian.</value>
+  </data>
+  <data name="LogbookCertification" xml:space="preserve">
+    <value>I certify that the entries in this log are true: _____________________________</value>
+  </data>
+  <data name="LogbookConfirmDelete" xml:space="preserve">
+    <value>Are you sure you want to delete this flight?  This action cannot be undone!</value>
+  </data>
+  <data name="LogbookDeleteTooltip" xml:space="preserve">
+    <value>Delete this flight</value>
+  </data>
+  <data name="LogbookFlightHasPicturesTooltip" xml:space="preserve">
+    <value>This flight has pictures</value>
+  </data>
+  <data name="LogbookFlightHasTelemetry" xml:space="preserve">
+    <value>This flight has telemetry data associated with it; click to view.</value>
+  </data>
+  <data name="LogbookGoToPage" xml:space="preserve">
+    <value>Go</value>
+  </data>
+  <data name="LogbookLandingKey" xml:space="preserve">
+    <value>(D) indicates a full-stop daytime landing&lt;br /&gt;(N) indicates a full-stop night-time landing</value>
+  </data>
+  <data name="LogbookPagePrompt" xml:space="preserve">
+    <value>Page </value>
+    <comment>Page x of y, this is the "Page"</comment>
+  </data>
+  <data name="LogbookPageTotalPagePrompt" xml:space="preserve">
+    <value>of</value>
+    <comment>Page x of y, this is the "of"</comment>
+  </data>
+  <data name="LogbookPrinterFriendlyViewHint" xml:space="preserve">
+    <value>(Use this for printer-friendly view of your whole logbook)</value>
+  </data>
+  <data name="LogbookShowAll" xml:space="preserve">
+    <value>ShowAll</value>
+  </data>
+  <data name="LogbookShowInPages" xml:space="preserve">
+    <value>Show in Pages</value>
+  </data>
+  <data name="errImportCannotImportProperty" xml:space="preserve">
+    <value>Unable to import property "{0}": {1}</value>
+    <comment>{0} is name of property, {1} is the error detail</comment>
+  </data>
+  <data name="errImportCannotReadDate" xml:space="preserve">
+    <value>Unable to parse date of flight - written as '{0}'</value>
+  </data>
+  <data name="errImportCannotReadTotalTime" xml:space="preserve">
+    <value>Bad total flight time '{0}'</value>
+  </data>
+  <data name="errImportFlightIsInvalid" xml:space="preserve">
+    <value>Invalid flight: {0}</value>
+    <comment>{0} contains the detailed error</comment>
+  </data>
+  <data name="errImportIncorrectColumns" xml:space="preserve">
+    <value>Row does not have the expected number of columns.  Expected {0}, found {1}</value>
+  </data>
+  <data name="errImportInvalidCSVFile" xml:space="preserve">
+    <value>Please upload a properly formatted CSV file</value>
+  </data>
+  <data name="errImportNoDate" xml:space="preserve">
+    <value>No "Date" column was found.  Each flight must have a date.</value>
+  </data>
+  <data name="errImportNoTail" xml:space="preserve">
+    <value>No "Tail Number" column was found.  Each flight must have a tail number to identify the aircraft used.</value>
+  </data>
+  <data name="errImportNoTotal" xml:space="preserve">
+    <value>No "Total Flight Time" column was found.  Each flight must have a total flight time.</value>
+  </data>
+  <data name="errImportRowErrorDetail" xml:space="preserve">
+    <value>{0}&lt;br /&gt;Row data: {1}</value>
+  </data>
+  <data name="errImportRowHasError" xml:space="preserve">
+    <value>Row #{0}: {1}</value>
+    <comment>{0} is row number, {1} is the problem</comment>
+  </data>
+  <data name="errImportUnknownAircraft" xml:space="preserve">
+    <value>Unknown aircraft with tail number '{0}' encountered.  Please create this aircraft and then try uploading again.</value>
+  </data>
+  <data name="ImportNotSuccessful" xml:space="preserve">
+    <value>Errors were encountered, no data was imported.  Please fix the errors and try again.</value>
+  </data>
+  <data name="ImportRowAdded" xml:space="preserve">
+    <value>NEW Flight added successfully: {0}</value>
+    <comment>{0} is flight details</comment>
+  </data>
+  <data name="ImportRowNotAdded" xml:space="preserve">
+    <value>Flight was NOT added! (Error: {1}): {0}</value>
+    <comment>{0} is flight details, {1} is error</comment>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ImportTableDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\ImportTableDescription.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="importTableHeader" xml:space="preserve">
+    <value>{0} - Setting up to import</value>
+    <comment>{0} has the app name</comment>
+  </data>
+  <data name="importUnitDate" xml:space="preserve">
+    <value>Date</value>
+    <comment>Field to import is a date</comment>
+  </data>
+  <data name="importUnitNumber" xml:space="preserve">
+    <value>Number</value>
+    <comment>Field to import is a number</comment>
+  </data>
+  <data name="importUnitText" xml:space="preserve">
+    <value>Text</value>
+    <comment>Field to import is free-form text</comment>
+  </data>
+  <data name="PublicFlightAircraft" xml:space="preserve">
+    <value>Aircraft:</value>
+  </data>
+  <data name="PublicFlightComments" xml:space="preserve">
+    <value>Comments:</value>
+  </data>
+  <data name="PublicFlightDate" xml:space="preserve">
+    <value>Date:</value>
+  </data>
+  <data name="PublicFlightEditThisFlight" xml:space="preserve">
+    <value>Edit This Flight</value>
+  </data>
+  <data name="PublicFlightHeader" xml:space="preserve">
+    <value>Shared Flight</value>
+    <comment>Header for viewing a public flight.</comment>
+  </data>
+  <data name="PublicFlightKMLDownload" xml:space="preserve">
+    <value>View in Google Earth (Requires Google Earth)</value>
+  </data>
+  <data name="PublicFlightPilotName" xml:space="preserve">
+    <value>Pilot:</value>
+  </data>
+  <data name="PublicFlightRoute" xml:space="preserve">
+    <value>Route:</value>
+  </data>
+  <data name="PublicFlightShowOnlyMap" xml:space="preserve">
+    <value>Show Only Map</value>
+  </data>
+  <data name="errCommentsTooLong" xml:space="preserve">
+    <value>Comments field is too long.</value>
+  </data>
+  <data name="errRouteTooLong" xml:space="preserve">
+    <value>Route field is too long</value>
+  </data>
+  <data name="StartingFlightAircraftExample" xml:space="preserve">
+    <value>Example: {0}</value>
+  </data>
+  <data name="StartingFlightComment" xml:space="preserve">
+    <value>CATCH-UP FLIGHT TO SET STARTING TOTALS</value>
+  </data>
+  <data name="FieldAdditionalFlightProperties" xml:space="preserve">
+    <value>Additional Flight Properties</value>
+  </data>
+  <data name="FieldNightLandings" xml:space="preserve">
+    <value>Night Landings:</value>
+  </data>
+  <data name="ImportPreviewNotSuccessful" xml:space="preserve">
+    <value>Errors were encountered; please review and fix the issues below before importing.</value>
+  </data>
+  <data name="errCantBeNegativeCount" xml:space="preserve">
+    <value>Landings and approach counts cannot be negative</value>
+  </data>
+  <data name="Hobbs" xml:space="preserve">
+    <value>Hobbs</value>
+  </data>
+  <data name="HobbsEnd" xml:space="preserve">
+    <value>Ending Hobbs</value>
+  </data>
+  <data name="HobbsStart" xml:space="preserve">
+    <value>Starting Hobbs</value>
+  </data>
+  <data name="HobbsTotal" xml:space="preserve">
+    <value>Total Hobbs</value>
+  </data>
+  <data name="RangeSeparator" xml:space="preserve">
+    <value>to</value>
+    <comment>E.g., from a to b.</comment>
+  </data>
+  <data name="PublicFlightDuration" xml:space="preserve">
+    <value>(Logged Time: {0})</value>
+  </data>
+  <data name="PublicFlightNoneFound" xml:space="preserve">
+    <value>No flights were found</value>
+  </data>
+  <data name="PublicFlightPageHeader" xml:space="preserve">
+    <value>Shared flights taken by {0}</value>
+  </data>
+  <data name="propAdditionalPropertiesPrompt" xml:space="preserve">
+    <value>Additional properties for your flight:</value>
+  </data>
+  <data name="propSelectAdditionalProperty" xml:space="preserve">
+    <value>(Select a property to add)</value>
+  </data>
+  <data name="NewPropertyPrompt1" xml:space="preserve">
+    <value>Contact us</value>
+  </data>
+  <data name="NewPropertyPrompt2" xml:space="preserve">
+    <value>if there are additional properties you'd like to see.</value>
+  </data>
+  <data name="RepeatFlight" xml:space="preserve">
+    <value>Repeat this flight</value>
+  </data>
+  <data name="RepeatReverseFlight" xml:space="preserve">
+    <value>Repeat and Reverse this Flight</value>
+  </data>
+  <data name="LogbookDeleteVideoTooltip" xml:space="preserve">
+    <value>Remove this video (doesn't delete the source video)</value>
+  </data>
+  <data name="SendFlight" xml:space="preserve">
+    <value>Send this flight</value>
+    <comment>For letting another user initialize this flight.</comment>
+  </data>
+  <data name="SendFlightButton" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="SendFlightCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SendFlightEmailPrompt" xml:space="preserve">
+    <value>Recipient Email:</value>
+  </data>
+  <data name="SendFlightMessagePrompt" xml:space="preserve">
+    <value>Add a message:</value>
+  </data>
+  <data name="SendFlightPrompt" xml:space="preserve">
+    <value>Send this flight to another pilot to add to their logbook</value>
+  </data>
+  <data name="SendFlightSubject" xml:space="preserve">
+    <value>{0} has shared a flight with you.</value>
+  </data>
+  <data name="HeaderImagesForFlight" xml:space="preserve">
+    <value>Images for this flight</value>
+  </data>
+  <data name="HeaderImagesVideosForFlight" xml:space="preserve">
+    <value>Images and videos for this flight</value>
+  </data>
+  <data name="DayAndNightLandingTemplate" xml:space="preserve">
+    <value>({0}D, {1}N)</value>
+    <comment>e.g., 1D, 2N for 1 day landing, 2 night landings</comment>
+  </data>
+  <data name="DayLandingTemplate" xml:space="preserve">
+    <value>({0}D)</value>
+  </data>
+  <data name="NightLandingTemplate" xml:space="preserve">
+    <value>({0}N)</value>
+  </data>
+  <data name="ImportAddTooltip" xml:space="preserve">
+    <value>This flight will be ADDED to your logbook.</value>
+  </data>
+  <data name="ImportUpdateTooltip" xml:space="preserve">
+    <value>This flight is ALREADY in your logbook and will be updated</value>
+  </data>
+  <data name="ImportRowUpdated" xml:space="preserve">
+    <value>EXISTING Flight updated successfully: {0}</value>
+    <comment>{0} is flight details</comment>
+  </data>
+  <data name="RunningTotalComment" xml:space="preserve">
+    <value>Running Totals:</value>
+  </data>
+  <data name="SubtotalComment" xml:space="preserve">
+    <value>Totals this page:</value>
+  </data>
+  <data name="TotalBlockTime" xml:space="preserve">
+    <value>Total Block Time: {0}</value>
+  </data>
+  <data name="TotalDutyTime" xml:space="preserve">
+    <value>Total Duty Time: {0}</value>
+  </data>
+  <data name="TotalTachTime" xml:space="preserve">
+    <value>Total Tachometer Time: {0}</value>
+  </data>
+  <data name="SendFlightBody" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\sendflightbody.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="EditFlightInlineCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="EditFlightInlinePrompt" xml:space="preserve">
+    <value>Edit flight on {0}</value>
+    <comment>{0} is the date of the flight being edited</comment>
+  </data>
+  <data name="PrintHeaderAircraft" xml:space="preserve">
+    <value>Aircraft</value>
+  </data>
+  <data name="PrintHeaderArrival" xml:space="preserve">
+    <value>Arrival</value>
+  </data>
+  <data name="PrintHeaderCategory" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="PrintHeaderCondition" xml:space="preserve">
+    <value>Operational Condition Time</value>
+  </data>
+  <data name="PrintHeaderDate" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="PrintHeaderDay" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="PrintHeaderDeparture" xml:space="preserve">
+    <value>Departure</value>
+  </data>
+  <data name="PrintHeaderFSTD" xml:space="preserve">
+    <value>FSTD Session</value>
+  </data>
+  <data name="PrintHeaderFSTDTime" xml:space="preserve">
+    <value>Total Time of Session</value>
+  </data>
+  <data name="PrintHeaderIFR" xml:space="preserve">
+    <value>IFR</value>
+  </data>
+  <data name="PrintHeaderLanding" xml:space="preserve">
+    <value>Landings</value>
+  </data>
+  <data name="PrintHeaderLicense" xml:space="preserve">
+    <value>License:</value>
+  </data>
+  <data name="PrintHeaderModel" xml:space="preserve">
+    <value>Make, Model, Variant</value>
+  </data>
+  <data name="PrintHeaderNight" xml:space="preserve">
+    <value>Night</value>
+  </data>
+  <data name="PrintHeaderPICName" xml:space="preserve">
+    <value>Name(s) of PIC</value>
+  </data>
+  <data name="PrintHeaderPilotFunction" xml:space="preserve">
+    <value>Pilot Function Time</value>
+  </data>
+  <data name="PrintHeaderRegistration" xml:space="preserve">
+    <value>Registration</value>
+  </data>
+  <data name="PrintHeaderRemarks" xml:space="preserve">
+    <value>Remarks and Endorsements</value>
+  </data>
+  <data name="PrintHeaderTime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="PrintHeaderTotalTime" xml:space="preserve">
+    <value>Total Time of Flight</value>
+  </data>
+  <data name="PrintLabelEASA" xml:space="preserve">
+    <value>Logbook format according to EASA Part FCL.050</value>
+  </data>
+  <data name="PrintLabelLocalDates" xml:space="preserve">
+    <value>Column 1 in local time, all others in UTC.</value>
+  </data>
+  <data name="PrintLabelUTCDates" xml:space="preserve">
+    <value>All dates and times in UTC</value>
+  </data>
+  <data name="PrintTotalsPreviousPage" xml:space="preserve">
+    <value>Totals Previous Page</value>
+  </data>
+  <data name="PrintTotalsRunning" xml:space="preserve">
+    <value>Total Times</value>
+  </data>
+  <data name="PrintTotalsThisPage" xml:space="preserve">
+    <value>Totals This Page</value>
+  </data>
+  <data name="PrintHeaderApproaches" xml:space="preserve">
+    <value># Inst. App.</value>
+  </data>
+  <data name="PrintHeaderCategory2" xml:space="preserve">
+    <value>Category / Class</value>
+  </data>
+  <data name="PrintHeaderCondition2" xml:space="preserve">
+    <value>Conditions of Flight</value>
+  </data>
+  <data name="PrintHeaderCrossCountry" xml:space="preserve">
+    <value>Cross-Country</value>
+  </data>
+  <data name="PrintHeaderIMC" xml:space="preserve">
+    <value>Act. Instr.</value>
+  </data>
+  <data name="PrintHeaderMEL" xml:space="preserve">
+    <value>Airplane MEL</value>
+  </data>
+  <data name="PrintHeaderPIC2" xml:space="preserve">
+    <value>PIC</value>
+  </data>
+  <data name="PrintHeaderPilotFunction2" xml:space="preserve">
+    <value>Type of Piloting Time</value>
+  </data>
+  <data name="PrintHeaderRoute" xml:space="preserve">
+    <value>Route</value>
+  </data>
+  <data name="PrintHeaderSEL" xml:space="preserve">
+    <value>Airplane SEL</value>
+  </data>
+  <data name="PrintHeaderSim" xml:space="preserve">
+    <value>Ground Trainer</value>
+  </data>
+  <data name="PrintHeaderSimInstrument" xml:space="preserve">
+    <value>Sim. Instr.</value>
+  </data>
+  <data name="PrintHeaderType" xml:space="preserve">
+    <value>Aircraft Type</value>
+  </data>
+  <data name="PrintFormatEASA" xml:space="preserve">
+    <value>EASA FCL.050</value>
+  </data>
+  <data name="PrintFormatNative" xml:space="preserve">
+    <value>MyFlightbook</value>
+  </data>
+  <data name="PrintFormatPrompt" xml:space="preserve">
+    <value>Layout to use:</value>
+  </data>
+  <data name="PrintFormatUSA" xml:space="preserve">
+    <value>US Formats (similar to ASA, Jeppesen, etc.)</value>
+  </data>
+  <data name="PrintHeaderApproachesShort" xml:space="preserve">
+    <value>App.</value>
+  </data>
+  <data name="PrintHeaderFrom" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="PrintHeaderTo" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="PrintHeaderLandingsShort" xml:space="preserve">
+    <value>Lndgs.</value>
+  </data>
+  <data name="importUnitBoolean" xml:space="preserve">
+    <value>Yes/No</value>
+    <comment>Field to import is a boolean (yes/no) value</comment>
+  </data>
+  <data name="PropertyGroupSeparator" xml:space="preserve">
+    <value>. - - - {0} - - -</value>
+    <comment>DO NOT LOCALIZE - used to separate groups of properties in the legacy property drop-down</comment>
+  </data>
+  <data name="errImportDuplicateColumn" xml:space="preserve">
+    <value>Duplicate column with name "{0}" found.  Please ensure that each column is only used once.</value>
+  </data>
+  <data name="errImportEmptyColumn" xml:space="preserve">
+    <value>Empty column header found for column {0}.  Please make sure every column has a header describing that column; if a column has no data, please remove the column.</value>
+  </data>
+  <data name="PropertiesFound" xml:space="preserve">
+    <value> properties found</value>
+    <comment># of properties that were found when filtering.</comment>
+  </data>
+  <data name="PropertyWatermark" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="PrintFormatSACAA" xml:space="preserve">
+    <value>SACAA</value>
+  </data>
+  <data name="PrintHeaderAircraftTimes" xml:space="preserve">
+    <value>Aircraft Time</value>
+  </data>
+  <data name="PrintHeaderCoPilot" xml:space="preserve">
+    <value>Co-Pilot</value>
+  </data>
+  <data name="PrintHeaderFSTDInstrumentTime" xml:space="preserve">
+    <value>FSTD</value>
+  </data>
+  <data name="PrintHeaderFSTDTotalTime" xml:space="preserve">
+    <value>FSTD Time</value>
+  </data>
+  <data name="PrintHeaderInstructorTime" xml:space="preserve">
+    <value>Instructor</value>
+  </data>
+  <data name="PrintHeaderInstrumentTime" xml:space="preserve">
+    <value>Instrument Time</value>
+  </data>
+  <data name="PrintHeaderPICUS" xml:space="preserve">
+    <value>PICUS</value>
+  </data>
+  <data name="PrintHeaderPlace" xml:space="preserve">
+    <value>Place</value>
+  </data>
+  <data name="EmptyLogbook" xml:space="preserve">
+    <value>There are no flights in this logbook</value>
+  </data>
+  <data name="PrintFormatGlider" xml:space="preserve">
+    <value>Glider</value>
+  </data>
+  <data name="PrintHeaderGliderAltitude" xml:space="preserve">
+    <value>Altitude</value>
+  </data>
+  <data name="PrintHeaderGliderMaxAltitude" xml:space="preserve">
+    <value>Max</value>
+  </data>
+  <data name="PrintHeaderGliderReleaseAltitude" xml:space="preserve">
+    <value>Release</value>
+  </data>
+  <data name="PrintHeaderGroundTrainingReceived" xml:space="preserve">
+    <value>Ground Training Received</value>
+  </data>
+  <data name="PrintHeaderLaunchMethod" xml:space="preserve">
+    <value>Launch Method</value>
+  </data>
+  <data name="PrintHeaderLaunchMethodAero" xml:space="preserve">
+    <value>A</value>
+  </data>
+  <data name="PrintHeaderLaunchMethodGround" xml:space="preserve">
+    <value>G</value>
+  </data>
+  <data name="PrintHeaderLaunchMethodSelf" xml:space="preserve">
+    <value>S</value>
+  </data>
+  <data name="PrintHeaderSolo" xml:space="preserve">
+    <value>Solo</value>
+  </data>
+  <data name="PrintHeaderGliderLandings" xml:space="preserve">
+    <value>Ldgs (Flts)</value>
+  </data>
+  <data name="FieldDayLandings" xml:space="preserve">
+    <value>Day landings (Full-stop)</value>
+  </data>
+  <data name="FieldOtherData" xml:space="preserve">
+    <value>Other flight data</value>
+  </data>
+  <data name="errNoSuchFlight" xml:space="preserve">
+    <value>The requested flight does not exist</value>
+  </data>
+  <data name="NextFlight" xml:space="preserve">
+    <value>►</value>
+  </data>
+  <data name="PreviousFlight" xml:space="preserve">
+    <value>◄</value>
+  </data>
+  <data name="BulkImportLink" xml:space="preserve">
+    <value>Import Telemetry</value>
+  </data>
+  <data name="BulkImportPrompt" xml:space="preserve">
+    <value>Got data from other sources that you'd like to attach to a flights?</value>
+  </data>
+  <data name="FlightDetailsDesc" xml:space="preserve">
+    <value>View details for your flight, including telemetry (if present).</value>
+  </data>
+  <data name="FlightDetailsHeader" xml:space="preserve">
+    <value>Flight Details</value>
+  </data>
+  <data name="FlightDetailsLearnAboutTelemetry" xml:space="preserve">
+    <value>Learn More about telemetry</value>
+  </data>
+  <data name="FlightDetailsTitle" xml:space="preserve">
+    <value>Details for Flight on {0:d}</value>
+  </data>
+  <data name="ApproachDescApproach" xml:space="preserve">
+    <value>{0} {1} approach</value>
+  </data>
+  <data name="ApproachDescApproaches" xml:space="preserve">
+    <value>{0} {1} approaches</value>
+  </data>
+  <data name="ApproachDescTemplate" xml:space="preserve">
+    <value>{0} to runway {1} at {2}</value>
+  </data>
+  <data name="csvAuditAppendedRowTooLong" xml:space="preserve">
+    <value>Row {0} has too many columns {1} to append to the prior row(s) (had {2} columns so far); will put that on a new row.</value>
+  </data>
+  <data name="csvauditColumnsFound" xml:space="preserve">
+    <value>Found {0} columns</value>
+  </data>
+  <data name="csvAuditEmptyRow" xml:space="preserve">
+    <value>Skipping empty row {0}, since it has no data</value>
+  </data>
+  <data name="csvAuditErrorFound" xml:space="preserve">
+    <value>Error parsing CSV: {0}</value>
+  </data>
+  <data name="csvAuditRowIncomplete" xml:space="preserve">
+    <value>Row {0} appears incomplete - has {1} columns, needs {2}; will append next row</value>
+  </data>
+  <data name="csvAuditRowMergedWithPrior" xml:space="preserve">
+    <value>Row {0} is being merged with prior row; has {1} columns; row is now complete!</value>
+  </data>
+  <data name="csvAuditSuccess" xml:space="preserve">
+    <value>All rows had the right number of columns; file looks fine</value>
+  </data>
+  <data name="csvAuditTotalRows" xml:space="preserve">
+    <value>{0} rows found in total</value>
+  </data>
+  <data name="errImportNoData" xml:space="preserve">
+    <value>Header row was found, but no rows of data were found.</value>
+  </data>
+  <data name="errImportNoHeaders" xml:space="preserve">
+    <value>First row must contain column headers.</value>
+  </data>
+  <data name="errImportTooManyColumns" xml:space="preserve">
+    <value>Row {0} has {1} columns; expected {2}; we will lose data.</value>
+  </data>
+  <data name="importAuditHeader" xml:space="preserve">
+    <value>Notes about file being imported</value>
+  </data>
+  <data name="importLabelDownloadConverted" xml:space="preserve">
+    <value>Download converted file</value>
+  </data>
+  <data name="importLabelFileWasConverted" xml:space="preserve">
+    <value>File was identified as being from {0} and was converted.</value>
+  </data>
+</root>

@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="errBadAlt" xml:space="preserve">
+    <value>Altitude less than -200 - seems suspect.</value>
+  </data>
+  <data name="errBadKMLPosition" xml:space="preserve">
+    <value>Bad position data '{0}': {1}</value>
+  </data>
+  <data name="errBadLatLong" xml:space="preserve">
+    <value>Suspected bad latitude/longitude: {0}</value>
+  </data>
+  <data name="errBadPosition" xml:space="preserve">
+    <value>Unable to parse position: {0}</value>
+  </data>
+  <data name="errGeneric" xml:space="preserve">
+    <value>An error was encountered: {0}</value>
+  </data>
+  <data name="errGPXBadRow" xml:space="preserve">
+    <value>An error was encountered parsing GPX data, sample {0}</value>
+  </data>
+  <data name="errGPXNoPath" xml:space="preserve">
+    <value>Error parsing GPX data - no known information found!</value>
+  </data>
+  <data name="errInRow" xml:space="preserve">
+    <value>&lt;br /&gt;Error in row {0}: {1}</value>
+  </data>
+  <data name="errNoKMLTrack" xml:space="preserve">
+    <value>No known KML track data found.</value>
+  </data>
+  <data name="errNotEnoughColumns" xml:space="preserve">
+    <value>Row {0} doesn't have data for every column</value>
+  </data>
+  <data name="errTooManyColumns" xml:space="preserve">
+    <value>Row {0} has more columns than the header had.</value>
+  </data>
+  <data name="errCantLoadFlight" xml:space="preserve">
+    <value>Unable to load flight {0}: {1}</value>
+    <comment>{0} is the ID of the flight, {1} is the error</comment>
+  </data>
+  <data name="errNoDataForFlight" xml:space="preserve">
+    <value>No data associated with flight {0}</value>
+  </data>
+  <data name="GraphDropPinTip" xml:space="preserve">
+    <value>Drop a pin on the map for this data point ({0})</value>
+  </data>
+  <data name="GraphNoData" xml:space="preserve">
+    <value>(None)</value>
+    <comment>Used to select no data on an axis in the graph.</comment>
+  </data>
+  <data name="errBadKMLHeader" xml:space="preserve">
+    <value>Expecting Latitude/Longitude pairs or Latitude/Longitude/Altitude tuples, but that's not what the coordinate data looks like.</value>
+  </data>
+  <data name="FlightDataContactUs" xml:space="preserve">
+    <value>Please let us know if you have data not listed here</value>
+  </data>
+  <data name="FlightDataHeader" xml:space="preserve">
+    <value>Uploading data for your flight.</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="FlightDataKey" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\FlightDataKey.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="FlightDataTitle" xml:space="preserve">
+    <value>Telemetry Information</value>
+  </data>
+  <data name="ZoomIn" xml:space="preserve">
+    <value>Zoom In</value>
+  </data>
+  <data name="headerColumnDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="headerColumnName" xml:space="preserve">
+    <value>Name of column</value>
+  </data>
+  <data name="PathForFlight" xml:space="preserve">
+    <value>Path for flight</value>
+  </data>
+  <data name="KnotsTemplate" xml:space="preserve">
+    <value>{0}kts</value>
+  </data>
+  <data name="errNoCSVHeaderRowFound" xml:space="preserve">
+    <value>Invalid CSV data - no header row found.</value>
+  </data>
+  <data name="ImportBulkUploadDescription" xml:space="preserve">
+    <value>Upload multiple telemetry files at once.  MyFlightbook will try to match them to existing flights by date and location.</value>
+  </data>
+  <data name="ImportErrCantParse" xml:space="preserve">
+    <value>"Can't parse telemetry: not a recognized format: {0}</value>
+  </data>
+  <data name="ImportErrMultiMatchMultiClose" xml:space="preserve">
+    <value>Can't match to a flight: multiple Flights found, and several are close to the starting point of the telemetry</value>
+  </data>
+  <data name="ImportErrMultiMatchNoneClose" xml:space="preserve">
+    <value>Can't match to a flight: multiple Flights found, none are close to the starting point of the telemetry</value>
+  </data>
+  <data name="ImportErrNoDate" xml:space="preserve">
+    <value>Can't match to a flight: no date information</value>
+  </data>
+  <data name="ImportErrNoMatch" xml:space="preserve">
+    <value>Can't match to a flight: no flight found on that date</value>
+  </data>
+  <data name="ImportHeaderBulkUpload" xml:space="preserve">
+    <value>Bulk Import Telemetry</value>
+  </data>
+  <data name="ImportStatusMatch" xml:space="preserve">
+    <value>Matched Flight!</value>
+  </data>
+  <data name="ImportUseHeliports" xml:space="preserve">
+    <value>Use heliports in trying to match flights.</value>
+  </data>
+  <data name="ImportErrMultiMatchNoLocation" xml:space="preserve">
+    <value>Can't match to a flight: multiple flights found, but telemetry has no location by which to match</value>
+  </data>
+</root>

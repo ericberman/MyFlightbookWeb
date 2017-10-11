@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CustomCurrencyEventNightLanding" xml:space="preserve">
+    <value>Atterrissage de nuit</value>
+  </data>
+  <data name="CustomCurrencyEventNightLandings" xml:space="preserve">
+    <value>Atterrissages de nuit</value>
+  </data>
+  <data name="CustomCurrencyEventNightTakeoff" xml:space="preserve">
+    <value>Nuit décollage</value>
+  </data>
+  <data name="CustomCurrencyEventNightTakeoffs" xml:space="preserve">
+    <value>Nuit décollages</value>
+  </data>
+  <data name="DisclaimerLink" xml:space="preserve">
+    <value>Notes importantes</value>
+    <comment>Disclaimer link</comment>
+  </data>
+  <data name="DiscrepancyTemplate" xml:space="preserve">
+    <value>(Déficit par {0} {1})</value>
+    <comment>Template for discrepancy in a custom currency rule.  E.g., "Short by 2 approaches"</comment>
+  </data>
+  <data name="DiscrepancyTemplateIFR" xml:space="preserve">
+    <value>(Déficit par {0} {1} et {2} {3})</value>
+    <comment>Template for what you're short by for IFR, e.g., "(Short by 2 approaches and 1 hold)"</comment>
+  </data>
+  <data name="DiscrepancyTemplateNight" xml:space="preserve">
+    <value>(Déficit par {0} {1}; verifier que les décollages requis ont bien été!)</value>
+    <comment>Template for what you're short by for night; e.g., "Short by 2 landings"</comment>
+  </data>
+  <data name="FlyingStatus" xml:space="preserve">
+    <value>Etat de vos compétences:</value>
+    <comment>Header for currency</comment>
+  </data>
+  <data name="FormatCurrent" xml:space="preserve">
+    <value>A jour jusqu’au: {0}</value>
+    <comment>If you're current, how much longer are you so?</comment>
+  </data>
+  <data name="FormatExpired" xml:space="preserve">
+    <value>Date d’expiration: {0}</value>
+    <comment>If you expired, when did your currency expire?</comment>
+  </data>
+  <data name="FormatNeverCurrent" xml:space="preserve">
+    <value>Pas qualifié!</value>
+    <comment>If you've never been current, this is your status</comment>
+  </data>
+  <data name="GeneralDisclaimer" xml:space="preserve">
+    <value>Vérifier les règles du système administratif qui vous est applicable. Les informations fournies le sont à titre indicatif et il appartient au pilote de vérifier que la tenue et les conditions lui permettant d’entreprendre le vol, soient conformes à la réglementation en vigueur</value>
+    <comment>General "I'm not responsible for you being current or not" disclaimer.</comment>
+  </data>
+  <data name="Hold" xml:space="preserve">
+    <value>Circuit d’attente</value>
+    <comment>Holding procedures (1 hold, 2 holds)</comment>
+  </data>
+  <data name="Holds" xml:space="preserve">
+    <value>Circuits d’attente</value>
+    <comment>Multiple holding procedures</comment>
+  </data>
+  <data name="IFR" xml:space="preserve">
+    <value>IFR</value>
+    <comment>Currency is for IFR in the particular category</comment>
+  </data>
+  <data name="IFRGlider" xml:space="preserve">
+    <value>IFR - Planeur</value>
+    <comment>Currency is for IFR operations in a glider (proving the holder to be insane)</comment>
+  </data>
+  <data name="IFRGliderNoPassengers" xml:space="preserve">
+    <value>(Sans Passagers)</value>
+    <comment>Whether IFR glider pilot can not carry passengers</comment>
+  </data>
+  <data name="IFRGliderPassengers" xml:space="preserve">
+    <value>(Avec Passagers)</value>
+    <comment>Whether IFR glider pilot can carry passengers</comment>
+  </data>
+  <data name="IPCRequired" xml:space="preserve">
+    <value>Contrôle en vol requis</value>
+    <comment>You've been out of IFR currency for long enough that an InstrumentProficiencyCheck is required</comment>
+  </data>
+  <data name="NextFlightReview" xml:space="preserve">
+    <value>Prochaine vol de contrôle</value>
+    <comment>Next Flight review is due...</comment>
+  </data>
+  <data name="NextMedical" xml:space="preserve">
+    <value>Prochaine visite médicale</value>
+    <comment>Next medical is due</comment>
+  </data>
+  <data name="NextPICProficiencyCheck" xml:space="preserve">
+    <value>Prochaine contrôle de la compétence (61.58): {0}</value>
+    <comment>When is the next PIC proficiency check, per 61.58, due?</comment>
+  </data>
+  <data name="Night" xml:space="preserve">
+    <value>Nuit</value>
+    <comment>Currency is for night</comment>
+  </data>
+  <data name="NightTakeoffReminder" xml:space="preserve">
+    <value>Aucun décollage de nuit n’est noté; Vérifier qu’ils aient bien été faits!</value>
+    <comment>We don't require nighttime takeoffs to be logged, but they are required for currency</comment>
+  </data>
+  <data name="NightVision" xml:space="preserve">
+    <value>Vision de nuit</value>
+    <comment>Currency is for night-vision operations</comment>
+  </data>
+  <data name="NoStatus" xml:space="preserve">
+    <value>(Pas d'informations disponibles)</value>
+    <comment>Message when no status is available</comment>
+  </data>
+  <data name="Passengers" xml:space="preserve">
+    <value>Passagers</value>
+    <comment>Currency is for carrying passengers</comment>
+  </data>
+  <data name="Priveleges" xml:space="preserve">
+    <value>Privilèges</value>
+    <comment>Header for privileges</comment>
+  </data>
+  <data name="StatusTitle" xml:space="preserve">
+    <value>Statut</value>
+    <comment>Title for "Status" column</comment>
+  </data>
+  <data name="Tailwheel" xml:space="preserve">
+    <value>Train classique</value>
+    <comment>Currency is for tailwheel aircraft</comment>
+  </data>
+  <data name="Takeoff" xml:space="preserve">
+    <value>décollage</value>
+    <comment>1 takeoff</comment>
+  </data>
+  <data name="Takeoffs" xml:space="preserve">
+    <value>décollages</value>
+    <comment>2 or more takeoffs</comment>
+  </data>
+</root>

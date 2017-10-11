@@ -1,0 +1,13 @@
+﻿Dear {0}:
+
+Thank-you very much for your previous donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
+
+Your last donation entitled you to a year of nightly cloud storage backups of your logbook.  
+
+Please consider continuing your support for %APP_NAME% with a new donation, and your backups will continue uninterrupted.
+
+You can view your donation history and make a new donation at http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate
+
+Thanks again for your support,
+
+--The %APP_NAME% team

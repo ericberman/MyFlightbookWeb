@@ -1,0 +1,7 @@
+﻿Dear <% FullName %>:
+
+Your invitation to <% ClubInvitee %> to join the club/FBO "<% ClubName %>" has been accepted.
+
+Thank-you.
+
+The %APP_NAME% Team

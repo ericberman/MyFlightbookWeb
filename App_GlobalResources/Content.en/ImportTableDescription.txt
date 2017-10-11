@@ -1,0 +1,190 @@
+    <p>%APP_NAME% can recognize and import the following core attributes of each 
+        flight:</p>
+    <table cellpadding="3" cellspacing="0" class="dataDescription">
+		<thead>
+			<tr>
+				<td>
+					Column Name</td>
+				<td>
+					Data</td>
+			</tr>
+		</thead>
+        <tr>
+            <td valign="top" >
+                Date</td>
+            <td valign="top" >
+                <b>REQUIRED</b> - Date of the flight&nbsp; in 
+                %SHORT_DATE%
+&nbsp;format</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Tail Number</td>
+            <td valign="top" >
+                <b>REQUIRED</b> - Complete tail number (i.e., registration) for the airplane.&nbsp; E.g., if the airplane is of US registration,
+                you must include the "N" prefix<br /><br />
+				<b>NOTE:</b> You may be using "Anonymous" aircraft, which is used to log time in an aircraft (or a set of aircraft) of a specific model 
+				but where you don't have the tail number(s) of the specific aircraft.  For example, you might use this if you are an airline pilot who flies a different
+				737 every day.  You can find out the tailnumber that is used internally for anonymous aircraft that you have added to your account by 
+				viewing details of the aircraft.  The tailnumber begins with a "#" followed by 6 numeric digits; e.g., "#123456".
+			</td>
+        </tr>
+        <tr>
+            <td valign="top" >Model</td>
+            <td valign="top" >The model identifier of aircraft (e.g., "B737" or "C-172").  <div><span style="font-weight:bold">Ignored unless the tail number cannot be found</span>, in which case it is used to help you add the aircraft to your account.</div></td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Total Flight Time</td>
+            <td valign="top" ><b>REQUIRED</b> - 
+                Total duration of the flight</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Approaches</td>
+            <td valign="top" >
+                Whole number of instrument approaches for the flight</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Hold</td>
+            <td valign="top" >
+                "Yes" if the flight included holding procedures</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Landings</td>
+            <td valign="top" >
+                Whole number of landings performed on the flight, including day and night, 
+                touch-and-go&#39;s and full-stop.&nbsp; This must be greater than or equal to the 
+                sum of full-stop landings</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                FS Day Landings</td>
+            <td valign="top" >
+                Whole number of full-stop daytime landings </td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                FS Night Landings</td>
+            <td valign="top" >
+                Whole number of full-stop nighttime landings.&nbsp; If this is non-zero, there 
+                must be some night flying time as well (see below).</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                X-Country</td>
+            <td valign="top" >
+                Number of hours of cross-country flight time</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Night</td>
+            <td valign="top" >
+                Number of hours of night flight time</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                IMC</td>
+            <td valign="top" >
+                Number of hours of flight time in actual instrument conditions</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Simulated Instrument
+            </td>
+            <td valign="top" >
+                Number of hours of flight time in simulated instrument conditions</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Ground Simulator
+            </td>
+            <td valign="top" >
+                Number of hours spent in a ground simulator</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Dual Received
+            </td>
+            <td valign="top" >
+                Number of hours of instruction time received</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                CFI</td>
+            <td valign="top" >
+                Number of hours of flight instructor time.</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                SIC</td>
+            <td valign="top" >
+                Number of hours of Second In Command time</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                PIC
+            </td>
+            <td valign="top" >
+                Number of hours of Pilot In Command time</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Route
+            </td>
+            <td valign="top" >
+                List of airports visited.</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Comments</td>
+            <td valign="top" >
+                Any additional comments about the flight.</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Engine Start<br />
+                Engine End</td>
+            <td valign="top" >
+                Engine start/end times, respectively 
+                (separate columns), in UTC format.&nbsp; E.g., the current time in Seattle would be expressed as
+                %DATE_TIME%
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Flight Start<br />
+                Flight End</td>
+            <td valign="top" >
+                Flight start/end times, respectively 
+                (separate columns), in UTC format.&nbsp; E.g., the current time in Seattle would be expressed as %DATE_TIME%
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Hobbs Start<br />
+                Hobbs End</td>
+            <td valign="top" >
+                Starting/ending hobbs for the flight, respectively (separate 
+                columns).</td>
+        </tr>
+        <tr>
+            <td valign="top" >
+                Flight ID</td>
+            <td valign="top" >The numeric identifier for the flight.  DO NOT ASSIGN THIS YOURSELF; it is
+                assigned by %APP_NAME%.  This will enable you to bulk-update existing flights from a 
+                spreadsheet that you have previously downloaded from the site.  If this field is not present, 
+                your flights are assumed to be new.
+            </td>
+        </tr>
+    </table>
+    <p><span style="font-weight:bold">The following properties may also be imported</span> 
+        for each flight.&nbsp; The column name is shown, along with the type of data.</p>
+	<p>
+		<ul>
+			<li>You must use the WHOLE column name EXACTLY as written (no spaces before or after it) for it to be recognized.</li>
+			<li>Yes/No values must be "Yes" or "No" (in English); numerical/text/date values can be expressed using your local conventions.</li>
+		</ul>
+    </p>

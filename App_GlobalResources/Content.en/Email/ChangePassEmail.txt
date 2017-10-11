@@ -1,0 +1,11 @@
+﻿Your password has been reset.  You may now return to the site and log-in again, using your e-mail address and your new password.
+
+Your new password for %APP_NAME% is:  <% Password %>
+
+Please note that your password is case sensitive!
+
+We also STRONGLY recommend that you change this password after signing in.  You can do this by clicking the "Profile" tab.
+
+Thank-you for using %APP_NAME%!
+
+(Please do not reply to this mail - the mailbox is not monitored).

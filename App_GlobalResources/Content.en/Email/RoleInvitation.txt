@@ -1,0 +1,9 @@
+﻿<% Requestor %> has invited you to be their <% Role %> on %APP_NAME% (http://%APP_URL%), a free online logbook for pilots.
+
+If you know <% Requestor %>, please confirm this by visiting:
+
+<% ConfirmRoleLink %>
+
+Thank-you
+
+Please do not reply to this message; this mailbox is not monitored.

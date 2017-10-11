@@ -1,0 +1,11 @@
+﻿This is an automated notification to let you know that <% Deleter %> has modified the following item from the schedule for <% Resource %> on %APP_NAME%:
+
+Original item:
+<% ScheduleDetail %>
+
+New Item:
+<% ScheduleDetailNew %>
+
+Thank-you.
+
+PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

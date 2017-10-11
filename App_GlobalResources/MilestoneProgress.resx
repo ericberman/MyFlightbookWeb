@@ -1,0 +1,1252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="MatchingXCFlightTemplate" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="MinDualXC" xml:space="preserve">
+    <value>3 hours of cross-country training in {0}</value>
+  </data>
+  <data name="MinNightFSLandings" xml:space="preserve">
+    <value>{0} night landings (training) to a full stop in {1}</value>
+  </data>
+  <data name="MinNightTakeoffs" xml:space="preserve">
+    <value>{0} night takeoffs (training) in {1}</value>
+  </data>
+  <data name="MinNightTime" xml:space="preserve">
+    <value>3 hours of night flight training in {0}</value>
+  </data>
+  <data name="MinSimulatedIMC" xml:space="preserve">
+    <value>3 hours of flight training by reference to instruments in {0}</value>
+  </data>
+  <data name="MinSolo" xml:space="preserve">
+    <value>10 hours of solo time</value>
+  </data>
+  <data name="MinTestPrep" xml:space="preserve">
+    <value>3 hours of flight training in {0} within 2 calendar months prior to exam</value>
+  </data>
+  <data name="MinTime" xml:space="preserve">
+    <value>40 hours of flight time</value>
+  </data>
+  <data name="MinTraining" xml:space="preserve">
+    <value>{0} hours of flight training (dual)</value>
+  </data>
+  <data name="MinXCDistance" xml:space="preserve">
+    <value>One solo cross-country flight of {1}nm total distance and a leg that is at least {2}nm, with three takeoffs and landings to a full-stop in {0}</value>
+  </data>
+  <data name="MinXCNight" xml:space="preserve">
+    <value>One night-time cross-country training flight of over {1}nm distance in {0}</value>
+  </data>
+  <data name="MinXCSolo" xml:space="preserve">
+    <value>{1} hours of solo cross-country time in {0}</value>
+  </data>
+  <data name="NoteIMCRequirements" xml:space="preserve">
+    <value>Where actual or simulated instrument time is recorded, the required maneuvers (climbs/turns/straight and level flight/etc.) are assumed to have been performed.</value>
+  </data>
+  <data name="NoteNightRequirements" xml:space="preserve">
+    <value>See FAR 61.110 for possible exceptions that may apply to you.  Night landings are assumed to have involved flight in the traffic pattern.</value>
+  </data>
+  <data name="NoteXCLandings" xml:space="preserve">
+    <value>Landings are assumed to have been at the listed airports.  The requirement for an operating control tower is NOT being enforced/checked here.</value>
+  </data>
+  <data name="NotMet" xml:space="preserve">
+    <value>Not yet completed.</value>
+  </data>
+  <data name="ProgressTemplate" xml:space="preserve">
+    <value>{0} found; {1:#,##0}% of goal</value>
+  </data>
+  <data name="ratingAirplane" xml:space="preserve">
+    <value>an airplane</value>
+  </data>
+  <data name="ratingAirplaneMulti" xml:space="preserve">
+    <value>a multi-engine airplane</value>
+  </data>
+  <data name="ratingAirplaneSingle" xml:space="preserve">
+    <value>a single engine airplane</value>
+  </data>
+  <data name="Title61109A" xml:space="preserve">
+    <value>FAR 61.109(a) - Airplane, Single-Engine</value>
+  </data>
+  <data name="Title61109B" xml:space="preserve">
+    <value>FAR 61.109(b) - Airplane, Multi-Engine</value>
+  </data>
+  <data name="ErrUnauthorized" xml:space="preserve">
+    <value>You are not authorized to view the progress for the requested pilot.  Your progress is being shown instead.</value>
+  </data>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Progress Towards Ratings for {0}</value>
+  </data>
+  <data name="CommMinComplexAMEL" xml:space="preserve">
+    <value>10 hours of training in a complex multi-engine airplane</value>
+  </data>
+  <data name="CommMinComplexAMES" xml:space="preserve">
+    <value>10 hours of training in a multi-engine seaplane with flaps and a controllable pitch propeller.</value>
+  </data>
+  <data name="CommMinComplexASEL" xml:space="preserve">
+    <value>10 hours of training in a complex airplane</value>
+  </data>
+  <data name="CommMinComplexASES" xml:space="preserve">
+    <value>10 hours of training in a single-engine seaplane with flaps and a controllable pitch propeller.</value>
+  </data>
+  <data name="CommMinNightFlight" xml:space="preserve">
+    <value>5 hours solo in night VFR conditions in {0}</value>
+  </data>
+  <data name="CommMinNightLandings" xml:space="preserve">
+    <value>10 solo landings at night in {0} (flight in the traffic pattern and a control tower are assumed)</value>
+  </data>
+  <data name="CommMinNightTakeoffs" xml:space="preserve">
+    <value>10 solo takeoffs at night in {0}</value>
+  </data>
+  <data name="CommMinPIC" xml:space="preserve">
+    <value>{0} hours PIC time</value>
+  </data>
+  <data name="CommMinPICInCategory" xml:space="preserve">
+    <value>{0} hours as PIC in {1}</value>
+  </data>
+  <data name="CommMinPICXC" xml:space="preserve">
+    <value>{0} hours PIC in cross-country Flight</value>
+  </data>
+  <data name="CommMinPICXCInCategory" xml:space="preserve">
+    <value>{0} hours PIC in cross-country flight in {1}</value>
+  </data>
+  <data name="CommMinPoweredInCategory" xml:space="preserve">
+    <value>{0} hours in {1}</value>
+  </data>
+  <data name="CommMinPoweredTime" xml:space="preserve">
+    <value>{0} hours in powered aircraft</value>
+  </data>
+  <data name="CommMinSimIMC" xml:space="preserve">
+    <value>{0} hours of simulated IFR training</value>
+  </data>
+  <data name="CommMinSimIMCInCategory" xml:space="preserve">
+    <value>{0} hours of simulated IFR training in {1}</value>
+  </data>
+  <data name="CommMinTime" xml:space="preserve">
+    <value>{0} hours of flight time as a pilot.</value>
+  </data>
+  <data name="CommMinTraining" xml:space="preserve">
+    <value>{0} hours of flight training</value>
+  </data>
+  <data name="CommPICSoloCategory" xml:space="preserve">
+    <value>{0} hours of solo time in {1}</value>
+  </data>
+  <data name="CommPICSoloXCCategory" xml:space="preserve">
+    <value>A solo cross-country flight in {0} of not less than 300nm total distance, with 3 landings, at least one of which is 250nm away from the departure point.</value>
+  </data>
+  <data name="CommSoloXCHelicopter" xml:space="preserve">
+    <value>A cross-country flight in a helicopter with landings at 3 points, with one segment at least 50 nm from the original point of departure.</value>
+  </data>
+  <data name="CommXCCategory" xml:space="preserve">
+    <value>A 2-hour cross-country training flight in {0} in daytime conditions with total distance over {1}nm from the point of departure.</value>
+  </data>
+  <data name="CommXCCategoryNight" xml:space="preserve">
+    <value>A 2-hour night cross-country training flight in {0} with total distance over {1}nm from point of departure.</value>
+  </data>
+  <data name="CompletedHeader" xml:space="preserve">
+    <value>Completed: </value>
+  </data>
+  <data name="GliderMinFlights" xml:space="preserve">
+    <value>20 flights in a glider</value>
+  </data>
+  <data name="GliderMinFlightTime" xml:space="preserve">
+    <value>{0} hours of flight time in a glider</value>
+  </data>
+  <data name="GliderMinSoloTime" xml:space="preserve">
+    <value>2 hours of solo flight time in a glider</value>
+  </data>
+  <data name="GliderMinTestPrep" xml:space="preserve">
+    <value>3 training flights with an instructor in a glider within 2 calendar months prior to test.</value>
+  </data>
+  <data name="GliderSoloFlights" xml:space="preserve">
+    <value>10 solo flights in a glider</value>
+  </data>
+  <data name="GliderSoloLandings" xml:space="preserve">
+    <value>10 solo landings in a glider</value>
+  </data>
+  <data name="MinInstrumentPICInCategory" xml:space="preserve">
+    <value>10 Hours of cross-country flight as PIC in {0}</value>
+  </data>
+  <data name="MinInstrumentPICXC" xml:space="preserve">
+    <value>50 Hours of cross-country flight as PIC</value>
+  </data>
+  <data name="MinInstrumentTestPrep" xml:space="preserve">
+    <value>3 hours of instrument flight training in {0} within 2 calendar months prior to test.</value>
+  </data>
+  <data name="MinInstrumentTime" xml:space="preserve">
+    <value>40 Hours of actual or simulated instrument time</value>
+  </data>
+  <data name="MinInstrumentXC" xml:space="preserve">
+    <value>A cross-country flight in {0} of at least {1}nm with at least 3 approaches.</value>
+  </data>
+  <data name="MinSoloInType" xml:space="preserve">
+    <value>10 hours of solo time in {0}</value>
+  </data>
+  <data name="MinXCDistanceHelicopter" xml:space="preserve">
+    <value>One solo cross-country flight in {0} of {1}nm total distance and landings at least {2}nm apart, with three landings</value>
+  </data>
+  <data name="MinXCNight50nm" xml:space="preserve">
+    <value>One night-time cross-country flight of over 50nm distance in {0}</value>
+  </data>
+  <data name="Note611293i" xml:space="preserve">
+    <value>If you log simulated instrument time, it is assumed that you practiced partial panel, unusual flight attitudes, intercepting/tracking, etc., as required.</value>
+  </data>
+  <data name="NoteCommMinPICXC" xml:space="preserve">
+    <value>Cross-country PIC for a flight is determined as the minimum of PIC time and cross-country time for that flight</value>
+  </data>
+  <data name="NoteGliderSoloLandings" xml:space="preserve">
+    <value>%APP_NAME% assumes that if you have solo time in a flight, you were solo for the launch and landings as well, and that you had as many launches as landings.</value>
+  </data>
+  <data name="NoteHeader" xml:space="preserve">
+    <value>Note: </value>
+  </data>
+  <data name="NoteInstrumentTime" xml:space="preserve">
+    <value>15 of these hours must have been with an authorized instructor holding an instrument rating; %APP_NAME% does not validate this.  61.65(h) and 61.65(i) allow simulators/FTDs/ATDs to contribute towards this as well, but subject to conditions; %APP_NAME% does NOT include these training devices here.</value>
+  </data>
+  <data name="NoteInstrumentXC" xml:space="preserve">
+    <value>%APP_NAME% assumes that the flight is conducted under instrument rules if it contains simulated or actual IMC time.  %APP_NAME% does not validate that different kinds of approaches were performed, nor that they were performed at each airport, nor that the flight was along airways.</value>
+  </data>
+  <data name="NoteNightXC" xml:space="preserve">
+    <value>Nighttime cross-country is assumed to be the smaller of the night flight time and cross-country time recorded in a flight.</value>
+  </data>
+  <data name="NoteXCTime" xml:space="preserve">
+    <value>61.65(g) allows fewer hours than this if you are applying for a combined private pilot/instrument rating certificate.</value>
+  </data>
+  <data name="OverallProgressDisclaimer" xml:space="preserve">
+    <value>%APP_NAME% cannot determine with 100% reliability that a given milestone has been met; some inference is often required.  In addition, various substitutions or credits may be applicable based on information beyond what %APP_NAME% can determine, so your personal requirements may differ from what is listed here.
+&lt;br /&gt;
+&lt;a href="http://www.ecfr.gov/cgi-bin/text-idx?c=ecfr&amp;sid=71744280eca6c8501c64b5216665c957&amp;rgn=div8&amp;view=text&amp;node=14:2.0.1.1.2.2.1.2&amp;idno=14" target="_blank"&gt;FAR 61.63&lt;/a&gt; may also render some or all of these milestones moot.
+&lt;br /&gt;
+YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTICAL EXPERIENCE.</value>
+  </data>
+  <data name="OverallProgressTemplate" xml:space="preserve">
+    <value>{0} of {1} milestones complete.</value>
+  </data>
+  <data name="PromptRatingGroup" xml:space="preserve">
+    <value>(Type of rating)</value>
+  </data>
+  <data name="PromptRatingItem" xml:space="preserve">
+    <value>(Rating being sought)</value>
+  </data>
+  <data name="ratingAirship" xml:space="preserve">
+    <value>an airship</value>
+  </data>
+  <data name="ratingBalloon" xml:space="preserve">
+    <value>a balloon</value>
+  </data>
+  <data name="ratingGlider" xml:space="preserve">
+    <value>a glider</value>
+  </data>
+  <data name="RatingGroupATP" xml:space="preserve">
+    <value>ATP Rating</value>
+  </data>
+  <data name="RatingGroupCommercial" xml:space="preserve">
+    <value>Commercial Rating</value>
+  </data>
+  <data name="RatingGroupInstrument" xml:space="preserve">
+    <value>Instrument Rating</value>
+  </data>
+  <data name="RatingGroupPrivatePilot" xml:space="preserve">
+    <value>Private Pilot Rating</value>
+  </data>
+  <data name="RatingGroupRecreational" xml:space="preserve">
+    <value>Recreational Pilot Rating</value>
+  </data>
+  <data name="RatingGroupSportPilot" xml:space="preserve">
+    <value>Sport Pilot Rating</value>
+  </data>
+  <data name="RatingGroupUnknown" xml:space="preserve">
+    <value>(Please Select)</value>
+  </data>
+  <data name="ratingGyroplane" xml:space="preserve">
+    <value>a gyroplane</value>
+  </data>
+  <data name="ratingHelicopter" xml:space="preserve">
+    <value>a helicopter</value>
+  </data>
+  <data name="ratingPoweredLift" xml:space="preserve">
+    <value>a powered-lift aircraft</value>
+  </data>
+  <data name="ratingPoweredParachute" xml:space="preserve">
+    <value>a powered parachute</value>
+  </data>
+  <data name="RatingUnknown" xml:space="preserve">
+    <value>(Please Select)</value>
+  </data>
+  <data name="ratingWeightShift" xml:space="preserve">
+    <value>a weight-shift-control aircraft</value>
+  </data>
+  <data name="RecreationalMinSolo" xml:space="preserve">
+    <value>3 hours of solo flying in the aircraft in the category/class for the rating being sought.</value>
+  </data>
+  <data name="RecreationalMinTime" xml:space="preserve">
+    <value>30 hours of flight time</value>
+  </data>
+  <data name="RecreationalMinTraining" xml:space="preserve">
+    <value>15 hours of flight training</value>
+  </data>
+  <data name="RecreationalMinXC" xml:space="preserve">
+    <value>2 hours of training en-route to an airport at least 25nm away, including at least 3 take-offs and landings at the 2nd airport.</value>
+  </data>
+  <data name="RecreationalMinXCNote" xml:space="preserve">
+    <value>Only landings are counted here; takeoffs are assumed, and one landing at the home airport is assumed, so 4 landings must be found.  If 4 or more landings are found, it is assumed that at least 3 of these were at the far airport.</value>
+  </data>
+  <data name="RecreationTestPrep" xml:space="preserve">
+    <value>3 hours of flight training within 2 calendar months prior to test.</value>
+  </data>
+  <data name="Title61109C" xml:space="preserve">
+    <value>FAR 61.109(c) - Helicopter</value>
+  </data>
+  <data name="Title61109D" xml:space="preserve">
+    <value>FAR 61.109(d) - Gyroplane</value>
+  </data>
+  <data name="Title61109E" xml:space="preserve">
+    <value>FAR 61.109(e) - Powered Lift</value>
+  </data>
+  <data name="Title61109F" xml:space="preserve">
+    <value>FAR 61.109(f) - Glider</value>
+  </data>
+  <data name="Title61109G" xml:space="preserve">
+    <value>FAR 61.109(g) - Airship</value>
+  </data>
+  <data name="Title61109H" xml:space="preserve">
+    <value>FAR 61.109(h) - Balloon</value>
+  </data>
+  <data name="Title61109I" xml:space="preserve">
+    <value>FAR 61.109(i) - Powered Parachute</value>
+  </data>
+  <data name="Title61109J" xml:space="preserve">
+    <value>FAR 61.109(j) - Weight-Shift</value>
+  </data>
+  <data name="Title61129A" xml:space="preserve">
+    <value>FAR 61.129(a) - Airplane, Single-Engine Land</value>
+  </data>
+  <data name="Title61129ASEA" xml:space="preserve">
+    <value>FAR 61.129(a) - Airplane, Single-Engine Sea</value>
+  </data>
+  <data name="Title61129B" xml:space="preserve">
+    <value>FAR 61.129(b) - Airplane, Multi-Engine Land</value>
+  </data>
+  <data name="Title61129BSEA" xml:space="preserve">
+    <value>FAR 61.129(b) - Airplane, Multi-Engine Sea</value>
+  </data>
+  <data name="Title61129C" xml:space="preserve">
+    <value>FAR 61.129(c) - Helicopter</value>
+  </data>
+  <data name="Title6165D" xml:space="preserve">
+    <value>FAR 61.65(d) - Airplane</value>
+  </data>
+  <data name="Title6165E" xml:space="preserve">
+    <value>FAR 61.65(e) - Helicopter</value>
+  </data>
+  <data name="Title6165F" xml:space="preserve">
+    <value>FAR 61.65(f) - Powered Lift</value>
+  </data>
+  <data name="Title6199" xml:space="preserve">
+    <value>FAR 61.99 </value>
+  </data>
+  <data name="ViewStudentProgress" xml:space="preserve">
+    <value>View Progress Towards Ratings</value>
+  </data>
+  <data name="Note61129TrainingDevice" xml:space="preserve">
+    <value>FAR 61.129(i) provides mechanisms by which time in a simulator or FTD may count towards requirements in 61.129, based on various conditions.  %APP_NAME% does NOT include time in a training device towards your goal, so you may have met it even if %APP_NAME% says otherwise.</value>
+  </data>
+  <data name="Part141ControltowerWarning" xml:space="preserve">
+    <value>%APP_NAME% cannot determine if these takeoffs/landings were done at an airport with an operating control tower; please ensure that this is the case.</value>
+  </data>
+  <data name="Part141InstrumentTraining" xml:space="preserve">
+    <value>3 hours of training in basic instrument maneuvers in {0}</value>
+  </data>
+  <data name="Part141MinInstruction" xml:space="preserve">
+    <value>At least 20 hours of dual instruction</value>
+  </data>
+  <data name="Part141MinTime" xml:space="preserve">
+    <value>At least {0} hours of flight training time</value>
+  </data>
+  <data name="Part141NightLandings" xml:space="preserve">
+    <value>10 Night landings (training) in {0}</value>
+  </data>
+  <data name="Part141NightTakeoffs" xml:space="preserve">
+    <value>10 Night takeoffs (training) in {0}</value>
+  </data>
+  <data name="Part141NightTraining" xml:space="preserve">
+    <value>3 hours of night flight in {0}</value>
+  </data>
+  <data name="Part141NightXC" xml:space="preserve">
+    <value>1 Night cross-country flight in {0} of more than {1}NM distance</value>
+  </data>
+  <data name="Part141SoloFlight" xml:space="preserve">
+    <value>5 hours of solo flight time in {0}</value>
+  </data>
+  <data name="Part141SoloLandings" xml:space="preserve">
+    <value>3 solo landings to a full-stop at an airport with an operating control tower in {0}</value>
+  </data>
+  <data name="Part141SoloTakeoffs" xml:space="preserve">
+    <value>3 solo takeoffs at an airport with an operating control tower in {0}</value>
+  </data>
+  <data name="Part141SoloTraining" xml:space="preserve">
+    <value>At least 5 hours of solo flight training in {0}</value>
+  </data>
+  <data name="Part141SoloXC" xml:space="preserve">
+    <value>One solo 100nm cross-country flight with one segment over 50nm and landings at 3 points in {0}</value>
+  </data>
+  <data name="Part141TestPrep" xml:space="preserve">
+    <value>3 hours in prep for the practical test within 60 days preceding the date of the test in {0}</value>
+  </data>
+  <data name="Part141XC" xml:space="preserve">
+    <value>3 hours of cross-country flight training in {0}</value>
+  </data>
+  <data name="Title141PPLSEL" xml:space="preserve">
+    <value>Part 141 - Private Pilot, Single-Engine Airplane</value>
+  </data>
+  <data name="NoteSoloTime" xml:space="preserve">
+    <value>A flight MUST include the "Solo Time" to count towards this; logging PIC time is not sufficient.</value>
+  </data>
+  <data name="ATPAirplaneSimulatorNote" xml:space="preserve">
+    <value>A maximum of 25 hours of simulator/FTD time may contribute to this.  An additional 25 hours in a simulator or training device may also be applicable here if it was done at a certified Part 142 training center</value>
+  </data>
+  <data name="ATPHelicopterInstrumentTime" xml:space="preserve">
+    <value>50 hours of instrument flight in helicopters</value>
+  </data>
+  <data name="ATPHelicopterPICInstrumentTime" xml:space="preserve">
+    <value>25 hours of instrument flight as PIC in helicopters</value>
+  </data>
+  <data name="ATPInstrumentTime" xml:space="preserve">
+    <value>75 hours of Instrument Time</value>
+  </data>
+  <data name="ATPMinHeliPICTime" xml:space="preserve">
+    <value>75 hours as PIC in a helicopter</value>
+  </data>
+  <data name="ATPMinHeliTime" xml:space="preserve">
+    <value>200 hours of flight in helicopters</value>
+  </data>
+  <data name="ATPMinNightTime" xml:space="preserve">
+    <value>100 hours of night flight time</value>
+  </data>
+  <data name="ATPMinTime" xml:space="preserve">
+    <value>{0:#,##0} hours of total time</value>
+  </data>
+  <data name="ATPMinXCTime" xml:space="preserve">
+    <value>500 hours of cross-country flight time</value>
+  </data>
+  <data name="ATPNightHelicopterTime" xml:space="preserve">
+    <value>15 hours of night flight time in helicopters</value>
+  </data>
+  <data name="ATPNightPICTime" xml:space="preserve">
+    <value>25 hours of night PIC flight time</value>
+  </data>
+  <data name="ATPPICTime" xml:space="preserve">
+    <value>250 hours of PIC time</value>
+  </data>
+  <data name="ATPPICTimeNote" xml:space="preserve">
+    <value>SIC time while performing the duties of PIC under the supervision of a PIC is allowed by the regulations but is not included here.</value>
+  </data>
+  <data name="ATPXCPICTime" xml:space="preserve">
+    <value>100 hours of cross-country PIC time</value>
+  </data>
+  <data name="Title61159ASEL" xml:space="preserve">
+    <value>FAR 61.159 - Airplane - Single-Engine Land</value>
+  </data>
+  <data name="Title61161" xml:space="preserve">
+    <value>FAR 61.161 - Helicopter</value>
+  </data>
+  <data name="Title61163" xml:space="preserve">
+    <value>FAR 61.163 - Powered Lift</value>
+  </data>
+  <data name="ATPMinPLPIC" xml:space="preserve">
+    <value>250 hours as PIC in a powered-lift</value>
+  </data>
+  <data name="ATPMinPLPICNight" xml:space="preserve">
+    <value>25 hours of PIC night flight in a powered-lift</value>
+  </data>
+  <data name="ATPMinPLPICXC" xml:space="preserve">
+    <value>100 hours of PIC cross-country time in a powered-lift</value>
+  </data>
+  <data name="AirshipDPIC" xml:space="preserve">
+    <value>5 hours performing the duties of PIC with an instructor.</value>
+  </data>
+  <data name="AirshipMinTraining" xml:space="preserve">
+    <value>25 hours of flight training in an airship</value>
+  </data>
+  <data name="AirshipXCNightFlight" xml:space="preserve">
+    <value>1 night cross-country flight of at least 25nm distance in an airship</value>
+  </data>
+  <data name="AirshipXCTraining" xml:space="preserve">
+    <value>3 hours of cross-country training in an airship</value>
+  </data>
+  <data name="BalloonAscent" xml:space="preserve">
+    <value>At least one flight involving a controlled assent to {0:#,###} feet above the launch site.</value>
+  </data>
+  <data name="BalloonGasMinFlights" xml:space="preserve">
+    <value>2 flights of at least 2 hours each in a gas balloon</value>
+  </data>
+  <data name="BalloonGasMinFlightsDPIC" xml:space="preserve">
+    <value>One 2-hour flight performing the duties of Pilot-in-Command in a gas balloon</value>
+  </data>
+  <data name="BalloonGasMinFlightTestPrep" xml:space="preserve">
+    <value>One 2-hour training flight in a gas balloon within 2 calendar months preceding the test in a gas balloon</value>
+  </data>
+  <data name="BalloonHotAirMinFlightTestPrep" xml:space="preserve">
+    <value>Two training flights of 1 hour each within 2 calendar months preceding the test in a hot-air balloon</value>
+  </data>
+  <data name="BalloonHotAirSolo" xml:space="preserve">
+    <value>One solo flight in a hot-air balloon</value>
+  </data>
+  <data name="BalloonMinFlights" xml:space="preserve">
+    <value>6 training flights with an instructor in a ballooon</value>
+  </data>
+  <data name="BalloonMinTraining" xml:space="preserve">
+    <value>10 hours of flight training</value>
+  </data>
+  <data name="NoteBalloonAscent" xml:space="preserve">
+    <value>The Maximum Altitude property for the flight is used to determine if this is met; be sure to use an AGL value rather than MSL.</value>
+  </data>
+  <data name="ratingGasBalloon" xml:space="preserve">
+    <value>a gas balloon</value>
+  </data>
+  <data name="ratingHotAirBalloon" xml:space="preserve">
+    <value>a hot air balloon</value>
+  </data>
+  <data name="Title61109H1Suffix" xml:space="preserve">
+    <value> (Gas Balloon)</value>
+  </data>
+  <data name="Title61109H2Suffix" xml:space="preserve">
+    <value> (Hot Air Balloon)</value>
+  </data>
+  <data name="MinLandingsFSToweredAirport" xml:space="preserve">
+    <value>3 full-stop solo landings at a towered airport</value>
+  </data>
+  <data name="MinLandingsToweredAirport" xml:space="preserve">
+    <value>3 landings at a towered airport</value>
+  </data>
+  <data name="MinTakeoffsToweredAirport" xml:space="preserve">
+    <value>3 solo takeoffs at a towered airport</value>
+  </data>
+  <data name="NoteToweredAirport" xml:space="preserve">
+    <value>Landings at a towered airport are assumed to be full-stop if full-stop is required and if enough full-stop landings are recorded in the flight</value>
+  </data>
+  <data name="JARPPLHelicopterDisclaimer" xml:space="preserve">
+    <value>ADDITIONAL NOTES:
+&lt;ul&gt;&lt;li&gt;The regulations require that the experience below be all done in a single type of helicopter; %APP_NAME% is not enforcing this. Please ensure that you have met these requirements in a single type of helicopter. &lt;/li&gt;
+&lt;li&gt;The night qualification requirements cannot be deterministically computed and thus are omitted here.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="JARPPLMinDual" xml:space="preserve">
+    <value>{0} hours of dual instruction</value>
+  </data>
+  <data name="JARPPLMinDualInstrument" xml:space="preserve">
+    <value>{0} hours instrument dual instruction time</value>
+  </data>
+  <data name="JARPPLMinSolo" xml:space="preserve">
+    <value>{0} hours of supervised solo</value>
+  </data>
+  <data name="JARPPLMinSoloLongXC" xml:space="preserve">
+    <value>1 solo cross-country flight of at least {0}nm, including 2 full-stop landings at 2 airports other than the point of departure</value>
+  </data>
+  <data name="JARPPLMinSoloNote" xml:space="preserve">
+    <value>("Supervised solo" includes solo time or Duties of PIC time with an authorized instructor on board)</value>
+  </data>
+  <data name="JARPPLMinSoloXC" xml:space="preserve">
+    <value>{0} hours of solo cross-country flight time</value>
+  </data>
+  <data name="JARPPLMinTime" xml:space="preserve">
+    <value>{0} Hours of flight time</value>
+  </data>
+  <data name="JARPPLMinTimeNote" xml:space="preserve">
+    <value>(May include up to 5 hours of simulator time; %APP_NAME% will include anything in which you can log an instrument approach)</value>
+  </data>
+  <data name="JARPPLNight" xml:space="preserve">
+    <value>{0} hours of night flight in airplanes</value>
+  </data>
+  <data name="JARPPLNightDisclaimer" xml:space="preserve">
+    <value>(Only required for a night qualification)</value>
+  </data>
+  <data name="JARPPLNightDual" xml:space="preserve">
+    <value>{0} hours of night dual</value>
+  </data>
+  <data name="JARPPLNightDualXC" xml:space="preserve">
+    <value>{0} hour(s) of night cross-country navigation</value>
+  </data>
+  <data name="JARPPLNightSoloLandings" xml:space="preserve">
+    <value>{0} solo night full-stop landings</value>
+  </data>
+  <data name="JARPPLNightSoloTakeoffs" xml:space="preserve">
+    <value>{0} solo night takeoffs</value>
+  </data>
+  <data name="TitleJARAirplanePPL" xml:space="preserve">
+    <value>EASA - PPL(A): Aeroplane Private Pilot</value>
+  </data>
+  <data name="TitleJARHelicopterPPL" xml:space="preserve">
+    <value>EASA - PPL(H): Helicopter Private Pilot</value>
+  </data>
+  <data name="Part141MultiEngineSoloDisclaimer" xml:space="preserve">
+    <value>ADDITIONAL NOTES:&lt;ul&gt;&lt;li&gt;Part 141 for multi-engine aircraft requires "performing the duties of a pilot in command while under the supervision of a certificated flight instructor" rather than solo.  You can specify this for a flight by indicating Duties of PIC ("DPIC") time and that the flight had an Instructor On Board (in additional properties).&lt;/li&gt;&lt;li&gt;DPIC is distinct from dual received, so any dual time logged on such a flight that overlaps with DPIC time is not counted.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="Title141PPLGyroplane" xml:space="preserve">
+    <value>Part 141 - Private Pilot, Gyroplane</value>
+  </data>
+  <data name="Title141PPLHelicopter" xml:space="preserve">
+    <value>Part 141 - Private Pilot, Helicopter</value>
+  </data>
+  <data name="Title141PPLMEL" xml:space="preserve">
+    <value>Part 141 - Private Pilot, Multi-Engine Airplane</value>
+  </data>
+  <data name="CommBalloonAscent" xml:space="preserve">
+    <value>One flight involving a controlled ascent to {0:#,###}ft above the launch site</value>
+  </data>
+  <data name="CommBalloonDPIC" xml:space="preserve">
+    <value>2 flights performing duties of PIC in a gas balloon</value>
+  </data>
+  <data name="CommBalloonMinFlights" xml:space="preserve">
+    <value>10 flights in balloons</value>
+  </data>
+  <data name="CommBalloonMinPIC" xml:space="preserve">
+    <value>Two flights in balloons as PIC</value>
+  </data>
+  <data name="CommBalloonMinTime" xml:space="preserve">
+    <value>20 hours in balloons</value>
+  </data>
+  <data name="CommBalloonSolo" xml:space="preserve">
+    <value>Two solo flights in a hot air balloon</value>
+  </data>
+  <data name="CommBalloonHotAirTestPrep" xml:space="preserve">
+    <value>Two training flights of 1 hour each within 2 calendar months preceding the test in a hot air balloon.</value>
+  </data>
+  <data name="CommBalloonTrainingFlights" xml:space="preserve">
+    <value>10 training flights in balloons</value>
+  </data>
+  <data name="CommBalloonTrainingTime" xml:space="preserve">
+    <value>10 hours of flight training in balloons</value>
+  </data>
+  <data name="Title61129HGasBalloon" xml:space="preserve">
+    <value>FAR 61.129(h) - Gas Balloon</value>
+  </data>
+  <data name="Title61129HHotAirBalloon" xml:space="preserve">
+    <value>FAR 61.129(h) - Hot Air Balloon</value>
+  </data>
+  <data name="CommBalloonGasTestPrep" xml:space="preserve">
+    <value>Two training flights of 2 hour each within 2 calendar months preceding the test in a gas balloon.</value>
+  </data>
+  <data name="NoteTestPrep" xml:space="preserve">
+    <value>%APP_NAME% is showing whether you are eligible to take the practical test TODAY; this progress can decay over time after your checkride.</value>
+  </data>
+  <data name="ATPAirplaneClassSimulatorNote" xml:space="preserve">
+    <value>A maximum of 25 hours of time in a "full flight simulator" may contribute to this, if done per parts 121, 135, 141, or 142.  %APP_NAME% assumes that any time logged in a simulator for which landings are approved meets this requirement.</value>
+  </data>
+  <data name="ATPAirplaneNightLandingsNote" xml:space="preserve">
+    <value>Per 61.159(b), if you've done at least 20 night takeoffs and night full-stop landings, then each such takeoff+landing after that can substitute for an hour of required night flight, up to 25 hours.</value>
+  </data>
+  <data name="ATPTimeInClass" xml:space="preserve">
+    <value>{0} hours of flight time in an {1} airplane</value>
+  </data>
+  <data name="Title61159AMEL" xml:space="preserve">
+    <value>FAR 61.159 - Airplane - Multi-Engine Land</value>
+  </data>
+  <data name="Title61159AMES" xml:space="preserve">
+    <value>FAR 61.159 - Airplane - Multi-Engine Sea</value>
+  </data>
+  <data name="Title61159ASES" xml:space="preserve">
+    <value>FAR 61.159 - Airplane - Single-Engine Sea</value>
+  </data>
+  <data name="CASRCategoryAirplane" xml:space="preserve">
+    <value>in an airplane</value>
+  </data>
+  <data name="CASRCategoryGyroplane" xml:space="preserve">
+    <value>in a gyroplane</value>
+  </data>
+  <data name="CASRCategoryHelicopter" xml:space="preserve">
+    <value>in a helicopter</value>
+  </data>
+  <data name="CASRCommIFR" xml:space="preserve">
+    <value>{0} hours of instrument time</value>
+  </data>
+  <data name="CASRCommIFRInCategory" xml:space="preserve">
+    <value>{0} hours of instrument time ({1})</value>
+  </data>
+  <data name="CASRCommLongCrossCountry" xml:space="preserve">
+    <value>1 cross-country flight as PIC ({0}) that is at least {1}nm and includes {2} at at least 2 other airports or landing areas</value>
+  </data>
+  <data name="CASRCommPIC" xml:space="preserve">
+    <value>{0} hours of flight time as PIC ({1})</value>
+  </data>
+  <data name="CASRCommPICXC" xml:space="preserve">
+    <value>{0} hours of cross-country time as PIC ({1})</value>
+  </data>
+  <data name="CASRFullStopLandings" xml:space="preserve">
+    <value>full-stop landings</value>
+  </data>
+  <data name="CASRLandings" xml:space="preserve">
+    <value>landings</value>
+  </data>
+  <data name="CASRPPLDualIFR" xml:space="preserve">
+    <value>{0} hours of dual instrument time</value>
+  </data>
+  <data name="CASRPPLDualIFRInCategory" xml:space="preserve">
+    <value>1 hour of dual instrument time ({0})</value>
+  </data>
+  <data name="CASRPPLMinSoloTimeInCategory" xml:space="preserve">
+    <value>{0} hours of solo time ({1})</value>
+  </data>
+  <data name="CASRPPLMinSoloXCTimeInCategory" xml:space="preserve">
+    <value>{0} hours of solo cross-country flight time ({1})</value>
+  </data>
+  <data name="CASRPPLMinTime" xml:space="preserve">
+    <value>{0} hours of flight time as a pilot</value>
+  </data>
+  <data name="CASRPPLMinTimeInCategory" xml:space="preserve">
+    <value>{0} hours of flight time as a pilot ({1})</value>
+    <comment>{1} is the category (e.g., "in an aeroplane")</comment>
+  </data>
+  <data name="CASRPPLSoloLongCrossCountry" xml:space="preserve">
+    <value>1 solo cross-country flight ({0}) that is at least {1}nm and includes {2} at at least 2 other airports or landing areas</value>
+  </data>
+  <data name="TitleCASRCommAirplaneNoTraining" xml:space="preserve">
+    <value>CASR - Commercial Pilot, Aeroplane, Integrated Training NOT Completed</value>
+  </data>
+  <data name="TitleCASRCommAirplaneTraining" xml:space="preserve">
+    <value>CASR - Commercial Pilot, Aeroplane, Integrated Training Completed</value>
+  </data>
+  <data name="TitleCASRCommHeliNoTraining" xml:space="preserve">
+    <value>CASR - Commercial Pilot, Helicopter Integrated Training NOT Completed</value>
+  </data>
+  <data name="TitleCASRCommHeliTraining" xml:space="preserve">
+    <value>CASR - Commercial Pilot, Helicopter Integrated Training Completed</value>
+  </data>
+  <data name="TitleCASRPPLAirplaneNoTraining" xml:space="preserve">
+    <value>CASR - Private Pilot, Aeroplane, Integrated Training NOT Completed</value>
+  </data>
+  <data name="TitleCASRPPLAirplaneTraining" xml:space="preserve">
+    <value>CASR - Private Pilot, Aeroplane, Integrated Training Completed</value>
+  </data>
+  <data name="TitleCASRPPLHeliNoTraining" xml:space="preserve">
+    <value>CASR - Private Pilot, Helicopter, Integrated Training NOT Completed</value>
+  </data>
+  <data name="TitleCASRPPLHeliTraining" xml:space="preserve">
+    <value>CASR - Private Pilot, Helicopter, Integrated Training Completed</value>
+  </data>
+  <data name="CASRAeronauticalExperience" xml:space="preserve">
+    <value>{0} hours of aeronautical experience</value>
+  </data>
+  <data name="SportAirplaneCategory" xml:space="preserve">
+    <value>single engine airplane</value>
+  </data>
+  <data name="SportGliderCategory" xml:space="preserve">
+    <value>glider</value>
+  </data>
+  <data name="SportGyroplaneCategory" xml:space="preserve">
+    <value>gyroplane</value>
+  </data>
+  <data name="SportMinFlightsGlider" xml:space="preserve">
+    <value>10 training flights in a glider (5 if you already have 20 hours in heavier-than-air aircraft)</value>
+  </data>
+  <data name="SportMinInstruction" xml:space="preserve">
+    <value>{0} hours of flight training in a {1}</value>
+  </data>
+  <data name="SportMinLandings" xml:space="preserve">
+    <value>10 takeoffs &amp; landings in a {0}</value>
+  </data>
+  <data name="SportMinLandingsNote" xml:space="preserve">
+    <value>Each solo flight with a landing is assumed to have a corresponding solo launch.  Think about it.</value>
+  </data>
+  <data name="SportMinSolo" xml:space="preserve">
+    <value>{0} hours of solo time in a {1}</value>
+  </data>
+  <data name="SportMinSoloGlider" xml:space="preserve">
+    <value>2 hours of solo flight in a glider (1 if you already have 20 hours in heavier-than-air aircraft)</value>
+  </data>
+  <data name="SportMinSoloLandings" xml:space="preserve">
+    <value>5 solo launches/landings (3 if you already have 20 hours in heavier-than-air aircraft)</value>
+  </data>
+  <data name="SportMinTime" xml:space="preserve">
+    <value>{0} hours of flight time</value>
+  </data>
+  <data name="SportMinTimeGlider" xml:space="preserve">
+    <value>10 hours of flight time in a glider (3 if you already have 20 hours in heavier-than-air aircraft)</value>
+  </data>
+  <data name="SportMinTraining" xml:space="preserve">
+    <value>At least 3 training flights within the 2 calendar months prior to the test</value>
+  </data>
+  <data name="SportMinXC" xml:space="preserve">
+    <value>2 hours of cross-country training in a {0}</value>
+  </data>
+  <data name="SportPilotLandingNote" xml:space="preserve">
+    <value>For simplicity, this is assuming one takeoff per landing and a flight in the pattern.</value>
+  </data>
+  <data name="SportSoloXCFlight" xml:space="preserve">
+    <value>Solo cross-country flight in a {0} of at least {1}nm that includes 2 full-stop landings and a straight line distance over 25nm</value>
+  </data>
+  <data name="SportTestPrepTime" xml:space="preserve">
+    <value>2 hours of flight training within the 2 calendar months prior to the test</value>
+  </data>
+  <data name="TitleSportGlider" xml:space="preserve">
+    <value>FAR 61.313(b &amp; c) - Sport Pilot, Glider</value>
+  </data>
+  <data name="TitleSportGyroplane" xml:space="preserve">
+    <value>FAR 61.313(d) - Sport Pilot, Gyroplane</value>
+  </data>
+  <data name="TitleSportSingleEngine" xml:space="preserve">
+    <value>FAR 61.313(a) - Sport Pilot, Airplane Single Engine Land/Sea</value>
+  </data>
+  <data name="Comm141DayXCFlight" xml:space="preserve">
+    <value>One cross-country flight in daytime conditions that is at least {0}hrs and goes at least {1}nm from the point of departure</value>
+  </data>
+  <data name="Comm141InstrumentTrainingNote" xml:space="preserve">
+    <value>For an airplane rating, a view-limiting device is required, so this is looking for simulated instrument conditions; unusual attitudes, partial panel operations, attitude instrument flying, etc., are all assumed</value>
+  </data>
+  <data name="Comm141MinComplexOrTurbine" xml:space="preserve">
+    <value>{0} hours of training in {1} that is complex or turbine-powered</value>
+  </data>
+  <data name="Comm141MinInstrumentTraining" xml:space="preserve">
+    <value>{0} hours of instrument training</value>
+  </data>
+  <data name="Comm141MinInstrumentTrainingInCatClass" xml:space="preserve">
+    <value>{0} hours of instrument training in {1}</value>
+  </data>
+  <data name="Comm141MinTime" xml:space="preserve">
+    <value>{0} hours of flight training from a CFI</value>
+  </data>
+  <data name="Comm141NightXCFlight" xml:space="preserve">
+    <value>One cross-country flight in nighttime conditions that is at least {0}hrs and goes at least {1}nm from the point of departure</value>
+  </data>
+  <data name="Comm141SoloNight" xml:space="preserve">
+    <value>{0} hours of solo (or duties-of-PIC with an authorized instructor on board) flight in night VFR conditions</value>
+  </data>
+  <data name="Comm141SoloNightLandings" xml:space="preserve">
+    <value>{0} solo landings at night (VFR conditions)</value>
+  </data>
+  <data name="Comm141SoloNightTakeoffs" xml:space="preserve">
+    <value>{0} solo takeoffs at night (VFR conditions)</value>
+  </data>
+  <data name="Comm141SoloTime" xml:space="preserve">
+    <value>{0} hours of solo time (or duties-of-PIC with an authorized instructor on board) in {1}</value>
+  </data>
+  <data name="Comm141SoloXCFlight" xml:space="preserve">
+    <value>One solo (or duties-of-PIC with an authorized instructor on board) cross country flight with at least 3 landings and a segment with a straight-line distance of at least {0}nm</value>
+  </data>
+  <data name="Comm141SoloXCHawaiiNote" xml:space="preserve">
+    <value>In Hawaii, a cross-country segment of 150nm satisfies this</value>
+  </data>
+  <data name="Comm141TestPrep" xml:space="preserve">
+    <value>{0} hours of test prep in {1} within {2} days preceding the test</value>
+  </data>
+  <data name="Comm141TestPrepNote" xml:space="preserve">
+    <value>%APP_NAME% is showing whether you are eligible to take the practical test TODAY; this progress can decay over time after your checkride.  This is looking for dual received.</value>
+  </data>
+  <data name="Comm141TrainingNote" xml:space="preserve">
+    <value>Any dual received is assumed to cover the required areas of operation.</value>
+  </data>
+  <data name="Title141CommercialHelicopter" xml:space="preserve">
+    <value>Part 141 - Commercial, Rotorcraft-Helicopter</value>
+  </data>
+  <data name="Title141CommercialMultiEngine" xml:space="preserve">
+    <value>Part 141 - Commerical, Airplane, Multi Engine</value>
+  </data>
+  <data name="Title141CommercialSingleEngine" xml:space="preserve">
+    <value>Part 141 - Commerical, Airplane, Single Engine</value>
+  </data>
+  <data name="Comm141MinTimeOverall" xml:space="preserve">
+    <value>{0} hours of flight training</value>
+  </data>
+  <data name="Comm141OverallTimeNote" xml:space="preserve">
+    <value>Per 141 Appendix D (4)(c), you may be entitled to credit time in a simulator or FTD, depending on the certification level of the device.  Time in training devices is NOT included here.</value>
+  </data>
+  <data name="ATPMinXCTimeNoteRestricted" xml:space="preserve">
+    <value>Per FAR 61.160(e) and (f), the cross-country limit here is 200 hours if you have 1500 total hours or are applying under 61.160(a), (b), or (c)</value>
+  </data>
+  <data name="ATPMinXCTimeRestricted" xml:space="preserve">
+    <value>200 hours of cross-country flight time</value>
+  </data>
+  <data name="ATPRestrictedEducationNote" xml:space="preserve">
+    <value>61.160 describes a variety of conditions regarding your education and ratings that you must have met which %APP_NAME% cannot verify.  It is your responsibility to ensure that you have met these requirements.</value>
+  </data>
+  <data name="ATPRestrictedMilitaryNote" xml:space="preserve">
+    <value>This does not apply if you had other than an honorable discharge, or if you did not earn a rating as a military pilot.  %APP_NAME% cannot verify either of these.</value>
+  </data>
+  <data name="Title61160AssociatesDegree" xml:space="preserve">
+    <value>FAR 61.160(c) - Airplane - Multi-Engine, Restricted (Associates Degree)</value>
+  </data>
+  <data name="Title61160BachelorsDegree" xml:space="preserve">
+    <value>FAR 61.160(b) - Airplane - Multi-Engine, Restricted (Bachelors Degree)</value>
+  </data>
+  <data name="Title61160FormerMilitary" xml:space="preserve">
+    <value>FAR 61.160(a) - Airplane - Multi-Engine, Restricted (Former Military)</value>
+  </data>
+  <data name="Title61160PartialDegree" xml:space="preserve">
+    <value>FAR 61.160(d) - Airplane - Multi-Engine, Restricted (30-60 credit hours)</value>
+  </data>
+  <data name="Title61160FAMEL" xml:space="preserve">
+    <value>FAR 61.160(f) - Airplane - Multi-Engine-Land, Restricted</value>
+  </data>
+  <data name="Title61160FAMES" xml:space="preserve">
+    <value>FAR 61.160(f) - Airplane - Multi-Engine-Sea, Restricted</value>
+  </data>
+  <data name="Title61160FASEL" xml:space="preserve">
+    <value>FAR 61.160(f) - Airplane - Single-Engine-Land, Restricted</value>
+  </data>
+  <data name="Title61160FASES" xml:space="preserve">
+    <value>FAR 61.160(f) - Airplane - Single-Engine-Sea, Restricted</value>
+  </data>
+  <data name="Part135PICDisclaimer" xml:space="preserve">
+    <value>Progress here is only computing the flight experience requirements.  You are also required to have appropriate ratings; %APP_NAME% cannot validate the status of your ratings</value>
+  </data>
+  <data name="Part135PICIFRNightTime" xml:space="preserve">
+    <value>100 hours of night flight time</value>
+  </data>
+  <data name="Part135PICIFRTime" xml:space="preserve">
+    <value>75 hours of actual or simulated instrument time</value>
+  </data>
+  <data name="Part135PICIFRTimeInFlight" xml:space="preserve">
+    <value>50 hours of actual or simulated instrument time in flight</value>
+  </data>
+  <data name="Part135PICMinTime" xml:space="preserve">
+    <value>{0} hours of total time as a pilot</value>
+  </data>
+  <data name="Part135PICNightXCMinTime" xml:space="preserve">
+    <value>25 hours of night cross-country time</value>
+  </data>
+  <data name="Part135PICXCMinTime" xml:space="preserve">
+    <value>{0} hours of cross-country time</value>
+  </data>
+  <data name="RatingGroup135" xml:space="preserve">
+    <value>Part 135 Ratings</value>
+  </data>
+  <data name="Title135243PIC" xml:space="preserve">
+    <value>FAR 135.243 PIC (VFR)</value>
+  </data>
+  <data name="Title135243PICIFR" xml:space="preserve">
+    <value>FAR 135.243 PIC (IFR)</value>
+  </data>
+  <data name="EASAClassAirplane" xml:space="preserve">
+    <value>an airplane</value>
+  </data>
+  <data name="EASAClassAirplaneNote" xml:space="preserve">
+    <value>All time in airplanes or TMGs is included here, not just dual, on the assumption that if you have not yet earned your LAPL license, it's all training/instruction.</value>
+  </data>
+  <data name="EASAClassHelicopter" xml:space="preserve">
+    <value>a helicopter</value>
+  </data>
+  <data name="EASAClassHelicopterNote" xml:space="preserve">
+    <value>All time in helicopters is included here, not just dual, on the assumption that if you have not yet earned your LAPL license, it's all training/instruction.  35 hours of this must be in the same type of helicopter that will be used for your test.  Without knowing what type you will be using, %APP_NAME% cannot compute this for you.</value>
+  </data>
+  <data name="EASAClassTMG" xml:space="preserve">
+    <value>a touring motor glider (TMG)</value>
+  </data>
+  <data name="EASALAPLAirplaneMinDual" xml:space="preserve">
+    <value>{0} hours in {1}</value>
+  </data>
+  <data name="EASALAPLAirplaneMinDualInClass" xml:space="preserve">
+    <value>{0} hours of flight instruction in {1}</value>
+  </data>
+  <data name="EASALAPLAirplaneMinSolo" xml:space="preserve">
+    <value>{0} hours of supervised solo time</value>
+  </data>
+  <data name="EASALAPLAirplaneMinSoloXC" xml:space="preserve">
+    <value>{0} hours of solo cross-country flight time</value>
+  </data>
+  <data name="EASALAPLAirplaneMinSoloXCMinDist" xml:space="preserve">
+    <value>1 solo cross-country flight of at least {0} nm with a full-stop landing at a different airport</value>
+  </data>
+  <data name="EASALAPLAirplaneOrTMG" xml:space="preserve">
+    <value>airplanes or TMGs</value>
+  </data>
+  <data name="EASASupervisedSoloNote" xml:space="preserve">
+    <value>The regulations specify "supervised solo" - %APP_NAME% counts either solo time or Duties of PIC time with an instructor on-board towards this</value>
+  </data>
+  <data name="TitleEASALAPLAirplane" xml:space="preserve">
+    <value>EASA - LAPL(A) - Light Aircraft Pilot License, Airplane</value>
+  </data>
+  <data name="TitleEASALAPLHelicopter" xml:space="preserve">
+    <value>EASA - LAPL(H) - Light Aircraft Pilot License, Helicopter</value>
+  </data>
+  <data name="RatingGroupLAPL" xml:space="preserve">
+    <value>EASA LAPL (Light Aircraft Pilot License)</value>
+  </data>
+  <data name="EASALAPLSailplaneDual" xml:space="preserve">
+    <value>10 hours of dual flight instruction in a sailplane</value>
+  </data>
+  <data name="EASALAPLSailplaneLaunchesAndLandings" xml:space="preserve">
+    <value>45 launches and landings.</value>
+  </data>
+  <data name="EASALAPLSailplaneLaunchesNotes" xml:space="preserve">
+    <value>Each landing assumes a corresponding launch</value>
+  </data>
+  <data name="EASALAPLSailplaneNoteTMG" xml:space="preserve">
+    <value>Up to 7 of these hours may be in a Touring Motor Glider (TMG)</value>
+  </data>
+  <data name="EASALAPLSailplaneSolo" xml:space="preserve">
+    <value>2 hours of supervised solo flight time (solo or Duties of PIC with an instructor on board)</value>
+  </data>
+  <data name="EASALAPLSailplaneTitle" xml:space="preserve">
+    <value>EASA - LAPL(S) - Light Aircraft Pilot License, Sailplane</value>
+  </data>
+  <data name="EASALAPLSailplaneTMGNote" xml:space="preserve">
+    <value>%APP_NAME% treats "Sailplanes" as synonymous with "Glider", and "Powered Sailplanes" as synonymous with "Touring Motor Glider (TMG)"</value>
+  </data>
+  <data name="EASALAPLSailplaneTotal" xml:space="preserve">
+    <value>15 hours in sailplanes</value>
+  </data>
+  <data name="EASALAPLSailplaneXC" xml:space="preserve">
+    <value>1 solo cross-country flight of at least 27nm or 1 dual cross-country flight of at least 55nm</value>
+  </data>
+  <data name="ATPTotalTimeSubstitutionNote" xml:space="preserve">
+    <value>Per 61.159(c), SIC time and some Flight Engineer Time can contribute towards this.  %APP_NAME% assumes that the conditions for doing so have been met.</value>
+  </data>
+  <data name="MinInstrumentTime141" xml:space="preserve">
+    <value>35 Hours of actual or simulated instrument time</value>
+  </data>
+  <data name="Note141InstrumentReducedHours" xml:space="preserve">
+    <value>Only 15 hours are required if this is for an additional instrument rating.  Use of simulators/FTDs/ATDs are included up to the limits described by 141 Appendix (C)(4)(b)</value>
+  </data>
+  <data name="Title141IFRAirplane" xml:space="preserve">
+    <value>Part 141 - Instrument Airplane</value>
+  </data>
+  <data name="Title141IFRHelicopter" xml:space="preserve">
+    <value>Part 141 - Instrument Helicopter</value>
+  </data>
+  <data name="CANightInstrument" xml:space="preserve">
+    <value>{0} hours of dual instrument flying</value>
+  </data>
+  <data name="CANightInstrumentNote" xml:space="preserve">
+    <value>Up to 5 hours of ground-sim time can contribute to this.</value>
+  </data>
+  <data name="CANightSolo" xml:space="preserve">
+    <value>{0} hours of solo night flight</value>
+  </data>
+  <data name="CANightTotalTime" xml:space="preserve">
+    <value>{0} hours in {1}</value>
+  </data>
+  <data name="CAPPLGroundSimNote" xml:space="preserve">
+    <value>Up to 3 hours may be performed in a ground simulator</value>
+  </data>
+  <data name="CAPPLMinXC" xml:space="preserve">
+    <value>{0} hours of cross-country dual flight time</value>
+  </data>
+  <data name="JARPPLMinDualNightLongXC" xml:space="preserve">
+    <value>1 dual cross-country flight at night of at least {0}nm</value>
+  </data>
+  <data name="TitleCANightAirplane" xml:space="preserve">
+    <value>Canada - Night Airplane</value>
+  </data>
+  <data name="TitleCANightHelicopter" xml:space="preserve">
+    <value>Canada - Night Helicopter</value>
+  </data>
+  <data name="TitleCAPPLAirplaneLand" xml:space="preserve">
+    <value>Canada - Private Pilot, Airplane (Land)</value>
+  </data>
+  <data name="TitleCAPPLHelicopter" xml:space="preserve">
+    <value>Canada - Private Pilot, Helicopter</value>
+  </data>
+  <data name="CAPPLSolo" xml:space="preserve">
+    <value>{0} hours of solo time</value>
+  </data>
+  <data name="CAPPLClassLandPlane" xml:space="preserve">
+    <value>a landplane</value>
+  </data>
+  <data name="CAPPLClassSeaPlane" xml:space="preserve">
+    <value>a seaplane</value>
+  </data>
+  <data name="CAPPLDualInClass" xml:space="preserve">
+    <value>{0} hours of dual instruction in {1}</value>
+  </data>
+  <data name="CAPPLSoloLandingsInClass" xml:space="preserve">
+    <value>5 takeoffs and landings as the sole occupant of {0}</value>
+  </data>
+  <data name="CAPPLSoloNote" xml:space="preserve">
+    <value>%APP_NAME% is just looking for total landings, assuming that you did the takeoffs.  For seaplanes, if the aircraft requires two crewmembers, then you may substitute PIC time for this.  %APP_NAME% does not do this for you.</value>
+  </data>
+  <data name="CAPPLTimeInClass" xml:space="preserve">
+    <value>{0} hours of training in {1}</value>
+  </data>
+  <data name="TitleCAPPLAirplaneSea" xml:space="preserve">
+    <value>Canada - Private Pilot, Airplane (Sea)</value>
+  </data>
+  <data name="SADual" xml:space="preserve">
+    <value>{0} hours of dual instruction in {1}</value>
+  </data>
+  <data name="SADualXC" xml:space="preserve">
+    <value>A dual night cross-country flight of at least {0}nm with 2 landings (full-stop if in an aeroplane) away from base</value>
+  </data>
+  <data name="SANightInstrument" xml:space="preserve">
+    <value>10 hours of instrument instruction</value>
+  </data>
+  <data name="SANightInstrumentNote" xml:space="preserve">
+    <value>Up to 5 hours of this may be done in an approved FSTD, or may be credited if you have an instrument rating in another category</value>
+  </data>
+  <data name="SANightLandings" xml:space="preserve">
+    <value>5 night dual landings</value>
+  </data>
+  <data name="SANightTakeoffs" xml:space="preserve">
+    <value>5 night dual takeoffs</value>
+  </data>
+  <data name="SASolo" xml:space="preserve">
+    <value>{0} hours of solo time</value>
+  </data>
+  <data name="SASoloLongXC" xml:space="preserve">
+    <value>A solo cross-country flight of at least {0}nm, including full-stop landings at 2 aerodromes.  For aeroplanes, a leg of at least 50nm from base is also required</value>
+  </data>
+  <data name="SASoloXC" xml:space="preserve">
+    <value>{0} hours of solo cross-country time</value>
+  </data>
+  <data name="SATotalTime" xml:space="preserve">
+    <value>{0} hours of total time in {1}</value>
+  </data>
+  <data name="TitleSANightAeroplane" xml:space="preserve">
+    <value>South Africa - Night Aeroplane</value>
+  </data>
+  <data name="TitleSANightHelicopter" xml:space="preserve">
+    <value>South Africa - Night Helicopter</value>
+  </data>
+  <data name="TitleSAPPLAirplane" xml:space="preserve">
+    <value>South Africa - PPL(A): Aeroplane Private Pilot</value>
+  </data>
+  <data name="TitleSAPPLHelicopter" xml:space="preserve">
+    <value>South Africa - PPL(H): Helicopter Private Pilot</value>
+  </data>
+  <data name="CAPPLMinTime" xml:space="preserve">
+    <value>{0} hours of flight training</value>
+  </data>
+  <data name="CommSoloNote" xml:space="preserve">
+    <value>Time spent performing duties of PIC with an authorized instructor on board may count towards this; however, since this is a substitute for solo, any dual instruction time received will be subtracted from duties-of-PIC time, which may prevent a flight from counting towards this.  (Google "FAA duties of PIC Kuhn" for details)</value>
+  </data>
+  <data name="CommGliderFlightsPIC" xml:space="preserve">
+    <value>{0} flights as PIC in a glider</value>
+  </data>
+  <data name="CommGliderGliderTime" xml:space="preserve">
+    <value>25 hours of glider time</value>
+  </data>
+  <data name="CommGliderHeavierThanAir" xml:space="preserve">
+    <value>200 hours of flight time in heavier-than-air aircraft</value>
+  </data>
+  <data name="CommGliderSoloFlights" xml:space="preserve">
+    <value>{0} solo flights in a glider</value>
+  </data>
+  <data name="CommGliderSoloTime" xml:space="preserve">
+    <value>2 hours of solo flight (glider is assumed)</value>
+  </data>
+  <data name="CommGliderTestPrep" xml:space="preserve">
+    <value>3 training flights in a glider within 2 calendar months preceding the test</value>
+  </data>
+  <data name="CommGliderTrainingFlights" xml:space="preserve">
+    <value>10 training flights in a glider</value>
+  </data>
+  <data name="CommGliderTrainingTime" xml:space="preserve">
+    <value>3 hours of flight training in a glider</value>
+  </data>
+  <data name="Title61129F" xml:space="preserve">
+    <value>FAR 61.129(f) - Glider</value>
+  </data>
+</root>

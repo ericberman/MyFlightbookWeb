@@ -1,0 +1,18 @@
+﻿Dear {0}
+
+You recently saved a flight on %APP_NAME% with a request to post it to your account on Facebook.
+
+Your flight was successfully saved, but your authorization for %APP_NAME% to post on your behalf to Facebook has expired or is no longer valid.
+
+You can re-authorize %APP_NAME% by visiting http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftPrefs.
+
+Doing this will re-enable you to choose whether or not to post a flight to your Facebook account when you save it.
+
+Thanks
+
+--The %APP_NAME% Team
+
+Response from Facebook:
+Error code: {1}
+SubCode: {2}
+Message: {3}

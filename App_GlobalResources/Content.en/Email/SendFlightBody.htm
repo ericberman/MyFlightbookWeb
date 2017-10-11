@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Flight from %APP_NAME%</title>
+    <link href="http://%APP_URL%%APP_ROOT%/Public/StyleSheet.css" rel="stylesheet" type="text/css" />
+</head>
+<body style="font-family: Arial; font-size: 9pt; margin-left: auto; margin-right: auto; min-width: 300px;">
+    <p>
+        <img alt="%APP_NAME% Logo" src="http://%APP_URL%%APP_LOGO%" />
+    </p>
+    <p><% Sender %> has shared a flight with you from %APP_NAME%:</p>
+    <div style="margin-left: 30px; margin-right: 30px;">
+        <p style="font-weight:bold;"><% Message %><p></p>
+        <table>
+            <tr><td style="font-weight: bold">Date</td><td><% Date %></td></tr>
+            <tr><td style="font-weight: bold">Aircraft</td><td><% Aircraft %></td></tr>
+            <tr><td style="font-weight: bold">Route</td><td><% Route %></td></tr>
+            <tr><td style="font-weight: bold">Comments</td><td><% Comments %></td></tr>
+            <tr><td style="font-weight: bold">Total time</td><td><% Time %></td></tr>
+        </table>
+    </div>
+    <p>To add this flight to your logbook on %APP_NAME%, click <a href="http://%APP_URL%<% FlightLink %>" style="font-weight: bold">here</a>.  You will have the chance to review the flight and make any changes before anything is saved.</p>
+
+    <p>Thank-you</p>
+    <p>
+        Sincerely,<br />The MyFlightbook Team
+        <br /><br />
+        MyFlightbook LLC
+    </p>
+    <p>IF YOU REPLY TO THIS MESSAGE, IT WILL GO TO <% Sender %>.  IF YOU WISH TO CONTACT US, PLEASE VISIT <a href="http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx">HERE</a>.</p></body>
+</html>

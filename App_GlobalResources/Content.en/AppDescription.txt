@@ -1,0 +1,17 @@
+
+<p>Here is a quick description of the main areas of the site:</p>
+<ul>
+    <li><strong><a href="Member/LogbookNew.aspx">Logbook</a></strong>
+        &nbsp; - Manage your flights. Enter new flights, view flights you&#39;ve logged, view your currency, search for flights and totals, 
+        download your logbook to a spreadsheet, or import your logbook from another source, and get a print view of your logbook.</li>
+    <li><strong><a href="Member/Aircraft.aspx">Aircraft</a></strong>
+		&nbsp; - View and edit just the aircraft that you fly.&nbsp; You can also define the characteristics of various aircraft models.  E.g., all Boeing 737&#39;s are turbine, multi-engine, and have retractable landing gear.
+		%APP_NAME% uses this to determine your time in aircraft that have these characteristics so you don't have to log it yourself!</li>
+    <li><strong><a href="Public/MapRoute2.aspx">Airports</a></strong>&nbsp;- View flight routes with links for FBO information and weather, see 
+        airports you&#39;ve visited, add airports, and try your skills at identifying 
+        airports from satellite imagery.  You can even add new airports into the system</li>
+	<li><strong><a = href="Member/Training.aspx/instInstructors">Training</a></strong>&nbsp;-
+		Track your training progress: manage endorsements and relationships with students and instructors, view progress towards different ratings, see your 8710 form, and even earn badges for various achievements!</li>
+    <li><strong><a href="Member/EditProfile.aspx">Profile</a></strong>&nbsp;- 
+        Change your password, provide the date of your last medical, and adjust your preferences.  You can even create custom currency rules or deadlines!</li>
+</ul>

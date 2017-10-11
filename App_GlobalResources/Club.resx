@@ -1,0 +1,639 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="errNameRequired" xml:space="preserve">
+    <value>Please provide a name for this club/FBO.</value>
+  </data>
+  <data name="LabelCity" xml:space="preserve">
+    <value>City:</value>
+  </data>
+  <data name="LabelCountry" xml:space="preserve">
+    <value>Country:</value>
+  </data>
+  <data name="LabelCreateClubs" xml:space="preserve">
+    <value>Create a club/FBO</value>
+  </data>
+  <data name="LabelDescription" xml:space="preserve">
+    <value>Description for the club/FBO:</value>
+  </data>
+  <data name="LabelEdit" xml:space="preserve">
+    <value>Edit Club/FBO Information</value>
+  </data>
+  <data name="LabelHomeAirport" xml:space="preserve">
+    <value>Club/FBO is based at (ICAO code):</value>
+  </data>
+  <data name="LabelManageClubs" xml:space="preserve">
+    <value>My Clubs/FBOs</value>
+  </data>
+  <data name="LabelName" xml:space="preserve">
+    <value>Name for the club/FBO:</value>
+  </data>
+  <data name="LabelNoClubs" xml:space="preserve">
+    <value>You are not a member of any club/FBO</value>
+  </data>
+  <data name="LabelPhone" xml:space="preserve">
+    <value>Contact Phone:</value>
+  </data>
+  <data name="LabelSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="LabelSearchClubs" xml:space="preserve">
+    <value>Find a club/FBO near me</value>
+  </data>
+  <data name="LabelStateProvince" xml:space="preserve">
+    <value>State or Province:</value>
+  </data>
+  <data name="LabelURL" xml:space="preserve">
+    <value>Website for the club/FBO:</value>
+  </data>
+  <data name="AddMemberFromInvitation" xml:space="preserve">
+    <value>You have been invited to join the club/FBO "{0}".  Do you wish to join?</value>
+  </data>
+  <data name="AddMemberFromRequest" xml:space="preserve">
+    <value>{0} has requested to join the club/FBO "{1}".  Do you approve?</value>
+  </data>
+  <data name="ButtonAddAircraft" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="ButtonInviteMember" xml:space="preserve">
+    <value>Invite Member</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ClubInviteJoin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\clubinvitejoin.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ClubRequestJoin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\clubrequestjoin.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ContactSubjectTemplate" xml:space="preserve">
+    <value>Message about '{0}' on %APP_NAME%</value>
+  </data>
+  <data name="errAlreadyAddedMember" xml:space="preserve">
+    <value>{0} is already a member of "{1}"</value>
+  </data>
+  <data name="errAlreadyMember" xml:space="preserve">
+    <value>You are already a member of "{0}"</value>
+  </data>
+  <data name="errCannotDeleteOwner" xml:space="preserve">
+    <value>The club must have an owner, who cannot be deleted</value>
+  </data>
+  <data name="errNoClubInRequest" xml:space="preserve">
+    <value>Invalid club membership request - no club specified!</value>
+  </data>
+  <data name="errNoContactMessageBody" xml:space="preserve">
+    <value>Please compose a message to send to the club/FBO.</value>
+  </data>
+  <data name="errNoSuchClub" xml:space="preserve">
+    <value>Requested club doesn't exist.</value>
+  </data>
+  <data name="errNotAuthorized" xml:space="preserve">
+    <value>You are not authorized to view this club</value>
+  </data>
+  <data name="errNotAuthorizedToManage" xml:space="preserve">
+    <value>You are not authorized to manage this club</value>
+  </data>
+  <data name="errValidEmailRequired" xml:space="preserve">
+    <value>Please provide a valid email address</value>
+  </data>
+  <data name="HeaderAircraft" xml:space="preserve">
+    <value>Aircraft in this club/FBO</value>
+  </data>
+  <data name="HeaderMembers" xml:space="preserve">
+    <value>Members of this club/FBO</value>
+  </data>
+  <data name="LabelAddAircraft" xml:space="preserve">
+    <value>Add aircraft to this club/FBO (must already exist in your profile):</value>
+  </data>
+  <data name="LabelAircraftDescriptionHeader" xml:space="preserve">
+    <value>Provide a description of the aircraft (features, rental rates, etc.) for members and potential members:</value>
+  </data>
+  <data name="LabelAircraftHeader" xml:space="preserve">
+    <value>Aircraft</value>
+  </data>
+  <data name="LabelAircraftSchedules" xml:space="preserve">
+    <value>Schedules for club/FBO aircraft</value>
+  </data>
+  <data name="TabClubAircraft" xml:space="preserve">
+    <value>Aircraft</value>
+  </data>
+  <data name="TabClubMembers" xml:space="preserve">
+    <value>Members</value>
+  </data>
+  <data name="LabelContactClub" xml:space="preserve">
+    <value>Send Message</value>
+  </data>
+  <data name="LabelCreateClub" xml:space="preserve">
+    <value>Create a new club/FBO</value>
+  </data>
+  <data name="LabelDeleteClub" xml:space="preserve">
+    <value>Delete this club/FBO</value>
+  </data>
+  <data name="LabelEditClubInfo" xml:space="preserve">
+    <value>Edit Club Information</value>
+  </data>
+  <data name="LabelEmailDisclaimer" xml:space="preserve">
+    <value>This e-mail address will NOT be stored or used for any other purpose</value>
+  </data>
+  <data name="LabelInviteMember" xml:space="preserve">
+    <value>To add a member to this club/FBO, enter their email below.  They will confirm that they wish to join.</value>
+  </data>
+  <data name="LabelLeaveClub" xml:space="preserve">
+    <value>Leave this club/FBO</value>
+  </data>
+  <data name="LabelManageClub" xml:space="preserve">
+    <value>You are a manager or owner of this club/FBO.</value>
+  </data>
+  <data name="LabelMemberJoinDate" xml:space="preserve">
+    <value>Joined</value>
+  </data>
+  <data name="LabelMemberName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LabelMemberRole" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="LabelMessagePrompt" xml:space="preserve">
+    <value>Please type your message below.</value>
+  </data>
+  <data name="LabelNoAircraft" xml:space="preserve">
+    <value>There are no aircraft in this club/FBO yet.</value>
+  </data>
+  <data name="LabelNotAMember" xml:space="preserve">
+    <value>You are not a member of this club/FBO</value>
+  </data>
+  <data name="LabelRequestMembership" xml:space="preserve">
+    <value>Include a request to join this club/FBO.  (The managers/owners of the club/FBO will need to approve your membership.)</value>
+  </data>
+  <data name="LabelScheduleForAircraft" xml:space="preserve">
+    <value>Schedule for {0}:</value>
+  </data>
+  <data name="LabelSendMessage" xml:space="preserve">
+    <value>You can contact the managers to find out more about the club/FBO, tell them about yourself, and/or request membership.</value>
+  </data>
+  <data name="LinkSendMessage" xml:space="preserve">
+    <value>Send a message</value>
+  </data>
+  <data name="MessageSenderTemplate" xml:space="preserve">
+    <value>Sender Name: {0}
+Sender Email: {1}</value>
+    <comment>Information about the sender when a message is sent.</comment>
+  </data>
+  <data name="RoleManager" xml:space="preserve">
+    <value>Manager</value>
+  </data>
+  <data name="RoleMember" xml:space="preserve">
+    <value>Member</value>
+  </data>
+  <data name="RoleOwner" xml:space="preserve">
+    <value>Owner</value>
+  </data>
+  <data name="StatusMessageSent" xml:space="preserve">
+    <value>Thank-you, your message has been sent.</value>
+  </data>
+  <data name="TimeZoneCurrentTime" xml:space="preserve">
+    <value>It is now </value>
+  </data>
+  <data name="TimeZoneDisclaimer" xml:space="preserve">
+    <value>All times are {0}.</value>
+  </data>
+  <data name="ButtonFindClubs" xml:space="preserve">
+    <value>Find Nearby Clubs</value>
+  </data>
+  <data name="ButtonNewAircraft" xml:space="preserve">
+    <value>Add a new aircraft to this club/FBO</value>
+  </data>
+  <data name="ButtonNewMember" xml:space="preserve">
+    <value>Invite someone to join this club/FBO</value>
+  </data>
+  <data name="errCantDemoteOwner" xml:space="preserve">
+    <value>A club must have one designated owner/creator.  You cannot demote a member from that role, but you can promote another member to that role (replacing the previous owner/creator)</value>
+  </data>
+  <data name="errHomeAirportNotFound" xml:space="preserve">
+    <value>Home airport was not found.</value>
+  </data>
+  <data name="errNoClubsFound" xml:space="preserve">
+    <value>No clubs were found near your home airport</value>
+  </data>
+  <data name="errNoHomeAirport" xml:space="preserve">
+    <value>Please specify your home airport</value>
+  </data>
+  <data name="LabelDistanceFromAirport" xml:space="preserve">
+    <value> from {0}</value>
+  </data>
+  <data name="LabelFindClubs" xml:space="preserve">
+    <value>Search for Clubs</value>
+  </data>
+  <data name="TabClubInfo" xml:space="preserve">
+    <value>Club Details</value>
+  </data>
+  <data name="TitleFindClubs" xml:space="preserve">
+    <value>Find Clubs/FBOs Near You</value>
+  </data>
+  <data name="WatermarkFindClubs" xml:space="preserve">
+    <value>Airport Code</value>
+  </data>
+  <data name="ConfirmClubDelete" xml:space="preserve">
+    <value>Are you sure you want to delete this club?  This CANNOT BE UNDONE!</value>
+  </data>
+  <data name="DeleteClub" xml:space="preserve">
+    <value>Delete this club</value>
+  </data>
+  <data name="WatermarkInviteMember" xml:space="preserve">
+    <value>E-mail adress</value>
+  </data>
+  <data name="CreateClubRestriction" xml:space="preserve">
+    <value>Membership in clubs is available to any %APP_NAME% user at no charge.  Creation of clubs is a premium feature available for pilots who have contributed {0:C} or more to support %APP_NAME%.</value>
+  </data>
+  <data name="ReportEndDate" xml:space="preserve">
+    <value>EndDate:</value>
+  </data>
+  <data name="ReportPrompt" xml:space="preserve">
+    <value>Here you can see a variety of reports about flying in club planes, as reported in logbooks.</value>
+  </data>
+  <data name="ReportPromptDisclaimer" xml:space="preserve">
+    <value>Report excludes everything prior to the date of the club's creation, as well as any flights by non-members of the club, or in non-club aircraft.</value>
+  </data>
+  <data name="ReportStartDate" xml:space="preserve">
+    <value>Start Date:</value>
+  </data>
+  <data name="ReportTypeIndividualFlightsByAircraft" xml:space="preserve">
+    <value>Individual flights per aircraft</value>
+  </data>
+  <data name="ReportTypeIndividualFlightsByUser" xml:space="preserve">
+    <value>Individual flights per user</value>
+  </data>
+  <data name="ReportTypeSelect" xml:space="preserve">
+    <value>(Please select a report)</value>
+  </data>
+  <data name="ReportTypeTotalsByAircraftByMonth" xml:space="preserve">
+    <value>Monthy totals per aircraft</value>
+  </data>
+  <data name="ReportTypeTotalsByUserByMonth" xml:space="preserve">
+    <value>Monthly totals per user</value>
+  </data>
+  <data name="TabClubReports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="ReportDownload" xml:space="preserve">
+    <value>Download as spreadsheet</value>
+  </data>
+  <data name="ReportUpdate" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="HeaderFoundClubs" xml:space="preserve">
+    <value>Clubs near your home airport</value>
+  </data>
+  <data name="HeaderYourClubs" xml:space="preserve">
+    <value>Your Clubs</value>
+  </data>
+  <data name="LabelViewAllClubs" xml:space="preserve">
+    <value>See all available clubs</value>
+  </data>
+  <data name="ReportHeaderAircraft" xml:space="preserve">
+    <value>Aircraft</value>
+  </data>
+  <data name="ReportHeaderDate" xml:space="preserve">
+    <value>Date of flight</value>
+  </data>
+  <data name="ReportHeaderHobbsEnd" xml:space="preserve">
+    <value>Hobbs End</value>
+  </data>
+  <data name="ReportHeaderHobbsStart" xml:space="preserve">
+    <value>Hobbs Start</value>
+  </data>
+  <data name="ReportHeaderMonth" xml:space="preserve">
+    <value>Month of flight</value>
+  </data>
+  <data name="ReportHeaderPilotName" xml:space="preserve">
+    <value>Pilot Name</value>
+  </data>
+  <data name="ReportHeaderTachEnd" xml:space="preserve">
+    <value>Tach End</value>
+  </data>
+  <data name="ReportHeaderTachStart" xml:space="preserve">
+    <value>Tach Start</value>
+  </data>
+  <data name="ReportHeaderTotalTime" xml:space="preserve">
+    <value>Total Logged time</value>
+  </data>
+  <data name="ReportNoData" xml:space="preserve">
+    <value>(No data to report)</value>
+  </data>
+  <data name="AddMemberInvitationAccepted" xml:space="preserve">
+    <value>Invitation to join {0} has been accepted</value>
+  </data>
+  <data name="AddMemberRequestAccepted" xml:space="preserve">
+    <value>Request to join {0} has been approved</value>
+  </data>
+  <data name="ButtonLeaveClub" xml:space="preserve">
+    <value>Leave this club/FBO</value>
+  </data>
+  <data name="ClubInvitationAccepted" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\clubinvitationaccepted.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ClubRequestAccepted" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\clubrequestaccepted.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="errConfirmLeaveClub" xml:space="preserve">
+    <value>Are you sure that you want to leave this club/FBO? </value>
+  </data>
+  <data name="LabelTimeZone" xml:space="preserve">
+    <value>Timezone (ignore daylight savings):</value>
+  </data>
+  <data name="confirmAircraftDelete" xml:space="preserve">
+    <value>Are you sure you want to remove this aircraft from this club?  This cannot be undone!</value>
+  </data>
+  <data name="confirmMemberDelete" xml:space="preserve">
+    <value>Are you sure you want to remove this member from the club?  This cannot be undone!</value>
+  </data>
+  <data name="ReportHeaderTotalHobbs" xml:space="preserve">
+    <value>Total Hobbs</value>
+  </data>
+  <data name="ReportHeaderTotalTach" xml:space="preserve">
+    <value>Total Tach</value>
+  </data>
+  <data name="LabelUpcomingSchedule" xml:space="preserve">
+    <value>Upcoming on the schedule:</value>
+  </data>
+  <data name="upcomingClub" xml:space="preserve">
+    <value>View all</value>
+  </data>
+  <data name="upcomingUser" xml:space="preserve">
+    <value>Only show mine</value>
+  </data>
+  <data name="errNoUpcomingEvents" xml:space="preserve">
+    <value>(No upcoming scheduled events)</value>
+  </data>
+  <data name="LabelPolicyOpenEdit" xml:space="preserve">
+    <value>Restrict editing of schedule to admins and the owner/creator of the scheduled item.</value>
+  </data>
+  <data name="LabelPolicy" xml:space="preserve">
+    <value>Policy</value>
+  </data>
+  <data name="LabelPolicyClubIsPrivate" xml:space="preserve">
+    <value>Hide club from search results</value>
+  </data>
+  <data name="LabelPolicyOwnerPrefix" xml:space="preserve">
+    <value>Prefix all scheduled items with the scheduler's name</value>
+  </data>
+  <data name="LabelClickClubForDetails" xml:space="preserve">
+    <value>Click on a marker for a club to see details about the club</value>
+  </data>
+  <data name="LabelPolicyDeleteNotification" xml:space="preserve">
+    <value>When an item is deleted from a schedule, notify:</value>
+  </data>
+  <data name="PolicyDeleteNotificationAdmins" xml:space="preserve">
+    <value>Admins only</value>
+  </data>
+  <data name="PolicyDeleteNotificationEveryone" xml:space="preserve">
+    <value>Everybody</value>
+  </data>
+  <data name="PolicyDeleteNotificationNone" xml:space="preserve">
+    <value>Nobody</value>
+  </data>
+  <data name="ClubDescHeader" xml:space="preserve">
+    <value>Clubs on %APP_NAME%</value>
+  </data>
+  <data name="ClubDescOverview1" xml:space="preserve">
+    <value>%APP_NAME% can help you manage membership and aircraft in a flying club.  </value>
+  </data>
+  <data name="ClubDescOverview2Aircraft" xml:space="preserve">
+    <value>Each of the aircraft in the club has its own schedule which is available to members of the club, so that they can reserve time or avoid taking the plane when somebody else has it reserved.</value>
+  </data>
+  <data name="ClubDescOverview3Admins" xml:space="preserve">
+    <value>One or more members of the club are designated as administrators.  Club administrators can edit club aircraft, manage membership, set club policies, and view reports.</value>
+  </data>
+  <data name="HeaderAllClubs" xml:space="preserve">
+    <value>All Clubs on %APP_NAME%</value>
+  </data>
+  <data name="LabelClubWebsite" xml:space="preserve">
+    <value>Club website</value>
+  </data>
+  <data name="LabelFindAllTip" xml:space="preserve">
+    <value>Tip: leave the airport blank to see all clubs at once on the map</value>
+  </data>
+  <data name="LabelSeeAllClubs" xml:space="preserve">
+    <value>View all clubs as list</value>
+  </data>
+  <data name="LabelViewClubDetails" xml:space="preserve">
+    <value>View details for this club</value>
+  </data>
+  <data name="MustBeMember" xml:space="preserve">
+    <value>To join a club or create a club, you must sign in to %APP_NAME%.</value>
+  </data>
+  <data name="LabelPolicyDoubleBook" xml:space="preserve">
+    <value>Who can double-book an aircraft:</value>
+  </data>
+  <data name="PolicyDoubleBookAdmin" xml:space="preserve">
+    <value>Admins only</value>
+  </data>
+  <data name="PolicyDoubleBookAnyone" xml:space="preserve">
+    <value>Everybody</value>
+  </data>
+  <data name="PolicyDoubleBookNone" xml:space="preserve">
+    <value>Nobody</value>
+  </data>
+  <data name="ClubCreateNoTrial" xml:space="preserve">
+    <value>Thank-you for your support of %APP_NAME%.  You may create a club!</value>
+  </data>
+  <data name="ClubCreateTrial" xml:space="preserve">
+    <value>You may create a club, but it will have a 30-day trial period.  If you like the functionality, please make a one-time contribution to support %APP_NAME%; otherwise, the club will become inactive after the trial period expires.</value>
+  </data>
+  <data name="clubStatusTrial" xml:space="preserve">
+    <value>The trial period for this club will end on {0} unless the owner makes a one-time donation to support %APP_NAME%.</value>
+  </data>
+  <data name="clubStatusTrialOwner" xml:space="preserve">
+    <value>The trial period for this club will end on {0} unless you make a one-time donation to support %APP_NAME%.</value>
+  </data>
+  <data name="errClubPromoExpired" xml:space="preserve">
+    <value>The trial period for this club has ended.  Please contact the owner of the club to let them know.  The club can be re-activated by having the owner make a one-time donation to support %APP_NAME%.</value>
+  </data>
+  <data name="errClubInactive" xml:space="preserve">
+    <value>This club is inactive.  No changes can be made to it.</value>
+  </data>
+  <data name="ClubDescLearnMore" xml:space="preserve">
+    <value>Learn more about clubs on %APP_NAME%</value>
+  </data>
+  <data name="LabelPolicyAddModifyNotification" xml:space="preserve">
+    <value>When an item is added to a schedule or modified, notify:</value>
+  </data>
+  <data name="PolicyAddModifyNotificationAdmins" xml:space="preserve">
+    <value>Admins only</value>
+  </data>
+  <data name="PolicyAddModifyNotificationEveryone" xml:space="preserve">
+    <value>Everybody</value>
+  </data>
+  <data name="PolicyAddModifyNotificationNone" xml:space="preserve">
+    <value>Nobody</value>
+  </data>
+  <data name="ReportHeaderTotalEngine" xml:space="preserve">
+    <value>Total Engine Time</value>
+  </data>
+  <data name="ReportHeaderTotalFlight" xml:space="preserve">
+    <value>Total Flight Time</value>
+  </data>
+  <data name="ReportHeaderEngineEnd" xml:space="preserve">
+    <value>Engine End</value>
+  </data>
+  <data name="ReportHeaderEngineStart" xml:space="preserve">
+    <value>Engine Start</value>
+  </data>
+  <data name="ReportHeaderFlightEnd" xml:space="preserve">
+    <value>Flight End</value>
+  </data>
+  <data name="ReportHeaderFlightStart" xml:space="preserve">
+    <value>Flight Start</value>
+  </data>
+  <data name="ReportHeaderFlying" xml:space="preserve">
+    <value>Flying Report</value>
+  </data>
+  <data name="ReportHeaderMaintenance" xml:space="preserve">
+    <value>Maintenance Report</value>
+  </data>
+  <data name="errNoClubSpecified" xml:space="preserve">
+    <value>No club specified</value>
+  </data>
+  <data name="errNotAManager" xml:space="preserve">
+    <value>You are not authorized to manage this club</value>
+  </data>
+  <data name="LabelManageNow" xml:space="preserve">
+    <value>Manage Club</value>
+  </data>
+  <data name="LabelManageThisClub" xml:space="preserve">
+    <value>Manage "{0}"</value>
+  </data>
+  <data name="LabelReturnToClub" xml:space="preserve">
+    <value>Return to club</value>
+  </data>
+  <data name="ClubAircraftHighestHobbs" xml:space="preserve">
+    <value>Highest Recorded Hobbs : {0:#,##0.0#}</value>
+  </data>
+  <data name="ClubAircraftHighestTach" xml:space="preserve">
+    <value>Highest Recorded Tach: {0:#,##0.0#}</value>
+  </data>
+  <data name="ClubAircraftTime" xml:space="preserve">
+    <value>Current Aircraft Hours</value>
+  </data>
+  <data name="ClubAircraftTimeCrossFill" xml:space="preserve">
+    <value>Update the aircraft hours to this value</value>
+  </data>
+  <data name="ClubAircraftTimeDesc" xml:space="preserve">
+    <value>Typically hobbs or tachometer</value>
+  </data>
+</root>

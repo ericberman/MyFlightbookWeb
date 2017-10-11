@@ -1,0 +1,9 @@
+﻿<% Requestor %> has requested membership in the club/FBO "<% ClubName %>" on %APP_NAME% (http://%APP_URL%).
+
+If you know <% Requestor %> and approve their membership, please confirm this by visiting:
+
+<% ConfirmRoleLink %>
+
+Thank-you
+
+Please do not reply to this message; this mailbox is not monitored.

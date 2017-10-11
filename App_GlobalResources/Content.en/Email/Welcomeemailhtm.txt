@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Welcome to %APP_NAME%</title>
+    <link href="http://%APP_URL%%APP_ROOT%/Public/StyleSheet.css" rel="stylesheet" type="text/css" />
+</head>
+<body style="font-family: Arial; font-size: 9pt;">
+<p>
+    <img alt="%APP_NAME% Logo" src="http://%APP_URL%%APP_LOGO%" /></p>
+    <p>Welcome to %APP_NAME%, an online pilot's logbook.</p>
+	<p>
+		%APP_NAME% keeps your logbook in the cloud, so you have access to it from anywhere and any device.  (It's your data, so you always have the ability to download it from the <a href="http://%APP_URL%">%APP_NAME% Website</a>.)
+	</p>
+    <p>
+        With %APP_NAME%, you can:</p>
+    <ul>
+        <li>Track your flights and access your logbook anywhere.</li>
+        <li>Enter new flights and view your flying history and stats from mobile devices 
+            such as iPhone, iPad, Android, and Windows 7 phone.</li>
+        <li>Keep track of your total times, including sub-totals based on specific queries.</li>
+        <li>Keep track of your instrument currency, nighttime currency, tailwheel currency,
+            and passenger currency. %APP_NAME% not only tells you if you're current, but also
+            tells you when that currency expires.</li>
+        <li>Add pictures to your flights</li>
+        <li>Share your flights on Facebook, Twitter, or with the 
+            %APP_NAME% community.</li>
+        <li>Track logbook endorsements.</li>
+        <li>Search for flights.</li>
+        <li>See flights you've taken on Google maps, or plan new flights and find out information
+            for each airport.</li>
+    </ul>
+	<p>
+	IF YOU ALREADY HAVE A LOGBOOK, you may want to get started by bulk-importing your existing flights or by entering starting totals.  See the "Getting Started" section in the <a href="http://%APP_URL%%APP_ROOT%/Public/FAQ.aspx">FAQ</a> for more information.
+	</p>
+	<p>Using %APP_NAME% from a mobile device?  There's a whole lot more functionality available on the <a href="http://%APP_URL%">%APP_NAME% Website</a>.</p>
+    <p>Using %APP_NAME% on the web but want it on your phone or tablet? Download the FREE %APP_NAME% applications for your 
+        <a href="http://itunes.apple.com/us/app/%APP_NAME%-for-iphone/id349983064?mt=8">
+        iPhone/iPad</a>, <a href="https://play.google.com/store/apps/details?id=com.myflightbook.android">Android</a>, and <a href="http://windowsphone.com/s?appid=606179af-90e7-41b9-be1b-71607cdec86c">Windows 7 Phone</a>.
+    </p>
+	<div><a href="http://www.facebook.com/MyFlightbook"><img title="Facebook" src="http://myflightbook.com/logbook/images/facebookicon.gif" alt="Facebook" style="border-width:0px;" />&nbsp;Follow MyFlightbook on Facebook</a></div>
+    <div><a href="http://twitter.com/MyFlightbook"><img title="Twitter" src="http://myflightbook.com/logbook/images/twitter20x20.png" alt="Twitter" style="border-width:0px;" />&nbsp;Follow MyFlightbook on Twitter</a></div>
+    <p>We hope you find it useful!</p>
+	<br />
+	<p>Sincerely,<br />The MyFlightbook Team
+	<br /><br />
+    MyFlightbook LLC</p>
+	<p>PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT <a href="http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx">HERE</a>.
+</body>
+</html>

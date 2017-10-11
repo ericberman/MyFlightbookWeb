@@ -1,0 +1,7 @@
+﻿<% Requestor %> has asked you to sign an entry they have made in their logbook for a flight on %APP_NAME% (http://%APP_URL%).
+
+Please visit <% SignPendingFlightsLink %> to view this request and sign their logbook entry.
+
+Thank-you
+
+Please do not reply to this message; this mailbox is not monitored.

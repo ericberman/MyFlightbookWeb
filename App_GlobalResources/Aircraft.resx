@@ -1,0 +1,525 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CurrencyAltimeter" xml:space="preserve">
+    <value> - Altimeter</value>
+    <comment>Currency for tailnumber.  E.g., "N1234 - Altimeter"</comment>
+  </data>
+  <data name="CurrencyAnnual" xml:space="preserve">
+    <value> - Annual</value>
+    <comment>Currency for tailnumber.  E.g., "N1234 - Annual</comment>
+  </data>
+  <data name="CurrencyDue" xml:space="preserve">
+    <value>Due in {0} day(s)</value>
+    <comment>Inspection is due in X days</comment>
+  </data>
+  <data name="CurrencyELT" xml:space="preserve">
+    <value> - ELT</value>
+    <comment>Currency for tailnumber.  E.g., "N1234 - ELT</comment>
+  </data>
+  <data name="CurrencyOverdue" xml:space="preserve">
+    <value> {0} day(s) overdue</value>
+    <comment>Inspection is overdue</comment>
+  </data>
+  <data name="CurrencyPitot" xml:space="preserve">
+    <value> - Pitot/Static</value>
+    <comment>Currency for tailnumber.  E.g., "N1234 - Pitot</comment>
+  </data>
+  <data name="CurrencyVOR" xml:space="preserve">
+    <value> - VOR</value>
+    <comment>Currency for tailnumber.  E.g., "N1234 - VOR"</comment>
+  </data>
+  <data name="CurrencyXPonder" xml:space="preserve">
+    <value> - Transponder</value>
+    <comment>Currency for tailnumber.  E.g., "N1234 - Transponder</comment>
+  </data>
+  <data name="errInvalidAfterCountryCode" xml:space="preserve">
+    <value>Invalid tail number - nothing after the country prefix '{0}'</value>
+  </data>
+  <data name="errInvalidChars" xml:space="preserve">
+    <value>Tail number can only contain numbers, letters, or a dash.</value>
+  </data>
+  <data name="errInvalidTailLong" xml:space="preserve">
+    <value>Invalid tail number -- too long.</value>
+  </data>
+  <data name="errInvalidTailShort" xml:space="preserve">
+    <value>'{0}' is not a valid tail number - too short</value>
+  </data>
+  <data name="errMakeIsSimOnly" xml:space="preserve">
+    <value>{0} does not represent a real aircraft, only a training device/simulator.  Please change the aircraft to be a simulator/ATD/FTD, or use a different make/model, or contact us if you believe this is in error.</value>
+  </data>
+  <data name="errMissingSimPrefix" xml:space="preserve">
+    <value>Simulators/FTDs/ATDs/etc. MUST begin with the prefix '{0}'</value>
+  </data>
+  <data name="errNoMakeModel" xml:space="preserve">
+    <value>No model specified for aircraft</value>
+  </data>
+  <data name="errNoTail" xml:space="preserve">
+    <value>No tail number supplied.</value>
+  </data>
+  <data name="errSimPrefixReserved" xml:space="preserve">
+    <value>{0} prefix is reserved for simulators/ATDs/FTDs, etc.</value>
+  </data>
+  <data name="InspectionLog100hr" xml:space="preserve">
+    <value>100hr inspection</value>
+  </data>
+  <data name="InspectionLogAltimeter" xml:space="preserve">
+    <value>altimeter inspection</value>
+  </data>
+  <data name="InspectionLogAnnual" xml:space="preserve">
+    <value>annual inspection</value>
+  </data>
+  <data name="InspectionLogELT" xml:space="preserve">
+    <value>ELT inspection</value>
+  </data>
+  <data name="InspectionLogEngine" xml:space="preserve">
+    <value>engine hours</value>
+  </data>
+  <data name="InspectionLogOil" xml:space="preserve">
+    <value>engine hours of last oil change</value>
+  </data>
+  <data name="InspectionLogPitotStatic" xml:space="preserve">
+    <value>pitot/static inspection</value>
+  </data>
+  <data name="InspectionLogTransponder" xml:space="preserve">
+    <value>transponder inspection</value>
+  </data>
+  <data name="InspectionLogVOR" xml:space="preserve">
+    <value>VOR inspection</value>
+  </data>
+  <data name="MaintenanceDelete" xml:space="preserve">
+    <value>Delete - </value>
+    <comment>Inspection deletion</comment>
+  </data>
+  <data name="MaintenanceUpdate" xml:space="preserve">
+    <value>Update - </value>
+    <comment>Inspection update</comment>
+  </data>
+  <data name="errAircraftInUse" xml:space="preserve">
+    <value>This aircraft is used in some of your flights and cannot be removed.</value>
+  </data>
+  <data name="errImportEmptyFile" xml:space="preserve">
+    <value>Nothing was found in the file!</value>
+  </data>
+  <data name="errImportFixErrors" xml:space="preserve">
+    <value>Errors were found in some aircraft; these were not imported.  Please fix the errors and try importing again.</value>
+  </data>
+  <data name="errImportNoFile" xml:space="preserve">
+    <value>Please upload a file</value>
+  </data>
+  <data name="AircraftTitle" xml:space="preserve">
+    <value>{0} - Aircraft</value>
+    <comment>{0} is the name of the app</comment>
+  </data>
+  <data name="ImportPrompt" xml:space="preserve">
+    <value>You can also bulk import aircraft from a spreadsheet.</value>
+  </data>
+  <data name="ImportTitle" xml:space="preserve">
+    <value>Go to Import Aircraft</value>
+  </data>
+  <data name="AircraftEditAdd" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AircraftEditEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="AircraftHeader" xml:space="preserve">
+    <value>Aircraft</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AircraftModelChangedNotification" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\aircraftmodelchangednotification.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="AircraftModelNewModelIgnored" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\aircraftmodelnewmodelignored.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ModelCollisionSubjectLine" xml:space="preserve">
+    <value>Information about Aircraft {0} on {1}</value>
+    <comment>{0} is the tailnumber of the aircraft</comment>
+  </data>
+  <data name="AnonymousAircraft" xml:space="preserve">
+    <value>Real aircraft, Anonymous (no tailnumber)</value>
+  </data>
+  <data name="AnonymousTailNote" xml:space="preserve">
+    <value>This tailnumber is used internally; you do not need it unless you are importing flights for this aircraft</value>
+  </data>
+  <data name="AnonymousTemplate" xml:space="preserve">
+    <value>(Anonymous {0})</value>
+    <comment>E.g., (C-172), no tailnumber</comment>
+  </data>
+  <data name="errBadAnonymousName" xml:space="preserve">
+    <value>Invalid tailnumber for anonymous aircraft</value>
+    <comment>Anonymous aircraft must be #xxxxxx, where xxxxxx is the model ID padded to 6 digits.</comment>
+  </data>
+  <data name="errMakeIsAnonOnly" xml:space="preserve">
+    <value>This model of aircraft is meant to represent a generic kind of aircraft and therefore cannot be assigned a tailnumber.</value>
+  </data>
+  <data name="ImportAlternateVersion" xml:space="preserve">
+    <value>(Alternate Version)</value>
+  </data>
+  <data name="ImportNotValidCSV" xml:space="preserve">
+    <value>Aircraft import requires both a tailnumber and model designation for each row.  Please fill in any missing data.</value>
+  </data>
+  <data name="optionHeader" xml:space="preserve">
+    <value>Options for {0}:</value>
+  </data>
+  <data name="optionHideFromMainList" xml:space="preserve">
+    <value>Active (Show this aircraft for new flights)</value>
+  </data>
+  <data name="optionRoleCFI" xml:space="preserve">
+    <value>If CFI is empty, set it equal to Total Time</value>
+  </data>
+  <data name="optionRoleNone" xml:space="preserve">
+    <value>Don't change anything about the flight</value>
+  </data>
+  <data name="optionRolePIC" xml:space="preserve">
+    <value>If PIC is empty, set it equal to Total Time</value>
+  </data>
+  <data name="optionRolePrompt" xml:space="preserve">
+    <value>For every flight I add in this aircraft:</value>
+  </data>
+  <data name="optionRoleSIC" xml:space="preserve">
+    <value>If SIC is empty, set it equal to Total Time</value>
+  </data>
+  <data name="locNotesPrompt" xml:space="preserve">
+    <value>Aircraft Notes</value>
+  </data>
+  <data name="locPrivateNotesPrompt" xml:space="preserve">
+    <value>Any notes you put here are private to you.  This is a good place to make up your own keywords (e.g., "#DEICE" for a de-iced aircraft), for example, so that you can find flights in aircraft that contain a particular keyword.</value>
+  </data>
+  <data name="locPrivateNotesTab" xml:space="preserve">
+    <value>Private Notes</value>
+  </data>
+  <data name="locPublicNotesPrompt" xml:space="preserve">
+    <value>Any notes you put here will be shared among all pilots who fly this aircraft.  This is a great place to describe STC'd modifications, maintenance notes, panel upgrades, notes about aircraft quirks, etc.</value>
+  </data>
+  <data name="locPublicNotesTab" xml:space="preserve">
+    <value>Shared Notes</value>
+  </data>
+  <data name="ImportHeaderBestMatchModel" xml:space="preserve">
+    <value>Best Matching Model</value>
+  </data>
+  <data name="ImportHeaderSpecifiedAircraft" xml:space="preserve">
+    <value>Aircraft to Import</value>
+  </data>
+  <data name="ImportAddNewAircraft" xml:space="preserve">
+    <value>Create aircraft</value>
+  </data>
+  <data name="ImportExistingAircraft" xml:space="preserve">
+    <value>Add existing aircraft</value>
+  </data>
+  <data name="ImportNoModelColumnFound" xml:space="preserve">
+    <value>No data column titled "Model" was found</value>
+  </data>
+  <data name="ImportNoTailNumberColumnFound" xml:space="preserve">
+    <value>No data column titled "Tail Number" was found</value>
+  </data>
+  <data name="alternateVersionsList" xml:space="preserve">
+    <value>The available versions for this aircraft are currently:</value>
+  </data>
+  <data name="CurrencyRegistration" xml:space="preserve">
+    <value> - Registration Renewal</value>
+  </data>
+  <data name="RegistrationRenewal" xml:space="preserve">
+    <value>registration renewal</value>
+  </data>
+  <data name="editAicraftOtherVersionsDescription" xml:space="preserve">
+    <value>This tailnumber has been used for multiple aircraft; if you meant to use another one besides this, you can select it below.</value>
+  </data>
+  <data name="editAircraftAddButton" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="editAircraftAddOtherVersion" xml:space="preserve">
+    <value>Don't change any flights, but add this aircraft</value>
+  </data>
+  <data name="editAircraftAdminLocked" xml:space="preserve">
+    <value>Locked</value>
+  </data>
+  <data name="editAircraftAnonymousCheck" xml:space="preserve">
+    <value>This aircraft is anonymous (no tailnumber)</value>
+  </data>
+  <data name="editAircraftAnonymousNote" xml:space="preserve">
+    <value>This is useful if you don't remember the aircraft's tailnumber or if you fly a lot of different aircraft of this model.</value>
+  </data>
+  <data name="editAircraftAutoAssignedNote" xml:space="preserve">
+    <value>This tailnumber is assigned for this aircraft.</value>
+  </data>
+  <data name="editAircraftCountryPrompt" xml:space="preserve">
+    <value>Country:</value>
+  </data>
+  <data name="editAircraftGlassUpgradeDate" xml:space="preserve">
+    <value>Date of upgrade to glass (optional):</value>
+  </data>
+  <data name="editAircraftHasGlass" xml:space="preserve">
+    <value>This aircraft has a glass cockpit</value>
+  </data>
+  <data name="editAircraftImagesPrompt" xml:space="preserve">
+    <value>Images:</value>
+  </data>
+  <data name="editAircraftInstanceTypePrompt" xml:space="preserve">
+    <value>This aircraft is a:</value>
+  </data>
+  <data name="editAircraftMaintenanceHeader" xml:space="preserve">
+    <value>Aircraft Maintenance and Inspections</value>
+  </data>
+  <data name="editAircraftMakeModelPrompt" xml:space="preserve">
+    <value>Aircraft Make/Model:</value>
+  </data>
+  <data name="editAircraftModelChange1" xml:space="preserve">
+    <value>Aircraft on %APP_NAME% are shared between pilots, so any change you make here could impact other pilots.</value>
+  </data>
+  <data name="editAircraftModelChange2" xml:space="preserve">
+    <value>If you are making a minor update, such as specifying a more accurate variant of the same basic model, great - go ahead.</value>
+  </data>
+  <data name="editAircraftModelChange3" xml:space="preserve">
+    <value>However, if you believe the base model of the aircraft is in error (or, perhaps that the tailnumber has been re-assigned), please contact us and we can fix things for you.</value>
+  </data>
+  <data name="editAircraftModelChangeHeader" xml:space="preserve">
+    <value>Please read before changing the model of this aircraft</value>
+  </data>
+  <data name="editAircraftOtherVersionsHeader" xml:space="preserve">
+    <value>Other versions of this aircraft</value>
+  </data>
+  <data name="editAircraftRegistrationPrompt" xml:space="preserve">
+    <value>Registration</value>
+  </data>
+  <data name="editAircraftSelectManufacturer" xml:space="preserve">
+    <value>(Select a manufacturer)</value>
+  </data>
+  <data name="editAircraftSelectModel" xml:space="preserve">
+    <value>(Select a model)</value>
+  </data>
+  <data name="editAircraftSharedImagesNote" xml:space="preserve">
+    <value>Images for aircraft are shared among pilots who fly that aircraft.  Please respect this and do not delete any image unless it is off-topic, inappropriate, or truly does not represent the aircraft.</value>
+  </data>
+  <data name="editAircraftShceduleHeader" xml:space="preserve">
+    <value>Schedule for this aircraft</value>
+  </data>
+  <data name="editAircraftSwitchOtherVersion" xml:space="preserve">
+    <value>My flights are in this aircraft</value>
+  </data>
+  <data name="editAircraftTailNumberPrompt" xml:space="preserve">
+    <value>Tail Number:</value>
+  </data>
+  <data name="AircraftGroupActive" xml:space="preserve">
+    <value>Frequently Used Aircraft</value>
+  </data>
+  <data name="AircraftGroupInactive" xml:space="preserve">
+    <value>Other Aircraft</value>
+  </data>
+  <data name="ViewAircraftActive" xml:space="preserve">
+    <value>Usage</value>
+  </data>
+  <data name="ViewAircraftAll" xml:space="preserve">
+    <value>Tailnumber (All)</value>
+  </data>
+  <data name="ViewAircraftCategoryClass" xml:space="preserve">
+    <value>Category / Class</value>
+  </data>
+  <data name="ViewAircraftModel" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="ViewAircraftPrompt" xml:space="preserve">
+    <value>View Aircraft by:</value>
+  </data>
+  <data name="InactiveAircraftNote" xml:space="preserve">
+    <value>To reduce clutter in the list of aircraft for new flights, you have indicated that this aircraft is "inactive". </value>
+  </data>
+  <data name="InstanceTypeATD" xml:space="preserve">
+    <value>ATD</value>
+  </data>
+  <data name="InstanceTypeFTD" xml:space="preserve">
+    <value>FTD/Sim</value>
+  </data>
+  <data name="InstanceTypeUncertified" xml:space="preserve">
+    <value>Uncertified Sim</value>
+  </data>
+  <data name="DownloadCSV" xml:space="preserve">
+    <value>Download all of your aircraft in a spreadsheet.</value>
+  </data>
+  <data name="Maintenance100" xml:space="preserve">
+    <value>Last 100-hour</value>
+  </data>
+  <data name="Maintenance100Due" xml:space="preserve">
+    <value>Next 100hr</value>
+  </data>
+  <data name="MaintenanceAltimeter" xml:space="preserve">
+    <value>Last Altimeter</value>
+  </data>
+  <data name="MaintenanceAltimeterDue" xml:space="preserve">
+    <value>Next Altimeter</value>
+  </data>
+  <data name="MaintenanceAnnual" xml:space="preserve">
+    <value>Last Annual</value>
+  </data>
+  <data name="MaintenanceAnnualDue" xml:space="preserve">
+    <value>Next Annual</value>
+  </data>
+  <data name="MaintenanceELT" xml:space="preserve">
+    <value>Last ELT</value>
+  </data>
+  <data name="MaintenanceELTDue" xml:space="preserve">
+    <value>Next ELT</value>
+  </data>
+  <data name="MaintenanceEngine" xml:space="preserve">
+    <value>Last Engine</value>
+  </data>
+  <data name="MaintenanceOil" xml:space="preserve">
+    <value>Last Oil</value>
+  </data>
+  <data name="MaintenanceOilDue100" xml:space="preserve">
+    <value>Next Oil (100hrs)</value>
+  </data>
+  <data name="MaintenanceOilDue25" xml:space="preserve">
+    <value>Next Oil (25hrs)</value>
+  </data>
+  <data name="MaintenanceOilDue50" xml:space="preserve">
+    <value>Next Oil (50hrs)</value>
+  </data>
+  <data name="MaintenancePitotStatic" xml:space="preserve">
+    <value>Last Pitot/Static</value>
+  </data>
+  <data name="MaintenancePitotStaticDue" xml:space="preserve">
+    <value>Next Pitot/Statis</value>
+  </data>
+  <data name="MaintenanceRegistration" xml:space="preserve">
+    <value>Registration Due</value>
+  </data>
+  <data name="MaintenanceTransponder" xml:space="preserve">
+    <value>Last Transponder</value>
+  </data>
+  <data name="MaintenanceTransponderDue" xml:space="preserve">
+    <value>Next Transponder</value>
+  </data>
+  <data name="MaintenanceVOR" xml:space="preserve">
+    <value>Last VOR</value>
+  </data>
+  <data name="MaintenanceVORDue" xml:space="preserve">
+    <value>Next VOR</value>
+  </data>
+  <data name="editAircraftClone" xml:space="preserve">
+    <value>I need a bigger edit</value>
+  </data>
+  <data name="editAircraftModelPrompt" xml:space="preserve">
+    <value>Edit the model of this aircraft</value>
+  </data>
+  <data name="editAircraftTweak" xml:space="preserve">
+    <value>I'm making a minor change</value>
+  </data>
+</root>

@@ -1,0 +1,13 @@
+﻿Dear {0}
+
+You recently saved a flight on %APP_NAME% with a request to post it to your account on Facebook.
+
+Your flight was successfully saved, but it was not posted to Facebook because you have not yet authorized %APP_NAME% to post on your behalf to Facebook.
+
+To give %APP_NAME% the ability to post flights (only the ones you select) to your Facebook profile, please visit http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftPrefs.
+
+Doing this will enable you to choose whether or not to post a flight to your Facebook account when you save it.
+
+Thanks
+
+--The %APP_NAME% Team

@@ -1,0 +1,13 @@
+﻿Dear {0}:
+
+Thank-you very much for your donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
+
+Depending on the level at which you gave, you may have earned a gratuity; this has been activated on your behalf.
+
+Please don't hesitate to contact us with any thoughts, questions, concerns, or ideas.  We love hearing from you!
+
+Thanks again,
+
+--The %APP_NAME% team
+
+PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

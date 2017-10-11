@@ -1,0 +1,29 @@
+Welcome to %APP_NAME%, an online pilot's logbook.
+
+%APP_NAME% keeps your logbook in the cloud, so you have access to it from anywhere and any device.  (It's your data, so you always have the ability to download it from the %APP_NAME% website.)
+
+With %APP_NAME%, you can:
+
+    * Track your flights and access your logbook anywhere.
+    * Enter new flights and view your flying history and stats from mobile devices such as iPhone, iPad, Android, and Windows 7 phone
+    * Keep track of your total times.
+    * Keep track of your instrument currency, nighttime currency, tailwheel currency, and passenger currency. %APP_NAME% not only tells you if you're current, but also tells you when that currency expires.
+    * Add pictures to your flights
+	* Share your flights on Facebook, Twitter, or with the %APP_NAME% community.
+    * Track logbook endorsements.
+    * Search for flights.
+    * See flights you've taken on Google maps, or plan new flights and find out information for each airport.
+
+IF YOU ALREADY HAVE A LOGBOOK, you may want to get started by bulk-importing your existing flights or by entering starting totals.  See the "Getting Started" section in http://%APP_URL%%APP_ROOT%/Public/FAQ.aspx for more information.
+
+Using %APP_NAME% from a mobile device?  There's a whole lot more functionality available on the %APP_NAME% Website at http://%APP_URL%.
+
+%APP_NAME% even has a applications for iPhone, iPad, Android, and Windows 7 Phone (also free!); go to http://%APP_URL% for more information.
+
+We hope you find it useful!
+
+Follow MyFlightbook on Facebook at http://www.facebook.com/MyFlightbook or on Twitter at http://twitter.com/MyFlightbook.
+
+MyFlightbook LLC
+
+PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

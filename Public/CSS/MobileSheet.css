@@ -1,0 +1,324 @@
+﻿/******************************************************
+ * 
+ * Copyright (c) 2015 MyFlightbook LLC
+ * Contact myflightbook@gmail.com for more information
+ *
+*******************************************************/
+/* Overrides for logbook entry to enable a vertical layout */
+.itemtimeleft
+{
+    clear:both;
+    width: 300px;
+}
+
+/* item on the right of a left-right layout */
+.itemtimeright
+{
+    clear:both;
+}
+
+/* Basic info about the flight */
+.flightinfoblock
+{
+    clear:both;
+}
+
+/* header for a section */
+.header
+{
+    font-weight:bold;
+    font-size:8pt;
+}
+
+/* the various times for the flight */
+.timesblock
+{
+    clear:both;
+    display:block;
+}
+
+.logbookForm
+{
+    background-color: #ffffff;
+}
+
+.EntryBlock
+{
+    background-color: #ffffff;
+}
+
+/* full-width blocks (i.e., no side-to-side */
+.fullblock
+{
+    width:auto;
+}
+
+.itemdata
+{
+    display: inline;
+    clear:both;
+    font-size:8pt;
+}
+
+/* item labels in both left and right times */
+.itemtimeleft .itemlabel, .itemtimeright .itemlabel, .flightinfoblock .itemlabel, .itemtime .itemlabel
+{
+    /* display: inline; */
+    float: left;
+    text-align: right;
+    width: 100px;
+    padding-right: 5px;
+    vertical-align: baseline;
+}
+
+/* flight-info items */
+.flightinfoitem
+{
+    float: none;
+}
+
+/* PropertyEditing*/
+.propItemFlow
+{
+    width: 280px;
+}
+
+.propItemContainer
+{
+    width: 310px;
+}
+
+.propItemContainerOverflow
+{
+    width: 310px;
+    height: 175px;
+}
+
+/* Header */
+#headerBar
+{
+}
+
+#headerLogo
+{
+    display:block;
+    float: none;
+}
+
+#headerMiddleContainer
+{
+    display: block;
+}
+
+#headerMobileCrossSell
+{
+}
+
+#headerMenuContainer
+{
+}
+
+#headerSearchAndSign
+{
+    display: block;
+    float: none;
+}
+
+#headerSearchBox, #headerLoginStatus
+{
+    display: inline-block;
+}
+
+.tabbargradient
+{
+}
+
+/* Sidebar for mobile */
+.topForm
+{
+    border-top: none;
+    background-color: #ffffff;
+}
+
+.sidebarLeft
+{
+    background-color: #eeeeee;
+    display: block;
+    width: 100%;
+    height: auto;
+    text-align:center;
+    border-bottom: 1px solid black;
+}
+
+.sidebarItem
+{
+    line-height: normal;
+    height: auto;
+    padding: 3px;
+}
+
+.sidebarRight
+{
+    width: 90%;
+    background-color: #ffffff;
+    margin-left:auto;
+    margin-right: auto;
+}
+
+.sidebarSelected, .sidebarUnSelected
+{
+    display: inline-block;
+    font-weight: normal;
+    border: none;
+    height: auto;
+    padding: 3px;
+}
+
+.sidebarSelected
+{
+    background-color: #eeeeee;
+    font-weight:bold;
+}
+
+/* Menu bar for mobile */
+#menu-bar
+{
+    height: 14pt;
+}
+
+#menu-bar li 
+{
+  border-top-right-radius: 0px;
+  -webkit-top-right-radius: 0px;
+  -moz-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+  -webkit-top-left-radius: 0px;
+  -moz-top-left-radius: 0px;
+  height: 14pt;
+}
+#menu-bar a {
+  font-size: 8pt;
+  font-weight: normal;
+  padding: 3px 1px 3px 1px;
+}
+#menu-bar .current a, #menu-bar li:hover > a {
+  border-top-right-radius: 0px;
+  -webkit-top-right-radius: 0px;
+  -moz-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+  -webkit-top-left-radius: 0px;
+  -moz-top-left-radius: 0px;
+  font-weight: normal;
+}
+#menu-bar ul li:hover a, #menu-bar li:hover li a 
+{
+}
+#menu-bar ul a:hover {
+}
+#menu-bar ul {
+  top: 14pt;
+}
+#menu-bar li:hover > ul {
+  display: block;  z-index: 100;
+}
+
+#menu-bar ul li {
+}
+#menu-bar ul a {
+  padding:5px 0px 5px 5px;
+  font-size:8pt;
+}
+#menu-bar ul li:first-child > a {
+}
+#menu-bar ul li:last-child > a {
+}
+#menu-bar:after {
+}
+#menu-bar {
+}
+html[xmlns] #menu-bar {
+}
+* html #menu-bar {
+}
+
+/* Progress towards ratings */
+.progress {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto; 
+}
+
+.checkedBox
+{
+    width: 20px;
+    height: 20px;
+    font-size: 18px;
+    line-height: 20px;
+}
+
+.percent {
+}
+
+.progressRow 
+{
+}
+
+.bar 
+{
+}
+
+/* "Please Read" callout or similar */
+.callout
+{
+    width: 90%;
+    margin-left:auto;
+    margin-right:auto;
+    margin: 3px;
+    padding: 3px;
+}
+
+.endorsement
+{
+    width: 90%;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+/* Calendaring */
+.calContainer { }
+
+.calPlaceholder
+{
+    float:none; 
+}
+
+.calNavContainer
+{
+    float:none;
+}
+
+.calCalContainer
+{
+    float:none;
+    width:100%;
+}
+
+.calEditAppointmentContainer
+{
+    width: 90%;
+}
+
+
+/* Club */
+.clubDetailsLeft
+{
+    vertical-align:top;
+    float: none;
+    width: 100%;
+}
+
+.clubDetailsRight
+{
+    vertical-align:top;
+    float: none;
+}

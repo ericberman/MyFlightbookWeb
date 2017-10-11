@@ -1,0 +1,25 @@
+﻿Dear {0}
+
+You just created a new aircraft "{1}" on %APP_NAME%, and identified this aircraft with the following model:
+
+     {2}
+
+However, this aircraft was already identified by other pilots as being this model:
+
+     {3}
+
+Because this aircraft is already being used in flights by other pilots, %APP_NAME% assumes
+the pre-existing model to be correct.
+{4}
+Sometimes, aircraft identifiers are reused.  Please contact us (use the "Contact Us" 
+link at http://%APP_URL%) and we can ensure that you can get the definition correct for you.
+
+If you believe that the model you specified is correct, you can update it at http://%APP_URL%, under
+the "Aircraft" section.  If you update the aircraft there, it will update for all of the pilots who have
+flown that aircraft.
+
+Thank-you,
+
+The %APP_NAME% Team
+
+PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

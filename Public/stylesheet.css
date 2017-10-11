@@ -1,0 +1,1170 @@
+﻿/******************************************************
+ * 
+ * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Contact myflightbook@gmail.com for more information
+ *
+*******************************************************/
+/* Basic HTML */
+BODY, body, .mfbDefault
+{
+    font-family: Arial;
+    font-size: 9pt;
+}
+
+TABLE, table
+{
+    font-family: Arial;
+    font-size: 9pt;
+}
+
+H1
+{
+    font-size: 18px;
+    font-weight: bold;
+    color: #4983B7;
+}
+H2
+{
+    font-size: 14px;
+    font-weight: bold;
+    color: #4983B7;
+}
+H3
+{
+    font-size: 12px;
+    font-weight: bold;
+    color: Black;
+}
+H4
+{
+    font-size: 11px;
+    font-weight: normal;
+    color: Black;
+}
+
+/* Centered body */
+.centeredBody {
+    max-width: 1000px; 
+    margin-left:auto; 
+    margin-right: auto;
+}
+
+/* Header */
+#headerBar
+{
+    display:block;
+    clear:both;
+    width: 100%;
+    text-align: center;
+}
+
+#headerLogo
+{
+    display:inline-block;
+    vertical-align:top;
+    padding: 3px;
+    float: left;
+}
+
+#headerMiddleContainer
+{
+    display: inline-block;
+    width: auto;
+    vertical-align: bottom;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#headerMobileCrossSell
+{
+    text-align: center; 
+    padding: 3px;
+    line-height: 40px;
+}
+
+#headerMenuContainer
+{
+}
+
+#headerSearchAndSign
+{
+    display: inline-block;
+    float:right;
+    width: auto;
+    vertical-align:top;
+    line-height: 20pt;
+}
+
+#headerSearchBox, #headerLoginStatus
+{
+}
+
+.tabbargradient
+{
+    background-image: url(../images/TabBarGradient.gif);
+    background-repeat: repeat-x;
+    height: 15px;
+    display:block;
+    clear:both;
+}
+
+/* Data entry form */
+.header
+{
+    font-weight: bold;
+    border-bottom: black 1px solid;
+}
+.itemlabel
+{
+    font-size: 9pt;
+}
+
+.logbookForm
+{
+    background-color: #ffffcc;
+}
+
+.hint
+{
+    vertical-align:super; 
+    font-size:9px;
+}
+
+.hintPopup {
+    border: 1px solid darkgray;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 3px;
+    max-width: 50%;
+    display: none;
+    background-color: #DDECFF;
+    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+}
+
+/* Vertical form (e.g., Edit Make) */
+.vfSection
+{
+    display:block;
+    padding-top: 3px;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-bottom: 8px;
+}
+
+.vfPrompt
+{
+    font-weight:bold;
+    width: 130px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.vfValue
+{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.vfDescription
+{
+    display: inline-block;
+    vertical-align: middle;
+    font-weight: normal;
+    font-size: smaller;
+    text-align: left;
+    text-indent: 0;
+}
+
+/* Error/success messages messages */
+.success
+{
+    font-weight: bold;
+    color: Green;
+}
+.ok
+{
+    font-weight: normal;
+    color: Green;
+}
+
+.error
+{
+    font-weight: bold;
+    color: Red;
+}
+
+.emphasis
+{
+    font-weight:bold;
+}
+
+/* Currency status */
+.currencylabel
+{
+    font-weight: normal;
+    font-size: 12px;
+}
+.currencygap
+{
+    font-weight: normal;
+    font-size: 9px;
+}
+.currencyok
+{
+    font-weight: normal;
+    color: Green;
+    font-size: 11px;
+}
+.currencynearlydue
+{
+    font-weight: bold;
+    color: Blue;
+    font-size: 11px;
+}
+.currencyexpired
+{
+    font-weight: bold;
+    color: Red;
+    font-size: 11px;
+}
+
+/* Signature status */
+.signatureValid
+{
+    color: Green;
+}
+.signatureInvalid
+{
+    color:Red;
+}
+
+.fineprint
+{
+    font-weight: normal;
+    font-size: smaller;
+    text-indent: 0;
+    text-align: left;
+}
+.task
+{
+    background-color: #C0C0C0;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Logbook rows */
+.subtotalRow
+{
+    font-weight: bold;
+}
+
+.subtotalRowPageBreak
+{
+    font-weight: bold;
+    page-break-after: always;
+}
+
+.runningTotalRow
+{
+    font-weight: bold;
+    page-break-after:always;
+}
+
+.pageBreakRow 
+{
+    page-break-after: always;
+}
+
+/* Autocomplete AJAX */
+.AutoExtender
+{
+    font-weight: normal;
+    border: solid 1px #006699;
+    line-height: 20px;
+    padding: 0px;
+    background-color: #ffffcc;
+    list-style-type: none;
+}
+
+.AutoExtenderList
+{
+    border-bottom: dotted 1px #006699;
+    cursor: pointer;
+    color: Maroon;
+    list-style-type: none;
+}
+
+.AutoExtenderHighlight
+{
+    color: White;
+    background-color: #006699;
+    cursor: pointer;
+    list-style-type: none;
+}
+
+/* Accordian AJAX */
+.accordianHeader{
+    font-weight: bold;
+    line-height: 24pt;
+    background-color: lightgray;
+    padding: 3px;
+    margin-top: 4px;
+    border: 1px solid gray;
+    border-radius: 7px;
+}
+
+.accordianHeaderSelected {
+    font-weight: bold;
+    line-height: 24pt;
+    background-color : darkgray;
+    padding: 3px;
+    margin-top: 4px;
+    border-top: 1px solid gray;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+
+.accordianContent {
+    padding: 3px;
+    border-bottom: 1px solid gray;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+
+.accordionMenuHeader
+{
+    display:none;
+    margin: 0px;
+    padding : 0px;
+}
+
+.accordionMenuContainer {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2px;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.accordionMenuHeaderSelected
+{
+    display:none;
+    margin: 0px;
+    padding : 0px;
+}
+
+.accordionMenuContent {
+    padding: 4px;
+    background-color: #ffffcc;
+    position: static;
+    border: black 1px solid;
+    margin: 15px;
+    border-bottom-left-radius: 7px; 
+    border-bottom-right-radius: 7px; 
+    border-top-left-radius: 7px; 
+    border-top-right-radius: 7px;
+}
+
+.accordionMenuControllerUnselected {
+    display:inline-block;
+    padding:3px;
+    width:80px;
+    margin: 2px;
+    border-bottom: 1px solid gray;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    border-top: 1px solid gray;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    background-color: snow;
+    text-align: center;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.accordionMenuControllerSelected {
+    display:inline-block;
+    padding:3px;
+    width:80px;
+    margin: 2px;
+    border-bottom: 1px solid gray;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    border-top: 1px solid gray;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    background-color: lightgray;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.filterApplied {
+    padding: 3px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    background-color: #EEEEEE;
+    border: 1px solid gray;
+    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+}
+
+/* aircraft and flight pictures popup */
+.rollAble
+{
+    color: #4983B7;
+}
+
+.rollAble:hover
+{
+    color: black;
+    font-weight: bold;
+}
+
+.modalBackground
+{
+    background-color: Gray;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+}
+
+.searchHit
+{
+    background-color:Yellow;
+}
+
+/* Combo-box typeahead prompt */
+.typeAhead
+{
+    border-right: black 1px solid;
+    border-top: black 1px solid;
+    font-weight: bold;
+    visibility: visible;
+    border-left: black 1px solid;
+    border-bottom: black 1px solid;
+    background-color: #cccc66;
+    z-index: 8;
+    position: absolute;
+}
+
+/* "Please Read" callout or similar */
+.callout
+{
+    border: 1px solid darkgray;
+    background-color: #DDDDDD;
+    padding: 3px;
+    margin: 3px;
+    width: 600px;
+}
+
+.endorsement
+{
+    width: 600px;
+    background-color: #CCCCCC;
+    border: 1px solid black;
+    border-radius: 5px;
+    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    page-break-inside:avoid;
+}
+
+/* Watermark */
+.watermark
+{
+    color: Gray;
+}
+
+/* Menu bar - see http://www.cssportal.com/css3-menu-generator/; customized from there */
+#menu-bar 
+{
+  margin: 0;
+  text-align:left;
+  padding: 0px 0px 0px 0px;
+  height: 34px;
+  position:relative;
+  float:left;
+  line-height: 100%;
+}
+
+#menu-bar li 
+{
+  border-top-right-radius: 8px;
+  -webkit-top-right-radius: 8px;
+  -moz-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  -webkit-top-left-radius: 8px;
+  -moz-top-left-radius: 8px;
+  margin-right:1px;
+  margin-left: 1px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding: 0px 0px 0px 0px;
+  float: left;
+  height: 34px;
+  position: relative;
+  list-style: none;
+  background: #EEEEEE;
+  background-image: linear-gradient(to bottom, #EEEEEE 0%, #A9A9A9 100%);
+  background-image: -ms-linear-gradient(top, #EEEEEE 0%, #A9A9A9 100%)
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#EEEEEE, endColorstr=#A9A9A9);
+  background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#A9A9A9));
+  background: -moz-linear-gradient(top,  #EEEEEE,  #A9A9A9);
+}
+#menu-bar a {
+  font-weight: bold;
+  font-family: arial;
+  font-style: normal;
+  font-size: 12px;
+  color: #666666;
+  text-decoration: none;
+  display: block;
+  padding: 11px 15px 11px 15px;
+  margin: 0;
+}
+#menu-bar .current a, #menu-bar li:hover > a {
+  border-top-right-radius: 8px;
+  -webkit-top-right-radius: 8px;
+  -moz-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  -webkit-top-left-radius: 8px;
+  -moz-top-left-radius: 8px;
+  font-weight: bold;
+  background: #0399D4;
+  background-image: linear-gradient(to bottom, #A9A9A9 0%, #CCCCCC 100%);
+  background-image: -ms-linear-gradient(top, #A9A9A9 0%, #CCCCCC 100%)
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr=#A9A9A9, endColorstr=#CCCCCC);
+  background: -webkit-gradient(linear, left top, left bottom, from(#A9A9A9), to(#CCCCCC));
+  background: -moz-linear-gradient(top,  #A9A9A9, #CCCCCC);
+  color: black;
+}
+#menu-bar ul li:hover a, #menu-bar li:hover li a 
+{
+  font-weight: normal;
+  background: none;
+  filter:none;
+  border: none;
+  color: #666;
+  -box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+#menu-bar ul a:hover {
+  background: #0399D4 !important;
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr=#04ACEC, endColorstr=#0186BA);
+  background: -webkit-gradient(linear, left top, left bottom, from(#04ACEC), to(#0186BA)) !important;
+  background: -moz-linear-gradient(top,  #04ACEC,  #0186BA) !important;
+  color: #FFFFFF !important;
+  border-radius: 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+}
+#menu-bar ul {
+  background: #DDDDDD;
+  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#CFCFCF);
+  background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#CFCFCF));
+  background: -moz-linear-gradient(top,  #FFFFFF,  #CFCFCF);
+  display: none;
+  margin: 3px, 0, 0, 0;
+  padding: 0;
+  width: 185px;
+  position: absolute;
+  top: 34px;
+  left: 0;
+  border: solid 1px #B4B4B4;
+  -webkit-box-shadow: 2px 2px 3px #222222;
+  -moz-box-shadow: 2px 2px 3px #222222;
+  box-shadow: 2px 2px 3px #222222;
+}
+#menu-bar li:hover > ul {
+  display: block;  z-index: 100;
+}
+
+#menu-bar ul li {
+  float: none;
+  background: none;
+  filter: none;
+  right:auto;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+#menu-bar ul a {
+  padding:10px 0px 10px 15px;
+  color:#424242 !important;
+  font-size:12px;
+  font-style:normal;
+  font-family:arial;
+  font-weight: normal;
+}
+#menu-bar ul li:first-child > a {
+}
+#menu-bar ul li:last-child > a {
+}
+#menu-bar:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+#menu-bar {
+  display: inline-block;
+}
+  html[xmlns] #menu-bar {
+  display: block;
+}
+* html #menu-bar {
+  height: 1%;
+}
+
+/* Sidebar UI */
+.topForm
+{
+    border-top: solid 1px black;
+    background-color: #ffffcc;
+}
+
+.sidebarContainer
+{
+    background-color:White;
+}
+
+.sidebarLeft
+{
+    width: 150px;
+    display:inline-block;
+    vertical-align:top;
+    margin: 0px;
+    height:100%;
+}
+
+.sidebarRight
+{
+    background-color: #ffffcc;
+    padding:5px;
+    display:inline-block;
+    height:100%;
+    width:800px;
+    margin: 0px;
+}
+
+.sidebarSelected
+{
+    background-color: #ffffcc;
+    font-weight:bold;
+    border-left: solid 1px black;
+    border-bottom: solid 1px black;
+    height: 40px;
+}
+
+.sidebarUnSelected
+{
+    background-color: #eeeeee;
+    font-weight:normal;
+    border-left: solid 1px black;
+    border-right:solid 1px black;
+    border-bottom:solid 1px black;
+    height: 40px;
+}
+
+.sidebarItem
+{
+    line-height:40px;
+    height:40px;
+    padding-left: 5px;
+}
+
+td.sidebarUnSelected a, td.sidebarUnSelected a:visited, td.sidebarUnSelected a:link, td.sidebarUnSelected a:active
+{
+    text-decoration: none;
+    color: #4983B7;
+}
+
+td.sidebarUnSelected:hover, td.sidebarUnSelected a:hover
+{
+    color: Black;
+    text-decoration: underline;
+}
+
+a, a:visited
+{
+    outline: none;
+    text-decoration: none;
+    color: #4983B7;
+}
+
+a:hover
+{
+    outline:none;
+    text-decoration: underline;
+    color: Black;
+}
+
+a img
+{
+    outline: none;
+    border: none;
+}
+
+/* Edit Flight */
+/* item on the left of a left-right layout */
+.itemtimeleft
+{
+    display: inline;
+    float: left;
+    clear: left;
+    vertical-align: bottom;
+    width: 150px;
+    padding: 3px;
+}
+
+/* item on the right of a left-right layout */
+.itemtimeright
+{
+    display: inline;
+    float: left;
+    clear: right;
+    vertical-align: bottom;
+    padding: 3px;
+}
+
+/* item with no particular left/right layout */
+.itemtime
+{
+    padding: 3px;
+}
+
+/* Basic info about the flight */
+.flightinfoblock
+{
+    float: left;
+    clear: left;
+    padding: 3px;
+}
+
+/* the various times for the flight */
+.timesblock
+{
+    float: left;
+    clear: right;
+    padding: 3px;
+}
+
+/* full-width blocks (i.e., no side-to-side */
+.fullblock
+{
+    padding: 3px;
+    display: block;
+    clear: both;
+    width: 620px;
+}
+
+/* item labels in both left and right times */
+.itemtimeleft .itemlabel, .itemtimeright .itemlabel, .flightinfoblock .itemlabel
+{
+    padding: 0px, 0px, 0px, 0px;
+    display: block;
+    clear: both;
+}
+
+/* flight-info items */
+.flightinfoitem
+{
+    float: left;
+}
+
+/* PropertyEditing*/
+.propItemFlow
+{
+    display:inline-block;
+    vertical-align:middle;
+    width: 280px;
+    height: 37px;
+    padding-top: 1px;
+    padding-bottom: 2px;
+}
+
+.propItemContainer
+{
+    width: 600px;
+    padding: 3px;
+    border-style: none;
+}
+
+.propItemContainerOverflow
+{
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    width: 600px;
+    height: 200px;
+    padding: 3px;
+}
+
+
+/* Home page flights */
+.HoverHighlight:hover
+{
+    background-color: #CCCCCC;
+    text-decoration: none;
+}
+
+.HoverHighlight
+{
+    background-color: White;
+    text-decoration: none;
+}
+
+.EntryBlock
+{
+    padding: 4px;
+    background-color: #ffffcc;
+    position: static;
+    border: black 1px solid;
+    margin: 15px;
+}
+
+/* Data that we want to call out */
+.ExceptionData
+{
+    font-weight:bold;
+    color: Blue;
+}
+
+/* 8710 Form */
+.PaddedCell
+{
+    padding:3px;
+}
+
+.FootNote
+{
+    vertical-align:super; 
+    font-size:8pt;
+}
+
+/* Wizard steps */
+.wizStepCompleted
+{
+    font-weight:normal;
+    color:Gray;
+    font-size: 14px;
+}
+
+.wizStepInProgress
+{
+    font-weight:bold;
+    color:#4983B7;
+    font-size: 14px;
+}
+
+.wizStepFuture
+{
+    font-weight:normal;
+    color:Black;
+    font-size: 14px;
+}
+
+/* Footer */
+.footerContainer
+{
+    text-align:center; 
+    clear:both; 
+    margin-left:auto; 
+    margin-right:auto; 
+    width:100%;
+}
+
+.footerItem
+{
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.footerItem:after
+{
+  content: "|";
+  margin-left: 6px;
+  margin-right: 6px;
+  display:inline-block;
+}
+
+.footerItem:last-child:after
+{
+    content:"";
+    display:inline-block;
+}
+
+/* Data entry form tables */
+td.header, tr.header
+{
+    font-weight: bold;
+    text-align: left;
+}
+
+td.label
+{
+    vertical-align: middle;
+}
+
+/* Data Description tables */
+table.dataDescription
+{
+    border-collapse: collapse;
+}
+
+table.dataDescription tbody tr td
+{
+    border: 1px solid black;
+}
+
+table.dataDescription thead tr td
+{
+    background: #CCCCCC;
+    font-weight:bold;
+    border: 1px solid black;
+}
+
+/* Public flight row */
+.publicFlight
+{
+    border-top: 1px solid #CCCCCC;
+}
+
+/* Filter items for a flight query */
+.queryFilterItem {
+    display:inline-block; 
+    border-radius: 4px; 
+    font-size: 10pt; 
+    padding: 3px; 
+    vertical-align:middle; 
+    margin:2px; 
+    border: 1px solid gray; 
+    background: #DDDDDD;
+}
+
+/* Progress towards ratings */
+.progress {
+    width: 500px; 
+    border: 1px solid black; 
+    position: relative; 
+    height: 20px;
+    padding: 3px;
+}
+
+.checkedBox
+{
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 40px;
+}
+
+.percent {
+    text-align:center; 
+    width:100%; 
+    position: absolute; 
+    font-weight:bold; 
+    vertical-align:bottom; 
+    padding: 3px;
+    left:0; 
+    top:0;
+    height:20px;
+    line-height: 20px;
+    display:inline-block;
+}
+
+.progressRow 
+{
+    vertical-align: top;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.bar 
+{
+    margin: 0px 0px 0px 0px;
+    left:0px;
+    top:0px;
+    height: 20px;
+}
+
+/* Image List item */
+.ilItem {
+    display: inline-block; 
+    padding: 5px; 
+    vertical-align:top; 
+    text-align:center;
+}
+
+.ilToolbar {
+    text-align: center; 
+    vertical-align:middle
+}
+
+.ilToolbarItem {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+/* Preferences */
+.prefSectionRow
+{
+    margin-bottom: 10px;
+}
+
+/* Ajax */
+.ajax__html_editor_extender_texteditor
+{
+    background-color:White;
+}
+
+/* Calendaring */
+.calContainer
+{
+    vertical-align:top;
+}
+
+.calPlaceholder
+{
+    float:left; width:200px; padding: 4px; margin-left: auto; margin-right: auto;
+}
+
+.calNavContainer
+{
+    float:left; width:160px; padding:4px;margin-left: auto; margin-right: auto;
+}
+
+.calCalContainer
+{
+    float:left; width:600px; padding: 4px;
+}
+
+.calEditAppointmentContainer
+{
+    width: 300px;
+    background-color: #FFFF99;
+    padding:15px; 
+}
+
+/* Club */
+.clubDetailsLeft
+{
+    vertical-align:top;
+    padding: 2px;
+    width: 100%;
+}
+
+.clubDetailsRight
+{
+    vertical-align:top;
+    float: right;
+    line-break:auto;
+    padding: 4px;
+    margin-left: 8px;
+    margin-bottom: 4px;
+    width: 50%;
+    max-width: 240px;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 6px 6px 5px #888888;
+}
+
+/* Drag & drop */
+.draggableItem{
+    padding-left: 4px; 
+    padding-right: 4px;
+    height:16px; 
+    line-height: 16px;
+    margin: 4px;
+    white-space:nowrap;
+    background-color: #DDDDDD;
+    vertical-align: middle;
+    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    cursor: move;
+}
+
+.dragTarget {
+    overflow-y:scroll;
+    height: 104px;
+    border: 1px solid black;
+}
+
+/* Resize handle*/
+.resizeHandle {
+    height: 20px;
+    width: 20px;
+    background-image: url(../images/resizehandle.png);
+    cursor: se-resize;
+    z-index:100;
+}
+
+/* Active/Inactive aircraft or other items. */
+.activeRow {
+    opacity: 1.0;
+}
+
+.inactiveRow {
+    opacity: 0.5;
+}
+
+/* Flight details view */
+.detailsSection {
+    padding: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 90%;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+/* Printing */
+@media print {
+   thead {display: table-header-group;}
+   tfoot {display: table-footer-group;}
+   .noprint, .sidebarContainer, .footerContainer {display:none; border:none;}
+   .logbookRow {vertical-align:top; border:1px solid lightgray; page-break-inside:avoid;}
+   .logbookAlternateRow {vertical-align:top; background:#EEEEEE; border:1px solid lightgray;page-break-inside:avoid;}
+   tr.logbookRow td, tr.logbookAlternateRow td {border: 1px solid lightgray; }
+   .hintPopup {
+    border: none;
+    border-radius: 0px;
+    padding: 0px;
+    margin: 0px;
+    }
+   .endorsement {background-color: #EEEEEE;}
+}
+
+@media screen {
+    .printonly {display:none;}
+    .logbookRow {vertical-align:top;}
+    .logbookAlternateRow {vertical-align:top; background:#E0E0E0;}
+}
+
+thead {display: table-header-group;}
+tfoot {display: table-footer-group;}

@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AdminAchievements" xml:space="preserve">
+    <value>Achievements &amp; Badges</value>
+  </data>
+  <data name="AdminAircraft" xml:space="preserve">
+    <value>Aircraft Issues</value>
+  </data>
+  <data name="AdminAirports" xml:space="preserve">
+    <value>User Airports</value>
+  </data>
+  <data name="AdminDonations" xml:space="preserve">
+    <value>Donations</value>
+  </data>
+  <data name="AdminEndorsements" xml:space="preserve">
+    <value>Endorsements</value>
+  </data>
+  <data name="AdminFAQ" xml:space="preserve">
+    <value>FAQ</value>
+  </data>
+  <data name="AdminImages" xml:space="preserve">
+    <value>Images</value>
+  </data>
+  <data name="AdminManufacturers" xml:space="preserve">
+    <value>Manufacturers</value>
+  </data>
+  <data name="AdminMisc" xml:space="preserve">
+    <value>Misc Admin Tools</value>
+  </data>
+  <data name="AdminModels" xml:space="preserve">
+    <value>Models</value>
+  </data>
+  <data name="AdminProperties" xml:space="preserve">
+    <value>Flight Properties</value>
+  </data>
+  <data name="AdminStats" xml:space="preserve">
+    <value>Statistics</value>
+  </data>
+  <data name="AdminTelemetry" xml:space="preserve">
+    <value>Telemetry</value>
+  </data>
+  <data name="AdminUsers" xml:space="preserve">
+    <value>User Management</value>
+  </data>
+  <data name="AnalysisAircraft" xml:space="preserve">
+    <value>Aircraft</value>
+  </data>
+  <data name="AnalysisChart" xml:space="preserve">
+    <value>Chart</value>
+  </data>
+  <data name="AnalysisDownload" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="AnalysisFlight" xml:space="preserve">
+    <value>Flight</value>
+  </data>
+  <data name="AnalysisRaw" xml:space="preserve">
+    <value>Raw Data</value>
+  </data>
+  <data name="Clubs" xml:space="preserve">
+    <value>Flying Clubs</value>
+  </data>
+  <data name="ImportAircraft" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="InstructionAchievements" xml:space="preserve">
+    <value>Achievements</value>
+  </data>
+  <data name="InstructionEndorsements" xml:space="preserve">
+    <value>Endorsements</value>
+  </data>
+  <data name="InstructionInstructors" xml:space="preserve">
+    <value>Instructors</value>
+  </data>
+  <data name="InstructionProgress" xml:space="preserve">
+    <value>Ratings Progress</value>
+  </data>
+  <data name="InstructionSignedFlights" xml:space="preserve">
+    <value>Request Signatures</value>
+  </data>
+  <data name="InstructionStudents" xml:space="preserve">
+    <value>Students</value>
+  </data>
+  <data name="Logbook8710" xml:space="preserve">
+    <value>8710</value>
+  </data>
+  <data name="LogbookAdd" xml:space="preserve">
+    <value>Add Flights</value>
+  </data>
+  <data name="LogbookAnalysis" xml:space="preserve">
+    <value>Analysis</value>
+  </data>
+  <data name="LogbookCurrency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="LogbookDownload" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="LogbookFind" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="LogbookImport" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="LogbookNew" xml:space="preserve">
+    <value>Logbook</value>
+  </data>
+  <data name="LogbookPrintView" xml:space="preserve">
+    <value>Print View</value>
+  </data>
+  <data name="LogbookStartingTotals" xml:space="preserve">
+    <value>Starting Totals</value>
+  </data>
+  <data name="LogbookTotals" xml:space="preserve">
+    <value>Totals</value>
+  </data>
+  <data name="MapAdd" xml:space="preserve">
+    <value>Add/Edit Airports</value>
+  </data>
+  <data name="MapFind" xml:space="preserve">
+    <value>Find Airports</value>
+  </data>
+  <data name="MapQuiz" xml:space="preserve">
+    <value>Airport Quiz</value>
+  </data>
+  <data name="MapRoutes" xml:space="preserve">
+    <value>Routes</value>
+  </data>
+  <data name="MapVisited" xml:space="preserve">
+    <value>Visited Airports</value>
+  </data>
+  <data name="MyAircraft" xml:space="preserve">
+    <value>My Aircraft</value>
+  </data>
+  <data name="ProfileAccount" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="ProfileDonate" xml:space="preserve">
+    <value>Donate</value>
+  </data>
+  <data name="ProfileEndorsements" xml:space="preserve">
+    <value>Instruction</value>
+  </data>
+  <data name="ProfileName" xml:space="preserve">
+    <value>Name/Email</value>
+  </data>
+  <data name="ProfilePassword" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="ProfilePilotInformation" xml:space="preserve">
+    <value>Pilot Info</value>
+  </data>
+  <data name="ProfilePreferences" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
+  <data name="ProfileQA" xml:space="preserve">
+    <value>Security Question</value>
+  </data>
+  <data name="TabAdmin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="TabAircraft" xml:space="preserve">
+    <value>Aircraft</value>
+  </data>
+  <data name="TabAirports" xml:space="preserve">
+    <value>Airports</value>
+  </data>
+  <data name="TabHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="TabInstruction" xml:space="preserve">
+    <value>Training</value>
+  </data>
+  <data name="TabLogbook" xml:space="preserve">
+    <value>Logbook</value>
+  </data>
+  <data name="TabMakes" xml:space="preserve">
+    <value>Models</value>
+  </data>
+  <data name="TabProfile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+</root>

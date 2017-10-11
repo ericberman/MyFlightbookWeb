@@ -1,0 +1,13 @@
+<p style="font-weight:bold">%APP_NAME% is your online pilot's logbook!</p>
+<ul>
+	<li>Access your logbook from anywhere!</li>
+    <li>Ensure that you are current</li>
+    <li>Get detailed totals</li>
+	<li>Track progress towards ratings</li>
+	<li>Use your phone/tablet to fill in flights as you fly them</li>
+	<li>Share flights on Facebook or Twitter
+    <li>Download your logbook into a spreadsheet</li>
+    <li>View your flights on a map</li>
+	<li>And much more...</li>
+</ul>
+<p style="font-weight:bold">%APP_NAME% is completely free of charge!</p>

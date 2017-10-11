@@ -1,0 +1,33 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="FAQ.aspx.cs" Inherits="Public_FAQ" %>
+<%@ MasterType VirtualPath="~/MasterPage.master" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" runat="server">
+    <% =Branding.ReBrand(Resources.LocalizedText.FAQHeader) %>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
+    <p><% =Branding.ReBrand(Resources.LocalizedText.FAQDesc) %>
+        <asp:HyperLink ID="lnkContact" runat="server" NavigateUrl="~/Public/ContactMe.aspx" Text="<%$ Resources:LocalizedText, FAQContactUs %>"></asp:HyperLink>
+    </p>
+    <asp:Repeater ID="rptFAQGroup" runat="server" OnItemDataBound="rptFAQGroup_ItemDataBound">
+        <ItemTemplate>
+            <h2><%# Eval("Category") %></h2>
+            <cc1:Accordion ID="accFAQGroup" RequireOpenedPane="false" SelectedIndex="-1" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250" >
+                <HeaderTemplate>
+                    <%# Eval("Question") %>
+                </HeaderTemplate>
+                <ContentTemplate>
+                    <div style="padding: 5px">
+                        <a name='<%# Eval("idFAQ") %>'></a>
+                        <div style="float:right">
+                            <asp:HyperLink ID="lnkPermalink" NavigateUrl='<%# "~/Public/FAQ.aspx?q=" + Eval("idFAQ") + "#" + Eval("idFAQ") %>' runat="server">
+                                <asp:Image ID="imgPermalink" style="opacity: 0.5;" ToolTip="<%$ Resources:LocalizedText, FAQPermaLink %>" ImageUrl="~/images/Link.png" runat="server" />
+                            </asp:HyperLink>
+                        </div>
+                        <%# Eval("Answer") %>
+                    </div>
+                </ContentTemplate>
+            </cc1:Accordion>
+        </ItemTemplate>
+    </asp:Repeater>
+</asp:Content>
+

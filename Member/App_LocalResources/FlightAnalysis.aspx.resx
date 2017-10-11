@@ -1,0 +1,393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccordionCtrlResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpChartResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpDownloadResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="acpRawResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnDownloadResource1.Text" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="btnDownloadResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Chart1Resource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Chart1Resource1.DescriptionUrl" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Chart1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbAltUnitsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbFormatResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbSpeedUnitsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbXAxisResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbYAxis1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cmbYAxis2Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvDataResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvDataResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvDataResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgPinResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgPinResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDistanceResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblDistanceResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblErrResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblErrResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFlightDateResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFlightDateResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFlightDescResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFlightDescResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblShowerrorsResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblShowerrorsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListItemResource1.Text" xml:space="preserve">
+    <value>Original Format</value>
+  </data>
+  <data name="ListItemResource1.Value" xml:space="preserve">
+    <value>Original</value>
+  </data>
+  <data name="ListItemResource10.Text" xml:space="preserve">
+    <value>Meters</value>
+  </data>
+  <data name="ListItemResource10.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ListItemResource2.Text" xml:space="preserve">
+    <value>Text (CSV / Spreadsheet)</value>
+  </data>
+  <data name="ListItemResource2.Value" xml:space="preserve">
+    <value>CSV</value>
+  </data>
+  <data name="ListItemResource3.Text" xml:space="preserve">
+    <value>KML (Google Earth)</value>
+  </data>
+  <data name="ListItemResource3.Value" xml:space="preserve">
+    <value>KML</value>
+  </data>
+  <data name="ListItemResource4.Text" xml:space="preserve">
+    <value>GPX</value>
+  </data>
+  <data name="ListItemResource4.Value" xml:space="preserve">
+    <value>GPX</value>
+  </data>
+  <data name="ListItemResource5.Text" xml:space="preserve">
+    <value>Knots</value>
+  </data>
+  <data name="ListItemResource5.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource6.Text" xml:space="preserve">
+    <value>Miles/Hour</value>
+  </data>
+  <data name="ListItemResource6.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ListItemResource7.Text" xml:space="preserve">
+    <value>Meters/Second</value>
+  </data>
+  <data name="ListItemResource7.Value" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="ListItemResource8.Text" xml:space="preserve">
+    <value>Feet/Second</value>
+  </data>
+  <data name="ListItemResource8.Value" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="ListItemResource9.Text" xml:space="preserve">
+    <value>Feet</value>
+  </data>
+  <data name="ListItemResource9.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="lnkBulkImportResource1.Text" xml:space="preserve">
+    <value>Bulk Import Telemetry</value>
+  </data>
+  <data name="lnkBulkImportResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkClearEventsResource1.Text" xml:space="preserve">
+    <value>Clear added markers</value>
+  </data>
+  <data name="lnkClearEventsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkKeyResource1.Text" xml:space="preserve">
+    <value>Learn More</value>
+  </data>
+  <data name="lnkKeyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkZoomResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkZoomResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkZoomToFitResource1.Text" xml:space="preserve">
+    <value>Zoom to fit all flight data</value>
+  </data>
+  <data name="lnkZoomToFitResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locAltUnitsPromptResource1.Text" xml:space="preserve">
+    <value>Altitude units are:</value>
+  </data>
+  <data name="locDataToChartResource1.Text" xml:space="preserve">
+    <value>Data to chart:</value>
+  </data>
+  <data name="locDownloadPromptResource1.Text" xml:space="preserve">
+    <value>Download this data as:</value>
+  </data>
+  <data name="locErrorsFoundResource1.Text" xml:space="preserve">
+    <value>Errors were found in loading flight data</value>
+  </data>
+  <data name="locImportResource1.Text" xml:space="preserve">
+    <value>Got data from other sources that you'd like to attach to a flights?</value>
+  </data>
+  <data name="locOverviewResource1.Text" xml:space="preserve">
+    <value>View telemetry data for your flight graphically, on a map, or in a table.  You can also download it to Excel or other analysis tools.</value>
+  </data>
+  <data name="locPageHeaderResource1.Text" xml:space="preserve">
+    <value>Flight Data Analysis</value>
+  </data>
+  <data name="locSpeedUnitsPromptResource1.Text" xml:space="preserve">
+    <value>Speed units are:</value>
+  </data>
+  <data name="locXAxisSelectionResource1.Text" xml:space="preserve">
+    <value>X-axis:</value>
+  </data>
+  <data name="locY2AxisSelectionResource1.Text" xml:space="preserve">
+    <value>2nd data to chart:</value>
+  </data>
+  <data name="PageResource1.Title" xml:space="preserve">
+    <value>Analyze flight data</value>
+  </data>
+  <data name="Panel1Resource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Panel1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAccordionMenuContainerResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAccordionMenuContainerResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlDistanceResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlDistanceResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlErrorDetailResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlErrorDetailResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlErrorsResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlErrorsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlMapResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlMapResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlShowRawDataResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlShowRawDataResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.HeaderText" xml:space="preserve">
+    <value>Position</value>
+  </data>
+</root>

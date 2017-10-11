@@ -1,0 +1,1356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AirportGameAirportPrompt" xml:space="preserve">
+    <value>Which airport is this?</value>
+  </data>
+  <data name="AirportGameAnswerStatus" xml:space="preserve">
+    <value>{0} airport(s) correctly identified!</value>
+  </data>
+  <data name="ORSeparator" xml:space="preserve">
+    <value>- OR -</value>
+  </data>
+  <data name="AirportGameCompletionStatus" xml:space="preserve">
+    <value>You got {0} out of {1} questions correct, {2}%</value>
+  </data>
+  <data name="AirportGameCorrectAnswer" xml:space="preserve">
+    <value>The airport was {0}</value>
+  </data>
+  <data name="AirportGameFinished" xml:space="preserve">
+    <value>Finished!</value>
+  </data>
+  <data name="AirportGameMustBeSignedIn" xml:space="preserve">
+    <value>You must be signed in and have at least 15 airports in your logbook;&lt;br /&gt; otherwise major US airports will be used.</value>
+  </data>
+  <data name="AirportGamePlayAgain" xml:space="preserve">
+    <value>Play Again</value>
+  </data>
+  <data name="AirportGameProgress" xml:space="preserve">
+    <value>Question {0} of {1}</value>
+  </data>
+  <data name="AirportGameSkipAirport" xml:space="preserve">
+    <value>Skip this question</value>
+  </data>
+  <data name="AirportGameSnark50" xml:space="preserve">
+    <value>Not bad - you got at least half right, but perhaps you should carry a GPS with you.</value>
+  </data>
+  <data name="AirportGameSnark75" xml:space="preserve">
+    <value>Congratulations - very well done!</value>
+  </data>
+  <data name="AirportGameSnarkPerfect" xml:space="preserve">
+    <value>Congratulations - that's perfect!</value>
+  </data>
+  <data name="AirportGameSnarkPoor" xml:space="preserve">
+    <value>You should never fly without a working up-to-date GPS!</value>
+  </data>
+  <data name="AirportGameTimeRemaining" xml:space="preserve">
+    <value>Time remaining: </value>
+  </data>
+  <data name="AirportGameTitle" xml:space="preserve">
+    <value>How well can you recognize airports based on satellite imagery? Try your skills here!</value>
+  </data>
+  <data name="AirportGameTooFewAirports" xml:space="preserve">
+    <value>You have landed at fewer than 15 airports, which is not enough.  We are showing busy US airports instead.</value>
+  </data>
+  <data name="AirportGameUnauthenticated" xml:space="preserve">
+    <value>Unauthenticated user - using US airports</value>
+  </data>
+  <data name="AirportGameUseUSAirports" xml:space="preserve">
+    <value>Try your skills with major US Airports</value>
+  </data>
+  <data name="AirportGameUseYourAirports" xml:space="preserve">
+    <value>Try with only airports you've landed at!</value>
+  </data>
+  <data name="AirportServiceAirportInformation" xml:space="preserve">
+    <value>Airport Information</value>
+  </data>
+  <data name="AirportServiceFBO" xml:space="preserve">
+    <value>FBO</value>
+  </data>
+  <data name="AirportServiceHotels" xml:space="preserve">
+    <value>Hotels near {0}</value>
+  </data>
+  <data name="AirportServiceMETAR" xml:space="preserve">
+    <value>METAR</value>
+  </data>
+  <data name="ATDFTDNoticeBody" xml:space="preserve">
+    <value>&lt;p&gt;To record time in something other than a real airplane, create an aircraft of the 
+            type being simulated (e.g., Cessna 172 or Boeing 757) and identify it as being a 
+            simulator/FTD/ATD/etc.&amp;nbsp; The prefix &amp;quot;SIM&amp;quot; will be used for the 
+            tailnumber of such aircraft, so you won&amp;#39;t have a tailnumber conflict with a real 
+            aircraft.&amp;nbsp; A tailnumber that doesn&amp;#39;t conflict 
+            with other existing simulator aircraft, or with another simulator that is not of 
+            the same certification level will also be proposed.&lt;/p&gt;
+        &lt;p&gt;For example, if you have time in a Boeing 757 simulator, create an aircraft that 
+            is a Boeing 757, identify it as being an FTD or ATD, and it will be given
+            a tailnumber like &amp;quot;SIMB757.&amp;quot; Depending on the certification level, 
+            approaches/landings/etc. in the SIMB757 would then count towards currency in a 
+            Boeing 757.&lt;/p&gt;
+        &lt;p&gt;You can quickly select from a list of existing simulators (and their 
+            certification levels) in the system &lt;a target="_blank" href="%APP_ROOT%/Member/BrowseSims.aspx" style="font-weight:bold"&gt;here&lt;/a&gt;.&lt;/p&gt;</value>
+  </data>
+  <data name="ATDFTDNoticeHead" xml:space="preserve">
+    <value>Please read: Simulators/FTDs/ATDs</value>
+  </data>
+  <data name="ChartTotalsApproaches" xml:space="preserve">
+    <value>Approach(es)</value>
+  </data>
+  <data name="ChartTotalsHours" xml:space="preserve">
+    <value>Hour(s)</value>
+  </data>
+  <data name="ChartTotalsHoursOfX" xml:space="preserve">
+    <value>Hours of {0}</value>
+    <comment>e.g., hours of night flying, hours of instruction.</comment>
+  </data>
+  <data name="ChartTotalsLandings" xml:space="preserve">
+    <value>Landing(s)</value>
+  </data>
+  <data name="ChartTotalsMouseHint1" xml:space="preserve">
+    <value>&lt;b&gt;TIP&lt;/b&gt;: Move your mouse over the chart to see more precise data values.  Or </value>
+    <comment>Or + click here + mouse hint 2</comment>
+  </data>
+  <data name="ChartTotalsMouseHint2" xml:space="preserve">
+    <value> to see/hide the raw data.</value>
+  </data>
+  <data name="ChartTotalsMouseHintClickHere" xml:space="preserve">
+    <value>click here</value>
+  </data>
+  <data name="ChartTotalsNumOfX" xml:space="preserve">
+    <value>Number of {0}</value>
+    <comment>e.g., number of landings, number of instrument approaches</comment>
+  </data>
+  <data name="ChartTotalsOptionsPrompt" xml:space="preserve">
+    <value>See your monthly flying trends by:</value>
+  </data>
+  <data name="ChartTotalsTotalApproaches" xml:space="preserve">
+    <value>Instrument Approaches</value>
+  </data>
+  <data name="ChartTotalsTotalCFI" xml:space="preserve">
+    <value>Instructor</value>
+  </data>
+  <data name="ChartTotalsTotalDual" xml:space="preserve">
+    <value>Dual Received</value>
+  </data>
+  <data name="ChartTotalsTotalFlyingTime" xml:space="preserve">
+    <value>Total flight time</value>
+  </data>
+  <data name="ChartTotalsTotalIMC" xml:space="preserve">
+    <value>Actual Instrument</value>
+  </data>
+  <data name="ChartTotalsTotalLandings" xml:space="preserve">
+    <value>Landings</value>
+  </data>
+  <data name="ChartTotalsTotalNight" xml:space="preserve">
+    <value>Night</value>
+  </data>
+  <data name="ChartTotalsTotalPIC" xml:space="preserve">
+    <value>Pilot in Command</value>
+  </data>
+  <data name="ChartTotalsTotalSIC" xml:space="preserve">
+    <value>Second in Command</value>
+  </data>
+  <data name="ChartTotalsTotalSimIMC" xml:space="preserve">
+    <value>Simulated Instrument</value>
+  </data>
+  <data name="ContactUsEmail" xml:space="preserve">
+    <value>Your email address:</value>
+  </data>
+  <data name="ContactUsMessage" xml:space="preserve">
+    <value>Message:</value>
+  </data>
+  <data name="ContactUsName" xml:space="preserve">
+    <value>Your name:</value>
+  </data>
+  <data name="ContactUsReturnHome" xml:space="preserve">
+    <value>Return Home</value>
+  </data>
+  <data name="ContactUsSend" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="ContactUsSubject" xml:space="preserve">
+    <value>Subject:</value>
+  </data>
+  <data name="ContactUsThankYou" xml:space="preserve">
+    <value>Thank-you for contacting us</value>
+  </data>
+  <data name="ContactUsTitle" xml:space="preserve">
+    <value>Contact Us</value>
+  </data>
+  <data name="DateErrInvalid" xml:space="preserve">
+    <value>&lt;br /&gt;The specified date is not valid.&lt;br /&gt;</value>
+  </data>
+  <data name="DateTimeErrInvalid" xml:space="preserve">
+    <value>&lt;br /&gt;Please enter a valid date and time.&lt;br /&gt;</value>
+  </data>
+  <data name="DateTimeNow" xml:space="preserve">
+    <value>Now</value>
+  </data>
+  <data name="DecimalEditErrInvalid" xml:space="preserve">
+    <value>Please enter a valid number.&lt;br /&gt;</value>
+  </data>
+  <data name="DecimalEditErrInvalidHHMM" xml:space="preserve">
+    <value>Please enter a valid time in hh:mm format.&lt;br /&gt;</value>
+  </data>
+  <data name="DecimalEditErrNotPresent" xml:space="preserve">
+    <value>Please enter a value&lt;br /&gt;</value>
+  </data>
+  <data name="EditableImageEditPrompt" xml:space="preserve">
+    <value>Add or edit a comment for this image</value>
+  </data>
+  <data name="EditableImageViewOnMap" xml:space="preserve">
+    <value>View on map</value>
+  </data>
+  <data name="EditAircraftAddAircraft" xml:space="preserve">
+    <value>Add Aircraft</value>
+  </data>
+  <data name="EditAircraftUpdateAircraft" xml:space="preserve">
+    <value>Update Aircraft</value>
+  </data>
+  <data name="EditAircraftUserStats" xml:space="preserve">
+    <value>This aircraft is used by {0} user(s) in {1} flight(s).</value>
+  </data>
+  <data name="EditAircraftYourStats" xml:space="preserve">
+    <value>You have flown it in {0} flight(s) between {1} and {2}.</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ValidationEmailFormat" xml:space="preserve">
+    <value>Please enter a valid email address</value>
+  </data>
+  <data name="ValidationEmailRequired" xml:space="preserve">
+    <value>You must provide an email address</value>
+  </data>
+  <data name="ValidationNameRequired" xml:space="preserve">
+    <value>Please tell us your name</value>
+  </data>
+  <data name="EditFlightAddFlight" xml:space="preserve">
+    <value>Add Flight</value>
+  </data>
+  <data name="EditFlightDefaultCatClass" xml:space="preserve">
+    <value>(Default for selected aircraft)</value>
+  </data>
+  <data name="EditFlightUpdateFlight" xml:space="preserve">
+    <value>Update Flight</value>
+  </data>
+  <data name="ClickToAddMakeModel" xml:space="preserve">
+    <value>Add a new make/model</value>
+  </data>
+  <data name="ClickToHide" xml:space="preserve">
+    <value>(Click to Hide)</value>
+  </data>
+  <data name="ClickToHideAlternateCatClass" xml:space="preserve">
+    <value>(Hide Alternate Category/Class)</value>
+  </data>
+  <data name="ClickToHideDetails" xml:space="preserve">
+    <value>(Hide Details)</value>
+  </data>
+  <data name="ClickToShow" xml:space="preserve">
+    <value>(Click to Show)</value>
+  </data>
+  <data name="ClickToShowAlternateCatClass" xml:space="preserve">
+    <value>(Show Alternate Category/Class)</value>
+  </data>
+  <data name="ClickToShowDetails" xml:space="preserve">
+    <value>(Show Details)</value>
+  </data>
+  <data name="EditMakeAddMake" xml:space="preserve">
+    <value>Add Model</value>
+  </data>
+  <data name="EditMakeUpdateMake" xml:space="preserve">
+    <value>Update Model</value>
+  </data>
+  <data name="EditMakeWatermarkCommonName" xml:space="preserve">
+    <value>Marketing Name</value>
+    <comment>e.g., "Cherokee"</comment>
+  </data>
+  <data name="EditMakeWatermarkMDS" xml:space="preserve">
+    <value>Model/Design/Series</value>
+  </data>
+  <data name="EditMakeWatermarkModelName" xml:space="preserve">
+    <value>Model ID</value>
+    <comment>e.g., PA28-160</comment>
+  </data>
+  <data name="EditMakeWatermarkTypeName" xml:space="preserve">
+    <value>Type ID</value>
+    <comment>e.g., B777-300</comment>
+  </data>
+  <data name="FileUploadAddAnother" xml:space="preserve">
+    <value>Add Another...</value>
+  </data>
+  <data name="FileUploadComment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="FlightInfoConfirmDelete" xml:space="preserve">
+    <value>Are you sure you want to delete this data?  This cannot be undone!</value>
+  </data>
+  <data name="FlightPropertiesFrequentlyUsed" xml:space="preserve">
+    <value>Previously Used</value>
+    <comment>The section of custom flight properties that you have used before</comment>
+  </data>
+  <data name="FlightPropertiesOtherProperties" xml:space="preserve">
+    <value>Other Properties</value>
+    <comment>Other flight properties (i.e., ones that have not been used by you before).</comment>
+  </data>
+  <data name="HeaderDownload" xml:space="preserve">
+    <value>Download %APP_NAME% for your phone or tablet!</value>
+  </data>
+  <data name="HeaderDownloadAndroid" xml:space="preserve">
+    <value>Download %APP_NAME% app for Android</value>
+  </data>
+  <data name="HeaderDownloadIOS" xml:space="preserve">
+    <value>Download %APP_NAME%  for iPhone and iPad</value>
+  </data>
+  <data name="HeaderDownloadIsFree" xml:space="preserve">
+    <value>It's &lt;span style="font-weight: bold"&gt;free!&lt;/span&gt;</value>
+  </data>
+  <data name="HeaderDownloadIsNew" xml:space="preserve">
+    <value>New!</value>
+  </data>
+  <data name="HeaderDownloadWP7" xml:space="preserve">
+    <value>Download %APP_NAME%  for Windows Phone</value>
+  </data>
+  <data name="ImageDisclaimer" xml:space="preserve">
+    <value>You may only upload images for which you have all necessary rights to do so.</value>
+  </data>
+  <data name="LoginStatusCreateAccount" xml:space="preserve">
+    <value>Create an Account</value>
+  </data>
+  <data name="LoginStatusSignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="LoginStatusSignOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="LoginStatusWelcome" xml:space="preserve">
+    <value>Welcome, {0} | </value>
+    <comment>(The vertical bar is a separator - leave it there!)</comment>
+  </data>
+  <data name="MiniFacebookAddToFacebook" xml:space="preserve">
+    <value>Share on Facebook</value>
+  </data>
+  <data name="MiniFacebookViewFlight" xml:space="preserve">
+    <value>View Flight</value>
+  </data>
+  <data name="SearchAndTotalsAllFlights" xml:space="preserve">
+    <value>&amp;nbsp;&amp;bull;&amp;nbsp;All flights are included</value>
+  </data>
+  <data name="SearchAndTotalsHeader" xml:space="preserve">
+    <value>Totals are computed using the criteria below</value>
+  </data>
+  <data name="SearchBoxGo" xml:space="preserve">
+    <value>Go</value>
+  </data>
+  <data name="SearchBoxWatermark" xml:space="preserve">
+    <value>Search your logbook</value>
+  </data>
+  <data name="SelectSimsAllMakes" xml:space="preserve">
+    <value>(Any make/model aircraft)</value>
+  </data>
+  <data name="SelectSimsAllTypes" xml:space="preserve">
+    <value>(All Sims/ATDs/FTDs)</value>
+  </data>
+  <data name="SelectSimsExistingSimulators" xml:space="preserve">
+    <value>Existing Simulators/Training Devices</value>
+  </data>
+  <data name="SelectSimsHeaderText" xml:space="preserve">
+    <value>Below are a list of simulators/ATDs/FTDs that are already in the system.  You can add any of these to your list of aircraft.</value>
+  </data>
+  <data name="SelectSimsNoMatchingSimsFound" xml:space="preserve">
+    <value>No simulators/FTDs/ATDs were found that match the specified certification type and/or make/model.</value>
+  </data>
+  <data name="SelectSimsSelectEmulatedMake" xml:space="preserve">
+    <value>Show only training devices that emulate:</value>
+  </data>
+  <data name="SelectSimsSelectType" xml:space="preserve">
+    <value>Show only training devices that are:</value>
+  </data>
+  <data name="DatesAll" xml:space="preserve">
+    <value>All Dates</value>
+  </data>
+  <data name="DatesPrev12Month" xml:space="preserve">
+    <value>Previous 12 months</value>
+  </data>
+  <data name="DatesPrev6Month" xml:space="preserve">
+    <value>Previous 6 months</value>
+  </data>
+  <data name="DatesPrevMonth" xml:space="preserve">
+    <value>Previous month</value>
+  </data>
+  <data name="DatesPrevYear" xml:space="preserve">
+    <value>Previous year</value>
+  </data>
+  <data name="DatesThisMonth" xml:space="preserve">
+    <value>This month</value>
+  </data>
+  <data name="DatesYearToDate" xml:space="preserve">
+    <value>Year-to-date</value>
+  </data>
+  <data name="SignInButtonTitle" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="SignInCreateAccountFree" xml:space="preserve">
+    <value>(it's &lt;b&gt;free!&lt;/b&gt;)</value>
+  </data>
+  <data name="SignInCreateAccountLink" xml:space="preserve">
+    <value>Create an account</value>
+  </data>
+  <data name="SignInEmailPrompt" xml:space="preserve">
+    <value>E-mail address:</value>
+  </data>
+  <data name="SignInForgotPasswordLink" xml:space="preserve">
+    <value>Forgot your password?</value>
+  </data>
+  <data name="SignInPasswordPrompt" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="SignInPasswordRequired" xml:space="preserve">
+    <value>&lt;br /&gt;Password is required.</value>
+  </data>
+  <data name="SignInPrompt" xml:space="preserve">
+    <value>Please sign in</value>
+  </data>
+  <data name="SignInRememberMe" xml:space="preserve">
+    <value>Remember me next time.</value>
+  </data>
+  <data name="SignInUserName" xml:space="preserve">
+    <value>UserName:</value>
+  </data>
+  <data name="SignInValBadEmail" xml:space="preserve">
+    <value>&lt;br /&gt;Please enter a valid e-mail address</value>
+  </data>
+  <data name="SignInValEmailRequired" xml:space="preserve">
+    <value>&lt;br /&gt;E-mail address is required.</value>
+  </data>
+  <data name="TermsAndConditions" xml:space="preserve">
+    <value>I built this site to fill a need I had and am sharing it because I believe it can be very broadly useful.
+However, I cannot make any promises regarding service levels, accuracy of data or computations, or the quality of the software.&amp;nbsp; (Although
+frankly I think it's pretty good and pretty bug free).&lt;br /&gt;&lt;br /&gt;
+While I back up the database nightly, there is a feature to back-up your data to
+an Excel spreadsheet - it's not a bad idea to use that now and then just in case.&lt;br /&gt;&lt;br /&gt;
+If you find a bug or have a feature request, &lt;a href="%APP_ROOT%/Public/ContactMe.aspx"&gt;let me know&lt;/a&gt;,
+and I will see what I can do.</value>
+  </data>
+  <data name="TermsAndConditionsAgree" xml:space="preserve">
+    <value>By creating an account, you agree to these conditions.</value>
+  </data>
+  <data name="TermsAndConditionsHeader" xml:space="preserve">
+    <value>Terms and Conditions</value>
+  </data>
+  <data name="RSSGoogle" xml:space="preserve">
+    <value>Add to Google</value>
+  </data>
+  <data name="RSSTitle" xml:space="preserve">
+    <value>RSS Feed of FlightCurrency</value>
+  </data>
+  <data name="TweetThis" xml:space="preserve">
+    <value>Tweet This</value>
+  </data>
+  <data name="TypeInDateInvalidDate" xml:space="preserve">
+    <value>&lt;br /&gt;Please enter a valid date.&lt;br /&gt;</value>
+  </data>
+  <data name="PasswordStrengthStrings" xml:space="preserve">
+    <value>Weak;OK;Good;Excellent</value>
+    <comment>Password strengths, separated by semicolons</comment>
+  </data>
+  <data name="ResetPasswordEmailSubject" xml:space="preserve">
+    <value>Your {0} password has been reset</value>
+    <comment>{0} is the name of the app ("MyFlightbook")</comment>
+  </data>
+  <data name="AddRelationshipConfirmNo" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="AddRelationshipConfirmPrompt" xml:space="preserve">
+    <value>If you recognize this request, please confirm below.</value>
+  </data>
+  <data name="AddRelationshipConfirmYes" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="AddRelationshipErrAlreadyInstructor" xml:space="preserve">
+    <value>You have already confirmed that you are an instructor for {0}</value>
+  </data>
+  <data name="AddRelationshipErrAlreadyStudent" xml:space="preserve">
+    <value>You have already confirmed that you are a student of {0}</value>
+  </data>
+  <data name="AddRelationshipErrInvalidRequest" xml:space="preserve">
+    <value>Invalid request</value>
+  </data>
+  <data name="AddRelationshipErrInvalidUser" xml:space="preserve">
+    <value>Invalid user in request</value>
+  </data>
+  <data name="AddRelationshipErrNotTargetUser" xml:space="preserve">
+    <value>This request was sent to '{0}', but you are signed in as '{1}'.  Please sign in with the correct e-mail address for this request.</value>
+  </data>
+  <data name="AddRelationshipHeader" xml:space="preserve">
+    <value>Please confirm relationship</value>
+  </data>
+  <data name="AddRelationshipRequestInstructor" xml:space="preserve">
+    <value>Another pilot on {0}, &lt;span style="font-weight:bold"&gt;{1}&lt;/span&gt; has asked you to confirm that you are an instructor of theirs</value>
+  </data>
+  <data name="AddRelationshipRequestStudent" xml:space="preserve">
+    <value>Another pilot on {0}, &lt;span style="font-weight:bold"&gt;{1}&lt;/span&gt; has asked you to confirm that you are a student of theirs.</value>
+    <comment>{0} is the product name.  Leave the &lt;span&gt; stuff; it makes the requestor's name ({1}) boldface</comment>
+  </data>
+  <data name="LogbookForUserHeader" xml:space="preserve">
+    <value>Logbook for {0}</value>
+    <comment>{0} is replaced by user's name</comment>
+  </data>
+  <data name="DownloadLogbookCSV" xml:space="preserve">
+    <value>CSV File</value>
+  </data>
+  <data name="DownloadLogbookCSVDesc" xml:space="preserve">
+    <value>Download a one-time spreadsheet that can be used in any spreadsheet. You need to download again to get new data.</value>
+  </data>
+  <data name="DownloadLogbookExcel" xml:space="preserve">
+    <value>Excel Spreadsheet</value>
+  </data>
+  <data name="DownloadLogbookExcelDesc" xml:space="preserve">
+    <value>Download once and then refresh from within Excel</value>
+  </data>
+  <data name="DownloadLogbookHeader" xml:space="preserve">
+    <value>Download logbook for {0}</value>
+  </data>
+  <data name="DownloadLogbookSeparator" xml:space="preserve">
+    <value>OR</value>
+  </data>
+  <data name="EditAircraftReuseAdvice" xml:space="preserve">
+    <value>If an aircraft with the tailnumber you provide is already in the system, the existing aircraft (and its model definition) will be used and added to your personal list of aircraft.</value>
+  </data>
+  <data name="EditAircraftTotalsHeader" xml:space="preserve">
+    <value>Your totals in {0}:</value>
+    <comment>{0} is the tailnumber of the aircraft</comment>
+  </data>
+  <data name="EditAircraftViewMatchingFlights" xml:space="preserve">
+    <value>Show matching flights</value>
+  </data>
+  <data name="MyAircraftAddAircraft" xml:space="preserve">
+    <value>Add an aircraft</value>
+  </data>
+  <data name="MyAircraftConfirmDeleteAircraft" xml:space="preserve">
+    <value>Are you sure you want to delete this aircraft?  Note: aircraft will not be deleted if it is used in any of your flights.</value>
+  </data>
+  <data name="MyAircraftDeleteAircraft" xml:space="preserve">
+    <value>Delete this aircraft</value>
+  </data>
+  <data name="MyAircraftDeleteError" xml:space="preserve">
+    <value>Unable to delete aircraft {0}: {1}</value>
+  </data>
+  <data name="MyAircraftDesc" xml:space="preserve">
+    <value>These are the aircraft that you fly. There are many aircraft in the system, so when you go to add a new aircraft to your list, we will re-use the existing airplane if it's already in the system.</value>
+  </data>
+  <data name="MyAircraftHeader" xml:space="preserve">
+    <value>Aircraft</value>
+  </data>
+  <data name="MyAircraftNoAircraft" xml:space="preserve">
+    <value>You have no aircraft in your account.</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Note:</value>
+    <comment>Any time a bold-faced "Note: ...." is needed.</comment>
+  </data>
+  <data name="VisitedAirportsDistanceEstimate" xml:space="preserve">
+    <value>{0:#,#.0} nautical miles flown.</value>
+    <comment>{0:#,#.0} is replaced by the distance.</comment>
+  </data>
+  <data name="VisitedAirportsNumAirports" xml:space="preserve">
+    <value>{0} airport(s) visited.  </value>
+    <comment># of airports visited</comment>
+  </data>
+  <data name="CloseWindow" xml:space="preserve">
+    <value>Close this window</value>
+  </data>
+  <data name="FacebookAuthRedir" xml:space="preserve">
+    <value>Please wait; you should be redirected shortly.</value>
+  </data>
+  <data name="FacebookAuthRedirNotHappening" xml:space="preserve">
+    <value>If you are not redirected, please click here.</value>
+  </data>
+  <data name="FacebookSharePrivateFlight" xml:space="preserve">
+    <value>This flight is currently a private flight, meaning that only the route will be visible to other people. Would you like to make the flight public, so that your comments and other flight details are shared with others? (You can always edit  the flight to stop sharing it.)</value>
+  </data>
+  <data name="FacebookSharePrivateFlightGoAhead" xml:space="preserve">
+    <value>Share all details</value>
+  </data>
+  <data name="FacebookSharePrivateFlightKeepPrivate" xml:space="preserve">
+    <value>Only share the route</value>
+  </data>
+  <data name="FacebookSharePrivateFlightNotYours" xml:space="preserve">
+    <value>This flight is not yours to share</value>
+  </data>
+  <data name="FindFlightsPrinterViewTotals" xml:space="preserve">
+    <value>Printer Friendly View of just totals</value>
+  </data>
+  <data name="FindFlightsRegularViewTotals" xml:space="preserve">
+    <value>Regular View</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="MobileAppPromo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\MobileAppPromo.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="MobileAppSampleImageAltText" xml:space="preserve">
+    <value>Mobile App Screenshot</value>
+  </data>
+  <data name="FAQContactUs" xml:space="preserve">
+    <value>Contact us if your question is not answered here.</value>
+  </data>
+  <data name="FAQDesc" xml:space="preserve">
+    <value>Below are some commonly asked questions about %APP_NAME%.</value>
+  </data>
+  <data name="FAQHeader" xml:space="preserve">
+    <value>%APP_NAME% Frequently Asked Questions</value>
+  </data>
+  <data name="Privacy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Content.en\Privacy.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="PrivacyPolicyHeader" xml:space="preserve">
+    <value>{0} Privacy Policy</value>
+    <comment>{0} is app name</comment>
+  </data>
+  <data name="DefaultPageAddFlightHeader" xml:space="preserve">
+    <value>Add a new flight</value>
+  </data>
+  <data name="DefaultPageRecentFlightsHeader" xml:space="preserve">
+    <value>Recent flights taken by members of the {0} community</value>
+    <comment>{0} is the name of the app.</comment>
+  </data>
+  <data name="DefaultPageWelcomeBack" xml:space="preserve">
+    <value>Welcome Back {0}</value>
+    <comment>{0} is user name</comment>
+  </data>
+  <data name="DefaultTitle" xml:space="preserve">
+    <value>{0} - Free online pilot's logbook and more!</value>
+  </data>
+  <data name="TitleAircraft" xml:space="preserve">
+    <value>{0} - Aircraft</value>
+    <comment>Default title (Aircraft tab); {0} is app name</comment>
+  </data>
+  <data name="TitleAirports" xml:space="preserve">
+    <value>{0} - Airports</value>
+    <comment>Default title (Airports tab); {0} is app name</comment>
+  </data>
+  <data name="TitleHome" xml:space="preserve">
+    <value>{0} - Free online logbook for pilots</value>
+    <comment>Default title (site-wide); {0} is app name</comment>
+  </data>
+  <data name="TitleLogbook" xml:space="preserve">
+    <value>{0} - Logbook for {1}</value>
+    <comment>Default title (Logbook tab); {0} is app name</comment>
+  </data>
+  <data name="TitleProfile" xml:space="preserve">
+    <value>{0} - Profile</value>
+    <comment>Default title (Profile tab); {0} is app name</comment>
+  </data>
+  <data name="ChangeQuery" xml:space="preserve">
+    <value>Change Query...</value>
+  </data>
+  <data name="ChartTotalsHeader" xml:space="preserve">
+    <value>See your monthly flying trends by:</value>
+  </data>
+  <data name="NumberOfFlights" xml:space="preserve">
+    <value>{0} flights</value>
+    <comment># of flights in a result set</comment>
+  </data>
+  <data name="ChartRunningTotal" xml:space="preserve">
+    <value>Running Total</value>
+  </data>
+  <data name="WhyStartingFlights" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\whystartingflights.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="NextPrompt" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="PreviousPrompt" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="ContactUsReadFAQ" xml:space="preserve">
+    <value>Please note that many questions can be answered in the FAQ.</value>
+  </data>
+  <data name="HomePageStats" xml:space="preserve">
+    <value>{0:N0} pilots have recorded {1:N0} flights over the past {2:N0} days!</value>
+  </data>
+  <data name="RecentFlightsBelow" xml:space="preserve">
+    <value>Some of the recent flights are shown below</value>
+  </data>
+  <data name="AnswerWhyCantEditSims" xml:space="preserve">
+    <value>This aircraft is a "virtual" aircraft that is either an unspecified instance of the representative model, or a training device that emulates that model. As such is shared by all pilots who want to fly a virtual version of this model with this set of capabilities (e.g., logging landings or approaches).&lt;br /&gt;&lt;br /&gt;If you need to record training time in a training device that represents another model of aircraft, or with a different certification level, or in a different model without specifying a specific tailnumber, you can create a new virtual aircraft to represent that (if one already exists, it will be reused).&lt;br /&gt;&lt;br /&gt;If you have existing flights that you would like to switch from one aircraft to another, contact us and we can do a bulk-edit for you.</value>
+  </data>
+  <data name="LabelWhyCantEditSims" xml:space="preserve">
+    <value>Why can't I edit this aircraft?</value>
+  </data>
+  <data name="DonatePrompt" xml:space="preserve">
+    <value>Do you like %APP_NAME%?  This service IS AND WILL REMAIN free.  However, we are happy to accept any amount that you think it is worth.</value>
+  </data>
+  <data name="DonatePromptGratuity" xml:space="preserve">
+    <value>As a thank-you for donations, we offer the following gratuities (cumulative):</value>
+  </data>
+  <data name="DownloadSaveToCloud" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="CloudStorageClickToConfigure" xml:space="preserve">
+    <value>Set up cloud storage services</value>
+  </data>
+  <data name="CloudDownloadDescription" xml:space="preserve">
+    <value>Save a snapshot of your logbook to your cloud storage account.</value>
+  </data>
+  <data name="CloudStorageNotConfigured" xml:space="preserve">
+    <value>%APP_NAME% is not set up for this service.</value>
+  </data>
+  <data name="CloudStorageSuccess" xml:space="preserve">
+    <value>Data successfully saved!</value>
+  </data>
+  <data name="DonateThankYouTitle" xml:space="preserve">
+    <value>Thank-you for supporting %APP_NAME%</value>
+  </data>
+  <data name="DonateSolicitation" xml:space="preserve">
+    <value>Please support %APP_NAME%</value>
+  </data>
+  <data name="ImagesBackupDropboxPrompt" xml:space="preserve">
+    <value>Include a ZIP file of images and telemetry.</value>
+  </data>
+  <data name="ImagesBackupEndorsementsHeader" xml:space="preserve">
+    <value>Endorsements for {0}</value>
+  </data>
+  <data name="ImagesBackupFilename" xml:space="preserve">
+    <value>%APP_NAME% Images</value>
+  </data>
+  <data name="ImagesBackupFineprint" xml:space="preserve">
+    <value>The ZIP file contains an HTML file and the thumbnail images; the full-size images are stored on Amazon Web Services.  View the HTML file to view the images; click them to see the full-size image, and you can use an image downloading program to copy all of the full-sized images from Amazon.</value>
+  </data>
+  <data name="ImagesBackupFlightsHeader" xml:space="preserve">
+    <value>Flights for {0}</value>
+  </data>
+  <data name="ImagesBackupPrompt" xml:space="preserve">
+    <value>ZIP file of images/telemetry</value>
+  </data>
+  <data name="ImagesBackupTitle" xml:space="preserve">
+    <value>Images and telemetry for {0}</value>
+  </data>
+  <data name="TelemetryBackupHeader" xml:space="preserve">
+    <value>Flights with Telemetry</value>
+  </data>
+  <data name="TelemetryBackupLink" xml:space="preserve">
+    <value>Flight Telemetry</value>
+  </data>
+  <data name="CloudStorageDonate" xml:space="preserve">
+    <value>Support %APP_NAME% for at least $25 and get a year of nightly cloud storage backups!</value>
+  </data>
+  <data name="PrintViewDescription" xml:space="preserve">
+    <value>This page provides a more printer-friendly view of your logbook in a variety of layouts.  Landscape orientation is recommended.  Use your browser's preview function to see what the printed page will look like.  Or, download a PDF of your flights.</value>
+  </data>
+  <data name="PrintViewIncludeImages" xml:space="preserve">
+    <value>Include Pictures</value>
+  </data>
+  <data name="PrintViewSelectedFlightsLabel" xml:space="preserve">
+    <value>Flights matching the following criteria:</value>
+  </data>
+  <data name="PrintViewTotalsHeader" xml:space="preserve">
+    <value>Totals for selected flights</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="videoAdd" xml:space="preserve">
+    <value>Add Video</value>
+  </data>
+  <data name="videoCommentPrompt" xml:space="preserve">
+    <value>Say something about this video</value>
+  </data>
+  <data name="videoDisclaimer" xml:space="preserve">
+    <value>You may only attach videos for which you have all the necessary rights to do so.</value>
+  </data>
+  <data name="videoErrNoURL" xml:space="preserve">
+    <value>Please supply a URL reference to a video.</value>
+  </data>
+  <data name="videoErrUnsupportedFormat" xml:space="preserve">
+    <value>Video source is not surpported</value>
+  </data>
+  <data name="videoErrURLNotParseable" xml:space="preserve">
+    <value>YouTube URL format is not recognized.</value>
+  </data>
+  <data name="videoHeader" xml:space="preserve">
+    <value>Add links to videos for this flight</value>
+  </data>
+  <data name="videoOverview" xml:space="preserve">
+    <value>To attach a video to your flight, you must first upload it to a video-hosting site such as YouTube or Vimeo.  You can then attach the link to the video here.</value>
+  </data>
+  <data name="videoPrompt" xml:space="preserve">
+    <value>Link to video (e.g. "http://www.youtube.com/watch?v=YMmy3P20_uw")</value>
+  </data>
+  <data name="EditMakeWatermarkFamily" xml:space="preserve">
+    <value>Family Name</value>
+  </data>
+  <data name="AjaxFileUploadDowngradePrompt" xml:space="preserve">
+    <value>(Image Upload not working?  Click here)</value>
+  </data>
+  <data name="ChartDataPeriod" xml:space="preserve">
+    <value>Time Period</value>
+  </data>
+  <data name="ChartDataRunningTotal" xml:space="preserve">
+    <value>Running Total</value>
+  </data>
+  <data name="ChartDataTotal" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="PopMenuAltText" xml:space="preserve">
+    <value>(Menu)</value>
+  </data>
+  <data name="AchievementsForUserHeader" xml:space="preserve">
+    <value>Achievements for {0}</value>
+  </data>
+  <data name="_8710FormForUserHeader" xml:space="preserve">
+    <value>8710 Form for {0}</value>
+  </data>
+  <data name="gratuityCloudStorageExpired" xml:space="preserve">
+    <value>Your nightly cloud storage backups from %APP_NAME% have ended</value>
+  </data>
+  <data name="gratuityCloudStorageExpiring" xml:space="preserve">
+    <value>Your nightly cloud storage backups from %APP_NAME% will end soon</value>
+  </data>
+  <data name="GratuityEarnedHeader" xml:space="preserve">
+    <value>As a thank-you for your support, you have earned the following gratuities:</value>
+  </data>
+  <data name="GratuityNameClub" xml:space="preserve">
+    <value>Create and manage flying clubs</value>
+  </data>
+  <data name="GratuityNameDropbox" xml:space="preserve">
+    <value>A year of nightly Backup to a cloud storage provider (requires configuration)</value>
+  </data>
+  <data name="GratuityNameVideo" xml:space="preserve">
+    <value>Attach Videos to Flights</value>
+  </data>
+  <data name="GratuityThanksClub" xml:space="preserve">
+    <value>You can create flying clubs to schedule airplanes and report on flying</value>
+  </data>
+  <data name="GratuityThanksDropbox" xml:space="preserve">
+    <value>Your logbook will be backed up nightly to your cloud storage account (requires configuration under Preferences) for a year</value>
+  </data>
+  <data name="GratuityThanksVideo" xml:space="preserve">
+    <value>You can attach links to videos to your flights</value>
+  </data>
+  <data name="videoDefaultYouTubeTitle" xml:space="preserve">
+    <value>Video from a pilot on %APP_NAME%</value>
+  </data>
+  <data name="videoYouTubeDisclaimer" xml:space="preserve">
+    <value>By clicking 'upload,' you certify that you own all rights to the content or that you are authorized by the owner to make the content publicly available on YouTube, and that it otherwise complies with the YouTube Terms of Service located at {0}.</value>
+  </data>
+  <data name="videoYouTubeOwnership" xml:space="preserve">
+    <value>All videos uploaded via %APP_NAME% are publicly visible on Youtube on the %APP_NAME% channel.</value>
+  </data>
+  <data name="videoYouTubeTOSMobile" xml:space="preserve">
+    <value>http://m.youtube.com/terms</value>
+  </data>
+  <data name="videoYouTubeTOSPC" xml:space="preserve">
+    <value>http://www.youtube.com/t/terms</value>
+  </data>
+  <data name="errNotAuthorizedVideos" xml:space="preserve">
+    <value>Video upload is only available for pilots that have donated to support %APP_NAME%.</value>
+  </data>
+  <data name="oAuthErrCreationFailed" xml:space="preserve">
+    <value>Creation of authorization failed</value>
+  </data>
+  <data name="oAuthErrMissingRequest" xml:space="preserve">
+    <value>Missing authorization request</value>
+  </data>
+  <data name="oAuthErrNotAuthorized" xml:space="preserve">
+    <value>User did not authorize you</value>
+  </data>
+  <data name="oAuthErrNotSecure" xml:space="preserve">
+    <value>Authorization requests MUST be on a secure channel</value>
+  </data>
+  <data name="EditFlightAltCatclassTooltip" xml:space="preserve">
+    <value>Useful for amphibian aircraft or aircraft that are part-time on floats and part-time on wheels.  For a flight that begins on water and lands on wheels (or vice-versa), record two separate flights.</value>
+  </data>
+  <data name="EditFlightApproachTooltip" xml:space="preserve">
+    <value>You can specify approach types with additional properties, below.</value>
+  </data>
+  <data name="EditFlightCrossfillTooltip" xml:space="preserve">
+    <value>Click to copy total time into other fields for this entry.</value>
+  </data>
+  <data name="LocalizedJoinWithSpace" xml:space="preserve">
+    <value>{0} {1}</value>
+    <comment>Join two strings with a space (avoid warning about non localized literal)</comment>
+  </data>
+  <data name="LocalizedParenthetical" xml:space="preserve">
+    <value>({0})</value>
+    <comment>Replace {0} with what goes inside the parenthesis</comment>
+  </data>
+  <data name="LocalizedSpace" xml:space="preserve">
+    <value> </value>
+    <comment>(space)</comment>
+  </data>
+  <data name="DropboxError" xml:space="preserve">
+    <value>Save failed: {0}</value>
+  </data>
+  <data name="DropboxErrorDeAuthorized" xml:space="preserve">
+    <value>%APP_NAME% has removed the credentials that allow it to save for you and will not try to save again until you re-authorize it.  You can re-authorize on the website at http://%APP_URL%.</value>
+  </data>
+  <data name="FAQPermaLink" xml:space="preserve">
+    <value>Link to this FAQ</value>
+  </data>
+  <data name="DropboxErrorOutOfSpace" xml:space="preserve">
+    <value>Insufficient space in your Dropbox account</value>
+  </data>
+  <data name="CopyrightDisplay" xml:space="preserve">
+    <value>(c) 2006-{0} MyFlightbook LLC</value>
+  </data>
+  <data name="DownloadHeader" xml:space="preserve">
+    <value>Download your logbook</value>
+  </data>
+  <data name="DownloadLogbookPDF" xml:space="preserve">
+    <value>Download a PDF of your logbook in EASA FCL.050 format.</value>
+  </data>
+  <data name="DownloadYourData" xml:space="preserve">
+    <value>It's YOUR data, so we make sure that you can download it in whatever way works best for you.</value>
+  </data>
+  <data name="errImportXLSNotCSV" xml:space="preserve">
+    <value>This file appears to be in Excel native format, not CSV</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AnswerWhyCantEditLockedAircraft" xml:space="preserve">
+    <value>This aircraft has been the subject of frequent back-and-forth edits among pilots, so it has been locked down by the site administrator.  Please check if an alternative version of the aircraft is already listed (below), or else use the "Contact Us" link and we can make things right.</value>
+  </data>
+  <data name="OneDriveBadAuth" xml:space="preserve">
+    <value>OneDrive authentication error; please re-authorize %APP_NAME% to save to your OneDrive account.</value>
+  </data>
+  <data name="OneDriveCantReachService" xml:space="preserve">
+    <value>Timeout or other problem connecting to OneDrive</value>
+  </data>
+  <data name="OneDriveErrorOutOfSpace" xml:space="preserve">
+    <value>No more space left in quota</value>
+  </data>
+  <data name="errPDFNoFlights" xml:space="preserve">
+    <value>No flights to download</value>
+  </data>
+  <data name="SponsoredAdHeader" xml:space="preserve">
+    <value>Please visit our sponsor.</value>
+  </data>
+  <data name="LogTabAnalysis" xml:space="preserve">
+    <value>Analysis</value>
+  </data>
+  <data name="LogTabCurrency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="LogTabFilter" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="LogTabNewFlight" xml:space="preserve">
+    <value>New Flight</value>
+  </data>
+  <data name="LogTabPrint" xml:space="preserve">
+    <value>Printing</value>
+  </data>
+  <data name="LogTabTotals" xml:space="preserve">
+    <value>Totals</value>
+  </data>
+  <data name="OpenPrintView" xml:space="preserve">
+    <value>Open a printer-optimized view of your logbook</value>
+  </data>
+  <data name="PrintViewXPerPage" xml:space="preserve">
+    <value>{0} flights/page</value>
+  </data>
+  <data name="PrintViewAsFit" xml:space="preserve">
+    <value>Continuous</value>
+  </data>
+  <data name="PrintViewFlightsPerPage" xml:space="preserve">
+    <value>Flights per page (approximate):</value>
+  </data>
+  <data name="PrintViewIncludeSubtotals" xml:space="preserve">
+    <value>Subtotals</value>
+  </data>
+  <data name="ResultsFiltered" xml:space="preserve">
+    <value>Only flights matching this criteria are shown:</value>
+  </data>
+  <data name="PrintViewIncludeNoTotals" xml:space="preserve">
+    <value>No Subtotals</value>
+  </data>
+  <data name="PrintViewIncludeRunningTotals" xml:space="preserve">
+    <value>Subtotals &amp; Running Totals</value>
+  </data>
+  <data name="PrintViewOptions" xml:space="preserve">
+    <value>Printing Options:</value>
+  </data>
+  <data name="CloudStorageDropbox" xml:space="preserve">
+    <value>Dropbox</value>
+  </data>
+  <data name="CloudStorageGDrive" xml:space="preserve">
+    <value>Google Drive</value>
+  </data>
+  <data name="CloudStorageICloud" xml:space="preserve">
+    <value>iCloud</value>
+  </data>
+  <data name="CloudStorageOneDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="CloudStoragePickDefault" xml:space="preserve">
+    <value>Default cloud provider: </value>
+  </data>
+  <data name="WelcomeEnterAircraft" xml:space="preserve">
+    <value>Enter the aircraft you fly into your account</value>
+  </data>
+  <data name="WelcomeEnterFlights" xml:space="preserve">
+    <value>Enter flights directly on this page</value>
+  </data>
+  <data name="WelcomeHeader" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="WelcomeImportFlights" xml:space="preserve">
+    <value>Bulk import your flights from a spreadsheet</value>
+  </data>
+  <data name="WelcomeNextSteps" xml:space="preserve">
+    <value>Your next steps:</value>
+  </data>
+  <data name="WelcomeThanks" xml:space="preserve">
+    <value>Thanks for creating an account; we hope you find the service to be useful.</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="EditableImageDelete" xml:space="preserve">
+    <value>Delete this image</value>
+  </data>
+  <data name="EditableImageMakeFavorite" xml:space="preserve">
+    <value>Use this as default image</value>
+  </data>
+  <data name="ChangePassEmail" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\changepassemail.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ResetPassEmailSent" xml:space="preserve">
+    <value>A message has been sent to {0} with instructions for how to reset your password.</value>
+  </data>
+  <data name="ResetPasswordAnswerRequired" xml:space="preserve">
+    <value>Please provide the answer to the question you provided</value>
+  </data>
+  <data name="ResetPasswordAnswerWrong" xml:space="preserve">
+    <value>That is not the correct answer; please try again.</value>
+  </data>
+  <data name="ResetPasswordInvalidRequest" xml:space="preserve">
+    <value>Invalid password reset request</value>
+  </data>
+  <data name="ResetPasswordRequestAlreadyUsed" xml:space="preserve">
+    <value>This password reset link has already been used</value>
+  </data>
+  <data name="ResetPasswordRequestExpired" xml:space="preserve">
+    <value>This password reset link has expired</value>
+  </data>
+  <data name="ResetPasswordSubjectNew" xml:space="preserve">
+    <value>Instructions to reset your %APP_NAME% password</value>
+  </data>
+  <data name="ResetPassEmail" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\resetpassemail.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="AccountQuestionHint" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\accountquestionhint.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="AccountQuestionLengthTooLong" xml:space="preserve">
+    <value>Security Question must be shorter than 80 characters</value>
+  </data>
+  <data name="AccountQuestionRequired" xml:space="preserve">
+    <value>Please choose a question.  You will be asked for this if you forget your password</value>
+  </data>
+  <data name="AccountQuestionSamplesList" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\accountquestionsampleslist.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="errNoMatchingFlightsFound" xml:space="preserve">
+    <value>No flights were found.</value>
+  </data>
+  <data name="PrintViewTabCompat" xml:space="preserve">
+    <value>Printing Information</value>
+  </data>
+  <data name="PrintViewTabFilter" xml:space="preserve">
+    <value>What to Include</value>
+  </data>
+  <data name="PrintViewTabOptions" xml:space="preserve">
+    <value>Layout</value>
+  </data>
+  <data name="CrossfillPrompt" xml:space="preserve">
+    <value>Cross-fill to this field from the total time field</value>
+  </data>
+  <data name="NoImageTooltip" xml:space="preserve">
+    <value>(No image available)</value>
+  </data>
+  <data name="DownloadAsPDF" xml:space="preserve">
+    <value>Download as PDF</value>
+  </data>
+  <data name="DownloadAsPDFTabHeader" xml:space="preserve">
+    <value>PDF Download</value>
+  </data>
+  <data name="PDFOrientationLandscape" xml:space="preserve">
+    <value>Landscape</value>
+  </data>
+  <data name="PDFOrientationPortrait" xml:space="preserve">
+    <value>Portrait</value>
+  </data>
+  <data name="PDFPageOrientationPrompt" xml:space="preserve">
+    <value>Orientation:</value>
+  </data>
+  <data name="PDFPageSizeA4" xml:space="preserve">
+    <value>A4</value>
+  </data>
+  <data name="PDFPageSizeLegal" xml:space="preserve">
+    <value>Legal</value>
+  </data>
+  <data name="PDFPageSizeLetter" xml:space="preserve">
+    <value>Letter</value>
+  </data>
+  <data name="PDFPageSizePrompt" xml:space="preserve">
+    <value>Page size:</value>
+  </data>
+  <data name="PDFGenerationFailed" xml:space="preserve">
+    <value>Unable to create PDF file.</value>
+  </data>
+  <data name="PrintedFooterPageCount" xml:space="preserve">
+    <value>Page {0}</value>
+  </data>
+  <data name="wkhtmlnote" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\wkhtmlnote.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="DownloadPDFDescription" xml:space="preserve">
+    <value>Save a PDF of your flights in a variety of layouts.  You can also choose whether to include all flights or just a subset of your flights.</value>
+  </data>
+  <data name="PrintFullRoute" xml:space="preserve">
+    <value>Full route: {0}</value>
+  </data>
+  <data name="ChromeTabHack" xml:space="preserve">
+    <value>    \t\t </value>
+  </data>
+  <data name="PDFPageSizeA1" xml:space="preserve">
+    <value>A1</value>
+  </data>
+  <data name="PDFPageSizeA2" xml:space="preserve">
+    <value>A2</value>
+  </data>
+  <data name="PDFPageSizeA3" xml:space="preserve">
+    <value>A3</value>
+  </data>
+  <data name="PDFPageSizeA5" xml:space="preserve">
+    <value>A5</value>
+  </data>
+  <data name="PDFPageSizeB1" xml:space="preserve">
+    <value>B1</value>
+  </data>
+  <data name="PDFPageSizeB2" xml:space="preserve">
+    <value>B2</value>
+  </data>
+  <data name="PDFPageSizeB3" xml:space="preserve">
+    <value>B3</value>
+  </data>
+  <data name="PDFPageSizeB4" xml:space="preserve">
+    <value>B4</value>
+  </data>
+  <data name="PDFPageSizeB5" xml:space="preserve">
+    <value>B5</value>
+  </data>
+  <data name="PDFPageSizeExecutive" xml:space="preserve">
+    <value>Executive</value>
+  </data>
+  <data name="PDFPageSizeTabloid" xml:space="preserve">
+    <value>Tabloid</value>
+  </data>
+  <data name="PrintViewIncludeEndorsements" xml:space="preserve">
+    <value>Endorsements</value>
+  </data>
+  <data name="PrintViewIncludeHeader" xml:space="preserve">
+    <value>Include:</value>
+  </data>
+  <data name="PrintViewIncludeJPEGEndorsements" xml:space="preserve">
+    <value>Include photos of paper endorsements</value>
+  </data>
+  <data name="PrintViewIncludeTotals" xml:space="preserve">
+    <value>Complete Totals</value>
+  </data>
+  <data name="ColonConnector" xml:space="preserve">
+    <value>: </value>
+    <comment>Connects items with a colon and a space</comment>
+  </data>
+  <data name="LocalizedParentheticalWithSpace" xml:space="preserve">
+    <value> ({0})</value>
+  </data>
+  <data name="LogAction" xml:space="preserve">
+    <value>Action:</value>
+  </data>
+  <data name="LogException" xml:space="preserve">
+    <value>Exception:</value>
+  </data>
+  <data name="LogExceptionDataSoruceMessage" xml:space="preserve">
+    <value>An exception occurred communicating with the data source.\n\n</value>
+  </data>
+  <data name="LogTabMore" xml:space="preserve">
+    <value>More...</value>
+    <comment>Placeholder for additional tasks</comment>
+  </data>
+  <data name="StartingTotalsLink" xml:space="preserve">
+    <value>Set Starting Totals</value>
+  </data>
+  <data name="LogbookStartingTotalsDescription" xml:space="preserve">
+    <value>Include flights in your totals which aren't in %APP_NAME%</value>
+  </data>
+  <data name="LogbookDownloadDescription" xml:space="preserve">
+    <value>Save a copy of your logbook to your computer or a cloud-storage service</value>
+  </data>
+  <data name="LogbookImportDescription" xml:space="preserve">
+    <value>Bulk-load flights into %APP_NAME%</value>
+  </data>
+  <data name="PrintViewNoEmbeddedPDFsNote" xml:space="preserve">
+    <value>(PDF endorsements can be downloaded/printed separately)</value>
+  </data>
+  <data name="TitleTraining" xml:space="preserve">
+    <value>{0} - Training</value>
+  </data>
+  <data name="GliderAeroTows" xml:space="preserve">
+    <value>AeroTows:&amp;nbsp;{0}</value>
+  </data>
+  <data name="GliderGroundLaunches" xml:space="preserve">
+    <value>Ground&amp;nbsp;Launches:&amp;nbsp;{0}</value>
+  </data>
+  <data name="GliderSelfLaunches" xml:space="preserve">
+    <value>Self&amp;nbsp;Launches:&amp;nbsp;{0}</value>
+  </data>
+  <data name="_8710NumberFlights" xml:space="preserve">
+    <value>Flights:&amp;nbsp;{0}</value>
+  </data>
+  <data name="ChartMaxX" xml:space="preserve">
+    <value>Maximum {0}: {1:#,##0.0}</value>
+    <comment>e.g., "Maximum Altitude: 1,340"</comment>
+  </data>
+  <data name="ChartMinX" xml:space="preserve">
+    <value>Minimum {0}: {1:#,##0.0}</value>
+  </data>
+  <data name="ChartTotalsGroundSim" xml:space="preserve">
+    <value>Ground Sim.</value>
+  </data>
+  <data name="ChartTotalsXC" xml:space="preserve">
+    <value>Cross-Country</value>
+  </data>
+  <data name="LocalizedJoinWithDash" xml:space="preserve">
+    <value>{0} - {1}</value>
+    <comment>Join two strings with a dash (avoid warning about non localized literal)</comment>
+  </data>
+  <data name="LocalizedSpaceWithDash" xml:space="preserve">
+    <value> - </value>
+    <comment>space-dash-space</comment>
+  </data>
+  <data name="profilePreferencesUpdated" xml:space="preserve">
+    <value>Preferences successfully updated</value>
+  </data>
+  <data name="profileUpdatePreferences" xml:space="preserve">
+    <value>Update Preferences</value>
+  </data>
+</root>

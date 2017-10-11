@@ -1,0 +1,11 @@
+﻿Dear {0}
+
+You recently added a flight on %APP_NAME% with the attached telemetry data which is too large for the system.
+
+We saved the flight for you without the data, but didn't want you to lose any of your data, so we are including it with this message.
+
+You can try again to attach it to your flight (you can do this from the website at http://%APP_URL%), but please reduce it to less than 300K before doing so. 
+
+Thanks
+
+--The %APP_NAME% Team

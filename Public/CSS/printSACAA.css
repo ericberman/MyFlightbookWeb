@@ -1,0 +1,55 @@
+﻿.pageTable {
+    width:100%; 
+    border-collapse:collapse; 
+    border-spacing:0;
+    font-size: 9pt; 
+}
+.pageTable td {
+    padding: 5px;
+}
+
+tr.bordered {
+    page-break-inside:avoid;
+}
+
+tr.bordered td, tr.bordered th {
+    padding: 3px;
+    border:1px solid black;
+    page-break-inside:avoid;
+    font-weight:normal;
+}
+
+tr.bordered td
+{
+    font-size: smaller;
+}
+
+tr.borderedBold th {
+    padding: 3px;
+    border:1px solid black;
+    page-break-inside:avoid;
+    font-weight:bold;
+    text-align:center;
+}
+
+tr.subtotal td {
+    padding: 2px;
+    border: 1px solid gray;
+    page-break-inside:avoid;
+    font-size: smaller;
+    font-weight:bold;
+}
+
+tr.subtotal td.subtotalLabel {
+    border: none;
+}
+
+.headerBig {
+    text-align:center;
+    font-weight:bold;
+    font-size:smaller;
+}
+.headerSmall {
+    text-align:center;
+    font-size:smaller;
+}

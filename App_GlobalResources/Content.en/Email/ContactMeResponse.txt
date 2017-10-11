@@ -1,0 +1,9 @@
+﻿Thank-you for contacting %APP_NAME%.
+
+We usually respond to requests within a few hours.  
+
+However, I will be traveling with intermittant Internet access from June 19 - July 3, so it may be a few days before you get a response in that timeframe.  The FAQ on the site addresses many common questions; please give that a try.
+
+Thank-you very much.
+
+PLEASE DO NOT REPLY TO THIS EMAIL - IT IS UNMONITORED.  IF YOU WISH TO CONTACT US, PLEASE VISIT http://%APP_URL%%APP_ROOT%/Public/ContactMe.aspx.

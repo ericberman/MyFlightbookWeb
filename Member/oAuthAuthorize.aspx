@@ -1,0 +1,33 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="oAuthAuthorize.aspx.cs" Inherits="Secure_oAuthAuthorize" culture="auto" meta:resourcekey="PageResource1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
+    <asp:Label ID="lblAuthorize" runat="server" Text="Authorize application" meta:resourcekey="lblAuthorizeResource1"></asp:Label>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
+    <p>&nbsp;</p>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
+    <p>
+        <asp:Label ID="lblAuthPrompt" runat="server" Text="The application below has requested access to your data.  Do you want to give it access?" meta:resourcekey="lblAuthPromptResource1"></asp:Label></p>
+    <p><asp:Label ID="lblClientName" runat="server" Font-Bold="True" meta:resourcekey="lblClientNameResource1"></asp:Label></p>
+    <p><% = Resources.oAuth.oAuthRequestedPermissions %></p>
+    <asp:MultiView ID="mvScopesRequested" runat="server">
+        <asp:View ID="vwNoScopes" runat="server">
+            <p class="error">
+                <%  =Resources.oAuth.oAuthNoScopesDefined %>
+            </p>
+        </asp:View>
+        <asp:View ID="vwRequestedScopes" runat="server">
+            <ul>
+                <asp:Repeater ID="rptPermissions" runat="server">
+                    <ItemTemplate>
+                        <li><%# Container.DataItem %></li>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </ul>
+        </asp:View>
+    </asp:MultiView>
+    <p>
+        <asp:Button ID="btnYes" runat="server" Text="Yes" OnClick="btnYes_Click" meta:resourcekey="btnYesResource1" />&nbsp;&nbsp;<asp:Button ID="btnNo" runat="server" Text="No" OnClick="btnNo_Click" meta:resourcekey="btnNoResource1" /></p>   
+</asp:Content>
+

@@ -1,0 +1,13 @@
+﻿Dear {0}
+
+You recently saved a flight on %APP_NAME% with a request to tweet it to your feed on Twitter.
+
+Your flight was successfully saved, but it was not posted to Twitter because you have not yet authorized %APP_NAME% to post on your behalf to your Twitter feed.
+
+To give %APP_NAME% the ability to post flights (only the ones you select) to your Twitter feed, please visit http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx and click on the "Preferences" section.
+
+Doing this will enable you to choose whether or not to tweet a flight to your Twitter feed when you save it.
+
+Thanks
+
+--The %APP_NAME% Team
