@@ -27,7 +27,6 @@ This source code is provided under the GNU license, but it incorporates other co
 * Create 4 folders under "Images": "Aircraft", "BasicMed", "Endorsements", "Flights", and "Telemetry".  Set permissions on them so that Network Service has full control (so that the website can write thumbnails to these folders).
 * Set up the virtual directory for "logbook" pointing to your working directory, convert it to an application.  Use ASP.NET 4.5 or later as your application pool.
 * Set up a certificate to enable https.
-* In Web.config, you probably 
 * Make sure that IIS is set up to serve .KML, .GPX, .PDF, .JPG, .DOCX, .APK (application/vnd.android.package-archive) etc.
  * Add debug.config so that you can turn debug mode on/off locally:
  ~~~~
