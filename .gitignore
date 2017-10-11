@@ -36,8 +36,9 @@ WSDLtoObjC/
 .svn/
 [Aa]irport [Dd]ata/
 {*}/
-Support/OldScripts/
-Support/*.vbs
+[Ss]upport/OldScripts/
+[Ss]upport/*.vbs
+[Ss]upport/Rootfiles
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
