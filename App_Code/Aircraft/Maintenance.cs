@@ -396,12 +396,12 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
             if (!dt.HasValue())
                 return;
 
-            double daysUntilDue = dt.Subtract(DateTime.Now).TotalDays;
+            int daysUntilDue = (int) Math.Ceiling(dt.Subtract(DateTime.Now).TotalDays);
 
             if (daysUntilDue < 0)
-                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), CurrencyState.NotCurrent, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyOverdue, Math.Truncate(Math.Abs(daysUntilDue)).ToString(CultureInfo.CurrentCulture))));
+                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), CurrencyState.NotCurrent, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyOverdue, Math.Abs(daysUntilDue).ToString(CultureInfo.CurrentCulture))));
             else if (daysUntilDue < 90)
-                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), daysUntilDue < 30 ? CurrencyState.GettingClose : CurrencyState.OK, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyDue, Math.Truncate(daysUntilDue) + 1)));
+                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), daysUntilDue < 30 ? CurrencyState.GettingClose : CurrencyState.OK, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyDue, daysUntilDue)));
         }
     }
 }

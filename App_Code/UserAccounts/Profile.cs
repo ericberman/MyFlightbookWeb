@@ -1159,9 +1159,10 @@ namespace MyFlightbook
             if (dt.CompareTo(DateTime.MinValue) != 0)
             {
                 TimeSpan ts = dt.Subtract(DateTime.Now);
-                CurrencyState cs = (ts.Days < 0) ? CurrencyState.NotCurrent : ((ts.Days < 30) ? CurrencyState.GettingClose : CurrencyState.OK);
-                return new CurrencyStatusItem(szLabel, dt.ToShortDateString(), cs, (cs == CurrencyState.GettingClose) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, ts.Days) :
-                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -ts.Days) : string.Empty);
+                int days = (int)Math.Ceiling(ts.TotalDays);
+                CurrencyState cs = (days < 0) ? CurrencyState.NotCurrent : ((ts.Days < 30) ? CurrencyState.GettingClose : CurrencyState.OK);
+                return new CurrencyStatusItem(szLabel, dt.ToShortDateString(), cs, (cs == CurrencyState.GettingClose) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
+                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty);
             }
             else
                 return null;

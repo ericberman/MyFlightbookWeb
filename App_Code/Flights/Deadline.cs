@@ -326,9 +326,10 @@ namespace MyFlightbook.FlightCurrency
                     if (dc.Expiration.HasValue())
                     {
                         TimeSpan ts = dc.Expiration.Subtract(DateTime.Now);
-                        CurrencyState cs = (ts.Days < 0) ? CurrencyState.NotCurrent : ((ts.Days < daysForWarning) ? CurrencyState.GettingClose : CurrencyState.OK);
-                        lst.Add(new CurrencyStatusItem(szLabel, dc.Expiration.ToShortDateString(), cs, cs == CurrencyState.GettingClose ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, ts.Days) :
-                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -ts.Days) : string.Empty));
+                        int days = (int) Math.Ceiling(ts.TotalDays);
+                        CurrencyState cs = (ts.Days < 0) ? CurrencyState.NotCurrent : ((days < daysForWarning) ? CurrencyState.GettingClose : CurrencyState.OK);
+                        lst.Add(new CurrencyStatusItem(szLabel, dc.Expiration.ToShortDateString(), cs, cs == CurrencyState.GettingClose ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
+                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty));
                     }
                 }
 
