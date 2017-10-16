@@ -8,6 +8,8 @@
 *.user
 *.userosscache
 *.sln.docstates
+MyFlightbook.csproj
+MyFlightbook.sln
 
 #configuration files that should not be in source control
 connection.config
