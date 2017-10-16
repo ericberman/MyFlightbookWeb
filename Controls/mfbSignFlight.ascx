@@ -246,4 +246,5 @@
 
     <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="False" 
         meta:resourcekey="lblErrResource1"></asp:Label>
+    <div><br />&nbsp;<br />&nbsp;<br />&nbsp;</div>
 </asp:Panel>
