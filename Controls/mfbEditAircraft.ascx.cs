@@ -252,7 +252,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         if (AdminMode)
             lst.Add(String.Format(CultureInfo.CurrentCulture, "Users = {0}", String.Join(", ", Stats.UserNames)));
 
-        lnkViewTotals.Visible = !AdminMode && !m_ac.IsNew;
+        lnkViewTotals.Visible = !AdminMode && !m_ac.IsNew && (new UserAircraft(Page.User.Identity.Name)).GetUserAircraftByID(m_ac.AircraftID) != null;
         if (lnkViewTotals.Visible)
         {
             FlightQuery fq = new FlightQuery(Page.User.Identity.Name) { AircraftIDList = new int[] { m_ac.AircraftID } };
