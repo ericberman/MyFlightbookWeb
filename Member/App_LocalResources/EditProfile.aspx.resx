@@ -316,7 +316,7 @@
     <value />
   </data>
   <data name="ckLAPLCurrencyResource1.Text" xml:space="preserve">
-    <value>Use EASA LAPL currency rules (Beta)</value>
+    <value>Use EASA LAPL currency rules</value>
   </data>
   <data name="ckLAPLCurrencyResource1.ToolTip" xml:space="preserve">
     <value />
@@ -1177,7 +1177,7 @@
     <value>Pilot License</value>
   </data>
   <data name="locMedicalDurationPromptResource1.Text" xml:space="preserve">
-    <value>Medical is valid for</value>
+    <value>Duration</value>
   </data>
   <data name="locNewAnswerResource1.Text" xml:space="preserve">
     <value>New Security Answer</value>
@@ -1582,6 +1582,21 @@
     <value />
   </data>
   <data name="ValidateEmailOKResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListItemResource7.Text" xml:space="preserve">
+    <value>FAA rules (calendar months)</value>
+  </data>
+  <data name="ListItemResource7.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListItemResource8.Text" xml:space="preserve">
+    <value>ICAO rules (day-for-day)</value>
+  </data>
+  <data name="ListItemResource8.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblMedicalDurationTypeResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
 </root>

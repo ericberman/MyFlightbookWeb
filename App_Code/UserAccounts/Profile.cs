@@ -342,6 +342,15 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Specifies whether to use ICAO (day-for-day) medical expiration or FAA (calendar month) expiraiton
+        /// </summary>
+        public Boolean UsesICAOMedical
+        {
+            get { return hasFlag(CurrencyOptionFlag.flagUseEASAMedical); }
+            set { setCurrencyFlag(CurrencyOptionFlag.flagUseEASAMedical, value); }
+        }
+
+        /// <summary>
         /// Use loose 61.57(c)(4) interpretation (i.e., mix/match of ATD/FTD/Real)
         /// </summary>
         public Boolean UsesLooseIFRCurrency
@@ -892,7 +901,7 @@ namespace MyFlightbook
                 if (!LastMedical.HasValue() || MonthsToMedical == 0)
                     return DateTime.MinValue;
                 else
-                    return LastMedical.AddCalendarMonths(MonthsToMedical);
+                    return UsesICAOMedical ? LastMedical.AddMonths(MonthsToMedical) : LastMedical.AddCalendarMonths(MonthsToMedical);
             }
         }
 
@@ -1172,7 +1181,7 @@ namespace MyFlightbook
         {
             List<CurrencyStatusItem> rgCS = new List<CurrencyStatusItem>();
 
-            if (NextMedical.CompareTo(DateTime.MinValue) != 0)
+            if (NextMedical.HasValue())
                 rgCS.Add(StatusForDate(NextMedical, Resources.Currency.NextMedical));
 
             CurrencyStatusItem csBasicMed = new Basicmed.BasicMed(UserName).Status;

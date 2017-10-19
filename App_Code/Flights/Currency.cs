@@ -40,7 +40,8 @@ namespace MyFlightbook.FlightCurrency
         flagUseFAR135_26xStatus = 0x0800,
         flagUseLAPLCurrency = 0x1000,
         flagFAR117IncludeAllFlights = 0x2000,
-        flagUseFAR61217 = 0x4000
+        flagUseFAR61217 = 0x4000,
+        flagUseEASAMedical = 0x8000
     }
 
     /// <summary>

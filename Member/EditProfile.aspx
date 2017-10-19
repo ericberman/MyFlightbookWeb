@@ -415,7 +415,7 @@
                                 </div>
                                 <div><asp:CheckBox ID="ckCanadianCurrency" runat="server" meta:resourcekey="ckCanadianCurrencyResource1" Text="Use Canadian currency rules" /></div>
                                 <div>
-                                    <asp:CheckBox ID="ckLAPLCurrency" runat="server" Text="Use EASA LAPL currency rules (Beta)" meta:resourcekey="ckLAPLCurrencyResource1" />
+                                    <asp:CheckBox ID="ckLAPLCurrency" runat="server" Text="Use EASA LAPL currency rules" meta:resourcekey="ckLAPLCurrencyResource1" />
                                     <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes2" meta:resourcekey="lnkCurrencyNotesResource1" runat="server" Text="(See notes on currency computations for details)" Target="_blank" NavigateUrl="~/Public/CurrencyDisclaimer.aspx#instrument"></asp:HyperLink></span>
                                 </div>
                                 <div>
@@ -786,46 +786,63 @@
                         </Header>
                         <Content>
                             <asp:Panel ID="pnlMedical" runat="server" DefaultButton="btnUpdateMedical" meta:resourcekey="pnlMedicalResource1">
-                                <h3>
-                                    <asp:Localize ID="locLastMedicalPrompt" runat="server" 
-                                        Text="Date of Last Medical" meta:resourcekey="locLastMedicalPromptResource1"></asp:Localize>
-                                </h3>
-                                <div>
-                                    <uc2:mfbTypeInDate ID="dateMedical" runat="server" />
-                                    <asp:Localize ID="locMedicalDurationPrompt" runat="server" 
-                                        Text="Medical is valid for" 
-                                        meta:resourcekey="locMedicalDurationPromptResource1"></asp:Localize>
-                                    <asp:DropDownList ID="cmbMonthsMedical" runat="server" 
-                                        ValidationGroup="valMedical" 
-                                        meta:resourcekey="cmbMonthsMedicalResource1">
-                                        <asp:ListItem Selected="True" Value="0" Text="(Unspecified)" 
-                                            meta:resourcekey="ListItemResource11"></asp:ListItem>
-                                        <asp:ListItem Value="6" Text="6 Months" meta:resourcekey="ListItemResource12"></asp:ListItem>
-                                        <asp:ListItem Value="12" Text="12 Months" meta:resourcekey="ListItemResource13"></asp:ListItem>
-                                        <asp:ListItem Value="24" Text="24 Months" meta:resourcekey="ListItemResource14"></asp:ListItem>
-                                        <asp:ListItem Value="36" Text="36 Months" meta:resourcekey="ListItemResource15"></asp:ListItem>
-                                        <asp:ListItem Value="48" Text="48 Months" meta:resourcekey="ListItemResource16"></asp:ListItem>
-                                        <asp:ListItem Value="60" Text="60 Months" meta:resourcekey="ListItemResource17"></asp:ListItem>
-                                    </asp:DropDownList>
-                                    <asp:CustomValidator ID="CustomValidator1" runat="server" 
-                                        ErrorMessage="Please specify the duration of your medical." 
-                                        ControlToValidate="cmbMonthsMedical" CssClass="error" 
-                                        OnServerValidate="DurationIsValid" ValidationGroup="valPilotInfo" 
-                                        meta:resourcekey="CustomValidator1Resource1"></asp:CustomValidator>
+                                <table cellpadding="3px">
+                                    <tr>
+                                        <td>
+                                            <asp:Localize ID="locLastMedicalPrompt" runat="server"
+                                                Text="Date of Last Medical" meta:resourcekey="locLastMedicalPromptResource1"></asp:Localize></td>
+                                        <td>
+                                            <uc2:mfbTypeInDate ID="dateMedical" ValidationGroup="valPilotInfo" runat="server" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <asp:Localize ID="locMedicalDurationPrompt" runat="server"
+                                                Text="Duration"
+                                                meta:resourcekey="locMedicalDurationPromptResource1"></asp:Localize></td>
+                                        <td>
+                                            <asp:DropDownList ID="cmbMonthsMedical" runat="server"
+                                                ValidationGroup="valPilotInfo"
+                                                meta:resourcekey="cmbMonthsMedicalResource1">
+                                                <asp:ListItem Selected="True" Value="0" Text="(Unspecified)"
+                                                    meta:resourcekey="ListItemResource11"></asp:ListItem>
+                                                <asp:ListItem Value="6" Text="6 Months" meta:resourcekey="ListItemResource12"></asp:ListItem>
+                                                <asp:ListItem Value="12" Text="12 Months" meta:resourcekey="ListItemResource13"></asp:ListItem>
+                                                <asp:ListItem Value="24" Text="24 Months" meta:resourcekey="ListItemResource14"></asp:ListItem>
+                                                <asp:ListItem Value="36" Text="36 Months" meta:resourcekey="ListItemResource15"></asp:ListItem>
+                                                <asp:ListItem Value="48" Text="48 Months" meta:resourcekey="ListItemResource16"></asp:ListItem>
+                                                <asp:ListItem Value="60" Text="60 Months" meta:resourcekey="ListItemResource17"></asp:ListItem>
+                                            </asp:DropDownList>
+                                            <asp:CustomValidator ID="CustomValidator1" runat="server"
+                                                ErrorMessage="Please specify the duration of your medical."
+                                                ControlToValidate="cmbMonthsMedical" CssClass="error"
+                                                OnServerValidate="DurationIsValid" ValidationGroup="valPilotInfo"
+                                                meta:resourcekey="CustomValidator1Resource1"></asp:CustomValidator>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <asp:RadioButtonList ID="rblMedicalDurationType" runat="server" meta:resourcekey="rblMedicalDurationTypeResource1">
+                                                <asp:ListItem Value="0" Text="Use FAA rules (calendar months)" meta:resourcekey="ListItemResource7" Selected="True"></asp:ListItem>
+                                                <asp:ListItem Value="1" Text="Use ICAO rules (day for day)" meta:resourcekey="ListItemResource8"></asp:ListItem>
+                                            </asp:RadioButtonList></td>
+                                    </tr>
+                                </table>
+
                                     <asp:Panel ID="pnlNextMedical" runat="server" Visible="False" 
                                         meta:resourcekey="pnlNextMedicalResource1"><br />
                                         <asp:Localize ID="locNextMedicalDuePrompt" runat="server" Text="<%$ Resources:Currency, NextMedical %>"></asp:Localize>
                                         <asp:Label ID="lblNextMedical" runat="server" Style="font-weight: bold;" 
                                             meta:resourcekey="lblNextMedicalResource1"></asp:Label>.<br /><br /></asp:Panel>
                                     <div>
-                                        <br />
                                         <asp:Button ID="btnUpdateMedical" runat="server"  
                                             Text="<%$ Resources:Profile, ProfilePilotInfoMedicalUpdate %>" ValidationGroup="valMedical" 
                                             onclick="btnUpdateMedical_Click" meta:resourcekey="btnUpdateMedicalResource1" />
-                                        <br />
+                                    </div>
+                                    <div>
                                         <asp:Label ID="lblMedicalInfo" runat="server" CssClass="success" EnableViewState="False"
                                             Text="<%$ Resources:Profile, ProfilePilotInfoMedicalUpdated %>" Visible="False" meta:resourcekey="lblMedicalInfoResource1"></asp:Label>
-                                        <br />
                                     </div>
                                     <asp:Panel ID="pnlBasicMed" runat="server" meta:resourcekey="pnlBasicMedResource1">
                                         <h3><% =Resources.Profile.BasicMedHeader %></h3>

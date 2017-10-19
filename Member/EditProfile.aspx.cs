@@ -148,6 +148,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
     {
         dateMedical.Date = m_pf.LastMedical;
         cmbMonthsMedical.SelectedValue = m_pf.MonthsToMedical.ToString(CultureInfo.CurrentCulture);
+        rblMedicalDurationType.SelectedIndex = m_pf.UsesICAOMedical ? 1 : 0;
         txtCertificate.Text = m_pf.Certificate;
         txtLicense.Text = m_pf.License;
         mfbTypeInDateCFIExpiration.Date = m_pf.CertificateExpiration;
@@ -863,8 +864,13 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     protected bool FCommitMedicalInfo()
     {
+        Page.Validate("valPilotInfo");
+        if (!IsValid)
+            return false;
+
         m_pf.LastMedical = dateMedical.Date;
         m_pf.MonthsToMedical = Convert.ToInt32(cmbMonthsMedical.SelectedValue, CultureInfo.InvariantCulture);
+        m_pf.UsesICAOMedical = rblMedicalDurationType.SelectedIndex > 0;
 
         try
         {
