@@ -253,7 +253,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             lst.Add(String.Format(CultureInfo.CurrentCulture, "Users = {0}", String.Join(", ", Stats.UserNames)));
 
         lnkViewTotals.Visible = !AdminMode && !m_ac.IsNew;
-        if (!m_ac.IsNew)
+        if (lnkViewTotals.Visible)
         {
             FlightQuery fq = new FlightQuery(Page.User.Identity.Name) { AircraftIDList = new int[] { m_ac.AircraftID } };
             lnkViewTotals.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(fq.ToJSONString().Compress())));
@@ -674,6 +674,14 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         bool fMigrate = e.CommandName.CompareOrdinalIgnoreCase("_switchMigrate") == 0;
         ua.ReplaceAircraftForUser(ac, m_ac, fMigrate);
         Response.Redirect(fMigrate ? String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ac.AircraftID) : "~/Member/Aircraft.aspx");
+    }
+
+    protected void gvAlternativeVersions_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e != null && e.Row.RowType == DataControlRowType.DataRow)
+        {
+            ((Controls_mfbHoverImageList)e.Row.FindControl("mfbHoverThumb")).Refresh();
+        }
     }
     #endregion
 

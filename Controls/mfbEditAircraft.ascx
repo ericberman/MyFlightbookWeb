@@ -10,6 +10,8 @@
 <%@ Register Src="mfbResourceSchedule.ascx" TagName="mfbResourceSchedule" TagPrefix="uc8" %>
 <%@ Register Src="ClubControls/SchedSummary.ascx" TagName="SchedSummary" TagPrefix="uc9" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc10" TagName="mfbTypeInDate" %>
+<%@ Register Src="~/Controls/mfbHoverImageList.ascx" TagPrefix="uc1" TagName="mfbHoverImageList" %>
+
 <asp:Panel ID="pnlEditAircraft" runat="server" DefaultButton="btnAddAircraft">
     <asp:HiddenField ID="hdnAdminMode" runat="server" Value="false" />
     <asp:Panel runat="server" ID="pnlLockedExplanation" CssClass="callout" Visible="False">
@@ -303,9 +305,16 @@
         <h2><% =Resources.Aircraft.editAircraftOtherVersionsHeader %></h2>
         <p><%=Resources.Aircraft.editAicraftOtherVersionsDescription %></p>
         <asp:GridView ID="gvAlternativeVersions" runat="server" GridLines="None"
-            AutoGenerateColumns="False" ShowHeader="False" CellPadding="4"
+            AutoGenerateColumns="False" ShowHeader="False" CellPadding="4" OnRowDataBound="gvAlternativeVersions_RowDataBound"
             OnRowCommand="gvAlternativeVersions_RowCommand">
             <Columns>
+                <asp:TemplateField>
+                    <ItemTemplate>
+                        <uc1:mfbHoverImageList ID="mfbHoverThumb" runat="server" ImageListKey='<%# Eval("AircraftID") %>' ImageListDefaultImage='<%# Eval("DefaultImage") %>' ImageListAltText='<%#: Eval("TailNumber") %>' MaxWidth="150px" 
+                            ImageListDefaultLink='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}{1}", Eval("AircraftID"), AdminMode ? "&a=1" : string.Empty) %>' ImageClass="Aircraft" />
+                    </ItemTemplate>
+                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="160px" />
+                </asp:TemplateField>
                 <asp:TemplateField>
                     <ItemTemplate>
                         <asp:HyperLink ID="lnkEditTail" runat="server" Target="_blank"
