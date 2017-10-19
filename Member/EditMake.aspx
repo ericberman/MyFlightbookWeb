@@ -12,20 +12,9 @@
         <uc2:mfbATDFTD ID="mfbATDFTD1" runat="server" />
         <uc1:mfbEditMake ID="mfbEditMake1" runat="server" OnMakeUpdated="MakeUpdated" />
         <div><asp:HyperLink ID="lnkViewAircraft" runat="server" Visible="false" Target="_blank">ADMIN - View Aircraft</asp:HyperLink>&nbsp;</div>
+        <div><asp:HyperLink ID="lnkViewTotals" runat="server" Visible="false"></asp:HyperLink></div>
         <br />
     </div>
 </asp:Content>
 <asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
-    <asp:Panel ID="pnlStats" runat="server" Visible="false">    
-        <br />
-        <h2><asp:Label ID="lblMake" runat="server" Text=""></asp:Label></h2>
-        <hr />
-        <div class="logbookForm" style="float:left; clear:right; border: 1px solid black; padding: 3px;">
-            <asp:Label ID="lblMakeStatsHeader" Font-Bold="true" runat="server" Text="<%$ Resources:Makes, makeStatsTotals %>"></asp:Label>
-            <br />
-            <uc3:mfbTotalSummary ID="mfbTotalSummary1" runat="server" /></div>
-        <div style="float:left; padding:3px;">
-            <uc4:mfbLogbook ID="mfbLogbook1" runat="server" />
-        </div>
-    </asp:Panel>   
 </asp:content>

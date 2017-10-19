@@ -522,4 +522,7 @@
   <data name="editAircraftTweak" xml:space="preserve">
     <value>I'm making a minor change</value>
   </data>
+  <data name="ViewAircraftTotalsPrompt" xml:space="preserve">
+    <value>View your totals in this aircraft</value>
+  </data>
 </root>

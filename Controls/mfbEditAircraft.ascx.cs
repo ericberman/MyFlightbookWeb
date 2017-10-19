@@ -4,13 +4,14 @@ using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Linq;
+using System.Web;
 using MyFlightbook;
 using MyFlightbook.Image;
 using MyFlightbook.Clubs;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -250,6 +251,10 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
         if (AdminMode)
             lst.Add(String.Format(CultureInfo.CurrentCulture, "Users = {0}", String.Join(", ", Stats.UserNames)));
+
+        lnkViewTotals.Visible = !AdminMode && m_ac.AircraftID != Aircraft.idAircraftUnknown;
+        FlightQuery fq = new FlightQuery(Page.User.Identity.Name) { AircraftIDList = new int[] { m_ac.AircraftID } };
+        lnkViewTotals.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(fq.ToJSONString().Compress())));
 
         rptStats.DataSource = lst;
         rptStats.DataBind();

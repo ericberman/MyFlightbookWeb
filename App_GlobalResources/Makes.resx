@@ -155,7 +155,7 @@
     <value>Turbine</value>
   </data>
   <data name="makeStatsHeader" xml:space="preserve">
-    <value>Your time in {0}</value>
+    <value>View your totals in {0}</value>
     <comment>e.g., "Your time in PA-180"</comment>
   </data>
   <data name="makeStatsTotals" xml:space="preserve">

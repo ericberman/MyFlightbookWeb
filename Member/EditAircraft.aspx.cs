@@ -1,22 +1,14 @@
+using MyFlightbook;
 using System;
-using System.Data;
-using System.Configuration;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -35,13 +27,6 @@ public partial class EditMake : System.Web.UI.Page
         }
         else
             base.OnError(e);
-    }
-
-    protected FlightQuery QueryForAircraft()
-    {
-        FlightQuery fq = new FlightQuery(Page.User.Identity.Name);
-        fq.AircraftList = new Aircraft[] { MfbEditAircraft1.Aircraft };
-        return fq;
     }
 
     protected bool AdminMode
@@ -83,19 +68,13 @@ public partial class EditMake : System.Web.UI.Page
             {
                 lblAddEdit1.Text = Resources.Aircraft.AircraftEditAdd;
                 reusetext.Visible = true;
-                pnlTotals.Visible = mfbLogbook1.Visible = false;
             }
             else
             {
                 bool fIsKnownAircraft = new UserAircraft(Page.User.Identity.Name).CheckAircraftForUser(MfbEditAircraft1.Aircraft);
                 lblAddEdit1.Text = Resources.Aircraft.AircraftEditEdit;
                 mfbATDFTD1.Visible = false;
-                lblTail2.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftTotalsHeader, MfbEditAircraft1.Aircraft.TailNumber);
                 lblTail.Text = MfbEditAircraft1.Aircraft.TailNumber;
-
-                if (!fAdminMode)
-                    mfbTotalSummary1.CustomRestriction = QueryForAircraft();
-                pnlTotals.Visible = !fAdminMode && fIsKnownAircraft;
             }
 
             // Remember the return URL, but only if it is relative (for security)
@@ -109,17 +88,6 @@ public partial class EditMake : System.Web.UI.Page
     {
         Aircraft.SaveLastTail(MfbEditAircraft1.AircraftID);
         Response.Redirect(!String.IsNullOrEmpty(hdnReturnURL.Value) ? hdnReturnURL.Value : "Aircraft.aspx");
-    }
-
-    protected void lnkShowFlights_Click(object sender, EventArgs e)
-    {
-        if (!AdminMode)
-        {
-            mfbLogbook1.Restriction = QueryForAircraft();
-            mfbLogbook1.Visible = true;
-            mfbLogbook1.RefreshData();
-            lnkShowFlights.Visible = false;
-        }
     }
 
     protected void btnAdminCloneThis_Click(object sender, EventArgs e)

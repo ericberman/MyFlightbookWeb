@@ -1,20 +1,12 @@
+using MyFlightbook;
 using System;
-using System.Data;
-using System.Configuration;
-using System.Collections;
 using System.Globalization;
 using System.Web;
-using System.Web.Security;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
-using System.Net.Mail;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -64,13 +56,10 @@ public partial class EditMake : System.Web.UI.Page
 
                 if (FUserHasFlownModel())
                 {
-                    pnlStats.Visible = true;
-                    lblMake.Text = String.Format(CultureInfo.CurrentCulture, Resources.Makes.makeStatsHeader, mfbEditMake1.Model.DisplayName);
-                    FlightQuery fq = new FlightQuery(Page.User.Identity.Name);
-                    fq.MakeList = new MakeModel[] { mfbEditMake1.Model };
-                    // TODO: create mfblogbook/mfbtotalssummary here, leaving them undefined otherwise?
-                    mfbTotalSummary1.CustomRestriction = fq;
-                    mfbLogbook1.Restriction = fq;
+                    lnkViewTotals.Visible = true;
+                    FlightQuery fq = new FlightQuery(Page.User.Identity.Name) { MakeList = new MakeModel[] { mfbEditMake1.Model } };
+                    lnkViewTotals.Text = String.Format(CultureInfo.CurrentCulture, Resources.Makes.makeStatsHeader, mfbEditMake1.Model.DisplayName);
+                    lnkViewTotals.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(fq.ToJSONString().Compress())));
                 }
 
                 if (Page.User.Identity.IsAuthenticated && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanManageData)

@@ -26,14 +26,6 @@
     <asp:HiddenField ID="hdnReturnURL" runat="server" />
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
-    <asp:Panel ID="pnlTotals" runat="server">
-        <h2><asp:Label Font-Bold="true" ID="lblTail2" runat="server" Text=""></asp:Label></h2>
-        <div style="float:left; clear:right; border: 1px solid black; padding: 3px; margin-right: 5px;" class="logbookForm">
-            <asp:LinkButton ID="lnkShowFlights" runat="server" 
-                onclick="lnkShowFlights_Click" Text="<%$ Resources:LocalizedText, EditAircraftViewMatchingFlights %>"></asp:LinkButton>
-            <uc4:mfbTotalSummary ID="mfbTotalSummary1" runat="server" />
-        </div>
-    </asp:Panel>
     <uc3:mfbLogbook ID="mfbLogbook1" runat="server" Visible="false" DetailsPageUrlFormatString="~/Member/FlightDetail.aspx/{0}"
          EditPageUrlFormatString="~/Member/LogbookNew.aspx/{0}" AnalysisPageUrlFormatString="~/Member/FlightDetail.aspx/{0}?tabID=Chart" SendPageTarget="~/Member/LogbookNew.aspx" />
     <asp:HiddenField ID="hdnAdminMode" runat="server" />

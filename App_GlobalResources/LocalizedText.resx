@@ -632,10 +632,6 @@ and I will see what I can do.</value>
   <data name="EditAircraftReuseAdvice" xml:space="preserve">
     <value>If an aircraft with the tailnumber you provide is already in the system, the existing aircraft (and its model definition) will be used and added to your personal list of aircraft.</value>
   </data>
-  <data name="EditAircraftTotalsHeader" xml:space="preserve">
-    <value>Your totals in {0}:</value>
-    <comment>{0} is the tailnumber of the aircraft</comment>
-  </data>
   <data name="EditAircraftViewMatchingFlights" xml:space="preserve">
     <value>Show matching flights</value>
   </data>

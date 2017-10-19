@@ -30,6 +30,7 @@
                 </ItemTemplate>
             </asp:Repeater>
         </ul>
+        <div><asp:HyperLink ID="lnkViewTotals" runat="server" Text="<%$ Resources:Aircraft, ViewAircraftTotalsPrompt %>"></asp:HyperLink></div>
         <asp:Panel ID="pnlLocked" runat="server" Visible="false">
             <asp:CheckBox ID="ckLocked" runat="server" Text="<%$ Resources:Aircraft, editAircraftAdminLocked %>" />
         </asp:Panel>
