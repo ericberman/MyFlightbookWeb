@@ -54,7 +54,7 @@
                     There is now a Facebook group for %APP_NAME%, and %APP_NAME% may include 
                     Facebook widgets on the site, and these widgets may use Facebook cookies to 
                     determine things like your status as a fan and such.&nbsp; If you are a member 
-                    of Facebook, Facebook may be able to deduce that you use %APP_NAME%.&nbsp; Please see the <a href="http://www.facebook.com/home.php#/policy.php?ref=pf">Facebook Privacy Policy</a> for more information 
+                    of Facebook, Facebook may be able to deduce that you use %APP_NAME%.&nbsp; Please see the <a href="https://www.facebook.com/home.php#/policy.php?ref=pf">Facebook Privacy Policy</a> for more information 
                     about their privacy policy.&nbsp; %APP_NAME% never, however, explicitly shares 
                     any information with Facebook.</p>
         <p>
@@ -73,7 +73,7 @@
             </li>
             <li>Google, as a third party vendor, uses cookies to serve ads on this site.
             </li>
-            <li>Google's use of the <a href="http://www.doubleclick.com/privacy/faq.aspx">DART cookie</a> enables it to serve ads to 
+            <li>Google's use of the <a href="https://www.dmasonline.org/doubleclick-dart-cookie/">DART cookie</a> enables it to serve ads to 
                 you based on your visit to this site and other sites on the Internet. </li>
-            <li>You may opt out of the use of the DART cookie by visiting the <a href="http://www.google.com/privacy_ads.html">Google ad and content network privacy policy</a>. </li>
+            <li>You may opt out of the use of the DART cookie by visiting the <a href="https://www.google.com/privacy_ads.html">Google ad and content network privacy policy</a>. </li>
         </ul>
