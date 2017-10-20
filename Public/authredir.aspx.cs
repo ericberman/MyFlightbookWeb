@@ -43,6 +43,8 @@ public partial class Public_authredir : System.Web.UI.Page
                 return "~/Member/8710Form.aspx";
             case "AIRCRAFTSCHEDULE":
                 return "~/Member/ACSchedule.aspx";
+            case "FAQ":
+                return "~/Public/FAQ.aspx";
             default:
                 return string.Empty;
         }
