@@ -1,8 +1,8 @@
 <p>
-    %APP_NAME% computes currency according to United States FAA rules (FAR <a href="http://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFar.nsf/FARSBySectLookup/61.57"
+    %APP_NAME% computes currency according to United States FAA rules (FAR <a href="https://www.law.cornell.edu/cfr/text/14/61.57"
         target="_blank">61.57</a>
     in particular). Meeting
-    <a href="http://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFar.nsf/FARSBySectLookup/61.57"
+    <a href="https://www.law.cornell.edu/cfr/text/14/61.57"
         target="_blank">61.57</a> can be subject to some interpretation. This page describes
     how %APP_NAME% computes currency and expiration dates.  <b>Being current, however, does not mean that you are legal.</b>&nbsp; 
         For example, if you do not have the right certification, or a flight review, if 
@@ -11,7 +11,7 @@
 <p style="font-weight:bold">Ultimately, you and only you can determine if you are legal to fly a given flight, regardless of what %APP_NAME% reports.&nbsp; You are responsible for this determination.</p>
 <h2 id="trainingdevices">Training Devices (Simulators, FTDs, and ATDs)</h2>
 <ul>
-    <li><a href="http://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFar.nsf/FARSBySectLookup/61.57"
+    <li><a href="https://www.law.cornell.edu/cfr/text/14/61.57"
         target="_blank">61.57</a> was updated in October 2009 to enable <b>flight training devices</b>
         (&quot;FTD&quot;) and <b>aviation training devices</b> (&quot;ATD&quot;), in addition to <strong>flight simulators </strong>(&quot;FS&quot;) for instrument
         currency.&nbsp; %APP_NAME% now supports these, but relies on you to identify the
@@ -31,7 +31,7 @@
     <li>Instrument currency requires approaches, holds, and &quot;intercepting and tracking
         courses through the use of navigation systems.&quot;&nbsp; Since such intercepting
         and tracking is often not explicitly logged, and because conducting approaches inevitably involve such procedures, %APP_NAME% assumes that if you log an approach, you must have performed intercepting and tracking procedures.</li>
-    <li>%APP_NAME% takes a fairly conservative interpretation of how <a href="http://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFar.nsf/FARSBySectLookup/61.57"
+    <li>%APP_NAME% takes a fairly conservative interpretation of how <a href="https://www.law.cornell.edu/cfr/text/14/61.57"
         target="_blank">61.57</a> is written, and unfortunately, it is written very poorly.&nbsp; In theory, 61.57(c) offers 5 choices for how to get current.&nbsp; %APP_NAME% computes each of these options and reports your currency based on whichever option results in the latest expiration date (if any).&nbsp; Here is how %APP_NAME% implements these options:
         <div style="margin-left:20px">
             <table style="padding:3px;">
@@ -65,9 +65,9 @@
         part 61.57 more conservatively than this and use a day-for-day sliding window when
         determining a 6-month window.&nbsp; See <a href="http://rgl.faa.gov/Regulatory_and_Guidance_Library%5CrgNPRM.nsf/0/3A4B11D9C94CC9CA8625727D0052C43A?OpenDocument"
             target="_blank">here</a> for an FAA document supporting the looser "calendar
-        month" interpretation.&nbsp; There is also a <a href="http://www.aopa.org/members/files/pilot/2002/pc0209.html"
+        month" interpretation.&nbsp; There is also a <a href="https://www.aopa.org/members/files/pilot/2002/pc0209.html"
             target="_blank">great article</a> (AOPA membership required, I&#39;m afraid)
-        that discusses this, and <a href="http://flash.aopa.org/asf/ifrinsights_regs/swf/flash.cfm"
+        that discusses this, and <a href="https://flash.aopa.org/asf/ifrinsights_regs/swf/flash.cfm"
             target="_blank">ASF course</a> (free registration required, if not an AOPA member)
         on IFR regulations also covers this topic.&nbsp; They key point of a &quot;calendar
         month&quot; is that if it is August 27, you can look back as far as Feb 1 for your
@@ -90,7 +90,7 @@
 </ul>
 <h2 id="nightcurrency">Night Currency</h2>
 <ul>
-    <li>When computing night-time currency, %APP_NAME% only requires night-time full-stop landings.  FAR <a href="http://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFar.nsf/FARSBySectLookup/61.57"
+    <li>When computing night-time currency, %APP_NAME% only requires night-time full-stop landings.  FAR <a href="https://www.law.cornell.edu/cfr/text/14/61.57"
         target="_blank">61.57</a>, however, requires 3 takeoffs as well. You can enter these (via &quot;Additional Flight Properties&quot;).  If both the required landings and takeoffs are found, %APP_NAME% will
         report your currency as expiring at the earlier of when the landings or takeoffs expire.  But if the required landings are found and the required takeoffs are NOT found, then %APP_NAME% will still report
         you as being current with an expiration date that ignores the takeoffs; it will, however, give you a warning that all of the required takeoffs were not found.&nbsp; It&#39;s a good idea to log them, 
@@ -107,7 +107,7 @@
         instrument time while doing required maneuvers in part (i) or (ii) of this section,
         %APP_NAME% assumes you have done ALL of the required maneuvers.&nbsp; Don&#39;t
         log it until you have done ALL of the required maneuvers.</li>
-    <li>As of Nov 15, 2013, the FAA <a href="http://www.gpo.gov/fdsys/pkg/FR-2013-09-16/pdf/2013-22485.pdf" target="_blank">changed its rule</a> and allowed CFI/CFII checkrides to 
+    <li>As of Nov 15, 2013, the FAA <a href="https://www.gpo.gov/fdsys/pkg/FR-2013-09-16/pdf/2013-22485.pdf" target="_blank">changed its rule</a> and allowed CFI/CFII checkrides to 
 	satisfy the flight review requirement of 61.56.  As such, %APP_NAME% now treats these checkrides as a flight review.</li>
 	<li><a href="http://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFAR.nsf/0/C039C8820E83B2F4862578940053960F?OpenDocument&Highlight=sfar%2073" target="_blank">SFAR 73</a>
 		requires two things for Robinson R-22 and R-44 helicopters:
@@ -149,8 +149,8 @@
     </li>
     <li>%APP_NAME% now supports part 135.293, 297, and 299.  You can attach properties to indicate that the requisite activities have been performed; it is up to you to ensure that they have been performed as required by the regulations.  Note, however, that at this time, a slightly simplified approach to computing some of this is taken.  Specifically:
         <ul>
-            <li><a href="http://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFar.nsf/FARSBySectLookup/135.293" target="_blank">135.293(b)</a> has a slightly different definition of "in-type" from part 61 based currency; %APP_NAME% uses the part 61 definition (i.e., segregating by category/class and, if needed, type).</li>
-            <li><a href="http://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFar.nsf/FARSBySectLookup/135.297" target="_blank">135.297(b)</a> discusses requirements to perform a given approach; this is NOT computed for you.</li>
+            <li><a href="https://www.law.cornell.edu/cfr/text/14/135.293" target="_blank">135.293(b)</a> has a slightly different definition of "in-type" from part 61 based currency; %APP_NAME% uses the part 61 definition (i.e., segregating by category/class and, if needed, type).</li>
+            <li><a href="https://www.law.cornell.edu/cfr/text/14/135.297" target="_blank">135.297(b)</a> discusses requirements to perform a given approach; this is NOT computed for you.</li>
             <li>135.297(d)/(e)/(f) also describe the kind of aircraft in which the IPC must be performed, and the mix-and-match that is allowed. For simplicity, though, this is also computed per category/class/(type) as above.</li>
         </ul>
     </li>
