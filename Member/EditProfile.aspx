@@ -830,120 +830,119 @@
                                     </tr>
                                 </table>
 
-                                    <asp:Panel ID="pnlNextMedical" runat="server" Visible="False" 
-                                        meta:resourcekey="pnlNextMedicalResource1"><br />
-                                        <asp:Localize ID="locNextMedicalDuePrompt" runat="server" Text="<%$ Resources:Currency, NextMedical %>"></asp:Localize>
-                                        <asp:Label ID="lblNextMedical" runat="server" Style="font-weight: bold;" 
-                                            meta:resourcekey="lblNextMedicalResource1"></asp:Label>.<br /><br /></asp:Panel>
-                                    <div>
-                                        <asp:Button ID="btnUpdateMedical" runat="server"  
-                                            Text="<%$ Resources:Profile, ProfilePilotInfoMedicalUpdate %>" ValidationGroup="valMedical" 
-                                            onclick="btnUpdateMedical_Click" meta:resourcekey="btnUpdateMedicalResource1" />
-                                    </div>
-                                    <div>
-                                        <asp:Label ID="lblMedicalInfo" runat="server" CssClass="success" EnableViewState="False"
-                                            Text="<%$ Resources:Profile, ProfilePilotInfoMedicalUpdated %>" Visible="False" meta:resourcekey="lblMedicalInfoResource1"></asp:Label>
-                                    </div>
-                                    <asp:Panel ID="pnlBasicMed" runat="server" meta:resourcekey="pnlBasicMedResource1">
-                                        <h3><% =Resources.Profile.BasicMedHeader %></h3>
-                                        <p><% =Resources.Profile.BasicMedDescription %></p>
-                                        <ol style="list-style-type:lower-alpha">
-                                            <li><%=Resources.Profile.BasicMedDescriptionA %></li>
-                                            <li><%=Resources.Profile.BasicMedDescriptionB %></li>
-                                            <li><%=Resources.Profile.BasicMedDescriptionC %></li>
-                                        </ol>
-                                        <p><a href="javascript:void(0);"><asp:Label ID="lblAddBaiscMedEvent" runat="server" Font-Bold="True" Text="<%$ Resources:Profile, BasicMedAddEventPrompt %>" meta:resourcekey="lblAddBaiscMedEventResource1"></asp:Label></a></p>
-                                        <asp:Panel ID="pnlAddBasicMedEvent" runat="server" meta:resourcekey="pnlAddBasicMedEventResource1">
-                                            <table>
-                                                <tr>
-                                                    <td><% =Resources.Profile.BasicMedEventDate %></td>
-                                                    <td><uc2:mfbTypeInDate runat="server" ID="mfbBasicMedEventDate" /></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><% =Resources.Profile.BasicMedEventActivity %></td>
-                                                    <td>
-                                                        <asp:RadioButtonList ID="rblBasicMedAction" runat="server">
-                                                            <asp:ListItem Text="<%$ Resources:Profile, BasicMedMedicalCourse %>" Selected="True" Value="AeromedicalCourse"></asp:ListItem>
-                                                            <asp:ListItem Text="<%$ Resources:Profile, BasicMedPhysicianVisit %>" Value="PhysicianVisit"></asp:ListItem>
-                                                        </asp:RadioButtonList>
-                                                    </td>
-                                                </tr>
-                                                <tr style="vertical-align:top">
-                                                    <td><% =Resources.Profile.BasicMedEventDescription %></td>
-                                                    <td><asp:TextBox ID="txtBasicMedNotes" TextMode="MultiLine" runat="server" meta:resourcekey="txtBasicMedNotesResource1"></asp:TextBox></td>
-                                                </tr>
-                                                <tr style="vertical-align:top">
-                                                    <td></td>
-                                                    <td>
-                                                        <p><% =Resources.Profile.BasicMedAttachDocumentation %></p>
-                                                        <uc7:mfbMultiFileUpload runat="server" ID="mfuBasicMedImages" Mode="Legacy" Class="BasicMed" IncludeDocs="true" IncludeVideos="false" RefreshOnUpload="true" />
-                                                    </td>
-                                                </tr>
-                                                <tr style="vertical-align:top">
-                                                    <td></td>
-                                                    <td>
-                                                        <br />
-                                                        <asp:Button ID="btnAddBasicMedEvent" runat="server" Text="<%$ Resources:Profile, BasicMedAddEvent %>" OnClick="btnAddBasicMedEvent_Click" meta:resourcekey="btnAddBasicMedEventResource1" />
-                                                        <asp:Label ID="lblBasicMedErr" CssClass="error" runat="server" EnableViewState="False" meta:resourcekey="lblBasicMedErrResource1"></asp:Label>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </asp:Panel>
-                                        <cc1:CollapsiblePanelExtender ID="cpeBasicMedEvents" runat="server" CollapseControlID="lblAddBaiscMedEvent" Collapsed="True" 
-                                                CollapsedSize="0" 
-                                            CollapsedText="<%$ Resources:Profile, BasicMedAddEventPrompt %>" 
-                                                ExpandControlID="lblAddBaiscMedEvent" ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>" 
-                                                TargetControlID="pnlAddBasicMedEvent" TextLabelID="lblAddBaiscMedEvent" BehaviorID="cpeBasicMed"></cc1:CollapsiblePanelExtender>
-                                        <asp:GridView ID="gvBasicMedEvents" runat="server" OnRowCommand="gvBasicMedEvents_RowCommand" OnRowEditing="gvBasicMedEvents_RowEditing" BorderStyle="None" BorderWidth="0px"
-                                            CellPadding="3" GridLines="None"
-                                            OnRowCancelingEdit="gvBasicMedEvents_RowCancelingEdit" OnRowUpdating="gvBasicMedEvents_RowUpdating" OnRowDataBound="gvBasicMedEvents_RowDataBound" AutoGenerateColumns="False" ShowHeader="False" meta:resourcekey="gvBasicMedEventsResource1">
-                                            <Columns>
-                                                <asp:TemplateField meta:resourcekey="TemplateFieldResource2">
-                                                    <ItemTemplate>
-                                                        <asp:ImageButton ID="imgDelete" runat="server" 
-                                                            AlternateText="<%$ Resources:Profile, BasicMedDeleteTooltip %>" CommandArgument='<%# Bind("ID") %>' 
-                                                            CommandName="_Delete" ImageUrl="~/images/x.gif" 
-                                                            ToolTip="<%$ Resources:Profile, BasicMedDeleteTooltip %>" />
-                                                        <cc1:ConfirmButtonExtender ID="confirmDeleteBasicMed" runat="server" 
-                                                            ConfirmOnFormSubmit="True" 
-                                                            ConfirmText="<%$ Resources:Profile, BasicMedConfirmDelete %>" 
-                                                            TargetControlID="imgDelete"></cc1:ConfirmButtonExtender>
-                                                    </ItemTemplate>
-                                                    <ItemStyle VerticalAlign="Top" />
-                                                </asp:TemplateField>
-                                                <asp:TemplateField meta:resourcekey="TemplateFieldResource3">
-                                                    <ItemTemplate>
-                                                        <div style="font-weight:bold"><%# ((DateTime) Eval("EventDate")).ToShortDateString() %> - <%# Eval("EventTypeDescription") %></div>
-                                                        <div><% =Resources.Profile.BasicMedExpiration  %><span style="font-weight:bold"><%# ((DateTime) Eval("ExpirationDate")).ToShortDateString() %></span></div>
-                                                        <div><%#: Eval("Description") %></div>
-                                                    </ItemTemplate>
-                                                    <ItemStyle VerticalAlign="Top" />
-                                                </asp:TemplateField>
-                                                <asp:TemplateField>
-                                                    <ItemTemplate>
-                                                        <uc8:mfbImageList runat="server" ID="ilBasicMed" CanEdit="false" ImageClass="BasicMed" IncludeDocs="true" />
-                                                    </ItemTemplate>
-                                                    <EditItemTemplate>
-                                                        <div><uc8:mfbImageList runat="server" ID="ilBasicMed" CanEdit="true" ImageClass="BasicMed" IncludeDocs="true" /></div>
-                                                        <div><uc7:mfbMultiFileUpload runat="server" ID="mfuBasicMedImages" Mode="Legacy" Class="BasicMed" IncludeDocs="true" ImageKey='<%# Bind("ID") %>' IncludeVideos="false" RefreshOnUpload="true" /></div>
-                                                    </EditItemTemplate>
-                                                    <ItemStyle VerticalAlign="Top" />
-                                                </asp:TemplateField>
-                                                <asp:CommandField ShowEditButton="True" meta:resourcekey="CommandFieldResource3" >
-                                                <ItemStyle VerticalAlign="Top" />
-                                                </asp:CommandField>
-                                            </Columns>
-                                            <EmptyDataTemplate>
-                                                <ul>
-                                                    <li>
-                                                        <asp:Label ID="lblNoDeadlines" runat="server" Font-Italic="True" 
-                                                            Text="<%$ Resources:Profile, BasicMedNoEvents %>" meta:resourcekey="lblNoDeadlinesResource2"></asp:Label>
-                                                    </li>
-                                                </ul>
-                                            </EmptyDataTemplate>
-                                        </asp:GridView>
-                                    </asp:Panel>
+                                <asp:Panel ID="pnlNextMedical" runat="server" Visible="False" 
+                                    meta:resourcekey="pnlNextMedicalResource1"><br />
+                                    <asp:Localize ID="locNextMedicalDuePrompt" runat="server" Text="<%$ Resources:Currency, NextMedical %>"></asp:Localize>
+                                    <asp:Label ID="lblNextMedical" runat="server" Style="font-weight: bold;" 
+                                        meta:resourcekey="lblNextMedicalResource1"></asp:Label>.<br /><br /></asp:Panel>
+                                <div>
+                                    <asp:Button ID="btnUpdateMedical" runat="server"  
+                                        Text="<%$ Resources:Profile, ProfilePilotInfoMedicalUpdate %>" ValidationGroup="valMedical" 
+                                        onclick="btnUpdateMedical_Click" meta:resourcekey="btnUpdateMedicalResource1" />
                                 </div>
+                                <div>
+                                    <asp:Label ID="lblMedicalInfo" runat="server" CssClass="success" EnableViewState="False"
+                                        Text="<%$ Resources:Profile, ProfilePilotInfoMedicalUpdated %>" Visible="False" meta:resourcekey="lblMedicalInfoResource1"></asp:Label>
+                                </div>
+                                <asp:Panel ID="pnlBasicMed" runat="server" meta:resourcekey="pnlBasicMedResource1">
+                                    <h3><% =Resources.Profile.BasicMedHeader %></h3>
+                                    <p><% =Resources.Profile.BasicMedDescription %></p>
+                                    <ol style="list-style-type:lower-alpha">
+                                        <li><%=Resources.Profile.BasicMedDescriptionA %></li>
+                                        <li><%=Resources.Profile.BasicMedDescriptionB %></li>
+                                        <li><%=Resources.Profile.BasicMedDescriptionC %></li>
+                                    </ol>
+                                    <p><a href="javascript:void(0);"><asp:Label ID="lblAddBaiscMedEvent" runat="server" Font-Bold="True" Text="<%$ Resources:Profile, BasicMedAddEventPrompt %>" meta:resourcekey="lblAddBaiscMedEventResource1"></asp:Label></a></p>
+                                    <asp:Panel ID="pnlAddBasicMedEvent" runat="server" meta:resourcekey="pnlAddBasicMedEventResource1">
+                                        <table>
+                                            <tr>
+                                                <td><% =Resources.Profile.BasicMedEventDate %></td>
+                                                <td><uc2:mfbTypeInDate runat="server" ID="mfbBasicMedEventDate" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td><% =Resources.Profile.BasicMedEventActivity %></td>
+                                                <td>
+                                                    <asp:RadioButtonList ID="rblBasicMedAction" runat="server">
+                                                        <asp:ListItem Text="<%$ Resources:Profile, BasicMedMedicalCourse %>" Selected="True" Value="AeromedicalCourse"></asp:ListItem>
+                                                        <asp:ListItem Text="<%$ Resources:Profile, BasicMedPhysicianVisit %>" Value="PhysicianVisit"></asp:ListItem>
+                                                    </asp:RadioButtonList>
+                                                </td>
+                                            </tr>
+                                            <tr style="vertical-align:top">
+                                                <td><% =Resources.Profile.BasicMedEventDescription %></td>
+                                                <td><asp:TextBox ID="txtBasicMedNotes" TextMode="MultiLine" runat="server" meta:resourcekey="txtBasicMedNotesResource1"></asp:TextBox></td>
+                                            </tr>
+                                            <tr style="vertical-align:top">
+                                                <td></td>
+                                                <td>
+                                                    <p><% =Resources.Profile.BasicMedAttachDocumentation %></p>
+                                                    <uc7:mfbMultiFileUpload runat="server" ID="mfuBasicMedImages" Mode="Legacy" Class="BasicMed" IncludeDocs="true" IncludeVideos="false" RefreshOnUpload="true" />
+                                                </td>
+                                            </tr>
+                                            <tr style="vertical-align:top">
+                                                <td></td>
+                                                <td>
+                                                    <br />
+                                                    <asp:Button ID="btnAddBasicMedEvent" runat="server" Text="<%$ Resources:Profile, BasicMedAddEvent %>" OnClick="btnAddBasicMedEvent_Click" meta:resourcekey="btnAddBasicMedEventResource1" />
+                                                    <asp:Label ID="lblBasicMedErr" CssClass="error" runat="server" EnableViewState="False" meta:resourcekey="lblBasicMedErrResource1"></asp:Label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </asp:Panel>
+                                    <cc1:CollapsiblePanelExtender ID="cpeBasicMedEvents" runat="server" CollapseControlID="lblAddBaiscMedEvent" Collapsed="True" 
+                                            CollapsedSize="0" 
+                                        CollapsedText="<%$ Resources:Profile, BasicMedAddEventPrompt %>" 
+                                            ExpandControlID="lblAddBaiscMedEvent" ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>" 
+                                            TargetControlID="pnlAddBasicMedEvent" TextLabelID="lblAddBaiscMedEvent" BehaviorID="cpeBasicMed"></cc1:CollapsiblePanelExtender>
+                                    <asp:GridView ID="gvBasicMedEvents" runat="server" OnRowCommand="gvBasicMedEvents_RowCommand" OnRowEditing="gvBasicMedEvents_RowEditing" BorderStyle="None" BorderWidth="0px"
+                                        CellPadding="3" GridLines="None"
+                                        OnRowCancelingEdit="gvBasicMedEvents_RowCancelingEdit" OnRowUpdating="gvBasicMedEvents_RowUpdating" OnRowDataBound="gvBasicMedEvents_RowDataBound" AutoGenerateColumns="False" ShowHeader="False" meta:resourcekey="gvBasicMedEventsResource1">
+                                        <Columns>
+                                            <asp:TemplateField meta:resourcekey="TemplateFieldResource2">
+                                                <ItemTemplate>
+                                                    <asp:ImageButton ID="imgDelete" runat="server" 
+                                                        AlternateText="<%$ Resources:Profile, BasicMedDeleteTooltip %>" CommandArgument='<%# Bind("ID") %>' 
+                                                        CommandName="_Delete" ImageUrl="~/images/x.gif" 
+                                                        ToolTip="<%$ Resources:Profile, BasicMedDeleteTooltip %>" />
+                                                    <cc1:ConfirmButtonExtender ID="confirmDeleteBasicMed" runat="server" 
+                                                        ConfirmOnFormSubmit="True" 
+                                                        ConfirmText="<%$ Resources:Profile, BasicMedConfirmDelete %>" 
+                                                        TargetControlID="imgDelete"></cc1:ConfirmButtonExtender>
+                                                </ItemTemplate>
+                                                <ItemStyle VerticalAlign="Top" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField meta:resourcekey="TemplateFieldResource3">
+                                                <ItemTemplate>
+                                                    <div style="font-weight:bold"><%# ((DateTime) Eval("EventDate")).ToShortDateString() %> - <%# Eval("EventTypeDescription") %></div>
+                                                    <div><% =Resources.Profile.BasicMedExpiration  %><span style="font-weight:bold"><%# ((DateTime) Eval("ExpirationDate")).ToShortDateString() %></span></div>
+                                                    <div><%#: Eval("Description") %></div>
+                                                </ItemTemplate>
+                                                <ItemStyle VerticalAlign="Top" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField>
+                                                <ItemTemplate>
+                                                    <uc8:mfbImageList runat="server" ID="ilBasicMed" CanEdit="false" ImageClass="BasicMed" IncludeDocs="true" />
+                                                </ItemTemplate>
+                                                <EditItemTemplate>
+                                                    <div><uc8:mfbImageList runat="server" ID="ilBasicMed" CanEdit="true" ImageClass="BasicMed" IncludeDocs="true" /></div>
+                                                    <div><uc7:mfbMultiFileUpload runat="server" ID="mfuBasicMedImages" Mode="Legacy" Class="BasicMed" IncludeDocs="true" ImageKey='<%# Bind("ID") %>' IncludeVideos="false" RefreshOnUpload="true" /></div>
+                                                </EditItemTemplate>
+                                                <ItemStyle VerticalAlign="Top" />
+                                            </asp:TemplateField>
+                                            <asp:CommandField ShowEditButton="True" meta:resourcekey="CommandFieldResource3" >
+                                            <ItemStyle VerticalAlign="Top" />
+                                            </asp:CommandField>
+                                        </Columns>
+                                        <EmptyDataTemplate>
+                                            <ul>
+                                                <li>
+                                                    <asp:Label ID="lblNoDeadlines" runat="server" Font-Italic="True" 
+                                                        Text="<%$ Resources:Profile, BasicMedNoEvents %>" meta:resourcekey="lblNoDeadlinesResource2"></asp:Label>
+                                                </li>
+                                            </ul>
+                                        </EmptyDataTemplate>
+                                    </asp:GridView>
+                                </asp:Panel>
                             </asp:Panel>
                         </Content>
                     </cc1:AccordionPane>
