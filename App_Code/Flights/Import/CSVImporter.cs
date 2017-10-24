@@ -9,7 +9,7 @@ using JouniHeikniemi.Tools.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -62,6 +62,11 @@ namespace MyFlightbook.ImportFlights
         {
             get { return colModelName[0]; }
         }
+
+        /// <summary>
+        /// A set of mappings between a user-supplied name for a model (e.g., "Cheyenne") and the model to which it was ultimately assigned (e.g., "PA31")
+        /// </summary>
+        public IDictionary<string, MakeModel> ModelNameMappings { get; set; }
         #endregion
 
         //  TODO: Pull these out of here so that we can reference them from externalformat.
@@ -336,6 +341,8 @@ namespace MyFlightbook.ImportFlights
 
                         if (m_cm.iColModel > 0 && !String.IsNullOrEmpty(szModel = m_rgszRow[m_cm.iColModel]))
                         {
+                            MakeModel mappedModel = (m_cm.ModelMapping != null && m_cm.ModelMapping.ContainsKey(szModel)) ? m_cm.ModelMapping[szModel] : null;   // see if we have a mapping for this, BEFORE trimming the comma
+
                             // trim anything after a comma, if necessary
                             int i = szModel.IndexOf(",");
                             if (i > 0)
@@ -346,12 +353,17 @@ namespace MyFlightbook.ImportFlights
                                 string szModelNormal = AircraftImportMatchRow.NormalizeModel(szModel);
                                 foreach (string szExistingTail in m_cm.AircraftForUser.Keys)
                                 {
-                                    if (szExistingTail.StartsWith(szTail, StringComparison.CurrentCultureIgnoreCase) &&
-                                        AircraftImportMatchRow.NormalizeModel(MakeModel.GetModel(m_cm.AircraftForUser[szExistingTail].ModelID).Model).StartsWith(szModelNormal, StringComparison.CurrentCultureIgnoreCase))
+                                    if (szExistingTail.StartsWith(szTail, StringComparison.CurrentCultureIgnoreCase))
                                     {
-                                        fFoundAnonOrSim = true;     // don't throw an exception
-                                        szTail = szExistingTail;    // Map to this aircraft
-                                        break;
+                                        Aircraft acExisting = m_cm.AircraftForUser[szExistingTail];
+                                        int modelIDExisting = acExisting.ModelID;
+                                        if ((mappedModel != null && mappedModel.MakeModelID == modelIDExisting) ||
+                                            (AircraftImportMatchRow.NormalizeModel(MakeModel.GetModel(modelIDExisting).Model).StartsWith(szModelNormal, StringComparison.CurrentCultureIgnoreCase)))
+                                            {
+                                                fFoundAnonOrSim = true;     // don't throw an exception
+                                                szTail = szExistingTail;    // Map to this aircraft
+                                                break;
+                                            }
                                     }
                                 }
                             }
@@ -578,6 +590,7 @@ namespace MyFlightbook.ImportFlights
             {
                 get { return _dictAircraft; }
             }
+            public IDictionary<string, MakeModel> ModelMapping { get; set; }
 
             public string User { get; set; }
 
@@ -734,7 +747,7 @@ namespace MyFlightbook.ImportFlights
                 {
                     try
                     {
-                        m_ImportContext = new ImportContext(csvr.GetCSVLine(true), szUser);
+                        m_ImportContext = new ImportContext(csvr.GetCSVLine(true), szUser) { ModelMapping = ModelNameMappings };
                     }
                     catch (CSVReaderInvalidCSVException ex)
                     {

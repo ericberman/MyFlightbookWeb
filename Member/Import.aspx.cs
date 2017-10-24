@@ -273,7 +273,7 @@ public partial class Member_Import : System.Web.UI.Page
         }
 
         ErrorContext.Clear();
-        CSVImporter csvimporter = CurrentImporter = new CSVImporter();
+        CSVImporter csvimporter = CurrentImporter = new CSVImporter() { ModelNameMappings = mfbImportAircraft1.ModelMapping };
         using (MemoryStream ms2 = new MemoryStream(rgb))
             csvimporter.FInitFromStream(ms2, User.Identity.Name, AddSuccessRow, AddErrorRow);
 

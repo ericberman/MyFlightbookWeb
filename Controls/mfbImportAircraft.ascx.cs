@@ -15,6 +15,7 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
     private const string szsessMakesKey = "sessMakesKey";
     private const string szsessAllManufacturers = "sessManufacturers";
     private const string szvsMatchRowsKey = "vsMatchRowsKey";
+    private const string szvsModelMapping = "vsModelMappingDict";
 
     public IEnumerable<AircraftImportMatchRow> CandidatesForImport
     {
@@ -48,10 +49,23 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
         }
         set { Session[szsessAllManufacturers] = value; }
     }
+
+    public  IDictionary<string, MakeModel> ModelMapping
+    {
+        get
+        {
+            Dictionary<string, MakeModel> d = (Dictionary<string, MakeModel>)ViewState[szvsModelMapping];
+            if (d == null)
+                ViewState[szvsModelMapping] = d = new Dictionary<string, MakeModel>();
+            return d;
+        }
+    }
     #endregion
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        Page.ClientScript.RegisterClientScriptInclude("jquery1", ResolveClientUrl("https://code.jquery.com/jquery-1.10.1.min.js"));
+        Page.ClientScript.RegisterClientScriptInclude("jquery2", ResolveClientUrl("~/public/jquery.json-2.4.min.js"));
         Page.ClientScript.RegisterClientScriptInclude("MFBAircraftImportScript", ResolveClientUrl("~/Public/ImpAircraft.js"));
         if (!IsPostBack)
         {
@@ -260,6 +274,8 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
             UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
             AircraftImportMatchRow mr = CandidatesForImport.FirstOrDefault<AircraftImportMatchRow>(mr2 => mr2.ID == idRow);
             mr.BestMatchAircraft.Commit(Page.User.Identity.Name);
+
+            ModelMapping[mr.ModelGiven] = MakeModel.GetModel(mr.BestMatchAircraft.ModelID);   // remember the mapping.
 
             // hack, but the commit above can result in the instance type being cleared out, so restore it.
             if (String.IsNullOrEmpty(mr.BestMatchAircraft.InstanceTypeDescription))
