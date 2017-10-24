@@ -134,9 +134,9 @@
         <p><asp:Label ID="lblImportSuccessful" runat="server" Text="Import complete - results are shown below" meta:resourcekey="lblImportSuccessfulResource1" ></asp:Label></p>
         <p><asp:HyperLink ID="btnDone" runat="server" Text="View my flights" NavigateUrl="~/Member/LogbookNew.aspx" meta:resourcekey="btnDoneResource1"  /></p>
     </asp:Panel>
+    <br /><br />
 </asp:Content>
 <asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
-    <br /><br />
     <asp:MultiView ID="mvContent" runat="server">
         <asp:View ID="View1" runat="server"></asp:View>
         <asp:View ID="View2" runat="server"></asp:View>
@@ -145,49 +145,72 @@
     <div style="margin-left:auto; margin-right:auto; max-width:90%">
         <asp:MultiView ID="mvPreviewResults" runat="server">
             <asp:View runat="server" ID="vwPreviewResults">
-                <asp:GridView ID="gvImportPreview" Width="100%" runat="server" BorderColor="Black" AutoGenerateColumns="False" 
-                    BorderStyle="Solid" BorderWidth="1px" CellPadding="2" OnRowDataBound="gvImportPreview_RowDataBound" 
-                    Font-Size="8pt" meta:resourcekey="gvImportPreviewResource1" >
-                        <Columns>
-                            <asp:TemplateField meta:resourcekey="TemplateFieldResource1" >
+                <asp:MultiView ID="mvPreview" runat="server">
+                    <asp:View ID="vwPreview" runat="server">
+                        <table style="width:100%; border-collapse:collapse; font-size: 8pt" border="1" cellpadding="2">
+                            <tr>
+                                <td></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label1" runat="server" Text="Date" meta:resourcekey="Label1Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label2" runat="server" Text="Tail Number" meta:resourcekey="Label2Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label3" runat="server" Text="Approaches" meta:resourcekey="Label3Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label4" runat="server" Text="Hold" meta:resourcekey="Label4Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label5" runat="server" Text="Landings" meta:resourcekey="Label5Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label6" runat="server" Text="FS Day Landings" meta:resourcekey="Label6Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label7" runat="server" Text="FS Night Landings" meta:resourcekey="Label7Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label8" runat="server" Text="X-Country" meta:resourcekey="Label8Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label9" runat="server" Text="Night" meta:resourcekey="Label9Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label10" runat="server" Text="IMC" meta:resourcekey="Label10Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label11" runat="server" Text="Sim. IMC" meta:resourcekey="Label11Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label12" runat="server" Text="Ground Sim" meta:resourcekey="Label12Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label13" runat="server" Text="Dual Received" meta:resourcekey="Label13Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label14" runat="server" Text="CFI" meta:resourcekey="Label14Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label20" runat="server" Text="SIC" meta:resourcekey="Label20Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label15" runat="server" Text="PIC" meta:resourcekey="Label15Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label16" runat="server" Text="Total Flight Time" meta:resourcekey="Label16Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label17" runat="server" Text="Route" meta:resourcekey="Label17Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label18" runat="server" Text="Comments" meta:resourcekey="Label18Resource1"></asp:Label></td>
+                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label19" runat="server" Text="Additional Data" meta:resourcekey="Label19Resource1"></asp:Label></td>
+                            </tr>
+                            <asp:Repeater ID="rptPreview" OnItemDataBound="rptPreview_ItemDataBound" runat="server">
                                 <ItemTemplate>
-                                    <asp:Image ID="imgNewOrUpdate" runat="server" ImageUrl='<%# Convert.ToBoolean(Eval("IsNewFlight")) ? "~/images/add.png" : "~/images/update.png" %>' 
-                                        ToolTip='<%# Convert.ToBoolean(Eval("IsNewFlight")) ? Resources.LogbookEntry.ImportAddTooltip : Resources.LogbookEntry.ImportUpdateTooltip %>' meta:resourcekey="imgNewOrUpdateResource1"  />
+                                    <tr runat="server" id="rowError" visible='<%# !String.IsNullOrEmpty((string) Eval("ErrorString")) %>'>
+                                        <td colspan="21" runat="server">
+                                            <div><asp:Label ID="lblFlightErr" CssClass="error" runat="server" Text='<%# Eval("ErrorString") %>'></asp:Label></div>
+                                            <div><asp:Label ID="lblRawRow" CssClass="error" runat="server"></asp:Label></div>
+                                        </td>
+                                    </tr>
+                                    <tr runat="server" id="rowFlight" class='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? "" : "error" %>'>
+                                        <td runat="server"><asp:Image ID="imgNewOrUpdate" runat="server" ImageUrl='<%# Convert.ToBoolean(Eval("IsNewFlight")) ? "~/images/add.png" : "~/images/update.png" %>' 
+                                                ToolTip='<%# Convert.ToBoolean(Eval("IsNewFlight")) ? Resources.LogbookEntry.ImportAddTooltip : Resources.LogbookEntry.ImportUpdateTooltip %>' meta:resourcekey="imgNewOrUpdateResource1"  /></td>
+                                        <td runat="server"><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
+                                        <td runat="server"><%# Eval("TailNumDisplay") %></td>
+                                        <td runat="server"><%# Eval("Approaches") %></td>
+                                        <td runat="server"><%# Eval("fHoldingProcedures").FormatBooleanInt() %></td>
+                                        <td runat="server"><%# Eval("Landings") %></td>
+                                        <td runat="server"><%# Eval("FullStopLandings") %></td>
+                                        <td runat="server"><%# Eval("NightLandings") %></td>
+                                        <td runat="server"><%# Eval("CrossCountry") %></td>
+                                        <td runat="server"><%# Eval("Nighttime") %></td>
+                                        <td runat="server"><%# Eval("IMC") %></td>
+                                        <td runat="server"><%# Eval("SimulatedIFR") %></td>
+                                        <td runat="server"><%# Eval("GroundSim") %></td>
+                                        <td runat="server"><%# Eval("Dual") %></td>
+                                        <td runat="server"><%# Eval("CFI") %></td>
+                                        <td runat="server"><%# Eval("SIC") %></td>
+                                        <td runat="server"><%# Eval("PIC") %></td>
+                                        <td runat="server"><%# Eval("TotalFlightTime") %></td>
+                                        <td runat="server"><%# Eval("Route") %></td>
+                                        <td runat="server"><%# Eval("Comment") %></td>
+                                        <td runat="server"><asp:PlaceHolder ID="plcAdditional" runat="server"></asp:PlaceHolder></td>
+                                    </tr>
                                 </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:BoundField DataField="Date" HeaderText="Date" meta:resourcekey="BoundFieldResource1" DataFormatString="{0:d}" />
-                            <asp:BoundField DataField="TailNumDisplay" HeaderText="Tail Number" meta:resourcekey="BoundFieldResource2"  />
-                            <asp:BoundField DataField="Approaches" HeaderText="Approaches" meta:resourcekey="BoundFieldResource3"  />
-                            <asp:TemplateField  HeaderText="Hold" meta:resourcekey="TemplateFieldResource2">
-                                <ItemTemplate>
-                                    <%# Eval("fHoldingProcedures").FormatBooleanInt() %>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:BoundField DataField="Landings" HeaderText="Landings" meta:resourcekey="BoundFieldResource4"  />
-                            <asp:BoundField DataField="FullStopLandings" HeaderText="FS Day Landings" meta:resourcekey="BoundFieldResource5"  />
-                            <asp:BoundField DataField="NightLandings" HeaderText="FS Night Landings" meta:resourcekey="BoundFieldResource6"  />
-                            <asp:BoundField DataField="CrossCountry" HeaderText="X-Country" meta:resourcekey="BoundFieldResource7"  />
-                            <asp:BoundField DataField="Nighttime" HeaderText="Night" meta:resourcekey="BoundFieldResource8"  />
-                            <asp:BoundField DataField="IMC" HeaderText="IMC" meta:resourcekey="BoundFieldResource9"  />
-                            <asp:BoundField DataField="SimulatedIFR" HeaderText="Sim. IMC" meta:resourcekey="BoundFieldResource10"  />
-                            <asp:BoundField DataField="GroundSim" HeaderText="Ground Sim" meta:resourcekey="BoundFieldResource11"  />
-                            <asp:BoundField DataField="Dual" HeaderText="Dual Received" meta:resourcekey="BoundFieldResource12"  />
-                            <asp:BoundField DataField="CFI" HeaderText="CFI" meta:resourcekey="BoundFieldResource13"  />
-                            <asp:BoundField DataField="SIC" HeaderText="SIC" meta:resourcekey="BoundFieldResource14"  />
-                            <asp:BoundField DataField="PIC" HeaderText="PIC" meta:resourcekey="BoundFieldResource15"  />
-                            <asp:BoundField DataField="TotalFlightTime" HeaderText="Total Flight Time" meta:resourcekey="BoundFieldResource16"  />
-                            <asp:BoundField DataField="Route" HeaderText="Route" meta:resourcekey="BoundFieldResource17"  />
-                            <asp:BoundField DataField="Comment" HeaderText="Comments" meta:resourcekey="BoundFieldResource18"  />
-                            <asp:TemplateField HeaderText="Additional Data" meta:resourcekey="TemplateFieldResource3" >
-                                <ItemTemplate>
-                                    <asp:PlaceHolder ID="plcAdditional" runat="server"></asp:PlaceHolder>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                        </Columns>
-                        <EmptyDataTemplate>
-                            <asp:Label ID="lblNoFlightsFound" runat="server" Text="No flights were found to import!" meta:resourcekey="lblNoFlightsFoundResource1" ></asp:Label>
-                        </EmptyDataTemplate>
-                    </asp:GridView>
+                            </asp:Repeater>
+                        </table>
+                    </asp:View>
+                    <asp:View ID="vwNoResults" runat="server">
+                        <div style="text-align:center"><asp:Label ID="lblNoFlightsFound" runat="server" CssClass="error" Text="No flights were found to import!" meta:resourcekey="lblNoFlightsFoundResource1" ></asp:Label></div>
+                    </asp:View>
+                </asp:MultiView>
             </asp:View>
             <asp:View runat="server" ID="vwImportResults">
                 <asp:PlaceHolder ID="plcProgress" runat="server"></asp:PlaceHolder>

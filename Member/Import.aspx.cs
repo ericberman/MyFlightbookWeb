@@ -119,47 +119,38 @@ public partial class Member_Import : System.Web.UI.Page
         l.Text = sz;
     }
 
-    protected void gvImportPreview_RowDataBound(object sender, GridViewRowEventArgs e)
+    protected void rptPreview_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
             throw new ArgumentNullException("e");
 
-        if (e.Row.RowType == DataControlRowType.DataRow)
+        LogbookEntry le = (LogbookEntry)e.Item.DataItem;
+
+        PlaceHolder plc = (PlaceHolder)e.Item.FindControl("plcAdditional");
+        // throw the less used properties into the final column
+        if (le.EngineStart.HasValue())
+            AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Engine Start: {0}", le.EngineStart.UTCDateFormatString()));
+        if (le.EngineEnd.HasValue())
+            AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Engine End: {0}", le.EngineEnd.UTCDateFormatString()));
+        if (le.FlightStart.HasValue())
+            AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Flight Start: {0}", le.FlightStart.UTCDateFormatString()));
+        if (le.FlightEnd.HasValue())
+            AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Flight End: {0}", le.FlightEnd.UTCDateFormatString()));
+        if (le.HobbsStart != 0)
+            AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Hobbs Start: {0}", le.HobbsStart));
+        if (le.HobbsEnd != 0)
+            AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Hobbs End: {0}", le.HobbsEnd));
+
+        // Add a concatenation of each property to the row as well.
+        foreach (CustomFlightProperty cfp in le.CustomProperties)
+            AddTextRow(plc, cfp.DisplayString);
+
+        if (!String.IsNullOrEmpty(le.ErrorString))
         {
-            LogbookEntry le = (LogbookEntry)e.Row.DataItem;
+            int iRow = e.Item.ItemIndex + 1;
 
-            if (String.IsNullOrEmpty(le.ErrorString))
-            {
-                PlaceHolder plc = (PlaceHolder)e.Row.FindControl("plcAdditional");
-                // throw the less used properties into the final column
-                if (le.EngineStart.HasValue())
-                    AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Engine Start: {0}", le.EngineStart.UTCDateFormatString()));
-                if (le.EngineEnd.HasValue())
-                    AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Engine End: {0}", le.EngineEnd.UTCDateFormatString()));
-                if (le.FlightStart.HasValue())
-                    AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Flight Start: {0}", le.FlightStart.UTCDateFormatString()));
-                if (le.FlightEnd.HasValue())
-                    AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Flight End: {0}", le.FlightEnd.UTCDateFormatString()));
-                if (le.HobbsStart != 0)
-                    AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Hobbs Start: {0}", le.HobbsStart));
-                if (le.HobbsEnd != 0)
-                    AddTextRow(plc, String.Format(CultureInfo.CurrentCulture, "Hobbs End: {0}", le.HobbsEnd));
-
-                // Add a concatenation of each property to the row as well.
-                foreach (CustomFlightProperty cfp in le.CustomProperties)
-                    AddTextRow(plc, cfp.DisplayString);
-            }
-            else
-            {
-                e.Row.Cells[0].Controls.Clear();
-                AddTextRow(e.Row.Cells[0], le.ErrorString, "error");
-                int iRow = e.Row.RowIndex + 1;
-                if (ErrorContext.ContainsKey(iRow))
-                    AddTextRow(e.Row.Cells[0], ErrorContext[iRow]);
-                e.Row.Cells[0].ColumnSpan = e.Row.Cells.Count;
-                while (e.Row.Cells.Count > 1)
-                    e.Row.Cells.RemoveAt(1);
-            }
+            if (ErrorContext.ContainsKey(iRow))
+                ((Label)e.Item.FindControl("lblRawRow")).Text = ErrorContext[iRow];
         }
     }
 
@@ -284,8 +275,9 @@ public partial class Member_Import : System.Web.UI.Page
             return;
         }
 
-        gvImportPreview.DataSource = csvimporter.FlightsToImport;
-        gvImportPreview.DataBind();
+        rptPreview.DataSource = csvimporter.FlightsToImport;
+        rptPreview.DataBind();
+        mvPreview.SetActiveView(csvimporter.FlightsToImport.Count > 0 ? vwPreview : vwNoResults);
 
         mvMissingAircraft.SetActiveView(vwNoMissingAircraft); // default state.
 
@@ -390,7 +382,6 @@ public partial class Member_Import : System.Web.UI.Page
         Response.Write(System.Text.Encoding.UTF8.GetString(CurrentCSVSource));
         Response.End();
     }
-
 
     protected void btnNewFile_Click(object sender, EventArgs e)
     {
