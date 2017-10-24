@@ -301,6 +301,8 @@ public partial class Member_Import : System.Web.UI.Page
                     mfbImportAircraft1.CandidatesForImport = missing;
                     mvMissingAircraft.SetActiveView(vwAddMissingAircraft);
                 }
+
+                ((Button)wzImportFlights.FindControl("FinishNavigationTemplateContainerID$btnNewFile")).Visible = true;
             }
         }
     }
@@ -387,5 +389,12 @@ public partial class Member_Import : System.Web.UI.Page
         Response.BinaryWrite(System.Text.Encoding.UTF8.GetPreamble());
         Response.Write(System.Text.Encoding.UTF8.GetString(CurrentCSVSource));
         Response.End();
+    }
+
+
+    protected void btnNewFile_Click(object sender, EventArgs e)
+    {
+        SetWizardStep(wsUpload);
+        ((Control)sender).Visible = false;
     }
 }

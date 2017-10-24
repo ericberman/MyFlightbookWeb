@@ -120,6 +120,15 @@
                 <asp:PlaceHolder ID="plcErrorList" runat="server" EnableViewState="false"></asp:PlaceHolder>
             </asp:WizardStep>
         </WizardSteps>
+        <StepNavigationTemplate>
+            <asp:Button CommandName="MovePrevious" Runat="server" Text="Previous" />
+            <asp:Button CommandName="MoveNext" Runat="server" Text="Next" />
+        </StepNavigationTemplate>
+        <FinishNavigationTemplate>
+            <asp:Button ID="btnNewFile" OnClick="btnNewFile_Click" Runat="server" Visible="false" Text="Upload a new file " />
+            <asp:Button CommandName="MovePrevious" Runat="server" Text="Previous" />
+            <asp:Button CommandName="MoveComplete" Runat="server" Text="Import" />
+        </FinishNavigationTemplate>
     </asp:Wizard>
     <asp:Panel ID="pnlImportSuccessful" runat="server" Visible="False" meta:resourcekey="pnlImportSuccessfulResource1" >
         <p><asp:Label ID="lblImportSuccessful" runat="server" Text="Import complete - results are shown below" meta:resourcekey="lblImportSuccessfulResource1" ></asp:Label></p>
