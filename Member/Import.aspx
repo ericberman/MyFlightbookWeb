@@ -180,8 +180,8 @@
                                         </td>
                                     </tr>
                                     <tr runat="server" id="rowFlight" class='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? "" : "error" %>'>
-                                        <td runat="server"><asp:Image ID="imgNewOrUpdate" runat="server" ImageUrl='<%# Convert.ToBoolean(Eval("IsNewFlight")) ? "~/images/add.png" : "~/images/update.png" %>' 
-                                                ToolTip='<%# Convert.ToBoolean(Eval("IsNewFlight")) ? Resources.LogbookEntry.ImportAddTooltip : Resources.LogbookEntry.ImportUpdateTooltip %>' meta:resourcekey="imgNewOrUpdateResource1"  /></td>
+                                        <td runat="server"><asp:Image ID="imgNewOrUpdate" runat="server" ImageUrl='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? "~/images/add.png" : "~/images/update.png") : "~/images/circleslash.png" %>' 
+                                                ToolTip='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? Resources.LogbookEntry.ImportAddTooltip : Resources.LogbookEntry.ImportUpdateTooltip) : string.Empty %>' meta:resourcekey="imgNewOrUpdateResource1"  /></td>
                                         <td runat="server"><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
                                         <td runat="server"><%# Eval("TailNumDisplay") %></td>
                                         <td runat="server"><%# Eval("Approaches") %></td>
