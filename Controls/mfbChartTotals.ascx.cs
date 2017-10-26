@@ -61,7 +61,7 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         gvRawData.DataBind();
 
         LogbookEntryDisplay.HistogramSelector sel = SelectedFieldToGraph;
-        Boolean fIsInt = (sel == LogbookEntryDisplay.HistogramSelector.Landings || sel == LogbookEntryDisplay.HistogramSelector.Approaches);
+        Boolean fIsInt = (sel == LogbookEntryDisplay.HistogramSelector.Landings || sel == LogbookEntryDisplay.HistogramSelector.Approaches || sel == LogbookEntryDisplay.HistogramSelector.Flights || sel == LogbookEntryDisplay.HistogramSelector.FlightDays);
 
         gcTrends.Clear();
         foreach (Bucket<DateTime> b in RawData)
@@ -91,8 +91,8 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         if (datasource == null)
             throw new ArgumentNullException("datasource");
         YearMonthBucketmanager bm = new YearMonthBucketmanager();
-        LogbookEntryDisplay.HistogramSelector? sel = SelectedFieldToGraph;
-        bm.ScanData(datasource, sel, true);
+        Dictionary<string, object> context = new Dictionary<string, object>() { { LogbookEntryDisplay.HistogramContextSelectorKey, SelectedFieldToGraph } };
+        bm.ScanData(datasource, context, true);
         RawData = bm.Buckets.ToArray<Bucket<DateTime>>();
         RefreshChartAndTable();
     }

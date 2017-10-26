@@ -2724,20 +2724,24 @@ namespace MyFlightbook
         #endregion
 
         #region IHistogramable support
-        public enum HistogramSelector { TotalFlightTime, Landings, Approaches, Night, IMC, SimulatedIMC, Dual, PIC, SIC, CFI, XC, GroundSim}
+        public const string HistogramContextSelectorKey = "hgContextSelector";
+        public enum HistogramSelector { TotalFlightTime, Landings, Approaches, Night, IMC, SimulatedIMC, Dual, PIC, SIC, CFI, XC, GroundSim, Flights, FlightDays}
 
         public IComparable BucketSelector
         {
             get { return Date; }
         }
 
-        public double HistogramValue(object context = null)
+        public double HistogramValue(IDictionary<string, object> context = null)
         {
-            HistogramSelector? sel = (HistogramSelector?)context;
-            if (sel == null || !sel.HasValue)
-                return (double)TotalFlightTime;
+            if (context == null)
+                throw new ArgumentNullException("context");
+            if (!context.ContainsKey(HistogramContextSelectorKey))
+                throw new MyFlightbookException("HistogramValue: context doesn't specify which field you want to sum!");
 
-            switch (sel.Value)
+            HistogramSelector sel = (HistogramSelector)context[HistogramContextSelectorKey];
+
+            switch (sel)
             {
                 case HistogramSelector.TotalFlightTime:
                 default:
@@ -2764,6 +2768,24 @@ namespace MyFlightbook
                     return (double)CrossCountry;
                 case HistogramSelector.GroundSim:
                     return (double)GroundSim;
+                case HistogramSelector.Flights:
+                    return 1;
+                case HistogramSelector.FlightDays:
+                    {
+                        const string FlightDaysContextKey = "hgFlightDays";
+                        HashSet<DateTime> hs = null;
+                        if (context.ContainsKey(FlightDaysContextKey))
+                            hs = (HashSet<DateTime>)context[FlightDaysContextKey];
+                        else
+                            context[FlightDaysContextKey] = hs = new HashSet<DateTime>();
+                        if (hs.Contains(Date))
+                            return 0;
+                        else
+                        {
+                            hs.Add(Date);
+                            return 1;
+                        }
+                    }
             }
         }
         #endregion

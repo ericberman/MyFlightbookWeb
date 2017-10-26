@@ -1349,4 +1349,10 @@ and I will see what I can do.</value>
   <data name="profileUpdatePreferences" xml:space="preserve">
     <value>Update Preferences</value>
   </data>
+  <data name="ChartTotalsTotalFlightDays" xml:space="preserve">
+    <value>Days with Flights</value>
+  </data>
+  <data name="ChartTotalsTotalFlights" xml:space="preserve">
+    <value>Flights</value>
+  </data>
 </root>

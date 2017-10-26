@@ -93,7 +93,7 @@ namespace MyFlightbook.Histogram
         /// <param name="context">Any context to be passed (e.g., could specify the property to be summed for the histogram</param>
         /// <param name="fSetRunningTotals">True to set running totals</param>
         /// <returns>The resulting histogram buckets, which are also persisted in the "Buckets" property</returns>
-        public void ScanData(IEnumerable<IHistogramable> source, object context = null, bool fSetRunningTotals = false)
+        public void ScanData(IEnumerable<IHistogramable> source, IDictionary<string, object> context = null, bool fSetRunningTotals = false)
         {
             if (source == null)
                 throw new ArgumentNullException("source");
@@ -302,6 +302,6 @@ namespace MyFlightbook.Histogram
         /// </summary>
         /// <param name="context">An optional parameter for context.  E.g., if there are multiple fields that can be summed, this could specify the field to use</param>
         /// <returns>The value to add to the bucket for this item</returns>
-        double HistogramValue(object context = null);
+        double HistogramValue(IDictionary<string, object> context = null);
     }
 }

@@ -17,6 +17,8 @@
         <asp:ListItem Value="PIC" Text="<%$ Resources:LocalizedText, ChartTotalsTotalPIC %>"></asp:ListItem>
         <asp:ListItem Value="CFI" Text="<%$ Resources:LocalizedText, ChartTotalsTotalCFI %>"></asp:ListItem>
         <asp:ListItem Value="SIC" Text="<%$ Resources:LocalizedText, ChartTotalsTotalSIC %>"></asp:ListItem>
+        <asp:ListItem Value="Flights" Text="<%$ Resources:LocalizedText, ChartTotalsTotalFlights %>"></asp:ListItem>
+        <asp:ListItem Value="FlightDays" Text="<%$ Resources:LocalizedText, ChartTotalsTotalFlightDays %>"></asp:ListItem>
     </asp:DropDownList>
     <asp:Panel ID="pnlChart" runat="server">
         <uc3:GoogleChart ID="gcTrends" Width="750" Height="340" ChartType="ColumnChart" Chart2Type="line" SlantAngle="90" LegendType="bottom" XDataType="date" UseMonthYearDate="true" YDataType="number" Y2DataType="number" runat="server" />

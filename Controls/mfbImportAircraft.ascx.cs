@@ -1,12 +1,18 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
+
+/******************************************************
+ * 
+ * Copyright (c) 2016-2017 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
 
 public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
 {
