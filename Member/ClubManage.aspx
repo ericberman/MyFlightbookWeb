@@ -200,6 +200,7 @@
                                     <asp:Label ID="lblName" runat="server" Text='<%# FullName(Eval("Firstname").ToString(), Eval("Lastname").ToString(), Eval("Email").ToString()) %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
+                            <asp:BoundField DataField="Route" HeaderText="<%$ Resources:Club, ReportHeaderRoute %>" />
                             <asp:BoundField DataField="Total Time" HeaderText="<%$ Resources:Club, ReportHeaderTotalTime %>" DataFormatString="{0:0.0#}" />
                             <asp:BoundField DataField="Hobbs Start" HeaderText="<%$ Resources:Club, ReportHeaderHobbsStart %>" />
                             <asp:BoundField DataField="Hobbs End" HeaderText="<%$ Resources:Club, ReportHeaderHobbsEnd %>" />
@@ -238,7 +239,7 @@
                 <asp:SqlDataSource ID="sqlDSReports" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
                     ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT f.date AS Date, f.TotalFlightTime AS 'Total Time', f.HobbsStart AS 'Hobbs Start', f.HobbsEnd AS 'Hobbs End', u.username AS 'Username', u.Firstname, u.LastName, u.Email, ac.Tailnumber AS 'Aircraft',  
+                    SelectCommand="SELECT f.date AS Date, f.TotalFlightTime AS 'Total Time', f.Route, f.HobbsStart AS 'Hobbs Start', f.HobbsEnd AS 'Hobbs End', u.username AS 'Username', u.Firstname, u.LastName, u.Email, ac.Tailnumber AS 'Aircraft',  
                     fp.decValue AS 'Tach Start', fp2.decValue AS 'Tach End',
                     f.dtFlightStart AS 'Flight Start', f.dtFlightEnd AS 'Flight End', 
                     f.dtEngineStart AS 'Engine Start', f.dtEngineEnd AS 'Engine End',
