@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -112,13 +110,138 @@ namespace MyFlightbook.Histogram
                     b.RunningTotal = (total += b.Value);
             }
         }
+    }
 
+    public abstract class DateBucketManager : BucketManager<DateTime>
+    {
+        #region properties
+        /// <summary>
+        /// Earliest date bucket
+        /// </summary>
+        public DateTime MinDate { get; protected set; }
+
+        /// <summary>
+        /// Latest date bucket
+        /// </summary>
+        public DateTime MaxDate { get; protected set; }
+        #endregion
+
+        protected void ComputeDateRange(IEnumerable<IHistogramable> items)
+        {
+            if (items == null)
+                throw new ArgumentNullException("items");
+            foreach (IHistogramable h in items)
+            {
+                DateTime dt = (DateTime)h.BucketSelector;
+                if (MinDate.CompareTo(dt) > 0)
+                    MinDate = dt;
+                if (MaxDate.CompareTo(dt) < 0)
+                    MaxDate = dt;
+            }
+        }
+
+        protected DateBucketManager() : base()
+        {
+            MinDate = DateTime.MaxValue;
+            MaxDate = DateTime.MinValue;
+        }
     }
 
     /// <summary>
+    /// BucketManager for days (e.g., "May 5 2016") data
+    /// </summary>
+    public class DailyBucketmanager : DateBucketManager
+    {
+        public DailyBucketmanager() : base() { }
+
+        /// <summary>
+        /// Generates the buckets for the range of Histogrammable.  WILL THROW AN EXCEPTION IF THE ORDINAL IS NOT A DATETIME!
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        protected override IDictionary<IComparable, Bucket<DateTime>> BucketsForData(IEnumerable<IHistogramable> items)
+        {
+            Dictionary<IComparable, Bucket<DateTime>> dict = new Dictionary<IComparable, Bucket<DateTime>>();
+            if (items == null)
+                throw new ArgumentNullException("items");
+
+            if (items.Count() == 0)
+                return dict;
+
+            ComputeDateRange(items);
+
+            // Now create the buckets
+            DateTime dt = MinDate;
+            do
+            {
+                dict[dt] = new Bucket<DateTime>((DateTime)KeyForValue(dt), dt.ToShortDateString());
+                dt = dt.AddDays(1);
+            } while (dt.CompareTo(MaxDate) <= 0);
+
+            return dict;
+        }
+
+        protected override IComparable KeyForValue(IComparable o)
+        {
+            return ((DateTime) o).Date;
+        }
+    }
+
+    /// <summary>
+    /// BucketManager for days (e.g., "May 5 2016") data
+    /// </summary>
+    public class WeeklyBucketmanager : DateBucketManager
+    {
+        /// <summary>
+        /// Day to use as the start of week.
+        /// </summary>
+        public DayOfWeek WeekStart { get; set; }
+
+        public WeeklyBucketmanager() : base()
+        {
+            WeekStart = DayOfWeek.Sunday;
+        }
+
+        /// <summary>
+        /// Generates the buckets for the range of Histogrammable.  WILL THROW AN EXCEPTION IF THE ORDINAL IS NOT A DATETIME!
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        protected override IDictionary<IComparable, Bucket<DateTime>> BucketsForData(IEnumerable<IHistogramable> items)
+        {
+            Dictionary<IComparable, Bucket<DateTime>> dict = new Dictionary<IComparable, Bucket<DateTime>>();
+            if (items == null)
+                throw new ArgumentNullException("items");
+
+            if (items.Count() == 0)
+                return dict;
+
+            ComputeDateRange(items);
+
+            // Now create the buckets
+            DateTime dt = (DateTime) KeyForValue(MinDate);
+            do
+            {
+                dict[dt] = new Bucket<DateTime>((DateTime)KeyForValue(dt), dt.ToShortDateString());
+                dt = dt.AddDays(7);
+            } while (dt.CompareTo(MaxDate) <= 0);
+
+            return dict;
+        }
+
+        protected override IComparable KeyForValue(IComparable o)
+        {
+            DateTime dt = (DateTime)o;
+            int cDays = (int)dt.DayOfWeek - (int)WeekStart; // # of days between now and the start of the week.  E.g., if weekstart is Monday and dt is Thursday, we need to subtract 3.
+            if (cDays < 0)
+                cDays += 7;
+            return dt.AddDays(-cDays);  // align with start of the week.
+        }
+    }
+    /// <summary>
     /// BucketManager for year-month (e.g., "2016-May") data
     /// </summary>
-    public class YearMonthBucketmanager : BucketManager<DateTime>
+    public class YearMonthBucketmanager : DateBucketManager
     {
         #region properties
         /// <summary>
@@ -151,8 +274,6 @@ namespace MyFlightbook.Histogram
         /// <returns></returns>
         protected override IDictionary<IComparable, Bucket<DateTime>> BucketsForData(IEnumerable<IHistogramable> items)
         {
-            DateTime _dtMin = DateTime.MaxValue, _dtMax = DateTime.MinValue;
-
             Dictionary<IComparable, Bucket<DateTime>> dict = new Dictionary<IComparable, Bucket<DateTime>>();
             if (items == null)
                 throw new ArgumentNullException("items");
@@ -160,25 +281,18 @@ namespace MyFlightbook.Histogram
             if (items.Count() == 0)
                 return dict;
 
-            // Find the date range.
-            foreach (IHistogramable h in items)
-            {
-                DateTime dt = (DateTime)h.BucketSelector;
-                if (_dtMin.CompareTo(dt) > 0)
-                    _dtMin = dt;
-                if (_dtMax.CompareTo(dt) < 0)
-                    _dtMax = dt;
-            }
+            ComputeDateRange(items);
 
             // Align to 1st of the month, and optionallyi to January/December.
-            _dtMin = new DateTime(_dtMin.Year, AlignStartToJanuary ? 1 : _dtMin.Month, 1);
-            _dtMax = new DateTime(_dtMax.Year, AlignEndToDecember ? 12 : _dtMax.Month, 1);
+            DateTime _dtMin = new DateTime(MinDate.Year, AlignStartToJanuary ? 1 : MinDate.Month, 1);
+            DateTime _dtMax = new DateTime(MaxDate.Year, AlignEndToDecember ? 12 : MaxDate.Month, 1);
 
             // Now create the buckets
+            DateTime dt = _dtMin;
             do {
-                dict[_dtMin] = new Bucket<DateTime>((DateTime) KeyForValue(_dtMin), _dtMin.ToString(DateFormat, CultureInfo.CurrentCulture));
-                _dtMin = _dtMin.AddMonths(1);
-            } while (_dtMin.CompareTo(_dtMax) <= 0);
+                dict[dt] = new Bucket<DateTime>((DateTime) KeyForValue(dt), dt.ToString(DateFormat, CultureInfo.CurrentCulture));
+                dt = dt.AddMonths(1);
+            } while (dt.CompareTo(_dtMax) <= 0);
 
             return dict;
         }

@@ -4,7 +4,7 @@
 <asp:Panel ID="Panel1" runat="server" style="padding:5px;">
     <asp:Localize ID="locTotalsHeader" runat="server" Text="<%$ Resources:LocalizedText, ChartTotalsHeader %>" />
     <asp:DropDownList ID="cmbFieldToview" runat="server" AutoPostBack="True" 
-        onselectedindexchanged="DropDownList1_SelectedIndexChanged" >
+        onselectedindexchanged="cmbFieldToview_SelectedIndexChanged" >
         <asp:ListItem Value="TotalFlightTime" Selected="True" Text="<%$ Resources:LocalizedText, ChartTotalsTotalFlyingTime %>"></asp:ListItem>
         <asp:ListItem Value="Landings" Text="<%$ Resources:LocalizedText, ChartTotalsTotalLandings %>"></asp:ListItem>
         <asp:ListItem Value="Approaches" Text="<%$ Resources:LocalizedText, ChartTotalsTotalApproaches %>"></asp:ListItem>
@@ -19,6 +19,12 @@
         <asp:ListItem Value="SIC" Text="<%$ Resources:LocalizedText, ChartTotalsTotalSIC %>"></asp:ListItem>
         <asp:ListItem Value="Flights" Text="<%$ Resources:LocalizedText, ChartTotalsTotalFlights %>"></asp:ListItem>
         <asp:ListItem Value="FlightDays" Text="<%$ Resources:LocalizedText, ChartTotalsTotalFlightDays %>"></asp:ListItem>
+    </asp:DropDownList>
+    <asp:Label ID="lblGroupBy" runat="server" Text="<%$ Resources:LocalizedText, ChartTotalsGroupPrompt %>"></asp:Label>
+    <asp:DropDownList ID="cmbGrouping" runat="server" AutoPostBack="true" OnSelectedIndexChanged="cmbGrouping_SelectedIndexChanged">
+        <asp:ListItem Selected="True" Value="Month" Text="<%$ Resources:LocalizedText, ChartTotalsGroupMonth %>"></asp:ListItem>
+        <asp:ListItem Value="Week" Text="<%$ Resources:LocalizedText, ChartTotalsGroupWeek %>"></asp:ListItem>
+        <asp:ListItem Value="Day" Text="<%$ Resources:LocalizedText, ChartTotalsGroupDay %>"></asp:ListItem>
     </asp:DropDownList>
     <asp:Panel ID="pnlChart" runat="server">
         <uc3:GoogleChart ID="gcTrends" Width="750" Height="340" ChartType="ColumnChart" Chart2Type="line" SlantAngle="90" LegendType="bottom" XDataType="date" UseMonthYearDate="true" YDataType="number" Y2DataType="number" runat="server" />
@@ -36,7 +42,11 @@
             <asp:GridView ID="gvRawData" runat="server" AutoGenerateColumns="False" CellPadding="3"
                 OnRowDataBound="gvRawData_RowDataBound" EnableModelValidation="True">
                 <Columns>
-                    <asp:BoundField DataField="Ordinal" HeaderText="<%$ Resources:LocalizedText, ChartDataPeriod %>" DataFormatString="{0:MMM-yyyy}" />
+                    <asp:TemplateField HeaderText="<%$ Resources:LocalizedText, ChartDataPeriod %>">
+                        <ItemTemplate>
+                            <%# ((DateTime) Eval("Ordinal")).ToString(CurrentGrouping == GroupingMode.Month ? "MMM-yyyy" : System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern) %>
+                        </ItemTemplate>
+                    </asp:TemplateField>
                     <asp:TemplateField HeaderText="<%$ Resources:LocalizedText, ChartDataTotal %>">
                         <ItemTemplate>
                             <asp:HyperLink runat="server" Target="_blank" ID="lnkValue"></asp:HyperLink>

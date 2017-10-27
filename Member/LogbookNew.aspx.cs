@@ -48,6 +48,8 @@ public partial class Member_LogbookNew : System.Web.UI.Page
         string szAirportParam = util.GetStringParam(Request, "ap");
         int month = util.GetIntParam(Request, "m", -1);
         int year = util.GetIntParam(Request, "y", -1);
+        int day = util.GetIntParam(Request, "d", -1);
+        int week = util.GetIntParam(Request, "w", -1);
         if (!String.IsNullOrEmpty(szFQParam))
         {
             try
@@ -69,8 +71,8 @@ public partial class Member_LogbookNew : System.Web.UI.Page
 
         if (month >= 0 && month < 12 && year > 1900)
         {
-            DateTime dtStart = new DateTime(year, month + 1, 1);
-            DateTime dtEnd = dtStart.AddMonths(1).AddDays(-1);
+            DateTime dtStart = new DateTime(year, month + 1, day > 0 ? day : 1);
+            DateTime dtEnd = (day > 0) ? (week > 0 ? dtStart.AddDays(6) : dtStart) : dtStart.AddMonths(1).AddDays(-1);
             Restriction.DateRange = FlightQuery.DateRanges.Custom;
             Restriction.DateMin = dtStart;
             Restriction.DateMax = dtEnd;

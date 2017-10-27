@@ -24,6 +24,14 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
 
     private const string szVSRawData = "keyViewStateRawData";
 
+    public enum GroupingMode { Month, Week, Day };
+
+    public GroupingMode CurrentGrouping
+    {
+        get { return (GroupingMode)Enum.Parse(typeof(GroupingMode), cmbGrouping.SelectedValue); }
+        set { cmbGrouping.SelectedValue = value.ToString(); }
+    }
+
     private Bucket<DateTime>[] RawData
     {
         get { return (Bucket<DateTime>[])ViewState[szVSRawData]; }
@@ -72,14 +80,34 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         }
         gcTrends.YLabel = String.Format(CultureInfo.CurrentCulture, fIsInt ? Resources.LocalizedText.ChartTotalsNumOfX : Resources.LocalizedText.ChartTotalsHoursOfX, cmbFieldToview.SelectedItem.Text);
         gcTrends.Y2Label = Resources.LocalizedText.ChartRunningTotal;
-        gcTrends.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "window.open('{0}?y=' + xvalue.getFullYear() + '&m=' + xvalue.getMonth(), '_blank').focus()", VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx")); ;
+        gcTrends.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "window.open('{0}?y=' + xvalue.getFullYear() + '&m=' + xvalue.getMonth() {1} {2}, '_blank').focus()",
+            VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"),
+            CurrentGrouping == GroupingMode.Month ? string.Empty : " + '&d=' + xvalue.getDate()",
+            CurrentGrouping == GroupingMode.Week ? " + '&w=1'" : string.Empty);
 
         pnlChart.Visible = true;
     }
 
-    protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+    protected void cmbFieldToview_SelectedIndexChanged(object sender, EventArgs e)
     {
         Refresh(SourceData);
+    }
+
+    protected DateBucketManager DefaultBucketManager
+    {
+        get
+        {
+            switch (CurrentGrouping)
+            {
+                default:
+                case GroupingMode.Month:
+                    return new YearMonthBucketmanager();
+                case GroupingMode.Week:
+                    return new WeeklyBucketmanager();
+                case GroupingMode.Day:
+                    return new DailyBucketmanager();
+            }
+        }
     }
 
     /// <summary>
@@ -90,9 +118,16 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
     {
         if (datasource == null)
             throw new ArgumentNullException("datasource");
-        YearMonthBucketmanager bm = new YearMonthBucketmanager();
+        DateBucketManager bm = DefaultBucketManager;
         Dictionary<string, object> context = new Dictionary<string, object>() { { LogbookEntryDisplay.HistogramContextSelectorKey, SelectedFieldToGraph } };
         bm.ScanData(datasource, context, true);
+        // check for daily with less than a year
+        if (CurrentGrouping == GroupingMode.Day && bm.MaxDate.CompareTo(bm.MinDate) > 0 && bm.MaxDate.Subtract(bm.MinDate).TotalDays > 365)
+        {
+            CurrentGrouping = GroupingMode.Week;
+            bm = new WeeklyBucketmanager();
+            bm.ScanData(datasource, context, true);
+        }
         RawData = bm.Buckets.ToArray<Bucket<DateTime>>();
         RefreshChartAndTable();
     }
@@ -105,7 +140,16 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
             HyperLink h = (HyperLink)e.Row.FindControl("lnkValue");
             h.Text = b.Value.ToString(CultureInfo.InvariantCulture);
             DateTime dt = (DateTime)b.Ordinal;
-            h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/Logbooknew.aspx?y={0}&m={1}", dt.Year, dt.Month - 1);
+            h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/Logbooknew.aspx?y={0}&m={1}{2}{3}",
+                dt.Year, 
+                dt.Month - 1, 
+                CurrentGrouping == GroupingMode.Month ? string.Empty : "&d=" + dt.Day,
+                CurrentGrouping == GroupingMode.Week ? "&w=1" : string.Empty);
         }
+    }
+
+    protected void cmbGrouping_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Refresh(SourceData);
     }
 }

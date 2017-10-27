@@ -756,7 +756,7 @@ and I will see what I can do.</value>
     <value>Change Query...</value>
   </data>
   <data name="ChartTotalsHeader" xml:space="preserve">
-    <value>See your monthly flying trends by:</value>
+    <value>See your flying trends by:</value>
   </data>
   <data name="NumberOfFlights" xml:space="preserve">
     <value>{0} flights</value>
@@ -1348,6 +1348,18 @@ and I will see what I can do.</value>
   </data>
   <data name="profileUpdatePreferences" xml:space="preserve">
     <value>Update Preferences</value>
+  </data>
+  <data name="ChartTotalsGroupDay" xml:space="preserve">
+    <value>Day (up to a year)</value>
+  </data>
+  <data name="ChartTotalsGroupMonth" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="ChartTotalsGroupPrompt" xml:space="preserve">
+    <value>Group by:</value>
+  </data>
+  <data name="ChartTotalsGroupWeek" xml:space="preserve">
+    <value>Week</value>
   </data>
   <data name="ChartTotalsTotalFlightDays" xml:space="preserve">
     <value>Days with Flights</value>
