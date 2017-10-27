@@ -127,7 +127,9 @@ namespace MyFlightbook.MilestoneProgress
         protected MilestoneItem miDualAsPIC { get; set; }
         protected MilestoneItem miDualAsPICXC { get; set; }
 
-        protected Comm61129Base() { }
+        protected Comm61129Base() {
+            GeneralDisclaimer = Branding.ReBrand(Resources.MilestoneProgress.CommGeneralDisclaimer);
+        }
 
         /// <summary>
         /// Is this for a commercial airplane rating?
