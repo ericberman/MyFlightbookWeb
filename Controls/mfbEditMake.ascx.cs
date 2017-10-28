@@ -155,7 +155,7 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         }
 
         bool fIsLegacyEligible = (idCatClass == CategoryClass.CatClassID.AMEL || idCatClass == CategoryClass.CatClassID.AMES || idCatClass == CategoryClass.CatClassID.Helicopter);
-        pnlLegacyHighPerf.Style["display"] = fIsLegacyEligible ? "block" : "none";
+        pnlLegacyHighPerf.Style["display"] = fIsLegacyEligible ? "inline" : "none";
         if (ckLegacyHighPerf.Checked && !fIsLegacyEligible)
             HighPerfType = MakeModel.HighPerfType.NotHighPerf;
     }

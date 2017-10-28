@@ -177,26 +177,14 @@
   <data name="ckCowlFlapsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="ckHighPerfResource1.Text" xml:space="preserve">
-    <value>High Performance</value>
-  </data>
-  <data name="ckHighPerfResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="ckHighPerfResource2.Text" xml:space="preserve">
     <value>High-Performance</value>
   </data>
   <data name="ckHighPerfResource2.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="ckIsSimOnlyResource1.Text" xml:space="preserve">
-    <value>All Aircraft of this make MUST NOT be real aircraft (i.e., sim only)</value>
-  </data>
-  <data name="ckIsSimOnlyResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="ckLegacyHighPerfResource1.Text" xml:space="preserve">
-    <value>High Performance only until 1997</value>
+    <value>...but only until 1997</value>
   </data>
   <data name="ckLegacyHighPerfResource1.ToolTip" xml:space="preserve">
     <value />
@@ -229,12 +217,6 @@
     <value>Motor Glider/Touring Motor Glider (TMG)</value>
   </data>
   <data name="ckTMGResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckTurbineResource1.Text" xml:space="preserve">
-    <value>Turbine Aircraft</value>
-  </data>
-  <data name="ckTurbineResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="cmbCatClassResource1.ToolTip" xml:space="preserve">
@@ -331,15 +313,9 @@
     <value />
   </data>
   <data name="lblHintResource1.Text" xml:space="preserve">
-    <value>On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp.  So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp each (for 400hp total), went from being high-performance to not high performance as of that date.  Checking this option will cause flights in this model prior to be treated as high-performance prior to, but not after, that date.</value>
+    <value>On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp.  So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp each (for 400hp total), went from being high-performance to not high performance as of that date.  Checking this option will cause flights prior to that date in this model to be treated as high-performance, but not flights after that date.</value>
   </data>
   <data name="lblHintResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblLegacyDescResource1.Text" xml:space="preserve">
-    <value>*On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp.  So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp, went from being high-performance to not as of that date.</value>
-  </data>
-  <data name="lblLegacyDescResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblMakeFeaturesResource1.Text" xml:space="preserve">
@@ -432,24 +408,6 @@
   <data name="ListItemResource1.Value" xml:space="preserve">
     <value>-1</value>
   </data>
-  <data name="ListItemResource10.Text" xml:space="preserve">
-    <value>High-Performance (Has an engine &gt; 200hp)</value>
-  </data>
-  <data name="ListItemResource10.Value" xml:space="preserve">
-    <value>HighPerf</value>
-  </data>
-  <data name="ListItemResource11.Text" xml:space="preserve">
-    <value>Total horsepower &gt; 200hp, but no engine &gt; 200hp (High performance until Aug 4, 1997)</value>
-  </data>
-  <data name="ListItemResource11.Value" xml:space="preserve">
-    <value>Is200HP</value>
-  </data>
-  <data name="ListItemResource12.Text" xml:space="preserve">
-    <value>Legacy High-Performance*</value>
-  </data>
-  <data name="ListItemResource12.Value" xml:space="preserve">
-    <value>Is200HP</value>
-  </data>
   <data name="ListItemResource13.Text" xml:space="preserve">
     <value>Electric</value>
   </data>
@@ -497,12 +455,6 @@
   </data>
   <data name="ListItemResource8.Value" xml:space="preserve">
     <value>2</value>
-  </data>
-  <data name="ListItemResource9.Text" xml:space="preserve">
-    <value>Not High-Performance</value>
-  </data>
-  <data name="ListItemResource9.Value" xml:space="preserve">
-    <value>NotHighPerf</value>
   </data>
   <data name="Panel2Resource1.GroupingText" xml:space="preserve">
     <value />
@@ -556,9 +508,6 @@
     <value />
   </data>
   <data name="RangeValidator1Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="rblHighPerfTypeResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="rblTurbineTypeResource1.ToolTip" xml:space="preserve">

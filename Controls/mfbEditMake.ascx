@@ -12,7 +12,7 @@
             <asp:DropDownList ID="cmbManufacturer" runat="server"
                 DataTextField="ManufacturerName" DataValueField="ManufacturerID" 
                 ValidationGroup="EditMake" AppendDataBoundItems="True" AutoPostBack="True" 
-                onselectedindexchanged="ManufacturerChanged" EnableViewState="false" 
+                onselectedindexchanged="ManufacturerChanged" EnableViewState="False" 
                 meta:resourcekey="cmbManufacturerResource1">
                 <asp:ListItem Selected="True" Value="-1" Text="(Please select)" 
                     meta:resourcekey="ListItemResource1"></asp:ListItem>
@@ -177,12 +177,11 @@
                 <asp:Panel ID="pnlHighPerfBlock" runat="server" 
                     meta:resourcekey="pnlHighPerfBlockResource1">
                     <asp:CheckBox ID="ckHighPerf" runat="server" Text="High-Performance" 
-                        meta:resourcekey="ckHighPerfResource2" /><br />
-                    <asp:Panel ID="pnlLegacyHighPerf" runat="server" 
-                        meta:resourcekey="pnlLegacyHighPerfResource1">
-                        &nbsp;&nbsp;&nbsp;<asp:CheckBox ID="ckLegacyHighPerf" runat="server" 
-                            Text="High Performance only until 1997" meta:resourcekey="ckLegacyHighPerfResource1" />
-                        <asp:Label ID="lblHint" CssClass="hint" runat="server" Text="On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp.  So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp each (for 400hp total), went from being high-performance to not high performance as of that date.  Checking this option will cause flights in this model prior to be treated as high-performance prior to, but not after, that date." 
+                        meta:resourcekey="ckHighPerfResource2" />
+                    <asp:Panel ID="pnlLegacyHighPerf" runat="server" style="display:inline" meta:resourcekey="pnlLegacyHighPerfResource1">
+                        ...&nbsp;<asp:CheckBox ID="ckLegacyHighPerf" runat="server" 
+                            Text="...but only until 1997" meta:resourcekey="ckLegacyHighPerfResource1" />
+                        <asp:Label ID="lblHint" CssClass="hint" runat="server" Text="On Aug 4, 1997, the FAA definition of high-performance changed from an aircraft with more than 200hp to being an aircraft with an engine of more than 200hp.  So a multi-engine aircraft such as a Piper Seneca, with two engines of 200hp each (for 400hp total), went from being high-performance to not high performance as of that date.  Checking this option will cause flights prior to that date in this model to be treated as high-performance, but not flights after that date." 
                             meta:resourcekey="lblHintResource1" Visible="False"></asp:Label>
                         <uc1:mfbTooltip ID="mfbTooltip1" runat="server" BodySource="lblHint" />
                     </asp:Panel>
