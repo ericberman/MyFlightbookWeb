@@ -531,8 +531,11 @@ namespace MyFlightbook.MilestoneProgress
                 return;
 
             miGliderTime.AddEvent(cfr.Total);
-            miGliderFlightsPIC1i.AddEvent(cfr.PIC);
-            miGliderFlightsPIC2i.AddEvent(cfr.PIC);
+            if (cfr.PIC > 0)
+            {
+                miGliderFlightsPIC1i.AddEvent(1);
+                miGliderFlightsPIC2i.AddEvent(1);
+            }
 
             int cLandings = Math.Max(1, cfr.cLandingsThisFlight);
 
