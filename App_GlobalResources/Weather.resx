@@ -247,7 +247,7 @@
     <value>Few</value>
   </data>
   <data name="GetMETARSPrompt" xml:space="preserve">
-    <value>Get METARS</value>
+    <value>Show current METARS</value>
   </data>
   <data name="Overcast" xml:space="preserve">
     <value>Overcast</value>

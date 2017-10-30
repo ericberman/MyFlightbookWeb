@@ -1,5 +1,6 @@
 using MyFlightbook;
 using MyFlightbook.Airports;
+using MyFlightbook.Weather.ADDS;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -97,8 +98,18 @@ public partial class MapRoute : System.Web.UI.Page
         mfbAirportServices1.SetAirports(result.MasterList.GetNormalizedAirports());
 
         lnkZoomOut.Visible = !result.MasterList.LatLongBox().IsEmpty;
+        pnlMetars.Visible = result != null && result.Result != null && result.Result.Count > 0;
     }
 
+    protected void btnMetars_Click(object sender, EventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+        METAR.METARs = new ADDSService().LatestMETARSForAirports(txtAirports.Text);
+        btnMetars.Visible = false;
+    }
+
+    #region Visited Routes
     protected VisitedRoute CurrentVisitedRoute
     {
         get
@@ -188,4 +199,5 @@ public partial class MapRoute : System.Web.UI.Page
             mfbIl.Refresh();
         }
     }
+    #endregion
 }

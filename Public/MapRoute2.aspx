@@ -6,17 +6,25 @@
 <%@ Register src="../Controls/mfbGoogleAdSense.ascx" tagname="mfbGoogleAdSense" tagprefix="uc2" %>
 <%@ Register src="../Controls/mfbAirportServices.ascx" tagname="mfbAirportServices" tagprefix="uc4" %>
 <%@ Register src="../Controls/mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc6" %>
+<%@ Register Src="~/Controls/METAR.ascx" TagPrefix="uc1" TagName="METAR" %>
+
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblPageHeader" runat="server" Text="Label"></asp:Label>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <asp:Panel ID="Panel1" runat="server" DefaultButton="btnMapEm">
-        <asp:Localize ID="locMapPrompt" runat="server" Text="<%$ Resources:Airports, MapPrompt %>"></asp:Localize>
-            <uc6:mfbTooltip ID="mfbTooltip1" runat="server" BodyContent="<%$ Resources:Airports, MapNavaidTip %>" />
-        <br />
-        <asp:TextBox ID="txtAirports" Width="600px" TextMode="MultiLine" Rows="1" runat="server"></asp:TextBox>
-        <br />
-        <asp:Button ID="btnMapEm" runat="server" OnClick="btnMapEm_Click" Text="<%$ Resources:Airports, MapUpdateMap %>" />
+        <div><asp:Localize ID="locMapPrompt" runat="server" Text="<%$ Resources:Airports, MapPrompt %>"></asp:Localize>
+            <uc6:mfbTooltip ID="mfbTooltip1" runat="server" BodyContent="<%$ Resources:Airports, MapNavaidTip %>" /></div>
+        <div><asp:TextBox ID="txtAirports" Width="600px" TextMode="MultiLine" Rows="1" runat="server"></asp:TextBox></div>
+        <div><asp:Button ID="btnMapEm" runat="server" OnClick="btnMapEm_Click" Text="<%$ Resources:Airports, MapUpdateMap %>" /></div>
+        <asp:UpdatePanel ID="pnlShowMeters" runat="server">
+            <ContentTemplate>
+                <asp:Panel ID="pnlMetars" runat="server">
+                    <asp:LinkButton ID="btnMetars" runat="server" Text="<%$ Resources:Weather, GetMETARSPrompt %>" OnClick="btnMetars_Click" Visible="true" />
+                    <uc1:METAR runat="server" ID="METAR" />
+                </asp:Panel>
+            </ContentTemplate>
+        </asp:UpdatePanel>
         <asp:Panel ID="pnlRestrictToFlown" runat="server" Visible="false">
             <asp:Button ID="btnSeeWhatsBeenFlown" runat="server" Text="Check what's flown" 
                 onclick="btnSeeWhatsBeenFlown_Click" />
@@ -62,14 +70,12 @@
                 ID="btnUploadXML" runat="server" Text="Initialize Flown Routes from XML" 
                 onclick="btnUploadXML_Click" />
         </asp:Panel>
-        <asp:HyperLink ID="lnkZoomOut" runat="server" NavigateUrl=""
-            Visible="False" Text="<%$Resources:Airports, MapZoomOut %>"></asp:HyperLink>
         <br />
         <asp:Label ID="lblError" runat="server" CssClass="error"></asp:Label>
     </asp:Panel>
 </asp:Content>
 <asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
-    <br />
+    <div><asp:HyperLink ID="lnkZoomOut" runat="server" Visible="False" Text="<%$Resources:Airports, MapZoomOut %>"></asp:HyperLink></div>
     <div style="margin-left:20px; width:80%; float:left; clear:left;">
         <uc1:mfbGoogleMapManager ID="MfbGoogleMapManager1" runat="server" Height="600px" />
         <asp:Panel ID="pnlDistance" runat="server" Visible="false">
