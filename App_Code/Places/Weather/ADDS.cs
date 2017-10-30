@@ -116,6 +116,8 @@ namespace MyFlightbook.Weather.ADDS
         {
             get
             {
+                if (quality_control_flags == null)
+                    return string.Empty;
                 StringBuilder sb = new StringBuilder();
                 if (quality_control_flags.auto_station.CompareOrdinalIgnoreCase("TRUE") == 0)
                     sb.Append(Resources.Weather.auto_stationField);
