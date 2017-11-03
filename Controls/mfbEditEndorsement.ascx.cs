@@ -108,9 +108,11 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        mfbTypeInDate1.DefaultDate = DateTime.Now;
+
         if (!IsPostBack)
         {
-            mfbTypeInDate1.Date = mfbTypeInDate1.DefaultDate = DateTime.Now;
+            mfbTypeInDate1.Date = DateTime.Now;
         }
         else
         {
@@ -323,10 +325,6 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
     {
         if (args == null)
             throw new ArgumentNullException("args");
-
-        // if no date typed in, catch that in the other validator
-        if (!mfbTypeInDate1.Date.HasValue())
-            return;
 
         // Offer up to 20 days to get the endorsement in
         if (StudentType == Endorsement.StudentTypes.Member && DateTime.Now.AddDays(-20).CompareTo(mfbTypeInDate1.Date) > 0)

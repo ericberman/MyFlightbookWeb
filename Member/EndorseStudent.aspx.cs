@@ -118,6 +118,7 @@ public partial class Member_EndorseStudent : System.Web.UI.Page
             e.Endorsement.FCommit();
             cmbTemplates.SelectedIndex = 0;
             mfbEditEndorsement1.EndorsementID = Convert.ToInt32(cmbTemplates.SelectedValue, CultureInfo.InvariantCulture);
+            hdnLastTemplate.Value = cmbTemplates.SelectedValue.ToString(CultureInfo.InvariantCulture);
 
             mfbEndorsementList1.RefreshEndorsements();
         }
