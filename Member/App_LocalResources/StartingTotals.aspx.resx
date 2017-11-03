@@ -450,4 +450,10 @@
   <data name="wizStartingTotalsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblCanFillInMoreLaterResource1.Text" xml:space="preserve">
+    <value>For simplicity, this focuses on the top-level totals.  After you create your starting totals, you will have &amp;quot;Catch-up&amp;quot; flights which you can edit to include whatever additional details you like.</value>
+  </data>
+  <data name="lblCanFillInMoreLaterResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -145,8 +145,11 @@
             <asp:WizardStep ID="stepFillInData" runat="server" 
                 Title="4. Specify Times" 
                 meta:resourcekey="stepFillInDataResource1">
-                <p><asp:Label ID="lblFillInForm" runat="server" Text="Fill in your times below" 
+                <p>
+                    <asp:Label ID="lblFillInForm" runat="server" Text="Fill in your times below" Font-Bold="true" 
                         meta:resourcekey="lblFillInFormResource1"></asp:Label>
+                    <asp:Label ID="lblCanFillInMoreLater" runat="server" Text="For simplicity, this focuses on the top-level totals.  After you create your starting totals, you will have &quot;Catch-up&quot; flights which you can edit to include whatever additional details you like."
+                        meta:resourcekey="lblCanFillInMoreLaterResource1"></asp:Label>
                 </p>
                 <asp:Table CellPadding="4" ID="tblStartingFlights" runat="server" 
                     EnableViewState="false" meta:resourcekey="tblStartingFlightsResource1">
