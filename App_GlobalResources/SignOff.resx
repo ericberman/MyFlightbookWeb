@@ -382,4 +382,10 @@
     <value>Student: {0}. {1}</value>
     <comment>{0} is the student's name, {1} are any other comments/remarks</comment>
   </data>
+  <data name="EndorsementTitleWatermark" xml:space="preserve">
+    <value>Endorsement Title</value>
+  </data>
+  <data name="errTitleRequired" xml:space="preserve">
+    <value>Please provide a title for the endorsement.</value>
+  </data>
 </root>

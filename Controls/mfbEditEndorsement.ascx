@@ -3,10 +3,21 @@
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <asp:Panel ID="pnlEditEndorsement" runat="server" BorderStyle="Solid" Style="padding:5px;" BorderWidth="1px" BorderColor="Black" Width="600px" BackColor="#CCCCCC">
     <table style="width: 100%">
-        <tr><td style="font-weight:bold"><asp:Literal runat="server" Text="<%$ Resources:SignOff, EditEndorsementEndorsementPrompt %>" /></td><td>
-            <asp:Label ID="lblEndorsementTitle" runat="server" Text=""></asp:Label></td></tr>
-        <tr><td style="font-weight:bold"><asp:Literal ID="Literal1" runat="server" Text="<%$ Resources:SignOff, EditEndorsementFARPrompt %>" /></td><td>
-            <asp:Label ID="lblEndorsementFAR" runat="server" Text=""></asp:Label></td></tr>
+        <tr>
+            <td style="font-weight: bold; width:25%">
+                <asp:Literal runat="server" Text="<%$ Resources:SignOff, EditEndorsementEndorsementPrompt %>" /></td>
+            <td>
+                <asp:TextBox ID="txtTitle" runat="server" Width="100%"></asp:TextBox>
+                <asp:TextBoxWatermarkExtender ID="wmeCustomTitle" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Signoff, EndorsementTitleWatermark %>" TargetControlID="txtTitle" runat="server" />
+                <div><asp:RequiredFieldValidator ID="valTitleRequired" runat="server" Display="Dynamic" EnableClientScript="true" ErrorMessage="<%$ Resources:Signoff, errTitleRequired %>" ControlToValidate="txtTitle" CssClass="error"></asp:RequiredFieldValidator></div>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold; width:25%">
+                <asp:Literal ID="Literal1" runat="server" Text="<%$ Resources:SignOff, EditEndorsementFARPrompt %>" /></td>
+            <td>
+                <asp:Label ID="lblEndorsementFAR" runat="server" Text=""></asp:Label></td>
+        </tr>
         <tr>
             <td colspan="2">
                 <hr />
@@ -73,4 +84,5 @@
                 Text="<%$ Resources:SignOff, EditEndorsementAddEndorsement %>" onclick="btnAddEndorsement_Click" /></td>
         </tr>
     </table>
+    <asp:HiddenField ID="hdnEndorsementID" Value="-1" runat="server" />
 </asp:Panel>

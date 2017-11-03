@@ -27,8 +27,6 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
 
     public event EventHandler<EndorsementEventArgs> NewEndorsement = null;
 
-    private int m_endorsementID = 0;
-
     private MyFlightbook.Profile m_TargetUser = null;
     private MyFlightbook.Profile m_SourceUser = null;
 
@@ -98,8 +96,14 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
     /// </summary>
     public int EndorsementID 
     { 
-        get {return m_endorsementID;}
-        set { m_endorsementID = value; UpdateFormForTemplate(m_endorsementID); }
+        get {return Convert.ToInt32(hdnEndorsementID.Value, CultureInfo.InvariantCulture);}
+        set
+        {
+            int currentID = Convert.ToInt32(hdnEndorsementID.Value, CultureInfo.InvariantCulture);
+            bool fResetTitle = (currentID != value);
+            hdnEndorsementID.Value = value.ToString(CultureInfo.InvariantCulture);
+            UpdateFormForTemplate(value, fResetTitle);
+        }
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -185,7 +189,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
             plcValidations.Controls.Add(new EndorsementRequiredField("val" + id, tb.ID, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EditEndorsementRequiredField, szName)));
     }
 
-    protected void UpdateFormForTemplate(int id)
+    protected void UpdateFormForTemplate(int id, bool fResetTitle)
     {
         EndorsementType et = EndorsementType.GetEndorsementByID(id);
         if (et == null)
@@ -194,7 +198,9 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
         plcTemplateForm.Controls.Clear();
         plcValidations.Controls.Clear();
 
-        lblEndorsementTitle.Text = et.Title;
+        // don't change the title unless we're changing from a prior template.
+        if (fResetTitle)
+            txtTitle.Text = et.Title;
         lblEndorsementFAR.Text = et.FARReference;
 
         // Find each of the substitutions
@@ -306,16 +312,22 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
             endorsement.EndorsementText = TemplateText();
             endorsement.StudentType = StudentType;
             endorsement.StudentName = StudentType == Endorsement.StudentTypes.Member ? TargetUser.UserName : txtOfflineStudent.Text;
-            endorsement.Title = lblEndorsementTitle.Text;
+            endorsement.Title = txtTitle.Text;
             endorsement.FARReference = lblEndorsementFAR.Text;
 
             NewEndorsement(this, new EndorsementEventArgs(endorsement));
         }
     }
+
     protected void valNoBackDate_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
             throw new ArgumentNullException("args");
+
+        // if no date typed in, catch that in the other validator
+        if (!mfbTypeInDate1.Date.HasValue())
+            return;
+
         // Offer up to 20 days to get the endorsement in
         if (StudentType == Endorsement.StudentTypes.Member && DateTime.Now.AddDays(-20).CompareTo(mfbTypeInDate1.Date) > 0)
             args.IsValid = false;
