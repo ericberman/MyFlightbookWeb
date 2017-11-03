@@ -19,11 +19,12 @@ public partial class Controls_mfbFooter : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        RSSCurrency1.Visible = Page.User.Identity.IsAuthenticated && Request.IsSecureConnection;
         if (!IsPostBack)
         {
-            cellFacebook.Visible = (lnkFacebook.NavigateUrl = Branding.CurrentBrand.FacebookFeed).Length > 0;
-            cellTwitter.Visible = (lnkTwitter.NavigateUrl = Branding.CurrentBrand.TwitterFeed).Length > 0;
+            RSSCurrency1.Visible = Page.User.Identity.IsAuthenticated && Request.IsSecureConnection;
+            lnkBlog.Visible = !String.IsNullOrEmpty(lnkBlog.NavigateUrl = Branding.CurrentBrand.BlogAddress);
+            cellFacebook.Visible = !String.IsNullOrEmpty(lnkFacebook.NavigateUrl = Branding.CurrentBrand.FacebookFeed);
+            cellTwitter.Visible = !String.IsNullOrEmpty(lnkTwitter.NavigateUrl = Branding.CurrentBrand.TwitterFeed);
             lblCopyright.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.CopyrightDisplay, DateTime.Now.Year);
             divSSLSeal.Visible = Request.IsSecureConnection;
         }

@@ -3,7 +3,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2016 MyFlightbook LLC
+ * Copyright (c) 2012-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -63,6 +63,11 @@ namespace MyFlightbook
         public string TwitterFeed { get; set; }
 
         /// <summary>
+        /// Link to Blog
+        /// </summary>
+        public string BlogAddress { get; set; }
+
+        /// <summary>
         /// Link to stylesheet path.
         /// </summary>
         public string StyleSheet { get; set; }
@@ -81,7 +86,7 @@ namespace MyFlightbook
         /// <param name="szFacebook">Link to the facebook feed for this brand</param>
         /// <param name="szStyleSheet">Link to the stylesheet for this brand</param>
         /// <param name="szTwitter">Link to the twitter feed for this brand</param>
-        public Brand(BrandID ID, string szapp, string szhost, string szRoot, string szlogo, string szStyleSheet, string szEmail, string szFacebook, string szTwitter)
+        public Brand(BrandID ID, string szapp, string szhost, string szRoot, string szlogo, string szStyleSheet, string szEmail, string szFacebook, string szTwitter, string szBlog)
         {
             BrandID = ID;
             AppName = szapp;
@@ -92,6 +97,7 @@ namespace MyFlightbook
             FacebookFeed = szFacebook;
             TwitterFeed = szTwitter;
             StyleSheet = szStyleSheet;
+            BlogAddress = szBlog;
         }
 
         private const string szPrefixToIgnore = "www.";
@@ -116,8 +122,8 @@ namespace MyFlightbook
     {
         static private Brand[] knownBrands = 
         {
-        new Brand(BrandID.brandMyFlightbook, "MyFlightbook", "myflightbook.com", "/logbook", "~/Public/myflightbooknew.png", string.Empty, "noreply@myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook")
-//        , new Brand(BrandID.brandAOPA, "AOPAFlightbook", "aopa.myflightbook.com", "~/Images/AOPABook.png", "~/Public/AOPASheet.css", "noreply@myflightbook.com", "", "")
+        new Brand(BrandID.brandMyFlightbook, "MyFlightbook", "myflightbook.com", "/logbook", "~/Public/myflightbooknew.png", string.Empty, "noreply@myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook", "https://myflightbookblog.blogspot.com/")
+//        , new Brand(BrandID.brandAOPA, "AOPAFlightbook", "aopa.myflightbook.com", "~/Images/AOPABook.png", "~/Public/AOPASheet.css", "noreply@myflightbook.com", "", "", "")
         };
 
 

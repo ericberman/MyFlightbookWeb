@@ -14,6 +14,7 @@
             Text="Mobile Access" meta:resourcekey="lnkPDAResource1"></asp:HyperLink></div>
         <div class="footerItem"><asp:HyperLink ID="lnkFAQ" runat="server" NavigateUrl="~/Public/FAQ.aspx" 
             Text="FAQ" meta:resourcekey="lnkFAQResource1"></asp:HyperLink></div>
+        <div class="footerItem" runat="server"><asp:HyperLink ID="lnkBlog" runat="server" Text="Blog" Target="_blank" meta:resourcekey="lnkBlogResource1"></asp:HyperLink></div>
         <uc1:RSSCurrency ID="RSSCurrency1" runat="server" />
         <div class="footerItem" id="cellFacebook" runat="server">
             <asp:HyperLink ID="lnkFacebook" Target="_blank" runat="server">
@@ -45,7 +46,6 @@
         <asp:Label ID="lblViewMobile" runat="server" Text="Mobile View" 
             meta:resourcekey="lblViewMobileResource1"></asp:Label>
     </asp:Panel>
-    <br />
-    <div style="margin-top:3px; margin-bottom:6px;" id="divSSLSeal" runat="server"><span id="siteseal"><script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=MbSEyzG679EfYseNolHmMeTjb9SSTum9qZBBZbXTqqb8vBPbEJNZtpY0EX4b"></script></span></div>
-    <asp:Label ID="lblCopyright" runat="server" Text="" meta:resourcekey="lblCopyrightResource1"></asp:Label>
+    <div style="margin-top:3px; margin-bottom:6px;" ID="divSSLSeal" runat="server"><span id="siteseal"><script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=MbSEyzG679EfYseNolHmMeTjb9SSTum9qZBBZbXTqqb8vBPbEJNZtpY0EX4b"></script></span></div>
+    <div><asp:Label ID="lblCopyright" runat="server" Text="" meta:resourcekey="lblCopyrightResource1"></asp:Label></div>
 </div>
