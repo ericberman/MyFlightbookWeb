@@ -31,7 +31,7 @@
                     <tr class="bordered">
                         <td colspan="2">
                             <asp:Label Font-Bold="true" EnableViewState="false" ID="lblStaticDate" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>'></asp:Label>&nbsp;<%#: Eval("Route") %>
-                            <div runat="server" id="divComments" style="clear:left" dir="auto">
+                            <div runat="server" id="divComments" style="clear:left; white-space:pre-line;" dir="auto">
                                 <%#: Eval("Comment").ToString() %>
                             </div>
                             <asp:Panel ID="pnlFlightTimes" runat="server" Visible="<%# CurrentUser.DisplayTimesByDefault %>">

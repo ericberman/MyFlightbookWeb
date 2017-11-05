@@ -91,7 +91,7 @@
                     <td><%# Convert.ToInt32(Eval("NetDayLandings")) %></td>
                     <td><%# Eval("NetNightLandings") %></td>
                     <td>
-                        <div><%#: Eval("Comment") %></div>
+                        <div style="clear:left; white-space:pre-line;" dir="auto"><%#: Eval("Comment") %></div>
                         <div><%#: Eval("CustPropertyDisplay") %></div>
                         <div><uc1:mfbSignature runat="server" ID="mfbSignature" EnableViewState="false" /></div>
                     </td>
