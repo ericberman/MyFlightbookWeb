@@ -348,13 +348,16 @@ namespace MyFlightbook
         #endregion
 
         private static Regex regexpWebLink = null;
+        private static Regex regexMarkDown = null;
 
         /// <summary>
-        /// Turn links in the string into anchor tags.  Does html escaping first
+        /// Turn links in the string into anchor tags.  Does html escaping first.
+        /// Optionally also does _xxx_ => emphasis (italic), *xxx* => strong (bold)
         /// </summary>
         /// <param name="sz"></param>
+        /// <param name="fMarkdown">Indicates if you want *xxx*/_xxx_ to become strong/em (respectively)</param>
         /// <returns></returns>
-        public static string Linkify(this string sz)
+        public static string Linkify(this string sz, bool fMarkdown = true)
         {
             if (regexpWebLink == null)
                 regexpWebLink = new Regex("https?://([\\w+?\\.\\w+])+([a-zA-Z0-9\\~\\!\\@\\#\\$\\%\\^\\&amp;\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\'\\,]*)?", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -374,6 +377,23 @@ namespace MyFlightbook
 
                 sz = sz.Replace(szReplace, "<a href=\"" + szReplace + "\" target=\"_blank\">" + szReplace + "</a>");
             }
+
+            if (fMarkdown)
+            {
+                if (regexMarkDown == null)
+                    regexMarkDown = new Regex("([*_])([^*_\r\n]*)\\1", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Multiline);
+
+                sz = regexMarkDown.Replace(sz, (m) =>
+                {
+                    if (m.Groups.Count < 3 || m.Value.Contains("&#13;") || m.Value.Contains("&#10;")) // Ignore anything with a newline/carriage return.
+                        return m.Value;
+
+                    string szCode = m.Groups[1].Value.CompareOrdinalIgnoreCase("*") == 0 ? "strong" : "em";
+
+                    return String.Format(CultureInfo.CurrentCulture, "<{0}>{1}</{0}>", szCode, m.Groups[2].Value);
+                });
+            }
+
             return sz;
         }
 
