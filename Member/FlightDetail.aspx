@@ -95,7 +95,7 @@
                                     </asp:View>
                                 </asp:MultiView>
                                 </span>
-                                <%# Eval("CommentWithReplacedApproaches") %>&nbsp;</p>
+                                <span style="white-space:pre-line;"><%# Eval("CommentWithReplacedApproaches") %>&nbsp;</span></p>
                             <div>
                                 <uc1:mfbTooltip ID="mfbTTCatClass" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookAltCatClassTooltip %>" HoverControl="lblCatClass" />
                             </div>

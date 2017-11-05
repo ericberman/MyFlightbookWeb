@@ -18,7 +18,7 @@
     <asp:Panel ID="pnlDetails" runat="server">
         <span><asp:HyperLink ID="lnkUser" runat="server"></asp:HyperLink></span> - 
         <span><asp:HyperLink ID="lnkRoute" runat="server"></asp:HyperLink></span>
-        <span><asp:Label ID="lblComments" runat="server" Text=""></asp:Label></span>
+        <span style="white-space:pre-line;"><asp:Label ID="lblComments" runat="server" Text=""></asp:Label></span>
         <span><asp:ImageButton ID="btnEdit" runat="server" ToolTip="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>" ImageUrl="~/images/pencilsm.png" AlternateText="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>" Visible="False" OnClick="btnEdit_Click" /></span>
         <uc1:mfbImageList ID="mfbIlAirplane" ImageClass="Aircraft" MaxImage="-1" CanEdit="false" Columns="2" runat="server" Visible="false" />
         <div style="max-width: 480px; margin-left:auto; margin-right:auto;">
