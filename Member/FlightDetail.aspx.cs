@@ -158,7 +158,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         bool fIsAdmin = (util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanSupport);
 
         // Check that you own the flight, or are admin.  If not either of these, check to see if you are authorized
-        if (szFlightOwner.CompareOrdinal(Page.User.Identity.Name) != 0 && !fIsAdmin)
+        if (String.Compare(szFlightOwner, Page.User.Identity.Name, StringComparison.InvariantCultureIgnoreCase) != 0 && !fIsAdmin)
         {
             // check for authorized by student
             CFIStudentMap sm = new CFIStudentMap(Page.User.Identity.Name);
