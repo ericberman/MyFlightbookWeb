@@ -181,7 +181,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             apcChart.Visible = apcDownload.Visible = apcRaw.Visible = false;
 
         lblFlightDate.Text = led.Date.ToShortDateString();
-        lblFlightDesc.Text = (led.TailNumDisplay ?? string.Empty) + (String.IsNullOrEmpty(led.Route) ? string.Empty : Resources.LocalizedText.LocalizedSpace + led.Route) + (String.IsNullOrEmpty(led.Comment) ? string.Empty : Resources.LocalizedText.LocalizedSpaceWithDash + led.Comment);
+        lblFlightDesc.Text = (led.TailNumDisplay ?? string.Empty) + (String.IsNullOrEmpty(led.Route) ? string.Empty : Resources.LocalizedText.LocalizedSpace + led.Route) + (String.IsNullOrEmpty(led.Comment) ? string.Empty : Resources.LocalizedText.LocalizedSpaceWithDash + led.Comment.Linkify());
 
         Page.Title = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDetailsTitle, led.Date);
 

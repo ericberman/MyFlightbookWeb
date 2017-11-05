@@ -45,7 +45,7 @@
                 <td>            
                     <p>
                         <asp:Label ID="lblFlightDate" Font-Bold="True" runat="server" meta:resourcekey="lblFlightDateResource1"></asp:Label>
-                        <asp:Label ID="lblFlightDesc" runat="server" meta:resourcekey="lblFlightDescResource1"></asp:Label>
+                        <asp:Label ID="lblFlightDesc" style="white-space:pre-line" runat="server" meta:resourcekey="lblFlightDescResource1"></asp:Label>
                     </p>
                     <asp:Panel ID="pnlFilter" runat="server" Visible="false" >
                         <div style="display:inline-block;"><%=Resources.LocalizedText.ResultsFiltered %></div>
