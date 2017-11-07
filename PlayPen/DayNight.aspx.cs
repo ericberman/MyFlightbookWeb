@@ -3,8 +3,8 @@ using System.Globalization;
 using System.Web.UI.WebControls;
 using MyFlightbook;
 using MyFlightbook.Solar;
-using MyFlightbook.Airports;
 using MyFlightbook.Mapping;
+using MyFlightbook.Geography;
 
 /******************************************************
  * 
@@ -20,21 +20,45 @@ public partial class Public_DayNight : System.Web.UI.Page
         this.Master.SelectedTab = tabID.tabHome;
         mfbGoogleMapManager1.Map.ClickHandler = "function (point) {clickForAirport(point.latLng);}";
 
+        mfbTypeInDate.DefaultDate = DateTime.Now;
+
         if (!IsPostBack)
-            txtDate.Text = DateTime.Now.ToShortDateString();
+        {
+            mfbTypeInDate.Date = DateTime.Now;
+        }
     }
+
+    protected double SafeParse(string s)
+    {
+        double d = 0;
+        if (String.IsNullOrEmpty(s))
+            return d;
+
+        if (double.TryParse(s, NumberStyles.Any, CultureInfo.CurrentCulture, out d))
+            return d;
+        return d;
+    }
+
+    protected double Latitude { get { return SafeParse(txtLat.Text); } }
+
+    protected double Longitude { get { return SafeParse(txtLon.Text); } }
 
     protected void btnTimes_Click(object sender, EventArgs e)
     {
-        DateTime dt = Convert.ToDateTime(txtDate.Text, CultureInfo.CurrentCulture);
+        bool fValid = pnlDropPin.Visible = pnlKey.Visible = IsValid;
+        if (!fValid)
+            return;
+
+        DateTime dt = mfbTypeInDate.Date;
         DateTime dtUTC = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, DateTimeKind.Utc);
-        double lat = Convert.ToDouble(txtLat.Text, CultureInfo.CurrentCulture);
-        double lon = Convert.ToDouble(txtLon.Text, CultureInfo.CurrentCulture);
+        double lat = Latitude;
+        double lon = Longitude;
         SunriseSunsetTimes sst = new SunriseSunsetTimes(dtUTC, lat, lon);
         lblSunRise.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SunriseSunsetTemplate, sst.Sunrise.ToLocalTime().ToLongTimeString(), sst.Sunrise.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
         lblSunSet.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SunriseSunsetTemplate, sst.Sunset.ToLocalTime().ToLongTimeString(), sst.Sunset.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
-        ListsFromRoutesResults result = AirportList.ListsFromRoutes(String.Format(CultureInfo.CurrentCulture, "@{0:F8}{1}{2:F8}{3}", Math.Abs(lat), lat > 0 ? "N" : "S", Math.Abs(lon), lon > 0 ? "E" : "W"));
-        mfbGoogleMapManager1.Map.Airports = result.Result;
+        lblUTCDate.Text = dtUTC.ToLongDateString();
+        mfbGoogleMapManager1.Map.ZoomFactor = GMap_ZoomLevels.US;
+        mfbGoogleMapManager1.Map.MapCenter = new LatLong(lat, lon);
 
         // show 5-minute increments throughout the day
         for (int h = 0; h < 24; h++)
@@ -53,7 +77,7 @@ public partial class Public_DayNight : System.Web.UI.Page
                 else if (sst.IsNight)
                     tc.BackColor = sst.IsFAACivilNight ? System.Drawing.Color.BlanchedAlmond : System.Drawing.Color.LightGray;
 
-                tc.Text = String.Format(CultureInfo.CurrentCulture, "{0}, {1:F1}°", dt2.ToString("MM /dd HH:mm", CultureInfo.InvariantCulture), sst.SolarAngle);
+                tc.Text = String.Format(CultureInfo.CurrentCulture, "{0}, {1:F1}°", dt2.ToString("HH:mm", CultureInfo.InvariantCulture), sst.SolarAngle);
             }
         }
     }
