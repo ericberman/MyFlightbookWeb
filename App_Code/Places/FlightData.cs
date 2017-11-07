@@ -502,7 +502,8 @@ namespace MyFlightbook.Telemetry
 
     public static class ConversionFactors
     {
-        public const double FeetPerMeter = 0.3048;
+        public const double FeetPerMeter = 3.28084;
+        public const double MetersPerFoot = 0.3048;
         public const double MetersPerSecondPerKnot = 0.514444444;
         public const double MetersPerSecondPerMilesPerHour = 0.44704;
         public const double MetersPerSecondPerKmPerHour = 0.277778;
@@ -814,7 +815,7 @@ namespace MyFlightbook.Telemetry
                     case SpeedUnitTypes.Knots:
                         return ConversionFactors.MetersPerSecondPerKnot;
                     case SpeedUnitTypes.FeetPerSecond:
-                        return ConversionFactors.FeetPerMeter;
+                        return ConversionFactors.MetersPerFoot;
                     case SpeedUnitTypes.MilesPerHour:
                         return ConversionFactors.MetersPerSecondPerMilesPerHour;
                     case SpeedUnitTypes.KmPerHour:

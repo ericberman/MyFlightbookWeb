@@ -141,7 +141,7 @@ namespace MyFlightbook.Telemetry
                             dr[KnownColumnNames.ALT] = alt;
                             dr[KnownColumnNames.LAT] = (Convert.ToDouble(rgWords[3].Substring(0, 2), ci) + (Convert.ToDouble(rgWords[3].Substring(2), ci) / 60.0)) * ((String.Compare(rgWords[4], "N", StringComparison.OrdinalIgnoreCase) == 0) ? 1 : -1);
                             dr[KnownColumnNames.LON] = (Convert.ToDouble(rgWords[5].Substring(0, 3), ci) + (Convert.ToDouble(rgWords[5].Substring(3), ci) / 60.0)) * ((String.Compare(rgWords[6], "E", StringComparison.OrdinalIgnoreCase) == 0) ? 1 : -1);
-                            dr[KnownColumnNames.SPEED] = Convert.ToDouble(rgWords[7], ci) / ConversionFactors.MetersPerSecondPerKnot; // do this in knots!
+                            dr[KnownColumnNames.SPEED] = Convert.ToDouble(rgWords[7], ci);
 
                             ParsedData.Rows.Add(dr);
                         }
