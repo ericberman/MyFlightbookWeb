@@ -28,20 +28,12 @@ public partial class Public_DayNight : System.Web.UI.Page
         }
     }
 
-    protected double SafeParse(string s)
-    {
-        double d = 0;
-        if (String.IsNullOrEmpty(s))
-            return d;
+    protected double Latitude { get { return txtLat.Text.SafeParseDouble(); } }
 
-        if (double.TryParse(s, NumberStyles.Any, CultureInfo.CurrentCulture, out d))
-            return d;
-        return d;
-    }
+    protected double Longitude { get { return txtLon.Text.SafeParseDouble(); } }
 
-    protected double Latitude { get { return SafeParse(txtLat.Text); } }
-
-    protected double Longitude { get { return SafeParse(txtLon.Text); } }
+    protected DateTime SunRiseUTC { get; set; }
+    protected DateTime SunSetUTC { get; set; }
 
     protected void btnTimes_Click(object sender, EventArgs e)
     {
@@ -54,8 +46,10 @@ public partial class Public_DayNight : System.Web.UI.Page
         double lat = Latitude;
         double lon = Longitude;
         SunriseSunsetTimes sst = new SunriseSunsetTimes(dtUTC, lat, lon);
-        lblSunRise.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SunriseSunsetTemplate, sst.Sunrise.ToLocalTime().ToLongTimeString(), sst.Sunrise.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
-        lblSunSet.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SunriseSunsetTemplate, sst.Sunset.ToLocalTime().ToLongTimeString(), sst.Sunset.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
+        SunRiseUTC = sst.Sunrise;
+        SunSetUTC = sst.Sunset;
+        // lblSunRise.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SunriseSunsetTemplate, sst.Sunrise.ToLocalTime().ToLongTimeString(), sst.Sunrise.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
+        // lblSunSet.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SunriseSunsetTemplate, sst.Sunset.ToLocalTime().ToLongTimeString(), sst.Sunset.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture));
         lblUTCDate.Text = dtUTC.ToLongDateString();
         mfbGoogleMapManager1.Map.ZoomFactor = GMap_ZoomLevels.US;
         mfbGoogleMapManager1.Map.MapCenter = new LatLong(lat, lon);

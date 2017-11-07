@@ -1,12 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
     CodeFile="DayNight.aspx.cs" Inherits="Public_DayNight" %>
-
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbGoogleMapManager.ascx" TagName="mfbGoogleMapManager"
     TagPrefix="uc1" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc1" TagName="mfbTypeInDate" %>
-<%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
-
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
     <div style="float:right;">
@@ -18,10 +15,10 @@
                 <td style="background-color:white; border:1px solid black;">Day</td>
             </tr>
             <tr>
-                <td style="background-color:LightGray; border:1px solid black;">Night - between sunrise and sunset </td>
+                <td style="background-color:LightGray; border:1px solid black;">Civil Twilight (sun < 6° below horizon)</td>
             </tr>
             <tr>
-                <td style="background-color:BlanchedAlmond; border:1px solid black;">Night - FAA Civil Night (sun < 6° below horizon)</td>
+                <td style="background-color:BlanchedAlmond; border:1px solid black;">Night (sun > 6° below horizon)</td>
             </tr>
             <tr>
                 <td style="background-color:darkgray; border:1px solid black;">Night - 1 hour past sunset to 1 hour before sunrise</td>
@@ -58,12 +55,12 @@
     </table>
     <p>
     <asp:Button ID="btnTimes" runat="server" Text="Get Times" OnClick="btnTimes_Click" /></p>
-    <p>Sunrise: <asp:Label ID="lblSunRise" runat="server" Text=""></asp:Label></p>
-    <p>Sunset: <asp:Label ID="lblSunSet" runat="server" Text=""></asp:Label></p>
     <uc1:mfbGoogleMapManager ID="mfbGoogleMapManager1" runat="server" ZoomFactor="World" Height="400px"
          />
     <asp:Panel ID="pnlKey" runat="server" Visible="false">
         <p>All times are for UTC-DATE: <asp:Label Font-Bold="true" ID="lblUTCDate" runat="server"></asp:Label>.  Each cell is the time (UTC) followed by the solar angle (angle of the sun over the horizon).</p>
+        <p>Sunrise (UTC): <% =SunRiseUTC.ToLongTimeString() %>,  (in *your* local time): <asp:Label ID="lblSunRise" runat="server" Text=""></asp:Label></p>
+        <p>Sunset (UTC): <% =SunSetUTC.ToLongTimeString() %>, (in *your* local time): <asp:Label ID="lblSunSet" runat="server" Text=""></asp:Label></p>
     </asp:Panel>
     <asp:Table runat="server" ID="tblDayNight" EnableViewState="false">
     </asp:Table>
@@ -88,6 +85,8 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 dropPin(nll(<% =Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture) %>, <% =Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture) %>), 'selected point');
+                document.getElementById('<% =lblSunRise.ClientID %>').innerText = new Date('<% =SunRiseUTC.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture) %>').toLocaleTimeString();
+                document.getElementById('<% =lblSunSet.ClientID %>').innerText = new Date('<% =SunSetUTC.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture) %>').toLocaleTimeString();
             });
         </script>
     </asp:Panel>
