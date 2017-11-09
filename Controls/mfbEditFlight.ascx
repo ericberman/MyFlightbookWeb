@@ -26,9 +26,10 @@
                     meta:resourcekey="Label7Resource1"></asp:Label></div>
             <div class="itemdata">
                 <uc1:mfbTypeInDate ID="mfbDate" runat="server" TabIndex="1" />
-                <asp:CustomValidator ID="valDate" runat="server" ErrorMessage="Date of flight should be today or in the past."
+                <div>
+                <asp:CustomValidator ID="valDate" runat="server" ErrorMessage="Date of flight should be today or in the past." CssClass="error"
                     onservervalidate="valDate_ServerValidate" Display="Dynamic" 
-                    meta:resourcekey="valDateResource1"></asp:CustomValidator>
+                    meta:resourcekey="valDateResource1"></asp:CustomValidator></div>
             </div>
         </div>
         <div class="itemtime">
