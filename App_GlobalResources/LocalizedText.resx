@@ -1367,4 +1367,10 @@ and I will see what I can do.</value>
   <data name="ChartTotalsTotalFlights" xml:space="preserve">
     <value>Flights</value>
   </data>
+  <data name="ChartTotalsGroupYear" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="WeeklyBucketTitleTemplate" xml:space="preserve">
+    <value>Week of {0}</value>
+  </data>
 </root>

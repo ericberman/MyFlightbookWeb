@@ -114,6 +114,8 @@ namespace MyFlightbook.Histogram
 
     public abstract class DateBucketManager : BucketManager<DateTime>
     {
+        public enum GroupingMode { Year, Month, Week, Day };
+
         #region properties
         /// <summary>
         /// Earliest date bucket
@@ -124,7 +126,33 @@ namespace MyFlightbook.Histogram
         /// Latest date bucket
         /// </summary>
         public DateTime MaxDate { get; protected set; }
+
+        /// <summary>
+        /// Format string to use.  Default is "MMM yyyy"
+        /// </summary>
+        public string DateFormat { get; set; }
         #endregion
+
+        /// <summary>
+        /// Returns the correct bucket manager for the specified grouping mode.
+        /// </summary>
+        /// <param name="gm"></param>
+        /// <returns></returns>
+        public static DateBucketManager BucketManagerForGroupingMode(GroupingMode gm)
+        {
+            switch (gm)
+            {
+                default:
+                case GroupingMode.Month:
+                    return new YearMonthBucketManager();
+                case GroupingMode.Week:
+                    return new WeeklyBucketManager();
+                case GroupingMode.Day:
+                    return new DailyBucketManager();
+                case GroupingMode.Year:
+                    return new YearlyBucketManager();
+            }
+        }
 
         protected void ComputeDateRange(IEnumerable<IHistogramable> items)
         {
@@ -144,15 +172,16 @@ namespace MyFlightbook.Histogram
         {
             MinDate = DateTime.MaxValue;
             MaxDate = DateTime.MinValue;
+            DateFormat = "MMM yyyy";
         }
     }
 
     /// <summary>
     /// BucketManager for days (e.g., "May 5 2016") data
     /// </summary>
-    public class DailyBucketmanager : DateBucketManager
+    public class DailyBucketManager : DateBucketManager
     {
-        public DailyBucketmanager() : base() { }
+        public DailyBucketManager() : base() { DateFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern; }
 
         /// <summary>
         /// Generates the buckets for the range of Histogrammable.  WILL THROW AN EXCEPTION IF THE ORDINAL IS NOT A DATETIME!
@@ -190,16 +219,17 @@ namespace MyFlightbook.Histogram
     /// <summary>
     /// BucketManager for days (e.g., "May 5 2016") data
     /// </summary>
-    public class WeeklyBucketmanager : DateBucketManager
+    public class WeeklyBucketManager : DateBucketManager
     {
         /// <summary>
         /// Day to use as the start of week.
         /// </summary>
         public DayOfWeek WeekStart { get; set; }
 
-        public WeeklyBucketmanager() : base()
+        public WeeklyBucketManager() : base()
         {
             WeekStart = DayOfWeek.Sunday;
+            DateFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
         }
 
         /// <summary>
@@ -222,7 +252,7 @@ namespace MyFlightbook.Histogram
             DateTime dt = (DateTime) KeyForValue(MinDate);
             do
             {
-                dict[dt] = new Bucket<DateTime>((DateTime)KeyForValue(dt), dt.ToShortDateString());
+                dict[dt] = new Bucket<DateTime>((DateTime)KeyForValue(dt), String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.WeeklyBucketTitleTemplate, dt.ToShortDateString()));
                 dt = dt.AddDays(7);
             } while (dt.CompareTo(MaxDate) <= 0);
 
@@ -238,10 +268,11 @@ namespace MyFlightbook.Histogram
             return dt.AddDays(-cDays);  // align with start of the week.
         }
     }
+
     /// <summary>
     /// BucketManager for year-month (e.g., "2016-May") data
     /// </summary>
-    public class YearMonthBucketmanager : DateBucketManager
+    public class YearMonthBucketManager : DateBucketManager
     {
         #region properties
         /// <summary>
@@ -253,14 +284,9 @@ namespace MyFlightbook.Histogram
         /// True to align the buckets to December of the latest year.  False by default.
         /// </summary>
         public bool AlignEndToDecember { get; set; }
-
-        /// <summary>
-        /// Format string to use.  Default is "MMM yyyy"
-        /// </summary>
-        public string DateFormat { get; set; }
         #endregion
 
-        public YearMonthBucketmanager() : base()
+        public YearMonthBucketManager() : base()
         {
             AlignStartToJanuary = true;
             AlignEndToDecember = false;
@@ -301,6 +327,47 @@ namespace MyFlightbook.Histogram
         {
             DateTime dt = (DateTime)o;
             return new DateTime(dt.Year, dt.Month, 1);
+        }
+    }
+
+    /// <summary>
+    /// BucketManager for days (e.g., "May 5 2016") data
+    /// </summary>
+    public class YearlyBucketManager : DateBucketManager
+    {
+        public YearlyBucketManager() : base() { DateFormat = "yyyy"; }
+
+        /// <summary>
+        /// Generates the buckets for the range of Histogrammable.  WILL THROW AN EXCEPTION IF THE ORDINAL IS NOT A DATETIME!
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        protected override IDictionary<IComparable, Bucket<DateTime>> BucketsForData(IEnumerable<IHistogramable> items)
+        {
+            Dictionary<IComparable, Bucket<DateTime>> dict = new Dictionary<IComparable, Bucket<DateTime>>();
+            if (items == null)
+                throw new ArgumentNullException("items");
+
+            if (items.Count() == 0)
+                return dict;
+
+            ComputeDateRange(items);
+
+            // Now create the buckets
+            DateTime dt = (DateTime) KeyForValue(MinDate);
+            do
+            {
+                dict[dt] = new Bucket<DateTime>((DateTime)KeyForValue(dt), dt.Year.ToString(CultureInfo.CurrentCulture));
+                dt = dt.AddYears(1);
+            } while (dt.CompareTo(MaxDate) <= 0);
+
+            return dict;
+        }
+
+        protected override IComparable KeyForValue(IComparable o)
+        {
+            DateTime dt = (DateTime)o;
+            return new DateTime(dt.Year, 1, 1);
         }
     }
 
@@ -399,7 +466,6 @@ namespace MyFlightbook.Histogram
         }
     }
     #endregion
-
 
     /// <summary>
     /// Interface implemented by objects which can be summed up in a histogram

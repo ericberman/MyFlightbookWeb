@@ -200,6 +200,11 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
     {
         get { return FormatStringForType(XDataType); }
     }
+
+    /// <summary>
+    /// Format pattern for the X axis, if it is a date and UseMonthYearDate isn't set.
+    /// </summary>
+    public string XDatePattern { get; set; }
     #endregion
 
     public void Clear()
@@ -243,7 +248,7 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
         switch (gcdt)
         {
             case GoogleColumnDataType.date:
-                return UseMonthYearDate ? "MMM yyyy" : System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+                return UseMonthYearDate ? "MMM yyyy" : (String.IsNullOrWhiteSpace(XDatePattern) ? System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern : XDatePattern);
             case GoogleColumnDataType.datetime:
                 return System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern + " " + "HH:mm";
             case GoogleColumnDataType.timeofday:

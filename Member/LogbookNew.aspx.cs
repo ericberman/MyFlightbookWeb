@@ -69,13 +69,22 @@ public partial class Member_LogbookNew : System.Web.UI.Page
         if (!String.IsNullOrEmpty(szAirportParam))
             Restriction.AirportList = MyFlightbook.Airports.AirportList.NormalizeAirportList(szAirportParam);
 
-        if (month >= 0 && month < 12 && year > 1900)
+        if (year > 1900)
         {
-            DateTime dtStart = new DateTime(year, month + 1, day > 0 ? day : 1);
-            DateTime dtEnd = (day > 0) ? (week > 0 ? dtStart.AddDays(6) : dtStart) : dtStart.AddMonths(1).AddDays(-1);
-            Restriction.DateRange = FlightQuery.DateRanges.Custom;
-            Restriction.DateMin = dtStart;
-            Restriction.DateMax = dtEnd;
+            if (month >= 0 && month < 12 && year > 1900)
+            {
+                DateTime dtStart = new DateTime(year, month + 1, day > 0 ? day : 1);
+                DateTime dtEnd = (day > 0) ? (week > 0 ? dtStart.AddDays(6) : dtStart) : dtStart.AddMonths(1).AddDays(-1);
+                Restriction.DateRange = FlightQuery.DateRanges.Custom;
+                Restriction.DateMin = dtStart;
+                Restriction.DateMax = dtEnd;
+            }
+            else
+            {
+                Restriction.DateRange = FlightQuery.DateRanges.Custom;
+                Restriction.DateMin = new DateTime(year, 1, 1);
+                Restriction.DateMax = new DateTime(year, 12, 31);
+            }
         }
 
         Refresh();

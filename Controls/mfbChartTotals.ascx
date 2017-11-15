@@ -22,12 +22,13 @@
     </asp:DropDownList>
     <asp:Label ID="lblGroupBy" runat="server" Text="<%$ Resources:LocalizedText, ChartTotalsGroupPrompt %>"></asp:Label>
     <asp:DropDownList ID="cmbGrouping" runat="server" AutoPostBack="true" OnSelectedIndexChanged="cmbGrouping_SelectedIndexChanged">
+        <asp:ListItem Value="Year" Text="<%$ Resources:LocalizedText, ChartTotalsGroupYear %>"></asp:ListItem>
         <asp:ListItem Selected="True" Value="Month" Text="<%$ Resources:LocalizedText, ChartTotalsGroupMonth %>"></asp:ListItem>
         <asp:ListItem Value="Week" Text="<%$ Resources:LocalizedText, ChartTotalsGroupWeek %>"></asp:ListItem>
         <asp:ListItem Value="Day" Text="<%$ Resources:LocalizedText, ChartTotalsGroupDay %>"></asp:ListItem>
     </asp:DropDownList>
     <asp:Panel ID="pnlChart" runat="server">
-        <uc3:GoogleChart ID="gcTrends" Width="750" Height="340" ChartType="ColumnChart" Chart2Type="line" SlantAngle="90" LegendType="bottom" XDataType="date" UseMonthYearDate="true" YDataType="number" Y2DataType="number" runat="server" />
+        <uc3:GoogleChart ID="gcTrends" Width="750" Height="340" ChartType="ColumnChart" Chart2Type="line" SlantAngle="90" LegendType="bottom" XDataType="date" YDataType="number" Y2DataType="number" runat="server" />
         <p>
             <asp:Literal ID="Literal2" runat="server" 
                 Text="<%$ Resources:LocalizedText, ChartTotalsMouseHint1 %>" />
@@ -42,11 +43,7 @@
             <asp:GridView ID="gvRawData" runat="server" AutoGenerateColumns="False" CellPadding="3"
                 OnRowDataBound="gvRawData_RowDataBound" EnableModelValidation="True">
                 <Columns>
-                    <asp:TemplateField HeaderText="<%$ Resources:LocalizedText, ChartDataPeriod %>">
-                        <ItemTemplate>
-                            <%# ((DateTime) Eval("Ordinal")).ToString(CurrentGrouping == GroupingMode.Month ? "MMM-yyyy" : System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern) %>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                    <asp:BoundField HeaderText="<%$ Resources:LocalizedText, ChartDataPeriod %>" DataField="DisplayName" />
                     <asp:TemplateField HeaderText="<%$ Resources:LocalizedText, ChartDataTotal %>">
                         <ItemTemplate>
                             <asp:HyperLink runat="server" Target="_blank" ID="lnkValue"></asp:HyperLink>

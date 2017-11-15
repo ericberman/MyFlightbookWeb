@@ -24,11 +24,9 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
 
     private const string szVSRawData = "keyViewStateRawData";
 
-    public enum GroupingMode { Month, Week, Day };
-
-    public GroupingMode CurrentGrouping
+    public DateBucketManager.GroupingMode CurrentGrouping
     {
-        get { return (GroupingMode)Enum.Parse(typeof(GroupingMode), cmbGrouping.SelectedValue); }
+        get { return (DateBucketManager.GroupingMode)Enum.Parse(typeof(DateBucketManager.GroupingMode), cmbGrouping.SelectedValue); }
         set { cmbGrouping.SelectedValue = value.ToString(); }
     }
 
@@ -80,10 +78,11 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         }
         gcTrends.YLabel = String.Format(CultureInfo.CurrentCulture, fIsInt ? Resources.LocalizedText.ChartTotalsNumOfX : Resources.LocalizedText.ChartTotalsHoursOfX, cmbFieldToview.SelectedItem.Text);
         gcTrends.Y2Label = Resources.LocalizedText.ChartRunningTotal;
-        gcTrends.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "window.open('{0}?y=' + xvalue.getFullYear() + '&m=' + xvalue.getMonth() {1} {2}, '_blank').focus()",
+        gcTrends.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "window.open('{0}?y=' + xvalue.getFullYear() {1} {2} {3}, '_blank').focus()",
             VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"),
-            CurrentGrouping == GroupingMode.Month ? string.Empty : " + '&d=' + xvalue.getDate()",
-            CurrentGrouping == GroupingMode.Week ? " + '&w=1'" : string.Empty);
+            CurrentGrouping == DateBucketManager.GroupingMode.Year ? string.Empty : " + '&m=' + xvalue.getMonth() ",
+            CurrentGrouping == DateBucketManager.GroupingMode.Month ? string.Empty : " + '&d=' + xvalue.getDate()",
+            CurrentGrouping == DateBucketManager.GroupingMode.Week ? " + '&w=1'" : string.Empty);
 
         pnlChart.Visible = true;
     }
@@ -91,23 +90,6 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
     protected void cmbFieldToview_SelectedIndexChanged(object sender, EventArgs e)
     {
         Refresh(SourceData);
-    }
-
-    protected DateBucketManager DefaultBucketManager
-    {
-        get
-        {
-            switch (CurrentGrouping)
-            {
-                default:
-                case GroupingMode.Month:
-                    return new YearMonthBucketmanager();
-                case GroupingMode.Week:
-                    return new WeeklyBucketmanager();
-                case GroupingMode.Day:
-                    return new DailyBucketmanager();
-            }
-        }
     }
 
     /// <summary>
@@ -118,16 +100,18 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
     {
         if (datasource == null)
             throw new ArgumentNullException("datasource");
-        DateBucketManager bm = DefaultBucketManager;
+        DateBucketManager bm = DateBucketManager.BucketManagerForGroupingMode(CurrentGrouping);
         Dictionary<string, object> context = new Dictionary<string, object>() { { LogbookEntryDisplay.HistogramContextSelectorKey, SelectedFieldToGraph } };
         bm.ScanData(datasource, context, true);
         // check for daily with less than a year
-        if (CurrentGrouping == GroupingMode.Day && bm.MaxDate.CompareTo(bm.MinDate) > 0 && bm.MaxDate.Subtract(bm.MinDate).TotalDays > 365)
+        if (CurrentGrouping == DateBucketManager.GroupingMode.Day && bm.MaxDate.CompareTo(bm.MinDate) > 0 && bm.MaxDate.Subtract(bm.MinDate).TotalDays > 365)
         {
-            CurrentGrouping = GroupingMode.Week;
-            bm = new WeeklyBucketmanager();
+            CurrentGrouping = DateBucketManager.GroupingMode.Week;
+            bm = new WeeklyBucketManager();
             bm.ScanData(datasource, context, true);
         }
+        gcTrends.XDatePattern = bm.DateFormat;
+
         RawData = bm.Buckets.ToArray<Bucket<DateTime>>();
         RefreshChartAndTable();
     }
@@ -140,11 +124,19 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
             HyperLink h = (HyperLink)e.Row.FindControl("lnkValue");
             h.Text = b.Value.ToString(CultureInfo.InvariantCulture);
             DateTime dt = (DateTime)b.Ordinal;
-            h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/Logbooknew.aspx?y={0}&m={1}{2}{3}",
-                dt.Year, 
-                dt.Month - 1, 
-                CurrentGrouping == GroupingMode.Month ? string.Empty : "&d=" + dt.Day,
-                CurrentGrouping == GroupingMode.Week ? "&w=1" : string.Empty);
+            System.Text.StringBuilder sb = new System.Text.StringBuilder("~/Member/LogbookNew.aspx?y=");
+            sb.Append(dt.Year.ToString(CultureInfo.InvariantCulture));
+            if (CurrentGrouping != DateBucketManager.GroupingMode.Year)
+            {
+                sb.AppendFormat(CultureInfo.InvariantCulture, "&m={0}", dt.Month - 1);
+                if (CurrentGrouping != DateBucketManager.GroupingMode.Month)
+                {
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "&d={0}", dt.Day);
+                    if (CurrentGrouping == DateBucketManager.GroupingMode.Week)
+                        sb.AppendFormat(CultureInfo.InvariantCulture, "&w=1");
+                }
+            }
+            h.NavigateUrl = sb.ToString();
         }
     }
 
