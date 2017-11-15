@@ -794,7 +794,7 @@ namespace MyFlightbook.Telemetry
                 switch (this.AltitudeUnits)
                 {
                     case AltitudeUnitTypes.Feet:
-                        return ConversionFactors.FeetPerMeter;
+                        return ConversionFactors.MetersPerFoot;
                     case AltitudeUnitTypes.Meters:
                     default:
                         return 1.0;
