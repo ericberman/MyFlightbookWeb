@@ -1357,6 +1357,18 @@ namespace MyFlightbook
                         dbh.CommandText = "DELETE FROM customcurrency WHERE Username=?uname";
                         dbh.DoNonQuery();
 
+                        dbh.CommandText = "DELETE FROM deadlines WHERE username=?uname";
+                        dbh.DoNonQuery();
+
+                        dbh.CommandText = "DELETE FROM airports WHERE sourceusername=?uname";
+                        dbh.DoNonQuery();
+
+                        dbh.CommandText = "DELETE FROM badges WHERE username=?uname";
+                        dbh.DoNonQuery();
+
+                        dbh.CommandText = "DELETE FROM earnedgratuities WHERE username=?uname";
+                        dbh.DoNonQuery();
+
                         // Remove the user from the logs
                         dbh.CommandText = "DELETE FROM wsevents WHERE user=?uname";
                         dbh.DoNonQuery();
