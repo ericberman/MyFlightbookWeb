@@ -403,7 +403,10 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             Description = Convert.ToString(dr["LocDescription"], CultureInfo.InvariantCulture);
             string szPreviousVals = Convert.ToString(dr["prevValues"], CultureInfo.InvariantCulture);
             if (!String.IsNullOrEmpty(szPreviousVals))
+            {
                 PreviousValues = szPreviousVals.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                Array.Sort<string>(PreviousValues);
+            }
         }
         #endregion
 
