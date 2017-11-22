@@ -57,6 +57,8 @@ and the application should be called "logbook" and point to the /logbook branch.
  * Need to set packet size to at least 10-15MB:	show variables like 'max_allowed_packet';	SET GLOBAL max_allowed_packet=16777216;
  * Not a bad idea to bump up group_concat_max_len to something like 2048.
  * Depending on where MySQL is hosted, may need to set  lower_case_table_names=1, since the code is not consistent about upper/lower case for table names.
+ * If on 5.7, may need any of the following:
+     *  sql_mode ALLOW_INVALID_DATES
  #### LocalConfig settings
   * AdminAuthAccessKey - enables use of certain admin-only functionality 
  * AuthorizedWebServiceClients - comma separated list of authorized clients of the web services.
