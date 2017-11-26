@@ -12,7 +12,7 @@
     </td>
     <td>
         <asp:HyperLink ID="lnkFlight" runat="server"><asp:Label ID="lblroute" runat="server"></asp:Label></asp:HyperLink><br />
-        <asp:Label ID="lblComments" runat="server"></asp:Label>
+        <span style="white-space:pre-line;"><asp:Label ID="lblComments" runat="server"></asp:Label></span>
         <uc3:mfbImageList ID="mfbIlFlight" runat="server" />
         <div style="margin-left:50px;" id='<% =FBDivID %>'>
             <uc1:fbComment ID="fbComment1" runat="server" />
