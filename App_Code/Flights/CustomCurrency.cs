@@ -225,7 +225,8 @@ namespace MyFlightbook.FlightCurrency
             LandingsHighAltitude = 20,
             NightFlight = 21,
             CAP5Checkride = 22,
-            CAP91Checkride = 23
+            CAP91Checkride = 23,
+            FMSApproaches = 24
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1 };
@@ -377,7 +378,6 @@ namespace MyFlightbook.FlightCurrency
         /// </summary>
         public LimitType CurrencyLimitType { get; set; }
         #endregion
-
 
         static public IEnumerable<CustomCurrency> CustomCurrenciesForUser(string szUser)
         {
@@ -597,6 +597,8 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     return Resources.Currency.CustomCurrencyEventCap5Checkride;
                 case CustomCurrencyEventType.CAP91Checkride:
                     return Resources.Currency.CustomCurrencyEventCap91Checkride;
+                case CustomCurrencyEventType.FMSApproaches:
+                    return Resources.Currency.CustomCurrencyEventFMSApproach;
                 default:
                     return ccet.ToString();
             }
@@ -654,6 +656,8 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     return Resources.Currency.CustomCurrencyEventCap5Checkrides;
                 case CustomCurrencyEventType.CAP91Checkride:
                     return Resources.Currency.CustomCurrencyEventCap91Checkrides;
+                case CustomCurrencyEventType.FMSApproaches:
+                    return Resources.Currency.CustomCurrencyEventFMSApproaches;
                 default:
                     return ccet.ToString();
             }
@@ -822,6 +826,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     case CustomCurrencyEventType.CAP91Checkride:
                         prop = CustomPropertyType.KnownProperties.IDPropCAP91Checkride;
                         break;
+                    case CustomCurrencyEventType.FMSApproaches:
+                        prop = CustomPropertyType.KnownProperties.IDPropFMSApproaches;
+                        break;
                     default:
                         throw new MyFlightbookException("Unknown event type: " + EventType.ToString() + " in ToQuery()");
                 }
@@ -962,6 +969,10 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 case CustomCurrencyEventType.CAP91Checkride:
                     if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropCAP91Checkride)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.BoolValue ? 1 : 0);
+                    break;
+                case CustomCurrencyEventType.FMSApproaches:
+                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFMSApproaches)) != null)
+                        AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
                     break;
             }
         }

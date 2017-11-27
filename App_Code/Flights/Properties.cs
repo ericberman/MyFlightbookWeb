@@ -102,7 +102,8 @@ namespace MyFlightbook
             IDPropMonitoredDayLandings = 562,
             IDPropMonitoredNightLandings = 563,
             IDPropMonitoredNightTakeoffs = 565,
-            IDPropNightTouchAndGo = 397
+            IDPropNightTouchAndGo = 397,
+            IDPropFMSApproaches = 583
         }
 
         internal static class CFPPropertyFlag

@@ -830,4 +830,10 @@
   <data name="CustomCurrencyEventCap91Checkrides" xml:space="preserve">
     <value>CAP Form 91 Checkrides</value>
   </data>
+  <data name="CustomCurrencyEventFMSApproach" xml:space="preserve">
+    <value>FMS approach</value>
+  </data>
+  <data name="CustomCurrencyEventFMSApproaches" xml:space="preserve">
+    <value>FMS approaches</value>
+  </data>
 </root>
