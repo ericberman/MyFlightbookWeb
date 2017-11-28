@@ -715,42 +715,42 @@ namespace MyFlightbook.FlightCurrency
                                 dictFlightCurrency.Add(szKey299, new Part135_299a(szCatClass, Resources.Currency.Part135299aTitle));
                             dictFlightCurrency[szKey299].ExamineFlight(cfr);
                         }
-
-                        if (pf.UsesFAR13526xCurrency)
-                        {
-                            const string szKey267a1 = "135.267(a)(1)";
-                            const string szKey267a2 = "135.267(a)(2)";
-                            const string szKey267a3 = "135.267(a)(3)";
-                            const string szKey265a1 = "135.265(a)(1)";
-                            const string szKey265a2 = "135.265(a)(2)";
-                            const string szKey265a3 = "135.265(a)(3)";
-
-                            if (!dictFlightCurrency.ContainsKey(szKey267a1))
-                                dictFlightCurrency.Add(szKey267a1, new Part135_267a1());
-                            dictFlightCurrency[szKey267a1].ExamineFlight(cfr);
-
-                            if (!dictFlightCurrency.ContainsKey(szKey267a2))
-                                dictFlightCurrency.Add(szKey267a2, new Part135_267a2());
-                            dictFlightCurrency[szKey267a2].ExamineFlight(cfr);
-
-                            if (!dictFlightCurrency.ContainsKey(szKey267a3))
-                                dictFlightCurrency.Add(szKey267a3, new Part135_267a3());
-                            dictFlightCurrency[szKey267a3].ExamineFlight(cfr);
-
-                            if (!dictFlightCurrency.ContainsKey(szKey265a1))
-                                dictFlightCurrency.Add(szKey265a1, new Part135_265a1());
-                            dictFlightCurrency[szKey265a1].ExamineFlight(cfr);
-
-                            if (!dictFlightCurrency.ContainsKey(szKey265a2))
-                                dictFlightCurrency.Add(szKey265a2, new Part135_265a2());
-                            dictFlightCurrency[szKey265a2].ExamineFlight(cfr);
-
-                            if (!dictFlightCurrency.ContainsKey(szKey265a3))
-                                dictFlightCurrency.Add(szKey265a3, new Part135_265a3());
-                            dictFlightCurrency[szKey265a3].ExamineFlight(cfr);
-                        }
                     } // foreach catclass
 
+                    if (pf.UsesFAR13526xCurrency)
+                    {
+                        const string szKey267a1 = "135.267(a)(1)";
+                        const string szKey267a2 = "135.267(a)(2)";
+                        const string szKey267a3 = "135.267(a)(3)";
+                        const string szKey265a1 = "135.265(a)(1)";
+                        const string szKey265a2 = "135.265(a)(2)";
+                        const string szKey265a3 = "135.265(a)(3)";
+
+                        if (!dictFlightCurrency.ContainsKey(szKey267a1))
+                            dictFlightCurrency.Add(szKey267a1, new Part135_267a1());
+                        dictFlightCurrency[szKey267a1].ExamineFlight(cfr);
+
+                        if (!dictFlightCurrency.ContainsKey(szKey267a2))
+                            dictFlightCurrency.Add(szKey267a2, new Part135_267a2());
+                        dictFlightCurrency[szKey267a2].ExamineFlight(cfr);
+
+                        if (!dictFlightCurrency.ContainsKey(szKey267a3))
+                            dictFlightCurrency.Add(szKey267a3, new Part135_267a3());
+                        dictFlightCurrency[szKey267a3].ExamineFlight(cfr);
+
+                        if (!dictFlightCurrency.ContainsKey(szKey265a1))
+                            dictFlightCurrency.Add(szKey265a1, new Part135_265a1());
+                        dictFlightCurrency[szKey265a1].ExamineFlight(cfr);
+
+                        if (!dictFlightCurrency.ContainsKey(szKey265a2))
+                            dictFlightCurrency.Add(szKey265a2, new Part135_265a2());
+                        dictFlightCurrency[szKey265a2].ExamineFlight(cfr);
+
+                        if (!dictFlightCurrency.ContainsKey(szKey265a3))
+                            dictFlightCurrency.Add(szKey265a3, new Part135_265a3());
+                        dictFlightCurrency[szKey265a3].ExamineFlight(cfr);
+                    }
+                    
                     // Army 95-1 currency
                     if (cfr.szArmyMDS.Length > 0 && cfr.Total > 0)
                     {
