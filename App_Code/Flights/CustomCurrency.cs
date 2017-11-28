@@ -194,6 +194,78 @@ namespace MyFlightbook.FlightCurrency
         #endregion
     }
 
+    /// <summary>
+    /// Local class to pair a singular/plural name with an event type.
+    /// </summary>
+    public static class CustomCurrencyEventTypeExtensions
+    {
+        #region extension methods for CustomCurrencyEvenType
+        private static Dictionary<CustomCurrency.CustomCurrencyEventType, string[]> s_eventTypeLabels = null;
+
+        private static string[] LabelsForEventType(CustomCurrency.CustomCurrencyEventType ccet)
+        {
+            if (s_eventTypeLabels == null)
+            {
+                s_eventTypeLabels = new Dictionary<CustomCurrency.CustomCurrencyEventType, string[]>()
+                    {
+                        { CustomCurrency.CustomCurrencyEventType.Flights, new string[] { Resources.Currency.CustomCurrencyEventFlight, Resources.Currency.CustomCurrencyEventFlights } },
+                        { CustomCurrency.CustomCurrencyEventType.Landings, new string[] { Resources.Currency.CustomCurrencyEventLanding, Resources.Currency.CustomCurrencyEventLandings } },
+                        { CustomCurrency.CustomCurrencyEventType.Hours, new string[] { Resources.Currency.CustomCurrencyEventHour, Resources.Currency.CustomCurrencyEventHours } },
+                        { CustomCurrency.CustomCurrencyEventType.IFRHours, new string[] { Resources.Currency.CustomCurrencyEventInstrumentHour, Resources.Currency.CustomCurrencyEventInstrumentHours } },
+                        { CustomCurrency.CustomCurrencyEventType.IFRApproaches, new string[] { Resources.Currency.CustomCurrencyEventApproach, Resources.Currency.CustomCurrencyEventApproaches } },
+                        { CustomCurrency.CustomCurrencyEventType.BaseCheck, new string[] { Resources.Currency.CustomCurrencyEventBaseCheck, Resources.Currency.CustomCurrencyEventBaseChecks } },
+                        { CustomCurrency.CustomCurrencyEventType.UASLaunch, new string[] { Resources.Currency.CustomCurrencyEventLaunch, Resources.Currency.CustomCurrencyEventLaunches } },
+                        { CustomCurrency.CustomCurrencyEventType.UASRecovery, new string[] { Resources.Currency.CustomCurrencyEventRecovery, Resources.Currency.CustomCurrencyEventRecoveries } },
+                        { CustomCurrency.CustomCurrencyEventType.NightLandings, new string[] { Resources.Currency.CustomCurrencyEventNightLanding, Resources.Currency.CustomCurrencyEventNightLandings } },
+                        { CustomCurrency.CustomCurrencyEventType.NightTakeoffs, new string[] { Resources.Currency.CustomCurrencyEventNightTakeoff, Resources.Currency.CustomCurrencyEventNightTakeoffs } },
+                        { CustomCurrency.CustomCurrencyEventType.PICLandings, new string[] { Resources.Currency.CustomCurrencyEventLandingPIC, Resources.Currency.CustomCurrencyEventLandingsPIC } },
+                        { CustomCurrency.CustomCurrencyEventType.PICNightLandings, new string[] { Resources.Currency.CustomCurrencyEventNightLandingPIC, Resources.Currency.CustomCurrencyEventNightLandingsPIC } },
+                        { CustomCurrency.CustomCurrencyEventType.TotalHours, new string[] { Resources.Currency.CustomCurrencyEventTotalHour, Resources.Currency.CustomCurrencyEventTotalHours } },
+                        { CustomCurrency.CustomCurrencyEventType.GroundSimHours, new string[] { Resources.Currency.CustomCurrencyEventSimulatorHour, Resources.Currency.CustomCurrencyEventSimulatorHours } },
+                        { CustomCurrency.CustomCurrencyEventType.BackseatHours, new string[] { Resources.Currency.CustomCurrencyEventBackSeatHour, Resources.Currency.CustomCurrencyEventBackSeatHours } },
+                        { CustomCurrency.CustomCurrencyEventType.FrontSeatHours, new string[] { Resources.Currency.CustomCurrencyEventFrontSeatHour, Resources.Currency.CustomCurrencyEventFrontSeatHours } },
+                        { CustomCurrency.CustomCurrencyEventType.HoistOperations, new string[] { Resources.Currency.CustomCurrencyHoistOperation, Resources.Currency.CustomCurrencyHoistOperations } },
+                        { CustomCurrency.CustomCurrencyEventType.NVHours, new string[] { Resources.Currency.CustomCurrencyEventNVHour, Resources.Currency.CustomCurrencyEventNVHours } },
+                        { CustomCurrency.CustomCurrencyEventType.NVGoggles, new string[] { Resources.Currency.CustomCurrencyEventNVGHour, Resources.Currency.CustomCurrencyEventNVGHours } },
+                        { CustomCurrency.CustomCurrencyEventType.NVFLIR, new string[] { Resources.Currency.CustomCurrencyEventNVSHour, Resources.Currency.CustomCurrencyEventNVSHours } },
+                        { CustomCurrency.CustomCurrencyEventType.LandingsHighAltitude, new string[] { Resources.Currency.CustomCurrencyEventHighAltitudeLanding, Resources.Currency.CustomCurrencyEventHighAltitudeLandings } },
+                        { CustomCurrency.CustomCurrencyEventType.NightFlight, new string[] { Resources.Currency.CustomCurrencyEventNightHour, Resources.Currency.CustomCurrencyEventNightHours } },
+                        { CustomCurrency.CustomCurrencyEventType.CAP5Checkride, new string[] { Resources.Currency.CustomCurrencyEventCap5Checkride, Resources.Currency.CustomCurrencyEventCap5Checkrides } },
+                        { CustomCurrency.CustomCurrencyEventType.CAP91Checkride, new string[] { Resources.Currency.CustomCurrencyEventCap91Checkride, Resources.Currency.CustomCurrencyEventCap91Checkrides } },
+                        { CustomCurrency.CustomCurrencyEventType.FMSApproaches, new string[] { Resources.Currency.CustomCurrencyEventFMSApproach, Resources.Currency.CustomCurrencyEventFMSApproaches } }
+                    };
+            }
+
+            return s_eventTypeLabels.ContainsKey(ccet) ? s_eventTypeLabels[ccet] : null;
+        }
+
+        /// <summary>
+        /// Description for the event type when there is one event.  E.g., "1 flight"
+        /// </summary>
+        /// <param name="ccet"></param>
+        /// <returns></returns>
+        public static string SingularName(this CustomCurrency.CustomCurrencyEventType ccet)
+        {
+            string[] rgsz = LabelsForEventType(ccet);
+            return (rgsz == null || rgsz.Length < 1) ? ccet.ToString() : rgsz[0];
+        }
+
+        /// <summary>
+        /// Description for the event type when there are multiple events.  E.g., "2 flights"
+        /// </summary>
+        /// <param name="ccet"></param>
+        /// <returns></returns>
+        public static string PluralName(this CustomCurrency.CustomCurrencyEventType ccet)
+        {
+            string[] rgsz = LabelsForEventType(ccet);
+            return (rgsz == null || rgsz.Length < 2) ? ccet.ToString() : rgsz[1];
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// Currencies that are defined by the user.
+    /// </summary>
     public class CustomCurrency : FlightCurrency
     {
         /// <summary>
@@ -545,127 +617,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 throw new MyFlightbookException("Error deleting customcurrency: " + dbh.LastError);
         }
 
-        private static string EventTypeLabelSingle(CustomCurrencyEventType ccet)
-        {
-            switch (ccet)
-            {
-                case CustomCurrencyEventType.Flights:
-                    return Resources.Currency.CustomCurrencyEventFlight;
-                case CustomCurrencyEventType.Hours:
-                    return Resources.Currency.CustomCurrencyEventHour;
-                case CustomCurrencyEventType.Landings:
-                    return Resources.Currency.CustomCurrencyEventLanding;
-                case CustomCurrencyEventType.IFRApproaches:
-                    return Resources.Currency.CustomCurrencyEventApproach;
-                case CustomCurrencyEventType.IFRHours:
-                    return Resources.Currency.CustomCurrencyEventInstrumentHour;
-                case CustomCurrencyEventType.BaseCheck:
-                    return Resources.Currency.CustomCurrencyEventBaseCheck;
-                case CustomCurrencyEventType.UASLaunch:
-                    return Resources.Currency.CustomCurrencyEventLaunch;
-                case CustomCurrencyEventType.UASRecovery:
-                    return Resources.Currency.CustomCurrencyEventRecovery;
-                case CustomCurrencyEventType.NightLandings:
-                    return Resources.Currency.CustomCurrencyEventNightLanding;
-                case CustomCurrencyEventType.NightTakeoffs:
-                    return Resources.Currency.CustomCurrencyEventNightTakeoff;
-                case CustomCurrencyEventType.PICLandings:
-                    return Resources.Currency.CustomCurrencyEventLandingPIC;
-                case CustomCurrencyEventType.PICNightLandings:
-                    return Resources.Currency.CustomCurrencyEventNightLandingPIC;
-                case CustomCurrencyEventType.BackseatHours:
-                    return Resources.Currency.CustomCurrencyEventBackSeatHour;
-                case CustomCurrencyEventType.FrontSeatHours:
-                    return Resources.Currency.CustomCurrencyEventFrontSeatHour;
-                case CustomCurrencyEventType.TotalHours:
-                    return Resources.Currency.CustomCurrencyEventTotalHour;
-                case CustomCurrencyEventType.GroundSimHours:
-                    return Resources.Currency.CustomCurrencyEventSimulatorHour;
-                case CustomCurrencyEventType.HoistOperations:
-                    return Resources.Currency.CustomCurrencyHoistOperation;
-                case CustomCurrencyEventType.NVHours:
-                    return Resources.Currency.CustomCurrencyEventNVHour;
-                case CustomCurrencyEventType.NVGoggles:
-                    return Resources.Currency.CustomCurrencyEventNVGHour;
-                case CustomCurrencyEventType.NVFLIR:
-                    return Resources.Currency.CustomCurrencyEventNVSHour;
-                case CustomCurrencyEventType.LandingsHighAltitude:
-                    return Resources.Currency.CustomCurrencyEventHighAltitudeLanding;
-                case CustomCurrencyEventType.NightFlight:
-                    return Resources.Currency.CustomCurrencyEventNightHour;
-                case CustomCurrencyEventType.CAP5Checkride:
-                    return Resources.Currency.CustomCurrencyEventCap5Checkride;
-                case CustomCurrencyEventType.CAP91Checkride:
-                    return Resources.Currency.CustomCurrencyEventCap91Checkride;
-                case CustomCurrencyEventType.FMSApproaches:
-                    return Resources.Currency.CustomCurrencyEventFMSApproach;
-                default:
-                    return ccet.ToString();
-            }
-        }
-
-        private static string EventTypeLabelPlural(CustomCurrencyEventType ccet)
-        {
-            switch (ccet)
-            {
-                case CustomCurrencyEventType.Flights:
-                    return Resources.Currency.CustomCurrencyEventFlights;
-                case CustomCurrencyEventType.Hours:
-                    return Resources.Currency.CustomCurrencyEventHours;
-                case CustomCurrencyEventType.Landings:
-                    return Resources.Currency.CustomCurrencyEventLandings;
-                case CustomCurrencyEventType.IFRApproaches:
-                    return Resources.Currency.CustomCurrencyEventApproaches;
-                case CustomCurrencyEventType.IFRHours:
-                    return Resources.Currency.CustomCurrencyEventInstrumentHours;
-                case CustomCurrencyEventType.BaseCheck:
-                    return Resources.Currency.CustomCurrencyEventBaseChecks;
-                case CustomCurrencyEventType.UASLaunch:
-                    return Resources.Currency.CustomCurrencyEventLaunches;
-                case CustomCurrencyEventType.UASRecovery:
-                    return Resources.Currency.CustomCurrencyEventRecoveries;
-                case CustomCurrencyEventType.NightLandings:
-                    return Resources.Currency.CustomCurrencyEventNightLandings;
-                case CustomCurrencyEventType.NightTakeoffs:
-                    return Resources.Currency.CustomCurrencyEventNightTakeoffs;
-                case CustomCurrencyEventType.PICLandings:
-                    return Resources.Currency.CustomCurrencyEventLandingsPIC;
-                case CustomCurrencyEventType.PICNightLandings:
-                    return Resources.Currency.CustomCurrencyEventNightLandingsPIC;
-                case CustomCurrencyEventType.BackseatHours:
-                    return Resources.Currency.CustomCurrencyEventBackSeatHours;
-                case CustomCurrencyEventType.FrontSeatHours:
-                    return Resources.Currency.CustomCurrencyEventFrontSeatHours;
-                case CustomCurrencyEventType.TotalHours:
-                    return Resources.Currency.CustomCurrencyEventTotalHours;
-                case CustomCurrencyEventType.GroundSimHours:
-                    return Resources.Currency.CustomCurrencyEventSimulatorHours;
-                case CustomCurrencyEventType.HoistOperations:
-                    return Resources.Currency.CustomCurrencyHoistOperations;
-                case CustomCurrencyEventType.NVHours:
-                    return Resources.Currency.CustomCurrencyEventNVHours;
-                case CustomCurrencyEventType.NVGoggles:
-                    return Resources.Currency.CustomCurrencyEventNVGHours;
-                case CustomCurrencyEventType.NVFLIR:
-                    return Resources.Currency.CustomCurrencyEventNVSHours;
-                case CustomCurrencyEventType.LandingsHighAltitude:
-                    return Resources.Currency.CustomCurrencyEventHighAltitudeLandings;
-                case CustomCurrencyEventType.NightFlight:
-                    return Resources.Currency.CustomCurrencyEventNightHours;
-                case CustomCurrencyEventType.CAP5Checkride:
-                    return Resources.Currency.CustomCurrencyEventCap5Checkrides;
-                case CustomCurrencyEventType.CAP91Checkride:
-                    return Resources.Currency.CustomCurrencyEventCap91Checkrides;
-                case CustomCurrencyEventType.FMSApproaches:
-                    return Resources.Currency.CustomCurrencyEventFMSApproaches;
-                default:
-                    return ccet.ToString();
-            }
-        }
-
         public static string EventTypeLabel(Decimal count, CustomCurrencyEventType ccet)
         {
-            return (count == 1) ? EventTypeLabelSingle(ccet) : EventTypeLabelPlural(ccet);
+            return (count == 1) ? ccet.SingularName() : ccet.PluralName();
         }
 
         override public string ToString()
@@ -707,8 +661,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         /// <summary>
         /// Generates a new flightquery object representing flights that match this custom currency
         /// </summary>
-        /// <returns>The newly generated flightquery.  Don't forget to refresh it!</returns>
-        public string FlightQueryJSON
+        public FlightQuery Query
         {
             get
             {
@@ -835,8 +788,17 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 if (prop != CustomPropertyType.KnownProperties.IDPropInvalid)
                     fq.PropertyTypes = lstprops.FindAll(cpt => cpt.PropTypeID == (int)prop).ToArray();
 
-                return System.Web.HttpUtility.UrlEncode(fq.ToBase64CompressedJSONString());
+                return fq;
             }
+        }
+
+        /// <summary>
+        /// Returns the query representing flights that match this custom currency, compressed and URL encoded.
+        /// </summary>
+        /// <returns>The newly generated flightquery.  Don't forget to refresh it!</returns>
+        public string FlightQueryJSON
+        {
+            get { return System.Web.HttpUtility.UrlEncode(Query.ToBase64CompressedJSONString()); }
         }
 
         /// <summary>
