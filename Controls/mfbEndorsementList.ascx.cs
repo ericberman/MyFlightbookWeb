@@ -45,7 +45,6 @@ public partial class Controls_mfbEndorsementList : System.Web.UI.UserControl
         gvExistingEndorsements.DataSource = rg;
         gvExistingEndorsements.DataBind();
         int cItems = rg.Count();
-        lblPreviousEndorsements.Visible = (cItems > 0);
         return cItems;
     }
 

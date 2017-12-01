@@ -40,6 +40,9 @@
                          
                         Text="You can scan your paper logbook endorsements and upload them here so that you always have access to them." meta:resourcekey="locScannedEndorsementDescResource1"></asp:Localize>
                 </p>
+                <div>
+                    <asp:Label ID="lblNote" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label> <asp:Label ID="lblPreviousEndorsements" runat="server" Text="<%$ Resources:SignOff, EditEndorsementDisclaimer %>"></asp:Label>
+                </div>
                 <uc7:mfbMultiFileUpload ID="mfbMultiFileUpload1" Class="Endorsement" OnUploadComplete="mfbMultiFileUpload1_OnUploadComplete"
                         runat="server" Mode="Legacy" RefreshOnUpload="true" IncludeDocs="true" />
                 <asp:Button ID="btnUploadImages" runat="server" CausesValidation="False" 

@@ -257,7 +257,7 @@
     <value>Date of endorsement:</value>
   </data>
   <data name="EditEndorsementDisclaimer" xml:space="preserve">
-    <value>&lt;span style="font-weight:bold"&gt;Note: &lt;/span&gt;These endorsements are shown for informational and record-keeping purposes only.</value>
+    <value>These endorsements are shown for informational and record-keeping purposes only.</value>
   </data>
   <data name="EditEndorsementEndorsementPrompt" xml:space="preserve">
     <value>Endorsement:</value>
@@ -387,5 +387,8 @@
   </data>
   <data name="errTitleRequired" xml:space="preserve">
     <value>Please provide a title for the endorsement.</value>
+  </data>
+  <data name="DigitalEndorsementDisclaimer" xml:space="preserve">
+    <value>Important information about the validity of digital endorsements.</value>
   </data>
 </root>
