@@ -2844,6 +2844,11 @@ namespace MyFlightbook
         /// </summary>
         public string Runway { get; private set; }
 
+        private string CanonicalRunway
+        {
+            get { return (String.IsNullOrEmpty(Runway) ? string.Empty : (Runway.StartsWith("RWY", StringComparison.CurrentCultureIgnoreCase) ? Runway : "RWY" + Runway)); }
+        }
+
         /// <summary>
         /// Airport Identifier where the approach was performed
         /// </summary>
@@ -2900,7 +2905,7 @@ namespace MyFlightbook
 
         public string ToCanonicalString()
         {
-            return String.Format(CultureInfo.CurrentCulture, "{0}-{1}-{2}@{3}", Count, Description, Runway, AirportCode);
+            return String.Format(CultureInfo.CurrentCulture, "{0}-{1}-{2}@{3}", Count, Description, CanonicalRunway, AirportCode);
         }
     }
 }
