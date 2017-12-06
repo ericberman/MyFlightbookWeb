@@ -24,6 +24,18 @@
             diagnosis, and that means that we will see your data.&nbsp; Of course, as 
             explained above, we dont&#39; want (nor do we request) a lot of personal information 
             about you, so this data cannot be tied to a person beyond your email address.&nbsp; </p>
+		<p>You can, of course, download your data, either to your own computer or to a cloud storage
+		provider such as Dropbox, Google Drive, or OneDrive.  We, of course, can't control what you do with it then.  
+		But, if you enable storage to a cloud provider, you should be aware that:</p>
+		<ul>
+			<li>%APP_NAME% cannot do anything with a cloud-storage provider unless you explicitly sign-in
+			to your cloud-storage account and explicitly grant %APP_NAME% permission to write files to your account.
+			(The technical protocol for this is "OAuth2", if you want the gory details of how it works)</li>
+			<li>%APP_NAME% does not read any of your data from the cloud storage.  Its operations are limited to writing
+			your logbook data and, as needed, images and telemetry data.  Note that it is possible for %APP_NAME% to overwrite an 
+			existing that it has already written.
+			</li>
+		</ul>
 		<p>
             Your passwords, by the way, are stored in the database using a one-way hash.&nbsp; 
             (When you authenticate, we hash the password you provide and compare that with 
