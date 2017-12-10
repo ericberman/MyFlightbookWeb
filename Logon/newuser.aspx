@@ -178,19 +178,6 @@
                                             meta:resourcekey="RegularExpressionValidator3Resource1"></asp:RegularExpressionValidator>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>&nbsp;&nbsp;&nbsp;</td>
-                                    <td>&nbsp;</td>
-                                    <td align="left">
-                                        <asp:CheckBox ID="ckOver13" runat="server" Text="I am at least 14 years old" 
-                                            ValidationGroup="CreateUserWizard1" meta:resourcekey="ckOver13Resource1" /><br />
-                                        <asp:CustomValidator ID="cvOver13" ValidationGroup="CreateUserWizard1" 
-                                            runat="server"  CssClass="error"
-                                            ErrorMessage="You must be at least 14 years old in order to create an account" 
-                                            OnServerValidate="cvOver13_ServerValidate" Display="Dynamic" 
-                                            meta:resourcekey="cvOver13Resource1"></asp:CustomValidator>
-                                    </td>
-                                </tr>
                                 <tr style="display:none">
                                     <td>&nbsp;&nbsp;&nbsp;</td>
                                     <td>&nbsp;</td>

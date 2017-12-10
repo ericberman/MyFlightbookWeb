@@ -138,12 +138,6 @@
   <data name="AnswerResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="ckOver13Resource1.Text" xml:space="preserve">
-    <value>I am at least 14 years old</value>
-  </data>
-  <data name="ckOver13Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="CompleteWizardStepResource1.Title" xml:space="preserve">
     <value>Complete</value>
   </data>
@@ -290,15 +284,6 @@
   </data>
   <data name="CreateUserWizardStep1Resource1.Title" xml:space="preserve">
     <value>Sign Up for Your New Account</value>
-  </data>
-  <data name="cvOver13Resource1.ErrorMessage" xml:space="preserve">
-    <value>You must be at least 14 years old in order to create an account</value>
-  </data>
-  <data name="cvOver13Resource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="cvOver13Resource1.ToolTip" xml:space="preserve">
-    <value />
   </data>
   <data name="EmailLabelResource1.Text" xml:space="preserve">
     <value>E-mail:</value>

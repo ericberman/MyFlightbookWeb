@@ -538,15 +538,6 @@
   <data name="SignInValEmailRequired" xml:space="preserve">
     <value>&lt;br /&gt;E-mail address is required.</value>
   </data>
-  <data name="TermsAndConditions" xml:space="preserve">
-    <value>I built this site to fill a need I had and am sharing it because I believe it can be very broadly useful.
-However, I cannot make any promises regarding service levels, accuracy of data or computations, or the quality of the software.&amp;nbsp; (Although
-frankly I think it's pretty good and pretty bug free).&lt;br /&gt;&lt;br /&gt;
-While I back up the database nightly, there is a feature to back-up your data to
-an Excel spreadsheet - it's not a bad idea to use that now and then just in case.&lt;br /&gt;&lt;br /&gt;
-If you find a bug or have a feature request, &lt;a href="%APP_ROOT%/Public/ContactMe.aspx"&gt;let me know&lt;/a&gt;,
-and I will see what I can do.</value>
-  </data>
   <data name="TermsAndConditionsAgree" xml:space="preserve">
     <value>By creating an account, you agree to these conditions.</value>
   </data>
@@ -1372,5 +1363,8 @@ and I will see what I can do.</value>
   </data>
   <data name="Privacy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\privacy.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="TermsAndConditions" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\termsandconditions.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

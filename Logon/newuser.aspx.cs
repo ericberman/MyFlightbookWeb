@@ -17,17 +17,6 @@ public partial class newuser : System.Web.UI.Page
         Master.Layout = MasterPage.LayoutMode.Accordion;
     }
 
-    protected void cvOver13_ServerValidate(object source, ServerValidateEventArgs args)
-    {
-        if (args == null)
-            throw new ArgumentNullException("args");
-        CheckBox ckOver13 = (CheckBox)CreateUserWizardStep1.ContentTemplateContainer.FindControl("ckOver13");
-        if (!ckOver13.Checked)
-        {
-            args.IsValid = false;
-        }
-    }
-
     protected void CreatingUser(object sender, LoginCancelEventArgs e)
     {
         if (e == null)
