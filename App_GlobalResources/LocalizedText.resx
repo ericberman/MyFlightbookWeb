@@ -381,14 +381,14 @@
     <comment>e.g., "Cherokee"</comment>
   </data>
   <data name="EditMakeWatermarkMDS" xml:space="preserve">
-    <value>Model/Design/Series</value>
+    <value>Mission/Design/Series</value>
   </data>
   <data name="EditMakeWatermarkModelName" xml:space="preserve">
     <value>Model ID</value>
     <comment>e.g., PA28-160</comment>
   </data>
   <data name="EditMakeWatermarkTypeName" xml:space="preserve">
-    <value>Type ID</value>
+    <value>Type Rating</value>
     <comment>e.g., B777-300</comment>
   </data>
   <data name="FileUploadAddAnother" xml:space="preserve">
@@ -1366,5 +1366,8 @@
   </data>
   <data name="TermsAndConditions" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\termsandconditions.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="OptionalData" xml:space="preserve">
+    <value>(Optional)</value>
   </data>
 </root>

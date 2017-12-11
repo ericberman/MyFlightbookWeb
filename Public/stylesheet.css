@@ -161,6 +161,11 @@ H4
     vertical-align: middle;
 }
 
+.vfSubDesc {
+    font-weight:normal;
+    font-size:smaller;
+}
+
 .vfValue
 {
     display: inline-block;
