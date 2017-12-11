@@ -166,6 +166,8 @@ namespace MyFlightbook.FlightCurrency
         #endregion
     }
 
+    public enum TotalsGrouping { CatClass, Model, Family }
+
     public class UserTotals
     {
         private ArrayList alTotals = new ArrayList();
@@ -391,6 +393,7 @@ namespace MyFlightbook.FlightCurrency
             return (TotalsItem[])alTotals.ToArray(typeof(TotalsItem));
         }
 
+        #region Constructors
         public UserTotals()
         {
             Username = "";
@@ -410,6 +413,7 @@ namespace MyFlightbook.FlightCurrency
             Restriction = fq;
             FilterEmptyTotals = fFilterEmpty;
         }
+        #endregion
 
         private void AddToList(TotalsItem ti)
         {
@@ -472,6 +476,7 @@ namespace MyFlightbook.FlightCurrency
                     {
                         string szModelDisplay = (string)dr["ModelDisplay"];
                         string szCatClassDisplay = (string)dr["CatClassDisplay"];
+                        string szFamilyDisplay = (string)dr["FamilyDisplay"];
 
                         string szCatClass = dr["CatClass"].ToString();
                         int idModel = Convert.ToInt32(dr["idmodel"], CultureInfo.InvariantCulture);
@@ -495,12 +500,24 @@ namespace MyFlightbook.FlightCurrency
 
                         // don't link to a query for type-totals, since there's no clean query for that.  But if this is a clean catclass (e.g., "AMEL") it should match and we can query it.
                         fq = new FlightQuery(Restriction);
-                        if (pf.UsesPerModelTotals)
-                            AddModelToQuery(fq, idModel);
-                        else
-                            AddCatClassToQuery(fq, cct.CatClass, szTypeName);
+                        string szTitle = string.Empty;
+                        switch (pf.TotalsGroupingMode)
+                        {
+                            case TotalsGrouping.CatClass:
+                                AddCatClassToQuery(fq, cct.CatClass, szTypeName);
+                                szTitle = szCatClassDisplay;
+                                break;
+                            case TotalsGrouping.Model:
+                                AddModelToQuery(fq, idModel);
+                                szTitle = szModelDisplay;
+                                break;
+                            case TotalsGrouping.Family:
+                                fq.ModelName = szFamilyDisplay;
+                                szTitle = szFamilyDisplay;
+                                break;
+                        }
 
-                        AddToList(new TotalsItem(pf.UsesPerModelTotals ? szModelDisplay : szCatClassDisplay, decTotal, szDesc) { Query = fq });
+                        AddToList(new TotalsItem(szTitle, decTotal, szDesc) { Query = fq });
                     }
                 }
             }
@@ -513,8 +530,8 @@ namespace MyFlightbook.FlightCurrency
             foreach (CatClassTotal cct in htCct.Values)
             {
                 FlightQuery fq = AddCatClassToQuery(new FlightQuery(Restriction), cct.CatClass, string.Empty);
-                if (pf.UsesPerModelTotals || !cct.IsRedundant)
-                    AddToList(new TotalsItem(cct.DisplayName, cct.Total, SubDescFromLandings(cct.TotalLandings, cct.TotalFSDayLandings, cct.TotalFSNightLandings, cct.TotalApproaches), pf.UsesPerModelTotals ? TotalsItem.SortMode.Model : TotalsItem.SortMode.CatClass) { Query = fq });
+                if (pf.TotalsGroupingMode != TotalsGrouping.CatClass || !cct.IsRedundant)
+                    AddToList(new TotalsItem(cct.DisplayName, cct.Total, SubDescFromLandings(cct.TotalLandings, cct.TotalFSDayLandings, cct.TotalFSNightLandings, cct.TotalApproaches), pf.TotalsGroupingMode == TotalsGrouping.CatClass ? TotalsItem.SortMode.CatClass : TotalsItem.SortMode.Model) { Query = fq });
             }
         }
 
@@ -650,9 +667,23 @@ namespace MyFlightbook.FlightCurrency
 
                 Profile pf = Profile.GetUser(Username);
 
+                string szGroupField = string.Empty;
+                switch (pf.TotalsGroupingMode)
+                {
+                    case TotalsGrouping.CatClass:
+                        szGroupField = "CatClassDisplay";
+                        break;
+                    case TotalsGrouping.Model:
+                        szGroupField = "ModelDisplay";
+                        break;
+                    case TotalsGrouping.Family:
+                        szGroupField = "FamilyDisplay";
+                        break;
+                }
+
                 // All three queries below use the innerquery above to find the matching flights; they then find totals from that subset of flights.
                 string szQTotalTimes = pf.DisplayTimesByDefault ? ConfigurationManager.AppSettings["TotalTimesSubQuery"].ToString() : string.Empty;
-                string szQTotalsByCatClass = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"].ToString(), szQTotalTimes, szTempTableName, pf.UsesPerModelTotals ? "ModelDisplay" : "CatClassDisplay");
+                string szQTotalsByCatClass = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"].ToString(), szQTotalTimes, szTempTableName, szGroupField);
                 string szQTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"].ToString(), szQTotalTimes, szTempTableName, "username"); // Note: this username is the "Group By" field, not a restriction.
                 string szQCustomPropTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsCustomProperties"].ToString(), szTempTableName);
 

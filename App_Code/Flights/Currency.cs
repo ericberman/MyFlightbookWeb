@@ -41,7 +41,8 @@ namespace MyFlightbook.FlightCurrency
         flagUseLAPLCurrency = 0x1000,
         flagFAR117IncludeAllFlights = 0x2000,
         flagUseFAR61217 = 0x4000,
-        flagUseEASAMedical = 0x8000
+        flagUseEASAMedical = 0x8000,
+        flagsShowTotalsPerFamily = 0x00010000
     }
 
     /// <summary>

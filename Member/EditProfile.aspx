@@ -392,7 +392,11 @@
                         <Content>
                             <div class="prefSectionRow">
                                 <h3><%=Resources.Currency.CurrencyTotalsDisplayHeader %></h3>
-                                <div><asp:CheckBox ID="ckPerModelTotals" Text="Show totals by model" runat="server" meta:resourcekey="ckPerModelTotalsResource2" /></div>
+                                <asp:RadioButtonList ID="rblTotalsOptions" runat="server" meta:resourcekey="rblTotalsOptionsResource1">
+                                    <asp:ListItem Selected="True" Text="Show totals by category/class (and type, for models that require a type rating)" Value="CatClass" meta:resourcekey="ListItemResource30" />
+                                    <asp:ListItem Text="Show totals by model" Value="Model" meta:resourcekey="ListItemResource31" />
+                                    <asp:ListItem Text="Show totals by model with common models grouped by family/ICAO Designator" Value="Family" meta:resourcekey="ListItemResource32" />
+                                </asp:RadioButtonList>
                                 <div><asp:Localize ID="locExpireCurrency" Text="When a currency is expired, display it:" runat="server" meta:resourcekey="locExpireCurrencyResource1"></asp:Localize> <asp:DropDownList ID="cmbExpiredCurrency" runat="server" meta:resourcekey="cmbExpiredCurrencyResource1"></asp:DropDownList></div>
                                 <h3><%=Resources.Currency.CurrencyPrefsHeader %></h3>
                                 <div><asp:CheckBox ID="ckUseArmyCurrency" runat="server" Text="Show AR 95-1 (US Army) Currency" meta:resourcekey="ckUseArmyCurrencyResource1" /></div>

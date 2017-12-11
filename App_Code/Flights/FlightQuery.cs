@@ -848,7 +848,7 @@ namespace MyFlightbook
                         string szParamName = String.Format(CultureInfo.InvariantCulture, "?modelQuery{0}", i++);
                         AddParameter(szParamName, String.Format(CultureInfo.InvariantCulture, "%{0}%", sz));
                         sbModelName.Append(sbModelName.Length == 0 ? "(" : " AND ");
-                        sbModelName.AppendFormat(CultureInfo.InvariantCulture, "ModelDisplay LIKE {0}", szParamName);
+                        sbModelName.AppendFormat(CultureInfo.InvariantCulture, "(ModelDisplay LIKE {0} OR FamilyDisplay LIKE {0}) ", szParamName);
                     }
                 }
                 if (sbModelName.Length > 0)

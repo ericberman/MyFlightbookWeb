@@ -290,10 +290,45 @@ namespace MyFlightbook
         /// <summary>
         /// Does this user show totals per-model?
         /// </summary>
-        public Boolean UsesPerModelTotals
+        private Boolean UsesPerModelTotals
         {
             get { return hasFlag(CurrencyOptionFlag.flagShowTotalsPerModel); }
             set { setCurrencyFlag(CurrencyOptionFlag.flagShowTotalsPerModel, value); }
+        }
+
+        /// <summary>
+        /// Does this user show totals per-family?
+        /// </summary>
+        private Boolean UsesPerFamilyTotals
+        {
+            get { return hasFlag(CurrencyOptionFlag.flagsShowTotalsPerFamily); }
+            set { setCurrencyFlag(CurrencyOptionFlag.flagsShowTotalsPerFamily, value); }
+        }
+
+        /// <summary>
+        /// How are totals done for this user?
+        /// </summary>
+        public TotalsGrouping TotalsGroupingMode
+        {
+            get { return UsesPerFamilyTotals ? TotalsGrouping.Family : (UsesPerModelTotals ? TotalsGrouping.Model : TotalsGrouping.CatClass); }
+            set
+            {
+                switch (value)
+                {
+                    case TotalsGrouping.CatClass:
+                        UsesPerFamilyTotals = false;
+                        UsesPerModelTotals = false;
+                        break;
+                    case TotalsGrouping.Model:
+                        UsesPerFamilyTotals = false;
+                        UsesPerModelTotals = true;
+                        break;
+                    case TotalsGrouping.Family:
+                        UsesPerFamilyTotals = true;
+                        UsesPerModelTotals = false;
+                        break;
+                }
+            }
         }
 
         /// <summary>
