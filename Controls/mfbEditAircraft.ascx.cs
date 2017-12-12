@@ -417,7 +417,11 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         if (fIsNew)
             UpdateModelList(Manufacturer.UnsavedID);
         else
+        {
             SelectCurrentMakeModel();
+            fvModel.DataSource = new MakeModel[] { MakeModel.GetModel(m_ac.ModelID) };
+            fvModel.DataBind();
+        }
 
         ckIsGlass.Checked = m_ac.IsGlass;
 
