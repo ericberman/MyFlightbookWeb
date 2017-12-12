@@ -11,6 +11,8 @@
 <%@ Register Src="ClubControls/SchedSummary.ascx" TagName="SchedSummary" TagPrefix="uc9" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc10" TagName="mfbTypeInDate" %>
 <%@ Register Src="~/Controls/mfbHoverImageList.ascx" TagPrefix="uc1" TagName="mfbHoverImageList" %>
+<%@ Register Src="~/Controls/mfbMakeListItem.ascx" TagPrefix="uc1" TagName="mfbMakeListItem" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
 
 <asp:Panel ID="pnlEditAircraft" runat="server" DefaultButton="btnAddAircraft">
     <asp:HiddenField ID="hdnAdminMode" runat="server" Value="false" />
@@ -168,6 +170,25 @@
                     <asp:View ID="vwReadOnlyModel" runat="server">
                         <asp:ImageButton ID="imgEditAircraftModel" ImageAlign="Top" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" />
                         <asp:Label ID="lblMakeModel" runat="server" Font-Bold="true"></asp:Label>
+                        <uc1:mfbTooltip runat="server" ID="mfbModelTooltip">
+                            <TooltipBody>
+                                <asp:FormView ID="fvModel" runat="server">
+                                    <ItemTemplate>
+                                        <div>
+                                            <asp:HyperLink ID="lnkEditModel" Font-Bold="true" runat="server" Text='<%# ((MakeModel) Container.DataItem).DisplayName %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditMake.aspx?id={0}", ((MakeModel) Container.DataItem).MakeModelID) %>'></asp:HyperLink>
+                                            <asp:Label ID="lblICAO" runat="server" Visible="<%# !String.IsNullOrEmpty(((MakeModel) Container.DataItem).FamilyName) %>" Text='<%# ModelQuery.ICAOPrefix + ((MakeModel) Container.DataItem).FamilyName %>'></asp:Label>
+                                        </div>
+                                        <ul>
+                                            <asp:Repeater ID="rptAttributes" runat="server" DataSource='<%# ((MakeModel) Container.DataItem).AttributeList() %>'>
+                                                <ItemTemplate>
+                                                    <li><%# Container.DataItem %></li>
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+                                        </ul>
+                                    </ItemTemplate>
+                                </asp:FormView>
+                            </TooltipBody>
+                        </uc1:mfbTooltip>
                     </asp:View>
                     <asp:View ID="vwEditableModel" runat="server">
                         <asp:DropDownList ID="cmbManufacturers" runat="server"
