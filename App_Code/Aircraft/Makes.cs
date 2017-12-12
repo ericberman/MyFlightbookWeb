@@ -739,6 +739,11 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
 
         static Regex rNormalizeModel = new Regex("[- ]+", RegexOptions.Compiled);
 
+        /// <summary>
+        /// Prefix to use for modelname to force to Family.
+        /// </summary>
+        public const string ICAOPrefix = "ICAO:";
+
         #region properties
         /// <summary>
         /// Text to find anywhere in the search string
@@ -813,11 +818,14 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             // Add each of the terms
             string[] rgTerms = FullText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < rgTerms.Length; i++)
-                AddQueryTerm(rgTerms[i], String.Format(CultureInfo.InvariantCulture, "FullText{0}", i), "Concat(model, ' ', manufacturers.manufacturer, ' ', typename, ' ', modelname, ' ', categoryclass.CatClass)", lstWhereTerms, lstParams);
+                AddQueryTerm(rgTerms[i], String.Format(CultureInfo.InvariantCulture, "FullText{0}", i), "Concat(model, ' ', manufacturers.manufacturer, ' ', typename, ' ', family, ' ', modelname, ' ', categoryclass.CatClass)", lstWhereTerms, lstParams);
 
             AddQueryTerm(CatClass, "qCatClass", "catclass", lstWhereTerms, lstParams);
             AddQueryTerm(rNormalizeModel.Replace(Model, string.Empty), "qModel", "REPLACE(REPLACE(model, ' ', ''), '-', '')", lstWhereTerms, lstParams);
-            AddQueryTerm(ModelName, "qModelName", "modelname", lstWhereTerms, lstParams);
+            if (ModelName.StartsWith(ICAOPrefix, StringComparison.CurrentCultureIgnoreCase))
+                AddQueryTerm(ModelName.Substring(ICAOPrefix.Length), "qFamilyName", "family", lstWhereTerms, lstParams);
+            else
+                AddQueryTerm(ModelName, "qModelName", "modelname", lstWhereTerms, lstParams);
             AddQueryTerm(ManufacturerName, "qMan", "manufacturer", lstWhereTerms, lstParams);
             AddQueryTerm(TypeName, "qType", "typename", lstWhereTerms, lstParams);
 

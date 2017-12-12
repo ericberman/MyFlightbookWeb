@@ -59,6 +59,7 @@
                         </td>
                         <td>
                             <asp:TextBox ID="txtModelName" runat="server" meta:resourcekey="txtModelNameResource1"></asp:TextBox>
+                            <div class="fineprint"><% = Resources.Makes.searchICAOTip %></div>
                         </td>
                     </tr>
                     <tr>

@@ -201,4 +201,7 @@
   <data name="searchWildcardTip" xml:space="preserve">
     <value>Tip: you can use wildcards * to match 0 or more characters, or ? to match a single character.</value>
   </data>
+  <data name="searchICAOTip" xml:space="preserve">
+    <value>Tip: search for "ICAO:abc" to restrict a search for "abc" to the ICAO designator for the model</value>
+  </data>
 </root>
