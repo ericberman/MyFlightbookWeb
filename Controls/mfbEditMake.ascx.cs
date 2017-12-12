@@ -185,7 +185,7 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         mk.Model = txtModel.Text.Trim();
         mk.ModelName = txtName.Text.Trim();
         mk.TypeName = txtType.Text.Trim();
-        mk.FamilyName = txtFamilyName.Text.Trim();
+        mk.FamilyName = txtFamilyName.Text.Trim().ToUpper(CultureInfo.InvariantCulture).Replace("-", string.Empty).Replace(" ", string.Empty);
         mk.CategoryClassID = ccId;
         mk.ManufacturerID = Convert.ToInt32(cmbManufacturer.SelectedValue, CultureInfo.InvariantCulture);
         mk.IsComplex = ckComplex.Checked;
