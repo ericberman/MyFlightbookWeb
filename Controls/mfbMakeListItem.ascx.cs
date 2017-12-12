@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web.UI.WebControls;
-using System.Globalization;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Image;
+using System;
+using System.Globalization;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2016 MyFlightbook LLC
+ * Copyright (c) 2013-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/

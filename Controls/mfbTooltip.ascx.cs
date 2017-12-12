@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
@@ -60,7 +61,23 @@ public partial class Controls_mfbTooltip : System.Web.UI.UserControl
             }
         }
     }
+
+    [TemplateContainer(typeof(TooltipContentTemplate)), PersistenceMode(PersistenceMode.InnerDefaultProperty), TemplateInstance(TemplateInstance.Single)]
+    public ITemplate TooltipBody { get; set; }
     #endregion
+
+    protected class TooltipContentTemplate : Control, INamingContainer
+    {
+        public TooltipContentTemplate() { }
+    }
+
+
+    protected override void OnInit(EventArgs e)
+    {
+        if (TooltipBody != null)
+            TooltipBody.InstantiateIn(plcCustom);
+        base.OnInit(e);
+    }
 
     protected void Page_Load(object sender, EventArgs e)
     {
