@@ -49,13 +49,13 @@
                 meta:resourcekey="RequiredFieldValidator1Resource1"></asp:RequiredFieldValidator>
         </div>
         <div class="vfDescription">
-                <asp:Label ID="lblAboutModel" runat="server" Text="This is typically the FAA designator, possibly with a model variant." meta:resourcekey="lblAboutModelResource1"></asp:Label><br />
-                <asp:Label ID="lblAboutModel2" runat="server" Text="E.g., &quot;B737-700&quot; or &quot;PA28-161&quot;" meta:resourcekey="lblAboutModel2Resource1"></asp:Label>
+                <div><asp:Label ID="lblAboutModel" runat="server" Text="The model identifier.  Be as specific as possible." meta:resourcekey="lblAboutModelResource1"></asp:Label></div>
+                <div><asp:Label ID="lblAboutModel2" runat="server" Text="EE.g., &quot;B737-700&quot; or &quot;C-172 S&quot; (rather than &quot;B737&quot; or &quot;C-172&quot;)" meta:resourcekey="lblAboutModel2Resource1"></asp:Label></div>
         </div>
     </div>
-    <div class="vfSection" id="rowFamily" visible="False" runat="server">
+    <div class="vfSection" id="rowFamily" runat="server">
         <div class="vfPrompt">
-            <asp:Label ID="lblFamilyName" runat="server" Text="Family Name:" meta:resourcekey="lblFamilyNameResource1"></asp:Label>
+            <asp:Label ID="lblFamilyName" runat="server" Text="FAA/ICAO ID:" meta:resourcekey="lblFamilyNameResource1"></asp:Label>
         </div>
         <div class="vfValue">
             <asp:TextBox ID="txtFamilyName" runat="server" meta:resourcekey="txtFamilyNameResource1"></asp:TextBox>
@@ -66,8 +66,9 @@
             </cc1:TextBoxWatermarkExtender>
         </div>
         <div class="vfDescription">
-            <asp:Label ID="lblFamilyDesc1" runat="server" Text="Theis is typically the FAA designator or the base model." meta:resourcekey="lblFamilyDesc1Resource1"></asp:Label><br />
-            <asp:Label ID="lblFamilyDesc2" runat="server" Text="E.g., a PA28-161 and a PA28-180 are both &quot;PA28&quot;." meta:resourcekey="lblFamilyDesc2Resource1"></asp:Label>
+            <div class="vfSubDesc"><% =Resources.LocalizedText.OptionalData %></div>
+            <asp:Label ID="lblFamilyDesc1" runat="server" Text="The FAA or ICAO designator or the base model, IF DIFFERENT from the Model ID." meta:resourcekey="lblFamilyDesc1Resource1"></asp:Label><br />
+            <asp:Label ID="lblFamilyDesc2" runat="server" Text="E.g., a C-172 N and a C-172 S are both &quot;C172&quot;." meta:resourcekey="lblFamilyDesc2Resource1"></asp:Label>
         </div>
     </div>
     <div class="vfSection">
@@ -86,15 +87,17 @@
             </cc1:TextBoxWatermarkExtender>
         </div>
         <div class="vfDescription">
-            <asp:Label ID="lblModelName1" runat="server" Text="An optional informal or market name for an aircraft." meta:resourcekey="Label1Resource1"></asp:Label><br />
+            <div class="vfSubDesc"><% =Resources.LocalizedText.OptionalData %></div>
+            <asp:Label ID="lblModelName1" runat="server" Text="An informal or market name for an aircraft." meta:resourcekey="lblModelName1"></asp:Label><br />
             <asp:Label ID="lblModelNameExample" runat="server" Text="E.g., &quot;Skyhawk&quot; for a C-172, but blank for a Boeing 737" meta:resourcekey="lblModelNameExampleResource1"></asp:Label>
         </div>
     </div>
     <div class="vfSection">
         <div class="vfPrompt">
             <asp:Label ID="lblType" runat="server" 
-                Text="Type ID:" 
+                Text="Is a type rating required?" 
                 meta:resourcekey="lblTypeResource1" ></asp:Label>
+            <div class="vfSubDesc"><asp:HyperLink ID="lnkTypeRatings" runat="server" NavigateUrl="http://registry.faa.gov/TypeRatings/" Text="Look up Type Ratings" meta:resourceKey="lnkTypeRatingsResource1"></asp:HyperLink></div>
         </div>
         <div class="vfValue">
             <asp:TextBox ID="txtType" runat="server" ValidationGroup="EditMake"
@@ -106,16 +109,16 @@
             </cc1:TextBoxWatermarkExtender>
         </div>
         <div class="vfDescription">
-            <asp:Label ID="lblTypeDesc1" runat="server" Font-Bold="True" meta:resourceKey="lblTypeDesc1Resource1" Text="Leave this blank unless the aircraft requires a type-rating (typically jet or over 12,500lbs). "></asp:Label>
-            <br />
-            <asp:Label ID="lblTypeDescExample" runat="server" Text="E.g., &quot;B737&quot; for a Boeing 737, blank for a C-172." meta:resourcekey="lblTypeDescExampleResource1"></asp:Label>
-            <br />
-            <asp:Label ID="lblTypeDesc2" runat="server" meta:resourceKey="lblTypeDesc2Resource1" Text="Use the same type ID for models that share a common type rating."></asp:Label>
+            <div><asp:Label ID="lblTypeDesc1" runat="server" Font-Bold="True" meta:resourceKey="lblTypeDesc1Resource1" Text="Leave this blank unless the aircraft requires a type-rating (typically jet or over 12,500lbs). "></asp:Label></div>
+            <div><asp:Label ID="lblTypeDescExample" runat="server" Text="E.g., &quot;B737&quot; for a Boeing 737, blank for a C-172." meta:resourcekey="lblTypeDescExampleResource1"></asp:Label></div>
+            <div>
+                <asp:Label ID="lblTypeDesc2" runat="server" meta:resourceKey="lblTypeDesc2Resource1" Text="Models that share a common type rating should use a common value here."></asp:Label>
+            </div>
         </div>
     </div>
     <div class="vfSection" id="rowArmyCurrency" runat="server">
         <div class="vfPrompt">
-            <asp:Label ID="lblMDS" runat="server" Text="Military Mission/Design/Series:" Font-Bold="True" meta:resourcekey="lblMDSResource1"></asp:Label>
+            <asp:Label ID="lblMDS" runat="server" Text="Mission/Design/Series:" Font-Bold="True" meta:resourcekey="lblMDSResource1"></asp:Label>
         </div>
         <div class="vfValue">
             <asp:TextBox ID="txtArmyMDS" runat="server" meta:resourcekey="txtArmyMDSResource1"></asp:TextBox>
@@ -126,6 +129,7 @@
             </cc1:TextBoxWatermarkExtender>
         </div>
         <div class="vfDescription">
+            <div class="vfSubDesc"><% =Resources.LocalizedText.OptionalData %></div>
             <asp:Label ID="lblMDS1" runat="server" Text="All aircraft with a common MDS will contribute to AR 95-1 currency for that group" meta:resourcekey="lblMDS1Resource1"></asp:Label><br />
             <asp:Label ID="lblMDS2" runat="server" Text="If you type an MDS identifier here, all aircraft with that MDS will contribute to AR 95-1 for that identifier." meta:resourcekey="lblMDS2Resource1"></asp:Label>
         </div>
