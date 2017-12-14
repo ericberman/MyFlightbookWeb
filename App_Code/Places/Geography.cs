@@ -6,13 +6,22 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2016 MyFlightbook LLC
+ * Copyright (c) 2015-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 namespace MyFlightbook.Geography
 {
+    public static class ConversionFactors
+    {
+        public const double FeetPerMeter = 3.28084;
+        public const double MetersPerFoot = 0.3048;
+        public const double MetersPerSecondPerKnot = 0.514444444;
+        public const double MetersPerSecondPerMilesPerHour = 0.44704;
+        public const double MetersPerSecondPerKmPerHour = 0.277778;
+    }
+
     /// <summary>
     /// Represents an angle in degrees/minutes/seconds
     /// </summary>
@@ -556,6 +565,89 @@ namespace MyFlightbook.Geography
                 HasSpeed ? String.Format(CultureInfo.InvariantCulture, " {0:F1}kts {1}", Speed, TypeOfSpeed.ToString()) : string.Empty,
                 HasAltitude ? String.Format(CultureInfo.InvariantCulture, " Alt:{0}", Altitude) : string.Empty,
                 Comment);
+        }
+
+        /// <summary>
+        /// Returns a synthesized path between two points, even spacing, between the two timestamps.
+        /// 
+        /// Can be used to estimate night flight, for example, or draw a great-circle path between two points.
+        /// 
+        /// From http://www.movable-type.co.uk/scripts/latlong.html
+        /// Formula: 	
+        ///     a = sin((1−f)⋅δ) / sin δ
+        ///     b = sin(f⋅δ) / sin δ
+        ///     x = a ⋅ cos φ1 ⋅ cos λ1 + b ⋅ cos φ2 ⋅ cos λ2
+        ///     y = a ⋅ cos φ1 ⋅ sin λ1 + b ⋅ cos φ2 ⋅ sin λ2
+        ///     z = a ⋅ sin φ1 + b ⋅ sin φ2
+        ///     φi = atan2(z, √x² + y²)
+        ///     λi = atan2(y, x)
+        /// where f is fraction along great circle route (f=0 is point 1, f=1 is point 2), δ is the angular distance d/R between the two points.
+        /// </summary>
+        /// <param name="llStart">Starting position</param>
+        /// <param name="dtStart">Starting date, in UTC</param>
+        /// <param name="llEnd">Ending Position</param>
+        /// <param name="dtEnd">Ending date, in UTC</param>
+        /// <returns>Intermediate time-stamped points, with 1-minute resolution  Speed is derived.</returns>
+        public static IEnumerable<Position> SynthesizePath(LatLong llStart, DateTime dtStart, LatLong llEnd, DateTime dtEnd)
+        {
+            if (llStart == null)
+                throw new ArgumentNullException("llStart");
+            if (llEnd == null)
+                throw new ArgumentNullException("llEnd");
+
+            List<Position> lst = new List<Position>();
+
+            if (!dtStart.HasValue() || !dtEnd.HasValue())
+                return lst;
+
+            double rlat1 = Math.PI * (llStart.Latitude / 180.0);
+            double rlon1 = Math.PI * (llStart.Longitude / 180.0);
+            double rlat2 = Math.PI * (llEnd.Latitude / 180.0);
+            double rlon2 = Math.PI * (llEnd.Longitude / 180.0);
+
+            double dLon = rlon2 - rlon1;
+
+            double delta = Math.Atan2(Math.Sin(dLon) * Math.Cos(rlat2), Math.Cos(rlat1) * Math.Sin(rlat2) - Math.Sin(rlat1) * Math.Cos(rlat2) * Math.Cos(dLon));
+            // double delta = 2 * Math.Asin(Math.Sqrt(Math.Pow((Math.Sin((rlat1 - rlat2) / 2)), 2) + Math.Cos(rlat1) * Math.Cos(rlat2) * Math.Pow(Math.Sin((rlon1 - rlon2) / 2), 2)));
+            double sin_delta = Math.Sin(delta);
+
+            // Compute path at 1-minute intervals.
+            TimeSpan ts = dtEnd.Subtract(dtStart);
+            double minutes = ts.TotalMinutes;
+
+            if (minutes > 48 * 60 || minutes <= 0)  // don't do paths more than 48 hours, or negative times.
+                return lst;
+
+            // We need to derive an average speed.  But no need to compute - just assume constant speed.
+            double distance = llStart.DistanceFrom(llEnd);
+            double speed = ConversionFactors.MetersPerSecondPerKnot * (distance / ts.TotalHours);
+
+            lst.Add(new Position(llStart, 0, dtStart, speed));
+
+            for (long minute = 0; minute <= minutes; minute++)
+            {
+                double f = ((double)minute) / minutes;
+                double a = Math.Sin((1.0 - f) * delta) / sin_delta;
+                double b = Math.Sin(f * delta) / sin_delta;
+                double x = a * Math.Cos(rlat1) * Math.Cos(rlon1) + b * Math.Cos(rlat2) * Math.Cos(rlon2);
+                double y = a * Math.Cos(rlat1) * Math.Sin(rlon1) + b * Math.Cos(rlat2) * Math.Sin(rlon2);
+                double z = a * Math.Sin(rlat1) + b * Math.Sin(rlat2);
+
+                double rlat = Math.Atan2(z, Math.Sqrt(x * x + y * y));
+                double rlon = Math.Atan2(y, x);
+
+                double dlat = 180 * (rlat / Math.PI);
+                double dlon = 180 * (rlon / Math.PI);
+                Position p = new Position(dlat, dlon, dtStart.AddMinutes(minute)) { Speed = speed } ;
+                lst.Add(p);
+            }
+
+            // Add a few stopped fields at the end to make it clear that there's a full-stop.  Separate them by a few seconds each.
+            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(10), 0));
+            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(20), 0));
+            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(30), 0));
+
+            return lst;
         }
     }
 

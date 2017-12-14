@@ -9,7 +9,7 @@ using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2016 MyFlightbook LLC
+ * Copyright (c) 2010-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -149,7 +149,8 @@ namespace MyFlightbook.Telemetry
                         }
 
                         // Derive speed and put it into a data table
-                        Position.DeriveSpeed(lst);
+                        if (!fHasSpeed)
+                            Position.DeriveSpeed(lst);
                         ToDataTable(lst);
                     }
                     else

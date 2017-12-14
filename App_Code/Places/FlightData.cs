@@ -17,7 +17,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2016 MyFlightbook LLC
+ * Copyright (c) 2010-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -498,15 +498,6 @@ namespace MyFlightbook.Telemetry
                 return DataSourceTypeFromFileType(FileType.CSV);
             }
         }
-    }
-
-    public static class ConversionFactors
-    {
-        public const double FeetPerMeter = 3.28084;
-        public const double MetersPerFoot = 0.3048;
-        public const double MetersPerSecondPerKnot = 0.514444444;
-        public const double MetersPerSecondPerMilesPerHour = 0.44704;
-        public const double MetersPerSecondPerKmPerHour = 0.277778;
     }
 
     /// <summary>
@@ -1007,15 +998,15 @@ namespace MyFlightbook.Telemetry
             }
         }
 
-        public void WriteGPXData(Stream s)
+        public void WriteGPXData(Stream s, IEnumerable<Position> positions = null, bool hasTime = false, bool hasAlt = false, bool hasSpeed = false)
         {
-            Position[] rgPos = GetTrajectory();
+            Position[] rgPos = positions == null ? GetTrajectory() : positions.ToArray();
 
             if (rgPos != null && rgPos.Length > 0)
             {
-                bool fHasAlt = HasAltitude;
-                bool fHasTime = HasDateTime;
-                bool fHasSpeed = HasSpeed;
+                bool fHasAlt = hasAlt || HasAltitude;
+                bool fHasTime = hasTime || HasDateTime;
+                bool fHasSpeed = hasSpeed || HasSpeed;
                 string szResult = string.Empty;
 
                 XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
@@ -1325,6 +1316,35 @@ namespace MyFlightbook.Telemetry
             if (le == null || opt == null)
                 return;
 
+            bool fSyntheticPath = false;
+            // see if we can synthesize a path.  If so, save it as GPX
+            if (String.IsNullOrEmpty(le.FlightData))
+            {
+                DateTime dtStart = le.FlightStart.HasValue() ? le.FlightStart : (le.EngineStart.HasValue() ? le.EngineStart : DateTime.MinValue);
+                DateTime dtEnd = le.FlightEnd.HasValue() ? le.FlightEnd : (le.EngineEnd.HasValue() ? le.EngineEnd : DateTime.MinValue);
+
+                if (dtStart.HasValue() && dtEnd.HasValue())
+                {
+                    AirportList apl = new AirportList(le.Route);
+                    airport[] rgap = apl.GetNormalizedAirports();
+                    if (rgap.Length == 2)
+                    {
+                        LatLong ll1 = rgap[0].LatLong;
+                        LatLong ll2 = rgap[1].LatLong;
+
+                        IEnumerable<Position> rgPos = Position.SynthesizePath(ll1, dtStart, ll2, dtEnd);
+
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            WriteGPXData(ms, rgPos, true, false, true);
+                            ms.Seek(0, SeekOrigin.Begin);
+                            le.FlightData = new StreamReader(ms).ReadToEnd();
+                            fSyntheticPath = true;
+                        }
+                    }
+                }
+            }
+
             // first, parse the telemetry.
             if (!String.IsNullOrEmpty(le.FlightData) && (ParseFlightData(le.FlightData) || opt.IgnoreErrors) && HasLatLongInfo && HasDateTime)
             {
@@ -1362,6 +1382,9 @@ namespace MyFlightbook.Telemetry
             le.TotalFlightTime = Math.Round(le.TotalFlightTime, 2);
 
             le.AutoFillFinish(opt);
+
+            if (fSyntheticPath) // no point in saving a bogus flight path that simply mimics the point-to-point.
+                le.FlightData = string.Empty;
         }
         #endregion
     }

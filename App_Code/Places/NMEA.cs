@@ -1,11 +1,12 @@
-﻿using System;
+﻿using MyFlightbook.Geography;
+using System;
 using System.Data;
 using System.Globalization;
 using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2016 MyFlightbook LLC
+ * Copyright (c) 2010-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
