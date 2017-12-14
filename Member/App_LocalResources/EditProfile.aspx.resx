@@ -1597,19 +1597,19 @@
     <value>Show totals by category/class (and type, for models that require a type rating)</value>
   </data>
   <data name="ListItemResource30.Value" xml:space="preserve">
-    <value>0</value>
+    <value>CatClass</value>
   </data>
   <data name="ListItemResource31.Text" xml:space="preserve">
     <value>Show totals by model</value>
   </data>
   <data name="ListItemResource31.Value" xml:space="preserve">
-    <value>1</value>
+    <value>Model</value>
   </data>
   <data name="ListItemResource32.Text" xml:space="preserve">
     <value>Show totals by model with common models grouped by family/ICAO Designator</value>
   </data>
   <data name="ListItemResource32.Value" xml:space="preserve">
-    <value>2</value>
+    <value>Family</value>
   </data>
   <data name="rblTotalsOptionsResource1.ToolTip" xml:space="preserve">
     <value />
