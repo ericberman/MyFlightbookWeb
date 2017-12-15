@@ -949,7 +949,7 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
     group by fp.idflight, fp.idproptype
     having numProps &gt; 1;"></asp:SqlDataSource>
             <asp:GridView ID="gvDupeProps" runat="server" AutoGenerateColumns="False" 
-                DataSourceID="sqlDSDupeProps" EnableModelValidation="True">
+                EnableModelValidation="True">
                 <Columns>
                     <asp:HyperLinkField DataTextField="idflight" DataNavigateUrlFields="idflight" DataTextFormatString="{0}" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}?a=1&oldProps=1" Target="_blank" HeaderText="Flight" SortExpression="idflight" />
                     <asp:BoundField DataField="idproptype" HeaderText="idproptype" 
@@ -967,14 +967,18 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
             SelectCommand="SELECT * FROM flightproperties WHERE intvalue = 0 AND decvalue = 0.0 AND (datevalue IS NULL OR YEAR(datevalue) &lt; 10) AND (stringvalue = '' OR stringvalue IS NULL);" >
             </asp:SqlDataSource>
             <asp:GridView ID="gvEmptyProps" runat="server" AutoGenerateColumns="False" 
-                DataSourceID="sqlDSEmptyProps" EnableModelValidation="True">
+                EnableModelValidation="True">
                 <Columns>
                     <asp:HyperLinkField DataTextField="idflight" DataNavigateUrlFields="idflight" DataTextFormatString="{0}" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}?a=1&oldProps=1" Target="_blank" HeaderText="Flight" SortExpression="idflight" />
                     <asp:BoundField DataField="idproptype" HeaderText="idproptype" 
                         SortExpression="idproptype" />
                 </Columns>
                 <EmptyDataTemplate>
-                    <p class="success">No empty properties found.</p></EmptyDataTemplate></asp:GridView><h2>Invalid signatures</h2><p>
+                    <p class="success">No empty properties found.</p>
+                </EmptyDataTemplate>
+            </asp:GridView>
+            <div><asp:Button ID="btnRefreshProps" runat="server" Text="Refresh empty/dupe props" OnClick="btnRefreshProps_Click" /></div>
+            <h2>Invalid signatures</h2><p>
                         <asp:Button ID="btnRefreshInvalidSigs" runat="server" OnClick="btnRefreshInvalidSigs_Click" Text="Refresh" /></p>
             <p><asp:Label ID="lblSigResults" runat="server" Text=""></asp:Label></p>
             <p><asp:Button ID="btnFlushCache" runat="server" Text="Flush Cache" OnClick="btnFlushCache_Click" /><span class="fineprint">Removes all entries from the cache; will make things slow, but useful for picking up DB changes or debugging</span></p>

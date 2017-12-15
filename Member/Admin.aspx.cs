@@ -1008,6 +1008,7 @@ GROUP BY ac.idaircraft";
         List<LogbookEntry> lst = new List<LogbookEntry>();
         List<int> lstIDs = new List<int>();
         DBHelper dbh = new DBHelper("SELECT idFlight FROM Flights WHERE signatureState<>0 ORDER BY Username ASC, Date DESC");
+        dbh.CommandArgs.Timeout = 300;  // up to 300 seconds.
         dbh.ReadRows((comm) => { }, (dr) => { lstIDs.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
 
         int cTotalSigned = lstIDs.Count;
@@ -1058,6 +1059,14 @@ GROUP BY ac.idaircraft";
         }
     }
 
+    protected void btnRefreshProps_Click(object sender, EventArgs e)
+    {
+        gvEmptyProps.DataSourceID = "sqlDSEmptyProps";
+        gvEmptyProps.DataBind();
+        gvDupeProps.DataSourceID = "sqlDSDupeProps";
+        gvDupeProps.DataBind();
+    }
+
     protected void btnFlushCache_Click(object sender, EventArgs e)
     {
         if (HttpContext.Current.Cache != null)
@@ -1065,5 +1074,4 @@ GROUP BY ac.idaircraft";
                 HttpContext.Current.Cache.Remove((string)entry.Key);
     }
     #endregion
-       
 }
