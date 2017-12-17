@@ -877,7 +877,7 @@
     <value>Link to video (e.g. "http://www.youtube.com/watch?v=YMmy3P20_uw")</value>
   </data>
   <data name="EditMakeWatermarkFamily" xml:space="preserve">
-    <value>Family Name</value>
+    <value>FAA/ICAO Designation</value>
   </data>
   <data name="AjaxFileUploadDowngradePrompt" xml:space="preserve">
     <value>(Image Upload not working?  Click here)</value>

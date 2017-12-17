@@ -58,12 +58,13 @@
             <asp:Label ID="lblFamilyName" runat="server" Text="FAA/ICAO ID:" meta:resourcekey="lblFamilyNameResource1"></asp:Label>
         </div>
         <div class="vfValue">
-            <asp:TextBox ID="txtFamilyName" runat="server" meta:resourcekey="txtFamilyNameResource1"></asp:TextBox>
+            <asp:TextBox ID="txtFamilyName" runat="server" MaxLength="4" meta:resourcekey="txtFamilyNameResource1"></asp:TextBox>
             <cc1:TextBoxWatermarkExtender
                 ID="TextBoxWatermarkExtender5" runat="server" 
                 WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LocalizedText, EditMakeWatermarkFamily %>" 
                 TargetControlID="txtFamilyName" BehaviorID="ctl00_TextBoxWatermarkExtender5">
             </cc1:TextBoxWatermarkExtender>
+            <cc1:FilteredTextBoxExtender runat="server" ID="filteredICAO" FilterType="LowercaseLetters,UppercaseLetters,Numbers" TargetControlID="txtFamilyName" />
         </div>
         <div class="vfDescription">
             <div class="vfSubDesc"><% =Resources.LocalizedText.OptionalData %></div>
