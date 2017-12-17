@@ -85,7 +85,7 @@ namespace MyFlightbook
         {
             return String.Format(CultureInfo.CurrentCulture, "{0} {1}: {2}{3}{4}{5}{6}{7}{8}{9}{10}",
                 this.DisplayName,
-                String.IsNullOrEmpty(this.FamilyName) ? string.Empty : "ICAO:" + FamilyName,
+                String.IsNullOrEmpty(this.FamilyName) ? string.Empty : ModelQuery.ICAOPrefix + FamilyName,
                 this.EngineType.ToString(),
                 this.IsCertifiedSinglePilot ? "Single Pilot " : string.Empty,
                 this.IsAllGlass ? "All Glass " : string.Empty,
