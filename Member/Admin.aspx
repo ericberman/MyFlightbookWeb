@@ -1038,6 +1038,7 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                         HtmlEncode="False" HtmlEncodeFormatString="False" ReadOnly="True" />
                     <asp:BoundField DataField="Manufacturer" HeaderText="Manufacturer" SortExpression="Manufacturer" />
                     <asp:BoundField DataField="DisplayName" HeaderText="DisplayName" SortExpression="DisplayName" />
+                    <asp:BoundField DataField="Family" HeaderText="Family" SortExpression="FamilyName" />
                     <asp:BoundField DataField="CatClass" HeaderText="CatClass" SortExpression="CatClass" />
                     <asp:TemplateField HeaderText="Model Attributes">
                         <ItemTemplate>
