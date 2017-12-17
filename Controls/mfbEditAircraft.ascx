@@ -175,7 +175,7 @@
                                 <asp:FormView ID="fvModel" runat="server">
                                     <ItemTemplate>
                                         <div>
-                                            <asp:HyperLink ID="lnkEditModel" Font-Bold="true" runat="server" Text='<%# ((MakeModel) Container.DataItem).DisplayName %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditMake.aspx?id={0}", ((MakeModel) Container.DataItem).MakeModelID) %>'></asp:HyperLink>
+                                            <asp:Label ID="lnkModel" Font-Bold="true" runat="server" Text='<%# ((MakeModel) Container.DataItem).DisplayName %>'></asp:Label>
                                             <asp:Label ID="lblICAO" runat="server" Visible="<%# !String.IsNullOrEmpty(((MakeModel) Container.DataItem).FamilyName) %>" Text='<%# ModelQuery.ICAOPrefix + ((MakeModel) Container.DataItem).FamilyName %>'></asp:Label>
                                         </div>
                                         <ul>
