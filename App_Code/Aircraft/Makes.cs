@@ -493,8 +493,9 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         {
             get
             {
-                m_szSearchNormal = m_szSearchNormal ?? String.Format(CultureInfo.CurrentCulture, "{0} {1} {2} {3}",
+                m_szSearchNormal = m_szSearchNormal ?? String.Format(CultureInfo.CurrentCulture, "{0} {1} {2} {3} {4}",
                         rNormalizeNoSpace.Replace(Model, string.Empty),
+                        FamilyName,
                         rNormalizeNoSpace.Replace(ManufacturerDisplay, string.Empty),
                         rNormalizeNoSpace.Replace(ModelName, string.Empty),
                         rNormalizeNoSpace.Replace(TypeName, string.Empty)).ToUpperInvariant();
