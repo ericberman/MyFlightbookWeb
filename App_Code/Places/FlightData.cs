@@ -1336,6 +1336,7 @@ namespace MyFlightbook.Telemetry
 
                         using (MemoryStream ms = new MemoryStream())
                         {
+                            SpeedUnits = SpeedUnitTypes.MetersPerSecond;    // SynthesizePath uses meters/s.
                             WriteGPXData(ms, rgPos, true, false, true);
                             ms.Seek(0, SeekOrigin.Begin);
                             le.FlightData = new StreamReader(ms).ReadToEnd();
@@ -1369,8 +1370,24 @@ namespace MyFlightbook.Telemetry
 
                 m_dt.DefaultView.Sort = afc.DateColumn + " ASC";
 
+                decimal factorToKts = (decimal) (SpeedFactor / Geography.ConversionFactors.MetersPerSecondPerKnot);
+                bool fConvertNativeSpeed = HasSpeed && afc.SpeedColumn.CompareOrdinal(KnownColumnNames.SPEED) == 0;
+
                 foreach (DataRow dr in m_dt.DefaultView.Table.Rows)
+                {
+                    decimal dSaved = 0.0M;
+                    // convert to kts for processing
+                    if (fConvertNativeSpeed)
+                    {
+                        dSaved = Convert.ToDecimal(dr[KnownColumnNames.SPEED], CultureInfo.CurrentCulture);
+                        dr[KnownColumnNames.SPEED] = dSaved * factorToKts;
+                    }
+                        
                     afc.ProcessSample(dr);
+
+                    if (fConvertNativeSpeed)
+                        dr[KnownColumnNames.SPEED] = dSaved;
+                }
 
                 afc.FinalizeFlight();
             }
