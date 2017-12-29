@@ -969,7 +969,7 @@ namespace MyFlightbook.Airports
         static public IEnumerable<airport> AirportsNearPosition(double lat, double lon, int limit, Boolean fIncludeHeliports)
         {
             string szDistanceComp = String.Format(CultureInfo.InvariantCulture, "acos(sin(Radians(airports.latitude))*sin(Radians({0}))+cos(Radians(airports.latitude))*cos(Radians({0}))*cos(Radians({1}-airports.longitude)))*3440.06479", lat, lon);
-            string szTemplate = "{0} WHERE (airports.latitude BETWEEN {1} AND {2})AND (airports.longitude BETWEEN {3} and {4}) AND (airports.type='A' OR airports.type='S' {5}) ORDER BY ROUND(dist, 2) ASC, Preferred DESC LIMIT {6}";
+            string szTemplate = "{0} WHERE (airports.latitude BETWEEN {1} AND {2})AND (airports.longitude BETWEEN {3} and {4}) AND (airports.type='A' OR airports.type='S' {5}) ORDER BY ROUND(dist, 2) ASC, LENGTH(airports.airportID) DESC, Preferred DESC LIMIT {6}";
             double minLat = Math.Max(lat - 1.5, -90.0);
             double maxLat = Math.Min(lat + 1.5, +90.0);
             double minLong = lon - 1.5;
