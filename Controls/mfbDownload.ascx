@@ -18,6 +18,7 @@
         <asp:BoundField DataField="Date" DataFormatString="{0:yyyy-MM-dd}" HeaderText="Date" ReadOnly="True"  />
         <asp:BoundField DataField="idFlight" HeaderText="Flight ID" ReadOnly="True"  />
         <asp:BoundField DataField="ModelDisplay" HeaderText="Model" ReadOnly="True" />
+        <asp:BoundField DataField="Family" HeaderText="ICAO Model" ReadOnly="true" />
         <asp:BoundField DataField="RawTailNumber" HeaderText="Tail Number" ReadOnly="True" />
         <asp:BoundField DataField="idAircraft" HeaderText="Aircraft ID" ReadOnly="true" />
         <asp:BoundField DataField="CatClassDisplay" HeaderText="Category/Class" ReadOnly="True" />
