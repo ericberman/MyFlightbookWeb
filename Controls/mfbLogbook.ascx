@@ -71,9 +71,7 @@
                                 <asp:Label ID="lblSigInvalid" runat="server" Font-Bold="true" CssClass="signatureInvalid" Text="<%$ Resources:SignOff, FlightSignatureInvalid %>"></asp:Label>
                             </asp:Panel>
                         </asp:Panel>
-                        <div runat="server" id="divComments" style="clear:left; white-space: pre-line;" dir="auto">
-                            <asp:Label ID="lblComments" runat="server" Text='<%# Eval("CommentWithReplacedApproaches") %>'></asp:Label>
-                        </div>
+                        <div runat="server" id="divComments" style="clear:left; white-space: pre-line;" dir="auto"><asp:Label ID="lblComments" runat="server" Text='<%# Eval("CommentWithReplacedApproaches") %>'></asp:Label></div>
                         <asp:Panel ID="pnlFlightTimes" runat="server" Visible="<%# Viewer.DisplayTimesByDefault %>">
                             <asp:Panel ID="pnlEngineTime" runat="server">
                                 <%# Eval("EngineTimeDisplay") %>
