@@ -255,10 +255,16 @@ namespace MyFlightbook.ImportFlights
                         if (rgRow.Length == 0)
                             break;
 
+                        if (iColAircraft < 0 || iColAircraft >= rgRow.Length)
+                            break;
+
                         string szAircraft = rgRow[iColAircraft];
                         if (String.IsNullOrWhiteSpace(szAircraft))
                             break;
-                        ForeFlightAircraftDescriptor ad = new ForeFlightAircraftDescriptor() { AircraftID = szAircraft, Model = rgRow[iColModel], TypeCode = rgRow[iColTypeCode] };
+
+                        string szModel = (iColModel >= 0) ? rgRow[iColModel] : string.Empty;
+                        string szTypeCode = (iColTypeCode >= 0) ? rgRow[iColTypeCode] : string.Empty;
+                        ForeFlightAircraftDescriptor ad = new ForeFlightAircraftDescriptor() { AircraftID = szAircraft, Model = szModel, TypeCode = szTypeCode };
                         dictAircraft[ad.AircraftID] = ad;
                     }
 
