@@ -40,7 +40,7 @@
             </ItemTemplate>
             <ItemStyle VerticalAlign="Top" />
         </asp:TemplateField>
-        <asp:CommandField ButtonType="Image" ShowEditButton="True" EditImageUrl="~/images/pencilsm.png">
+        <asp:CommandField ButtonType="Link" ShowEditButton="True" EditImageUrl="~/images/pencilsm.png">
         <ItemStyle VerticalAlign="Top" />
         </asp:CommandField>
     </Columns>

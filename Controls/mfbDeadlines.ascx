@@ -54,7 +54,7 @@
                 </div>
             </ItemTemplate>
         </asp:TemplateField>
-        <asp:CommandField ButtonType="Image" ShowEditButton="true" EditImageUrl="~/images/pencilsm.png" ItemStyle-VerticalAlign="Top" />
+        <asp:CommandField ButtonType="Link" ShowEditButton="true" EditImageUrl="~/images/pencilsm.png" ItemStyle-VerticalAlign="Top" />
     </Columns>
     <EmptyDataTemplate>
         <ul>

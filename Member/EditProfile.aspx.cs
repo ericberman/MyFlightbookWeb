@@ -289,6 +289,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         List<Aircraft> lstDeadlineAircraft = new List<Aircraft>(ua.GetAircraftForUser());
         lstDeadlineAircraft.RemoveAll(ac => ac.InstanceType != AircraftInstanceTypes.RealAircraft);
+        lstDeadlineAircraft.RemoveAll(ac => ac.HideFromSelection);
         cmbDeadlineAircraft.DataSource = lstDeadlineAircraft;
         cmbDeadlineAircraft.DataBind();
         decRegenInterval.EditBox.Attributes["onfocus"] = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').checked = true;", rbRegenInterval.ClientID);
