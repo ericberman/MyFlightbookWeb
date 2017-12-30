@@ -153,6 +153,11 @@ namespace MyFlightbook
         public string Title { get; set; }
 
         /// <summary>
+        /// Title in sorting order.  Enables things like Block Out or Tach Start to sort before Block In or Tach End.
+        /// </summary>
+        public string SortKey { get; set; }
+
+        /// <summary>
         /// Is this a "favorite" for the current user?
         /// </summary>
         public Boolean IsFavorite { get; set; }
@@ -357,7 +362,7 @@ namespace MyFlightbook
         #region Constructors
         public CustomPropertyType()
         {
-            FormatString = Title = String.Empty;
+            FormatString = Title = SortKey = String.Empty;
             Type = CFPPropertyType.cfpInteger;
             Flags = CFPPropertyFlag.cfpFlagNone;
             PropTypeID = (int) KnownProperties.IDPropInvalid;
@@ -399,6 +404,9 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             Title = dr["LocTitle"].ToString();
             FormatString = dr["LocFormatString"].ToString();
             Type = (CFPPropertyType)Convert.ToInt32(dr["Type"], CultureInfo.InvariantCulture);
+            SortKey = Convert.ToString(dr["SortKey"], CultureInfo.CurrentCulture);
+            if (String.IsNullOrEmpty(SortKey))
+                SortKey = Title;
             Flags = (UInt32)Convert.ToInt32(dr["Flags"], CultureInfo.InvariantCulture);
             IsFavorite = Convert.ToBoolean(dr["IsFavorite"], CultureInfo.InvariantCulture);
             Description = Convert.ToString(dr["LocDescription"], CultureInfo.InvariantCulture);
@@ -548,7 +556,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             // CustomPropsForUserQuery will work with an empty szUser, but it is SLOW, so if no user is specified, use a faster query.
             string szQ;
             if (String.IsNullOrEmpty(szUser))
-                szQ = @"SELECT cpt.*, 
+                szQ = @"SELECT cpt.*,
 COALESCE(l.Text, cpt.Title) AS LocTitle, 
 COALESCE(l2.Text, cpt.FormatString) AS LocFormatString,
 COALESCE(l3.Text, cpt.Description) AS LocDescription,
@@ -558,7 +566,7 @@ FROM custompropertytypes cpt
 LEFT JOIN LocText l ON (l.idTableID=2 AND l.idItemID=cpt.idPropType AND l.LangId=?langID) 
 LEFT JOIN locText l2 ON (l2.idTableID=3 AND l2.idItemID=cpt.idPropType AND l2.LangID=?LangID)
 LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.LangID=?LangID)
-ORDER BY Title ASC";
+ORDER BY IF(SortKey='', Title, SortKey) ASC";
             else
             {
                 Profile pf = Profile.GetUser(szUser);

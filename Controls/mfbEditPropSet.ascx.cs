@@ -204,7 +204,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
             }
         }
 
-        ActiveProperties.Sort((cfp1, cfp2) => { return cfp1.PropertyType.Title.CompareCurrentCultureIgnoreCase(cfp2.PropertyType.Title); });
+        ActiveProperties.Sort((cfp1, cfp2) => { return cfp1.PropertyType.SortKey.CompareCurrentCultureIgnoreCase(cfp2.PropertyType.SortKey); });
 
         ListItem li = cmbPropsToAdd.Items[0];
         cmbPropsToAdd.Items.Clear();
