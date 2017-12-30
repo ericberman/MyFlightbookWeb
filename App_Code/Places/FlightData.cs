@@ -1304,21 +1304,10 @@ namespace MyFlightbook.Telemetry
             }
         }
 
-        /// <summary>
-        /// Updates the specified entry with as much as can be gleaned from the telemetry and/or times.
-        /// </summary>
-        /// <param name="le"></param>
-        /// <returns></returns>
-        public void AutoFill(LogbookEntry le, AutoFillOptions opt)
+        private string GenerateSyntheticPath(LogbookEntry le)
         {
-            StringBuilder sbSummary = new StringBuilder();
-
-            if (le == null || opt == null)
-                return;
-
-            bool fSyntheticPath = false;
-            // see if we can synthesize a path.  If so, save it as GPX
-            if (String.IsNullOrEmpty(le.FlightData))
+            string result = string.Empty;
+            if (le != null && String.IsNullOrEmpty(le.FlightData))
             {
                 DateTime dtStart = le.FlightStart.HasValue() ? le.FlightStart : (le.EngineStart.HasValue() ? le.EngineStart : DateTime.MinValue);
                 DateTime dtEnd = le.FlightEnd.HasValue() ? le.FlightEnd : (le.EngineEnd.HasValue() ? le.EngineEnd : DateTime.MinValue);
@@ -1339,11 +1328,32 @@ namespace MyFlightbook.Telemetry
                             SpeedUnits = SpeedUnitTypes.MetersPerSecond;    // SynthesizePath uses meters/s.
                             WriteGPXData(ms, rgPos, true, false, true);
                             ms.Seek(0, SeekOrigin.Begin);
-                            le.FlightData = new StreamReader(ms).ReadToEnd();
-                            fSyntheticPath = true;
+                            result = new StreamReader(ms).ReadToEnd();
                         }
                     }
                 }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Updates the specified entry with as much as can be gleaned from the telemetry and/or times.
+        /// </summary>
+        /// <param name="le"></param>
+        /// <returns></returns>
+        public void AutoFill(LogbookEntry le, AutoFillOptions opt)
+        {
+            StringBuilder sbSummary = new StringBuilder();
+
+            if (le == null || opt == null)
+                return;
+
+            bool fSyntheticPath = false;
+            // see if we can synthesize a path.  If so, save it as GPX
+            if (String.IsNullOrEmpty(le.FlightData))
+            {
+                le.FlightData = GenerateSyntheticPath(le);
+                fSyntheticPath = !String.IsNullOrEmpty(le.FlightData);
             }
 
             // first, parse the telemetry.

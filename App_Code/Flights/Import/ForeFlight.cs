@@ -210,6 +210,55 @@ namespace MyFlightbook.ImportFlights
             }
         }
 
+        private void ReadAircraftTable(CSVReader reader)
+        {
+            int iColAircraft = -1;
+            int iColTypeCode = -1;
+            int iColModel = -1;
+
+            // Find the start of the aircraft table
+            string[] rgRow = null;
+            while ((rgRow = reader.GetCSVLine()) != null)
+            {
+                if (rgRow != null && rgRow.Length > 0 && rgRow[0].CompareCurrentCultureIgnoreCase("Aircraft Table") == 0)
+                    break;
+            }
+
+            string[] rgHeaders = reader.GetCSVLine();
+            int cColumnHeader = int.MaxValue;
+            if (rgHeaders != null)
+            {
+                cColumnHeader = rgHeaders.Length;
+                for (int i = 0; i < rgHeaders.Length; i++)
+                {
+                    if (rgHeaders[i].CompareCurrentCultureIgnoreCase("AircraftID") == 0)
+                        iColAircraft = i;
+                    else if (rgHeaders[i].CompareCurrentCultureIgnoreCase("TypeCode") == 0)
+                        iColTypeCode = i;
+                    else if (rgHeaders[i].CompareCurrentCultureIgnoreCase("Model") == 0)
+                        iColModel = i;
+                }
+            }
+
+            while ((rgRow = reader.GetCSVLine()) != null)
+            {
+                if (rgRow.Length == 0)
+                    break;
+
+                if (iColAircraft < 0 || iColAircraft >= rgRow.Length)
+                    break;
+
+                string szAircraft = rgRow[iColAircraft];
+                if (String.IsNullOrWhiteSpace(szAircraft))
+                    break;
+
+                string szModel = (iColModel >= 0) ? rgRow[iColModel] : string.Empty;
+                string szTypeCode = (iColTypeCode >= 0) ? rgRow[iColTypeCode] : string.Empty;
+                ForeFlightAircraftDescriptor ad = new ForeFlightAircraftDescriptor() { AircraftID = szAircraft, Model = szModel, TypeCode = szTypeCode };
+                dictAircraft[ad.AircraftID] = ad;
+            }
+        }
+
         public override byte[] PreProcess(byte[] rgb)
         {
             if (rgb == null)
@@ -218,55 +267,14 @@ namespace MyFlightbook.ImportFlights
             MemoryStream ms = new MemoryStream(rgb);
             try
             {
-                int iColAircraft = -1;
-                int iColTypeCode = -1;
-                int iColModel = -1;
                 dictAircraft.Clear();
                 using (CSVReader reader = new CSVReader(ms))
                 {
                     ms = null;  // for CA2202
 
-                    // Find the start of the aircraft table
+                    ReadAircraftTable(reader);
+
                     string[] rgRow = null;
-                    while ((rgRow = reader.GetCSVLine()) != null)
-                    {
-                        if (rgRow != null && rgRow.Length > 0 && rgRow[0].CompareCurrentCultureIgnoreCase("Aircraft Table") == 0)
-                            break;
-                    }
-
-                    string[] rgHeaders = reader.GetCSVLine();
-                    int cColumnHeader = int.MaxValue;
-                    if (rgHeaders != null)
-                    {
-                        cColumnHeader = rgHeaders.Length;
-                        for (int i = 0; i < rgHeaders.Length; i++)
-                        {
-                            if (rgHeaders[i].CompareCurrentCultureIgnoreCase("AircraftID") == 0)
-                                iColAircraft = i;
-                            else if (rgHeaders[i].CompareCurrentCultureIgnoreCase("TypeCode") == 0)
-                                iColTypeCode= i;
-                            else if (rgHeaders[i].CompareCurrentCultureIgnoreCase("Model") == 0)
-                                iColModel = i;
-                        }
-                    }
-
-                    while ((rgRow = reader.GetCSVLine()) != null)
-                    {
-                        if (rgRow.Length == 0)
-                            break;
-
-                        if (iColAircraft < 0 || iColAircraft >= rgRow.Length)
-                            break;
-
-                        string szAircraft = rgRow[iColAircraft];
-                        if (String.IsNullOrWhiteSpace(szAircraft))
-                            break;
-
-                        string szModel = (iColModel >= 0) ? rgRow[iColModel] : string.Empty;
-                        string szTypeCode = (iColTypeCode >= 0) ? rgRow[iColTypeCode] : string.Empty;
-                        ForeFlightAircraftDescriptor ad = new ForeFlightAircraftDescriptor() { AircraftID = szAircraft, Model = szModel, TypeCode = szTypeCode };
-                        dictAircraft[ad.AircraftID] = ad;
-                    }
 
                     // Now find the start of the flight table and stop - the regular CSVAnalyzer can pick up from here, and our aircraft table is now set up.
                     while ((rgRow = reader.GetCSVLine()) != null)
@@ -275,7 +283,7 @@ namespace MyFlightbook.ImportFlights
                             break;
                     }
 
-                    rgHeaders = reader.GetCSVLine();
+                    string[] rgHeaders = reader.GetCSVLine();
 
                     if (rgHeaders != null)
                     {
