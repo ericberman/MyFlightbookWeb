@@ -20,16 +20,16 @@
         <span><asp:HyperLink ID="lnkRoute" runat="server"></asp:HyperLink></span>
         <span style="white-space:pre-line;"><asp:Label ID="lblComments" runat="server" Text=""></asp:Label></span>
         <span><asp:ImageButton ID="btnEdit" runat="server" ToolTip="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>" ImageUrl="~/images/pencilsm.png" AlternateText="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>" Visible="False" OnClick="btnEdit_Click" /></span>
-        <uc1:mfbImageList ID="mfbIlAirplane" ImageClass="Aircraft" MaxImage="-1" CanEdit="false" Columns="2" runat="server" Visible="false" />
-        <div style="max-width: 480px; margin-left:auto; margin-right:auto;">
-            <uc1:imageSlider runat="server" ID="imgSliderAircraft" />
-        </div>
     </asp:Panel>
     <div style="margin-left:auto;margin-right:auto; width:640px;"><uc7:mfbVideoEntry ID="mfbVideoEntry1" runat="server" CanAddVideos="false" /></div>
     <uc1:mfbImageList ID="mfbIlFlight" ImageClass="Flight" runat="server" Columns="4" CanEdit="false" MaxImage="-1" MapLinkType="ZoomOnLocalMap" AltText="" Visible="false" />
     <div>
         <div style="max-width:480px; margin-left:auto; margin-right:auto; ">
             <uc1:imageSlider runat="server" ID="imgsliderFlights" />
+        </div>
+        <uc1:mfbImageList ID="mfbIlAirplane" ImageClass="Aircraft" MaxImage="-1" CanEdit="false" Columns="2" runat="server" Visible="false" />
+        <div style="max-width: 480px; margin-left:auto; margin-right:auto;">
+            <uc1:imageSlider runat="server" ID="imgSliderAircraft" />
         </div>
         <div id="divMap" runat="server">
             <asp:HyperLink ID="lnkZoomOut" runat="server" Visible="False" Text="<%$ Resources:Airports, MapZoomOut %>"></asp:HyperLink>&nbsp;&nbsp;&nbsp;&nbsp;<asp:HyperLink ID="lnkShowMapOnly" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowOnlyMap %>"></asp:HyperLink>&nbsp;&nbsp;
