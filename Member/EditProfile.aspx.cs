@@ -798,7 +798,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     protected void btnWhiteList_Click(object sender, EventArgs e)
     {
-        if (!String.IsNullOrEmpty(txtPropID.Text))
+        if (!String.IsNullOrEmpty(txtPropID.Text) && !String.IsNullOrEmpty(txtPropID.Text.Trim()))
         {
             try
             {
@@ -816,7 +816,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     protected void btnBlackList_Click(object sender, EventArgs e)
     {
-        if (!String.IsNullOrEmpty(txtPropID.Text))
+        if (!String.IsNullOrEmpty(txtPropID.Text) && !String.IsNullOrEmpty(txtPropID.Text.Trim()))
         {
             try
             {
