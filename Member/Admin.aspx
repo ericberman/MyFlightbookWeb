@@ -1127,7 +1127,7 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
         <asp:View ID="vwMainProperties" runat="server">
             <asp:SqlDataSource ID="sqlCustomProps" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                 ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT * FROM custompropertytypes ORDER BY idPropType DESC"
-                UpdateCommand="UPDATE custompropertytypes SET Title=?Title, SortKey=?SortKey, FormatString=?FormatString, Description=?Description, Type=?Type, Flags=?Flags WHERE idPropType=?idPropType">
+                UpdateCommand="UPDATE custompropertytypes SET Title=?Title, SortKey=IF(?SortKey IS NULL, '', ?SortKey), FormatString=?FormatString, Description=?Description, Type=?Type, Flags=?Flags WHERE idPropType=?idPropType">
                 <UpdateParameters>
                     <asp:Parameter Name="Title" Direction="Input" Type="String" />
                     <asp:Parameter Name="FormatString" Direction="Input" Type="String" />
@@ -1135,7 +1135,7 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                     <asp:Parameter Name="Flags" Direction="Input" Type="Int32" />
                     <asp:Parameter Name="idPropType" Direction="Input" Type="Int32" />
                     <asp:Parameter Name="Description" Direction="Input" Type="String" />
-                    <asp:Parameter Name="SortKey" Direction="Input" Type="String" />
+                    <asp:Parameter Name="SortKey" Direction="Input" Type="String" ConvertEmptyStringToNull="false" />
                 </UpdateParameters>
             </asp:SqlDataSource>
             <h2>Existing Props</h2><asp:UpdatePanel ID="UpdatePanel1" runat="server">
