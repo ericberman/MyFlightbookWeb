@@ -33,21 +33,15 @@ namespace MyFlightbook.FlightCurrency
         public enum SortMode { Model, CatClass };
 
         #region Creation/Initialization
-        public void Init()
+        public TotalsItem()
         {
             SubDescription = Description = String.Empty;
             Value = 0.0M;
             NumericType = NumType.Time; // decimals are time by default
         }
 
-        public TotalsItem()
+        public TotalsItem(string description, Decimal value) : this()
         {
-            Init();
-        }
-
-        public TotalsItem(string description, Decimal value)
-        {
-            Init();
             Description = description;
             Value = value;
         }
@@ -59,25 +53,22 @@ namespace MyFlightbook.FlightCurrency
         /// <param name="value">Value</param>
         /// <param name="isTime">True if this is a time</param>
         /// <param name="isInt"></param>
-        public TotalsItem(string description, Decimal value, NumType nt)
+        public TotalsItem(string description, Decimal value, NumType nt) : this()
         {
-            Init();
             Description = description;
             Value = value;
             NumericType = nt;
         }
 
-        public TotalsItem(string description, int value)
+        public TotalsItem(string description, int value) : this()
         {
-            Init();
             Description = description;
             Value = value;
             NumericType = NumType.Integer;
         }
 
-        public TotalsItem(string description, Decimal value, string subDescription, SortMode mode = SortMode.CatClass)
+        public TotalsItem(string description, Decimal value, string subDescription, SortMode mode = SortMode.CatClass) : this()
         {
-            Init();
             Description = description;
             Value = value;
             SubDescription = subDescription;
@@ -636,7 +627,7 @@ namespace MyFlightbook.FlightCurrency
 
                         string szDesc = fIncludeSubtotals ? SubDescFromLandings(cLandings, cFSDayLandings, cFSNightLandings, cApproaches) : string.Empty;
 
-                        AddToList(new TotalsItem(Resources.Totals.TotalTime, Convert.ToDecimal(util.ReadNullableField(dr, "Total", 0.0M), CultureInfo.InvariantCulture), szDesc));
+                        AddToList(new TotalsItem(Resources.Totals.TotalTime, Convert.ToDecimal(util.ReadNullableField(dr, "Total", 0.0M), CultureInfo.InvariantCulture), szDesc) { Query = Restriction.IsDefault ? null : Restriction });
                     }
                 }
             }
