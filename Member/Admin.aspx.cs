@@ -18,7 +18,7 @@ using MyFlightbook.Achievements;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2017 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -352,7 +352,7 @@ public partial class Member_Admin : System.Web.UI.Page
     #region Properties
     protected void btnNewCustomProp_Click(object sender, EventArgs e)
     {
-        DBHelper dbh = new DBHelper("INSERT INTO custompropertytypes SET Title=?Title, FormatString=?FormatString, Type=?Type, Flags=?Flags, Description=?Desc");
+        DBHelper dbh = new DBHelper("INSERT INTO custompropertytypes SET Title=?Title, FormatString=?FormatString, Type=?Type, Flags=?Flags, Description=?Desc, SortKey=''");
         dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("Title", txtCustomPropTitle.Text);
