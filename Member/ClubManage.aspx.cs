@@ -64,7 +64,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
                     vcEdit.ShowDelete = (cm.RoleInClub == ClubMember.ClubMemberRole.Owner);
 
                     dateStart.Date = CurrentClub.CreationDate;
-                    dateEnd.Date = DateTime.Now;
+                    dateEnd.DefaultDate = dateEnd.Date = DateTime.Now;
                     RefreshAircraft();
 
                     lblManageheader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Club.LabelManageThisClub, CurrentClub.Name);
@@ -399,7 +399,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
         sqlDSReports.SelectParameters.Clear();
         sqlDSReports.SelectParameters.Add(new Parameter("idclub", System.Data.DbType.Int32, CurrentClub.ID.ToString(CultureInfo.InvariantCulture)));
         sqlDSReports.SelectParameters.Add(new Parameter("startDate", System.Data.DbType.Date, dateStart.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
-        sqlDSReports.SelectParameters.Add(new Parameter("endDate", System.Data.DbType.Date, dateEnd.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+        sqlDSReports.SelectParameters.Add(new Parameter("endDate", System.Data.DbType.Date, dateEnd.Date.HasValue() ? dateEnd.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
         gvClubReports.DataSourceID = sqlDSReports.ID;
         gvClubReports.DataBind();
         btnDownload.Visible = true;
