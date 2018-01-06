@@ -349,13 +349,16 @@
                 </asp:BoundField>
                 <asp:TemplateField>
                     <ItemTemplate>
-                        <asp:LinkButton ID="lnkUseThis" runat="server"
-                            Text="<%$ Resources:Aircraft, editAircraftSwitchOtherVersion %>" CommandName="_switchMigrate"
-                            CommandArgument='<%# Bind("AircraftID") %>'></asp:LinkButton>
-                        &nbsp;|&nbsp;
-                                <asp:LinkButton ID="lnkAddThis" runat="server"
-                                    Text="<%$ Resources:Aircraft, editAircraftAddOtherVersion %>"
-                                    CommandName="_switchNoMigrate" CommandArgument='<%# Bind("AircraftID") %>'></asp:LinkButton>
+                        <ul>
+                            <li><asp:LinkButton ID="lnkUseThis" runat="server"
+                                Text="<%$ Resources:Aircraft, editAircraftSwitchOtherVersion %>" CommandName="_switchMigrate"
+                                CommandArgument='<%# Bind("AircraftID") %>'></asp:LinkButton></li>
+                            <li>
+                                    <asp:LinkButton ID="lnkAddThis" runat="server"
+                                        Text="<%$ Resources:Aircraft, editAircraftAddOtherVersion %>"
+                                        CommandName="_switchNoMigrate" CommandArgument='<%# Bind("AircraftID") %>'></asp:LinkButton>
+                            </li>
+                        </ul>
                     </ItemTemplate>
                     <ItemStyle VerticalAlign="Middle" />
                 </asp:TemplateField>
