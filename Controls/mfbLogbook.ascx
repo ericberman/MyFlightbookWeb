@@ -84,7 +84,7 @@
                             </asp:Panel>
                         </asp:Panel>
                         <asp:Panel ID="pnlProps" runat="server">
-                            <%# Eval("CustomProperties") == null ? string.Empty : HttpUtility.HtmlEncode(Eval("CustPropertyDisplay").ToString()).Replace("&#13;&#10;", "<br />") %>
+                            <div style="white-space:pre-line"><%# Eval("PropertiesWithReplacedApproaches") %></div>
                         </asp:Panel>
                         <asp:Panel ID="pnlFlightImages" runat="server" CssClass='<%# PrintView ? string.Empty : "hintPopup" %>'>
                             <uc1:mfbImageList ID="mfbilFlights" runat="server" Columns="2" CanEdit="false" ImageClass="Flight" IncludeDocs="false" MaxImage="-1" />

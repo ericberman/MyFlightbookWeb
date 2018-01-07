@@ -2500,6 +2500,11 @@ namespace MyFlightbook
         {
             get { return ApproachDescription.ReplaceApproaches(Comment.Linkify()); }
         }
+
+        public string PropertiesWithReplacedApproaches
+        {
+            get { return String.IsNullOrEmpty(CustPropertyDisplay) ? string.Empty : ApproachDescription.ReplaceApproaches(CustPropertyDisplay.Linkify()); }
+        }
         #endregion
         #endregion
 
