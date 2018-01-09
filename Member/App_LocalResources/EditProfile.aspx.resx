@@ -1117,7 +1117,7 @@
     <value>...but not these</value>
   </data>
   <data name="locCertPromptResource1.Text" xml:space="preserve">
-    <value>Instructor Certificate #</value>
+    <value>CFI (or CFII / GI / DPE / etc.) Certificate #</value>
   </data>
   <data name="locCloudStorageResource1.Text" xml:space="preserve">
     <value>Cloud Backup</value>

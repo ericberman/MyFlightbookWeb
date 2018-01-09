@@ -251,7 +251,7 @@
     <value>Add Endorsement</value>
   </data>
   <data name="EditEndorsementCFIPrompt" xml:space="preserve">
-    <value>CFI/CFII/GI #:</value>
+    <value>CFI, CFII, GI, or DPE #:</value>
   </data>
   <data name="EditEndorsementDatePrompt" xml:space="preserve">
     <value>Date of endorsement:</value>

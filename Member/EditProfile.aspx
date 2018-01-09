@@ -967,7 +967,7 @@
                                         Text="(Only used when printing your logbook)" meta:resourcekey="lblLicenseFineprintResource1"></asp:Label>
                                 </div>
                                 <h3>
-                                    <asp:Localize ID="locCertPrompt" runat="server" Text="Instructor Certificate #" 
+                                    <asp:Localize ID="locCertPrompt" runat="server" Text="CFI (or CFII / GI / DPE / etc.) Certificate #" 
                                         meta:resourcekey="locCertPromptResource1"></asp:Localize>
                                 </h3>
                                 <div>
