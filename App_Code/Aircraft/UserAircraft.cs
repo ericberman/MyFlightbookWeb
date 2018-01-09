@@ -8,7 +8,7 @@ using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2017 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -217,6 +217,23 @@ namespace MyFlightbook
             if (fMigrateFlights)
             {
                 LogbookEntry.UpdateFlightAircraftForUser(this.User, acOld.AircraftID, acNew.AircraftID);
+
+                // Migrate any custom currencies associated with the aircraft
+                foreach (CustomCurrency cc in CustomCurrency.CustomCurrenciesForUser(User))
+                {
+                    List<int> lst = new List<int>(cc.AircraftRestriction);
+
+                    for (int i = 0; i < lst.Count; i++)
+                    {
+                        if (lst[i] == acOld.AircraftID)
+                        {
+                            lst[i] = acNew.AircraftID;
+                            cc.AircraftRestriction = lst;
+                            cc.FCommit();
+                            break;
+                        }
+                    }
+                }
 
                 // And migrate any deadlines associated with the aircraft
                 foreach (DeadlineCurrency dc in DeadlineCurrency.DeadlinesForUser(User, acOld.AircraftID))

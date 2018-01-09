@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -134,7 +134,7 @@ public partial class EditMake : System.Web.UI.Page
             acGeneric.Commit();
         }
 
-        Aircraft.MergeDupeAircraft(acGeneric, acOriginal);
+        Aircraft.AdminMergeDupeAircraft(acGeneric, acOriginal);
         Response.Redirect(Request.Url.PathAndQuery);
     }
 }

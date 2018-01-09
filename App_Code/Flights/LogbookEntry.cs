@@ -21,7 +21,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1317,7 +1317,24 @@ namespace MyFlightbook
         /// <param name="idAircraftNew">The ID of the new aircraft</param>
         public static void UpdateFlightAircraftForUser(string szUser, int idAircraftOld, int idAircraftNew)
         {
-            DBHelper dbh = new DBHelper("UPDATE Flights f SET f.idAircraft=?idNew WHERE f.username=?user AND f.idAircraft=?idOld");
+            // This method can render valid signatures invalid (due to aircraft change), so 
+            // we need to find such flights and - IF THEY ARE VALID - recompute the flight hash so 
+            // that they stay valid.
+            FlightQuery q = new FlightQuery(szUser) { IsSigned = true, AircraftIDList = new int[] { idAircraftOld } };
+            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(q));
+            dbh.ReadRows((comm) => { }, dr =>
+            {
+                LogbookEntry le = new LogbookEntry(dr, szUser);
+                le.CustomProperties = CustomFlightProperty.LoadPropertiesForFlight(le.FlightID);
+                if (le.IsValidSignature())
+                {
+                    le.AircraftID = idAircraftNew;
+                    le.FlightHash = le.ComputeFlightHash();
+                    le.FCommit(false, true);
+                }
+            });
+
+            dbh = new DBHelper("UPDATE Flights f SET f.idAircraft=?idNew WHERE f.username=?user AND f.idAircraft=?idOld");
             dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("idNew", idAircraftNew);
@@ -1325,33 +1342,6 @@ namespace MyFlightbook
                 comm.Parameters.AddWithValue("user", szUser);
             });
         }
-
-        /*
-        private static void SendLargeTelemetry(string szUser, string szTelemetry)
-        {
-            Profile pf = Profile.GetUser(szUser);
-
-            // allow site admins to post huge data, but nobody else.
-            if (pf.Role != ProfileRoles.UserRole.SiteAdmin)
-            {
-                using (MailMessage msg = new MailMessage())
-                {
-                    msg.Subject = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TelemetryEmailSubject, Branding.CurrentBrand.AppName);
-                    msg.Body = Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.TelemetryTooLarge, pf.UserFullName));
-                    msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, Branding.CurrentBrand.AppName);
-                    msg.To.Add(new MailAddress(pf.Email, pf.UserFullName.Trim()));
-
-                    byte[] byteArray = Encoding.ASCII.GetBytes(szTelemetry);
-                    using (MemoryStream stream = new MemoryStream(byteArray))
-                    {
-                        Attachment at = new Attachment(stream, String.Format(CultureInfo.CurrentCulture, "Telemetry.{0}", DataSourceType.BestGuessTypeFromText(szTelemetry).DefaultExtension));
-                        msg.Attachments.Add(at);
-                        util.SendMessage(msg);
-                    }
-                }
-            }
-        }
-         * */
 
         public const int MaxTelemetrySize = 300000;
 

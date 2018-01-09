@@ -14,7 +14,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2016 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1201,7 +1201,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="acMaster">The TARGET aircraft</param>
         /// <param name="ac">The aircraft being merged - this one will be DELETED (but a tombstone will remain)</param>
-        public static void MergeDupeAircraft(Aircraft acMaster, Aircraft ac)
+        public static void AdminMergeDupeAircraft(Aircraft acMaster, Aircraft ac)
         {
             if (ac == null)
                 throw new ArgumentNullException("ac");
@@ -1217,22 +1217,21 @@ namespace MyFlightbook
             AircraftTombstone act = new AircraftTombstone(ac.AircraftID, acMaster.AircraftID);
             act.Commit();
 
-            DBHelperCommandArgs dba = new DBHelperCommandArgs("UPDATE Flights f SET f.idAircraft=?idAircraftNew WHERE f.idAircraft=?idAircraftOld");
+            // It's slower than doing a simple "UPDATE Flights f SET f.idAircraft=?idAircraftNew WHERE f.idAircraft=?idAircraftOld",
+            // but first find all of the users with flights in the old aircraft and then call ReplaceAircraftForUser on each one
+            // This ensures that useraircraft is correctly updated.
+            DBHelperCommandArgs dba = new DBHelperCommandArgs("SELECT DISTINCT username FROM flights WHERE idAircraft=?idAircraftOld");
             dba.AddWithValue("idAircraftNew", acMaster.AircraftID);
             dba.AddWithValue("idAircraftOld", ac.AircraftID);
             // Remap any flights that use the old aircraft
             DBHelper dbh = new DBHelper(dba);
-            dbh.DoNonQuery(
-                (comm) => { });
 
-            // Remap any known aircraft for user aircraft lists
-            dbh.CommandText = "UPDATE useraircraft ua SET idAircraft =?idAircraftNew WHERE ua.idAircraft=?idAircraftOld";
-            dbh.DoNonQuery();
+            List<string> lstAffectedUsers = new List<string>();
+            dbh.ReadRows((comm) => { }, (dr) => { lstAffectedUsers.Add((string)dr["username"]); });
 
-            // Remap any custom currency
-            dbh.CommandText = String.Format(CultureInfo.InvariantCulture,"UPDATE custcurrencyref SET value=?idAircraftNew WHERE value=?idAircraftOld AND type={0}", (int)MyFlightbook.FlightCurrency.CustomCurrency.CurrencyRefType.Aircraft);
-            dbh.DoNonQuery();
-
+            foreach (string szUser in lstAffectedUsers)
+                new UserAircraft(szUser).ReplaceAircraftForUser(acMaster, ac, true);
+                
             // remap any club aircraft and scheduled events.
             dbh.CommandText = "UPDATE clubaircraft ca SET ca.idaircraft=?idAircraftNew WHERE ca.idAircraft=?idAircraftOld";
             dbh.DoNonQuery();

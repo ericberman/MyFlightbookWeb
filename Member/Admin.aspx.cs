@@ -184,7 +184,7 @@ public partial class Member_Admin : System.Web.UI.Page
             else
             {
                 // if the generic for the target also exists, need to merge the aircraft (creating a tombstone).
-                Aircraft.MergeDupeAircraft(acGenericTarget, acGenericSource);
+                Aircraft.AdminMergeDupeAircraft(acGenericTarget, acGenericSource);
             }
         }
 
@@ -644,7 +644,7 @@ WHERE (instanceType > 1 AND ac.TailNumber NOT LIKE '{0}%') OR
 
             if (acThis.InstanceTypeID == acNext.InstanceTypeID && acThis.ModelID == acNext.ModelID)
             {
-                Aircraft.MergeDupeAircraft(acThis, acNext);
+                Aircraft.AdminMergeDupeAircraft(acThis, acNext);
                 lstDupes.RemoveAt(i + 1);
             }
             if (acThis.Version != i)
@@ -717,7 +717,7 @@ WHERE (instanceType > 1 AND ac.TailNumber NOT LIKE '{0}%') OR
             foreach (int acID in lstDupesToMerge)
             {
                 Aircraft ac = new Aircraft(acID);
-                Aircraft.MergeDupeAircraft(acMaster, ac);
+                Aircraft.AdminMergeDupeAircraft(acMaster, ac);
             }
 
             // refresh the list.
