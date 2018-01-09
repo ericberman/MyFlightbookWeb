@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2017 MyFlightbook LLC
+ * Copyright (c) 2016-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -232,7 +232,8 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
                 case AircraftImportMatchRow.MatchState.MatchedExisting:
                     btnAddThis.Visible = true;
                     btnAddThis.Text = Resources.Aircraft.ImportExistingAircraft;
-                    btnAddThis.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "addExistingAircraft({0}, '{1}', '{2}'); return false;", mr.BestMatchAircraft.AircraftID, btnAddThis.ClientID, lblAllGood.ClientID);
+                    btnAddThis.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "addExistingAircraft({0}, '{1}', '{2}', '{3}'); return false;", 
+                        mr.BestMatchAircraft.AircraftID, btnAddThis.ClientID, lblAllGood.ClientID, popupAddingInProgress.BehaviorID);
                     break;
                 case AircraftImportMatchRow.MatchState.UnMatched:
                     btnAddThis.Visible = true;
@@ -240,12 +241,13 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
                     if (e.Row.RowIndex != gv.SelectedIndex && mr.State == AircraftImportMatchRow.MatchState.UnMatched && mr.BestMatchAircraft != null)
                     {
                         // Bypass a postback if it is an error-free non-selected row.  This should avoid some of the viewstate errors we've been getting for click-click-click down the list of buttons
-                        btnAddThis.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "addNewAircraft('{0}', '{1}', {2}, '{3}', {4}); return false;",
+                        btnAddThis.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "addNewAircraft('{0}', '{1}', {2}, '{3}', {4}, '{5}'); return false;",
                             btnAddThis.ClientID,
                             lblAllGood.ClientID,
                             mr.BestMatchAircraft.ModelID,
                             mr.BestMatchAircraft.TailNumber,
-                            mr.BestMatchAircraft.InstanceTypeID);
+                            mr.BestMatchAircraft.InstanceTypeID,
+                            popupAddingInProgress.BehaviorID);
                     }
                     break;
             }
