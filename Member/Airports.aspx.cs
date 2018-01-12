@@ -2,6 +2,7 @@
 using MyFlightbook.Airports;
 using MyFlightbook.Telemetry;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -9,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2017 MyFlightbook LLC
+ * Copyright (c) 2011-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -42,8 +43,26 @@ public partial class Member_Airports : System.Web.UI.Page
         AirportList alMatches = new AirportList(CurrentVisitedAirports);
 
         // get an airport list of the airports
-        mfbGoogleMapManager1.Map.ShowRoute = false;
         mfbGoogleMapManager1.Map.SetAirportList(alMatches);
+
+        bool fIncludeRoutes = util.GetIntParam(Request, "path", 0) != 0;
+
+        if (mfbGoogleMapManager1.Map.ShowRoute = fIncludeRoutes)
+        {
+            List<AirportList> lst = new List<AirportList>();
+
+            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, lto: LogbookEntry.LoadTelemetryOption.MetadataOrDB));
+            dbh.ReadRows((comm) => { }, (dr) =>
+            {
+                object o = dr["Route"];
+                string szRoute = (string)(o == System.DBNull.Value ? string.Empty : o);
+
+                if (!String.IsNullOrEmpty(szRoute))
+                    lst.Add(alMatches.CloneSubset(szRoute));
+            });
+            mfbGoogleMapManager1.Map.Airports = lst;
+        }
+
         lnkZoomOut.NavigateUrl = mfbGoogleMapManager1.ZoomToFitScript;
         lnkZoomOut.Visible = (CurrentVisitedAirports.Length > 0);
 
