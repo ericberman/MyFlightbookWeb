@@ -51,7 +51,7 @@ public partial class Member_Airports : System.Web.UI.Page
         {
             List<AirportList> lst = new List<AirportList>();
 
-            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, lto: LogbookEntry.LoadTelemetryOption.MetadataOrDB));
+            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, lto: LogbookEntry.LoadTelemetryOption.None));
             dbh.ReadRows((comm) => { }, (dr) =>
             {
                 object o = dr["Route"];
