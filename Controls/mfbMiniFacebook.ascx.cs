@@ -61,15 +61,23 @@ public partial class Controls_mfbMiniFacebook : System.Web.UI.UserControl
             if (mfbii != null && mfbii.URLFullImage != null && !String.IsNullOrEmpty(mfbii.URLFullImage.ToAbsoluteURL(Request).ToString()))
             {
                 bool fVideo = mfbii.ImageType == MyFlightbook.Image.MFBImageInfo.ImageFileType.S3VideoMP4;
-                Uri  absoluteURI = mfbii.URLFullImage.ToAbsoluteURL("https", Request.Url.Host);
-                AddMeta("og:image", absoluteURI.ToString());
+
+                string absolutePath = mfbii.ResolveFullImage();
                 if (fVideo)
-                    AddMeta("og:video", absoluteURI.ToString());
-                AddMeta(fVideo ? "og:video:secure_url" : "og:image:secure_url", absoluteURI.ToString());
-                if (fVideo)
+                {
+                    string absoluteThumb = mfbii.UriS3VideoThumbnail.ToString();
+                    AddMeta("og:image", absoluteThumb);
+                    AddMeta("og:image:secure_url", absoluteThumb);
+                    AddMeta("og:video", absolutePath);
+                    AddMeta("og:video:secure_url", absolutePath);
                     AddMeta("og:video:type", "video/mp4");
+                }
                 else
+                {
+                    AddMeta("og:image", absolutePath);
+                    AddMeta("og:image:secure_url", absolutePath);
                     AddMeta("og:image:type", "image/jpeg");
+                }
 
                 double ratio = (mfbii.WidthThumbnail == 0) ? 1.0 : ((double) mfbii.HeightThumbnail / (double)mfbii.WidthThumbnail);
 

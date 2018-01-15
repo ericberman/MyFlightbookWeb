@@ -243,6 +243,23 @@ namespace MyFlightbook.Image
         }
 
         /// <summary>
+        /// Returns a URI to the full-sized video thumbnail that's up on S3
+        /// </summary>
+        public Uri UriS3VideoThumbnail
+        {
+            get
+            {
+                switch (ImageType)
+                {
+                    case ImageFileType.S3VideoMP4:
+                        return new Uri(AWSConfiguration.AmazonS3Prefix + VirtualPath.Substring(1) + ThumbnailFile.Replace("_.jpg", "_00001.jpg"));
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        /// <summary>
         /// Returns a virtual path to the full image.  This may not be usable as a URL to the full image as the file may not actually exist here.
         /// </summary>
         public string PathFullImage
