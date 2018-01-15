@@ -60,16 +60,24 @@ public partial class Controls_mfbMiniFacebook : System.Web.UI.UserControl
             MyFlightbook.Image.MFBImageInfo mfbii = FlightEntry.SocialMediaImage();
             if (mfbii != null && mfbii.URLFullImage != null && !String.IsNullOrEmpty(mfbii.URLFullImage.ToAbsoluteURL(Request).ToString()))
             {
-                AddMeta("og:image", mfbii.URLFullImage.ToAbsoluteURL(Request).ToString());
-                AddMeta("og:image:type", "image/jpeg");
+                bool fVideo = mfbii.ImageType == MyFlightbook.Image.MFBImageInfo.ImageFileType.S3VideoMP4;
+                Uri  absoluteURI = mfbii.URLFullImage.ToAbsoluteURL("https", Request.Url.Host);
+                AddMeta("og:image", absoluteURI.ToString());
+                if (fVideo)
+                    AddMeta("og:video", absoluteURI.ToString());
+                AddMeta(fVideo ? "og:video:secure_url" : "og:image:secure_url", absoluteURI.ToString());
+                if (fVideo)
+                    AddMeta("og:video:type", "video/mp4");
+                else
+                    AddMeta("og:image:type", "image/jpeg");
 
                 double ratio = (mfbii.WidthThumbnail == 0) ? 1.0 : ((double) mfbii.HeightThumbnail / (double)mfbii.WidthThumbnail);
 
                 const int nominalDimension = 400;
                 int nominalWidth = (int) ((ratio < 1) ? nominalDimension : nominalDimension / ratio);
                 int nominalHeight = (int) ((ratio < 1) ? nominalDimension * ratio : nominalDimension); 
-                AddMeta("og:image:width", nominalWidth.ToString(System.Globalization.CultureInfo.InvariantCulture));
-                AddMeta("og:image:height", nominalHeight.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                AddMeta(fVideo ? "og:video:width" : "og:image:width", nominalWidth.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                AddMeta(fVideo ? "og:video:height" : "og:image:height", nominalHeight.ToString(System.Globalization.CultureInfo.InvariantCulture));
             }
         }
     }
