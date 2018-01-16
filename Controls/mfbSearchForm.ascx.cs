@@ -378,7 +378,16 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
 
         UserAircraft ua = new UserAircraft(Username);
         Aircraft[] rgac = ua.GetAircraftForUser();
-        cklAircraft.DataSource = rgac;
+        Aircraft[] rgacActive = Array.FindAll(rgac, aircraft => !aircraft.HideFromSelection);
+
+        // Hide inactive aircraft unless 
+        // (a) all aircraft are active, or 
+        // (b) the current query references inactive aircraft
+        // (c) pnlshowAllAircraft is invisible (indicating that it has been clicked)
+        bool fShowAll = !pnlShowAllAircraft.Visible || rgacActive.Length == rgac.Length || Array.Exists(Restriction.AircraftList, ac => ac.HideFromSelection);
+        if (fShowAll)
+            pnlShowAllAircraft.Visible = false;
+        cklAircraft.DataSource = fShowAll ? rgac : rgacActive;
         cklAircraft.DataBind();
         
         cklMakes.DataSource = MakeModel.ModelsForAircraft(rgac);
@@ -501,9 +510,9 @@ function setDates(isCustom)
             UserAircraft ua = new UserAircraft(Username);
             Aircraft[] rgAircraft = ua.GetAircraftForUser();
 
-            for (int i = 0; i < cklAircraft.Items.Count; i++)
-                if (cklAircraft.Items[i].Selected)
-                    lstAircraft.Add(rgAircraft[i]);
+            foreach (ListItem li in cklAircraft.Items)
+                if (li.Selected)
+                    lstAircraft.Add(Array.Find(rgAircraft, ac => ac.AircraftID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)));
 
             m_fq.AircraftList = lstAircraft.ToArray();
         }
@@ -712,5 +721,12 @@ function setDates(isCustom)
             txtQueryName.Text = string.Empty;
             DoSearch();
         }
+    }
+
+    protected void lnkShowAllAircraft_Click(object sender, EventArgs e)
+    {
+        m_fq = GetFlightQuery();
+        pnlShowAllAircraft.Visible = false;
+        RefreshFormForQuery();
     }
 }

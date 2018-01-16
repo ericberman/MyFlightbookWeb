@@ -186,6 +186,9 @@
                             RepeatColumns="6" RepeatDirection="Horizontal" 
                             meta:resourcekey="cklAircraftResource1">
                         </asp:CheckBoxList>
+                        <asp:Panel ID="pnlShowAllAircraft" runat="server">
+                            <asp:LinkButton ID="lnkShowAllAircraft" runat="server" Text="Show All Aircraft" meta:resourcekey="lnkShowAllAircraft1" OnClick="lnkShowAllAircraft_Click"></asp:LinkButton>
+                        </asp:Panel>
                 </asp:Panel>
                 <p class="header" runat="server" id="MakesHeader">
                     <asp:Localize ID="locMakes"

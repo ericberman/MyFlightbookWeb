@@ -603,4 +603,7 @@
   <data name="txtRestrictResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lnkShowAllAircraft1.Text" xml:space="preserve">
+    <value>Show All Aircraft</value>
+  </data>
 </root>
