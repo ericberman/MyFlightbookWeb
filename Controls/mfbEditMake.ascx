@@ -50,12 +50,13 @@
         </div>
         <div class="vfDescription">
                 <div><asp:Label ID="lblAboutModel" runat="server" Text="The model identifier.  Be as specific as possible." meta:resourcekey="lblAboutModelResource1"></asp:Label></div>
-                <div><asp:Label ID="lblAboutModel2" runat="server" Text="EE.g., &quot;B737-700&quot; or &quot;C-172 S&quot; (rather than &quot;B737&quot; or &quot;C-172&quot;)" meta:resourcekey="lblAboutModel2Resource1"></asp:Label></div>
+                <div><asp:Label ID="lblAboutModel2" runat="server" Text="E.g., &quot;B737-700&quot; or &quot;C-172 S&quot; (rather than &quot;B737&quot; or &quot;C-172&quot;)" meta:resourcekey="lblAboutModel2Resource1"></asp:Label></div>
         </div>
     </div>
     <div class="vfSection" id="rowFamily" runat="server">
         <div class="vfPrompt">
             <asp:Label ID="lblFamilyName" runat="server" Text="FAA/ICAO ID:" meta:resourcekey="lblFamilyNameResource1"></asp:Label>
+            <div class="vfSubDesc"><asp:HyperLink NavigateUrl="https://www.icao.int/publications/DOC8643/Pages/Search.aspx" Target="_blank" ID="lnkICAO" runat="server" Text="Look up" meta:resourcekey="lnkICAOResource1"></asp:HyperLink></div>
         </div>
         <div class="vfValue">
             <asp:TextBox ID="txtFamilyName" runat="server" MaxLength="4" meta:resourcekey="txtFamilyNameResource1"></asp:TextBox>
@@ -64,11 +65,11 @@
                 WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LocalizedText, EditMakeWatermarkFamily %>" 
                 TargetControlID="txtFamilyName" BehaviorID="ctl00_TextBoxWatermarkExtender5">
             </cc1:TextBoxWatermarkExtender>
-            <cc1:FilteredTextBoxExtender runat="server" ID="filteredICAO" FilterType="LowercaseLetters,UppercaseLetters,Numbers" TargetControlID="txtFamilyName" />
+            <cc1:FilteredTextBoxExtender runat="server" ID="filteredICAO" FilterType="Numbers, UppercaseLetters, LowercaseLetters" TargetControlID="txtFamilyName" BehaviorID="ctl00_filteredICAO" />
         </div>
         <div class="vfDescription">
             <div class="vfSubDesc"><% =Resources.LocalizedText.OptionalData %></div>
-            <asp:Label ID="lblFamilyDesc1" runat="server" Text="The FAA or ICAO designator or the base model, IF DIFFERENT from the Model ID." meta:resourcekey="lblFamilyDesc1Resource1"></asp:Label><br />
+            <asp:Label ID="lblFamilyDesc1" runat="server" Text="The FAA or ICAO designator or the base model." meta:resourcekey="lblFamilyDesc1Resource1"></asp:Label><br />
             <asp:Label ID="lblFamilyDesc2" runat="server" Text="E.g., a C-172 N and a C-172 S are both &quot;C172&quot;." meta:resourcekey="lblFamilyDesc2Resource1"></asp:Label>
         </div>
     </div>
