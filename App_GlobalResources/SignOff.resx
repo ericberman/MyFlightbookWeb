@@ -379,8 +379,8 @@
     <value>Text of endorsement</value>
   </data>
   <data name="StudentNameTemplate" xml:space="preserve">
-    <value>Student: {0}. {1}</value>
-    <comment>{0} is the student's name, {1} are any other comments/remarks</comment>
+    <value>Student Comment: {0}.  My notes: {1}</value>
+    <comment>{0} is the comments in the student's logbook , {1} are any other comments/remarks from the CFI</comment>
   </data>
   <data name="EndorsementTitleWatermark" xml:space="preserve">
     <value>Endorsement Title</value>

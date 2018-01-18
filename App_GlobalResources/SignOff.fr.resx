@@ -343,7 +343,7 @@
     <value>Signé par</value>
   </data>
   <data name="StudentNameTemplate" xml:space="preserve">
-    <value>Étudiant: {0}. {1}</value>
-    <comment>{0} is the student's name, {1} are any other comments/remarks</comment>
+    <value>Commentaire de l'étudiant: {0} Mes notes: {1}</value>
+    <comment>{0} is the comments in the student's logbook , {1} are any other comments/remarks from the CFI</comment>
   </data>
 </root>

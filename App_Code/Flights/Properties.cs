@@ -59,6 +59,7 @@ namespace MyFlightbook
             IDPropPilotFlyingTime = 529,        // Not flagged as a known property
             IDPropInstructorName = 92,          // Not flagged as a known property
             IDPropCheckRide = 43,               // Not flagged as a known property
+            IDPropStudentName = 166,            // Not flagged as a known property - just used for copying to instructor's flight.
             IDPropCheckrideRecreational = 131,  
             IDPropCheckrideCFI = 176,
             IDPropCheckrideCFII = 177,
