@@ -8,7 +8,7 @@ using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2018 MyFlightbook LLC
+ * Copyright (c) 2013-2017 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -120,11 +120,16 @@ namespace MyFlightbook.MilestoneProgress
         #endregion
 
         #region Object creation/initialization
-        public MilestoneItem()
+        private void InitObject()
         {
             Title = Note = FARRef = String.Empty;
             Progress = Threshold = TrainingDeviceContribution = 0.0M;
             Type = MilestoneType.AchieveOnce;
+        }
+
+        public MilestoneItem()
+        {
+            InitObject();
         }
 
         /// <summary>
@@ -135,8 +140,9 @@ namespace MyFlightbook.MilestoneProgress
         /// <param name="note">Any qualifying notes</param>
         /// <param name="type">Type of milestoneitem</param>
         /// <param name="threshold">Threshold for the item</param>
-        public MilestoneItem(string title, string farref, string note, MilestoneType type, decimal threshold) : this()
+        public MilestoneItem(string title, string farref, string note, MilestoneType type, decimal threshold)
         {
+            InitObject();
             Type = type;
             Title = title;
             Note = note;
@@ -277,12 +283,6 @@ namespace MyFlightbook.MilestoneProgress
         // Part 135
         Part135PIC,
         Part135PICIFR,
-
-        // DPE
-        DPEPPLEASEL,
-        DPEPPLEASES,
-        DPEPPLEAMEL,
-        DPEPPLEAMES,
 
         // Placeholder for unknown
         Unknown
@@ -444,8 +444,7 @@ namespace MyFlightbook.MilestoneProgress
                 new LAPLMilestones(),           // EASA LAPL ratings
                 new CommercialMilestones(),     // Commercial Pilot Ratings
                 new ATPMilestones(),            // ATP Ratings
-                new Part135Milestones(),        // Part 135 Ratings,
-                new DPEMilestones()             // DPE ratings (or whatever they should be called)
+                new Part135Milestones()         // Part 135 Ratings
             };
         }
 

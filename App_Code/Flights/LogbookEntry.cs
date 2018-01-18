@@ -1447,7 +1447,7 @@ namespace MyFlightbook
                     if (fUpdateSignature)
                     {
                         comm.Parameters.AddWithValue("sigState", UpdateSignatureState());
-                        comm.Parameters.AddWithValue("cficomment", this.CFIComments.LimitTo(255));
+                        comm.Parameters.AddWithValue("cficomment", this.CFIComments);
                         comm.Parameters.AddWithValue("sigDate", this.CFISignatureDate);
                         comm.Parameters.AddWithValue("cficert", this.CFICertificate);
                         comm.Parameters.AddWithValue("cfiExpiration", this.CFIExpiration);
