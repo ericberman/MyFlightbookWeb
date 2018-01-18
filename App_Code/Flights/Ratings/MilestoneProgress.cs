@@ -8,7 +8,7 @@ using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -284,6 +284,21 @@ namespace MyFlightbook.MilestoneProgress
         Part135PIC,
         Part135PICIFR,
 
+        // DPE Milestones
+        DPEASELPPL,
+        DPEAMELPPL,
+        DPEASESPPL,
+        DPEAMESPPL,
+        DPEGyroplanePPL,
+        DPEHelicopterPPL,
+        DPEGliderPPL,
+        DPEASELCommercial,
+        DPEAMELCommercial,
+        DPEASESCommercial,
+        DPEAMESCommercial,
+        DPEHelicopterCommercial,
+        DPEGliderCommercial,
+
         // Placeholder for unknown
         Unknown
     };
@@ -444,7 +459,8 @@ namespace MyFlightbook.MilestoneProgress
                 new LAPLMilestones(),           // EASA LAPL ratings
                 new CommercialMilestones(),     // Commercial Pilot Ratings
                 new ATPMilestones(),            // ATP Ratings
-                new Part135Milestones()         // Part 135 Ratings
+                new Part135Milestones(),         // Part 135 Ratings
+                new DPEMilestones()
             };
         }
 

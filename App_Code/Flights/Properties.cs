@@ -9,7 +9,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -103,7 +103,9 @@ namespace MyFlightbook
             IDPropMonitoredNightLandings = 563,
             IDPropMonitoredNightTakeoffs = 565,
             IDPropNightTouchAndGo = 397,
-            IDPropFMSApproaches = 583
+            IDPropFMSApproaches = 583,
+            IDPropCFIITime = 192,
+            IDPropInstrumentInstructionTime = 542
         }
 
         internal static class CFPPropertyFlag
