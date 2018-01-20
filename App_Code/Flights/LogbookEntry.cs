@@ -291,6 +291,7 @@ namespace MyFlightbook
         /// Summary data about the flight's telemetry.  CAN BE NULL
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public TelemetryReference Telemetry { get; set; }
 
         /// <summary>
@@ -372,6 +373,7 @@ namespace MyFlightbook
         /// <summary>
         /// Quick & Dirty display string
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string DisplayString
         {
             get { return this.ToString(); }
@@ -509,6 +511,7 @@ namespace MyFlightbook
         /// Repair some common errors that seem to arise with signatures
         /// </summary>
         /// <returns>True if errors found and fixed</returns>
+        [Newtonsoft.Json.JsonIgnore]
         public SignatureSanityCheckState AdminSignatureSanityCheckState
         {
             get
@@ -550,6 +553,7 @@ namespace MyFlightbook
         /// Return the decrypted flight hash as persisted in the DB
         /// </summary>
         /// <returns>The decrypted flighthash</returns>
+        [Newtonsoft.Json.JsonIgnore]
         public string DecryptedFlightHash
         {
             get
@@ -566,6 +570,7 @@ namespace MyFlightbook
         /// Returns a decrypted hash of the current flight
         /// </summary>
         /// <returns>The currently computed flight hash</returns>
+        [Newtonsoft.Json.JsonIgnore]
         public string DecryptedCurrentHash
         {
             get
@@ -578,6 +583,7 @@ namespace MyFlightbook
             }
         }
 
+        [Newtonsoft.Json.JsonIgnore]
         public bool CurrentValidSig
         {
             get { return IsValidSignature(); }
@@ -1785,6 +1791,7 @@ namespace MyFlightbook
         }
 
         #region IPostable
+        [Newtonsoft.Json.JsonIgnore]
         public string SocialMediaComment
         {
             get
@@ -1820,6 +1827,7 @@ namespace MyFlightbook
             return null;
         }
 
+        [Newtonsoft.Json.JsonIgnore]
         public bool CanPost
         {
             get { return (fIsPublic || Route.Length > 0); }

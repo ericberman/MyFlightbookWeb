@@ -42,7 +42,8 @@
                         <asp:ListItem Value="AddAircraftForUser" Text="Add Aircraft"></asp:ListItem>
                         <asp:ListItem Value="AircraftForUser" Text="Aircraft for user"></asp:ListItem>
                         <asp:ListItem Value="MakesAndModels" Text="Makes / Models"></asp:ListItem>
-                        <asp:ListItem Value="addflight" Text="Add flight (POST only)"></asp:ListItem>
+                        <asp:ListItem Value="addFlight" Text="Add flight (POST only)"></asp:ListItem>
+                        <asp:ListItem Value="FlightsWithQueryAndOffset" Text="View flights (POST only)"></asp:ListItem>
                         <asp:ListItem Value="FlightPathForFlight" Text="Flight Path for flight"></asp:ListItem>
                         <asp:ListItem Value="FlightPathForFlightGPX" Text="Flight Path (GPX) for flight"></asp:ListItem>
                         <asp:ListItem Value="DeleteLogbookEntry" Text="Delete Flight"></asp:ListItem>
@@ -71,6 +72,22 @@
                             <div>(Optional): JSON-ified Flight Query:</div>
                             <asp:TextBox ID="txtFlightQuery" runat="server" TextMode="MultiLine" Width="200px" Rows="5"></asp:TextBox>
                         </div>
+                    </asp:View>
+                    <asp:View ID="vwGetFlights" runat="server">
+                        <table>
+                            <tr>
+                                <td>(Optional): JSON-ified Flight Query:</td>
+                                <td><asp:TextBox ID="txtFlightQuery2" runat="server" TextMode="MultiLine" Width="200px" Rows="5"></asp:TextBox></td>
+                            </tr>
+                            <tr>
+                                <td>Offset:</td>
+                                <td><uc1:mfbDecimalEdit runat="server" ID="decOffset" EditingMode="Integer" /></td>
+                            </tr>
+                            <tr>
+                                <td>Limit:</td>
+                                <td><uc1:mfbDecimalEdit runat="server" ID="decLimit" EditingMode="Integer" /></td>
+                            </tr>
+                        </table>
                     </asp:View>
                     <asp:View ID="vwAddAircraft" runat="server">
                         <div class="detailsSection">

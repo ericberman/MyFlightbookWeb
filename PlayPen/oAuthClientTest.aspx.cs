@@ -200,17 +200,18 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             case OAuthServiceID.addFlight:
                 sb.AppendFormat(CultureInfo.InvariantCulture, "&flight={0}&format={1}", HttpUtility.UrlEncode(txtFlightToAdd.Text), cmbFlightFormat.SelectedValue);
                 break;
-            case OAuthServiceID.currency:
+            case OAuthServiceID.FlightsWithQueryAndOffset:
                 // These are post-only
                 break;
+            case OAuthServiceID.currency:
             case OAuthServiceID.FlightPathForFlight:
             case OAuthServiceID.FlightPathForFlightGPX:
             case OAuthServiceID.DeleteLogbookEntry:
             case OAuthServiceID.PropertiesForFlight:
-                sb.AppendFormat(CultureInfo.InvariantCulture, "&idFlight={0}&format={1}", decFlightID.IntValue, cmbFlightFormat.SelectedValue);
+                sb.AppendFormat(CultureInfo.InvariantCulture, "&idFlight={0}", decFlightID.IntValue);
                 break;
             case OAuthServiceID.AddAircraftForUser:
-                sb.AppendFormat(CultureInfo.InvariantCulture, "&szTail={0}&idModel={1}&idInstanceType={2}&format={3}", HttpUtility.UrlEncode(txtTail.Text), decModelID.IntValue, txtInstanceType.Text, cmbFlightFormat.SelectedValue);
+                sb.AppendFormat(CultureInfo.InvariantCulture, "&szTail={0}&idModel={1}&idInstanceType={2}", HttpUtility.UrlEncode(txtTail.Text), decModelID.IntValue, txtInstanceType.Text);
                 break;
             case OAuthServiceID.VisitedAirports:
             case OAuthServiceID.AircraftForUser:
@@ -265,6 +266,11 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 postParams.Add("idModel", decModelID.IntValue.ToString(CultureInfo.InvariantCulture));
                 postParams.Add("idInstanceType", txtInstanceType.Text);
                 break;
+            case OAuthServiceID.FlightsWithQueryAndOffset:
+                postParams.Add("fq", txtFlightQuery2.Text);
+                postParams.Add("offset", decOffset.IntValue.ToString(CultureInfo.InvariantCulture));
+                postParams.Add("maxCount", decLimit.IntValue.ToString(CultureInfo.InvariantCulture));
+                break;
             case OAuthServiceID.VisitedAirports:
             case OAuthServiceID.AircraftForUser:
             case OAuthServiceID.currency:
@@ -292,6 +298,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                     response.EnsureSuccessStatusCode();
 
                     Page.Response.Clear();
+                    Response.ContentType = ckJSON.Checked ? "application/json; charset=utf-8" : "text/xml; charset=utf-8";
                     System.Threading.Tasks.Task.Run(async () => { await response.Content.CopyToAsync(Page.Response.OutputStream); }).Wait();
                     Page.Response.Flush();
 
@@ -352,6 +359,9 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 break;
             case OAuthServiceID.AddAircraftForUser:
                 mvService.SetActiveView(vwAddAircraft);
+                break;
+            case OAuthServiceID.FlightsWithQueryAndOffset:
+                mvService.SetActiveView(vwGetFlights);
                 break;
             default:
                 mvService.SetActiveView(vwCustom);

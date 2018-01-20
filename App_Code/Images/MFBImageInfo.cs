@@ -25,7 +25,7 @@ using Newtonsoft.Json;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -150,12 +150,14 @@ namespace MyFlightbook.Image
         /// Key (i.e., virtual path without the base path).
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public string Key { get; protected set; }
 
         /// <summary>
         /// The image class.  Must be explicitly set
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public ImageClass Class { get; protected set; }
 
         /// <summary>
@@ -166,6 +168,7 @@ namespace MyFlightbook.Image
         /// <summary>
         /// Get the filename of the full-size file.  No path, just the name of the file.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string FullImageFile
         {
             get
@@ -245,6 +248,7 @@ namespace MyFlightbook.Image
         /// <summary>
         /// Returns a URI to the full-sized video thumbnail that's up on S3
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Uri UriS3VideoThumbnail
         {
             get
@@ -262,6 +266,7 @@ namespace MyFlightbook.Image
         /// <summary>
         /// Returns a virtual path to the full image.  This may not be usable as a URL to the full image as the file may not actually exist here.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string PathFullImage
         {
             get { return VirtualPath + FullImageFile; }
@@ -270,6 +275,7 @@ namespace MyFlightbook.Image
         /// <summary>
         /// Returns a virtual path to the thumbnail
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string PathThumbnail
         {
             get { return VirtualPath + ThumbnailFile; }
@@ -959,6 +965,7 @@ namespace MyFlightbook.Image
         /// Primary key for the object - useful as a hash tag
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public string PrimaryKey
         {
             get { return MFBImageInfo.PrimaryKeyForValues(this.Class, this.Key, this.ThumbnailFile); }
