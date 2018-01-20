@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -10,7 +11,7 @@ using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2017 MyFlightbook LLC
+ * Copyright (c) 2012-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -739,7 +740,28 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
         if (Page.IsValid)
         {
             LogbookEntry le = new LogbookEntry(Convert.ToInt32(hdnFlightToSend.Value, CultureInfo.InvariantCulture), Page.User.Identity.Name);
-            le.SendAsEmail(MyFlightbook.Profile.GetUser(Page.User.Identity.Name), txtSendFlightEmail.Text, txtSendFlightMessage.Text, ResolveUrl(SendPageTarget) + "?src=" + HttpUtility.UrlEncode(le.EncodeShareKey()));
+            MyFlightbook.Profile pfSender = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
+            string szRecipient = txtSendFlightEmail.Text;
+
+            using (MailMessage msg = new MailMessage())
+            {
+                msg.Body = Branding.ReBrand(Resources.LogbookEntry.SendFlightBody.Replace("<% Sender %>", HttpUtility.HtmlEncode(pfSender.UserFullName))
+                    .Replace("<% Message %>", HttpUtility.HtmlEncode(txtSendFlightMessage.Text))
+                    .Replace("<% Date %>", le.Date.ToShortDateString())
+                    .Replace("<% Aircraft %>", HttpUtility.HtmlEncode(le.TailNumDisplay))
+                    .Replace("<% Route %>", HttpUtility.HtmlEncode(le.Route))
+                    .Replace("<% Comments %>", HttpUtility.HtmlEncode(le.Comment))
+                    .Replace("<% Time %>", le.TotalFlightTime.FormatDecimal(pfSender.UsesHHMM))
+                    .Replace("<% FlightLink %>", ResolveUrl(SendPageTarget) + "?src=" + HttpUtility.UrlEncode(le.EncodeShareKey())));
+
+                msg.Subject = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.SendFlightSubject, pfSender.UserFullName);
+                msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pfSender.UserFullName));
+                msg.ReplyToList.Add(new MailAddress(pfSender.Email));
+                msg.To.Add(new MailAddress(szRecipient));
+                msg.IsBodyHtml = true;
+                util.SendMessage(msg);
+            }
+
             modalPopupSendFlight.Hide();
         }
         else

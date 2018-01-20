@@ -5,7 +5,6 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -1841,43 +1840,6 @@ namespace MyFlightbook
         public string EncodeShareKey()
         {
             return new UserAccessEncryptor().Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1}", this.FlightID, this.User));
-        }
-
-        /// <summary>
-        /// Sends the flight as email
-        /// </summary>
-        /// <param name="pfSender">The profile of the sender</param>
-        /// <param name="szRecipient">email address of the recipient</param>
-        /// <param name="szMsg">The message to send with the flight</param>
-        /// <param name="szTargetLink">The target link for the page</param>
-        public void SendAsEmail(Profile pfSender, string szRecipient, string szMsg, string szTargetLink)
-        {
-            if (pfSender == null)
-                throw new ArgumentNullException("pfSender");
-            if (szRecipient == null)
-                throw new ArgumentNullException("szRecipient");
-            if (szMsg == null)
-                throw new ArgumentNullException("szMsg");
-            if (szTargetLink == null)
-                throw new ArgumentNullException("szTargetLink");
-            using (MailMessage msg = new MailMessage())
-            {
-                msg.Body = Branding.ReBrand(Resources.LogbookEntry.SendFlightBody.Replace("<% Sender %>", HttpUtility.HtmlEncode(pfSender.UserFullName))
-                    .Replace("<% Message %>", HttpUtility.HtmlEncode(szMsg))
-                    .Replace("<% Date %>", Date.ToShortDateString())
-                    .Replace("<% Aircraft %>", HttpUtility.HtmlEncode(TailNumDisplay))
-                    .Replace("<% Route %>", HttpUtility.HtmlEncode(Route))
-                    .Replace("<% Comments %>", HttpUtility.HtmlEncode(Comment))
-                    .Replace("<% Time %>", TotalFlightTime.FormatDecimal(pfSender.UsesHHMM))
-                    .Replace("<% FlightLink %>", szTargetLink));
-
-                msg.Subject = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.SendFlightSubject, pfSender.UserFullName);
-                msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pfSender.UserFullName));
-                msg.ReplyToList.Add(new MailAddress(pfSender.Email));
-                msg.To.Add(new MailAddress(szRecipient));
-                msg.IsBodyHtml = true;
-                util.SendMessage(msg);
-            }
         }
 
         #region Telemetry
