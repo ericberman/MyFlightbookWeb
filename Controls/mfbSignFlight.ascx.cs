@@ -198,6 +198,47 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
     protected const string szDataURLPrefix = "data:image/png;base64,";
 
+    protected void CopyToInstructor(LogbookEntry le)
+    {
+        // Now make it look like the CFI's: their username, swap DUAL for CFI time, ensure that PIC time is present.
+        le.FlightID = LogbookEntry.idFlightNew;
+        string szStudentName = MyFlightbook.Profile.GetUser(le.User).UserFullName;
+        List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(le.CustomProperties);
+        lstProps.ForEach(cfp => cfp.FlightID = le.FlightID);
+
+        // Add the student's name as a property
+        lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropStudentName);
+        lstProps.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropStudentName)) { FlightID = le.FlightID, TextValue = szStudentName });
+
+        le.Comment = String.IsNullOrEmpty(le.Comment) ? txtComments.Text : String.Format(CultureInfo.CurrentCulture, Resources.SignOff.StudentNameTemplate, le.Comment, txtComments.Text);
+        le.User = CFIProfile.UserName;  // Swap username, of course, but do so AFTER adjusting the comment above (where we had the user's name)
+        le.PIC = le.CFI = Flight.Dual;  // Assume you were PIC for the time you were giving instruction.
+        le.Dual = 0.0M;
+
+        // Swap ground instruction given/ground-instruction received
+        CustomFlightProperty cfpGIReceived = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
+        if (cfpGIReceived != null)
+        {
+            CustomFlightProperty cfpGIGiven = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven);
+            if (cfpGIGiven == null)
+                cfpGIGiven = new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven));
+            cfpGIGiven.DecValue = cfpGIReceived.DecValue;
+            cfpGIGiven.FlightID = le.FlightID;
+            cfpGIReceived.DeleteProperty();
+            lstProps.Remove(cfpGIReceived);
+            lstProps.Add(cfpGIGiven);
+        }
+        le.CustomProperties = lstProps.ToArray();
+
+        // Add this aircraft to the user's profile if needed
+        UserAircraft ua = new UserAircraft(CFIProfile.UserName);
+        Aircraft ac = new Aircraft(le.AircraftID);
+        if (!ua.CheckAircraftForUser(ac))
+            ua.FAddAircraftForUser(ac);
+
+        le.FCommit(true);
+    }
+
     protected void btnSign_Click(object sender, EventArgs e)
     {
         if (!Page.IsValid)
@@ -263,49 +304,9 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     Flight.SignFlight(CFIProfile.UserName, txtComments.Text);
 
                     // Copy the flight to the CFI's logbook if needed.
+                    // We modify a new copy of the flight; this avoids modifying this.Flight, but ensures we get every property
                     if (ckCopyFlight.Checked)
-                    {
-                        // Modify a new copy of the flight; this avoids modifying this.Flight, but ensures we get every property
-                        LogbookEntry le = Flight.Clone();
-
-                        // Now make it look like the CFI's: their username, swap DUAL for CFI time, ensure that PIC time is present.
-                        le.FlightID = LogbookEntry.idFlightNew;
-                        string szStudentName = MyFlightbook.Profile.GetUser(le.User).UserFullName;
-                        List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(le.CustomProperties);
-                        lstProps.ForEach(cfp => cfp.FlightID = le.FlightID);
-
-                        // Add the student's name as a property
-                        lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropStudentName);
-                        lstProps.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropStudentName)) { FlightID = le.FlightID, TextValue = szStudentName });
-
-                        le.Comment = String.IsNullOrEmpty(le.Comment) ? txtComments.Text : String.Format(CultureInfo.CurrentCulture, Resources.SignOff.StudentNameTemplate, le.Comment, txtComments.Text);
-                        le.User = CFIProfile.UserName;  // Swap username, of course, but do so AFTER adjusting the comment above (where we had the user's name)
-                        le.PIC = le.CFI = Flight.Dual;  // Assume you were PIC for the time you were giving instruction.
-                        le.Dual = 0.0M;
-                        
-                        // Swap ground instruction given/ground-instruction received
-                        CustomFlightProperty cfpGIReceived = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
-                        if (cfpGIReceived != null)
-                        {
-                            CustomFlightProperty cfpGIGiven = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven);
-                            if (cfpGIGiven == null)
-                                cfpGIGiven = new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven));
-                            cfpGIGiven.DecValue = cfpGIReceived.DecValue;
-                            cfpGIGiven.FlightID = le.FlightID;
-                            cfpGIReceived.DeleteProperty();
-                            lstProps.Remove(cfpGIReceived);
-                            lstProps.Add(cfpGIGiven);
-                        }
-                        le.CustomProperties = lstProps.ToArray();
-
-                        // Add this aircraft to the user's profile if needed
-                        UserAircraft ua = new UserAircraft(CFIProfile.UserName);
-                        Aircraft ac = new Aircraft(le.AircraftID);
-                        if (!ua.CheckAircraftForUser(ac))
-                            ua.FAddAircraftForUser(ac);
-
-                        le.FCommit(true);
-                    }
+                        CopyToInstructor(Flight.Clone());
                 }
                 catch (MyFlightbookException ex)
                 {
