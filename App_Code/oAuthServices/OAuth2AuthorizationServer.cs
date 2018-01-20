@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2017 MyFlightbook LLC
+ * Copyright (c) 2016-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  * 
  * Much of the code in this file came from DotNetOpenAuth.
@@ -25,7 +25,7 @@ namespace OAuthAuthorizationServer.Code
 {
     public static class MFBOauthServer
     {
-        public enum MFBOAuthScope { none, currency, totals, addflight }
+        public enum MFBOAuthScope { none, currency, totals, addflight, readflight, addaircraft, readaircraft, visited, images}
 
         /// <summary>
         /// Returns a localized human description of each specified scope
@@ -36,12 +36,22 @@ namespace OAuthAuthorizationServer.Code
         {
             switch (scope)
             {
-                case MFBOAuthScope.addflight:
-                    return Resources.oAuth.addflightScopeDescription;
                 case MFBOAuthScope.currency:
                     return Resources.oAuth.currencyScopeDescription;
                 case MFBOAuthScope.totals:
                     return Resources.oAuth.totalsScopeDescription;
+                case MFBOAuthScope.addflight:
+                    return Resources.oAuth.addflightScopeDescription;
+                case MFBOAuthScope.readflight:
+                    return Resources.oAuth.readflightScopeDescription;
+                case MFBOAuthScope.addaircraft:
+                    return Resources.oAuth.addaircraftScopeDescription;
+                case MFBOAuthScope.readaircraft:
+                    return Resources.oAuth.readaircraftScopeDescription;
+                case MFBOAuthScope.visited:
+                    return Resources.oAuth.visitedScopeDescription;
+                case MFBOAuthScope.images:
+                    return Resources.oAuth.modifyImagesScopeDescription;
                 case MFBOAuthScope.none:
                     return string.Empty;
                 default:
@@ -61,6 +71,7 @@ namespace OAuthAuthorizationServer.Code
                 return lst;
             foreach (MFBOAuthScope sc in lstsc)
                 lst.Add(ScopeDescription(sc));
+            lst.Sort();
             return lst;
         }
 

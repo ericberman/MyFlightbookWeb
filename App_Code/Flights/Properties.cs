@@ -709,6 +709,7 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
         /// <summary>
         /// Return a string containing just the relevant value - read-only
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string ValueString
         {
             get
@@ -738,6 +739,7 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
         /// <summary>
         /// Return a string containing just the relevant value - read-only, culture invariant
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string ValueStringInvariant
         {
             get
@@ -767,6 +769,7 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
         /// <summary>
         /// Formatted Display string (i.e., including label) for the property - read-only
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string DisplayString
         {
             get { return string.Format(CultureInfo.CurrentCulture, PropertyType.FormatString, ValueString); }
@@ -780,6 +783,7 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
         /// <summary>
         /// Cached customproperty type for quick reading.  THIS IS CACHED from the property type; it doesn't get written.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public CustomPropertyType PropertyType
         {
             get { return m_cpt; }
@@ -788,6 +792,7 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
         /// <summary>
         /// Is this a new/unsaved property?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool IsNew
         {
             get { return PropID == idCustomFlightPropertyNew; }
@@ -796,6 +801,7 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
         /// <summary>
         /// Does this property already exist in the database?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool IsExisting
         {
             get { return !IsNew; }
@@ -804,6 +810,7 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
         /// <summary>
         /// Is the current value for the property the default value?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsDefaultValue
         {
             get

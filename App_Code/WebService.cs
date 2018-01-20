@@ -1,27 +1,26 @@
-using System;
-using System.Web;
-using System.Collections;
-using System.Collections.Generic;
-using System.Web.Services;
-using System.Globalization;
-using System.ServiceModel;
-using System.Web.Security;
 using MyFlightbook.Airports;
+using MyFlightbook.FlightCurrency;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
-using MyFlightbook.FlightCurrency;
 using MyFlightbook.SocialMedia;
 using MyFlightbook.Telemetry;
-using VolunteerApp.Twitter;
-using System.Text.RegularExpressions;
-using System.Net.Mail;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Threading;
 using System.Linq;
+using System.Net.Mail;
+using System.ServiceModel;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Web;
+using System.Web.Security;
+using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1190,6 +1189,21 @@ namespace MyFlightbook
             return (r.IsSecureConnection || r.Url.Host.StartsWith("192.168", StringComparison.OrdinalIgnoreCase) || r.Url.Host.StartsWith("10.", StringComparison.OrdinalIgnoreCase) || r.IsLocal);
         }
 
+        private static string AuthTokenForValidatedUser(string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException("szUser");
+            return new Encryptors.WebServiceEncryptor().Encrypt(szUser + ";" + DateTime.Now.Ticks);
+        }
+
+        public static string AuthTokenFromOAuthToken(DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag token)
+        {
+            if (token == null)
+                throw new ArgumentNullException("token");
+
+            return AuthTokenForValidatedUser(token.User);
+        }
+
         /// <summary>
         /// Returns an authorization token to authenticate a particular user, which can be used in subsequent calls for that user.
         /// </summary>
@@ -1254,7 +1268,7 @@ namespace MyFlightbook
                 }
                 EventRecorder.WriteEvent(EventRecorder.MFBEventID.AuthUser, szUser, String.Format(CultureInfo.InvariantCulture,"Auth User - {0} from {1}.", HttpContext.Current.Request.IsSecureConnection ? "Secure" : "NOT SECURE", szAppToken));
 
-                return new Encryptors.WebServiceEncryptor().Encrypt(szUser + ";" + DateTime.Now.Ticks);
+                return AuthTokenForValidatedUser(szUser);
             }
 
             return null;

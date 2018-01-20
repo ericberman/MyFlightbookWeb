@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -180,6 +180,7 @@ namespace MyFlightbook.Geography
         /// <summary>
         /// Is the latitude a valid value?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool IsValidLatitude
         {
             get { return (Latitude <= 90.0 && Latitude >= -90.0); }
@@ -188,6 +189,7 @@ namespace MyFlightbook.Geography
         /// <summary>
         /// Is the longitude a valid value?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool IsValidLongitude
         {
             get { return (Longitude >= -180.0 && Longitude <= 180.0); }
@@ -196,6 +198,7 @@ namespace MyFlightbook.Geography
         /// <summary>
         /// Validate the LatLong
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool IsValid
         {
             get { return IsValidLatitude && IsValidLongitude; }
@@ -240,6 +243,7 @@ namespace MyFlightbook.Geography
         /// <summary>
         /// Error string, empty if things are valid.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string ValidationError
         {
             get
@@ -265,6 +269,7 @@ namespace MyFlightbook.Geography
         /// <summary>
         /// Invariant culture string representation of latitude as a floating point number
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string LatitudeString
         {
             get { return InvariantString(Latitude); }
@@ -273,6 +278,7 @@ namespace MyFlightbook.Geography
         /// <summary>
         /// Invariant culture string representation of longitude as a floating point number
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string LongitudeString
         {
             get { return InvariantString(Longitude); }
@@ -366,6 +372,7 @@ namespace MyFlightbook.Geography
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [System.Web.Script.Serialization.ScriptIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public LatLong Antipode
         {
             get { return new LatLong(-Latitude, Longitude > 0 ? Longitude - 180.0 : Longitude + 180.0); }

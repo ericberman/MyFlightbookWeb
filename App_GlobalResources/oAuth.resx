@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="addflightScopeDescription" xml:space="preserve">
-    <value>Add flights to your account</value>
+    <value>Add/Modify flights to your account</value>
   </data>
   <data name="currencyScopeDescription" xml:space="preserve">
     <value>Retrieve your flying currency</value>
@@ -137,5 +137,20 @@
   </data>
   <data name="totalsScopeDescription" xml:space="preserve">
     <value>Retrieve your flying totals</value>
+  </data>
+  <data name="addaircraftScopeDescription" xml:space="preserve">
+    <value>Add/Modify aircraft in your account</value>
+  </data>
+  <data name="modifyImagesScopeDescription" xml:space="preserve">
+    <value>Modify Images for your flights or aircraft</value>
+  </data>
+  <data name="readaircraftScopeDescription" xml:space="preserve">
+    <value>Retrieve aircraft in your account</value>
+  </data>
+  <data name="readflightScopeDescription" xml:space="preserve">
+    <value>Retrieve flights in your account</value>
+  </data>
+  <data name="visitedScopeDescription" xml:space="preserve">
+    <value>Retrieve visited airports</value>
   </data>
 </root>

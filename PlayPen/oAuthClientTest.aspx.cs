@@ -1,17 +1,17 @@
-﻿using System;
+﻿using DotNetOpenAuth.OAuth2;
+using OAuthAuthorizationServer.Services;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Collections.Specialized;
+using System.Globalization;
+using System.Net.Http;
 using System.Text;
 using System.Web;
-using System.Net.Http;
 using System.Web.UI;
-using DotNetOpenAuth.OAuth2;
-using OAuthAuthorizationServer.Code;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2016 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -134,9 +134,20 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
     protected void btnGetAuth_Click(object sender, EventArgs e)
     {
-        ToSession();
-        WebServerClient client = Client();
-        client.RequestUserAuthorization(Scopes, RedirURL);
+        Validate("vgAuthorize");
+        if (Page.IsValid)
+        {
+            try
+            {
+                ToSession();
+                WebServerClient client = Client();
+                client.RequestUserAuthorization(Scopes, RedirURL);
+            }
+            catch (MyFlightbook.MyFlightbookException ex)
+            {
+                lblErr.Text = ex.Message;
+            }
+        }
     }
 
     protected void AppendQueryString(string szKey, string szVal, StringBuilder sb)
@@ -150,23 +161,30 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
     protected void btnGetToken_Click(object sender, EventArgs e)
     {
-        ToSession();
-        WebServerClient consumer = new WebServerClient(Description(), CurrentPageState.ClientID, CurrentPageState.ClientSecret);
-        consumer.ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(CurrentPageState.ClientSecret);
-        IAuthorizationState grantedAccess = consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
+        try
+        {
+            ToSession();
+            WebServerClient consumer = new WebServerClient(Description(), CurrentPageState.ClientID, CurrentPageState.ClientSecret);
+            consumer.ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(CurrentPageState.ClientSecret);
+            IAuthorizationState grantedAccess = consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
 
-        lblToken.Text = grantedAccess.AccessToken;
+            lblToken.Text = grantedAccess.AccessToken;
+        }
+        catch (DotNetOpenAuth.Messaging.ProtocolException ex)
+        {
+            lblErr.Text = ex.Message;
+        }
     }
 
     protected string ResourcePath
     {
         get
         {
-            MFBOauthServer.MFBOAuthScope scope = SelectedScope;
+            OAuthServiceID action = SelectedAction;
 
             return String.Format(CultureInfo.InvariantCulture, "{0}{1}?access_token={2}&json={3}",
                 txtResourceURL.Text,
-                scope == MFBOauthServer.MFBOAuthScope.none ? txtCustomVerb.Text : scope.ToString(),
+                action == OAuthServiceID.none ? txtCustomVerb.Text : action.ToString(),
                 lblToken.Text,
                 ckJSON.Checked ? "1" : "0");
         }
@@ -177,19 +195,34 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         ToSession();
         StringBuilder sb = new StringBuilder(ResourcePath);
 
-        switch (SelectedScope)
+        switch (SelectedAction)
         {
-            case MFBOauthServer.MFBOAuthScope.addflight:
+            case OAuthServiceID.addFlight:
                 sb.AppendFormat(CultureInfo.InvariantCulture, "&flight={0}&format={1}", HttpUtility.UrlEncode(txtFlightToAdd.Text), cmbFlightFormat.SelectedValue);
                 break;
-            case MFBOauthServer.MFBOAuthScope.currency:
+            case OAuthServiceID.currency:
                 // These are post-only
                 break;
-            case MFBOauthServer.MFBOAuthScope.totals:
-                if (!String.IsNullOrEmpty(txtFlightQuery.Text))
-                    sb.AppendFormat(CultureInfo.InvariantCulture, "&q={0}", HttpUtility.UrlEncode(txtFlightQuery.Text));
+            case OAuthServiceID.FlightPathForFlight:
+            case OAuthServiceID.FlightPathForFlightGPX:
+            case OAuthServiceID.DeleteLogbookEntry:
+            case OAuthServiceID.PropertiesForFlight:
+                sb.AppendFormat(CultureInfo.InvariantCulture, "&idFlight={0}&format={1}", decFlightID.IntValue, cmbFlightFormat.SelectedValue);
                 break;
-            case MFBOauthServer.MFBOAuthScope.none:
+            case OAuthServiceID.AddAircraftForUser:
+                sb.AppendFormat(CultureInfo.InvariantCulture, "&szTail={0}&idModel={1}&idInstanceType={2}&format={3}", HttpUtility.UrlEncode(txtTail.Text), decModelID.IntValue, txtInstanceType.Text, cmbFlightFormat.SelectedValue);
+                break;
+            case OAuthServiceID.VisitedAirports:
+            case OAuthServiceID.AircraftForUser:
+            case OAuthServiceID.AvailablePropertyTypesForUser:
+            case OAuthServiceID.MakesAndModels:
+                // no parameters
+                break;
+            case OAuthServiceID.totals:
+                if (!String.IsNullOrEmpty(txtFlightQuery.Text))
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "&fq={0}", HttpUtility.UrlEncode(txtFlightQuery.Text));
+                break;
+            case OAuthServiceID.none:
                 if (!String.IsNullOrEmpty(txtCustomData.Text))
                     sb.Append("&" + txtCustomData.Text);
                 break;
@@ -212,18 +245,32 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                    { "locale", "en_US" },
                };
 
-        switch (SelectedScope)
+        switch (SelectedAction)
         {
-            case MFBOauthServer.MFBOAuthScope.addflight:
+            case OAuthServiceID.addFlight:
                 postParams.Add("flight", txtFlightToAdd.Text);
                 postParams.Add("format", cmbFlightFormat.SelectedValue);
                 break;
-            case MFBOauthServer.MFBOAuthScope.currency:
+            case OAuthServiceID.totals:
+                postParams.Add("fq", txtFlightQuery.Text);
                 break;
-            case MFBOauthServer.MFBOAuthScope.totals:
-                postParams.Add("q", txtFlightQuery.Text);
+            case OAuthServiceID.FlightPathForFlight:
+            case OAuthServiceID.FlightPathForFlightGPX:
+            case OAuthServiceID.DeleteLogbookEntry:
+            case OAuthServiceID.PropertiesForFlight:
+                postParams.Add("idFlight", decFlightID.IntValue.ToString(CultureInfo.InvariantCulture));
                 break;
-            case MFBOauthServer.MFBOAuthScope.none:
+            case OAuthServiceID.AddAircraftForUser:
+                postParams.Add("szTail", txtTail.Text);
+                postParams.Add("idModel", decModelID.IntValue.ToString(CultureInfo.InvariantCulture));
+                postParams.Add("idInstanceType", txtInstanceType.Text);
+                break;
+            case OAuthServiceID.VisitedAirports:
+            case OAuthServiceID.AircraftForUser:
+            case OAuthServiceID.currency:
+            case OAuthServiceID.AvailablePropertyTypesForUser:
+            case OAuthServiceID.MakesAndModels:
+                // no parameters required here.
                 break;
         }
 
@@ -268,31 +315,44 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         }
     }
 
-    protected MFBOauthServer.MFBOAuthScope SelectedScope
+    protected OAuthServiceID SelectedAction
     {
         get
         {
-            MFBOauthServer.MFBOAuthScope scope = MFBOauthServer.MFBOAuthScope.none;
-            if (Enum.TryParse(cmbResourceAction.SelectedValue, out scope))
-                return scope;
-            return MFBOauthServer.MFBOAuthScope.none;
+            OAuthServiceID action = OAuthServiceID.currency;
+            if (Enum.TryParse(cmbResourceAction.SelectedValue, out action))
+                return action;
+            return action;
         }
     }
 
     protected void cmbResourceAction_SelectedIndexChanged(object sender, EventArgs e)
     {
-        switch (SelectedScope)
+        switch (SelectedAction)
         {
-            case MFBOauthServer.MFBOAuthScope.addflight:
+            case OAuthServiceID.addFlight:
                 mvService.SetActiveView(vwAddFlight);
                 break;
-            case MFBOauthServer.MFBOAuthScope.currency:
-                mvService.SetActiveView(vwCurrency);
+            case OAuthServiceID.totals:
+            case OAuthServiceID.TotalsForUserWithQuery:
+                mvService.SetActiveView(vwFlightQuery);
                 break;
-            case MFBOauthServer.MFBOAuthScope.totals:
-                mvService.SetActiveView(vwTotals);
+            case OAuthServiceID.currency:
+            case OAuthServiceID.VisitedAirports:
+            case OAuthServiceID.AircraftForUser:
+            case OAuthServiceID.AvailablePropertyTypesForUser:
+            case OAuthServiceID.MakesAndModels:
+                mvService.SetActiveView(vwNoParams);
                 break;
-            case MFBOauthServer.MFBOAuthScope.none:
+            case OAuthServiceID.FlightPathForFlight:
+            case OAuthServiceID.FlightPathForFlightGPX:
+            case OAuthServiceID.DeleteLogbookEntry:
+            case OAuthServiceID.PropertiesForFlight:
+                mvService.SetActiveView(vwFlightID);
+                break;
+            case OAuthServiceID.AddAircraftForUser:
+                mvService.SetActiveView(vwAddAircraft);
+                break;
             default:
                 mvService.SetActiveView(vwCustom);
                 break;
