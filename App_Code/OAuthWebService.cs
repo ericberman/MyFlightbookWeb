@@ -5,8 +5,10 @@ using MyFlightbook.ImportFlights;
 using Newtonsoft.Json;
 using OAuthAuthorizationServer.Code;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -22,6 +24,119 @@ using System.Web.Services;
 
 namespace OAuthAuthorizationServer.Services
 {
+    public enum MFBOAuthScope { none, currency, totals, addflight, readflight, addaircraft, readaircraft, visited, images }
+
+    public static class MFBOauthServer
+    {
+        /// <summary>
+        /// Returns a localized human description of each specified scope
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <returns></returns>
+        public static string ScopeDescription(MFBOAuthScope scope)
+        {
+            switch (scope)
+            {
+                case MFBOAuthScope.currency:
+                    return Resources.oAuth.currencyScopeDescription;
+                case MFBOAuthScope.totals:
+                    return Resources.oAuth.totalsScopeDescription;
+                case MFBOAuthScope.addflight:
+                    return Resources.oAuth.addflightScopeDescription;
+                case MFBOAuthScope.readflight:
+                    return Resources.oAuth.readflightScopeDescription;
+                case MFBOAuthScope.addaircraft:
+                    return Resources.oAuth.addaircraftScopeDescription;
+                case MFBOAuthScope.readaircraft:
+                    return Resources.oAuth.readaircraftScopeDescription;
+                case MFBOAuthScope.visited:
+                    return Resources.oAuth.visitedScopeDescription;
+                case MFBOAuthScope.images:
+                    return Resources.oAuth.modifyImagesScopeDescription;
+                case MFBOAuthScope.none:
+                    return string.Empty;
+                default:
+                    throw new ArgumentOutOfRangeException("scope");
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerable of descriptions from an enumerable of scopes
+        /// </summary>
+        /// <param name="lstsc"></param>
+        /// <returns></returns>
+        public static IEnumerable<string> ScopeDescriptions(IEnumerable<MFBOAuthScope> lstsc)
+        {
+            List<string> lst = new List<string>();
+            if (lstsc == null)
+                return lst;
+            foreach (MFBOAuthScope sc in lstsc)
+                lst.Add(ScopeDescription(sc));
+            lst.Sort();
+            return lst;
+        }
+
+        /// <summary>
+        /// Returns an enumerable of MFBOauthScope from an enumerable of strings.
+        /// </summary>
+        /// <param name="lstsc"></param>
+        /// <returns></returns>
+        public static IEnumerable<MFBOAuthScope> ScopesFromStrings(IEnumerable<string> lstsc)
+        {
+            List<MFBOAuthScope> lst = new List<MFBOAuthScope>();
+            if (lstsc == null)
+                return lst;
+            foreach (string sz in lstsc)
+            {
+                MFBOAuthScope sc;
+                if (Enum.TryParse<MFBOAuthScope>(sz, out sc))
+                    lst.Add(sc);
+                else
+                    throw new ArgumentOutOfRangeException(sz);
+            }
+            return lst;
+        }
+
+        public static IEnumerable<MFBOAuthScope> ScopesFromString(string sz)
+        {
+            List<MFBOAuthScope> lst = new List<MFBOAuthScope>();
+            if (sz == null)
+                return lst;
+
+            return ScopesFromStrings(OAuthUtilities.SplitScopes(sz));
+        }
+
+        /// <summary>
+        /// Checks if the specified scope is allowed in the list of scopes
+        /// </summary>
+        public static bool CheckScope(IEnumerable<MFBOAuthScope> lst, MFBOAuthScope sc)
+        {
+            if (lst == null)
+                return false;
+            return lst.Contains(sc);
+        }
+
+        /// <summary>
+        /// Checks if the specified scope is allowed in the list of scopes (by string)
+        /// </summary>
+        public static bool CheckScope(IEnumerable<string> lst, MFBOAuthScope sc)
+        {
+            if (lst == null)
+                return false;
+            return CheckScope(ScopesFromStrings(lst), sc);
+        }
+
+        /// <summary>
+        /// Checks if the specified scope is allowed in the space-separated of scopes
+        /// </summary>
+        public static bool CheckScope(string sz, MFBOAuthScope sc)
+        {
+            if (String.IsNullOrEmpty(sz))
+                return false;
+            return CheckScope(ScopesFromString(sz), sc);
+        }
+    }
+
     #region Available Services
     public enum OAuthServiceID
     {
@@ -61,39 +176,39 @@ namespace OAuthAuthorizationServer.Services
         /// </summary>
         /// <param name="service"></param>
         /// <returns></returns>
-        protected MFBOauthServer.MFBOAuthScope ScopeForService()
+        protected MFBOAuthScope ScopeForService()
         {
             switch (ServiceCall)
             {
                 case OAuthServiceID.AddAircraftForUser:
                 case OAuthServiceID.DeleteAircraftForUser:
                 case OAuthServiceID.UpdateMaintenanceForAircraftWithFlagsAndNotes:
-                    return MFBOauthServer.MFBOAuthScope.addaircraft;
+                    return MFBOAuthScope.addaircraft;
                 case OAuthServiceID.addFlight:
                 case OAuthServiceID.CommitFlightWithOptions:
                 case OAuthServiceID.DeletePropertiesForFlight:
                 case OAuthServiceID.DeleteLogbookEntry:
-                    return MFBOauthServer.MFBOAuthScope.addflight;
+                    return MFBOAuthScope.addflight;
                 case OAuthServiceID.MakesAndModels:
                 case OAuthServiceID.AircraftForUser:
-                    return MFBOauthServer.MFBOAuthScope.readaircraft;
+                    return MFBOAuthScope.readaircraft;
                 case OAuthServiceID.FlightsWithQueryAndOffset:
                 case OAuthServiceID.AvailablePropertyTypesForUser:
                 case OAuthServiceID.PropertiesForFlight:
                 case OAuthServiceID.FlightPathForFlight:
                 case OAuthServiceID.FlightPathForFlightGPX:
-                    return MFBOauthServer.MFBOAuthScope.readflight;
+                    return MFBOAuthScope.readflight;
                 case OAuthServiceID.currency:
                 case OAuthServiceID.GetCurrencyForUser:
-                    return MFBOauthServer.MFBOAuthScope.currency;
+                    return MFBOAuthScope.currency;
                 case OAuthServiceID.DeleteImage:
                 case OAuthServiceID.UpdateImageAnnotation:
-                    return MFBOauthServer.MFBOAuthScope.images;
+                    return MFBOAuthScope.images;
                 case OAuthServiceID.totals:
                 case OAuthServiceID.TotalsForUserWithQuery:
-                    return MFBOauthServer.MFBOAuthScope.totals;
+                    return MFBOAuthScope.totals;
                 case OAuthServiceID.VisitedAirports:
-                    return MFBOauthServer.MFBOAuthScope.visited;
+                    return MFBOAuthScope.visited;
                 case OAuthServiceID.none:
                 default:
                     throw new InvalidOperationException();
@@ -102,7 +217,7 @@ namespace OAuthAuthorizationServer.Services
 
         private void CheckAuth()
         {
-            MFBOauthServer.MFBOAuthScope sc = ScopeForService();
+            MFBOAuthScope sc = ScopeForService();
             if (!MFBOauthServer.CheckScope(Token.Scope, sc))
                 throw new UnauthorizedAccessException(String.Format(CultureInfo.CurrentCulture, "Requested action requires scope \"{0}\", which is not granted.", sc.ToString()));
         }

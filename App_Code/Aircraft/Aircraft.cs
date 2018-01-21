@@ -328,6 +328,7 @@ namespace MyFlightbook
         /// <summary>
         /// The maintenance record for the aircraft
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public MaintenanceRecord Maintenance
         {
             get { return m_mr; }
@@ -350,6 +351,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this a new aircraft?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool IsNew
         {
             get { return AircraftID == idAircraftUnknown; }
@@ -456,6 +458,7 @@ namespace MyFlightbook
         /// <summary>
         /// Read-only: is the airplane a tailwheel airplane?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsTailwheel
         {
             get { return m_fIsTailwheel; }
@@ -557,6 +560,7 @@ namespace MyFlightbook
         /// <summary>
         /// Model Description + Common Name)
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string LongModelDescription
         {
             get { return String.Format(CultureInfo.CurrentCulture, "{0}, {1}", ModelDescription, ModelCommonName).Trim(); }
@@ -565,6 +569,7 @@ namespace MyFlightbook
         /// <summary>
         /// Tail Number + LongModelDescription (= Model Description + Common Name)
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string LongDescription
         {
             get { return String.Format(CultureInfo.CurrentCulture, "{0} ({1})", TailNumber, LongModelDescription); }
@@ -573,6 +578,7 @@ namespace MyFlightbook
         /// <summary>
         /// Returns a display tailnumber, mapping anonymous as appropriate
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string DisplayTailnumber
         {
             get { return IsAnonymous ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AnonymousTemplate, ModelDescription) : TailNumber; }
@@ -581,6 +587,7 @@ namespace MyFlightbook
         /// <summary>
         /// Returns DisplayTailnumber + the model
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string DisplayTailnumberWithModel
         {
             get { return IsAnonymous ? DisplayTailnumber : this.ToString(); }
@@ -610,6 +617,7 @@ namespace MyFlightbook
         /// Helper property for category/class display
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public string CategoryClassDisplay
         {
             get { return MakeModel.GetModel(ModelID).CategoryClassDisplay; }
@@ -696,6 +704,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this an anonymous aircraft?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool IsAnonymous
         {
             get { return InstanceType == AircraftInstanceTypes.RealAircraft && TailNumber.StartsWith(CountryCodePrefix.szAnonPrefix, StringComparison.OrdinalIgnoreCase); }
