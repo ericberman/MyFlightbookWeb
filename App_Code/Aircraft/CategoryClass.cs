@@ -69,11 +69,13 @@ namespace MyFlightbook
         /// <summary>
         /// Handy utility to return catclass as an int for checkboxes, lists
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public int IDCatClassAsInt { get { return (int)IdCatClass; } }
 
         /// <summary>
         /// Tells whether or not there is a possible alternate class for this.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean HasPossibleAlternate
         {
             get { return AltCatClass != 0; }

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="addflightScopeDescription" xml:space="preserve">
-    <value>Add/Modify flights to your account</value>
+    <value>Add/Modify flights in your account</value>
   </data>
   <data name="currencyScopeDescription" xml:space="preserve">
     <value>Retrieve your flying currency</value>

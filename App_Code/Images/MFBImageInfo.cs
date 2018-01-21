@@ -296,6 +296,7 @@ namespace MyFlightbook.Image
         /// <summary>
         /// Returns a path to the expected location of the full image on S3.  This may not be usable as a URL to the full image as the file may not exist there.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string PathFullImageS3
         {
             get { return AWSConfiguration.AmazonS3Prefix + S3Key; }

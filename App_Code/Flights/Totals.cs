@@ -145,6 +145,7 @@ namespace MyFlightbook.FlightCurrency
         /// The JSON serialized string that represents the query for this totals item.
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public string JSONSerializedQuery
         {
             get { return Query == null ? Newtonsoft.Json.JsonConvert.SerializeObject(null) : Query.ToJSONString(); }

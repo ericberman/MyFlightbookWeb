@@ -556,16 +556,19 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// True if this airport is user-generated.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsUserGenerated
         {
             get { return (UserName.Length > 0); }
         }
 
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsAirport
         {
             get { return (FacilityTypeCode == "A" || FacilityType == "Airport"); }
         }
 
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsSeaport
         {
             get { return (FacilityTypeCode == "S"); }
@@ -574,6 +577,7 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// Is this an airport, seaport, or heliport?  (I.e., someplace to land)?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsPort
         {
             get { return (IsAirport || FacilityTypeCode == "S" || FacilityTypeCode == "H"); }
@@ -583,6 +587,7 @@ namespace MyFlightbook.Airports
         /// Priority for purposes of disambiguation
         /// </summary>
         /// <returns>An integer indicating priority, lowest (0) value is highest priority</returns>
+        [Newtonsoft.Json.JsonIgnore]
         public int Priority
         {
             get
@@ -619,6 +624,7 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// Returns the full name of the airport (friendly name + code)
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string FullName
         {
             get { return String.Format(CultureInfo.CurrentCulture, "{0} ({1})", Name.Trim(), Code); }
@@ -627,6 +633,7 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// Is this airport in a (generous) latitude/longitude box that surrounds Hawaii?  (Used for cross-country ratings)
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool IsHawaiian
         {
             get { return LatLong != null && LatLong.Latitude <= 26 && LatLong.Latitude >= 18 && LatLong.Longitude >= -173 && LatLong.Longitude <= -154; }

@@ -194,6 +194,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this property a BFR event?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsBFR
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagBFR) != CFPPropertyFlag.cfpFlagNone); }
@@ -202,6 +203,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this property a Proficiency check as per 61.58?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsPICProficiencyCheck6158
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagPICProfCheck) != CFPPropertyFlag.cfpFlagNone); }
@@ -210,6 +212,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this property an IPC event?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsIPC
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagIPC) != CFPPropertyFlag.cfpFlagNone); }
@@ -218,6 +221,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this property an approach of some kind?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsApproach
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagIsApproach) != CFPPropertyFlag.cfpFlagNone); }
@@ -226,6 +230,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this an unusual attitude, ascending?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsUnusualAttitudeAscending
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagUAAscending) != CFPPropertyFlag.cfpFlagNone); }
@@ -234,6 +239,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this an unusual attitude, descending?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsUnusualAttitudeDescending
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagUADescending) != CFPPropertyFlag.cfpFlagNone); }
@@ -242,6 +248,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this maneuvers in a glider?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsGliderInstrumentManeuvers
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagGliderInstrumentManeuvers) != CFPPropertyFlag.cfpFlagNone); }
@@ -250,6 +257,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this instrument maneuvers with passengers in a glider?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsGliderInstrumentManeuversPassengers
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagGliderInstrumentManeuversPassengers) != CFPPropertyFlag.cfpFlagNone); }
@@ -258,6 +266,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this a night-time takeoff?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsNightTakeOff
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagNightTakeOff) != CFPPropertyFlag.cfpFlagNone); }
@@ -266,6 +275,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this a night vision proficiency check?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsNightVisionProficiencyCheck
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagNightVisionProficiencyCheck) != CFPPropertyFlag.cfpFlagNone); }
@@ -274,6 +284,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this night vision time?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsNightVisionTime
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagNightVisionTime) != CFPPropertyFlag.cfpFlagNone); }
@@ -282,6 +293,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this a night-vision related property?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsNightVisionAnything
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagAnyNightVision) != CFPPropertyFlag.cfpFlagNone); }
@@ -290,6 +302,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this a base-check (i.e., flight with an instructor that isn't specifically a BFR or other flight review
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsBaseCheck
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagBaseCheck) != CFPPropertyFlag.cfpFlagNone); }
@@ -298,6 +311,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this a UAS (Unmanned Aerial System) Launch?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsUASLaunch
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagsUASLaunch) != CFPPropertyFlag.cfpFlagNone); }
@@ -306,6 +320,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this a UAS (Unmanned Aerial System) Recovery?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsUASRecovery
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagsUASRecovery) != CFPPropertyFlag.cfpFlagNone); }
@@ -314,6 +329,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is solo time recorded?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsSolo
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagSolo) != CFPPropertyFlag.cfpFlagNone); }
@@ -322,6 +338,7 @@ namespace MyFlightbook
         /// <summary>
         /// Does this property represent a glider ground launch?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsGliderGroundLaunch
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagGliderGroundLaunch) != CFPPropertyFlag.cfpFlagNone); }
@@ -330,6 +347,7 @@ namespace MyFlightbook
         /// <summary>
         /// If this is a property that is typically used only once, exclude it from the MRU list.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsExcludedFromMRU
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagExcludeMRU) != CFPPropertyFlag.cfpFlagNone); }
@@ -338,6 +356,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this a "known" property - one where the ID is specifically known?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsKnownProperty
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagKnownProperty) != CFPPropertyFlag.cfpFlagNone); }
@@ -346,11 +365,11 @@ namespace MyFlightbook
         /// <summary>
         /// Is this property a decimal but not a time?  (i.e., a distance or a weight)
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsBasicDecimal
         {
             get { return Type == CFPPropertyType.cfpDecimal && ((Flags & CFPPropertyFlag.cfpFlagBasicDecimal) != CFPPropertyFlag.cfpFlagNone); }
         }
-
         #endregion
         #endregion
         /// <summary>

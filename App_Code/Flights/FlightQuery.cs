@@ -170,6 +170,7 @@ namespace MyFlightbook
         /// <summary>
         /// Any additional search columns that need to be added to the query.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string SearchColumns
         {
             get { return String.IsNullOrEmpty(GeneralText) ? string.Empty : "userAircraft.PrivateNotes AS AircraftPrivateNotes, "; }
@@ -178,6 +179,7 @@ namespace MyFlightbook
         /// <summary>
         /// True if we need to join with user aircraft
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool NeedsUserAircraft
         {
             get { return !String.IsNullOrEmpty(GeneralText); }
@@ -186,6 +188,7 @@ namespace MyFlightbook
         /// <summary>
         /// True if we need to join with images.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool NeedsImages
         {
             get { return HasImages; }

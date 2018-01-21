@@ -481,21 +481,25 @@ namespace MyFlightbook
         /// <summary>
         /// Does this have a sample image?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public bool HasSampleImage { get { return AircraftImages != null && AircraftImages.Count > 0; } }
 
         /// <summary>
         /// URL, if any, to sample image thumbnail
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string SampleImageThumbnail { get { return HasSampleImage ? AircraftImages[0].URLThumbnail : string.Empty; } }
 
         /// <summary>
         /// URL, if any, to full-sized sample image
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string SampleImageFull { get { return HasSampleImage ? AircraftImages[0].URLFullImage : string.Empty; } }
 
         /// <summary>
         /// Comment for the sample image
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string SampleImageComment { get { return HasSampleImage ? AircraftImages[0].Comment : string.Empty; } }
 
         /// <summary>
@@ -526,6 +530,7 @@ namespace MyFlightbook
         /// <summary>
         /// Read-only access to the flags, used for persistence.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public UInt32 FlagsValue
         { get { return Flags; } }
 
@@ -597,6 +602,7 @@ namespace MyFlightbook
         /// Hack for backwards compatibility with existing mobile apps: provide a tailnumber that is still anonymous (begins with "#")
         /// but which is human legible.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string HackDisplayTailnumber
         {
             get { return String.Format(CultureInfo.InvariantCulture, "{0}{1}", CountryCodePrefix.szAnonPrefix, DisplayTailnumber); }

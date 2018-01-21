@@ -101,6 +101,7 @@ namespace MyFlightbook
         /// <summary>
         /// Full display name, including manufacturer.
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string DisplayName
         {
             get
@@ -115,6 +116,7 @@ namespace MyFlightbook
         /// <summary>
         /// Display name of the model only (Display name minus manufacturer)
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string ModelDisplayName
         {
             get
@@ -129,6 +131,7 @@ namespace MyFlightbook
         /// <summary>
         /// Basic display name of the model (Display name minus manufacturer and category class)
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string ModelDisplayNameNoCatclass
         {
             get
@@ -319,6 +322,7 @@ namespace MyFlightbook
         /// <summary>
         /// Is this a new model or an existing one?
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean IsNew
         {
             get { return MakeModelID == MakeModel.UnknownModel; }
