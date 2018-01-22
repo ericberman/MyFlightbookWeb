@@ -114,6 +114,9 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 lst.Add(new KeyValuePair<string, string>(szKey, Request.Params[szKey]));
             gvResults.DataSource = lst;
             gvResults.DataBind();
+
+            if (Request["error"] != null)
+                lblErr.Text = Request["error"].ToString();
         }
     }
 

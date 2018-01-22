@@ -35,14 +35,28 @@ public partial class Secure_oAuthAuthorize : System.Web.UI.Page
                 if ((m_pendingRequest = this.authorizationServer.ReadAuthorizationRequest()) == null)
                     throw new HttpException((int)HttpStatusCode.BadRequest, Resources.LocalizedText.oAuthErrMissingRequest);
 
-                IEnumerable<string> lstScopes = MFBOauthServer.ScopeDescriptions(MFBOauthServer.ScopesFromStrings(m_pendingRequest.Scope));
+                MFBOauth2Client client = (MFBOauth2Client)authorizationServer.AuthorizationServerServices.GetClient(m_pendingRequest.ClientIdentifier);
+
+                if (Uri.Compare(m_pendingRequest.Callback, new Uri(client.Callback), UriComponents.HostAndPort | UriComponents.PathAndQuery, UriFormat.UriEscaped, StringComparison.CurrentCultureIgnoreCase) != 0)
+                    throw new HttpException((int)HttpStatusCode.BadRequest, Resources.LocalizedText.oAuthErrBadRedirectURL);
+
+                HashSet<string> allowedScopes = OAuthUtilities.SplitScopes(client.Scope);
+
+                if (!m_pendingRequest.Scope.IsSubsetOf(allowedScopes))
+                    throw new HttpException((int)HttpStatusCode.BadRequest, Resources.LocalizedText.oAuthErrUnauthorizedScopes);
+
+                IEnumerable<MFBOAuthScope> requestedScopes = MFBOauthServer.ScopesFromStrings(m_pendingRequest.Scope);
+
+                // See if there are any scopes that are requested that are not allowed.
+
+                IEnumerable<string> lstScopes = MFBOauthServer.ScopeDescriptions(requestedScopes);
                 mvScopesRequested.SetActiveView(lstScopes.Count() == 0 ? vwNoScopes : vwRequestedScopes);
                 rptPermissions.DataSource = lstScopes;
                 rptPermissions.DataBind();
 
                 ViewState[szVSKeyPendingRequest] = m_pendingRequest;
 
-                lblClientName.Text = ((MFBOauth2Client)authorizationServer.AuthorizationServerServices.GetClient(m_pendingRequest.ClientIdentifier)).ClientName;
+                lblClientName.Text = client.ClientName;
             }
             else
                 m_pendingRequest = (EndUserAuthorizationRequest)ViewState[szVSKeyPendingRequest];
