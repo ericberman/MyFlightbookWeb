@@ -205,7 +205,7 @@
         <tr>
             <td>Redirect URL:</td>
             <td>
-                <asp:TextBox ID="txtRedirectURL" runat="server" Width="400px">http://myflightbook.com/logbook/playpen/oAuthClientTest.aspx</asp:TextBox>
+                <asp:TextBox ID="txtRedirectURL" runat="server" Width="400px">https://myflightbook.com/logbook/playpen/oAuthClientTest.aspx</asp:TextBox>
             </td>
         </tr>
         <tr>
