@@ -108,6 +108,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             txtRedirectURL.Text = FixHost(txtRedirectURL.Text);
             txtResourceURL.Text = FixHost(txtResourceURL.Text);
             txtTokenURL.Text = FixHost(txtTokenURL.Text);
+            txtImgUploadURL.Text = FixHost(txtImgUploadURL.Text);
 
             List<KeyValuePair<string, string>> lst = new List<KeyValuePair<string,string>>();
             foreach (string szKey in Request.Params.Keys)
@@ -186,8 +187,8 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             OAuthServiceID action = SelectedAction;
 
             return String.Format(CultureInfo.InvariantCulture, "{0}{1}?access_token={2}&json={3}",
-                txtResourceURL.Text,
-                action == OAuthServiceID.none ? txtCustomVerb.Text : action.ToString(),
+                action == OAuthServiceID.UploadImage ? txtImgUploadURL.Text : txtResourceURL.Text,
+                action == OAuthServiceID.none ? txtCustomVerb.Text : (action == OAuthServiceID.UploadImage ? string.Empty : action.ToString()),
                 lblToken.Text,
                 ckJSON.Checked ? "1" : "0");
         }
@@ -240,14 +241,10 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         Response.Redirect(Request.Path);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification ="FXCop is reporting a false positive for stringcontent below")]
-    protected void btnPostResource_Click(object sender, EventArgs e)
+    protected void AddPostParams(NameValueCollection postParams)
     {
-        ToSession();
-        NameValueCollection postParams = new NameValueCollection()
-               {
-                   { "locale", "en_US" },
-               };
+        if (postParams == null)
+            throw new ArgumentNullException("postParams");
 
         switch (SelectedAction)
         {
@@ -274,6 +271,23 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 postParams.Add("offset", decOffset.IntValue.ToString(CultureInfo.InvariantCulture));
                 postParams.Add("maxCount", decLimit.IntValue.ToString(CultureInfo.InvariantCulture));
                 break;
+            case OAuthServiceID.UploadImage:
+                postParams.Add("txtComment", txtImgComment.Text);
+                decimal lat = decImgLat.Value;
+                decimal lon = decImgLon.Value;
+
+                if (lat != 0 || lon != 0)
+                {
+                    postParams.Add("txtLat", decImgLat.Value.ToString(CultureInfo.InvariantCulture));
+                    postParams.Add("txtLon", decImgLon.Value.ToString(CultureInfo.InvariantCulture));
+                }
+                if (!String.IsNullOrEmpty(txtImageParamName1.Text))
+                    postParams.Add(txtImageParamName1.Text, txtImageParam1.Text);
+                if (!String.IsNullOrEmpty(txtImageParamName2.Text))
+                    postParams.Add(txtImageParamName2.Text, txtImageParam2.Text);
+                if (!String.IsNullOrEmpty(txtImageParamName3.Text))
+                    postParams.Add(txtImageParamName3.Text, txtImageParam3.Text);
+                break;
             case OAuthServiceID.VisitedAirports:
             case OAuthServiceID.AircraftForUser:
             case OAuthServiceID.currency:
@@ -282,6 +296,18 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 // no parameters required here.
                 break;
         }
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification ="FXCop is reporting a false positive for stringcontent below")]
+    protected void btnPostResource_Click(object sender, EventArgs e)
+    {
+        ToSession();
+        NameValueCollection postParams = new NameValueCollection()
+               {
+                   { "locale", "en_US" },
+               };
+
+        AddPostParams(postParams);
 
         using (MultipartFormDataContent form = new MultipartFormDataContent())
         {
@@ -291,6 +317,13 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 StringContent sc = new StringContent(postParams[key]);
                 form.Add(sc);
                 sc.Headers.ContentDisposition = (new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") { Name = key });
+            }
+
+            if (fuImage.HasFile)
+            {
+                StreamContent sc = new StreamContent(fuImage.FileContent);
+                sc.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(fuImage.PostedFile.ContentType);
+                form.Add(sc, "imgPicture", fuImage.FileName);
             }
 
             using (HttpClient httpClient = new HttpClient())
@@ -366,6 +399,10 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             case OAuthServiceID.FlightsWithQueryAndOffset:
                 mvService.SetActiveView(vwGetFlights);
                 break;
+            case OAuthServiceID.UploadImage:
+                mvService.SetActiveView(vwImage);
+                break;
+            case OAuthServiceID.none:
             default:
                 mvService.SetActiveView(vwCustom);
                 break;

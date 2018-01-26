@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -153,7 +154,7 @@ namespace OAuthAuthorizationServer.Services
         /* Visited Airports */
         VisitedAirports,
         /* Images */
-        UpdateImageAnnotation, DeleteImage
+        UpdateImageAnnotation, DeleteImage, UploadImage
     }
 
     public class OAuthServiceCall : WebService
@@ -167,6 +168,9 @@ namespace OAuthAuthorizationServer.Services
         {
             if (szRequest.StartsWith("/", StringComparison.CurrentCultureIgnoreCase))
                 szRequest = szRequest.Substring(1);
+
+            if (String.IsNullOrEmpty(szRequest))
+                return OAuthServiceID.none;
 
             return (OAuthServiceID)Enum.Parse(typeof(OAuthServiceID), szRequest);
         }
@@ -203,6 +207,7 @@ namespace OAuthAuthorizationServer.Services
                     return MFBOAuthScope.currency;
                 case OAuthServiceID.DeleteImage:
                 case OAuthServiceID.UpdateImageAnnotation:
+                case OAuthServiceID.UploadImage:
                     return MFBOAuthScope.images;
                 case OAuthServiceID.totals:
                 case OAuthServiceID.TotalsForUserWithQuery:
@@ -253,17 +258,12 @@ namespace OAuthAuthorizationServer.Services
         /// <summary>
         /// A pseudo authtoken generated from the OAuth token.
         /// </summary>
-        protected string GeneratedAuthToken { get; set; }
+        public string GeneratedAuthToken { get; set; }
 
         /// <summary>
         /// The oAuth token itself
         /// </summary>
-        protected AccessToken Token { get; set; }
-
-        /// <summary>
-        /// WebService object to actually handle the calls
-        /// </summary>
-        protected MFBWebService WebService { get; set; }
+        public AccessToken Token { get; set; }
 
         /// <summary>
         /// Result format - JSON or XML
@@ -306,8 +306,6 @@ namespace OAuthAuthorizationServer.Services
                         throw new MyFlightbookException("oAuth2 - Token has expired!");
                     if (String.IsNullOrEmpty(Token.User))
                         throw new MyFlightbookException("Invalid oAuth token - no user");
-
-                    WebService = new MFBWebService();
 
                     GeneratedAuthToken = MFBWebService.AuthTokenFromOAuthToken(Token);
                 }
@@ -355,76 +353,152 @@ namespace OAuthAuthorizationServer.Services
 
             CheckAuth();
 
-            switch (ServiceCall)
+            using (MFBWebService mfbSvc = new MFBWebService())
             {
-                case OAuthServiceID.AddAircraftForUser:
-                    WriteObject(s, WebService.AddAircraftForUser(GeneratedAuthToken, GetRequiredParam("szTail"), GetRequiredParam<int>("idModel"), GetRequiredParam<int>("idInstanceType")));
-                    break;
-                case OAuthServiceID.AircraftForUser:
-                    WriteObject(s, WebService.AircraftForUser(GeneratedAuthToken));
-                    break;
-                case OAuthServiceID.AvailablePropertyTypesForUser:
-                    WriteObject(s, WebService.AvailablePropertyTypesForUser(GeneratedAuthToken));
-                    break;
-                case OAuthServiceID.CommitFlightWithOptions:
-                case OAuthServiceID.addFlight:
-                    {
-                        string szFormat = GetOptionalParam("format") ?? "Native";
-                        LogbookEntry le = (szFormat.CompareCurrentCultureIgnoreCase("LTP") == 0) ?
-                            JsonConvert.DeserializeObject<LogTenPro>(GetRequiredParam("flight"), new JsonConverter[] { new MFBDateTimeConverter() }).ToLogbookEntry() :
-                            le = GetRequiredParam<LogbookEntry>("le");
-                        WriteObject(s, WebService.CommitFlightWithOptions(GeneratedAuthToken, le, GetRequiredParam<PostingOptions>("po")));
-                    }
-                    break;
-                case OAuthServiceID.currency:
-                case OAuthServiceID.GetCurrencyForUser:
-                    WriteObject(s, WebService.GetCurrencyForUser(GeneratedAuthToken));
-                    break;
-                case OAuthServiceID.DeleteAircraftForUser:
-                    WriteObject(s, WebService.DeleteAircraftForUser(GeneratedAuthToken, GetRequiredParam<int>("idAircraft")));
-                    break;
-                case OAuthServiceID.DeleteImage:
-                    WebService.DeleteImage(GeneratedAuthToken, GetRequiredParam<MFBImageInfo>("mfbii"));
-                    break;
-                case OAuthServiceID.DeleteLogbookEntry:
-                    WriteObject(s, WebService.DeleteLogbookEntry(GeneratedAuthToken, GetRequiredParam<int>("idFlight")));
-                    break;
-                case OAuthServiceID.DeletePropertiesForFlight:
-                    WebService.DeletePropertiesForFlight(GeneratedAuthToken, GetRequiredParam<int>("idFlight"), GetRequiredParam<int[]>("rgPropIds"));
-                    break;
-                case OAuthServiceID.FlightPathForFlight:
-                    WriteObject(s, WebService.FlightPathForFlight(GeneratedAuthToken, GetRequiredParam<int>("idFlight")));
-                    break;
-                case OAuthServiceID.FlightPathForFlightGPX:
-                    WriteObject(s, WebService.FlightPathForFlightGPX(GeneratedAuthToken, GetRequiredParam<int>("idFlight")));
-                    break;
-                case OAuthServiceID.FlightsWithQueryAndOffset:
-                    WriteObject(s, WebService.FlightsWithQueryAndOffset(GeneratedAuthToken, GetRequiredParam<FlightQuery>("fq"), GetRequiredParam<int>("offset"), GetRequiredParam<int>("maxCount")));
-                    break;
-                case OAuthServiceID.MakesAndModels:
-                    WriteObject(s, WebService.MakesAndModels());
-                    break;
-                case OAuthServiceID.PropertiesForFlight:
-                    WriteObject(s, WebService.PropertiesForFlight(GeneratedAuthToken, GetRequiredParam<int>("idFlight")));
-                    break;
-                case OAuthServiceID.totals:
-                case OAuthServiceID.TotalsForUserWithQuery:
-                    WriteObject(s, WebService.TotalsForUserWithQuery(GeneratedAuthToken, GetOptionalParam<FlightQuery>("fq")));
-                    break;
-                case OAuthServiceID.UpdateImageAnnotation:
-                    WebService.UpdateImageAnnotation(GeneratedAuthToken, GetRequiredParam<MFBImageInfo>("mfbii"));
-                    break;
-                case OAuthServiceID.UpdateMaintenanceForAircraftWithFlagsAndNotes:
-                    WebService.UpdateMaintenanceForAircraftWithFlagsAndNotes(GeneratedAuthToken, GetRequiredParam<Aircraft>("ac"));
-                    break;
-                case OAuthServiceID.VisitedAirports:
-                    WriteObject(s, WebService.VisitedAirports(GeneratedAuthToken));
-                    break;
-                case OAuthServiceID.none:
-                default:
-                    throw new InvalidOperationException();
+                switch (ServiceCall)
+                {
+                    case OAuthServiceID.AddAircraftForUser:
+                        WriteObject(s, mfbSvc.AddAircraftForUser(GeneratedAuthToken, GetRequiredParam("szTail"), GetRequiredParam<int>("idModel"), GetRequiredParam<int>("idInstanceType")));
+                        break;
+                    case OAuthServiceID.AircraftForUser:
+                        WriteObject(s, mfbSvc.AircraftForUser(GeneratedAuthToken));
+                        break;
+                    case OAuthServiceID.AvailablePropertyTypesForUser:
+                        WriteObject(s, mfbSvc.AvailablePropertyTypesForUser(GeneratedAuthToken));
+                        break;
+                    case OAuthServiceID.CommitFlightWithOptions:
+                    case OAuthServiceID.addFlight:
+                        {
+                            string szFormat = GetOptionalParam("format") ?? "Native";
+                            LogbookEntry le = (szFormat.CompareCurrentCultureIgnoreCase("LTP") == 0) ?
+                                JsonConvert.DeserializeObject<LogTenPro>(GetRequiredParam("flight"), new JsonConverter[] { new MFBDateTimeConverter() }).ToLogbookEntry() :
+                                le = GetRequiredParam<LogbookEntry>("le");
+                            WriteObject(s, mfbSvc.CommitFlightWithOptions(GeneratedAuthToken, le, GetRequiredParam<PostingOptions>("po")));
+                        }
+                        break;
+                    case OAuthServiceID.currency:
+                    case OAuthServiceID.GetCurrencyForUser:
+                        WriteObject(s, mfbSvc.GetCurrencyForUser(GeneratedAuthToken));
+                        break;
+                    case OAuthServiceID.DeleteAircraftForUser:
+                        WriteObject(s, mfbSvc.DeleteAircraftForUser(GeneratedAuthToken, GetRequiredParam<int>("idAircraft")));
+                        break;
+                    case OAuthServiceID.DeleteImage:
+                        mfbSvc.DeleteImage(GeneratedAuthToken, GetRequiredParam<MFBImageInfo>("mfbii"));
+                        break;
+                    case OAuthServiceID.DeleteLogbookEntry:
+                        WriteObject(s, mfbSvc.DeleteLogbookEntry(GeneratedAuthToken, GetRequiredParam<int>("idFlight")));
+                        break;
+                    case OAuthServiceID.DeletePropertiesForFlight:
+                        mfbSvc.DeletePropertiesForFlight(GeneratedAuthToken, GetRequiredParam<int>("idFlight"), GetRequiredParam<int[]>("rgPropIds"));
+                        break;
+                    case OAuthServiceID.FlightPathForFlight:
+                        WriteObject(s, mfbSvc.FlightPathForFlight(GeneratedAuthToken, GetRequiredParam<int>("idFlight")));
+                        break;
+                    case OAuthServiceID.FlightPathForFlightGPX:
+                        WriteObject(s, mfbSvc.FlightPathForFlightGPX(GeneratedAuthToken, GetRequiredParam<int>("idFlight")));
+                        break;
+                    case OAuthServiceID.FlightsWithQueryAndOffset:
+                        WriteObject(s, mfbSvc.FlightsWithQueryAndOffset(GeneratedAuthToken, GetRequiredParam<FlightQuery>("fq"), GetRequiredParam<int>("offset"), GetRequiredParam<int>("maxCount")));
+                        break;
+                    case OAuthServiceID.MakesAndModels:
+                        WriteObject(s, mfbSvc.MakesAndModels());
+                        break;
+                    case OAuthServiceID.PropertiesForFlight:
+                        WriteObject(s, mfbSvc.PropertiesForFlight(GeneratedAuthToken, GetRequiredParam<int>("idFlight")));
+                        break;
+                    case OAuthServiceID.totals:
+                    case OAuthServiceID.TotalsForUserWithQuery:
+                        WriteObject(s, mfbSvc.TotalsForUserWithQuery(GeneratedAuthToken, GetOptionalParam<FlightQuery>("fq")));
+                        break;
+                    case OAuthServiceID.UpdateImageAnnotation:
+                        mfbSvc.UpdateImageAnnotation(GeneratedAuthToken, GetRequiredParam<MFBImageInfo>("mfbii"));
+                        break;
+                    case OAuthServiceID.UpdateMaintenanceForAircraftWithFlagsAndNotes:
+                        mfbSvc.UpdateMaintenanceForAircraftWithFlagsAndNotes(GeneratedAuthToken, GetRequiredParam<Aircraft>("ac"));
+                        break;
+                    case OAuthServiceID.VisitedAirports:
+                        WriteObject(s, mfbSvc.VisitedAirports(GeneratedAuthToken));
+                        break;
+                    case OAuthServiceID.none:
+                    case OAuthServiceID.UploadImage:    // not serviced here.
+                    default:
+                        throw new InvalidOperationException();
+                }
             }
         }
         #endregion
+    }
+
+    public abstract class UploadImagePage : System.Web.UI.Page
+    {
+        /// <summary>
+        /// Method to actually upload the image; this method will decide what to look for.
+        /// Basic validation and authentication has already been performed, but that's it.
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <param name="pf"></param>
+        /// <returns></returns>
+        protected abstract MFBImageInfo UploadForUser(string szUser, HttpPostedFile pf, string szComment);
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (String.Compare(Request.HttpMethod, "GET", StringComparison.OrdinalIgnoreCase) == 0)
+                return;
+
+            if (!Request.IsSecureConnection)
+                throw new HttpException((int)HttpStatusCode.Forbidden, "Image upload MUST be on a secure channel");
+
+            if (ShuntState.IsShunted)
+                throw new MyFlightbookException(ShuntState.ShuntMessage);
+
+            System.Web.UI.HtmlControls.HtmlInputFile imgPicture = (System.Web.UI.HtmlControls.HtmlInputFile)FindControl("imgPicture");
+            if (imgPicture == null)
+                throw new MyFlightbookException("No control named 'imgPicture' found!");
+
+            string szErr = "OK";
+
+            try
+            {
+                string szUser = string.Empty;
+                string szAuth = Request.Form["txtAuthToken"];
+                if (String.IsNullOrEmpty(szAuth))
+                {
+                    // check for an oAuth token
+                    using (OAuthServiceCall service = new OAuthServiceCall(Request))
+                    {
+                        szAuth = service.GeneratedAuthToken;
+
+                        // Verify that you're allowed to modify images.
+                        if (!MFBOauthServer.CheckScope(service.Token.Scope, MFBOAuthScope.images))
+                            throw new UnauthorizedAccessException(String.Format(CultureInfo.CurrentCulture, "Requested action requires scope \"{0}\", which is not granted.", MFBOAuthScope.images.ToString()));
+                    }
+                }
+
+                using (MFBWebService ws = new MFBWebService())
+                {
+                    szUser = ws.GetEncryptedUser(szAuth);
+                }
+
+                if (string.IsNullOrEmpty(szUser))
+                    throw new MyFlightbookException(Resources.WebService.errBadAuth);
+
+                HttpPostedFile pf = imgPicture.PostedFile;
+                if (pf == null || pf.ContentLength == 0)
+                    throw new MyFlightbookException(Resources.WebService.errNoImageProvided);
+
+                // Upload the image, and then perform a pseudo idempotency check on it.
+                MFBImageInfo mfbii = UploadForUser(szUser, pf, Request.Form["txtComment"] ?? string.Empty);
+                mfbii.IdempotencyCheck();
+            }
+            catch (MyFlightbookException ex)
+            {
+                szErr = ex.Message;
+            }
+
+            Response.Clear();
+            Response.ContentType = "text/plain; charset=utf-8";
+            Response.Write(szErr);
+        }
     }
 }

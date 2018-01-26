@@ -35,7 +35,7 @@
             <td>
                 <div>
                     <asp:DropDownList ID="cmbResourceAction" AutoPostBack="true" OnSelectedIndexChanged="cmbResourceAction_SelectedIndexChanged" runat="server">
-                        <asp:ListItem Selected="True" Text="(Custom - GET only)" Value=""></asp:ListItem>
+                        <asp:ListItem Selected="True" Text="(Custom - GET only)" Value="none"></asp:ListItem>
                         <asp:ListItem Value="currency" Text="Currency"></asp:ListItem>
                         <asp:ListItem Value="totals" Text="Totals"></asp:ListItem>
                         <asp:ListItem Value="VisitedAirports" Text="Visited Airports"></asp:ListItem>
@@ -49,6 +49,7 @@
                         <asp:ListItem Value="DeleteLogbookEntry" Text="Delete Flight"></asp:ListItem>
                         <asp:ListItem Value="PropertiesForFlight" Text="Properties For Flight"></asp:ListItem>
                         <asp:ListItem Value="AvailablePropertyTypesForUser" Text="Properties for user"></asp:ListItem>
+                        <asp:ListItem Value="UploadImage" Text="Upload an image (POST only)"></asp:ListItem>
                     </asp:DropDownList>
                     <asp:CheckBox ID="ckJSON" runat="server" Text="Request JSON data (default is XML)" />
                 </div>
@@ -130,6 +131,58 @@
                     <asp:View ID="vwFlightID" runat="server">
                         <div class="detailsSection">
                             Flight ID: <uc1:mfbDecimalEdit runat="server" ID="decFlightID" EditingMode="Integer" />
+                        </div>
+                    </asp:View>
+                    <asp:View ID="vwImage" runat="server">
+                        <div class="detailsSection">
+                            <table>
+                                <tr>
+                                    <td>File to upload</td>
+                                    <td>
+                                        <asp:FileUpload ID="fuImage" runat="server" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Comment:</td>
+                                    <td>
+                                        <asp:TextBox ID="txtImgComment" runat="server"></asp:TextBox></td>
+                                </tr>
+                                <tr>
+                                    <td>Latitude<br />(Optional)</td>
+                                    <td><uc1:mfbDecimalEdit runat="server" ID="decImgLat" EditingMode="Decimal" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Longitude<br />(Optional)</td>
+                                    <td><uc1:mfbDecimalEdit runat="server" ID="decImgLon" EditingMode="Decimal" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Additional params</td>
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <td>Param Name</td>
+                                                <td>Param Value</td>
+                                            </tr>
+                                            <tr>
+                                                <td><asp:TextBox ID="txtImageParamName1" runat="server"></asp:TextBox></td>
+                                                <td><asp:TextBox ID="txtImageParam1" runat="server"></asp:TextBox></td>
+                                            </tr>
+                                            <tr>
+                                                <td><asp:TextBox ID="txtImageParamName2" runat="server"></asp:TextBox></td>
+                                                <td><asp:TextBox ID="txtImageParam2" runat="server"></asp:TextBox></td>
+                                            </tr>
+                                            <tr>
+                                                <td><asp:TextBox ID="txtImageParamName3" runat="server"></asp:TextBox></td>
+                                                <td><asp:TextBox ID="txtImageParam3" runat="server"></asp:TextBox></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Target page</td>
+                                    <td>
+                                        <asp:TextBox ID="txtImgUploadURL" runat="server" Text="https://myflightbook.com/logbook/public/UploadPicture.aspx" Width="100%"></asp:TextBox></td>
+                                </tr>
+                            </table>
                         </div>
                     </asp:View>
                 </asp:MultiView>

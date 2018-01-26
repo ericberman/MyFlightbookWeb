@@ -1,111 +1,63 @@
-﻿using System;
-using System.Collections;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Xml.Linq;
-using System.IO;
-using System.Xml.Serialization;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Image;
 using MyFlightbook.Payments;
+using OAuthAuthorizationServer.Services;
+using System;
+using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Public_UploadAirplanePicture : System.Web.UI.Page
+public partial class Public_UploadAirplanePicture : UploadImagePage
 {
-    protected void Page_Load(object sender, EventArgs e)
+    protected override MFBImageInfo UploadForUser(string szUser, HttpPostedFile pf, string szComment)
     {
-        String szErr = "OK";
-
-        using (MFBWebService ws = new MFBWebService())
+        string szTail = Request.Form["txtAircraft"];
+        int idAircraft = Aircraft.idAircraftUnknown;
+        bool fUseID = util.GetIntParam(Request, "id", 0) != 0;
+        if (String.IsNullOrEmpty(szTail))
+            throw new MyFlightbookException(Resources.WebService.errBadTailNumber);
+        if (fUseID)
         {
-            try
-            {
-                if (ShuntState.IsShunted)
-                    throw new MyFlightbookException(ShuntState.ShuntMessage);
+            if (!int.TryParse(szTail, out idAircraft) || idAircraft == Aircraft.idAircraftUnknown)
+                throw new MyFlightbookException(Resources.WebService.errBadTailNumber);
+        }
+        else if (szTail.Length > Aircraft.maxTailLength || szTail.Length < 3)
+            throw new MyFlightbookException(Resources.WebService.errBadTailNumber);
 
-                string szAuth = Request.Form["txtAuthToken"];
-                string szTail = Request.Form["txtAircraft"];
-                HttpPostedFile pf = imgPicture.PostedFile;
-                string szComment = Request.Form["txtComment"];
-                int idAircraft = Aircraft.idAircraftUnknown;
-                bool fUseID = util.GetIntParam(Request, "id", 0) != 0;
+        // Check if authorized for videos
+        if (MFBImageInfo.ImageTypeFromFile(pf) == MFBImageInfo.ImageFileType.S3VideoMP4 && !EarnedGrauity.UserQualifies(szUser, Gratuity.GratuityTypes.Videos))
+            throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.errNotAuthorizedVideos));
 
-                if (szComment == null)
-                    szComment = "";
+        UserAircraft ua = new UserAircraft(szUser);
+        ua.InvalidateCache();   // in case the aircraft was added but cache is not refreshed.
+        Aircraft[] rgac = ua.GetAircraftForUser();
 
-                string szUser = ws.GetEncryptedUser(szAuth);
-                if (szUser.Length == 0)
-                    throw new MyFlightbookException(Resources.WebService.errBadAuth);
+        Aircraft ac = null;
+        if (fUseID)
+        {
+            ac = new Aircraft(idAircraft);
+        }
+        else
+        {
+            string szTailNormal = Aircraft.NormalizeTail(szTail);
 
-                if (String.IsNullOrEmpty(szTail))
-                    throw new MyFlightbookException(Resources.WebService.errBadTailNumber);
-
-                if (fUseID)
-                {
-                    if (!int.TryParse(szTail, out idAircraft) || idAircraft == Aircraft.idAircraftUnknown)
-                        throw new MyFlightbookException(Resources.WebService.errBadTailNumber);
-                }
-                else if (szTail.Length > Aircraft.maxTailLength || szTail.Length < 3)
-                    throw new MyFlightbookException(Resources.WebService.errBadTailNumber);
-
-                if (pf == null || pf.ContentLength == 0)
-                    throw new MyFlightbookException(Resources.WebService.errNoImageProvided);
-
-                // Check if authorized for videos
-                if (MFBImageInfo.ImageTypeFromFile(pf) == MFBImageInfo.ImageFileType.S3VideoMP4 && !EarnedGrauity.UserQualifies(szUser, Gratuity.GratuityTypes.Videos))
-                    throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.errNotAuthorizedVideos));
-
-                UserAircraft ua = new UserAircraft(szUser);
-                ua.InvalidateCache();   // in case the aircraft was added but cache is not refreshed.
-                Aircraft[] rgac = ua.GetAircraftForUser();
-
-                Aircraft ac = null;
-                if (fUseID)
-                {
-                    ac = new Aircraft(idAircraft);
-                }
-                else
-                {
-                    string szTailNormal = Aircraft.NormalizeTail(szTail);
-
-                    // Look for the aircraft in the list of the user's aircraft (that way you get the right version if it's a multi-version aircraft and no ID was specified
-                    // Hack for backwards compatibility with mobile apps and anonymous aircraft
-                    // Look to see if the tailnumber matches the anonymous tail 
-                    ac = Array.Find<Aircraft>(rgac, uac =>
-                        (String.Compare(Aircraft.NormalizeTail(szTailNormal), Aircraft.NormalizeTail(uac.TailNumber), StringComparison.CurrentCultureIgnoreCase) == 0 ||
-                         String.Compare(szTail, uac.HackDisplayTailnumber, StringComparison.CurrentCultureIgnoreCase) == 0));
-                }
-
-                if (ac == null || !ua.CheckAircraftForUser(ac))
-                    throw new MyFlightbookException(Resources.WebService.errNotYourAirplane);
-
-                mfbImageAircraft.Key = ac.AircraftID.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                MFBImageInfo mfbii = new MFBImageInfo(MFBImageInfo.ImageClass.Aircraft, mfbImageAircraft.Key, pf, szComment, null);
-
-                // Pseudo-idempotency check: see if the just-added image is a dupe, delete it if so.
-                mfbii.IdempotencyCheck();
-            }
-            catch (MyFlightbookException ex)
-            {
-                szErr = ex.Message;
-            }
+            // Look for the aircraft in the list of the user's aircraft (that way you get the right version if it's a multi-version aircraft and no ID was specified
+            // Hack for backwards compatibility with mobile apps and anonymous aircraft
+            // Look to see if the tailnumber matches the anonymous tail 
+            ac = Array.Find<Aircraft>(rgac, uac =>
+                (String.Compare(Aircraft.NormalizeTail(szTailNormal), Aircraft.NormalizeTail(uac.TailNumber), StringComparison.CurrentCultureIgnoreCase) == 0 ||
+                 String.Compare(szTail, uac.HackDisplayTailnumber, StringComparison.CurrentCultureIgnoreCase) == 0));
         }
 
-        Response.Clear();
-        Response.ContentType = "text/plain; charset=utf-8";
-        Response.Write(szErr);
+        if (ac == null || !ua.CheckAircraftForUser(ac))
+            throw new MyFlightbookException(Resources.WebService.errNotYourAirplane);
+
+        mfbImageAircraft.Key = ac.AircraftID.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        return new MFBImageInfo(MFBImageInfo.ImageClass.Aircraft, mfbImageAircraft.Key, pf, szComment, null);
     }
 }
