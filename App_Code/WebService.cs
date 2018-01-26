@@ -118,7 +118,57 @@ namespace MyFlightbook
         }
     }
 
+    /// <summary>
+    /// Static class to encapsulate authoriztion to modify images.
+    /// Want to keep MFBImageInfo (relatively) clean w.r.t. MyFlightbook classes; this encapsulates the semantic
+    /// knowledge needed for services.
+    /// </summary>
+    public static class ImageAuthorization
+    {
+        /// <summary>
+        /// Determines if the specified user is authorized to modify/delete an image
+        /// </summary>
+        /// <param name="mfbii">The image</param>
+        /// <param name="szuser">The user</param>
+        /// <exception cref="UnauthorizedAccessException">Throws UnauthorizedAccessException if user isn't authorized </exception>
+        /// <exception cref="ArgumentNullException"></exception>"
+        public static void ValidateAuth(MFBImageInfo mfbii, string szuser)
+        {
+            if (mfbii == null)
+                throw new ArgumentNullException("mfbii");
 
+            if (String.IsNullOrEmpty(szuser))
+                throw new UnauthorizedAccessException();
+
+            switch (mfbii.Class)
+            {
+                case MFBImageInfo.ImageClass.Aircraft:
+                    if (!new UserAircraft(szuser).CheckAircraftForUser(new Aircraft(Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture))))
+                        throw new UnauthorizedAccessException();
+                    break;
+                case MFBImageInfo.ImageClass.BasicMed:
+                    {
+                        int idBME = Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture);
+                        List<MyFlightbook.Basicmed.BasicMedEvent> lst = new List<Basicmed.BasicMedEvent>(Basicmed.BasicMedEvent.EventsForUser(szuser));
+                        if (!lst.Exists(bme => bme.ID == idBME))
+                            throw new UnauthorizedAccessException();
+                    }
+                    break;
+                case MFBImageInfo.ImageClass.Endorsement:
+                    if (szuser.CompareCurrentCultureIgnoreCase(mfbii.Key) != 0)
+                        throw new UnauthorizedAccessException();
+                    break;
+                case MFBImageInfo.ImageClass.Flight:
+                    if (!new LogbookEntry().FLoadFromDB(Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture), szuser))
+                        throw new UnauthorizedAccessException();
+                    break;
+                case MFBImageInfo.ImageClass.Unknown:
+                default:
+                    throw new UnauthorizedAccessException();
+            }
+        }
+    }
+    
     /// <summary>
     /// The main SOAP service for mobile use
     /// NOTE: iPhone sends HTML entities URL encoded, so we need to decode them on receipt.  Bleah.
@@ -1142,49 +1192,6 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Determines if the specified user is authorized to modify/delete an image
-        /// </summary>
-        /// <param name="mfbii">The image</param>
-        /// <param name="szuser">The user</param>
-        /// <exception cref="UnauthorizedAccessException">Throws UnauthorizedAccessException if user isn't authorized </exception>
-        /// <exception cref="ArgumentNullException"></exception>"
-        protected void CheckUserOwnsImage(MFBImageInfo mfbii, string szuser)
-        {
-            if (mfbii == null)
-                throw new ArgumentNullException("mfbii");
-
-            if (String.IsNullOrEmpty(szuser))
-                throw new UnauthorizedAccessException();
-
-            switch (mfbii.Class)
-            {
-                case MFBImageInfo.ImageClass.Aircraft:
-                    if (!new UserAircraft(szuser).CheckAircraftForUser(new Aircraft(Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture))))
-                        throw new UnauthorizedAccessException();
-                    break;
-                case MFBImageInfo.ImageClass.BasicMed:
-                    {
-                        int idBME = Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture);
-                        List<MyFlightbook.Basicmed.BasicMedEvent> lst = new List<Basicmed.BasicMedEvent>(Basicmed.BasicMedEvent.EventsForUser(szuser));
-                        if (!lst.Exists(bme => bme.ID == idBME))
-                            throw new UnauthorizedAccessException();
-                    }
-                    break;
-                case MFBImageInfo.ImageClass.Endorsement:
-                    if (szuser.CompareCurrentCultureIgnoreCase(mfbii.Key) != 0)
-                        throw new UnauthorizedAccessException();
-                    break;
-                case MFBImageInfo.ImageClass.Flight:
-                    if (!new LogbookEntry().FLoadFromDB(Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture), szuser))
-                        throw new UnauthorizedAccessException();
-                    break;
-                case MFBImageInfo.ImageClass.Unknown:
-                default:
-                    throw new UnauthorizedAccessException();
-            }
-        }
-
-        /// <summary>
         /// Deletes the specified image
         /// </summary>
         /// <param name="szAuthUserToken">Authtoken for the user</param>
@@ -1200,7 +1207,7 @@ namespace MyFlightbook
             // do a sanity check.
             mfbii.FixImageType();
 
-            CheckUserOwnsImage(mfbii, szUser);
+            ImageAuthorization.ValidateAuth(mfbii, szUser);
             mfbii.DeleteImage();
         }
 
@@ -1216,7 +1223,7 @@ namespace MyFlightbook
                 throw new ArgumentNullException("mfbii");
             string szUser = GetEncryptedUser(szAuthUserToken);
 
-            CheckUserOwnsImage(mfbii, szUser);
+            ImageAuthorization.ValidateAuth(mfbii, szUser);
 
             if (mfbii.ThumbnailFile.Length > 0 && mfbii.VirtualPath.Length > 0)
                 mfbii.UpdateAnnotation(mfbii.Comment);
