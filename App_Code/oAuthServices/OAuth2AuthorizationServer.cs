@@ -121,9 +121,10 @@ namespace OAuthAuthorizationServer.Code
     /// An OAuth 2.0 Client that has registered with this Authorization Server.
     /// Adapted from DotNetOpenAuth sample code.
     /// </summary>
+    [Serializable]
     public sealed partial class MFBOauth2Client : IClientDescription
     {
-        public MFBOauth2Client(string clientIdentifier, string clientSecret, string callback, string name, string scope)
+        public MFBOauth2Client(string clientIdentifier, string clientSecret, string callback, string name, string scope, string szuser)
         {
             ClientName = name;
             ClientIdentifier = clientIdentifier;
@@ -131,6 +132,12 @@ namespace OAuthAuthorizationServer.Code
             Callback = callback;
             ClientType = DotNetOpenAuth.OAuth2.ClientType.Public;
             Scope = scope;
+            OwningUser = szuser;
+        }
+
+        private MFBOauth2Client(MySqlDataReader dr) : this((string)dr["ClientID"], (string)dr["ClientSecret"], (string)dr["Callback"], (string)dr["ClientName"], (string)dr["Scopes"], (string)dr["owningUserName"])
+        {
+            
         }
 
         /// <summary>
@@ -141,11 +148,92 @@ namespace OAuthAuthorizationServer.Code
         {
             List<MFBOauth2Client> lst = new List<MFBOauth2Client>();
             new DBHelper("SELECT * FROM allowedoauthclients").ReadRows((comm) => { },
-                (dr) =>
-                {
-                    lst.Add(new MFBOauth2Client((string)dr["ClientID"], (string)dr["ClientSecret"], (string)dr["Callback"], (string)dr["ClientName"], (string)dr["Scopes"]));
-                });
+                (dr) => { lst.Add(new MFBOauth2Client(dr)); });
             return lst;
+        }
+
+        public static IEnumerable<MFBOauth2Client> GetClientsForUser(string szUser)
+        {
+            List<MFBOauth2Client> lst = new List<MFBOauth2Client>();
+            new DBHelper("SELECT * FROM allowedoauthclients WHERE owningUserName=?user").ReadRows(
+                (comm) => { comm.Parameters.AddWithValue("user", szUser); },
+                (dr) => { lst.Add(new MFBOauth2Client(dr)); });
+            return lst;
+        }
+
+        public static IEnumerable<MFBOauth2Client> GetClientByID(string id)
+        {
+            List<MFBOauth2Client> lst = new List<MFBOauth2Client>();
+            new DBHelper("SELECT * FROM allowedoauthclients WHERE ClientID=?id").ReadRows(
+                (comm) => { comm.Parameters.AddWithValue("id", id); },
+                (dr) => { lst.Add(new MFBOauth2Client(dr)); });
+            return lst;
+        }
+
+        private void Validate()
+        {
+            if (String.IsNullOrWhiteSpace(ClientName))
+                throw new MyFlightbookValidationException("Client Name cannot be empty");
+            if (String.IsNullOrWhiteSpace(ClientSecret))
+                throw new MyFlightbookValidationException("Client secret cannot be empty");
+            if (String.IsNullOrWhiteSpace(ClientIdentifier))
+                throw new MyFlightbookValidationException("Client identifier cannot be empty");
+            if (String.IsNullOrWhiteSpace(Callback))
+                throw new MyFlightbookValidationException("Callback URL cannot be empty");
+
+            if (!Callback.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                throw new MyFlightbookValidationException("Callback URL MUST be https");
+
+            if (!Uri.IsWellFormedUriString(Callback, UriKind.Absolute))
+                throw new MyFlightbookValidationException("Callback URL MUST be a valid https URL");
+
+            if (String.IsNullOrWhiteSpace(Scope))
+                throw new MyFlightbookValidationException("No scopes provided - this client will not be userful!");
+
+            if (String.IsNullOrWhiteSpace(OwningUser))
+                throw new MyFlightbookValidationException("No user provided!!!");
+
+            foreach (MFBOauth2Client client in GetClientByID(ClientIdentifier))
+                if (client.OwningUser.CompareCurrentCultureIgnoreCase(OwningUser) != 0)
+                    throw new UnauthorizedAccessException("This clientID is already in use by another owner");
+        }
+
+        /// <summary>
+        /// Saves a client to the database
+        /// </summary>
+        public void Commit()
+        {
+            Validate(); // will throw an exception as appropriate
+            DBHelper dbh = new DBHelper("REPLACE INTO allowedoauthclients SET ClientID=?id, ClientSecret=?secret, CallBack=?callback, ClientName=?name, Scopes=?scopes, owningUserName=?user, ClientType=1");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("id", ClientIdentifier);
+                comm.Parameters.AddWithValue("secret", ClientSecret);
+                comm.Parameters.AddWithValue("callback", Callback);
+                comm.Parameters.AddWithValue("name", ClientName);
+                comm.Parameters.AddWithValue("scopes", Scope);
+                comm.Parameters.AddWithValue("user", OwningUser);
+            });
+        }
+
+        /// <summary>
+        /// Deletes the specified client.  Owning user MUST be passed too, as a security precaution.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="user"></param>
+        public static void DeleteForUser(string id, string user)
+        {
+            if (id == null)
+                throw new ArgumentNullException("id");
+            if (user == null)
+                throw new ArgumentNullException("user");
+
+            DBHelper dbh = new DBHelper("DELETE FROM allowedoauthclients WHERE owningUserName=?user AND ClientID=?id");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("user", user);
+                comm.Parameters.AddWithValue("id", id);
+            });
         }
 
         #region Properties
@@ -155,6 +243,7 @@ namespace OAuthAuthorizationServer.Code
         public string Callback { get; set; }
         public string Scope { get; set; }
         public ClientType ClientType { get; set; }
+        public string OwningUser { get; set; }
         #endregion
 
         #region IConsumerDescription Members
