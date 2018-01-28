@@ -1,12 +1,11 @@
-﻿using System;
+﻿using MyFlightbook;
+using OAuthAuthorizationServer.Code;
+using OAuthAuthorizationServer.Services;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using OAuthAuthorizationServer.Services;
-using OAuthAuthorizationServer.Code;
-using MyFlightbook;
 
 /******************************************************
  * 
@@ -78,6 +77,8 @@ public partial class Public_Developer : System.Web.UI.Page
                 foreach (ListItem li in cklScopes.Items)
                     li.Selected = false;
                 Expando.ExpandoControl.Collapsed = true;
+
+                util.NotifyAdminEvent("oAuth client created", String.Format(CultureInfo.CurrentCulture, "User: {0}, Name: {1}", Page.User.Identity.Name, client.ClientName), ProfileRoles.maskCanReport);
             }
             catch (UnauthorizedAccessException ex)
             {

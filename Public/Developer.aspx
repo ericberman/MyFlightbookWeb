@@ -14,60 +14,62 @@
                 <uc1:Expando runat="server" ID="Expando">
                 <Header><span style="font-weight:bold">Add a client</span></Header>
                 <Body>
-                    <table style="padding:3px;">
-                        <tr style="vertical-align:top">
-                            <td>Client ID</td>
-                            <td>
-                                <asp:TextBox ID="txtClient" runat="server" ValidationGroup="newClient"></asp:TextBox>
-                                <asp:RequiredFieldValidator ValidationGroup="newClient" ID="valClient" ControlToValidate="txtClient" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must choose a unique ID for your client."></asp:RequiredFieldValidator>
-                            </td>
-                            <td>
-                                This is the unique ID for your client.
-                            </td>
-                        </tr>
-                        <tr style="vertical-align:top">
-                            <td>Client Secret</td>
-                            <td>
-                                <asp:TextBox ID="txtSecret" runat="server" ValidationGroup="newClient"></asp:TextBox>
-                                <asp:RequiredFieldValidator ID="valSecret" ValidationGroup="newClient" ControlToValidate="txtSecret" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must choose a secret for your client."></asp:RequiredFieldValidator>
-                            </td>
-                            <td>
-                                This is the secret for your client.  Keep it safe!!!
-                            </td>
-                        </tr>
-                        <tr style="vertical-align:top">
-                            <td>Client Name</td>
-                            <td>
-                                <asp:TextBox ID="txtName" runat="server" ValidationGroup="newClient"></asp:TextBox>
-                                <asp:RequiredFieldValidator ID="valName" ValidationGroup="newClient" ControlToValidate="txtName" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must choose a name for your client."></asp:RequiredFieldValidator>
-                            </td>
-                            <td>
-                                This is the name for your client, as displayed to your users.
-                            </td>
-                        </tr>
-                        <tr style="vertical-align:top">
-                            <td>Callback URL:</td>
-                            <td>
-                                https://<asp:TextBox ID="txtCallback" runat="server" ValidationGroup="newClient"></asp:TextBox>
-                                <asp:RequiredFieldValidator ID="valCallback" ValidationGroup="newClient" ControlToValidate="txtCallback" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must provide a valid callback URL for your client."></asp:RequiredFieldValidator>
-                            </td>
-                            <td>
-                                When authorizing a user, the redirect URL MUST match this.
-                            </td>
-                        </tr>
-                        <tr style="vertical-align:top">
-                            <td>Requested Scopes</td>
-                            <td>
-                                <asp:CheckBoxList ID="cklScopes" runat="server">
-                                </asp:CheckBoxList>
-                            </td>
-                            <td>
-                                What sorts of operations might you request for a given user?
-                            </td>
-                        </tr>
-                    </table>
-                    <asp:Button ID="btnAddClient" runat="server" Text="Add" OnClick="btnAddClient_Click" />
-                    <div><asp:Label ID="lblErr" runat="server" Text="" CssClass="error" EnableViewState="false"></asp:Label></div>
+                    <asp:Panel ID="pnlNew" runat="server" DefaultButton="btnAddClient">
+                        <table style="padding:3px;">
+                            <tr style="vertical-align:top">
+                                <td>Client ID</td>
+                                <td>
+                                    <asp:TextBox ID="txtClient" runat="server" ValidationGroup="newClient"></asp:TextBox>
+                                    <asp:RequiredFieldValidator ValidationGroup="newClient" ID="valClient" ControlToValidate="txtClient" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must choose a unique ID for your client."></asp:RequiredFieldValidator>
+                                </td>
+                                <td>
+                                    This is the unique ID for your client.
+                                </td>
+                            </tr>
+                            <tr style="vertical-align:top">
+                                <td>Client Secret</td>
+                                <td>
+                                    <asp:TextBox ID="txtSecret" runat="server" ValidationGroup="newClient"></asp:TextBox>
+                                    <asp:RequiredFieldValidator ID="valSecret" ValidationGroup="newClient" ControlToValidate="txtSecret" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must choose a secret for your client."></asp:RequiredFieldValidator>
+                                </td>
+                                <td>
+                                    This is the secret for your client.  Keep it safe!!!
+                                </td>
+                            </tr>
+                            <tr style="vertical-align:top">
+                                <td>Client Name</td>
+                                <td>
+                                    <asp:TextBox ID="txtName" runat="server" ValidationGroup="newClient"></asp:TextBox>
+                                    <asp:RequiredFieldValidator ID="valName" ValidationGroup="newClient" ControlToValidate="txtName" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must choose a name for your client."></asp:RequiredFieldValidator>
+                                </td>
+                                <td>
+                                    This is the name for your client, as displayed to your users.
+                                </td>
+                            </tr>
+                            <tr style="vertical-align:top">
+                                <td>Callback URL:</td>
+                                <td>
+                                    https://<asp:TextBox ID="txtCallback" runat="server" ValidationGroup="newClient"></asp:TextBox>
+                                    <asp:RequiredFieldValidator ID="valCallback" ValidationGroup="newClient" ControlToValidate="txtCallback" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must provide a valid callback URL for your client."></asp:RequiredFieldValidator>
+                                </td>
+                                <td>
+                                    When authorizing a user, the redirect URL MUST match this.
+                                </td>
+                            </tr>
+                            <tr style="vertical-align:top">
+                                <td>Requested Scopes</td>
+                                <td>
+                                    <asp:CheckBoxList ID="cklScopes" runat="server">
+                                    </asp:CheckBoxList>
+                                </td>
+                                <td>
+                                    What sorts of operations might you request for a given user?
+                                </td>
+                            </tr>
+                        </table>
+                        <asp:Button ID="btnAddClient" runat="server" Text="Add" OnClick="btnAddClient_Click" />
+                        <div><asp:Label ID="lblErr" runat="server" Text="" CssClass="error" EnableViewState="false"></asp:Label></div>
+                    </asp:Panel>
                 </Body>
             </uc1:Expando>
             </div>
