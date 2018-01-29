@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MyFlightbook;
+using MyFlightbook.Image;
+using System;
 using System.Globalization;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Image;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,7 +29,7 @@ public partial class Controls_mfbPublicFlightItem : System.Web.UI.UserControl
                 throw new ArgumentNullException("value");
 
             m_le = value;
-            lnkFlight.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/public/ViewPublicFlight.aspx/{0}", value.FlightID);
+            lnkFlight.NavigateUrl = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/public/ViewPublicFlight.aspx/{0}", value.FlightID));
             lblDate.Text = value.Date.ToShortDateString();
             lblDetails.Text = (value.TotalFlightTime > 0) ? String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightDuration, value.TotalFlightTime) : string.Empty;
 
