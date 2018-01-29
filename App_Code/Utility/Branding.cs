@@ -122,7 +122,7 @@ namespace MyFlightbook
     {
         static private Brand[] knownBrands = 
         {
-        new Brand(BrandID.brandMyFlightbook, "MyFlightbook", "myflightbook.com", "/logbook", "~/Public/myflightbooknew.png", string.Empty, "noreply@myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook", "https://myflightbookblog.blogspot.com/")
+        new Brand(BrandID.brandMyFlightbook, "MyFlightbook", "myflightbook.com", "/logbook", "~/Public/myflightbooknew.png", string.Empty, "noreply@mg.myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook", "https://myflightbookblog.blogspot.com/")
 //        , new Brand(BrandID.brandAOPA, "AOPAFlightbook", "aopa.myflightbook.com", "~/Images/AOPABook.png", "~/Public/AOPASheet.css", "noreply@myflightbook.com", "", "", "")
         };
 
