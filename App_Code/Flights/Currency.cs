@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -335,8 +335,10 @@ namespace MyFlightbook.FlightCurrency
             idCatClassOverride = (CategoryClass.CatClassID)Convert.ToInt32(dr["CatClassOverride"], CultureInfo.InvariantCulture);
             fIsGlider = idCatClassOverride == CategoryClass.CatClassID.Glider;
             szArmyMDS = dr["ArmyMDS"].ToString();
-            szFamily = dr["Family"].ToString();
             szModel = dr["model"].ToString();
+            szFamily = dr["Family"].ToString();
+            if (String.IsNullOrEmpty(szFamily))
+                szFamily = szModel;
             Route = dr["Route"].ToString();
             fTailwheel = Convert.ToBoolean(dr["fTailwheel"], CultureInfo.InvariantCulture);
             Night = (Convert.ToDecimal(dr["night"], CultureInfo.InvariantCulture));
@@ -636,7 +638,7 @@ namespace MyFlightbook.FlightCurrency
                     List<string> lstCatClasses = new List<string>();
                     Boolean fFlightInTypeRatedAircraft = cfr.szType.Length > 0;
                     if (pf.UsesPerModelCurrency)
-                        lstCatClasses.Add(String.Format("{0} ({1})", cfr.szModel, cfr.szCatClassType));
+                        lstCatClasses.Add(String.Format("{0} ({1})", cfr.szFamily, cfr.szCatClassType));
                     else
                     {
                         lstCatClasses.Add(cfr.szCatClassType);
