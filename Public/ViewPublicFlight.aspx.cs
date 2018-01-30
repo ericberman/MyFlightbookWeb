@@ -40,6 +40,14 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
         }
     }
 
+    private const string szVSLogbook = "vsLEToView";
+
+    private LogbookEntry PublicFlight
+    {
+        get { return (LogbookEntry)ViewState[szVSLogbook]; }
+        set { ViewState[szVSLogbook] = value; }
+    }
+
     private void ShowMap(LogbookEntry le)
     {
         double distance = 0.0;
@@ -47,12 +55,13 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
         {
             ListsFromRoutesResults result = AirportList.ListsFromRoutes(le.Route);
             MfbGoogleMap1.Map.Airports = result.Result;
+            MfbGoogleMap1.Map.ShowRoute = ckShowRoute.Checked;
             MfbGoogleMap1.Map.AutofillOnPanZoom = (result.Result.Count() == 0);
             lnkZoomOut.NavigateUrl = MfbGoogleMap1.ZoomToFitScript;
             lnkZoomOut.Visible = !result.MasterList.LatLongBox().IsEmpty;
 
             // display flight path, if available.
-            if (le.Telemetry.HasPath)
+            if (ckShowPath.Checked && le.Telemetry.HasPath)
             {
                 MfbGoogleMap1.Map.Path = le.Telemetry.Path();
                 distance = le.Telemetry.Distance();
@@ -66,6 +75,8 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
             string szURL = Request.Url.PathAndQuery;
             lnkShowMapOnly.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", szURL, szURL.Contains("?") ? "&" : "?", "show=map");
         }
+
+        MfbGoogleMap1.Map.Images = ckShowImages.Checked ? mfbIlFlight.Images.ImageArray.ToArray() : new MFBImageInfo[0];
 
         lblDistance.Text = le.GetPathDistanceDescription(distance);
         pnlDistance.Visible = lblDistance.Text.Length > 0;
@@ -94,6 +105,8 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
             // load the flight, redirect home on any error.
             if (id > 0 && le.FLoadFromDB(id, User.Identity.Name, LogbookEntry.LoadTelemetryOption.MetadataOrDB, true))
             {
+                PublicFlight = le;
+
                 hdnID.Value = id.ToString(CultureInfo.InvariantCulture);
 
                 if (!le.fIsPublic && (String.Compare(le.User, User.Identity.Name, StringComparison.OrdinalIgnoreCase) != 0)) // not public and this isn't the owner...
@@ -131,7 +144,6 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
 
                 mfbIlFlight.Key = hdnID.Value;
                 mfbIlFlight.Refresh();
-                MfbGoogleMap1.Map.Images = mfbIlFlight.Images.ImageArray.ToArray();
 
                 mfbIlAirplane.Key = le.AircraftID.ToString(CultureInfo.InvariantCulture);
                 mfbIlAirplane.AltText = le.TailNumDisplay;
@@ -200,4 +212,26 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
             }
         }
     }
+
+    #region Map options
+    protected void ckShowAirports_CheckedChanged(object sender, EventArgs e)
+    {
+        ShowMap(PublicFlight);
+    }
+
+    protected void ckShowPath_CheckedChanged(object sender, EventArgs e)
+    {
+        ShowMap(PublicFlight);
+    }
+
+    protected void ckShowRoute_CheckedChanged(object sender, EventArgs e)
+    {
+        ShowMap(PublicFlight);
+    }
+
+    protected void ckShowImages_CheckedChanged(object sender, EventArgs e)
+    {
+        ShowMap(PublicFlight);
+    }
+    #endregion
 }

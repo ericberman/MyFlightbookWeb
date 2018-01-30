@@ -10,6 +10,8 @@
 <%@ Register Src="~/Controls/mfbEditableImage.ascx" TagName="mfbEditableImage" TagPrefix="uc8" %>
 <%@ Register Src="~/Controls/mfbMiniFacebook.ascx" TagPrefix="uc1" TagName="mfbMiniFacebook" %>
 <%@ Register Src="~/Controls/imageSlider.ascx" TagPrefix="uc1" TagName="imageSlider" %>
+<%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
+
 
 <asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
     <div id="FullPageTop" runat="server">
@@ -32,9 +34,21 @@
             <uc1:imageSlider runat="server" ID="imgSliderAircraft" />
         </div>
         <div id="divMap" runat="server">
-            <asp:HyperLink ID="lnkZoomOut" runat="server" Visible="False" Text="<%$ Resources:Airports, MapZoomOut %>"></asp:HyperLink>&nbsp;&nbsp;&nbsp;&nbsp;<asp:HyperLink ID="lnkShowMapOnly" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowOnlyMap %>"></asp:HyperLink>&nbsp;&nbsp;
-            <asp:LinkButton ID="lnkViewKML" runat="server" Visible="false" 
-                onclick="lnkViewKML_Click" Text="<%$ Resources:LogbookEntry, PublicFlightKMLDownload %>"></asp:LinkButton><br />
+            <div>
+                <asp:HyperLink ID="lnkZoomOut" runat="server" Visible="False" Text="<%$ Resources:Airports, MapZoomOut %>"></asp:HyperLink>&nbsp;&nbsp;&nbsp;&nbsp;<asp:HyperLink ID="lnkShowMapOnly" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowOnlyMap %>"></asp:HyperLink>&nbsp;&nbsp;
+                <asp:LinkButton ID="lnkViewKML" runat="server" Visible="false" 
+                    onclick="lnkViewKML_Click" Text="<%$ Resources:LogbookEntry, PublicFlightKMLDownload %>"></asp:LinkButton>
+                <div style="float:right">
+                    <uc1:popmenu runat="server" ID="popmenu">
+                        <MenuContent>
+                            <h3><% =Resources.Airports.mapShowOptions %></h3>
+                            <div><asp:CheckBox ID="ckShowPath" runat="server" Checked="true" Text="<%$ Resources:Airports, mapShowPath %>" AutoPostBack="true" OnCheckedChanged="ckShowPath_CheckedChanged" /></div>
+                            <div><asp:CheckBox ID="ckShowRoute" runat="server" Checked="true" Text="<%$ Resources:Airports, mapShowRoute %>" AutoPostBack="true" OnCheckedChanged="ckShowRoute_CheckedChanged" /></div>
+                            <div><asp:CheckBox ID="ckShowImages" runat="server" Checked="true" Text="<%$ Resources:Airports, mapShowImages %>" AutoPostBack="true" OnCheckedChanged="ckShowImages_CheckedChanged" /></div>
+                        </MenuContent>
+                    </uc1:popmenu>
+                </div>
+            </div>
             <uc2:mfbGoogleMap ID="MfbGoogleMap1" runat="server" Width="100%" Height="400px" />
             <asp:Panel ID="pnlDistance" runat="server" Visible="false">
                 <asp:Label ID="lblDistance" runat="server" Text=""></asp:Label>

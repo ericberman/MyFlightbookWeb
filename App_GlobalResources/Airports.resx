@@ -199,4 +199,19 @@
   <data name="WarningSlow" xml:space="preserve">
     <value>(Slow - only click once)</value>
   </data>
+  <data name="mapShowAirports" xml:space="preserve">
+    <value>Airports</value>
+  </data>
+  <data name="mapShowImages" xml:space="preserve">
+    <value>Images</value>
+  </data>
+  <data name="mapShowOptions" xml:space="preserve">
+    <value>Show on map (if present):</value>
+  </data>
+  <data name="mapShowPath" xml:space="preserve">
+    <value>Path of flight (as flown)</value>
+  </data>
+  <data name="mapShowRoute" xml:space="preserve">
+    <value>Route of flight (airport-to-airport)</value>
+  </data>
 </root>
