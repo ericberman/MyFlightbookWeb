@@ -1570,7 +1570,7 @@ namespace MyFlightbook
                 return NormalizeTail(szTail).Replace(NormalizeTail(cc.Prefix), szPrefixNew);
             }
             else
-                return szTail.ToUpper(CultureInfo.InvariantCulture).Replace("-", string.Empty);
+                return Regex.Replace(szTail.ToUpper(CultureInfo.InvariantCulture), "[^a-zA-Z0-9#]", string.Empty);
         }
 
         /// <summary>
