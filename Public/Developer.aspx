@@ -6,8 +6,24 @@
     Developers
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
-    <p>Interested in integrating your service with MyFlightbook?</p>
-    <p>MyFlightbook supports the oAuth2 protocol.  You can learn more about this on the <a href="https://github.com/ericberman/MyFlightbookWeb/wiki">MyFlightbook wiki.</a></p>
+    <h2>Source code</h2>
+    <p><% =Branding.ReBrand("%APP_NAME% is now open source.") %>  Please visit <a href="https://github.com/ericberman" target="_blank">GitHub</a> if you are interested.</p>
+    <p>There are 4 projects there:</p>
+    <ul>
+        <li><a href="https://github.com/ericberman/MyFlightbookWeb" target="_blank">MyFlightbookWeb</a> has the code for the website, which backs the mobile apps.  This is where the real database lives and where all the main logic lies.</li>
+        <li><a href="https://github.com/ericberman/MyFlightbookAndroid" target="_blank">MyFlightbookAndroid</a> has the code for the Android app.</li>
+        <li><a href="https://github.com/ericberman/MyFlightbookiOS" target="_blank">MyFlightbookiOS</a> has the code for the the iOS app.</li>
+        <li><a href="https://github.com/ericberman/WSDLtoObjC" target="_blank">WSDLtoObjC</a> has support code for the iOS app.  This code consumes the <a href="https://en.wikipedia.org/wiki/Web_Services_Description_Language" target="_blank">WSDL</a> (Web Service Description Language) from the website and generates
+            Objective-C classes that talk to the web service and encapsulate the data.</li>
+    </ul>
+    <p>To set up the web server, you will need Windows running IIS and a MySQL database.  The <a href="https://github.com/ericberman/MyFlightbookWeb/blob/master/README.md" target="_blank">README.md</a> file on GitHub provides walk-through instructions</p>
+    <p><span style="font-weight:bold">PLEASE DO NOT TEST AGAINST THE LIVE SITE.</span>  While you can't harm other people's data, you can mess up your own.  <a href="ContactMe.aspx">Contact us</a> and we can point you to a safe staging/development server that you can use.</p>
+    <h2>Web Service</h2>
+    <p>The available calls (some of which are deprecated) can be found <a href="WebService.asmx" target="_blank">here</a>; a formal XML-based description of the data structures can be found <a href="WebService.asmx?WSDL" target="_blank">here</a>.</p>
+    <p>Please read the <a href="https://github.com/ericberman/MyFlightbookWeb/wiki" target="_blank">wiki</a> on github for more information.</p>
+    <h2><% =Branding.ReBrand("Integrating with %APP_NAME%") %></h2>
+    <p><% =Branding.ReBrand("%APP_NAME% supports the oAuth2 protocol.") %>  You can learn more about this on the <a href="https://github.com/ericberman/MyFlightbookWeb/wiki">MyFlightbook wiki.</a></p>
+    <p>To integrate your service, you must implement oAuth.  You can then call make calls to the web service on behalf of the user</p>
     <asp:MultiView ID="mvServices" runat="server" ActiveViewIndex="0">
         <asp:View ID="vwAuthenticated" runat="server">
             <div style="background-color:lightgray; border: 1px solid black; border-radius:5px; padding:5px; margin: 3px;">

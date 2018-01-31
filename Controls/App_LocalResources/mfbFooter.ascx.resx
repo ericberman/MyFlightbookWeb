@@ -231,4 +231,10 @@
   <data name="lnkBlogResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lnkDevelopers1.Text" xml:space="preserve">
+    <value>Developers</value>
+  </data>
+  <data name="lnkDevelopers1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
 </root>
