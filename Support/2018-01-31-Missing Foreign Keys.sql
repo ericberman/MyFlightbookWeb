@@ -123,3 +123,9 @@ ADD CONSTRAINT `fkusersinrolesUsername`
   ON UPDATE NO ACTION;
 
 
+ALTER TABLE `logbook`.`flights` 
+ADD CONSTRAINT `fkFlightUser`
+  FOREIGN KEY (`username`)
+  REFERENCES `logbook`.`users` (`Username`)
+  ON DELETE CASCADE
+  ON UPDATE NO ACTION;
