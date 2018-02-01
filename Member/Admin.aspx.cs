@@ -603,12 +603,22 @@ WHERE (instanceType > 1 AND ac.TailNumber NOT LIKE '{0}%') OR
         DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
         if (di.Exists)
             di.Delete(true);
+
+        // Delete any tombstone that might point to *this*
+        DBHelper dbh = new DBHelper("DELETE FROM aircraftTombstones WHERE idMappedAircraft=?idAc");
+        dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idAc", ac.AircraftID); });
     }
 
-    protected void gvOrphanedAircraft_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    protected void gvOrphanedAircraft_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        if (e != null && e.Keys[0] != null)
-            DeleteOrphanAircraft(Convert.ToInt32(e.Keys[0], CultureInfo.InvariantCulture));
+        if (e != null && e.CommandName.CompareCurrentCultureIgnoreCase("_Delete") == 0)
+        {
+            int idAircraft = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
+            DeleteOrphanAircraft(idAircraft);
+            DBHelper dbh = new DBHelper("DELETE FROM Aircraft WHERE idAircraft=?idaircraft");
+            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idaircraft", idAircraft); });
+        }
+        btnOrphans_Click(sender, e);
     }
 
     protected void btnDeleteAllOrphans_Click(object sender, EventArgs e)
