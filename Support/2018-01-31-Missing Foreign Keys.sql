@@ -1,13 +1,13 @@
-﻿ALTER TABLE `logbook`.`aircraft` 
+﻿﻿ALTER TABLE `logbook`.`aircraft` 
 DROP FOREIGN KEY `model`,
 DROP FOREIGN KEY `instance`;
 ALTER TABLE `logbook`.`aircraft` 
-ADD CONSTRAINT `model`
+ADD CONSTRAINT `fkaircraftmodel`
   FOREIGN KEY (`idmodel`)
   REFERENCES `logbook`.`models` (`idmodel`)
   ON DELETE RESTRICT
   ON UPDATE NO ACTION,
-ADD CONSTRAINT `instance`
+ADD CONSTRAINT `fkaircraftinstance`
   FOREIGN KEY (`InstanceType`)
   REFERENCES `logbook`.`aircraftinstancetypes` (`ID`)
   ON DELETE RESTRICT
@@ -26,7 +26,7 @@ ADD CONSTRAINT `mappedaircraft`
 ALTER TABLE `logbook`.`badges` 
 ADD INDEX `Users_idx` (`Username` ASC);
 ALTER TABLE `logbook`.`badges` 
-ADD CONSTRAINT `Users`
+ADD CONSTRAINT `fkBadgesUsers`
   FOREIGN KEY (`Username`)
   REFERENCES `logbook`.`users` (`Username`)
   ON DELETE CASCADE
@@ -53,7 +53,6 @@ ADD CONSTRAINT `fkdeadlineuser`
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
 
-
 ALTER TABLE `logbook`.`earnedgratuities` 
 ADD CONSTRAINT `fkearnedgratuityuser`
   FOREIGN KEY (`username`)
@@ -61,16 +60,7 @@ ADD CONSTRAINT `fkearnedgratuityuser`
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
 
-ALTER TABLE `logbook`.`endorsements` 
-ADD INDEX `fkendorsement_idx` (`Student` ASC);
-ALTER TABLE `logbook`.`endorsements` 
-ADD CONSTRAINT `fkendorsement`
-  FOREIGN KEY (`Student`)
-  REFERENCES `logbook`.`users` (`Username`)
-  ON DELETE CASCADE
-  ON UPDATE NO ACTION;
-
-  ALTER TABLE `logbook`.`flightproperties` 
+ALTER TABLE `logbook`.`flightproperties` 
 ADD CONSTRAINT `fkPropType`
   FOREIGN KEY (`idPropType`)
   REFERENCES `logbook`.`custompropertytypes` (`idPropType`)
