@@ -1253,6 +1253,9 @@ namespace MyFlightbook
             dbh.CommandText = "UPDATE scheduledEvents se SET se.resourceid=?idAircraftNew WHERE se.resourceid=?idAircraftOld";
             dbh.DoNonQuery();
 
+            dbh.CommandText = "UPDATE useraircraft ua SET ua.idAircraft=?idAircraftNew WHERE ua.idAircraft=?idAircraftOld";
+            dbh.DoNonQuery();
+
             // Finally, it should now be safe to delete the aircraft
             dbh.CommandText = "DELETE FROM aircraft WHERE idAircraft=?idAircraftOld";
             dbh.DoNonQuery();
