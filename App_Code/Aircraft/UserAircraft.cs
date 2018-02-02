@@ -210,12 +210,23 @@ namespace MyFlightbook
             if (acNew.AircraftID == acOld.AircraftID)
                 return;
 
+            List<Aircraft> lstAc = new List<Aircraft>(CachedAircraft);
+
             // Add the new aircraft first
             FAddAircraftForUser(acNew);
 
             // Migrate any flights, if necessary...
             if (fMigrateFlights)
             {
+                // make sure we are populated with both old and new so that UpdateFlightAircraftForUser works.
+                // (This can happen if you have one version of an aircraft and you go to add another version of it; 
+                // they won't both be there, but the query used in UpdateFlightAircraftForUser wants them both present.
+                if (!lstAc.Exists(ac => ac.AircraftID == acNew.AircraftID))
+                    lstAc.Add(acNew);
+                if (!lstAc.Exists(ac => ac.AircraftID == acOld.AircraftID))
+                    lstAc.Add(acOld);
+                CachedAircraft = lstAc.ToArray();   // we'll nullify the cache below.
+                
                 LogbookEntry.UpdateFlightAircraftForUser(this.User, acOld.AircraftID, acNew.AircraftID);
 
                 // Migrate any custom currencies associated with the aircraft
@@ -248,7 +259,9 @@ namespace MyFlightbook
                     FDeleteAircraftforUser(acOld.AircraftID);
                 }
                 catch (MyFlightbookException)
-                { }
+                {
+                    InvalidateCache();
+                }
             }
         }
 

@@ -672,7 +672,6 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         if (e == null)
             throw new ArgumentNullException("e");
 
-        GridViewRow grow = (GridViewRow)((LinkButton)e.CommandSource).NamingContainer;
         Aircraft ac = new Aircraft(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         bool fMigrate = e.CommandName.CompareOrdinalIgnoreCase("_switchMigrate") == 0;
