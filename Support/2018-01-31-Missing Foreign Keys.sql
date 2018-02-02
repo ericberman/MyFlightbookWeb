@@ -129,3 +129,20 @@ ADD CONSTRAINT `fkFlightUser`
   REFERENCES `logbook`.`users` (`Username`)
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
+
+  ALTER TABLE `logbook`.`roles` 
+ADD INDEX `rolenameidx` (`Rolename` ASC);
+
+ALTER TABLE `logbook`.`usersinroles` 
+ADD CONSTRAINT `fkusersinrolesrole`
+  FOREIGN KEY (`Rolename`)
+  REFERENCES `logbook`.`roles` (`Rolename`)
+  ON DELETE RESTRICT
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `logbook`.`passwordresetrequests` 
+ADD CONSTRAINT `fkprrUsername`
+  FOREIGN KEY (`username`)
+  REFERENCES `logbook`.`users` (`Username`)
+  ON DELETE CASCADE
+  ON UPDATE NO ACTION;
