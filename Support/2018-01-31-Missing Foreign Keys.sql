@@ -146,3 +146,12 @@ ADD CONSTRAINT `fkprrUsername`
   REFERENCES `logbook`.`users` (`Username`)
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
+
+ALTER TABLE `logbook`.`airports` 
+ADD INDEX `fkairporttype_idx` (`Type` ASC);
+ALTER TABLE `logbook`.`airports` 
+ADD CONSTRAINT `fkairporttype`
+  FOREIGN KEY (`Type`)
+  REFERENCES `logbook`.`navaidtypes` (`Code`)
+  ON DELETE RESTRICT
+  ON UPDATE NO ACTION;
