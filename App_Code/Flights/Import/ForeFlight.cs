@@ -87,6 +87,10 @@ namespace MyFlightbook.ImportFlights
         public string Text { get; set; }
         public string TypeCode { get; set; }
         public string Model { get; set; }
+        protected List<string> PassengerNames { get; set; }
+        protected List<string> StudentNames { get; set; }
+        protected List<string> InstructorNames { get; set; }
+        protected List<string> ExaminerNames { get; set; }
         #endregion
 
         public ForeFlight(DataRow dr, IDictionary<string, ForeFlightAircraftDescriptor> dict, IEnumerable<CustomPropertyType> lstProps = null) : base(dr, lstProps)
@@ -96,6 +100,43 @@ namespace MyFlightbook.ImportFlights
                 Model = dict[AircraftID].Model;
                 TypeCode = dict[AircraftID].TypeCode;
             }
+        }
+
+        protected string AddToRole(string szPerson)
+        {
+            if (szPerson == null)
+                return string.Empty;
+
+            List<string> lstFields = new List<string>(szPerson.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+
+            if (lstFields.Count >= 2)
+            {
+                string szRole = lstFields[1].ToLower(CultureInfo.CurrentCulture);
+                List<string> lstResult = null;
+                switch (szRole)
+                {
+                    case "student":
+                        lstResult = StudentNames;
+                        break;
+                    case "instructor":
+                        lstResult = InstructorNames;
+                        break;
+                    case "passenger":
+                        lstResult = PassengerNames;
+                        break;
+                    case "examiner":
+                        lstResult = ExaminerNames;
+                        break;
+                }
+                if (lstResult != null)
+                {
+                    lstFields.RemoveAt(1);
+                    lstResult.Add(JoinStrings(lstFields));
+                    return string.Empty;
+                }
+            }
+
+            return szPerson;
         }
         
         public override LogbookEntry ToLogbookEntry()
@@ -129,6 +170,22 @@ namespace MyFlightbook.ImportFlights
                 }
             }
 
+            StudentNames = new List<string>();
+            InstructorNames = new List<string>();
+            ExaminerNames = new List<string>();
+            PassengerNames = new List<string>();
+
+            // try to parse people's role on the flight
+            Person1 = AddToRole(Person1);
+            Person2 = AddToRole(Person2);
+            Person3 = AddToRole(Person3);
+            Person4 = AddToRole(Person4);
+            Person5 = AddToRole(Person5);
+            Person6 = AddToRole(Person6);
+            if (!String.IsNullOrEmpty(InstructorName))
+                InstructorNames.Add(InstructorName);
+            InstructorName = JoinStrings(InstructorNames);
+            
             if (AircraftID == null)
                 AircraftID = string.Empty;
 
@@ -175,6 +232,9 @@ namespace MyFlightbook.ImportFlights
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachStart, TachStart),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachEnd, TachEnd),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropInstructorName, InstructorName),
+                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerNames, JoinStrings(PassengerNames)),
+                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropStudentName, JoinStrings(StudentNames)),
+                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfExaminer, JoinStrings(ExaminerNames)),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, GroundTraining),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, FlightReview),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIPC, IPC),

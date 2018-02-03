@@ -67,6 +67,7 @@ namespace MyFlightbook
             IDPropNightTakeoff = 73,
             IDPropNameOfPIC = 183,              // Note: this one isn't flagged as a known property, just used for logbookentrydisplay to print.
             IDPropNameOfSIC = 184,              // Not flagged as a known property
+            IDPropNameOfExaminer = 260,         // Not flagged as a known property
             IDPropDutiesOfPIC = 185,
             IDPropPICUS = 279,
             IDPropInstructorOnBoard = 288,
