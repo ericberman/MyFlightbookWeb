@@ -203,6 +203,15 @@ public partial class Member_Admin : System.Web.UI.Page
             }
         }
 
+        // Update any custom currency references to the old model
+        DBHelper dbhCCR = new DBHelper("UPDATE CustCurrencyRef SET value=?newID WHERE value=?oldID AND type=?modelsType");
+        dbhCCR.DoNonQuery((comm) =>
+        {
+            comm.Parameters.AddWithValue("newID", idModelToMergeInto);
+            comm.Parameters.AddWithValue("oldID", idModelToDelete);
+            comm.Parameters.AddWithValue("modelsType", (int)MyFlightbook.FlightCurrency.CustomCurrency.CurrencyRefType.Models);
+        });
+
         // Then delete the old model
         szQ = String.Format(CultureInfo.InvariantCulture, "DELETE FROM models WHERE idmodel={0}", idModelToDelete);
         DBHelper dbh = new DBHelper(szQ);
@@ -216,6 +225,20 @@ public partial class Member_Admin : System.Web.UI.Page
         cmbModelToDelete.DataBind();
         cmbModelToMergeInto.DataBind();
         pnlPreview.Visible = false;
+    }
+
+    protected void gvOrphanMakes_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+        if (e != null)
+        {
+            int idModel = Convert.ToInt32(e.Keys[0], CultureInfo.InvariantCulture); // first key is idmodel
+            DBHelper dbh = new DBHelper("DELETE FROM CustCurrencyRef WHERE value=?idmodel AND type=?modelsType");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("idmodel", idModel);
+                comm.Parameters.AddWithValue("modelsType", (int)MyFlightbook.FlightCurrency.CustomCurrency.CurrencyRefType.Models);
+            });
+        }
     }
 
     private string NormalizeModelName(string sz)
