@@ -296,6 +296,19 @@ namespace MyFlightbook
             foreach (DeadlineCurrency dc in DeadlineCurrency.DeadlinesForUser(User, AircraftID))
                 dc.FDelete();
 
+            // And delete any custom currencies associated with the aircraft
+            foreach (CustomCurrency cc in CustomCurrency.CustomCurrenciesForUser(User))
+            {
+                List<int> ids = new List<int>(cc.AircraftRestriction);
+
+                if (ids.Contains(AircraftID))
+                {
+                    ids.Remove(AircraftID);
+                    cc.AircraftRestriction = ids;
+                    cc.FCommit();
+                }
+            }
+
             // we don't actually delete the aircraft; no need to do so, even if it's not used by anybody because
             // (a) we can't force caches of aircraft lists to be invalid and, 
             // (b) no harm from keeping it - if somebody re-uses the tailnumber, it will re-use the existing flight.
