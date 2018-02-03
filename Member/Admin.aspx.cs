@@ -632,7 +632,7 @@ WHERE (instanceType > 1 AND ac.TailNumber NOT LIKE '{0}%') OR
         dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idAc", ac.AircraftID); });
     }
 
-    protected void gvOrphanedAircraft_RowCommand(object sender, GridViewCommandEventArgs e)
+    protected void gvOrphanedAircraft_RowCommand(object sender, CommandEventArgs e)
     {
         if (e != null && e.CommandName.CompareCurrentCultureIgnoreCase("_Delete") == 0)
         {
