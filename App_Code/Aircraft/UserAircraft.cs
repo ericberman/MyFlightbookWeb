@@ -210,14 +210,14 @@ namespace MyFlightbook
             if (acNew.AircraftID == acOld.AircraftID)
                 return;
 
-            List<Aircraft> lstAc = new List<Aircraft>(CachedAircraft);
-
             // Add the new aircraft first
             FAddAircraftForUser(acNew);
 
             // Migrate any flights, if necessary...
             if (fMigrateFlights)
             {
+                List<Aircraft> lstAc = new List<Aircraft>(GetAircraftForUser());
+                
                 // make sure we are populated with both old and new so that UpdateFlightAircraftForUser works.
                 // (This can happen if you have one version of an aircraft and you go to add another version of it; 
                 // they won't both be there, but the query used in UpdateFlightAircraftForUser wants them both present.
