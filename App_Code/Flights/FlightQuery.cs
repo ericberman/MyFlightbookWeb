@@ -931,29 +931,30 @@ namespace MyFlightbook
             AppendIfChecked(sbType, IsMotorglider, Resources.FlightQuery.AircraftFeatureMotorGlider);
             AppendIfChecked(sbType, IsMultiEngineHeli, Resources.FlightQuery.AircraftFeatureMultiEngineHelicopter);
 
+            const string szPoweredAircraftTemplate = "((IF (flights.idCatClassOverride = 0, models.idcategoryclass, flights.idCatClassOverride) in (1, 2, 3, 4, 7, 8, 9, 13, 14, 17, 18) OR models.fMotorglider <> 0) AND {0})";
             switch (EngineType)
             {
                 default:
                 case EngineTypeRestriction.AllEngines:
                     break;
                 case EngineTypeRestriction.AnyTurbine:
-                    AddClause(sbQuery, "(models.fTurbine in (1, 2, 3))", true);
+                    AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, szPoweredAircraftTemplate, "(models.fTurbine in (1, 2, 3))"), true);
                     AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeatureTurbine);
                     break;
                 case EngineTypeRestriction.Piston:
-                    AddClause(sbQuery, "(models.fTurbine = 0)", true);
+                    AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, szPoweredAircraftTemplate, "(models.fTurbine = 0)"), true);
                     AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeaturePiston);
                     break;
                 case EngineTypeRestriction.Turboprop:
-                    AddClause(sbQuery, "(models.fTurbine = 1)", true);
+                    AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, szPoweredAircraftTemplate, "(models.fTurbine = 1)"), true);
                     AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeatureTurboprop);
                     break;
                 case EngineTypeRestriction.Jet:
-                    AddClause(sbQuery, "(models.fTurbine = 2)", true);
+                    AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, szPoweredAircraftTemplate, "(models.fTurbine = 2)"), true);
                     AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeatureJet);
                     break;
                 case EngineTypeRestriction.Electric:
-                    AddClause(sbQuery, "(models.fTurbine = 4)", true);
+                    AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, szPoweredAircraftTemplate, "(models.fTurbine = 4)"), true);
                     AppendIfChecked(sbType, true, Resources.FlightQuery.AircraftFeatureElectric);
                     break;
             }
