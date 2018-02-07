@@ -223,20 +223,54 @@ namespace MyFlightbook
         /// <summary>
         /// Date of the earliest date for the user in this aircraft, if known
         /// </summary>
-        public DateTime EarliestDate { get; set; }
+        public DateTime? EarliestDate { get; set; }
 
         /// <summary>
         /// Date of the latest date for the user in this aircraft, if known
         /// </summary>
-        public DateTime LatestDate { get; set; }
+        public DateTime? LatestDate { get; set; }
         #endregion
 
-        /// <summary>
-        /// Refreshes the stats for the given aircraft and user
-        /// </summary>
-        private void Refresh()
+        #region Constructors
+        private void InitFromDataReader(MySqlDataReader dr)
         {
-            string szQ = String.Format(CultureInfo.InvariantCulture, @"SELECT  (SELECT COUNT(idFlight) FROM flights WHERE flights.idaircraft=?idAircraft) AS numFlights, 
+            m_cFlightsTotal = Convert.ToInt32(dr["numFlights"], CultureInfo.InvariantCulture);
+            m_cFlightsUser = Convert.ToInt32(dr["flightsForUser"], CultureInfo.InvariantCulture);
+            m_cUsers = Convert.ToInt32(dr["numUsers"], CultureInfo.InvariantCulture);
+            UserNames = dr["userNames"].ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+            object o = dr["EarliestDate"];
+            if (o != DBNull.Value)
+                EarliestDate = (DateTime)o;
+            o = dr["LatestDate"];
+            if (o != DBNull.Value)
+                LatestDate = (DateTime)o;
+            o = dr["idaircraft"];
+            if (o != DBNull.Value)
+                AircraftID = Convert.ToInt32(o, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Creates a new AircraftStats object
+        /// </summary>
+        public AircraftStats()
+        {
+            User = string.Empty;
+            AircraftID = Aircraft.idAircraftUnknown;
+            EarliestDate = new DateTime?();
+            LatestDate = new DateTime?();
+        }
+
+        /// <summary>
+        /// Creates a new AircraftStats object for the specified user, aircraft
+        /// </summary>
+        /// <param name="szUser">The user for whom stats are requested</param>
+        /// <param name="idAircraft">The aircraft for which stats are requested</param>
+        public AircraftStats(string szUser, int idAircraft) : this()
+        {
+            User = szUser;
+            AircraftID = idAircraft; // in case no rows are returned - e.g., 
+            string szQ = String.Format(CultureInfo.InvariantCulture, @"SELECT flights.idaircraft, (SELECT COUNT(idFlight) FROM flights WHERE flights.idaircraft=?idAircraft) AS numFlights, 
                                              (SELECT COUNT(DISTINCT(userName)) FROM useraircraft WHERE useraircraft.idAircraft=?idAircraft) AS numUsers, 
                                              (SELECT GROUP_CONCAT(username SEPARATOR ';') FROM useraircraft WHERE idAircraft=?idAircraft) AS userNames,
                                              COUNT(idFlight) AS flightsForUser, 
@@ -250,46 +284,65 @@ namespace MyFlightbook
             if (!dbh.ReadRow(
                 (comm) =>
                 {
-                    comm.Parameters.AddWithValue("idAircraft", AircraftID);
+                    comm.Parameters.AddWithValue("idAircraft", idAircraft);
                     comm.Parameters.AddWithValue("User", User);
                 },
-                (dr) =>
-                {
-                    m_cFlightsTotal = Convert.ToInt32(dr["numFlights"], CultureInfo.InvariantCulture);
-                    m_cFlightsUser = Convert.ToInt32(dr["flightsForUser"], CultureInfo.InvariantCulture);
-                    m_cUsers = Convert.ToInt32(dr["numUsers"], CultureInfo.InvariantCulture);
-                    UserNames = dr["userNames"].ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    object o = dr["EarliestDate"];
-                    EarliestDate = (o == DBNull.Value) ? DateTime.MinValue : (DateTime)o;
-                    o = dr["LatestDate"];
-                    LatestDate = (o == DBNull.Value) ? DateTime.MinValue : (DateTime)o;
-                }))
+                (dr) => { InitFromDataReader(dr); }))
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception in AircraftStats Refresh - Query = {0}, User = {1}, Aircraft={2}, Exception={3}", szQ, User, AircraftID, dbh.LastError));
         }
 
-        #region Constructors
-        /// <summary>
-        /// Creates a new AircraftStats object
-        /// </summary>
-        public AircraftStats()
+        protected AircraftStats(MySqlDataReader dr) : this()
         {
-            User = string.Empty;
-            AircraftID = Aircraft.idAircraftUnknown;
-        }
-
-        /// <summary>
-        /// Creates a new AircraftStats object for the specified user, aircraft
-        /// </summary>
-        /// <param name="szUser">The user for whom stats are requested</param>
-        /// <param name="idAircraft">The aircraft for which stats are requested</param>
-        public AircraftStats(string szUser, int idAircraft) : this()
-        {
-            User = szUser;
-            AircraftID = idAircraft;
-            Refresh();
+            InitFromDataReader(dr);
         }
         #endregion
+
+        /// <summary>
+        /// Returns the stats for all of the user's aircraft, but ONLY their stats
+        /// </summary>
+        /// <param name="szUser">User</param>
+        /// <returns></returns>
+        public static IDictionary<int, AircraftStats> StatsForUserAircraft(string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException("szUser");
+            if (szUser.Length == 0)
+                throw new MyFlightbookValidationException("Empty username in StatsForUserAircraft");
+            Dictionary<int, AircraftStats> dict = new Dictionary<int, AircraftStats>();
+
+            DBHelper dbh = new DBHelper(@"SELECT 
+                                            ac.idaircraft,
+                                            1 AS numUsers,
+                                            f.username AS userNames,
+                                            COUNT(f.idFlight) AS numFlights,
+                                            COUNT(f.idFlight) AS flightsForUser, 
+                                            Min(f.date) AS EarliestDate, 
+                                            Max(f.date) AS LatestDate 
+                                    FROM flights f INNER JOIN aircraft ac ON f.idaircraft=ac.idaircraft
+                                    WHERE f.username=?user
+                                    GROUP BY f.idaircraft");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
+                (dr) =>
+                {
+                    AircraftStats acs = new AircraftStats(dr);
+                    dict[acs.AircraftID] = acs;
+                });
+
+            return dict;
+        }
+
+        public static void PopulateStatsForUserAircraft(string szUser, IEnumerable<Aircraft> lstAc)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException("szUser");
+            if (lstAc == null)
+                throw new ArgumentNullException("lstAc");
+            IDictionary<int, AircraftStats> dict = StatsForUserAircraft(szUser);
+
+            foreach (Aircraft ac in lstAc)
+                if (dict.ContainsKey(ac.AircraftID))
+                    ac.Stats = dict[ac.AircraftID];
+        }
     }
 
     /// <summary>
@@ -365,6 +418,39 @@ namespace MyFlightbook
             get { return m_instanceType; }
             set { m_instanceType = value; }
         }
+
+        #region user stats
+        /// <summary>
+        /// Stats for the aircraft?  CAN BE NULL!  NOT SERIALIZED - we want to keep this abstracted.
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Xml.Serialization.XmlIgnore]
+        public AircraftStats Stats { get; set; }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public DateTime? FirstFlightDate
+        {
+            get { return (Stats == null) ? null : Stats.EarliestDate; }
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public DateTime? LastFlightDate
+        {
+            get { return (Stats == null) ? null : Stats.LatestDate; }
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public int FlightCount
+        {
+            get { return (Stats == null) ? 0 : Stats.UserFlights; }
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public bool HasBeenFlown
+        {
+            get { return (Stats != null && Stats.EarliestDate.HasValue);}
+        }
+        #endregion
 
         /// <summary>
         /// Human readable description of the instance type; read-only.  NOT PERSISTED!
@@ -1684,7 +1770,7 @@ namespace MyFlightbook
         /// <summary>
         /// Indicates how to group the aircraft
         /// </summary>
-        public enum GroupMode { All, Activity, CategoryClass, Model }
+        public enum GroupMode { All, Activity, CategoryClass, Model, Recency }
 
         #region Properties
         public IEnumerable<Aircraft> MatchingAircraft { get; set; }
@@ -1704,6 +1790,8 @@ namespace MyFlightbook
             {
                 default:
                     throw new ArgumentOutOfRangeException("Unknown groupmode: " + gm.ToString());
+                case GroupMode.Recency:
+                    return "HasBeenFlown";
                 case GroupMode.All:
                     return string.Empty;
                 case GroupMode.Activity:
@@ -1728,6 +1816,23 @@ namespace MyFlightbook
                     throw new ArgumentOutOfRangeException("Unknown groupmode: " + gm.ToString());
                 case GroupMode.All:
                     lstDst.Add(new AircraftGroup() { GroupTitle = string.Empty, MatchingAircraft = d[string.Empty] });
+                    break;
+                case GroupMode.Recency:
+                    if (d.ContainsKey(true.ToString()))
+                    {
+                        // HasBeenFlown, so Stats and dates are both present
+                        List<Aircraft> lstActive = new List<Aircraft>(d[true.ToString()]);
+                        lstActive.Sort((ac1, ac2) =>
+                        {
+                            if (ac1.Stats.LatestDate.Value.CompareTo(ac2.Stats.LatestDate) == 0)
+                                return ac1.TailNumber.CompareCurrentCulture(ac2.TailNumber);
+                            else
+                                return ac2.Stats.LatestDate.Value.CompareTo(ac1.Stats.LatestDate);
+                        });
+                        lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupFlown, MatchingAircraft = lstActive });
+                    }
+                    if (d.ContainsKey(false.ToString()))
+                            lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupUnflown, MatchingAircraft = d[false.ToString()] });
                     break;
                 case GroupMode.Activity:
                     if (d.ContainsKey(false.ToString()))

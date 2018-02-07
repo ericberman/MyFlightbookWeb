@@ -8,7 +8,7 @@
     </asp:View>
     <asp:View ID="vwAjaxUpload" runat="server">
         <asp:Image ID="myThrobber" ImageUrl="~/images/ajax-loader.gif" runat="server" style="display:None" />
-        <asp:AjaxFileUpload ID="AjaxFileUpload1" runat="server" UseAbsoluteHandlerPath="false" AutoStartUpload="true"
+        <asp:AjaxFileUpload ID="AjaxFileUpload1" runat="server" AutoStartUpload="true"
                 ThrobberID="myThrobber" AllowedFileTypes="jpg,jpeg,pdf,jpe,png" MaximumNumberOfFiles="10" OnUploadComplete="AjaxFileUpload1_UploadComplete" OnUploadCompleteAll="AjaxFileUpload1_UploadCompleteAll" />
         <uc2:mfbImageList ID="mfbImageListPending" NoRequery="true" CanEdit="true" runat="server" Columns="4" MaxImage="-1" />
         <asp:Panel ID="pnlRefresh" runat="server" Visible="false">

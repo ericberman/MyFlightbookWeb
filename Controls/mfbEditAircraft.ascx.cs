@@ -246,8 +246,8 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         List<string> lst = new List<string>();
         lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftUserStats, Stats.Users, Stats.Flights));
 
-        if (Stats.LatestDate.CompareTo(DateTime.MinValue) != 0)
-            lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftYourStats, Stats.UserFlights, Stats.EarliestDate.ToShortDateString(), Stats.LatestDate.ToShortDateString()));
+        if (Stats.LatestDate.HasValue && Stats.EarliestDate.HasValue)
+            lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftYourStats, Stats.UserFlights, Stats.EarliestDate.Value.ToShortDateString(), Stats.LatestDate.Value.ToShortDateString()));
 
         if (AdminMode)
             lst.Add(String.Format(CultureInfo.CurrentCulture, "Users = {0}", String.Join(", ", Stats.UserNames)));

@@ -525,4 +525,19 @@
   <data name="ViewAircraftTotalsPrompt" xml:space="preserve">
     <value>View your totals in this aircraft</value>
   </data>
+  <data name="AircraftFirstFlight" xml:space="preserve">
+    <value>First flight:</value>
+  </data>
+  <data name="AircraftGroupFlown" xml:space="preserve">
+    <value>Flown aircraft</value>
+  </data>
+  <data name="AircraftGroupUnflown" xml:space="preserve">
+    <value>Unflown aircraft</value>
+  </data>
+  <data name="AircraftLastFlight" xml:space="preserve">
+    <value>Most recent flight:</value>
+  </data>
+  <data name="ViewAircraftRecency" xml:space="preserve">
+    <value>Recency of flight</value>
+  </data>
 </root>
