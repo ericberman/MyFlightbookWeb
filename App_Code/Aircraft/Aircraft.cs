@@ -179,6 +179,18 @@ namespace MyFlightbook
     [Serializable]
     public class AircraftStats
     {
+        public enum StatsScope {
+            /// <summary>
+            /// Indicates that the stats are valid system-wide
+            /// </summary>
+            Global,
+
+            /// <summary>
+            /// Indicates that the stats are only looking at the user's flights
+            /// (i.e., NumUsers is always 1 and NumFlights always equals UserFlights
+            /// </summary>
+            PerUser }
+
         private int m_cFlightsUser = 0;
         private int m_cFlightsTotal = 0;
         private int m_cUsers = 0;
@@ -229,6 +241,11 @@ namespace MyFlightbook
         /// Date of the latest date for the user in this aircraft, if known
         /// </summary>
         public DateTime? LatestDate { get; set; }
+
+        /// <summary>
+        /// Scope of the stats: are these global or just per-user (i.e., do the NumFlights include flights taken by others and is NumUsers valid)
+        /// </summary>
+        public StatsScope Scope { get; set; }
         #endregion
 
         #region Constructors
@@ -259,6 +276,7 @@ namespace MyFlightbook
             AircraftID = Aircraft.idAircraftUnknown;
             EarliestDate = new DateTime?();
             LatestDate = new DateTime?();
+            Scope = StatsScope.Global;
         }
 
         /// <summary>
@@ -269,7 +287,9 @@ namespace MyFlightbook
         public AircraftStats(string szUser, int idAircraft) : this()
         {
             User = szUser;
-            AircraftID = idAircraft; // in case no rows are returned - e.g., 
+            AircraftID = idAircraft; // in case no rows are returned - e.g., if nobody has flown it
+            Scope = StatsScope.Global;
+
             string szQ = String.Format(CultureInfo.InvariantCulture, @"SELECT flights.idaircraft, (SELECT COUNT(idFlight) FROM flights WHERE flights.idaircraft=?idAircraft) AS numFlights, 
                                              (SELECT COUNT(DISTINCT(userName)) FROM useraircraft WHERE useraircraft.idAircraft=?idAircraft) AS numUsers, 
                                              (SELECT GROUP_CONCAT(username SEPARATOR ';') FROM useraircraft WHERE idAircraft=?idAircraft) AS userNames,
@@ -324,7 +344,7 @@ namespace MyFlightbook
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
                 (dr) =>
                 {
-                    AircraftStats acs = new AircraftStats(dr);
+                    AircraftStats acs = new AircraftStats(dr) { Scope = StatsScope.PerUser };
                     dict[acs.AircraftID] = acs;
                 });
 
