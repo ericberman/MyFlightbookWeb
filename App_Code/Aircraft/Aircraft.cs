@@ -179,18 +179,6 @@ namespace MyFlightbook
     [Serializable]
     public class AircraftStats
     {
-        public enum StatsScope {
-            /// <summary>
-            /// Indicates that the stats are valid system-wide
-            /// </summary>
-            Global,
-
-            /// <summary>
-            /// Indicates that the stats are only looking at the user's flights
-            /// (i.e., NumUsers is always 1 and NumFlights always equals UserFlights
-            /// </summary>
-            PerUser }
-
         private int m_cFlightsUser = 0;
         private int m_cFlightsTotal = 0;
         private int m_cUsers = 0;
@@ -241,11 +229,6 @@ namespace MyFlightbook
         /// Date of the latest date for the user in this aircraft, if known
         /// </summary>
         public DateTime? LatestDate { get; set; }
-
-        /// <summary>
-        /// Scope of the stats: are these global or just per-user (i.e., do the NumFlights include flights taken by others and is NumUsers valid)
-        /// </summary>
-        public StatsScope Scope { get; set; }
         #endregion
 
         #region Constructors
@@ -276,39 +259,11 @@ namespace MyFlightbook
             AircraftID = Aircraft.idAircraftUnknown;
             EarliestDate = new DateTime?();
             LatestDate = new DateTime?();
-            Scope = StatsScope.Global;
         }
 
-        /// <summary>
-        /// Creates a new AircraftStats object for the specified user, aircraft
-        /// </summary>
-        /// <param name="szUser">The user for whom stats are requested</param>
-        /// <param name="idAircraft">The aircraft for which stats are requested</param>
-        public AircraftStats(string szUser, int idAircraft) : this()
+        public AircraftStats(string szUser, int aircraftID) : this()
         {
-            User = szUser;
-            AircraftID = idAircraft; // in case no rows are returned - e.g., if nobody has flown it
-            Scope = StatsScope.Global;
-
-            string szQ = String.Format(CultureInfo.InvariantCulture, @"SELECT flights.idaircraft, (SELECT COUNT(idFlight) FROM flights WHERE flights.idaircraft=?idAircraft) AS numFlights, 
-                                             (SELECT COUNT(DISTINCT(userName)) FROM useraircraft WHERE useraircraft.idAircraft=?idAircraft) AS numUsers, 
-                                             (SELECT GROUP_CONCAT(username SEPARATOR ';') FROM useraircraft WHERE idAircraft=?idAircraft) AS userNames,
-                                             COUNT(idFlight) AS flightsForUser, 
-                                             Min(date) AS EarliestDate, 
-                                             Max(date) AS LatestDate 
-                                    FROM flights 
-                                    WHERE flights.idaircraft=?idAircraft {0}", String.IsNullOrEmpty(User) ? "" : " AND flights.username=?User");
-
-            DBHelper dbh = new DBHelper(szQ);
-
-            if (!dbh.ReadRow(
-                (comm) =>
-                {
-                    comm.Parameters.AddWithValue("idAircraft", idAircraft);
-                    comm.Parameters.AddWithValue("User", User);
-                },
-                (dr) => { InitFromDataReader(dr); }))
-                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception in AircraftStats Refresh - Query = {0}, User = {1}, Aircraft={2}, Exception={3}", szQ, User, AircraftID, dbh.LastError));
+            GetStats(new int[] { aircraftID }, szUser, (dr) => { InitFromDataReader(dr); });
         }
 
         protected AircraftStats(MySqlDataReader dr) : this()
@@ -317,47 +272,94 @@ namespace MyFlightbook
         }
         #endregion
 
+        #region Getting stats for aircraft
+        private static void GetStats(IEnumerable<int> lstAircraftIDs, string szUser, Action<MySqlDataReader> readStats)
+        {
+            List<string> lstIds = new List<string>();
+            foreach (int id in lstAircraftIDs)
+                lstIds.Add(id.ToString(CultureInfo.InvariantCulture));
+
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT
+                    ac.idaircraft,
+                    COUNT(DISTINCT(f1.idFlight)) AS numFlights,
+                    COUNT(DISTINCT(ua.username)) AS numUsers,
+                    GROUP_CONCAT(DISTINCT ua.username SEPARATOR ';') AS userNames,
+                    COUNT(DISTINCT(f2.idflight)) AS flightsForUser,
+                    MIN(f2.date) AS EarliestDate,
+                    MAX(f2.date) AS LatestDate
+                FROM aircraft ac
+                    LEFT JOIN flights f1 ON ac.idaircraft=f1.idaircraft
+                    LEFT JOIN flights f2 ON f2.username=?user AND f1.idflight=f2.idflight
+                    LEFT JOIN useraircraft ua ON ac.idaircraft=ua.idaircraft
+                WHERE ac.idaircraft  IN ({0})
+                GROUP BY ac.idaircraft", String.Join(",", lstIds)));
+
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
+                (dr) => { readStats(dr); });
+        }
+
         /// <summary>
-        /// Returns the stats for all of the user's aircraft, but ONLY their stats
+        /// Returns the stats for the specified set of aircraft ID's
         /// </summary>
-        /// <param name="szUser">User</param>
-        /// <returns></returns>
-        public static IDictionary<int, AircraftStats> StatsForUserAircraft(string szUser)
+        /// <param name="lstAircraftIDs">The list of aircraft IDs for which stats are requested</param>
+        /// <param name="szUser">The user for whom to return per-user stats.</param>
+        /// <returns>An IDictionary mapping IDs to stats</returns>
+        public static IDictionary<int, AircraftStats> StatsForAircraft(IEnumerable<int> lstAircraftIDs, string szUser = null)
         {
             if (szUser == null)
-                throw new ArgumentNullException("szUser");
-            if (szUser.Length == 0)
-                throw new MyFlightbookValidationException("Empty username in StatsForUserAircraft");
+                szUser = string.Empty;
+
             Dictionary<int, AircraftStats> dict = new Dictionary<int, AircraftStats>();
 
-            DBHelper dbh = new DBHelper(@"SELECT 
-                                            ac.idaircraft,
-                                            1 AS numUsers,
-                                            f.username AS userNames,
-                                            COUNT(f.idFlight) AS numFlights,
-                                            COUNT(f.idFlight) AS flightsForUser, 
-                                            Min(f.date) AS EarliestDate, 
-                                            Max(f.date) AS LatestDate 
-                                    FROM flights f INNER JOIN aircraft ac ON f.idaircraft=ac.idaircraft
-                                    WHERE f.username=?user
-                                    GROUP BY f.idaircraft");
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
-                (dr) =>
-                {
-                    AircraftStats acs = new AircraftStats(dr) { Scope = StatsScope.PerUser };
-                    dict[acs.AircraftID] = acs;
-                });
+            if (lstAircraftIDs == null || lstAircraftIDs.Count() == 0)
+                return dict;
+
+            GetStats(lstAircraftIDs, szUser, (dr) =>
+            {
+                AircraftStats acs = new AircraftStats(dr);
+                dict[acs.AircraftID] = acs;
+            });
 
             return dict;
         }
 
-        public static void PopulateStatsForUserAircraft(string szUser, IEnumerable<Aircraft> lstAc)
+        /// <summary>
+        /// Returns the stats for the specified set of aircraft
+        /// </summary>
+        /// <param name="lstAc">The list of aircraft for which stats are requested</param>
+        /// <param name="szUser">The user for whom to return per-user stats.</param>
+        /// <returns>An IDictionary mapping IDs to stats</returns>
+        public static IDictionary<int, AircraftStats> StatsForAircraft(IEnumerable<Aircraft> lstAc, string szUser = null)
+        {
+            if (lstAc == null)
+                throw new ArgumentNullException("lstAc");
+            List<int> lstIds = new List<int>();
+            foreach (Aircraft ac in lstAc)
+                lstIds.Add(ac.AircraftID);
+
+            return StatsForAircraft(lstIds, szUser);
+        }
+
+        /// <summary>
+        /// Returns stats for a single specified aircraft, and optionally a specific user
+        /// </summary>
+        /// <param name="idAircraft"></param>
+        /// <param name="szUser">The user</param>
+        /// <returns>Stats for that user</returns>
+        public static AircraftStats StatsForAircraft(int idAircraft, string szUser = null)
+        {
+            IDictionary<int, AircraftStats> d = StatsForAircraft(new int[] { idAircraft }, szUser);
+            return d.ContainsKey(idAircraft) ? d[idAircraft] : new AircraftStats();
+        }
+        #endregion
+
+        public static void PopulateStatsForAircraft(IEnumerable<Aircraft> lstAc, string szUser)
         {
             if (szUser == null)
                 throw new ArgumentNullException("szUser");
             if (lstAc == null)
                 throw new ArgumentNullException("lstAc");
-            IDictionary<int, AircraftStats> dict = StatsForUserAircraft(szUser);
+            IDictionary<int, AircraftStats> dict = StatsForAircraft(lstAc, szUser);
 
             foreach (Aircraft ac in lstAc)
                 if (dict.ContainsKey(ac.AircraftID))
@@ -1246,7 +1248,7 @@ namespace MyFlightbook
 
             // see if we need to use the matching aircraft's model
             AircraftStats acs = new AircraftStats(String.Empty, acMatch.AircraftID);
-            if (acs.UserFlights != 0)
+            if (acs.Users != 0)
             {
                 if (!String.IsNullOrEmpty(szUser))
                 {
@@ -1285,7 +1287,7 @@ namespace MyFlightbook
             // See if there's even an issue
             // If it's not used in any flights, or there's exactly one user (the owner), no problem.
             AircraftStats acs = new AircraftStats(String.Empty, acMatch.AircraftID);
-            if (acs.UserFlights == 0 || (acs.Users == 1 && String.Compare(szUser, acs.UserNames[0], StringComparison.CurrentCultureIgnoreCase) == 0))
+            if (acs.Flights == 0 || (acs.Users == 1 && String.Compare(szUser, acs.UserNames[0], StringComparison.CurrentCultureIgnoreCase) == 0))
                 return;
 
             // Notify the admin here - model changed, I want to see it.
