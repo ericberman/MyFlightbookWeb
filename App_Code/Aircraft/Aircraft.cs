@@ -1364,6 +1364,10 @@ namespace MyFlightbook
             dbh.CommandText = "UPDATE useraircraft ua SET ua.idAircraft=?idAircraftNew WHERE ua.idAircraft=?idAircraftOld";
             dbh.DoNonQuery();
 
+            // And fix up any pre-existing tombstones that point to this aircraft
+            dbh.CommandText = "UPDATE aircrafttombstones SET idMappedAircraft=?idAircraftNew WHERE idMappedAircraft=?idAircraftOld";
+            dbh.DoNonQuery();
+
             // Finally, it should now be safe to delete the aircraft
             dbh.CommandText = "DELETE FROM aircraft WHERE idAircraft=?idAircraftOld";
             dbh.DoNonQuery();
