@@ -2010,6 +2010,90 @@ namespace MyFlightbook
         #endregion
     }
 
+    [Serializable]
+    public class AircraftAdminModelMapping
+    {
+        #region properties
+        public Aircraft aircraft { get; set; }
+        public MakeModel currentModel { get; set; }
+        public MakeModel targetModel { get; set; }
+        #endregion
+
+        public AircraftAdminModelMapping()
+        {
+            aircraft = null;
+            currentModel = targetModel = null;
+        }
+
+        // Commits the mapping - NO EMAIL sent, also very efficient on the database (simple update)
+        public void CommitChange()
+        {
+            DBHelper dbh = new DBHelper("UPDATE aircraft SET idmodel=?newmodel WHERE idaircraft=?idac");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("newmodel", targetModel.MakeModelID);
+                comm.Parameters.AddWithValue("idac", aircraft.AircraftID);
+            });
+        }
+
+        public static IEnumerable<AircraftAdminModelMapping> MapModels(Stream s)
+        {
+            if (s == null)
+                throw new ArgumentNullException("s");
+
+            List<AircraftAdminModelMapping> lstMappings = new List<AircraftAdminModelMapping>();
+
+            using (CSVReader reader = new CSVReader(s))
+            {
+                try
+                {
+                    int iColAircraftID = -1;
+                    int iColTargetModelID = -1;
+
+                    string[] rgCols = reader.GetCSVLine(true);
+
+                    if (rgCols == null)
+                        throw new MyFlightbookValidationException("No column headers found.");
+
+                    for (int i = 0; i < rgCols.Length; i++)
+                    {
+                        string sz = rgCols[i];
+                        if (String.Compare(sz, "idaircraft", StringComparison.OrdinalIgnoreCase) == 0)
+                            iColAircraftID = i;
+                        if (String.Compare(sz, "idModelProper", StringComparison.OrdinalIgnoreCase) == 0)
+                            iColTargetModelID = i;
+                    }
+
+                    if (iColAircraftID < 0)
+                        throw new MyFlightbookValidationException("No \"idaircraft\" column found.");
+                    if (iColTargetModelID < 0)
+                        throw new MyFlightbookValidationException("No \"idModelProper\" column found.");
+
+                    while ((rgCols = reader.GetCSVLine()) != null)
+                    {
+                        int idAircraft = Convert.ToInt32(rgCols[iColAircraftID], CultureInfo.InvariantCulture);
+                        int idTargetModel = Convert.ToInt32(rgCols[iColTargetModelID], CultureInfo.InvariantCulture);
+                        Aircraft ac = new Aircraft(idAircraft);
+                        if (ac.AircraftID != Aircraft.idAircraftUnknown && ac.ModelID != idTargetModel)
+                        {
+                            AircraftAdminModelMapping amm = new AircraftAdminModelMapping();
+                            amm.aircraft = ac;
+                            amm.currentModel = MakeModel.GetModel(ac.ModelID);
+                            amm.targetModel = MakeModel.GetModel(idTargetModel);
+                            lstMappings.Add(amm);
+                        }
+                    }
+                }
+                catch (CSVReaderInvalidCSVException ex)
+                {
+                    throw new MyFlightbookException(ex.Message, ex);
+                }
+            }
+
+            return lstMappings;
+        }
+    }
+
     /// <summary>
     /// Results from parsing the CSV file
     /// </summary>

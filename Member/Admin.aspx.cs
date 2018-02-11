@@ -800,6 +800,52 @@ GROUP BY ac.idaircraft";
             dbhDelMaintenance.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idac", ac.AircraftID); });
         }
     }
+
+    const string szKeyVSMapModels = "VSModelMapping";
+
+    protected void btnMapModels_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!fuMapModels.HasFile)
+                throw new MyFlightbookValidationException("Need to upload a CSV file with aircraft to map.");
+
+            mvAircraftIssues.SetActiveView(vwMapModels);
+
+            List<AircraftAdminModelMapping> lst = new List<AircraftAdminModelMapping>(AircraftAdminModelMapping.MapModels(fuMapModels.FileContent));
+            ViewState[szKeyVSMapModels] = lst;
+            gvMapModels.DataSource = lst;
+            gvMapModels.DataBind();
+        }
+        catch (MyFlightbookValidationException ex)
+        {
+            lblMapModelErr.Text = ex.Message;
+        }
+        catch (MyFlightbookException ex)
+        {
+            lblMapModelErr.Text = ex.Message;
+        }
+    }
+
+    protected void gvMapModels_RowCommand(object sender, CommandEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        if (e.CommandName.CompareCurrentCultureIgnoreCase("_MapModel") == 0)
+        {
+            int idRow = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
+            List<AircraftAdminModelMapping> lst = (List<AircraftAdminModelMapping>)ViewState[szKeyVSMapModels];
+
+            AircraftAdminModelMapping amm = lst[idRow];
+
+            amm.CommitChange();
+
+            lst.Remove(amm);
+            gvMapModels.DataSource = lst;
+            gvMapModels.DataBind();
+        }
+    }
     #endregion
 
     #region Endorsement Management

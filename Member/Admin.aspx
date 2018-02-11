@@ -7,6 +7,8 @@
 <%@ Register src="../Controls/mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc3" %>
 <%@ Register src="../Controls/Expando.ascx" tagname="Expando" tagprefix="uc4" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc1" TagName="mfbTypeInDate" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
     Admin Tools
 </asp:Content>
@@ -92,6 +94,9 @@
         <asp:View ID="vwAircraft" runat="server">
             <h2>Aircraft</h2>
             <asp:UpdatePanel ID="updpanelAircraft" runat="server">
+                <Triggers>
+                    <asp:PostBackTrigger ControlID="btnMapModels" />
+                </Triggers>
                 <ContentTemplate>
                         <table>
                             <tr>
@@ -133,6 +138,25 @@
                                 <td>
                                     <asp:Button ID="btnCleanUpMaintenance" runat="server" Width="100%" OnClick="btnCleanUpMaintenance_Click" Text="Clean up Maint." /></td>
                                 <td>Remove maintainence for virtual aircraft (sims and generic).
+                                </td>
+                            </tr>
+                            <tr style="vertical-align:top">
+                                <td>
+                                    <div><asp:Button ID="btnMapModels" runat="server" Width="100%" OnClick="btnMapModels_Click" Text="Bulk-map models" /></div>
+                                </td>
+                                <td>
+                                    <div><asp:FileUpload ID="fuMapModels" runat="server" /></div>
+                                    Bulk map aircraft models from spreadsheet.
+                                    <uc1:mfbTooltip runat="server" ID="mfbTooltip">
+                                        <TooltipBody>
+                                            <div>CSV spreadsheet needs two columns:</div>
+                                            <ul>
+                                                <li>idaircraft - the ID of the aircraft to map</li>
+                                                <li>idModelProper - the ID of the model to which it should be mapped.</li>
+                                            </ul>
+                                        </TooltipBody>
+                                    </uc1:mfbTooltip>
+                                    <div><asp:Label runat="server" CssClass="error" EnableViewState="false" ID="lblMapModelErr"></asp:Label></div>
                                 </td>
                             </tr>
                         </table>
@@ -415,6 +439,40 @@ LEFT JOIN Flights f ON f.idaircraft=ac.idaircraft
 WHERE ac.tailnumber RLIKE '^N-?[ABD-FH-KM-QT-WYZ][-0-9A-Z]+' OR (ac.tailnumber LIKE 'N7_7%' AND man.idmanufacturer=3) OR modelTails.tailnumber IS NOT NULL
 GROUP BY ac.idaircraft
 ORDER BY tailnumber ASC"></asp:SqlDataSource>
+                            </asp:View>
+                            <asp:View ID="vwMapModels" runat="server">
+                                <asp:GridView ID="gvMapModels" runat="server" OnRowCommand="gvMapModels_RowCommand" AutoGenerateColumns="false">
+                                    <Columns>
+                                        <asp:TemplateField>
+                                            <ItemTemplate>
+                                                <asp:HyperLink ID="lnkAircraft" Text="<%# ((AircraftAdminModelMapping) Container.DataItem).aircraft.DisplayTailnumber %>" Target="_blank"
+                                                    NavigateUrl='<%# "~/Member/EditAircraft.aspx?id=" + ((AircraftAdminModelMapping) Container.DataItem).aircraft.AircraftID.ToString() %>' runat="server"></asp:HyperLink>
+                                            </ItemTemplate>
+                                            <HeaderTemplate>
+                                                Aircraft
+                                            </HeaderTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+                                            <ItemTemplate>
+                                                <asp:HyperLink ID="lnkModel" Text="<%# ((AircraftAdminModelMapping) Container.DataItem).currentModel.ModelDisplayName %>" Target="_blank"
+                                                    NavigateUrl='<%# "~/Member/EditMake.aspx?id=" + ((AircraftAdminModelMapping) Container.DataItem).currentModel.MakeModelID.ToString() %>' runat="server"></asp:HyperLink>
+                                            </ItemTemplate>
+                                            <HeaderTemplate>
+                                                Current Model
+                                            </HeaderTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+                                            <ItemTemplate>
+                                                <asp:HyperLink ID="lnkModel" Text="<%# ((AircraftAdminModelMapping) Container.DataItem).targetModel.ModelDisplayName %>" Target="_blank"
+                                                    NavigateUrl='<%# "~/Member/EditMake.aspx?id=" + ((AircraftAdminModelMapping) Container.DataItem).targetModel.MakeModelID.ToString() %>' runat="server"></asp:HyperLink>
+                                            </ItemTemplate>
+                                            <HeaderTemplate>
+                                                Target Model Model
+                                            </HeaderTemplate>
+                                        </asp:TemplateField>
+                                        <asp:ButtonField CommandName="_MapModel" ButtonType="Link" Text="Map it" />
+                                    </Columns>
+                                </asp:GridView>
                             </asp:View>
                         </asp:MultiView>
                 </ContentTemplate>
