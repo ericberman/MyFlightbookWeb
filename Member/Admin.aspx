@@ -445,6 +445,11 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                                     <Columns>
                                         <asp:TemplateField>
                                             <ItemTemplate>
+                                                <asp:HyperLink ID="lnkRegistration" runat="server" NavigateUrl='<%# Aircraft.LinkForTailnumberRegistry(((AircraftAdminModelMapping) Container.DataItem).aircraft.TailNumber) %>' Target="_blank" Text="Registration" Visible='<%# !String.IsNullOrEmpty(Aircraft.LinkForTailnumberRegistry(((AircraftAdminModelMapping) Container.DataItem).aircraft.TailNumber)) %>'></asp:HyperLink>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField>
+                                            <ItemTemplate>
                                                 <asp:HyperLink ID="lnkAircraft" Text="<%# ((AircraftAdminModelMapping) Container.DataItem).aircraft.DisplayTailnumber %>" Target="_blank"
                                                     NavigateUrl='<%# "~/Member/EditAircraft.aspx?id=" + ((AircraftAdminModelMapping) Container.DataItem).aircraft.AircraftID.ToString() %>' runat="server"></asp:HyperLink>
                                             </ItemTemplate>
