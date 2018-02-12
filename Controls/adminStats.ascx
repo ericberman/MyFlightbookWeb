@@ -3,14 +3,27 @@
     <%@ Register src="GoogleChart.ascx" tagname="GoogleChart" tagprefix="uc1" %>
     <h1>Site Stats</h1>
     <h3>Users:</h3>
-    <asp:GridView ID="gvUserStats" runat="server" DataSourceID="sqlUserStats">
+    <asp:GridView ID="gvUserStats" runat="server" DataSourceID="sqlUserStats" CellPadding="3">
     </asp:GridView>
     <asp:SqlDataSource ID="sqlUserStats" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-        SelectCommand="SELECT SUM(username<> '') AS 'Users', SUM(emailsubscriptions<> 0) AS Subscriptions, SUM(FacebookAccessToken <> '') 'Facebook Users', SUM(TwitterAccessToken <> '') AS 'Twitter Users', (SELECT COUNT(*) FROM students) AS Students, SUM(month(creationdate)=month(now()) AND year(creationdate)=year(now())) AS 'New Users this month' FROM users" 
+        SelectCommand="SELECT COUNT(username) AS 'Users', 
+	SUM(emailsubscriptions&lt;&gt; 0) AS Subscriptions, 
+    SUM(FacebookAccessToken &lt;&gt; '') 'Facebook Users', 
+    SUM(TwitterAccessToken &lt;&gt; '') AS 'Twitter Users', 
+    SUM(propertyblacklist &lt;&gt; '') AS blacklistcount,
+    SUM(DropboxAccesstoken &lt;&gt; '') AS dropboxusers,
+    SUM(GoogleDriveAccessToken &lt;&gt; '') AS googleusers,
+    SUM(OnedriveaccessToken &lt;&gt; '') AS oneDriveUsers,
+    SUM(IF(DropboxAccesstoken &lt;&gt; '', 1, 0) + IF(GoogleDriveAccessToken&lt;&gt;'', 1, 0) + IF(OneDriveAccessToken &lt;&gt; '', 1, 0) &gt; 1) as multicloudusers,
+    SUM(DefaultCloudDriveID &lt;&gt; 0) AS multiusers,
+    SUM(month(creationdate)=month(now()) AND year(creationdate)=year(now())) AS 'New Users this month' 
+FROM users;" 
         onselecting="setTimeout">
     </asp:SqlDataSource>
-    <asp:GridView ID="gvOAuthAndPass" runat="server" DataSourceID="sqlOAuthAndPass"></asp:GridView>
+    <asp:Button ID="btnTrimAuthenticate" runat="server" Text="Trim Authentications" 
+        onclick="btnTrimAuthenticate_Click" />
+    <asp:GridView ID="gvOAuthAndPass" runat="server" DataSourceID="sqlOAuthAndPass" CellPadding="3"></asp:GridView>
     <asp:SqlDataSource ID="sqlOAuthAndPass" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
         SelectCommand="SELECT 
@@ -19,8 +32,6 @@
             (SELECT count(*) FROM passwordresetrequests) AS PasswordResetCount;"          
         onselecting="setTimeout">
     </asp:SqlDataSource>
-    <asp:Button ID="btnTrimAuthenticate" runat="server" Text="Trim Authentications" 
-        onclick="btnTrimAuthenticate_Click" />
     <asp:Button ID="btnTrimOAuth" runat="server" OnClick="btnTrimOAuth_Click" Text="Trim old oAuth authentications" />
     <h3>Usage:</h3>
     <asp:GridView ID="gvMiscStats" runat="server" DataSourceID="sqlMiscStats">
@@ -28,22 +39,16 @@
     <asp:SqlDataSource ID="SqlMiscStats" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
         SelectCommand="SELECT
-                        (SELECT count(*) from users where propertyblacklist &lt;&gt; '') AS blacklistcount,
+                        (SELECT COUNT(*) FROM students) AS Students, 
                         (SELECT count(*) from aircraft where publicnotes &lt;&gt; '') AS publicnotescount,
                         (SELECT count(*) from useraircraft where privatenotes &lt;&gt; '') AS privatenotescount,
                         (SELECT count(*) from flightvideos) AS flightVideoCount,
                         (SELECT count(*) from images where virtpathid=0 and imagetype=3) AS AWSVideoCount,
-                        (SELECT count(*) from clubs) AS clubcount,
-                        (SELECT count(*) from users where dropboxaccesstoken &lt;&gt; '') AS dropboxusers,
-                        (SELECT count(*) from users where GoogleDriveAccessToken &lt;&gt; '') AS googleusers,
-                        (SELECT count(*) from users where OnedriveAccessToken &lt;&gt; '') AS onedriveusers,
-                        (SELECT count(*) from users where (IF(DropboxAccesstoken &lt;&gt; '', 1, 0) + IF(GoogleDriveAccessToken&lt;&gt;'', 1, 0) + IF(OneDriveAccessToken &lt;&gt; '', 1, 0) &gt; 1)) AS multicloudusers,
-                        (SELECT count(*) from users where DefaultCloudDriveID &lt;&gt; 0) AS multiusers,
-                        (SELECT ClickCount from sponsoredads) AS 'sponsored ad clicks';" 
+                        (SELECT count(*) from clubs) AS clubcount" 
         onselecting="setTimeout">
     </asp:SqlDataSource>
     <table>
-        <tr valign="top">
+        <tr>
             <td>
                 <asp:GridView ID="gvUserSources" runat="server" DataSourceID="sqlUserSources">
                 </asp:GridView>
@@ -63,7 +68,7 @@
                 </asp:SqlDataSource>
             </td>
         </tr>
-        <tr valign="top">
+        <tr>
             <td>
                 <asp:GridView ID="gvPayments" DataSourceID="sqlDSPayments" runat="server"></asp:GridView>
                 <asp:SqlDataSource ID="sqlDSPayments" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
@@ -88,10 +93,10 @@
                 </asp:GridView>
                 <asp:SqlDataSource ID="SqlSiteOther" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
                     ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT
-                   (SELECT COUNT(DISTINCT(idFlight)) FROM flights) AS 'Flights',
+                   (SELECT COUNT(*) FROM flights) AS 'Flights',
                    (SELECT COUNT(*) from flighttelemetry) AS 'Telemetry Count',
-                   (SELECT COUNT(DISTINCT(idmodel)) FROM models) AS 'Models',
-                   (SELECT COUNT(*) FROM airports where sourceusername <> '') AS UserAirports,
+                   (SELECT COUNT(*) FROM models) AS 'Models',
+                   (SELECT COUNT(*) FROM airports where sourceusername &lt;&gt; '') AS UserAirports,
                    (SELECT WSCommittedFlights FROM eventcounts WHERE id=1) AS 'WS Committed Flights',
                    (SELECT ImportedFlights FROM eventcounts WHERE id=1) AS 'Imported Flights'" 
                     onselecting="setTimeout">
