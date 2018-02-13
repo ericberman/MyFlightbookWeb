@@ -9,7 +9,7 @@ using JouniHeikniemi.Tools.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2017 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -482,20 +482,7 @@ namespace MyFlightbook.ImportFlights
             #region GetMappedValues
             private Boolean GetMappedBoolean(int iCol)
             {
-                if (iCol < 0)
-                    return false;
-                string sz = m_rgszRow[iCol].ToUpperInvariant().Trim();
-                if (sz.Length == 0)
-                    return false;
-                else
-                {
-                    if (sz[0] == 'Y' || sz[0] == 'T' || sz[0] == '1')
-                        return true;
-                    Boolean f = false;
-                    if (Boolean.TryParse(sz, out f))
-                        return f;
-                    return false;
-                }
+                return (iCol < 0) ? false : m_rgszRow[iCol].SafeParseBoolean();
             }
 
             private string GetMappedString(int iCol)

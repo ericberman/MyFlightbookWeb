@@ -1,25 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MyFlightbook;
+using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.HtmlControls;
-using System.IO;
-using System.Collections;
-using System.Globalization;
-using JouniHeikniemi.Tools.Text;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web.Script.Serialization;
-using System.Web.Services;
-using System.Web.Security;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -166,7 +156,7 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
         try
         {
             // Initial pass - no database hit, just the tailnumbers and models.  We'll populate useraircraft/all aircraft afterwards
-            Matches = aipc = new AircraftImportParseContext(szCSVToParse);
+            Matches = aipc = new AircraftImportParseContext(szCSVToParse, Page.User.Identity.Name);
 
             if (aipc.RowsFound && aipc.MatchResults.Count == 0)
                 throw new MyFlightbookException(Resources.Aircraft.errImportEmptyFile);

@@ -2126,9 +2126,22 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// User for whom we are importing
+        /// </summary>
+        public string Username { get; set; }
+
+        /// <summary>
         /// True if rows were found.
         /// </summary>
         public bool RowsFound { get; set; }
+
+        #region internal - column indices
+        private int iColTail = -1;  // column index for tailnumber
+        private int iColModel = -1; // column index for model
+        private int iColPrivatenotes = -1; // column index for private notes
+        private int iColFrequentlyUsed = -1; // column index for frequently used
+        private int iColAircraftID = -1; // column index for aircraft ID
+        #endregion
 
         #region Subsets of matches
         /// <summary>
@@ -2175,11 +2188,11 @@ namespace MyFlightbook
         /// <param name="szTail">The tailnumber</param>
         /// <param name="szModelGiven">The given model</param>
         /// <param name="fRequireModel">True (default) if a model MUST be provided.</param>
-        public void AddMatchCandidate(string szTail, string szModelGiven, bool fRequireModel = true)
+        public AircraftImportMatchRow AddMatchCandidate(string szTail, string szModelGiven, bool fRequireModel = true)
         {
             // Look for missing data.  If both are empty, that's OK - just continue
             if (String.IsNullOrEmpty(szTail) && String.IsNullOrEmpty(szModelGiven))
-                return;
+                return null;
 
             // But if only one is empty, that's a problem.
             if (String.IsNullOrEmpty(szTail) || (fRequireModel && String.IsNullOrEmpty(szModelGiven)))
@@ -2194,10 +2207,10 @@ namespace MyFlightbook
             if (CountryCodePrefix.IsNakedAnon(szTail) || CountryCodePrefix.IsNakedSim(szTail))
             {
                 if (MatchResults.FirstOrDefault<AircraftImportMatchRow>(matchrow => { return matchrow.TailNumber.CompareOrdinalIgnoreCase(szTail) == 0 && matchrow.ModelGiven.CompareOrdinalIgnoreCase(szModelGiven) == 0; }) != null)
-                    return;
+                    return null;
             }
             else if (TailsFound.Contains(szTailNormal))
-                return;
+                return null;
 
             RowsFound = true;
 
@@ -2205,66 +2218,95 @@ namespace MyFlightbook
             MatchResults.Add(mr);
             if (!String.IsNullOrEmpty(szTailNormal))
                 TailsFound.Add(szTailNormal);
+            return mr;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        public void InitFromCSV(string szCSVToParse)
+        private void InitHeaders(string[] rgszRow)
+        {
+            if (rgszRow == null)
+                return;
+
+            if (rgszRow.Length < 2)
+                throw new MyFlightbookException(Resources.Aircraft.ImportNotValidCSV);
+
+            for (int i = 0; i < rgszRow.Length; i++)
+            {
+                if (rgszRow[i].CompareCurrentCultureIgnoreCase(ImportFlights.CSVImporter.TailNumberColumnName) == 0)
+                    iColTail = i;
+                if (rgszRow[i].CompareCurrentCultureIgnoreCase(ImportFlights.CSVImporter.ModelColumnName) == 0)
+                    iColModel = i;
+                if (rgszRow[i].CompareCurrentCultureIgnoreCase("Private Notes") == 0)
+                    iColPrivatenotes = i;
+                if (rgszRow[i].CompareCurrentCultureIgnoreCase("Frequently Used") == 0)
+                    iColFrequentlyUsed = i;
+                if (rgszRow[i].CompareCurrentCultureIgnoreCase("Aircraft ID") == 0)
+                    iColAircraftID = i;
+            }
+
+            if (iColTail < 0)
+                throw new MyFlightbookException(Resources.Aircraft.ImportNoTailNumberColumnFound);
+            if (iColModel < 0)
+                throw new MyFlightbookException(Resources.Aircraft.ImportNoModelColumnFound);
+        }
+
+        private void InitFromCSV(Stream CSVToParse)
         {
             string[] rgszRow;
             bool fFirstRow = true;  // detect list separator on first read row.
 
-            int iColTail = -1;  // column index for tailnumber
-            int iColModel = -1; // column index for model
+            UserAircraft ua = String.IsNullOrEmpty(Username) ? null : new UserAircraft(Username);
 
-            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(szCSVToParse)))
-                using (CSVReader csvr = new CSVReader(ms))
+            using (CSVReader csvr = new CSVReader(CSVToParse))
+            {
+                try
                 {
-                    try
+                    InitHeaders(csvr.GetCSVLine(true));
+                    while ((rgszRow = csvr.GetCSVLine(fFirstRow)) != null)
                     {
-                        while ((rgszRow = csvr.GetCSVLine(fFirstRow)) != null)
+                        string szTail = rgszRow[iColTail].Trim().ToUpper(CultureInfo.CurrentCulture);
+                        string szModelGiven = rgszRow[iColModel].Trim();
+
+                        // trim anything after a comma, if necessary
+                        int iComma = szModelGiven.IndexOf(",", StringComparison.CurrentCultureIgnoreCase);
+                        if (iComma > 0)
+                            szModelGiven = szModelGiven.Substring(0, iComma);
+
+                        AircraftImportMatchRow mr = AddMatchCandidate(szTail, szModelGiven);
+
+                        if (mr != null && iColAircraftID >= 0 && ua != null)
                         {
-                            if (fFirstRow)
+                            int idAircraft = Convert.ToInt32(rgszRow[iColAircraftID], CultureInfo.InvariantCulture);
+                            Aircraft ac = ua.GetUserAircraftByID(idAircraft);
+                            if (ac != null && Aircraft.NormalizeTail(szTail).CompareCurrentCultureIgnoreCase(Aircraft.NormalizeTail(ac.TailNumber)) == 0)   // double check that the tails match too!
                             {
-                                fFirstRow = false;
-
-                                if (rgszRow.Length < 2)
-                                    throw new MyFlightbookException(Resources.Aircraft.ImportNotValidCSV);
-
-                                for (int i = 0; i < rgszRow.Length; i++)
+                                mr.BestMatchAircraft = ac;
+                                bool fChanged = false;
+                                if (iColFrequentlyUsed >= 0)
                                 {
-                                    if (rgszRow[i].CompareCurrentCultureIgnoreCase(MyFlightbook.ImportFlights.CSVImporter.TailNumberColumnName) == 0)
-                                        iColTail = i;
-                                    if (rgszRow[i].CompareCurrentCultureIgnoreCase(MyFlightbook.ImportFlights.CSVImporter.ModelColumnName) == 0)
-                                        iColModel = i;
+                                    bool newVal = !rgszRow[iColFrequentlyUsed].SafeParseBoolean();  // meaning is inverted - internally it's "hide", externally it's "show" (i.e., frequently used).
+                                    fChanged = (newVal != ac.HideFromSelection);
+                                    ac.HideFromSelection = newVal;
+                                }
+                                if (iColPrivatenotes >= 0)
+                                {
+                                    fChanged = fChanged || ac.PrivateNotes.CompareCurrentCultureIgnoreCase(rgszRow[iColPrivatenotes]) != 0;
+                                    ac.PrivateNotes = rgszRow[iColPrivatenotes];
                                 }
 
-                                if (iColTail < 0)
-                                    throw new MyFlightbookException(Resources.Aircraft.ImportNoTailNumberColumnFound);
-                                if (iColModel < 0)
-                                    throw new MyFlightbookException(Resources.Aircraft.ImportNoModelColumnFound);
-
-                                continue;
+                                if (fChanged)
+                                    ua.FAddAircraftForUser(ac);
                             }
-
-                            string szTail = rgszRow[iColTail].Trim().ToUpper(CultureInfo.CurrentCulture);
-                            string szModelGiven = rgszRow[iColModel].Trim();
-
-                            // trim anything after a comma, if necessary
-                            int iComma = szModelGiven.IndexOf(",", StringComparison.CurrentCultureIgnoreCase);
-                            if (iComma > 0)
-                                szModelGiven = szModelGiven.Substring(0, iComma);
-
-                            AddMatchCandidate(szTail, szModelGiven);
                         }
                     }
-                    catch (CSVReaderInvalidCSVException ex)
-                    {
-                        throw new MyFlightbookException(ex.Message);
-                    }
-                    catch (MyFlightbookException)
-                    {
-                        throw;
-                    }
+                }
+                catch (CSVReaderInvalidCSVException ex)
+                {
+                    throw new MyFlightbookException(ex.Message);
+                }
+                catch (MyFlightbookException)
+                {
+                    throw;
+                }
             }
         }
 
@@ -2278,9 +2320,11 @@ namespace MyFlightbook
         /// Creates a new AirportImportParseResults object, initializing it from the specified CSV string.
         /// </summary>
         /// <param name="szCSV">String representing the aircraft to import, in CSV format.</param>
-        public AircraftImportParseContext(string szCSV) : this()
+        public AircraftImportParseContext(string szCSVToParse, string szUser) : this()
         {
-            InitFromCSV(szCSV);
+            Username = szUser;
+            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(szCSVToParse)))
+                InitFromCSV(ms);
         }
         #endregion
 

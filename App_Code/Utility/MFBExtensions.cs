@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -233,6 +233,30 @@ namespace MyFlightbook
                 return dt;
 
             return defVal;
+        }
+
+        /// <summary>
+        /// Parses a string into a boolean
+        /// </summary>
+        /// <param name="szIn">The string to parse</param>
+        /// <returns>the parsed value.</returns>
+        static public Boolean SafeParseBoolean(this string szIn)
+        {
+            if (String.IsNullOrEmpty(szIn))
+                return false;
+
+            string sz = szIn.ToUpperInvariant().Trim();
+            if (sz.Length == 0)
+                return false;
+            else
+            {
+                if (sz[0] == 'Y' || sz[0] == 'T' || sz[0] == '1')
+                    return true;
+                Boolean f = false;
+                if (Boolean.TryParse(sz, out f))
+                    return f;
+                return false;
+            }
         }
 
         /// <summary>
