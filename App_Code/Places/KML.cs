@@ -100,7 +100,14 @@ namespace MyFlightbook.Telemetry
                 return;
 
             kml.WriteStartElement("Placemark");
-            kml.WriteElementString("name", szName);
+            try
+            {
+                // We've had instances where szName has invalid cahracters, so ignore any errors that arise
+                kml.WriteElementString("name", szName);
+            }
+            catch (ArgumentException) { }
+            catch (InvalidOperationException) { }
+
             kml.WriteElementString("styleUrl", "#redPoly");
             kml.WriteStartElement("gx", "Track", null);
 
@@ -127,7 +134,13 @@ namespace MyFlightbook.Telemetry
                 return;
 
             kml.WriteStartElement("Placemark");
-            kml.WriteElementString("name", szName);
+            try
+            {
+                // We've had instances where szName has invalid cahracters, so ignore any errors that arise
+                kml.WriteElementString("name", szName);
+            }
+            catch (ArgumentException) { }
+            catch (InvalidOperationException) { }
             kml.WriteElementString("styleUrl", "#redPoly");
             kml.WriteStartElement("LineString");
 
