@@ -1299,7 +1299,9 @@ namespace MyFlightbook.Telemetry
             /// </summary>
             public void FinalizeFlight()
             {
-                ActiveFlight.Route = RouteSoFar.ToString().Trim();
+                string szNewRoute = RouteSoFar.ToString().Trim();
+                if (!String.IsNullOrEmpty(szNewRoute))
+                    ActiveFlight.Route = szNewRoute;
                 ActiveFlight.Nighttime = Convert.ToDecimal(Math.Round(TotalNight, 2));
             }
         }
