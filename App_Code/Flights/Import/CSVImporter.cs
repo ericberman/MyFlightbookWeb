@@ -77,9 +77,9 @@ namespace MyFlightbook.ImportFlights
         */
         private static string[] colFlightID = { "Flight ID" };
         private static string[] colDate = { "Date" };
-        private static string[] colTail = { "Tail Number", "Registration", "Aircraft ID", "Ident" };
+        private static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident" };
         private static string[] colAircraftID = { "Aircraft ID" };
-        private static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Flt Time" };
+        private static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Flt Time", "Block" };
         private static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP" };
         private static string[] colHold = { "Hold", "Holds", "Holding" };
         private static string[] colLandings = { "Landings" };
@@ -95,17 +95,17 @@ namespace MyFlightbook.ImportFlights
         private static string[] colSIC = { "SIC", "flight_sic" };
         private static string[] colPIC = { "PIC", "flight_pic" };
         private static string[] colRoute = { "Route", "flight_route", "Via" };
-        private static string[] colFrom = { "From", "flight_from", "Departure" };
-        private static string[] colTo = { "To", "flight_to", "Arrival" };
+        private static string[] colFrom = { "From", "flight_from", "Departure", "Origin" };
+        private static string[] colTo = { "To", "flight_to", "Arrival", "Dest" };
         private static string[] colComment = { "Comments", "Remarks" };
         private static string[] colCatClassOverride = { "CatClassOverride" };
-        private static string[] colEngineStart = { "Engine Start" };
-        private static string[] colEngineEnd = { "Engine End" };
+        private static string[] colEngineStart = { "Engine Start", "Depart" };
+        private static string[] colEngineEnd = { "Engine End", "Arrive" };
         private static string[] colFlightStart = { "Flight Start" };
         private static string[] colFlightEnd = { "Flight End" };
         private static string[] colHobbsStart = { "Hobbs Start" };
         private static string[] colHobbsEnd = { "Hobbs End" };
-        private static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL" };
+        private static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type" };
 
         /// <summary>
         /// Common aliases for property names
@@ -114,8 +114,8 @@ namespace MyFlightbook.ImportFlights
         private static Dictionary<string, string[]> PropNameAliases = new Dictionary<string, string[]>()
         {
             { "Solo Time", new string[] {"Solo Time", "flight_solo", "Solo"}},
-            { "Name of PIC", new string[] {"Name of PIC", "flight_selectedCrewPIC", "PIC/P1 Crew"}},
-            { "Name of SIC", new string[] {"Name of SIC", "SIC/P2 Crew"}},
+            { "Name of PIC", new string[] {"Name of PIC", "flight_selectedCrewPIC", "PIC/P1 Crew", "Captain"}},
+            { "Name of SIC", new string[] {"Name of SIC", "SIC/P2 Crew", "First Officer" }},
             { "Takeoffs - Night", new string[] {"Takeoffs - Night", "flight_nightTakeoffs", "Night T/O"}},
             { "Landings - Water", new string[] {"Landings - Water", "flight_waterLandings"}},
             { "Takeoffs - Water", new string[] {"Takeoffs - Water", "flight_waterTakeoffs"}},
@@ -129,6 +129,8 @@ namespace MyFlightbook.ImportFlights
             {"Part 135 Flight", new string[] {"Part 135 Flight", "flight_faaPart135"}},
             {"Tachometer End", new string[] {"Tachometer End", "Tach In"}},
             {"Tachometer Start", new string[] {"Tachometer Start", "Tach Out"}},
+            {"Flight Number", new string[] {"Flight Number", "Flight" } },
+            {"Flight Attendant Name(s)", new string[] { "Flight Attendant Name(s)", "Flight Attendant" } },
             {"Student Name", new string[] {"Student Name", "Student"}}
         };
 
@@ -429,10 +431,10 @@ namespace MyFlightbook.ImportFlights
 
                 le.Comment = GetMappedString(m_cm.iColComment);
 
-                le.EngineStart = GetMappedUTCDate(m_cm.iColEngineStart);
-                le.EngineEnd = GetMappedUTCDate(m_cm.iColEngineEnd);
-                le.FlightStart = GetMappedUTCDate(m_cm.iColFlightStart);
-                le.FlightEnd = GetMappedUTCDate(m_cm.iColFlightEnd);
+                le.EngineStart = GetMappedUTCDate(m_cm.iColEngineStart, le.Date);
+                le.EngineEnd = GetMappedUTCDate(m_cm.iColEngineEnd, le.Date);
+                le.FlightStart = GetMappedUTCDate(m_cm.iColFlightStart, le.Date);
+                le.FlightEnd = GetMappedUTCDate(m_cm.iColFlightEnd, le.Date);
                 le.HobbsStart = GetMappedDecimal(m_cm.iColHobbsStart);
                 le.HobbsEnd = GetMappedDecimal(m_cm.iColHobbsEnd);
 
@@ -490,7 +492,7 @@ namespace MyFlightbook.ImportFlights
                 return (iCol < 0) ? string.Empty : m_rgszRow[iCol];
             }
 
-            private DateTime GetMappedUTCDate(int iCol)
+            private DateTime GetMappedUTCDate(int iCol, DateTime? dtNakedTime = null)
             {
                 DateTime d = DateTime.MinValue;
 
@@ -498,6 +500,10 @@ namespace MyFlightbook.ImportFlights
                     return DateTime.MinValue;
 
                 string sz = m_rgszRow[iCol];
+
+                // if it appears to be only a naked time and a date for the naked time is provided, use that date.
+                if (sz.Length <= 5 && System.Text.RegularExpressions.Regex.IsMatch(sz, "^\\d{0,2}:\\d{2}$", System.Text.RegularExpressions.RegexOptions.Compiled))
+                    sz = String.Format(CultureInfo.InvariantCulture, "{0}T{1}Z", dtNakedTime.Value.YMDString(), sz);
 
                 if (DateTime.TryParse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal, out d))
                     return d;
