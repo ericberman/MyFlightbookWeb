@@ -1376,4 +1376,13 @@
   <data name="oAuthErrUnauthorizedScopes" xml:space="preserve">
     <value>Request is for scopes that the service is not authorized to have.</value>
   </data>
+  <data name="AutofillOptionEstimateNight" xml:space="preserve">
+    <value>Estimate Night Flight</value>
+  </data>
+  <data name="AutofillOptionIncludeHeliports" xml:space="preserve">
+    <value>Include Heliports</value>
+  </data>
+  <data name="AutofillOptionTakeoffSpeed" xml:space="preserve">
+    <value>Take-off Speed:</value>
+  </data>
 </root>

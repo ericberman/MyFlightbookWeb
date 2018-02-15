@@ -17,7 +17,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2017 MyFlightbook LLC
+ * Copyright (c) 2010-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -272,69 +272,60 @@ namespace MyFlightbook.Telemetry
         public enum AutoFillTotalOption { None, FlightTime, EngineTime, HobbsTime };
         public enum AutoFillHobbsOption { None, FlightTime, EngineTime, TotalTime };
 
-        private double m_XC = 50.0;
-        private double m_TO = 70;
-        private double m_LA = 55;
-        private int m_TZOffset = 0;
-
-        private AutoFillTotalOption aft = AutoFillTotalOption.EngineTime;
-        private AutoFillHobbsOption afh = AutoFillHobbsOption.EngineTime;
+        public const int DefaultCrossCountryDistance = 50;
+        public const int DefaultTakeoffSpeedKts = 70;
+        public const int DefaultLandingSpeedKts = 55;
         public const double FullStopSpeed = 5.0;
+
+        private static int[] _rgSpeeds = { 20, 40, 55, 70, 85, 100 };
+        private const int DefaultSpeedIndex = 3;
+        private const int SpeedBreakPoint = 50;
+        private const int LandingSpeedDifferentialLow = 10;
+        private const int LandingSpeedDifferentialHigh = 15;
+
+        #region Constructors
+        public AutoFillOptions()
+        {
+            TimeZoneOffset = 0;
+            AutoFillTotal = AutoFillTotalOption.EngineTime;
+            AutoFillHobbs = AutoFillHobbsOption.EngineTime;
+            CrossCountryThreshold = DefaultCrossCountryDistance;
+            TakeOffSpeed = DefaultTakeoffSpeedKts;
+            LandingSpeed = DefaultLandingSpeedKts;
+            AutoSynthesizePath = true;
+        }
+        #endregion
 
         #region Properties
         /// <summary>
         /// timezone offset from UTC, in minutes
         /// </summary>
-        public int TimeZoneOffset
-        {
-            get { return m_TZOffset; }
-            set { m_TZOffset = value; }
-        }
+        public int TimeZoneOffset { get; set; }
 
         /// <summary>
         /// AutoTotal options
         /// </summary>
-        public AutoFillTotalOption AutoFillTotal
-        {
-            get { return aft; }
-            set { aft = value; }
-        }
+        public AutoFillTotalOption AutoFillTotal { get; set; }
 
         /// <summary>
         /// AutoHobbs options
         /// </summary>
-        public AutoFillHobbsOption AutoFillHobbs
-        {
-            get { return afh; }
-            set { afh = value; }
-        }
+        public AutoFillHobbsOption AutoFillHobbs { get; set; }
 
         /// <summary>
         /// Threshold for cross-country flight
         /// </summary>
-        public double CrossCountryThreshold
-        {
-            get { return m_XC; }
-            set { m_XC = value; }
-        }
+        public double CrossCountryThreshold { get; set; }
 
         /// <summary>
         /// Speed above which the aircraft is assumed to be flying
         /// </summary>
-        public double TakeOffSpeed
-        {
-            get { return m_TO; }
-            set { m_TO = value; }
-        }
+        public double TakeOffSpeed { get; set; }
 
         /// <summary>
         /// Speed below which the aircraft is assumed to be taxiing or stopped
         /// </summary>
-        public double LandingSpeed
-        {
-            get { return m_LA; }
-            set { m_LA = value; }
-        }
+        public double LandingSpeed { get; set; }
 
         /// <summary>
         /// Include heliports in autodetection?
@@ -345,13 +336,13 @@ namespace MyFlightbook.Telemetry
         /// True to plow ahead and continue even if errors are encountered.
         /// </summary>
         public bool IgnoreErrors { get; set; }
-        #endregion
 
-        private static int[] _rgSpeeds = { 20, 40, 55, 70, 85, 100 };
-        private const int DefaultSpeedIndex = 3;
-        private const int SpeedBreakPoint = 50;
-        private const int LandingSpeedDifferentialLow = 10;
-        private const int LandingSpeedDifferentialHigh = 15;
+        /// <summary>
+        /// Indicates if a path should be synthesized if not present (needed to estimate night time, for example)
+        /// True by default.
+        /// </summary>
+        public bool AutoSynthesizePath { get; set; }
+        #endregion
 
         /// <summary>
         /// Get the default take-off speed
@@ -1352,7 +1343,7 @@ namespace MyFlightbook.Telemetry
 
             bool fSyntheticPath = false;
             // see if we can synthesize a path.  If so, save it as GPX
-            if (String.IsNullOrEmpty(le.FlightData))
+            if (String.IsNullOrEmpty(le.FlightData) && opt.AutoSynthesizePath)
             {
                 le.FlightData = GenerateSyntheticPath(le);
                 fSyntheticPath = !String.IsNullOrEmpty(le.FlightData);

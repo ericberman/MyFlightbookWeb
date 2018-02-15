@@ -1,25 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Xml.Linq;
-using System.Text;
-using Ionic.Zip;
-using System.IO;
-using System.Globalization;
+﻿using Ionic.Zip;
 using MyFlightbook;
 using MyFlightbook.Telemetry;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,6 +19,7 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
     private const string keyFlightData = "PendingFlightData";
     private const string keyCookieSpeed = "autoFillDefaultSpeed";
     private const string keyCookieHeliport = "autoFillDefaultHeliport";
+    private const string keyCookieEstimateNight = "autoFillEstimateNight";
 
     #region properties
     /// <summary>
@@ -123,6 +114,9 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
             bool includeHeliports;
             if (Request.Cookies[keyCookieHeliport] == null || !bool.TryParse(Request.Cookies[keyCookieHeliport].Value, out includeHeliports))
                 includeHeliports = false;
+            bool estimateNight = true;
+            if (Request.Cookies[keyCookieEstimateNight] == null || !bool.TryParse(Request.Cookies[keyCookieEstimateNight].Value, out estimateNight))
+                estimateNight = true;
 
             foreach (int speed in AutoFillOptions.DefaultSpeeds)
             {
@@ -130,6 +124,7 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
                 rblTakeOffSpeed.Items.Add(li);
             }
             ckIncludeHeliports.Checked = includeHeliports;
+            ckEstimateNight.Checked = estimateNight;
         }
     }
 
@@ -213,17 +208,19 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
         if (this.AutoFill != null)
         {
             int takeoffSpeed = Convert.ToInt32(rblTakeOffSpeed.SelectedValue, CultureInfo.InvariantCulture);
-            AutoFillOptions afo = new AutoFillOptions() 
-            { 
-                TimeZoneOffset = mfbTimeZone1.TimeZoneOffset, 
-                TakeOffSpeed = takeoffSpeed, 
+            AutoFillOptions afo = new AutoFillOptions()
+            {
+                TimeZoneOffset = mfbTimeZone1.TimeZoneOffset,
+                TakeOffSpeed = takeoffSpeed,
                 LandingSpeed = AutoFillOptions.BestLandingSpeedForTakeoffSpeed(takeoffSpeed),
                 IncludeHeliports = ckIncludeHeliports.Checked,
+                AutoSynthesizePath = ckEstimateNight.Checked,
                 IgnoreErrors = true
             };
 
             Response.Cookies[keyCookieSpeed].Value = takeoffSpeed.ToString(CultureInfo.InvariantCulture);
-            Response.Cookies[keyCookieHeliport].Value = ckIncludeHeliports.Checked.ToString();
+            Response.Cookies[keyCookieHeliport].Value = ckIncludeHeliports.Checked.ToString(CultureInfo.InvariantCulture);
+            Response.Cookies[keyCookieEstimateNight].Value = ckEstimateNight.Checked.ToString(CultureInfo.InvariantCulture);
             Response.Cookies[keyCookieHeliport].Expires = Response.Cookies[keyCookieSpeed].Expires = DateTime.Now.AddYears(10);
 
             string szTelemetry = Telemetry;

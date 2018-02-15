@@ -155,12 +155,12 @@
                 <td>
                     <uc4:popmenu ID="popmenu1" runat="server">
                         <MenuContent>
-                            <div><asp:Label ID="lblTOSpeed" runat="server" Text="Take-off Speed: "></asp:Label></div>
+                            <div style="padding:3px"><asp:Label ID="lblTOSpeed" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionTakeoffSpeed %>" /></div>
                             <div>
                                 <asp:RadioButtonList ID="rblTakeOffSpeed" runat="server"></asp:RadioButtonList>
                             </div>
-                            <div></div>
-                            <div><asp:CheckBox ID="ckIncludeHeliports" runat="server" Text="Include Heliports" /></div>
+                            <div style="padding:3px"><asp:CheckBox ID="ckIncludeHeliports" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionIncludeHeliports %>" /></div>
+                            <div style="padding:3px"><asp:CheckBox ID="ckEstimateNight" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionEstimateNight %>" /></div>
                         </MenuContent>
                     </uc4:popmenu>
                 </td>
