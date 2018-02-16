@@ -1385,4 +1385,10 @@
   <data name="AutofillOptionTakeoffSpeed" xml:space="preserve">
     <value>Take-off Speed:</value>
   </data>
+  <data name="AutofillOptionEstimateNightTip" xml:space="preserve">
+    <value>If no telemetry is provided but engine or flight times are, a great-path circle will be constructed between the airports and night flight will be inferred from that based on a constant speed along that path</value>
+  </data>
+  <data name="AutofillOptionsIncludeHeliportsTip" xml:space="preserve">
+    <value>Indicates whether to include heliports when a takeoff or landing is detected, or only airports/seaports.</value>
+  </data>
 </root>

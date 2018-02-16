@@ -155,12 +155,42 @@
                 <td>
                     <uc4:popmenu ID="popmenu1" runat="server">
                         <MenuContent>
-                            <div style="padding:3px"><asp:Label ID="lblTOSpeed" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionTakeoffSpeed %>" /></div>
-                            <div>
-                                <asp:RadioButtonList ID="rblTakeOffSpeed" runat="server"></asp:RadioButtonList>
-                            </div>
-                            <div style="padding:3px"><asp:CheckBox ID="ckIncludeHeliports" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionIncludeHeliports %>" /></div>
-                            <div style="padding:3px"><asp:CheckBox ID="ckEstimateNight" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionEstimateNight %>" /></div>
+                            <table>
+                                <tr>
+                                    <td colspan="2"><asp:Label ID="lblTOSpeed" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionTakeoffSpeed %>" /></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <asp:RadioButtonList ID="rblTakeOffSpeed" runat="server"></asp:RadioButtonList>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><asp:CheckBox ID="ckIncludeHeliports" runat="server" /></td>
+                                    <td>
+                                        <div>
+                                            <asp:Label ID="lblIncludeHeliports" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionIncludeHeliports %>" AssociatedControlID="ckIncludeHeliports"></asp:Label>
+                                            <asp:Label ID="lblIncludeHeliportsTip" runat="server" Text="[?]" CssClass="hint"></asp:Label>
+                                            <cc1:HoverMenuExtender ID="hmeHoverHeliports" runat="server" OffsetX="-180" OffsetY="10" TargetControlID="lblIncludeHeliportsTip" PopupControlID="pnlIncludeHeliportsTip"></cc1:HoverMenuExtender>
+                                            <asp:Panel ID="pnlIncludeHeliportsTip" runat="server" style="max-width:250px; min-width:140px" CssClass="hintPopup">
+                                                <%=Resources.LocalizedText.AutofillOptionsIncludeHeliportsTip %>
+                                            </asp:Panel>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><asp:CheckBox ID="ckEstimateNight" runat="server" /></td>
+                                    <td>
+                                        <div>
+                                            <asp:Label ID="lblEstimateNight" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionEstimateNight %>" AssociatedControlID="ckEstimateNight"></asp:Label>
+                                            <asp:Label ID="lblEstimateNightTip" runat="server" Text="[?]" CssClass="hint"></asp:Label>
+                                            <cc1:HoverMenuExtender ID="hmeHoverEstimateNight" runat="server" OffsetX="-180" OffsetY="10" TargetControlID="lblEstimateNightTip" PopupControlID="pnlEstimateNightTip"></cc1:HoverMenuExtender>
+                                            <asp:Panel ID="pnlEstimateNightTip" runat="server" style="max-width:250px; min-width:140px" CssClass="hintPopup">
+                                                <%=Resources.LocalizedText.AutofillOptionEstimateNightTip %>
+                                            </asp:Panel>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
                         </MenuContent>
                     </uc4:popmenu>
                 </td>
