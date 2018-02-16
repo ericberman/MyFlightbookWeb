@@ -2040,7 +2040,20 @@ namespace MyFlightbook
                     // else fall through and do hobbs time.
                     case AutoFillOptions.AutoFillTotalOption.HobbsTime:
                         if (HobbsStart > 0 && HobbsEnd > HobbsStart)
+                        {
                             TotalFlightTime = HobbsEnd - HobbsStart;
+                            break;
+                        }
+                        goto case AutoFillOptions.AutoFillTotalOption.BlockTime;
+                    // else fall through and do block time.
+                    case AutoFillOptions.AutoFillTotalOption.BlockTime:
+                        {
+                            CustomFlightProperty cfpBlockOut = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut);
+                            CustomFlightProperty cfpBlockIn = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn);
+
+                            if (cfpBlockIn != null && cfpBlockOut != null && !cfpBlockIn.IsDefaultValue && !cfpBlockOut.IsDefaultValue && cfpBlockIn.DateValue.CompareTo(cfpBlockOut.DateValue) > 0)
+                                TotalFlightTime = (decimal) cfpBlockIn.DateValue.Subtract(cfpBlockOut.DateValue).TotalHours;
+                        }
                         break;
                 }
             }

@@ -269,7 +269,7 @@ namespace MyFlightbook.Telemetry
 
     public class AutoFillOptions
     {
-        public enum AutoFillTotalOption { None, FlightTime, EngineTime, HobbsTime };
+        public enum AutoFillTotalOption { None, FlightTime, EngineTime, HobbsTime, BlockTime };
         public enum AutoFillHobbsOption { None, FlightTime, EngineTime, TotalTime };
 
         public const int DefaultCrossCountryDistance = 50;
