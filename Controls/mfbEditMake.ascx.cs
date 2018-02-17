@@ -352,7 +352,11 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
     {
         int idMan = Convert.ToInt32(cmbManufacturer.SelectedValue, CultureInfo.InvariantCulture);
         if (idMan > 0)
-            rblAircraftAllowedTypes.SelectedIndex = (int) (new Manufacturer(idMan)).AllowedTypes;
+        {
+            Manufacturer man = new Manufacturer(idMan);
+            if (man.AllowedTypes != AllowedAircraftTypes.Any)
+                rblAircraftAllowedTypes.SelectedIndex = (int)man.AllowedTypes;
+        }
     }
 
     protected void cmbCatClass_SelectedIndexChanged(object sender, EventArgs e)
