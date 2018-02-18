@@ -666,10 +666,10 @@ namespace MyFlightbook.FlightCurrency
                         szGroupField = "CatClassDisplay";
                         break;
                     case TotalsGrouping.Model:
-                        szGroupField = "ModelDisplay";
+                        szGroupField = "CatClassDisplay, ModelDisplay";
                         break;
                     case TotalsGrouping.Family:
-                        szGroupField = "FamilyDisplay";
+                        szGroupField = "CatClassDisplay, FamilyDisplay";
                         break;
                 }
 
