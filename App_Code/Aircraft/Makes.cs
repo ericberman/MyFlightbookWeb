@@ -83,7 +83,7 @@ namespace MyFlightbook
 
         public override string ToString()
         {
-            return String.Format(CultureInfo.CurrentCulture, "{0} {1}: {2}{3}{4}{5}{6}{7}{8}{9}{10}",
+            return String.Format(CultureInfo.CurrentCulture, "{0} {1}: {2}{3}{4}{5}{6}{7}{8}{9}{10}{11}",
                 this.DisplayName,
                 String.IsNullOrEmpty(this.FamilyName) ? string.Empty : ModelQuery.ICAOPrefix + FamilyName,
                 this.EngineType.ToString(),
@@ -94,7 +94,8 @@ namespace MyFlightbook
                 this.IsMotorGlider ? "Motor glider " : string.Empty,
                 this.IsTailWheel ? "Tailwheel " : string.Empty,
                 this.IsMotorGlider ? "Motorglider " : string.Empty,
-                this.IsMultiEngineHelicopter ? "Multi-engine Helicopter " : string.Empty).Trim();
+                this.IsMultiEngineHelicopter ? "Multi-engine Helicopter " : string.Empty,
+                this.AllowedTypes == AllowedAircraftTypes.Any ? string.Empty : this.AllowedTypes.ToString()).Trim();
         }
 
         #region Properties
