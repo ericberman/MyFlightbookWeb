@@ -973,17 +973,8 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                 <p>View donations for: <asp:TextBox ID="txtDonationUser" runat="server"></asp:TextBox><asp:CheckBoxList ID="ckTransactionTypes" runat="server" RepeatColumns="4"><asp:ListItem Selected="True" Text="Payments" Value="0"></asp:ListItem><asp:ListItem Selected="True" Text="Refunds" Value="1"></asp:ListItem><asp:ListItem Text="Adjustments" Value="2"></asp:ListItem><asp:ListItem Text="Test Transactions" Value="3"></asp:ListItem></asp:CheckBoxList><asp:Button ID="btnFindDonations" runat="server" onclick="btnFindDonations_Click" Text="Find" /></p><p>
                     <asp:Button ID="btnComputeStats" runat="server" onclick="btnComputeStats_Click" 
                         Text="Fix Donation Fees" />
-                    <asp:GridView ID="gvTotalPayments" runat="server" AutoGenerateColumns="False" 
-                        DataSourceID="sqlDSTotalPayments" EnableModelValidation="True">
-                        <Columns>
-                            <asp:BoundField DataField="MonthPeriod" HeaderText="Period" SortExpression="MonthPeriod" />
-                            <asp:BoundField DataField="Gross" HeaderText="Gross" SortExpression="Gross" DataFormatString="{0:C}" ItemStyle-HorizontalAlign="Right" />
-                            <asp:BoundField DataField="Fee" HeaderText="Fee" SortExpression="Fee" DataFormatString="{0:C}" ItemStyle-HorizontalAlign="Right" />
-                            <asp:BoundField DataField="Net" HeaderText="Net" SortExpression="Net" DataFormatString="{0:C}" ItemStyle-HorizontalAlign="Right" />
-                            <asp:BoundField DataField="NetPaypal" HeaderText="Net Paypal" SortExpression="NetPaypal" DataFormatString="{0:C}" ItemStyle-HorizontalAlign="Right" />
-                        </Columns>
-                    </asp:GridView>
-                    <asp:SqlDataSource ID="sqlDSTotalPayments" runat="server" 
+                    <asp:PlaceHolder ID="plcPayments" runat="server"></asp:PlaceHolder>
+                    <asp:SqlDataSource ID="sqlDSTotalPayments" runat="server" DataSourceMode="DataReader"
                         ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
                         ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
                         SelectCommand="SELECT CAST(CONCAT(YEAR(Date), '-', LPAD(MONTH(Date), 2, '0')) AS CHAR) AS MonthPeriod, SUM(Amount) AS Gross, SUM(Fee) AS Fee, SUM(Amount - Fee) AS Net, SUM(IF(TransactionID='', 0, Amount-FEE)) AS NetPaypal From Payments WHERE TransactionType IN (0, 1) GROUP BY MonthPeriod ORDER BY MonthPeriod ASC">
