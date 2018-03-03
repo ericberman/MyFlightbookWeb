@@ -96,6 +96,10 @@ public partial class Public_AllMakes : Page
                                 throw new System.Web.HttpException(404, "Not found");
 
                             MakeModel m = ModelsByManufacturer[idMan].Find(mm => mm.MakeModelID == idModel);
+
+                            if (m == null)
+                                throw new System.Web.HttpException(404, "Not found");
+
                             rptAttributes.DataSource = m.AttributeList();
                             rptAttributes.DataBind();
                             lblModel.Text = m.DisplayName;
