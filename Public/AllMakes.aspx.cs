@@ -76,13 +76,26 @@ public partial class Public_AllMakes : Page
                         break;
                     case 1: // specific manufacturer - show their models
                             // No images, just for performance
-                        gvMakes.DataSource = ModelsByManufacturer[Convert.ToInt32(rgIds[0], CultureInfo.InvariantCulture)];
-                        gvMakes.DataBind();
+                        {
+                            int idMan = Convert.ToInt32(rgIds[0], CultureInfo.InvariantCulture);
+                            if (ModelsByManufacturer.ContainsKey(idMan))
+                            {
+                                gvMakes.DataSource = ModelsByManufacturer[idMan];
+                                gvMakes.DataBind();
+                            }
+                            else
+                                throw new System.Web.HttpException(404, "Not found");
+                        }
                         break;
                     case 2: // specific model - show all aircraft
                         {
+                            int idMan = Convert.ToInt32(rgIds[0], CultureInfo.InvariantCulture);
                             int idModel = Convert.ToInt32(rgIds[1], CultureInfo.InvariantCulture);
-                            MakeModel m = ModelsByManufacturer[Convert.ToInt32(rgIds[0], CultureInfo.InvariantCulture)].Find(mm => mm.MakeModelID == idModel);
+
+                            if (!ModelsByManufacturer.ContainsKey(idMan))
+                                throw new System.Web.HttpException(404, "Not found");
+
+                            MakeModel m = ModelsByManufacturer[idMan].Find(mm => mm.MakeModelID == idModel);
                             rptAttributes.DataSource = m.AttributeList();
                             rptAttributes.DataBind();
                             lblModel.Text = m.DisplayName;
