@@ -542,7 +542,6 @@ public partial class Member_Admin : System.Web.UI.Page
         mvAircraftIssues.SetActiveView(vwPseudoGeneric);
         gvPseudoGeneric.DataSourceID = sqlPseudoGeneric.ID;
         gvPseudoGeneric.DataBind();
-        // TODO: Can also search for 1-4 digit numeric (military without the xx- prefix) with '^[0-9]{1,4}$'.
     }
 
     protected void btnDeleteDupeUA_Click(object sender, EventArgs e)
