@@ -435,10 +435,14 @@ namespace MyFlightbook.ImportFlights
                 le.EngineEnd = GetMappedUTCDate(m_cm.iColEngineEnd, le.Date);
                 le.FlightStart = GetMappedUTCDate(m_cm.iColFlightStart, le.Date);
                 le.FlightEnd = GetMappedUTCDate(m_cm.iColFlightEnd, le.Date);
+                if (le.EngineEnd.CompareTo(le.EngineStart) < 0)
+                    le.EngineEnd = le.EngineEnd.AddDays(1);
+                if (le.FlightEnd.CompareTo(le.FlightStart) < 0)
+                    le.FlightEnd = le.FlightEnd.AddDays(1);
                 le.HobbsStart = GetMappedDecimal(m_cm.iColHobbsStart);
                 le.HobbsEnd = GetMappedDecimal(m_cm.iColHobbsEnd);
 
-                ArrayList alCustPropsForFlight = new ArrayList();
+                List<CustomFlightProperty> lstCustPropsForFlight = new List<CustomFlightProperty>();
                 foreach (ImportColumn ic in m_cm.CustomPropertiesToImport)
                 {
                     string szVal = m_rgszRow[ic.m_iCol];
@@ -449,9 +453,9 @@ namespace MyFlightbook.ImportFlights
                             // Re-use the existing property if possible.
                             CustomFlightProperty cfp = (le.CustomProperties == null) ? null : le.CustomProperties.FirstOrDefault(cfpExisting => cfpExisting.PropTypeID == ic.m_cpt.PropTypeID) ?? new CustomFlightProperty(ic.m_cpt);
 
-                            cfp.InitFromString(szVal);
+                            cfp.InitFromString(szVal, le.Date);
                             if (!cfp.IsDefaultValue)
-                                alCustPropsForFlight.Add(cfp);
+                                lstCustPropsForFlight.Add(cfp);
                         }
                         catch
                         {
@@ -459,6 +463,13 @@ namespace MyFlightbook.ImportFlights
                         }
                     }
                 }
+
+                // Fix up block times too
+                CustomFlightProperty blockIn = lstCustPropsForFlight.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn);
+                CustomFlightProperty blockOut = lstCustPropsForFlight.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut);
+
+                if (blockIn != null && blockOut != null && blockIn.DateValue.CompareTo(blockOut.DateValue) < 0)
+                    blockIn.DateValue = blockIn.DateValue.AddDays(1);
 
                 // we now have, from above, a set of custom properties to import.
                 // BUT...if this is an existing flight, then some of those flights may already
@@ -469,11 +480,11 @@ namespace MyFlightbook.ImportFlights
                 if (!le.IsNewFlight)
                 {
                     List<CustomFlightProperty> lstExisting = new List<CustomFlightProperty>(le.CustomProperties);
-                    lstExisting.RemoveAll(cfp => alCustPropsForFlight.Contains(cfp));   // remove any flight props that are in the ones to import - these are updates, not orphans.
+                    lstExisting.RemoveAll(cfp => lstCustPropsForFlight.Contains(cfp));   // remove any flight props that are in the ones to import - these are updates, not orphans.
                     m_cm.OrphanedPropsByFlightID[le.FlightID] = lstExisting;
                 }
 
-                le.CustomProperties = (CustomFlightProperty[])alCustPropsForFlight.ToArray(typeof(CustomFlightProperty));
+                le.CustomProperties = lstCustPropsForFlight.ToArray();
 
                 if (!le.IsValid())
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportFlightIsInvalid, le.ErrorString));
@@ -501,14 +512,7 @@ namespace MyFlightbook.ImportFlights
 
                 string sz = m_rgszRow[iCol];
 
-                // if it appears to be only a naked time and a date for the naked time is provided, use that date.
-                if (sz.Length <= 5 && System.Text.RegularExpressions.Regex.IsMatch(sz, "^\\d{0,2}:\\d{2}$", System.Text.RegularExpressions.RegexOptions.Compiled))
-                    sz = String.Format(CultureInfo.InvariantCulture, "{0}T{1}Z", dtNakedTime.Value.YMDString(), sz);
-
-                if (DateTime.TryParse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal, out d))
-                    return d;
-
-                return DateTime.MinValue;
+                return sz.ParseUTCDateTime(dtNakedTime);
             }
 
             private Decimal GetMappedDecimal(int iCol)
