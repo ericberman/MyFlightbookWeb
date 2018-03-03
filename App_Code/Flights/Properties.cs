@@ -968,7 +968,8 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
         /// Initializes the value from a string value.  The PropertyType MUST be set.  Throws an exception if there is a problem
         /// </summary>
         /// <param name="szVal">The string representation of the value.</param>
-        public void InitFromString(String szVal)
+        /// <param name="dtDefault">The default date to assume if a datetime value is hh:mm only</param>
+        public void InitFromString(String szVal, DateTime? dtDefault = null)
         {
             if (szVal == null)
                 throw new ArgumentNullException("szVal");
@@ -992,10 +993,10 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
                     DecValue = szVal.SafeParseDecimal();
                     break;
                 case CFPPropertyType.cfpDate:
-                case CFPPropertyType.cfpDateTime:
                     DateValue = DateTime.Parse(szVal, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
-                    if (PropertyType.Type == CFPPropertyType.cfpDateTime)
-                        DateValue = DateTime.SpecifyKind(DateValue, DateTimeKind.Utc);
+                    break;
+                case CFPPropertyType.cfpDateTime:
+                    DateValue = szVal.ParseUTCDateTime(dtDefault);
                     break;
                 case CFPPropertyType.cfpString:
                     TextValue = szVal;

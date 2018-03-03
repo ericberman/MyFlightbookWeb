@@ -218,6 +218,38 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Parse the specified string, assigning it UTC, and using the specified date if it appears to be only time (i.e., hh:mm).
+        /// </summary>
+        /// <param name="sz">The string</param>
+        /// <param name="dtNakedTime">A date time, or just a time.</param>
+        /// <returns>The parsed date, if possible, otherwise minvalue</returns>
+        static public DateTime ParseUTCDateTime(this string sz, DateTime? dtNakedTime = null)
+        {
+            if (sz == null)
+                throw new ArgumentNullException("sz");
+
+            DateTime d = DateTime.MinValue;
+
+            // if it appears to be only a naked time and a date for the naked time is provided, use that date.
+            if (dtNakedTime != null && sz.Length <= 5 && System.Text.RegularExpressions.Regex.IsMatch(sz, "^\\d{0,2}:\\d{2}$", System.Text.RegularExpressions.RegexOptions.Compiled))
+            {
+                string[] rgszHM = sz.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                if (rgszHM.Length == 2)
+                {
+                    int hour = 0;
+                    int minute = 0;
+                    if (int.TryParse(rgszHM[0], out hour) && int.TryParse(rgszHM[1], out minute))
+                        sz = String.Format(CultureInfo.InvariantCulture, "{0}T{1}:{2}Z", dtNakedTime.Value.YMDString(), hour.ToString("00", CultureInfo.InvariantCulture), minute.ToString("00", CultureInfo.InvariantCulture));
+                }
+            }
+
+            if (DateTime.TryParse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal, out d))
+                return d;
+
+            return DateTime.MinValue;
+        }
+
+        /// <summary>
         /// Parses a string into a DateTime, returning defVal if any error
         /// </summary>
         /// <param name="sz">The string to parse</param>
