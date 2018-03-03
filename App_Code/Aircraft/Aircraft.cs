@@ -1089,12 +1089,61 @@ namespace MyFlightbook
         }
 
         #region Validation
+        private const string szRegexValidTail = "^[a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+$";
+
+        /// <summary>
+        /// Admin utility to quickly find all invalid aircraft (since examining them one at a time is painfully slow and pounds the database)
+        /// KEEP IN SYNC WITH IsValid!!
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<Aircraft> AdminAllInvalidAircraft()
+        {
+            List<Aircraft> lst = new List<Aircraft>();
+
+            List<string> lstNakedPrefix = new List<string>();
+            foreach (CountryCodePrefix cc in CountryCodePrefix.CountryCodes())
+                lstNakedPrefix.Add(cc.Prefix.Replace("-", string.Empty));
+
+            string szNaked = String.Join("', '", lstNakedPrefix);
+
+            const string szQInvalidAircraftRestriction = @"WHERE
+(aircraft.idmodel < 0 OR models.idmodel IS NULL)
+OR (aircraft.tailnumber = '') OR (LENGTH(aircraft.tailnumber) <= 2) OR (LENGTH(aircraft.tailnumber) > {0})
+OR (aircraft.tailnumber LIKE '{2}%' AND aircraft.tailnumber <> CONCAT('{2}', LPAD(aircraft.idmodel, 6, '0')))
+OR (aircraft.tailnumber NOT LIKE '{2}%' AND aircraft.tailnumber NOT RLIKE '{1}')
+OR (aircraft.instancetype = 1 AND aircraft.tailnumber LIKE '{3}%')
+OR (aircraft.instancetype <> 1 AND aircraft.tailnumber NOT LIKE '{3}%')
+OR (models.fSimOnly = 1 AND aircraft.instancetype={4})
+OR (models.fSimOnly = 2 AND aircraft.InstanceType={4} AND aircraft.tailnumber NOT LIKE '{2}%')
+OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
+
+            string szQInvalid = String.Format(CultureInfo.InvariantCulture, szQInvalidAircraftRestriction, 
+                maxTailLength, 
+                szRegexValidTail, 
+                CountryCodePrefix.szAnonPrefix, 
+                CountryCodePrefix.szSimPrefix,
+                (int) AircraftInstanceTypes.RealAircraft,
+                szNaked);
+
+            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", szQInvalid);
+
+            DBHelper dbh = new DBHelper(szQ);
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new Aircraft(dr)); });
+
+            // set the error for each one
+            foreach (Aircraft ac in lst)
+                ac.IsValid(true);
+
+            return lst;
+        }
+
         /// <summary>
         /// Tests the aircraft for validity prior to commitment
+        /// KEEP IN SYNC WITH AdminAllInvalidAircraft()
         /// </summary>
         /// <param name="fCheckMake">True to check that the make is valid (can be slow - hits DB)</param>
         /// <returns>True for valid aircraft</returns>
-        public Boolean IsValid(Boolean fCheckMake)
+        public Boolean IsValid(Boolean fCheckMake = true)
         {
             ErrorString = "";
 
@@ -1124,7 +1173,7 @@ namespace MyFlightbook
             }
             else
             {
-                Regex r = new Regex("[a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                Regex r = new Regex(szRegexValidTail, RegexOptions.IgnoreCase | RegexOptions.Compiled);
                 Match mt = r.Match(TailNumber);
                 if (mt.Captures.Count != 1 || String.Compare(TailNumber, mt.Captures[0].Value, StringComparison.OrdinalIgnoreCase) != 0)
                     ErrorString = Resources.Aircraft.errInvalidChars;
@@ -1191,15 +1240,6 @@ namespace MyFlightbook
             }
 
             return ErrorString.Length == 0;
-        }
-
-        /// <summary>
-        /// Verifies that the aircraft is valid INCLUDING a check of the make/model (DB hit)
-        /// </summary>
-        /// <returns>True for valid aircraft</returns>
-        public Boolean IsValid()
-        {
-            return IsValid(true);
         }
 
         /// <summary>

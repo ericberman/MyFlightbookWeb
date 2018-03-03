@@ -112,7 +112,7 @@
                             <tr>
                                 <td>
                                     <asp:Button ID="btnRefreshInvalid" runat="server" Width="100%" Text="Invalid Aircraft" OnClick="btnRefreshInvalid_Click" /></td>
-                                <td>SLOW - perform validity check on ALL aircraft</td>
+                                <td>Perform validity check on ALL aircraft</td>
                             </tr>
                             <tr>
                                 <td>
@@ -300,12 +300,10 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                                     <Columns>
                                         <asp:TemplateField HeaderText="Aircraft">
                                             <ItemTemplate>
-                                                <a href='EditAircraft.aspx?id=<%# Eval("AircraftID") %>&amp;a=1' 
-                                                    target="_blank"><%# Eval("TailNumber") %></a>
-                                                <br />
-                                                <%# Eval("ModelCommonName") %><%# Eval("ModelCommonName") %>
-                                                <br />
-                                                <%# Eval("InstanceTypeDescription") %>
+                                                <div><a href='EditAircraft.aspx?id=<%# Eval("AircraftID") %>&amp;a=1' 
+                                                    target="_blank"><%# Eval("TailNumber") %></a></div>
+                                                <div><%# MakeModel.GetModel((int) Eval("ModelID")).DisplayName %></div>
+                                                <div><%# Eval("InstanceTypeDescription") %></div>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:BoundField DataField="ErrorString" HeaderText="Validation Error" />

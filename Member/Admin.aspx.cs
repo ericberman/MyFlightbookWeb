@@ -509,43 +509,7 @@ public partial class Member_Admin : System.Web.UI.Page
     {
         mvAircraftIssues.SetActiveView(vwInvalidAircraft);
 
-        List<Aircraft> lstAc = new List<Aircraft>();
-
-        List<int> lstInvalidModelIDs = new List<int>();
-
-        // first - find all aircraft for which here is an invalid model.
-        // Do this here so that the IsValid check can be faster 
-        DBHelper dbh = new DBHelper("SELECT * FROM aircraft ac LEFT JOIN models m ON ac.idmodel=m.idmodel WHERE m.idmodel=null OR ac.idmodel<= 0");
-        dbh.ReadRows((comm) => {}, (dr) => { lstInvalidModelIDs.Add(Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture)); });
-
-        List<int> lstInvalidInstanceIDs = new List<int>();
-
-        // Now check for aircraft that are violating restrictions
-        dbh.CommandText = String.Format(CultureInfo.InvariantCulture, @"SELECT ac.* FROM aircraft ac
-INNER JOIN models m ON ac.idmodel=m.idmodel
-WHERE (instanceType > 1 AND ac.TailNumber NOT LIKE '{0}%') OR
-    (ac.instancetype=1 AND m.fSimOnly =1) OR
-    (ac.instancetype=1 AND m.fSimOnly =2 AND ac.Tailnumber NOT LIKE '{1}%')", CountryCodePrefix.szSimPrefix, CountryCodePrefix.szAnonPrefix);
-        dbh.ReadRows((comm) =>{}, (dr) => {lstInvalidInstanceIDs.Add(Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture)); });
-
-        // get ALL of the aircraft.
-        Aircraft[] rgua = (new UserAircraft(Page.User.Identity.Name)).GetAircraftForUser(UserAircraft.AircraftRestriction.AllAircraft, -1);
-
-        foreach (Aircraft ac in rgua)
-        {
-            if (!ac.IsValid(false))
-                lstAc.Add(ac);
-        }
-
-        // Add in the aircraft above
-        foreach (int id in lstInvalidModelIDs)
-            lstAc.Add(new Aircraft(id) { ErrorString = "Invalid Model" });
-        foreach (int id in lstInvalidInstanceIDs)
-            lstAc.Add(new Aircraft(id) { ErrorString = "Invalid Instance" });
-
-
-
-        gvInvalidAircraft.DataSource = lstAc;
+        gvInvalidAircraft.DataSource = Aircraft.AdminAllInvalidAircraft();
         gvInvalidAircraft.DataBind();
     }
 
