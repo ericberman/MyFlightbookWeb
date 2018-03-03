@@ -2,6 +2,8 @@
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbMakeListItem.ascx" tagname="mfbMakeListItem" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc2" %>
+<%@ Register Src="~/Controls/mfbImageList.ascx" TagPrefix="uc1" TagName="mfbImageList" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
@@ -33,7 +35,14 @@
             </asp:GridView>
         </asp:View>
         <asp:View ID="vwAircraft" runat="server">
-            <h1>Aircraft</h1>
+            <h1><asp:Label ID="lblModel" runat="server" Text=""></asp:Label></h1>
+            <ul>
+                <asp:Repeater ID="rptAttributes" runat="server">
+                    <ItemTemplate>
+                        <li><%# Container.DataItem %></li>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </ul>
             <asp:GridView ID="gvAircraft" runat="server" AutoGenerateColumns="False" EnableViewState="false"
                 OnRowDataBound="AddPictures" GridLines="None"
                 HeaderStyle-HorizontalAlign="left" CellSpacing="0" CellPadding="5">
@@ -43,26 +52,14 @@
                         <ItemTemplate>
                             <div>
                                 <asp:Label ID="lblTail" Font-Bold="true" runat="server" Text='<%# Eval("DisplayTailNumber") %>'></asp:Label>
-                                - <%# Eval("ModelDescription")%> - <%# Eval("ModelCommonName")%> (<asp:Label ID="lblCatClass" runat="server" Text=""></asp:Label>) <%# Eval("InstanceTypeDescription")%> 
-                                <asp:Label ID="lblAircraftErr" runat="server" CssClass="error" EnableViewState="false" Text="" Visible="false"></asp:Label>
-                                <div style="float:right">
-                                    <asp:FormView ID="fvModelCaps" runat="server">
-                                        <ItemTemplate>
-                                            <asp:Panel ID="pnlAttributes" runat="server">
-                                                <ul>
-                                                <asp:Repeater ID="rptAttributes" runat="server" DataSource='<%# MakeModel.GetModel(Convert.ToInt32(Eval("MakeModelID"))).AttributeList() %>'>
-                                                    <ItemTemplate>
-                                                        <li><%# Container.DataItem %></li>
-                                                    </ItemTemplate>
-                                                </asp:Repeater>
-                                                </ul>
-                                            </asp:Panel>
-                                        </ItemTemplate>
-                                    </asp:FormView>
-                                </div>
                             </div>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="">
+                        <ItemStyle VerticalAlign="Top" />
+                        <ItemTemplate>
                             <div>
-                                <asp:PlaceHolder ID="plcImages" runat="server"></asp:PlaceHolder>
+                                <uc1:mfbImageList runat="server" ID="mfbAircraftImages" ImageClass="Aircraft" MaxImage="3" Columns="3" CanEdit="false" />
                             </div>
                         </ItemTemplate>
                     </asp:TemplateField>

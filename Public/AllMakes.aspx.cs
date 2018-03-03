@@ -1,24 +1,52 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Image;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Globalization;
-using MyFlightbook;
-using MyFlightbook.Image;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2016 MyFlightbook LLC
+ * Copyright (c) 2013-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Public_AllMakes : System.Web.UI.Page
+public partial class Public_AllMakes : Page
 {
+    private const string szCacheKeyModels = "keyAllModelsByManufacturer";
+    private IDictionary<int, List<MakeModel>> ModelsByManufacturer
+    {
+        get
+        {
+            Dictionary<int, List<MakeModel>> d = (Dictionary<int, List<MakeModel>>)Cache[szCacheKeyModels];
+            if (d == null)
+            {
+                d = new Dictionary<int, List<MakeModel>>();
+                Collection<MakeModel> allModels = MakeModel.MatchingMakes();
+
+                foreach (MakeModel m in allModels)
+                {
+                    // skip any sim/generic-only types
+                    if (m.AllowedTypes != AllowedAircraftTypes.Any)
+                        continue;
+
+                    if (!d.ContainsKey(m.ManufacturerID))
+                        d[m.ManufacturerID] = new List<MakeModel>();
+                    ((List<MakeModel>)d[m.ManufacturerID]).Add(m);
+                }
+
+                Cache.Add(szCacheKeyModels, d, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), System.Web.Caching.CacheItemPriority.BelowNormal, null);
+            }
+            return (IDictionary<int, List<MakeModel>>) d;
+        }
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
+        // This page is for search engines by default.
         if (Page.User.Identity.IsAuthenticated && String.IsNullOrEmpty(Request.PathInfo))
         {
             Response.Redirect("~/Member/Makes.aspx", true);
@@ -39,20 +67,40 @@ public partial class Public_AllMakes : System.Web.UI.Page
                 switch (clevels)
                 {
                     case 0: // base page - show manufacturers
-                        gvManufacturers.DataSource = Manufacturer.AllManufacturers();
-                        gvManufacturers.DataBind();
+                        {
+                            List<Manufacturer> lst = new List<Manufacturer>(Manufacturer.CachedManufacturers());
+                            lst.RemoveAll(man => man.AllowedTypes != AllowedAircraftTypes.Any);
+                            gvManufacturers.DataSource = lst;
+                            gvManufacturers.DataBind();
+                        }
                         break;
                     case 1: // specific manufacturer - show their models
                             // No images, just for performance
-                        gvMakes.DataSource = MakeModel.MatchingMakes(Convert.ToInt32(rgIds[0], CultureInfo.InvariantCulture));
+                        gvMakes.DataSource = ModelsByManufacturer[Convert.ToInt32(rgIds[0], CultureInfo.InvariantCulture)];
                         gvMakes.DataBind();
                         break;
                     case 2: // specific model - show all aircraft
-                        int idModel = Convert.ToInt32(rgIds[1], CultureInfo.InvariantCulture);
-                        UserAircraft ua = new UserAircraft(string.Empty);
-                        Aircraft[] rgac = ua.GetAircraftForUser(UserAircraft.AircraftRestriction.AllMakeModel, idModel);
-                        gvAircraft.DataSource = rgac;
-                        gvAircraft.DataBind();
+                        {
+                            int idModel = Convert.ToInt32(rgIds[1], CultureInfo.InvariantCulture);
+                            MakeModel m = ModelsByManufacturer[Convert.ToInt32(rgIds[0], CultureInfo.InvariantCulture)].Find(mm => mm.MakeModelID == idModel);
+                            rptAttributes.DataSource = m.AttributeList();
+                            rptAttributes.DataBind();
+                            lblModel.Text = m.DisplayName;
+
+                            List<Aircraft> lst = new List<Aircraft>();
+                            // UserAircraft.GetAircraftForUser is pretty heavyweight, especially for models witha  lot of aircraft like C-152.
+                            // We just don't need that much detail, since we're just binding images by ID and tailnumbers
+                            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT idaircraft, tailnumber FROM aircraft WHERE idmodel=?modelid AND tailnumber NOT LIKE '{0}%' AND instanceType=1 ORDER BY tailnumber ASC", CountryCodePrefix.szAnonPrefix));
+                            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("modelid", idModel); },
+                                (dr) =>
+                                {
+                                    int idaircraft = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture);
+                                    string tailnumber = (string)dr["tailnumber"];
+                                    lst.Add(new Aircraft() { AircraftID = idaircraft, TailNumber = tailnumber });
+                                });
+                            gvAircraft.DataSource = lst;
+                            gvAircraft.DataBind();
+                        }
                         break;
                 }
             }
@@ -82,27 +130,11 @@ public partial class Public_AllMakes : System.Web.UI.Page
         {
             Aircraft ac = (Aircraft)e.Row.DataItem;
 
-            Controls_mfbImageList mfbIl = (Controls_mfbImageList)LoadControl("~/Controls/mfbImageList.ascx");
+            Controls_mfbImageList mfbIl = (Controls_mfbImageList) e.Row.FindControl("mfbAircraftImages");
             mfbIl.Key = ac.AircraftID.ToString(CultureInfo.InvariantCulture);
             mfbIl.AltText = "Image of " + ac.TailNumber;
-            mfbIl.ImageClass = MFBImageInfo.ImageClass.Aircraft;
-            mfbIl.CanEdit = false;
-            mfbIl.Columns = 3;
-            mfbIl.MaxImage = -1;
 
-            if (mfbIl.Refresh() > 0) // only add image list if there are images.
-            {
-                PlaceHolder p = (PlaceHolder)e.Row.FindControl("plcImages");
-                p.Controls.Add(mfbIl);
-            }
-
-            // Show aircraft capabilities too.
-            FormView fv = (FormView)e.Row.FindControl("fvModelCaps");
-            MakeModel m = MakeModel.GetModel(ac.ModelID);
-            fv.DataSource = new MakeModel[] { m };
-            fv.DataBind();
-            Label lblCatClass = (Label)e.Row.FindControl("lblCatClass");
-            lblCatClass.Text = m.CategoryClassDisplay;
+            mfbIl.Visible = (mfbIl.Refresh() > 0); // only add image list if there are images.
         }
     }
 }
