@@ -33,6 +33,10 @@
         if (Context.Request.IsLocal)
             return;
 
+        HttpException err = myError as HttpException;
+        if (err != null && err.GetHttpCode() == 404)
+            return;
+
         if (Context != null)
         {
             ErrorMessage.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "Request = {0}://{1}{2}\r\nUser = {3}\r\nBy: {4} {5} {6}\r\n\r\n\r\n", Context.Request.IsSecureConnection ? "https" : "http", Context.Request.Url.Host, Context.Request.Url.PathAndQuery, Context.User.Identity.Name, Context.Request.UserAgent, Context.Request.UserHostAddress, Context.Request.UserHostName);
