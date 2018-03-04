@@ -55,6 +55,10 @@ public partial class Public_AllMakes : Page
 
         if (!IsPostBack)
         {
+            Response.Cache.SetExpires(DateTime.Now.AddSeconds(1209600));
+            Response.Cache.SetCacheability(System.Web.HttpCacheability.Public);
+            Response.Cache.SetValidUntilExpires(true);
+            
             this.Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.Makes.AllMakesTitle, Branding.CurrentBrand.AppName);
             string[] rgIds = Request.PathInfo.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             int clevels = rgIds.Length;
