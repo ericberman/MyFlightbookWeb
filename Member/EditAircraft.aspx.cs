@@ -2,6 +2,7 @@ using MyFlightbook;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -46,6 +47,8 @@ public partial class EditMake : System.Web.UI.Page
             bool fAdminMode = AdminMode = id > 0 && (util.GetIntParam(Request, "a", 0) != 0) && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanSupport;
             bool fCanMigrate = !String.IsNullOrEmpty(util.GetStringParam(Request, "genCandidate"));
 
+            MfbEditAircraft1.AircraftID = id = AircraftTombstone.MapAircraftID(id);
+
             MfbEditAircraft1.AdminMode = lblAdminMode.Visible = pnlAdminUserFlights.Visible = fAdminMode;
             if (fAdminMode)
             {
@@ -61,8 +64,8 @@ public partial class EditMake : System.Web.UI.Page
                 }
             }
 
-            MfbEditAircraft1.AircraftID = AircraftTombstone.MapAircraftID(id);
             btnMigrateGeneric.Visible = fAdminMode && fCanMigrate && !MfbEditAircraft1.Aircraft.IsAnonymous && MfbEditAircraft1.Aircraft.InstanceType == AircraftInstanceTypes.RealAircraft;
+            btnMigrateSim.Visible = btnMigrateGeneric.Visible && CouldBeSim(MfbEditAircraft1.Aircraft);
 
             if (MfbEditAircraft1.AircraftID == Aircraft.idAircraftUnknown)
             {
@@ -90,6 +93,13 @@ public partial class EditMake : System.Web.UI.Page
         Response.Redirect(!String.IsNullOrEmpty(hdnReturnURL.Value) ? hdnReturnURL.Value : "Aircraft.aspx");
     }
 
+    protected void valModelSelected_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        if (args != null && MfbEditAircraft1.SelectedModelID == MakeModel.UnknownModel)
+            args.IsValid = false;
+    }
+
+    #region Admin functions
     protected void btnAdminCloneThis_Click(object sender, EventArgs e)
     {
         if (Page.IsValid)
@@ -114,11 +124,6 @@ public partial class EditMake : System.Web.UI.Page
         btnMakeDefault.Enabled = false;
     }
 
-    protected void valModelSelected_ServerValidate(object source, ServerValidateEventArgs args)
-    {
-        if (args != null && MfbEditAircraft1.SelectedModelID == MakeModel.UnknownModel)
-            args.IsValid = false;
-    }
     protected void btnMigrateGeneric_Click(object sender, EventArgs e)
     {
         Aircraft acOriginal = new Aircraft(MfbEditAircraft1.AircraftID);
@@ -126,7 +131,7 @@ public partial class EditMake : System.Web.UI.Page
         // See if there is a generic for the model
         string szTailNumGeneric = Aircraft.AnonymousTailnumberForModel(acOriginal.ModelID);
         Aircraft acGeneric = new Aircraft(szTailNumGeneric);
-        if (acGeneric.AircraftID == Aircraft.idAircraftUnknown)
+        if (acGeneric.IsNew)
         {
             acGeneric.TailNumber = szTailNumGeneric;
             acGeneric.ModelID = acOriginal.ModelID;
@@ -135,6 +140,55 @@ public partial class EditMake : System.Web.UI.Page
         }
 
         Aircraft.AdminMergeDupeAircraft(acGeneric, acOriginal);
-        Response.Redirect(Request.Url.PathAndQuery);
+        Response.Redirect(Request.Url.PathAndQuery.Replace(String.Format(CultureInfo.InvariantCulture, "id={0}", acOriginal.AircraftID), String.Format(CultureInfo.InvariantCulture, "id={0}", acGeneric.AircraftID)));
     }
+
+    protected AircraftInstanceTypes PseudoSimTypeFromTail(string szTail)
+    {
+        szTail = szTail.ToUpper(CultureInfo.CurrentCulture);
+        if (szTail.Contains("ATD"))
+            return AircraftInstanceTypes.CertifiedATD;
+        else if (Regex.IsMatch(szTail, "(D-?SIM)|FFS"))
+            return AircraftInstanceTypes.CertifiedIFRAndLandingsSimulator;
+        else if (Regex.IsMatch(szTail, "FS|SIM|FTD"))
+            return AircraftInstanceTypes.CertifiedIFRSimulator;
+        else
+            return AircraftInstanceTypes.RealAircraft;
+    }
+
+    protected bool CouldBeSim(Aircraft ac)
+    {
+        return ac.InstanceType == AircraftInstanceTypes.RealAircraft && PseudoSimTypeFromTail(ac.TailNumber) != AircraftInstanceTypes.RealAircraft;
+    }
+
+    protected void btnMigrateSim_Click(object sender, EventArgs e)
+    {
+        Aircraft acOriginal = new Aircraft(MfbEditAircraft1.AircraftID);
+        if (!CouldBeSim(acOriginal))
+        {
+            lblErr.Text = "This doesn't look like it should be a sim";
+            return;
+        }
+
+        // detect likely sim type
+        AircraftInstanceTypes ait = PseudoSimTypeFromTail(acOriginal.TailNumber);
+
+        // see if the specified sim exists
+        string szSimTail = Aircraft.SuggestSims(acOriginal.ModelID, ait)[0].TailNumber;
+        Aircraft acNew = new Aircraft(szSimTail);
+
+        if (acNew.IsNew)
+        {
+            acNew.TailNumber = szSimTail;
+            acNew.ModelID = acOriginal.ModelID;
+            acNew.InstanceType = ait;
+            acNew.Commit();
+        }
+
+        // set the original's instance type so that merge works.
+        acOriginal.InstanceType = ait;
+        Aircraft.AdminMergeDupeAircraft(acNew, acOriginal);
+        Response.Redirect(Request.Url.PathAndQuery.Replace(String.Format(CultureInfo.InvariantCulture, "id={0}", acOriginal.AircraftID), String.Format(CultureInfo.InvariantCulture, "id={0}", acNew.AircraftID)));
+    }
+    #endregion
 }

@@ -439,6 +439,7 @@ WHERE
     OR (ac.tailnumber LIKE 'N7_7%' AND man.idmanufacturer=3) 
     OR modelTails.tailnumber IS NOT NULL
     OR REPLACE(RIGHT(ac.tailnumber, LENGTH(ac.tailnumber) - 1), '-', '') = REPLACE(RIGHT(m.model, LENGTH(m.model) - 1), '-', '')
+    OR (ac.instancetype=1 AND ac.tailnumber RLIKE 'SIM|FTD|ATD|FFS')
 GROUP BY ac.idaircraft
 ORDER BY tailnumber ASC"></asp:SqlDataSource>
                             </asp:View>

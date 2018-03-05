@@ -38,6 +38,8 @@
         </ul>
         <asp:Button ID="btnMigrateGeneric" runat="server" 
             onclick="btnMigrateGeneric_Click" Text="Migrate to Generic" Visible="False" />
+        <asp:Button ID="btnMigrateSim" runat="server" 
+            onclick="btnMigrateSim_Click" Text="Migrate to Sim" Visible="false" />
         <asp:Button ID="btnAdminCloneThis" runat="server" Text="Create New Version" CausesValidation="true" ValidationGroup="adminclone" 
             onclick="btnAdminCloneThis_Click" />
         <asp:Button ID="btnMakeDefault" runat="server" Text="MakeDefault" CausesValidation="true" Visible="false"
