@@ -9,7 +9,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -223,7 +223,7 @@ namespace MyFlightbook.ImportFlights
 
     public abstract class ExternalFormatImporter
     {
-        private static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter() };
+        private static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter() };
 
         /// <summary>
         /// Initializes an enumerable of the external format from a datatable.
