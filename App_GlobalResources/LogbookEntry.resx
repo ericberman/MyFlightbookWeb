@@ -329,7 +329,7 @@
     <value>{0}&lt;br /&gt;Row data: {1}</value>
   </data>
   <data name="errImportRowHasError" xml:space="preserve">
-    <value>Row #{0}: {1}</value>
+    <value>Flight entry #{0}: {1}</value>
     <comment>{0} is row number, {1} is the problem</comment>
   </data>
   <data name="errImportUnknownAircraft" xml:space="preserve">
