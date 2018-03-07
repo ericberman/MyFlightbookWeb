@@ -126,7 +126,7 @@ namespace MyFlightbook.MilestoneProgress
 
                     int cRequiredLandings = fXCLandingsMustBeFullStop ? cfr.cFullStopLandings + cfr.cFullStopNightLandings : cfr.cLandingsThisFlight;
 
-                    if (al.DistanceForRoute() >= (double)miSoloLongCrossCountry.Threshold && al.GetAirportList().Length >= 3 && cRequiredLandings >= 2)
+                    if (al.DistanceForRoute() >= reqXCDistance && al.GetAirportList().Length >= 3 && cRequiredLandings >= 2)
                         miSoloLongCrossCountry.MatchFlightEvent(cfr);
                 }
             }
