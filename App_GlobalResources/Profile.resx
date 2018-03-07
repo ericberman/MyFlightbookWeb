@@ -429,7 +429,7 @@
     <value>Medical information successfully updated</value>
   </data>
   <data name="BasicMedDescriptionA" xml:space="preserve">
-    <value>You have held a valid medical at some point since July 15, 2006</value>
+    <value>You have held a valid medical at some point since July 15, 2006 (be sure to enter this, even if expired)</value>
   </data>
   <data name="BasicMedDescriptionB" xml:space="preserve">
     <value>You have taken a course on aero-medical issues within the prior 24 calendar months</value>
