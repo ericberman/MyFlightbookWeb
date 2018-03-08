@@ -540,4 +540,7 @@
   <data name="ViewAircraftRecency" xml:space="preserve">
     <value>Recency of flight</value>
   </data>
+  <data name="AdminNotASim" xml:space="preserve">
+    <value>This doesn't look like it should be a sim</value>
+  </data>
 </root>

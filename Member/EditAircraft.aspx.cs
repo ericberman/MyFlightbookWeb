@@ -145,6 +145,8 @@ public partial class EditMake : System.Web.UI.Page
 
     protected AircraftInstanceTypes PseudoSimTypeFromTail(string szTail)
     {
+        if (szTail == null)
+            throw new ArgumentNullException("szTail");
         szTail = szTail.ToUpper(CultureInfo.CurrentCulture);
         if (szTail.Contains("ATD"))
             return AircraftInstanceTypes.CertifiedATD;
@@ -158,6 +160,8 @@ public partial class EditMake : System.Web.UI.Page
 
     protected bool CouldBeSim(Aircraft ac)
     {
+        if (ac == null)
+            throw new ArgumentNullException("ac");
         return ac.InstanceType == AircraftInstanceTypes.RealAircraft && PseudoSimTypeFromTail(ac.TailNumber) != AircraftInstanceTypes.RealAircraft;
     }
 
@@ -166,7 +170,7 @@ public partial class EditMake : System.Web.UI.Page
         Aircraft acOriginal = new Aircraft(MfbEditAircraft1.AircraftID);
         if (!CouldBeSim(acOriginal))
         {
-            lblErr.Text = "This doesn't look like it should be a sim";
+            lblErr.Text = Resources.Aircraft.AdminNotASim;
             return;
         }
 
