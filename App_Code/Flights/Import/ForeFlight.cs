@@ -235,7 +235,8 @@ namespace MyFlightbook.ImportFlights
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerNames, JoinStrings(PassengerNames)),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropStudentName, JoinStrings(StudentNames)),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfExaminer, JoinStrings(ExaminerNames)),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven, GroundTraining),
+                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven, DualGiven > 0 ? GroundTraining : 0),
+                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, DualReceived > 0 ? GroundTraining : 0),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, FlightReview),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIPC, IPC),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCheckRide, Checkride)
