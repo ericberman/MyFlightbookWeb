@@ -1391,4 +1391,10 @@
   <data name="AutofillOptionsIncludeHeliportsTip" xml:space="preserve">
     <value>Indicates whether to include heliports when a takeoff or landing is detected, or only airports/seaports.</value>
   </data>
+  <data name="CloudStorageAppendDate" xml:space="preserve">
+    <value>Append date to filename (backups on different days are to different files)</value>
+  </data>
+  <data name="CloudStorageOverwrite" xml:space="preserve">
+    <value>Use a common filename (each backup overwrites any prior backup)</value>
+  </data>
 </root>

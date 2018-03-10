@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2017 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1138,7 +1138,7 @@ namespace MyFlightbook
                 return false;
 
             szQ = @"UPDATE users SET Email=?Email, FirstName=?FirstName, LastName=?LastName, Address=?address, TwitterAccessToken=?TwitterAccesstoken, TwitterAccessSecret=?TwitterAccessSecret, FacebookAccessToken=?FacebookAccessToken, 
-            DropboxAccessToken=?dropboxAccesstoken, OnedriveAccessToken=?onedrive, GoogleDriveAccessToken=?gdrive, ICloudAccessToken=?icloud, DefaultCloudDriveID=?defcloud,
+            DropboxAccessToken=?dropboxAccesstoken, OnedriveAccessToken=?onedrive, GoogleDriveAccessToken=?gdrive, ICloudAccessToken=?icloud, DefaultCloudDriveID=?defcloud, OverwriteDropbox=?overwriteCloud,
             LastBFR = ?LastBFR, LastMedical=?LastMedical, MonthsToMedical=?MonthsToMedical, IsInstructor=?IsInstructor, UsesSIC=?UsesSIC, UsesHHMM=?UsesHHMM, UsesUTCDates=?useUTCDates, License=?license, CertificateNumber=?cert, CFIExpiration=?cfiExp, 
             CurrencyFlags=?currencyFlags, GPlusAccessToken=?gpaccess, ShowTimes=?showTimes, EnglishProficiencyExpiration=?engProfExpiration, EmailSubscriptions=?subscriptions, LastEmail=?lastemail, AchievementStatus=?achievementstatus, PropertyBlackList=?blacklist
             WHERE PKID = ?PKID";
@@ -1160,6 +1160,7 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("gdrive", GoogleDriveAccessToken == null ? null : JsonConvert.SerializeObject(GoogleDriveAccessToken));
                     comm.Parameters.AddWithValue("icloud", ICloudDriveAccessToken == null ? null : JsonConvert.SerializeObject(ICloudDriveAccessToken));
                     comm.Parameters.AddWithValue("defcloud", (int)DefaultCloudStorage);
+                    comm.Parameters.AddWithValue("overwriteCloud", OverwriteCloudBackup ? 1 : 0);
                     comm.Parameters.AddWithValue("LastBFR", m_LastBFR);
                     comm.Parameters.AddWithValue("LastMedical", LastMedical);
                     comm.Parameters.AddWithValue("MonthsToMedical", MonthsToMedical);

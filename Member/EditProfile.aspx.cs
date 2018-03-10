@@ -15,7 +15,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2017 MyFlightbook LLC
+ * Copyright (c) 2010-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -241,6 +241,8 @@ public partial class Member_EditProfile : System.Web.UI.Page
         lnkAuthorizeOneDrive.Text = Branding.ReBrand(Resources.Profile.AuthorizeOneDrive);
         lnkDeAuthOneDrive.Text = Branding.ReBrand(Resources.Profile.DeAuthOneDrive);
         locOneDriveIsAuthed.Text = Branding.ReBrand(Resources.Profile.OneDriveIsAuthed);
+
+        rblCloudBackupAppendDate.SelectedValue = m_pf.OverwriteCloudBackup.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
     }
 
     private void HandleOAuthRedirect()
@@ -784,6 +786,12 @@ public partial class Member_EditProfile : System.Web.UI.Page
         catch (ArgumentNullException) { }
         catch (ArgumentException) { }
         catch (OverflowException) { }
+    }
+
+    protected void rblCloudBackupAppendDate_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        m_pf.OverwriteCloudBackup = Convert.ToBoolean(rblCloudBackupAppendDate.SelectedValue, CultureInfo.InvariantCulture);
+        m_pf.FCommit();
     }
     #endregion // Social Networking
 

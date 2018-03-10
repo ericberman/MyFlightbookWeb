@@ -760,6 +760,10 @@
                                     </tr>
                                 </table>
                             </div>
+                            <asp:RadioButtonList ID="rblCloudBackupAppendDate" runat="server" AutoPostBack="true" OnSelectedIndexChanged="rblCloudBackupAppendDate_SelectedIndexChanged">
+                                <asp:ListItem Selected="True" Value="false" Text="<%$ Resources:LocalizedText, CloudStorageAppendDate %>"></asp:ListItem>
+                                <asp:ListItem Value="true" Text="<%$ Resources:LocalizedText, CloudStorageOverwrite %>"></asp:ListItem>
+                            </asp:RadioButtonList>
                             <asp:Panel ID="pnlDefaultCloud" Visible="False" runat="server" meta:resourceKey="pnlDefaultCloudResource1">
                                 <hr />
                                 <asp:Label ID="lblPickDefault" runat="server" Text="<%$ Resources:LocalizedText, CloudStoragePickDefault %>" meta:resourceKey="lblPickDefaultResource1"></asp:Label>
