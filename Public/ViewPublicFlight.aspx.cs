@@ -119,7 +119,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
                     this.Master.HasFooter = this.Master.HasHeader = false;
                     FullPageBottom.Visible = FullPageTop.Visible = false;
 
-                    pnlDetails.Visible = divMap.Visible = mfbAirportServices1.Visible = lnkShowMapOnly.Visible = imgsliderFlights.Visible = mfbVideoEntry1.Visible = false;
+                    pnlDetails.Visible = divAircraftImages.Visible = divMap.Visible = mfbAirportServices1.Visible = lnkShowMapOnly.Visible = imgsliderFlights.Visible = mfbVideoEntry1.Visible = false;
 
                     ShowComponents(szComponents.Split(','));
                 }
