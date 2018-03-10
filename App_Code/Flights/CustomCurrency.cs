@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -229,6 +229,7 @@ namespace MyFlightbook.FlightCurrency
                         { CustomCurrency.CustomCurrencyEventType.NVGoggles, new string[] { Resources.Currency.CustomCurrencyEventNVGHour, Resources.Currency.CustomCurrencyEventNVGHours } },
                         { CustomCurrency.CustomCurrencyEventType.NVFLIR, new string[] { Resources.Currency.CustomCurrencyEventNVSHour, Resources.Currency.CustomCurrencyEventNVSHours } },
                         { CustomCurrency.CustomCurrencyEventType.LandingsHighAltitude, new string[] { Resources.Currency.CustomCurrencyEventHighAltitudeLanding, Resources.Currency.CustomCurrencyEventHighAltitudeLandings } },
+                        { CustomCurrency.CustomCurrencyEventType.HoursDual, new string[] { Resources.Currency.CustomCurrencyEventDualHour, Resources.Currency.CustomCurrencyEventDualHours } },
                         { CustomCurrency.CustomCurrencyEventType.NightFlight, new string[] { Resources.Currency.CustomCurrencyEventNightHour, Resources.Currency.CustomCurrencyEventNightHours } },
                         { CustomCurrency.CustomCurrencyEventType.CAP5Checkride, new string[] { Resources.Currency.CustomCurrencyEventCap5Checkride, Resources.Currency.CustomCurrencyEventCap5Checkrides } },
                         { CustomCurrency.CustomCurrencyEventType.CAP91Checkride, new string[] { Resources.Currency.CustomCurrencyEventCap91Checkride, Resources.Currency.CustomCurrencyEventCap91Checkrides } },
@@ -298,7 +299,8 @@ namespace MyFlightbook.FlightCurrency
             NightFlight = 21,
             CAP5Checkride = 22,
             CAP91Checkride = 23,
-            FMSApproaches = 24
+            FMSApproaches = 24,
+            HoursDual = 25
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1 };
@@ -782,6 +784,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     case CustomCurrencyEventType.FMSApproaches:
                         prop = CustomPropertyType.KnownProperties.IDPropFMSApproaches;
                         break;
+                    case CustomCurrencyEventType.HoursDual:
+                        fq.HasDual = true;
+                        break;
                     default:
                         throw new MyFlightbookException("Unknown event type: " + EventType.ToString() + " in ToQuery()");
                 }
@@ -870,6 +875,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     break;
                 case CustomCurrencyEventType.IFRApproaches:
                     AddRecentFlightEvents(cfr.dtFlight, Convert.ToInt32(cfr.cApproaches));
+                    break;
+                case CustomCurrencyEventType.HoursDual:
+                    AddRecentFlightEvents(cfr.dtFlight, cfr.Dual);
                     break;
                 case CustomCurrencyEventType.BaseCheck:
                     cfr.ForEachEvent((pfe) =>

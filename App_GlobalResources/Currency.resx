@@ -836,4 +836,10 @@
   <data name="CustomCurrencyEventFMSApproaches" xml:space="preserve">
     <value>FMS approaches</value>
   </data>
+  <data name="CustomCurrencyEventDualHour" xml:space="preserve">
+    <value>hour of dual</value>
+  </data>
+  <data name="CustomCurrencyEventDualHours" xml:space="preserve">
+    <value>hours of Dual</value>
+  </data>
 </root>
