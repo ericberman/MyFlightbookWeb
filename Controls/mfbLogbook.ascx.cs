@@ -365,7 +365,11 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
                 FlushCache();
 
             if (util.GetIntParam(Request, "dupesOnly", 0) != 0)
+            {
                 RestrictToDupes();
+                FlushCache();
+                HasBeenBound = false;
+            }
         }
 
         if (!HasBeenBound)
