@@ -292,22 +292,30 @@ namespace MyFlightbook.SocialMedia
             try
             {
                 FacebookResponseError fberr = MFBFacebook.ParseJSonError(szResult);
-                if (fberr.Error != null && fberr.Error.Code == 190)
+                if (fberr.Error != null)
                 {
-                    // De-authorize
-                    Profile pf = Profile.GetUser(szUser);
-                    pf.FacebookAccessToken = null;
-                    pf.FCommit();
+                    if (fberr.Error.Code == 190)
+                    {
+                        // De-authorize
+                        Profile pf = Profile.GetUser(szUser);
+                        pf.FacebookAccessToken = null;
+                        pf.FCommit();
 
-                    // let them know that there is a problem.
-                    util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.WebService.NotifyFacebookSetup, Branding.CurrentBrand.AppName),
-                        String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.ReauthFacebook,
-                            pf.UserFullName,
-                            fberr.Error.Code,
-                            fberr.Error.ErrorSubcode,
-                            fberr.Error.Message),
-                        new MailAddress(pf.Email, pf.UserFullName),
-                        false, false);
+                        // let them know that there is a problem.
+                        util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.WebService.NotifyFacebookSetup, Branding.CurrentBrand.AppName),
+                            String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.ReauthFacebook,
+                                pf.UserFullName,
+                                fberr.Error.Code,
+                                fberr.Error.ErrorSubcode,
+                                fberr.Error.Message),
+                            new MailAddress(pf.Email, pf.UserFullName),
+                            false, false);
+                    }
+                    else
+                    {
+                        // send the raw result so we can debug.
+                        util.NotifyAdminEvent("Facebook posting error", szResult, ProfileRoles.maskSiteAdminOnly);
+                    }
                 }
             }
             catch (MyFlightbookException) { }
