@@ -147,6 +147,12 @@
   <data name="lblAnswerWhyStartingFlightsResource2.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblCanFillInMoreLaterResource1.Text" xml:space="preserve">
+    <value>For simplicity, this focuses on the top-level totals.  After you create your starting totals, you will have "Catch-up" flights which you can edit to include whatever additional details you like.</value>
+  </data>
+  <data name="lblCanFillInMoreLaterResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblCanUseAnonymousResource1.Text" xml:space="preserve">
     <value>If you don't remember the tailnumber of an aircraft, or if you have flown many different aircraft of a particular model (such as an airline pilot might do), you may wish to create "anonymous" aircraft.  These aircraft have no specific tailnumber.</value>
   </data>
@@ -190,7 +196,7 @@
     <value />
   </data>
   <data name="lblInputAircraft2Resource2.Text" xml:space="preserve">
-    <value>You don't need every aircraft, but you should have at least one that represents each type of total you would like to represent in your totals</value>
+    <value>You don't need every aircraft, but you should have at least one that represents each type of total you would like to represent in your totals.</value>
   </data>
   <data name="lblInputAircraft2Resource2.ToolTip" xml:space="preserve">
     <value />
@@ -205,6 +211,12 @@
     <value>If you have flown Boeing 747's and Bell R-22 helicopters, though, you probably want to capture those totals separately, so make sure that one of the 747's and one of the R-22's is in your list.</value>
   </data>
   <data name="lblInputAircraft4Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblInputAircraftGenericResource1.Text" xml:space="preserve">
+    <value>There is also a special set of generic aircraft in the system by the pseudo manufacturer "Generic", which can be useful for lumping together common characteristics without picking a specific model.  E.g., "Generic - ASEL" can be used to represent single-engine piston time that is not complex/retract/tailwheel, or "Generic - AMEL Turbine" for multi-engine turbine time.</value>
+  </data>
+  <data name="lblInputAircraftGenericResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblInputAircraftResource1.Text" xml:space="preserve">
@@ -448,12 +460,6 @@
     <value>Previous</value>
   </data>
   <data name="wizStartingTotalsResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblCanFillInMoreLaterResource1.Text" xml:space="preserve">
-    <value>For simplicity, this focuses on the top-level totals.  After you create your starting totals, you will have &amp;quot;Catch-up&amp;quot; flights which you can edit to include whatever additional details you like.</value>
-  </data>
-  <data name="lblCanFillInMoreLaterResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
 </root>

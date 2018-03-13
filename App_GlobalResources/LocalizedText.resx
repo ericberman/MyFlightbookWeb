@@ -1397,4 +1397,7 @@
   <data name="CloudStorageOverwrite" xml:space="preserve">
     <value>Use a common filename (each backup overwrites any prior backup)</value>
   </data>
+  <data name="WelcomeSetStartingTotals" xml:space="preserve">
+    <value>Set Starting Totals</value>
+  </data>
 </root>

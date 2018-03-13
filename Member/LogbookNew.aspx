@@ -125,7 +125,10 @@
                 <% =Resources.LocalizedText.ORSeparator %>
             </li>
             <li><asp:HyperLink ID="lnkImportWelcome" NavigateUrl="~/Member/Import.aspx" runat="server" 
-                    Text="<%$ Resources:LocalizedText, WelcomeImportFlights %>"></asp:HyperLink>.</li>
+                    Text="<%$ Resources:LocalizedText, WelcomeImportFlights %>"></asp:HyperLink><br />
+                <% =Resources.LocalizedText.ORSeparator %>
+            </li>
+            <li><asp:HyperLink ID="lnkSetStartingTotals" runat="server" Text="<%$ Resources:LocalizedText, WelcomeSetStartingTotals %>" NavigateUrl="~/Member/StartingTotals.aspx"></asp:HyperLink></li>
         </ul>
         <div style="text-align:center">
         <asp:Button ID="btnClose" runat="server" Text="<%$ Resources:LocalizedText, Close %>" /></div>

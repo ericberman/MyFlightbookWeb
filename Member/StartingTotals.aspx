@@ -60,18 +60,23 @@
                 <p><asp:Label ID="lblInputAircraft" runat="server" 
                         Text="First, Make sure that all of the aircraft that you've flown are in your account." 
                         meta:resourcekey="lblInputAircraftResource1"></asp:Label></p>
-                <p><asp:Label ID="lblInputAircraft2" runat="server" 
-                        Text="You don't need every aircraft, but you should have at least one that represents each type of total you would like to represent in your totals" meta:resourcekey="lblInputAircraft2Resource2" 
-                        ></asp:Label></p>
-                <p><asp:Label ID="lblInputAircraft3" runat="server" 
-                        Text="For example, if all of your flying is in single-engine aircraft, one of the C-172's that you've flown may be sufficient." meta:resourcekey="lblInputAircraft3Resource1" 
-                        ></asp:Label></p>
-                <p><asp:Label ID="lblInputAircraft4" runat="server" 
-                        Text="If you have flown Boeing 747's and Bell R-22 helicopters, though, you probably want to capture those totals separately, so make sure that one of the 747's and one of the R-22's is in your list." meta:resourcekey="lblInputAircraft4Resource1" 
-                        ></asp:Label></p>
-                <p><asp:Label ID="lblCanUseAnonymous" runat="server" 
-                        Text="If you don't remember the tailnumber of an aircraft, or if you have flown many different aircraft of a particular model (such as an airline pilot might do), you may wish to create &quot;anonymous&quot; aircraft.  These aircraft have no specific tailnumber." 
-                        meta:resourcekey="lblCanUseAnonymousResource1"></asp:Label> </p>
+                <ul>
+                    <li>
+                        <p><asp:Label ID="lblInputAircraft2" runat="server"
+                            Text="You don't need every aircraft, but you should have at least one that represents each type of total you would like to represent in your totals." meta:resourcekey="lblInputAircraft2Resource2"></asp:Label></p>
+                        <p><asp:Label ID="lblInputAircraft3" runat="server"
+                            Text="For example, if all of your flying is in single-engine aircraft, one of the C-172's that you've flown may be sufficient." meta:resourcekey="lblInputAircraft3Resource1"></asp:Label></p></li>
+                    <li>
+                        <p><asp:Label ID="lblInputAircraftGeneric" runat="server" Text="There is also a special set of generic aircraft in the system by the pseudo manufacturer &quot;Generic&quot;, which can be useful for lumping together common characteristics without picking a specific model.  E.g., &quot;Generic - ASEL&quot; can be used to represent single-engine piston time that is not complex/retract/tailwheel, or &quot;Generic - AMEL Turbine&quot; for multi-engine turbine time." meta:resourcekey="lblInputAircraftGenericResource1"></asp:Label></p></li>
+                    <li>
+                        <p><asp:Label ID="lblInputAircraft4" runat="server"
+                            Text="If you have flown Boeing 747's and Bell R-22 helicopters, though, you probably want to capture those totals separately, so make sure that one of the 747's and one of the R-22's is in your list." meta:resourcekey="lblInputAircraft4Resource1"></asp:Label></p></li>
+                    <li>
+                        <p><asp:Label ID="lblCanUseAnonymous" runat="server"
+                            Text="If you don't remember the tailnumber of an aircraft, or if you have flown many different aircraft of a particular model (such as an airline pilot might do), you may wish to create &quot;anonymous&quot; aircraft.  These aircraft have no specific tailnumber."
+                            meta:resourcekey="lblCanUseAnonymousResource1"></asp:Label></p>
+                    </li>
+                </ul>
                 <p><asp:HyperLink ID="lnkAircraft" runat="server" Text="Add/Edit/Import Aircraft" 
                         NavigateUrl="~/Member/Aircraft.aspx" Target="_blank" 
                         meta:resourcekey="lnkAircraftResource1"></asp:HyperLink></p>
