@@ -1217,12 +1217,63 @@ namespace MyFlightbook
         {
             List<CurrencyStatusItem> rgCS = new List<CurrencyStatusItem>();
 
-            if (NextMedical.HasValue())
-                rgCS.Add(StatusForDate(NextMedical, Resources.Currency.NextMedical));
-
+            CurrencyStatusItem csMedical = NextMedical.HasValue() ? StatusForDate(NextMedical, Resources.Currency.NextMedical) : null;
             CurrencyStatusItem csBasicMed = new Basicmed.BasicMed(UserName).Status;
-            if (csBasicMed != null)
-                rgCS.Add(csBasicMed);
+
+            /* Scenarios for combining regular medical and basicmed.
+             * 
+             *   +--------------------+--------------------+--------------------+--------------------+
+             *   |\_____    Medical   |                    |                    |                    |
+             *   |      \______       |   Never Current    |     Expired        |      Valid         |
+             *   | BasicMed    \_____ |                    |                    |                    |
+             *   +--------------------+--------------------+--------------------+--------------------+
+             *   |  Never Current     |    Show Nothing    |   Show Expired     |    Show Valid      |
+             *   |                    |                    |     Medical        |     Medical        |
+             *   +--------------------+--------------------+--------------------+--------------------+
+             *   |      Expired       |        N/A         |   Show Expired     | Show Valid Medical |
+             *   |                    |                    | Medical, BasicMed  | Suppress BasicMed  |
+             *   +--------------------+--------------------+--------------------+--------------------+
+             *   |                    |                    |    Show Valid      |    Show Valid      |
+             *   |       Valid        |        N/A         |   BasicMed, note   |   Medical, show    |
+             *   |                    |                    |    BasicMed only   |   BasicMed too     |
+             *   +--------------------+--------------------+--------------------+--------------------+
+             * 
+             * 
+             * a) Medical has never been valid -> by definition, neither has basic med: NO STATUS
+             * b) Medical expired
+             *      1) BasicMed never valid -> show only expired medical
+             *      2) BasicMed expired -> show expired medical, expired basicmed (so you can tell which is easier to renew)
+             *      3) BasicMed is valid -> Show valid BasicMed, that you are ONLY basicmed
+             * c) Medical valid:
+             *      1) BasicMed never valid -> Show only valid medical
+             *      2) BasicMed expired -> show valid medical don't bother showing the expired basicmed since it's kinda pointless
+             *      3) BasicMed is still valid -> show both (hey, seeing green is good)
+            */
+
+            if (csMedical != null) // (a) above - i.e., left column of chart; nothing to add if never had valid medical
+            {
+                if (csBasicMed == null) // b.1 and c.1 above, i.e., top row of chart - Just show medical status
+                    rgCS.Add(csMedical);
+                else
+                {
+                    switch (csMedical.Status)
+                    {
+                        case CurrencyState.OK:
+                        case CurrencyState.GettingClose:
+                            // Medical valid - c.2 and c.3 above - show medical, show basic med if valid
+                            rgCS.Add(csMedical);
+                            if (csBasicMed.Status != CurrencyState.NotCurrent)
+                                rgCS.Add(csBasicMed);
+                            break;
+                        case CurrencyState.NotCurrent:
+                            // Medical is not current but basicmed has been - always show basicmed, show medical only if basicmed is also expired
+                            rgCS.Add(csBasicMed);
+                            if (csBasicMed.Status == CurrencyState.NotCurrent)
+                                rgCS.Add(csMedical);
+                            break;
+                    }
+                }
+            }
 
             BFREvents = null; // clear the cache - but this will let the next three calls (LastBFR/LastBFRR22/LastBFRR44) hit the DB only once.
             DateTime dtBfrLast = LastBFR();

@@ -842,4 +842,7 @@
   <data name="CustomCurrencyEventDualHours" xml:space="preserve">
     <value>hours of Dual</value>
   </data>
+  <data name="NextMedicalBasicMedOnly" xml:space="preserve">
+    <value>Medical (BASICMED ONLY)</value>
+  </data>
 </root>
