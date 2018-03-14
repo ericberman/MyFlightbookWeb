@@ -252,7 +252,7 @@ public partial class Member_Training : System.Web.UI.Page
             if (String.Compare(le.User, User.Identity.Name, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 HyperLink lnkPendingFlight = (HyperLink)e.Row.FindControl("lnkFlightToSign");
-                lnkPendingFlight.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/SignFlight.aspx?idFlight={0}&ret={1}", le.FlightID, HttpUtility.UrlEncode(Request.Url.OriginalString));
+                lnkPendingFlight.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/SignFlight.aspx?idFlight={0}&ret={1}", le.FlightID, HttpUtility.UrlEncode(Request.Url.PathAndQuery));
             }
 
             ImageButton btnIgnore = (ImageButton)e.Row.FindControl("btnIgnore");
