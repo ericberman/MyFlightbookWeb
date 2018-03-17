@@ -35,6 +35,52 @@ namespace MyFlightbook.Telemetry
             get { return FlightData.SpeedUnitTypes.MetersPerSecond; }
         }
 
+        private class GPXPathRoot
+        {
+            public XNamespace xnamespace { get; set;}
+            public IEnumerable<XElement> elements { get; set; }
+        }
+
+        private GPXPathRoot FindRoot(XDocument xml)
+        {
+            if (xml == null)
+                return null;
+
+            XNamespace ns = XNamespace.Get("http://www.topografix.com/GPX/1/0");
+            XNamespace ns11 = XNamespace.Get("http://www.topografix.com/GPX/1/1");
+
+            IEnumerable<XElement> ele = null;
+
+            try
+            {
+                ele = xml.Descendants(ns + "trk").First().Descendants(ns + "trkseg");
+            }
+            catch (InvalidOperationException)
+            {
+                try
+                {
+                    ele = xml.Descendants("trk").First().Descendants("trkseg");
+                    if (ele != null)
+                        ns = "";
+                }
+                catch (InvalidOperationException)
+                {
+                    try
+                    {
+                        ele = xml.Descendants(ns11 + "trk");
+                        ele = ele.First().Descendants(ns11 + "trkseg");
+                        if (ele != null)
+                            ns = ns11;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                    }
+                }
+            }
+
+            return new GPXPathRoot { xnamespace = ns, elements = ele };
+        }
+
         /// <summary>
         /// Parses GPX-based flight data
         /// </summary>
@@ -42,6 +88,9 @@ namespace MyFlightbook.Telemetry
         /// <returns>True for success</returns>
         public override bool Parse(string szData)
         {
+            if (String.IsNullOrEmpty(szData))
+                return false;
+
             StringBuilder sbErr = new StringBuilder();
             ParsedData.Clear();
             Boolean fResult = true;
@@ -49,43 +98,16 @@ namespace MyFlightbook.Telemetry
             byte[] bytes = Encoding.UTF8.GetBytes(szData);
             using (MemoryStream stream = new MemoryStream(bytes))
             {
-                XDocument xml = XDocument.Load(new StreamReader(stream));
-
                 try
                 {
-                    XNamespace ns = XNamespace.Get("http://www.topografix.com/GPX/1/0");
-                    XNamespace ns11 = XNamespace.Get("http://www.topografix.com/GPX/1/1");
+                    XDocument xml = XDocument.Load(new StreamReader(stream));
 
-                    IEnumerable<XElement> ele = null;
+                    GPXPathRoot root = FindRoot(xml);
 
-                    try
-                    {
-                        ele = xml.Descendants(ns + "trk").First().Descendants(ns + "trkseg");
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        try
-                        {
-                            ele = xml.Descendants("trk").First().Descendants("trkseg");
-                            if (ele != null)
-                                ns = "";
-                        }
-                        catch (InvalidOperationException)
-                        {
-                            try
-                            {
-                                ele = xml.Descendants(ns11 + "trk");
-                                ele = ele.First().Descendants(ns11 + "trkseg");
-                                if (ele != null)
-                                    ns = ns11;
-                            }
-                            catch (InvalidOperationException)
-                            {
-                            }
-                        }
-                    }
+                    if (root == null)
+                        return false;
 
-                    if (ele != null)
+                    if (root.elements != null)
                     {
                         int iRow = 0;
                         bool fHasAlt = false;
@@ -95,9 +117,9 @@ namespace MyFlightbook.Telemetry
 
                         List<Position> lst = new List<Position>();
 
-                        foreach (XElement e in ele)
+                        foreach (XElement e in root.elements)
                         {
-                            foreach (XElement coord in e.Descendants(ns + "trkpt"))
+                            foreach (XElement coord in e.Descendants(root.xnamespace + "trkpt"))
                             {
                                 XAttribute xLat = null;
                                 XAttribute xLon = null;
@@ -107,9 +129,9 @@ namespace MyFlightbook.Telemetry
 
                                 xLat = coord.Attribute("lat");
                                 xLon = coord.Attribute("lon");
-                                xAlt = coord.Descendants(ns + "ele").FirstOrDefault();
-                                xTime = coord.Descendants(ns + "time").FirstOrDefault();
-                                xSpeed = coord.Descendants(ns + "speed").FirstOrDefault();
+                                xAlt = coord.Descendants(root.xnamespace + "ele").FirstOrDefault();
+                                xTime = coord.Descendants(root.xnamespace + "time").FirstOrDefault();
+                                xSpeed = coord.Descendants(root.xnamespace + "speed").FirstOrDefault();
 
                                 fHasAlt = (xAlt != null);
                                 fHasDate = (xTime != null);
@@ -155,6 +177,11 @@ namespace MyFlightbook.Telemetry
                     }
                     else
                         throw new MyFlightbookException(Resources.FlightData.errGPXNoPath);
+                }
+                catch (System.Xml.XmlException ex)
+                {
+                    sbErr.Append(Resources.FlightData.errGeneric + ex.Message);
+                    fResult = false;
                 }
                 catch (MyFlightbookException ex)
                 {
