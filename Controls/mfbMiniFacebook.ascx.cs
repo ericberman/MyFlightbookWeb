@@ -100,7 +100,7 @@ public partial class Controls_mfbMiniFacebook : System.Web.UI.UserControl
             string szURL = string.Empty;
             if (FlightEntry != null)
             {
-                string szFlightURL = String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}/{1}", "~/Public/ViewPublicFlight.aspx".ToAbsoluteURL(Request), FlightEntry.FlightID);
+                string szFlightURL = FlightEntry.SocialMediaItemUri(Request.Url.Host).ToString();
 
                 szURL = String.Format(System.Globalization.CultureInfo.InvariantCulture, szFBTemplate,
                     MFBFacebook.FACEBOOK_API_KEY,

@@ -1805,7 +1805,7 @@ namespace MyFlightbook
 
         public Uri SocialMediaItemUri(string szHost = null)
         {
-            return String.Format(CultureInfo.InvariantCulture, "~/Public/ViewPublicFlight.aspx/{0}", FlightID).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
+            return String.Format(CultureInfo.InvariantCulture, "~/Public/ViewPublicFlight.aspx/{0}?v={1}", FlightID, (new Random()).Next(10000)).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
         }
 
         public MFBImageInfo SocialMediaImage(string szHost = null)
