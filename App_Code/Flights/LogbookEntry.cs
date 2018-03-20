@@ -1,4 +1,12 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.Encryptors;
+using MyFlightbook.Histogram;
+using MyFlightbook.Image;
+using MyFlightbook.Instruction;
+using MyFlightbook.SocialMedia;
+using MyFlightbook.Telemetry;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
@@ -7,16 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI.WebControls;
-using MyFlightbook.Airports;
-using MyFlightbook.Encryptors;
-using MyFlightbook.Histogram;
-using MyFlightbook.Image;
-using MyFlightbook.Instruction;
-using MyFlightbook.SocialMedia;
-using MyFlightbook.Telemetry;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
@@ -1330,7 +1329,6 @@ namespace MyFlightbook
             dbh.ReadRows((comm) => { }, dr =>
             {
                 LogbookEntry le = new LogbookEntry(dr, szUser);
-                le.CustomProperties = CustomFlightProperty.LoadPropertiesForFlight(le.FlightID);
                 if (le.IsValidSignature())
                 {
                     le.AircraftID = idAircraftNew;
@@ -1636,6 +1634,9 @@ namespace MyFlightbook
                     CatClassDisplay = util.ReadNullableField(dr, "CatClassDisplay", string.Empty).ToString();
                     TailNumDisplay = util.ReadNullableField(dr, "TailNumberdisplay", string.Empty).ToString();
 
+                    // Load properties, if available.
+                    CustomProperties = CustomFlightProperty.PropertiesFromJSONTuples((string)util.ReadNullableField(dr, "CustomPropsJSON", string.Empty), FlightID);
+
                     string szVids = dr["FlightVids"].ToString();
                     if (!String.IsNullOrEmpty(szVids))
                     {
@@ -1758,9 +1759,6 @@ namespace MyFlightbook
                         fResult = InitFromDataReader(dr, szUserName, lto);
                         if (additionalInit != null)
                             additionalInit(dr);
-
-                        if (fResult)
-                            CustomProperties = CustomFlightProperty.LoadPropertiesForFlight(idRow);
                     }))
                     szError += dbh.LastError;
 
@@ -1908,29 +1906,6 @@ namespace MyFlightbook
             return string.Empty;
         }
         #endregion
-
-        static Regex regCurrency = null;
-
-        /// <summary>
-        /// Converts currency (monetary) values into locally formatted currency.  These are flagged as a decimal surrounded by $$$.
-        /// </summary>
-        /// <param name="szCurrencySummary"></param>
-        /// <returns></returns>
-        public static string AdjustCurrency(string szCurrencySummary)
-        {
-            if (regCurrency == null)
-                regCurrency = new Regex("(\\$\\$\\$)([0-9.,]+)(\\$\\$\\$)", RegexOptions.Compiled);
-
-            return regCurrency.Replace(szCurrencySummary, (m) =>
-                {
-                    if (m.Groups.Count >= 4)
-                    {
-                        decimal d = Convert.ToDecimal(m.Groups[2].Value, System.Globalization.CultureInfo.InvariantCulture);
-                        return String.Format(CultureInfo.CurrentCulture, "{0:C}", d);
-                    }
-                    return string.Empty;
-                });
-        }
 
         #region subtotals (for printing, mostly)
         /// <summary>
@@ -2481,107 +2456,6 @@ namespace MyFlightbook
         #endregion
         #endregion
 
-        #region hack for doing duty time, block time, and tach time totals
-        /// <summary>
-        /// /// Given a UTC property string in the form id\tvalue\r\nid\tvalue...., breaks it up and appends a Total elapsed time string.  Used for block time and duty time.
-        /// </summary>
-        /// <param name="szTimes"></param>
-        /// <param name="sb"></param>
-        private static void AppendPropertyTimes(string szTimes, StringBuilder sb)
-        {
-            DateTime? dtDutyStart = null, dtDutyEnd = null, dtBlockOut = null, dtBlockIn = null;
-            string[] rgTimes = szTimes.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (string sz in rgTimes)
-            {
-                string[] rgProp = sz.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                if (rgProp.Length == 2)
-                {
-                    DateTime dt = Convert.ToDateTime(rgProp[1], CultureInfo.InvariantCulture);
-                    switch ((CustomPropertyType.KnownProperties) Convert.ToInt32(rgProp[0], CultureInfo.InvariantCulture))
-                    {
-                        case CustomPropertyType.KnownProperties.IDBlockIn:
-                            dtBlockIn = dt;
-                            break;
-                        case CustomPropertyType.KnownProperties.IDBlockOut:
-                            dtBlockOut = dt;
-                            break;
-                        case CustomPropertyType.KnownProperties.IDPropDutyTimeStart:
-                            dtDutyStart = dt;
-                            break;
-                        case CustomPropertyType.KnownProperties.IDPropDutyTimeEnd:
-                            dtDutyEnd = dt;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            if (dtDutyStart != null && dtDutyEnd != null && dtDutyStart.HasValue && dtDutyEnd.HasValue && dtDutyEnd.Value.CompareTo(dtDutyStart.Value) > 0)
-                sb.AppendFormat(CultureInfo.CurrentCulture, "\r\n" + Resources.LogbookEntry.TotalDutyTime, ((decimal)dtDutyEnd.Value.Subtract(dtDutyStart.Value).TotalHours).ToHHMM());
-
-            if (dtBlockOut != null && dtBlockIn != null && dtBlockOut.HasValue && dtBlockIn.HasValue && dtBlockIn.Value.CompareTo(dtBlockOut.Value) > 0)
-                sb.AppendFormat(CultureInfo.CurrentCulture, "\r\n" + Resources.LogbookEntry.TotalBlockTime, ((decimal)dtBlockIn.Value.Subtract(dtBlockOut.Value).TotalHours).ToHHMM());
-        }
-
-        /// <summary>
-        /// Given a tach property string in the form id\tvalue\r\nid\tvalue...., breaks it up and appends a Total Tach string.
-        /// </summary>
-        /// <param name="szTach"></param>
-        /// <param name="sb"></param>
-        private static void AppendPropertyTach(string szTach, StringBuilder sb)
-        {
-            decimal tachStart = 0.0M, tachEnd = 0.0M;
-            string[] rgTach = szTach.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (string sz in rgTach)
-            {
-                string[] rgProp = sz.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                if (rgProp.Length == 2)
-                {
-                    decimal val = Convert.ToDecimal(rgProp[1], CultureInfo.InvariantCulture);
-                    switch ((CustomPropertyType.KnownProperties) Convert.ToInt32(rgProp[0], CultureInfo.InvariantCulture))
-                    {
-                        case CustomPropertyType.KnownProperties.IDPropTachStart:
-                            tachStart = val;
-                            break;
-                        case CustomPropertyType.KnownProperties.IDPropTachEnd:
-                            tachEnd = val;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            if (tachStart > 0 && tachEnd > tachStart)
-                sb.AppendFormat(CultureInfo.CurrentCulture, "\r\n" + Resources.LogbookEntry.TotalTachTime, tachEnd - tachStart);
-        }
-
-        /// <summary>
-        /// Total hack to account for the fact that block out/in, duty start/end, and tach time are all independent properties, so displaying the total block/duty/tach time can't easily be done in the main query.
-        /// </summary>
-        /// <param name="szTimes"></param>
-        /// <param name="szTach"></param>
-        /// <returns></returns>
-        public static string PropertyTotals(string szTimes, string szTach)
-        {
-            bool fHasTime = !String.IsNullOrEmpty(szTimes);
-            bool fHasTach = !String.IsNullOrEmpty(szTach);
-            if (!fHasTime && !fHasTach) // short circuit for performance
-                return string.Empty;
-
-            StringBuilder sb = new StringBuilder();
-            if (fHasTime)
-                AppendPropertyTimes(szTimes, sb);
-
-            if (fHasTach)
-                AppendPropertyTach(szTach, sb);
-
-            return sb.ToString();
-        }
-        #endregion
-
         #region Object creation
         public LogbookEntryDisplay()
             : base()
@@ -2599,12 +2473,10 @@ namespace MyFlightbook
             IsOverridden = Convert.ToBoolean(dr["IsOverridden"], CultureInfo.InvariantCulture);
             EffectiveCatClass = Convert.ToInt32(dr["CatClassOverride"], CultureInfo.InvariantCulture);
 
-            string szCustProperties = util.ReadNullableField(dr, "CustomProperties", string.Empty).ToString() + PropertyTotals(util.ReadNullableString(dr, "timestamps"), util.ReadNullableString(dr, "tachtime"));
-
-            CustPropertyDisplay = AdjustCurrency(szCustProperties);
+            CustPropertyDisplay = CustomFlightProperty.PropListDisplay(CustomProperties, UseHHMM);
         }
 
-        protected LogbookEntryDisplay(MySqlDataReader dr, string szUser)
+        protected LogbookEntryDisplay(MySqlDataReader dr, string szUser, bool fUseHHMM, bool fUseUTCDate)
             : base(dr, szUser)
         {
             if (dr == null)
@@ -2612,6 +2484,9 @@ namespace MyFlightbook
 
             RowHeight = 1;  // takes one slot by default.
             RowType = LogbookRowType.Flight;
+
+            UseHHMM = fUseHHMM;
+            UseUTCDates = fUseUTCDate;
 
             InitPropertiesFromDB(dr);
         }
@@ -2638,7 +2513,7 @@ namespace MyFlightbook
             DBHelper dbh = new DBHelper(args);
             args.Timeout = 120; // give it up to 120 seconds.
             List<LogbookEntryDisplay> lst = new List<LogbookEntryDisplay>();
-            if (!dbh.ReadRows((c) => { }, (dr) => { lst.Add(new LogbookEntryDisplay(dr, szUser) { UseHHMM = fUseHHMM, UseUTCDates = fUseUTCDate }); }))
+            if (!dbh.ReadRows((c) => { }, (dr) => { lst.Add(new LogbookEntryDisplay(dr, szUser, fUseHHMM, fUseUTCDate)); }))
                 util.NotifyAdminEvent("Error in RefreshData", String.Format(CultureInfo.InvariantCulture, "{0}\r\n{1}\r\n{2}", szUser, dbh.LastError, args.QueryString), ProfileRoles.maskSiteAdminOnly);
 
             // Sort the list by the sort expression and direction

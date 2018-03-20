@@ -633,7 +633,7 @@ namespace MyFlightbook
                 { },
                 (dr) =>
                 {
-                    LogbookEntry le = new LogbookEntry(dr, fq.UserName); // Note: this doesn't initialize any properties, has no telemetry
+                    LogbookEntry le = new LogbookEntry(dr, fq.UserName); // Note: this has no telemetry
                     le.FlightData = null; // don't even bother sending this field down the wire.
 
                     le.PopulateImages();
@@ -1007,7 +1007,6 @@ namespace MyFlightbook
 
                         foreach (LogbookEntry l in rgleDupes)
                         {
-                            l.CustomProperties = CustomFlightProperty.LoadPropertiesForFlight(l.FlightID);
                             if (le.IsEqualTo(l))
                                 return l;
                         }
@@ -1133,7 +1132,7 @@ namespace MyFlightbook
             {
                 LogbookEntry le = new LogbookEntry();
                 if (le.FLoadFromDB(idFlight, szUser))
-                    return CustomFlightProperty.LoadPropertiesForFlight(idFlight);
+                    return le.CustomProperties;
             }
             return null;
         }

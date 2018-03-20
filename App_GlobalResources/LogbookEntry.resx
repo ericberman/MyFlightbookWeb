@@ -519,13 +519,13 @@
     <value>Totals this page:</value>
   </data>
   <data name="TotalBlockTime" xml:space="preserve">
-    <value>Total Block Time: {0}</value>
+    <value>(Total Block Time: {0})</value>
   </data>
   <data name="TotalDutyTime" xml:space="preserve">
-    <value>Total Duty Time: {0}</value>
+    <value>(Total Duty Time: {0})</value>
   </data>
   <data name="TotalTachTime" xml:space="preserve">
-    <value>Total Tachometer Time: {0}</value>
+    <value>(Total Tach Time: {0:#,##0.0#})</value>
   </data>
   <data name="SendFlightBody" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\sendflightbody.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

@@ -147,7 +147,7 @@
                                         <td><%# Eval("TotalFlightTime").FormatDecimal(Viewer.UsesHHMM)%></td>
                                     </tr>
                                 </table>
-                                <%# Eval("CustomProperties") == null ? string.Empty : HttpUtility.HtmlEncode(Eval("CustPropertyDisplay").ToString()).Replace("&#13;&#10;", "<br />") %>
+                                <div style="white-space:pre-line"><%#: Eval("CustPropertyDisplay").ToString() %></div>
                                 <div><%# Eval("EngineTimeDisplay") %></div>
                                 <div><%# Eval("FlightTimeDisplay") %></div>
                                 <div><%# Eval("HobbsDisplay") %></div>

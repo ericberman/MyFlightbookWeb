@@ -44,7 +44,7 @@
                                 </asp:Panel>
                             </asp:Panel>
                             <asp:Panel EnableViewState="false" ID="pnlProps" runat="server">
-                                <%# Eval("CustomProperties") == null ? string.Empty : HttpUtility.HtmlEncode(Eval("CustPropertyDisplay").ToString()).Replace("&#13;&#10;", " ") %>
+                                <%#: Eval("CustPropertyDisplay").ToString() %>
                             </asp:Panel>
                             <uc1:mfbSignature runat="server" ID="mfbSignature" EnableViewState="false" />
                             <asp:Panel EnableViewState="false" ID="pnlFlightImages" runat="server" Visible="<%# IncludeImages %>">

@@ -1,16 +1,16 @@
-﻿using System;
+﻿using MyFlightbook;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections;
 using System.Data;
 using System.Globalization;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2016 MyFlightbook LLC
+ * Copyright (c) 2012-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -196,14 +196,9 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
             throw new ArgumentNullException("e");
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            object props = DataBinder.Eval(e.Row.DataItem, "CustomProperties");
-            object times = DataBinder.Eval(e.Row.DataItem, "timestamps");
-            object tach = DataBinder.Eval(e.Row.DataItem, "tachtime");
-            string szProperties = (props == null || props == System.DBNull.Value) ? string.Empty : (string) props;;
-            string szTimeStamps = (times == null || times == System.DBNull.Value) ? string.Empty : (string) times;
-            string szTach = (tach == null || tach == System.DBNull.Value) ? string.Empty : (string)tach;
-
-            szProperties = LogbookEntry.AdjustCurrency(szProperties + LogbookEntryDisplay.PropertyTotals(szTimeStamps, szTach));
+            int idFlight = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "idflight"), CultureInfo.InvariantCulture);
+            CustomFlightProperty[] rgProps = CustomFlightProperty.PropertiesFromJSONTuples((string) DataBinder.Eval(e.Row.DataItem, "CustomPropsJSON"), idFlight);
+            string szProperties = CustomFlightProperty.PropListDisplay(rgProps, false, "; ");
 
             if (szProperties.Length > 0)
             {
@@ -228,202 +223,6 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
 
         return sbCSV.ToString();
     }
-
-    #region obsolete download PDF
-    /*
-    /// <summary>
-    /// Downloads a printable PDF version of the logbook.  ENDS THE CURRENT HTTP REQUEST!!
-    /// </summary>
-    /// <param name="fPostToOpenShift">true to post to a 3rd party server hosted on openshift (false requires python and tex to be set up and available on the server)</param>
-    protected void DownloadPDFVersion(bool fPostToOpenShift = true)
-    {
-        // Download a CSV for the user and pass it to Till's tex writer.
-        MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(User);
-
-        StringBuilder sbLicense = new StringBuilder(pf.License);
-        if (sbLicense.Length > 0 && !String.IsNullOrEmpty(pf.Certificate))
-            sbLicense.AppendFormat(CultureInfo.CurrentCulture, ";{0}{1}", pf.Certificate, pf.CertificateExpiration.HasValue() ? String.Format(CultureInfo.CurrentCulture, " ({0})", pf.CertificateExpiration.ToShortDateString()) : string.Empty);
-
-        string[] rgAddress = pf.Address.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-        NameValueCollection postParams = new NameValueCollection()
-               {
-                   { "locale", "en_US" },
-                   { fPostToOpenShift ? "pilot_name" : "pilotname", pf.UserFullName},
-                   { "address1", rgAddress.Length > 0 ? rgAddress[0] : string.Empty},
-                   { "address2", rgAddress.Length > 1 ? rgAddress[1] : string.Empty},
-                   { "address3", rgAddress.Length > 2 ? rgAddress[2] : string.Empty},
-                   { fPostToOpenShift ? "license_nr" : "license", sbLicense.ToString() }
-               };
-
-        if (pf.UsesUTCDateOfFlight)
-            postParams.Add("utconly", "on");
-        if (!pf.UsesHHMM)
-            postParams.Add("fractions", "on");
-
-        if (fPostToOpenShift)
-        {
-            const string szURL = "http://myflightbookpdf-tillgerken.rhcloud.com/compile";
-            const string szDebugURL = "http://myflightbookpdfdev-tillgerken.rhcloud.com/compile";
-
-            Uri uriTarget = new Uri(util.GetIntParam(Page.Request, "dev", 0) == 1 ? szDebugURL : szURL);
-
-            using (MultipartFormDataContent form = new MultipartFormDataContent())
-            {
-                // Add each of the parameters
-                foreach (string key in postParams.Keys)
-                {
-                    StringContent sc = new StringContent(postParams[key]);
-                    form.Add(sc);
-                    sc.Headers.ContentDisposition = (new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") { Name = key });
-                }
-
-
-                // And the raw file
-                string szCSV = CSVInUSCulture();
-                if (String.IsNullOrEmpty(szCSV) || szCSV.Length == 1 && szCSV[0].CompareTo('\uFEFF') == 0)
-                {
-                    lblPDFErr.Text = Resources.LocalizedText.errPDFNoFlights;
-                    return;
-                }
-
-                StringContent scContent = new StringContent(szCSV);
-                form.Add(scContent);
-                scContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/csv");
-                scContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") { Name = "csvfile", FileName = pf.UserName + ".csv" };
-
-                using (HttpClient httpClient = new HttpClient())
-                {
-                    try
-                    {
-                        HttpResponseMessage response = httpClient.PostAsync(uriTarget, form).Result;
-                        response.EnsureSuccessStatusCode();
-
-                        Page.Response.Clear();
-                        Page.Response.ContentType = response.Content.Headers.ContentType.ToString();
-                        Response.AddHeader("content-disposition", String.Format(CultureInfo.CurrentCulture, @"attachment;filename=""{0}.pdf""", pf.UserFullName));
-                        System.Threading.Tasks.Task.Run(async () => { await response.Content.CopyToAsync(Page.Response.OutputStream); }).Wait();
-                        Page.Response.Flush();
-
-                        // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
-                        Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                        HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
-                    }
-                    catch (System.Threading.ThreadAbortException)
-                    {
-                    }
-                    catch (System.Web.HttpUnhandledException ex)
-                    {
-                        lblPDFErr.Text = ex.Message;
-                    }
-                    catch (System.Web.HttpException ex)
-                    {
-                        lblPDFErr.Text = ex.Message;
-                    }
-                    catch (System.Net.WebException ex)
-                    {
-                        lblPDFErr.Text = ex.Message;
-                    }
-                }
-            }
-        }
-        else
-        {
-            throw new NotImplementedException("Generating PDF on local server is not yet working");
-
-            // Write the data to a temp file
-            string szPath = Path.GetTempPath();
-            string szFilenameBase = String.Format(CultureInfo.InvariantCulture, "{0}{1}", DateTime.Now.ToString("yyyyMMddhhmmssfff", CultureInfo.InvariantCulture), pf.UserName);
-            string szBaseFile = szPath + szFilenameBase;
-            string szCSVPath = szBaseFile + ".csv";
-            string szTexPath = szBaseFile + ".tex";
-            string szPdfPath = szBaseFile + ".pdf";
-
-            try
-            {
-                File.WriteAllBytes(szCSVPath, Encoding.UTF8.GetBytes(sbCSV.ToString()));
-
-                string szTexBatPath = LocalConfig.SettingForKey("csvtopdfpath");
-
-                // create the .tex file
-                ProcessStartInfo psiPython = new ProcessStartInfo(szTexBatPath, String.Format(CultureInfo.InvariantCulture, "{0} {1} {2} \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\"",
-                    szPath,
-                    szFilenameBase,
-                    System.Globalization.RegionInfo.CurrentRegion.ThreeLetterISORegionName.ToLower(),
-                    postParams["pilotname"],
-                    postParams["address1"],
-                    postParams["address2"],
-                    postParams["address3"],
-                    postParams["license"]
-                    ))
-                {
-                    UseShellExecute = false,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true
-                };
-
-                string szBatchoutput = string.Empty;
-                string szBatchError = string.Empty;
-
-                //Create the .TEX file
-                using (Process p = new Process() { StartInfo = psiPython })
-                {
-                    p.Start();
-                    szBatchoutput = p.StandardOutput.ReadToEnd();
-                    szBatchError = p.StandardError.ReadToEnd();
-                    p.WaitForExit(20000);   // wait up to 20 seconds
-                }
-
-                if (!File.Exists(szTexPath))
-                    throw new MyFlightbookException("Conversion from CSV to TeX failed: " + szBatchError);
-
-                if (File.Exists(szPdfPath))
-                {
-                    Response.Clear();
-                    Response.ContentType = "application/pdf";
-                    string szDisposition = String.Format(CultureInfo.InvariantCulture, "inline;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szPdfPath, "[^0-9a-zA-Z-]", ""));
-                    Response.AddHeader("Content-Disposition", szDisposition);
-
-                    Response.WriteFile(szPdfPath);
-                    Response.Flush();
-                    Response.End();
-                }
-                else
-                    throw new MyFlightbookException("PDF file creation failed.");
-
-            }
-            catch (System.InvalidOperationException ex)
-            {
-                lblPDFErr.Text = ex.Message;
-            }
-            catch (System.ComponentModel.Win32Exception ex)
-            {
-                lblPDFErr.Text = ex.Message;
-            }
-            catch (MyFlightbookException ex)
-            {
-                lblPDFErr.Text = ex.Message;
-            }
-            finally
-            {
-                // Clean up and return
-                DirectoryInfo dir = new DirectoryInfo(szPath);
-                FileInfo[] rgFiles = dir.GetFiles(szFilenameBase + ".*");
-
-                foreach (FileInfo fi in rgFiles)
-                    fi.Delete();
-            }
-        }
-    }
-
-    protected void lnkDownloadPDF_Click(object sender, EventArgs e)
-    {
-        if (String.IsNullOrEmpty(User))
-            User = Page.User.Identity.Name;
-        DownloadPDFVersion();
-    }
-    */
-    #endregion
 
     public byte[] RawData(string szUser)
     {

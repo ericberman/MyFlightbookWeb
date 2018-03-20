@@ -1,11 +1,14 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Web;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
@@ -144,6 +147,7 @@ namespace MyFlightbook
         };
 
         private const string szAppCacheKey = "keyCustomPropertyTypes";
+        private const string szAppCacheDictKey = "keyDictCustomPropertyTypes";
 
         #region properties.
         /// <summary>
@@ -511,9 +515,12 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
 
         public static void FlushCache()
         {
-            HttpApplicationState appCache = CustomPropertyType.AppCache;
+            HttpApplicationState appCache = AppCache;
             if (appCache != null)
+            {
                 appCache.Remove(szAppCacheKey);
+                appCache.Remove(szAppCacheDictKey);
+            }
         }
 
         private static string SessionKey(string szUser)
@@ -527,6 +534,42 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
                 Session.Remove(SessionKey(szUser));
         }
 
+        private static Dictionary<int, CustomPropertyType> PropTypeDictionary
+        {
+            get
+            {
+                HttpApplicationState appcache = AppCache;
+                Dictionary<int, CustomPropertyType> d = (Dictionary<int, CustomPropertyType>)appcache[szAppCacheDictKey];
+                if (d == null)
+                {
+                    appcache[szAppCacheDictKey] = d = new Dictionary<int, CustomPropertyType>();
+                    var rgProps = GetCustomPropertyTypes();
+                    foreach (CustomPropertyType cpt in rgProps)
+                        d[cpt.PropTypeID] = cpt;
+                }
+                return d;
+            }
+        }
+
+        /// <summary>
+        /// Fast lookup of a single property type by ID (uses cached list).  May hit the database if cache is cold, but should otherwise be very fast.
+        /// </summary>
+        /// <param name="id">Id requested</param>
+        /// <returns></returns>
+        public static CustomPropertyType GetCustomPropertyType(int id)
+        {
+            if (id < 0)
+                return null;
+
+            Dictionary<int, CustomPropertyType> d = PropTypeDictionary;
+            if (d == null) // shouldn't happen, but if it does, do a brute-force search - a bit slower.
+                return GetCustomPropertyTypes().FirstOrDefault(proptype => proptype.PropTypeID == id);
+            
+            CustomPropertyType cpt = null;
+            d.TryGetValue(id, out cpt);
+            return cpt;
+        }
+
         /// <summary>
         /// Return a list of custom property types with ID's in the list
         /// </summary>
@@ -538,10 +581,15 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             if (lstIds == null)
                 return lstResult;
 
-            List<CustomPropertyType> lstAll = new List<CustomPropertyType>(GetCustomPropertyTypes());
+            var d = PropTypeDictionary;
+
+            if (d == null) // shouldn't happen, but if it does, do a brute-force search
+                return new List<CustomPropertyType>(GetCustomPropertyTypes()).FindAll(cpt => lstIds.Contains(cpt.PropTypeID));
+
             foreach (int id in lstIds)
             {
-                CustomPropertyType cpt = lstAll.Find(cpt2 => cpt2.PropTypeID == id);
+                CustomPropertyType cpt = null;
+                d.TryGetValue(id, out cpt);
                 if (cpt != null)
                     lstResult.Add(cpt);
             }
@@ -660,19 +708,6 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
     [Serializable]
     public class CustomFlightProperty
     {
-        private const string szSelectBase = @"
-SELECT fdc.*, 
-cpt.*, 
-COALESCE(l.Text, cpt.Title) AS LocTitle, 
-COALESCE(l2.Text, cpt.FormatString) AS LocFormatString, 
-COALESCE(l3.Text, cpt.Description) AS LocDescription,
-0 AS IsFavorite, '' AS prevValues 
-FROM flightproperties fdc 
-INNER JOIN custompropertytypes cpt ON fdc.idPropType=cpt.idPropType 
-LEFT JOIN LocText l ON (l.idTableID=2 AND l.idItemID=cpt.idPropType AND l.LangId=?langID) 
-LEFT JOIN locText l2 ON (l2.idTableID=3 AND l2.idItemID=cpt.idPropType AND l2.LangID=?langID) 
-LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.LangID=?langID)
-{0}";
         private const string szDeleteBase = "DELETE FROM flightproperties WHERE idProp=?idProp";
         private const string szReplaceBase = "REPLACE INTO flightproperties SET idFlight=?idFlight, idPropType=?idProptype, intValue=?IntValue, DecValue=?DecValue, DateValue=?DateValue, StringValue=?StringValue";
 
@@ -743,9 +778,9 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
                     case CFPPropertyType.cfpDateTime:
                         return DateValue.ToShortDateString() + Resources.LocalizedText.LocalizedSpace + DateValue.ToShortTimeString();
                     case CFPPropertyType.cfpDecimal:
-                        return DecValue.ToString("0.0#", CultureInfo.CurrentCulture);
+                        return DecValue.ToString("#,##0.0#", CultureInfo.CurrentCulture);
                     case CFPPropertyType.cfpCurrency:
-                        return DecValue.ToString("0.00", CultureInfo.CurrentCulture);
+                        return DecValue.ToString("C", CultureInfo.CurrentCulture);
                     case CFPPropertyType.cfpInteger:
                         return IntValue.ToString(CultureInfo.CurrentCulture);
                     case CFPPropertyType.cfpString:
@@ -793,6 +828,15 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
         public string DisplayString
         {
             get { return string.Format(CultureInfo.CurrentCulture, PropertyType.FormatString, ValueString); }
+        }
+
+        /// <summary>
+        /// Formatted Display string using HHMM format, if it's a time.
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public string DisplayStringHHMM
+        {
+            get { return string.Format(CultureInfo.CurrentCulture, PropertyType.FormatString, (PropertyType.Type == CFPPropertyType.cfpDecimal && !PropertyType.IsBasicDecimal) ? DecValue.ToHHMM() : ValueString); }
         }
 
         public override string ToString()
@@ -865,9 +909,9 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
             BoolValue = false;
             FlightID = LogbookEntry.idFlightNone;
             PropID = idCustomFlightPropertyNew;
-            PropTypeID = (int) CustomPropertyType.KnownProperties.IDPropInvalid;
+            PropTypeID = (int)CustomPropertyType.KnownProperties.IDPropInvalid;
         }
-        
+
         /// <summary>
         /// Creates a new custom flight property of the specified type
         /// </summary>
@@ -909,6 +953,72 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
             {
                 throw new MyFlightbookException("Exception reading custom property from DR: " + ex.Message, ex, string.Empty);
             }
+        }
+
+        /// <summary>
+        /// Creates an array of custom properties from a JSON array of tuples, making it efficient to pull directly from the database
+        /// Each tuple consists of an array of 3 values: [0] is the property id, [1] is the property type, and [2] is the value.  Everything else is filled in.
+        /// 
+        /// Bad things will happen if you don't set this all up correctly - no validation is performed!
+        /// </summary>
+        /// <param name="szJSON">The JSON to parse</param>
+        /// <param name="idFlight">The flight for which this is associated</param>
+        /// <returns>An array of fully-formed customflightproperties</returns>
+        public static CustomFlightProperty[] PropertiesFromJSONTuples(string szJSON, int idFlight)
+        {
+            if (String.IsNullOrEmpty(szJSON))
+                return new CustomFlightProperty[0];
+
+            JArray tuples = null;
+            try
+            {
+                tuples = (JArray)JsonConvert.DeserializeObject(szJSON);
+            }
+            catch (JsonSerializationException)
+            {
+                throw;
+            }
+            catch (JsonReaderException)
+            {
+                throw;
+            }
+
+            CustomFlightProperty[] result = new CustomFlightProperty[tuples.Count];
+
+            int i = 0;
+            foreach (JArray tuple in tuples)
+            {
+                int idProp = (int)tuple[0];
+                int idPropType = (int)tuple[1];
+                string value = (string)tuple[2];
+                CustomPropertyType cpt = CustomPropertyType.GetCustomPropertyType(idPropType);
+
+                CustomFlightProperty cfp = new CustomFlightProperty(cpt) { PropID = idProp, FlightID = idFlight };
+
+                switch (cpt.Type)
+                {
+                    case CFPPropertyType.cfpBoolean:
+                        cfp.boolValue = Convert.ToBoolean(value, CultureInfo.InvariantCulture);
+                        break;
+                    case CFPPropertyType.cfpCurrency:
+                    case CFPPropertyType.cfpDecimal:
+                        cfp.DecValue = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+                        break;
+                    case CFPPropertyType.cfpDate:
+                    case CFPPropertyType.cfpDateTime:
+                        cfp.DateValue = Convert.ToDateTime(value, CultureInfo.InvariantCulture);
+                        break;
+                    case CFPPropertyType.cfpInteger:
+                        cfp.IntValue = Convert.ToInt32(value, CultureInfo.InvariantCulture);
+                        break;
+                    case CFPPropertyType.cfpString:
+                        cfp.TextValue = value;
+                        break;
+                }
+                result[i++] = cfp;
+            }
+
+            return result;
         }
         #endregion
 
@@ -1002,28 +1112,6 @@ LEFT JOIN locText l3 ON (l3.idTableID=4 AND l3.idItemID=cpt.idPropType AND l3.La
                     TextValue = szVal;
                     break;
             }
-        }
-
-        public static CustomFlightProperty[] LoadPropertiesForFlight(int flightID)
-        {
-            ArrayList ar = new ArrayList();
-
-            if (flightID > 0)
-            {
-                DBHelper dbh = new DBHelper(String.Format(szSelectBase, "WHERE idFlight=?idFlight"));
-
-                if (!dbh.ReadRows(
-                    (comm) =>
-                    {
-                        comm.Parameters.AddWithValue("idFlight", flightID);
-                        comm.Parameters.AddWithValue("langID", System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
-                    },
-                    (dr) => { ar.Add(new CustomFlightProperty(dr)); }
-                    ))
-                    throw new MyFlightbookException(dbh.LastError);
-            }
-
-            return (CustomFlightProperty[])ar.ToArray(typeof(CustomFlightProperty));
         }
 
         /// <summary>
@@ -1139,6 +1227,57 @@ GROUP BY fp.idPropType;";
                 (dr) => { d[Convert.ToInt32(dr["PropTypeID"])] = new List<string>(dr["PrevVals"].ToString().Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries)); });
 
             return d;
+        }
+
+        private static Dictionary<int, string> ComputeTotals(IEnumerable<CustomFlightProperty> rgprops)
+        {
+            Dictionary<int, string> d = new Dictionary<int, string>();
+
+            // Do Tach total and Time Totals
+            CustomFlightProperty cfpTachStart = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart);
+            CustomFlightProperty cfpTachEnd = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachEnd);
+            if (cfpTachStart != null && cfpTachEnd != null && cfpTachEnd.DecValue - cfpTachStart.DecValue > 0)
+                d[(int)CustomPropertyType.KnownProperties.IDPropTachEnd] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalTachTime, cfpTachEnd.DecValue - cfpTachStart.DecValue);
+
+            CustomFlightProperty cfpDutyStart = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutyTimeStart);
+            CustomFlightProperty cfpDutyEnd = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutyTimeEnd);
+            CustomFlightProperty cfpBlockOut = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut);
+            CustomFlightProperty cfpBlockIn = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn);
+
+            if (cfpDutyStart != null && cfpDutyEnd != null && cfpDutyEnd.DateValue.CompareTo(cfpDutyStart.DateValue) > 0)
+                d[(int)CustomPropertyType.KnownProperties.IDPropDutyTimeEnd] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalDutyTime, ((decimal)cfpDutyEnd.DateValue.Subtract(cfpDutyStart.DateValue).TotalHours).ToHHMM());
+
+            if (cfpBlockOut != null && cfpBlockIn != null && cfpBlockIn.DateValue.CompareTo(cfpBlockOut.DateValue) > 0)
+                d[(int)CustomPropertyType.KnownProperties.IDBlockIn] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalBlockTime, ((decimal)cfpBlockIn.DateValue.Subtract(cfpBlockOut.DateValue).TotalHours).ToHHMM());
+
+            return d;
+        }
+
+        /// <summary>
+        /// Formats a collection of properties for display to the user, using current locale
+        /// </summary>
+        /// <param name="rgprops">An enumerable of properties.</param>
+        /// <param name="fUseHHMM">Indicates if HHMM format should be used.</param>
+        /// <param name="separator">Separator to use between properties - null to use the default (\r\n) for the environment.</param>
+        /// <returns>A human-readable list of properties</returns>
+        public static string PropListDisplay(IEnumerable<CustomFlightProperty> rgprops, bool fUseHHMM = false, string separator = null)
+        {
+            // short-circuit empty properties
+            if (rgprops == null || rgprops.Count() == 0)
+                return string.Empty;
+
+            Dictionary<int, string> d = ComputeTotals(rgprops);
+            StringBuilder sb = new StringBuilder();
+            foreach (CustomFlightProperty cfp in rgprops)
+            {
+                sb.Append(fUseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString);
+                if (d.ContainsKey(cfp.PropTypeID))
+                    sb.Append(Resources.LocalizedText.LocalizedSpace + d[cfp.PropTypeID]);
+
+                sb.Append(separator ?? Environment.NewLine);
+            }
+
+            return sb.ToString();
         }
     }
 
