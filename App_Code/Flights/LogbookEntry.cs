@@ -1640,17 +1640,9 @@ namespace MyFlightbook
                     string szVids = dr["FlightVids"].ToString();
                     if (!String.IsNullOrEmpty(szVids))
                     {
-                        string[] rgVids = szVids.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                        foreach (string szVid in rgVids)
-                        {
-                            try
-                            {
-                                VideoRef v = new VideoRef();
-                                v.InitFromSerializedString(FlightID, szVid);
-                                Videos.Add(v);
-                            }
-                            catch (MyFlightbookException) { }
-                        }
+                        VideoRef[] vids = Newtonsoft.Json.JsonConvert.DeserializeObject<VideoRef[]>(szVids);
+                        foreach (VideoRef vid in vids)
+                            Videos.Add(vid);
                     }
 
                     return true;
