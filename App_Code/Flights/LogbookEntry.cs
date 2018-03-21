@@ -346,7 +346,7 @@ namespace MyFlightbook
         /// <summary>
         /// CACHED email of the CFI at the point of signing.  May no longer be their email.
         /// </summary>
-        private string CFIEmail { get; set; }
+        internal string CFIEmail { get; set; }
 
         /// <summary>
         /// CACHED name of CFI at the point of signing.  May no longer be their name.
@@ -2320,11 +2320,24 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Convenience check for a
+        /// Convenience check for a valid signature
         /// </summary>
         public bool HasValidSig
         {
             get { return CFISignatureState == SignatureState.Valid; }
+        }
+
+        /// <summary>
+        /// Indicates if a signature can be requested
+        /// Basically, can request signature if it is unsigned without a pending signature, or if it is invalid.
+        /// </summary>
+        public bool CanRequestSig
+        {
+            get
+            {
+                return CFISignatureState == SignatureState.Invalid ||
+                    (CFISignatureState == SignatureState.None && String.IsNullOrEmpty(CFIEmail) && String.IsNullOrEmpty(CFIName));
+            }
         }
 
         [System.Xml.Serialization.XmlIgnore]

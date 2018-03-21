@@ -391,4 +391,7 @@
   <data name="DigitalEndorsementDisclaimer" xml:space="preserve">
     <value>Important information about the validity of digital endorsements.</value>
   </data>
+  <data name="RequestSignature" xml:space="preserve">
+    <value>Request a signature</value>
+  </data>
 </root>

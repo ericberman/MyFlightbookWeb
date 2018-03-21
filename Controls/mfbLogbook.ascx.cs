@@ -550,6 +550,9 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
             ((LinkButton)popup.FindControl("lnkReverse")).CommandArgument = ((LinkButton)popup.FindControl("lnkClone")).CommandArgument = le.FlightID.ToString(CultureInfo.InvariantCulture);
             ((LinkButton)popup.FindControl("lnkSendFlight")).CommandArgument = le.FlightID.ToString(CultureInfo.InvariantCulture);
             ((HyperLink)popup.FindControl("lnkEditThisFlight")).NavigateUrl = EditPath(le.FlightID);
+            HyperLink h = (HyperLink)popup.FindControl("lnkRequestSignature");
+            h.Visible = le.CanRequestSig;
+            h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/RequestSigs.aspx?id={0}", le.FlightID);
 
             // fix the ID of the delete button to prevent replay attacks
             string szDelID = String.Format(CultureInfo.InvariantCulture, "lnkDel{0}", le.FlightID);

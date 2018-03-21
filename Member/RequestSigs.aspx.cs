@@ -26,7 +26,7 @@ public partial class Member_RequestSigs : System.Web.UI.Page
 
             this.Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleTraining, Branding.CurrentBrand.AppName);
 
-            RefreshFlightsList();
+            RefreshFlightsList(util.GetIntParam(Request, "id", LogbookEntry.idFlightNew));
             SetUpInstructorList();
             lblSignatureDisclaimer.Text = Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer);
         }
@@ -60,19 +60,29 @@ public partial class Member_RequestSigs : System.Web.UI.Page
     }
     #endregion
 
-    protected void RefreshFlightsList()
+    protected void RefreshFlightsList(int idFlight)
     {
-        List<LogbookEntry> lstFlights = new List<LogbookEntry>();
+        List<LogbookEntryDisplay> lstFlights = new List<LogbookEntryDisplay>();
 
-        FlightQuery fq = new FlightQuery(Page.User.Identity.Name);
-        fq.CustomRestriction = " (SignatureState = 2 OR ((SignatureState = 0 AND ((CFIEmail IS NULL OR CFIEmail='') AND (CFIUserName IS NULL OR CFIUserName=''))))) ";
-        DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq));
 
-        dbh.ReadRows(
-            (comm) => { },
-            (dr) => { lstFlights.Add(new LogbookEntry(dr, Page.User.Identity.Name)); });
+        if (idFlight != LogbookEntry.idFlightNew)
+        {
+            LogbookEntryDisplay le = new LogbookEntryDisplay(idFlight, User.Identity.Name);
+            if (!le.IsNewFlight && le.CanRequestSig)   // it loaded (is owned by the user) and signable
+                lstFlights.Add(le);
+        }
+        if (lstFlights.Count == 0)
+        {
+            lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", SortDirection.Descending, false, false);
+            lstFlights.RemoveAll(le => !le.CanRequestSig);
+        }
+
         rptSelectedFlights.DataSource = lstFlights;
         rptSelectedFlights.DataBind();
+
+        // if only one flight, check it by default.
+        if (lstFlights.Count == 1)
+            ((CheckBox)rptSelectedFlights.Items[0].FindControl("ckFlight")).Checked = true;
     }
 
     protected void SetUpInstructorList()
@@ -89,7 +99,7 @@ public partial class Member_RequestSigs : System.Web.UI.Page
         valBadEmail.Enabled = valEmailRequired.Enabled = fNeedsEmail;
     }
 
-    protected List<string> SelectedFlightIDs
+    protected IList<string> SelectedFlightIDs
     {
         get
         {
@@ -112,9 +122,9 @@ public partial class Member_RequestSigs : System.Web.UI.Page
     {
         get
         {
-            List<string> lstIds = SelectedFlightIDs;
+            IList<string> lstIds = SelectedFlightIDs;
             FlightQuery fq = new FlightQuery(User.Identity.Name);
-            fq.CustomRestriction = String.Format(" (flights.idFlight IN ({0})) ", String.Join(", ", lstIds.ToArray()));
+            fq.CustomRestriction = String.Format(" (flights.idFlight IN ({0})) ", String.Join(", ", lstIds));
             DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq));
             List<LogbookEntry> lstFlights = new List<LogbookEntry>();
             dbh.ReadRows(
