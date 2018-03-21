@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.Web.Caching;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -503,9 +504,9 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             return sz;
         }
 
-        private static HttpApplicationState AppCache
+        private static Cache AppCache
         {
-            get { return (HttpContext.Current != null && HttpContext.Current.Application != null) ? HttpContext.Current.Application : null; }
+            get { return HttpRuntime.Cache; }
         }
 
         private static System.Web.SessionState.HttpSessionState Session
@@ -515,7 +516,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
 
         public static void FlushCache()
         {
-            HttpApplicationState appCache = AppCache;
+            Cache appCache = AppCache;
             if (appCache != null)
             {
                 appCache.Remove(szAppCacheKey);
@@ -538,7 +539,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
         {
             get
             {
-                HttpApplicationState appcache = AppCache;
+                Cache appcache = AppCache;
                 Dictionary<int, CustomPropertyType> d = (Dictionary<int, CustomPropertyType>)appcache[szAppCacheDictKey];
                 if (d == null)
                 {
@@ -606,7 +607,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
         {
             List<CustomPropertyType> ar = new List<CustomPropertyType>();
             System.Web.SessionState.HttpSessionState sess = Session;
-            HttpApplicationState appcache = AppCache;
+            Cache appcache = AppCache;
             string szSessKey = string.Empty;
 
             // if szUser is null or empty, we want to cache this in the application cache (shared across all users)
