@@ -245,6 +245,12 @@
                                     </asp:HyperLink>
                                 </div>
                                 <div>
+                                    <asp:HyperLink ID="lnkRequestSignature" runat="server">
+                                        <asp:Image ID="imgSignature" runat="server" style="padding-right: 4px" ImageUrl="~/images/signaturesm.png" />
+                                        <asp:Label ID="lblRequestSignature" runat="server" Text="<%$ Resources:SignOff, RequestSignature %>"></asp:Label>
+                                    </asp:HyperLink>
+                                </div>
+                                <div>
                                     <asp:LinkButton ID="lnkClone" runat="server" CommandName="CloneFlight">
                                         <asp:Image ID="imgClone" runat="server" style="padding-right:4px;" ImageUrl="~/images/copyflight.png" />
                                         <asp:Label ID="lblClone" runat="server" Text="<%$ Resources:LogbookEntry, RepeatFlight %>"></asp:Label>
