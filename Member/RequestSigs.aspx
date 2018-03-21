@@ -27,12 +27,27 @@
                 <h3><asp:Label ID="lblSelectFlightPrompt" runat="server" 
                         Text="Select the flight(s) that you want to have signed." 
                         meta:resourcekey="lblSelectFlightPromptResource1"></asp:Label></h3>
-                <div><asp:ListBox ID="lbSelectedFlights" runat="server" Rows="10" 
-                    DataTextField="DisplayString" DataValueField="FlightID" 
-                    SelectionMode="Multiple" Width="500px" 
-                        meta:resourcekey="lbSelectedFlightsResource1">
-                </asp:ListBox>
-                </div>
+                <asp:Panel ID="pnlFlights" ScrollBars="Auto" Height="200" runat="server">
+                    <table cellpadding="4">
+                        <asp:Repeater ID="rptSelectedFlights" runat="server" >
+                            <ItemTemplate>
+                                <tr style="vertical-align:top">
+                                    <td>
+                                        <asp:CheckBox ID="ckFlight" runat="server" />
+                                        <asp:HiddenField ID="hdnFlightID" runat="server" Value='<%# Eval("FlightID") %>' />
+                                    </td>
+                                    <td>
+                                        <div style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></div>
+                                        <div><%# Eval("TailNumDisplay") %></div>
+                                    </td>
+                                    <td>
+                                        <div><span style="font-style:italic"><%# Eval("Route") %></span> <%# Eval("Comment") %></div>
+                                    </td>
+                                </tr>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </table>
+                </asp:Panel>
                 <asp:Label ID="lblErrNoSelection" runat="server" 
                     Text="Please select at least one flight to be signed" EnableViewState="false" 
                     CssClass="error" Visible="false" meta:resourcekey="lblErrNoSelectionResource1"></asp:Label>
@@ -90,24 +105,22 @@
                         <td><asp:Label ID="lblFlightsToSign" runat="server" Text="Flights to sign:" 
                                 Font-Bold="true" meta:resourcekey="lblFlightsToSignResource1"></asp:Label></td>
                         <td>
-                            <asp:GridView ShowHeader="false" ID="gvFlightsToSign" runat="server" 
-                                AutoGenerateColumns="false" GridLines="None" 
-                                meta:resourcekey="gvFlightsToSignResource1">
-                                <Columns>
-                                    <asp:TemplateField meta:resourcekey="TemplateFieldResource1">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblDate" runat="server" 
-                                                Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Bold="True" 
-                                                meta:resourcekey="lblDateResource1"></asp:Label> 
-                                            (<asp:Label ID="lblTail" runat="server" Text='<%# Eval("TailNumDisplay") %>' 
-                                                meta:resourcekey="lblTailResource1"></asp:Label>)
-                                            <div><%# Eval("Route") %></div>
-                                            <div><%# Eval("Comment") %></div>
+                            <table cellpadding="0" cellspacing="4">
+                                <asp:Repeater ID="gvFlightsToSign" runat="server" >
+                                    <ItemTemplate>
+                                        <tr style="vertical-align:top; padding-bottom: 5px;">
+                                            <td>
+                                                <div style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></div>
+                                                <div><%# Eval("TailNumDisplay") %></div>
+                                            </td>
+                                            <td>
+                                                <div><span style="font-style:italic"><%# Eval("Route") %></span> <%# Eval("Comment") %></div>
                                             <div><asp:Label ID="lblExistingSigWillBeRemoved" runat="server" CssClass="error" Text="<%$ Resources:SignOff, RequestSignatureReSign %>" Visible='<%# (LogbookEntry.SignatureState) Eval("CFISignatureState") == LogbookEntry.SignatureState.Invalid %>' meta:resourcekey="lblExistingSigWillBeRemovedResource1"></asp:Label></div>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                </Columns>
-                            </asp:GridView>
+                                            </td>
+                                        </tr>
+                                    </ItemTemplate>
+                                </asp:Repeater>
+                            </table>
                         </td>
                     </tr>
                 </table>

@@ -45,6 +45,8 @@ public partial class Public_authredir : System.Web.UI.Page
                 return "~/Member/ACSchedule.aspx";
             case "FAQ":
                 return "~/Public/FAQ.aspx";
+            case "REQSIGS":
+                return "~/Member/RequestSigs.aspx";
             default:
                 return string.Empty;
         }

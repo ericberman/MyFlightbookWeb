@@ -9,7 +9,7 @@ using MyFlightbook.Instruction;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,7 +18,6 @@ public partial class Member_RequestSigs : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        this.Master.SelectedTab = tabID.tabTraining;
         wzRequestSigs.PreRender += new EventHandler(wzRequestSigs_PreRender);
         this.Master.SelectedTab = tabID.instSignFlights;
         if (!IsPostBack)
@@ -72,8 +71,8 @@ public partial class Member_RequestSigs : System.Web.UI.Page
         dbh.ReadRows(
             (comm) => { },
             (dr) => { lstFlights.Add(new LogbookEntry(dr, Page.User.Identity.Name)); });
-        lbSelectedFlights.DataSource = lstFlights;
-        lbSelectedFlights.DataBind();
+        rptSelectedFlights.DataSource = lstFlights;
+        rptSelectedFlights.DataBind();
     }
 
     protected void SetUpInstructorList()
@@ -90,17 +89,30 @@ public partial class Member_RequestSigs : System.Web.UI.Page
         valBadEmail.Enabled = valEmailRequired.Enabled = fNeedsEmail;
     }
 
-    protected IEnumerable<LogbookEntry> SelectedFlights
+    protected List<string> SelectedFlightIDs
     {
         get
         {
             List<string> lstIds = new List<string>();
-            foreach (ListItem li in lbSelectedFlights.Items)
-            {
-                if (li.Selected)
-                    lstIds.Add(li.Value);
-            }
 
+            foreach (RepeaterItem ri in rptSelectedFlights.Items)
+            {
+                CheckBox ck = (CheckBox)ri.FindControl("ckFlight");
+                if (ck.Checked)
+                {
+                    HiddenField h = (HiddenField)ri.FindControl("hdnFlightID");
+                    lstIds.Add(h.Value);
+                }
+            }
+            return lstIds;
+        }
+    }
+
+    protected IEnumerable<LogbookEntry> SelectedFlights
+    {
+        get
+        {
+            List<string> lstIds = SelectedFlightIDs;
             FlightQuery fq = new FlightQuery(User.Identity.Name);
             fq.CustomRestriction = String.Format(" (flights.idFlight IN ({0})) ", String.Join(", ", lstIds.ToArray()));
             DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq));
@@ -188,7 +200,7 @@ public partial class Member_RequestSigs : System.Web.UI.Page
     {
         if (e == null)
             throw new ArgumentNullException("e");
-        if (e.CurrentStepIndex == 0 && lbSelectedFlights.SelectedIndex < 0)
+        if (e.CurrentStepIndex == 0 && SelectedFlightIDs.Count == 0)
         {
             lblErrNoSelection.Visible = true;
             e.Cancel = true;
