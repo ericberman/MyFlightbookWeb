@@ -1,9 +1,11 @@
-﻿using MyFlightbook.CSV;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.CSV;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 /******************************************************
@@ -66,6 +68,7 @@ namespace MyFlightbook.ImportFlights
         public string From { get; set; }
         public string To { get; set; }
         public decimal BlockHours { get; set; }
+        public decimal CrossCountry { get; set; }
         public string Tail { get; set; }
         public string Model { get; set; }
         public int Landings { get; set; }
@@ -103,7 +106,8 @@ namespace MyFlightbook.ImportFlights
                 TotalFlightTime = BlockHours,
                 TailNumDisplay = Tail,
                 ModelDisplay = Model,
-                Landings = this.Landings
+                Landings = this.Landings,
+                CrossCountry = this.CrossCountry
             };
 
             CrewTracEmployee PIC = Captain;
@@ -153,50 +157,69 @@ namespace MyFlightbook.ImportFlights
             // We ignore the data table passed in - we have our data from Matches, which was initialized in CanParse.
 
             IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes();
+
+            // Build up the list of CrewTrac objects first; we'll then fill in cross-country time.
+            List<CrewTrac> lstCt = new List<CrewTrac>();
+            foreach (Match ctMatch in Matches)
+            {
+                GroupCollection gc = ctMatch.Groups;
+
+                string szEmployees = gc["employees"].Value;
+                // replace runs of 2 or more spaces with a tab for better finding boundaries (e.g., multiple employees).
+                while (szEmployees.Contains("  "))
+                    szEmployees = szEmployees.Replace("  ", "\t");
+
+                MatchCollection mcEmployees = regCrewMember.Matches(szEmployees);
+
+                List<CrewTracEmployee> lst = new List<CrewTracEmployee>();
+                foreach (Match empMatch in mcEmployees)
+                {
+                    GroupCollection gcEmployee = empMatch.Groups;
+                    CrewTracEmployee.CrewTracRole role = CrewTracEmployee.CrewTracRole.CA;
+                    if (!Enum.TryParse<CrewTracEmployee.CrewTracRole>(gcEmployee["pos"].Value, out role))
+                        role = CrewTracEmployee.CrewTracRole.CA;
+                    lst.Add(new CrewTracEmployee() { Role = role, Name = gcEmployee["empname"].Value });
+                }
+
+                try
+                {
+                    CrewTrac ct = new CrewTrac()
+                    {
+                        FlightNumber = String.IsNullOrEmpty(gc["flightnum"].Value) ? 0 : Convert.ToInt32(gc["flightnum"].Value, CultureInfo.CurrentCulture),
+                        Date = Convert.ToDateTime(gc["date"].Value, CultureInfo.CurrentCulture),
+                        From = gc["from"].Value,
+                        To = gc["to"].Value,
+                        BlockHours = gc["block"].Value.DecimalFromHHMM(),
+                        Tail = gc["tail"].Value,
+                        Model = gc["model"].Value,
+                        Landings = String.IsNullOrEmpty(gc["landings"].Value) ? 0 : Convert.ToInt32(gc["landings"].Value, CultureInfo.CurrentCulture),
+                        Employees = lst
+                    };
+                    lstCt.Add(ct);
+
+                }
+                catch (FormatException) { }
+            }
+
+            // Build up a list of airports so that we can determine cross-country time.
+            StringBuilder sbRoutes = new StringBuilder();
+            foreach (CrewTrac ct in lstCt)
+                sbRoutes.AppendFormat(CultureInfo.CurrentCulture, " {0} {1}", ct.From, ct.To);
+            AirportList alRoutes = new AirportList(sbRoutes.ToString());
+
+            foreach (CrewTrac ct in lstCt)
+            {
+                AirportList alFlight = alRoutes.CloneSubset(ct.From + " " + ct.To);
+                if (alFlight.MaxDistanceForRoute() > 50.0)
+                    ct.CrossCountry = ct.BlockHours;
+            }
+
             using (DataTable dtDst = new DataTable())
             {
                 dtDst.Locale = CultureInfo.CurrentCulture;
                 CSVImporter.InitializeDataTable(dtDst);
-                foreach (Match ctMatch in Matches)
-                {
-                    GroupCollection gc = ctMatch.Groups;
-
-                    string szEmployees = gc["employees"].Value;
-                    // replace runs of 2 or more spaces with a tab for better finding boundaries (e.g., multiple employees).
-                    while (szEmployees.Contains("  "))
-                        szEmployees = szEmployees.Replace("  ", "\t");
-
-                    MatchCollection mcEmployees = regCrewMember.Matches(szEmployees);
-
-                    List<CrewTracEmployee> lst = new List<CrewTracEmployee>();
-                    foreach (Match empMatch in mcEmployees)
-                    {
-                        GroupCollection gcEmployee = empMatch.Groups;
-                        CrewTracEmployee.CrewTracRole role = CrewTracEmployee.CrewTracRole.CA;
-                        if (!Enum.TryParse<CrewTracEmployee.CrewTracRole>(gcEmployee["pos"].Value, out role))
-                            role = CrewTracEmployee.CrewTracRole.CA;
-                        lst.Add(new CrewTracEmployee() { Role = role, Name = gcEmployee["empname"].Value });
-                    }
-
-                    try
-                    {
-                        CrewTrac ct = new CrewTrac()
-                        {
-                            FlightNumber = String.IsNullOrEmpty(gc["flightnum"].Value) ? 0 : Convert.ToInt32(gc["flightnum"].Value, CultureInfo.CurrentCulture),
-                            Date = Convert.ToDateTime(gc["date"].Value, CultureInfo.CurrentCulture),
-                            From = gc["from"].Value,
-                            To = gc["to"].Value,
-                            BlockHours = gc["block"].Value.DecimalFromHHMM(),
-                            Tail = gc["tail"].Value,
-                            Model = gc["model"].Value,
-                            Landings = String.IsNullOrEmpty(gc["landings"].Value) ? 0 : Convert.ToInt32(gc["landings"].Value, CultureInfo.CurrentCulture),
-                            Employees = lst
-                        };
-
-                        CSVImporter.WriteEntryToDataTable(ct.ToLogbookEntry(), dtDst);
-                    }
-                    catch (FormatException) { }
-                }
+                foreach (CrewTrac ct in lstCt)
+                    CSVImporter.WriteEntryToDataTable(ct.ToLogbookEntry(), dtDst);
                 return CsvWriter.WriteToString(dtDst, true, true);
             }
         }
