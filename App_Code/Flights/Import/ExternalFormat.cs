@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -223,7 +222,7 @@ namespace MyFlightbook.ImportFlights
 
     public abstract class ExternalFormatImporter
     {
-        private static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter() };
+        private static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new CrewTracImporter() };
 
         /// <summary>
         /// Initializes an enumerable of the external format from a datatable.

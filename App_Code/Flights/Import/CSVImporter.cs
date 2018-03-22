@@ -1,11 +1,12 @@
-﻿using System;
+﻿using JouniHeikniemi.Tools.Text;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using JouniHeikniemi.Tools.Text;
+using System.Text.RegularExpressions;
 
 /******************************************************
  * 
@@ -624,10 +625,22 @@ namespace MyFlightbook.ImportFlights
                 UserAircraft ua = new UserAircraft(szUser);
                 Aircraft[] rgac = ua.GetAircraftForUser();
 
+                Regex rAlias = new Regex("#ALT(?<altname>[a-zA-Z0-9-]+)#", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
                 if (rgac != null)
                 {
                     foreach (Aircraft ac in rgac)
+                    {
                         dictReturn[Aircraft.NormalizeTail(ac.TailNumber)] = ac;
+
+                        // To support broken systems like crewtrac, which don't use standard naming, allow for "#ALTxxx#" in the private notes
+                        // as a way to map.  E.g., Virgin America uses simple 3-digit aircraft IDs like "483" for N483VA.  
+                        // This hack allows a private note of "#ALT483#" in N483VA to allow "483" to map to N483VA.
+                        // Use with care. :)
+                        MatchCollection mcAliases = rAlias.Matches(ac.PrivateNotes ?? string.Empty);
+                        foreach (Match m in mcAliases)
+                            dictReturn[m.Groups["altname"].Value] = ac;
+                    }
                 }
 
                 return dictReturn;
