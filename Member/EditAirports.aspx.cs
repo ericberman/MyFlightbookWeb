@@ -107,6 +107,12 @@ public partial class Member_EditAirports : System.Web.UI.Page
             pnlMyAirports.Visible = true;
             gvMyAirports.DataSource = m_rgAirportsForUser;
             gvMyAirports.DataBind();
+            if (m_rgAirportsForUser.Count() > 30)
+            {
+                pnlMyAirports.ScrollBars = ScrollBars.Vertical;
+                pnlMyAirports.Height = Unit.Pixel(400);
+                pnlMyAirports.Width = Unit.Pixel(600);
+            }
         }
     }
 
