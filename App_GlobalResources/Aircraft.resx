@@ -388,7 +388,7 @@
     <value>If you are making a minor update, such as specifying a more accurate variant of the same basic model, great - go ahead.</value>
   </data>
   <data name="editAircraftModelChange3" xml:space="preserve">
-    <value>However, if you believe the base model of the aircraft is in error (or, perhaps that the tailnumber has been re-assigned), please contact us and we can fix things for you.</value>
+    <value>However, if you believe the base model of the aircraft is in error (or, perhaps that the tailnumber has been re-assigned), please contact us and we can create a new version of this aircraft as necessary.</value>
   </data>
   <data name="editAircraftModelChangeHeader" xml:space="preserve">
     <value>Please read before changing the model of this aircraft</value>
