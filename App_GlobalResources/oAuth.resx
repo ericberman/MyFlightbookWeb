@@ -153,4 +153,7 @@
   <data name="visitedScopeDescription" xml:space="preserve">
     <value>Retrieve visited airports</value>
   </data>
+  <data name="namedqueriesScopeDescription" xml:space="preserve">
+    <value>Create, view, and update named queries</value>
+  </data>
 </root>

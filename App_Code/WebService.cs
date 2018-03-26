@@ -528,28 +528,6 @@ namespace MyFlightbook
                 return null;
         }
 
-        /*
-        /// <summary>
-        /// Returns a list of the nearest airports (within 1 degree each way), sorted by distance from the specified lat/long (+/- 1 degree max)
-        /// </summary>
-        /// <param name="szAuthToken">Authorization token - to prevent overuse</param>
-        /// <param name="lat">Latitude of desired position</param>
-        /// <param name="lon">Longitude of desired position</param>
-        /// <param name="limit">Maximum number of results to return (capped here at 50)</param>
-        /// <param name="fIncludeHeliports">True to include heliports, false to exclude them</param>
-        /// <returns>The airports</returns>
-        [WebMethod]
-        public airport[] AirportsNearPosition(string szAuthToken, double lat, double lon, int limit, Boolean fIncludeHeliports)
-        {
-            string szUser = GetEncryptedUser(szAuthToken);
-            EventRecorder.WriteEvent(EventRecorder.MFBEventID.ObsoleteAPI, szUser, "Obsolete API: LogbookEntryForUserLE");
-            if (szUser.Length > 0)
-                return airport.AirportsNearPosition(lat, lon, Math.Min(limit, 50), fIncludeHeliports);
-            else
-                return null;
-        }
-        */
-
         /// <summary>
         /// Returns the user's flying totals from the specified (minimum) date to the present.  Currently called by the iOS WatchExtension.
         /// </summary>
@@ -684,151 +662,6 @@ namespace MyFlightbook
             fq.UserName = szUser; //just to be sure.
             return FlightsWithQuery(fq, 0, maxCount);
         }
-
-        /*
-        /// <summary>
-        /// Returns all flights for a particular user within a specified date range
-        /// </summary>
-        /// <param name="szAuthUserToken">Authorization token to access a user (retrieved from AuthTokenForUser method)</param>
-        /// <param name="dtStart">Start date of range</param>
-        /// <param name="dtEnd">End date of range</param>
-        /// <returns>An array of flights, null if auth fails</returns>
-        [WebMethod]
-        public LogbookEntry[] FlightsByDate(string szAuthUserToken, DateTime dtStart, DateTime dtEnd)
-        {
-            LogbookEntry[] rgle = new LogbookEntry[0];
-
-            string szUser = GetEncryptedUser(szAuthUserToken);
-            EventRecorder.WriteEvent(EventRecorder.MFBEventID.ObsoleteAPI, szUser, "Obsolete API: FlightsByDate");
-            if (szUser.Length > 0)
-            {
-                FlightQuery fq = new FlightQuery(szUser);
-                fq.DateRange = FlightQuery.DateRanges.Custom;
-                fq.DateMin = dtStart;
-                fq.DateMax = dtEnd;
-                rgle = FlightsWithQuery(fq, 0, -1);
-            }
-
-            return rgle;
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Returns all flights for a particular user.
-        /// </summary>
-        /// <param name="szAuthUserToken">Authorization token to access a user (retrieved from AuthTokenForUser method)</param>
-        /// <returns>An array of flights, null if auth fails</returns>
-        [WebMethod]
-        public LogbookEntry[] Flights(string szAuthUserToken)
-        {
-            EventRecorder.WriteEvent(EventRecorder.MFBEventID.ObsoleteAPI, GetEncryptedUser(szAuthUserToken), "Obsolete API: Flights");
-            DateTime dtNow = DateTime.Now;
-            DateTime dtEarliest = new DateTime(1900, 1, 1);
-            return FlightsByDate(szAuthUserToken, dtEarliest, dtNow);
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Creates or edits a logbook entry for a user
-        /// </summary>
-        /// <param name="szAuthUserToken">Authorization token to access a user (retrieved from AuthTokenForUser method)</param>
-        /// <param name="FlightID">The ID for the flight (if already exists), -1 to create a new entry</param>
-        /// <param name="AircraftID">The ID of the aircraft used in the flight - must be one that belongs to the user</param>
-        /// <param name="Approaches">The # of instrument approaches on the flight</param>
-        /// <param name="Landings">The # of landings on the flight</param>
-        /// <param name="cNightLandings">The # of landings which were to a full-stop at night; must be &lt;= total number of landings</param>
-        /// <param name="cFullStopLandings">The # of landings which were to a full-stop; must be &lt;= total number of landings</param>
-        /// <param name="CrossCountry">The amount of cross-country flight time</param>
-        /// <param name="Nighttime">The amount of nighttime flight time.</param>
-        /// <param name="IMC">The amount of actual instrument time</param>
-        /// <param name="SimulatedIFR">The amount of simulated instrument time</param>
-        /// <param name="GroundSim">Time spent on a ground simulator</param>
-        /// <param name="Dual">Instruction time received</param>
-        /// <param name="PIC">Pilot in command time</param>
-        /// <param name="TotalFlightTime">Total Flight time</param>
-        /// <param name="HoldingProcedures">True of the flight included holding procedures</param>
-        /// <param name="Route">The route of the flight</param>
-        /// <param name="Comment">Any comments about the flight</param>
-        /// <param name="isPublic">Is this flight public?</param>
-        /// <param name="DateOfFlight">Date of the flight</param>
-        /// <param name="HobbsStart">Starting Hobbs time of the flight</param>
-        /// <param name="HobbsEnd">Ending Hobbs time of the flight</param>
-        /// <param name="EngineStart">UTC time of engine start</param>
-        /// <param name="EngineEnd">UTC time of engine stop</param>
-        /// <param name="FlightStart">UTC time of first take-off</param>
-        /// <param name="FlightEnd">UTC time of final landing</param>
-        /// <returns>Null if failure, else the entry</returns>
-        [WebMethod]
-        public LogbookEntry LogbookEntryForUserParams(string szAuthUserToken,
-            int FlightID,
-            int AircraftID,
-            int Approaches,
-            int Landings,
-            int cFullStopLandings,
-            int cNightLandings,
-            decimal CrossCountry,
-            decimal Nighttime,
-            decimal IMC,
-            decimal SimulatedIFR,
-            decimal GroundSim,
-            decimal Dual,
-            decimal PIC,
-            decimal TotalFlightTime,
-            Boolean HoldingProcedures,
-            string Route,
-            string Comment,
-            Boolean isPublic,
-            DateTime DateOfFlight,
-            decimal HobbsStart,
-            decimal HobbsEnd,
-            DateTime EngineStart,
-            DateTime EngineEnd,
-            DateTime FlightStart,
-            DateTime FlightEnd,
-            Boolean fTweet
-           )
-        {
-            string szUser = GetEncryptedUser(szAuthUserToken);
-            EventRecorder.WriteEvent(EventRecorder.MFBEventID.ObsoleteAPI, szUser, "Obsolete API: LogbookEntryForUserParams");
-            if (szUser.Length > 0)
-            {
-                LogbookEntry le = new LogbookEntry();
-
-                le.User = szUser;
-                le.AircraftID = AircraftID;
-                le.Approaches = Approaches;
-                le.Landings = Landings;
-                le.FullStopLandings = cFullStopLandings;
-                le.NightLandings = cNightLandings;
-                le.CrossCountry = CrossCountry;
-                le.Nighttime = Nighttime;
-                le.IMC = IMC;
-                le.SimulatedIFR = SimulatedIFR;
-                le.GroundSim = GroundSim;
-                le.Dual = Dual;
-                le.PIC = PIC;
-                le.TotalFlightTime = TotalFlightTime;
-                le.fHoldingProcedures = HoldingProcedures;
-                le.Route = Route;
-                le.Comment = Comment;
-                le.fIsPublic = isPublic;
-                le.Date = DateOfFlight;
-                le.FlightID = FlightID;
-                le.HobbsStart = HobbsStart;
-                le.HobbsEnd = HobbsEnd;
-                le.EngineStart = EngineStart;
-                le.EngineEnd = EngineEnd;
-                le.FlightStart = FlightStart;
-                le.FlightEnd = FlightEnd;
-
-                return LogbookEntryForUserLE(szAuthUserToken, le, fTweet);
-            }
-
-            return null;
-        }
-        */
 
         /// <summary>
         /// Delete a logbook entry for the named user.  The user MUST be the owner of the flight
@@ -1032,21 +865,6 @@ namespace MyFlightbook
             Thread.Sleep(60 * 1000); // sleep for a minute to allow any pictures to be posted
             new FacebookPoster().PostToSocialMedia(dp.Entry, dp.Entry.User, Branding.CurrentBrand.HostName);
         }
-
-        /*
-        /// <summary>
-        /// Updates or creates a logbook entry for the authenticated user
-        /// </summary>
-        /// <param name="szAuthUserToken">Authorization token identifying the user</param>
-        /// <param name="le">The logbook entry</param>
-        /// <returns>The entry, if successful</returns>
-        [WebMethod]
-        public LogbookEntry LogbookEntryForUserLE(string szAuthUserToken, LogbookEntry le, Boolean fTweet)
-        {
-            EventRecorder.WriteEvent(EventRecorder.MFBEventID.ObsoleteAPI, GetEncryptedUser(szAuthUserToken), "Obsolete API: LogbookEntryForUserLE");
-            return CommitFlightWithOptions(szAuthUserToken, le, new PostingOptions(fTweet, false));
-        }
-        */
 
         /// <summary>
         /// Returns the flight path for the flight as a series of lat/long coordinates
@@ -1479,6 +1297,58 @@ namespace MyFlightbook
             return false;
         }
 
+        #region Named (canned) queries:
+        [WebMethod]
+        public CannedQuery[] GetNamedQueriesForUser(string szAuthToken)
+        {
+            string szUser = GetEncryptedUser(szAuthToken);
+
+            return String.IsNullOrEmpty(szUser) ? null : CannedQuery.QueriesForUser(szUser).ToArray();
+        }
+
+        [WebMethod]
+        public CannedQuery[] AddNamedQueryForUser(string szAuthToken, FlightQuery fq, string szName)
+        {
+            if (szAuthToken == null)
+                throw new ArgumentNullException("szAuthToken");
+            if (fq == null)
+                throw new ArgumentNullException("fq");
+            if (szName == null)
+                throw new ArgumentNullException("szName");
+            if (String.IsNullOrWhiteSpace(szName))
+                throw new InvalidOperationException("Missing or empty name passed to AddNamedQueryForUser");
+
+            string szUser = GetEncryptedUser(szAuthToken);
+            if (!String.IsNullOrEmpty(szUser) && ! fq.IsDefault)
+            {
+                fq.UserName = szUser;   // just to be safe
+                new CannedQuery(fq, szName).Commit();
+            }
+
+            return GetNamedQueriesForUser(szAuthToken);
+        }
+
+        [WebMethod]
+        public CannedQuery[] DeleteNamedQueryForUser(string szAuthToken, CannedQuery cq)
+        {
+            if (szAuthToken == null)
+                throw new ArgumentNullException("szAuthToken");
+            if (cq == null)
+                throw new ArgumentNullException("cq");
+
+            string szUser = GetEncryptedUser(szAuthToken);
+            if (!String.IsNullOrEmpty(szUser) && cq != null)
+            {
+                cq.UserName = szUser;   // just to be safe
+                if (String.IsNullOrEmpty(cq.QueryName))
+                    throw new UnauthorizedAccessException("No query name specified");
+
+                cq.Delete();
+                return GetNamedQueriesForUser(szAuthToken);
+            }
+            return null;
+        }
+        #endregion
         #region Autocomplete
         private const string keyColumn = "ColumnKey";
 

@@ -49,6 +49,7 @@
                         <asp:ListItem Value="DeleteLogbookEntry" Text="Delete Flight"></asp:ListItem>
                         <asp:ListItem Value="PropertiesForFlight" Text="Properties For Flight"></asp:ListItem>
                         <asp:ListItem Value="AvailablePropertyTypesForUser" Text="Properties for user"></asp:ListItem>
+                        <asp:ListItem Value="GetNamedQueries" Text="Get Named Queries"></asp:ListItem>
                         <asp:ListItem Value="UploadImage" Text="Upload an image (POST only)"></asp:ListItem>
                     </asp:DropDownList>
                     <asp:CheckBox ID="ckJSON" runat="server" Text="Request JSON data (default is XML)" />
@@ -211,7 +212,7 @@
         <tr>
             <td>Scope:</td>
             <td>
-                <asp:TextBox ID="txtScope" runat="server" Width="400px">currency totals addflight readflight addaircraft readaircraft visited images</asp:TextBox>
+                <asp:TextBox ID="txtScope" runat="server" Width="400px">currency totals addflight readflight addaircraft readaircraft visited namedqueries images</asp:TextBox>
             </td>
         </tr>
         <tr>

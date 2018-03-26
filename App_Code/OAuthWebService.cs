@@ -25,7 +25,7 @@ using System.Web.Services;
 
 namespace OAuthAuthorizationServer.Services
 {
-    public enum MFBOAuthScope { none, currency, totals, addflight, readflight, addaircraft, readaircraft, visited, images }
+    public enum MFBOAuthScope { none, currency, totals, addflight, readflight, addaircraft, readaircraft, visited, images, namedqueries }
 
     public static class MFBOauthServer
     {
@@ -54,6 +54,8 @@ namespace OAuthAuthorizationServer.Services
                     return Resources.oAuth.visitedScopeDescription;
                 case MFBOAuthScope.images:
                     return Resources.oAuth.modifyImagesScopeDescription;
+                case MFBOAuthScope.namedqueries:
+                    return Resources.oAuth.namedqueriesScopeDescription;
                 case MFBOAuthScope.none:
                     return string.Empty;
                 default:
@@ -154,7 +156,9 @@ namespace OAuthAuthorizationServer.Services
         /* Visited Airports */
         VisitedAirports,
         /* Images */
-        UpdateImageAnnotation, DeleteImage, UploadImage
+        UpdateImageAnnotation, DeleteImage, UploadImage,
+        /* Canned Queries */
+        AddNamedQuery, DeleteNamedQuery, GetNamedQueries
     }
 
     public class OAuthServiceCall : WebService
@@ -214,6 +218,10 @@ namespace OAuthAuthorizationServer.Services
                     return MFBOAuthScope.totals;
                 case OAuthServiceID.VisitedAirports:
                     return MFBOAuthScope.visited;
+                case OAuthServiceID.AddNamedQuery:
+                case OAuthServiceID.DeleteNamedQuery:
+                case OAuthServiceID.GetNamedQueries:
+                    return MFBOAuthScope.namedqueries;
                 case OAuthServiceID.none:
                 default:
                     throw new InvalidOperationException();
@@ -343,6 +351,17 @@ namespace OAuthAuthorizationServer.Services
             return JsonConvert.DeserializeObject<T>(GetRequiredParam(name));
         }
 
+        #region service calls
+        private void AddFlight(Stream s, MFBWebService mfbSvc)
+        {
+            string szFormat = GetOptionalParam("format") ?? "Native";
+            LogbookEntry le = (szFormat.CompareCurrentCultureIgnoreCase("LTP") == 0) ?
+                JsonConvert.DeserializeObject<LogTenPro>(GetRequiredParam("flight"), new JsonConverter[] { new MFBDateTimeConverter() }).ToLogbookEntry() :
+                le = GetRequiredParam<LogbookEntry>("le");
+            WriteObject(s, mfbSvc.CommitFlightWithOptions(GeneratedAuthToken, le, GetRequiredParam<PostingOptions>("po")));
+        }
+        #endregion
+
         /// <summary>
         /// Executes the requested service, writing any result to the specified output stream
         /// </summary>
@@ -368,13 +387,7 @@ namespace OAuthAuthorizationServer.Services
                         break;
                     case OAuthServiceID.CommitFlightWithOptions:
                     case OAuthServiceID.addFlight:
-                        {
-                            string szFormat = GetOptionalParam("format") ?? "Native";
-                            LogbookEntry le = (szFormat.CompareCurrentCultureIgnoreCase("LTP") == 0) ?
-                                JsonConvert.DeserializeObject<LogTenPro>(GetRequiredParam("flight"), new JsonConverter[] { new MFBDateTimeConverter() }).ToLogbookEntry() :
-                                le = GetRequiredParam<LogbookEntry>("le");
-                            WriteObject(s, mfbSvc.CommitFlightWithOptions(GeneratedAuthToken, le, GetRequiredParam<PostingOptions>("po")));
-                        }
+                        AddFlight(s, mfbSvc);
                         break;
                     case OAuthServiceID.currency:
                     case OAuthServiceID.GetCurrencyForUser:
@@ -419,6 +432,15 @@ namespace OAuthAuthorizationServer.Services
                         break;
                     case OAuthServiceID.VisitedAirports:
                         WriteObject(s, mfbSvc.VisitedAirports(GeneratedAuthToken));
+                        break;
+                    case OAuthServiceID.GetNamedQueries:
+                        WriteObject(s, mfbSvc.GetNamedQueriesForUser(GeneratedAuthToken));
+                        break;
+                    case OAuthServiceID.AddNamedQuery:
+                        WriteObject(s, mfbSvc.AddNamedQueryForUser(GeneratedAuthToken, GetRequiredParam<CannedQuery>("fq"), GetRequiredParam<string>("szName")));
+                        break;
+                    case OAuthServiceID.DeleteNamedQuery:
+                        WriteObject(s, mfbSvc.DeleteNamedQueryForUser(GeneratedAuthToken, GetRequiredParam<CannedQuery>("cq")));
                         break;
                     case OAuthServiceID.none:
                     case OAuthServiceID.UploadImage:    // not serviced here.

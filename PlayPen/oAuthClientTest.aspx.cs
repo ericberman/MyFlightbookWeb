@@ -221,6 +221,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             case OAuthServiceID.AircraftForUser:
             case OAuthServiceID.AvailablePropertyTypesForUser:
             case OAuthServiceID.MakesAndModels:
+            case OAuthServiceID.GetNamedQueries:
                 // no parameters
                 break;
             case OAuthServiceID.totals:

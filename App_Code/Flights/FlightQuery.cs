@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2017 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1184,6 +1184,12 @@ namespace MyFlightbook
         public CannedQuery(string szName) : base(szName)
         {
             QueryName = string.Empty;
+        }
+
+        public CannedQuery(FlightQuery fq, string szName) : base()
+        {
+            util.CopyObject(fq, this);
+            QueryName = szName;
         }
         #endregion
 
