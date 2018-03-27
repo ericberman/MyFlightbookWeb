@@ -12,7 +12,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.ServiceModel;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using System.Web.Security;
@@ -168,7 +167,7 @@ namespace MyFlightbook
             }
         }
     }
-    
+
     /// <summary>
     /// The main SOAP service for mobile use
     /// NOTE: iPhone sends HTML entities URL encoded, so we need to decode them on receipt.  Bleah.
@@ -363,7 +362,7 @@ namespace MyFlightbook
             ac.InstanceTypeID = idInstanceType;
             ac.ModelID = idModel;
             ac.Commit(szUser); // this will check for dupes and will add 
-            EventRecorder.WriteEvent(EventRecorder.MFBEventID.CreateAircraft, szUser, String.Format(CultureInfo.InvariantCulture,"Create Aircraft - {0}", szTail));
+            EventRecorder.WriteEvent(EventRecorder.MFBEventID.CreateAircraft, szUser, String.Format(CultureInfo.InvariantCulture, "Create Aircraft - {0}", szTail));
 
             if (ac.AircraftID < 0)
                 throw new MyFlightbookException(Resources.WebService.errNewAircraftFailed);
@@ -1115,8 +1114,8 @@ namespace MyFlightbook
             // In case the password has an html entity in it, may need to compare using that as well.  Most of the time, though, shouldn't need to.
             // Slight efficiency gain by not doing two validations if the unescaped password is the same as the escaped one
             string szUnescapedPass = szPass.UnescapeHTML();
-            bool fValid = (util.ValidateUser(szUser, szPass).CompareOrdinal(szUser) == 0) ||
-                            (szPass.CompareOrdinal(szUnescapedPass) != 0 && (util.ValidateUser(szUser, szUnescapedPass).CompareOrdinal(szUser) == 0));
+            bool fValid = (UserEntity.ValidateUser(szUser, szPass).CompareOrdinal(szUser) == 0) ||
+                            (szPass.CompareOrdinal(szUnescapedPass) != 0 && (UserEntity.ValidateUser(szUser, szUnescapedPass).CompareOrdinal(szUser) == 0));
 
             if (fValid)
             {
@@ -1135,7 +1134,7 @@ namespace MyFlightbook
                     else
                         throw new UnauthorizedAccessException();
                 }
-                EventRecorder.WriteEvent(EventRecorder.MFBEventID.AuthUser, szUser, String.Format(CultureInfo.InvariantCulture,"Auth User - {0} from {1}.", HttpContext.Current.Request.IsSecureConnection ? "Secure" : "NOT SECURE", szAppToken));
+                EventRecorder.WriteEvent(EventRecorder.MFBEventID.AuthUser, szUser, String.Format(CultureInfo.InvariantCulture, "Auth User - {0} from {1}.", HttpContext.Current.Request.IsSecureConnection ? "Secure" : "NOT SECURE", szAppToken));
 
                 return AuthTokenForValidatedUser(szUser);
             }
@@ -1144,52 +1143,6 @@ namespace MyFlightbook
         }
 
         private static System.Object lockObject = new System.Object();
-
-        #region new user validation
-        /// <summary>
-        /// Checks the password - throws an exception if there is an issue with it.
-        /// </summary>
-        /// <param name="szPass"></param>
-        private void ValidatePassword(string szPass)
-        {
-            if (String.IsNullOrEmpty(szPass))
-                throw new MyFlightbookException(Resources.Profile.errNoPassword);
-
-            if (szPass.Length < 6 || szPass.Length > 20)
-                throw new MyFlightbookException(Resources.Profile.errBadPasswordLength);
-        }
-
-        /// <summary>
-        /// Checks the email - throws an exception if there is an issue.
-        /// </summary>
-        /// <param name="szEmail"></param>
-        private void ValidateEmail(string szEmail)
-        {
-            Regex r = new Regex("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-            Match m = r.Match(szEmail);
-            if (m.Captures.Count != 1 || m.Captures[0].Value.CompareOrdinal(szEmail) != 0)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errInvalidEmail, szEmail));
-        }
-
-        /// <summary>
-        /// Checks the question and answer - throws an exception if there is an issue
-        /// </summary>
-        /// <param name="szQuestion"></param>
-        /// <param name="szAnswer"></param>
-        private void ValidateQandA(string szQuestion, string szAnswer)
-        {
-            if (String.IsNullOrEmpty(szQuestion))
-                throw new MyFlightbookException(Resources.Profile.errNoQuestion);
-
-            if (String.IsNullOrEmpty(szAnswer))
-                throw new MyFlightbookException(Resources.Profile.errNoAnswer);
-
-            if (szQuestion.Length > 80)
-                throw new MyFlightbookException(Resources.Profile.errQuestionTooLong);
-            if (szAnswer.Length > 80)
-                throw new MyFlightbookException(Resources.Profile.errAnswerTooLong);
-        }
-        #endregion
 
         /// <summary>
         /// Create a new user
@@ -1205,79 +1158,83 @@ namespace MyFlightbook
         [WebMethod]
         public UserEntity CreateUser(string szAppToken, string szEmail, string szPass, string szFirst, string szLast, string szQuestion, string szAnswer)
         {
-            if (IsAuthorizedService(szAppToken))
-            {
-                // do a few simple validations
-                if (!CheckSecurity(HttpContext.Current.Request))
-                    throw new MyFlightbookException(Resources.WebService.errNotSecureConnection);
-
-                ValidateEmail(szEmail);
-                ValidatePassword(szPass);
-                ValidateQandA(szQuestion, szAnswer);
-
-                // create a username from the email address
-                string szUser = util.UserNameForEmail(szEmail);
-
-                szFirst = szFirst ?? string.Empty;
-                szLast = szLast ?? string.Empty;
-
-                UserEntity ue = new UserEntity();
-
-                lock (lockObject)
-                {
-                    ue.mcs = util.CreateUser(szUser, szPass.UnescapeHTML(), szEmail, szQuestion.UnescapeHTML(), szAnswer.UnescapeHTML());
-                }
-
-                string szErr = "";
-                switch (ue.mcs)
-                {
-                    case MembershipCreateStatus.Success:
-                        ue.szUsername = szUser;
-                        ue.szAuthToken = AuthTokenForUser(szAppToken, szUser, szPass);
-
-                        try
-                        {
-                            // set the first/last name for the user
-                            util.FinalizeUser(szUser, szFirst, szLast, true);
-                            EventRecorder.WriteEvent(EventRecorder.MFBEventID.CreateUser, szUser, String.Format(CultureInfo.InvariantCulture,"User '{0}' was created at {1}, connection {2} - {3}", szUser, DateTime.Now.ToShortDateString(), HttpContext.Current.Request.IsSecureConnection ? "Secure" : "NOT SECURE", szAppToken));
-                        }
-                        catch (Exception ex)
-                        {
-                            EventRecorder.WriteEvent(EventRecorder.MFBEventID.CreateUserError, szUser, "Exception creating user: " + ex.Message);
-                            util.NotifyAdminEvent("Error creating new user: ", "Username: " + szUser + "\r\n\r\n" + ex.Message, ProfileRoles.maskSiteAdminOnly);
-                            throw new MyFlightbookException("Error creating new user: " + ex.Message);
-                        }
-
-                        return ue;
-                    case MembershipCreateStatus.InvalidAnswer:
-                        szErr = String.Format(CultureInfo.CurrentCulture,Resources.Profile.errInvalidAnswer, szAnswer);
-                        break;
-                    case MembershipCreateStatus.DuplicateEmail:
-                    case MembershipCreateStatus.DuplicateUserName:
-                        szErr = String.Format(CultureInfo.CurrentCulture,Resources.Profile.errEmailInUse, szEmail);
-                        break;
-                    case MembershipCreateStatus.InvalidEmail:
-                    case MembershipCreateStatus.InvalidUserName:
-                        szErr = String.Format(CultureInfo.CurrentCulture,Resources.Profile.errInvalidEmail, szEmail);
-                        break;
-                    case MembershipCreateStatus.InvalidPassword:
-                        szErr = Resources.Profile.errInvalidPassword;
-                        break;
-                    case MembershipCreateStatus.InvalidQuestion:
-                        szErr = String.Format(CultureInfo.CurrentCulture,Resources.Profile.errInvalidQuestion, szQuestion);
-                        break;
-                    default:
-                        szErr = String.Format(CultureInfo.CurrentCulture,Resources.Profile.errGenericCreateAccountError, ue.mcs.ToString());
-                        break;
-                }
-
-                if (szErr.Length == 0)
-                    return null;
-                else
-                    throw new MyFlightbookException(szErr);
-            }
-            else
+            if (!IsAuthorizedService(szAppToken))
                 throw new MyFlightbookException("Unauthorized!");
+
+            // do a few simple validations
+            if (!CheckSecurity(HttpContext.Current.Request))
+                throw new MyFlightbookException(Resources.WebService.errNotSecureConnection);
+
+            // create a username from the email address
+            string szUser = UserEntity.UserNameForEmail(szEmail);
+
+            szFirst = szFirst ?? string.Empty;
+            szLast = szLast ?? string.Empty;
+
+            UserEntity result = null;
+
+            lock (lockObject)
+            {
+                try
+                {
+                    result = UserEntity.CreateUser(szUser, szPass.UnescapeHTML(), szEmail, szQuestion.UnescapeHTML(), szAnswer.UnescapeHTML());
+                }
+                catch (UserEntityException ex)
+                {
+                    // fix up the error message if there is none for some reason.
+                    if (String.IsNullOrEmpty(ex.Message))
+                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errGenericCreateAccountError, result.mcs.ToString()));
+                    throw;
+                }
+            }
+
+            if (result == null)
+            {
+                // should never be here.
+                string szErr = String.Format(CultureInfo.CurrentCulture, "Error creating new user - uncaught error: {0}", result == null ? "null result from createuser" : result.mcs.ToString());
+                util.NotifyAdminEvent("Error creating new user " + szUser, szErr, ProfileRoles.maskSiteAdminOnly);
+                throw new MyFlightbookException(szErr);
+            }
+
+            // some of the errors below were probably already thrown above (as a userentityexception), but format the string here in case they weren't
+            // e.g., invalid answer probably already thrown, but duplicateEmail will return without throwing an exception
+            // so we catch them all here just in case, to ensure that something meaningful gets returned to the user
+            switch (result.mcs)
+            {
+                case MembershipCreateStatus.Success:
+                    result.szAuthToken = AuthTokenForUser(szAppToken, szUser, szPass);
+                    try
+                    {
+                        // set the first/last name for the user
+                        ProfileAdmin.FinalizeUser(szUser, szFirst, szLast, true);
+                        EventRecorder.WriteEvent(EventRecorder.MFBEventID.CreateUser, szUser, String.Format(CultureInfo.InvariantCulture, "User '{0}' was created at {1}, connection {2} - {3}", szUser, DateTime.Now.ToShortDateString(), HttpContext.Current.Request.IsSecureConnection ? "Secure" : "NOT SECURE", szAppToken));
+                    }
+                    catch (Exception ex)
+                    {
+                        EventRecorder.WriteEvent(EventRecorder.MFBEventID.CreateUserError, szUser, "Exception creating user: " + ex.Message);
+                        util.NotifyAdminEvent("Error creating new user: ", "Username: " + szUser + "\r\n\r\n" + ex.Message, ProfileRoles.maskSiteAdminOnly);
+                        throw new MyFlightbookException("Error creating new user: " + ex.Message);
+                    }
+                    return result;
+                case MembershipCreateStatus.InvalidAnswer:
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errInvalidAnswer, szAnswer));
+                case MembershipCreateStatus.DuplicateEmail:
+                case MembershipCreateStatus.DuplicateUserName:
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errEmailInUse, szEmail));
+                case MembershipCreateStatus.InvalidEmail:
+                case MembershipCreateStatus.InvalidUserName:
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errInvalidEmail, szEmail));
+                case MembershipCreateStatus.InvalidPassword:
+                    throw new MyFlightbookException(Resources.Profile.errInvalidPassword);
+                case MembershipCreateStatus.InvalidQuestion:
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errInvalidQuestion, szQuestion));
+                case MembershipCreateStatus.UserRejected:
+                case MembershipCreateStatus.ProviderError:
+                case MembershipCreateStatus.DuplicateProviderUserKey:
+                case MembershipCreateStatus.InvalidProviderUserKey:
+                default:
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errGenericCreateAccountError, result.mcs.ToString()));
+            }
         }
 
         /// <summary>

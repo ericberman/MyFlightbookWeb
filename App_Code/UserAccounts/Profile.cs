@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Net.Mail;
-using System.Web;
-using System.Web.Caching;
-using System.Web.Security;
+﻿using Andri.Web;
 using DotNetOpenAuth.OAuth2;
 using MyFlightbook.Achievements;
 using MyFlightbook.CloudStorage;
@@ -16,6 +8,17 @@ using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Globalization;
+using System.Linq;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
+using System.Web;
+using System.Web.Caching;
+using System.Web.Security;
 
 /******************************************************
  * 
@@ -1501,6 +1504,213 @@ namespace MyFlightbook
         public static IEnumerable<string> SuggestedSecurityQuestions
         {
             get { return Resources.LocalizedText.AccountQuestionSamplesList.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries); }
+        }
+
+        /// <summary>
+        /// Sets the first/last name for the user, sends notification email & welcome email.
+        /// </summary>
+        /// <param name="szUser">Username</param>
+        /// <param name="szFirst">First Name</param>
+        /// <param name="szLast">Last Name</param>
+        /// <param name="fWebService">True if this was from the web service</param>
+        static public void FinalizeUser(string szUser, string szFirst, string szLast, Boolean fWebService)
+        {
+            Profile pf = Profile.GetUser(szUser);
+            pf.FirstName = szFirst;
+            pf.LastName = szLast;
+            pf.TracksSecondInCommandTime = pf.IsInstructor = true;
+            pf.FCommit();
+
+            // send welcome mail
+            util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName), Resources.EmailTemplates.Welcomeemailhtm, new MailAddress(pf.Email, pf.UserFirstName), false, true);
+            util.NotifyAdminEvent("New user created" + (fWebService ? " - WebService" : ""), String.Format(CultureInfo.CurrentCulture, "User '{0}' was created at {1}", pf.UserName, DateTime.Now.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture)), ProfileRoles.maskCanReport);
+        }
+    }
+
+    [Serializable]
+    public class UserEntityException : Exception
+    {
+        public MembershipCreateStatus ErrorCode { get; set; }
+
+        #region Constructors
+        public UserEntityException() : base()
+        {
+            ErrorCode = MembershipCreateStatus.Success;
+        }
+
+        public UserEntityException(string message) : base(message)
+        {
+            ErrorCode = MembershipCreateStatus.Success;
+        }
+
+        public UserEntityException(string message, Exception ex) : base(message, ex)
+        {
+            ErrorCode = MembershipCreateStatus.Success;
+        }
+
+        protected UserEntityException(System.Runtime.Serialization.SerializationInfo si, System.Runtime.Serialization.StreamingContext sc) : base(si, sc)
+        {
+            ErrorCode = MembershipCreateStatus.Success;
+        }
+
+        public UserEntityException(MembershipCreateStatus mcs) : base()
+        {
+            ErrorCode = mcs;
+        }
+
+        public UserEntityException(string message, MembershipCreateStatus mcs) : base(message)
+        {
+            ErrorCode = mcs;
+        }
+
+        public UserEntityException(string message, Exception ex, MembershipCreateStatus mcs) : base(message, ex)
+        {
+            ErrorCode = mcs;
+        }
+        #endregion
+
+        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+
+            info.AddValue("ErrorCode", ErrorCode);
+        }
+    }
+
+    [Serializable]
+    public class UserEntity
+    {
+        public string szAuthToken { get; set; }
+        public string szUsername { get; set; }
+        public MembershipCreateStatus mcs { get; set; }
+
+        public UserEntity()
+        {
+            szUsername = szAuthToken = string.Empty;
+            mcs = MembershipCreateStatus.Success;
+        }
+
+        /// <summary>
+        /// Validates a user based on a username/password
+        /// </summary>
+        /// <param name="szUser">Username for the user</param>
+        /// <param name="szPass">Password for the user</param>
+        /// <returns>Username that is validated, else an empty string</returns>
+        static public string ValidateUser(string szUser, string szPass)
+        {
+            if (Membership.ValidateUser(szUser, szPass))
+                return szUser;
+            else
+                return string.Empty;
+        }
+
+        /// <summary>
+        /// Find a new, non-conflicting username for the specified email address.  Assumes the email address is NOT a duplicate.
+        /// </summary>
+        /// <param name="szEmail">The email address</param>
+        /// <returns>The username to use</returns>
+        static public string UserNameForEmail(string szEmail)
+        {
+            if (szEmail == null)
+                throw new ArgumentNullException("szEmail");
+            //  find a unique username to propose
+            int ichAt = szEmail.IndexOf('@');
+            string szUserBase = (ichAt > 0) ? szEmail.Remove(ichAt) : szEmail;
+
+            // Clean up any illegal characters (for Amazon, for example)
+            szUserBase = Regex.Replace(szUserBase, "[ $&@=;:+,?\\{}^~#|<>[]", "-");
+
+            string szUser = szUserBase;
+            int i = 1;
+            while (Membership.GetUser(szUser, false) != null)
+                szUser = szUserBase + (i++).ToString(CultureInfo.InvariantCulture);
+
+            return szUser;
+        }
+
+        #region new user validation
+        /// <summary>
+        /// Checks the password - throws an exception if there is an issue with it.
+        /// </summary>
+        /// <param name="szPass"></param>
+        private static void ValidatePassword(string szPass)
+        {
+            if (String.IsNullOrEmpty(szPass))
+                throw new UserEntityException(Resources.Profile.errNoPassword, MembershipCreateStatus.InvalidPassword);
+
+            if (szPass.Length < 6 || szPass.Length > 20)
+                throw new UserEntityException(Resources.Profile.errBadPasswordLength, MembershipCreateStatus.InvalidPassword);
+        }
+
+        /// <summary>
+        /// Checks the email - throws an exception if there is an issue.
+        /// </summary>
+        /// <param name="szEmail"></param>
+        private static void ValidateEmailAndUser(string szEmail, string szUser)
+        {
+            if (String.IsNullOrEmpty(szEmail))
+                throw new UserEntityException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errInvalidEmail, string.Empty), MembershipCreateStatus.InvalidEmail);
+
+            if (String.IsNullOrEmpty(szUser))
+                throw new UserEntityException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errInvalidEmail, string.Empty), MembershipCreateStatus.InvalidUserName);
+
+            Regex r = new Regex("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+            Match m = r.Match(szEmail);
+            if (m.Captures.Count != 1 || m.Captures[0].Value.CompareOrdinal(szEmail) != 0)
+                throw new UserEntityException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errInvalidEmail, szEmail), MembershipCreateStatus.InvalidEmail);
+
+            Regex rgUsername = new Regex("\\w+([-+.']\\w+)*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            if (!rgUsername.IsMatch(szUser))
+                throw new UserEntityException(String.Format(CultureInfo.CurrentCulture, Resources.Profile.errInvalidEmail, szUser), MembershipCreateStatus.InvalidUserName);
+        }
+
+        /// <summary>
+        /// Checks the question and answer - throws an exception if there is an issue
+        /// </summary>
+        /// <param name="szQuestion"></param>
+        /// <param name="szAnswer"></param>
+        private static void ValidateQandA(string szQuestion, string szAnswer)
+        {
+            if (String.IsNullOrEmpty(szQuestion))
+                throw new UserEntityException(Resources.Profile.errNoQuestion, MembershipCreateStatus.InvalidQuestion);
+            if (szQuestion.Length > 80)
+                throw new UserEntityException(Resources.Profile.errQuestionTooLong, MembershipCreateStatus.InvalidQuestion);
+
+            if (String.IsNullOrEmpty(szAnswer))
+                throw new UserEntityException(Resources.Profile.errNoAnswer, MembershipCreateStatus.InvalidAnswer);
+            if (szAnswer.Length > 80)
+                throw new UserEntityException(Resources.Profile.errAnswerTooLong, MembershipCreateStatus.InvalidAnswer);
+        }
+        #endregion
+
+        /// <summary>
+        /// Creates a user based on a username/password
+        /// </summary>
+        /// <param name="szUser">Username for the user</param>
+        /// <param name="szPass">Password for the user</param>
+        /// <exception cref="UserEntityException"></exception>
+        /// <returns>True if success</returns>
+        static public UserEntity CreateUser(string szUser, string szPass, string szEmail, string szQuestion, string szAnswer)
+        {
+
+            MySqlMembershipProvider mmp = new MySqlMembershipProvider();
+            NameValueCollection nvc = new NameValueCollection();
+            MembershipCreateStatus result = new MembershipCreateStatus();
+
+            // Validate - this will throw a UserEntityException if there is an issue.
+            ValidateEmailAndUser(szEmail, szUser);
+            ValidatePassword(szPass);
+            ValidateQandA(szQuestion, szAnswer);
+
+            // If we are here, everything has been validated
+            nvc.Add("applicationName", "Online Flight Logbook");
+            nvc.Add("connectionStringName", "logbookConnectionString");
+
+            mmp.Initialize(null, nvc);
+
+            MembershipUser mu = mmp.CreateUser(szUser, szPass, szEmail, szQuestion, szAnswer, true, Guid.NewGuid(), out result);
+
+            return new UserEntity() { mcs = result, szUsername = mu == null ? string.Empty : mu.UserName };
         }
     }
 

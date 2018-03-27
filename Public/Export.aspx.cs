@@ -9,7 +9,7 @@ using MyFlightbook.Encryptors;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -67,7 +67,7 @@ public partial class _Default : System.Web.UI.Page
             if (szUser.Contains("@"))
                 szUser = Membership.GetUserNameByEmail(szUser);
 
-            if (util.ValidateUser(szUser, szPass).Length > 0)
+            if (UserEntity.ValidateUser(szUser, szPass).Length > 0)
             {
                 mfbDownload1.User = szUser;
                 mfbDownload1.OrderString = szOrder;

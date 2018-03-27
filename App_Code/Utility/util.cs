@@ -1,24 +1,20 @@
-using System;
-using System.Data;
-using System.Configuration;
-using System.Collections.Generic;
-using System.Text;
-using System.Web;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Andri.Web;
-using System.Collections.Specialized;
-using System.Reflection;
 using MyFlightbook.CSV;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Globalization;
 using System.Net.Mail;
+using System.Reflection;
+using System.Text;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -446,106 +442,6 @@ namespace MyFlightbook
         }
         #endregion
 
-        #region User utilities - should go into profile?
-        /// <summary>
-        /// Validates a user based on a username/password
-        /// </summary>
-        /// <param name="szUser">Username for the user</param>
-        /// <param name="szPass">Password for the user</param>
-        /// <returns>Username that is validated, else an empty string</returns>
-        static public string ValidateUser(string szUser, string szPass)
-        {
-            if (Membership.ValidateUser(szUser, szPass))
-                return szUser;
-            else
-                return "";
-        }
-
-        /// <summary>
-        /// Find a new, non-conflicting username for the specified email address.  Assumes the email address is NOT a duplicate.
-        /// </summary>
-        /// <param name="szEmail">The email address</param>
-        /// <returns>The username to use</returns>
-        static public string UserNameForEmail(string szEmail)
-        {
-            if (szEmail == null)
-                throw new ArgumentNullException("szEmail");
-            //  find a unique username to propose
-            int ichAt = szEmail.IndexOf('@');
-            string szUserBase = (ichAt > 0) ? szEmail.Remove(ichAt) : szEmail;
-
-            // Clean up any illegal characters (for Amazon, for example)
-            szUserBase = Regex.Replace(szUserBase, "[ $&@=;:+,?\\{}^~#|<>[]", "-");
-
-            string szUser = szUserBase;
-            int i = 1;
-            while (Membership.GetUser(szUser, false) != null)
-                szUser = szUserBase + (i++).ToString(CultureInfo.InvariantCulture);
-
-            return szUser;
-        }
-
-        /// <summary>
-        /// Creates a user based on a username/password
-        /// </summary>
-        /// <param name="szUser">Username for the user</param>
-        /// <param name="szPass">Password for the user</param>
-        /// <returns>True if success</returns>
-        static public MembershipCreateStatus CreateUser(string szUser, string szPass, string szEmail, string szQuestion, string szAnswer)
-        {
-            Regex rgEmail = new Regex("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
-            Regex rgUsername = new Regex("\\w+([-+.']\\w+)*");
-
-            MySqlMembershipProvider mmp = new MySqlMembershipProvider();
-            NameValueCollection nvc = new NameValueCollection();
-            MembershipCreateStatus mcs = new MembershipCreateStatus();
-
-            if (!rgEmail.IsMatch(szEmail))
-                return MembershipCreateStatus.InvalidEmail;
-
-            if (!rgUsername.IsMatch(szUser))
-                return MembershipCreateStatus.InvalidUserName;
-
-            if (String.IsNullOrEmpty(szPass) || szPass.Length < 6)
-                return MembershipCreateStatus.InvalidPassword;
-
-            if (String.IsNullOrEmpty(szQuestion) || szQuestion.Length > 80)
-                return MembershipCreateStatus.InvalidQuestion;
-
-            if (String.IsNullOrEmpty(szAnswer) || szAnswer.Length > 80)
-                return MembershipCreateStatus.InvalidAnswer;
-
-            nvc.Add("applicationName", "Online Flight Logbook");
-            nvc.Add("connectionStringName", "logbookConnectionString");
-
-            mmp.Initialize(null, nvc);
-
-            mmp.CreateUser(szUser, szPass, szEmail, szQuestion, szAnswer, true, Guid.NewGuid(), out mcs);
-
-            return mcs;
-        }
-
-        /// <summary>
-        /// Sets the first/last name for the user, sends notification email & welcome email.
-        /// </summary>
-        /// <param name="szUser">Username</param>
-        /// <param name="szFirst">First Name</param>
-        /// <param name="szLast">Last Name</param>
-        /// <param name="fWebService">True if this was from the web service</param>
-        static public void FinalizeUser(string szUser, string szFirst, string szLast, Boolean fWebService)
-        {
-            Profile pf = Profile.GetUser(szUser);
-            pf.FirstName = szFirst;
-            pf.LastName = szLast;
-            pf.TracksSecondInCommandTime = pf.IsInstructor = true;
-            pf.FCommit();
-
-            // send welcome mail
-            util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName), Resources.EmailTemplates.Welcomeemailhtm, new MailAddress(pf.Email, pf.UserFirstName), false, true);
-            util.NotifyAdminEvent("New user created" + (fWebService ? " - WebService" : ""), String.Format(CultureInfo.CurrentCulture, "User '{0}' was created at {1}", pf.UserName, DateTime.Now.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture)), ProfileRoles.maskCanReport);
-        }
-        #endregion
-
         #region Read nullable MySql fields - should be extension?
         /// <summary>
         /// Reads the specified field from the datareader row, returning the default object in case of an exception.
@@ -589,20 +485,6 @@ namespace MyFlightbook
                 return o.ToString();
         }
         #endregion
-    }
-
-    [Serializable]
-    public class UserEntity
-    {
-        public string szAuthToken { get; set; }
-        public string szUsername { get; set; }
-        public MembershipCreateStatus mcs { get; set; }
-
-        public UserEntity()
-        {
-            szUsername = szAuthToken = string.Empty;
-            mcs = MembershipCreateStatus.Success;
-        }
     }
 
     // Hack from http://stackoverflow.com/questions/976524/issues-rendering-usercontrol-using-server-execute-in-an-asmx-web-service
