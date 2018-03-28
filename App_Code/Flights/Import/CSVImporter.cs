@@ -77,13 +77,13 @@ namespace MyFlightbook.ImportFlights
          * So, for example, the comments field has "Comments" as the highest priority column; if that is not found, then "Remarks" will be used next, and so forth.
         */
         private static string[] colFlightID = { "Flight ID" };
-        private static string[] colDate = { "Date" };
-        private static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident" };
+        private static string[] colDate = { "Date", "FLT_DATE" };
+        private static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM" };
         private static string[] colAircraftID = { "Aircraft ID" };
-        private static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Flt Time", "Block" };
+        private static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Flt Time", "Block", "HRS" };
         private static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE" };
         private static string[] colHold = { "Hold", "Holds", "Holding" };
-        private static string[] colLandings = { "Landings" };
+        private static string[] colLandings = { "Landings", "LAND_STD" };
         private static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings", "LANDINGS NIGHT" };
         private static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings", "LANDINGS DAY" };
         private static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY" };
@@ -95,18 +95,18 @@ namespace MyFlightbook.ImportFlights
         private static string[] colCFI = { "CFI", "flight_dualGiven", "DualGiven", "Dual Given" };
         private static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND" };
         private static string[] colPIC = { "PIC", "flight_pic", "PILOT IN COMMAND" };
-        private static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT" };
-        private static string[] colFrom = { "From", "flight_from", "Departure", "Origin" };
-        private static string[] colTo = { "To", "flight_to", "Arrival", "Dest" };
+        private static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT", "LOC_INTM" };
+        private static string[] colFrom = { "From", "flight_from", "Departure", "Origin", "LOC_FROM" };
+        private static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "LOC_TO" };
         private static string[] colComment = { "Comments", "Remarks" };
         private static string[] colCatClassOverride = { "CatClassOverride" };
         private static string[] colEngineStart = { "Engine Start", "Depart" };
         private static string[] colEngineEnd = { "Engine End", "Arrive" };
-        private static string[] colFlightStart = { "Flight Start" };
-        private static string[] colFlightEnd = { "Flight End" };
+        private static string[] colFlightStart = { "Flight Start", "FLT_BEGIN" };
+        private static string[] colFlightEnd = { "Flight End", "FLT_END" };
         private static string[] colHobbsStart = { "Hobbs Start" };
         private static string[] colHobbsEnd = { "Hobbs End" };
-        private static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL" };
+        private static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL", "ACFT_MDS" };
 
         /// <summary>
         /// Common aliases for property names
@@ -132,6 +132,7 @@ namespace MyFlightbook.ImportFlights
             {"Tachometer Start", new string[] {"Tachometer Start", "Tach Out"}},
             {"Flight Number", new string[] {"Flight Number", "Flight" } },
             {"Flight Attendant Name(s)", new string[] { "Flight Attendant Name(s)", "Flight Attendant" } },
+            {"Number of Passengers", new string[] {"Number of Passengers", "PAX" } },
             {"Student Name", new string[] {"Student Name", "Student"}}
         };
 
@@ -426,7 +427,7 @@ namespace MyFlightbook.ImportFlights
                 // Route is concatenation of From + (Route/Via) + To, if From/To fields are present AND if not redundant.
                 if (!String.IsNullOrEmpty(szFrom) && !szRoute.StartsWith(szFrom, StringComparison.CurrentCultureIgnoreCase))
                     szRoute = szFrom + " " + szRoute;
-                if (!String.IsNullOrEmpty(szTo) && !szRoute.StartsWith(szTo, StringComparison.CurrentCultureIgnoreCase))
+                if (!String.IsNullOrEmpty(szTo) && !szRoute.EndsWith(szTo, StringComparison.CurrentCultureIgnoreCase))
                     szRoute = szRoute + " " + szTo;
                 le.Route = szRoute.Trim();
 
