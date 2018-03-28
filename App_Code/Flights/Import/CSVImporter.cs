@@ -343,7 +343,7 @@ namespace MyFlightbook.ImportFlights
                         bool fFoundAnonOrSim = false;
                         string szModel = string.Empty;
 
-                        if (m_cm.iColModel > 0 && !String.IsNullOrEmpty(szModel = m_rgszRow[m_cm.iColModel]))
+                        if (m_cm.iColModel >= 0 && !String.IsNullOrEmpty(szModel = m_rgszRow[m_cm.iColModel]))
                         {
                             MakeModel mappedModel = (m_cm.ModelMapping != null && m_cm.ModelMapping.ContainsKey(szModel)) ? m_cm.ModelMapping[szModel] : null;   // see if we have a mapping for this, BEFORE trimming the comma
 
