@@ -81,21 +81,21 @@ namespace MyFlightbook.ImportFlights
         private static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident" };
         private static string[] colAircraftID = { "Aircraft ID" };
         private static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Flt Time", "Block" };
-        private static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP" };
+        private static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE" };
         private static string[] colHold = { "Hold", "Holds", "Holding" };
         private static string[] colLandings = { "Landings" };
-        private static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings" };
-        private static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings" };
-        private static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X CNTY", "X/Ctry", "X/C" };
+        private static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings", "LANDINGS NIGHT" };
+        private static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings", "LANDINGS DAY" };
+        private static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY" };
         private static string[] colNight = { "Night", "flight_night" };
-        private static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst" };
+        private static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT" };
         private static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst" };
-        private static string[] colGroundSim = { "Ground Simulator", "flight_simulator", "Sim/FTD" };
-        private static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd" };
+        private static string[] colGroundSim = { "Ground Simulator", "flight_simulator", "Sim/FTD", "SIMULATOR" };
+        private static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd", "Dual" };
         private static string[] colCFI = { "CFI", "flight_dualGiven", "DualGiven", "Dual Given" };
-        private static string[] colSIC = { "SIC", "flight_sic" };
-        private static string[] colPIC = { "PIC", "flight_pic" };
-        private static string[] colRoute = { "Route", "flight_route", "Via" };
+        private static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND" };
+        private static string[] colPIC = { "PIC", "flight_pic", "PILOT IN COMMAND" };
+        private static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT" };
         private static string[] colFrom = { "From", "flight_from", "Departure", "Origin" };
         private static string[] colTo = { "To", "flight_to", "Arrival", "Dest" };
         private static string[] colComment = { "Comments", "Remarks" };
@@ -106,7 +106,7 @@ namespace MyFlightbook.ImportFlights
         private static string[] colFlightEnd = { "Flight End" };
         private static string[] colHobbsStart = { "Hobbs Start" };
         private static string[] colHobbsEnd = { "Hobbs End" };
-        private static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type" };
+        private static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL" };
 
         /// <summary>
         /// Common aliases for property names
