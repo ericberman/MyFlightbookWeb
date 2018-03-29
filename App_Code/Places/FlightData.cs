@@ -1325,6 +1325,11 @@ namespace MyFlightbook.Telemetry
                 if (dtSample.Kind != DateTimeKind.Utc)
                     dtSample = new DateTime(dtSample.AddMinutes(HasTimezone ? Convert.ToInt32(dr[TimeZoneColumnName], CultureInfo.InvariantCulture) : -Options.TimeZoneOffset).Ticks, DateTimeKind.Utc);
 
+                if (!ActiveFlight.EngineStart.HasValue())
+                    ActiveFlight.EngineStart = dtSample;
+                if (!ActiveFlight.EngineEnd.HasValue() || dtSample.CompareTo(ActiveFlight.EngineEnd) > 0)
+                    ActiveFlight.EngineEnd = dtSample;
+
                 Position po = null;
                 bool fIsNightForLandings = false;
                 bool fIsNightForFlight = false;
