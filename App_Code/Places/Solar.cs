@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2011-2017 MyFlightbook LLC
+ * Copyright (c) 2011-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,22 +22,39 @@ namespace MyFlightbook.Solar
         /// <summary>
         /// True if between sunset and sunrise
         /// </summary>
-        public Boolean IsNight { get; set; }
+        public Boolean IsNight { get; private set; }
 
         /// <summary>
-        /// True if between 1-hour after sunset and 1-hour before sunrise
+        /// True if between 1-hour (or other offset, as determined by NightLandingOffset) after sunset and 1-hour before sunrise
         /// </summary>
-        public Boolean IsFAANight { get; set; }
+        public Boolean IsFAANight { get; private set; }
+
+        /// <summary>
+        /// True if the flight is between Sunset + NightFlightOffset and Sunrise - NightFlightOffset
+        /// </summary>
+        public Boolean IsWithinNightOffset { get; private set; }
 
         /// <summary>
         /// True if between civil twilight after sunset and civil twilight before sunrise (i.e., FAA loggable as night) - defined as sun less than 6 degrees below the horizon
         /// </summary>
-        public Boolean IsFAACivilNight { get; set; }
+        public Boolean IsFAACivilNight { get; private set; }
 
         /// <summary>
         /// The angle of the sun above the horizon at this latitude/longitude/time.
         /// </summary>
-        public double SolarAngle { get; set; }
+        public double SolarAngle { get; private set; }
+
+        /// <summary>
+        /// The offset from sunrise/sunset (in minutes) needed for night currency (i.e., in computing IsFAANight)
+        /// 1 hour by default (i.e., landings need to be between sunset + 1 hour and sunrise - 1 hour to count.
+        /// </summary>
+        public int NightLandingOffset { get; private set; }
+
+        /// <summary>
+        /// The offset from sunrise/sunset (in minutes) needed for night flight, if that's how night flight is computed
+        /// (Default is 0.0, since default for night flight is IsFAACivilNight.)
+        /// </summary>
+        public int NightFlightOffset { get; private set; }
         #endregion
 
         #region constructors
@@ -45,13 +62,16 @@ namespace MyFlightbook.Solar
         {
             Date = Sunrise = Sunset = DateTime.MinValue;
             Latitude = Longitude = 0.0;
+            NightLandingOffset = 60;  // FAA uses 1 hour, we always set that by default.
+            NightFlightOffset = 0;
         }
 
-        public SunriseSunsetTimes(DateTime dt, double latitude, double longitude)
+        public SunriseSunsetTimes(DateTime dt, double latitude, double longitude, int nightFlightOffset = 0) : this()
         {
             Date = dt;
             Latitude = latitude;
             Longitude = longitude;
+            NightFlightOffset = nightFlightOffset;
             ComputeTimesAtLocation(dt);
         }
         #endregion
@@ -116,6 +136,7 @@ namespace MyFlightbook.Solar
             // (c) time is before sunrise - figure out the previous sunset and compare to that
             IsNight = IsFAACivilNight;
             IsFAANight = false;
+            IsWithinNightOffset = false;
             if (Sunrise.CompareTo(dt) <= 0 && Sunset.CompareTo(dt) >= 0)
             {
                 // between sunrise and sunset - it's daytime no matter how you slice it; use default values (set above)
@@ -130,7 +151,8 @@ namespace MyFlightbook.Solar
                 {
                     DateTime dtNextSunrise = MinutesToDateTime(dtTomorrow, nextSunrise);
                     IsNight = (dtNextSunrise.CompareTo(dt) > 0); // we've already determined that we're after sunset, we just need to be before sunrise
-                    IsFAANight = (Sunset.AddHours(1).CompareTo(dt) <= 0 && dtNextSunrise.AddHours(-1).CompareTo(dt) >= 0);
+                    IsFAANight = (Sunset.AddMinutes(NightLandingOffset).CompareTo(dt) <= 0 && dtNextSunrise.AddMinutes(- NightLandingOffset).CompareTo(dt) >= 0);
+                    IsWithinNightOffset = (Sunset.AddMinutes(NightFlightOffset).CompareTo(dt) <= 0 && dtNextSunrise.AddMinutes(-NightFlightOffset).CompareTo(dt) >= 0);
                 }
             }
             else if (Sunrise.CompareTo(dt) > 0)
@@ -143,7 +165,8 @@ namespace MyFlightbook.Solar
                 {
                     DateTime dtPrevSunset = MinutesToDateTime(dtYesterday, prevSunset);
                     IsNight = (dtPrevSunset.CompareTo(dt) < 0); // we've already determined that we're before sunrise, we just need to be after sunset.
-                    IsFAANight = (dtPrevSunset.AddHours(1).CompareTo(dt) <= 0 && Sunrise.AddHours(-1).CompareTo(dt) >= 0);
+                    IsFAANight = (dtPrevSunset.AddMinutes(NightLandingOffset).CompareTo(dt) <= 0 && Sunrise.AddMinutes(-NightLandingOffset).CompareTo(dt) >= 0);
+                    IsWithinNightOffset = (dtPrevSunset.AddMinutes(NightFlightOffset).CompareTo(dt) <= 0 && Sunrise.AddMinutes(-NightFlightOffset).CompareTo(dt) >= 0);
                 }
             }
         }

@@ -20,6 +20,8 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
     private const string keyCookieSpeed = "autoFillDefaultSpeed";
     private const string keyCookieHeliport = "autoFillDefaultHeliport";
     private const string keyCookieEstimateNight = "autoFillEstimateNight";
+    private const string keyCookieNightDef = "autoFillNightDefinition";
+    private const string keyCookieNightLandingDef = "autoFillNightLandingDef";
 
     #region properties
     /// <summary>
@@ -117,6 +119,12 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
             bool estimateNight = true;
             if (Request.Cookies[keyCookieEstimateNight] == null || !bool.TryParse(Request.Cookies[keyCookieEstimateNight].Value, out estimateNight))
                 estimateNight = true;
+            AutoFillOptions.NightCritera nightCritera = AutoFillOptions.NightCritera.EndOfCivilTwilight;
+            if (Request.Cookies[keyCookieNightDef] == null || !Enum.TryParse<AutoFillOptions.NightCritera>(Request.Cookies[keyCookieNightDef].Value, out nightCritera))
+                nightCritera = AutoFillOptions.NightCritera.EndOfCivilTwilight;
+            AutoFillOptions.NightLandingCriteria nightLandingCriteria = AutoFillOptions.NightLandingCriteria.SunsetPlus60;
+            if (Request.Cookies[keyCookieNightLandingDef] == null || !Enum.TryParse<AutoFillOptions.NightLandingCriteria>(Request.Cookies[keyCookieNightLandingDef].Value, out nightLandingCriteria))
+                nightLandingCriteria = AutoFillOptions.NightLandingCriteria.SunsetPlus60;
 
             foreach (int speed in AutoFillOptions.DefaultSpeeds)
             {
@@ -125,6 +133,8 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
             }
             ckIncludeHeliports.Checked = includeHeliports;
             ckEstimateNight.Checked = estimateNight;
+            rblNightCriteria.SelectedValue = nightCritera.ToString();
+            rblNightLandingCriteria.SelectedValue = nightLandingCriteria.ToString();
         }
     }
 
@@ -215,13 +225,24 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
                 LandingSpeed = AutoFillOptions.BestLandingSpeedForTakeoffSpeed(takeoffSpeed),
                 IncludeHeliports = ckIncludeHeliports.Checked,
                 AutoSynthesizePath = ckEstimateNight.Checked,
+                Night = (AutoFillOptions.NightCritera) Enum.Parse(typeof(AutoFillOptions.NightCritera), rblNightCriteria.SelectedValue, true),
+                NightLanding = (AutoFillOptions.NightLandingCriteria)Enum.Parse(typeof(AutoFillOptions.NightLandingCriteria), rblNightLandingCriteria.SelectedValue, true),
                 IgnoreErrors = true
             };
 
             Response.Cookies[keyCookieSpeed].Value = takeoffSpeed.ToString(CultureInfo.InvariantCulture);
             Response.Cookies[keyCookieHeliport].Value = ckIncludeHeliports.Checked.ToString(CultureInfo.InvariantCulture);
             Response.Cookies[keyCookieEstimateNight].Value = ckEstimateNight.Checked.ToString(CultureInfo.InvariantCulture);
-            Response.Cookies[keyCookieHeliport].Expires = Response.Cookies[keyCookieSpeed].Expires = DateTime.Now.AddYears(10);
+            Response.Cookies[keyCookieNightDef].Value = afo.Night.ToString();
+            Response.Cookies[keyCookieNightLandingDef].Value = afo.NightLanding.ToString();
+
+            Response.Cookies[keyCookieSpeed].Expires =
+                Response.Cookies[keyCookieHeliport].Expires =
+                Response.Cookies[keyCookieEstimateNight].Expires = 
+                Response.Cookies[keyCookieNightDef].Expires =
+                Response.Cookies[keyCookieNightLandingDef].Expires =
+                    DateTime.Now.AddYears(10);
+            
 
             string szTelemetry = Telemetry;
             // Load from the DB if needed

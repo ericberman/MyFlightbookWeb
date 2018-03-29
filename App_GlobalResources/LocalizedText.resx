@@ -1400,4 +1400,31 @@
   <data name="WelcomeSetStartingTotals" xml:space="preserve">
     <value>Set Starting Totals</value>
   </data>
+  <data name="AutoFillOptionNightDefinition" xml:space="preserve">
+    <value>Night flight starts:</value>
+  </data>
+  <data name="AutoFillOptionNightDefinitionSunset" xml:space="preserve">
+    <value>Sunset</value>
+  </data>
+  <data name="AutoFillOptionNightDefinitionSunsetPlus15" xml:space="preserve">
+    <value>15 minutes after sunset</value>
+  </data>
+  <data name="AutoFillOptionNightDefinitionSunsetPlus30" xml:space="preserve">
+    <value>30 minutes after sunset</value>
+  </data>
+  <data name="AutoFillOptionNightDefinitionSunsetPlus60" xml:space="preserve">
+    <value>1 hour after sunset</value>
+  </data>
+  <data name="AutoFillOptionNightDefinitionTwilight" xml:space="preserve">
+    <value>End of civil twilight</value>
+  </data>
+  <data name="AutoFillOptionNightLandingDefinition" xml:space="preserve">
+    <value>Night landings occur:</value>
+  </data>
+  <data name="AutoFillOptionNightLandingDefinitionNight" xml:space="preserve">
+    <value>During night flight</value>
+  </data>
+  <data name="AutoFillOptionNightLandingDefinitionSunsetPlus1Hour" xml:space="preserve">
+    <value>1 hour after sunset</value>
+  </data>
 </root>

@@ -271,6 +271,8 @@ namespace MyFlightbook.Telemetry
     {
         public enum AutoFillTotalOption { None, FlightTime, EngineTime, HobbsTime, BlockTime };
         public enum AutoFillHobbsOption { None, FlightTime, EngineTime, TotalTime };
+        public enum NightCritera { EndOfCivilTwilight, Sunset, SunsetPlus15, SunsetPlus30, SunsetPlus60 };
+        public enum NightLandingCriteria { SunsetPlus60, Night};
 
         public const int DefaultCrossCountryDistance = 50;
         public const int DefaultTakeoffSpeedKts = 70;
@@ -289,6 +291,8 @@ namespace MyFlightbook.Telemetry
             TimeZoneOffset = 0;
             AutoFillTotal = AutoFillTotalOption.EngineTime;
             AutoFillHobbs = AutoFillHobbsOption.EngineTime;
+            Night = NightCritera.EndOfCivilTwilight;
+            NightLanding = NightLandingCriteria.SunsetPlus60;
             CrossCountryThreshold = DefaultCrossCountryDistance;
             TakeOffSpeed = DefaultTakeoffSpeedKts;
             LandingSpeed = DefaultLandingSpeedKts;
@@ -311,6 +315,39 @@ namespace MyFlightbook.Telemetry
         /// AutoHobbs options
         /// </summary>
         public AutoFillHobbsOption AutoFillHobbs { get; set; }
+
+        /// <summary>
+        /// By what criteria do we begin accumulating night flight?
+        /// </summary>
+        public NightCritera Night { get; set; }
+
+        /// <summary>
+        /// By what criteria do we log a night landing?
+        /// </summary>
+        public NightLandingCriteria NightLanding { get; set; }
+
+        /// <summary>
+        /// Return the time offset (in minutes) relative to sunset to use for IsWithinNightOffset
+        /// </summary>
+        public int NightFlightSunsetOffset
+        {
+            get
+            {
+                switch (Night)
+                {
+                    case NightCritera.EndOfCivilTwilight:
+                    case NightCritera.Sunset:
+                    default:
+                        return 0;
+                    case NightCritera.SunsetPlus60:
+                        return 60;
+                    case NightCritera.SunsetPlus15:
+                        return 15;
+                    case NightCritera.SunsetPlus30:
+                        return 30;
+                }
+            }
+        }
 
         /// <summary>
         /// Threshold for cross-country flight
@@ -342,6 +379,37 @@ namespace MyFlightbook.Telemetry
         /// True by default.
         /// </summary>
         public bool AutoSynthesizePath { get; set; }
+        #endregion
+
+        #region testing for night, night landings
+        /// <summary>
+        /// Determines if the specified date counts as night for logging night flight
+        /// </summary>
+        /// <param name="sst">The sunrisesunsettimes that contains the date and relevant location</param>
+        /// <returns>True if the time sample should be considered night per user options</returns>
+        public bool IsNightForFlight(SunriseSunsetTimes sst)
+        {
+            if (sst == null)
+                throw new ArgumentNullException("sst");
+
+            // short circuit
+            if (!sst.IsNight)
+                return false;
+
+            switch (Night)
+            {
+                case AutoFillOptions.NightCritera.EndOfCivilTwilight:
+                    return sst.IsFAACivilNight;
+                case AutoFillOptions.NightCritera.Sunset:
+                    return true;    // Actually sst.IsNight, but we've determined from the above short circuit that it must be true.
+                case AutoFillOptions.NightCritera.SunsetPlus15:
+                case AutoFillOptions.NightCritera.SunsetPlus30:
+                case AutoFillOptions.NightCritera.SunsetPlus60:
+                    return sst.IsWithinNightOffset;
+            }
+
+            return false;   // should never hit this.
+        }
         #endregion
 
         /// <summary>
@@ -1258,21 +1326,21 @@ namespace MyFlightbook.Telemetry
                     dtSample = new DateTime(dtSample.AddMinutes(HasTimezone ? Convert.ToInt32(dr[TimeZoneColumnName], CultureInfo.InvariantCulture) : -Options.TimeZoneOffset).Ticks, DateTimeKind.Utc);
 
                 Position po = null;
-                bool fIsNight = false;
-                bool fIsCivilNight = false;
+                bool fIsNightForLandings = false;
+                bool fIsNightForFlight = false;
 
                 LatLong ll = LatLong.TryParse(dr[KnownColumnNames.LAT], dr[KnownColumnNames.LON], CultureInfo.CurrentCulture);
                 if (ll != null)
                 {
                     po = new Position(ll.Latitude, ll.Longitude, dtSample);
-                    SunriseSunsetTimes sst = new SunriseSunsetTimes(po.Timestamp, po.Latitude, po.Longitude);
-                    fIsNight = sst.IsFAANight;
-                    fIsCivilNight = sst.IsFAACivilNight;
+                    SunriseSunsetTimes sst = new SunriseSunsetTimes(po.Timestamp, po.Latitude, po.Longitude, Options.NightFlightSunsetOffset);
+                    fIsNightForFlight = Options.IsNightForFlight(sst);
+                    fIsNightForLandings =  (Options.NightLanding == AutoFillOptions.NightLandingCriteria.Night) ? fIsNightForFlight : sst.IsFAANight;
                 }
 
                 if (po != null && LastPositionReport != null)
                 {
-                    if (fIsCivilNight && LastPositionWasNight)
+                    if (fIsNightForFlight && LastPositionWasNight)
                     {
                         double night = po.Timestamp.Subtract(LastPositionReport.Timestamp).TotalHours;
                         if (night < 0.5)    // don't add the night time if samples are spaced more than 30 minutes apart
@@ -1280,9 +1348,9 @@ namespace MyFlightbook.Telemetry
                     }
                 }
                 LastPositionReport = po;
-                LastPositionWasNight = fIsCivilNight;
+                LastPositionWasNight = fIsNightForFlight;
 
-                UpdateFlyingState(s, dtSample, po, fIsNight);
+                UpdateFlyingState(s, dtSample, po, fIsNightForLandings);
             }
 
             /// <summary>
