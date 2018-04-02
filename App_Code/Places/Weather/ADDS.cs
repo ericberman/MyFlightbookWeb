@@ -263,10 +263,16 @@ namespace MyFlightbook.Weather.ADDS
             // allows for validation of SSL conversations
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
-            using (StreamReader streamIn = new StreamReader(req.GetResponse().GetResponseStream()))
-                strResponse = streamIn.ReadToEnd();
-
-            return strResponse.DeserializeFromXML<response>();
+            try
+            {
+                using (StreamReader streamIn = new StreamReader(req.GetResponse().GetResponseStream()))
+                    strResponse = streamIn.ReadToEnd();
+                return strResponse.DeserializeFromXML<response>();
+            }
+            catch (WebException)
+            {
+                return null;
+            }
         }
         #endregion
 
