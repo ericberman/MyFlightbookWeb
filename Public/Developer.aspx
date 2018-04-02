@@ -114,7 +114,7 @@
                     <asp:BoundField HeaderText="Client Name" DataField="ClientName" ItemStyle-VerticalAlign="Top" />
                     <asp:BoundField HeaderText="Callback URL" DataField="Callback" ItemStyle-VerticalAlign="Top" />
                     <asp:BoundField HeaderText="Scopes" DataField="Scope" ItemStyle-VerticalAlign="Top" />
-                    <asp:CommandField ButtonType="Link" ShowEditButton="true" ShowDeleteButton="true" ItemStyle-VerticalAlign="Top" />
+                    <asp:CommandField ButtonType="Link" ShowEditButton="true" ItemStyle-VerticalAlign="Top" />
                 </Columns>
             </asp:GridView>
             <div><asp:Label ID="lblErrGV" runat="server" Text="" CssClass="error" EnableViewState="false"></asp:Label></div>
