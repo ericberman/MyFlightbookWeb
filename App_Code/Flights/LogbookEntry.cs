@@ -1433,10 +1433,10 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("fPublic", this.fIsPublic);
                     comm.Parameters.AddWithValue("hobbsStart", this.HobbsStart);
                     comm.Parameters.AddWithValue("hobbsEnd", this.HobbsEnd);
-                    comm.Parameters.AddWithValue("dtFlightStart", this.FlightStart);
-                    comm.Parameters.AddWithValue("dtFlightEnd", this.FlightEnd);
-                    comm.Parameters.AddWithValue("dtEngineStart", this.EngineStart);
-                    comm.Parameters.AddWithValue("dtEngineEnd", this.EngineEnd);
+                    comm.Parameters.AddWithValue("dtFlightStart", this.FlightStart.HasValue() ? (object) this.FlightStart : DBNull.Value);
+                    comm.Parameters.AddWithValue("dtFlightEnd", this.FlightEnd.HasValue() ? (object) this.FlightEnd : DBNull.Value);
+                    comm.Parameters.AddWithValue("dtEngineStart", this.EngineStart.HasValue() ? (object) this.EngineStart : DBNull.Value);
+                    comm.Parameters.AddWithValue("dtEngineEnd", this.EngineEnd.HasValue() ? (object) this.EngineEnd : DBNull.Value);
                     comm.Parameters.AddWithValue("cfi", this.CFI);
                     comm.Parameters.AddWithValue("SIC", this.SIC);
 

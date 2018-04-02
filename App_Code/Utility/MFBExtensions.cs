@@ -31,7 +31,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public static bool HasValue(this DateTime dt)
         {
-            return dt.CompareTo(DateTime.MinValue) != 0;
+            return dt.CompareTo(DateTime.MinValue) != 0 && dt.Year > 1;
         }
 
         /// <summary>
