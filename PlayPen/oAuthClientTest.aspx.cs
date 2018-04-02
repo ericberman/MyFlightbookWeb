@@ -93,9 +93,6 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            if (!Page.User.Identity.IsAuthenticated || !MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanDoAllAdmin)
-                Response.Redirect("~/Default.aspx");
-
             FromSession();
             if (Request["code"] != null)
                 lblAuthorization.Text = Request["code"].ToString();
