@@ -162,6 +162,9 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
     protected void btnGetToken_Click(object sender, EventArgs e)
     {
+        Validate("vgAuthorize");
+        if (!Page.IsValid)
+            return;
         try
         {
             ToSession();
