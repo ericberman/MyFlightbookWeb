@@ -9,14 +9,14 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Member_Import : System.Web.UI.Page
 {
-    protected bool fUseHHMM = false;
+    protected bool UseHHMM { get; set;}
     private const string szKeyVSCSVImporter = "viewStateKeyCSVImporter";
     private const string szKeyVSCSVData = "viewStateCSVData";
 
@@ -92,7 +92,7 @@ public partial class Member_Import : System.Web.UI.Page
         wzImportFlights.PreRender += new EventHandler(wzImportFlights_PreRender);
 
         Title = (string)GetLocalResourceObject("PageResource1.Title");
-        fUseHHMM = MyFlightbook.Profile.GetUser(User.Identity.Name).UsesHHMM;
+        UseHHMM = MyFlightbook.Profile.GetUser(User.Identity.Name).UsesHHMM;
 
         if (!IsPostBack)
         {

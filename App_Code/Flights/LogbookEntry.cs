@@ -2232,19 +2232,24 @@ namespace MyFlightbook
         /// </summary>
         public bool UseUTCDates { get; set; }
 
+        public static string LandingDisplayForFlight(LogbookEntry le)
+        {
+            if (le == null)
+                return string.Empty;
+
+            return String.Format(CultureInfo.CurrentCulture, "{0} {1}", le.Landings.FormatInt(),
+                (le.FullStopLandings > 0 && le.NightLandings > 0) ? String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.DayAndNightLandingTemplate, le.FullStopLandings, le.NightLandings) :
+                (le.FullStopLandings == 0 && le.NightLandings > 0) ? String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.NightLandingTemplate, le.NightLandings) :
+                (le.FullStopLandings > 0 && le.NightLandings == 0) ? String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.DayLandingTemplate, le.FullStopLandings) :
+                string.Empty).Trim();
+        }
+
         /// <summary>
         /// Shows total landings, and subtotals (as appropriate) for full-stop-day and full-stop-night
         /// </summary>
         public string LandingDisplay
         {
-            get
-            {
-                return String.Format(CultureInfo.CurrentCulture, "{0} {1}", Landings.FormatInt(),
-                    (FullStopLandings > 0 && NightLandings > 0) ? String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.DayAndNightLandingTemplate, FullStopLandings, NightLandings) :
-                    (FullStopLandings == 0 && NightLandings > 0) ? String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.NightLandingTemplate, NightLandings) :
-                    (FullStopLandings > 0 && NightLandings == 0) ? String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.DayLandingTemplate, FullStopLandings) :
-                    string.Empty).Trim();
-            }
+            get { return LandingDisplayForFlight(this); }
         }
 
         /// <summary>

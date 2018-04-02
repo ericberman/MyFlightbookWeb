@@ -2,6 +2,8 @@
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbImportAircraft.ascx" tagname="mfbImportAircraft" tagprefix="uc1" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Localize ID="locHeader" runat="server" Text="Importing Data" meta:resourcekey="locHeaderResource1" 
             ></asp:Localize>
@@ -147,61 +149,66 @@
             <asp:View runat="server" ID="vwPreviewResults">
                 <asp:MultiView ID="mvPreview" runat="server">
                     <asp:View ID="vwPreview" runat="server">
-                        <table style="width:100%; border-collapse:collapse; font-size: 8pt" border="1" cellpadding="2">
-                            <tr>
-                                <td></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label1" runat="server" Text="Date" meta:resourcekey="Label1Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label2" runat="server" Text="Tail Number" meta:resourcekey="Label2Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label3" runat="server" Text="Approaches" meta:resourcekey="Label3Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label4" runat="server" Text="Hold" meta:resourcekey="Label4Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label5" runat="server" Text="Landings" meta:resourcekey="Label5Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label6" runat="server" Text="FS Day Landings" meta:resourcekey="Label6Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label7" runat="server" Text="FS Night Landings" meta:resourcekey="Label7Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label8" runat="server" Text="X-Country" meta:resourcekey="Label8Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label9" runat="server" Text="Night" meta:resourcekey="Label9Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label10" runat="server" Text="IMC" meta:resourcekey="Label10Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label11" runat="server" Text="Sim. IMC" meta:resourcekey="Label11Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label12" runat="server" Text="Ground Sim" meta:resourcekey="Label12Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label13" runat="server" Text="Dual Received" meta:resourcekey="Label13Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label14" runat="server" Text="CFI" meta:resourcekey="Label14Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label20" runat="server" Text="SIC" meta:resourcekey="Label20Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label15" runat="server" Text="PIC" meta:resourcekey="Label15Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label16" runat="server" Text="Total Flight Time" meta:resourcekey="Label16Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label17" runat="server" Text="Route" meta:resourcekey="Label17Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label18" runat="server" Text="Comments" meta:resourcekey="Label18Resource1"></asp:Label></td>
-                                <td style="text-align:center"><asp:Label Font-Bold="True" ID="Label19" runat="server" Text="Additional Data" meta:resourcekey="Label19Resource1"></asp:Label></td>
-                            </tr>
+                        <table style="width:100%; font-size: 8pt; border-color: gray; border-collapse:collapse" border="1" cellpadding="2">
+                            <thead>
+                                <tr style="font-weight:bold">
+                                    <td></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldTail %></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldApproaches %></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldHold %></td>
+                                    <td style="text-align:center">
+                                        <% =Resources.LogbookEntry.FieldLanding %>
+                                        <uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:LogbookEntry, LogbookLandingKey %>" />
+                                    </td>
+                                    <td style="text-align:center"><% =Resources.LogbookEntry.FieldXCountry %></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldNight %></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldSimIMC %></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldIMC %></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldGroundSim %></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldDual %></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldCFI %></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldSIC %></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldPIC %></td>
+                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldTotal %></td>
+                                </tr>
+                            </thead>
                             <asp:Repeater ID="rptPreview" OnItemDataBound="rptPreview_ItemDataBound" runat="server">
                                 <ItemTemplate>
-                                    <tr runat="server" id="rowError" visible='<%# !String.IsNullOrEmpty((string) Eval("ErrorString")) %>'>
-                                        <td colspan="21" runat="server">
+                                    <tr runat="server" id="rowError" visible='<%# !String.IsNullOrEmpty((string) Eval("ErrorString")) %>' valign="top">
+                                        <td colspan="15" runat="server">
                                             <div><asp:Label ID="lblFlightErr" CssClass="error" runat="server" Text='<%# Eval("ErrorString") %>'></asp:Label></div>
                                             <div><asp:Label ID="lblRawRow" CssClass="error" runat="server"></asp:Label></div>
                                         </td>
                                     </tr>
-                                    <tr runat="server" id="rowFlight" class='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? "" : "error" %>'>
-                                        <td runat="server"><asp:Image ID="imgNewOrUpdate" runat="server" ImageUrl='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? "~/images/add.png" : "~/images/update.png") : "~/images/circleslash.png" %>' 
-                                                ToolTip='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? Resources.LogbookEntry.ImportAddTooltip : Resources.LogbookEntry.ImportUpdateTooltip) : string.Empty %>' meta:resourcekey="imgNewOrUpdateResource1"  /></td>
-                                        <td runat="server"><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
-                                        <td runat="server"><%# Eval("TailNumDisplay") %></td>
-                                        <td runat="server"><%# Eval("Approaches") %></td>
-                                        <td runat="server"><%# Eval("fHoldingProcedures").FormatBooleanInt() %></td>
-                                        <td runat="server"><%# Eval("Landings") %></td>
-                                        <td runat="server"><%# Eval("FullStopLandings") %></td>
-                                        <td runat="server"><%# Eval("NightLandings") %></td>
-                                        <td runat="server"><%# Eval("CrossCountry") %></td>
-                                        <td runat="server"><%# Eval("Nighttime") %></td>
-                                        <td runat="server"><%# Eval("IMC") %></td>
-                                        <td runat="server"><%# Eval("SimulatedIFR") %></td>
-                                        <td runat="server"><%# Eval("GroundSim") %></td>
-                                        <td runat="server"><%# Eval("Dual") %></td>
-                                        <td runat="server"><%# Eval("CFI") %></td>
-                                        <td runat="server"><%# Eval("SIC") %></td>
-                                        <td runat="server"><%# Eval("PIC") %></td>
-                                        <td runat="server"><%# Eval("TotalFlightTime") %></td>
-                                        <td runat="server"><%# Eval("Route") %></td>
-                                        <td runat="server"><%# Eval("Comment") %></td>
-                                        <td runat="server"><asp:PlaceHolder ID="plcAdditional" runat="server"></asp:PlaceHolder></td>
+                                    <tr runat="server" id="rowFlight" style="vertical-align:top; text-align:center; border: 1px solid gray" class='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? string.Empty : "error" %>'>
+                                        <td style="text-align:left" runat="server">
+                                            <div>
+                                                <asp:Image ID="imgNewOrUpdate" runat="server" ImageUrl='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? "~/images/add.png" : "~/images/update.png") : "~/images/circleslash.png" %>' 
+                                                ToolTip='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? Resources.LogbookEntry.ImportAddTooltip : Resources.LogbookEntry.ImportUpdateTooltip) : (string) Eval("ErrorString") %>' meta:resourcekey="imgNewOrUpdateResource1"  />
+                                                <span style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></span>
+                                                <%# Eval("Route") %>
+                                            </div>
+                                            <div><%# Eval("Comment") %></div>
+                                            <div><asp:PlaceHolder ID="plcAdditional" runat="server"></asp:PlaceHolder></div>
+                                        </td>
+                                        <td runat="server">
+                                            <div style="font-weight:bold"><%# Eval("TailNumDisplay") %></div>
+                                            <div><%# Eval("ModelDisplay") %></div>
+                                            <div><%# Eval("CatClassDisplay") %></div>
+                                        </td>
+                                        <td runat="server"><%# Eval("Approaches").FormatInt() %></td>
+                                        <td style="font-weight:bold" runat="server"><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
+                                        <td runat="server"><%# LogbookEntryDisplay.LandingDisplayForFlight((LogbookEntry) Container.DataItem) %></td>
+                                        <td runat="server"><%# Eval("CrossCountry").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server"><%# Eval("Nighttime").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server"><%# Eval("SimulatedIFR").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server"><%# Eval("IMC").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server"><%# Eval("GroundSim").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server"><%# Eval("Dual").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server"><%# Eval("CFI").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server"><%# Eval("SIC").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server"><%# Eval("PIC").FormatDecimal(UseHHMM) %></td>
+                                        <td runat="server"><%# Eval("TotalFlightTime").FormatDecimal(UseHHMM) %></td>
                                     </tr>
                                 </ItemTemplate>
                             </asp:Repeater>
