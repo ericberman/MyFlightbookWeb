@@ -92,7 +92,7 @@ namespace OAuthAuthorizationServer.Services
             foreach (string sz in lstsc)
             {
                 MFBOAuthScope sc;
-                if (Enum.TryParse<MFBOAuthScope>(sz, out sc))
+                if (Enum.TryParse<MFBOAuthScope>(sz, out sc) && Enum.IsDefined(typeof(MFBOAuthScope), sc))
                     lst.Add(sc);
                 else
                     throw new ArgumentOutOfRangeException(sz);
