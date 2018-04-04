@@ -214,6 +214,7 @@ namespace OAuthAuthorizationServer.Code
                 comm.Parameters.AddWithValue("scopes", Scope);
                 comm.Parameters.AddWithValue("user", OwningUser);
             });
+            OAuth2AuthorizationServer.RefreshClients();
         }
 
         /// <summary>
@@ -234,6 +235,7 @@ namespace OAuthAuthorizationServer.Code
                 comm.Parameters.AddWithValue("user", user);
                 comm.Parameters.AddWithValue("id", id);
             });
+            OAuth2AuthorizationServer.RefreshClients();
         }
 
         #region Properties
@@ -459,6 +461,11 @@ namespace OAuthAuthorizationServer.Code
                 publicKey = pubkey;
                 privateKey = privkey;
             }
+        }
+
+        public static void RefreshClients()
+        {
+            _lstClients = new List<MFBOauth2Client>(MFBOauth2Client.GetAvailableClients());
         }
             
         private const string KeyContainerName = "MyFlightbookContainer";
