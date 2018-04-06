@@ -15,7 +15,7 @@
                 <th class="headerBig" colspan="2"><% =Resources.LogbookEntry.PrintHeaderRoute %></th>
                 <th class="headerBig" rowspan="2"><%=Resources.LogbookEntry.PrintHeaderRemarks %></th>
                 <th class="headerSmall" rowspan="2" style="width:1cm"><%=Resources.LogbookEntry.PrintHeaderApproaches %></th>
-                <th class="headerSmall" rowspan="2" style="width:1cm"><%=Resources.LogbookEntry.PrintHeaderLanding %></th>
+                <th class="headerBig" colspan="2" style="width:1cm"><%=Resources.LogbookEntry.PrintHeaderLanding %></th>
                 <th class="headerBig" colspan="3" style="width:3cm"><%=Resources.LogbookEntry.PrintHeaderCategory2 %></th>
                 <th class="headerBig" colspan="3"><%=Resources.LogbookEntry.PrintHeaderCondition2 %></th>
                 <th class="headerSmall" rowspan="2" style="width:1cm"><%=Resources.LogbookEntry.PrintHeaderSim %></th>
@@ -25,6 +25,8 @@
             <tr class="bordered">
                 <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderFrom %></th>
                 <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderTo %></th>
+                <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
+                <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
                 <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderSEL %></th>
                 <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderMEL %></th>
                 <th class="headerSmall" style="width:1cm">&nbsp;</th>
@@ -53,7 +55,8 @@
                         <div><uc1:mfbSignature runat="server" ID="mfbSignature" EnableViewState="false" /></div>
                     </td>
                     <td><%# Eval("Approaches") %></td>
-                    <td><%# Eval("Landings") %></td>
+                    <td><%# Eval("NetDayLandings") %></td>
+                    <td><%# Eval("NetNightLandings") %></td>
                     <td><%#: (((int)Eval("EffectiveCatClass")) == (int) CategoryClass.CatClassID.ASEL) ? Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) : string.Empty %></td>
                     <td><%#: (((int)Eval("EffectiveCatClass")) == (int) CategoryClass.CatClassID.AMEL) ? Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) : string.Empty %></td>
                     <td><%#: (((int)Eval("EffectiveCatClass")) != (int) CategoryClass.CatClassID.ASEL && ((int)Eval("EffectiveCatClass")) != (int) CategoryClass.CatClassID.AMEL) ? Eval("CatClassDisplay") + ": " + Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) : string.Empty %></td>
@@ -80,7 +83,8 @@
                             <%# (Container.ItemIndex != 0) ? "<tr class=\"subtotal\">" : string.Empty %>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).CatClassDisplay %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).Landings.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetDayLandings %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).NetNightLandings %></td>
                             <td colspan="3"><%# ((LogbookEntryDisplay) Container.DataItem).TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).Nighttime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).IMC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
