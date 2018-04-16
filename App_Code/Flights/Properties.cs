@@ -1007,7 +1007,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                         break;
                     case CFPPropertyType.cfpDate:
                     case CFPPropertyType.cfpDateTime:
-                        cfp.DateValue = Convert.ToDateTime(value, CultureInfo.InvariantCulture);
+                        cfp.DateValue = DateTime.SpecifyKind(Convert.ToDateTime(value, CultureInfo.InvariantCulture), DateTimeKind.Utc);
                         break;
                     case CFPPropertyType.cfpInteger:
                         cfp.IntValue = Convert.ToInt32(value, CultureInfo.InvariantCulture);
