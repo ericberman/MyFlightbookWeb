@@ -547,6 +547,8 @@ namespace MyFlightbook.FlightCurrency
                 ErrorString = Resources.Currency.errCustomCurrencyBadRequiredEvents;
             if (RequiredEvents > 2000)
                 ErrorString = Resources.Currency.errCustomCurrencyInvalidEventCount;
+            if (DisplayName.Length > 45)
+                ErrorString = Resources.Currency.errCustomCurrencyNameTooLong;
 
             return String.IsNullOrEmpty(ErrorString);
         }

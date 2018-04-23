@@ -845,4 +845,7 @@
   <data name="NextMedicalBasicMedOnly" xml:space="preserve">
     <value>Medical (BASICMED ONLY)</value>
   </data>
+  <data name="errCustomCurrencyNameTooLong" xml:space="preserve">
+    <value>Name too long; please limit to 45 characters</value>
+  </data>
 </root>
