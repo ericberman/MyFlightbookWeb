@@ -789,7 +789,7 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                 </tr>
                 <tr>
                     <td>
-                        <asp:HyperLink ID="HyperLink3" NavigateUrl="~/Member/AdminImages.aspx?r=Endorsement" Target="_blank" runat="server">Review Endorsements</asp:HyperLink>
+                        <asp:HyperLink ID="lnkEndorsementImages" NavigateUrl="~/Member/AdminImages.aspx?r=Endorsement" Target="_blank" runat="server">Review Endorsements</asp:HyperLink>
                     </td>
                     <td>
                         <asp:Button ID="btnSyncEndorsements" runat="server" 
@@ -797,6 +797,18 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                     </td>
                     <td>
                         <asp:Button ID="btnDelS3EndorsementOrphans" runat="server" OnClick="btnDelS3EndorsementOrphans_Click" Text="Delete Orphan S3 Images" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <asp:HyperLink ID="lnkBasicMedImages" NavigateUrl="~/Member/AdminImages.aspx?r=Endorsement" Target="_blank" runat="server">Review BasicMed</asp:HyperLink>
+                    </td>
+                    <td>
+                        <asp:Button ID="btnSyncBasicMed" runat="server" 
+                            Text="Sync BasicMed Images to DB" onclick="btnSyncBasicMed_Click" />
+                    </td>
+                    <td>
+                        <asp:Button ID="btnDelS3BasicMedOrphans" runat="server" OnClick="btnDelS3BasicMedOrphans_Click" Text="Delete Orphan S3 Images" />
                     </td>
                 </tr>
             </table>

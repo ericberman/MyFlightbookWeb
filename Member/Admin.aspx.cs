@@ -881,6 +881,11 @@ GROUP BY ac.idaircraft";
         SyncImagesToDB(MFBImageInfo.ImageClass.Endorsement);
     }
 
+    protected void btnSyncBasicMed_Click(object sender, EventArgs e)
+    {
+        SyncImagesToDB(MFBImageInfo.ImageClass.BasicMed);
+    }
+
     protected void DeleteS3Orphans(MFBImageInfo.ImageClass ic)
     {
         LiteralControl lc = new LiteralControl(String.Format(CultureInfo.InvariantCulture, "<iframe src=\"{0}\" width=\"600\" height=\"300\"></iframe>", String.Format(CultureInfo.InvariantCulture, "{0}?dels3orphan=1&r={1}{2}", ResolveClientUrl("AdminImages.aspx"), ic.ToString(), ckPreviewOnly.Checked ? "&preview=1" : string.Empty)));
@@ -898,6 +903,11 @@ GROUP BY ac.idaircraft";
     protected void btnDelS3EndorsementOrphans_Click(object sender, EventArgs e)
     {
         DeleteS3Orphans(MFBImageInfo.ImageClass.Endorsement);
+    }
+
+    protected void btnDelS3BasicMedOrphans_Click(object sender, EventArgs e)
+    {
+        DeleteS3Orphans(MFBImageInfo.ImageClass.BasicMed);
     }
 
     #endregion
