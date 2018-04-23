@@ -134,7 +134,7 @@
     <comment>Currency for tailnumber.  E.g., "N1234 - ELT</comment>
   </data>
   <data name="CurrencyOverdue" xml:space="preserve">
-    <value> {0} day(s) overdue</value>
+    <value>{0} day(s) overdue</value>
     <comment>Inspection is overdue</comment>
   </data>
   <data name="CurrencyPitot" xml:space="preserve">
