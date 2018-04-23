@@ -169,6 +169,35 @@ public partial class Member_EditProfile : System.Web.UI.Page
             lblNextBFR.Text = m_pf.NextBFR(rgpfeBFR[rgpfeBFR.Length - 1].Date).ToShortDateString();
             pnlNextBFR.Visible = true;
         }
+
+        string szPane = Request["pane"];
+        if (!String.IsNullOrEmpty(szPane))
+        {
+            for (int i = 0; i < accordianPilotInfo.Panes.Count; i++)
+            {
+                switch (szPane)
+                {
+                    case "medical":
+                        if (accordianPilotInfo.Panes[i] == acpMedical)
+                            accordianPilotInfo.SelectedIndex = i;
+                        break;
+                    case "certificates":
+                        if (accordianPilotInfo.Panes[i] == acpCertificates)
+                            accordianPilotInfo.SelectedIndex = i;
+                        break;
+                    case "flightreview":
+                        if (accordianPilotInfo.Panes[i] == acpFlightReviews)
+                            accordianPilotInfo.SelectedIndex = i;
+                        break;
+                    case "ipc":
+                        if (accordianPilotInfo.Panes[i] == acpIPCs)
+                            accordianPilotInfo.SelectedIndex = i;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 
     private void InitFeaturePrefs()
@@ -334,6 +363,22 @@ public partial class Member_EditProfile : System.Web.UI.Page
                 case "social":
                     for (int i = 0; i < accordianPrefs.Panes.Count; i++)
                         if (accordianPrefs.Panes[i] == acpSocialNetworking)
+                        {
+                            accordianPrefs.SelectedIndex = i;
+                            break;
+                        }
+                    break;
+                case "deadlines":
+                    for (int i = 0; i < accordianPrefs.Panes.Count; i++)
+                        if (accordianPrefs.Panes[i] == acpCustomDeadlines)
+                        {
+                            accordianPrefs.SelectedIndex = i;
+                            break;
+                        }
+                    break;
+                case "custcurrency":
+                    for (int i = 0; i < accordianPrefs.Panes.Count; i++)
+                        if (accordianPrefs.Panes[i] == acpCustomCurrencies)
                         {
                             accordianPrefs.SelectedIndex = i;
                             break;

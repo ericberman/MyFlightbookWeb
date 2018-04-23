@@ -235,6 +235,13 @@ H4
     font-size: 11px;
 }
 
+.currencynodate 
+{
+    font-weight: bold;
+    color: black;
+    font-size: 11px;
+}
+
 /* Signature status */
 .signatureValid
 {

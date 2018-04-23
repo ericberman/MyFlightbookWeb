@@ -2,11 +2,13 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Globalization;
+using MyFlightbook;
 using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2015 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,6 +18,7 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
     protected string m_szOKStyle = "currencyok";
     protected string m_szNotCurrentStyle = "currencyexpired";
     protected string m_szCurrencyDueStyle = "currencynearlydue";
+    protected string m_szCurrencyNoDateStyle = "currencynodate";
     protected string m_szCurrencyGap = "currencygap";
     protected string m_szCurrencyLabel = "currencylabel";
 
@@ -47,6 +50,15 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
     {
         get { return m_szCurrencyDueStyle; }
         set { m_szCurrencyDueStyle = value; }
+    }
+
+    /// <summary>
+    /// The name of the CSS style to use for a row that is not date based (i.e., can't determine if it's expired or close to expiring)
+    /// </summary>
+    public string CssCurrencyNoDate
+    {
+        get { return m_szCurrencyNoDateStyle; }
+        set { m_szCurrencyNoDateStyle = value; }
     }
 
     /// <summary>
@@ -84,16 +96,22 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
     public bool SuppressAutoRefresh { get; set; }
     #endregion
 
-    protected string CSSForItem(CurrencyState cs)
+    protected string CSSForItem(CurrencyStatusItem csi)
     {
-        switch (cs)
+        if (csi != null)
         {
-            case CurrencyState.GettingClose:
-                return CssCurrencyNearlyDue;
-            case CurrencyState.NotCurrent:
-                return CssNotCurrent;
-            case CurrencyState.OK:
-                return CssOK;
+            CurrencyState cs = csi.Status;
+            switch (cs)
+            {
+                case CurrencyState.GettingClose:
+                    return CssCurrencyNearlyDue;
+                case CurrencyState.NotCurrent:
+                    return CssNotCurrent;
+                case CurrencyState.OK:
+                    return CssOK;
+                case CurrencyState.NoDate:
+                    return CssCurrencyNoDate;
+            }
         }
         return string.Empty;
     }
@@ -109,7 +127,7 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
 
     public void RefreshCurrencyTable()
     {
-        gvCurrency.DataSource = CurrencyStatusItem.GetCurrencyItemsForUser(String.IsNullOrEmpty(UserName) ? Page.User.Identity.Name : UserName, true);
+        gvCurrency.DataSource = CurrencyStatusItem.GetCurrencyItemsForUser(String.IsNullOrEmpty(UserName) ? Page.User.Identity.Name : UserName);
         gvCurrency.DataBind();
 
         // HACK - We do this here because Page_Load may not be called if this is for an RSS feed.
@@ -123,13 +141,18 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
             throw new ArgumentNullException("e");
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
+            CurrencyStatusItem csi = (CurrencyStatusItem)e.Row.DataItem;
+            bool fLink = csi.StatusInfo != null && (csi.StatusInfo.Query != null || !String.IsNullOrEmpty(csi.StatusInfo.ResourceLink));
+            MultiView mv = (MultiView) e.Row.FindControl("mvTitle");
+            mv.ActiveViewIndex = fLink ? 1 : 0;
+            if (fLink)
+                ((HyperLink)e.Row.FindControl("lnkTitle")).NavigateUrl = csi.StatusInfo.ResourceLink ?? String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(csi.StatusInfo.Query.ToJSONString().Compress())));
+
             if (UseInlineFormatting)
             {
-                CurrencyStatusItem csi = (CurrencyStatusItem)e.Row.DataItem;
-
-                Label lblTitle = (Label)e.Row.FindControl("lblTitle");
-                lblTitle.Style["font-size"] = "12px";
-                lblTitle.Style["font-weight"] = "normal";
+                Panel p = (Panel) e.Row.FindControl("pnlTitle");
+                p.Style["font-size"] = "12px";
+                p.Style["font-weight"] = "normal";
 
                 Label lblStatus = (Label)e.Row.FindControl("lblStatus");
                 lblStatus.Style["font-size"] = "12px";
@@ -147,6 +170,10 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
                         lblStatus.Style["font-weight"] = "bold";
                         lblStatus.Style["color"] = "blue";
                         break;
+                    case CurrencyState.NoDate:
+                        lblStatus.Style["font-weight"] = "bold";
+                        lblStatus.Style["color"] = "black";
+                        break;
                     default:
                         break;
                 }
@@ -155,7 +182,7 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
                 lblDiscrepancy.Style["font-weight"] = "normal";
                 lblDiscrepancy.Style["font-size"] = "9px";
 
-                lblTitle.Style["font-family"] = lblStatus.Style["font-family"] = lblDiscrepancy.Style["font-family"] = "Arial";
+                p.Style["font-family"] = lblStatus.Style["font-family"] = lblDiscrepancy.Style["font-family"] = "Arial";
             }
         }
     }

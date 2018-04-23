@@ -17,7 +17,7 @@ namespace MyFlightbook.FlightCurrency
     /// <summary>
     /// Status for currency
     /// </summary>
-    public enum CurrencyState { NotCurrent = 0, GettingClose = 1, OK = 2 };
+    public enum CurrencyState { NotCurrent = 0, GettingClose = 1, OK = 2, NoDate = 3 };
 
     /// <summary>
     /// Bitflags for various currency options which can be selected by the user.
@@ -94,6 +94,46 @@ namespace MyFlightbook.FlightCurrency
     }
 
     /// <summary>
+    /// Encapsulates additional metadata about a currency status item.
+    /// </summary>
+    [Serializable]
+    [DataContract]
+    public class CurrencyStatusInfo
+    {
+        public enum CurrencyResourceType { FlightExperience, Aircraft, PilotInfo, Medical, Deadline, CustomCurrency }
+
+        #region Properties
+        /// <summary>
+        /// URL (Link) to the underlying resource or options page
+        /// </summary>
+        public string ResourceLink { get; set; }
+
+        /// <summary>
+        /// The ID of the resource to which this is linked (typically aircraft)
+        /// </summary>
+        public int ResourceID { get; set; }
+
+        /// <summary>
+        /// The kind of resource to which this 
+        /// </summary>
+        public CurrencyResourceType ResourceType { get; set; }
+
+        /// <summary>
+        /// The query that might return matching flights.
+        /// </summary>
+        public FlightQuery Query { get; set; }
+        #endregion
+
+        public CurrencyStatusInfo()
+        {
+            ResourceLink = null;
+            Query = null;
+            ResourceID = 0;
+            ResourceType = CurrencyResourceType.FlightExperience;
+        }
+    }
+
+    /// <summary>
     /// Represents a given state of currency for a given attribute; fairly generic
     /// </summary>
     [Serializable]
@@ -128,6 +168,12 @@ namespace MyFlightbook.FlightCurrency
         /// </summary>
         [DataMember]
         public string Discrepancy { get; set; }
+
+        /// <summary>
+        /// Any potential descriptive metadata about this status item
+        /// </summary>
+        [DataMember]
+        public CurrencyStatusInfo StatusInfo { get; set; }
         #endregion
 
         /// <summary>
@@ -137,25 +183,25 @@ namespace MyFlightbook.FlightCurrency
         /// <param name="szValue">The value or description of the state</param>
         /// <param name="cs">Everything OK?  Expired?  Close to expiration?</param>
         /// <param name="szDiscrepancy">What is the gap between the current state and some bad state?</param>
-        public CurrencyStatusItem(string szAttribute, string szValue, CurrencyState cs, string szDiscrepancy)
+        public CurrencyStatusItem(string szAttribute, string szValue, CurrencyState cs, string szDiscrepancy = null, CurrencyStatusInfo csi = null)
         {
             Attribute = szAttribute;
             Value = szValue;
             Status = cs;
             Discrepancy = szDiscrepancy;
+            StatusInfo = csi;
         }
 
         /// <summary>
         /// Get the full set of known currencies for the specified user
         /// </summary>
         /// <param name="szUser">Username</param>
-        /// <param name="fLinkAircraft">Indicates whether to hyper-link the aircraft in maintenance</param>
         /// <returns>A set of currencystatusitem objects.</returns>
-        static public IEnumerable<CurrencyStatusItem> GetCurrencyItemsForUser(string szUser, Boolean fLinkAircraft)
+        static public IEnumerable<CurrencyStatusItem> GetCurrencyItemsForUser(string szUser)
         {
             List<CurrencyStatusItem> lst = new List<CurrencyStatusItem>(CurrencyExaminer.ComputeCurrency(szUser));
-            lst.AddRange(MaintenanceLog.AircraftInspectionWarningsForUser(szUser, fLinkAircraft));
-            lst.AddRange(Profile.GetUser(szUser).WarningsForUser(fLinkAircraft));
+            lst.AddRange(MaintenanceLog.AircraftInspectionWarningsForUser(szUser));
+            lst.AddRange(Profile.GetUser(szUser).WarningsForUser());
             return lst;
         }
     }
@@ -946,7 +992,7 @@ namespace MyFlightbook.FlightCurrency
             foreach (CustomCurrency cc in rgCustomCurrency)
             {
                 if (cc.HasBeenCurrent)
-                    arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString));
+                    arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString, new CurrencyStatusInfo() { Query = cc.Query, ResourceType = CurrencyStatusInfo.CurrencyResourceType.CustomCurrency, ResourceLink= System.Web.VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPrefs?pane=custcurrency") }));
             }
 
             return arcs;

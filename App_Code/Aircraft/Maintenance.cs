@@ -9,7 +9,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2017 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -365,7 +365,7 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
             return rgar;
         }
 
-        public static IEnumerable<CurrencyStatusItem> AircraftInspectionWarningsForUser(string szUser, Boolean fLinkAircraft)
+        public static IEnumerable<CurrencyStatusItem> AircraftInspectionWarningsForUser(string szUser)
         {
             Aircraft[] rgar = MaintenanceLog.AircraftMaintainedByUser(szUser);
             List<CurrencyStatusItem> arcs = new List<CurrencyStatusItem>();
@@ -374,24 +374,24 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
             {
                 foreach (Aircraft ar in rgar)
                 {
-                    string szLink = (fLinkAircraft) ? String.Format(CultureInfo.InvariantCulture, "<a href=\"https://{0}{1}?id={2}\">{3}</a>", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditAircraft.aspx"), ar.AircraftID.ToString(CultureInfo.InvariantCulture), ar.TailNumber) : ar.TailNumber;
+                    CurrencyStatusInfo csi = new CurrencyStatusInfo() { ResourceID = ar.AircraftID, ResourceType = CurrencyStatusInfo.CurrencyResourceType.Aircraft, ResourceLink = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ar.AircraftID)) };
 
                     MaintenanceRecord mr = ar.Maintenance;
 
-                    AddPendingInspection(arcs, szLink + Resources.Aircraft.CurrencyAltimeter, mr.NextAltimeter);
-                    AddPendingInspection(arcs, szLink + Resources.Aircraft.CurrencyAnnual, mr.NextAnnual);
-                    AddPendingInspection(arcs, szLink + Resources.Aircraft.CurrencyELT, mr.NextELT);
-                    AddPendingInspection(arcs, szLink + Resources.Aircraft.CurrencyPitot, mr.NextStatic);
-                    AddPendingInspection(arcs, szLink + Resources.Aircraft.CurrencyXPonder, mr.NextTransponder);
-                    AddPendingInspection(arcs, szLink + Resources.Aircraft.CurrencyVOR, mr.NextVOR);
-                    AddPendingInspection(arcs, szLink + Resources.Aircraft.CurrencyRegistration, mr.RegistrationExpiration);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyAltimeter, mr.NextAltimeter, csi);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyAnnual, mr.NextAnnual, csi);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyELT, mr.NextELT, csi);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyPitot, mr.NextStatic, csi);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyXPonder, mr.NextTransponder, csi);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyVOR, mr.NextVOR, csi);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyRegistration, mr.RegistrationExpiration, csi);
                 }
             }
 
             return arcs;
         }
 
-        private static void AddPendingInspection(List<CurrencyStatusItem> arcs, string szLabel, DateTime dt)
+        private static void AddPendingInspection(List<CurrencyStatusItem> arcs, string szLabel, DateTime dt, CurrencyStatusInfo csi)
         {
             if (!dt.HasValue())
                 return;
@@ -399,9 +399,9 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
             int daysUntilDue = (int) Math.Ceiling(dt.Subtract(DateTime.Now).TotalDays);
 
             if (daysUntilDue < 0)
-                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), CurrencyState.NotCurrent, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyOverdue, Math.Abs(daysUntilDue).ToString(CultureInfo.CurrentCulture))));
+                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), CurrencyState.NotCurrent, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyOverdue, Math.Abs(daysUntilDue).ToString(CultureInfo.CurrentCulture)), csi));
             else if (daysUntilDue < 90)
-                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), daysUntilDue < 30 ? CurrencyState.GettingClose : CurrencyState.OK, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyDue, daysUntilDue)));
+                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), daysUntilDue < 30 ? CurrencyState.GettingClose : CurrencyState.OK, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyDue, daysUntilDue), csi));
         }
     }
 }

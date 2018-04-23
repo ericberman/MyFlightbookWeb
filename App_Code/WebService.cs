@@ -522,7 +522,7 @@ namespace MyFlightbook
             SetCultureForRequest();
 
             if (szUser.Length > 0)
-                return CurrencyStatusItem.GetCurrencyItemsForUser(szUser, false).ToArray();
+                return CurrencyStatusItem.GetCurrencyItemsForUser(szUser).ToArray();
             else
                 return null;
         }

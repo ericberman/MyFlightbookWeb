@@ -5,7 +5,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -304,9 +304,8 @@ namespace MyFlightbook.FlightCurrency
         /// </summary>
         /// <param name="szUser">The user</param>
         /// <param name="daysForWarning">How many days to use for "getting close"</param>
-        /// <param name="fLinkAircraft">True to linkify the tailnumber</param>
         /// <returns></returns>
-        public static IEnumerable<CurrencyStatusItem> CurrencyForUser(string szUser, int daysForWarning = 30, Boolean fLinkAircraft = true)
+        public static IEnumerable<CurrencyStatusItem> CurrencyForUser(string szUser, int daysForWarning = 30)
         {
             List<CurrencyStatusItem> lst = new List<CurrencyStatusItem>();
             IEnumerable<DeadlineCurrency> deadlines = DeadlinesForUser(szUser);
@@ -314,12 +313,15 @@ namespace MyFlightbook.FlightCurrency
             foreach (DeadlineCurrency dc in deadlines)
             {
                 string szLabel = dc.AircraftID > 0 ? String.Format(CultureInfo.CurrentCulture, "{0} - {1}", dc.TailNumber, dc.Name) : dc.Name;
-                if (dc.AircraftID > 0 && fLinkAircraft)
-                    szLabel = szLabel.Replace(dc.TailNumber, String.Format(CultureInfo.InvariantCulture, "<a href=\"https://{0}{1}?id={2}\">{3}</a>", Branding.CurrentBrand.HostName, System.Web.VirtualPathUtility.ToAbsolute("~/Member/EditAircraft.aspx"), dc.AircraftID, dc.TailNumber));
+                CurrencyStatusInfo csi = null;
+                if (dc.AircraftID > 0)
+                    csi = new CurrencyStatusInfo() { ResourceID = dc.AircraftID, ResourceType = CurrencyStatusInfo.CurrencyResourceType.Aircraft, ResourceLink= System.Web.VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", dc.AircraftID)) };
+                else
+                    csi = new CurrencyStatusInfo() { ResourceLink = System.Web.VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPrefs?pane=deadlines"), ResourceType = CurrencyStatusInfo.CurrencyResourceType.Deadline };
 
                 if (dc.UsesHours)
                 {
-                    lst.Add(new CurrencyStatusItem(szLabel, dc.AircraftHours.ToString("#,##0.0#", CultureInfo.CurrentCulture), CurrencyState.OK, string.Empty));
+                    lst.Add(new CurrencyStatusItem(szLabel, dc.AircraftHours.ToString("#,##0.0#", CultureInfo.CurrentCulture), CurrencyState.NoDate, string.Empty, csi));
                 }
                 else
                 {
@@ -329,7 +331,7 @@ namespace MyFlightbook.FlightCurrency
                         int days = (int) Math.Ceiling(ts.TotalDays);
                         CurrencyState cs = (ts.Days < 0) ? CurrencyState.NotCurrent : ((days < daysForWarning) ? CurrencyState.GettingClose : CurrencyState.OK);
                         lst.Add(new CurrencyStatusItem(szLabel, dc.Expiration.ToShortDateString(), cs, cs == CurrencyState.GettingClose ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
-                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty));
+                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty, csi));
                     }
                 }
 
