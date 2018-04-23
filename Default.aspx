@@ -30,7 +30,7 @@
                     <div id="divCurrency" class="EntryBlock">
                         <h2>
                             <asp:Literal ID="Literal1" runat="server" Text="<%$ Resources:Currency, FlyingStatus %>"></asp:Literal></h2>
-                        <uc3:mfbCurrency ID="MfbCurrency1" CssNotCurrent="currencyexpired" CssOK="currencyok" runat="server" />
+                        <uc3:mfbCurrency ID="MfbCurrency1" runat="server" />
                     </div>
                     <uc6:mfbFacebookFan ID="mfbFacebookFan2" runat="server" ShowStream="true" />
                 </div>

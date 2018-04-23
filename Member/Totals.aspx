@@ -12,7 +12,7 @@
     <table>
         <tr valign="top">
             <td>
-                <uc2:mfbCurrency ID="MfbCurrency1" CssNotCurrent="currencyexpired" CssOK="currencyok" runat="server" />
+                <uc2:mfbCurrency ID="MfbCurrency1" runat="server" />
             </td>
             <td style="width:30px">
                 &nbsp;
