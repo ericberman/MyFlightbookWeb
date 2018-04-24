@@ -96,22 +96,18 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
     public bool SuppressAutoRefresh { get; set; }
     #endregion
 
-    protected string CSSForItem(CurrencyStatusItem csi)
+    protected string CSSForItem(CurrencyState cs)
     {
-        if (csi != null)
+        switch (cs)
         {
-            CurrencyState cs = csi.Status;
-            switch (cs)
-            {
-                case CurrencyState.GettingClose:
-                    return CssCurrencyNearlyDue;
-                case CurrencyState.NotCurrent:
-                    return CssNotCurrent;
-                case CurrencyState.OK:
-                    return CssOK;
-                case CurrencyState.NoDate:
-                    return CssCurrencyNoDate;
-            }
+            case CurrencyState.GettingClose:
+                return CssCurrencyNearlyDue;
+            case CurrencyState.NotCurrent:
+                return CssNotCurrent;
+            case CurrencyState.OK:
+                return CssOK;
+            case CurrencyState.NoDate:
+                return CssCurrencyNoDate;
         }
         return string.Empty;
     }
@@ -142,11 +138,11 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             CurrencyStatusItem csi = (CurrencyStatusItem)e.Row.DataItem;
-            bool fLink = csi.StatusInfo != null && (csi.StatusInfo.Query != null || !String.IsNullOrEmpty(csi.StatusInfo.ResourceLink));
+            bool fLink = !String.IsNullOrEmpty(csi.AssociatedResourceLink);
             MultiView mv = (MultiView) e.Row.FindControl("mvTitle");
             mv.ActiveViewIndex = fLink ? 1 : 0;
             if (fLink)
-                ((HyperLink)e.Row.FindControl("lnkTitle")).NavigateUrl = csi.StatusInfo.ResourceLink ?? String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(csi.StatusInfo.Query.ToJSONString().Compress())));
+                ((HyperLink)e.Row.FindControl("lnkTitle")).NavigateUrl = csi.AssociatedResourceLink ?? String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(csi.Query.ToJSONString().Compress())));
 
             if (UseInlineFormatting)
             {

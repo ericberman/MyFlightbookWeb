@@ -313,26 +313,16 @@ namespace MyFlightbook.FlightCurrency
             foreach (DeadlineCurrency dc in deadlines)
             {
                 string szLabel = dc.AircraftID > 0 ? String.Format(CultureInfo.CurrentCulture, "{0} - {1}", dc.TailNumber, dc.Name) : dc.Name;
-                CurrencyStatusInfo csi = null;
-                if (dc.AircraftID > 0)
-                    csi = new CurrencyStatusInfo() { ResourceID = dc.AircraftID, ResourceType = CurrencyStatusInfo.CurrencyResourceType.Aircraft, ResourceLink= System.Web.VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", dc.AircraftID)) };
-                else
-                    csi = new CurrencyStatusInfo() { ResourceLink = System.Web.VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPrefs?pane=deadlines"), ResourceType = CurrencyStatusInfo.CurrencyResourceType.Deadline };
 
                 if (dc.UsesHours)
+                    lst.Add(new CurrencyStatusItem(szLabel, dc.AircraftHours.ToString("#,##0.0#", CultureInfo.CurrentCulture), CurrencyState.NoDate, string.Empty) { AssociatedResourceID = dc.AircraftID, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Deadline });
+                else if (dc.Expiration.HasValue())
                 {
-                    lst.Add(new CurrencyStatusItem(szLabel, dc.AircraftHours.ToString("#,##0.0#", CultureInfo.CurrentCulture), CurrencyState.NoDate, string.Empty, csi));
-                }
-                else
-                {
-                    if (dc.Expiration.HasValue())
-                    {
-                        TimeSpan ts = dc.Expiration.Subtract(DateTime.Now);
-                        int days = (int) Math.Ceiling(ts.TotalDays);
-                        CurrencyState cs = (ts.Days < 0) ? CurrencyState.NotCurrent : ((days < daysForWarning) ? CurrencyState.GettingClose : CurrencyState.OK);
-                        lst.Add(new CurrencyStatusItem(szLabel, dc.Expiration.ToShortDateString(), cs, cs == CurrencyState.GettingClose ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
-                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty, csi));
-                    }
+                    TimeSpan ts = dc.Expiration.Subtract(DateTime.Now);
+                    int days = (int)Math.Ceiling(ts.TotalDays);
+                    CurrencyState cs = (ts.Days < 0) ? CurrencyState.NotCurrent : ((days < daysForWarning) ? CurrencyState.GettingClose : CurrencyState.OK);
+                    lst.Add(new CurrencyStatusItem(szLabel, dc.Expiration.ToShortDateString(), cs, cs == CurrencyState.GettingClose ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
+                                                                               (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty) { AssociatedResourceID = dc.AircraftID, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Deadline });
                 }
 
             }

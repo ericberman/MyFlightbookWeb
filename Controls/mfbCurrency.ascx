@@ -19,7 +19,7 @@
         </asp:TemplateField>
         <asp:TemplateField ItemStyle-VerticalAlign="Top">
             <ItemTemplate>
-                <div><asp:Label ID="lblStatus" runat="server" CssClass='<%# CSSForItem((MyFlightbook.FlightCurrency.CurrencyStatusItem) Container.DataItem) %>' Text='<%# Eval("Value") %>'></asp:Label></div>
+                <div><asp:Label ID="lblStatus" runat="server" CssClass='<%# CSSForItem((MyFlightbook.FlightCurrency.CurrencyState) Eval("Status")) %>' Text='<%# Eval("Value") %>'></asp:Label></div>
                 <div><asp:Label ID="lblDiscrepancy" CssClass="<%# CssCurrencyGap %>" runat="server" Text='<%# Eval("Discrepancy") %>'></asp:Label></div>
             </ItemTemplate>
         </asp:TemplateField>

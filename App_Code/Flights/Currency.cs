@@ -1,5 +1,6 @@
 using MySql.Data.MySqlClient;
 using System;
+using System.Web;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
@@ -94,55 +95,13 @@ namespace MyFlightbook.FlightCurrency
     }
 
     /// <summary>
-    /// Encapsulates additional metadata about a currency status item.
-    /// </summary>
-    [Serializable]
-    [DataContract]
-    public class CurrencyStatusInfo
-    {
-        public enum CurrencyResourceType { FlightExperience, Aircraft, PilotInfo, Medical, Deadline, CustomCurrency }
-
-        #region Properties
-        /// <summary>
-        /// URL (Link) to the underlying resource or options page
-        /// </summary>
-        public string ResourceLink { get; set; }
-
-        /// <summary>
-        /// The ID of the resource to which this is linked (typically aircraft)
-        /// </summary>
-        public int ResourceID { get; set; }
-
-        /// <summary>
-        /// The kind of resource to which this 
-        /// </summary>
-        public CurrencyResourceType ResourceType { get; set; }
-
-        /// <summary>
-        /// The query that might return matching flights.
-        /// </summary>
-        public FlightQuery Query { get; set; }
-        #endregion
-
-        public CurrencyStatusInfo()
-        {
-            ResourceLink = null;
-            Query = null;
-            ResourceID = 0;
-            ResourceType = CurrencyResourceType.FlightExperience;
-        }
-    }
-
-    /// <summary>
     /// Represents a given state of currency for a given attribute; fairly generic
     /// </summary>
     [Serializable]
     [DataContract]
     public class CurrencyStatusItem
     {
-        public CurrencyStatusItem()
-        {
-        }
+        public enum CurrencyGroups { None, FlightExperience, FlightReview, Aircraft, Certificates, Medical, Deadline, CustomCurrency }
 
         #region properties
         /// <summary>
@@ -170,10 +129,51 @@ namespace MyFlightbook.FlightCurrency
         public string Discrepancy { get; set; }
 
         /// <summary>
-        /// Any potential descriptive metadata about this status item
+        /// URL (Link) to the underlying resource or options page
+        /// </summary>
+        public string AssociatedResourceLink
+        {
+            get
+            {
+                switch (CurrencyGroup)
+                {
+                    default:
+                    case CurrencyGroups.None:
+                    case CurrencyGroups.FlightExperience:
+                        return null;
+                    case CurrencyGroups.FlightReview:
+                        return VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=flightreview");
+                    case CurrencyGroups.Aircraft:
+                        return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", AssociatedResourceID));
+                    case CurrencyGroups.Certificates:
+                        return VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=certificates");
+                    case CurrencyGroups.Medical:
+                        return VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=medical");
+                    case CurrencyGroups.Deadline:
+                        return VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPrefs?pane=deadlines");
+                    case CurrencyGroups.CustomCurrency:
+                        return VirtualPathUtility.ToAbsolute(Query == null ? "~/Member/EditProfile.aspx/pftPrefs?pane=custcurrency" : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(Query.ToJSONString().Compress()))));
+                }
+            }
+        }
+
+        /// <summary>
+        /// The ID of the resource to which this is linked (typically aircraft)
         /// </summary>
         [DataMember]
-        public CurrencyStatusInfo StatusInfo { get; set; }
+        public int AssociatedResourceID { get; set; }
+
+        /// <summary>
+        /// The kind of resource to which this 
+        /// </summary>
+        [DataMember]
+        public CurrencyGroups CurrencyGroup { get; set; }
+
+        /// <summary>
+        /// The query that might return matching flights.
+        /// </summary>
+        [DataMember]
+        public FlightQuery Query { get; set; }
         #endregion
 
         /// <summary>
@@ -183,13 +183,21 @@ namespace MyFlightbook.FlightCurrency
         /// <param name="szValue">The value or description of the state</param>
         /// <param name="cs">Everything OK?  Expired?  Close to expiration?</param>
         /// <param name="szDiscrepancy">What is the gap between the current state and some bad state?</param>
-        public CurrencyStatusItem(string szAttribute, string szValue, CurrencyState cs, string szDiscrepancy = null, CurrencyStatusInfo csi = null)
+        public CurrencyStatusItem()
+        {
+            Attribute = Value = Discrepancy = string.Empty;
+            Status = CurrencyState.OK;
+            Query = null;
+            AssociatedResourceID = 0;
+            CurrencyGroup = CurrencyGroups.None;
+        }
+
+        public CurrencyStatusItem(string szAttribute, string szValue, CurrencyState cs, string szDiscrepancy = null) : this()
         {
             Attribute = szAttribute;
             Value = szValue;
             Status = cs;
             Discrepancy = szDiscrepancy;
-            StatusInfo = csi;
         }
 
         /// <summary>
@@ -992,7 +1000,7 @@ namespace MyFlightbook.FlightCurrency
             foreach (CustomCurrency cc in rgCustomCurrency)
             {
                 if (cc.HasBeenCurrent)
-                    arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString, new CurrencyStatusInfo() { Query = cc.Query, ResourceType = CurrencyStatusInfo.CurrencyResourceType.CustomCurrency, ResourceLink= System.Web.VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPrefs?pane=custcurrency") }));
+                    arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString) { Query = cc.Query, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.CustomCurrency });
             }
 
             return arcs;

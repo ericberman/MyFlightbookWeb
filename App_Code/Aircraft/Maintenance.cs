@@ -374,24 +374,22 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
             {
                 foreach (Aircraft ar in rgar)
                 {
-                    CurrencyStatusInfo csi = new CurrencyStatusInfo() { ResourceID = ar.AircraftID, ResourceType = CurrencyStatusInfo.CurrencyResourceType.Aircraft, ResourceLink = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ar.AircraftID)) };
-
                     MaintenanceRecord mr = ar.Maintenance;
 
-                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyAltimeter, mr.NextAltimeter, csi);
-                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyAnnual, mr.NextAnnual, csi);
-                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyELT, mr.NextELT, csi);
-                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyPitot, mr.NextStatic, csi);
-                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyXPonder, mr.NextTransponder, csi);
-                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyVOR, mr.NextVOR, csi);
-                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyRegistration, mr.RegistrationExpiration, csi);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyAltimeter, mr.NextAltimeter, ar.AircraftID);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyAnnual, mr.NextAnnual, ar.AircraftID);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyELT, mr.NextELT, ar.AircraftID);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyPitot, mr.NextStatic, ar.AircraftID);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyXPonder, mr.NextTransponder, ar.AircraftID);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyVOR, mr.NextVOR, ar.AircraftID);
+                    AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyRegistration, mr.RegistrationExpiration, ar.AircraftID);
                 }
             }
 
             return arcs;
         }
 
-        private static void AddPendingInspection(List<CurrencyStatusItem> arcs, string szLabel, DateTime dt, CurrencyStatusInfo csi)
+        private static void AddPendingInspection(List<CurrencyStatusItem> arcs, string szLabel, DateTime dt, int idAircraft)
         {
             if (!dt.HasValue())
                 return;
@@ -399,9 +397,9 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
             int daysUntilDue = (int) Math.Ceiling(dt.Subtract(DateTime.Now).TotalDays);
 
             if (daysUntilDue < 0)
-                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), CurrencyState.NotCurrent, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyOverdue, Math.Abs(daysUntilDue).ToString(CultureInfo.CurrentCulture)), csi));
+                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), CurrencyState.NotCurrent, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyOverdue, Math.Abs(daysUntilDue).ToString(CultureInfo.CurrentCulture))) { AssociatedResourceID = idAircraft, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Aircraft });
             else if (daysUntilDue < 90)
-                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), daysUntilDue < 30 ? CurrencyState.GettingClose : CurrencyState.OK, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyDue, daysUntilDue), csi));
+                arcs.Add(new CurrencyStatusItem(szLabel, dt.ToShortDateString(), daysUntilDue < 30 ? CurrencyState.GettingClose : CurrencyState.OK, String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.CurrencyDue, daysUntilDue)) { AssociatedResourceID = idAircraft, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Aircraft });
         }
     }
 }

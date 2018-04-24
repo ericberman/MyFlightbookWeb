@@ -73,18 +73,16 @@ namespace MyFlightbook.Basicmed
                 if (Profile.GetUser(Username).NextMedical.CompareTo(LastMedicalCutoff) < 0 || medicalCourse == null || physicianVisit == null)
                     return null;
 
-                CurrencyStatusInfo csi = new CurrencyStatusInfo() { ResourceType = CurrencyStatusInfo.CurrencyResourceType.Medical, ResourceLink = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=medical") };
-
                 DateTime expiration = medicalCourse.ExpirationDate.EarlierDate(physicianVisit.ExpirationDate);
                 if (expiration.CompareTo(DateTime.Now) < 0) // expired!
                 {
                     if (medicalCourse.ExpirationDate.CompareTo(physicianVisit.ExpirationDate) < 0)
-                        return new CurrencyStatusItem(Resources.Profile.BasicMedCurrencyTitle, expiration.ToShortDateString(), CurrencyState.NotCurrent, Resources.Profile.BasicMedErrNoMedicalCourseWithin2Years, csi);
+                        return new CurrencyStatusItem(Resources.Profile.BasicMedCurrencyTitle, expiration.ToShortDateString(), CurrencyState.NotCurrent, Resources.Profile.BasicMedErrNoMedicalCourseWithin2Years) { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Medical };
                     else
-                        return new CurrencyStatusItem(Resources.Profile.BasicMedCurrencyTitle, expiration.ToShortDateString(), CurrencyState.NotCurrent, Resources.Profile.BasicMedErrNoPhysicalWithin4Years, csi);
+                        return new CurrencyStatusItem(Resources.Profile.BasicMedCurrencyTitle, expiration.ToShortDateString(), CurrencyState.NotCurrent, Resources.Profile.BasicMedErrNoPhysicalWithin4Years) { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Medical };
                 }
                 else
-                    return new CurrencyStatusItem(Resources.Profile.BasicMedCurrencyTitle, expiration.ToShortDateString(), (expiration.CompareTo(DateTime.Now.AddCalendarMonths(1)) < 0) ? CurrencyState.GettingClose : CurrencyState.OK, string.Empty, csi);
+                    return new CurrencyStatusItem(Resources.Profile.BasicMedCurrencyTitle, expiration.ToShortDateString(), (expiration.CompareTo(DateTime.Now.AddCalendarMonths(1)) < 0) ? CurrencyState.GettingClose : CurrencyState.OK, string.Empty) { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Medical };
             }
         }
         #endregion

@@ -47,6 +47,16 @@ public partial class Public_authredir : System.Web.UI.Page
                 return "~/Public/FAQ.aspx";
             case "REQSIGS":
                 return "~/Member/RequestSigs.aspx";
+            case "FLIGHTREVIEW":
+                return "~/Member/EditProfile.aspx/pftPilotInfo?pane=flightreview";
+            case "CERTIFICATES":
+                return "~/Member/EditProfile.aspx/pftPilotInfo?pane=certificates";
+            case "MEDICAL":
+                return "~/Member/EditProfile.aspx/pftPilotInfo?pane=medical";
+            case "DEADLINE":
+                return "~/Member/EditProfile.aspx/pftPrefs?pane=deadlines";
+            case "CUSTOMCURRENCY":
+                return "~/Member/EditProfile.aspx/pftPrefs?pane=custcurrency";
             default:
                 return string.Empty;
         }

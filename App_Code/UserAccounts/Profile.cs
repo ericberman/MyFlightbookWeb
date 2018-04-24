@@ -1202,7 +1202,7 @@ namespace MyFlightbook
         }
 
         #region Profile-based currency items (i.e., not related to flying - things like medical and flight reviews)
-        private CurrencyStatusItem StatusForDate(DateTime dt, string szLabel, CurrencyStatusInfo csi = null)
+        private CurrencyStatusItem StatusForDate(DateTime dt, string szLabel, CurrencyStatusItem.CurrencyGroups rt)
         {
             if (dt.CompareTo(DateTime.MinValue) != 0)
             {
@@ -1210,8 +1210,7 @@ namespace MyFlightbook
                 int days = (int)Math.Ceiling(ts.TotalDays);
                 CurrencyState cs = (days < 0) ? CurrencyState.NotCurrent : ((ts.Days < 30) ? CurrencyState.GettingClose : CurrencyState.OK);
                 return new CurrencyStatusItem(szLabel, dt.ToShortDateString(), cs, (cs == CurrencyState.GettingClose) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
-                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty, 
-                                                                                   csi);
+                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty) { CurrencyGroup = rt };
             }
             else
                 return null;
@@ -1221,7 +1220,7 @@ namespace MyFlightbook
         {
             List<CurrencyStatusItem> rgCS = new List<CurrencyStatusItem>();
 
-            CurrencyStatusItem csMedical = NextMedical.HasValue() ? StatusForDate(NextMedical, Resources.Currency.NextMedical, new CurrencyStatusInfo() { ResourceType = CurrencyStatusInfo.CurrencyResourceType.Medical, ResourceLink = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=medical") }) : null;
+            CurrencyStatusItem csMedical = NextMedical.HasValue() ? StatusForDate(NextMedical, Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical) : null;
             CurrencyStatusItem csBasicMed = new Basicmed.BasicMed(UserName).Status;
 
             /* Scenarios for combining regular medical and basicmed.
@@ -1282,22 +1281,22 @@ namespace MyFlightbook
             BFREvents = null; // clear the cache - but this will let the next three calls (LastBFR/LastBFRR22/LastBFRR44) hit the DB only once.
             DateTime dtBfrLast = LastBFR();
             if (dtBfrLast.HasValue())
-                rgCS.Add(StatusForDate(NextBFR(dtBfrLast), Resources.Currency.NextFlightReview, new CurrencyStatusInfo() { ResourceType = CurrencyStatusInfo.CurrencyResourceType.PilotInfo, ResourceLink = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=flightreview") }));
+                rgCS.Add(StatusForDate(NextBFR(dtBfrLast), Resources.Currency.NextFlightReview, CurrencyStatusItem.CurrencyGroups.FlightReview));
 
             // SFAR 73 support - check if there is an expired R22/R44 BFR
             DateTime dtBfrLastR22 = LastBFRR22();
             DateTime dtBfrLastR44 = LastBFRR44();
             if (dtBfrLastR22.HasValue())
-                rgCS.Add(StatusForDate(NextBFR(dtBfrLastR22), Resources.Currency.NextFlightReviewR22));
+                rgCS.Add(StatusForDate(NextBFR(dtBfrLastR22), Resources.Currency.NextFlightReviewR22, CurrencyStatusItem.CurrencyGroups.FlightExperience));
             if (dtBfrLastR44.HasValue())
-                rgCS.Add(StatusForDate(NextBFR(dtBfrLastR44), Resources.Currency.NextFlightReviewR44));
+                rgCS.Add(StatusForDate(NextBFR(dtBfrLastR44), Resources.Currency.NextFlightReviewR44, CurrencyStatusItem.CurrencyGroups.FlightExperience));
             BFREvents = null; // clear the cache again (memory).
 
             if (CertificateExpiration.HasValue())
-                rgCS.Add(StatusForDate(CertificateExpiration, Resources.Currency.CertificateExpiration, new CurrencyStatusInfo() { ResourceType = CurrencyStatusInfo.CurrencyResourceType.PilotInfo, ResourceLink = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=certificates") }));
+                rgCS.Add(StatusForDate(CertificateExpiration, Resources.Currency.CertificateExpiration, CurrencyStatusItem.CurrencyGroups.Certificates));
 
             if (EnglishProficiencyExpiration.HasValue())
-                rgCS.Add(StatusForDate(EnglishProficiencyExpiration, Resources.Currency.NextLanguageProficiency, new CurrencyStatusInfo() { ResourceType = CurrencyStatusInfo.CurrencyResourceType.PilotInfo, ResourceLink = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=certificates") }));
+                rgCS.Add(StatusForDate(EnglishProficiencyExpiration, Resources.Currency.NextLanguageProficiency, CurrencyStatusItem.CurrencyGroups.Certificates));
 
             // Now get any custom deadlines.
             rgCS.AddRange(DeadlineCurrency.CurrencyForUser(UserName, 30));
