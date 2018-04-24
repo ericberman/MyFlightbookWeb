@@ -48,15 +48,20 @@ public partial class Public_authredir : System.Web.UI.Page
             case "REQSIGS":
                 return "~/Member/RequestSigs.aspx";
             case "FLIGHTREVIEW":
-                return "~/Member/EditProfile.aspx/pftPilotInfo?pane=flightreview";
+                lstParams.Add("pane=flightreview");
+                return "~/Member/EditProfile.aspx/pftPilotInfo";
             case "CERTIFICATES":
-                return "~/Member/EditProfile.aspx/pftPilotInfo?pane=certificates";
+                lstParams.Add("pane=certificates");
+                return "~/Member/EditProfile.aspx/pftPilotInfo";
             case "MEDICAL":
-                return "~/Member/EditProfile.aspx/pftPilotInfo?pane=medical";
+                lstParams.Add("pane=medical");
+                return "~/Member/EditProfile.aspx/pftPilotInfo";
             case "DEADLINE":
-                return "~/Member/EditProfile.aspx/pftPrefs?pane=deadlines";
+                lstParams.Add("pane=deadlines");
+                return "~/Member/EditProfile.aspx/pftPrefs";
             case "CUSTOMCURRENCY":
-                return "~/Member/EditProfile.aspx/pftPrefs?pane=custcurrency";
+                lstParams.Add("pane=custcurrency");
+                return "~/Member/EditProfile.aspx/pftPrefs";
             default:
                 return string.Empty;
         }
