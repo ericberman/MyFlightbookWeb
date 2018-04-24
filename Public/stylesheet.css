@@ -672,7 +672,9 @@ H4
     padding:5px;
     display:inline-block;
     height:100%;
-    width:800px;
+    width: 100%;
+    min-width:280px;
+    max-width:800px;
     margin: 0px;
 }
 
