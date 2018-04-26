@@ -350,13 +350,16 @@ public partial class Member_EditProfile : System.Web.UI.Page
         string szPane = Request["pane"];
         if (!String.IsNullOrEmpty(szPane))
         {
+            acpLocalPrefs.Visible = String.IsNullOrEmpty(Request["nolocalprefs"]);
+            int paneIndexOffset = acpLocalPrefs.Visible ? 0 : -1;
+
             switch (szPane)
             {
                 case "backup":
                     for (int i = 0; i < accordianPrefs.Panes.Count; i++)
                         if (accordianPrefs.Panes[i] == acpBackup)
                         {
-                            accordianPrefs.SelectedIndex = i;
+                            accordianPrefs.SelectedIndex = i + paneIndexOffset;
                             break;
                         }
                     break;
@@ -364,7 +367,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
                     for (int i = 0; i < accordianPrefs.Panes.Count; i++)
                         if (accordianPrefs.Panes[i] == acpSocialNetworking)
                         {
-                            accordianPrefs.SelectedIndex = i;
+                            accordianPrefs.SelectedIndex = i + paneIndexOffset;
                             break;
                         }
                     break;
@@ -372,7 +375,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
                     for (int i = 0; i < accordianPrefs.Panes.Count; i++)
                         if (accordianPrefs.Panes[i] == acpCustomDeadlines)
                         {
-                            accordianPrefs.SelectedIndex = i;
+                            accordianPrefs.SelectedIndex = i + paneIndexOffset;
                             break;
                         }
                     break;
@@ -380,7 +383,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
                     for (int i = 0; i < accordianPrefs.Panes.Count; i++)
                         if (accordianPrefs.Panes[i] == acpCustomCurrencies)
                         {
-                            accordianPrefs.SelectedIndex = i;
+                            accordianPrefs.SelectedIndex = i + paneIndexOffset;
                             break;
                         }
                     break;
@@ -388,8 +391,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
                     break;
             }
         }
-
-        acpLocalPrefs.Visible = String.IsNullOrEmpty(Request["nolocalprefs"]);
 
         InitDeadlinesAndCurrencies();
     }
