@@ -1,4 +1,8 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Image;
+using MyFlightbook.Printing;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -8,14 +12,10 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Image;
-using MyFlightbook.Printing;
-using Newtonsoft.Json;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -141,16 +141,24 @@ public partial class Member_PrintView : System.Web.UI.Page
         MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
         mvLayouts.ActiveViewIndex = (int) PrintOptions1.Options.Layout;
         List<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, fAsc: true), pf.UserName, string.Empty, SortDirection.Ascending, pf.UsesHHMM, pf.UsesUTCDateOfFlight);
-        IndexedPropertyCollection ipc = new IndexedPropertyCollection(CustomFlightProperty.GetAllPropertiesForUser(Page.User.Identity.Name));
+
         IPrintingTemplate pt = ActiveTemplate;
 
         PrintLayout pl = PrintLayout.LayoutForType(PrintOptions1.Options.Layout, CurrentUser);
         bool fCanIncludeImages = pl.SupportsImages;
 
+        List<int> lstPropsToExclude = new List<int>(PrintOptions1.Options.ExcludedPropertyIDs);
+        string szPropSeparator = PrintOptions1.Options.PropertySeparatorText;
+
         // set up properties per flight, and compute rough lineheight
         foreach (LogbookEntryDisplay led in lstFlights)
         {
-            led.CustomProperties = ipc.PropertiesForFlight(led.FlightID).ToArray();
+            // Fix up properties according to the printing options
+            List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
+            lstProps.RemoveAll(cfp => lstPropsToExclude.Contains(cfp.PropTypeID));
+
+            led.CustomProperties = lstProps.ToArray();
+            led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, pf.UsesHHMM, szPropSeparator);
 
             if (PrintOptions1.Options.IncludeImages)
                 led.PopulateImages(true);

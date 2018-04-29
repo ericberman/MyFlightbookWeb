@@ -2,14 +2,13 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
-using System.Web.Caching;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Caching;
 
 /******************************************************
  * 
@@ -674,35 +673,6 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         }
     }
 
-    public class IndexedPropertyCollection
-    {
-        private Dictionary<int, List<CustomFlightProperty>> m_dict;
-
-        public IEnumerable<CustomFlightProperty> PropertiesForFlight(int idFlight)
-        {
-            if (m_dict.ContainsKey(idFlight))
-                return m_dict[idFlight];
-            return new CustomFlightProperty[0];
-        }
-        /// <summary>
-        /// Returns an IDictionary of the specified properties, keyed on flight ID
-        /// </summary>
-        /// <param name="lst">An enumerable set of custom flight properties</param>
-        /// <returns></returns>
-        public IndexedPropertyCollection(IEnumerable<CustomFlightProperty> lst)
-        {
-            if (lst == null)
-                throw new ArgumentNullException("lst");
-            m_dict = new Dictionary<int, List<CustomFlightProperty>>();
-            foreach (CustomFlightProperty cfp in lst)
-            {
-                if (!m_dict.ContainsKey(cfp.FlightID))
-                    m_dict[cfp.FlightID] = new List<CustomFlightProperty>();
-                m_dict[cfp.FlightID].Add(cfp);
-            }
-        }
-    }
-
     /// <summary>
     /// An actual instance of a CustomPropertyType - a flight property.  This is ALWAYS tied to a particular flight.
     /// </summary>
@@ -1179,26 +1149,6 @@ FROM flights f
 INNER JOIN flightproperties fp ON f.idFlight = fp.idFlight
 INNER JOIN custompropertytypes cp ON fp.idPropType = cp.idPropType
 WHERE f.username =?User AND (cp.Flags <> 0) AND ((fp.IntValue <> 0) OR (fp.DecValue <> 0.0) OR (cp.Type = 4))
-ORDER BY f.Date Desc");
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("User", szUser); }, (dr) => { lst.Add(new CustomFlightProperty(dr)); });
-            return lst;
-        }
-
-        /// <summary>
-        /// Returns all events with a non-zero flag for the specified user.
-        /// </summary>
-        /// <param name="szUser">Username that owns the events</param>
-        /// <returns>An array of matching ProfileEvent objects</returns>
-        public static IEnumerable<CustomFlightProperty> GetAllPropertiesForUser(string szUser)
-        {
-            List<CustomFlightProperty> lst = new List<CustomFlightProperty>();
-            if (String.IsNullOrEmpty(szUser))
-                return lst;
-            DBHelper dbh = new DBHelper(@"SELECT fp.*, cp.*, '' AS LocTitle, '' AS LocFormatString, '' AS LocDescription, '' AS prevValues, 0 AS IsFavorite
-FROM flights f
-INNER JOIN flightproperties fp ON f.idFlight = fp.idFlight
-INNER JOIN custompropertytypes cp ON fp.idPropType = cp.idPropType
-WHERE f.username =?User
 ORDER BY f.Date Desc");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("User", szUser); }, (dr) => { lst.Add(new CustomFlightProperty(dr)); });
             return lst;

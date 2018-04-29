@@ -1427,4 +1427,25 @@
   <data name="AutoFillOptionNightLandingDefinitionSunsetPlus1Hour" xml:space="preserve">
     <value>1 hour after sunset</value>
   </data>
+  <data name="PrintViewPropertiesHeader" xml:space="preserve">
+    <value>Printing of flight properties</value>
+  </data>
+  <data name="PrintViewPropertyInclusion" xml:space="preserve">
+    <value>Don't include these properties when printing:</value>
+  </data>
+  <data name="PrintViewPropertySeparator" xml:space="preserve">
+    <value>Separate Properties with:</value>
+  </data>
+  <data name="PrintViewPropertySeparatorComma" xml:space="preserve">
+    <value>, (Comma)</value>
+  </data>
+  <data name="PrintViewPropertySeparatorNewline" xml:space="preserve">
+    <value>(Line break)</value>
+  </data>
+  <data name="PrintViewPropertySeparatorSemicolon" xml:space="preserve">
+    <value>; (Semicolon)</value>
+  </data>
+  <data name="PrintViewPropertySeparatorSpace" xml:space="preserve">
+    <value>(Space)</value>
+  </data>
 </root>

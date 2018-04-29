@@ -5,7 +5,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -181,6 +181,9 @@ namespace MyFlightbook.Printing
     [Serializable]
     public class PrintingOptions
     {
+        public enum PropertySeparatorType { Space, Comma, Semicolon, Newline }
+
+        #region properties
         /// <summary>
         /// Number of flights to print; less than or = 0 for continuous
         /// </summary>
@@ -196,11 +199,46 @@ namespace MyFlightbook.Printing
         /// </summary>
         public PrintLayoutType Layout { get; set; }
 
+        /// <summary>
+        /// Properties to exclude from printing
+        /// </summary>
+        public int[] ExcludedPropertyIDs { get; set; }
+
+        /// <summary>
+        /// Character to use to separate properties in print layout
+        /// </summary>
+        public PropertySeparatorType PropertySeparator { get; set; }
+
+        /// <summary>
+        /// Returns the text to use to separate properties (based on PropertySeparator)
+        /// </summary>
+        public string PropertySeparatorText
+        {
+            get
+            {
+                switch (PropertySeparator)
+                {
+                    default:
+                    case PropertySeparatorType.Space:
+                        return Resources.LocalizedText.LocalizedSpace;
+                    case PropertySeparatorType.Semicolon:
+                        return "; ";
+                    case PropertySeparatorType.Comma:
+                        return ", ";
+                    case PropertySeparatorType.Newline:
+                        return Environment.NewLine;
+                }
+            }
+        }
+        #endregion
+
         public PrintingOptions()
         {
             FlightsPerPage = 15;    // default
             IncludeImages = false;
             Layout = PrintLayoutType.Native;
+            ExcludedPropertyIDs = new int[0];
+            PropertySeparator = PropertySeparatorType.Space;
         }
     }
 

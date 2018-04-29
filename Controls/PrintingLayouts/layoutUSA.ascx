@@ -51,7 +51,7 @@
                     <td>
                         <div><%#: ((string[]) Eval("Airports")).Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, Eval("Route")) %></div>
                         <div style="clear:left; white-space:pre-line;" dir="auto"><%# ((string) Eval("Comment")).Linkify() %></div>
-                        <div><%#: Eval("CustPropertyDisplay") %></div>
+                        <div style="white-space:pre-line;"><%#: Eval("CustPropertyDisplay") %></div>
                         <div><uc1:mfbSignature runat="server" ID="mfbSignature" EnableViewState="false" /></div>
                     </td>
                     <td><%# Eval("Approaches") %></td>

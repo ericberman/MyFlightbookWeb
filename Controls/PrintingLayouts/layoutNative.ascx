@@ -43,9 +43,7 @@
                                     <%# Eval("HobbsDisplay") %>
                                 </asp:Panel>
                             </asp:Panel>
-                            <asp:Panel EnableViewState="false" ID="pnlProps" runat="server">
-                                <%#: Eval("CustPropertyDisplay").ToString() %>
-                            </asp:Panel>
+                            <div style="white-space:pre-line;"><%#: Eval("CustPropertyDisplay").ToString() %></div>
                             <uc1:mfbSignature runat="server" ID="mfbSignature" EnableViewState="false" />
                             <asp:Panel EnableViewState="false" ID="pnlFlightImages" runat="server" Visible="<%# IncludeImages %>">
                                 <uc1:mfbImageList ID="mfbilFlights" runat="server" Columns="3" CanEdit="false" ImageClass="Flight" IncludeDocs="false" MaxImage="3" />
