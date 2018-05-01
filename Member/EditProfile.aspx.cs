@@ -781,7 +781,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
         Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}?{3}=1",
             Request.IsLocal && !Request.IsSecureConnection ? "http" : "https",
             Request.Url.Host,
-            Request.Url.AbsolutePath,
+            ResolveUrl("~/Member/EditProfile.aspx/pftPrefs"),
             szParamDropboxAuth));
         new MFBDropbox().Authorize(uri);
     }
