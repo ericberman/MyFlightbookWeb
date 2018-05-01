@@ -361,7 +361,7 @@
     <value>This tailnumber is assigned for this aircraft.</value>
   </data>
   <data name="editAircraftCountryPrompt" xml:space="preserve">
-    <value>Country:</value>
+    <value>Country</value>
   </data>
   <data name="editAircraftGlassUpgradeDate" xml:space="preserve">
     <value>Date of upgrade to glass (optional):</value>
@@ -370,16 +370,16 @@
     <value>This aircraft has a glass cockpit</value>
   </data>
   <data name="editAircraftImagesPrompt" xml:space="preserve">
-    <value>Images:</value>
+    <value>Images</value>
   </data>
   <data name="editAircraftInstanceTypePrompt" xml:space="preserve">
-    <value>This aircraft is a:</value>
+    <value>Aircraft or training device?</value>
   </data>
   <data name="editAircraftMaintenanceHeader" xml:space="preserve">
     <value>Aircraft Maintenance and Inspections</value>
   </data>
   <data name="editAircraftMakeModelPrompt" xml:space="preserve">
-    <value>Aircraft Make/Model:</value>
+    <value>Aircraft Make/Model</value>
   </data>
   <data name="editAircraftModelChange1" xml:space="preserve">
     <value>Aircraft on %APP_NAME% are shared between pilots, so any change you make here could impact other pilots.</value>
@@ -397,7 +397,7 @@
     <value>Other versions of this aircraft</value>
   </data>
   <data name="editAircraftRegistrationPrompt" xml:space="preserve">
-    <value>Registration</value>
+    <value>Registration Details</value>
   </data>
   <data name="editAircraftSelectManufacturer" xml:space="preserve">
     <value>(Select a manufacturer)</value>
@@ -415,7 +415,7 @@
     <value>My flights are in this aircraft</value>
   </data>
   <data name="editAircraftTailNumberPrompt" xml:space="preserve">
-    <value>Tail Number:</value>
+    <value>Tail Number</value>
   </data>
   <data name="AircraftGroupActive" xml:space="preserve">
     <value>Frequently Used Aircraft</value>
@@ -543,4 +543,7 @@
   <data name="AdminNotASim" xml:space="preserve">
     <value>This doesn't look like it should be a sim</value>
   </data>
- </root>
+  <data name="editAircraftAddModelPrompt" xml:space="preserve">
+    <value>Add new...</value>
+  </data>
+</root>

@@ -202,6 +202,7 @@
             a tailnumber like &amp;quot;SIMB757.&amp;quot; Depending on the certification level, 
             approaches/landings/etc. in the SIMB757 would then count towards currency in a 
             Boeing 757.&lt;/p&gt;
+       &lt;p&gt;When you record a flight in the sim, record the device's serial number or registration either in the comments for the flight, or, if you prefer, using the "Simulator/Training Device Identifier" property.&lt;/p&gt;
         &lt;p&gt;You can quickly select from a list of existing simulators (and their 
             certification levels) in the system &lt;a target="_blank" href="%APP_ROOT%/Member/BrowseSims.aspx" style="font-weight:bold"&gt;here&lt;/a&gt;.&lt;/p&gt;</value>
   </data>
@@ -348,9 +349,6 @@
   </data>
   <data name="EditFlightUpdateFlight" xml:space="preserve">
     <value>Update Flight</value>
-  </data>
-  <data name="ClickToAddMakeModel" xml:space="preserve">
-    <value>Add a new make/model</value>
   </data>
   <data name="ClickToHide" xml:space="preserve">
     <value>(Click to Hide)</value>
