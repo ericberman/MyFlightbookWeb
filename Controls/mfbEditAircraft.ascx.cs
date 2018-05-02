@@ -394,7 +394,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
 
         pnlLockedExplanation.Visible = m_ac.IsLocked;
-        pnlLocked.Visible = AdminMode && IsRealAircraft;
+        ckLocked.Visible = AdminMode && IsRealAircraft;
         ckAnonymous.Checked = IsRealAircraft && IsAnonymous;
         ckLocked.Checked = m_ac.IsLocked;
 
@@ -449,6 +449,9 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         // hard to detect true changes of one vs. the other.
         hdnLastCountry.Value = cmbCountryCode.SelectedValue;
         hdnLastTail.Value = txtTail.Text;
+
+        if (!fIsNew)
+            lblTailnumber.Text = m_ac.TailNumber;
     }
 
     /// <summary>

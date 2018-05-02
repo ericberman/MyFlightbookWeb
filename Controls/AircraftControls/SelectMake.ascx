@@ -29,8 +29,8 @@
         </div>
     </asp:View>
     <asp:View ID="vwReadOnly" runat="server">
-        <div style="vertical-align:bottom">
-            <asp:Label ID="lblMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:Label>
+        <div style="vertical-align:middle">
+            <asp:Label ID="lblMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:Label>&nbsp;&nbsp;
             <asp:ImageButton ID="imgEditAircraftModel" ImageAlign="Top" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" />
         </div>
     </asp:View>

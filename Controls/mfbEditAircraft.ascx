@@ -26,10 +26,7 @@
                 Text="<%$ Resources:LocalizedText, AnswerWhyCantEditLockedAircraft %>"></asp:Label>
         </p>
     </asp:Panel>
-    <asp:Panel ID="pnlLocked" runat="server" Visible="false">
-        <asp:CheckBox ID="ckLocked" runat="server" Text="<%$ Resources:Aircraft, editAircraftAdminLocked %>" />
-    </asp:Panel>
-
+    <div><asp:Label ID="lblTailnumber" Font-Size="X-Large" Font-Bold="true" runat="server"></asp:Label> <asp:CheckBox ID="ckLocked" runat="server" Text="<%$ Resources:Aircraft, editAircraftAdminLocked %>" /></div>
     <uc1:SelectMake runat="server" id="SelectMake1" OnModelChanged="SelectMake1_ModelChanged" OnMajorChangeRequested="SelectMake1_MajorChangeRequested" />
     <asp:Panel ID="pnlGlassCockpit" runat="server">
         <asp:CheckBox ID="ckIsGlass" runat="server" AutoPostBack="true" OnCheckedChanged="ckIsGlass_CheckedChanged" Text="<%$ Resources:Aircraft, editAircraftHasGlass %>" />
