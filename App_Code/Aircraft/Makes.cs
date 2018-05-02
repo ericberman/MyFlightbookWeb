@@ -1,16 +1,17 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2016 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -677,7 +678,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         /// <summary>
         /// A list of human-readable attributes for this model
         /// </summary>
-        public IReadOnlyCollection<string> AttributeList(bool fGlassOverride = false)
+        public IEnumerable<string> AttributeList(bool fGlassOverride = false)
         {
             // Get the model attributes
             List<string> lstAttributes = new List<string>();
@@ -727,13 +728,12 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         {
             get
             {
-                IReadOnlyCollection<string> col = AttributeList(false);
-                return col.Count == 0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, "({0})", String.Join(", ", col));
+                IEnumerable<string> col = AttributeList(false);
+                return col.Count() == 0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, "({0})", String.Join(", ", col));
             }
         }
     }
-
-
+    
     /// <summary>
     /// Structured search for a model
     /// </summary>
@@ -935,5 +935,19 @@ FROM models
         }
     }
 
+    public class MakeSelectedEventArgs : EventArgs
+    {
+        public int SelectedModel { get; set; }
+
+        public MakeSelectedEventArgs() : base()
+        {
+            SelectedModel = MakeModel.UnknownModel;
+        }
+
+        public MakeSelectedEventArgs(int idModel) : base()
+        {
+            SelectedModel = idModel;
+        }
+    }
 }
 

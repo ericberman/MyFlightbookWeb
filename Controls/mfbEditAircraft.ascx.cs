@@ -21,14 +21,25 @@ using MyFlightbook.Clubs;
  * 
  * We have at least the following scenarios to handle/test
  * 
- * -	New Aircraft (sim, anonymous, real)
- * -	Existing – Only user (i.e., it's fine to make changes)
- * -	Existing – Other users
- * -	Existing – Sim
- * -	Existing – Anonymous
- * -	Existing – Locked – shared
- * -	Existing – Locked – alone (kinda silly, but hey); 
- * 
+| Scenario                                   | Change model?                    | Edit Tail?                    | Edit Glass?                |
+| -------------------------------------------|----------------------------------|-------------------------------|----------------------------|
+| New, Real, Registered                      | Yes                              | Yes                           | IF model isn't glass-only  |
+| New, Real, Anonymous                       | Yes                              | No                            | No                         |
+| New, Sim                                   | Yes                              | No - Read-only, with Sim note | No (**currently allowed**) |
+| Existing, Real, Registered, single user    | Yes                              | Yes (but see issue #80        | Yes                        |
+| Existing, Real, Registered, Multiple users | Yes, AFTER confirming minor edit | Yes (but see issue #80)       | If model isn't glass-only  |
+| Existing, Real, Anonymous                  | No                               | No                            | No (**currently allowed**) |
+| Existing, Sim                              | No                               | No                            | No (**currently allowed**) |
+| Existing - Locked, non-admin               | No                               | No                            | IF model isn't glass-only  |
+| Existing - Locked, Admin                   | Yes, AFTER confirmation          | No                            | IF model isn't glass-only  |
+
+And a few action scenarios to test (preserve existing behavior):
+ * New Aircraft, type-ahead on tail number, select => Should redirect (or refill) using the selected aircraft 
+ * Clicking Anonymous needs to hide the tailnumber
+ * Switching between real/training device should show/hide ability to edit tail number
+ * Changing model needs to reset glass checkbox
+ * Verify cloning, locking (admin functions) still work)
+ 
  * */
 
 public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
@@ -46,12 +57,6 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     {
         get { return Convert.ToBoolean(hdnAdminMode.Value, CultureInfo.CurrentCulture); }
         set { hdnAdminMode.Value = value.ToString(); }
-    }
-
-    protected int LastSelectedManufacturer
-    {
-        get { return String.IsNullOrEmpty(hdnLastMan.Value) ? Manufacturer.UnsavedID : Convert.ToInt32(hdnLastMan.Value, CultureInfo.InvariantCulture); }
-        set { hdnLastMan.Value = value.ToString(CultureInfo.InvariantCulture); }
     }
 
     /// <summary>
@@ -78,7 +83,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     /// </summary>
     public int SelectedModelID
     {
-        get { return Convert.ToInt32(cmbMakeModel.SelectedValue, CultureInfo.InvariantCulture); }
+        get { return SelectMake1.SelectedModelID; }
     }
 
     protected AircraftInstanceTypes SelectedInstanceType
@@ -108,32 +113,14 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     {
         get { return CountryCodePrefix.BestMatchCountryCode(m_ac.TailNumber).IsAnonymous; }
     }
-
-    protected bool IsEditable
-    {
-        get { return mvModel.ActiveViewIndex == 1; }
-        set
-        {
-            mvModel.ActiveViewIndex = (value ? 1 : 0);
-            lnkNewMake.Visible = value;
-        }
-    }
     #endregion
 
     #region Page setup
-    protected void RepopulateList(BaseDataBoundControl cmb, IEnumerable<object> lst)
-    {
-        if (cmb == null)
-            throw new ArgumentNullException("cmb");
-        cmb.DataSource = lst;
-        cmb.DataBind();
-    }
-
     protected void Page_Init(object sender, EventArgs e)
     {
-        // For efficiency of viewstate, we repopulate manufactures and country code on each postback.
-        RepopulateList(cmbManufacturers, Manufacturer.CachedManufacturers());
-        RepopulateList(cmbCountryCode, CountryCodePrefix.CountryCodes());
+        // For efficiency of viewstate, we repopulate country code on each postback.
+        cmbCountryCode.DataSource = CountryCodePrefix.CountryCodes();
+        cmbCountryCode.DataBind();
         hdnSimCountry.Value = CountryCodePrefix.szSimPrefix; // hack, but avoids "CA1303:Do not pass literals as localized parameters" warning.
     }
 
@@ -239,28 +226,34 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     /// <summary>
     /// Display the statistics for this aircraft
     /// </summary>
-    protected void SetUpStats()
+    protected IEnumerable<LinkedString> StatsForUser
     {
-        Stats = m_ac.IsNew ? new AircraftStats() : new AircraftStats(Page.User.Identity.Name, m_ac.AircraftID);
-        pnlStats.Visible = !m_ac.IsNew;
-        List<string> lst = new List<string>();
-        lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftUserStats, Stats.Users, Stats.Flights));
-
-        if (Stats.LatestDate.HasValue && Stats.EarliestDate.HasValue)
-            lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftYourStats, Stats.UserFlights, Stats.EarliestDate.Value.ToShortDateString(), Stats.LatestDate.Value.ToShortDateString()));
-
-        if (AdminMode)
-            lst.Add(String.Format(CultureInfo.CurrentCulture, "Users = {0}", String.Join(", ", Stats.UserNames)));
-
-        lnkViewTotals.Visible = !AdminMode && !m_ac.IsNew && (new UserAircraft(Page.User.Identity.Name)).GetUserAircraftByID(m_ac.AircraftID) != null;
-        if (lnkViewTotals.Visible)
+        get
         {
-            FlightQuery fq = new FlightQuery(Page.User.Identity.Name) { AircraftIDList = new int[] { m_ac.AircraftID } };
-            lnkViewTotals.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(fq.ToJSONString().Compress())));
-        }
+            if (m_ac.IsNew)
+                return new LinkedString[0]; // nothing to add for a new aircraft
 
-        rptStats.DataSource = lst;
-        rptStats.DataBind();
+            List<LinkedString> lst = new List<LinkedString>();
+
+            Stats = new AircraftStats(Page.User.Identity.Name, m_ac.AircraftID);
+            lst.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftUserStats, Stats.Users, Stats.Flights)));
+
+            if (Stats.LatestDate.HasValue && Stats.EarliestDate.HasValue)
+            {
+                string szText = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftYourStats, Stats.UserFlights, Stats.EarliestDate.Value.ToShortDateString(), Stats.LatestDate.Value.ToShortDateString());
+                string szLink = null;
+                if (!AdminMode && (new UserAircraft(Page.User.Identity.Name)).GetUserAircraftByID(m_ac.AircraftID) != null) {
+                    FlightQuery fq = new FlightQuery(Page.User.Identity.Name) { AircraftIDList = new int[] { m_ac.AircraftID } };
+                    szLink = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(fq.ToJSONString().Compress())));
+                }
+                lst.Add(new LinkedString(szText, szLink));
+            }
+
+            if (AdminMode && util.GetStringParam(Request, "listUsers").Length > 0)
+                lst.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, "Users = {0}", String.Join(", ", Stats.UserNames))));
+
+            return lst;
+        }
     }
 
     /// <summary>
@@ -393,15 +386,12 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
         mvInstanceType.SetActiveView(fIsNew ? vwInstanceNew : vwInstanceExisting);
 
-        if (fIsNew)
-            LastSelectedManufacturer = Manufacturer.UnsavedID;
-
-        SetUpStats();
-
         // disable editing of sims and anonymous aircraft.
-        bool fCanEdit = IsRealAircraft && !IsAnonymous && (AdminMode || !m_ac.IsLocked);
-        ckIsGlass.Enabled = ckAnonymous.Enabled = cmbMakeModel.Enabled = cmbManufacturers.Enabled = imgEditAircraftModel.Visible = fCanEdit;
+        bool fIsLocked = (!AdminMode && m_ac.IsLocked);
+        bool fCanEdit = IsRealAircraft && !IsAnonymous && !fIsLocked;
+        ckIsGlass.Enabled = ckAnonymous.Enabled = fCanEdit;
         pnlAnonymous.Visible = fIsNew;
+
 
         pnlLockedExplanation.Visible = m_ac.IsLocked;
         pnlLocked.Visible = AdminMode && IsRealAircraft;
@@ -409,19 +399,14 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         ckLocked.Checked = m_ac.IsLocked;
 
         SelectedInstanceType = m_ac.InstanceType;
-        // don't allow instance type to be changed after it is created; could lead to collisions between aircraft.
-        lblInstanceType.Text = cmbAircraftInstance.SelectedItem.Text;
 
         SetUpCountryCode();
 
-        if (fIsNew)
-            UpdateModelList(Manufacturer.UnsavedID);
-        else
-        {
-            SelectCurrentMakeModel();
-            fvModel.DataSource = new MakeModel[] { MakeModel.GetModel(m_ac.ModelID) };
-            fvModel.DataBind();
-        }
+        List<LinkedString> lstAttrib = new List<LinkedString>();
+        lstAttrib.Add(new LinkedString(cmbAircraftInstance.SelectedItem.Text));
+        lstAttrib.AddRange(StatsForUser);
+        SelectMake1.AircraftAttributes = lstAttrib;
+        SelectMake1.SelectedModelID = m_ac.ModelID;
 
         ckIsGlass.Checked = m_ac.IsGlass;
 
@@ -436,7 +421,17 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         SetUpSchedules();
 
         btnAddAircraft.Text = fIsNew ? Resources.LocalizedText.EditAircraftAddAircraft : Resources.LocalizedText.EditAircraftUpdateAircraft;
-        IsEditable = m_ac.IsNew || (fIsReal && !m_ac.IsAnonymous && Stats.Users <= 1 && !m_ac.IsLocked);
+
+        // Set the edit mode, based on chart above, which breaks down as:
+        // Editing automatically enabled IF new aircraft OR real, registered, unlocked, single user.
+        // Editing offered (with confirmation) if real, registered, (unlocked or admin), multiple-user
+        // Otherwise, no editing
+        if (fIsNew || (fCanEdit && Stats.Users == 1))
+            SelectMake1.EditMode = Controls_AircraftControls_SelectMake.MakeEditMode.Edit; 
+        else if (fCanEdit && !fIsLocked)
+            SelectMake1.EditMode = Controls_AircraftControls_SelectMake.MakeEditMode.EditWithConfirm;
+        else
+            SelectMake1.EditMode = Controls_AircraftControls_SelectMake.MakeEditMode.Locked;
 
         mfbDateOfGlassUpgrade.Date = m_ac.GlassUpgradeDate.HasValue ? m_ac.GlassUpgradeDate.Value : DateTime.MinValue;
         pnlGlassUpgradeDate.Visible = ckIsGlass.Checked;
@@ -536,7 +531,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         else
             ac.UpdateMaintenanceForUser(mfbMaintainAircraft.MaintenanceForAircraft(), Page.User.Identity.Name);
 
-        ac.ModelID = Convert.ToInt32(cmbMakeModel.SelectedValue, CultureInfo.InvariantCulture);
+        ac.ModelID = SelectedModelID;
         ac.InstanceTypeID = (int) this.SelectedInstanceType;
         ac.IsGlass = ckIsGlass.Checked;
         ac.GlassUpgradeDate = (ac.IsGlass && mfbDateOfGlassUpgrade.Date.HasValue()) ? mfbDateOfGlassUpgrade.Date : (DateTime?) null;
@@ -699,63 +694,22 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     }
     #endregion
 
-    #region Change Make/Model Functionality
-    protected void SelectCurrentMakeModel()
-    {
-        MakeModel mm = MakeModel.GetModel(m_ac.ModelID);
-        cmbManufacturers.SelectedValue = mm.ManufacturerID.ToString(CultureInfo.InvariantCulture);
-        LastSelectedManufacturer = mm.ManufacturerID;
-        UpdateModelList(mm.ManufacturerID);
-
-        cmbMakeModel.SelectedValue = m_ac.ModelID.ToString(CultureInfo.InvariantCulture);
-
-        // Capture this as well in case not editable.
-        lblMakeModel.Text = m_ac.LongModelDescription;
-    }
-
-    protected void cmbMakeModel_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        m_ac.ModelID = Convert.ToInt32(cmbMakeModel.SelectedValue, CultureInfo.InvariantCulture);
-        ckIsGlass.Checked = false;  // reset this since model changed.
-        AdjustForAircraftType();
-    }
-
-    protected void UpdateModelList(int idManufacturer)
-    {
-        ListItem liSelect = cmbMakeModel.Items[0];  // hold onto the "please select a model" item.
-        cmbMakeModel.Items.Clear();
-        cmbMakeModel.Items.Add(liSelect);
-        cmbMakeModel.DataSource = (idManufacturer == MakeModel.UnknownModel) ? new System.Collections.ObjectModel.Collection<MakeModel>() : MakeModel.MatchingMakes(idManufacturer);
-        cmbMakeModel.DataBind();
-    }
-
-    protected void cmbManufacturers_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        int newManId = Convert.ToInt32(cmbManufacturers.SelectedValue, CultureInfo.InvariantCulture);
-        if (newManId != LastSelectedManufacturer)
-        {
-            UpdateModelList(newManId);
-            m_ac.ModelID = MakeModel.UnknownModel;
-        }
-        LastSelectedManufacturer = newManId;
-        AdjustForAircraftType();
-    }
-
     protected void ckIsGlass_CheckedChanged(object sender, EventArgs e)
     {
         pnlGlassUpgradeDate.Visible = ckIsGlass.Checked;
     }
 
-    protected void btnChangeModelTweak_Click(object sender, EventArgs e)
+    protected void SelectMake1_ModelChanged(object sender, MakeSelectedEventArgs e)
     {
-        IsEditable = true;
-        SelectCurrentMakeModel();   // not quite sure why I need to do this, but otherwise the manufacturer dropdown reverts.
+        if (e == null)
+            throw new ArgumentNullException("e");
+        m_ac.ModelID = e.SelectedModel;
+        ckIsGlass.Checked = false;  // reset this since model changed.
+        AdjustForAircraftType();
     }
 
-    protected void btnChangeModelClone_Click(object sender, EventArgs e)
+    protected void SelectMake1_MajorChangeRequested(object sender, EventArgs e)
     {
         Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Public/ContactMe.aspx?subj={0}", System.Web.HttpUtility.UrlEncode(String.Format(CultureInfo.CurrentCulture, "Incorrect definition for aircraft {0}", m_ac.TailNumber))));
     }
-
-    #endregion
 }

@@ -12,7 +12,7 @@
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc10" TagName="mfbTypeInDate" %>
 <%@ Register Src="~/Controls/mfbHoverImageList.ascx" TagPrefix="uc1" TagName="mfbHoverImageList" %>
 <%@ Register Src="~/Controls/mfbMakeListItem.ascx" TagPrefix="uc1" TagName="mfbMakeListItem" %>
-<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+<%@ Register Src="~/Controls/AircraftControls/SelectMake.ascx" TagPrefix="uc1" TagName="SelectMake" %>
 
 <asp:Panel ID="pnlEditAircraft" runat="server" DefaultButton="btnAddAircraft">
     <asp:HiddenField ID="hdnAdminMode" runat="server" Value="false" />
@@ -26,69 +26,11 @@
                 Text="<%$ Resources:LocalizedText, AnswerWhyCantEditLockedAircraft %>"></asp:Label>
         </p>
     </asp:Panel>
-    <asp:Panel runat="server" ID="pnlStats" CssClass="callout">
-        <ul>
-            <asp:Repeater ID="rptStats" runat="server">
-                <ItemTemplate>
-                    <li><%# Container.DataItem %></li>
-                </ItemTemplate>
-            </asp:Repeater>
-        </ul>
-        <div><asp:HyperLink ID="lnkViewTotals" runat="server" Text="<%$ Resources:Aircraft, ViewAircraftTotalsPrompt %>"></asp:HyperLink></div>
-        <asp:Panel ID="pnlLocked" runat="server" Visible="false">
-            <asp:CheckBox ID="ckLocked" runat="server" Text="<%$ Resources:Aircraft, editAircraftAdminLocked %>" />
-        </asp:Panel>
+    <asp:Panel ID="pnlLocked" runat="server" Visible="false">
+        <asp:CheckBox ID="ckLocked" runat="server" Text="<%$ Resources:Aircraft, editAircraftAdminLocked %>" />
     </asp:Panel>
 
-    <asp:MultiView ID="mvModel" runat="server" ActiveViewIndex="0">
-        <asp:View ID="vwReadOnlyModel" runat="server">
-            <div style="vertical-align:bottom"><asp:Label ID="lblMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:Label>
-            <uc1:mfbTooltip runat="server" ID="mfbModelTooltip">
-                <TooltipBody>
-                    <asp:FormView ID="fvModel" runat="server">
-                        <ItemTemplate>
-                            <div>
-                                <asp:Label ID="lnkCatClass" Font-Bold="true" runat="server" Text='<%# ((MakeModel) Container.DataItem).CategoryClassDisplay %>'></asp:Label>
-                                <asp:Label ID="lblICAO" runat="server" Visible="<%# !String.IsNullOrEmpty(((MakeModel) Container.DataItem).FamilyName) %>" Text='<%# "(" + ModelQuery.ICAOPrefix + ((MakeModel) Container.DataItem).FamilyName + ")" %>'></asp:Label></div>
-                            <ul>
-                                <asp:Repeater ID="rptAttributes" runat="server" DataSource='<%# ((MakeModel) Container.DataItem).AttributeList() %>'>
-                                    <ItemTemplate>
-                                        <li><%# Container.DataItem %></li>
-                                    </ItemTemplate>
-                                </asp:Repeater>
-                            </ul>
-                        </ItemTemplate>
-                    </asp:FormView>
-                </TooltipBody>
-            </uc1:mfbTooltip>
-            <asp:ImageButton ID="imgEditAircraftModel" ImageAlign="Top" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" /></div>
-            <asp:Label ID="lblInstanceType" Font-Bold="true" runat="server"></asp:Label>
-        </asp:View>
-        <asp:View ID="vwEditableModel" runat="server">
-            <h3><% =Resources.Aircraft.editAircraftMakeModelPrompt %></h3>
-            <asp:DropDownList ID="cmbManufacturers" runat="server"
-                AppendDataBoundItems="True" AutoPostBack="True" EnableViewState="False"
-                DataTextField="ManufacturerName"
-                DataValueField="ManufacturerID"
-                OnSelectedIndexChanged="cmbManufacturers_SelectedIndexChanged">
-                <asp:ListItem Selected="True"
-                    Text="<%$ Resources:Aircraft, editAircraftSelectManufacturer %>" Value="-1"></asp:ListItem>
-            </asp:DropDownList>
-            <asp:HiddenField ID="hdnLastMan" runat="server" />
-            <asp:DropDownList ID="cmbMakeModel" runat="server" AppendDataBoundItems="True"
-                AutoPostBack="True" DataTextField="ModelDisplayName"
-                DataValueField="MakeModelID"
-                OnSelectedIndexChanged="cmbMakeModel_SelectedIndexChanged">
-                <asp:ListItem Selected="True"
-                    Text="<%$ Resources:Aircraft, editAircraftSelectModel %>" Value="-1"></asp:ListItem>
-            </asp:DropDownList>
-            <asp:HyperLink ID="lnkNewMake" Visible="false" runat="server" Text="<%$ Resources:Aircraft, editAircraftAddModelPrompt %>" NavigateUrl="~/Member/EditMake.aspx"></asp:HyperLink>
-            <div><asp:RangeValidator ID="RangeValidator1" runat="server"
-                ControlToValidate="cmbMakeModel" CssClass="error" Display="Dynamic"
-                MaximumValue="1000000" ErrorMessage="&lt;br /&gt;Please select a make/model from the list.  You can add one if needed."
-                MinimumValue="0" Type="Integer" ValidationGroup="EditAircraft"></asp:RangeValidator></div>
-        </asp:View>
-    </asp:MultiView>
+    <uc1:SelectMake runat="server" id="SelectMake1" OnModelChanged="SelectMake1_ModelChanged" OnMajorChangeRequested="SelectMake1_MajorChangeRequested" />
     <asp:Panel ID="pnlGlassCockpit" runat="server">
         <asp:CheckBox ID="ckIsGlass" runat="server" AutoPostBack="true" OnCheckedChanged="ckIsGlass_CheckedChanged" Text="<%$ Resources:Aircraft, editAircraftHasGlass %>" />
         <asp:Panel ID="pnlGlassUpgradeDate" runat="server" Style="margin: 3px;">
@@ -96,7 +38,7 @@
             <uc10:mfbTypeInDate runat="server" ID="mfbDateOfGlassUpgrade" />
         </asp:Panel>
     </asp:Panel>
-
+    
     <asp:MultiView ID="mvInstanceType" runat="server">
         <asp:View ID="vwInstanceNew" runat="server">
             <h3><% = Resources.Aircraft.editAircraftInstanceTypePrompt %></h3>
@@ -219,7 +161,7 @@
     </div>
 
     <h3><% =Resources.Aircraft.editAircraftImagesPrompt %></h3>
-    <asp:Panel ID="pnlImageNote" runat="server">
+    <asp:Panel ID="pnlImageNote" runat="server" CssClass="fineprint">
         <asp:Label ID="locImageNote" runat="server" Text="<%$ Resources:LocalizedText, Note %>" Font-Bold="True"></asp:Label>
         <% =Resources.Aircraft.editAircraftSharedImagesNote %>
     </asp:Panel>
@@ -256,6 +198,7 @@
             </Body>
         </uc6:Expando>
     </div>
+
     <div id="rowClubSchedules" runat="server" visible="false" style="margin-top: 5px">
         <uc7:mfbEditAppt ID="mfbEditAppt1" runat="server" />
         <uc6:Expando ID="expandoSchedules" runat="server" HeaderCss="header">
@@ -279,6 +222,7 @@
             </Body>
         </uc6:Expando>
     </div>
+
     <div id="rowMaintenance" runat="server" style="margin-top: 5px">
         <uc6:Expando ID="expandoMaintenance" runat="server" HeaderCss="header">
             <Header>
@@ -289,7 +233,9 @@
             </Body>
         </uc6:Expando>
     </div>
+    
     <div>&nbsp;</div>
+    
     <div>
         <asp:Button ID="btnAddAircraft" runat="server"
             OnClick="btnAddAircraft_Click"
@@ -340,37 +286,4 @@
             </Columns>
         </asp:GridView>
     </asp:Panel>
-    <asp:Panel ID="pnlAdviseModelChange" runat="server" BackColor="White" Style="margin: 3px; padding:15px; display:none; width: 450px;" DefaultButton="btnChangeModelCancel">
-        <p>
-            <asp:Label ID="lblAdviseModelChange" runat="server" Text="<%$ Resources:Aircraft, editAircraftModelChangeHeader %>" Font-Bold="True"></asp:Label>
-        </p>
-        <p><% =Branding.ReBrand(Resources.Aircraft.editAircraftModelChange1) %></p>
-        <p><% =Resources.Aircraft.editAircraftModelChange2 %></p>
-        <p><% =Resources.Aircraft.editAircraftModelChange3 %></p>
-        <div style="text-align:center">
-            <asp:Button ID="btnChangeModelTweak" runat="server" Width="45%" Text="<%$ Resources:Aircraft, editAircraftTweak %>" OnClick="btnChangeModelTweak_Click" />
-            <asp:Button ID="btnChangeModelClone" runat="server" Width="45%" Text="<%$ Resources:Aircraft, editAircraftClone %>" OnClick="btnChangeModelClone_Click" />
-            <br /><br />
-            <asp:Button ID="btnChangeModelCancel" runat="server" Width="30%" Text="<%$ Resources:LocalizedText, Cancel %>" />
-        </div>
-    </asp:Panel>
-    <ajaxToolkit:ModalPopupExtender runat="server" DropShadow="true" PopupControlID="pnlAdviseModelChange" BackgroundCssClass="modalBackground" CancelControlID="btnChangeModelCancel" ID="modalModelChange" BehaviorID="modalModelChange" TargetControlID="imgEditAircraftModel"></ajaxToolkit:ModalPopupExtender>
-    <script type="text/javascript">
-        function hideModelChange() {
-            document.getElementById('<% =pnlAdviseModelChange.ClientID %>').style.display = 'none';
-            $find("modalModelChange").hide();
-        }
-
-        /* Handle escape to dismiss */
-        function pageLoad(sender, args) {
-            if (!args.get_isPartialLoad()) {
-                $addHandler(document, "keydown", onKeyDown);
-            }
-        }
-
-        function onKeyDown(e) {
-            if (e && e.keyCode == Sys.UI.Key.esc)
-                hideModelChange();
-        }
-    </script>
 </asp:Panel>

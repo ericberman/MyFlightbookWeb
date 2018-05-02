@@ -65,6 +65,30 @@ namespace MyFlightbook
     }
 
     /// <summary>
+    /// Provides text with an optionally linked string.
+    /// </summary>
+    [Serializable]
+    public class LinkedString
+    {
+        public string Value { get; set; }
+        public string Link { get; set; }
+
+        public LinkedString() { } 
+
+        public LinkedString(string szValue, string szLink)
+        {
+            Value = szValue;
+            Link = szLink;
+        }
+
+        public LinkedString(string szValue)
+        {
+            Value = szValue;
+            Link = null;
+        }
+    }
+
+    /// <summary>
     /// Utility Class - contains a few commonly used/needed functions
     /// </summary>
     public static class util
@@ -185,7 +209,7 @@ namespace MyFlightbook
         static public string GetStringParam(HttpRequest req, string szKey)
         {
             if (req == null || req[szKey] == null)
-                return "";
+                return string.Empty;
             else
                 return req[szKey];
         }
