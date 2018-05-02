@@ -648,6 +648,8 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
     protected void ckAnonymous_CheckedChanged(object sender, EventArgs e)
     {
+        if (String.IsNullOrEmpty(txtTail.Text) && !ckAnonymous.Checked && m_ac.IsNew)
+            SetUpCountryCode();
         AdjustForAircraftType();
     }
     #endregion
