@@ -77,6 +77,7 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
                 LastSelectedManufacturer = Manufacturer.UnsavedID;
                 cmbManufacturers.SelectedIndex = 0;
                 UpdateModelList(Manufacturer.UnsavedID);
+                UpdateAttributesForModel(null);
             }
             else
             {
@@ -86,17 +87,24 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
                 UpdateModelList(mm.ManufacturerID);
                 cmbMakeModel.SelectedValue = mm.MakeModelID.ToString(CultureInfo.InvariantCulture);
                 lblMakeModel.Text = mm.ManufacturerDisplay + Resources.LocalizedText.LocalizedSpace + mm.ModelDisplayName;
-
-                List<LinkedString> lst = new List<LinkedString>();
-                lst.AddRange(AircraftAttributes);
-                if (!String.IsNullOrEmpty(mm.FamilyName))
-                    lst.Add(new LinkedString(ModelQuery.ICAOPrefix + mm.FamilyName));
-                foreach (string sz in mm.AttributeList())
-                    lst.Add(new LinkedString(sz));
-                rptAttributes.DataSource = lst;
-                rptAttributes.DataBind();
+                UpdateAttributesForModel(mm);
             }
         }
+    }
+
+    protected void UpdateAttributesForModel(MakeModel mm)
+    {
+        List<LinkedString> lst = new List<LinkedString>();
+        lst.AddRange(AircraftAttributes);
+        if (mm != null)
+        {
+            if (!String.IsNullOrEmpty(mm.FamilyName))
+                lst.Add(new LinkedString(ModelQuery.ICAOPrefix + mm.FamilyName));
+            foreach (string sz in mm.AttributeList())
+                lst.Add(new LinkedString(sz));
+        }
+        rptAttributes.DataSource = lst;
+        rptAttributes.DataBind();
     }
 
     protected int LastSelectedManufacturer
@@ -124,8 +132,10 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
     #region Managing the combos
     protected void cmbMakeModel_SelectedIndexChanged(object sender, EventArgs e)
     {
+        int modelID = SelectedModelID;
+        UpdateAttributesForModel(modelID == MakeModel.UnknownModel ? null : MakeModel.GetModel(modelID));
         if (ModelChanged != null)
-            ModelChanged(this, new MakeSelectedEventArgs(SelectedModelID));
+            ModelChanged(this, new MakeSelectedEventArgs(modelID));
     }
 
     protected void UpdateModelList(int idManufacturer)
@@ -142,6 +152,7 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
         int newManId = Convert.ToInt32(cmbManufacturers.SelectedValue, CultureInfo.InvariantCulture);
         if (newManId != LastSelectedManufacturer)
         {
+            UpdateAttributesForModel(null);
             UpdateModelList(newManId);
             LastSelectedManufacturer = newManId;
             if (ModelChanged != null)

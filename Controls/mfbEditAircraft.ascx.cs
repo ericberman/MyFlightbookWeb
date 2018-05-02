@@ -403,8 +403,11 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         SetUpCountryCode();
 
         List<LinkedString> lstAttrib = new List<LinkedString>();
-        lstAttrib.Add(new LinkedString(cmbAircraftInstance.SelectedItem.Text));
-        lstAttrib.AddRange(StatsForUser);
+        if (!fIsNew)
+        {
+            lstAttrib.Add(new LinkedString(cmbAircraftInstance.SelectedItem.Text));
+            lstAttrib.AddRange(StatsForUser);
+        }
         SelectMake1.AircraftAttributes = lstAttrib;
         SelectMake1.SelectedModelID = m_ac.ModelID;
 

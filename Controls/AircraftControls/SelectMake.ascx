@@ -32,25 +32,25 @@
         <div style="vertical-align:bottom">
             <asp:Label ID="lblMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:Label>
             <asp:ImageButton ID="imgEditAircraftModel" ImageAlign="Top" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" />
-            <ul>
-                <asp:Repeater ID="rptAttributes" runat="server">
-                    <ItemTemplate>
-                        <li>
-                            <asp:MultiView ID="mvAttribute" runat="server" ActiveViewIndex='<%# String.IsNullOrEmpty((string) Eval("Link")) ? 0 : 1 %>'>
-                                <asp:View ID="vwNoLink" runat="server">
-                                    <%# Eval("Value") %>
-                                </asp:View>
-                                <asp:View ID="vwLink" runat="server">
-                                    <asp:HyperLink ID="lnkAttrib" runat="server" Text='<%# Eval("Value") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink>
-                                </asp:View>
-                            </asp:MultiView>
-                        </li>
-                    </ItemTemplate>
-                </asp:Repeater>
-            </ul>
         </div>
     </asp:View>
 </asp:MultiView>
+<ul>
+    <asp:Repeater ID="rptAttributes" runat="server">
+        <ItemTemplate>
+            <li>
+                <asp:MultiView ID="mvAttribute" runat="server" ActiveViewIndex='<%# String.IsNullOrEmpty((string) Eval("Link")) ? 0 : 1 %>'>
+                    <asp:View ID="vwNoLink" runat="server">
+                        <%# Eval("Value") %>
+                    </asp:View>
+                    <asp:View ID="vwLink" runat="server">
+                        <asp:HyperLink ID="lnkAttrib" runat="server" Text='<%# Eval("Value") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink>
+                    </asp:View>
+                </asp:MultiView>
+            </li>
+        </ItemTemplate>
+    </asp:Repeater>
+</ul>
 <asp:Panel ID="pnlAdviseModelChange" runat="server" BackColor="White" Style="margin: 3px; padding:15px; display:none; width: 450px;" DefaultButton="btnChangeModelCancel">
     <p>
         <asp:Label ID="lblAdviseModelChange" runat="server" Text="<%$ Resources:Aircraft, editAircraftModelChangeHeader %>" Font-Bold="True"></asp:Label>
