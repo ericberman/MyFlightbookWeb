@@ -810,6 +810,11 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         /// Should the sort be ascending or descending?
         /// </summary>
         public ModelSortDirection SortDir { get; set; }
+
+        /// <summary>
+        /// Should we give a boost to models where the model itself matches?
+        /// </summary>
+        public bool PreferModelNameMatch { get; set; }
         #endregion
 
         #region Query utilities
@@ -825,6 +830,14 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             string[] rgTerms = FullText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < rgTerms.Length; i++)
                 AddQueryTerm(rgTerms[i], String.Format(CultureInfo.InvariantCulture, "FullText{0}", i), "Concat(model, ' ', manufacturers.manufacturer, ' ', typename, ' ', family, ' ', modelname, ' ', categoryclass.CatClass)", lstWhereTerms, lstParams);
+
+            string szPreferred = "0";
+            if (PreferModelNameMatch)
+            {
+                string szModelMatch = String.Format(CultureInfo.InvariantCulture, "%{0}%", ConvertWildcards(FullText));
+                szPreferred = "IF(model LIKE ?modelMatch, 1, 0)";
+                lstParams.Add(new MySqlParameter("modelMatch", szModelMatch));
+            }
 
             AddQueryTerm(CatClass, "qCatClass", "catclass", lstWhereTerms, lstParams);
             AddQueryTerm(rNormalizeModel.Replace(Model, string.Empty), "qModel", "REPLACE(REPLACE(model, ' ', ''), '-', '')", lstWhereTerms, lstParams);
@@ -848,14 +861,14 @@ models.*,
 manufacturers.manufacturer,
 categoryclass.CatClass as 'Category/Class',
 {0} AS AircraftIDs,
-Concat(model, ' ', manufacturers.manufacturer, ' ', typename, ' ', modelname, ' ', categoryclass.CatClass) AS searchName
+{1} AS preferred
 FROM models
   INNER JOIN manufacturers on manufacturers.idManufacturer = models.idmanufacturer
   INNER JOIN categoryclass on categoryclass.idCatClass = models.idcategoryclass
-{1}
 {2}
 {3}
-{4}";
+{4}
+{5}";
             const string szQSamplesTemplate = @"LEFT OUTER JOIN (SELECT ac.idmodel, group_concat(DISTINCT img.imageKey separator ',') AS AircraftIDs
                     FROM Images img
                     INNER JOIN aircraft ac ON CAST(img.imageKey AS Unsigned)=ac.idaircraft
@@ -865,6 +878,7 @@ FROM models
 
             string szQ = String.Format(CultureInfo.InvariantCulture, szQTemplate,
                 IncludeSampleImages ? "Samples.AircraftIDs" : "NULL",
+                szPreferred,
                 IncludeSampleImages ? szQSamplesTemplate : string.Empty,
                 szHavingPredicate.Length == 0 ? string.Empty : String.Format(CultureInfo.InvariantCulture, " WHERE {0} ", szHavingPredicate),
                 SortOrderFromSortModeAndDirection(SortMode, SortDir),
@@ -919,7 +933,7 @@ FROM models
                     szOrderString = String.Format(CultureInfo.InvariantCulture, "Model {0}, modelname {0}, typename {0}", szDirString);
                     break;
             }
-            return String.Format(CultureInfo.InvariantCulture, " ORDER BY {0}", szOrderString);
+            return String.Format(CultureInfo.InvariantCulture, " ORDER BY Preferred DESC, {0}", szOrderString);
         }
         #endregion
 
