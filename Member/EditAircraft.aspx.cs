@@ -16,6 +16,37 @@ using System.Web.UI.WebControls;
 
 public partial class EditMake : System.Web.UI.Page
 {
+    #region webservices
+    [System.Web.Services.WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static string[] SuggestFullModels(string prefixText, int count)
+    {
+        if (String.IsNullOrEmpty(prefixText))
+            return new string[0];
+        ModelQuery modelQuery = new ModelQuery() { FullText = prefixText.Replace(" ", "*").Replace("-", "*"), Skip = 0, Limit = count };
+        List<string> lst = new List<string>();
+        foreach (MakeModel mm in MakeModel.MatchingMakes(modelQuery))
+            lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithDash, mm.ManufacturerDisplay, mm.ModelDisplayName), mm.MakeModelID.ToString(CultureInfo.InvariantCulture)));
+
+        return lst.ToArray();
+    }
+
+    [System.Web.Services.WebMethod]
+    [System.Web.Script.Services.ScriptMethod]
+    public static string[] SuggestAircraft(string prefixText, int count)
+    {
+        if (String.IsNullOrEmpty(prefixText))
+            return new string[0];
+        prefixText = Regex.Replace(prefixText, "[^a-zA-Z0-9 -]", string.Empty) + "%";
+        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT idaircraft, tailnumber FROM aircraft WHERE tailnumber LIKE ?prefix ORDER BY tailnumber ASC LIMIT {0}", count));
+        List<string> lst = new List<string>();
+        dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("prefix", prefixText); },
+            (dr) => { lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem((string) dr["tailnumber"], dr["idaircraft"].ToString())); });
+        return lst.ToArray();
+    }
+
+    #endregion
+
     protected override void OnError(EventArgs e)
     {
         Exception ex = Server.GetLastError();

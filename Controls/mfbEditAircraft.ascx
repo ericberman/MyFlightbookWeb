@@ -67,6 +67,7 @@
                         <script type="text/javascript">
                             function AircraftSelected(source, eventArgs) {
                                 document.getElementById('<% = imgAutofillProgress.ClientID %>').style.display = 'inline-block';
+                                document.getElementById('<% = hdnSelectedAircraftID.ClientID %>').value = eventArgs._value;
                                 document.getElementById('<% = lnkPopulateAircraft.ClientID %>').click();
                             }
                         </script>
@@ -99,8 +100,9 @@
                                         CompletionListItemCssClass="AutoExtenderList" DelimiterCharacters=""
                                         OnClientItemSelected="AircraftSelected"
                                         Enabled="True" MinimumPrefixLength="2" ServiceMethod="SuggestAircraft"
-                                        ServicePath="~/Public/Webservice.asmx" TargetControlID="txtTail">
+                                        ServicePath="~/Member/EditAircraft.aspx" TargetControlID="txtTail">
                                     </cc1:AutoCompleteExtender>
+                                    <asp:HiddenField ID="hdnSelectedAircraftID" runat="server" />
                                     <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender1" runat="server"
                                         Enabled="True" FilterType="Custom, Numbers, UppercaseLetters, LowercaseLetters"
                                         TargetControlID="txtTail" ValidChars="-"></cc1:FilteredTextBoxExtender>

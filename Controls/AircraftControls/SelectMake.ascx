@@ -31,8 +31,8 @@
                         CompletionListHighlightedItemCssClass="AutoExtenderHighlight"
                         CompletionListItemCssClass="AutoExtenderList" DelimiterCharacters=""
                         OnClientItemSelected="ModelSelected"
-                        Enabled="True" MinimumPrefixLength="2" ServiceMethod="SuggestFullModels" UseContextKey="true"
-                        ServicePath="~/Public/Webservice.asmx" TargetControlID="txtFilter" CompletionSetCount="20">
+                        Enabled="True" MinimumPrefixLength="2" ServiceMethod="SuggestFullModels"
+                        ServicePath="~/Member/EditAircraft.aspx" TargetControlID="txtFilter" CompletionSetCount="20">
                     </cc1:AutoCompleteExtender>
                 </td>
             </tr>

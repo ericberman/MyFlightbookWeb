@@ -644,11 +644,19 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     {
         if (!String.IsNullOrEmpty(txtTail.Text) && m_ac.IsNew)
         {
-            Aircraft ac = new Aircraft(txtTail.Text);
-            if (!ac.IsNew)
+            int aircraftID = Aircraft.idAircraftUnknown;
+            if (int.TryParse(hdnSelectedAircraftID.Value, out aircraftID))
             {
-                AircraftID = ac.AircraftID;
-                InitFormForAircraft();
+                Response.Redirect("~/Member/EditAircraft.aspx?id=" + aircraftID.ToString(CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                Aircraft ac = new Aircraft(txtTail.Text);
+                if (!ac.IsNew)
+                {
+                    AircraftID = ac.AircraftID;
+                    InitFormForAircraft();
+                }
             }
         }
     }
