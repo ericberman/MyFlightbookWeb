@@ -28,6 +28,7 @@
             <asp:Panel ID="Panel1" runat="server" DefaultButton="btnSimpleSearch" meta:resourcekey="pnlSearchResource2">
                 <asp:Localize ID="Localize1" runat="server" Text="Find Models" meta:resourcekey="locFilterMakesResource2"></asp:Localize>&nbsp;<asp:TextBox ID="txtFilter" runat="server" meta:resourcekey="txtFilterResource1"></asp:TextBox>&nbsp;
                 <asp:Button ID="btnSimpleSearch" runat="server" Text="Search" OnClick="FilterTextChanged" meta:resourcekey="btnSimpleSearchResource1" />
+                <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Makes, SearchTip %>" runat="server" TargetControlID="txtFilter" />
                 <br />
                 <asp:LinkButton ID="lnkAdvanced" runat="server" Text="Advanced Search" OnClick="lnkAdvanced_Click" meta:resourcekey="lnkAdvancedResource1"></asp:LinkButton>
             </asp:Panel>
