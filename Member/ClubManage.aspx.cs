@@ -1,8 +1,11 @@
 ﻿using MyFlightbook;
+using MyFlightbook.Airports;
 using MyFlightbook.Clubs;
 using MyFlightbook.Instruction;
+using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Web.UI;
@@ -10,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2017-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -420,6 +423,33 @@ public partial class Member_ClubManage : System.Web.UI.Page
         string szDisposition = String.Format(CultureInfo.InvariantCulture, "inline;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty));
         Response.AddHeader("Content-Disposition", szDisposition);
         Response.Write(gvClubReports.CSVFromData());
+        Response.End();
+    }
+
+    protected void lnkViewKML_Click(object sender, EventArgs e)
+    {
+        DataSourceType dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.KML);
+        Response.Clear();
+        Response.ContentType = dst.Mimetype;
+        Response.AddHeader("Content-Disposition", String.Format(CultureInfo.CurrentCulture, "attachment;filename={0}-AllFlights.{1}", Branding.CurrentBrand.AppName, dst.DefaultExtension));
+
+        // Get the flight IDs that contribute to the report
+        sqlDSReports.SelectParameters.Clear();
+        sqlDSReports.SelectParameters.Add(new Parameter("idclub", System.Data.DbType.Int32, CurrentClub.ID.ToString(CultureInfo.InvariantCulture)));
+        sqlDSReports.SelectParameters.Add(new Parameter("startDate", System.Data.DbType.Date, dateStart.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+        sqlDSReports.SelectParameters.Add(new Parameter("endDate", System.Data.DbType.Date, dateEnd.Date.HasValue() ? dateEnd.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+
+        List<int> lstIds = new List<int>();
+        using (DataView dv = (DataView) sqlDSReports.Select(DataSourceSelectArguments.Empty))
+        {
+            foreach (DataRowView dr in dv)
+                lstIds.Add(Convert.ToInt32(dr["idflight"]));
+        }
+
+        string szErr = string.Empty;
+        VisitedAirport.AllFlightsAsKML(new FlightQuery(), Response.OutputStream, out szErr, lstIds);
+        if (String.IsNullOrEmpty(szErr))
+            lblErr.Text = szErr;
         Response.End();
     }
 

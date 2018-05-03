@@ -168,6 +168,13 @@
                             <td>
                                 <uc1:mfbTypeInDate runat="server" ID="dateStart" />
                             </td>
+                            <td rowspan="2" style="padding-left: 50px">
+                                <asp:LinkButton ID="lnkViewKML" runat="server" onclick="lnkViewKML_Click">
+                                    <asp:Image ID="imgDownloadKML" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
+                                    <asp:Image ID="imgKMLIcon" ImageAlign="Middle" runat="server" ImageUrl="~/images/kmlicon_med.png" style="padding-right: 5px;" />
+                                    <div style="display:inline-block;vertical-align:middle"><asp:Localize ID="locViewGoogleEarth" runat="server" Text="<%$ Resources:Airports, DownloadKML %>"></asp:Localize><br /><asp:Label ID="locKMLSlow" runat="server" Text="<%$ Resources:Airports, WarningSlow %>"></asp:Label></div> 
+                                </asp:LinkButton>
+                            </td>
                         </tr>
                         <tr>
                             <td>
@@ -177,8 +184,9 @@
                                 <uc1:mfbTypeInDate runat="server" ID="dateEnd" />
                             </td>
                         </tr>
+
                         <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                                 <asp:Button ID="btnUpdate" OnClick="btnUpdate_Click" runat="server" Text="<%$ Resources:Club, ReportUpdate %>" />
                                 <asp:Button ID="btnDownload" OnClick="btnDownload_Click" runat="server" Text="<%$ Resources:Club, ReportDownload %>" Visible="false" />
                             </td>
@@ -239,7 +247,7 @@
                 <asp:SqlDataSource ID="sqlDSReports" runat="server" 
                     ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
                     ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-                    SelectCommand="SELECT f.date AS Date, f.TotalFlightTime AS 'Total Time', f.Route, f.HobbsStart AS 'Hobbs Start', f.HobbsEnd AS 'Hobbs End', u.username AS 'Username', u.Firstname, u.LastName, u.Email, ac.Tailnumber AS 'Aircraft',  
+                    SelectCommand="SELECT f.idflight, f.date AS Date, f.TotalFlightTime AS 'Total Time', f.Route, f.HobbsStart AS 'Hobbs Start', f.HobbsEnd AS 'Hobbs End', u.username AS 'Username', u.Firstname, u.LastName, u.Email, ac.Tailnumber AS 'Aircraft',  
                     fp.decValue AS 'Tach Start', fp2.decValue AS 'Tach End',
                     f.dtFlightStart AS 'Flight Start', f.dtFlightEnd AS 'Flight End', 
                     f.dtEngineStart AS 'Engine Start', f.dtEngineEnd AS 'Engine End',

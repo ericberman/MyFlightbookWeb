@@ -1,3 +1,7 @@
+using MyFlightbook.Geography;
+using MyFlightbook.Image;
+using MyFlightbook.Telemetry;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,14 +12,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using MyFlightbook.Geography;
-using MyFlightbook.Image;
-using MyFlightbook.Telemetry;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2016 MyFlightbook LLC
+ * Copyright (c) 2010-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -437,13 +437,17 @@ namespace MyFlightbook.Airports
         /// <param name="fq">The flight query</param>
         /// <param name="s">The stream to which to write</param>
         /// <param name="error">Any error</param>
+        /// <param name="lstIDs">The list of specific flight IDs to request</param>
         /// <returns>KML string for the matching flights.</returns>
-        public static void AllFlightsAsKML(FlightQuery fq, Stream s, out string error)
+        public static void AllFlightsAsKML(FlightQuery fq, Stream s, out string error, IEnumerable<int> lstIDs = null)
         {
             if (fq == null)
                 throw new ArgumentNullException("fq");
-            if (String.IsNullOrEmpty(fq.UserName))
+            if (String.IsNullOrEmpty(fq.UserName) && (lstIDs == null || lstIDs.Count() == 0))
                 throw new MyFlightbookException("Don't get all flights as KML for an empty user!!");
+
+            if (lstIDs != null)
+                fq.CustomRestriction = String.Format(CultureInfo.InvariantCulture, " flights.idFlight IN ({0}) ", String.Join(", ", lstIDs));
 
             string szKML = string.Empty;
 
