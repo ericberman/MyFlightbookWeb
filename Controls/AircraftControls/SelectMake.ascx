@@ -1,7 +1,43 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="SelectMake.ascx.cs" Inherits="Controls_AircraftControls_SelectMake" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:MultiView ID="mvModel" runat="server" ActiveViewIndex="0">
     <asp:View ID="vwEdit" runat="server">
-        <h3><% =Resources.Aircraft.editAircraftMakeModelPrompt %></h3>
+        <script type="text/javascript">
+            function ModelSelected(source, eventArgs) {
+                $find("cpeFilter")._doClose();
+                document.getElementById('<% = imgAutofillProgress.ClientID %>').style.display = 'inline-block';
+                document.getElementById('<% = hdnSelectedModel.ClientID %>').value = eventArgs._value;
+                document.getElementById('<% = lnkPopulateModel.ClientID %>').click();
+            }
+        </script>
+        <table>
+            <tr>
+                <td style="padding:0px"><h3><% =Resources.Aircraft.editAircraftMakeModelPrompt %></h3></td>
+                <td> <asp:Image ID="imgSearch" ImageUrl="~/images/Search.png" runat="server" Height="20px" Width="20px" /></td>
+                <td>
+                    <ajaxToolkit:CollapsiblePanelExtender ID="cpeFilter" Collapsed="true" runat="server" CollapseControlID="imgSearch" EnableViewState="false" 
+                        TargetControlID="pnlFilterModels" ExpandControlID="imgSearch" ExpandDirection="Horizontal" TextLabelID="pnlSearchProps" BehaviorID="cpeFilter" />
+                    <asp:Panel ID="pnlFilterModels" runat="server" EnableViewState="false">
+                        <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Makes, SearchTip %>" runat="server" TargetControlID="txtFilter" />
+                        <asp:TextBox ID="txtFilter" EnableViewState="false" runat="server" Width="320px" onfocusout="$find('cpeFilter')._doClose()"></asp:TextBox>
+                        <span style="display: none">
+                            <asp:LinkButton ID="lnkPopulateModel" runat="server" OnClick="lnkPopulateModel_Click" />
+                            <asp:HiddenField ID="hdnSelectedModel" runat="server" />
+                        </span>
+                    </asp:Panel>
+                    <asp:Image ID="imgAutofillProgress" style="display: none" runat="server" ImageUrl="~/images/ajax-loader-transparent-ball.gif" />
+                    <cc1:AutoCompleteExtender ID="txtTail_AutoCompleteExtender" runat="server"
+                        CompletionInterval="100" CompletionListCssClass="AutoExtender"
+                        CompletionListHighlightedItemCssClass="AutoExtenderHighlight"
+                        CompletionListItemCssClass="AutoExtenderList" DelimiterCharacters=""
+                        OnClientItemSelected="ModelSelected"
+                        Enabled="True" MinimumPrefixLength="2" ServiceMethod="SuggestFullModels" UseContextKey="true"
+                        ServicePath="~/Public/Webservice.asmx" TargetControlID="txtFilter" CompletionSetCount="20">
+                    </cc1:AutoCompleteExtender>
+                </td>
+            </tr>
+        </table>
+         
         <div style="margin-bottom:4px">
             <asp:DropDownList ID="cmbManufacturers" runat="server"
                 AppendDataBoundItems="True" AutoPostBack="True" EnableViewState="False"
@@ -31,7 +67,7 @@
     <asp:View ID="vwReadOnly" runat="server">
         <div style="vertical-align:middle">
             <asp:Label ID="lblMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:Label>&nbsp;&nbsp;
-            <asp:ImageButton ID="imgEditAircraftModel" ImageAlign="Top" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" />
+            <asp:ImageButton ID="imgEditAircraftModel" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" />
         </div>
     </asp:View>
 </asp:MultiView>

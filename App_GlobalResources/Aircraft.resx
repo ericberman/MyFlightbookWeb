@@ -379,7 +379,7 @@
     <value>Aircraft Maintenance and Inspections</value>
   </data>
   <data name="editAircraftMakeModelPrompt" xml:space="preserve">
-    <value>Aircraft Make/Model</value>
+    <value>Model for this aircraft</value>
   </data>
   <data name="editAircraftModelChange1" xml:space="preserve">
     <value>Aircraft on %APP_NAME% are shared between pilots, so any change you make here could impact other pilots.</value>

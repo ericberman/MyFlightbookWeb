@@ -1357,6 +1357,22 @@ namespace MyFlightbook
 
         [System.Web.Services.WebMethod]
         [System.Web.Script.Services.ScriptMethod]
+        public string[] SuggestFullModels(string prefixText, int count, string contextKey)
+        {
+            if (String.IsNullOrEmpty(prefixText))
+                return new string[0];
+            ModelQuery modelQuery = new ModelQuery() { FullText = prefixText.Replace(" ", "*").Replace("-", "*"), Skip = 0, Limit = count };
+            List<string> lst = new List<string>();
+            foreach (MakeModel mm in MakeModel.MatchingMakes(modelQuery))
+            {
+                lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithDash, mm.ManufacturerDisplay, mm.ModelDisplayName), mm.MakeModelID.ToString()));
+            }
+
+            return lst.ToArray();
+        }
+
+        [System.Web.Services.WebMethod]
+        [System.Web.Script.Services.ScriptMethod]
         public string[] PreviouslyUsedTextProperties(string prefixText, int count, string contextKey)
         {
             string[] rgResultDefault = new string[0];

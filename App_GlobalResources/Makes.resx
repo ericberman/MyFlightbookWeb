@@ -204,4 +204,10 @@
   <data name="searchICAOTip" xml:space="preserve">
     <value>Tip: search for "ICAO:abc" to restrict a search for "abc" to the ICAO designator for the model</value>
   </data>
+  <data name="searchModels" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="searchTip" xml:space="preserve">
+    <value>Search for models</value>
+  </data>
 </root>

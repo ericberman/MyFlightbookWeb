@@ -172,4 +172,22 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
             MajorChangeRequested(this, e);        
     }
     #endregion
+
+    protected void lnkPopulateModel_Click(object sender, EventArgs e)
+    {
+        int mmID = MakeModel.UnknownModel;
+        if (int.TryParse(hdnSelectedModel.Value, out mmID))
+        {
+            MakeModel mm = MakeModel.GetModel(mmID);
+            cmbManufacturers.SelectedValue = mm.ManufacturerID.ToString(CultureInfo.InvariantCulture);
+            LastSelectedManufacturer = mm.ManufacturerID;
+            UpdateModelList(mm.ManufacturerID);
+            cmbMakeModel.SelectedValue = mmID.ToString(CultureInfo.InvariantCulture);
+            UpdateAttributesForModel(mm);
+            if (ModelChanged != null)
+                ModelChanged(this, new MakeSelectedEventArgs(SelectedModelID));
+
+            hdnSelectedModel.Value = txtFilter.Text = string.Empty;
+        }
+    }
 }
