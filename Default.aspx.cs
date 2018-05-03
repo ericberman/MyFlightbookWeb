@@ -53,10 +53,6 @@ public partial class Public_Home : System.Web.UI.Page
 
             mvWelcome.SetActiveView(User.Identity.IsAuthenticated ? vwWelcomeBack : vwWelcomeNewUser);
 
-            // turn off maps for iPad since it seems to crash
-            if (String.IsNullOrEmpty(Request.UserAgent) || (Request.UserAgent.Contains("iPad") && Request.UserAgent.Contains("Safari")))
-                lblSomeShown.Visible = mfbGoogleMapManagerRecentFlights.Visible = false;
-
             if (User.Identity.IsAuthenticated)
             {
                 lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageWelcomeBack, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFirstName);
@@ -83,9 +79,6 @@ public partial class Public_Home : System.Web.UI.Page
             else
                 Response.Redirect("DefaultMini.aspx");
         }
-
-        // need to do this on every callback so that pictures are displayed.
-        mfbGoogleMapManagerRecentFlights.Map.Airports = fs.RecentRoutes;
 
         gvRecentFlights.DataSource = fs.RecentPublicFlights;
         gvRecentFlights.DataBind();

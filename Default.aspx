@@ -7,7 +7,6 @@
 <%@ Register src="Controls/mfbFacebookFan.ascx" tagname="mfbFacebookFan" tagprefix="uc6" %>
 <%@ Register src="Controls/mfbGoogleAdSense.ascx" tagname="mfbGoogleAdSense" tagprefix="uc5" %>
 <%@ Register src="Controls/mfbSignIn.ascx" tagname="mfbSignIn" tagprefix="uc7" %>
-<%@ Register src="Controls/mfbGoogleMapManager.ascx" tagname="mfbGoogleMapManager" tagprefix="uc8" %>
 <%@ Register src="Controls/fbComment.ascx" tagname="fbComment" tagprefix="uc9" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblHeader" runat="server" Text=""></asp:Label>
@@ -39,8 +38,7 @@
         </asp:View>
     </asp:MultiView>
     <h2><asp:Localize ID="locRecentFlightsHeader" runat="server"></asp:Localize></h2>
-        <p><asp:Label ID="lblRecentFlightsStats" Font-Bold="true" runat="server" Text="Label"></asp:Label> <asp:Label ID="lblSomeShown" runat="server" Text="<%$ Resources:LocalizedText, RecentFlightsBelow %>"></asp:Label></p>
-        <uc8:mfbGoogleMapManager ID="mfbGoogleMapManagerRecentFlights" Width="600px" runat="server" /><br />
+        <p><asp:Label ID="lblRecentFlightsStats" Font-Bold="true" runat="server" Text="Label"></asp:Label></p>
         <asp:GridView ID="gvRecentFlights" runat="server" OnRowDataBound="gvRecentFlights_AddPictures" 
         GridLines="None" Visible="true" AutoGenerateColumns="false" onpageindexchanging="OnPageIndexChanging"
         CellPadding="5" EnableViewState="false" Width="950px" PageSize="5"

@@ -766,9 +766,6 @@
   <data name="HomePageStats" xml:space="preserve">
     <value>{0:N0} pilots have recorded {1:N0} flights over the past {2:N0} days!</value>
   </data>
-  <data name="RecentFlightsBelow" xml:space="preserve">
-    <value>Some of the recent flights are shown below</value>
-  </data>
   <data name="AnswerWhyCantEditSims" xml:space="preserve">
     <value>This aircraft is a "virtual" aircraft that is either an unspecified instance of the representative model, or a training device that emulates that model. As such is shared by all pilots who want to fly a virtual version of this model with this set of capabilities (e.g., logging landings or approaches).&lt;br /&gt;&lt;br /&gt;If you need to record training time in a training device that represents another model of aircraft, or with a different certification level, or in a different model without specifying a specific tailnumber, you can create a new virtual aircraft to represent that (if one already exists, it will be reused).&lt;br /&gt;&lt;br /&gt;If you have existing flights that you would like to switch from one aircraft to another, contact us and we can do a bulk-edit for you.</value>
   </data>
