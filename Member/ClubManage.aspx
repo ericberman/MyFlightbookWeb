@@ -210,23 +210,23 @@
                             <asp:BoundField DataField="Total Tach" HeaderText="<%$ Resources:Club, ReportHeaderTotalTach %>" DataFormatString="{0:0.0#}" />
                             <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderFlightStart %>" >
                                 <ItemTemplate>
-                                    <asp:Label ID="lblFlightStart" runat="server" Text='<%# ((DateTime)Eval("Flight Start")).UTCFormattedStringOrEmpty(false) %>'></asp:Label>
+                                    <asp:Label ID="lblFlightStart" runat="server" Text='<%# FormattedUTCDate(Eval("Flight Start")) %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderFlightEnd %>" >
                                 <ItemTemplate>
-                                    <asp:Label ID="lblflightEnd" runat="server" Text='<%# ((DateTime)Eval("Flight End")).UTCFormattedStringOrEmpty(false) %>'></asp:Label>
+                                    <asp:Label ID="lblflightEnd" runat="server" Text='<%# FormattedUTCDate(Eval("Flight End")) %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:BoundField DataField="Total Flight" HeaderText="<%$ Resources:Club, ReportHeaderTotalFlight %>" DataFormatString="{0:0.0#}"  />
                             <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderEngineStart %>" >
                                 <ItemTemplate>
-                                    <asp:Label ID="lblEngineStart" runat="server" Text='<%# ((DateTime)Eval("Engine Start")).UTCFormattedStringOrEmpty(false) %>'></asp:Label>
+                                    <asp:Label ID="lblEngineStart" runat="server" Text='<%# FormattedUTCDate(Eval("Engine Start")) %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderEngineEnd %>" >
                                 <ItemTemplate>
-                                    <asp:Label ID="lblEngineEnd" runat="server" Text='<%# ((DateTime)Eval("Engine End")).UTCFormattedStringOrEmpty(false) %>'></asp:Label>
+                                    <asp:Label ID="lblEngineEnd" runat="server" Text='<%# FormattedUTCDate(Eval("Engine End")) %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:BoundField DataField="Total Engine" HeaderText="<%$ Resources:Club, ReportHeaderTotalEngine %>" DataFormatString="{0:0.0#}" />

@@ -1,18 +1,16 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Clubs;
+using MyFlightbook.Instruction;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Net.Mail;
-using MyFlightbook;
-using MyFlightbook.Clubs;
-using MyFlightbook.Schedule;
-using MyFlightbook.Instruction;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -387,6 +385,15 @@ public partial class Member_ClubManage : System.Web.UI.Page
         else if (DateTime.Now.AddDays(30).CompareTo(dt) > 0)
             return "currencynearlydue";
         return "currencyok";
+    }
+
+    protected string FormattedUTCDate(object o)
+    {
+        if (o == null)
+            return string.Empty;
+        if (o is DateTime)
+            return ((DateTime)o).UTCFormattedStringOrEmpty(false);
+        return string.Empty;
     }
 
     protected string MonthForDate(DateTime dt)
