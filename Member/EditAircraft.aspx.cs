@@ -68,15 +68,11 @@ public partial class EditMake : System.Web.UI.Page
             btnMigrateSim.Visible = btnMigrateGeneric.Visible && CouldBeSim(MfbEditAircraft1.Aircraft);
 
             if (MfbEditAircraft1.AircraftID == Aircraft.idAircraftUnknown)
-            {
                 lblAddEdit1.Text = Resources.Aircraft.AircraftEditAdd;
-                reusetext.Visible = true;
-            }
             else
             {
                 bool fIsKnownAircraft = new UserAircraft(Page.User.Identity.Name).CheckAircraftForUser(MfbEditAircraft1.Aircraft);
                 lblAddEdit1.Text = Resources.Aircraft.AircraftEditEdit;
-                mfbATDFTD1.Visible = false;
                 lblTail.Text = MfbEditAircraft1.Aircraft.DisplayTailnumberWithModel;
             }
 

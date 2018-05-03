@@ -450,6 +450,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         hdnLastCountry.Value = cmbCountryCode.SelectedValue;
         hdnLastTail.Value = txtTail.Text;
 
+        pnlReuseWarning.Visible = fIsNew;
         if (!fIsNew)
             lblTailnumber.Text = m_ac.TailNumber;
     }
@@ -482,6 +483,8 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         rowCountry.Visible = fRealAircraft && !fIsAnonymous;
         rowMaintenance.Visible = rowCountry.Visible && !fIsNew;
 
+        mfbATDFTD1.Visible = fIsNew && !fRealAircraft;
+
         if (fRealAircraft)
         {
             if (fIsAnonymous)
@@ -506,9 +509,10 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             // Sim 
             if (fIsNew && fHasModelSpecified)
                 m_ac.TailNumber = Aircraft.SuggestSims(m_ac.ModelID, m_ac.InstanceType)[0].TailNumber;
-            pnlSimTail.Visible = (fHasModelSpecified);
+            vwSimTailDisplay.SetActiveView(fHasModelSpecified ? vwHasModel : vwNoModel);
 
             lblSimTail.Text = txtTail.Text = m_ac.TailNumber;
+
             ckAnonymous.Checked = false;
         }
     }

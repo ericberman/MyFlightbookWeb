@@ -13,6 +13,7 @@
 <%@ Register Src="~/Controls/mfbHoverImageList.ascx" TagPrefix="uc1" TagName="mfbHoverImageList" %>
 <%@ Register Src="~/Controls/mfbMakeListItem.ascx" TagPrefix="uc1" TagName="mfbMakeListItem" %>
 <%@ Register Src="~/Controls/AircraftControls/SelectMake.ascx" TagPrefix="uc1" TagName="SelectMake" %>
+<%@ Register src="../Controls/mfbATDFTD.ascx" tagname="mfbATDFTD" tagprefix="uc2" %>
 
 <asp:Panel ID="pnlEditAircraft" runat="server" DefaultButton="btnAddAircraft">
     <asp:HiddenField ID="hdnAdminMode" runat="server" Value="false" />
@@ -44,6 +45,7 @@
                 DataValueField="InstanceTypeInt"
                 OnSelectedIndexChanged="cmbAircraftInstance_SelectedIndexChanged">
             </asp:DropDownList>
+            <uc2:mfbATDFTD ID="mfbATDFTD1" runat="server" Visible="false" />
         </asp:View>
         <asp:View ID="vwInstanceExisting" runat="server">
         </asp:View>
@@ -133,6 +135,15 @@
                                     <asp:Image ID="imgAutofillProgress" Style="display: none" runat="server" ImageUrl="~/images/ajax-loader-transparent-ball.gif" />
                                 </td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <asp:Panel runat="server" ID="pnlReuseWarning" CssClass="fineprint" style="max-width:400px" visible="false">
+                                        <asp:Label ID="lblNote" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>&nbsp;
+                                        <asp:Localize ID="locAircraftReuseWarning" runat="server" Text="<%$ Resources:LocalizedText, EditAircraftReuseAdvice %>"></asp:Localize>
+                                    </asp:Panel>
+                                </td>
+                            </tr>
                         </table>
                     </asp:View>
                     <asp:View ID="vwAnonTail" runat="server">
@@ -147,12 +158,19 @@
                 </asp:MultiView>
             </asp:View>
             <asp:View ID="vwSimTail" runat="server">
-                <asp:Panel ID="pnlSimTail" runat="server">
-                    <ul>
-                        <li><asp:Label ID="lblSimTail" Font-Bold="True" Font-Size="Larger" runat="server"></asp:Label></li>
-                        <li><asp:Label ID="lblAutoSuggestTail" runat="server" CssClass="fineprint" Text="<%$ Resources:Aircraft, editAircraftAutoAssignedNote %>"></asp:Label></li>
-                    </ul>
-                </asp:Panel>
+                <asp:MultiView ID="vwSimTailDisplay" runat="server">
+                    <asp:View ID="vwHasModel" runat="server">
+                        <ul>
+                            <li><asp:Label ID="lblSimTail" Font-Bold="True" Font-Size="Larger" runat="server"></asp:Label></li>
+                            <li><asp:Label ID="lblAutoSuggestTail" runat="server" CssClass="fineprint" Text="<%$ Resources:Aircraft, editAircraftAutoAssignedNote %>"></asp:Label></li>
+                        </ul>
+                    </asp:View>
+                    <asp:View ID="vwNoModel" runat="server">
+                        <ul>
+                            <li><asp:Label ID="lblPendingTail" CssClass="fineprint" runat="server" Text="<%$ Resources:Aircraft, editAircraftTailNumberPending %>"></asp:Label></li>
+                        </ul>
+                    </asp:View>
+                </asp:MultiView>
             </asp:View>
         </asp:MultiView>
     </div>

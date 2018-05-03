@@ -546,4 +546,7 @@
   <data name="editAircraftAddModelPrompt" xml:space="preserve">
     <value>Add new...</value>
   </data>
+  <data name="editAircraftTailNumberPending" xml:space="preserve">
+    <value>(Tail number will be assigned when a model is specified)</value>
+  </data>
 </root>

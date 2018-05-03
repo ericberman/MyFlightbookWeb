@@ -2,7 +2,6 @@
     CodeFile="EditAircraft.aspx.cs" Inherits="EditMake" Title="" %>
 <%@ Register Src="../Controls/mfbEditAircraft.ascx" TagName="mfbEditAircraft" TagPrefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
-<%@ Register src="../Controls/mfbATDFTD.ascx" tagname="mfbATDFTD" tagprefix="uc2" %>
 <%@ Register src="../Controls/mfbLogbook.ascx" tagname="mfbLogbook" tagprefix="uc3" %>
 <%@ Register src="../Controls/mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc4" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
@@ -16,12 +15,7 @@
     <script type="text/javascript" src='<%= ResolveUrl("~/public/jquery.json-2.4.min.js") %>'></script>
     <script type="text/javascript" src='<%= ResolveUrl("~/public/mfbcalendar.js") %>'></script>
     <div class="noprint">
-        <uc2:mfbATDFTD ID="mfbATDFTD1" runat="server" />
-        <p runat="server" id="reusetext" visible="false">
-            <asp:Label ID="lblNote" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>&nbsp;
-            <asp:Localize ID="locAircraftReuseWarning" runat="server" Text="<%$ Resources:LocalizedText, EditAircraftReuseAdvice %>"></asp:Localize>
-        </p>
-        <div style="float:left"><uc1:mfbEditAircraft id="MfbEditAircraft1" runat="server" OnAircraftUpdated="AircraftUpdated"></uc1:mfbEditAircraft></div>
+        <uc1:mfbEditAircraft id="MfbEditAircraft1" runat="server" OnAircraftUpdated="AircraftUpdated"></uc1:mfbEditAircraft>
     </div>
     <asp:HiddenField ID="hdnReturnURL" runat="server" />
 </asp:Content>
