@@ -1,15 +1,14 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Globalization;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -162,7 +161,7 @@ namespace MyFlightbook.FlightCurrency
 
     public class UserTotals
     {
-        private ArrayList alTotals = new ArrayList();
+        private List<TotalsItem> alTotals = new List<TotalsItem>();
 
         ModelFeatureTotal[] rgModelFeatureTotals = {new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.Complex, Resources.Totals.Complex, " fcomplex <> 0 "),
                                                             new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.Retract, Resources.Totals.Retract, " fRetract <> 0 "),
@@ -370,20 +369,15 @@ namespace MyFlightbook.FlightCurrency
         /// Whether or not to include totals that are 0.
         /// </summary>
         public Boolean FilterEmptyTotals { get; set; }
-        #endregion
 
         /// <summary>
-        /// The resulting totals for the user
+        /// The resulting totals.
         /// </summary>
-        public Collection<TotalsItem> Totals
+        public IEnumerable<TotalsItem> Totals
         {
-            get { return new Collection<TotalsItem>((TotalsItem[])alTotals.ToArray(typeof(TotalsItem))); }
+            get { return alTotals; }
         }
-
-        public TotalsItem[] TotalsArray()
-        {
-            return (TotalsItem[])alTotals.ToArray(typeof(TotalsItem));
-        }
+        #endregion
 
         #region Constructors
         public UserTotals()
@@ -523,7 +517,21 @@ namespace MyFlightbook.FlightCurrency
             {
                 FlightQuery fq = AddCatClassToQuery(new FlightQuery(Restriction), cct.CatClass, string.Empty);
                 if (pf.TotalsGroupingMode != TotalsGrouping.CatClass || !cct.IsRedundant)
+                {
+                    if (pf.TotalsGroupingMode == TotalsGrouping.CatClass) {
+                        // If you have a mix of type-rated and non-type-rated aircraft, then the subtotal for non-typerated doesn't have a type specifier; it's just naked "AMEL", for example.
+                        // So Find and fix up the query for that item
+                        CategoryClass ccTarget = cct.CatClass;
+                        foreach (TotalsItem ti in Totals)
+                        {
+                            FlightQuery q = ti.Query;
+                            if (q != null && q.CatClasses != null && q.CatClasses.Length == 1 && q.CatClasses[0].IdCatClass == ccTarget.IdCatClass && (q.TypeNames == null || q.TypeNames.Length == 0))
+                                q.TypeNames = new string[1] { string.Empty };
+                        }
+                    }
+
                     AddToList(new TotalsItem(cct.DisplayName, cct.Total, SubDescFromLandings(cct.TotalLandings, cct.TotalFSDayLandings, cct.TotalFSNightLandings, cct.TotalApproaches), pf.TotalsGroupingMode == TotalsGrouping.CatClass ? TotalsItem.SortMode.CatClass : TotalsItem.SortMode.Model) { Query = fq });
+                }
             }
         }
 

@@ -322,4 +322,7 @@
   <data name="FlightFeatureHasImages" xml:space="preserve">
     <value>Has images or videos</value>
   </data>
+  <data name="ContainsTypeNone" xml:space="preserve">
+    <value>(none)</value>
+  </data>
 </root>

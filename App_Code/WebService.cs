@@ -547,7 +547,7 @@ namespace MyFlightbook
             fq.DateMin = dtMin;
             UserTotals ut = new UserTotals(szUser, fq, true);
             ut.DataBind();
-            return ut.TotalsArray();
+            return ut.Totals.ToArray();
         }
 
         /// <summary>
@@ -571,7 +571,7 @@ namespace MyFlightbook
             fq.UserName = szUser; // just to be safe
             UserTotals ut = new UserTotals(szUser, fq, true);
             ut.DataBind();
-            return ut.TotalsArray();
+            return ut.Totals.ToArray();
         }
 
         /// <summary>

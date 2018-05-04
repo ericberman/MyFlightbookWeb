@@ -864,23 +864,32 @@ namespace MyFlightbook
 
             if (TypeNames != null && TypeNames.Length > 0)
             {
-                int i = 0;
-                StringBuilder sbTypes = new StringBuilder();
-                foreach (string szType in TypeNames)
+                if (TypeNames.Length == 1 && String.IsNullOrEmpty(TypeNames[0]))
                 {
-                    if (!string.IsNullOrWhiteSpace(szType))
-                    {
-                        string szParamName = String.Format(CultureInfo.InvariantCulture, "?typequery{0}", i++);
-                        AddParameter(szParamName, szType.Trim());
-                        sbTypes.Append(sbTypes.Length == 0 ? "(" : " OR ");
-                        sbTypes.AppendFormat(CultureInfo.InvariantCulture, "typename={0}", szParamName);
-                    }
+                    // special case: single empty typename = "No type."
+                    szModelsTypeQuery = " (typename='') ";
+                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsType, Resources.FlightQuery.ContainsTypeNone, "TypeNames"));
                 }
-                if (sbTypes.Length > 0)
+                else
                 {
-                    sbTypes.Append(")");
-                    szModelsTypeQuery = sbTypes.ToString();
-                    Filters.Add(new QueryFilterItem(TypeNames.Length == 1 ? Resources.FlightQuery.ContainsType : Resources.FlightQuery.ContainsTypeMultiple, String.Join(",", TypeNames), "TypeNames"));
+                    int i = 0;
+                    StringBuilder sbTypes = new StringBuilder();
+                    foreach (string szType in TypeNames)
+                    {
+                        if (!string.IsNullOrWhiteSpace(szType))
+                        {
+                            string szParamName = String.Format(CultureInfo.InvariantCulture, "?typequery{0}", i++);
+                            AddParameter(szParamName, szType.Trim());
+                            sbTypes.Append(sbTypes.Length == 0 ? "(" : " OR ");
+                            sbTypes.AppendFormat(CultureInfo.InvariantCulture, "typename={0}", szParamName);
+                        }
+                    }
+                    if (sbTypes.Length > 0)
+                    {
+                        sbTypes.Append(")");
+                        szModelsTypeQuery = sbTypes.ToString();
+                        Filters.Add(new QueryFilterItem(TypeNames.Length == 1 ? Resources.FlightQuery.ContainsType : Resources.FlightQuery.ContainsTypeMultiple, String.Join(",", TypeNames), "TypeNames"));
+                    }
                 }
 
                 // Splice the type query into the models query as an OR - i.e., matches EITHER model OR typenames.
