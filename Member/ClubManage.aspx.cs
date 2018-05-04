@@ -443,7 +443,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
         using (DataView dv = (DataView) sqlDSReports.Select(DataSourceSelectArguments.Empty))
         {
             foreach (DataRowView dr in dv)
-                lstIds.Add(Convert.ToInt32(dr["idflight"]));
+                lstIds.Add(Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture));
         }
 
         string szErr = string.Empty;
