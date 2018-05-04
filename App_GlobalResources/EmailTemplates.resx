@@ -181,6 +181,9 @@
   <data name="OneDriveFailureSubject" xml:space="preserve">
     <value>%APP_NAME% - Backup failed to OneDrive</value>
   </data>
+  <data name="PasswordChanged" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\passwordchanged.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="ReauthFacebook" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\email\reauthfacebook.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

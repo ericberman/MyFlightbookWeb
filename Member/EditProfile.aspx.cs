@@ -521,6 +521,10 @@ public partial class Member_EditProfile : System.Web.UI.Page
                 throw new MyFlightbookException(Resources.Profile.errPasswordsDontMatch);
             if (!Membership.Provider.ChangePassword(Page.User.Identity.Name, CurrentPassword.Text, NewPassword.Text))
                 throw new MyFlightbookException(Resources.Profile.errChangePasswordFailed);
+
+            util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.PasswordChangedSubject, Branding.CurrentBrand.AppName),
+                Branding.ReBrand(Resources.EmailTemplates.PasswordChanged),
+                new System.Net.Mail.MailAddress(m_pf.Email, m_pf.UserFullName), false, false);
         }
         catch (MyFlightbookException ex)
         {

@@ -494,4 +494,7 @@
   <data name="ReturnToStudent" xml:space="preserve">
     <value>← Return to logbook for student {0}</value>
   </data>
+  <data name="PasswordChangedSubject" xml:space="preserve">
+    <value>{0} - Notification of password change</value>
+  </data>
 </root>
