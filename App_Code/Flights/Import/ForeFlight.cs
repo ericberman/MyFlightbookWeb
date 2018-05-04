@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using MyFlightbook.CSV;
 using System.Globalization;
 using System.Text;
@@ -11,7 +11,7 @@ using JouniHeikniemi.Tools.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -235,9 +235,8 @@ namespace MyFlightbook.ImportFlights
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerNames, JoinStrings(PassengerNames)),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropStudentName, JoinStrings(StudentNames)),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfExaminer, JoinStrings(ExaminerNames)),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven, DualGiven > 0 ? GroundTraining : 0),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, DualReceived > 0 ? GroundTraining : 0),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, FlightReview),
+						PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven, DualGiven > 0 ? GroundTraining : 0),
+                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, DualReceived > 0 ? GroundTraining : 0),                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, FlightReview),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIPC, IPC),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCheckRide, Checkride)
                     }).ToArray()
@@ -357,6 +356,11 @@ namespace MyFlightbook.ImportFlights
 
                             while ((rgRow = reader.GetCSVLine()) != null)
                             {
+                                bool fHasData = false;
+                                Array.ForEach<string>(rgRow, (sz) => { fHasData = fHasData || !String.IsNullOrWhiteSpace(sz); });
+                                if (!fHasData)
+                                    continue;
+
                                 DataRow dr = dt.NewRow();
                                 for (int i = 0; i < rgRow.Length && i < rgHeaders.Length; i++)
                                     dr[i] = rgRow[i];
