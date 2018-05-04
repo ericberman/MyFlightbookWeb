@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2017 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -48,13 +48,19 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
             if (String.IsNullOrEmpty(Username))
                 Username = Page.User.Identity.Name;
 
+            // Only refresh if the incoming value is different from the previous value.
+            if (value != null)
+                value.UserName = Username;
+
+            FlightQuery fqOld = m_fq;
             m_fq = value;
-            if (m_fq != null)
-                m_fq.UserName = Username;
-            UserTotals ut = new UserTotals(Username, m_fq, true);
-            ut.DataBind();
-            gvTotals.DataSource = ut.Totals;
-            gvTotals.DataBind();
+            if (m_fq == null || !m_fq.IsSameAs(fqOld))
+            {
+                UserTotals ut = new UserTotals(Username, m_fq, true);
+                ut.DataBind();
+                gvTotals.DataSource = ut.Totals;
+                gvTotals.DataBind();
+            }
         }
     }
 

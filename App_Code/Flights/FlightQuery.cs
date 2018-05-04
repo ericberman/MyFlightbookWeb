@@ -418,7 +418,22 @@ namespace MyFlightbook
         {
             get { return JsonConvert.SerializeObject(this).CompareCurrentCultureIgnoreCase(JsonConvert.SerializeObject(new FlightQuery(this.UserName))) == 0; }
         }
+
         #endregion
+
+        /// <summary>
+        /// Sees if two queries are semantically the same.
+        /// Compares JSON serializations.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>True if they are the same.</returns>
+        public bool IsSameAs(FlightQuery fq)
+        {
+            if (fq == null)
+                return false;
+
+            return String.Compare(ToJSONString(), fq.ToJSONString(), StringComparison.Ordinal) == 0;
+        }
 
         #region JSON Management
         #region Serialization of empty arrays
