@@ -34,7 +34,7 @@
             <uc1:imageSlider runat="server" ID="imgSliderAircraft" />
         </div>
         <div id="divMap" runat="server">
-            <div>
+            <div style="text-align:center;">
                 <asp:HyperLink ID="lnkZoomOut" runat="server" Visible="False" Text="<%$ Resources:Airports, MapZoomOut %>"></asp:HyperLink>&nbsp;&nbsp;&nbsp;&nbsp;<asp:HyperLink ID="lnkShowMapOnly" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowOnlyMap %>"></asp:HyperLink>&nbsp;&nbsp;
                 <asp:LinkButton ID="lnkViewKML" runat="server" Visible="false" 
                     onclick="lnkViewKML_Click" Text="<%$ Resources:LogbookEntry, PublicFlightKMLDownload %>"></asp:LinkButton>
@@ -49,10 +49,14 @@
                     </uc1:popmenu>
                 </div>
             </div>
-            <uc2:mfbGoogleMap ID="MfbGoogleMap1" runat="server" Width="100%" Height="400px" />
-            <asp:Panel ID="pnlDistance" runat="server" Visible="false">
-                <asp:Label ID="lblDistance" runat="server" Text=""></asp:Label>
-            </asp:Panel>
+            <div style="margin-left:auto; margin-right:auto;">
+                <uc2:mfbGoogleMap ID="MfbGoogleMap1" runat="server" Width="100%" Height="400px" />
+                <div style="text-align:center">
+                    <asp:Panel ID="pnlDistance" runat="server" Visible="false">
+                        <asp:Label ID="lblDistance" runat="server" Text=""></asp:Label>
+                    </asp:Panel>
+                </div>
+            </div>
             <uc5:mfbAirportServices ID="mfbAirportServices1" runat="server" ShowFBO="false" ShowHotels="false" ShowInfo="false" ShowMetar="false" ShowZoom="true" />
         </div>
     </div>
@@ -65,7 +69,7 @@
             </div>
         </div>
     </div>
-    <div style="margin-left:auto; margin-right:auto; width: 400px;">
+    <div runat="server" id="pnlFB" style="margin-left:auto; margin-right:auto; width: 400px;">
         <div><uc1:mfbMiniFacebook runat="server" ID="mfbMiniFacebook" AddMetaTagHints="true" /></div>
         <div><uc6:fbComment ID="fbComment" runat="server"></uc6:fbComment></div>
     </div>

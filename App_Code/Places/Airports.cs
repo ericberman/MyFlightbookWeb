@@ -1382,7 +1382,7 @@ namespace MyFlightbook.Airports
         public const string RouteSeparator = "=>";
 
         private string[] m_rgszAirportsNormal;
-        private Hashtable m_htAirportsByCode = new Hashtable();
+        private Dictionary<string, airport> m_htAirportsByCode = new Dictionary<string, airport>();
         private List<airport> m_rgAirports;
 
         public override string ToString()
@@ -1464,7 +1464,8 @@ namespace MyFlightbook.Airports
             {
                 string szKey = airport.ForceNavaidPrefix + ap.Code;
                 // see if a navaid is already there; store the new one only if it is higher priority (lower value) than what's already there.
-                airport ap2 = (airport) m_htAirportsByCode[szKey];
+                airport ap2 = null;
+                m_htAirportsByCode.TryGetValue(szKey, out ap2);
                 if (ap2 == null || (ap.Priority < ap2.Priority))
                     m_htAirportsByCode[szKey] = ap;
             }
@@ -1566,15 +1567,16 @@ namespace MyFlightbook.Airports
         /// <returns>The matching airport, null if not found.</returns>
         private airport GetAirportByCode(string sz)
         {
-            airport ap = (airport)m_htAirportsByCode[sz];
+            airport ap = null;
+            m_htAirportsByCode.TryGetValue(sz, out ap);
 
             // if this wasn't a forced navaid and the airport wasn't found, look to see if the navaid matched.
             if (ap == null && !sz.StartsWith(airport.ForceNavaidPrefix, StringComparison.CurrentCultureIgnoreCase))
-                ap = (airport)m_htAirportsByCode[airport.ForceNavaidPrefix + sz];
+                m_htAirportsByCode.TryGetValue(airport.ForceNavaidPrefix + sz, out ap);
 
             // else try the USPrefix hack
             if (ap == null && airport.IsUSAirport(sz))
-                ap = (airport)m_htAirportsByCode[airport.USPrefixConvenienceAlias(sz)];
+                m_htAirportsByCode.TryGetValue(airport.USPrefixConvenienceAlias(sz), out ap);
 
             return ap;
         }
@@ -1602,6 +1604,11 @@ namespace MyFlightbook.Airports
         public airport[] GetAirportList()
         {
             return m_rgAirports.ToArray();
+        }
+
+        public IEnumerable<airport> UniqueAirports
+        {
+            get { return (m_htAirportsByCode == null) ? new airport[0] : (IEnumerable<airport>)m_htAirportsByCode.Values; }
         }
         #endregion
 
@@ -1656,7 +1663,7 @@ namespace MyFlightbook.Airports
         {
             m_rgAirports = new List<airport>();
             m_rgszAirportsNormal = new string[0];
-            m_htAirportsByCode = new Hashtable();
+            m_htAirportsByCode = new Dictionary<string, airport>();
             List<string> lstCodes = new List<string>();
 
             IEnumerable<airport> rgap = airport.AirportsMatchingText(szQuery);

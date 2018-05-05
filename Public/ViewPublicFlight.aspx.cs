@@ -57,6 +57,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
             MfbGoogleMap1.Map.Airports = result.Result;
             MfbGoogleMap1.Map.ShowRoute = ckShowRoute.Checked;
             MfbGoogleMap1.Map.AutofillOnPanZoom = (result.Result.Count() == 0);
+            MfbGoogleMap1.Map.AllowDupeMarkers = false;
             lnkZoomOut.NavigateUrl = MfbGoogleMap1.ZoomToFitScript;
             lnkZoomOut.Visible = !result.MasterList.LatLongBox().IsEmpty;
 
@@ -77,6 +78,13 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
         }
 
         MfbGoogleMap1.Map.Images = ckShowImages.Checked ? mfbIlFlight.Images.ImageArray.ToArray() : new MFBImageInfo[0];
+        // By default, show only a static map (cut down on dynamic map hits)
+        if (util.GetIntParam(Request, "dm", 0) == 0)
+        {
+            MfbGoogleMap1.Mode = MyFlightbook.Mapping.GMap_Mode.Static;
+            popmenu.Visible = false;
+            lnkZoomOut.Visible = mfbAirportServices1.Visible = false;
+        }
 
         lblDistance.Text = le.GetPathDistanceDescription(distance);
         pnlDistance.Visible = lblDistance.Text.Length > 0;
@@ -119,7 +127,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
                     this.Master.HasFooter = this.Master.HasHeader = false;
                     FullPageBottom.Visible = FullPageTop.Visible = false;
 
-                    pnlDetails.Visible = divAircraftImages.Visible = divMap.Visible = mfbAirportServices1.Visible = lnkShowMapOnly.Visible = imgsliderFlights.Visible = mfbVideoEntry1.Visible = false;
+                    pnlFB.Visible = pnlDetails.Visible = divAircraftImages.Visible = divMap.Visible = mfbAirportServices1.Visible = lnkShowMapOnly.Visible = imgsliderFlights.Visible = mfbVideoEntry1.Visible = false;
 
                     ShowComponents(szComponents.Split(','));
                 }

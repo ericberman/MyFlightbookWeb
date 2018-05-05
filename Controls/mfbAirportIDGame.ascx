@@ -38,7 +38,8 @@ function TickTock()
     }
 }
 // ]]>
-</script><asp:Literal ID="Literal5" runat="server" Text="<%$ Resources:LocalizedText, AirportGameTimeRemaining %>" /><span id="timer" style="font-weight: bold;">0:30</span><br /> <br /><asp:Label ID="Label1" runat="server" Text="<%$Resources:LocalizedText, AirportGameAirportPrompt %>"></asp:Label><br /><uc1:mfbGoogleMap ID="MfbGoogleMap1" runat="server" Width="400px" Height="400px" AllowUserManipulation="false" ShowMarkers="false" />
+</script><asp:Literal ID="Literal5" runat="server" Text="<%$ Resources:LocalizedText, AirportGameTimeRemaining %>" /><span id="timer" style="font-weight: bold;">0:30</span><br /> <br /><asp:Label ID="Label1" runat="server" Text="<%$Resources:LocalizedText, AirportGameAirportPrompt %>"></asp:Label><br />
+        <uc1:mfbGoogleMap ID="MfbGoogleMap1" runat="server" Width="400px" Height="400px" ShowMarkers="false" Mode="Static" />
         <asp:RadioButtonList ID="rbGuesses" runat="server" AutoPostBack="true" OnSelectedIndexChanged="rbGuesses_SelectedIndexChanged">
         </asp:RadioButtonList><br />
         <br />

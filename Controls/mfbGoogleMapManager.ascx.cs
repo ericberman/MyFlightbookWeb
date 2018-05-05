@@ -1,12 +1,12 @@
+using MyFlightbook.Mapping;
 using System;
 using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook.Mapping;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,6 +21,12 @@ public partial class Controls_mfbGoogleMapMgr : System.Web.UI.UserControl
     /// The map object
     /// </summary>
     public GoogleMap Map { get { return m_Map; } }
+
+    public GMap_Mode Mode
+    {
+        get { return mvMap.ActiveViewIndex == 0 ? GMap_Mode.Dynamic : GMap_Mode.Static; }
+        set { mvMap.SetActiveView(value == GMap_Mode.Dynamic ? vwDynamic : vwStatic); }
+    }
 
     /// <summary>
     /// Whether or not to highlight the specified airports with a marker that enables zooming and other services
@@ -40,15 +46,6 @@ public partial class Controls_mfbGoogleMapMgr : System.Web.UI.UserControl
         set { Map.ShowRoute = value; }
     }
 
-    /// <summary>
-    /// Enables/disables user control of zoom or panning.
-    /// </summary>
-    public Boolean AllowUserManipulation
-    {
-        get { return Map.ZoomAndPan; }
-        set { Map.ZoomAndPan = value; ResizableControlExtender1.Enabled = value; }
-    }
-
     public Boolean AllowResize
     {
         get { return ResizableControlExtender1.Enabled; }
@@ -60,8 +57,14 @@ public partial class Controls_mfbGoogleMapMgr : System.Web.UI.UserControl
     /// </summary>
     public Unit Width
     {
-        set { pnlMap.Width = value; }
-        get { return pnlMap.Width; }
+        set
+        {
+            if (Mode == GMap_Mode.Dynamic)
+                pnlMap.Width = value;
+            else
+                imgMap.Width = value;
+        }
+        get { return (Mode == GMap_Mode.Dynamic) ? pnlMap.Width : imgMap.Width; }
     }
 
     /// <summary>
@@ -69,8 +72,14 @@ public partial class Controls_mfbGoogleMapMgr : System.Web.UI.UserControl
     /// </summary>
     public Unit Height
     {
-        set { pnlMap.Height = value; }
-        get { return pnlMap.Height; }
+        set
+        {
+            if (Mode == GMap_Mode.Dynamic)
+                pnlMap.Height = value;
+            else
+                imgMap.Height = value;
+        }
+        get { return (Mode == GMap_Mode.Dynamic) ? pnlMap.Height : imgMap.Height; }
     }
 
     /// <summary>
@@ -92,14 +101,21 @@ public partial class Controls_mfbGoogleMapMgr : System.Web.UI.UserControl
 
     protected override void OnPreRender(EventArgs e)
     {
-        Page.ClientScript.RegisterStartupScript(GetType(), "MapInit" + UniqueID, Map.MapJScript(MapID, pnlMap.ClientID), true);
+        switch (Mode) {
+            case GMap_Mode.Dynamic:
+                Page.ClientScript.RegisterClientScriptInclude("googleMaps", String.Format(CultureInfo.InvariantCulture, "https://maps.googleapis.com/maps/api/js?key={0}", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey));
+                Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/GMapScript.js"));
+                Page.ClientScript.RegisterClientScriptInclude("MFBMapOMS", ResolveClientUrl("~/Public/oms.min.js"));
+                Page.ClientScript.RegisterStartupScript(GetType(), "MapInit" + UniqueID, Map.MapJScript(MapID, pnlMap.ClientID), true);
+                break;
+            case GMap_Mode.Static:
+                imgMap.ImageUrl = Map.StaticMapHRef(MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey, (int) Height.Value, (int) Width.Value);
+                break;
+        }
         base.OnPreRender(e);
     }
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Page.ClientScript.RegisterClientScriptInclude("googleMaps", String.Format(CultureInfo.InvariantCulture, "https://maps.googleapis.com/maps/api/js?key={0}", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey));
-        Page.ClientScript.RegisterClientScriptInclude("MFBMapScript", ResolveClientUrl("~/Public/GMapScript.js"));
-        Page.ClientScript.RegisterClientScriptInclude("MFBMapOMS", ResolveClientUrl("~/Public/oms.min.js"));
     }
 }

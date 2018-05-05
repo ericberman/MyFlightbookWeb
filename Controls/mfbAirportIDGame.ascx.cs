@@ -1,14 +1,14 @@
+using MyFlightbook;
+using MyFlightbook.Airports;
+using MyFlightbook.Mapping;
 using System;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
-using MyFlightbook;
-using MyFlightbook.Airports;
-using MyFlightbook.Mapping;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -180,9 +180,11 @@ public partial class Controls_mfbAirportIDGame : System.Web.UI.UserControl, INam
     protected void ShowMap(string szTLA)
     {
         // Create an airportlist object and initialize it with this airport string
-        MfbGoogleMap1.Map.SetAirportList(new AirportList(szTLA));
+        airport ap = new AirportList(szTLA).GetAirportList()[0];
+        MfbGoogleMap1.Map.MapCenter = ap.LatLong;
         MfbGoogleMap1.Map.ZoomFactor = GMap_ZoomLevels.Airport;
         MfbGoogleMap1.Map.MapType = GMap_MapType.G_SATELLITE_MAP;
+        MfbGoogleMap1.Map.StaticMapAdditionalParams = "style=feature:all|element:labels|visibility:off";
     }
 
 

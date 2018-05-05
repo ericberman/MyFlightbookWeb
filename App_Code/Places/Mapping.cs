@@ -11,7 +11,7 @@ using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2016 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -20,6 +20,8 @@ namespace MyFlightbook.Mapping
 {
     #region Google Maps
     public enum GMap_MapType { G_NORMAL_MAP, G_SATELLITE_MAP, G_HYBRID_MAP, G_TERRAIN };
+
+    public enum GMap_Mode { Dynamic, Static }
 
     public enum GMap_ZoomLevels { Invalid = 0, World = 1, US = 4, AirportAndVicinity = 10, Airport = 14 };
 
@@ -35,6 +37,11 @@ namespace MyFlightbook.Mapping
         public GMap_MapType MapType { get; set; }
 
         /// <summary>
+        /// Dynamic or static map?
+        /// </summary>
+        public GMap_Mode MapMode { get; set; }
+
+        /// <summary>
         /// True to show markers
         /// </summary>
         public Boolean ShowMarkers { get; set; }
@@ -43,11 +50,6 @@ namespace MyFlightbook.Mapping
         /// True to show the route (airport to airport) - i.e., connect-the-dots
         /// </summary>
         public Boolean ShowRoute { get; set; }
-
-        /// <summary>
-        /// True to enable zoomming and panning
-        /// </summary>
-        public Boolean ZoomAndPan { get; set; }
 
         /// <summary>
         /// Is the map visible?
@@ -134,13 +136,85 @@ namespace MyFlightbook.Mapping
         private LatLongBox BoundingBox { get; set; }
         #endregion
 
+        #region Static Map
+        /// <summary>
+        /// Additional querystring arguments for a static map.  E.g., style=feature:all|element:labels|visibility:off
+        /// </summary>
+        public string StaticMapAdditionalParams { get; set; }
+
+        /// <summary>
+        /// Returns the HREF string suitable for use in an IMG tag (i.e., for a static map vs. a dynamic map)
+        /// <param name="szMapKey">The key for using the google maps API</param>
+        /// <param name="width">The width for the static map</param>
+        /// <param name="height">The height for the static map</param>
+        /// </summary>
+        public string StaticMapHRef(string szMapKey, int height, int width)
+        {
+            StringBuilder sb = new StringBuilder(String.Format(CultureInfo.InvariantCulture, "https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&key={0}&size={1}x{2}", HttpUtility.UrlEncode(szMapKey), width, height));
+
+            bool fHasRoute = Airports != null && Airports.Count() > 0;
+            bool fHasPath = Path != null && Path.Count() > 0 && ShowRoute;
+
+            if (!String.IsNullOrEmpty(StaticMapAdditionalParams))
+                sb.AppendFormat(CultureInfo.InvariantCulture, "&{0}", StaticMapAdditionalParams);
+
+            if (fHasPath || fHasRoute)
+            {
+                List<List<string>> lstSegments = new List<List<string>>();
+                if (fHasRoute)
+                {
+                    List<string> lstMarkers = new List<string>();
+                    foreach (AirportList al in Airports)
+                    {
+                        List<string> lstSegment = new List<string>();
+                        lstSegments.Add(lstSegment);
+                        foreach (airport ap in al.GetAirportList())
+                        {
+                            string szSegment = String.Format(CultureInfo.InvariantCulture, "{0:F6},{1:F6}", ap.LatLong.Latitude, ap.LatLong.Longitude);
+                            lstMarkers.Add(szSegment);
+                            lstSegment.Add(szSegment);
+                        }
+                    }
+
+                    if (ShowMarkers)
+                        sb.Append("&markers=color:red|" + String.Join("|", lstMarkers));
+                }
+                if (ShowRoute)
+                {
+                    string szPath = string.Empty;
+                    if (fHasPath)
+                    {
+                        List<string> lstPath = new List<string>();
+                        foreach (LatLong ll in Path)
+                            lstPath.Add(String.Format(CultureInfo.InvariantCulture, "{0:F6},{1:F6}", ll.Latitude, ll.Longitude));
+                        szPath = String.Join("|", lstPath);
+                    }
+
+                    // always connect the segments...
+                    foreach (List<string> segment in lstSegments)
+                        sb.Append("&path=color:0x0000FF88|weight:5|geodesic:true|" + String.Join("|", segment));
+
+                    // and add the path, if possible
+                    if (sb.Length + szPath.Length < 8100)
+                        sb.Append("&path=color:0xFF000088|weight:5|" + szPath);
+                }
+            }
+            else
+            {
+                sb.AppendFormat(CultureInfo.InvariantCulture, "&center={0:F8},{1:F8}&zoom={2}", MapCenter.Latitude, MapCenter.Longitude, (int)ZoomFactor);
+            }
+
+            return sb.ToString();
+        }
+        #endregion
+
         #region Constructors
         public GoogleMap()
         {
             MapType = GMap_MapType.G_HYBRID_MAP;
+            MapMode = GMap_Mode.Dynamic;
             ShowMarkers = true;
             ShowRoute = true;
-            ZoomAndPan = true;
             MapVisible = true;
             Path = new LatLong[0];
             ZoomFactor = GMap_ZoomLevels.US;
@@ -177,7 +251,7 @@ namespace MyFlightbook.Mapping
 
                 foreach (AirportList airportlist in Airports)
                 {
-                    airport[] rgap = AllowDupeMarkers ? airportlist.GetAirportList() : airportlist.GetNormalizedAirports();
+                    airport[] rgap = AllowDupeMarkers ? airportlist.GetAirportList() : airportlist.UniqueAirports.ToArray();
 
                     List<string> lstRoute = new List<string>();
 
@@ -304,12 +378,12 @@ namespace MyFlightbook.Mapping
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "rgImages: {0}, ", szImages);
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "rgClubs: {0}, ", szClubs);
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "divContainer: '{0}', ", containerID);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fZoom: {0}, ", ZoomAndPan ? 1 : 0);
+            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fZoom: {0}, ", 1);
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fAutofillPanZoom: {0}, ", AutofillOnPanZoom ? 1 : 0);
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fShowMap: {0}, ", MapVisible ? 1 : 0);
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fShowMarkers: {0}, ", ShowMarkers ? 1 : 0);
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fShowRoute: {0}, ", ShowRoute ? 1 : 0);
-            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fDisableUserManip: {0}, ", ZoomAndPan ? 0 : 1);
+            sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fDisableUserManip: {0}, ", 0);
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "defaultZoom: {0}, ", Convert.ToInt32(ZoomFactor, CultureInfo.InvariantCulture));
             sbInitMap.Append(String.Format(CultureInfo.InvariantCulture, "defaultLat: {0}, defaultLong: {1}, ", MapCenter.Latitude, MapCenter.Longitude));
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "MapType: {0}, ", MapTypeToString(MapType));
@@ -334,8 +408,6 @@ namespace MyFlightbook.Mapping
 
             return sbInitMap.ToString();
         }
-
-
     }
     #endregion
 }
