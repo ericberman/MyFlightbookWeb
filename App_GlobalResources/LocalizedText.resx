@@ -1443,4 +1443,10 @@
   <data name="PrintViewPropertySeparatorSpace" xml:space="preserve">
     <value>(Space)</value>
   </data>
+  <data name="CookieNotice" xml:space="preserve">
+    <value>This site uses cookies to maintain your authentication state, remember preferences, analyze traffic, and provide limited advertisement.</value>
+  </data>
+  <data name="CookieNoticeAccept" xml:space="preserve">
+    <value>Got it, I consent</value>
+  </data>
 </root>

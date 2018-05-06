@@ -67,6 +67,12 @@
             </asp:contentplaceholder>
         </div>
         <uc1:mfbFooter ID="MfbFooter" runat="server" />
+        <asp:Panel ID="pnlCookies" runat="server" style="padding: 4px; margin-left:auto; margin-right: auto; margin-bottom:2px; border: 1px solid black; border-radius: 3px; background-color:#eeeeee;">
+            <% =Resources.LocalizedText.CookieNotice %>
+            <asp:Button ID="btnAcceptCookies" runat="server" Text="<%$ Resources:LocalizedText, CookieNoticeAccept %>" OnClick="btnAcceptCookies_Click" /> 
+            <asp:Button ID="lnkPrivacy" runat="server" OnClick="lnkPrivacy_Click" />
+        </asp:Panel>
+        <asp:AlwaysVisibleControlExtender runat="server" ID="avceCookies" TargetControlID="pnlCookies" HorizontalSide="Center" VerticalSide="Bottom" VerticalOffset="5" />
         <uc4:GoogleAnalytics ID="GoogleAnalytics1" runat="server" />
     </form>
 </body>

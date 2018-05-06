@@ -30,6 +30,7 @@ namespace MyFlightbook
         public const string keyOriginalID = "OriginalID";
         public const string keyNewUser = "IsNewUser";
         public const string keyEncryptMyFlights = "MyFlightsKey";
+        public const string keyCookiePrivacy = "cookiesAccepted";
     }
 
     public static class ShuntState

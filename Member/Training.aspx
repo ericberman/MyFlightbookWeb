@@ -93,9 +93,9 @@
                                     AlternateText="Delete this student" 
                                     ToolTip="<%$ Resources:Profile, EditProfileDeleteStudentTooltip %>" CommandName="_Delete"
                                     CommandArgument='<%# Bind("username") %>' runat="server" meta:resourcekey="imgDeleteResource1" 
-                                     /><cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="imgDelete"
+                                     /><cc1:ConfirmButtonExtender ID="cbeDeleteStudent" runat="server" TargetControlID="imgDelete"
                                     ConfirmOnFormSubmit="True" 
-                                    ConfirmText="<%$ Resources:Profile, EditProfileDeleteStudentConfirmation %>" BehaviorID="ConfirmButtonExtender1"></cc1:ConfirmButtonExtender></ItemTemplate>
+                                    ConfirmText="<%$ Resources:Profile, EditProfileDeleteStudentConfirmation %>"></cc1:ConfirmButtonExtender></ItemTemplate>
                             <ItemStyle VerticalAlign="Top" />
                         </asp:TemplateField>
                         <asp:BoundField DataField="UserFullName" ShowHeader="False" meta:resourcekey="BoundFieldResource1"
@@ -211,9 +211,9 @@
                                     AlternateText="Delete this instructor" 
                                     ToolTip="<%$ Resources:Profile, EditProfileDeleteCFITooltip %>" CommandName="_Delete"
                                     CommandArgument='<%# Bind("username") %>' runat="server" meta:resourcekey="imgDeleteResource2" 
-                                     /><cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="imgDelete"
+                                     /><cc1:ConfirmButtonExtender ID="cbeDeleteInstructor" runat="server" TargetControlID="imgDelete"
                                     ConfirmOnFormSubmit="True" 
-                                    ConfirmText="<%$ Resources:Profile, EditProfileDeleteCFIConfirmation %>" BehaviorID="ConfirmButtonExtender1"></cc1:ConfirmButtonExtender></ItemTemplate></asp:TemplateField>
+                                    ConfirmText="<%$ Resources:Profile, EditProfileDeleteCFIConfirmation %>"></cc1:ConfirmButtonExtender></ItemTemplate></asp:TemplateField>
                         <asp:BoundField DataField="UserFullName" ShowHeader="False" meta:resourcekey="BoundFieldResource2" 
                              />
                         <asp:TemplateField meta:resourcekey="TemplateFieldResource10" ><ItemTemplate><asp:CheckBox ID="ckCanViewLogbook" runat="server" 

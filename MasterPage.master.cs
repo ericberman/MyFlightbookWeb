@@ -284,6 +284,13 @@ public partial class MasterPage : System.Web.UI.MasterPage
             if (util.GetStringParam(Request, "m") == "no")
                 SetMobile(false);
 
+            bool fResetCookieAccept = util.GetIntParam(Request, "declinecookie", 0) != 0;
+            bool fCookiesAccepted = Request.Cookies[MFBConstants.keyCookiePrivacy] != null;
+            if (fResetCookieAccept && fCookiesAccepted)
+                Response.Cookies[MFBConstants.keyCookiePrivacy].Expires = DateTime.Now.AddDays(-1);
+            pnlCookies.Visible = !fCookiesAccepted || fResetCookieAccept;
+            lnkPrivacy.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName);
+
             lnkAppleIcon.Href = ResolveUrl("~/images/apple-touch-icon.png");
             cssMain.Href = "~/Public/stylesheet.css".ToAbsoluteURL(Request).ToString();
             cssMobile.Visible = mfbHeader.IsMobile = MfbFooter.IsMobile = IsMobileSession();
@@ -330,5 +337,17 @@ public partial class MasterPage : System.Web.UI.MasterPage
         ProfileRoles.StopImpersonating();
         pnlImpersonation.Visible = false;
         Response.Redirect("~/Member/Admin.aspx");
+    }
+
+    protected void btnAcceptCookies_Click(object sender, EventArgs e)
+    {
+        pnlCookies.Visible = false;
+        Response.Cookies[MFBConstants.keyCookiePrivacy].Value = "yes";
+        Response.Cookies[MFBConstants.keyCookiePrivacy].Expires = DateTime.Now.AddYears(100);
+    }
+
+    protected void lnkPrivacy_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/Public/Privacy.aspx");
     }
 }
