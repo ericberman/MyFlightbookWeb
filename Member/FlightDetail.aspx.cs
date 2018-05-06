@@ -102,10 +102,16 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         }
     }
 
-    private AirportList m_al = null;
-    protected AirportList Airports
+    private const string szkeyVSAirportListResult = "szkeyVSALR";
+    protected ListsFromRoutesResults RoutesList
     {
-        get { return m_al ?? (m_al = new AirportList(CurrentFlight.Route)); }
+        get
+        {
+            ListsFromRoutesResults lfrr = (ListsFromRoutesResults)ViewState[szkeyVSAirportListResult];
+            if (lfrr == null)
+                ViewState[szkeyVSAirportListResult] = lfrr = AirportList.ListsFromRoutes(CurrentFlight.Route);
+            return lfrr;
+        }
     }
 
     private string szKeyVSRestriction = "viewstateRestrictionKey";
@@ -297,7 +303,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         }
 
         // Set up any maps.
-        mfbGoogleMapManager1.Map.SetAirportList(Airports);
+        mfbGoogleMapManager1.Map.Airports = RoutesList.Result;
         mfbGoogleMapManager1.ShowMarkers = true;
         mfbGoogleMapManager1.Map.PathVarName = PathLatLongArrayID;
         mfbGoogleMapManager1.Map.Path = m_fd.GetPath();
@@ -598,7 +604,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
 
         Controls_mfbAirportServices aptSvc = (Controls_mfbAirportServices)fv.FindControl("mfbAirportServices1");
         aptSvc.GoogleMapID = mfbGoogleMapManager1.MapID;
-        aptSvc.SetAirports(Airports.GetNormalizedAirports());
+        aptSvc.SetAirports(RoutesList.MasterList.GetNormalizedAirports());
 
         ((Controls_mfbSignature)fv.FindControl("mfbSignature")).Flight = le;
     }

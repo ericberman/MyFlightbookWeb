@@ -99,7 +99,7 @@
                             <div>
                                 <uc1:mfbTooltip ID="mfbTTCatClass" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookAltCatClassTooltip %>" HoverControl="lblCatClass" />
                             </div>
-                            <asp:Panel ID="pnlRoute" runat="server" Visible="<%# Airports.GetNormalizedAirports().Length > 0 %>" CssClass="detailsSection" meta:resourcekey="pnlRouteResource1">
+                            <asp:Panel ID="pnlRoute" runat="server" Visible="<%# RoutesList.MasterList.GetNormalizedAirports().Length > 0 %>" CssClass="detailsSection" meta:resourcekey="pnlRouteResource1">
                                 <h3><%# Eval("Route").ToString().ToUpper() %></h3>
                                 <uc5:mfbAirportServices runat="server" ID="mfbAirportServices1" ShowZoom="true" ShowInfo="true" ShowMetar="true" />
                                 <p><%# ((LogbookEntryDisplay) Container.DataItem).GetPathDistanceDescription(DataForFlight.ComputePathDistance()) %></p>

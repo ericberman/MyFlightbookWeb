@@ -1355,6 +1355,7 @@ namespace MyFlightbook.Airports
     /// <summary>
     /// Result from parsing a list of routes
     /// </summary>
+    [Serializable]
     public class ListsFromRoutesResults
     {
         /// <summary>
@@ -1366,6 +1367,7 @@ namespace MyFlightbook.Airports
         /// The AirportList containing the set of all airports found.
         /// </summary>
         public AirportList MasterList { get; set; }
+
         public ListsFromRoutesResults(IEnumerable<AirportList> result, AirportList master)
         {
             Result = new List<AirportList>(result);
