@@ -311,7 +311,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
 
             IsNaked = util.GetIntParam(Request, "naked", 0) != 0;
             if (IsNaked)
-                SidebarPlaceholder.Visible = mfbHeader.Visible = MfbFooter.Visible = SponsoredAd1.Visible = false;
+                pnlCookies.Visible = SidebarPlaceholder.Visible = mfbHeader.Visible = MfbFooter.Visible = SponsoredAd1.Visible = false;
 
             bool fIsImpersonating = ProfileRoles.IsImpersonating(Page.User.Identity.Name);
             pnlImpersonation.Visible = fIsImpersonating;
