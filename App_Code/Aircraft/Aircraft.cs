@@ -229,6 +229,23 @@ namespace MyFlightbook
         /// Date of the latest date for the user in this aircraft, if known
         /// </summary>
         public DateTime? LatestDate { get; set; }
+
+        /// <summary>
+        /// Linked display for the stats for the flight.
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public LinkedString UserStatsDisplay
+        {
+            get
+            {
+                if (UserFlights == 0)
+                    return new LinkedString(Resources.Aircraft.AircraftStatsNeverFlown, null);
+                else return
+                        new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsFlown, UserFlights,
+                  EarliestDate.HasValue && LatestDate.HasValue ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsDate, EarliestDate.Value.ToShortDateString(), LatestDate.Value.ToShortDateString()) : string.Empty),
+                    String.IsNullOrEmpty(User) ? null : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(new FlightQuery() { UserName = User, AircraftIDList = new int[] { AircraftID } }.ToBase64CompressedJSONString())));
+            }
+        }
         #endregion
 
         #region Constructors
@@ -263,7 +280,11 @@ namespace MyFlightbook
 
         public AircraftStats(string szUser, int aircraftID) : this()
         {
-            GetStats(new int[] { aircraftID }, szUser, (dr) => { InitFromDataReader(dr); });
+            GetStats(new int[] { aircraftID }, szUser, (dr) =>
+            {
+                InitFromDataReader(dr);
+                User = szUser;
+            });
         }
 
         protected AircraftStats(MySqlDataReader dr) : this()
@@ -316,7 +337,7 @@ namespace MyFlightbook
 
             GetStats(lstAircraftIDs, szUser, (dr) =>
             {
-                AircraftStats acs = new AircraftStats(dr);
+                AircraftStats acs = new AircraftStats(dr) { User = szUser };
                 dict[acs.AircraftID] = acs;
             });
 
@@ -471,6 +492,12 @@ namespace MyFlightbook
         public bool HasBeenFlown
         {
             get { return (Stats != null && Stats.EarliestDate.HasValue);}
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public LinkedString StatsDisplay
+        {
+            get { return (Stats == null) ? new LinkedString() : Stats.UserStatsDisplay; }
         }
         #endregion
 
@@ -687,6 +714,9 @@ namespace MyFlightbook
         {
             get { return String.Format(CultureInfo.CurrentCulture, "{0} ({1})", TailNumber, LongModelDescription); }
         }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public string ICAO { get; set; }
 
         /// <summary>
         /// Returns a display tailnumber, mapping anonymous as appropriate
@@ -906,6 +936,9 @@ namespace MyFlightbook
             InstanceTypeDescription = dr["InstanceTypeDesc"].ToString();
             ModelDescription = dr["Model"].ToString();
             ModelCommonName = dr["ModelCommonName"].ToString();
+            ICAO = dr["Family"].ToString();
+            if (String.IsNullOrEmpty(ICAO))
+                ICAO = ModelDescription;
             Flags = UInt32.Parse(dr["Flags"].ToString(), CultureInfo.InvariantCulture);
             PublicNotes = Convert.ToString(dr["PublicNotes"], CultureInfo.InvariantCulture) ?? string.Empty;
             PrivateNotes = Convert.ToString(dr["UserNotes"], CultureInfo.InvariantCulture) ?? string.Empty;
@@ -1836,7 +1869,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         /// <summary>
         /// Indicates how to group the aircraft
         /// </summary>
-        public enum GroupMode { All, Activity, CategoryClass, Model, Recency }
+        public enum GroupMode { All, Activity, CategoryClass, Model, ICAO, Recency }
 
         #region Properties
         public IEnumerable<Aircraft> MatchingAircraft { get; set; }
@@ -1860,6 +1893,8 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                     return "HasBeenFlown";
                 case GroupMode.All:
                     return string.Empty;
+                case GroupMode.ICAO:
+                    return "ICAO";
                 case GroupMode.Activity:
                     return "HideFromSelection";
                 case GroupMode.Model:
@@ -1908,6 +1943,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                     break;
                 case GroupMode.Model:
                 case GroupMode.CategoryClass:
+                case GroupMode.ICAO:
                     foreach (string key in d.Keys)
                         lstDst.Add(new AircraftGroup() { GroupTitle = key, MatchingAircraft = d[key] });
                     lstDst.Sort((ag1, ag2) => { return ag1.GroupTitle.CompareCurrentCulture(ag2.GroupTitle); });

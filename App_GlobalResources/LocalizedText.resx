@@ -326,9 +326,6 @@
   <data name="EditAircraftUserStats" xml:space="preserve">
     <value>This aircraft is used by {0} user(s) in {1} flight(s).</value>
   </data>
-  <data name="EditAircraftYourStats" xml:space="preserve">
-    <value>You have flown it in {0} flight(s) between {1} and {2}.</value>
-  </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>

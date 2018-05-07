@@ -58,6 +58,11 @@ public partial class makes : System.Web.UI.Page
 
     protected void Refresh()
     {
+        if (GroupingMode == AircraftGroup.GroupMode.Recency && String.IsNullOrEmpty(hdnStatsFetched.Value))
+        {
+            hdnStatsFetched.Value = "yes";
+            AircraftStats.PopulateStatsForAircraft(SourceAircraft, Page.User.Identity.Name);
+        }
         rptAircraftGroups.DataSource = AircraftGroup.AssignToGroups(SourceAircraft, IsAdminMode ? AircraftGroup.GroupMode.All : GroupingMode);
         rptAircraftGroups.DataBind();
     }
@@ -79,9 +84,29 @@ public partial class makes : System.Web.UI.Page
 
             ((Label)popup.FindControl("lblOptionHeader")).Text = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.optionHeader, ac.DisplayTailnumber);
 
-            HyperLink lnkRegistration = (HyperLink)e.Row.FindControl("lnkRegistration");
+            if (!IsAdminMode)
+            {
+                List<LinkedString> lst = new List<LinkedString>();
+
+                if (ac.Stats != null)
+                    lst.Add(ac.Stats.UserStatsDisplay);
+                MakeModel mm = MakeModel.GetModel(ac.ModelID);
+                if (mm != null)
+                {
+                    if (!String.IsNullOrEmpty(mm.FamilyName))
+                        lst.Add(new LinkedString(ModelQuery.ICAOPrefix + mm.FamilyName));
+                    foreach (string sz in mm.AttributeList())
+                        lst.Add(new LinkedString(sz));
+                }
+
+                Repeater rpt = (Repeater)e.Row.FindControl("rptAttributes");
+                rpt.DataSource = lst;
+                rpt.DataBind();
+            }
+
             if (IsAdminMode)
             {
+                HyperLink lnkRegistration = (HyperLink)e.Row.FindControl("lnkRegistration");
                 string szURL = ac.LinkForTailnumberRegistry();
                 lnkRegistration.Visible = szURL.Length > 0;
                 lnkRegistration.NavigateUrl = szURL;

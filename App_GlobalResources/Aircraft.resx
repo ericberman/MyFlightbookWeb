@@ -549,4 +549,18 @@
   <data name="editAircraftTailNumberPending" xml:space="preserve">
     <value>(Tail number will be assigned when a model is specified)</value>
   </data>
+  <data name="AircraftStatsDate" xml:space="preserve">
+    <value>between {0} and {1}</value>
+    <comment>Dates, if known.</comment>
+  </data>
+  <data name="AircraftStatsFlown" xml:space="preserve">
+    <value>You have flown it in {0} flight(s) {1}</value>
+    <comment>{1} will have dates, if known</comment>
+  </data>
+  <data name="AircraftStatsNeverFlown" xml:space="preserve">
+    <value>You have no recorded flights in this aircraft</value>
+  </data>
+  <data name="ViewAircraftICAO" xml:space="preserve">
+    <value>ICAO designation</value>
+  </data>
 </root>

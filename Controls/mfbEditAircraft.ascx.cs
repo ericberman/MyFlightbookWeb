@@ -236,18 +236,10 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             List<LinkedString> lst = new List<LinkedString>();
 
             Stats = new AircraftStats(Page.User.Identity.Name, m_ac.AircraftID);
+            // Add overall stats
             lst.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftUserStats, Stats.Users, Stats.Flights)));
-
-            if (Stats.LatestDate.HasValue && Stats.EarliestDate.HasValue)
-            {
-                string szText = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftYourStats, Stats.UserFlights, Stats.EarliestDate.Value.ToShortDateString(), Stats.LatestDate.Value.ToShortDateString());
-                string szLink = null;
-                if (!AdminMode && (new UserAircraft(Page.User.Identity.Name)).GetUserAircraftByID(m_ac.AircraftID) != null) {
-                    FlightQuery fq = new FlightQuery(Page.User.Identity.Name) { AircraftIDList = new int[] { m_ac.AircraftID } };
-                    szLink = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(fq.ToJSONString().Compress())));
-                }
-                lst.Add(new LinkedString(szText, szLink));
-            }
+            // And add personal stats
+            lst.Add(Stats.UserStatsDisplay);
 
             if (AdminMode && util.GetStringParam(Request, "listUsers").Length > 0)
                 lst.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, "Users = {0}", String.Join(", ", Stats.UserNames))));

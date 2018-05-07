@@ -15,9 +15,12 @@
                 <asp:ListItem Selected="True" Text="<%$ Resources:Aircraft, ViewAircraftActive %>" Value="Activity"></asp:ListItem>
                 <asp:ListItem Text="<%$ Resources:Aircraft, ViewAircraftAll %>" Value="All"></asp:ListItem>
                 <asp:ListItem Text="<%$ Resources:Aircraft, ViewAircraftModel %>" Value="Model"></asp:ListItem>
+                <asp:ListItem Text="<%$ Resources:Aircraft, ViewAircraftICAO %>" Value="ICAO"></asp:ListItem>
                 <asp:ListItem Text="<%$ Resources:Aircraft, ViewAircraftCategoryClass %>" Value="CategoryClass"></asp:ListItem>
+                <asp:ListItem Text="<%$ Resources:Aircraft, ViewAircraftRecency %>" Value="Recency"></asp:ListItem>
             </asp:DropDownList>
         </asp:Panel>
+        <asp:HiddenField ID="hdnStatsFetched" runat="server" />
         <p>
             <asp:Button ID="btnAddNew" runat="server" Text="<%$ Resources:LocalizedText, MyAircraftAddAircraft %>" 
             onclick="btnAddNew_Click" />
@@ -181,11 +184,20 @@
                                             <div style="white-space:pre"><%# Eval("PrivateNotes").ToString().Linkify() %></div>
                                             <asp:Panel ID="pnlAttributes" runat="server" Visible="<%# !IsAdminMode %>">
                                                 <ul>
-                                                    <asp:Repeater ID="rptAttributes" runat="server" DataSource='<%# MakeModel.GetModel((int) Eval("ModelID")).AttributeList() %>'>
-                                                        <ItemTemplate>
-                                                            <li><%# Container.DataItem %></li>
-                                                        </ItemTemplate>
-                                                    </asp:Repeater>
+                                                <asp:Repeater ID="rptAttributes" runat="server">
+                                                    <ItemTemplate>
+                                                        <li>
+                                                            <asp:MultiView ID="mvAttribute" runat="server" ActiveViewIndex='<%# String.IsNullOrEmpty((string) Eval("Link")) ? 0 : 1 %>'>
+                                                                <asp:View ID="vwNoLink" runat="server">
+                                                                    <%# Eval("Value") %>
+                                                                </asp:View>
+                                                                <asp:View ID="vwLink" runat="server">
+                                                                    <asp:HyperLink ID="lnkAttrib" runat="server" Text='<%# Eval("Value") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink>
+                                                                </asp:View>
+                                                            </asp:MultiView>
+                                                        </li>
+                                                    </ItemTemplate>
+                                                </asp:Repeater>
                                                 </ul>
                                             </asp:Panel>
                                         </asp:Panel>
