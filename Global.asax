@@ -1,12 +1,12 @@
 ﻿<%@ Application Language="C#" %>
 
 <script RunAt="server">
-/******************************************************
- * 
- * Copyright (c) 2015 MyFlightbook LLC
- * Contact myflightbook-at-gmail.com for more information
- *
-*******************************************************/
+    /******************************************************
+     * 
+     * Copyright (c) 2015 MyFlightbook LLC
+     * Contact myflightbook-at-gmail.com for more information
+     *
+    *******************************************************/
 
     protected void Application_Start(object sender, EventArgs e)
     {
@@ -39,7 +39,10 @@
 
         if (Context != null)
         {
-            ErrorMessage.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "Request = {0}://{1}{2}\r\nUser = {3}\r\nBy: {4} {5} {6}\r\n\r\n\r\n", Context.Request.IsSecureConnection ? "https" : "http", Context.Request.Url.Host, Context.Request.Url.PathAndQuery, Context.User.Identity.Name, Context.Request.UserAgent, Context.Request.UserHostAddress, Context.Request.UserHostName);
+            ErrorMessage.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "Request = {0}://{1}{2}\r\nUser = {3}\r\nLanguage={4}\r\nBy: {5} {6} {7}\r\n\r\n\r\n", Context.Request.IsSecureConnection ? "https" : "http",
+                Context.Request.Url.Host, Context.Request.Url.PathAndQuery, Context.User.Identity.Name,
+                Context.Request.UserLanguages == null ? "(none)" : String.Join(", ", Context.Request.UserLanguages),
+            Context.Request.UserAgent, Context.Request.UserHostAddress, Context.Request.UserHostName);
             if (Context.Request != null && Context.Request.UrlReferrer != null)
                 ErrorMessage.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "Referrer requested: {0}\r\n", Context.Request.UrlReferrer.ToString());
 
