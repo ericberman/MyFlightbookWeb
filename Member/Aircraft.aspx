@@ -75,7 +75,7 @@
                                 <asp:Label ID="lblVOR" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastVOR")) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText=":Last Altimeter">
+                        <asp:TemplateField HeaderText="Last Altimeter">
                             <ItemTemplate>
                                 <asp:Label ID="lblAltimeter" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastAltimeter")) %>'></asp:Label>
                             </ItemTemplate>
@@ -105,7 +105,7 @@
                                 <asp:Label ID="lblVOR" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextVOR) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText=":Next Altimeter">
+                        <asp:TemplateField HeaderText="Next Altimeter">
                             <ItemTemplate>
                                 <asp:Label ID="lblAltimeter" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextAltimeter) %>'></asp:Label>
                             </ItemTemplate>
