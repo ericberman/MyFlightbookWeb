@@ -563,4 +563,16 @@
   <data name="ViewAircraftICAO" xml:space="preserve">
     <value>ICAO designation</value>
   </data>
+  <data name="errInvalidTail" xml:space="preserve">
+    <value>Please provide a complete tail number, including country prefix (or choose "Other" from the list of countries).</value>
+  </data>
+  <data name="errInvalidTailChars" xml:space="preserve">
+    <value>Please enter a valid tail number (numbers and letters and, optionally, a dash)</value>
+  </data>
+  <data name="errMissingTail" xml:space="preserve">
+    <value>Please enter a tail number (registration)</value>
+  </data>
+  <data name="errSimMustStartWithSim" xml:space="preserve">
+    <value>Any aircraft that is not a real aircraft must have a tailnumber that begins with "SIM".  Real aircraft must NOT begin with SIM.</value>
+  </data>
 </root>

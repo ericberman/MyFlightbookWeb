@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2016 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,13 +21,67 @@ namespace MyFlightbook
         public const string szSimPrefix = "SIM";
         public const string szAnonPrefix = "#";
 
-        public enum RegistrationTemplateMode { NoSearch = 0, WholeTail = 1, SuffixOnly = 2, WholeWithDash = 3 }
+        public enum RegistrationTemplateMode
+        {
+            /// <summary>
+            /// We don't know how to search for this 
+            /// </summary>
+            NoSearch = 0,
+
+            /// <summary>
+            /// Pass the entire tail number when searching
+            /// </summary>
+            WholeTail = 1,
+
+            /// <summary>
+            /// Pass only the tailnumber that FOLLOWS the country code when searching
+            /// </summary>
+            SuffixOnly = 2,
+
+            /// <summary>
+            /// Pass the whole tailnumber, with a dash
+            /// </summary>
+            WholeWithDash = 3
+        }
+
+        /// <summary>
+        /// Preference for a given country code.  E.g., US (N) doesn't use a hyphen (N12345, not N-12345), but many countries, like Canada (C-FABC) do.
+        /// </summary>
+        public enum HyphenPreference {
+            /// <summary>
+            /// No preference - anything goes
+            /// </summary>
+            None,
+
+            /// <summary>
+            /// Use a hyphen (e.g., C-FABC for Canada)
+            /// </summary>
+            Hyphenate,
+
+            /// <summary>
+            /// Do NOT use a hyphen (e.g., US or countries that already have a hyphen, like F-OG
+            /// </summary>
+            NoHyphen
+        }
 
         #region Properties
         /// <summary>
         /// The aircraft prefix for the country
         /// </summary>
         public string Prefix { get; set; }
+
+        /// <summary>
+        /// The prefix, including any required (preferred) hyphen
+        /// </summary>
+        public string HyphenatedPrefix
+        {
+            get { return HyphenPref == HyphenPreference.Hyphenate ? Prefix + "-" : Prefix; }
+        }
+
+        /// <summary>
+        /// The prefix with NO hyphens at all
+        /// </summary>
+        public string NormalizedPrefix { get; set; }
 
         /// <summary>
         /// The name of the country
@@ -48,13 +102,30 @@ namespace MyFlightbook
         /// How to use the template with a tailnumber
         /// </summary>
         public RegistrationTemplateMode RegistrationURLTemplateMode { get; set; }
+
+        public HyphenPreference HyphenPref { get; set; }
+
+        #region Test for special countries
+        /// <summary>
+        /// Is this country code for a simulator?
+        /// </summary>
+        public Boolean IsSim { get { return String.Compare(Prefix, CountryCodePrefix.szSimPrefix, StringComparison.OrdinalIgnoreCase) == 0; } }
+
+        public Boolean IsAnonymous { get { return String.Compare(Prefix, CountryCodePrefix.szAnonPrefix, StringComparison.OrdinalIgnoreCase) == 0; } }
+
+        /// <summary>
+        /// Is this not a known country?
+        /// </summary>
+        public Boolean IsUnknown { get { return String.IsNullOrEmpty(Prefix); } }
+        #endregion
         #endregion
 
         #region constructors
         public CountryCodePrefix()
         {
-            Prefix = CountryName = RegistrationURLTemplate = String.Empty;
+            Prefix = NormalizedPrefix = CountryName = RegistrationURLTemplate = String.Empty;
             RegistrationURLTemplateMode = RegistrationTemplateMode.NoSearch;
+            HyphenPref = HyphenPreference.None;
         }
 
         /// <summary>
@@ -64,7 +135,8 @@ namespace MyFlightbook
         /// <param name="szPrefix">Prefix</param>
         public CountryCodePrefix(string szCountry, string szPrefix) : this()
         {
-            Prefix = szPrefix;
+            Prefix = szPrefix ?? string.Empty;
+            NormalizedPrefix = Prefix.Replace("-", string.Empty);
             CountryName = szCountry;
         }
 
@@ -72,12 +144,15 @@ namespace MyFlightbook
         {
             CountryName = Convert.ToString(dr["CountryName"], CultureInfo.InvariantCulture);
             Prefix = Convert.ToString(dr["Prefix"], CultureInfo.InvariantCulture);
+            NormalizedPrefix = Prefix.Replace("-", string.Empty);
             Locale = Convert.ToString(dr["locale"], CultureInfo.InvariantCulture);
             RegistrationURLTemplate = (string)util.ReadNullableField(dr, "RegistrationURLTemplate", string.Empty);
             RegistrationURLTemplateMode = (RegistrationTemplateMode)Convert.ToInt32(dr["TemplateType"], CultureInfo.InvariantCulture);
+            HyphenPref = (HyphenPreference)Convert.ToInt32(dr["HyphenPref"], CultureInfo.InvariantCulture);
         }
         #endregion
 
+        #region Finding the best (longest) prefix match
         /// <summary>
         /// Find the most likely country for a given tail number
         /// </summary>
@@ -98,13 +173,15 @@ namespace MyFlightbook
                 return CountryCodePrefix.AnonymousCountry;
 
             IEnumerable<CountryCodePrefix> rgcc = CountryCodePrefix.CountryCodes();
+            string szCompare = szTail.Replace("-", string.Empty);
 
             foreach (CountryCodePrefix cc in rgcc)
-                if (szTail.StartsWith(cc.Prefix, StringComparison.CurrentCultureIgnoreCase) && cc.Prefix.Length > ccBestMatch.Prefix.Length)
+                if (szCompare.StartsWith(cc.NormalizedPrefix, StringComparison.CurrentCultureIgnoreCase) && cc.NormalizedPrefix.Length > ccBestMatch.NormalizedPrefix.Length)
                     ccBestMatch = cc;
 
             return ccBestMatch;
         }
+        #endregion
 
         /// <summary>
         /// Get the default country code for the specified locale
@@ -122,7 +199,7 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Returns a tailnumber the replaces the country code prefix with the supplied one
+        /// Returns a tailnumber that replaces the country code prefix with the supplied one
         /// </summary>
         /// <param name="ccNew">The desired country code prefix</param>
         /// <param name="szTail">The original tailnumber</param>
@@ -135,13 +212,18 @@ namespace MyFlightbook
             // strip the country code that was passed and pre-pend the sim prefix.
             CountryCodePrefix ccOld = CountryCodePrefix.BestMatchCountryCode(szTail);
 
-            string szTailNew = ccNew.Prefix + szTail.Substring(ccOld.Prefix.Length);
-            if (szTailNew.Length > Aircraft.maxTailLength)
-                szTailNew = szTailNew.Substring(0, Aircraft.maxTailLength);
+            string szTailNew = szTail;
+            if (ccOld.Prefix.CompareCurrentCulture(ccNew.Prefix) != 0)
+            {
+                szTailNew = ccNew.HyphenatedPrefix + Aircraft.NormalizeTail(szTail).Substring(ccOld.NormalizedPrefix.Length);
+                if (szTailNew.Length > Aircraft.maxTailLength)
+                    szTailNew = szTailNew.Substring(0, Aircraft.maxTailLength);
+            }
 
             return szTailNew.ToUpper(CultureInfo.InvariantCulture);
         }
 
+        #region Special pseudo-countries
         /// <summary>
         /// Returns a pseudo-country-code for simulators
         /// </summary>
@@ -159,33 +241,15 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Is this country code for a simulator?
-        /// </summary>
-        public Boolean IsSim
-        {
-            get { return String.Compare(Prefix, CountryCodePrefix.szSimPrefix, StringComparison.OrdinalIgnoreCase) == 0; }
-        }
-
-        public Boolean IsAnonymous
-        {
-            get { return String.Compare(Prefix, CountryCodePrefix.szAnonPrefix, StringComparison.OrdinalIgnoreCase) == 0; }
-        }
-
-        /// <summary>
         /// Returns a pseudo-country-code for unknown countries
         /// </summary>
         public static CountryCodePrefix UnknownCountry
         {
             get { return new CountryCodePrefix("(Unknown)", String.Empty); }
         }
+        #endregion
 
-        /// <summary>
-        /// Is this not a known country?
-        /// </summary>
-        public Boolean IsUnknown
-        {
-            get { return String.IsNullOrEmpty(Prefix); }
-        }
+        static private List<CountryCodePrefix> _cachedCountryCodes = null;
 
         /// <summary>
         /// Returns a cached array of all country codes
@@ -193,30 +257,23 @@ namespace MyFlightbook
         /// <returns>An array of country codes</returns>
         public static IEnumerable<CountryCodePrefix> CountryCodes()
         {
-            const string szCacheKey = "CountryCodesArrayKey";
+            if (_cachedCountryCodes != null)
+                return _cachedCountryCodes;
 
-            CountryCodePrefix[] rgCountryCodes = null;
-
-            if (HttpRuntime.Cache != null)
-                rgCountryCodes = (CountryCodePrefix[])HttpRuntime.Cache[szCacheKey];
-
-            if (rgCountryCodes != null)
-                return rgCountryCodes;
-
-            List<CountryCodePrefix> ar = new List<CountryCodePrefix>();
+            _cachedCountryCodes = new List<CountryCodePrefix>();
 
             DBHelper dbh = new DBHelper("SELECT * FROM countrycodes");
             if (!dbh.ReadRows(
                 (comm) => { },
-                (dr) => { ar.Add(new CountryCodePrefix(dr)); }))
+                (dr) => { _cachedCountryCodes.Add(new CountryCodePrefix(dr)); }))
                 throw new MyFlightbookException("Error getting countrycodes:\r\n" + dbh.LastError);
 
-            rgCountryCodes = ar.ToArray();
+            return _cachedCountryCodes;
+        }
 
-            if (HttpRuntime.Cache != null)
-                HttpRuntime.Cache[szCacheKey] = rgCountryCodes;
-
-            return rgCountryCodes;
+        public static void FlushCache()
+        {
+            _cachedCountryCodes = null;
         }
 
         /// <summary>
@@ -237,6 +294,11 @@ namespace MyFlightbook
         public static Boolean IsNakedAnon(string sz)
         {
             return sz.CompareOrdinalIgnoreCase(szAnonPrefix) == 0;
+        }
+
+        public override string ToString()
+        {
+            return String.Format(CultureInfo.CurrentCulture, "{0} - {1}{2}", Prefix, CountryName, String.IsNullOrEmpty(Locale) ? string.Empty : String.Format(CultureInfo.CurrentCulture, " ({0})", Locale));
         }
     }
 }

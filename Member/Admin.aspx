@@ -96,6 +96,7 @@
             <asp:UpdatePanel ID="updpanelAircraft" runat="server">
                 <Triggers>
                     <asp:PostBackTrigger ControlID="btnMapModels" />
+                    <asp:PostBackTrigger ControlID="btnManageCountryCodes" />
                 </Triggers>
                 <ContentTemplate>
                         <table>
@@ -133,6 +134,12 @@
                                 <td>
                                     <asp:Button ID="btnDeleteDupeUA" runat="server" Width="100%" OnClick="btnDeleteDupeUA_Click" Text="Delete Dupe User Aircraft" /></td>
                                 <td>Delete any aircraft that are in a user's account multiple times</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Button ID="btnManageCountryCodes" runat="server" Width="100%" OnClick="btnManageCountryCodes_Click" Text="Country Codes" /></td>
+                                <td>Country codes
+                                </td>
                             </tr>
                             <tr>
                                 <td>
@@ -1079,6 +1086,66 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
         <asp:View ID="vwMainUsers" runat="server">
         </asp:View>
         <asp:View ID="vwMainAircraft" runat="server">
+            <asp:UpdatePanel ID="UpdatePanel4" runat="server">
+                <ContentTemplate>
+                    <div style="padding:5px;">
+                        <asp:HiddenField ID="hdnLastCountrySortDir" runat="server" />
+                        <asp:HiddenField ID="hdnLastCountrySortField" runat="server" />
+                        <asp:GridView ID="gvCountryCodes" runat="server" AllowSorting="True" OnRowEditing="gvCountryCodes_RowEditing"
+                            AutoGenerateEditButton="true" CellPadding="3" AutoGenerateColumns="false"
+                            OnRowDataBound="gvCountryCodes_RowDataBound" DataKeyNames="ID" OnRowUpdating="gvCountryCodes_RowUpdating"
+                            >
+                            <Columns>
+                                <asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" ReadOnly="true" />
+                                <asp:BoundField DataField="Prefix" HeaderText="Prefix" SortExpression="Prefix" />
+                                <asp:BoundField DataField="CountryName" HeaderText="Country Name" SortExpression="CountryName" />
+                                <asp:BoundField DataField="Locale" HeaderText="Locale" SortExpression="Locale" />
+                                <asp:BoundField DataField="RegistrationURLTemplate"   />
+                                <asp:TemplateField HeaderText="Template Mode" SortExpression="RegistrationURLTemplateMode">
+                                    <ItemTemplate>
+                                        <%# ((CountryCodePrefix.RegistrationTemplateMode) Convert.ToUInt32(Eval("TemplateType"), System.Globalization.CultureInfo.InvariantCulture)).ToString() %>
+                                    </ItemTemplate>
+                                    <EditItemTemplate>
+                                        <asp:RadioButtonList ID="rblTemplateType" runat="server">
+                                            <asp:ListItem Text="None" Value="0"></asp:ListItem>
+                                            <asp:ListItem Text="Whole Tailnumber" Value="1"></asp:ListItem>
+                                            <asp:ListItem Text="Suffix Only (only what follows dash)" Value="2"></asp:ListItem>
+                                            <asp:ListItem Text="Whole - with dash" Value="3"></asp:ListItem>
+                                        </asp:RadioButtonList>
+                                    </EditItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Hyphen Rules" SortExpression="HyphenPref">
+                                    <ItemTemplate>
+                                        <%# ((CountryCodePrefix.HyphenPreference) Convert.ToUInt32(Eval("HyphenPref"), System.Globalization.CultureInfo.InvariantCulture)).ToString() %>
+                                    </ItemTemplate>
+                                    <EditItemTemplate>
+                                        <asp:RadioButtonList ID="rblHyphenPref" runat="server">
+                                            <asp:ListItem Text="None" Value="0"></asp:ListItem>
+                                            <asp:ListItem Text="Hyphenate" Value="1"></asp:ListItem>
+                                            <asp:ListItem Text="No Hyphen" Value="2"></asp:ListItem>
+                                        </asp:RadioButtonList>
+                                    </EditItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                        <asp:SqlDataSource ID="sqlDSCountryCode" runat="server"
+                            ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
+                            ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
+                            SelectCommand="SELECT * FROM countrycodes ORDER BY ID ASC"
+                            UpdateCommand="UPDATE countrycodes SET Prefix=?Prefix, CountryName=?CountryName, Locale=?Locale, RegistrationURLTemplate=?RegistrationURLTemplate, TemplateType=?TemplateType, HyphenPref=?HyphenPref WHERE ID=?ID">
+                            <UpdateParameters>
+                                <asp:Parameter Name="Prefix" Type="String" Size="10" Direction="InputOutput" />
+                                <asp:Parameter Name="CountryName" Type="String" Size="80" Direction="InputOutput" />
+                                <asp:Parameter Name="Locale" Type="String" Size="3" Direction="InputOutput" />
+                                <asp:Parameter Name="RegistrationURLTemplate" Type="String" Size="512" Direction="InputOutput" />
+                                <asp:Parameter Name="TemplateType" Type="Int16" Direction="InputOutput" />
+                                <asp:Parameter Name="HyphenPref" Type="Int16" Direction="InputOutput" />
+                                <asp:Parameter Name="ID" Type="Int32" Direction="Input" />
+                            </UpdateParameters>
+                        </asp:SqlDataSource>
+                    </div>
+                </ContentTemplate>
+            </asp:UpdatePanel>
         </asp:View>
         <asp:View ID="vwMainModels" runat="server">
             <h2>Models that are potential dupes:</h2><asp:SqlDataSource ID="SqlDataSourceDupeModels" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"

@@ -78,7 +78,7 @@
                                 </td>
                                 <td>
                                     <asp:DropDownList ID="cmbCountryCode" runat="server" AutoPostBack="True" EnableViewState="False"
-                                        DataTextField="CountryName" DataValueField="Prefix"
+                                        DataTextField="CountryName" DataValueField="HyphenatedPrefix"
                                         OnSelectedIndexChanged="cmbCountryCode_SelectedIndexChanged">
                                     </asp:DropDownList>
                                     <asp:HiddenField ID="hdnSimCountry" runat="server" EnableViewState="false" />
@@ -108,26 +108,22 @@
                                         TargetControlID="txtTail" ValidChars="-"></cc1:FilteredTextBoxExtender>
                                     <asp:RegularExpressionValidator ID="valTailNumber" runat="server"
                                         ControlToValidate="txtTail" CssClass="error" Display="Dynamic"
-                                        ErrorMessage="Please enter a valid tail number (numbers and letters)"
+                                        ErrorMessage="<%$ Resources:Aircraft, errInvalidTailChars %>"
                                         ValidationExpression="[a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+"
                                         ValidationGroup="EditAircraft"></asp:RegularExpressionValidator>
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server"
                                         ControlToValidate="txtTail" CssClass="error" Display="Dynamic"
-                                        ErrorMessage="Please enter a tail number"
+                                        ErrorMessage="<%$ Resources:Aircraft, errMissingTail %>"
                                         ValidationGroup="EditAircraft"></asp:RequiredFieldValidator>
                                     <asp:CustomValidator ID="valTail" runat="server" ControlToValidate="txtTail"
                                         CssClass="error" Display="Dynamic"
-                                        ErrorMessage="Please provide a complete tail number, including country prefix"
+                                        ErrorMessage="<%$ Resources:Aircraft, errInvalidTail %>"
                                         OnServerValidate="ValidateTailNum"
                                         ValidationGroup="EditAircraft"></asp:CustomValidator>
-                                    <asp:CustomValidator ID="valPrefix" runat="server"
-                                        ControlToValidate="txtTail" CssClass="error" Display="Dynamic"
-                                        ErrorMessage="Please include a valid country prefix (or choose &quot;Other&quot; from the list of countries)."
-                                        OnServerValidate="ValidateTailNumHasCountry" ValidationGroup="EditAircraft"></asp:CustomValidator>
-                                    <asp:CustomValidator ID="CustomValidator2" runat="server"
+                                    <asp:CustomValidator ID="valSimTail" runat="server"
                                         ControlToValidate="txtTail" CssClass="error" Display="Dynamic"
                                         OnServerValidate="ValidateSim"
-                                        ErrorMessage="Any aircraft that is not a real aircraft must have a tailnumber that begins with &quot;SIM&quot;.  Real aircraft must NOT begin with SIM."
+                                        ErrorMessage="<%$ Resources:Aircraft, errSimMustStartWithSim %>"
                                         ValidationGroup="EditAircraft"></asp:CustomValidator>
                                     <span style="display: none">
                                         <asp:LinkButton ID="lnkPopulateAircraft" runat="server" OnClick="lnkPopulateAircraft_Click"></asp:LinkButton></span>

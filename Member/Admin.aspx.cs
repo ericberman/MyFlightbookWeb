@@ -1,20 +1,20 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Achievements;
+using MyFlightbook.Image;
+using MyFlightbook.Payments;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
+using System.IO;
+using System.Net.Mail;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Net.Mail;
-using System.IO;
-using MySql.Data.MySqlClient;
-using MyFlightbook;
-using MyFlightbook.Image;
-using MyFlightbook.Payments;
-using System.Globalization;
-using MyFlightbook.Achievements;
 
 /******************************************************
  * 
@@ -808,6 +808,52 @@ GROUP BY ac.idaircraft";
             gvMapModels.DataSource = lst;
             gvMapModels.DataBind();
         }
+    }
+
+    protected void btnManageCountryCodes_Click(object sender, EventArgs e)
+    {
+        gvCountryCodes.DataSourceID = "sqlDSCountryCode";
+        gvCountryCodes.DataBind();
+    }
+
+    protected void gvCountryCodes_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+        if ((e.Row.RowState & DataControlRowState.Edit) == DataControlRowState.Edit)
+        {
+            RadioButtonList rbl = (RadioButtonList)e.Row.FindControl("rblTemplateType");
+            DataRowView drv = (DataRowView)e.Row.DataItem;
+            rbl.SelectedValue = drv["TemplateType"].ToString();
+            rbl = (RadioButtonList)e.Row.FindControl("rblHyphenPref");
+            rbl.SelectedValue = drv["hyphenpref"].ToString();
+        }
+    }
+
+    protected void gvCountryCodes_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+        if (sender == null)
+            throw new ArgumentNullException("sender");
+
+        GridView gv = (GridView)sender;
+        RadioButtonList rbl = (RadioButtonList)gv.Rows[e.RowIndex].FindControl("rblTemplateType");
+        sqlDSCountryCode.UpdateParameters["templateType"].DefaultValue = rbl.SelectedValue;
+        rbl = (RadioButtonList)gv.Rows[e.RowIndex].FindControl("rblHyphenPref");
+        sqlDSCountryCode.UpdateParameters["hyphenpref"].DefaultValue = rbl.SelectedValue;
+        sqlDSCountryCode.Update();
+
+        gv.EditIndex = -1;
+        CountryCodePrefix.FlushCache();
+    }
+
+    protected void gvCountryCodes_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+        gvCountryCodes.EditIndex = e.NewEditIndex;
+        gvCountryCodes.DataBind();
     }
     #endregion
 

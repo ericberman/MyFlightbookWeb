@@ -1135,7 +1135,7 @@ namespace MyFlightbook
 
             List<string> lstNakedPrefix = new List<string>();
             foreach (CountryCodePrefix cc in CountryCodePrefix.CountryCodes())
-                lstNakedPrefix.Add(cc.Prefix.Replace("-", string.Empty));
+                lstNakedPrefix.Add(cc.NormalizedPrefix);
 
             string szNaked = String.Join("', '", lstNakedPrefix);
 
@@ -1230,15 +1230,11 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
 
             bool fIsRealAircraft = InstanceType == AircraftInstanceTypes.RealAircraft;
 
-            // grandfathering existing simulators
-            if (AircraftID <= 0)
-            {
-                if (fIsRealAircraft && cc.IsSim)
-                    ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.errSimPrefixReserved, cc.Prefix);
+            if (fIsRealAircraft && cc.IsSim)
+                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.errSimPrefixReserved, cc.Prefix);
 
-                if (!fIsRealAircraft && !cc.IsSim)
-                    ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.errMissingSimPrefix, CountryCodePrefix.szSimPrefix);
-            }
+            if (!fIsRealAircraft && !cc.IsSim)
+                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.errMissingSimPrefix, CountryCodePrefix.szSimPrefix);
 
             // validate the model by loading the make model; a bad modelID will throw an exception.
             if (fCheckMake)
@@ -1738,27 +1734,39 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         }
         #endregion
 
+        private static Regex rNormalChars = new Regex("[^a-zA-Z0-9#]", RegexOptions.Compiled);
+
         /// <summary>
         /// Removes all of the dashes/hyphens from a tailnumber, except optionally the one separating the country code from the rest of the registration
         /// Note: if the country code already contains a hyphen (dash), such as "F-OG", then we just use that dash; otherwise, we append it.
         /// E.g., Canadian aircraft C1234 would become C-1234 but FOG1234 would become F-OG1234
         /// </summary>
         /// <param name="szTail">The tailnumber</param>
-        /// <param name="fWithDash">True to include a dash after the country code</param>
-        /// <param name="cc">The tailnumber's country code, if provided; if not provided, will be looked up (slightly slower)</param>
+        /// <param name="cc">The tailnumber's country code (optional) - if specified, controls hyphenation of resulting tail.  E.g., C-FABC becomes CFABC for comparison purposes, but if the 
+        /// canadian country code (which indicates hyphenation) is passed, this will normalize to "C-FABC".
+        /// </param>
         /// <returns></returns>
-        public static string NormalizeTail(string szTail, bool fWithDash = false, CountryCodePrefix cc = null)
+        public static string NormalizeTail(string szTail, CountryCodePrefix cc = null)
         {
             if (String.IsNullOrEmpty(szTail))
                 return szTail;
-            if (fWithDash)
-            {
-                cc = cc ?? CountryCodePrefix.BestMatchCountryCode(szTail);
-                string szPrefixNew = cc.Prefix.Contains("-") ? cc.Prefix : cc.Prefix + "-";
-                return NormalizeTail(szTail).Replace(NormalizeTail(cc.Prefix), szPrefixNew);
-            }
-            else
-                return Regex.Replace(szTail.ToUpper(CultureInfo.InvariantCulture), "[^a-zA-Z0-9#]", string.Empty);
+
+            // strip all hyphens/dashes/etc
+            string szResult = rNormalChars.Replace(szTail.ToUpperInvariant(), string.Empty);
+
+            // if a country code is specified, follow it's lead w.r.t. prefix
+            if (cc != null)
+                szResult = Regex.Replace(szResult, "^" + cc.NormalizedPrefix, cc.HyphenatedPrefix);
+
+            return szResult;
+        }
+
+        /// <summary>
+        /// Returns a normalized tail using 
+        /// </summary>
+        public string NormalizedTail
+        {
+            get { return NormalizeTail(TailNumber, CountryCodePrefix.BestMatchCountryCode(TailNumber)); }
         }
 
         /// <summary>
@@ -1846,11 +1854,11 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                 case CountryCodePrefix.RegistrationTemplateMode.NoSearch:
                     return cc.RegistrationURLTemplate ?? string.Empty;
                 case CountryCodePrefix.RegistrationTemplateMode.SuffixOnly:
-                    return String.Format(CultureInfo.InvariantCulture,cc.RegistrationURLTemplate, NormalizeTail(szTailNumber).Substring(NormalizeTail(cc.Prefix).Length));
+                    return String.Format(CultureInfo.InvariantCulture,cc.RegistrationURLTemplate, NormalizeTail(szTailNumber).Substring(cc.NormalizedPrefix.Length));
                 case CountryCodePrefix.RegistrationTemplateMode.WholeTail:
                     return String.Format(CultureInfo.InvariantCulture,cc.RegistrationURLTemplate, NormalizeTail(szTailNumber));
                 case CountryCodePrefix.RegistrationTemplateMode.WholeWithDash:
-                    return String.Format(CultureInfo.InvariantCulture, cc.RegistrationURLTemplate, NormalizeTail(szTailNumber, true, cc));
+                    return String.Format(CultureInfo.InvariantCulture, cc.RegistrationURLTemplate, NormalizeTail(szTailNumber, cc));
             }
         }
 

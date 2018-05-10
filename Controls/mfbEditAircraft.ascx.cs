@@ -1,13 +1,12 @@
+using MyFlightbook;
+using MyFlightbook.Clubs;
+using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Linq;
-using System.Web;
-using MyFlightbook;
-using MyFlightbook.Image;
-using MyFlightbook.Clubs;
 
 /******************************************************
  * 
@@ -185,26 +184,21 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     {
         if (args == null)
             throw new ArgumentNullException("args");
-        // ensure that there is more than just a country code
-        if (txtTail.Text.Length == 0 || String.Compare(txtTail.Text, cmbCountryCode.SelectedValue, StringComparison.CurrentCultureIgnoreCase) == 0)
+
+        string szNormalTail = Aircraft.NormalizeTail(txtTail.Text);
+        // ensure that there is more than just the country code that is specified by the drop-down
+        if (txtTail.Text.Length == 0 || String.Compare(szNormalTail, Aircraft.NormalizeTail(cmbCountryCode.SelectedValue), StringComparison.CurrentCultureIgnoreCase) == 0)
             args.IsValid = false;
 
         CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(txtTail.Text);
-        if (String.Compare(txtTail.Text, cc.Prefix, StringComparison.CurrentCultureIgnoreCase) == 0)
+        if (cc.Prefix.Length == 0 && !String.IsNullOrEmpty(cmbCountryCode.SelectedValue))
+            args.IsValid = false;
+
+        // Ensure that what's there is more than the country code
+        if (String.Compare(szNormalTail, cc.NormalizedPrefix, StringComparison.CurrentCultureIgnoreCase) == 0)
             args.IsValid = false;
     }
 
-    protected void ValidateTailNumHasCountry(object sender, ServerValidateEventArgs args)
-    {
-        if (args == null)
-            throw new ArgumentNullException("args");
-        string szPrefix = cmbCountryCode.SelectedValue;
-        CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(txtTail.Text);
-
-        // ensure that there is a valid country code, allowing an explicit "OTHER"
-        if (cc.Prefix.Length == 0 && szPrefix.Length > 0)
-            args.IsValid = false;
-    }
 
     protected void ValidateSim(object sender, ServerValidateEventArgs args)
     {
@@ -257,7 +251,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         {
             string[] rgLocale = Request.UserLanguages;
             if (rgLocale != null && rgLocale.Length > 0 && rgLocale[0].Length > 4)
-                cmbCountryCode.SelectedValue = CountryCodePrefix.DefaultCountryCodeForLocale(Request.UserLanguages[0].Substring(3, 2)).Prefix;
+                cmbCountryCode.SelectedValue = CountryCodePrefix.DefaultCountryCodeForLocale(Request.UserLanguages[0].Substring(3, 2)).HyphenatedPrefix;
             else
                 cmbCountryCode.SelectedIndex = 0;
             UpdateMask();
@@ -267,12 +261,12 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             string szTail = m_ac.TailNumber;
 
             CountryCodePrefix ccp = CountryCodePrefix.BestMatchCountryCode(szTail);
-            string szPrefix = ccp.Prefix;
+            string szPrefix = ccp.HyphenatedPrefix;
 
             if (szPrefix.Length > 0) // Should be!
             {
                 szTail = szTail.Substring(szPrefix.Length);
-                cmbCountryCode.SelectedValue = (ccp.IsSim) ? "N" : szPrefix;
+                cmbCountryCode.SelectedValue = (ccp.IsSim) ? CountryCodePrefix.DefaultCountryCodeForLocale(Request.UserLanguages[0].Substring(3, 2)).HyphenatedPrefix : szPrefix;
                 UpdateMask();
             }
             else
@@ -493,7 +487,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             }
 
             mvRealAircraft.SetActiveView(fIsAnonymous ? vwAnonTail : vwRegularTail);
-            valTailNumber.Enabled = valPrefix.Enabled = fIsAnonymous;
+            valTailNumber.Enabled = fIsAnonymous;
             FixFAALink();
         }
         else
@@ -527,7 +521,9 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         bool fChangedTail = (String.Compare(Aircraft.NormalizeTail(ac.TailNumber), Aircraft.NormalizeTail(szTailNew), true) != 0);
         bool fMigrateUser = (!ac.IsNew && fChangedTail && (new AircraftStats(Page.User.Identity.Name, m_ac.AircraftID)).Users > 1);
 
-        ac.TailNumber = szTailNew;  // set the tailnumber regardless.
+        // set the tailnumber regardless, using appropriate hyphenation (if hyphenation is specified)
+        CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(szTailNew);
+        ac.TailNumber = (cc.HyphenPref == CountryCodePrefix.HyphenPreference.None) ? szTailNew.ToUpperInvariant() : Aircraft.NormalizeTail(szTailNew, CountryCodePrefix.BestMatchCountryCode(szTailNew));
         if (fMigrateUser)
             ac.AircraftID = Aircraft.idAircraftUnknown; // treat this as if we are adding a new aircraft.
         else
@@ -601,13 +597,12 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         if (fChangedCountry)
         {
             UpdateMask();
-            txtTail.Text = CountryCodePrefix.SetCountryCodeForTail(new CountryCodePrefix(cmbCountryCode.SelectedItem.Text, cmbCountryCode.SelectedValue), txtTail.Text);
             FixFAALink();
         }
         else if (fChangedTail)
         {
             // sync the countrycode to the tail.  Note that we set hdnLastCountry.Value here as well to prevent a potential loop.
-            cmbCountryCode.SelectedValue = hdnLastCountry.Value = CountryCodePrefix.BestMatchCountryCode(txtTail.Text).Prefix;
+            cmbCountryCode.SelectedValue = hdnLastCountry.Value = CountryCodePrefix.BestMatchCountryCode(txtTail.Text).HyphenatedPrefix;
         }
         hdnLastCountry.Value = cmbCountryCode.SelectedValue;
         hdnLastTail.Value = txtTail.Text;
@@ -627,9 +622,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     protected void UpdateMask()
     {
         string szCountry = IsRealAircraft ? cmbCountryCode.SelectedValue : hdnSimCountry.Value;
-        CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(txtTail.Text);
-        string szSuffix = txtTail.Text.Substring(cc.Prefix.Length);
-        txtTail.Text = szCountry + szSuffix;
+        txtTail.Text = CountryCodePrefix.SetCountryCodeForTail(new CountryCodePrefix(cmbCountryCode.SelectedItem.Text, cmbCountryCode.SelectedValue), txtTail.Text);
     }
 
     protected void lnkPopulateAircraft_Click(object sender, EventArgs e)
