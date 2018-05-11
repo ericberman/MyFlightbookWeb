@@ -107,6 +107,8 @@ namespace MyFlightbook.ImportFlights
         private static string[] colHobbsStart = { "Hobbs Start" };
         private static string[] colHobbsEnd = { "Hobbs End" };
         private static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL", "ACFT_MDS" };
+        private static string[] colFlightConditions = { "FS_ID" };  // For CAFRS - specifies flight conditions
+        private static string[] colPIlotRole = { "DS_ID" };    // For CAFRS - specifies role of pilot ("Duty Position")
 
         /// <summary>
         /// Common aliases for property names
@@ -266,6 +268,85 @@ namespace MyFlightbook.ImportFlights
             {
                 m_cm = columnmapper;
             }
+
+            #region CAFRS helpers
+            /*
+             * CAFRS is the army reporting system, and it imports more or less directly, but instead of having 
+             * separate columns for things like night or PIC, they have a column for flight conditions and a column for role
+             */
+            private void AddCrossFilledPropertyWithID(LogbookEntry le, int idPropType, List<CustomFlightProperty> lstProps)
+            {
+                if (le == null || lstProps == null || le.TotalFlightTime == 0)
+                    return;
+
+                // Don't add anything if the property has already been specified explicitly
+                if (lstProps.FirstOrDefault(prop => prop.PropTypeID == idPropType) != null)
+                    return;
+
+                CustomFlightProperty cfp = ((le.CustomProperties == null) ? null : le.CustomProperties.FirstOrDefault(cfpExisting => cfpExisting.PropTypeID == idPropType)) ?? new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType(idPropType));
+                if (cfp.DecValue == 0)  // might not be the case if we are re-using a property
+                cfp.DecValue = le.TotalFlightTime;
+                lstProps.Add(cfp);
+            }
+
+            private void SetCAFRSFlightCondition(LogbookEntry le, string szFlightConditions, List<CustomFlightProperty> lstProps)
+            {
+                if (String.IsNullOrEmpty(szFlightConditions) || le == null || le.TotalFlightTime == 0)
+                    return;
+
+                switch (szFlightConditions.ToUpperInvariant())
+                {
+                    default:
+                    case "D":   // day - no action
+                        break;
+                    case "NG":  // Night vision goggles
+                    case "N":   // night unaided
+                        if (le.Nighttime == 0)
+                            le.Nighttime = le.TotalFlightTime;
+                        if (szFlightConditions.CompareCurrentCultureIgnoreCase("NG") == 0)
+                            AddCrossFilledPropertyWithID(le, (int) CustomPropertyType.KnownProperties.IDPropNVGoggleTime, lstProps);
+                        break;
+                    case "W":   // "Weather" (imc)
+                        if (le.IMC == 0)
+                            le.IMC = le.TotalFlightTime;
+                        break;
+                    case "H":   // "Hood"
+                        if (le.SimulatedIFR == 0)
+                            le.SimulatedIFR = le.TotalFlightTime;
+                        break;
+                }
+            }
+
+            private void SetCAFRSPilotRole(LogbookEntry le, string szPilotRole, List<CustomFlightProperty> lstProps)
+            {
+                if (String.IsNullOrEmpty(szPilotRole) || le == null || le.TotalFlightTime == 0)
+                    return;
+
+                switch (szPilotRole.ToUpperInvariant())
+                {
+                    case "PI":  // Second in command
+                        if (le.SIC == 0)
+                            le.SIC = le.TotalFlightTime;
+                        break;
+                    case "PC":  // PIC
+                        if (le.PIC == 0)
+                            le.PIC = le.TotalFlightTime;
+                        break;
+                    case "CP":  // Co-pilot
+                        AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropCoPilotTime, lstProps);
+                        break;
+                    case "IP":  // Instructor Pilot
+                        if (le.CFI == 0)
+                            le.CFI = le.TotalFlightTime;
+                        break;
+                    case "IE":  // Instrument evaluator
+                        AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropInstrumentExaminor, lstProps);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            #endregion
 
             public LogbookEntry FlightFromRow(LogbookEntry le, string[] rgszRow)
             {
@@ -473,6 +554,10 @@ namespace MyFlightbook.ImportFlights
                 if (blockIn != null && blockOut != null && blockIn.DateValue.CompareTo(blockOut.DateValue) < 0)
                     blockIn.DateValue = blockIn.DateValue.AddDays(1);
 
+                // CAFRS support - read pilot role and flight conditions IF not already filled in above.
+                SetCAFRSFlightCondition(le, GetMappedString(m_cm.iColFlightConditions), lstCustPropsForFlight);
+                SetCAFRSPilotRole(le, GetMappedString(m_cm.iColPilotRole), lstCustPropsForFlight);
+
                 // we now have, from above, a set of custom properties to import.
                 // BUT...if this is an existing flight, then some of those flights may already
                 // have props.  If so, we want to hold on to those props so that we delete them
@@ -581,6 +666,8 @@ namespace MyFlightbook.ImportFlights
             public int iColModel { get; set; }
             public int iColFrom { get; set; }
             public int iColTo { get; set; }
+            public int iColFlightConditions { get; set; }
+            public int iColPilotRole { get; set; }
             #endregion
 
             #region public properties
@@ -696,6 +783,8 @@ namespace MyFlightbook.ImportFlights
                 iColModel = ColumnIndex(colModelName);
                 iColFrom = ColumnIndex(colFrom);
                 iColTo = ColumnIndex(colTo);
+                iColFlightConditions = ColumnIndex(colFlightConditions);
+                iColPilotRole = ColumnIndex(colPIlotRole);
 
                 // Now, see which custom properties are present
                 CustomPropertyType[] rgCpt = CustomPropertyType.GetCustomPropertyTypes();
