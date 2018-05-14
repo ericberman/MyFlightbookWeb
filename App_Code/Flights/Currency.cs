@@ -135,6 +135,7 @@ namespace MyFlightbook.FlightCurrency
         {
             get
             {
+                string szResult = string.Empty;
                 switch (CurrencyGroup)
                 {
                     default:
@@ -142,18 +143,26 @@ namespace MyFlightbook.FlightCurrency
                     case CurrencyGroups.FlightExperience:
                         return null;
                     case CurrencyGroups.FlightReview:
-                        return VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=flightreview");
+                        szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=flightreview");
+                        break;
                     case CurrencyGroups.Aircraft:
-                        return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", AssociatedResourceID));
+                        szResult = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", AssociatedResourceID));
+                        break;
                     case CurrencyGroups.Certificates:
-                        return VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=certificates");
+                        szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=certificates");
+                        break;
                     case CurrencyGroups.Medical:
-                        return VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=medical");
+                        szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=medical");
+                        break;
                     case CurrencyGroups.Deadline:
-                        return VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPrefs?pane=deadlines");
+                        szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPrefs?pane=deadlines");
+                        break;
                     case CurrencyGroups.CustomCurrency:
-                        return VirtualPathUtility.ToAbsolute(Query == null ? "~/Member/EditProfile.aspx/pftPrefs?pane=custcurrency" : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(Query.ToJSONString().Compress()))));
+                        szResult = VirtualPathUtility.ToAbsolute(Query == null ? "~/Member/EditProfile.aspx/pftPrefs?pane=custcurrency" : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(Query.ToJSONString().Compress()))));
+                        break;
                 }
+
+                return String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, szResult);
             }
         }
 

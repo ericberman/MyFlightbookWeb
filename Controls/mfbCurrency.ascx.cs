@@ -142,7 +142,7 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
             MultiView mv = (MultiView) e.Row.FindControl("mvTitle");
             mv.ActiveViewIndex = fLink ? 1 : 0;
             if (fLink)
-                ((HyperLink)e.Row.FindControl("lnkTitle")).NavigateUrl = csi.AssociatedResourceLink ?? String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(Convert.ToBase64String(csi.Query.ToJSONString().Compress())));
+                ((HyperLink)e.Row.FindControl("lnkTitle")).NavigateUrl = csi.AssociatedResourceLink ?? String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?fq={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"), csi.Query == null ? string.Empty : HttpUtility.UrlEncode(csi.Query.ToBase64CompressedJSONString()));
 
             if (UseInlineFormatting)
             {
