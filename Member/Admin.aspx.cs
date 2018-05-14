@@ -810,6 +810,7 @@ GROUP BY ac.idaircraft";
         }
     }
 
+    #region country codes
     protected void btnManageCountryCodes_Click(object sender, EventArgs e)
     {
         gvCountryCodes.DataSourceID = "sqlDSCountryCode";
@@ -827,6 +828,18 @@ GROUP BY ac.idaircraft";
             rbl.SelectedValue = drv["TemplateType"].ToString();
             rbl = (RadioButtonList)e.Row.FindControl("rblHyphenPref");
             rbl.SelectedValue = drv["hyphenpref"].ToString();
+        }
+        else if (e.Row.RowType == DataControlRowType.DataRow && (e.Row.RowState & DataControlRowState.Normal) == DataControlRowState.Normal)
+        {
+            DataRowView drv = (DataRowView)e.Row.DataItem;
+            string szPrefix = drv["Prefix"].ToString();
+            if (szPrefix.CompareCurrentCultureIgnoreCase(hdnLastCountryEdited.Value) == 0)
+            {
+                Label l = (Label)e.Row.FindControl("lblHyphenResult");
+                l.Visible = true;
+                l.Text = hdnLastCountryResult.Value;
+                hdnLastCountryResult.Value = hdnLastCountryEdited.Value = string.Empty;
+            }
         }
     }
 
@@ -846,6 +859,7 @@ GROUP BY ac.idaircraft";
 
         gv.EditIndex = -1;
         CountryCodePrefix.FlushCache();
+        gv.DataBind();
     }
 
     protected void gvCountryCodes_RowEditing(object sender, GridViewEditEventArgs e)
@@ -855,6 +869,25 @@ GROUP BY ac.idaircraft";
         gvCountryCodes.EditIndex = e.NewEditIndex;
         gvCountryCodes.DataBind();
     }
+
+    protected void gvCountryCodes_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        if (e.CommandName.CompareCurrentCultureIgnoreCase("fixHyphens") == 0)
+        {
+            hdnLastCountryEdited.Value = e.CommandArgument.ToString();
+            
+            CountryCodePrefix ccp = new List<CountryCodePrefix>(CountryCodePrefix.CountryCodes()).Find(ccp1 => ccp1.Prefix.CompareCurrentCultureIgnoreCase(hdnLastCountryEdited.Value) == 0);
+            if (ccp != null)
+            {
+                hdnLastCountryResult.Value = String.Format(CultureInfo.CurrentCulture, "{0} aircraft updated", ccp.ADMINNormalizeMatchingAircraft());
+                gvCountryCodes.DataBind();
+            }
+        }
+    }
+    #endregion
     #endregion
 
     #region Endorsement Management

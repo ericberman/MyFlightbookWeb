@@ -10,7 +10,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -86,6 +86,11 @@ namespace MyFlightbook
         public Int32 LastInsertedRowId { get; set; }
 
         /// <summary>
+        /// Number of rows affected by the most recent nonquery (update/delete/replace).  -1 if there is none.
+        /// </summary>
+        public int AffectedRowCount { get; set; }
+
+        /// <summary>
         /// Arguments for setting up a command.
         /// </summary>
         public DBHelperCommandArgs CommandArgs { get; set; }
@@ -103,6 +108,7 @@ namespace MyFlightbook
         #region Constructors
         public DBHelper() {
             CommandArgs = new DBHelperCommandArgs();
+            AffectedRowCount = -1;
         }
 
         public DBHelper(string szQuery) : this()
@@ -272,7 +278,7 @@ namespace MyFlightbook
                 try
                 {
                     comm.Connection.Open();
-                    comm.ExecuteNonQuery();
+                    AffectedRowCount = comm.ExecuteNonQuery();
                     comm.CommandText = "SELECT Last_Insert_Id()";
                     LastInsertedRowId = Convert.ToInt32(comm.ExecuteScalar(), CultureInfo.InvariantCulture);
                 }

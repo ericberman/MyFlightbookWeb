@@ -1089,17 +1089,17 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
             <asp:UpdatePanel ID="UpdatePanel4" runat="server">
                 <ContentTemplate>
                     <div style="padding:5px;">
-                        <asp:HiddenField ID="hdnLastCountrySortDir" runat="server" />
-                        <asp:HiddenField ID="hdnLastCountrySortField" runat="server" />
+                        <asp:HiddenField ID="hdnLastCountryEdited" runat="server" />
+                        <asp:HiddenField ID="hdnLastCountryResult" runat="server" />
                         <asp:GridView ID="gvCountryCodes" runat="server" AllowSorting="True" OnRowEditing="gvCountryCodes_RowEditing"
-                            AutoGenerateEditButton="true" CellPadding="3" AutoGenerateColumns="false"
+                            AutoGenerateEditButton="true" CellPadding="3" AutoGenerateColumns="false" OnRowCommand="gvCountryCodes_RowCommand"
                             OnRowDataBound="gvCountryCodes_RowDataBound" DataKeyNames="ID" OnRowUpdating="gvCountryCodes_RowUpdating"
                             >
                             <Columns>
                                 <asp:BoundField DataField="ID" HeaderText="ID" SortExpression="ID" ReadOnly="true" />
                                 <asp:BoundField DataField="Prefix" HeaderText="Prefix" SortExpression="Prefix" />
                                 <asp:BoundField DataField="CountryName" HeaderText="Country Name" SortExpression="CountryName" />
-                                <asp:BoundField DataField="Locale" HeaderText="Locale" SortExpression="Locale" />
+                                <asp:BoundField DataField="Locale" HeaderText="Locale" SortExpression="Locale" ConvertEmptyStringToNull="false" />
                                 <asp:BoundField DataField="RegistrationURLTemplate"   />
                                 <asp:TemplateField HeaderText="Template Mode" SortExpression="RegistrationURLTemplateMode">
                                     <ItemTemplate>
@@ -1126,6 +1126,12 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                                         </asp:RadioButtonList>
                                     </EditItemTemplate>
                                 </asp:TemplateField>
+                                <asp:TemplateField>
+                                    <ItemTemplate>
+                                        <asp:Button ID="btnFixHyphens" runat="server" Text="Fix Aircraft Hyphenation" CommandArgument='<%# Eval("Prefix") %>' CommandName="fixHyphens" />
+                                        <div><asp:Label ID="lblHyphenResult" runat="server" Font-Bold="true" Visible="false"></asp:Label></div>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
                         <asp:SqlDataSource ID="sqlDSCountryCode" runat="server"
@@ -1136,7 +1142,7 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                             <UpdateParameters>
                                 <asp:Parameter Name="Prefix" Type="String" Size="10" Direction="InputOutput" />
                                 <asp:Parameter Name="CountryName" Type="String" Size="80" Direction="InputOutput" />
-                                <asp:Parameter Name="Locale" Type="String" Size="3" Direction="InputOutput" />
+                                <asp:Parameter Name="Locale" Type="String" Size="3" Direction="InputOutput" ConvertEmptyStringToNull="false" />
                                 <asp:Parameter Name="RegistrationURLTemplate" Type="String" Size="512" Direction="InputOutput" />
                                 <asp:Parameter Name="TemplateType" Type="Int16" Direction="InputOutput" />
                                 <asp:Parameter Name="HyphenPref" Type="Int16" Direction="InputOutput" />

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Web;
+using System.Text;
 
 /******************************************************
  * 
@@ -118,6 +118,14 @@ namespace MyFlightbook
         /// </summary>
         public Boolean IsUnknown { get { return String.IsNullOrEmpty(Prefix); } }
         #endregion
+
+        /// <summary>
+        /// Get the set of country codes that are "children" of this - e.g., "F" has children "FA", "F-O", "F-OD", "F-OG", and "F-OH"; "F-O" has childresn "F-OD", "F-OG", and "F-OH".
+        /// </summary>
+        public IEnumerable<CountryCodePrefix> Children
+        {
+            get { return new List<CountryCodePrefix>(CountryCodePrefix.CountryCodes()).FindAll(ccp => ccp.Prefix.CompareCurrentCultureIgnoreCase(this.Prefix) != 0 && ccp.NormalizedPrefix.StartsWith(this.NormalizedPrefix, StringComparison.CurrentCultureIgnoreCase)); }
+        }
         #endregion
 
         #region constructors
@@ -198,6 +206,7 @@ namespace MyFlightbook
             return rgccMatch.Count == 0 ? rgcc[0] : rgccMatch[0];
         }
 
+        #region Tail numbers
         /// <summary>
         /// Returns a tailnumber that replaces the country code prefix with the supplied one
         /// </summary>
@@ -222,6 +231,47 @@ namespace MyFlightbook
 
             return szTailNew.ToUpper(CultureInfo.InvariantCulture);
         }
+
+        /// <summary>
+        /// Sets hyphenation for all aircraft to match this country code's hyphenation conventions.  No-op for "None".  Does NOT affect children.
+        /// </summary>
+        /// <returns>Number of aircraft that are affected</returns>
+        public int ADMINNormalizeMatchingAircraft()
+        {
+            // Nothing to do.
+            if (HyphenPref == HyphenPreference.None)
+                return -1;
+            
+            // HyphenPreference Hyphenate or nohyphen are handled by the "hyphenatedprefix" parameter.
+            StringBuilder szQ = new StringBuilder(String.Format(CultureInfo.InvariantCulture, @"UPDATE aircraft 
+                SET 
+                    tailnumber = CONCAT(?hyphenatedPrefix,
+                        SUBSTRING(REPLACE(tailnumber, '-', ''),
+                        LENGTH(?NormalizedPrefix) + 1))
+                WHERE
+                    REPLACE(tailnumber, '-', '') LIKE ?NormalizedPrefixWildcard 
+                        AND (length(tailnumber) < {0}) ", Aircraft.maxTailLength - ((HyphenPref == HyphenPreference.Hyphenate) ? 1 : 0)));
+
+            List<MySqlParameter> lstParams = new List<MySqlParameter>() {
+                new MySqlParameter("hyphenatedPrefix", HyphenatedPrefix),
+                new MySqlParameter("NormalizedPrefix", NormalizedPrefix),
+                new MySqlParameter("NormalizedPrefixWildcard", NormalizedPrefix + "%")
+            };
+
+            int i = 0;
+            foreach (CountryCodePrefix ccp in Children)
+            {
+                string szParamName = String.Format(CultureInfo.InvariantCulture, "child{0}", i++);
+                string szParamVal = ccp.NormalizedPrefix + "%";
+                szQ.AppendFormat(CultureInfo.InvariantCulture, " AND REPLACE(tailnumber, '-', '') NOT LIKE ?{0} ", szParamName);
+                lstParams.Add(new MySqlParameter(szParamName, szParamVal));
+            }
+
+            DBHelper dbh = new DBHelper(szQ.ToString());
+            dbh.DoNonQuery((comm) => { comm.Parameters.AddRange(lstParams.ToArray()); });
+            return dbh.AffectedRowCount;
+        }
+        #endregion
 
         #region Special pseudo-countries
         /// <summary>
