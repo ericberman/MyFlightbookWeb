@@ -3,7 +3,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2017 MyFlightbook LLC
+ * Copyright (c) 2012-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -15,8 +15,8 @@ namespace MyFlightbook
     /// </summary>
     public enum BrandID
     {
-        brandMyFlightbook
-        //            , brandAOPA
+        brandMyFlightbook,
+        brandMyFlightbookNew,
     };
 
     public class Brand
@@ -122,8 +122,8 @@ namespace MyFlightbook
     {
         static private Brand[] knownBrands = 
         {
-        new Brand(BrandID.brandMyFlightbook, "MyFlightbook", "myflightbook.com", "/logbook", "~/Public/myflightbooknew.png", string.Empty, "noreply@mg.myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook", "https://myflightbookblog.blogspot.com/")
-//        , new Brand(BrandID.brandAOPA, "AOPAFlightbook", "aopa.myflightbook.com", "~/Images/AOPABook.png", "~/Public/AOPASheet.css", "noreply@myflightbook.com", "", "", "")
+        new Brand(BrandID.brandMyFlightbook, "MyFlightbook", "myflightbook.com", "/logbook", "~/Public/myflightbooknew.png", string.Empty, "noreply@mg.myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook", "https://myflightbookblog.blogspot.com/"),
+        new Brand(BrandID.brandMyFlightbookNew, "MyFlightbook", "staging.myflightbook.com", "/logbook", "~/Public/mfblogonew.png", "~/Public/stylesheetnew.css", "noreply@mg.myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook", "https://myflightbookblog.blogspot.com/")
         };
 
 
@@ -147,11 +147,17 @@ namespace MyFlightbook
                         return (BrandID)o;
                 }
 
+                BrandID result = BrandID.brandMyFlightbook;
+
                 string szHost = HttpContext.Current.Request.Url.Host;
                 foreach (Brand b in knownBrands)
                     if (String.Compare(szHost, b.HostName, StringComparison.OrdinalIgnoreCase) == 0)
-                        return b.BrandID;
-                return BrandID.brandMyFlightbook;
+                        result = b.BrandID;
+
+                if (HttpContext.Current.Session != null)
+                    HttpContext.Current.Session[brandStateKey] = result;
+
+                return result;
             }
             set
             {

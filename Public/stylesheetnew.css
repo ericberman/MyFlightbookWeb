@@ -1,0 +1,401 @@
+﻿/******************************************************
+ * 
+ * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+/* Basic HTML */
+BODY, body, .mfbDefault
+{
+    font-family: Arial;
+    font-size: 9pt;
+    border-top: 7px solid #03a9f4;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+H1 {
+    font-size: 18px;
+    width: 100%;
+    font-weight: bold;
+    color: black;
+    background-color: #03a9f4;
+    padding: 4px;
+    text-align:center;
+}
+
+.tabbargradient
+{
+    background-image: none;
+    background-repeat: repeat-x;
+    height: 0;
+    display:block;
+    clear:both;
+}
+
+.logbookForm
+{
+    background-color: white;
+}
+
+
+/* Menu bar - see http://www.cssportal.com/css3-menu-generator/; customized from there */
+#menu-bar 
+{
+  margin: 0;
+  text-align:left;
+  padding: 0px 0px 0px 0px;
+  height: 34px;
+  position:relative;
+  float:left;
+  line-height: 100%;
+}
+
+#menu-bar li 
+{
+  border-top-right-radius: 0px;
+  -webkit-top-right-radius: 0px;
+  -moz-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+  -webkit-top-left-radius: 0px;
+  -moz-top-left-radius: 0px;
+  margin-right:1px;
+  margin-left: 1px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding: 0px 0px 0px 0px;
+  float: left;
+  height: 34px;
+  position: relative;
+  list-style: none;
+  background: #fafafa;
+  background-image: none;
+}
+
+#menu-bar a {
+  font-weight: bold;
+  font-family: arial;
+  font-style: normal;
+  font-size: 12px;
+  color: #263238;
+  text-decoration: none;
+  display: block;
+  padding: 11px 15px 11px 15px;
+  margin: 0;
+}
+
+#menu-bar .current a, #menu-bar li:hover > a {
+  border-top-right-radius: 0px;
+  -webkit-top-right-radius: 0px;
+  -moz-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+  -webkit-top-left-radius: 0px;
+  -moz-top-left-radius: 0px;
+  font-weight: bold;
+  background: #f3f6f6;
+  background-image: none;
+  color: #263238;
+}
+
+#menu-bar ul li:hover a, #menu-bar li:hover li a 
+{
+  font-weight: normal;
+  background: none;
+  filter:none;
+  border: none;
+  color: black;
+  font-weight:bold;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+#menu-bar ul a:hover {
+  background: #e7e7e7 !important;
+  filter:  unset;
+  color: black !important;
+  border-radius: 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+}
+#menu-bar ul {
+  filter: unset;
+  background: #f3f6f6;
+  display: none;
+  margin: 3px, 0, 0, 0;
+  padding: 0;
+  width: 185px;
+  position: absolute;
+  top: 34px;
+  left: 0;
+  border: none;
+  font-weight:bold;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+#menu-bar li:hover > ul {
+  display: block;  z-index: 100;
+}
+
+#menu-bar ul li {
+  float: none;
+  background: none;
+  filter: none;
+  right:auto;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+#menu-bar ul a {
+  padding:10px 0px 10px 15px;
+  color:#424242 !important;
+  font-size:12px;
+  font-style:normal;
+  font-family:arial;
+  font-weight: normal;
+}
+#menu-bar ul li:first-child > a {
+}
+#menu-bar ul li:last-child > a {
+}
+#menu-bar:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+#menu-bar {
+  display: inline-block;
+}
+  html[xmlns] #menu-bar {
+  display: block;
+}
+* html #menu-bar {
+  height: 1%;
+}
+
+/* Sidebar UI */
+.topForm
+{
+    border-top: none;
+    background-color: white;
+}
+
+.sidebarContainer
+{
+    background-color:White;
+}
+
+.sidebarLeft
+{
+    width: 150px;
+    display:inline-block;
+    vertical-align:top;
+    margin: 0px;
+    height:100%;
+    background-color:white;
+}
+
+.sidebarRight
+{
+    background-color: white;
+    padding:5px;
+    display:inline-block;
+    height:100%;
+    width: 100%;
+    min-width:280px;
+    max-width:800px;
+    margin: 0px;
+}
+
+.sidebarSelected {
+    margin: 3px;
+    padding: 3px;
+    background-color: #eeeeee;
+    font-weight: bold;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    height: 40px;
+}
+
+.sidebarUnSelected {
+    margin: 3px;
+    padding: 3px;
+    background-color: white;
+    font-weight: normal;
+    height: 40px;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.sidebarItem
+{
+    line-height:40px;
+    height:40px;
+    padding-left: 5px;
+}
+
+
+/* Edit Flight */
+/* item on the left of a left-right layout */
+.itemtimeleft
+{
+    display: inline;
+    float: left;
+    clear: left;
+    vertical-align: bottom;
+    width: 150px;
+    padding: 3px;
+}
+
+/* item on the right of a left-right layout */
+.itemtimeright
+{
+    display: inline;
+    float: left;
+    clear: right;
+    vertical-align: bottom;
+    padding: 3px;
+}
+
+/* item with no particular left/right layout */
+.itemtime
+{
+    padding: 3px;
+}
+
+/* Basic info about the flight */
+.flightinfoblock
+{
+    float: left;
+    clear: left;
+    padding: 3px;
+}
+
+/* the various times for the flight */
+.timesblock
+{
+    float: left;
+    clear: right;
+    padding: 3px;
+}
+
+/* full-width blocks (i.e., no side-to-side */
+.fullblock
+{
+    padding: 3px;
+    display: block;
+    clear: both;
+    width: 620px;
+}
+
+/* item labels in both left and right times */
+.itemtimeleft .itemlabel, .itemtimeright .itemlabel, .flightinfoblock .itemlabel
+{
+    padding: 0px, 0px, 0px, 0px;
+    display: block;
+    clear: both;
+}
+
+/* flight-info items */
+.flightinfoitem
+{
+    float: left;
+}
+
+.accordionMenuContent {
+    background-color: white;
+}
+
+/* PropertyEditing*/
+.propItemFlow
+{
+    display:inline-block;
+    vertical-align:middle;
+    width: 280px;
+    height: 37px;
+    padding-top: 1px;
+    padding-bottom: 2px;
+}
+
+.propItemContainer
+{
+    width: 600px;
+    padding: 3px;
+    border-style: none;
+}
+
+.propItemContainerOverflow
+{
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    width: 600px;
+    height: 200px;
+    padding: 3px;
+}
+
+
+/* Home page flights */
+.HoverHighlight:hover
+{
+    background-color: #CCCCCC;
+    text-decoration: none;
+}
+
+.HoverHighlight
+{
+    background-color: White;
+    text-decoration: none;
+}
+
+.EntryBlock
+{
+    background-color: white;
+}
+
+
+/* Footer */
+.footerContainer {
+    text-align: center;
+    clear: both;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    border-top: 12px solid #07afb9;
+    background-color: #263238;
+    color:white;
+    font-weight:bold;
+    font-size: 9pt;
+}
+
+.footerContainer a, footerContainer a:visited, footerContainer a:hover {
+    color: white;
+}
+
+.footerItem
+{
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.footerItem:after
+{
+  content: "|";
+  margin-left: 6px;
+  margin-right: 6px;
+  display:inline-block;
+}
+
+.footerItem:last-child:after
+{
+    content:"";
+    display:inline-block;
+}
