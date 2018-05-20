@@ -1651,7 +1651,7 @@ namespace MyFlightbook.Image
     public static class AWSConfiguration
     {
         public const string S3BucketName = "mfbimages";
-        public const string S3BucketNameDebug = "mfbdebug";
+        public const string S3BucketNameDebug = "mfbimages";
 
         #region Properties
         public static bool UseS3 { get { return String.Compare(LocalConfig.SettingForKey("UseAWSS3"), "yes", StringComparison.OrdinalIgnoreCase) == 0; } }

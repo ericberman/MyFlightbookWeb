@@ -30,9 +30,6 @@
             <uc1:imageSlider runat="server" ID="imgsliderFlights" />
         </div>
         <uc1:mfbImageList ID="mfbIlAirplane" ImageClass="Aircraft" MaxImage="-1" CanEdit="false" Columns="2" runat="server" Visible="false" />
-        <div style="max-width: 480px; margin-left:auto; margin-right:auto;" id="divAircraftImages" runat="server">
-            <uc1:imageSlider runat="server" ID="imgSliderAircraft" />
-        </div>
         <div id="divMap" runat="server">
             <div style="text-align:center;">
                 <asp:HyperLink ID="lnkZoomOut" runat="server" Visible="False" Text="<%$ Resources:Airports, MapZoomOut %>"></asp:HyperLink>&nbsp;&nbsp;&nbsp;&nbsp;<asp:HyperLink ID="lnkShowMapOnly" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowOnlyMap %>"></asp:HyperLink>&nbsp;&nbsp;

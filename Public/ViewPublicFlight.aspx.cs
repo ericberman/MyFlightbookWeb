@@ -3,13 +3,14 @@ using MyFlightbook.Airports;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -127,7 +128,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
                     this.Master.HasFooter = this.Master.HasHeader = false;
                     FullPageBottom.Visible = FullPageTop.Visible = false;
 
-                    pnlFB.Visible = pnlDetails.Visible = divAircraftImages.Visible = divMap.Visible = mfbAirportServices1.Visible = lnkShowMapOnly.Visible = imgsliderFlights.Visible = mfbVideoEntry1.Visible = false;
+                    pnlFB.Visible = pnlDetails.Visible = divMap.Visible = mfbAirportServices1.Visible = lnkShowMapOnly.Visible = imgsliderFlights.Visible = mfbVideoEntry1.Visible = false;
 
                     ShowComponents(szComponents.Split(','));
                 }
@@ -161,8 +162,10 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
                 mfbIlAirplane.DefaultImage = ac.DefaultImage;
                 mfbIlAirplane.Refresh();
 
-                imgSliderAircraft.Images = mfbIlAirplane.Images.ImageArray;
-                imgsliderFlights.Images = mfbIlFlight.Images.ImageArray;
+                List<MFBImageInfo> lst = new List<MFBImageInfo>(mfbIlFlight.Images.ImageArray);
+                lst.AddRange(mfbIlAirplane.Images.ImageArray);
+                imgsliderFlights.Images = lst;
+                imgsliderFlights.Visible = lst.Count > 0;
 
                 string szDescription = le.SocialMediaComment.Length > 0 ? le.SocialMediaComment : Resources.LogbookEntry.PublicFlightHeader;
                 this.Master.Title = szDescription;
