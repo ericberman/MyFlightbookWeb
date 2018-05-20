@@ -3,6 +3,7 @@ using MyFlightbook.FlightStats;
 using MyFlightbook.Image;
 using MyFlightbook.SocialMedia;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
 using System.Web.UI;
@@ -11,13 +12,26 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Public_Home : System.Web.UI.Page
 {
+    protected class AppAreaDescriptor {
+        public string Title { get; set; }
+        public string Link { get; set; }
+        public string Description { get; set; }
+
+        public AppAreaDescriptor(string title, string link, string description)
+        {
+            Title = title;
+            Link = link;
+            Description = description;
+        }
+    }
+
     protected override void OnError(EventArgs e)
     {
         Exception ex = Server.GetLastError();
@@ -48,7 +62,16 @@ public partial class Public_Home : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            litAppDesc.Text = Branding.ReBrand(Resources.Profile.AppDescription);
+            List<AppAreaDescriptor> lst = new List<AppAreaDescriptor>()
+            {
+                new AppAreaDescriptor(Resources.Tabs.TabLogbook, "~/Member/LogbookNew.aspx", Branding.ReBrand(Resources.Profile.appDescriptionLogbook)),
+                new AppAreaDescriptor(Resources.Tabs.TabAircraft, "~/Member/Aircraft.aspx", Branding.ReBrand(Resources.Profile.appDescriptionAircraft)),
+                new AppAreaDescriptor(Resources.Tabs.TabAirports, "~/Public/MapRoute2.aspx", Branding.ReBrand(Resources.Profile.appDescriptionAirports)),
+                new AppAreaDescriptor(Resources.Tabs.TabInstruction, "~/Member/Training.aspx", Branding.ReBrand(Resources.Profile.appDescriptionTraining)),
+                new AppAreaDescriptor(Resources.Tabs.TabProfile, "~/Member/EditProfile.aspx", Branding.ReBrand(Resources.Profile.appDescriptionProfile))
+            };
+            rptFeatures.DataSource = lst;
+            rptFeatures.DataBind();
             locRecentFlightsHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentFlightsHeader, Branding.CurrentBrand.AppName);
 
             mvWelcome.SetActiveView(User.Identity.IsAuthenticated ? vwWelcomeBack : vwWelcomeNewUser);
@@ -56,7 +79,6 @@ public partial class Public_Home : System.Web.UI.Page
             if (User.Identity.IsAuthenticated)
             {
                 lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageWelcomeBack, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFirstName);
-                MfbCurrency1.UserName = User.Identity.Name;
             }
             else
             {
@@ -65,8 +87,6 @@ public partial class Public_Home : System.Web.UI.Page
                 if (mainform != null && mfbSignIn1.DefButtonUniqueID.Length > 0)
                     mainform.DefaultButton = mfbSignIn1.DefButtonUniqueID;
             }
-
-            mfbEditFlight1.SetUpNewOrEdit(-1);
 
             lblRecentFlightsStats.Text = fs.ToString();
         }
@@ -80,46 +100,39 @@ public partial class Public_Home : System.Web.UI.Page
                 Response.Redirect("DefaultMini.aspx");
         }
 
-        gvRecentFlights.DataSource = fs.RecentPublicFlights;
-        gvRecentFlights.DataBind();
+        PopulateRecentImages(fs.RecentPublicFlights);
     }
 
-    public void gvRecentFlights_AddPictures(Object sender, GridViewRowEventArgs e)
+    protected void PopulateRecentImages(IEnumerable<LogbookEntry> flights)
     {
-        if (e != null && e.Row.RowType == DataControlRowType.DataRow)
+        List<LogbookEntry> lstRecent = new List<LogbookEntry>(flights);
+        List<MFBImageInfo> lstRecentImages = new List<MFBImageInfo>();
+        HashSet<int> recentAircraft = new HashSet<int>();
+
+        foreach (LogbookEntry le in lstRecent)
         {
-            string szTail = DataBinder.Eval(e.Row.DataItem, "TailNumDisplay").ToString();
-            string szTailID = DataBinder.Eval(e.Row.DataItem, "AircraftID").ToString();
-            string szID = DataBinder.Eval(e.Row.DataItem, "FlightID").ToString();
+            if (le.FlightImages == null || le.FlightImages.Length == 0)
+                le.PopulateImages();
+            if (le.FlightImages.Length > 0)
+                lstRecentImages.Add(le.FlightImages[0]);
+            else
+                recentAircraft.Add(le.AircraftID);
 
-            Controls_mfbImageList mfbIl = (Controls_mfbImageList)LoadControl("~/Controls/mfbImageList.ascx");
-
-            PlaceHolder plcAircraft = (PlaceHolder)e.Row.FindControl("plcAircraft");
-            PlaceHolder plcFlightPix = (PlaceHolder)e.Row.FindControl("plcFlightPix");
-
-            mfbIl.Key = szTailID;
-            mfbIl.ImageClass = MFBImageInfo.ImageClass.Aircraft;
-            mfbIl.AltText = szTail;
-            mfbIl.CanEdit = false;
-            mfbIl.Columns = 1;
-            mfbIl.MaxImage = 1;
-            mfbIl.Refresh();
-
-            plcAircraft.Controls.Add(mfbIl);
-
-            Controls_mfbImageList mfbIlFlight = (Controls_mfbImageList) LoadControl("~/Controls/mfbImageList.ascx");
-            mfbIlFlight.ImageClass = MFBImageInfo.ImageClass.Flight;
-            mfbIlFlight.Key = szID;
-            mfbIlFlight.AltText = "";
-            mfbIlFlight.Columns = 4;
-            mfbIlFlight.MaxImage = -1;
-            mfbIlFlight.CanEdit = false;
-            plcFlightPix.Controls.Add(mfbIlFlight);
-            mfbIlFlight.Refresh();
-
-            Controls_fbComment fbComment = (Controls_fbComment)e.Row.FindControl("fbComment1");
-            fbComment.URI = Branding.PublicFlightURL(Convert.ToInt32(szID, System.Globalization.CultureInfo.InvariantCulture));
+            if (lstRecentImages.Count > 10)
+                break;
         }
+
+        foreach (int aircraftID in recentAircraft)
+        {
+            ImageList il = new ImageList(MFBImageInfo.ImageClass.Aircraft, aircraftID.ToString(CultureInfo.InvariantCulture));
+            il.Refresh();
+            if (il.ImageArray.Count > 0)
+                lstRecentImages.Add(il.ImageArray[0]);
+            if (lstRecentImages.Count > 10)
+                break;
+        }
+
+        imageSlider.Images = lstRecentImages;
     }
 
     protected void lnkViewMobile_Click(object sender, EventArgs e)

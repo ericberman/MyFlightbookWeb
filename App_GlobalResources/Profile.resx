@@ -255,9 +255,6 @@
     <comment>{0} is the app name</comment>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="AppDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Content.en\AppDescription.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="NewAccountPromo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Content.en\NewAccountPromo.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -496,5 +493,20 @@
   </data>
   <data name="PasswordChangedSubject" xml:space="preserve">
     <value>{0} - Notification of password change</value>
+  </data>
+  <data name="appDescriptionAircraft" xml:space="preserve">
+    <value>Manage the aircraft that you fly, and add new models to the system.  You can also define new models of aircraft.  You can even create a flying club if you share aircraft with others!</value>
+  </data>
+  <data name="appDescriptionAirports" xml:space="preserve">
+    <value>View flight routes, see airports that you&amp;#39;ve visited, add missing airports.  You can even try your skills at identifying airports from satellite imagery.</value>
+  </data>
+  <data name="appDescriptionLogbook" xml:space="preserve">
+    <value>Manage your flights and see your currency and totals. You can also upload or download your logbook, and get a printer-optimized view!</value>
+  </data>
+  <data name="appDescriptionProfile" xml:space="preserve">
+    <value>Manage your account and preferences for the site. You can even create custom currency rules or deadlines!</value>
+  </data>
+  <data name="appDescriptionTraining" xml:space="preserve">
+    <value>Track your progress towards ratings, record endorsements, and manage relationships with students and instructors.  You can even earn badges for various achievements!</value>
   </data>
 </root>
