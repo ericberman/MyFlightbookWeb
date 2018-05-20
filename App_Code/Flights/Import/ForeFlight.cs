@@ -339,7 +339,7 @@ namespace MyFlightbook.ImportFlights
                     // Now find the start of the flight table and stop - the regular CSVAnalyzer can pick up from here, and our aircraft table is now set up.
                     while ((rgRow = reader.GetCSVLine()) != null)
                     {
-                        if (rgRow != null && rgRow[0].CompareCurrentCultureIgnoreCase("Flights Table") == 0)
+                        if (rgRow != null && rgRow.Length > 0 && rgRow[0].CompareCurrentCultureIgnoreCase("Flights Table") == 0)
                             break;
                     }
 
