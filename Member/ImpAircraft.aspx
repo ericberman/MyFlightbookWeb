@@ -10,9 +10,6 @@
     <asp:Localize ID="locHeader" runat="server" Text="Import Aircraft" meta:resourcekey="locHeaderResource1"></asp:Localize>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
-    <h1><asp:Label ID="lblImportHeader" runat="server" Text="Import Aircraft" 
-            meta:resourcekey="lblImportHeaderResource1"></asp:Label>
-    </h1>
     <asp:Wizard ID="wzImportAircraft" runat="server" Width="800px" 
         OnFinishButtonClick="ImportAllNew" DisplaySideBar="False"
         meta:resourcekey="wzImportAircraftResource1" ActiveStepIndex="0" 

@@ -315,12 +315,6 @@
   <data name="lblImportErrorResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="lblImportHeaderResource1.Text" xml:space="preserve">
-    <value>Import Aircraft</value>
-  </data>
-  <data name="lblImportHeaderResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="lblKindResource1.Text" xml:space="preserve">
     <value>Aircraft is a:</value>
   </data>

@@ -1,13 +1,35 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
+
+/* 
+    open_sans and roboto used from http://www.1001fonts.com/open-sans-font.html and http://www.1001fonts.com/roboto-font.html; 
+    Licensed under Appache License 2.0, free for commercial use
+
+*/
+@font-face {
+    font-family: open_sans_bold;
+    src: url('Fonts/open-sans.bold.ttf') format('opentype')
+}
+
+@font-face {
+    font-family: open_sans;
+    src: url('Fonts/open-sans.regular.ttf') format('opentype')
+}
+
+@font-face {
+    font-family: roboto_bold;
+    src: url('Fonts/roboto.bold.ttf') format('opentype')
+}
+
+
 /* Basic HTML */
 BODY, body, .mfbDefault
 {
-    font-family: Arial;
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
     border-top: 7px solid #03a9f4;
     max-width: 1000px;
@@ -23,6 +45,7 @@ H1 {
     background-color: #03a9f4;
     padding: 4px;
     text-align:center;
+    margin: 0px;
 }
 
 .tabbargradient
@@ -74,14 +97,14 @@ H1 {
 }
 
 #menu-bar a {
-  font-weight: bold;
-  font-family: arial;
+  font-weight: normal;
+  font-family: roboto_bold;
   font-style: normal;
-  font-size: 12px;
+  font-size: 10pt;
   color: #263238;
   text-decoration: none;
   display: block;
-  padding: 11px 15px 11px 15px;
+  padding: 8px 8px 8px 8px;
   margin: 0;
 }
 
@@ -92,7 +115,7 @@ H1 {
   border-top-left-radius: 0px;
   -webkit-top-left-radius: 0px;
   -moz-top-left-radius: 0px;
-  font-weight: bold;
+  font-weight: normal;
   background: #f3f6f6;
   background-image: none;
   color: #263238;
@@ -105,7 +128,6 @@ H1 {
   filter:none;
   border: none;
   color: black;
-  font-weight:bold;
   box-shadow: none;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -129,7 +151,7 @@ H1 {
   top: 34px;
   left: 0;
   border: none;
-  font-weight:bold;
+  font-weight:normal;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -148,12 +170,12 @@ H1 {
   padding: 0;
 }
 #menu-bar ul a {
-  padding:10px 0px 10px 15px;
-  color:#424242 !important;
-  font-size:12px;
-  font-style:normal;
-  font-family:arial;
-  font-weight: normal;
+    padding: 10px 0px 10px 15px;
+    color: #424242 !important;
+    font-size: 10pt;
+    font-style: normal;
+    font-family: roboto_bold;
+    font-weight: normal;
 }
 #menu-bar ul li:first-child > a {
 }
@@ -342,10 +364,8 @@ H1 {
     padding: 3px;
 }
 
-
 /* Home page flights */
-.HoverHighlight:hover
-{
+.HoverHighlight:hover {
     background-color: #CCCCCC;
     text-decoration: none;
 }
@@ -372,7 +392,8 @@ H1 {
     border-top: 12px solid #07afb9;
     background-color: #263238;
     color:white;
-    font-weight:bold;
+    font-weight:normal;
+    font-family:roboto_bold;
     font-size: 9pt;
 }
 
@@ -409,6 +430,7 @@ H1 {
     max-width: unset;
     min-width: unset;
     color:white;
+    font-family: open_sans;
     padding: 14px;
 }
 
@@ -428,4 +450,16 @@ H1 {
     margin-left: 6px;
     margin-right: 6px;
     display: inline-block;
+}
+
+.featureAreaDescriptionHeader {
+    font-family: open_sans_bold;
+    font-weight:normal;
+    font-size: 12pt;
+}
+
+.featureAreaDescriptionBody {
+    font-family: open_sans;
+    font-weight: normal;
+    font-size: 9pt;
 }

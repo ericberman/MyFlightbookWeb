@@ -1172,6 +1172,16 @@ table.dataDescription thead tr td
 .welcomeHeader li {
 }
 
+.featureAreaDescriptionHeader {
+    font-weight:bold;
+    font-size: 12pt;
+    text-align:center;
+}
+
+.featureAreaDescriptionBody {
+    font-size: 10pt;
+}
+
 /* Printing */
 @media print {
    thead {display: table-header-group;}

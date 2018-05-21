@@ -21,8 +21,8 @@
         <asp:Repeater ID="rptFeatures" runat="server">
             <ItemTemplate>
                 <div style="border: 3px solid #cccccc; border-radius: 10px; margin: 10px; padding: 10px; height: 120px; vertical-align:middle; display:inline-block; width: 180px;">
-                    <div style="text-align:center; font-size:larger; font-weight:bold;"><asp:HyperLink ID="lnkTitle" runat="server" Text='<%# Eval("Title") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink></div>
-                    <div><%# Eval("Description") %></div>
+                    <div class="featureAreaDescriptionHeader"><asp:HyperLink ID="lnkTitle" runat="server" Text='<%# Eval("Title") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink></div>
+                    <div class="featureAreaDescriptionBody"><%# Eval("Description") %></div>
                 </div>
             </ItemTemplate>
         </asp:Repeater>
