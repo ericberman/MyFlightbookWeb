@@ -1157,6 +1157,21 @@ table.dataDescription thead tr td
     border-radius: 5px;
 }
 
+/* Home page welcome */
+.welcomeHeader {
+    margin-left:auto;
+    margin-right: auto;
+    min-width: 200px;
+    max-width: 350px;
+}
+
+.welcomeHeader p {
+    font-size:larger;
+}
+
+.welcomeHeader li {
+}
+
 /* Printing */
 @media print {
    thead {display: table-header-group;}

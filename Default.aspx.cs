@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
-using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
@@ -74,18 +73,16 @@ public partial class Public_Home : System.Web.UI.Page
             rptFeatures.DataBind();
             locRecentFlightsHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentFlightsHeader, Branding.CurrentBrand.AppName);
 
-            mvWelcome.SetActiveView(User.Identity.IsAuthenticated ? vwWelcomeBack : vwWelcomeNewUser);
 
             if (User.Identity.IsAuthenticated)
             {
                 lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageWelcomeBack, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFirstName);
+                pnlWelcome.Visible = false;
             }
             else
             {
                 lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName);
-                HtmlForm mainform = (HtmlForm)Master.FindControl("form1");
-                if (mainform != null && mfbSignIn1.DefButtonUniqueID.Length > 0)
-                    mainform.DefaultButton = mfbSignIn1.DefButtonUniqueID;
+                pnlWelcome.Visible = true;
             }
 
             lblRecentFlightsStats.Text = fs.ToString();

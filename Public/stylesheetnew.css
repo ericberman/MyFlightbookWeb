@@ -399,3 +399,33 @@ H1 {
     content:"";
     display:inline-block;
 }
+
+/* Home page welcome */
+.welcomeHeader {
+    background-color: #03a9f4;
+    width:100%;
+    margin-left: unset;
+    margin-right: unset;
+    max-width: unset;
+    min-width: unset;
+    color:white;
+    padding: 14px;
+}
+
+.welcomeHeader p {
+    text-align: center;
+    font-size: 24pt;
+}
+
+.welcomeHeader li {
+    display: inline;
+    font-size: 12pt;
+    text-align: left;
+}
+
+.welcomeHeader li:before {
+    content: "•";
+    margin-left: 6px;
+    margin-right: 6px;
+    display: inline-block;
+}

@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
-using MyFlightbook.Airports;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -80,7 +80,7 @@ FROM flights f
   INNER JOIN models m ON ac.idmodel=m.idmodel 
 WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND f.fPublic <> 0 
 ORDER BY f.date DESC, f.idflight DESC 
-LIMIT 60";
+LIMIT 100";
                 DBHelper dbh = new DBHelper(szQuery);
                 List<string> lstRoutes = new List<string>();
 

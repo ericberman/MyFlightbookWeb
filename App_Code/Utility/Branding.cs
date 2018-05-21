@@ -123,7 +123,7 @@ namespace MyFlightbook
         static private Brand[] knownBrands = 
         {
         new Brand(BrandID.brandMyFlightbook, "MyFlightbook", "myflightbook.com", "/logbook", "~/Public/myflightbooknew.png", string.Empty, "noreply@mg.myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook", "https://myflightbookblog.blogspot.com/"),
-        new Brand(BrandID.brandMyFlightbookNew, "MyFlightbook", "staging.myflightbook.com", "/logbook", "~/Public/mfblogonew.png", "~/Public/stylesheetnew.css", "noreply@mg.myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook", "https://myflightbookblog.blogspot.com/")
+        new Brand(BrandID.brandMyFlightbookNew, "MyFlightbook", "myflightbook.com", "/logbook", "~/Public/mfblogonew.png", "~/Public/stylesheetnew.css", "noreply@mg.myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook", "https://myflightbookblog.blogspot.com/")
         };
 
 
@@ -152,7 +152,10 @@ namespace MyFlightbook
                 string szHost = HttpContext.Current.Request.Url.Host;
                 foreach (Brand b in knownBrands)
                     if (String.Compare(szHost, b.HostName, StringComparison.OrdinalIgnoreCase) == 0)
+                    {
                         result = b.BrandID;
+                        break;
+                    }
 
                 if (HttpContext.Current.Session != null)
                     HttpContext.Current.Session[brandStateKey] = result;
