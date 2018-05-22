@@ -27,11 +27,19 @@
 
 
 /* Basic HTML */
-BODY, body, .mfbDefault
+.mfbDefault
 {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+BODY, body {
     border-top: 7px solid #03a9f4;
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 9pt;
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
@@ -128,9 +136,6 @@ H1 {
   filter:none;
   border: none;
   color: black;
-  box-shadow: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
 }
 #menu-bar ul a:hover {
   background: #e7e7e7 !important;
@@ -152,9 +157,6 @@ H1 {
   left: 0;
   border: none;
   font-weight:normal;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
 }
 #menu-bar li:hover > ul {
   display: block;  z-index: 100;
