@@ -669,39 +669,36 @@ H4
 .sidebarRight
 {
     background-color: #ffffcc;
-    padding:5px;
     display:inline-block;
     height:100%;
     width: 100%;
     min-width:280px;
     max-width:800px;
     margin: 0px;
+    padding-left: 5px;
 }
 
-.sidebarSelected
-{
+.sidebarSelected {
     background-color: #ffffcc;
-    font-weight:bold;
+    font-weight: bold;
     border-left: solid 1px black;
     border-bottom: solid 1px black;
     height: 40px;
-}
-
-.sidebarUnSelected
-{
-    background-color: #eeeeee;
-    font-weight:normal;
-    border-left: solid 1px black;
-    border-right:solid 1px black;
-    border-bottom:solid 1px black;
-    height: 40px;
-}
-
-.sidebarItem
-{
-    line-height:40px;
-    height:40px;
+    line-height: 40px;
     padding-left: 5px;
+    display: block;
+}
+
+.sidebarUnSelected {
+    background-color: #eeeeee;
+    font-weight: normal;
+    border-left: solid 1px black;
+    border-right: solid 1px black;
+    border-bottom: solid 1px black;
+    height: 40px;
+    line-height: 40px;
+    padding-left: 5px;
+    display: block;
 }
 
 td.sidebarUnSelected a, td.sidebarUnSelected a:visited, td.sidebarUnSelected a:link, td.sidebarUnSelected a:active

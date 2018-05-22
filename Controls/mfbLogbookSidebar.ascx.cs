@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Web.Security;
+﻿using MyFlightbook;
+using System;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Xml.Linq;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2019-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -59,27 +51,20 @@ public partial class Controls_mfbLogbookSidebar : System.Web.UI.UserControl
 
             Boolean fSelected = (ti.ID == CurrentTab);
 
-            Panel p = new Panel();
-            plcSidebar.Controls.Add(p);
-
-            p.CssClass = (fSelected) ? "sidebarSelected" : "sidebarUnSelected";
-
-            string szClass = "sidebarItem";
-
             if (fSelected)
             {
                 Label l = new Label();
-                p.Controls.Add(l);
+                plcSidebar.Controls.Add(l);
                 l.Text = ti.Text;
-                l.CssClass = szClass;
+                l.CssClass = "sidebarSelected";
             }
             else
             {
                 HyperLink a = new HyperLink();
-                p.Controls.Add(a);
+                plcSidebar.Controls.Add(a);
                 a.NavigateUrl = ti.Link;
                 a.Text = ti.Text;
-                a.CssClass = szClass;
+                a.CssClass = "sidebarUnSelected";
             }
         }
     }

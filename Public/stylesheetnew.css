@@ -32,7 +32,7 @@ BODY, body, .mfbDefault
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
     border-top: 7px solid #03a9f4;
-    max-width: 1000px;
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -206,11 +206,6 @@ H1 {
     background-color: white;
 }
 
-.sidebarContainer
-{
-    background-color:White;
-}
-
 .sidebarLeft
 {
     width: 150px;
@@ -243,6 +238,7 @@ H1 {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     height: 40px;
+    text-align:center;
 }
 
 .sidebarUnSelected {
@@ -255,15 +251,8 @@ H1 {
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
+    text-align: center;
 }
-
-.sidebarItem
-{
-    line-height:40px;
-    height:40px;
-    padding-left: 5px;
-}
-
 
 /* Edit Flight */
 /* item on the left of a left-right layout */
