@@ -141,18 +141,6 @@
   <data name="lblCopyrightResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="lblFollowFacebookResource1.Text" xml:space="preserve">
-    <value>Follow MyFlightbook on Facebook</value>
-  </data>
-  <data name="lblFollowFacebookResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblFollowTwitterResource1.Text" xml:space="preserve">
-    <value>Follow MyFlightbook on Twitter</value>
-  </data>
-  <data name="lblFollowTwitterResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="lblViewMobileResource1.Text" xml:space="preserve">
     <value>Mobile View</value>
   </data>
@@ -205,12 +193,6 @@
     <value>Classic View</value>
   </data>
   <data name="lnkViewClassicResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lnkWhatsNewResource1.Text" xml:space="preserve">
-    <value>What's New</value>
-  </data>
-  <data name="lnkWhatsNewResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="pnlClassicResource1.GroupingText" xml:space="preserve">

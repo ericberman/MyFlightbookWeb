@@ -908,21 +908,12 @@ a img
 .footerItem
 {
     display:inline-block;
+    text-align: left;
     vertical-align:middle;
 }
 
-.footerItem:after
-{
-  content: "|";
-  margin-left: 6px;
-  margin-right: 6px;
-  display:inline-block;
-}
-
-.footerItem:last-child:after
-{
-    content:"";
-    display:inline-block;
+.footerItem li {
+    list-style-type:none;
 }
 
 /* Data entry form tables */

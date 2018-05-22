@@ -1446,4 +1446,10 @@
   <data name="CookieNoticeAccept" xml:space="preserve">
     <value>Got it, I consent</value>
   </data>
+  <data name="FollowOnFacebook" xml:space="preserve">
+    <value>%APP_NAME% on Facebook</value>
+  </data>
+  <data name="FollowOnTwitter" xml:space="preserve">
+    <value>%APP_NAME% on Twitter</value>
+  </data>
 </root>

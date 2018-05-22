@@ -395,6 +395,11 @@ H1 {
     font-weight:normal;
     font-family:roboto_bold;
     font-size: 9pt;
+    border-top: 10px solid #07a5b9;
+}
+
+.footerContainer hr {
+    display:none;
 }
 
 .footerContainer a, footerContainer a:visited, footerContainer a:hover {
@@ -405,20 +410,6 @@ H1 {
 {
     display:inline-block;
     vertical-align:middle;
-}
-
-.footerItem:after
-{
-  content: "|";
-  margin-left: 6px;
-  margin-right: 6px;
-  display:inline-block;
-}
-
-.footerItem:last-child:after
-{
-    content:"";
-    display:inline-block;
 }
 
 /* Home page welcome */
