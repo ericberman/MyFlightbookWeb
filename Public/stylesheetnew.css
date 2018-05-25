@@ -204,6 +204,44 @@ H1 {
   height: 1%;
 }
 
+/* Icons on menu bar */
+#menu-bar .topTab, #menu-bar .current a, #menu-bar a.topTab:hover, #menu-bar li:hover > a {
+    background-size: 12pt 12pt;
+    background-repeat: no-repeat;
+    background-position-y: center;
+    background-position-x: 4pt;
+    padding-left: 20pt;
+}
+
+#menu-bar #tabIDtabHome {
+    padding-left: 8px;
+}
+
+#menu-bar #tabIDtabLogbook {
+    background-image: url('tabimages/LogbookTab.png');
+}
+
+#menu-bar #tabIDtabAircraft {
+    background-image: url('tabimages/AircraftTab.png');
+}
+
+#menu-bar #tabIDtabMaps {
+    background-image: url('tabimages/AirportTab.png');
+}
+
+#menu-bar #tabIDtabTraining {
+    background-image: url('tabimages/TrainingTab.png');
+}
+
+#menu-bar #tabIDtabProfile {
+    background-image: url('tabimages/ProfileTab.png');
+}
+
+#menu-bar #tabIDtabAdmin {
+    background-image: url('tabimages/AdminTab.png');
+}
+
+
 /* Sidebar UI */
 .topForm
 {

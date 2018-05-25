@@ -75,6 +75,8 @@ public partial class XMLNav : System.Web.UI.UserControl
             m_tw.RenderBeginTag(HtmlTextWriterTag.Li);
 
             m_tw.AddAttribute(HtmlTextWriterAttribute.Href, ResolveUrl(ti.Link));
+            m_tw.AddAttribute(HtmlTextWriterAttribute.Id, "tabID" + ti.ID.ToString());
+            m_tw.AddAttribute(HtmlTextWriterAttribute.Class, "topTab");
             m_tw.RenderBeginTag(HtmlTextWriterTag.A);
             m_tw.InnerWriter.Write(ti.Text);
             m_tw.RenderEndTag(); // Anchor tag
