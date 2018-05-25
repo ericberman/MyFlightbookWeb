@@ -213,31 +213,31 @@ H1 {
     padding-left: 20pt;
 }
 
-#menu-bar #tabIDtabHome {
+#menu-bar #tabIDtabHome, #tabIDtabHome.featureDescriptorIcon {
     padding-left: 8px;
 }
 
-#menu-bar #tabIDtabLogbook {
+#menu-bar #tabIDtabLogbook, #tabIDtabLogbook.featureAreaDescriptorIcon {
     background-image: url('tabimages/LogbookTab.png');
 }
 
-#menu-bar #tabIDtabAircraft {
+#menu-bar #tabIDtabAircraft, #tabIDtabAircraft.featureAreaDescriptorIcon {
     background-image: url('tabimages/AircraftTab.png');
 }
 
-#menu-bar #tabIDtabMaps {
+#menu-bar #tabIDtabMaps, #tabIDtabMaps.featureAreaDescriptorIcon {
     background-image: url('tabimages/AirportTab.png');
 }
 
-#menu-bar #tabIDtabTraining {
+#menu-bar #tabIDtabTraining, #tabIDtabTraining.featureAreaDescriptorIcon  {
     background-image: url('tabimages/TrainingTab.png');
 }
 
-#menu-bar #tabIDtabProfile {
+#menu-bar #tabIDtabProfile, #tabIDtabProfile.featureAreaDescriptorIcon {
     background-image: url('tabimages/ProfileTab.png');
 }
 
-#menu-bar #tabIDtabAdmin {
+#menu-bar #tabIDtabAdmin, #tabIDtabAdmin.featureAreaDescriptorIcon {
     background-image: url('tabimages/AdminTab.png');
 }
 
@@ -499,6 +499,14 @@ H1 {
     font-family: open_sans;
     font-weight: normal;
     font-size: 9pt;
+}
+
+.featureAreaDescriptorIcon {
+    background-repeat:no-repeat; 
+    background-position-x:center; 
+    background-size: 24pt 24pt; 
+    line-height: 24pt;
+    display:block;
 }
 
 /* Printing */

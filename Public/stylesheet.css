@@ -1188,6 +1188,10 @@ table.dataDescription thead tr td
     font-size: 10pt;
 }
 
+.featureAreaDescriptorIcon {
+    display:none;
+}
+
 /* Printing */
 @media print {
    thead {display: table-header-group;}

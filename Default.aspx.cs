@@ -22,12 +22,14 @@ public partial class Public_Home : System.Web.UI.Page
         public string Title { get; set; }
         public string Link { get; set; }
         public string Description { get; set; }
+        public tabID TabID { get; set; }
 
-        public AppAreaDescriptor(string title, string link, string description)
+        public AppAreaDescriptor(string title, string link, string description, tabID id)
         {
             Title = title;
             Link = link;
             Description = description;
+            TabID = id;
         }
     }
 
@@ -63,11 +65,11 @@ public partial class Public_Home : System.Web.UI.Page
         {
             List<AppAreaDescriptor> lst = new List<AppAreaDescriptor>()
             {
-                new AppAreaDescriptor(Resources.Tabs.TabLogbook, "~/Member/LogbookNew.aspx", Branding.ReBrand(Resources.Profile.appDescriptionLogbook)),
-                new AppAreaDescriptor(Resources.Tabs.TabAircraft, "~/Member/Aircraft.aspx", Branding.ReBrand(Resources.Profile.appDescriptionAircraft)),
-                new AppAreaDescriptor(Resources.Tabs.TabAirports, "~/Public/MapRoute2.aspx", Branding.ReBrand(Resources.Profile.appDescriptionAirports)),
-                new AppAreaDescriptor(Resources.Tabs.TabInstruction, "~/Member/Training.aspx", Branding.ReBrand(Resources.Profile.appDescriptionTraining)),
-                new AppAreaDescriptor(Resources.Tabs.TabProfile, "~/Member/EditProfile.aspx", Branding.ReBrand(Resources.Profile.appDescriptionProfile))
+                new AppAreaDescriptor(Resources.Tabs.TabLogbook, "~/Member/LogbookNew.aspx", Branding.ReBrand(Resources.Profile.appDescriptionLogbook), tabID.tabLogbook),
+                new AppAreaDescriptor(Resources.Tabs.TabAircraft, "~/Member/Aircraft.aspx", Branding.ReBrand(Resources.Profile.appDescriptionAircraft), tabID.tabAircraft),
+                new AppAreaDescriptor(Resources.Tabs.TabAirports, "~/Public/MapRoute2.aspx", Branding.ReBrand(Resources.Profile.appDescriptionAirports), tabID.tabMaps),
+                new AppAreaDescriptor(Resources.Tabs.TabInstruction, "~/Member/Training.aspx", Branding.ReBrand(Resources.Profile.appDescriptionTraining), tabID.tabTraining),
+                new AppAreaDescriptor(Resources.Tabs.TabProfile, "~/Member/EditProfile.aspx", Branding.ReBrand(Resources.Profile.appDescriptionProfile), tabID.tabProfile)
             };
             rptFeatures.DataSource = lst;
             rptFeatures.DataBind();

@@ -21,9 +21,12 @@
                 <div style="margin-left: auto; margin-right:auto; max-width:700px; text-align:center;">
                     <asp:Repeater ID="rptFeatures" runat="server">
                         <ItemTemplate>
-                            <div style="border: 3px solid #aaaaaa; border-radius: 10px; margin: 10px; padding: 10px; height: 120px; vertical-align:middle; display:inline-block; width: 180px;">
-                                <div class="featureAreaDescriptionHeader"><asp:HyperLink ID="lnkTitle" runat="server" Text='<%# Eval("Title") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink></div>
-                                <div class="featureAreaDescriptionBody"><%# Eval("Description") %></div>
+                            <div style="display:inline-block; vertical-align:middle; ">
+                                <div id="<%# "tabID" + Eval("TabID") %>" class="featureAreaDescriptorIcon">&nbsp;</div>
+                                <div style="border: 3px solid #aaaaaa; border-radius: 10px; margin: 10px; padding: 10px; height: 120px; width: 180px;">
+                                    <div class="featureAreaDescriptionHeader"><asp:HyperLink ID="lnkTitle" runat="server" Text='<%# Eval("Title") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink></div>
+                                    <div class="featureAreaDescriptionBody"><%# Eval("Description") %></div>
+                                </div>
                             </div>
                         </ItemTemplate>
                     </asp:Repeater>
