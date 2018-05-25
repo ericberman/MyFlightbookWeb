@@ -5,5 +5,7 @@
     <asp:Localize ID="locHeader" runat="server"></asp:Localize>
 </asp:Content>
 <asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
-    <uc1:mfbSignIn ID="mfbSignIn1" runat="server" />
+    <div style="padding: 10px; max-width:700px; margin-left:auto; margin-right: auto;">
+        <uc1:mfbSignIn ID="mfbSignIn1" runat="server" />
+    </div>
 </asp:content>

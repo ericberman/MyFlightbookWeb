@@ -10,18 +10,22 @@
                 runat="server" Text="Privacy policy" meta:resourcekey="lnkPrivacyResource1"></asp:HyperLink></li>
                 <li><asp:HyperLink ID="HyperLink1" NavigateUrl="~/Public/TandC.aspx" runat="server" 
                 Text="Terms of Use" meta:resourcekey="HyperLink1Resource1"></asp:HyperLink></li>
-                <li><asp:HyperLink ID="lnkPDA" NavigateUrl="~/DefaultMini.aspx" runat="server" 
-                Text="Mobile Access" meta:resourcekey="lnkPDAResource1"></asp:HyperLink></li>
+                <li><asp:HyperLink ID="lnkDevelopers" runat="server" Text="Developers" NavigateUrl="~/Public/Developer.aspx" meta:resourcekey="lnkDevelopers1"></asp:HyperLink></li>
             </ul>
         </div>
         <div class="footerItem">
             <ul>
                 <li><asp:HyperLink ID="lnkContact" NavigateUrl="~/Public/ContactMe.aspx" 
                 runat="server" Text="Contact Us" meta:resourcekey="lnkContactResource1"></asp:HyperLink></li>
-                <li class="footerItem"><asp:HyperLink ID="lnkFAQ" runat="server" NavigateUrl="~/Public/FAQ.aspx" 
+                <li><asp:HyperLink ID="lnkFAQ" runat="server" NavigateUrl="~/Public/FAQ.aspx" 
                     Text="FAQ" meta:resourcekey="lnkFAQResource1"></asp:HyperLink></li>
-                <li class="footerItem" runat="server"><asp:HyperLink ID="lnkBlog" runat="server" Text="Blog" Target="_blank" meta:resourcekey="lnkBlogResource1"></asp:HyperLink></li>
-                <li><asp:HyperLink ID="lnkDevelopers" runat="server" Text="Developers" NavigateUrl="~/Public/Developer.aspx" meta:resourcekey="lnkDevelopers1"></asp:HyperLink></li>
+                <li><asp:HyperLink ID="lnkBlog" runat="server" Text="Blog" Target="_blank" meta:resourcekey="lnkBlogResource1"></asp:HyperLink></li>
+            </ul>
+        </div>
+        <div class="footerItem">
+            <ul>
+                <li><asp:HyperLink ID="lnkPDA" NavigateUrl="~/DefaultMini.aspx" runat="server" 
+                Text="Mobile Access" meta:resourcekey="lnkPDAResource1"></asp:HyperLink></li>
             </ul>
         </div>
         <div class="footerItem">

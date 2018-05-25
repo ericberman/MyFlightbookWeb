@@ -52,8 +52,11 @@ H1 {
     color: black;
     background-color: #03a9f4;
     padding: 4px;
-    text-align:center;
+    text-align: center;
     margin: 0px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
 }
 
 .tabbargradient
@@ -124,7 +127,7 @@ H1 {
   -webkit-top-left-radius: 0px;
   -moz-top-left-radius: 0px;
   font-weight: normal;
-  background: #f3f6f6;
+  background: #e7e7e7;
   background-image: none;
   color: #263238;
 }
@@ -400,34 +403,48 @@ H1 {
 .footerItem
 {
     display:inline-block;
-    vertical-align:middle;
+    vertical-align:top;
 }
 
 /* Home page welcome */
-.welcomeHeader {
+
+
+#homePagePromo.welcomeHeader {
     background-color: #03a9f4;
-    width:100%;
-    margin-left: unset;
-    margin-right: unset;
-    max-width: unset;
-    min-width: unset;
-    color:white;
+    width: 100%;
+    max-width: 100%;
+    color: white;
     font-family: open_sans;
-    padding: 14px;
+    padding: 4px;
+    margin: 0px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
+    box-shadow: none;
+    border: none;
+    border-radius: unset;
 }
 
-.welcomeHeader p {
+#homePagePromo.welcomeHeader p {
     text-align: center;
     font-size: 24pt;
+    line-height: 1.0;
+    font-family: open_sans_bold, Arial;
 }
 
-.welcomeHeader li {
+#homePagePromo.welcomeHeader ul {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#homePagePromo.welcomeHeader li {
     display: inline;
     font-size: 12pt;
     text-align: left;
 }
 
-.welcomeHeader li:before {
+#homePagePromo.welcomeHeader li:before {
     content: "•";
     margin-left: 6px;
     margin-right: 6px;
@@ -444,4 +461,10 @@ H1 {
     font-family: open_sans;
     font-weight: normal;
     font-size: 9pt;
+}
+
+/* Printing */
+@media print {
+    h1 { background-color:none;}
+    BODY, body { border:none; }
 }

@@ -1,6 +1,6 @@
-<p style="font-weight:bold">%APP_NAME% is your online pilot's logbook!</p>
+<p>%APP_NAME% - logbook for pilots!</p>
 <ul>
-	<li>Access your logbook from anywhere!</li>
+	<li>Access your logbook from anywhere</li>
     <li>Ensure that you are current</li>
     <li>Get detailed totals</li>
 	<li>Track progress towards ratings</li>
@@ -10,4 +10,4 @@
     <li>View your flights on a map</li>
 	<li>And much more...</li>
 </ul>
-<p style="font-weight:bold">%APP_NAME% is completely free of charge!</p>
+<p>%APP_NAME% is free of charge</p>

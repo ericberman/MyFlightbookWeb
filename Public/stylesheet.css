@@ -44,7 +44,7 @@ H4
 
 /* Centered body */
 .centeredBody {
-    max-width: 1000px; 
+    max-width: 1000px;
     margin-left:auto; 
     margin-right: auto;
 }
@@ -906,11 +906,12 @@ a img
 {
     display:inline-block;
     text-align: left;
-    vertical-align:middle;
+    vertical-align:top;
 }
 
 .footerItem li {
     list-style-type:none;
+    display:block;
 }
 
 /* Data entry form tables */
@@ -1153,8 +1154,25 @@ table.dataDescription thead tr td
     max-width: 350px;
 }
 
+#homePagePromo.welcomeHeader {
+    background-color: #03a9f4;
+    background-color: #eeeeee;
+    border: 1px solid darkgray;
+    border-radius: 6px;
+    padding: 4px;
+    margin-left: auto;
+    margin-right: auto;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
+    box-shadow: 6px 6px 5px #888888;
+}
+
+
 .welcomeHeader p {
     font-size:larger;
+    font-weight: bold;
+    text-align:center;
 }
 
 .welcomeHeader li {

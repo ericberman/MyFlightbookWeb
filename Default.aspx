@@ -12,28 +12,33 @@
     <asp:Label ID="lblHeader" runat="server" Text=""></asp:Label>
 </asp:Content>
 <asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
-    <asp:LinkButton ID="lnkViewMobile" runat="server" Visible="false" OnClick="lnkViewMobile_Click">Switch to Mobile View<br /></asp:LinkButton>
-    <asp:Panel ID="pnlWelcome" runat="server" CssClass="welcomeHeader">
-        <% =Branding.ReBrand(Resources.Profile.NewAccountPromo) %>
+    <asp:Panel ID="pnlWelcome" runat="server">
+        <div id="homePagePromo" class="welcomeHeader"><% =Branding.ReBrand(Resources.Profile.NewAccountPromo) %></div>
     </asp:Panel>
-    <div>
-        <div style="float:right; min-width:250px; margin:5px;"><uc6:mfbFacebookFan ID="mfbFacebookFan1" runat="server" ShowStream="true" /></div>
-        <div style="margin-left: auto; margin-right:auto; max-width:700px; float:left; text-align:center;">
-            <asp:Repeater ID="rptFeatures" runat="server">
-                <ItemTemplate>
-                    <div style="border: 3px solid #cccccc; border-radius: 10px; margin: 10px; padding: 10px; height: 120px; vertical-align:middle; display:inline-block; width: 180px;">
-                        <div class="featureAreaDescriptionHeader"><asp:HyperLink ID="lnkTitle" runat="server" Text='<%# Eval("Title") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink></div>
-                        <div class="featureAreaDescriptionBody"><%# Eval("Description") %></div>
+    <table style="width:100%">
+        <tr style="vertical-align:top">
+            <td>
+                <div style="margin-left: auto; margin-right:auto; max-width:700px; text-align:center;">
+                    <asp:Repeater ID="rptFeatures" runat="server">
+                        <ItemTemplate>
+                            <div style="border: 3px solid #aaaaaa; border-radius: 10px; margin: 10px; padding: 10px; height: 120px; vertical-align:middle; display:inline-block; width: 180px;">
+                                <div class="featureAreaDescriptionHeader"><asp:HyperLink ID="lnkTitle" runat="server" Text='<%# Eval("Title") %>' NavigateUrl='<%# Eval("Link") %>'></asp:HyperLink></div>
+                                <div class="featureAreaDescriptionBody"><%# Eval("Description") %></div>
+                            </div>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                    <h2><asp:Localize ID="locRecentFlightsHeader" runat="server"></asp:Localize></h2>
+                    <p><asp:Label ID="lblRecentFlightsStats" Font-Bold="true" runat="server" Text="Label"></asp:Label></p>
+                    <div style="max-width: 480px; margin-left:auto; margin-right:auto;">
+                        <uc1:imageSlider runat="server" ID="imageSlider" />
                     </div>
-                </ItemTemplate>
-            </asp:Repeater>
-            <h2><asp:Localize ID="locRecentFlightsHeader" runat="server"></asp:Localize></h2>
-            <p><asp:Label ID="lblRecentFlightsStats" Font-Bold="true" runat="server" Text="Label"></asp:Label></p>
-            <div style="max-width: 480px; margin-left:auto; margin-right:auto;">
-                <uc1:imageSlider runat="server" ID="imageSlider" />
-            </div>
-        </div>
-    </div>
+                </div>
+            </td>
+            <td>
+                <div style="min-width:250px; margin:5px;"><uc6:mfbFacebookFan ID="mfbFacebookFan1" runat="server" ShowStream="true" /></div>
+            </td>
+        </tr>
+    </table>
     <div style="text-align:center">
         <uc5:mfbGoogleAdSense ID="mfbGoogleAdSense1" runat="server" LayoutStyle="adStyleHorizontal" />
     </div>

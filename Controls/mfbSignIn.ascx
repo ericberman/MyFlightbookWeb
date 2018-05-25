@@ -87,6 +87,8 @@
         </asp:Login>
     </div>
     <div style="display:inline-block; padding:5px; margin-left: 10px; background-color:#eeeeee; border: 1px solid darkgray; border-radius: 6px; box-shadow: 6px 6px 5px #888888; vertical-align:top; max-width: 300px;">
-        <asp:Literal ID="litNewAccountPromo" runat="server"></asp:Literal>
+        <div class="welcomeHeader">
+            <% =Branding.ReBrand(Resources.Profile.NewAccountPromo) %>
+        </div>
     </div>
 </asp:Panel>

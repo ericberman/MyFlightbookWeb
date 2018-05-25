@@ -171,6 +171,9 @@
     font-weight: normal;
     border: none;
     height: auto;
+    line-height: 1.5;
+    margin-left: 2px;
+    margin-right: 2px;
     padding: 3px;
 }
 

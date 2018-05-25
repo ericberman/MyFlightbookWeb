@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -28,7 +28,6 @@ public partial class Controls_mfbSignIn : System.Web.UI.UserControl
         {
             HyperLink hl = (HyperLink) ctlSignIn.FindControl("CreateUserLink");
             hl.NavigateUrl = hl.NavigateUrl + Request.Url.Query;
-            litNewAccountPromo.Text = Branding.ReBrand(Resources.Profile.NewAccountPromo);
         }
     }
 

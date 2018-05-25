@@ -91,9 +91,7 @@ public partial class Public_Home : System.Web.UI.Page
         // redirect to a mobile view if this is from a mobile device UNLESS cookies suggest to do otherwise.
         if (this.Master.IsMobileSession())
         {
-            if ((Request.Cookies[MFBConstants.keyClassic] != null && String.Compare(Request.Cookies[MFBConstants.keyClassic].Value, "yes", StringComparison.OrdinalIgnoreCase) == 0))
-                lnkViewMobile.Visible = true;
-            else
+            if ((Request.Cookies[MFBConstants.keyClassic] == null || String.Compare(Request.Cookies[MFBConstants.keyClassic].Value, "yes", StringComparison.OrdinalIgnoreCase) != 0))
                 Response.Redirect("DefaultMini.aspx");
         }
 
