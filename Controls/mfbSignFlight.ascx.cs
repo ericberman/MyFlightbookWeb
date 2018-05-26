@@ -20,6 +20,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
     private string szKeyVSIDFlight = "keyVSEntryToSign";
     private string szKeyVSIDStudent = "keyVSStudentName";
     private string szKeyCFIUserName = "keyVSCFIUserName";
+    private string szKeyCookieCopy = "cookieCopy";
 
     public event EventHandler Cancel = null;
     public event EventHandler SigningFinished = null;
@@ -87,6 +88,12 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     // Offer to copy the flight for the CFI
                     pnlCopyFlight.Visible = CFIProfile != null;
                     ckCopyFlight.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightCopy, CFIProfile == null ? String.Empty : CFIProfile.UserFullName);
+                    if (Request.Cookies[szKeyCookieCopy] != null)
+                    {
+                        bool copyFlight = false;
+                        if (Boolean.TryParse(Request.Cookies[szKeyCookieCopy].Value, out copyFlight))
+                            ckCopyFlight.Checked = copyFlight;
+                    }
 
                     valCertificateRequired.Enabled = valCFIExpiration.Enabled = valNameRequired.Enabled = valBadEmail.Enabled = valEmailRequired.Enabled = valSignature.Enabled = false;
                     break;
@@ -302,6 +309,9 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
                     // Prepare for signing
                     Flight.SignFlight(CFIProfile.UserName, txtComments.Text);
+
+                    Response.Cookies[szKeyCookieCopy].Value = ckCopyFlight.Checked.ToString();
+                    Response.Cookies[szKeyCookieCopy].Expires = DateTime.Now.AddYears(10);
 
                     // Copy the flight to the CFI's logbook if needed.
                     // We modify a new copy of the flight; this avoids modifying this.Flight, but ensures we get every property
