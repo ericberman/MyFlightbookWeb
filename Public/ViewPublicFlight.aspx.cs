@@ -52,7 +52,8 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
     private void ShowMap(LogbookEntry le)
     {
         double distance = 0.0;
-        if (le.Route.Length > 0 || (le.Telemetry != null && le.Telemetry.HasPath)) // show a map.
+        bool fHasPath = le.Telemetry != null && le.Telemetry.HasPath;
+        if (le.Route.Length > 0 || fHasPath) // show a map.
         {
             ListsFromRoutesResults result = AirportList.ListsFromRoutes(le.Route);
             MfbGoogleMap1.Map.Airports = result.Result;
@@ -79,8 +80,16 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
         }
 
         MfbGoogleMap1.Map.Images = ckShowImages.Checked ? mfbIlFlight.Images.ImageArray.ToArray() : new MFBImageInfo[0];
+
+        bool fForceDynamicMap = util.GetIntParam(Request, "dm", 0) != 0;
+        bool fHasGeotaggedImages = false;
+        if (le.FlightImages != null)
+            Array.ForEach<MFBImageInfo>(le.FlightImages, (mfbii) => { fHasGeotaggedImages = fHasGeotaggedImages || mfbii.Location != null; });
+
         // By default, show only a static map (cut down on dynamic map hits)
-        if (util.GetIntParam(Request, "dm", 0) == 0)
+        if (fForceDynamicMap || fHasGeotaggedImages || fHasPath)
+            MfbGoogleMap1.Mode = MyFlightbook.Mapping.GMap_Mode.Dynamic;
+        else
         {
             MfbGoogleMap1.Mode = MyFlightbook.Mapping.GMap_Mode.Static;
             popmenu.Visible = false;
