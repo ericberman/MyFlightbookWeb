@@ -135,7 +135,7 @@
                         <uc8:ClubAircraftSchedule runat="server" ID="casSingleAircraft" />
                     </asp:View>
                     <asp:View ID="vwMultipleAircraft" runat="server">
-                        <asp:TabContainer ID="tcAircraftSchedules" runat="server" >
+                        <asp:TabContainer ID="tcAircraftSchedules" runat="server" CssClass="mfbDefault" >
                         </asp:TabContainer>
                     </asp:View>
                 </asp:MultiView>

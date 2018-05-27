@@ -18,7 +18,7 @@
             window.location = "<% = Request.Url.AbsoluteUri %>";
          }
     </script>
-    <asp:AjaxFileUpload ID="AjaxFileUpload1" runat="server" OnClientUploadCompleteAll="refreshStatus"
+    <asp:AjaxFileUpload ID="AjaxFileUpload1" runat="server" OnClientUploadCompleteAll="refreshStatus" CssClass="mfbDefault"
             ThrobberID="myThrobber" MaximumNumberOfFiles="20" OnUploadComplete="AjaxFileUpload1_UploadComplete" />
     <asp:Image ID="myThrobber" ImageUrl="~/images/ajax-loader.gif" runat="server" style="display:None" />
 </asp:Content>

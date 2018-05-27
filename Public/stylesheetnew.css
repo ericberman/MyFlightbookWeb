@@ -59,6 +59,10 @@ H1 {
     box-sizing: border-box; /* Opera/IE 8+ */
 }
 
+.mfbDefault table {
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
 .tabbargradient
 {
     background-image: none;
@@ -275,7 +279,9 @@ H1 {
     margin: 3px;
     padding: 3px;
     background-color: #eeeeee;
-    font-weight: bold;
+    font-family:roboto_bold;
+    font-weight:normal;
+    font-size: 10pt;
     border: 1px solid #CCCCCC;
     border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -288,7 +294,9 @@ H1 {
     margin: 3px;
     padding: 3px;
     background-color: white;
+    font-family: roboto_bold;
     font-weight: normal;
+    font-size: 10pt;
     height: 40px;
     border: 1px solid #CCCCCC;
     border-radius: 5px;
@@ -508,6 +516,45 @@ H1 {
     line-height: 24pt;
     display:block;
 }
+
+/* Ajax styling */
+/* Ajax file upload */
+
+/* Tabs*/
+.mfbDefault.ajax__tab_xp .ajax__tab_header {
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 9pt;
+}
+
+.mfbDefault .ajax__tab_panel, .mfbDefault .ajax__tab_body, .mfbDefault .ajax__scroll_none {
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 9pt;
+}
+
+.mfbDefault .ajax__tab_header {
+}
+
+.mfbDefault .ajax__tab_header .ajax__tab_outer {
+}
+
+.mfbDefault .ajax__tab_header .ajax__tab_inner {
+}
+
+.mfbDefault .ajax__tab_hover .ajax__tab_outer {
+}
+
+.mfbDefault .ajax__tab_hover .ajax__tab_inner {
+}
+
+.mfbDefault .ajax__tab_active .ajax__tab_outer {
+}
+
+.mfbDefault .ajax__tab_active .ajax__tab_inner {
+}
+
+.mfbDefault .ajax__tab_body {
+}
+
 
 /* Printing */
 @media print {

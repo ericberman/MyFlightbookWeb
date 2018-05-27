@@ -18,8 +18,8 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
     <h2><asp:Label ID="lblManageheader" runat="server"></asp:Label></h2>
     <asp:HyperLink ID="lnkReturnToClub" runat="server" Text="<%$ Resources:Club, LabelReturnToClub %>"></asp:HyperLink>
-    <asp:TabContainer ID="tabManage" runat="server">
-        <asp:TabPanel ID="tabpanelMembers" runat="server" CssClass="mfbDefault" HeaderText="<%$ Resources:Club, TabClubMembers %>">
+    <asp:TabContainer ID="tabManage" runat="server" CssClass="mfbDefault">
+        <asp:TabPanel ID="tabpanelMembers" runat="server" HeaderText="<%$ Resources:Club, TabClubMembers %>">
             <ContentTemplate>
                 <asp:Panel ID="pnlManageMembers" runat="server">
                     <asp:GridView ID="gvMembers" DataKeyNames="UserName" runat="server" AutoGenerateColumns="False" GridLines="None" AutoGenerateEditButton="True" OnRowCancelingEdit="gvMembers_RowCancelingEdit" 
@@ -75,7 +75,7 @@
                 </asp:Panel>
             </ContentTemplate>
         </asp:TabPanel>
-        <asp:TabPanel ID="tabpanelAircraft" runat="server" CssClass="mfbDefault" HeaderText="<%$ Resources:Club, TabClubAircraft %>">
+        <asp:TabPanel ID="tabpanelAircraft" runat="server" HeaderText="<%$ Resources:Club, TabClubAircraft %>">
             <ContentTemplate>
                 <asp:Panel ID="pnlManageAircraft" runat="server">
                     <asp:GridView ID="gvAircraft" runat="server" Width="100%" AutoGenerateColumns="false" AutoGenerateEditButton="true" GridLines="None" OnRowDataBound="gvAircraft_RowDataBound" 
@@ -146,12 +146,12 @@
                 </asp:Panel>
             </ContentTemplate>
         </asp:TabPanel>
-        <asp:TabPanel ID="tabpanelClubDetails" runat="server" CssClass="mfbDefault" HeaderText="<%$ Resources:Club, TabClubInfo %>">
+        <asp:TabPanel ID="tabpanelClubDetails" runat="server" HeaderText="<%$ Resources:Club, TabClubInfo %>">
             <ContentTemplate>
                 <uc1:ViewClub ID="vcEdit" runat="server" DefaultMode="Edit" OnClubChanged="vcEdit_ClubChanged" OnClubDeleted="btnDeleteClub_Click" ShowCancel="false" ShowDelete="true" OnClubChangeCanceled="vcEdit_ClubChangeCanceled" />
             </ContentTemplate>
         </asp:TabPanel>
-        <asp:TabPanel ID="tabpanelClubReports" runat="server" CssClass="mfbDefault" HeaderText="<%$ Resources:Club, TabClubReports %>">
+        <asp:TabPanel ID="tabpanelClubReports" runat="server" HeaderText="<%$ Resources:Club, TabClubReports %>">
             <ContentTemplate>
                 <h2><asp:Literal ID="litReportsPrompt" runat="server" Text="<%$ Resources:Club, ReportPrompt %>"></asp:Literal></h2>
                 <h3><% = Resources.Club.ReportHeaderFlying %></h3>

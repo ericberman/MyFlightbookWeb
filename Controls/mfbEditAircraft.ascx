@@ -189,8 +189,8 @@
             </Header>
             <Body>
                 <div style="padding: 5px">
-                    <cc1:TabContainer ID="tabNotes" runat="server">
-                        <cc1:TabPanel runat="server" HeaderText="<%$ Resources:Aircraft, locPublicNotesTab %>" CssClass="mfbDefault" ID="tabPublicNotes">
+                    <cc1:TabContainer ID="tabNotes" runat="server" CssClass="mfbDefault">
+                        <cc1:TabPanel runat="server" HeaderText="<%$ Resources:Aircraft, locPublicNotesTab %>" ID="tabPublicNotes">
                             <ContentTemplate>
                                 <div>
                                     <asp:Localize ID="locPublicNotesPrompt" Text="<%$ Resources:Aircraft, locPublicNotesPrompt %>" runat="server"></asp:Localize>
@@ -198,7 +198,7 @@
                                 <asp:TextBox runat="server" ID="txtPublicNotes" Width="90%" MaxLength="4096" dir="auto" TextMode="MultiLine" Rows="4"></asp:TextBox>
                             </ContentTemplate>
                         </cc1:TabPanel>
-                        <cc1:TabPanel runat="server" HeaderText="<%$ Resources:Aircraft, locPrivateNotesTab %>" CssClass="mfbDefault" ID="tabPrivateNotes">
+                        <cc1:TabPanel runat="server" HeaderText="<%$ Resources:Aircraft, locPrivateNotesTab %>" ID="tabPrivateNotes">
                             <ContentTemplate>
                                 <div>
                                     <asp:Localize ID="Localize2" Text="<%$ Resources:Aircraft, locPrivateNotesPrompt %>" runat="server"></asp:Localize>

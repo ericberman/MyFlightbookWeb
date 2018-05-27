@@ -1192,6 +1192,76 @@ table.dataDescription thead tr td
     display:none;
 }
 
+/* Ajax styling */
+/* Ajax file upload */
+.mfbDefault .ajax__fileupload {
+    border: none;
+    padding: 5px;
+    padding-left: 0px;
+}
+
+.mfbDefault .ajax__fileupload_dropzone {
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+    font-size: 22pt;
+    font-weight: bold;
+    color: darkgrey;
+    line-height: 60px;
+}
+
+.mfbDefault .ajax__fileupload_selectFileButton {
+    background-color: #DDDDDD;
+    border: 1px solid #888888;
+    color: black;
+    font-size: 9pt;
+    line-height: 18pt;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
+}
+
+.mfbDefault .ajax__fileupload_queueContainer {
+}
+
+.mfbDefault .ajax__fileupload_footer {
+}
+
+/* Tabs*/
+.mfbDefault.ajax__tab_xp .ajax__tab_header {
+    font-family: Arial, sans-serif;
+    font-size: 9pt;
+}
+
+.mfbDefault .ajax__tab_panel, .mfbDefault .ajax__tab_body, .mfbDefault .ajax__scroll_none {
+    font-family: Arial, sans-serif;
+    font-size: 9pt;
+}
+
+.mfbDefault .ajax__tab_header {
+}
+
+.mfbDefault .ajax__tab_header .ajax__tab_outer {
+}
+
+.mfbDefault .ajax__tab_header .ajax__tab_inner {
+}
+
+.mfbDefault .ajax__tab_hover .ajax__tab_outer {
+}
+
+.mfbDefault .ajax__tab_hover .ajax__tab_inner {
+}
+
+.mfbDefault .ajax__tab_active .ajax__tab_outer {
+}
+
+.mfbDefault .ajax__tab_active .ajax__tab_inner {
+}
+
+.mfbDefault .ajax__tab_body {
+}
+
 /* Printing */
 @media print {
    thead {display: table-header-group;}

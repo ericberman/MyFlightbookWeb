@@ -14,15 +14,13 @@
 <%@ Register Src="~/Controls/PrintingLayouts/LayoutSACAA.ascx" TagPrefix="uc1" TagName="LayoutSACAA" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutGlider.ascx" TagPrefix="uc1" TagName="layoutGlider" %>
 
-
-
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblUserName" runat="server" ></asp:Label>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <div class="noprint">
         <p><asp:Label ID="lblDescription" runat="server" Text="<%$ Resources:LocalizedText, PrintViewDescription %>" ></asp:Label></p>
-        <ajaxToolkit:TabContainer ID="TabContainer1" runat="server" ActiveTabIndex="0" >
+        <ajaxToolkit:TabContainer ID="TabContainer1" runat="server" CssClass="mfbDefault" ActiveTabIndex="0" >
             <ajaxToolkit:TabPanel ID="tpOptions" runat="server" HeaderText="<%$ Resources:LocalizedText, PrintViewTabOptions %>" >
                 <ContentTemplate>
                     <uc5:PrintOptions ID="PrintOptions1" runat="server" OnOptionsChanged="PrintOptions1_OptionsChanged" />
