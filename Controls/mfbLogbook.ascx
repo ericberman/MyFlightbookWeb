@@ -28,7 +28,7 @@
         <asp:GridView ID="gvFlightLogs" runat="server" AutoGenerateColumns="False" BorderStyle="None"
             CellPadding="3" DataKeyNames="FlightID" AllowSorting="True" 
             ShowHeader="true" ShowFooter="true" UseAccessibleHeader="true"
-            Font-Names="Arial" Font-Size="8pt" AllowPaging="True" HeaderStyle-HorizontalAlign="Center"
+            Font-Size="8pt" AllowPaging="True" HeaderStyle-HorizontalAlign="Center"
             OnRowDataBound="gvFlightLogs_RowDataBound" EnableViewState="false" 
             PagerSettings-Mode="NumericFirstLast"
             GridLines="None" OnDataBound="gvFlightLogs_DataBound" 

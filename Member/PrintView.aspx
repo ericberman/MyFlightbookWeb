@@ -3,7 +3,6 @@
 <%@ Register Src="../Controls/mfbLogbook.ascx" TagName="mfbLogbook" TagPrefix="uc6" %>
 <%@ Register src="../Controls/mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc2" %>
 <%@ Register src="../Controls/mfbSearchForm.ascx" tagname="mfbSearchForm" tagprefix="uc3" %>
-<%@ Register src="../Controls/mfbDownload.ascx" tagname="mfbDownload" tagprefix="uc4" %>
 <%@ Register src="../Controls/PrintOptions.ascx" tagname="PrintOptions" tagprefix="uc5" %>
 <%@ Register Src="~/Controls/mfbQueryDescriptor.ascx" TagPrefix="uc2" TagName="mfbQueryDescriptor" %>
 <%@ Register src="../Controls/mfbLogbookSidebar.ascx" tagname="mfbLogbookSidebar" tagprefix="uc1" %>

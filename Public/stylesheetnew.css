@@ -45,6 +45,11 @@ BODY, body {
     margin-right: auto;
 }
 
+TABLE, table {
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 9pt;
+}
+
 H1 {
     font-size: 18px;
     width: 100%;

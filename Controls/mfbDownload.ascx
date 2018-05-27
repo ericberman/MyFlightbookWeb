@@ -12,7 +12,7 @@
 <asp:GridView ID="gvFlightLogs" runat="server" 
     OnRowDataBound="gvFlightLogs_RowDataBound" AutoGenerateColumns="False" 
     BorderStyle="None" CellPadding="3" DataKeyNames="idFlight" PageSize="50" 
-    Font-Names="Verdana,Arial" Font-Size="8pt" EnableViewState="False" 
+    Font-Size="8pt" EnableViewState="False" 
     EnableModelValidation="True" >
     <Columns>
         <asp:BoundField DataField="Date" DataFormatString="{0:yyyy-MM-dd}" HeaderText="Date" ReadOnly="True"  />
