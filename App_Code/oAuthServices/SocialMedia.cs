@@ -314,7 +314,7 @@ namespace MyFlightbook.SocialMedia
                     else
                     {
                         // send the raw result so we can debug.
-                        util.NotifyAdminEvent("Facebook posting error", szResult, ProfileRoles.maskSiteAdminOnly);
+                        util.NotifyAdminEvent("Facebook posting error", String.Format(CultureInfo.CurrentCulture, "user: {0}. FB Response: {1}", szUser, szResult), ProfileRoles.maskSiteAdminOnly);
                     }
                 }
             }
