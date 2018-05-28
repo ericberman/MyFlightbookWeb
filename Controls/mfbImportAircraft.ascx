@@ -11,11 +11,11 @@
         </asp:TemplateField>
         <asp:TemplateField HeaderText="<%$ Resources:Aircraft, ImportHeaderSpecifiedAircraft %>" HeaderStyle-HorizontalAlign="Left" meta:resourcekey="TemplateFieldResource2">
             <ItemTemplate>
-                <asp:HyperLink ID="lnkFAA" Font-Bold="True" runat="server" Target="_blank"
+                <asp:HyperLink ID="lnkFAA" CssClass="boldface" runat="server" Target="_blank"
                     Text='<%# Eval("TailNumber") %>' meta:resourcekey="lnkFAAResource1"></asp:HyperLink>
-                <asp:Label ID="lblGivenTail" runat="server" Font-Bold="True"
+                <asp:Label ID="lblGivenTail" runat="server" CssClass="boldface"
                     Text='<%# Eval("TailNumber") %>' meta:resourcekey="lblGivenTailResource1"></asp:Label>
-                <asp:Label ID="lblAircraftVersion" runat="server" Font-Bold="True" meta:resourcekey="lblAircraftVersionResource1"></asp:Label>
+                <asp:Label ID="lblAircraftVersion" runat="server" CssClass="boldface" meta:resourcekey="lblAircraftVersionResource1"></asp:Label>
                 -
                 <asp:Label ID="lblGivenModel" runat="server"
                     Text='<%# Eval("ModelGiven") %>' meta:resourcekey="lblGivenModelResource1"></asp:Label>
@@ -86,7 +86,7 @@
             <ItemTemplate>
                 <asp:HiddenField ID="hdnMatchRowID" Value='<%# Eval("ID") %>' runat="server" />
                 <asp:Label ID="lblACErr" runat="server" CssClass="error" meta:resourcekey="lblACErrResource1"></asp:Label>
-                <asp:Label ID="lblAllGood" runat="server" CssClass="ok" Font-Bold="True" EnableViewState="False"
+                <asp:Label ID="lblAllGood" runat="server" CssClass="ok boldface" EnableViewState="False"
                     Text="Aircraft Added" Style="display: none" meta:resourcekey="lblAllGoodResource1"></asp:Label>
                 <asp:Label ID="lblAlreadyInProfile" runat="server" CssClass="success"
                     Text="This aircraft is in your profile" meta:resourcekey="lblAlreadyInProfileResource1"></asp:Label>

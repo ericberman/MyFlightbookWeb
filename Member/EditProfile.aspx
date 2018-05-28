@@ -196,7 +196,7 @@
                                             <asp:Localize ID="locCurrentQuestion" runat="server" meta:resourceKey="locCurrentQuestionResource1" Text="Current question: "></asp:Localize>
                                         </td>
                                         <td>
-                                            <asp:Label ID="lblQuestion" runat="server" Font-Bold="True" meta:resourceKey="lblQuestionResource1"></asp:Label>
+                                            <asp:Label ID="lblQuestion" runat="server" CssClass="boldface" meta:resourceKey="lblQuestionResource1"></asp:Label>
                                         </td>
                                     </tr>
                                     <tr>
@@ -246,7 +246,7 @@
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
-                                <div><asp:Label ID="lblPrefTimes" runat="server" Font-Bold="True" Text="Format for times:" meta:resourcekey="lblPrefTimesResource1"></asp:Label></div>
+                                <div><asp:Label ID="lblPrefTimes" runat="server" CssClass="boldface" Text="Format for times:" meta:resourcekey="lblPrefTimesResource1"></asp:Label></div>
                                 <asp:RadioButtonList ID="rblTimeEntryPreference" runat="server" 
                                     ValidationGroup="valPrefs" meta:resourcekey="rblTimeEntryPreferenceResource1">
                                     <asp:ListItem Text="Use decimal" Value="1"
@@ -254,7 +254,7 @@
                                     <asp:ListItem Text="Use hours and minutes (HH:MM)" 
                                         Value="0" meta:resourcekey="ListItemResource2"></asp:ListItem>
                                 </asp:RadioButtonList>
-                                <div><asp:Label ID="lblPrefDates" runat="server" Font-Bold="True" Text="Interpret the date of flight as:" meta:resourcekey="lblPrefDatesResource1"></asp:Label></div>
+                                <div><asp:Label ID="lblPrefDates" runat="server" CssClass="boldface" Text="Interpret the date of flight as:" meta:resourcekey="lblPrefDatesResource1"></asp:Label></div>
                                 <asp:RadioButtonList ID="rblDateEntryPreferences" runat="server" 
                                     ValidationGroup="valPrefs" meta:resourcekey="rblDateEntryPreferencesResource1">
                                     <asp:ListItem Text="The local date at the point/time of departure" Value="1" meta:resourcekey="ListItemResource18" 
@@ -262,7 +262,7 @@
                                     <asp:ListItem Text="The UTC date at the time of departure" 
                                         Value="0" meta:resourcekey="ListItemResource19"></asp:ListItem>
                                 </asp:RadioButtonList>
-                                <div><asp:Label ID="lblFieldsToShow" runat="server" Font-Bold="True" Text="Show the following for flights:" meta:resourcekey="lblFieldsToShowResource2"></asp:Label></div>
+                                <div><asp:Label ID="lblFieldsToShow" runat="server" CssClass="boldface" Text="Show the following for flights:" meta:resourcekey="lblFieldsToShowResource2"></asp:Label></div>
                                 <table> <!-- table here is to match layout of radiobuttonlist above -->
                                     <tr>
                                         <td>
@@ -491,7 +491,7 @@
                                             <p>
                                                 <asp:Label ID="lblDeadlinesHeader3" runat="server" meta:resourcekey="lblDeadlinesHeader3Resource1" Text="A deadline may be due based on a calendar date, or, if associated with an aircraft, by the hours on that aircraft (typically hobbs or tachometer)."></asp:Label>
                                             </p>
-                                            <asp:Label ID="lblAddDeadlines" runat="server" Font-Bold="True" meta:resourceKey="lblAddDeadlinesResource1"></asp:Label>
+                                            <asp:Label ID="lblAddDeadlines" runat="server" CssClass="boldface" meta:resourceKey="lblAddDeadlinesResource1"></asp:Label>
                                         </div>
                                         <asp:Panel ID="pnlAddDeadlines" runat="server" DefaultButton="btnAddDeadline" meta:resourceKey="pnlAddDeadlinesResource1" style="overflow:hidden">
                                             <table style="border-spacing: 5px;">
@@ -860,7 +860,7 @@
                                         <li><%=Resources.Profile.BasicMedDescriptionB %></li>
                                         <li><%=Resources.Profile.BasicMedDescriptionC %></li>
                                     </ol>
-                                    <p><a href="javascript:void(0);"><asp:Label ID="lblAddBaiscMedEvent" runat="server" Font-Bold="True" Text="<%$ Resources:Profile, BasicMedAddEventPrompt %>" meta:resourcekey="lblAddBaiscMedEventResource1"></asp:Label></a></p>
+                                    <p><a href="javascript:void(0);"><asp:Label ID="lblAddBaiscMedEvent" runat="server" CssClass="boldface" Text="<%$ Resources:Profile, BasicMedAddEventPrompt %>" meta:resourcekey="lblAddBaiscMedEventResource1"></asp:Label></a></p>
                                     <asp:Panel ID="pnlAddBasicMedEvent" runat="server" meta:resourcekey="pnlAddBasicMedEventResource1">
                                         <table>
                                             <tr>
@@ -1066,8 +1066,8 @@
             <asp:Panel ID="pnlPaypalSuccess" runat="server" Visible="False" 
                 EnableViewState="False" meta:resourcekey="pnlPaypalSuccessResource1">
                 <asp:Label ID="Label1" runat="server" 
-                    Text="Thank-you - your payment has been successfully applied!" Font-Bold="True" 
-                    CssClass="success" meta:resourcekey="Label1Resource1"></asp:Label>
+                    Text="Thank-you - your payment has been successfully applied!" 
+                    CssClass="boldface success" meta:resourcekey="Label1Resource1"></asp:Label>
             </asp:Panel>
             <asp:Panel ID="pnlPaypalCanceled" runat="server" Visible="False" 
                 EnableViewState="False" meta:resourcekey="pnlPaypalCanceledResource1">
@@ -1094,7 +1094,7 @@
                     meta:resourcekey="lblDonationHistoryResource1" ></asp:Label>
             </h2>
             <asp:Panel ID="pnlEarnedGratuities" runat="server" CssClass="callout" meta:resourcekey="pnlFreeDropboxGratuityResource1" Visible="False">
-                <asp:Label ID="lblThankYou" runat="server" Font-Bold="True" meta:resourcekey="lblThankYouResource1" Text="Thank-you for your support!"></asp:Label>
+                <asp:Label ID="lblThankYou" runat="server" CssClass="boldface" meta:resourcekey="lblThankYouResource1" Text="Thank-you for your support!"></asp:Label>
                 <br />
                 <asp:Localize ID="locEarnedGratuities" runat="server" Text="<%$ Resources:LocalizedText, GratuityEarnedHeader %>"></asp:Localize>
                 <ul>
@@ -1110,7 +1110,7 @@
                 <Columns>
                     <asp:BoundField DataField="TimeStamp" DataFormatString="{0:d}" 
                         meta:resourcekey="BoundFieldResource7" >
-                        <ItemStyle Font-Bold="True" />
+                        <ItemStyle CssClass="boldface" />
                         </asp:BoundField>
                     <asp:BoundField DataField="Amount" DataFormatString="{0:C}" 
                         meta:resourcekey="BoundFieldResource8" />

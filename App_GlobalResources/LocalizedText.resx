@@ -204,7 +204,7 @@
             Boeing 757.&lt;/p&gt;
        &lt;p&gt;When you record a flight in the sim, record the device's serial number or registration either in the comments for the flight, or, if you prefer, using the "Simulator/Training Device Identifier" property.&lt;/p&gt;
         &lt;p&gt;You can quickly select from a list of existing simulators (and their 
-            certification levels) in the system &lt;a target="_blank" href="%APP_ROOT%/Member/BrowseSims.aspx" style="font-weight:bold"&gt;here&lt;/a&gt;.&lt;/p&gt;</value>
+            certification levels) in the system &lt;a target="_blank" href="%APP_ROOT%/Member/BrowseSims.aspx" class="boldface"&gt;here&lt;/a&gt;.&lt;/p&gt;</value>
   </data>
   <data name="ATDFTDNoticeHead" xml:space="preserve">
     <value>Please read: Simulators/FTDs/ATDs</value>
@@ -413,7 +413,7 @@
     <value>Download %APP_NAME%  for iPhone and iPad</value>
   </data>
   <data name="HeaderDownloadIsFree" xml:space="preserve">
-    <value>It's &lt;span style="font-weight: bold"&gt;free!&lt;/span&gt;</value>
+    <value>It's &lt;span class="boldface"&gt;free!&lt;/span&gt;</value>
   </data>
   <data name="HeaderDownloadIsNew" xml:space="preserve">
     <value>New!</value>
@@ -587,10 +587,10 @@
     <value>Please confirm relationship</value>
   </data>
   <data name="AddRelationshipRequestInstructor" xml:space="preserve">
-    <value>Another pilot on {0}, &lt;span style="font-weight:bold"&gt;{1}&lt;/span&gt; has asked you to confirm that you are an instructor of theirs</value>
+    <value>Another pilot on {0}, &lt;span class="boldface"&gt;{1}&lt;/span&gt; has asked you to confirm that you are an instructor of theirs</value>
   </data>
   <data name="AddRelationshipRequestStudent" xml:space="preserve">
-    <value>Another pilot on {0}, &lt;span style="font-weight:bold"&gt;{1}&lt;/span&gt; has asked you to confirm that you are a student of theirs.</value>
+    <value>Another pilot on {0}, &lt;span class="boldface"&gt;{1}&lt;/span&gt; has asked you to confirm that you are a student of theirs.</value>
     <comment>{0} is the product name.  Leave the &lt;span&gt; stuff; it makes the requestor's name ({1}) boldface</comment>
   </data>
   <data name="LogbookForUserHeader" xml:space="preserve">

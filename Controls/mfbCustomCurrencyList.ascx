@@ -29,7 +29,7 @@
         </asp:TemplateField>
         <asp:HyperLinkField Target="_blank" DataTextField="DisplayName" DataNavigateUrlFields="FlightQueryJSON"
             DataNavigateUrlFormatString="~/member/logbooknew.aspx?fq={0}">
-            <ItemStyle Font-Bold="True" VerticalAlign="Top" />
+            <ItemStyle CssClass="boldface" VerticalAlign="Top" />
         </asp:HyperLinkField>
         <asp:TemplateField>
             <EditItemTemplate>

@@ -58,7 +58,7 @@
     <uc1:mfbGoogleMapManager ID="mfbGoogleMapManager1" runat="server" ZoomFactor="World" Height="400px"
          />
     <asp:Panel ID="pnlKey" runat="server" Visible="false">
-        <p>All times are for UTC-DATE: <asp:Label Font-Bold="true" ID="lblUTCDate" runat="server"></asp:Label>.  Each cell is the time (UTC) followed by the solar angle (angle of the sun over the horizon).</p>
+        <p>All times are for UTC-DATE: <asp:Label CssClass="boldface" ID="lblUTCDate" runat="server"></asp:Label>.  Each cell is the time (UTC) followed by the solar angle (angle of the sun over the horizon).</p>
         <p>Sunrise (UTC): <% =SunRiseUTC.ToLongTimeString() %>,  (in *your* local time): <asp:Label ID="lblSunRise" runat="server" Text=""></asp:Label></p>
         <p>Sunset (UTC): <% =SunSetUTC.ToLongTimeString() %>, (in *your* local time): <asp:Label ID="lblSunSet" runat="server" Text=""></asp:Label></p>
     </asp:Panel>

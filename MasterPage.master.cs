@@ -292,13 +292,13 @@ public partial class MasterPage : System.Web.UI.MasterPage
             lnkPrivacy.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName);
 
             lnkAppleIcon.Href = ResolveUrl("~/images/apple-touch-icon.png");
-            cssMain.Href = "~/Public/stylesheet.css".ToAbsoluteURL(Request).ToString();
+            cssMain.Href = "~/Public/stylesheet.css".ToAbsoluteURL(Request).ToString() + "?v=1";    // to enable forced reload
             cssMobile.Visible = mfbHeader.IsMobile = MfbFooter.IsMobile = IsMobileSession();
             cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css");
             string szStyle = Branding.CurrentBrand.StyleSheet;
             if (szStyle.Length > 0)
             {
-                cssBranded.Href = ResolveUrl(szStyle);
+                cssBranded.Href = ResolveUrl(szStyle) + "?v=1";
                 cssBranded.Visible = true;
             }
 

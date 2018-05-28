@@ -12,16 +12,21 @@
 */
 @font-face {
     font-family: open_sans_bold;
+    font-weight:bold;
+    font-style: normal;
     src: url('Fonts/open-sans.bold.ttf') format('opentype')
 }
 
 @font-face {
     font-family: open_sans;
+    font-weight:normal;
+    font-style: normal;
     src: url('Fonts/open-sans.regular.ttf') format('opentype')
 }
 
 @font-face {
     font-family: roboto_bold;
+    font-weight:bold;
     src: url('Fonts/roboto.bold.ttf') format('opentype')
 }
 
@@ -31,16 +36,16 @@
 {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
-    max-width: 1200px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
 }
 
 BODY, body {
-    border-top: 7px solid #03a9f4;
+    border-top: 7px solid #00bcd4;
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
-    max-width: 1200px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -53,15 +58,19 @@ TABLE, table {
 H1 {
     font-size: 18px;
     width: 100%;
-    font-weight: bold;
     color: black;
-    background-color: #03a9f4;
+    background-color: #00bcd4;
     padding: 4px;
     text-align: center;
     margin: 0px;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box; /* Firefox, other Gecko */
     box-sizing: border-box; /* Opera/IE 8+ */
+}
+
+nobold, .vfPrompt .vfSubDesc {
+    font-weight: normal;
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .mfbDefault table {
@@ -136,7 +145,7 @@ H1 {
   -webkit-top-left-radius: 0px;
   -moz-top-left-radius: 0px;
   font-weight: normal;
-  background: #e7e7e7;
+  background: #cdcdcd;
   background-image: none;
   color: #263238;
 }
@@ -283,11 +292,11 @@ H1 {
 .sidebarSelected {
     margin: 3px;
     padding: 3px;
-    background-color: #eeeeee;
+    background-color: #cdcdcd;
     font-family:roboto_bold;
     font-weight:normal;
     font-size: 10pt;
-    border: 1px solid #CCCCCC;
+    border: 1px solid #aaaaaa;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -303,7 +312,7 @@ H1 {
     font-weight: normal;
     font-size: 10pt;
     height: 40px;
-    border: 1px solid #CCCCCC;
+    border: 1px solid #aaaaaa;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -461,7 +470,7 @@ H1 {
 
 
 #homePagePromo.welcomeHeader {
-    background-color: #03a9f4;
+    background-color: #00bcd4;
     width: 100%;
     max-width: 100%;
     color: white;
@@ -480,7 +489,7 @@ H1 {
     text-align: center;
     font-size: 24pt;
     line-height: 1.0;
-    font-family: open_sans_bold, Arial;
+    font-family: open_sans_bold, 'Arial Bold';
 }
 
 #homePagePromo.welcomeHeader ul {
@@ -503,8 +512,8 @@ H1 {
 }
 
 .featureAreaDescriptionHeader {
-    font-family: open_sans_bold;
-    font-weight:normal;
+    font-family: open_sans_bold, 'Arial Bold';
+    font-weight: normal;
     font-size: 12pt;
 }
 

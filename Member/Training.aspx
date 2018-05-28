@@ -41,7 +41,7 @@
                         Text="You can scan your paper logbook endorsements and upload them here so that you always have access to them." meta:resourcekey="locScannedEndorsementDescResource1"></asp:Localize>
                 </p>
                 <div>
-                    <asp:Label ID="lblNote" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label> <asp:Label ID="lblPreviousEndorsements" runat="server" Text="<%$ Resources:SignOff, EditEndorsementDisclaimer %>"></asp:Label>
+                    <asp:Label ID="lblNote" runat="server" CssClass="boldface" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label> <asp:Label ID="lblPreviousEndorsements" runat="server" Text="<%$ Resources:SignOff, EditEndorsementDisclaimer %>"></asp:Label>
                 </div>
                 <uc7:mfbMultiFileUpload ID="mfbMultiFileUpload1" Class="Endorsement" OnUploadComplete="mfbMultiFileUpload1_OnUploadComplete"
                         runat="server" Mode="Legacy" RefreshOnUpload="true" IncludeDocs="true" />
@@ -170,7 +170,7 @@
                 enter the student&#39;s email address below. They will confirm that they know you." meta:resourcekey="locAddStudentPrmoptResource1" 
                     ></asp:Localize>
                 <br />
-                <asp:Label ID="lblEmailDisclaimer" Font-Bold="True" runat="server" 
+                <asp:Label ID="lblEmailDisclaimer" CssClass="boldface" runat="server" 
                     Text="This e-mail address will NOT be stored or used for any other purpose." meta:resourcekey="lblEmailDisclaimerResource1" 
                     ></asp:Label>
                 <br />
@@ -233,7 +233,7 @@
                 instructor, enter their email address below. They will confirm that they know 
                 you." meta:resourcekey="locAddInstructorPromptResource1" ></asp:Localize>
                 <br />
-                <asp:Label ID="lblEmailDisclaimer2" Font-Bold="True" runat="server" 
+                <asp:Label ID="lblEmailDisclaimer2" CssClass="boldface" runat="server" 
                     Text="This e-mail address will NOT be stored or used for any other purpose." meta:resourcekey="lblEmailDisclaimer2Resource1" 
                     ></asp:Label>
                 <br />

@@ -37,11 +37,6 @@
                     <asp:Image ID="imgGooglePlay" runat="server" ImageUrl="~/images/google-play-badge.png" AlternateText="Get it on Google Play" />
                 </a>
             </p>
-            <a href="http://www.amazon.com/MyFlightbook-LLC-for-Android/dp/B00513FSSK/ref=sr_1_1?ie=UTF8&s=mobile-apps&qid=1305584951&sr=8-1"
-                target="_blank">
-                <asp:Image ID="Image1" Style="padding: 3px;"
-                    ImageUrl="~/Public/AndroidImages/amazon-apps-store-us-white.png" runat="server"
-                    ImageAlign="Middle" meta:resourcekey="imgAmazonAppResource1" /></a>
             <p>
                 <a target="_blank" href="http://windowsphone.com/s?appid=606179af-90e7-41b9-be1b-71607cdec86c" style="font-weight: bold">
                     <asp:Image runat="server" ID="Image3" ImageUrl="~/Public/WP7Images/154x40_WPS_Download_cyan.png" meta:resourcekey="Image3Resource1" />
@@ -55,7 +50,7 @@
                     <asp:HyperLink ID="lnkDownloadIPhone" runat="server"
                         Text="Download iPhone/iPad App"
                         NavigateUrl="http://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8"
-                        Target="_blank" Font-Bold="True"
+                        Target="_blank" CssClass="boldface" 
                         meta:resourcekey="lnkDownloadIPhoneResource1"></asp:HyperLink>
                     <br />
                     <object data="AppleAppStore.svg" type="image/svg+xml"></object>
@@ -76,7 +71,7 @@
                     <asp:HyperLink ID="lnkDownloadIPad" runat="server"
                         Text="Download iPhone/iPad App"
                         NavigateUrl="http://itunes.apple.com/us/app/myflightbook-for-iphone/id349983064?mt=8"
-                        Target="_blank" Font-Bold="True"
+                        Target="_blank" CssClass="boldface" 
                         meta:resourcekey="lnkDownloadIPadResource1"></asp:HyperLink>
                     <br />
                     <object data="AppleAppStore.svg" type="image/svg+xml"></object>
@@ -97,21 +92,11 @@
                     <asp:HyperLink ID="lnkDownloadAndroidPlay" runat="server"
                         Text="Download Android App"
                         NavigateUrl="https://market.android.com/details?id=com.myflightbook.android"
-                        Target="_blank" Font-Bold="True"
+                        Target="_blank" CssClass="boldface" 
                         meta:resourcekey="lnkDownloadAndroidPlayResource1"></asp:HyperLink>
                     <br />
                     <a href="https://play.google.com/store/apps/details?id=com.myflightbook.android" target="_blank">
                         <asp:Image ID="Image2" runat="server" ImageUrl="~/images/google-play-badge.png" AlternateText="Get it on Google Play" ImageAlign="Middle" Style="padding:3px;" /></a>
-                    <a href="http://www.amazon.com/MyFlightbook-LLC-for-Android/dp/B00513FSSK/ref=sr_1_1?ie=UTF8&s=mobile-apps&qid=1305584951&sr=8-1"
-                        target="_blank">
-                        <asp:Image ID="imgAmazonApp" Style="padding: 3px;"
-                            ImageUrl="~/Public/AndroidImages/amazon-apps-store-us-white.png" runat="server"
-                            ImageAlign="Middle" meta:resourcekey="imgAmazonAppResource1" /></a>
-                    <a href="http://www.amazon.com/MyFlightbook-LLC-for-Android/dp/B00513FSSK/ref=sr_1_1?ie=UTF8&s=mobile-apps&qid=1305584951&sr=8-1"
-                        target="_blank">
-                        <asp:Image ID="imgKindleApp" Style="padding: 3px;"
-                            ImageUrl="~/Public/AndroidImages/amazon-apps-kindle-us-white.png"
-                            runat="server" ImageAlign="Middle" meta:resourcekey="imgKindleAppResource1" /></a>
                 </p>
                 <div>
                         <asp:Image ID="imgAndroid9" runat="server" 

@@ -24,7 +24,7 @@
     <p><asp:HyperLink ID="lnkViewAll" runat="server" NavigateUrl="~/Public/Clubs.aspx?noredir=1" Text="<%$ Resources:Club, LabelViewAllClubs %>"></asp:HyperLink></p>
     <asp:MultiView ID="mvPromoStatus" runat="server">
         <asp:View ID="vwPromotional" runat="server">
-            <p><asp:Label Font-Bold="true" ID="lblPromo" runat="server"></asp:Label></p>
+            <p><asp:Label CssClass="boldface" ID="lblPromo" runat="server"></asp:Label></p>
         </asp:View>
         <asp:View ID="vwInactive" runat="server">
             <p class="error"><asp:Label ID="lblInactive" runat="server"></asp:Label></p>
@@ -99,7 +99,7 @@
             </script>
             <h2><asp:Label ID="lblSchedules" runat="server" Text="<%$ Resources:Club, LabelAircraftSchedules %>"></asp:Label></h2>
             <p>
-                <asp:Label ID="lblNoteTZ" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
+                <asp:Label ID="lblNoteTZ" CssClass="boldface" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
                 <asp:Label ID="lblTZDisclaimer" Text="" runat="server"></asp:Label>
                 <% =Resources.Club.TimeZoneCurrentTime %>
                 <asp:Label ID="lblCurTime" runat="server" Text=""></asp:Label>
@@ -116,7 +116,7 @@
                         </asp:RadioButtonList>
                     </p>
                 </div>
-                <p><asp:Label Font-Bold="true" ID="locSummary" Text="<%$ Resources:Club, LabelUpcomingSchedule %>" runat="server"></asp:Label></p>
+                <p><asp:Label CssClass="boldface" ID="locSummary" Text="<%$ Resources:Club, LabelUpcomingSchedule %>" runat="server"></asp:Label></p>
                 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                     <ContentTemplate>
                         <div style="border:1px solid black; padding:3px; ">

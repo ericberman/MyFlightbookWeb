@@ -218,7 +218,7 @@ namespace MyFlightbook
             if (ccNew == null)
                 throw new ArgumentNullException("ccNew");
 
-            if (!String.IsNullOrEmpty(szTail) && (szTail.StartsWith(szAnonPrefix, StringComparison.InvariantCultureIgnoreCase) || szTail.StartsWith(szSimPrefix, StringComparison.InvariantCultureIgnoreCase)))
+            if (!String.IsNullOrEmpty(szTail) && (szTail.StartsWith(szAnonPrefix, StringComparison.OrdinalIgnoreCase) || szTail.StartsWith(szSimPrefix, StringComparison.OrdinalIgnoreCase)))
                 return szTail;
 
             // strip the country code that was passed and pre-pend the sim prefix.

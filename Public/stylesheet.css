@@ -42,6 +42,10 @@ H4
     color: Black;
 }
 
+.boldface {
+    font-weight: bold;
+}
+
 /* Centered body */
 .centeredBody {
     max-width: 1000px;
@@ -532,7 +536,7 @@ H4
   list-style: none;
   background: #EEEEEE;
   background-image: linear-gradient(to bottom, #EEEEEE 0%, #A9A9A9 100%);
-  background-image: -ms-linear-gradient(top, #EEEEEE 0%, #A9A9A9 100%)
+  background-image: -ms-linear-gradient(top, #EEEEEE 0%, #A9A9A9 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#EEEEEE, endColorstr=#A9A9A9);
   background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#A9A9A9));
   background: -moz-linear-gradient(top,  #EEEEEE,  #A9A9A9);
@@ -558,7 +562,7 @@ H4
   font-weight: bold;
   background: #0399D4;
   background-image: linear-gradient(to bottom, #A9A9A9 0%, #CCCCCC 100%);
-  background-image: -ms-linear-gradient(top, #A9A9A9 0%, #CCCCCC 100%)
+  background-image: -ms-linear-gradient(top, #A9A9A9 0%, #CCCCCC 100%);
   filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr=#A9A9A9, endColorstr=#CCCCCC);
   background: -webkit-gradient(linear, left top, left bottom, from(#A9A9A9), to(#CCCCCC));
   background: -moz-linear-gradient(top,  #A9A9A9, #CCCCCC);

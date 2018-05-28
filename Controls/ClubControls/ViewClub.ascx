@@ -9,10 +9,10 @@
             <asp:Panel ID="pnlContactDetails" runat="server" CssClass="clubDetailsRight">
                 <asp:MultiView ID="mvClubHeader" runat="server">
                     <asp:View ID="vwLink" runat="server">
-                        <asp:HyperLink ID="lnkClubDetails" Font-Bold="true" runat="server" NavigateUrl='<%# Eval("EditLink") %>' Text='<%# Eval("Name") %>'></asp:HyperLink>
+                        <asp:HyperLink ID="lnkClubDetails" CssClass="boldface" runat="server" NavigateUrl='<%# Eval("EditLink") %>' Text='<%# Eval("Name") %>'></asp:HyperLink>
                     </asp:View>
                     <asp:View ID="vwNoLink" runat="server">
-                        <asp:Label ID="lblClubDetails" runat="server" Font-Bold="true" Text='<%# Eval("Name") %>'></asp:Label>
+                        <asp:Label ID="lblClubDetails" runat="server" CssClass="boldface" Text='<%# Eval("Name") %>'></asp:Label>
                     </asp:View>
                 </asp:MultiView>
                 <asp:Panel ID="pnlHomeAirport" runat="server" Visible='<%# !String.IsNullOrEmpty(Eval("HomeAirportCode").ToString()) %>'>
@@ -26,7 +26,7 @@
             </asp:Panel>
             <div class="clubDetailsLeft">
                 <div><%# Eval("Description") %> &nbsp;</div>
-                <div><asp:HyperLink ID="HyperLink1" Visible='<%# LinkToDetails %>' Font-Bold="true" runat="server" NavigateUrl='<%# Eval("EditLink") %>' Text='<%$ Resources:Club, LabelViewClubDetails %>'></asp:HyperLink></div>
+                <div><asp:HyperLink ID="HyperLink1" Visible='<%# LinkToDetails %>' CssClass="boldface" runat="server" NavigateUrl='<%# Eval("EditLink") %>' Text='<%$ Resources:Club, LabelViewClubDetails %>'></asp:HyperLink></div>
             </div>
         </div>
     </ItemTemplate>

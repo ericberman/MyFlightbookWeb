@@ -31,7 +31,7 @@
         <tr>
             <td valign="middle" style="font-weight: bold; text-align: center;" colspan="2">
                 <hr />
-                <asp:Label Font-Bold="true" ID="Label1" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookSeparator %>"></asp:Label>
+                <asp:Label CssClass="boldface" ID="Label1" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookSeparator %>"></asp:Label>
             </td>
         </tr>
         <tr valign="top">
@@ -59,7 +59,7 @@
         <tr>
             <td valign="middle" style="font-weight: bold; text-align: center;" colspan="2">
                 <hr />
-                <asp:Label Font-Bold="true" ID="lblOR" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookSeparator %>"></asp:Label>
+                <asp:Label CssClass="boldface" ID="lblOR" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookSeparator %>"></asp:Label>
             </td>
         </tr>
         <tr valign="top">
@@ -97,7 +97,7 @@
                 <p><asp:Localize ID="locCloudStorageDesc" runat="server" Text="<%$ Resources:LocalizedText, CloudDownloadDescription %>"></asp:Localize></p>
                 <p><asp:HyperLink ID="lnkConfigure" runat="server" Text="<%$ Resources:LocalizedText, CloudStorageClickToConfigure %>" NavigateUrl="~/Member/EditProfile.aspx/pftPrefs?pane=backup"></asp:HyperLink></p>
                 <p>
-                    <asp:Label ID="lblNote" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label> 
+                    <asp:Label ID="lblNote" runat="server" CssClass="boldface" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label> 
                     <asp:Localize ID="locDonate" runat="server"></asp:Localize>
                 </p>
             </td>
@@ -105,7 +105,7 @@
         <tr>
             <td valign="middle" style="font-weight: bold; text-align: center;" colspan="2">
                 <hr />
-                <asp:Label Font-Bold="true" ID="lblOR2" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookSeparator %>"></asp:Label>
+                <asp:Label CssClass="boldface" ID="lblOR2" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookSeparator %>"></asp:Label>
             </td>
         </tr>
         <tr>

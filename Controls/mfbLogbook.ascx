@@ -28,7 +28,7 @@
         <asp:GridView ID="gvFlightLogs" runat="server" AutoGenerateColumns="False" BorderStyle="None"
             CellPadding="3" DataKeyNames="FlightID" AllowSorting="True" 
             ShowHeader="true" ShowFooter="true" UseAccessibleHeader="true"
-            Font-Size="8pt" AllowPaging="True" HeaderStyle-HorizontalAlign="Center"
+            Font-Size="8pt" AllowPaging="True" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Font-Bold="false"
             OnRowDataBound="gvFlightLogs_RowDataBound" EnableViewState="false" 
             PagerSettings-Mode="NumericFirstLast"
             GridLines="None" OnDataBound="gvFlightLogs_DataBound" 
@@ -37,7 +37,7 @@
             <Columns>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldFlight %>" SortExpression="Date">
                     <ItemTemplate>
-                        <asp:HyperLink ID="lnkEditFlight" Font-Bold="true" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' NavigateUrl='<%# DetailsPath(Eval("FlightID")) %>'></asp:HyperLink>
+                        <asp:HyperLink ID="lnkEditFlight" CssClass="boldface" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' NavigateUrl='<%# DetailsPath(Eval("FlightID")) %>'></asp:HyperLink>
                         <span class="noprint" style="float:right">
                             &nbsp;&nbsp;
                             <asp:Panel ID="pnlImagesHover" runat="server" Visible="false" style="display:inline-block;">
@@ -68,7 +68,7 @@
                                 <div><%#: Eval("SignatureCommentLine") %></div>
                             </asp:Label>
                             <asp:Panel ID="pnlInvalidSig" runat="server" Visible='<%# !(bool) Eval("HasValidSig") %>'>
-                                <asp:Label ID="lblSigInvalid" runat="server" Font-Bold="true" CssClass="signatureInvalid" Text="<%$ Resources:SignOff, FlightSignatureInvalid %>"></asp:Label>
+                                <asp:Label ID="lblSigInvalid" runat="server" CssClass="boldface signatureInvalid" Text="<%$ Resources:SignOff, FlightSignatureInvalid %>"></asp:Label>
                             </asp:Panel>
                         </asp:Panel>
                         <div runat="server" id="divComments" style="clear:left; white-space: pre-line;" dir="auto"><asp:Label ID="lblComments" runat="server" Text='<%# Eval("CommentWithReplacedApproaches") %>'></asp:Label></div>
@@ -146,14 +146,14 @@
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldApproaches %>" SortExpression="Approaches">
                     <ItemStyle HorizontalAlign="Center" />
-                    <HeaderStyle HorizontalAlign="Center" Font-Bold="true" />
+                    <HeaderStyle HorizontalAlign="Center" />
                     <ItemTemplate>
                         <%# Eval("Approaches").FormatInt() %>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldHold %>" SortExpression="fHoldingProcedures">
                     <HeaderStyle HorizontalAlign="Center" />
-                    <ItemStyle Font-Bold="true" Font-Size="Larger" HorizontalAlign="Center" />
+                    <ItemStyle CssClass="boldface" Font-Size="Larger" HorizontalAlign="Center" />
                     <ItemTemplate>
                         <%# Eval("fHoldingProcedures").FormatBoolean() %>
                     </ItemTemplate>
@@ -291,7 +291,7 @@
             <RowStyle CssClass="logbookRow" />
             <PagerTemplate>
                 <div style="float:left"><asp:LinkButton ID="lnkShowAll" runat="server" OnClick="lnkShowAll_Click" CausesValidation="false" Text="<%$ Resources:LogbookEntry, LogbookShowAll %>" ></asp:LinkButton></div>
-                <asp:Panel ID="pnlPager" runat="server" DefaultButton="btnSetPage" style="float:right; font-weight:bold;">
+                <asp:Panel ID="pnlPager" runat="server" DefaultButton="btnSetPage" style="float:right;" CssClass="boldface">
                     <asp:LinkButton ID="lnkFirst" CommandArgument="First" CommandName="Page" runat="server" Text="<<" CausesValidation="false"></asp:LinkButton>&nbsp;&nbsp;
                     <asp:LinkButton ID="lnkPrev" CommandArgument="Prev" CommandName="Page" runat="server" Text="<" CausesValidation="false" ></asp:LinkButton>&nbsp;&nbsp;
                     <asp:Label ID="lblCurPagePrompt" runat="server" Text="<%$ Resources:LogbookEntry, LogbookPagePrompt %>" Visible="false"></asp:Label> 

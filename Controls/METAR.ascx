@@ -3,7 +3,7 @@
     <Columns>
         <asp:TemplateField>
             <ItemTemplate>
-                <div><asp:Label ID="lblStation" runat="server" ToolTip='<%# Eval("raw_text") %>' Font-Bold="true" Font-Size="Larger" Text='<%# Eval("station_id") %>'></asp:Label></div> 
+                <div><asp:Label ID="lblStation" runat="server" ToolTip='<%# Eval("raw_text") %>' CssClass="boldface" Font-Size="Larger" Text='<%# Eval("station_id") %>'></asp:Label></div> 
                 <div><asp:Label ID="lblTime" runat="server" Text='<%# Eval("TimeDisplay") %>'></asp:Label></div>
                 <div><asp:Label ID="lblType" runat="server" Text='<%# Eval("METARTypeDisplay") %>'></asp:Label></div>
                 <div><asp:Label ID="lblQuality" runat="server" Text='<%# Eval("QualityDisplay") %>'></asp:Label></div>
@@ -12,7 +12,7 @@
         </asp:TemplateField>
         <asp:TemplateField  HeaderText="<%$ Resources:Weather, headerCategory %>">
             <ItemTemplate>
-                <asp:Label ID="lblFlightCategory" runat="server" Text='<%# Eval("flight_category") %>' Font-Bold="true" ForeColor='<%# ColorForFlightRules((MyFlightbook.Weather.ADDS.METAR) Container.DataItem) %>'></asp:Label> 
+                <asp:Label ID="lblFlightCategory" runat="server" Text='<%# Eval("flight_category") %>' CssClass="boldface" ForeColor='<%# ColorForFlightRules((MyFlightbook.Weather.ADDS.METAR) Container.DataItem) %>'></asp:Label> 
             </ItemTemplate>
             <ItemStyle VerticalAlign="Top" />
         </asp:TemplateField>

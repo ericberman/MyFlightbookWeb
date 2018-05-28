@@ -8,7 +8,7 @@
             meta:resourcekey="lblUserNameResource1"></asp:Label></h1>
     <asp:Panel ID="pnlSuccess" runat="server" Visible="false" EnableViewState="false"
         meta:resourcekey="pnlSuccessResource1">
-        <asp:Label ID="lblSuccessText" runat="server" Font-Bold="True" 
+        <asp:Label ID="lblSuccessText" runat="server" CssClass="boldface"
         Text="Entry Successful!" meta:resourcekey="lblSuccessTextResource1"></asp:Label> 
         <asp:Localize ID="Localize1" runat="server" Text="You may enter another one below" 
         meta:resourcekey="Localize1Resource1"></asp:Localize>

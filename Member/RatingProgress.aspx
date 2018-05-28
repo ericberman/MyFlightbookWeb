@@ -20,8 +20,8 @@
         </asp:DropDownList>
     </p>
     <asp:Panel ID="pnlOverallProgress" runat="server" Visible="false">
-        <asp:Label Font-Bold="true" ID="lblOverallProgress" runat="server" Text=""></asp:Label><br />
-        <asp:Label ID="lblNoteProgress" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
+        <asp:Label CssClass="boldface"  ID="lblOverallProgress" runat="server" Text=""></asp:Label><br />
+        <asp:Label ID="lblNoteProgress" runat="server" CssClass="boldface"  Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
         <asp:Label ID="lblOverallProgressDisclaimer" CssClass="fineprint" runat="server" Text=""></asp:Label>
         <asp:Panel ID="pnlRatingDisclaimer" runat="server">
             <p class="fineprint"><asp:Label ID="lblRatingOverallDisclaimer" runat="server" Text=""></asp:Label></p>
@@ -42,9 +42,9 @@
             <asp:TemplateField>
                 <ItemStyle CssClass="progressRow" />
                 <ItemTemplate>
-                    <div><asp:Label ID="lblFarFREF" Font-Bold="true" runat="server" Text='<%# Eval("FARRef") %>'></asp:Label> - <asp:Label ID="lblTitle" runat="server" Text='<%# Eval("Title") %>'></asp:Label></div>
+                    <div><asp:Label ID="lblFarFREF" CssClass="boldface"  runat="server" Text='<%# Eval("FARRef") %>'></asp:Label> - <asp:Label ID="lblTitle" runat="server" Text='<%# Eval("Title") %>'></asp:Label></div>
                     <asp:Panel ID="pnlNote" CssClass="fineprint" runat="server">
-                        <asp:Label ID="lblNoteHeader" runat="server" Font-Bold="true" Text="<%$ Resources:MilestoneProgress, NoteHeader %>"></asp:Label>
+                        <asp:Label ID="lblNoteHeader" runat="server" CssClass="boldface"  Text="<%$ Resources:MilestoneProgress, NoteHeader %>"></asp:Label>
                         <asp:Label ID="lblNote" runat="server" Font-Italic="true" Text='<%# Eval("Note") %>'></asp:Label>
                     </asp:Panel>
                     <asp:MultiView ID="mvProgress" runat="server">
@@ -57,11 +57,11 @@
                         <asp:View ID="vwAchievement" runat="server">
                             <asp:MultiView ID="mvAchievement" runat="server">
                                 <asp:View ID="vwAchieved" runat="server">
-                                    <asp:Label ID="lblCompleted" runat="server" Text="<%$ Resources:MilestoneProgress, CompletedHeader %>" Font-Bold="true"></asp:Label>
+                                    <asp:Label ID="lblCompleted" runat="server" Text="<%$ Resources:MilestoneProgress, CompletedHeader %>" CssClass="boldface" ></asp:Label>
                                     <asp:HyperLink runat="server" ID="lnkFlight" Target="_blank" Text='<%# Eval("MatchingEventText") %>'></asp:HyperLink>
                                 </asp:View>
                                 <asp:View ID="vwNotAchieved" runat="server">
-                                    <asp:Label ID="lblNotDone" Font-Bold="true" runat="server" Text="<%$ Resources:MilestoneProgress, NotMet %>"></asp:Label>
+                                    <asp:Label ID="lblNotDone" CssClass="boldface"  runat="server" Text="<%$ Resources:MilestoneProgress, NotMet %>"></asp:Label>
                                 </asp:View>
                             </asp:MultiView>
                         </asp:View>

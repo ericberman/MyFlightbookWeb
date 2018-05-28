@@ -8,13 +8,13 @@
             MembershipProvider="MySqlMembershipProvider" PasswordRecoveryText=""
             PasswordRecoveryUrl="~/Logon/ResetPass.aspx" TitleText=""
             OnLoggingIn="OnLoggingIn">
-            <TitleTextStyle Font-Bold="True" />
+            <TitleTextStyle CssClass="boldface" />
             <InstructionTextStyle Font-Italic="True" ForeColor="Black" />
             <TextBoxStyle />
             <LayoutTemplate>
                 <table style="min-width:300px; padding:4px">
                     <tr>
-                        <td colspan="2" style="font-weight: bold; text-align:center;" >
+                        <td colspan="2" class="boldface" style="text-align:center;" >
                             <asp:Localize ID="locSignIn" runat="server" Text="<%$ Resources:LocalizedText, SignInPrompt %>"></asp:Localize>
                         </td>
                     </tr>

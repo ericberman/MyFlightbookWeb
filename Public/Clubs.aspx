@@ -21,7 +21,7 @@
     <p><% =FixUpDonationAmount() %></p>
     <asp:Panel ID="pnlCreateClub" runat="server">
         <uc3:Expando ID="expandoCreateClub" runat="server">
-            <Header><asp:Label ID="lblCreateClubHeader" runat="server" Font-Bold="true" Text="<%$ Resources:Club, LabelCreateClub %>"></asp:Label></Header>
+            <Header><asp:Label ID="lblCreateClubHeader" runat="server" CssClass="boldface" Text="<%$ Resources:Club, LabelCreateClub %>"></asp:Label></Header>
             <Body>
                 <asp:Panel ID="pnlNewClub" runat="server" style="overflow:hidden;">
                     <div style="border: 1px solid black; background-color:white;">

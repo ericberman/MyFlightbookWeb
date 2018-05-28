@@ -75,7 +75,7 @@
                                 <asp:Image ID="imgDownload" ImageUrl="~/images/download.png" runat="server" />
                             </td>
                             <td>
-                                <asp:HyperLink ID="lnkDownload" Font-Bold="true" runat="server" NavigateUrl="~/Member/Download.aspx?lm=Accordion" Text="<%$ Resources:Tabs, LogbookDownload %>"></asp:HyperLink>
+                                <asp:HyperLink ID="lnkDownload" CssClass="boldface" runat="server" NavigateUrl="~/Member/Download.aspx?lm=Accordion" Text="<%$ Resources:Tabs, LogbookDownload %>"></asp:HyperLink>
                             </td>
                             <td>
                                 <% =Resources.LocalizedText.LogbookDownloadDescription %>
@@ -86,7 +86,7 @@
                                 <asp:Image ID="imgImport" ImageUrl="~/images/import.png" runat="server" />
                             </td>
                             <td>
-                                <asp:HyperLink ID="lnkImport" Font-Bold="true" runat="server" NavigateUrl="~/Member/Import.aspx?lm=Accordion" Text="<%$ Resources:Tabs, LogbookImport %>"></asp:HyperLink>
+                                <asp:HyperLink ID="lnkImport" CssClass="boldface" runat="server" NavigateUrl="~/Member/Import.aspx?lm=Accordion" Text="<%$ Resources:Tabs, LogbookImport %>"></asp:HyperLink>
                             </td>
                             <td>
                                 <% =Branding.ReBrand(Resources.LocalizedText.LogbookImportDescription) %>
@@ -97,7 +97,7 @@
                                 <asp:Image ID="imgStartingTotals" ImageUrl="~/images/startingtotals.png" runat="server" />
                             </td>
                             <td>
-                                <asp:HyperLink ID="lnkStartingTotals" Font-Bold="true" NavigateUrl="~/Member/StartingTotals.aspx?lm=Accordion" runat="server" Text="<%$ Resources:LocalizedText, StartingTotalsLink %>"></asp:HyperLink>
+                                <asp:HyperLink ID="lnkStartingTotals" CssClass="boldface" NavigateUrl="~/Member/StartingTotals.aspx?lm=Accordion" runat="server" Text="<%$ Resources:LocalizedText, StartingTotalsLink %>"></asp:HyperLink>
                             </td>
                             <td>
                                 <% =Branding.ReBrand(Resources.LocalizedText.LogbookStartingTotalsDescription) %>

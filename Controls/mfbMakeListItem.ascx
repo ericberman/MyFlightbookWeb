@@ -13,11 +13,11 @@
                     <table style="width:100%">
                         <tr>
                             <td style="width:30%">
-                                <asp:Label ID="lblManufacturer" runat="server" Text='<%# Eval("ManufacturerDisplay") %>' Font-Bold='<%# SortMode == ModelQuery.ModelSortMode.Manufacturer %>' Font-Size='<%# SortMode == ModelQuery.ModelSortMode.Manufacturer ? FontUnit.Larger : FontUnit.Empty %>'></asp:Label>
+                                <asp:Label ID="lblManufacturer" runat="server" Text='<%# Eval("ManufacturerDisplay") %>' CssClass='<%# SortMode == ModelQuery.ModelSortMode.Manufacturer ? "boldface" : "" %>' Font-Size='<%# SortMode == ModelQuery.ModelSortMode.Manufacturer ? FontUnit.Larger : FontUnit.Empty %>'></asp:Label>
                             </td>
                             <td style="width:40%">
                                 <div>
-                                    <asp:HyperLink ID="lnkEditMake" runat="server" NavigateUrl='<%# "~/Member/EditMake.aspx?id=" + Eval("MakeModelID").ToString() %>' Font-Bold='<%# SortMode == ModelQuery.ModelSortMode.ModelName %>' Font-Size='<%# SortMode == ModelQuery.ModelSortMode.ModelName ? FontUnit.Larger : FontUnit.Empty %>'>
+                                    <asp:HyperLink ID="lnkEditMake" runat="server" NavigateUrl='<%# "~/Member/EditMake.aspx?id=" + Eval("MakeModelID").ToString() %>' CssClass='<%# SortMode == ModelQuery.ModelSortMode.ModelName ? "boldface" : "" %>' Font-Size='<%# SortMode == ModelQuery.ModelSortMode.ModelName ? FontUnit.Larger : FontUnit.Empty %>'>
                                         <%# Eval("ModelDisplayNameNoCatclass") %>
                                     </asp:HyperLink>
                                 </div>
@@ -26,7 +26,7 @@
                                 </asp:Panel>
                             </td>
                             <td style="width:30%">
-                                <asp:Label ID="lblCategoryClass" runat="server" Text='<%# Eval("CategoryClassDisplay") %>' Font-Bold='<%# SortMode == ModelQuery.ModelSortMode.CatClass %>' Font-Size='<%# SortMode == ModelQuery.ModelSortMode.CatClass ? FontUnit.Larger : FontUnit.Empty %>'></asp:Label>
+                                <asp:Label ID="lblCategoryClass" runat="server" Text='<%# Eval("CategoryClassDisplay") %>' CssClass='<%# SortMode == ModelQuery.ModelSortMode.CatClass ? "boldface" : "" %>' Font-Size='<%# SortMode == ModelQuery.ModelSortMode.CatClass ? FontUnit.Larger : FontUnit.Empty %>'></asp:Label>
                             </td>
                         </tr>
                         <tr>

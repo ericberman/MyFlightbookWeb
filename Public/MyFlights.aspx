@@ -23,7 +23,7 @@
             </asp:TemplateField>
         </Columns>
         <EmptyDataTemplate>
-            <p><asp:Label ID="lblNoneFound" Font-Bold="true" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightNoneFound %>"></asp:Label></p>
+            <p><asp:Label ID="lblNoneFound" CssClass="boldface" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightNoneFound %>"></asp:Label></p>
         </EmptyDataTemplate>
     </asp:GridView>
 

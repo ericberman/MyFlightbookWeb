@@ -66,7 +66,7 @@
     </asp:View>
     <asp:View ID="vwReadOnly" runat="server">
         <div style="vertical-align:middle">
-            <asp:Label ID="lblMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:Label>&nbsp;&nbsp;
+            <asp:Label ID="lblMakeModel" runat="server" Font-Size="Larger" CssClass="boldface"></asp:Label>&nbsp;&nbsp;
             <asp:ImageButton ID="imgEditAircraftModel" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" />
         </div>
     </asp:View>
@@ -89,7 +89,7 @@
 </ul>
 <asp:Panel ID="pnlAdviseModelChange" runat="server" BackColor="White" Style="margin: 3px; padding:15px; display:none; width: 450px;" DefaultButton="btnChangeModelCancel">
     <p>
-        <asp:Label ID="lblAdviseModelChange" runat="server" Text="<%$ Resources:Aircraft, editAircraftModelChangeHeader %>" Font-Bold="True"></asp:Label>
+        <asp:Label ID="lblAdviseModelChange" runat="server" Text="<%$ Resources:Aircraft, editAircraftModelChangeHeader %>" CssClass="boldface"></asp:Label>
     </p>
     <p><% =Branding.ReBrand(Resources.Aircraft.editAircraftModelChange1) %></p>
     <p><% =Resources.Aircraft.editAircraftModelChange2 %></p>

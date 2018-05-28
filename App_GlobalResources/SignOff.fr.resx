@@ -257,7 +257,7 @@
     <value>Date de endossement:</value>
   </data>
   <data name="EditEndorsementDisclaimer" xml:space="preserve">
-    <value>&lt;span style="font-weight:bold"&gt;Note: &lt;/span&gt;Ces endossements sont affichés pour information et archivage uniquement.  L'autorité ou administration concernée peu ou pas reconnaître la forme utilisée, vous assurez aussi de faire signer votre carnet de vol.</value>
+    <value>&lt;span class="boldface"&gt;Note: &lt;/span&gt;Ces endossements sont affichés pour information et archivage uniquement.  L'autorité ou administration concernée peu ou pas reconnaître la forme utilisée, vous assurez aussi de faire signer votre carnet de vol.</value>
   </data>
   <data name="EditEndorsementEndorsementPrompt" xml:space="preserve">
     <value>Endossement:</value>

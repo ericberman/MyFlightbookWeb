@@ -1,7 +1,7 @@
 <%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbAirportIDGame.ascx.cs"
     Inherits="Controls_mfbAirportIDGame" %>
 <%@ Register Src="mfbGoogleMapManager.ascx" TagName="mfbGoogleMap" TagPrefix="uc1" %>
-<p style="font-weight: bold; font-size: 14px;" runat="server" id="pRunningScore"
+<p class="boldface" style="font-size: 14px;" runat="server" id="pRunningScore"
     visible="false">
     <span style="color: Green;">
         <asp:Label ID="lblCorrect" runat="server" Visible="false">Correct!</asp:Label></span>
@@ -14,7 +14,7 @@
     <asp:View ID="vwBegin" runat="server">
         <p><asp:Literal runat="server" Text="<%$ Resources:LocalizedText, AirportGameTitle %>" /></p>
         <div style="text-align: center; width: 480px">
-            <asp:LinkButton ID="lnkBusyUS" runat="server" OnClick="lnkBusyUS_Click"><asp:Literal ID="Literal1" runat="server" Text="<%$ Resources:LocalizedText, AirportGameUseUSAirports %>" /></asp:LinkButton><br /><span style="font-weight:bold"><asp:Literal ID="Literal3" runat="server" Text="<%$ Resources:LocalizedText, ORSeparator %>" /></span><br /> 
+            <asp:LinkButton ID="lnkBusyUS" runat="server" OnClick="lnkBusyUS_Click"><asp:Literal ID="Literal1" runat="server" Text="<%$ Resources:LocalizedText, AirportGameUseUSAirports %>" /></asp:LinkButton><br /><span class="boldface"><asp:Literal ID="Literal3" runat="server" Text="<%$ Resources:LocalizedText, ORSeparator %>" /></span><br /> 
             <asp:LinkButton ID="lnkYourAirports" runat="server" OnClick="lnkYourAirports_Click"><asp:Literal ID="Literal2" runat="server" Text="<%$ Resources:LocalizedText, AirportGameUseYourAirports %>" /></asp:LinkButton><br /><asp:Literal ID="Literal4" runat="server" Text="<%$ Resources:LocalizedText, AirportGameMustBeSignedIn %>" />
         </div>
     </asp:View>
@@ -38,7 +38,7 @@ function TickTock()
     }
 }
 // ]]>
-</script><asp:Literal ID="Literal5" runat="server" Text="<%$ Resources:LocalizedText, AirportGameTimeRemaining %>" /><span id="timer" style="font-weight: bold;">0:30</span><br /> <br /><asp:Label ID="Label1" runat="server" Text="<%$Resources:LocalizedText, AirportGameAirportPrompt %>"></asp:Label><br />
+</script><asp:Literal ID="Literal5" runat="server" Text="<%$ Resources:LocalizedText, AirportGameTimeRemaining %>" /><span id="timer" class="boldface">0:30</span><br /> <br /><asp:Label ID="Label1" runat="server" Text="<%$Resources:LocalizedText, AirportGameAirportPrompt %>"></asp:Label><br />
         <uc1:mfbGoogleMap ID="MfbGoogleMap1" runat="server" Width="400px" Height="400px" ShowMarkers="false" Mode="Static" />
         <asp:RadioButtonList ID="rbGuesses" runat="server" AutoPostBack="true" OnSelectedIndexChanged="rbGuesses_SelectedIndexChanged">
         </asp:RadioButtonList><br />

@@ -12,7 +12,7 @@
         <table>
             <tr class="itemlabel">
                 <td colspan="2">
-                    <asp:Label ID="lblHobbs" runat="server" Text="Hobbs" Font-Bold="True" 
+                    <asp:Label ID="lblHobbs" runat="server" Text="Hobbs" CssClass="boldface" 
                         meta:resourcekey="lblHobbsResource1"></asp:Label>
                 </td>
             </tr>
@@ -42,7 +42,7 @@
         <table style="vertical-align:baseline">
             <tr class="itemlabel">
                 <td colspan="2">
-                    <asp:Label ID="lblEngine" runat="server" Text="Engine (UTC)" Font-Bold="True" 
+                    <asp:Label ID="lblEngine" runat="server" Text="Engine (UTC)" CssClass="boldface" 
                         meta:resourcekey="lblEngineResource1"></asp:Label>
                 </td>
             </tr>
@@ -71,7 +71,7 @@
         <table>
             <tr class="itemlabel">
                 <td colspan="2">
-                    <asp:Label ID="lblFlight" runat="server" Text="Flight (UTC)" Font-Bold="True" 
+                    <asp:Label ID="lblFlight" runat="server" Text="Flight (UTC)" CssClass="boldface" 
                         meta:resourcekey="lblFlightResource1"></asp:Label>
                 </td>
             </tr>
@@ -101,7 +101,7 @@
         <table>
             <tr class="itemlabel">
                 <td>
-                    <asp:Label ID="lblTelemetryData" Font-Bold="True" runat="server" 
+                    <asp:Label ID="lblTelemetryData" CssClass="boldface" runat="server" 
                         Text="Flight telemetry data" meta:resourcekey="lblTelemetryDataResource1"></asp:Label>
                     <asp:HyperLink ID="lnkLearnMore" CssClass="fineprint" runat="server" 
                         NavigateUrl="~/Public/FlightDataKey.aspx" Target="_blank" Text="Learn More" 
@@ -144,7 +144,7 @@
         <table>
             <tr class="itemlabel">
                 <td>
-                    <asp:Label ID="lblAutoFill" Font-Bold="True" runat="server" Text="Auto-fill" 
+                    <asp:Label ID="lblAutoFill" CssClass="boldface" runat="server" Text="Auto-fill" 
                         meta:resourcekey="lblAutoFillResource1"></asp:Label><br />
                     <asp:Label ID="lblAutoFillDesc" runat="server" 
                         Text="Auto-fill fills in missing information that can be determined from your route of flight, the times provided above, and any optional telemetry file you provide above." 

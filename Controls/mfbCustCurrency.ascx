@@ -84,7 +84,7 @@
         <tr>
             <td colspan="2">
                 <asp:Label ID="locCustCurrencyApplicationPrompt" runat="server"
-                    Text="<%$ Resources:Currency, CustomCurrencyRestrictPrompt %>" Font-Bold="True"></asp:Label>
+                    Text="<%$ Resources:Currency, CustomCurrencyRestrictPrompt %>" CssClass="boldface"></asp:Label>
             </td>
         </tr>
         <tr style="vertical-align:top;">
