@@ -289,7 +289,6 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
 
                 lst = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(Restriction), this.User, LastSortExpr, LastSortDir, Viewer.UsesHHMM, pfUser.UsesUTCDateOfFlight);
                 CachedData = lst;
-                lblNumFlights.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.NumberOfFlights, lst.Count());
             }
             return lst;
         }
@@ -538,6 +537,10 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
             for (int i = cCols - 1; i >= 1; i--)
                 e.Row.Cells.RemoveAt(i);
             e.Row.Cells[0].ColumnSpan = cCols;
+        }
+        else if (e.Row.RowType == DataControlRowType.Pager)
+        {
+            ((Label) e.Row.FindControl("lblNumFlights")).Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.NumberOfFlights, CachedData.Count());
         }
         else if (e.Row.RowType == DataControlRowType.DataRow)
         {

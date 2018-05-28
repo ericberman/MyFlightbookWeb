@@ -1281,8 +1281,16 @@ table.dataDescription thead tr td
 
 @media screen {
     .printonly {display:none;}
-    .logbookRow {vertical-align:top;}
-    .logbookAlternateRow {vertical-align:top; background:#E0E0E0;}
+    .logbookRow, .logbookAlternateRow {
+        vertical-align: top;
+        border-bottom: 1px solid #cccccc;
+    }
+    .logbookAlternateRow {
+        background-color: #eeeeee;
+    }
+    .logbookRow:nth-last-child(2), .logbookAlternateRow:nth-last-child(2) {
+        border-bottom: none;
+    }
 }
 
 thead {display: table-header-group;}

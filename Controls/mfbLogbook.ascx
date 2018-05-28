@@ -7,6 +7,8 @@
 <%@ Register src="mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc6" %>
 <%@ Register src="popmenu.ascx" tagname="popmenu" tagprefix="uc7" %>
 <%@ Register src="mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc5" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
 <div class="printonly">
     <div>
         <asp:Label ID="lblLogbookHeader" runat="server" Text=""><% = Pilot.UserFullName %></asp:Label>
@@ -286,18 +288,18 @@
                     <ItemStyle CssClass="noprint" />
                 </asp:TemplateField>
             </Columns>
-            <PagerSettings Mode="NextPreviousFirstLast" Position="TopAndBottom" />
+            <PagerSettings Mode="NextPreviousFirstLast" Position="Top" />
             <AlternatingRowStyle CssClass="logbookAlternateRow" />
             <RowStyle CssClass="logbookRow" />
             <PagerTemplate>
-                <div style="float:left"><asp:LinkButton ID="lnkShowAll" runat="server" OnClick="lnkShowAll_Click" CausesValidation="false" Text="<%$ Resources:LogbookEntry, LogbookShowAll %>" ></asp:LinkButton></div>
+                <div style="float:left; vertical-align: middle;"><asp:Label ID="lblNumFlights" runat="server" Text=""></asp:Label> <asp:LinkButton ID="lnkShowAll" runat="server" OnClick="lnkShowAll_Click" CausesValidation="false" Text="<%$ Resources:LogbookEntry, LogbookShowAll %>" ></asp:LinkButton></div>
                 <asp:Panel ID="pnlPager" runat="server" DefaultButton="btnSetPage" style="float:right; font-weight:bold;">
                     <asp:LinkButton ID="lnkFirst" CommandArgument="First" CommandName="Page" runat="server" Text="<<" CausesValidation="false"></asp:LinkButton>&nbsp;&nbsp;
                     <asp:LinkButton ID="lnkPrev" CommandArgument="Prev" CommandName="Page" runat="server" Text="<" CausesValidation="false" ></asp:LinkButton>&nbsp;&nbsp;
                     <asp:Label ID="lblCurPagePrompt" runat="server" Text="<%$ Resources:LogbookEntry, LogbookPagePrompt %>" Visible="false"></asp:Label> 
-                    <asp:TextBox ID="decPage" runat="server" Width="50px"></asp:TextBox>
+                    <asp:TextBox ID="decPage" runat="server" Width="50px" BorderColor="LightGray" BorderStyle="Solid" BorderWidth="1"></asp:TextBox>
                     <asp:Label ID="lblTotalPagePrompt" runat="server" Text="<%$ Resources:LogbookEntry, LogbookPageTotalPagePrompt %>" Visible="false"></asp:Label> <asp:Label ID="lblPage" runat="server" Text="{0}"></asp:Label>
-                    <asp:Button ID="btnSetPage" runat="server" Text="<%$ Resources:LogbookEntry, LogbookGoToPage %>" onclick="btnSetPage_Click" />&nbsp;&nbsp;
+                    <asp:Button ID="btnSetPage" runat="server" Text="<%$ Resources:LogbookEntry, LogbookGoToPage %>" onclick="btnSetPage_Click" style="display:none;" />&nbsp;&nbsp;
                     <asp:LinkButton ID="lnkNext" CommandArgument="Next" CommandName="Page"  runat="server" Text=">" CausesValidation="false" ></asp:LinkButton>&nbsp;&nbsp;
                     <asp:LinkButton ID="lnkLast" CommandArgument="Last" CommandName="Page"  runat="server" Text=">>" CausesValidation="false" ></asp:LinkButton>
                 </asp:Panel>
@@ -307,7 +309,6 @@
                 <p><%=Resources.LogbookEntry.EmptyLogbook %></p>
             </EmptyDataTemplate>
         </asp:GridView>
-        <asp:Label ID="lblNumFlights" runat="server" Text=""></asp:Label>
         <asp:Panel ID="pnlSendFlight" runat="server" Width="480px" DefaultButton="btnSendFlight" BackColor="#FFFF99" style="padding:10px; display:none">
             <asp:Localize ID="locSendPrompt" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightPrompt %>"></asp:Localize>
             <asp:HiddenField ID="hdnFlightToSend" runat="server" />

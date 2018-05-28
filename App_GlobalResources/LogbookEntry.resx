@@ -291,7 +291,7 @@
     <value>(Use this for printer-friendly view of your whole logbook)</value>
   </data>
   <data name="LogbookShowAll" xml:space="preserve">
-    <value>ShowAll</value>
+    <value>Show All</value>
   </data>
   <data name="LogbookShowInPages" xml:space="preserve">
     <value>Show in Pages</value>

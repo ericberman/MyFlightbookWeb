@@ -42,7 +42,7 @@
         <asp:HiddenField ID="hdnPrevID" runat="server" />
         <table style="width:100%">
             <tr style="vertical-align:middle">
-                <td><asp:LinkButton ID="lnkPreviousFlight" runat="server" Text="<%$ Resources:LogbookEntry, PreviousFlight %>" Font-Size="Larger" OnClick="lnkPreviousFlight_Click" meta:resourcekey="lnkPreviousFlightResource1"></asp:LinkButton></td>
+                <td><asp:LinkButton ID="lnkPreviousFlight" runat="server" Font-Names="Arial" Text="<%$ Resources:LogbookEntry, PreviousFlight %>" Font-Size="Larger" OnClick="lnkPreviousFlight_Click" meta:resourcekey="lnkPreviousFlightResource1"></asp:LinkButton></td>
                 <td>            
                     <p>
                         <asp:Label ID="lblFlightDate" Font-Bold="True" runat="server" meta:resourcekey="lblFlightDateResource1"></asp:Label>
@@ -53,7 +53,7 @@
                             <uc1:mfbQueryDescriptor ID="mfbQueryDescriptor1" runat="server" OnQueryUpdated="mfbQueryDescriptor1_QueryUpdated" />
                     </asp:Panel>
                 </td>
-                <td><asp:LinkButton ID="lnkNextFlight" runat="server" Text="<%$ Resources:LogbookEntry, NextFlight %>" Font-Size="Larger" OnClick="lnkNextFlight_Click" meta:resourcekey="lnkNextFlightResource1"></asp:LinkButton></td>
+                <td><asp:LinkButton ID="lnkNextFlight" runat="server" Font-Names="Arial" Text="<%$ Resources:LogbookEntry, NextFlight %>" Font-Size="Larger" OnClick="lnkNextFlight_Click" meta:resourcekey="lnkNextFlightResource1"></asp:LinkButton></td>
             </tr>
         </table>
         <div>
