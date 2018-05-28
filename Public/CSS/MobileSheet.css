@@ -244,6 +244,19 @@ html[xmlns] #menu-bar {
 * html #menu-bar {
 }
 
+/* Ensure no icons on mobile menu bar */
+#menu-bar .topTab, #menu-bar .current a, #menu-bar a.topTab:hover, #menu-bar li:hover > a,
+#menu-bar #tabIDtabHome, #menu-bar #tabIDtabLogbook, #menu-bar #tabIDtabAircraft,
+#menu-bar #tabIDtabMaps, #menu-bar #tabIDtabTraining, #menu-bar #tabIDtabProfile,
+#menu-bar #tabIDtabAdmin
+{
+    background-image: none;
+    padding-left: 8px;
+    padding-right: 8px;
+    background-size: 0pt;
+    background-repeat: no-repeat;
+}
+
 /* Progress towards ratings */
 .progress {
     width: 95%;
