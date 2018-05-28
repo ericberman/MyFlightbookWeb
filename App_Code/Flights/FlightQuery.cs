@@ -230,6 +230,7 @@ namespace MyFlightbook
                     if (value != null)
                         foreach (int id in value)
                             lst.Add(ua.GetUserAircraftByID(id));
+                    lst.RemoveAll(ac => ac == null);
                     AircraftList = lst.ToArray();
                 }
             }
