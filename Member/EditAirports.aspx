@@ -145,7 +145,7 @@
                             </tr>
                         </table>
                         <p>
-                            <asp:Label ID="lblTipHeader" runat="server" Text="Tip" CssClass="boldface" 
+                            <asp:Label ID="lblTipHeader" runat="server" Text="Tip" Font-Bold="True" 
                                 meta:resourceKey="lblTipHeaderResource2"></asp:Label>&nbsp;
                             <asp:Label ID="lblClickToSetLatLon" runat="server" 
                                 Text="Click on the map to fill in the latitude/longitude" 

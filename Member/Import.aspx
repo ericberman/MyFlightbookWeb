@@ -29,23 +29,23 @@
             <asp:WizardStep ID="wsCreateFile" runat="server" 
                 Title="1. Prepare your data for import" meta:resourcekey="wsCreateFileResource1" >
                 <p>
-                    <asp:Label ID="lblNewDirectImport" runat="server" Text="<%$ Resources:LocalizedText, HeaderDownloadIsNew %>" CssClass="boldface"  meta:resourcekey="lblNewDirectImportResource1"></asp:Label>
+                    <asp:Label ID="lblNewDirectImport" runat="server" Text="<%$ Resources:LocalizedText, HeaderDownloadIsNew %>" Font-Bold="true" meta:resourcekey="lblNewDirectImportResource1"></asp:Label>
                     <asp:Label ID="lblDirectImport" runat="server" Text="If your data is from FOREFLIGHT, ZULULOG, LOGTEN PRO, or ELOGSITE…you should be able to simply export your data in <a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'>CSV</a> format from that program and import it directly here." meta:resourcekey="lblDirectImportResource1"></asp:Label>
                 </p>
                 <p>
                     <asp:Localize ID="locStep1DescSpreadsheet" runat="server" Text="Otherwise, you must first create a table of your flights in a spreadsheet such as Excel and save it in <a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'>CSV</a> (spreadsheet) format.  The first row of the table must be headers that identify which column is which, with one flight per row on the rows that follow." meta:resourcekey="locStep1DescSpreadsheetResource1"></asp:Localize>
                 </p>
                 <ul>
-                    <li><asp:HyperLink ID="lnkImportTable" runat="server" CssClass="boldface"  
+                    <li><asp:HyperLink ID="lnkImportTable" runat="server" Font-Bold="True" 
                             NavigateUrl="~/Public/ImportTable.aspx" Target="_blank" 
                             Text="Description of spreadsheet columns" meta:resourcekey="lnkImportTableResource1" 
                             ></asp:HyperLink></li>
-                    <li><asp:LinkButton ID="lnkDefaultTemplate" runat="server" CssClass="boldface"  
+                    <li><asp:LinkButton ID="lnkDefaultTemplate" runat="server" Font-Bold="True" 
                             OnClick="lnkDefaultTemplate_Click"
                             Text="Download a starting CSV File template" meta:resourcekey="lnkDefaultTemplateResource1" 
                             ></asp:LinkButton></li>
                 </ul>
-                <p><asp:Label ID="lblTipsHeader" CssClass="boldface"  runat="server" Text="" meta:resourcekey="lblTipsHeaderResource1"></asp:Label></p>
+                <p><asp:Label ID="lblTipsHeader" Font-Bold="true" runat="server" Text="" meta:resourcekey="lblTipsHeaderResource1"></asp:Label></p>
                 <div><asp:Literal ID="litTipsFAQ" runat="server" meta:resourcekey="litTipsFAQResource1"></asp:Literal></div>
             </asp:WizardStep>
             <asp:WizardStep ID="wsUpload" runat="server" Title="2. Upload your file" meta:resourcekey="wsUploadResource1" 
@@ -98,11 +98,11 @@
                 <asp:Localize ID="locPreviewReady" runat="server" 
                     Text="When you are ready, you can import your data." meta:resourcekey="locPreviewReadyResource1" 
                     ></asp:Localize>
-                <asp:Label ID="lblPreviewDontWorry" runat="server" CssClass="boldface"  
+                <asp:Label ID="lblPreviewDontWorry" runat="server" Font-Bold="True" 
                     Text="Nothing will be imported if any problems are found." meta:resourcekey="lblPreviewDontWorryResource1" 
                     ></asp:Label>
                 <br /><br />
-                <asp:Label ID="lblImportant2" CssClass="boldface"  runat="server" 
+                <asp:Label ID="lblImportant2" Font-Bold="true" runat="server" 
                     Text="Important: " meta:resourcekey="lblImportant2Resource1" ></asp:Label>
                 <asp:Label ID="lblOnlyClickOnce" runat="server" 
                     Text="Only click to import once; otherwise, you can end up with duplicate entries." meta:resourcekey="lblOnlyClickOnceResource1" 
@@ -151,7 +151,7 @@
                     <asp:View ID="vwPreview" runat="server">
                         <table style="width:100%; font-size: 8pt; border-color: gray; border-collapse:collapse" border="1" cellpadding="2">
                             <thead>
-                                <tr class="boldface">
+                                <tr style="font-weight:bold">
                                     <td></td>
                                     <td style="text-align:center"><%=Resources.LogbookEntry.FieldTail %></td>
                                     <td style="text-align:center"><%=Resources.LogbookEntry.FieldApproaches %></td>
@@ -185,19 +185,19 @@
                                             <div>
                                                 <asp:Image ID="imgNewOrUpdate" runat="server" ImageUrl='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? "~/images/add.png" : "~/images/update.png") : "~/images/circleslash.png" %>' 
                                                 ToolTip='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? Resources.LogbookEntry.ImportAddTooltip : Resources.LogbookEntry.ImportUpdateTooltip) : (string) Eval("ErrorString") %>' meta:resourcekey="imgNewOrUpdateResource1"  />
-                                                <span class="boldface"><%# ((DateTime) Eval("Date")).ToShortDateString() %></span>
+                                                <span style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></span>
                                                 <%# Eval("Route") %>
                                             </div>
                                             <div><%# Eval("Comment") %></div>
                                             <div><asp:PlaceHolder ID="plcAdditional" runat="server"></asp:PlaceHolder></div>
                                         </td>
                                         <td runat="server">
-                                            <div class="boldface"><%# Eval("TailNumDisplay") %></div>
+                                            <div style="font-weight:bold"><%# Eval("TailNumDisplay") %></div>
                                             <div><%# Eval("ModelDisplay") %></div>
                                             <div><%# Eval("CatClassDisplay") %></div>
                                         </td>
                                         <td runat="server"><%# Eval("Approaches").FormatInt() %></td>
-                                        <td class="boldface" runat="server"><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
+                                        <td style="font-weight:bold" runat="server"><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
                                         <td runat="server"><%# LogbookEntryDisplay.LandingDisplayForFlight((LogbookEntry) Container.DataItem) %></td>
                                         <td runat="server"><%# Eval("CrossCountry").FormatDecimal(UseHHMM) %></td>
                                         <td runat="server"><%# Eval("Nighttime").FormatDecimal(UseHHMM) %></td>

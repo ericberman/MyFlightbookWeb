@@ -28,7 +28,7 @@
                     <asp:HyperLink ID="lnkCreateAccount" runat="server" NavigateUrl="~/Logon/newuser.aspx" Text="<%$ Resources:LocalizedText, LoginStatusCreateAccount %>"></asp:HyperLink></asp:Label>
                 </div>
                 <asp:Panel ID="pnlDonate" runat="server">
-                    <asp:HyperLink ID="lnkDonate" CssClass="boldface" runat="server" NavigateUrl="~/Member/EditProfile.aspx/pftDonate"></asp:HyperLink>
+                    <asp:HyperLink ID="lnkDonate" Font-Bold="true" runat="server" NavigateUrl="~/Member/EditProfile.aspx/pftDonate"></asp:HyperLink>
                 </asp:Panel>
             </div>
             <div id="headerMiddleContainer">

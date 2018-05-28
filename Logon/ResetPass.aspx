@@ -23,11 +23,11 @@
         <asp:View ID="vwVerify" runat="server">
             <h1><asp:Label ID="lblVerify" runat="server" Text="Reset Password: verify your identity" meta:resourcekey="lblVerifyResource1"></asp:Label></h1>
             <p><asp:Label ID="lblPleaseAnswer" runat="server" Text="Please provide the answer to the following question, which you provided when you created your account" meta:resourcekey="lblPleaseAnswerResource1"></asp:Label></p>
-            <p><asp:Label ID="lblNoteExact" CssClass="boldface" runat="server" Text="<%$ Resources:LocalizedText, Note %>" meta:resourcekey="lblNoteExactResource1"></asp:Label> <asp:Label ID="lblExactPrompt" runat="server" Text="The answer must match EXACTLY, including capitalization, punctuation, and spaces." meta:resourcekey="lblExactPromptResource1"></asp:Label></p>
+            <p><asp:Label ID="lblNoteExact" Font-Bold="True" runat="server" Text="<%$ Resources:LocalizedText, Note %>" meta:resourcekey="lblNoteExactResource1"></asp:Label> <asp:Label ID="lblExactPrompt" runat="server" Text="The answer must match EXACTLY, including capitalization, punctuation, and spaces." meta:resourcekey="lblExactPromptResource1"></asp:Label></p>
             <p>
                 <asp:Label ID="lblQuestionPrompt" runat="server" Text="Your question:" meta:resourcekey="lblQuestionPromptResource1"></asp:Label>
             </p>
-            <p><asp:Label ID="lblQuestion" runat="server" CssClass="boldface" meta:resourcekey="lblQuestionResource1"></asp:Label></p>
+            <p><asp:Label ID="lblQuestion" runat="server" Font-Bold="True" meta:resourcekey="lblQuestionResource1"></asp:Label></p>
             <p><asp:TextBox ID="txtAnswer" runat="server" ValidationGroup="vgAnswer" meta:resourcekey="txtAnswerResource1" ></asp:TextBox> &nbsp;<asp:Button ValidationGroup="vgAnswer" ID="btnSubmitAnswer" runat="server" Text="Next" OnClick="btnSubmitAnswer_Click" meta:resourcekey="btnSubmitAnswerResource1" />
                 &nbsp;<asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="vgAnswer" runat="server" CssClass="error" Display="Dynamic" ControlToValidate="txtAnswer" ErrorMessage="<%$ Resources:LocalizedText, ResetPasswordAnswerRequired %>" meta:resourcekey="RequiredFieldValidator2Resource1"></asp:RequiredFieldValidator>
             </p>

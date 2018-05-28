@@ -11,7 +11,7 @@
     </div>
     <asp:GridView ID="gvKnownColumns" runat="server" CellPadding="3" AutoGenerateColumns="false" GridLines="None" ShowFooter="false" ShowHeader="true">
         <Columns>
-            <asp:BoundField DataField="Column" HeaderText="<%$ Resources:FlightData, headerColumnName %>" ItemStyle-VerticalAlign="Top" HeaderStyle-HorizontalAlign="Left" ItemStyle-CssClass="boldface" />
+            <asp:BoundField DataField="Column" HeaderText="<%$ Resources:FlightData, headerColumnName %>" ItemStyle-VerticalAlign="Top" HeaderStyle-HorizontalAlign="Left" ItemStyle-Font-Bold="true" />
             <asp:TemplateField HeaderText="<%$ Resources:FlightData, headerColumnDescription %>">
                 <ItemTemplate>
                     <div><%# Eval("ColumnDescription") %></div>

@@ -19,7 +19,7 @@
     <div style="float:right; margin: 5px; padding:5px; max-width: 200px; border: 1px solid black">
         <asp:Localize ID="locPageTop" runat="server" Text="Don&#39;t see the make/model of aircraft that you fly?" 
             meta:resourcekey="locPageTopResource1"></asp:Localize>
-        <div><asp:LinkButton ID="btnAddNew" runat="server" Text="Create a new model" CssClass="boldface" 
+        <div><asp:LinkButton ID="btnAddNew" runat="server" Text="Create a new model" Font-Bold="true"
             onclick="btnAddNew_Click" meta:resourcekey="btnAddNewResource1" /></div>
     </div>
     <h2><asp:Label ID="lblSearchPrompt" runat="server" Text="Find models of aircraft"></asp:Label></h2>
@@ -102,16 +102,16 @@
                         <tr>
                             <td style="width:30%;">
                                 <asp:LinkButton ID="lnkSortManufacturer" runat="server" Text="Manufacturer" 
-                                    meta:resourcekey="lnkSortManufacturerResource1" 
+                                    Font-Bold="False" meta:resourcekey="lnkSortManufacturerResource1" 
                                     onclick="lnkSortManufacturer_Click"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
                             </td>
                             <td style="width:40%;">
-                                <asp:LinkButton ID="lnkSortModel" runat="server" Text="Model" CssClass="boldface"  
+                                <asp:LinkButton ID="lnkSortModel" runat="server" Text="Model" Font-Bold="True" 
                                     meta:resourcekey="lnkSortModelResource1" onclick="lnkSortModel_Click"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
                             </td>
                             <td style="width:30%;">
                                 <asp:LinkButton ID="lnkSortCatclass" runat="server" Text="Category/Class" 
-                                    meta:resourcekey="lnkSortCatclassResource1" 
+                                    Font-Bold="False" meta:resourcekey="lnkSortCatclassResource1" 
                                     onclick="lnkSortCatclass_Click"></asp:LinkButton>
                             </td>
                         </tr>

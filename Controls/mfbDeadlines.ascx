@@ -25,7 +25,7 @@
             <EditItemTemplate>
                 <div>
                     <asp:Label ID="lblName" runat="server" Text='<%# Bind("DisplayName") %>'
-                        CssClass="boldface" ></asp:Label>
+                        Font-Bold="True"></asp:Label>
                     <asp:Label ID="lblDue" runat="server" Text='<%# Bind("ExpirationDisplay") %>'></asp:Label>
                 </div>
                 <div>
@@ -43,7 +43,7 @@
             </EditItemTemplate>
             <ItemTemplate>
                 <div>
-                    <asp:Label ID="lblName" runat="server" CssClass="boldface" 
+                    <asp:Label ID="lblName" runat="server" Font-Bold="True"
                         Text='<%# Bind("DisplayName") %>'></asp:Label>
                     <asp:Label ID="lblDue" runat="server"
                         Text='<%# Bind("ExpirationDisplay") %>'></asp:Label>

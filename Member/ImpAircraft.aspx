@@ -40,7 +40,7 @@
                 </p>
                 <table>
                     <tr style="vertical-align:top">
-                        <td><asp:Label ID="lblHeaderTailNum" CssClass="boldface" runat="server" Text="Tail Number" meta:resourcekey="lblHeaderTailNumResource1"></asp:Label></td>
+                        <td><asp:Label ID="lblHeaderTailNum" Font-Bold="true" runat="server" Text="Tail Number" meta:resourcekey="lblHeaderTailNumResource1"></asp:Label></td>
                         <td>
                             <asp:Label ID="lblHeaderTailNumDesc" runat="server" Text="This column contains the registration (tail number) for each aircraft, INCLUDING the country code (e.g., &quot;N&quot; for the US)." meta:resourcekey="lblHeaderTailNumDescResource1"></asp:Label>
                             <ul>
@@ -57,7 +57,7 @@
                         </td>
                     </tr>
                     <tr style="vertical-align:top">
-                        <td><asp:Label ID="lblHeaderModel" CssClass="boldface"  runat="server" Text="Model" meta:resourcekey="lblHeaderModelResource1"></asp:Label></td>
+                        <td><asp:Label ID="lblHeaderModel" Font-Bold="true" runat="server" Text="Model" meta:resourcekey="lblHeaderModelResource1"></asp:Label></td>
                         <td><asp:Label ID="lblModelDesc" runat="server" Text="This column contains the model identifier for the aircraft.  E.g., &quot;C-172&quot; or &quot;B737&quot;.  We will try to match it to an existing make/model, and you will have the chance to review/adjust this before import." meta:resourcekey="lblModelDescResource1"></asp:Label></td>
                     </tr>
                 </table>
@@ -107,7 +107,7 @@ N6789,B777
                                 meta:resourcekey="locMatchedToProfileResource1"></asp:Localize>
                         </td>
                         <td>
-                            <asp:Label ID="lblCountMatchProfile" CssClass="boldface"  runat="server" Text="" 
+                            <asp:Label ID="lblCountMatchProfile" Font-Bold="true" runat="server" Text="" 
                                 meta:resourcekey="lblCountMatchProfileResource1"></asp:Label>
                         </td>
                     </tr>
@@ -118,7 +118,7 @@ N6789,B777
                                 meta:resourcekey="locMatchedExistingResource1"></asp:Localize>
                         </td>
                         <td>
-                            <asp:Label ID="lblCountMatchExisting" CssClass="boldface"  runat="server" Text="" 
+                            <asp:Label ID="lblCountMatchExisting" Font-Bold="true" runat="server" Text="" 
                                 meta:resourcekey="lblCountMatchExistingResource1"></asp:Label>
                         </td>
                     </tr>
@@ -129,7 +129,7 @@ N6789,B777
                                 meta:resourcekey="locUnmatchedResource1"></asp:Localize>
                         </td>
                         <td>
-                            <asp:Label ID="lblCountUnmatched" CssClass="boldface"  runat="server" Text="" 
+                            <asp:Label ID="lblCountUnmatched" Font-Bold="true" runat="server" Text="" 
                                 meta:resourcekey="lblCountUnmatchedResource1"></asp:Label>
                         </td>
                     </tr>
@@ -141,7 +141,7 @@ N6789,B777
                         Text="You can review them to make sure they match your expectations and add them individually, or you can import them all at once." 
                         meta:resourcekey="locImportExistingReviewResource1"></asp:Localize></p>
                 <p>
-                    <asp:Label ID="lblNote" runat="server" CssClass="boldface"  
+                    <asp:Label ID="lblNote" runat="server" Font-Bold="true" 
                         Text="<%$ Resources:LocalizedText, Note %>" meta:resourcekey="lblNoteResource1"></asp:Label> 
                     <asp:Localize ID="locImportExistingMultiVersions" runat="server" 
                         Text="Aircraft tailnumbers are sometimes re-assigned.  You may see the same tailnumber across multiple aircraft below, or you may see your tailnumber on an aircraft that is different from what you expect." 
@@ -196,7 +196,7 @@ N6789,B777
                 <p><asp:Label ID="lblSkipsErrors" runat="server" 
                         Text="When you press &quot;Finish&quot;, all of the aircraft below that don't have errors will be imported.  You can come back later and re-import if necessary." 
                         meta:resourcekey="lblSkipsErrorsResource1"></asp:Label>
-                        <asp:Label ID="lblCanBeSlow" CssClass="boldface"  runat="server" 
+                        <asp:Label ID="lblCanBeSlow" Font-Bold="true" runat="server" 
                         Text="If you have a lot of aircraft, this can be slow; please be patient!" 
                         meta:resourcekey="lblCanBeSlowResource1"></asp:Label>
                 </p>

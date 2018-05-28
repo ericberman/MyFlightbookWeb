@@ -1,19 +1,19 @@
-using MyFlightbook;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Text;
 using System.Web;
-using System.Web.Services;
+using System.Globalization;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
+using System.Web.Services;
+using System.IO;
+using Newtonsoft.Json;
+using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2015 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -142,11 +142,11 @@ public partial class makes : System.Web.UI.Page
 
     protected void UpdateSortHeaders(ModelQuery.ModelSortMode sortmode)
     {
-        lnkSortCatclass.CssClass = (sortmode == ModelQuery.ModelSortMode.CatClass) ? "boldface" : string.Empty;
+        lnkSortCatclass.Font.Bold = (sortmode == ModelQuery.ModelSortMode.CatClass);
         lnkSortCatclass.Font.Size = (sortmode == ModelQuery.ModelSortMode.CatClass) ? FontUnit.Larger : FontUnit.Empty;
-        lnkSortManufacturer.CssClass = (sortmode == ModelQuery.ModelSortMode.Manufacturer) ? "boldface" : string.Empty;
+        lnkSortManufacturer.Font.Bold = (sortmode == ModelQuery.ModelSortMode.Manufacturer);
         lnkSortManufacturer.Font.Size = (sortmode == ModelQuery.ModelSortMode.Manufacturer) ? FontUnit.Larger : FontUnit.Empty;
-        lnkSortModel.CssClass = (sortmode == ModelQuery.ModelSortMode.ModelName) ? "boldface" : string.Empty;
+        lnkSortModel.Font.Bold = (sortmode == ModelQuery.ModelSortMode.ModelName);
         lnkSortModel.Font.Size = (sortmode == ModelQuery.ModelSortMode.ModelName) ? FontUnit.Larger : FontUnit.Empty;
     }
 

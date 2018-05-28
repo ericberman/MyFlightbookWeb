@@ -17,7 +17,7 @@
     window.addEventListener('DOMContentLoaded', loaded, false);
 </script> 
 <asp:Panel ID="pnlMain" runat="server" meta:resourcekey="pnlMainResource1">
-    <p><asp:Label ID="lblNote" CssClass="boldface" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label> 
+    <p><asp:Label ID="lblNote" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label> 
         <asp:Label ID="lblSignatureDisclaimer" runat="server" CssClass="fineprint" Text=""></asp:Label></p>
         <asp:MultiView ID="mvFlightToSign" ActiveViewIndex="0" runat="server">
             <asp:View ID="vwEntrySummary" runat="server">
@@ -29,81 +29,81 @@
                             </tr>
                             <tr style="vertical-align: text-top">
                                 <td>
-                                    <asp:Label ID="Label2" runat="server" CssClass="boldface" meta:resourcekey="Label2Resource1" Text="<%$ Resources:LogbookEntry, PublicFlightComments %>"></asp:Label>
+                                    <asp:Label ID="Label2" runat="server" Font-Bold="True" meta:resourcekey="Label2Resource1" Text="<%$ Resources:LogbookEntry, PublicFlightComments %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("Comment") %></td>
                                 <td>
-                                    <asp:Label ID="Label3" runat="server" CssClass="boldface" meta:resourcekey="Label3Resource1" Text="<%$ Resources:LogbookEntry, PublicFlightRoute %>"></asp:Label>
+                                    <asp:Label ID="Label3" runat="server" Font-Bold="True" meta:resourcekey="Label3Resource1" Text="<%$ Resources:LogbookEntry, PublicFlightRoute %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("Route") %></td>
                             </tr>
                             <tr style="vertical-align: text-top">
                                 <td>
-                                    <asp:Label ID="lblLandingPrompt" runat="server" CssClass="boldface" meta:resourcekey="lblLandingPromptResource1" Text="<%$ Resources:LogbookEntry, FieldLanding %>"></asp:Label>
+                                    <asp:Label ID="lblLandingPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblLandingPromptResource1" Text="<%$ Resources:LogbookEntry, FieldLanding %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("Landings") %></td>
                                 <td>
-                                    <asp:Label ID="lblNightLandingsPrompt" runat="server" CssClass="boldface" meta:resourcekey="lblNightLandingsPromptResource1" Text="<%$ Resources:LogbookEntry, FieldNightLandings %>"></asp:Label>
+                                    <asp:Label ID="lblNightLandingsPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblNightLandingsPromptResource1" Text="<%$ Resources:LogbookEntry, FieldNightLandings %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("NightLandings") %></td>
                             </tr>
                             <tr style="vertical-align: text-top">
                                 <td>
-                                    <asp:Label ID="lblApproachesPrompt" runat="server" CssClass="boldface" meta:resourcekey="lblApproachesPromptResource1" Text="<%$ Resources:LogbookEntry, FieldApproaches %>"></asp:Label>
+                                    <asp:Label ID="lblApproachesPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblApproachesPromptResource1" Text="<%$ Resources:LogbookEntry, FieldApproaches %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("Approaches") %></td>
                                 <td>
-                                    <asp:Label ID="lblHoldPrompt" runat="server" CssClass="boldface" meta:resourcekey="lblHoldPromptResource1" Text="<%$ Resources:LogbookEntry, FieldHold %>"></asp:Label>
+                                    <asp:Label ID="lblHoldPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblHoldPromptResource1" Text="<%$ Resources:LogbookEntry, FieldHold %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
                             </tr>
                             <tr style="vertical-align: text-top">
                                 <td>
-                                    <asp:Label ID="Label7" runat="server" CssClass="boldface" meta:resourcekey="Label7Resource1" Text="<%$ Resources:LogbookEntry, FieldXCountry %>"></asp:Label>
+                                    <asp:Label ID="Label7" runat="server" Font-Bold="True" meta:resourcekey="Label7Resource1" Text="<%$ Resources:LogbookEntry, FieldXCountry %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("CrossCountry").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td>
-                                    <asp:Label ID="Label9" runat="server" CssClass="boldface" meta:resourcekey="Label9Resource1" Text="<%$ Resources:LogbookEntry, FieldNight %>"></asp:Label>
+                                    <asp:Label ID="Label9" runat="server" Font-Bold="True" meta:resourcekey="Label9Resource1" Text="<%$ Resources:LogbookEntry, FieldNight %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("Nighttime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             </tr>
                             <tr style="vertical-align: text-top">
                                 <td>
-                                    <asp:Label ID="Label11" runat="server" CssClass="boldface" meta:resourcekey="Label11Resource1" Text="<%$ Resources:LogbookEntry, FieldSimIMC %>"></asp:Label>
+                                    <asp:Label ID="Label11" runat="server" Font-Bold="True" meta:resourcekey="Label11Resource1" Text="<%$ Resources:LogbookEntry, FieldSimIMC %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("SimulatedIFR").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td>
-                                    <asp:Label ID="Label13" runat="server" CssClass="boldface" meta:resourcekey="Label13Resource1" Text="<%$ Resources:LogbookEntry, FieldIMC %>"></asp:Label>
+                                    <asp:Label ID="Label13" runat="server" Font-Bold="True" meta:resourcekey="Label13Resource1" Text="<%$ Resources:LogbookEntry, FieldIMC %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             </tr>
                             <tr style="vertical-align: text-top">
                                 <td>
-                                    <asp:Label ID="Label1" runat="server" CssClass="boldface" meta:resourcekey="Label1Resource1" Text="<%$ Resources:LogbookEntry, FieldGroundSim %>"></asp:Label>
+                                    <asp:Label ID="Label1" runat="server" Font-Bold="True" meta:resourcekey="Label1Resource1" Text="<%$ Resources:LogbookEntry, FieldGroundSim %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("GroundSim").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td>
-                                    <asp:Label ID="Label4" runat="server" CssClass="boldface" meta:resourcekey="Label4Resource1" Text="<%$ Resources:LogbookEntry, FieldDual %>"></asp:Label>
+                                    <asp:Label ID="Label4" runat="server" Font-Bold="True" meta:resourcekey="Label4Resource1" Text="<%$ Resources:LogbookEntry, FieldDual %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             </tr>
                             <tr style="vertical-align: text-top">
                                 <td>
-                                    <asp:Label ID="Label6" runat="server" CssClass="boldface" meta:resourcekey="Label6Resource1" Text="<%$ Resources:LogbookEntry, FieldCFI %>"></asp:Label>
+                                    <asp:Label ID="Label6" runat="server" Font-Bold="True" meta:resourcekey="Label6Resource1" Text="<%$ Resources:LogbookEntry, FieldCFI %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td>
-                                    <asp:Label ID="Label16" runat="server" CssClass="boldface" meta:resourcekey="Label16Resource1" Text="<%$ Resources:LogbookEntry, FieldSIC %>"></asp:Label>
+                                    <asp:Label ID="Label16" runat="server" Font-Bold="True" meta:resourcekey="Label16Resource1" Text="<%$ Resources:LogbookEntry, FieldSIC %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("SIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             </tr>
                             <tr style="vertical-align: text-top">
                                 <td>
-                                    <asp:Label ID="Label18" runat="server" CssClass="boldface" meta:resourcekey="Label18Resource1" Text="<%$ Resources:LogbookEntry, FieldPIC %>"></asp:Label>
+                                    <asp:Label ID="Label18" runat="server" Font-Bold="True" meta:resourcekey="Label18Resource1" Text="<%$ Resources:LogbookEntry, FieldPIC %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td>
-                                    <asp:Label ID="Label20" runat="server" CssClass="boldface" meta:resourcekey="Label20Resource1" Text="<%$ Resources:LogbookEntry, FieldTotal %>"></asp:Label>
+                                    <asp:Label ID="Label20" runat="server" Font-Bold="True" meta:resourcekey="Label20Resource1" Text="<%$ Resources:LogbookEntry, FieldTotal %>"></asp:Label>
                                 </td>
                                 <td><%# Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             </tr>
@@ -127,7 +127,7 @@
                 <h2><% =Resources.SignOff.SignFlightAffirmation %></h2>
                 <div style="padding: 3px">
                     <asp:Panel ID="rowEmail" runat="server" meta:resourcekey="rowEmailResource1">
-                        <div><asp:Label ID="lblInstructorNamePrompt" runat="server" CssClass="boldface" 
+                        <div><asp:Label ID="lblInstructorNamePrompt" runat="server" Font-Bold="True" 
                                 Text="<%$ Resources:SignOff, EditEndorsementInstructorPrompt %>" 
                                 meta:resourcekey="lblInstructorNamePromptResource1"></asp:Label></div>
                         <div>
@@ -139,7 +139,7 @@
                                 meta:resourcekey="RequiredFieldValidator1Resource1"></asp:RequiredFieldValidator>
                         </div>
                         <div><asp:Label ID="lblCFIEmailPrompt" runat="server" 
-                                Text="<%$ Resources:Signoff, CFIEmail %>" CssClass="boldface" 
+                                Text="<%$ Resources:Signoff, CFIEmail %>" Font-Bold="True" 
                                 meta:resourcekey="lblCFIEmailPromptResource1"></asp:Label></div>
                         <div>
                             <asp:TextBox ID="txtCFIEmail" TextMode="Email" runat="server" Width="280px" meta:resourcekey="txtCFIEmailResource1"></asp:TextBox>
@@ -158,7 +158,7 @@
                         meta:resourcekey="pnlRowPasswordResource1">
                         <div>
                             <asp:Label ID="lblPassPrompt" runat="server" Text="<%$ Resources:SignOff, SignReEnterPassword %>" 
-                                CssClass="boldface" meta:resourcekey="lblPassPromptResource2"></asp:Label></div>
+                                Font-Bold="True" meta:resourcekey="lblPassPromptResource2"></asp:Label></div>
                         <div>
                             <asp:TextBox ID="txtPassConfirm" runat="server" TextMode="Password" 
                                 meta:resourcekey="txtPassConfirmResource1"></asp:TextBox><br />
@@ -175,7 +175,7 @@
                     </asp:Panel>
                     <div>
                         <asp:Label ID="lblCFICommentsPrompt" runat="server" 
-                            Text="<%$ Resources:Signoff, CFIComments %>" CssClass="boldface" 
+                            Text="<%$ Resources:Signoff, CFIComments %>" Font-Bold="True" 
                             meta:resourcekey="lblCFICommentsPromptResource1"></asp:Label>
                     </div>
                     <div>
@@ -185,7 +185,7 @@
                     <div>
                         <asp:Label ID="lblCFICertificatePrompt" runat="server" 
                             Text="<%$ Resources:SignOff, EditEndorsementCFIPrompt %>" 
-                            CssClass="boldface" meta:resourcekey="lblCFICertificatePromptResource1"></asp:Label>
+                            Font-Bold="True" meta:resourcekey="lblCFICertificatePromptResource1"></asp:Label>
                          <asp:Label ID="lblCFICertificate" runat="server" 
                             meta:resourcekey="lblCFICertificateResource1"></asp:Label>
                     </div>
@@ -200,7 +200,7 @@
                     <div>
                         <asp:Label ID="lblCFIDatePrompt" runat="server" 
                             Text="<%$ Resources:SignOff, EditEndorsementExpirationPrompt %>" 
-                            CssClass="boldface" meta:resourcekey="lblCFIDatePromptResource1"></asp:Label>
+                            Font-Bold="True" meta:resourcekey="lblCFIDatePromptResource1"></asp:Label>
                          <asp:Label ID="lblCFIDate" runat="server" 
                             meta:resourcekey="lblCFIDateResource1"></asp:Label>
                     </div>
@@ -215,7 +215,7 @@
                     <asp:Panel ID="rowSignature" Visible="False" runat="server" 
                         meta:resourcekey="rowSignatureResource1">
                         <div><asp:Label ID="lblSignaturePrompt" runat="server" Text="Signature" 
-                                CssClass="boldface" meta:resourcekey="lblSignaturePromptResource1"></asp:Label></div>
+                                Font-Bold="True" meta:resourcekey="lblSignaturePromptResource1"></asp:Label></div>
                         <div><canvas id="signatureCanvas" width="280px" height="120px" style="border: solid 2px black; background-color:White"></canvas></div>
                         <div><input id="btnClear" type="button" value="Clear" /> <span id="statusText"></span></div>
                         <asp:HiddenField ID="hdnSigData" runat="server" />

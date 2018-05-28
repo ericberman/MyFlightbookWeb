@@ -53,7 +53,7 @@
                     <asp:Panel ID="pnlAddMember" runat="server" DefaultButton="btnAddMember">
                         <asp:Localize ID="locAddMemberPrompt" runat="server" Text="<%$ Resources:Club, LabelInviteMember %>"></asp:Localize>
                         <br />
-                        <asp:Label ID="lblEmailDisclaimer2" CssClass="boldface" runat="server" 
+                        <asp:Label ID="lblEmailDisclaimer2" Font-Bold="True" runat="server" 
                             Text="<%$ Resources:Club, LabelEmailDisclaimer %>"></asp:Label>
                         <br />
                         <br />
@@ -157,7 +157,7 @@
                 <h3><% = Resources.Club.ReportHeaderFlying %></h3>
                 <asp:Panel ID="pnlFlyingReport" DefaultButton="btnUpdate" runat="server">
                     <p>
-                        <asp:Label ID="lblReportDisclaimer" CssClass="boldface" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
+                        <asp:Label ID="lblReportDisclaimer" Font-Bold="True" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
                         <asp:Literal ID="litReportsDisclaimer" runat="server" Text="<%$ Resources:Club, ReportPromptDisclaimer %>"></asp:Literal>
                     </p>
                     <table>
@@ -277,7 +277,7 @@ f.date &lt;= ?endDate
                 <asp:Panel ID="pnlMaintenanceReport" runat="server" ScrollBars="Auto" >
                     <asp:GridView ID="gvMaintenance" AutoGenerateColumns="false" ShowFooter="false" CellPadding="4" GridLines="None" runat="server">
                         <Columns>
-                            <asp:BoundField DataField="DisplayTailnumber" ItemStyle-CssClass="boldface" HeaderText="<%$ Resources:Aircraft, AircraftHeader %>" />
+                            <asp:BoundField DataField="DisplayTailnumber" ItemStyle-Font-Bold="true" HeaderText="<%$ Resources:Aircraft, AircraftHeader %>" />
                             <asp:TemplateField HeaderText="<%$ Resources:Club, ClubAircraftTime %>">
                                 <ItemTemplate>
                                     <asp:Label ID="lblLastAnnual" runat="server" Text='<%# ValueString (Eval("HighWater")) %>' />

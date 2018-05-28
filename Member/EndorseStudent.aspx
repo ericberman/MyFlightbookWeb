@@ -12,7 +12,7 @@
     <asp:Panel ID="pnlEndorsement" runat="server">
         <h2><asp:Label ID="lblNewEndorsementHeader" runat="server" Text=""></asp:Label></h2>
         <p>
-            <asp:Label ID="lblNote" CssClass="boldface" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
+            <asp:Label ID="lblNote" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
             <asp:Localize ID="locEndorsementDisclaimer" runat="server" Text="<%$ Resources:Profile, EndorsementDisclaimer %>"></asp:Localize><br />
             <asp:HyperLink ID="lnkCFISigs" Text='<%$ Resources:SignOff, CFISigsLinkLabel %>' Target="_blank" runat="server" NavigateUrl="~/Public/CFISigs.aspx" ></asp:HyperLink>
         </p>

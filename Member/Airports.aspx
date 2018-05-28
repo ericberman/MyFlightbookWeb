@@ -11,9 +11,9 @@
     <asp:MultiView ID="mvVisitedAirports" runat="server" ActiveViewIndex="0">
         <asp:View ID="vwVisitedAirports" runat="server">
             <p>
-                <asp:Label ID="lblNumAirports" runat="server" CssClass="boldface" 
+                <asp:Label ID="lblNumAirports" runat="server" Font-Bold="True" 
                     meta:resourcekey="lblNumAirportsResource1"></asp:Label>  
-                &nbsp;<asp:Label ID="lblNote" runat="server" CssClass="boldface" 
+                &nbsp;<asp:Label ID="lblNote" runat="server" Font-Bold="True" 
                     Text="<%$ Resources:LocalizedText, Note %>" meta:resourcekey="lblNoteResource1"></asp:Label> 
                 <asp:Localize ID="locVANote" runat="server" 
                     Text="you may have visited more airports than this; this is only the count of distinct 3- or 4-letter codes within the 'Route' field of flights in your account." 
@@ -128,7 +128,7 @@
                                     <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="UpdatePanel2">
                                         <ProgressTemplate>
                                             <p>
-                                                <asp:Label ID="lblComputing" runat="server" CssClass="boldface" meta:resourcekey="lblComputingResource1" Text="Computing..."></asp:Label>
+                                                <asp:Label ID="lblComputing" runat="server" Font-Bold="True" meta:resourcekey="lblComputingResource1" Text="Computing..."></asp:Label>
                                             </p>
                                             <p>
                                                 <asp:Image ID="imgProgress" runat="server" ImageUrl="~/images/ajax-loader.gif" />
@@ -136,9 +136,9 @@
                                         </ProgressTemplate>
                                     </asp:UpdateProgress>
                                     <asp:Panel ID="pnlDistanceResults" runat="server" EnableViewState="false" meta:resourcekey="pnlDistanceResultsResource1" Visible="False">
-                                        <asp:Label ID="lblDistanceEstimate" runat="server" CssClass="boldface" meta:resourcekey="lblDistanceEstimateResource1"></asp:Label>
+                                        <asp:Label ID="lblDistanceEstimate" runat="server" Font-Bold="True" meta:resourcekey="lblDistanceEstimateResource1"></asp:Label>
                                         <br />
-                                        <asp:Label ID="lblNote2" runat="server" CssClass="boldface" meta:resourcekey="lblNote2Resource1" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
+                                        <asp:Label ID="lblNote2" runat="server" Font-Bold="True" meta:resourcekey="lblNote2Resource1" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
                                         <asp:Localize ID="locDistance" runat="server" meta:resourcekey="locDistanceResource1" Text="Estimate is based on airport-to-airport distance in the route of your flight or telemetry, if present."></asp:Localize>
                                     </asp:Panel>
                                 </div>

@@ -51,7 +51,7 @@
                         <ItemStyle VerticalAlign="Top" />
                         <ItemTemplate>
                             <div>
-                                <asp:Label ID="lblTail" CssClass="boldface" runat="server" Text='<%# Eval("DisplayTailNumber") %>'></asp:Label>
+                                <asp:Label ID="lblTail" Font-Bold="true" runat="server" Text='<%# Eval("DisplayTailNumber") %>'></asp:Label>
                             </div>
                         </ItemTemplate>
                     </asp:TemplateField>

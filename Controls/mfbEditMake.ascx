@@ -111,7 +111,7 @@
             </cc1:TextBoxWatermarkExtender>
         </div>
         <div class="vfDescription">
-            <div><asp:Label ID="lblTypeDesc1" runat="server" CssClass="boldface" meta:resourceKey="lblTypeDesc1Resource1" Text="Leave this blank unless the aircraft requires a type-rating (typically jet or over 12,500lbs). "></asp:Label></div>
+            <div><asp:Label ID="lblTypeDesc1" runat="server" Font-Bold="True" meta:resourceKey="lblTypeDesc1Resource1" Text="Leave this blank unless the aircraft requires a type-rating (typically jet or over 12,500lbs). "></asp:Label></div>
             <div><asp:Label ID="lblTypeDescExample" runat="server" Text="E.g., &quot;B737&quot; for a Boeing 737, blank for a C-172." meta:resourcekey="lblTypeDescExampleResource1"></asp:Label></div>
             <div>
                 <asp:Label ID="lblTypeDesc2" runat="server" meta:resourceKey="lblTypeDesc2Resource1" Text="Models that share a common type rating should use a common value here."></asp:Label>
@@ -120,7 +120,7 @@
     </div>
     <div class="vfSection" id="rowArmyCurrency" runat="server">
         <div class="vfPrompt">
-            <asp:Label ID="lblMDS" runat="server" Text="Mission/Design/Series:" CssClass="boldface" meta:resourcekey="lblMDSResource1"></asp:Label>
+            <asp:Label ID="lblMDS" runat="server" Text="Mission/Design/Series:" Font-Bold="True" meta:resourcekey="lblMDSResource1"></asp:Label>
         </div>
         <div class="vfValue">
             <asp:TextBox ID="txtArmyMDS" runat="server" meta:resourcekey="txtArmyMDSResource1"></asp:TextBox>
@@ -150,7 +150,7 @@
     </div>
     <div class="vfSection">
         <div class="vfPrompt">
-            <asp:Label ID="lblMakeFeatures" runat="server" Text="Features:" meta:resourcekey="lblMakeFeaturesResource1" CssClass="boldface"></asp:Label>
+            <asp:Label ID="lblMakeFeatures" runat="server" Text="Features:" meta:resourcekey="lblMakeFeaturesResource1" Font-Bold="True"></asp:Label>
         </div>
         <div>
             <div style="display:inline-block; vertical-align:top" runat="server" id="divComplex">
@@ -194,7 +194,7 @@
                 </asp:Panel>
             </div>
             <div id="divIsSimOnly" runat="server" visible="False" style="display:inline-block;vertical-align:top">
-                <asp:Label ID="lblAdminSimRestrictions" CssClass="boldface" runat="server" Text="ADMIN Sim/Anon Restrictions" meta:resourcekey="lblAdminSimRestrictionsResource1"></asp:Label>
+                <asp:Label ID="lblAdminSimRestrictions" Font-Bold="True" runat="server" Text="ADMIN Sim/Anon Restrictions" meta:resourcekey="lblAdminSimRestrictionsResource1"></asp:Label>
                 <asp:RadioButtonList ID="rblAircraftAllowedTypes" runat="server" 
                     meta:resourcekey="RadioButtonList1Resource1">
                     <asp:ListItem Selected="True" Text="No Restrictions" Value="0" 

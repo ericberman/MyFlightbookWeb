@@ -97,13 +97,13 @@
                     <tr valign="top">
                         <td><asp:Label ID="lblInstructorPrompt" runat="server" 
                                 Text="<%$ Resources:SignOff, EditEndorsementInstructorPrompt %>" 
-                                CssClass="boldface" meta:resourcekey="lblInstructorPromptResource1"></asp:Label></td>
+                                Font-Bold="true" meta:resourcekey="lblInstructorPromptResource1"></asp:Label></td>
                         <td><asp:Label ID="lblInstructorNameSummary" runat="server" Text="" 
                                 meta:resourcekey="lblInstructorNameSummaryResource1"></asp:Label></td>
                     </tr>
                     <tr valign="top">
                         <td><asp:Label ID="lblFlightsToSign" runat="server" Text="Flights to sign:" 
-                                CssClass="boldface" meta:resourcekey="lblFlightsToSignResource1"></asp:Label></td>
+                                Font-Bold="true" meta:resourcekey="lblFlightsToSignResource1"></asp:Label></td>
                         <td>
                             <table cellpadding="0" cellspacing="4">
                                 <asp:Repeater ID="gvFlightsToSign" runat="server" >
@@ -127,7 +127,7 @@
             </asp:WizardStep>
         </WizardSteps>
     </asp:Wizard>
-    <p><asp:Label ID="lblNote" CssClass="boldface" runat="server" 
+    <p><asp:Label ID="lblNote" Font-Bold="True" runat="server" 
             Text="<%$ Resources:LocalizedText, Note %>" meta:resourcekey="lblNoteResource1"></asp:Label> 
         <asp:Label ID="lblSignatureDisclaimer" runat="server" CssClass="fineprint" Text="MyFlightbook provides facilities for an instructor to sign a logbook on another pilot's behalf, with that pilot's permission. While every attempt is made to ensure the integrity of this process, it has not been vetted by the FAA or other similar agencies, and may therefore not be acceptible to these agencies." 
             meta:resourcekey="lblSignatureDisclaimerResource1"></asp:Label>

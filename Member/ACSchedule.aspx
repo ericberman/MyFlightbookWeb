@@ -15,11 +15,11 @@
     <uc1:mfbEditAppt ID="mfbEditAppt1" runat="server" />
     <asp:MultiView ID="mvStatus" runat="server">
         <asp:View ID="vwNoClub" runat="server">
-            <p><asp:Label ID="lblTailNumber3" runat="server" CssClass="boldface" meta:resourcekey="lblTailNumber3Resource1"></asp:Label> - <asp:Localize ID="locNoClub" runat="server" Text="This aircraft is not in a club." meta:resourcekey="locNoClubResource1"></asp:Localize></p>
+            <p><asp:Label ID="lblTailNumber3" runat="server" Font-Bold="True" meta:resourcekey="lblTailNumber3Resource1"></asp:Label> - <asp:Localize ID="locNoClub" runat="server" Text="This aircraft is not in a club." meta:resourcekey="locNoClubResource1"></asp:Localize></p>
             <p><asp:HyperLink ID="lnkCreateClub" runat="server" Text="Create a club" NavigateUrl="~/Public/Clubs.aspx?noredir=1" meta:resourcekey="lnkCreateClubResource1"></asp:HyperLink></p>
         </asp:View>
         <asp:View ID="vwNotMember" runat="server">
-            <p><asp:Label ID="lblTailNumber2" runat="server" CssClass="boldface" meta:resourcekey="lblTailNumber2Resource1"></asp:Label> - <asp:Localize ID="locNotMember" runat="server" Text="This aircraft belongs to the club(s) listed below, but you are not a member.  View details for the club to request membership." meta:resourcekey="locNotMemberResource1"></asp:Localize></p>
+            <p><asp:Label ID="lblTailNumber2" runat="server" Font-Bold="True" meta:resourcekey="lblTailNumber2Resource1"></asp:Label> - <asp:Localize ID="locNotMember" runat="server" Text="This aircraft belongs to the club(s) listed below, but you are not a member.  View details for the club to request membership." meta:resourcekey="locNotMemberResource1"></asp:Localize></p>
             <asp:Repeater ID="rptClubsForAircraft" runat="server">
                 <ItemTemplate>
                     <h3><asp:HyperLink ID="lnkClub" NavigateUrl='<%# String.Format("~/Member/ClubDetails.aspx/{0}", Eval("ID")) %>' runat="server"><%# Eval("Name") %></asp:HyperLink></h3>
@@ -66,9 +66,9 @@
             </script>
             <asp:Panel ID="pnlChangeDatePop" Width="100%" runat="server" meta:resourcekey="pnlChangeDatePopResource1">
                 <div style="padding:2px; width:100%; background-color:lightgray; line-height: 30px; height:30px; z-index:100; position:fixed; top: 0px; text-align:center;">
-                    <asp:Label ID="lblTailNumber" CssClass="boldface" runat="server" meta:resourcekey="lblTailNumberResource1"></asp:Label> - 
+                    <asp:Label ID="lblTailNumber" Font-Bold="True" runat="server" meta:resourcekey="lblTailNumberResource1"></asp:Label> - 
                     <asp:Image ID="imgCalendar" runat="server" ImageUrl="~/images/CalendarPopup.png" style="display:inline-block; vertical-align:middle;" meta:resourcekey="imgCalendarResource1" />
-                    <asp:Label ID="lblDate" runat="server" CssClass="boldface" style="vertical-align:middle; display:inline-block; line-height:normal;" meta:resourcekey="lblDateResource1"></asp:Label>
+                    <asp:Label ID="lblDate" runat="server" Font-Bold="True" style="vertical-align:middle; display:inline-block; line-height:normal;" meta:resourcekey="lblDateResource1"></asp:Label>
                 </div>
             </asp:Panel>
             <asp:Panel ID="pnlChangeDate" runat="server" HorizontalAlign="Center" style="padding:15px; display:none;" BackColor="White" meta:resourcekey="pnlChangeDateResource1">

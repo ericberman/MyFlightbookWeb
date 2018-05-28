@@ -23,7 +23,7 @@
         <asp:Localize ID="locImport" runat="server" Text="Got data from other sources that you'd like to attach to a flights?" meta:resourcekey="locImportResource1"></asp:Localize> <asp:HyperLink ID="lnkBulkImport" NavigateUrl="~/Member/ImportTelemetry.aspx" runat="server" Text="Bulk Import Telemetry" meta:resourcekey="lnkBulkImportResource1"></asp:HyperLink>
     </p>
     <div style="padding:5px; margin-left: auto; margin-right:auto; margin-top: 5px; margin-bottom: 15px; text-align:center; background-color:#eeeeee; border: 1px solid darkgray; border-radius: 6px; box-shadow: 6px 6px 5px #888888; ">
-        <asp:Label ID="lblFlightDate" CssClass="boldface" runat="server" meta:resourcekey="lblFlightDateResource1"></asp:Label>
+        <asp:Label ID="lblFlightDate" Font-Bold="True" runat="server" meta:resourcekey="lblFlightDateResource1"></asp:Label>
         <asp:Label ID="lblFlightDesc" runat="server" meta:resourcekey="lblFlightDescResource1"></asp:Label>
     </div>
     <uc3:mfbAccordionProxyControl ID="mfbAccordionProxyControl1" runat="server" />

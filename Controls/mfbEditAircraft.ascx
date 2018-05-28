@@ -19,7 +19,7 @@
     <asp:HiddenField ID="hdnAdminMode" runat="server" Value="false" />
     <asp:Panel runat="server" ID="pnlLockedExplanation" CssClass="callout" Visible="False">
         <p>
-            <asp:Label ID="lblWhyNoEditQ" runat="server" CssClass="boldface" 
+            <asp:Label ID="lblWhyNoEditQ" runat="server" Font-Bold="True"
                 Text="<%$ Resources:LocalizedText, LabelWhyCantEditSims %>"></asp:Label>
         </p>
         <p>
@@ -27,7 +27,7 @@
                 Text="<%$ Resources:LocalizedText, AnswerWhyCantEditLockedAircraft %>"></asp:Label>
         </p>
     </asp:Panel>
-    <div><asp:Label ID="lblTailnumber" Font-Size="X-Large" CssClass="boldface" runat="server"></asp:Label> <asp:CheckBox ID="ckLocked" runat="server" Text="<%$ Resources:Aircraft, editAircraftAdminLocked %>" /></div>
+    <div><asp:Label ID="lblTailnumber" Font-Size="X-Large" Font-Bold="true" runat="server"></asp:Label> <asp:CheckBox ID="ckLocked" runat="server" Text="<%$ Resources:Aircraft, editAircraftAdminLocked %>" /></div>
     <uc1:SelectMake runat="server" id="SelectMake1" OnModelChanged="SelectMake1_ModelChanged" OnMajorChangeRequested="SelectMake1_MajorChangeRequested" />
     <asp:Panel ID="pnlGlassCockpit" runat="server">
         <asp:CheckBox ID="ckIsGlass" runat="server" AutoPostBack="true" OnCheckedChanged="ckIsGlass_CheckedChanged" Text="<%$ Resources:Aircraft, editAircraftHasGlass %>" />
@@ -137,7 +137,7 @@
                                 <td></td>
                                 <td>
                                     <asp:Panel runat="server" ID="pnlReuseWarning" CssClass="fineprint" style="max-width:400px" visible="false">
-                                        <asp:Label ID="lblNote" CssClass="boldface" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>&nbsp;
+                                        <asp:Label ID="lblNote" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>&nbsp;
                                         <asp:Localize ID="locAircraftReuseWarning" runat="server" Text="<%$ Resources:LocalizedText, EditAircraftReuseAdvice %>"></asp:Localize>
                                     </asp:Panel>
                                 </td>
@@ -147,7 +147,7 @@
                     <asp:View ID="vwAnonTail" runat="server">
                         <asp:Panel ID="pnlAnonTail" runat="server">
                             <ul>
-                                <li><asp:Label ID="lblAnonTailDisplay" CssClass="boldface" Font-Size="Larger" runat="server"></asp:Label></li>
+                                <li><asp:Label ID="lblAnonTailDisplay" Font-Bold="True" Font-Size="Larger" runat="server"></asp:Label></li>
                                 <li><asp:Label ID="lblAnonymousTailNote" runat="server" CssClass="fineprint"
                                     Text="<%$ Resources:Aircraft, AnonymousTailNote %>"></asp:Label></li>
                             </ul>
@@ -159,7 +159,7 @@
                 <asp:MultiView ID="vwSimTailDisplay" runat="server">
                     <asp:View ID="vwHasModel" runat="server">
                         <ul>
-                            <li><asp:Label ID="lblSimTail" CssClass="boldface" Font-Size="Larger" runat="server"></asp:Label></li>
+                            <li><asp:Label ID="lblSimTail" Font-Bold="True" Font-Size="Larger" runat="server"></asp:Label></li>
                             <li><asp:Label ID="lblAutoSuggestTail" runat="server" CssClass="fineprint" Text="<%$ Resources:Aircraft, editAircraftAutoAssignedNote %>"></asp:Label></li>
                         </ul>
                     </asp:View>
@@ -175,7 +175,7 @@
 
     <h3><% =Resources.Aircraft.editAircraftImagesPrompt %></h3>
     <asp:Panel ID="pnlImageNote" runat="server" CssClass="fineprint">
-        <asp:Label ID="locImageNote" runat="server" Text="<%$ Resources:LocalizedText, Note %>" CssClass="boldface"></asp:Label>
+        <asp:Label ID="locImageNote" runat="server" Text="<%$ Resources:LocalizedText, Note %>" Font-Bold="True"></asp:Label>
         <% =Resources.Aircraft.editAircraftSharedImagesNote %>
     </asp:Panel>
     <uc3:mfbMultiFileUpload ID="mfbMFUAircraftImages" Mode="Ajax" IncludeDocs="false" Class="Aircraft" RefreshOnUpload="true" runat="server" />

@@ -3,9 +3,9 @@
 <%@ Register src="mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc3" %>
 <tr valign="top">
     <td>
-        <asp:Label ID="lblDate" CssClass="boldface" runat="server" Text=""></asp:Label> - 
-        <asp:Label ID="lblTail" runat="server" CssClass="boldface"></asp:Label> <asp:Label ID="lblDetails" runat="server" Text=""></asp:Label>
-        <div>
+        <asp:Label ID="lblDate" Font-Bold="true" runat="server" Text=""></asp:Label> - 
+        <asp:Label Font-Bold="true" ID="lblTail" runat="server" CssClass="hintTrigger"></asp:Label> <asp:Label ID="lblDetails" runat="server" Text=""></asp:Label>
+        <div style="text-align:center">
             <asp:Label ID="lblModel" runat="server" Text=""></asp:Label> <asp:Label ID="lblCatClass" runat="server" Text=""></asp:Label>
         </div>
         <uc3:mfbImageList ID="mfbILAircraft" CanEdit="false" ImageClass="Aircraft" MaxImage="1" Columns="1" runat="server" />

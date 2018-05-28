@@ -13,7 +13,7 @@
                             <div><%#: Eval("SignatureCommentLine") %></div>
                         </asp:Panel>
                         <asp:Panel ID="pnlInvalidSig" runat="server" Visible='<%# !(bool) Eval("HasValidSig") %>'>
-                            <asp:Label ID="lblSigInvalid" runat="server" CssClass="boldface signatureInvalid" Text="<%$ Resources:SignOff, FlightSignatureInvalid %>"></asp:Label>
+                            <asp:Label ID="lblSigInvalid" runat="server" Font-Bold="true" CssClass="signatureInvalid" Text="<%$ Resources:SignOff, FlightSignatureInvalid %>"></asp:Label>
                         </asp:Panel>
                     </td>
                     <td style="border:none;">

@@ -36,7 +36,7 @@
                 <p><asp:Label ID="lblOverview2" runat="server" 
                         Text="You can instead initialize your logbook with starting flights that represent your flying totals to date, so that your totals are up to date." meta:resourcekey="lblOverview2Resource1" 
                         ></asp:Label></p>
-                <p><asp:Label ID="lblWhyStartingFlights" runat="server" CssClass="boldface"  
+                <p><asp:Label ID="lblWhyStartingFlights" runat="server" Font-Bold="true" 
                         Text="Why use starting flights instead of just using starting values?" meta:resourcekey="lblWhyStartingFlightsResource2" 
                         ></asp:Label> 
                     <asp:Label
@@ -80,9 +80,9 @@
                 <p><asp:HyperLink ID="lnkAircraft" runat="server" Text="Add/Edit/Import Aircraft" 
                         NavigateUrl="~/Member/Aircraft.aspx" Target="_blank" 
                         meta:resourcekey="lnkAircraftResource1"></asp:HyperLink></p>
-                <p><asp:Label ID="lblCurrentAircraft" runat="server" Text="Your aircraft:" CssClass="boldface"  
+                <p><asp:Label ID="lblCurrentAircraft" runat="server" Text="Your aircraft:" Font-Bold="true" 
                         meta:resourcekey="lblCurrentAircraftResource1"></asp:Label> 
-                    <asp:Label ID="lblViewExisting" runat="server" 
+                    <asp:Label ID="lblViewExisting" runat="server" Text="" Font-Bold="false" 
                         meta:resourcekey="lblViewExistingResource1"></asp:Label></p>
                 <cc1:CollapsiblePanelExtender ID="cpeExistingAircraft" runat="server" 
                         CollapseControlID="lblViewExisting" ExpandControlID="lblViewExisting" CollapsedText="<%$ Resources:LocalizedText, ClickToShow %>"
@@ -124,7 +124,7 @@
                     <tr valign="top">
                         <td><asp:RadioButton ID="rbSimple" runat="server" GroupName="rbMode" Checked="true" AutoPostBack="true"
                         Text="" meta:resourcekey="rbSimpleResource1" OnCheckedChanged="InitFlights" /> </td>
-                        <td><asp:Label ID="lblSimple" CssClass="boldface"  runat="server" Text="Simple" 
+                        <td><asp:Label ID="lblSimple" Font-Bold="true" runat="server" Text="Simple" 
                                 AssociatedControlID="rbSimple" meta:resourcekey="lblSimpleResource2"></asp:Label> <asp:Label ID="lblSimpleDesc" runat="server" AssociatedControlID="rbSimple" 
                         Text="Enter starting totals by category/class and, if appropriate, type.  This is the simplest to do, but is also the coarsest approximation of various categories of flying time." meta:resourcekey="lblSimpleDescResource1" 
                         ></asp:Label></td>
@@ -132,7 +132,7 @@
                     <tr valign="top">
                         <td><asp:RadioButton ID="rbMedium" runat="server" GroupName="rbMode" AutoPostBack="true"
                         Text="" meta:resourcekey="rbMediumResource1" OnCheckedChanged="InitFlights"/> </td>
-                        <td><asp:Label ID="lblMedium" CssClass="boldface"  runat="server" Text="Medium" 
+                        <td><asp:Label ID="lblMedium" Font-Bold="true" runat="server" Text="Medium" 
                                 AssociatedControlID="rbMedium" meta:resourcekey="lblMediumResource2"></asp:Label> <asp:Label ID="lblMediumDesc" runat="server" AssociatedControlID="rbMedium"
                         Text="Enter starting totals by category/class/type, but also by aircraft capabilities.  For example, you can break out retract or high-performance time.  This is more work than simple, but will provide a better approximation of your flying totals." meta:resourcekey="lblMediumDescResource1" 
                             ></asp:Label></td>
@@ -140,7 +140,7 @@
                     <tr valign="top">
                         <td><asp:RadioButton ID="rbModels" runat="server" GroupName="rbMode" AutoPostBack="true"
                         Text="" meta:resourcekey="rbModelsResource1" OnCheckedChanged="InitFlights" /> </td>
-                        <td><asp:Label ID="lblDetailed" CssClass="boldface"  runat="server" Text="Detailed" 
+                        <td><asp:Label ID="lblDetailed" Font-Bold="true" runat="server" Text="Detailed" 
                                 AssociatedControlID="rbModels" meta:resourcekey="lblDetailedResource1"></asp:Label>  <asp:Label ID="lblModelsDesc" runat="server" AssociatedControlID="rbModels"
                         Text="Enter starting totals based on time in each model of aircraft you have flown.  This is the most complex, but will also provide the best approximation of your flying totals." meta:resourcekey="lblModelsDescResource1" 
                             ></asp:Label></td>
@@ -151,7 +151,7 @@
                 Title="4. Specify Times" 
                 meta:resourcekey="stepFillInDataResource1">
                 <p>
-                    <asp:Label ID="lblFillInForm" runat="server" Text="Fill in your times below" CssClass="boldface"  
+                    <asp:Label ID="lblFillInForm" runat="server" Text="Fill in your times below" Font-Bold="true" 
                         meta:resourcekey="lblFillInFormResource1"></asp:Label>
                     <asp:Label ID="lblCanFillInMoreLater" runat="server" Text="For simplicity, this focuses on the top-level totals.  After you create your starting totals, you will have &quot;Catch-up&quot; flights which you can edit to include whatever additional details you like."
                         meta:resourcekey="lblCanFillInMoreLaterResource1"></asp:Label>

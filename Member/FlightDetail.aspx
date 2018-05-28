@@ -45,7 +45,7 @@
                 <td><asp:LinkButton ID="lnkPreviousFlight" runat="server" Text="<%$ Resources:LogbookEntry, PreviousFlight %>" Font-Size="Larger" OnClick="lnkPreviousFlight_Click" meta:resourcekey="lnkPreviousFlightResource1"></asp:LinkButton></td>
                 <td>            
                     <p>
-                        <asp:Label ID="lblFlightDate" CssClass="boldface" runat="server" meta:resourcekey="lblFlightDateResource1"></asp:Label>
+                        <asp:Label ID="lblFlightDate" Font-Bold="True" runat="server" meta:resourcekey="lblFlightDateResource1"></asp:Label>
                         <asp:Label ID="lblFlightDesc" style="white-space:pre-line" runat="server" meta:resourcekey="lblFlightDescResource1"></asp:Label>
                     </p>
                     <asp:Panel ID="pnlFilter" runat="server" Visible="false" >
@@ -180,7 +180,7 @@
                                     <td>
                                         <asp:Panel ID="pnlAircraftID" runat="server" meta:resourcekey="pnlAircraftIDResource1">
                                             <div>
-                                                <asp:HyperLink ID="lnkEditAircraft" Font-Size="Larger" CssClass="boldface" runat="server" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", Eval("AircraftID")) %>' meta:resourcekey="lnkEditAircraftResource1" Text='<%# Eval("DisplayTailNumber") %>'></asp:HyperLink>
+                                                <asp:HyperLink ID="lnkEditAircraft" Font-Size="Larger" Font-Bold="True" runat="server" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", Eval("AircraftID")) %>' meta:resourcekey="lnkEditAircraftResource1" Text='<%# Eval("DisplayTailNumber") %>'></asp:HyperLink>
                                                 - <%# Eval("ModelDescription")%> - <%# Eval("ModelCommonName")%> (<%# Eval("CategoryClassDisplay") %>)
                                             </div>
                                             <div><%# Eval("InstanceTypeDescription")%></div>

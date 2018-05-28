@@ -31,7 +31,7 @@
         </tr>
         <tr>
             <td valign="top" >Model</td>
-            <td valign="top" >The model identifier of aircraft (e.g., "B737" or "C-172").  <div><span class="boldface">Ignored unless the tail number cannot be found</span>, in which case it is used to help you add the aircraft to your account.</div></td>
+            <td valign="top" >The model identifier of aircraft (e.g., "B737" or "C-172").  <div><span style="font-weight:bold">Ignored unless the tail number cannot be found</span>, in which case it is used to help you add the aircraft to your account.</div></td>
         </tr>
         <tr>
             <td valign="top" >
@@ -180,7 +180,7 @@
             </td>
         </tr>
     </table>
-    <p><span class="boldface">The following properties may also be imported</span> 
+    <p><span style="font-weight:bold">The following properties may also be imported</span> 
         for each flight.&nbsp; The column name is shown, along with the type of data.</p>
 	<p>
 		<ul>

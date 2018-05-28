@@ -9,7 +9,7 @@
                     <asp:Image ID="imgOverlay" runat="server" Width="70" ImageUrl='<%# Eval("BadgeImageOverlay") %>' ToolTip="" AlternateText="" Visible='<%# Eval("BadgeImageOverlay").ToString().Length > 0 %>' style="position:absolute; bottom: 0; left: 0; z-index:1;" />
                 </div>
                 <br />
-                <asp:Label ID="lblBadgeName" runat="server" Text='<%# Eval("Name") %>' CssClass="boldface"></asp:Label><br />
+                <asp:Label ID="lblBadgeName" runat="server" Text='<%# Eval("Name") %>' Font-Bold="true"></asp:Label><br />
                 <asp:Label ID="lblDateEarned" runat="server" Text='<%# Eval("EarnedDateString") %>'></asp:Label>
             </div>
         </ItemTemplate>

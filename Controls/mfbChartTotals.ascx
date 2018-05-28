@@ -32,7 +32,7 @@
         <p>
             <asp:Literal ID="Literal2" runat="server" 
                 Text="<%$ Resources:LocalizedText, ChartTotalsMouseHint1 %>" />
-            <span class="boldface" style="text-decoration:underline;">
+            <span style="font-weight:bold; text-decoration:underline;">
             <asp:Label ID="lblShowData" runat="server" 
                 Text="<%$ Resources:LocalizedText, ChartTotalsMouseHintClickHere %>"></asp:Label>
             </span>

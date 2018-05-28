@@ -11,7 +11,7 @@
 
 */
 @font-face {
-    font-family: open_sans_bold;
+    font-family: open_sans;
     font-weight:bold;
     font-style: normal;
     src: url('Fonts/open-sans.bold.ttf') format('opentype')
@@ -58,6 +58,7 @@ TABLE, table {
 H1 {
     font-size: 18px;
     width: 100%;
+    font-weight: bold;
     color: black;
     background-color: #00bcd4;
     padding: 4px;
@@ -489,7 +490,7 @@ nobold, .vfPrompt .vfSubDesc {
     text-align: center;
     font-size: 24pt;
     line-height: 1.0;
-    font-family: open_sans_bold, 'Arial Bold';
+    font-weight: bold;
 }
 
 #homePagePromo.welcomeHeader ul {
@@ -512,8 +513,7 @@ nobold, .vfPrompt .vfSubDesc {
 }
 
 .featureAreaDescriptionHeader {
-    font-family: open_sans_bold, 'Arial Bold';
-    font-weight: normal;
+    font-weight: bold;
     font-size: 12pt;
 }
 

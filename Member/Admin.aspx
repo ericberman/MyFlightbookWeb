@@ -181,7 +181,7 @@
                                         ImageUrl="~/images/ajax-loader.gif" /></p>
                             </ProgressTemplate>
                         </asp:UpdateProgress>
-                        <div><asp:Label ID="lblAircraftStatus" runat="server" EnableViewState="false" CssClass="boldface"></asp:Label></div>
+                        <div><asp:Label ID="lblAircraftStatus" runat="server" EnableViewState="false" Font-Bold="true"></asp:Label></div>
                         <asp:MultiView ID="mvAircraftIssues" runat="server">
                             <asp:View ID="vwDupeAircraft" runat="server">
                                 <p>
@@ -340,7 +340,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                                             <ItemTemplate>
                                                 <%# Eval("ModelDescription") %><%# Eval("ModelCommonName") %>
                                                 <%# Eval("InstanceTypeDescription") %>
-                                                <asp:Label ID="lblProposedRename" runat="server" CssClass="boldface" Text=""></asp:Label>
+                                                <asp:Label ID="lblProposedRename" runat="server" Font-Bold="true" Text=""></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:ButtonField ButtonType="Link" CommandName="Preview" 
@@ -415,7 +415,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                                     <Columns>
                                         <asp:TemplateField>
                                             <ItemTemplate>
-                                                <asp:Label ID="lblTailnumber" CssClass="boldface" runat="server" Text='<%# Eval("Tailnumber") %>'></asp:Label>
+                                                <asp:Label ID="lblTailnumber" Font-Bold="true" runat="server" Text='<%# Eval("Tailnumber") %>'></asp:Label>
                                                 <asp:Label ID="lblManufacturer" runat="server" Text='<%# Eval("manufacturer") %>'></asp:Label>
                                                 <asp:Label ID="lblModel" runat="server" Text='<%# Eval("model") %>'></asp:Label>
                                             </ItemTemplate>
@@ -940,7 +940,7 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                                         <asp:Image ID="imgOverlay" ImageUrl='<%# String.Format("~/images/BadgeOverlays/{0}", Eval("overlayname")) %>' runat="server" />
                                     </td>
                                     <td>
-                                        <asp:Label ID="txtID" runat="server" Text='<%# Bind("idAchievement") %>' CssClass="boldface" /> - <asp:Label  ID="txtTitle" runat="server" Text='<%# Bind("name") %>' />
+                                        <asp:Label ID="txtID" runat="server" Text='<%# Bind("idAchievement") %>' Font-Bold="true" /> - <asp:Label  ID="txtTitle" runat="server" Text='<%# Bind("name") %>' />
                                         <br />
                                         <asp:HyperLink ID="lnkViewAirports" Target="_blank" runat="server" NavigateUrl='<%# String.Format("~/public/maproute2.aspx?Airports={0}", HttpUtility.UrlEncode(Eval("airportcodes").ToString())) %>'>
                                             <asp:Label  ID="txtText" runat="server" Width="300px" Text='<%# Bind("airportcodes")%>' />
@@ -1005,7 +1005,7 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
             </asp:Panel>
             <cc1:CollapsiblePanelExtender Collapsed="true" ID="CollapsiblePanelExtender1" runat="server" TargetControlID="pnlTestTransaction" CollapseControlID="lblShowHideTestTransaction" ExpandControlID="lblShowHideTestTransaction"
                 TextLabelID="lblShowHideTestTransaction" CollapsedText="Click to show" ExpandedText="Click to hide"></cc1:CollapsiblePanelExtender>
-            <p><asp:Label ID="lblHeader" runat="server" CssClass="boldface" Text="Test transaction"></asp:Label>&nbsp;<asp:Label ID="lblShowHideTestTransaction" runat="server" Text="show/hide"></asp:Label></p><asp:Panel ID="pnlTestTransaction" Height="0px" style="overflow:hidden;" DefaultButton="btnEnterTestTransaction" runat="server">
+            <p><asp:Label ID="lblHeader" runat="server" Font-Bold="true" Text="Test transaction"></asp:Label>&nbsp;<asp:Label ID="lblShowHideTestTransaction" runat="server" Text="show/hide"></asp:Label></p><asp:Panel ID="pnlTestTransaction" Height="0px" style="overflow:hidden;" DefaultButton="btnEnterTestTransaction" runat="server">
                 <table>
                     <tr>
                         <td>Date: </td><td>
@@ -1129,7 +1129,7 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                                 <asp:TemplateField>
                                     <ItemTemplate>
                                         <asp:Button ID="btnFixHyphens" runat="server" Text="Fix Aircraft Hyphenation" CommandArgument='<%# Eval("Prefix") %>' CommandName="fixHyphens" />
-                                        <div><asp:Label ID="lblHyphenResult" runat="server" CssClass="boldface" Visible="false"></asp:Label></div>
+                                        <div><asp:Label ID="lblHyphenResult" runat="server" Font-Bold="true" Visible="false"></asp:Label></div>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
@@ -1403,7 +1403,7 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                             <asp:TextBox ID="txtNotes" runat="server" Text='<%# Bind("Notes") %>' TextMode="MultiLine"></asp:TextBox></EditItemTemplate></asp:TemplateField><asp:TemplateField HeaderText="TransactionData" SortExpression="">
                         <ItemStyle VerticalAlign="Top" HorizontalAlign="Left" Width="350px" />
                         <ItemTemplate>
-                            <asp:Label ID="lblTransactionID" runat="server" CssClass="boldface" Text='<%# Bind("TransactionID") %>'></asp:Label><asp:Panel ID="pnlDecoded" runat="server">
+                            <asp:Label ID="lblTransactionID" runat="server" Font-Bold="true" Text='<%# Bind("TransactionID") %>'></asp:Label><asp:Panel ID="pnlDecoded" runat="server">
                                 <asp:PlaceHolder ID="plcDecoded" runat="server"></asp:PlaceHolder>
                                 <asp:Label ID="lblTxNotes" runat="server" Text="Decode"></asp:Label><br /></asp:Panel><cc1:CollapsiblePanelExtender ID="cpeNotes" runat="server"
                                 CollapseControlID="lblTransactionID" SuppressPostBack="True"
