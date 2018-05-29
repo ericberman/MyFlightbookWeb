@@ -46,7 +46,7 @@
         </asp:Panel>    
         <uc2:mfbHeader ID="mfbHeader" runat="server" />
         <asp:PlaceHolder ID="plcSecondaryNavTop" runat="server"></asp:PlaceHolder>
-        <asp:Panel ID="pnlTitle" runat="server">
+        <asp:Panel ID="pnlTitle" runat="server" CssClass="noprint">
             <h1>
                 <asp:ContentPlaceHolder ID="cpPageTitle" runat="server">
                 </asp:ContentPlaceHolder>

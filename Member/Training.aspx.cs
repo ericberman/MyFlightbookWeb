@@ -83,7 +83,7 @@ public partial class Member_Training : System.Web.UI.Page
                     if (!Request.IsMobileDeviceOrTablet())
                         mfbMultiFileUpload1.Mode = Controls_mfbMultiFileUpload.UploadMode.Ajax;
 
-                    lnkPrintFriendly.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "{0}?print=1", Request.Url.AbsolutePath);
+                    lnkPrintFriendly.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "{0}?naked=1&print=1", Request.Url.AbsolutePath);
                     if (util.GetIntParam(Request, "print", 0) != 0)
                     {
                         lnkPrintFriendly.Visible = mfbIlEndorsements.Visible = mfbMultiFileUpload1.Visible = false;
