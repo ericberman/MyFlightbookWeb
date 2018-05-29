@@ -13,9 +13,13 @@
         </asp:TemplateField>
         <asp:TemplateField >
             <ItemTemplate>
-                <asp:LinkButton CausesValidation="false" ID="lnkDelete" CommandName="_Delete" CommandArgument='<%# Eval("ID") %>' runat="server" Visible='<%# (bool) Eval("IsExternalEndorsement") %>'>
+                <asp:LinkButton CausesValidation="false" ID="lnkDeleteExternal" CommandName="_DeleteExternal" CommandArgument='<%# Eval("ID") %>' runat="server" Visible='<%# (bool) Eval("IsExternalEndorsement") %>'>
                     <asp:Image ID="imgDelete" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:SignOff, ExternalEndorsementDeleteTooltip %>" ToolTip="<%$ Resources:SignOff, ExternalEndorsementDeleteTooltip %>" runat="server" /></asp:LinkButton>
-                <asp:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDelete" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:SignOff, ExternalEndorsementConfirmDelete %>">
+                <asp:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDeleteExternal" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:SignOff, ExternalEndorsementConfirmDelete %>">
+                </asp:ConfirmButtonExtender>
+                <asp:LinkButton CausesValidation="false" ID="lnkDeleteOwned" CommandName="_DeleteOwned" CommandArgument='<%# Eval("ID") %>' runat="server" Visible='<%# CanDelete((MyFlightbook.Instruction.Endorsement) Container.DataItem) %>'>
+                    <asp:Image ID="Image1" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:SignOff, OwnedEndorsementDeleteTooltip %>" ToolTip="<%$ Resources:SignOff, OwnedEndorsementDeleteTooltip %>" runat="server" /></asp:LinkButton>
+                <asp:ConfirmButtonExtender ID="ConfirmButtonExtender2" runat="server" TargetControlID="lnkDeleteOwned" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:SignOff, OwnedEndorsementConfirmDelete %>">
                 </asp:ConfirmButtonExtender>
             </ItemTemplate>
             <ItemStyle CssClass="noprint" />
@@ -25,6 +29,8 @@
         <asp:Label ID="lblNoEndorsements" runat="server" Text="<%$ Resources:Signoff, NoExistingEndorsements %>"></asp:Label>
     </EmptyDataTemplate>
 </asp:GridView>
+<asp:HiddenField ID="hdnStudent" runat="server" />
+<asp:HiddenField ID="hdnInstructor" runat="server" />
 <asp:LinkButton ID="lnkDownload" runat="server" Text="<%$ Resources:Signoff, DownloadCSVEndorsements %>" OnClick="lnkDownload_Click"></asp:LinkButton>
 <asp:GridView ID="gvDownload" runat="server" AutoGenerateColumns="false">
     <Columns>

@@ -394,4 +394,10 @@
   <data name="RequestSignature" xml:space="preserve">
     <value>Request a signature</value>
   </data>
+  <data name="OwnedEndorsementConfirmDelete" xml:space="preserve">
+    <value>Are you sure you want to delete this?  THE INSTRUCTOR WILL HAVE TO ISSUE A NEW ENDORSEMENT AND CANNOT BACK-DATE IT!</value>
+  </data>
+  <data name="OwnedEndorsementDeleteTooltip" xml:space="preserve">
+    <value>Delete this endorsement.  BE CAREFUL - this is permanent</value>
+  </data>
 </root>
