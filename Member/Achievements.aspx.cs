@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Achievements;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2014-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -35,18 +32,12 @@ public partial class Member_Achievements : System.Web.UI.Page
     {
         List<Badge> lst = new Achievement(Page.User.Identity.Name).BadgesForUser();
         if (lst == null || lst.Count == 0)
-            pnlNoBadges.Visible = true;
+            mvBadges.SetActiveView(vwNoBadges);
         else
         {
-            lst.Sort();
-            foreach (Badge.BadgeCategory bc in (Badge.BadgeCategory[])Enum.GetValues(typeof(Badge.BadgeCategory)))
-            {
-                if (bc == Badge.BadgeCategory.BadgeCategoryUnknown)
-                    continue;
-                Controls_mfbBadgeSet bs = (Controls_mfbBadgeSet)LoadControl("~/Controls/mfbBadgeSet.ascx");
-                bs.ShowBadgesForCategory(bc, lst);
-                plcBadges.Controls.Add(bs);
-            }
+            mvBadges.SetActiveView(vwBadges);
+            rptBadgeset.DataSource = BadgeSet.BadgeSetsFromBadges(lst);
+            rptBadgeset.DataBind();
         }
     }
 

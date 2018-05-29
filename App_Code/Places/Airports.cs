@@ -113,6 +113,13 @@ namespace MyFlightbook.Airports
         public DateTime LatestVisitDate { get; set;}
 
         public int NumberOfVisits {get; set;}
+
+        /// <summary>
+        /// Internally cached ID of the flight where this airport was first encountered.
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Xml.Serialization.XmlIgnore]
+        public int FlightIDOfFirstVisit { get; private set; }
         #endregion
 
         #region IComparable
@@ -128,6 +135,7 @@ namespace MyFlightbook.Airports
             Aliases = string.Empty;
             EarliestVisitDate = LatestVisitDate = DateTime.MinValue;
             NumberOfVisits = 0;
+            FlightIDOfFirstVisit = LogbookEntry.idFlightNone;
         }
 
         public VisitedAirport(DateTime dtVisited) : this()
@@ -141,10 +149,13 @@ namespace MyFlightbook.Airports
         /// Record a visit to the airport on the specified date
         /// </summary>
         /// <param name="dt">The date of the visit</param>
-        public void VisitAirport(DateTime dt)
+        private void VisitAirport(DateTime dt, int idFlight)
         {
             if (EarliestVisitDate.CompareTo(dt) > 0)
+            {
                 EarliestVisitDate = dt;
+                FlightIDOfFirstVisit = idFlight;
+            }
             if (LatestVisitDate.CompareTo(dt) < 0)
                 LatestVisitDate = dt;
             NumberOfVisits++;
@@ -154,12 +165,15 @@ namespace MyFlightbook.Airports
         /// Merge with another visited airport.  E.g., Maui can be OGG (IATA) or PHOG (ICAO).  If you've visited both, then this creates a single record with an alias.        /// 
         /// </summary>
         /// <param name="va">The visited airport with which to merge</param>
-        public void MergeWith(VisitedAirport va)
+        private void MergeWith(VisitedAirport va)
         {
             if (va == null)
                 throw new ArgumentNullException("va");
             if (EarliestVisitDate.CompareTo(va.EarliestVisitDate) > 0)
+            {
                 EarliestVisitDate = va.EarliestVisitDate;
+                FlightIDOfFirstVisit = va.FlightIDOfFirstVisit;
+            }
             if (LatestVisitDate.CompareTo(va.LatestVisitDate) < 0)
                 LatestVisitDate = va.LatestVisitDate;
             NumberOfVisits += va.NumberOfVisits;
@@ -190,6 +204,7 @@ namespace MyFlightbook.Airports
                 {
                     DateTime dtFlight = Convert.ToDateTime(dr["date"], CultureInfo.InvariantCulture);
                     string szRoute = dr["route"].ToString();
+                    int idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture);
 
                     // we want to defer any db hit to the airport list until later, so we create an uninitialized airportlist
                     // We then visit each airport in the flight.
@@ -213,9 +228,9 @@ namespace MyFlightbook.Airports
 
                         // for now, the key holds the airport code, since the airport itself within the visited airport is still null
                         if (va == null)
-                            dictVA[szap] = va = new VisitedAirport(dtFlight);
+                            dictVA[szap] = va = new VisitedAirport(dtFlight) { FlightIDOfFirstVisit = idFlight };
                         else
-                            va.VisitAirport(dtFlight);
+                            va.VisitAirport(dtFlight, idFlight);
                     }
                 });
 

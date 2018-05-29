@@ -1,18 +1,16 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.FlightCurrency;
+using MyFlightbook.Geography;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
-using System.Text;
-using System.Configuration;
-using MySql.Data.MySqlClient;
-using MyFlightbook.Geography;
-using MyFlightbook.Airports;
-using MyFlightbook.FlightCurrency;
-using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2014-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -93,7 +91,9 @@ namespace MyFlightbook.Achievements
             pf.SetAchievementStatus(ComputeStatus.InProgress);
 
             // Pre-fill context with Visitedairports, since we know we're going to use that a bunch
-            BadgeContext[KeyVisitedAirports] = VisitedAirport.VisitedAirportsForUser(UserName);
+            List<VisitedAirport> lstVA = new List<VisitedAirport>(VisitedAirport.VisitedAirportsForQuery(new FlightQuery(UserName) { AircraftInstanceTypes = FlightQuery.AircraftInstanceRestriction.RealOnly }));
+            lstVA.Sort((va1, va2) => { return va1.EarliestVisitDate.CompareTo(va2.EarliestVisitDate); });
+            BadgeContext[KeyVisitedAirports] = lstVA.ToArray();
 
             try
             {
@@ -171,6 +171,67 @@ namespace MyFlightbook.Achievements
     }
 
     /// <summary>
+    /// Represents a collection of badges within a category.
+    /// </summary>
+    public class BadgeSet : IComparable
+    {
+        #region Properties
+        /// <summary>
+        /// The category for this badge set
+        /// </summary>
+        public Badge.BadgeCategory Category { get; set; }
+
+        /// <summary>
+        /// Display name for the category
+        /// </summary>
+        public string CategoryName { get { return Badge.GetCategoryName(Category); } }
+
+        /// <summary>
+        /// The Badges for this category
+        /// </summary>
+        public IEnumerable<Badge> Badges { get; set; }
+
+        /// <summary>
+        /// Anything to show?
+        /// </summary>
+        public bool HasBadges { get { return Badges != null && Badges.Count() > 0; } }
+        #endregion
+
+        public BadgeSet(Badge.BadgeCategory category, IEnumerable<Badge> badges)
+        {
+            Category = category;
+            Badges = badges;
+        }
+
+        public static IEnumerable<BadgeSet> BadgeSetsFromBadges(IEnumerable<Badge> lstIn)
+        {
+            if (lstIn == null)
+                throw new ArgumentNullException("lstIn");
+            Dictionary<Badge.BadgeCategory, BadgeSet> d = new Dictionary<Badge.BadgeCategory, BadgeSet>();
+            foreach (Badge b in lstIn)
+            {
+                BadgeSet bs;
+                if (!d.TryGetValue(b.Category, out bs))
+                    d.Add(b.Category, bs = new BadgeSet(b.Category, new List<Badge>()));
+                ((List<Badge>)bs.Badges).Add(b);
+            }
+            List<BadgeSet> lstOut = new List<BadgeSet>();
+            foreach (BadgeSet bs in d.Values)
+            {
+                ((List<Badge>)bs.Badges).Sort();
+                lstOut.Add(bs);
+            }
+            lstOut.Sort();
+            return lstOut;
+        }
+
+        public int CompareTo(object obj)
+        {
+            return ((int)Category).CompareTo((int)((BadgeSet)obj).Category);
+        }
+    }
+
+    /// <summary>
     /// Abstract class for a badge that is awarded for meeting an achievement
     /// </summary>
     public abstract class Badge : IComparable
@@ -235,6 +296,8 @@ namespace MyFlightbook.Achievements
             NumberOfCFIHours,
             NumberOfNightHours,
             NumberOfIMCHours,
+            NumberOfLandings,
+            NumberOfApproaches,
 
             AirportList00 = BadgeCategory.AirportList,
             AirportList01, AirportList02, AirportList03, AirportList04, AirportList05, AirportList06, AirportList07, AirportList08, AirportList09, AirportList10,
@@ -296,7 +359,7 @@ namespace MyFlightbook.Achievements
 
         public string EarnedDateString
         {
-            get { return !DateEarned.HasValue() ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Achievements.EarnedDate, DateEarned.ToShortDateString()); }
+            get { return !DateEarned.HasValue() ? string.Empty : String.Format(CultureInfo.CurrentCulture, Level == AchievementLevel.Achieved ? Resources.Achievements.EarnedDate : Resources.Achievements.LevelReachedDate, DateEarned); }
         }
 
         /// <summary>
@@ -484,6 +547,7 @@ namespace MyFlightbook.Achievements
             Level = (AchievementLevel)Convert.ToInt32(dr["AchievementLevel"], CultureInfo.InvariantCulture);
             DateEarned = (DateTime)util.ReadNullableField(dr, "AchievedDate", DateTime.MinValue);
             DateComputed = Convert.ToDateTime(dr["ComputeDate"], CultureInfo.InvariantCulture);
+            IDFlightEarned = Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture);
         }
 
         public bool FIsValid()
@@ -512,7 +576,7 @@ namespace MyFlightbook.Achievements
             if (!FIsValid())
                 throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Error saving badge: {0}", ErrorString));
 
-            DBHelper dbh = new DBHelper("REPLACE INTO badges SET BadgeID=?achieveID, UserName=?username, ClassName=?classname, AchievementLevel=?level, AchievedDate=?dateearned, ComputeDate=Now()");
+            DBHelper dbh = new DBHelper("REPLACE INTO badges SET BadgeID=?achieveID, UserName=?username, ClassName=?classname, AchievementLevel=?level, AchievedDate=?dateearned, ComputeDate=Now(), idFlight=?flightID");
             dbh.DoNonQuery((comm) =>
                 {
                     comm.Parameters.AddWithValue("achieveID", ID);
@@ -523,6 +587,7 @@ namespace MyFlightbook.Achievements
                         comm.Parameters.AddWithValue("dateearned", null);
                     else
                         comm.Parameters.AddWithValue("dateearned", DateEarned);
+                    comm.Parameters.AddWithValue("flightID", IDFlightEarned);
                 });
         }
 
@@ -604,6 +669,8 @@ namespace MyFlightbook.Achievements
 
                     // Multi-level badges (counts)
                     new MultiLevelBadgeNumberFlights(),
+                    new MultiLevelBadgeLandings(),
+                    new MultiLevelBadgeApproaches(),
                     new MultiLevelBadgeNumberModels(),
                     new MultiLevelBadgeNumberAircraft(),
                     new MultiLevelBadgeNumberAirports(),
@@ -634,6 +701,7 @@ namespace MyFlightbook.Achievements
                     ID == bCompare.ID &&
                     IsAchieved == bCompare.IsAchieved &&
                     Level == bCompare.Level &&
+                    IDFlightEarned == bCompare.IDFlightEarned &&
                     DateEarned.CompareTo(bCompare.DateEarned) == 0);
         }
     }
@@ -776,10 +844,10 @@ namespace MyFlightbook.Achievements
     #region Multi-level badges based on integer counts
     public abstract class MultiLevelCountBadgeBase : Badge
     {
-        public int[] Levels {get; set;}
-        public int ItemCount { get; set; }
-        public string ProgressTemplate { get; set; }
-
+        protected int[] Levels {get; set;}
+        protected decimal Quantity { get; set; }
+        protected string ProgressTemplate { get; set; }
+        
         public override string Name
         {
             get { return String.Format(CultureInfo.CurrentCulture, ProgressTemplate, Levels[(int)Level - (int)AchievementLevel.Bronze], CultureInfo.CurrentCulture); }
@@ -791,19 +859,39 @@ namespace MyFlightbook.Achievements
         {
             ProgressTemplate = nameTemplate;
             Levels = new int[] { Bronze, Silver, Gold, Platinum};
+            Level = AchievementLevel.None;
         }
 
-        public override void PostFlight(Dictionary<string, Object> context)
+        /// <summary>
+        /// Adds the specified amount to the count, checking to see if this bumps us up to a new level.  
+        /// If it causes a level change, then IDFlightEarned is assigned to the flightID of the examiner flightrow and the dateearned is similarly set
+        /// </summary>
+        /// <param name="amount">Amount to add</param>
+        /// <param name="cfr">The flight row</param>
+        /// <returns>True if a new level was acchieved</returns>
+        protected bool AddToCount(decimal amount, ExaminerFlightRow cfr)
         {
-            Level = AchievementLevel.None;
+            if (amount <= 0)
+                return false;
 
+            decimal newAmount = Quantity + amount;
+            AchievementLevel newLevel = Level;
             for (int i = 0; i < Levels.Length; i++)
             {
-                if (ItemCount > Levels[i])
-                    Level = (AchievementLevel)((int)AchievementLevel.Bronze + i);
+                if (newAmount >= Levels[i])
+                    newLevel = (AchievementLevel)((int)AchievementLevel.Bronze + i);
                 else
                     break;
             }
+            Quantity = newAmount;
+            bool fNewLevel = newLevel != Level;
+            if (fNewLevel && cfr != null)
+            {
+                IDFlightEarned = cfr.flightID;
+                DateEarned = cfr.dtFlight;
+            }
+            Level = newLevel;
+            return fNewLevel;
         }
     }
 
@@ -820,7 +908,7 @@ namespace MyFlightbook.Achievements
 
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, Object> context)
         {
-            ++ItemCount;
+            AddToCount(1, cfr);
         }
     }
 
@@ -829,7 +917,7 @@ namespace MyFlightbook.Achievements
     /// </summary>
     public class MultiLevelBadgeNumberModels : MultiLevelCountBadgeBase
     {
-        List<int> lstModelsFlown = new List<int>();
+        HashSet<int> lstModelsFlown = new HashSet<int>();
 
         public MultiLevelBadgeNumberModels()
             : base(BadgeID.NumberOfModels, Resources.Achievements.nameNumberModels, 25, 50, 100, 200)
@@ -841,13 +929,10 @@ namespace MyFlightbook.Achievements
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
             if (!lstModelsFlown.Contains(cfr.idModel))
+            {
+                AddToCount(1, cfr);
                 lstModelsFlown.Add(cfr.idModel);
-        }
-
-        public override void PostFlight(Dictionary<string, Object> context)
-        {
-            ItemCount = lstModelsFlown.Count;
-            base.PostFlight(context);
+            }
         }
     }
 
@@ -856,7 +941,7 @@ namespace MyFlightbook.Achievements
     /// </summary>
     public class MultiLevelBadgeNumberAircraft : MultiLevelCountBadgeBase
     {
-        List<int> lstAircraftFlown = new List<int>();
+        HashSet<int> lstAircraftFlown = new HashSet<int>();
 
         public MultiLevelBadgeNumberAircraft()
             : base(BadgeID.NumberOfAircraft, Resources.Achievements.nameNumberAircraft, 20, 50, 100, 200)
@@ -868,13 +953,10 @@ namespace MyFlightbook.Achievements
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
             if (!lstAircraftFlown.Contains(cfr.idAircraft))
+            {
+                AddToCount(1, cfr);
                 lstAircraftFlown.Add(cfr.idAircraft);
-        }
-
-        public override void PostFlight(Dictionary<string, Object> context)
-        {
-            ItemCount = lstAircraftFlown.Count;
-            base.PostFlight(context);
+            }
         }
     }
 
@@ -895,18 +977,24 @@ namespace MyFlightbook.Achievements
                 VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
 
                 if (rgva != null)
-                    ItemCount = rgva.Length;
+                    foreach (VisitedAirport va in rgva)
+                    {
+                        if (AddToCount(1, null))
+                        {
+                            DateEarned = va.EarliestVisitDate;
+                            IDFlightEarned = va.FlightIDOfFirstVisit;
+                        }
+                    }
             }
             base.PostFlight(context);
         }
 
-        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context) { }
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context) {  }
     }
 
     /// Multi-level badge for total time
     public class MultiLevelBadgeTotalTime : MultiLevelCountBadgeBase
     {
-        decimal cHoursTotal = 0.0M;
         public MultiLevelBadgeTotalTime()
             : base(BadgeID.NumberOfTotalHours, Resources.Achievements.nameNumberTotal, 40, 500, 1000, 5000)
         {
@@ -916,20 +1004,13 @@ namespace MyFlightbook.Achievements
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            cHoursTotal += cfr.Total;
-        }
-
-        public override void PostFlight(Dictionary<string, object> context)
-        {
-            ItemCount = (int)cHoursTotal;
-            base.PostFlight(context);
+            AddToCount(cfr.Total, cfr);
         }
     }
 
     /// Multi-level badge for PIC time
     public class MultiLevelBadgePICTime : MultiLevelCountBadgeBase
     {
-        decimal cHoursPIC = 0.0M;
         public MultiLevelBadgePICTime()
             : base(BadgeID.NumberOfPICHours, Resources.Achievements.nameNumberPIC, 100, 500, 1000, 5000)
         {
@@ -939,20 +1020,13 @@ namespace MyFlightbook.Achievements
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            cHoursPIC += cfr.PIC;
-        }
-
-        public override void PostFlight(Dictionary<string, object> context)
-        {
-            ItemCount = (int)cHoursPIC;
-            base.PostFlight(context);
+            AddToCount(cfr.PIC, cfr);
         }
     }
 
     /// Multi-level badge for total time
     public class MultiLevelBadgeSICTime : MultiLevelCountBadgeBase
     {
-        decimal cHoursTotal = 0.0M;
         public MultiLevelBadgeSICTime()
             : base(BadgeID.NumberOfSICHours, Resources.Achievements.nameNumberSIC, 40, 500, 1000, 5000)
         {
@@ -962,20 +1036,13 @@ namespace MyFlightbook.Achievements
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            cHoursTotal += cfr.SIC;
-        }
-
-        public override void PostFlight(Dictionary<string, object> context)
-        {
-            ItemCount = (int)cHoursTotal;
-            base.PostFlight(context);
+            AddToCount(cfr.SIC, cfr);
         }
     }
 
     /// Multi-level badge for total time
     public class MultiLevelBadgeCFITime : MultiLevelCountBadgeBase
     {
-        decimal cHoursTotal = 0.0M;
         public MultiLevelBadgeCFITime()
             : base(BadgeID.NumberOfCFIHours, Resources.Achievements.nameNumberCFI, 100, 500, 1000, 5000)
         {
@@ -985,21 +1052,13 @@ namespace MyFlightbook.Achievements
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            cHoursTotal += cfr.CFI;
-        }
-
-        public override void PostFlight(Dictionary<string, object> context)
-        {
-            ItemCount = (int)cHoursTotal;
-            base.PostFlight(context);
+            AddToCount(cfr.CFI, cfr);
         }
     }
 
     /// Multi-level badge for IMC time
     public class MultiLevelBadgeIMCTime : MultiLevelCountBadgeBase
     {
-        decimal cIMCTimeTotal = 0.0M;
-
         public override string BadgeImageOverlay
         {
             get { return "~/images/BadgeOverlays/cloud.png"; }
@@ -1014,21 +1073,13 @@ namespace MyFlightbook.Achievements
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            cIMCTimeTotal += cfr.IMC;
-        }
-
-        public override void PostFlight(Dictionary<string, object> context)
-        {
-            ItemCount = (int)cIMCTimeTotal;
-            base.PostFlight(context);
+            AddToCount(cfr.IMC, cfr);
         }
     }
 
     /// Multi-level badge for Night time
     public class MultiLevelBadgeNightTime : MultiLevelCountBadgeBase
     {
-        decimal cNightTotal = 0.0M;
-
         public override string BadgeImageOverlay
         {
             get { return "~/images/BadgeOverlays/nightowl.png"; }
@@ -1041,13 +1092,37 @@ namespace MyFlightbook.Achievements
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            cNightTotal += cfr.IMC;
+            AddToCount(cfr.Night, cfr);
         }
+    }
 
-        public override void PostFlight(Dictionary<string, object> context)
+    /// <summary>
+    /// Multi-level badge for landings
+    /// </summary>
+    public class MultiLevelBadgeLandings : MultiLevelCountBadgeBase
+    {
+        public MultiLevelBadgeLandings() : base(BadgeID.NumberOfLandings, Resources.Achievements.nameNumberLandings, 500, 1000, 2500, 5000) { }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
-            ItemCount = (int)cNightTotal;
-            base.PostFlight(context);
+            if (cfr == null)
+                throw new ArgumentNullException("cfr");
+            AddToCount(cfr.cLandingsThisFlight, cfr);
+        }
+    }
+
+    /// <summary>
+    /// Multi-level badge for approaches
+    /// </summary>
+    public class MultiLevelBadgeApproaches : MultiLevelCountBadgeBase
+    {
+        public MultiLevelBadgeApproaches() : base(BadgeID.NumberOfApproaches, Resources.Achievements.nameNumberApproaches, 100, 250, 500, 1000) { }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException("cfr");
+            AddToCount(cfr.cApproaches, cfr);
         }
     }
     #endregion
@@ -1316,31 +1391,37 @@ namespace MyFlightbook.Achievements
             if (rgva != null)
             {
                 List<airport> lstAirports = new List<airport>(m_badgeData.Airports.GetAirportList());
-                int cAirportsHit = 0;
                 lstAirports.RemoveAll(ap => !ap.IsAirport && !ap.IsSeaport);
                 Array.ForEach<VisitedAirport>(rgva, (va) =>
                 {
                     if (m_badgeData.BoundingFrame.ContainsPoint(va.Airport.LatLong))
                     {
                         List<airport> apMatches = lstAirports.FindAll(ap => ap.LatLong.IsSameLocation(va.Airport.LatLong, 0.02) && String.Compare(ap.FacilityTypeCode, va.Airport.FacilityTypeCode) == 0);
+                        int cAirportsRemainingToHit = lstAirports.Count;
                         apMatches.ForEach((ap) => { lstAirports.Remove(ap); });
                         if (apMatches.Count > 0)
                         {
                             dtEarned = dtEarned.LaterDate(va.EarliestVisitDate);
-                            cAirportsHit++;
+                            if (m_badgeData.BinaryOnly)
+                            {
+                                if (cAirportsRemainingToHit > 0 && lstAirports.Count == 0)
+                                {
+                                    DateEarned = va.EarliestVisitDate;
+                                    IDFlightEarned = va.FlightIDOfFirstVisit;
+                                }
+                            }
+                            else if (AddToCount(1, null))
+                            {
+                                DateEarned = va.EarliestVisitDate;
+                                IDFlightEarned = va.FlightIDOfFirstVisit;
+                            }
                         }
                     }
                 });
                 if (m_badgeData.BinaryOnly)
-                {
                     Level = lstAirports.Count == 0 ? AchievementLevel.Achieved : AchievementLevel.None;
-                    DateEarned = dtEarned;
-                }
-                else
-                {
-                    ItemCount = cAirportsHit;
-                    base.PostFlight(context);
-                }   
+
+                base.PostFlight(context);
             }
         }
 

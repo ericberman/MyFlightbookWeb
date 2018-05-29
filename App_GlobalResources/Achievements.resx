@@ -133,7 +133,7 @@
     <value>Silver badge for this achievement - continue for gold!</value>
   </data>
   <data name="EarnedDate" xml:space="preserve">
-    <value>(Earned on {0})</value>
+    <value>Earned {0:d}</value>
   </data>
   <data name="errInProgress" xml:space="preserve">
     <value>Your achievements are being computed; please try again in a few moments.</value>
@@ -230,5 +230,14 @@
   </data>
   <data name="nameFirstSoloXCFlight" xml:space="preserve">
     <value>First Solo Cross-Country Flight!</value>
+  </data>
+  <data name="LevelReachedDate" xml:space="preserve">
+    <value>Level achieved {0:d}</value>
+  </data>
+  <data name="nameNumberApproaches" xml:space="preserve">
+    <value>{0:#,###} instrument approaches performed!</value>
+  </data>
+  <data name="nameNumberLandings" xml:space="preserve">
+    <value>{0:#,###} landings recorded!</value>
   </data>
 </root>

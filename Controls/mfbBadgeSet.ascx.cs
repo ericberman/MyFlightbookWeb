@@ -1,40 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+﻿using MyFlightbook;
 using MyFlightbook.Achievements;
+using System;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2014-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Controls_mfbBadgeSet : System.Web.UI.UserControl
 {
-    /// <summary>
-    /// Binds to the subset of the specified list that matches the given category
-    /// </summary>
-    /// <param name="bc">The badge category, Unknown for all</param>
-    /// <param name="lstSource">The master list of badges</param>
-    public void ShowBadgesForCategory(Badge.BadgeCategory bc, List<Badge> lstSource)
+    private BadgeSet m_badgeset = null;
+
+    public BadgeSet BadgeSet
     {
-        lblCategory.Text = Badge.GetCategoryName(bc);
-        List<Badge> lst = (bc == Badge.BadgeCategory.BadgeCategoryUnknown) ? lstSource : lstSource.FindAll(b => b.Category == bc);
-        if (lst.Count == 0)
-            pnlBadges.Visible = false;
-        else
+        get { return m_badgeset; }
+        set
         {
-            repeaterBadges.DataSource = lst;
-            repeaterBadges.DataBind();
+            m_badgeset = value;
+            if (value != null)
+            {
+                lblCategory.Text = value.CategoryName;
+                repeaterBadges.DataSource = value.Badges;
+                repeaterBadges.DataBind();
+            }
         }
     }
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
+    protected void Page_Load(object sender, EventArgs e) {  }
 
+    protected int ViewIndexForBadge(Badge b)
+    {
+        if (b == null)
+            throw new ArgumentNullException("b");
+
+        if (b.Level == Badge.AchievementLevel.None)
+            return 0;
+        else
+            return (b.IDFlightEarned == LogbookEntry.idFlightNone) ? 1 : 2;
     }
 }
