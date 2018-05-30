@@ -928,7 +928,7 @@ namespace MyFlightbook.Achievements
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            if (!lstModelsFlown.Contains(cfr.idModel))
+            if (!lstModelsFlown.Contains(cfr.idModel) && cfr.Total > 0)
             {
                 AddToCount(1, cfr);
                 lstModelsFlown.Add(cfr.idModel);
@@ -952,7 +952,7 @@ namespace MyFlightbook.Achievements
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            if (!lstAircraftFlown.Contains(cfr.idAircraft))
+            if (!lstAircraftFlown.Contains(cfr.idAircraft) && cfr.Total > 0)
             {
                 AddToCount(1, cfr);
                 lstAircraftFlown.Add(cfr.idAircraft);
