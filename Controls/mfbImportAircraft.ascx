@@ -102,13 +102,13 @@
             Text="(No aircraft found to import)" meta:resourcekey="lblNoMatchingExistingResource1"></asp:Label>
     </EmptyDataTemplate>
 </asp:GridView>
-<asp:Panel ID="pnlAddingAircraft" runat="server" style="display:none; width: 230px; text-align:center; background-color:white; padding: 20px;" meta:resourcekey="pnlAddingAircraftResource1">
+<asp:Panel ID="pnlAddingAircraft" runat="server" CssClass="modalpopup" style="display:none; width: 230px; text-align:center; padding: 20px;" meta:resourcekey="pnlAddingAircraftResource1">
     <h3><asp:Label ID="lblAddingAircraft" runat="server" Text="Adding aircraft..." meta:resourcekey="lblAddingAircraftResource1"></asp:Label></h3>
     <div><asp:Image ID="imgProgress" runat="server" ImageUrl="~/images/ajax-loader.gif" meta:resourcekey="imgProgressResource1" /></div>
 </asp:Panel>
 <asp:Label ID="lblPopupPlaceholder" runat="server" Text="" meta:resourcekey="lblPopupPlaceholderResource1"></asp:Label>
 <ajaxToolkit:ModalPopupExtender ID="popupAddingInProgress" runat="server"
     PopupControlID="pnlAddingAircraft" TargetControlID="lblPopupPlaceholder"
-    BackgroundCssClass="modalBackground" DropShadow="True" 
+    BackgroundCssClass="modalBackground" 
     BehaviorID="mpeAddAircraftProgress" DynamicServicePath="" />
 

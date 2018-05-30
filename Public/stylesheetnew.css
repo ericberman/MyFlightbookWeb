@@ -87,11 +87,9 @@ nobold, .vfPrompt .vfSubDesc {
     clear:both;
 }
 
-.logbookForm
-{
+.logbookForm {
     background-color: white;
 }
-
 
 /* Menu bar - see http://www.cssportal.com/css3-menu-generator/; customized from there */
 #menu-bar 

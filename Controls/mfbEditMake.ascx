@@ -236,31 +236,27 @@
     <br />
 </asp:Panel>
 <asp:HiddenField ID="hdnID" runat="server" />
-<asp:Panel ID="pnlManufacturer" runat="server" BackColor="#FFFF99" 
+<asp:Panel ID="pnlManufacturer" runat="server" CssClass="modalpopup"
     DefaultButton="btnManOK" meta:resourcekey="pnlManufacturerResource1">
-    <table style="padding:5px"">
-        <tr class="paddedRow">
-            <td style="text-align:center">
-                <asp:Label ID="lblAddManufacturer" runat="server" 
-                    Text="Add a new manufacturer:" meta:resourcekey="lblAddManufacturerResource1"></asp:Label>
-                <br />
-                <asp:TextBox ID="txtManufacturer" runat="server" 
-                    meta:resourcekey="txtManufacturerResource1"></asp:TextBox><br /><br />
-                <asp:Button ID="btnManOK" runat="server" Text="OK" onclick="btnManOK_Click" 
-                    CausesValidation="False" meta:resourcekey="btnManOKResource1" />&nbsp;&nbsp;
-                <asp:Button ID="btnManCancel" runat="server" Text="Cancel" 
-                    CausesValidation="False" meta:resourcekey="btnManCancelResource1" />
-            </td>
-        </tr>
-    </table>
+    <div style="text-align:center">
+        <div><asp:Label ID="lblAddManufacturer" runat="server" 
+                        Text="Add a new manufacturer:" meta:resourcekey="lblAddManufacturerResource1"></asp:Label></div>
+        <div><asp:TextBox ID="txtManufacturer" runat="server" 
+                        meta:resourcekey="txtManufacturerResource1"></asp:TextBox></div>
+        <div style="margin-top: 5px;">
+                    <asp:Button ID="btnManOK" runat="server" Text="OK" onclick="btnManOK_Click" 
+                        CausesValidation="False" meta:resourcekey="btnManOKResource1" />&nbsp;&nbsp;
+                    <asp:Button ID="btnManCancel" runat="server" Text="Cancel" 
+                        CausesValidation="False" meta:resourcekey="btnManCancelResource1" /></div>
+    </div>
 </asp:Panel>
 <cc1:ModalPopupExtender ID="ModalPopupExtender1" runat="server" TargetControlID="lblAddNewManufacturer"
     PopupControlID="pnlManufacturer" BackgroundCssClass="modalBackground" 
     CancelControlID="btnManCancel" OnCancelScript="getFlickerSolved();"
-    DropShadow="True" DynamicServicePath="" BehaviorID="ctl00_ModalPopupExtender1">
+    BehaviorID="ctl00_ModalPopupExtender1">
 </cc1:ModalPopupExtender>
-<asp:Panel ID="pnlDupesFound" runat="server" Width="480px" BackColor="#FFFF99" 
-    style="padding:10px; display:none" meta:resourcekey="pnlDupesFoundResource1">
+<asp:Panel ID="pnlDupesFound" runat="server" Width="480px" CssClass="modalpopup"
+    style="display:none" meta:resourcekey="pnlDupesFoundResource1">
     <h2>
         <asp:Label ID="lblPossibleMatchHeader" runat="server" Text="Possible match!" 
             meta:resourcekey="lblPossibleMatchHeaderResource1"></asp:Label></h2>
@@ -316,7 +312,7 @@
     runat="server" meta:resourcekey="lblDummyResource1"></asp:Label>
 <cc1:ModalPopupExtender ID="modalPopupDupes" runat="server" 
     PopupControlID="pnlDupesFound" TargetControlID="lblDummy"
-    BackgroundCssClass="modalBackground" DropShadow="True" 
+    BackgroundCssClass="modalBackground"
     CancelControlID="btnCancelDupe" OnCancelScript="getFlickerSolved();" DynamicServicePath="" BehaviorID="ctl00_modalPopupDupes">
 </cc1:ModalPopupExtender>
 <script type="text/javascript" language="javascript">

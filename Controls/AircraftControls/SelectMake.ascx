@@ -87,7 +87,7 @@
         </ItemTemplate>
     </asp:Repeater>
 </ul>
-<asp:Panel ID="pnlAdviseModelChange" runat="server" BackColor="White" Style="margin: 3px; padding:15px; display:none; width: 450px;" DefaultButton="btnChangeModelCancel">
+<asp:Panel ID="pnlAdviseModelChange" runat="server" BackColor="White" CssClass="modalpopup" Style="display:none; width: 450px;" DefaultButton="btnChangeModelCancel">
     <p>
         <asp:Label ID="lblAdviseModelChange" runat="server" Text="<%$ Resources:Aircraft, editAircraftModelChangeHeader %>" Font-Bold="True"></asp:Label>
     </p>
@@ -101,7 +101,7 @@
         <asp:Button ID="btnChangeModelCancel" runat="server" Width="30%" Text="<%$ Resources:LocalizedText, Cancel %>" />
     </div>
 </asp:Panel>
-<ajaxToolkit:ModalPopupExtender runat="server" DropShadow="true" PopupControlID="pnlAdviseModelChange" BackgroundCssClass="modalBackground" CancelControlID="btnChangeModelCancel" ID="modalModelChange" BehaviorID="modalModelChange" TargetControlID="imgEditAircraftModel"></ajaxToolkit:ModalPopupExtender>
+<ajaxToolkit:ModalPopupExtender runat="server" PopupControlID="pnlAdviseModelChange" BackgroundCssClass="modalBackground" CancelControlID="btnChangeModelCancel" ID="modalModelChange" BehaviorID="modalModelChange" TargetControlID="imgEditAircraftModel"></ajaxToolkit:ModalPopupExtender>
 <script type="text/javascript">
     function hideModelChange() {
         document.getElementById('<% =pnlAdviseModelChange.ClientID %>').style.display = 'none';

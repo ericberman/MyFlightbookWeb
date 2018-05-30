@@ -454,6 +454,16 @@ H4
     filter: alpha(opacity=70);
 }
 
+.modalpopup {
+    background-color: white;
+    min-width: 300px;
+    padding: 15px;
+    border: 1px solid gray;
+    -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+}
+
 .searchHit
 {
     background-color:Yellow;
@@ -828,7 +838,6 @@ a img
     padding: 3px;
 }
 
-
 /* Home page flights */
 .HoverHighlight:hover
 {
@@ -1061,13 +1070,6 @@ table.dataDescription thead tr td
 .calCalContainer
 {
     float:left; width:600px; padding: 4px;
-}
-
-.calEditAppointmentContainer
-{
-    width: 300px;
-    background-color: #FFFF99;
-    padding:15px; 
 }
 
 /* Club */

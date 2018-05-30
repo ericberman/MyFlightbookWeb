@@ -71,14 +71,14 @@
                     <asp:Label ID="lblDate" runat="server" Font-Bold="True" style="vertical-align:middle; display:inline-block; line-height:normal;" meta:resourcekey="lblDateResource1"></asp:Label>
                 </div>
             </asp:Panel>
-            <asp:Panel ID="pnlChangeDate" runat="server" HorizontalAlign="Center" style="padding:15px; display:none;" BackColor="White" meta:resourcekey="pnlChangeDateResource1">
+            <asp:Panel ID="pnlChangeDate" runat="server" HorizontalAlign="Center" CssClass="modalpopup" style="display:none;" BackColor="White" meta:resourcekey="pnlChangeDateResource1">
                 <span style="text-size-adjust: 125%">
                     <asp:Panel ID="pnlDateSelector" runat="server" meta:resourcekey="pnlDateSelectorResource1"></asp:Panel>
                 </span>
                 <br />
                 <asp:Button ID="btnClose" runat="server" Text="Close" meta:resourcekey="btnCloseResource1" />
             </asp:Panel>
-            <cc1:ModalPopupExtender ID="mpeChooseDate" runat="server" TargetControlID="pnlChangeDatePop" BackgroundCssClass="modalBackground" DropShadow="True" BehaviorID="mpeChooseDateBehavior" CancelControlID="btnClose" OkControlID="btnClose" PopupControlID="pnlChangeDate" DynamicServicePath="" >
+            <cc1:ModalPopupExtender ID="mpeChooseDate" runat="server" TargetControlID="pnlChangeDatePop" BackgroundCssClass="modalBackground" BehaviorID="mpeChooseDateBehavior" CancelControlID="btnClose" OkControlID="btnClose" PopupControlID="pnlChangeDate" DynamicServicePath="" >
             </cc1:ModalPopupExtender>
             <div style="margin-top: 50px;">
                 <asp:Repeater ID="rptSchedules" runat="server" OnItemDataBound="rptSchedules_ItemDataBound">

@@ -309,7 +309,7 @@
                 <p><%=Resources.LogbookEntry.EmptyLogbook %></p>
             </EmptyDataTemplate>
         </asp:GridView>
-        <asp:Panel ID="pnlSendFlight" runat="server" Width="480px" DefaultButton="btnSendFlight" BackColor="#FFFF99" style="padding:10px; display:none">
+        <asp:Panel ID="pnlSendFlight" runat="server" Width="480px" DefaultButton="btnSendFlight" CssClass="modalpopup" style="display:none">
             <asp:Localize ID="locSendPrompt" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightPrompt %>"></asp:Localize>
             <asp:HiddenField ID="hdnFlightToSend" runat="server" />
             <table>
@@ -344,7 +344,7 @@
         <uc1:mfbImageList ID="mfbilAircraft" runat="server" Columns="2" CanEdit="false" ImageClass="Aircraft" IncludeDocs="false" MaxImage="2" Visible="false" />
         <cc1:ModalPopupExtender ID="modalPopupSendFlight" runat="server" 
             PopupControlID="pnlSendFlight" TargetControlID="lnkPopSendFlight"
-            BackgroundCssClass="modalBackground" DropShadow="True" 
+            BackgroundCssClass="modalBackground"
             CancelControlID="btnCancelSend" BehaviorID="modalPopupSendFlight"
             Enabled="true">
         </cc1:ModalPopupExtender>

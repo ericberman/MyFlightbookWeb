@@ -189,7 +189,7 @@ N6789,B777
                         ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>" Enabled="True"></cc1:CollapsiblePanelExtender>
                 <asp:Panel ID="pnlAddMake" runat="server" Height="0px" Width="600px" 
                         style="overflow:hidden;" meta:resourcekey="pnlAddMakeResource1">
-                    <div style="padding:3px; border:solid 1px black; background-color:#ffffcc">
+                    <div style="padding:3px; border:solid 1px black;" class="logbookForm">
                         <uc5:mfbEditMake ID="mfbEditMake1" runat="server" MakeID="-1" OnMakeUpdated="NewMakeAdded" />
                     </div>
                 </asp:Panel>

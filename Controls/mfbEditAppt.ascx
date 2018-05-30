@@ -2,8 +2,8 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register src="~/Controls/mfbDateTime.ascx" tagname="mfbDateTime" tagprefix="uc1" %>
 <%@ Register src="mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc3" %>
-<asp:ModalPopupExtender ID="ModalPopupExtender1" BehaviorID="mpeEditAppt" BackgroundCssClass="modalBackground" DropShadow="true" runat="server" TargetControlID="btnDummy" PopupControlID="pnlEditAppt"></asp:ModalPopupExtender>
-<asp:Panel ID="pnlEditAppt" DefaultButton="btnSaveAppt" style="display:none" runat="server" CssClass="calEditAppointmentContainer">
+<asp:ModalPopupExtender ID="ModalPopupExtender1" BehaviorID="mpeEditAppt" BackgroundCssClass="modalBackground" runat="server" TargetControlID="btnDummy" PopupControlID="pnlEditAppt"></asp:ModalPopupExtender>
+<asp:Panel ID="pnlEditAppt" DefaultButton="btnSaveAppt" style="display:none" runat="server" CssClass="modalpopup">
     <div><asp:Localize ID="Localize3" runat="server" Text="<%$ Resources:Schedule, EventTitle %>"></asp:Localize></div>
     <div>
         <asp:TextBox ID="txtApptTitle" runat="server" Width="90%"></asp:TextBox>

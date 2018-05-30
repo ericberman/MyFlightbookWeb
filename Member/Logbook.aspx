@@ -13,10 +13,8 @@
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <asp:Button ID="btnPopWelcome" runat="server" Text="Button" 
         style="display:none" meta:resourcekey="btnPopWelcomeResource1" />
-    <asp:Panel ID="pnlWelcomeNewUser" runat="server" BackColor="#EEEEEE" 
-        Width="80%" style="padding:15px; width:400px; display:none;" 
-        BorderColor="Black" BorderStyle="Solid" BorderWidth="1px" 
-        meta:resourcekey="pnlWelcomeNewUserResource1">
+    <asp:Panel ID="pnlWelcomeNewUser" runat="server" CssClass="modalpopup"
+        style="display:none;" meta:resourcekey="pnlWelcomeNewUserResource1">
         <h2><asp:Localize ID="locWelcomeHeader" runat="server" Text="Welcome" 
                 meta:resourcekey="locWelcomeHeaderResource1"></asp:Localize>
         </h2>
@@ -44,7 +42,7 @@
     </asp:Panel>
     <cc1:ModalPopupExtender PopupControlID="pnlWelcomeNewUser" 
         BackgroundCssClass="modalBackground" ID="ModalPopupExtender1" runat="server" 
-        TargetControlID="btnPopWelcome" DropShadow="True"
+        TargetControlID="btnPopWelcome"
     CancelControlID="btnClose" Enabled="True">
     </cc1:ModalPopupExtender>
     <uc4:mfbEditFlight id="mfbEF1" runat="server" OnFlightUpdated="FlightUpdated">

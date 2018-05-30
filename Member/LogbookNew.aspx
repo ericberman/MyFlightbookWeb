@@ -111,9 +111,7 @@
     <uc1:mfbLogbook ID="mfbLogbook1" runat="server" OnItemDeleted="mfbLogbook1_ItemDeleted" DetailsPageUrlFormatString="~/Member/FlightDetail.aspx/{0}"
          EditPageUrlFormatString="~/Member/LogbookNew.aspx/{0}" AnalysisPageUrlFormatString="~/Member/FlightDetail.aspx/{0}?tabID=Chart" SendPageTarget="~/Member/LogbookNew.aspx" />
     <asp:Button ID="btnPopWelcome" runat="server" Text="" style="display:none" />
-    <asp:Panel ID="pnlWelcomeNewUser" runat="server" BackColor="#EEEEEE" 
-        Width="80%" style="padding:15px; width:400px; display:none;" 
-        BorderColor="Black" BorderStyle="Solid" BorderWidth="1px">
+    <asp:Panel ID="pnlWelcomeNewUser" runat="server" CssClass="modalpopup" style="display:none;">
         <h2><asp:Localize ID="locWelcomeHeader" runat="server" Text="<%$ Resources:LocalizedText, WelcomeHeader %>"></asp:Localize>
         </h2>
         <p><%=Resources.LocalizedText.WelcomeThanks %></p>
@@ -134,7 +132,7 @@
     </asp:Panel>
     <ajaxToolkit:ModalPopupExtender PopupControlID="pnlWelcomeNewUser" 
         BackgroundCssClass="modalBackground" ID="ModalPopupExtender1" runat="server" 
-        TargetControlID="btnPopWelcome" DropShadow="True"
+        TargetControlID="btnPopWelcome" 
     CancelControlID="btnClose" Enabled="True">
     </ajaxToolkit:ModalPopupExtender>
 </asp:Content>

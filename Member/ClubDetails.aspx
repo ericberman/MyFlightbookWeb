@@ -36,7 +36,7 @@
                 <p><asp:Localize ID="lblNotMember" runat="server" Text="<%$ Resources:Club, LabelNotAMember %>"></asp:Localize></p>
                 <p><asp:Localize ID="locSendMessage" Text="<%$ Resources:Club, LabelSendMessage %>" runat="server"></asp:Localize> <asp:HyperLink ID="lnkSendMessage" Text="<%$ Resources:Club, LinkSendMessage %>" runat="server"></asp:HyperLink></p>
             </div>
-            <asp:Panel ID="pnlContact" BackColor="#FFFF99" DefaultButton="btnSendMessage" runat="server" style="padding:15px; display:none; width: 450px;">
+            <asp:Panel ID="pnlContact" DefaultButton="btnSendMessage" runat="server" CssClass="modalpopup" style="display:none; width: 450px;">
                 <p><asp:Localize ID="locSendPrompt" runat="server" Text="<%$ Resources:Club, LabelMessagePrompt %>"></asp:Localize></p>
                 <p>
                     <asp:TextBox ID="txtContact"  runat="server" TextMode="MultiLine" Rows="5" Width="400px" style="margin-left:auto; margin-right:auto;" ValidationGroup="clubContact"></asp:TextBox>
@@ -56,7 +56,7 @@
                     </tr>
                 </table>
             </asp:Panel>
-            <asp:ModalPopupExtender ID="mpuGuestContact" runat="server" BackgroundCssClass="modalBackground" DropShadow="true" CancelControlID="btnCancel" PopupControlID="pnlContact" BehaviorID="mpuGuestContact" TargetControlID="lnkSendMessage"></asp:ModalPopupExtender>
+            <asp:ModalPopupExtender ID="mpuGuestContact" runat="server" BackgroundCssClass="modalBackground" CancelControlID="btnCancel" PopupControlID="pnlContact" BehaviorID="mpuGuestContact" TargetControlID="lnkSendMessage"></asp:ModalPopupExtender>
             <p><asp:Label ID="lblMessageStatus" runat="server" CssClass="success" Text="<%$ Resources:Club, StatusMessageSent %>" EnableViewState="false" Visible="false"></asp:Label></p>
         </asp:View>
         <asp:View ID="vwTopMember" runat="server"></asp:View>
