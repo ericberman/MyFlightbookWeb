@@ -166,7 +166,7 @@
                                 <asp:Literal ID="litStart" runat="server" Text="<%$ Resources:Club, ReportStartDate %>"></asp:Literal>
                             </td>
                             <td>
-                                <uc1:mfbTypeInDate runat="server" ID="dateStart" />
+                                <uc1:mfbTypeInDate runat="server" ID="dateStart" DefaultType="Today" />
                             </td>
                             <td rowspan="2" style="padding-left: 50px">
                                 <asp:LinkButton ID="lnkViewKML" runat="server" onclick="lnkViewKML_Click">
@@ -181,7 +181,7 @@
                                 <asp:Literal ID="litEnd" runat="server" Text="<%$ Resources:Club, ReportEndDate %>"></asp:Literal>
                             </td>
                             <td>
-                                <uc1:mfbTypeInDate runat="server" ID="dateEnd" />
+                                <uc1:mfbTypeInDate runat="server" ID="dateEnd" DefaultType="Today" />
                             </td>
                         </tr>
 

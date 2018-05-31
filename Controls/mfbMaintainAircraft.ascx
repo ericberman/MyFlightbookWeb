@@ -25,7 +25,7 @@
                         meta:resourcekey="locAnnualResource1"></asp:Localize>
                 </td>
                 <td>
-                    <uc4:mfbTypeInDate ID="mfbLastAnnual" runat="server" />
+                    <uc4:mfbTypeInDate ID="mfbLastAnnual" runat="server" DefaultType="None" />
                 </td>
                 <td>
                     <asp:Label ID="lblNextAnnual" runat="server" 
@@ -38,7 +38,7 @@
                         meta:resourcekey="locXPonderResource1"></asp:Localize>
                 </td>
                 <td>
-                    <uc4:mfbTypeInDate ID="mfbLastTransponder" runat="server" />
+                    <uc4:mfbTypeInDate ID="mfbLastTransponder" runat="server" DefaultType="None" />
                 </td>
                 <td>
                     <asp:Label ID="lblNextTransponder" runat="server" 
@@ -52,7 +52,7 @@
             
                 </td>
                 <td>
-                    <uc4:mfbTypeInDate ID="mfbLastPitotStatic" runat="server" />
+                    <uc4:mfbTypeInDate ID="mfbLastPitotStatic" runat="server" DefaultType="None" />
                 </td>
                 <td>
                     <asp:Label ID="lblNextPitot" runat="server" 
@@ -66,7 +66,7 @@
             
                 </td>
                 <td>
-                    <uc4:mfbTypeInDate ID="mfbLastAltimeter" runat="server" />
+                    <uc4:mfbTypeInDate ID="mfbLastAltimeter" runat="server" DefaultType="None" />
                 </td>
                 <td>
                     <asp:Label ID="lblNextAltimeter" runat="server" 
@@ -79,7 +79,7 @@
                         meta:resourcekey="locELTResource1"></asp:Localize>
                 </td>
                 <td>
-                    <uc4:mfbTypeInDate ID="mfbLastELT" runat="server" />
+                    <uc4:mfbTypeInDate ID="mfbLastELT" runat="server" DefaultType="None" />
                 </td>
                 <td>
                     <asp:Label ID="lblNextELT" runat="server" 
@@ -92,7 +92,7 @@
                         meta:resourcekey="locVORResource1"></asp:Localize>
                 </td>
                 <td>
-                    <uc4:mfbTypeInDate ID="mfbLastVOR" runat="server" />
+                    <uc4:mfbTypeInDate ID="mfbLastVOR" runat="server" DefaultType="None" />
                 </td>
                 <td>
                     <asp:Label ID="lblNextVOR" runat="server" 
@@ -140,7 +140,7 @@
                     <asp:Localize ID="Localize1" runat="server" Text="Registration Renewal Due:" meta:resourcekey="Localize1Resource1"></asp:Localize>
                 </td>
                 <td>
-                    <uc4:mfbTypeInDate runat="server" ID="mfbRenewalDue" />
+                    <uc4:mfbTypeInDate runat="server" ID="mfbRenewalDue" DefaultType="None" />
                 </td>
                 <td>
                 </td>

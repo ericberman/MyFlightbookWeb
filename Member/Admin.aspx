@@ -1009,7 +1009,7 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                 <table>
                     <tr>
                         <td>Date: </td><td>
-                            <uc1:mfbTypeInDate runat="server" ID="dateTestTransaction" />
+                            <uc1:mfbTypeInDate runat="server" ID="dateTestTransaction" DefaultType="Today" />
                         </td>
                     </tr>
                     <tr>

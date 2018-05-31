@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Globalization;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Text;
-using AjaxControlToolkit;
-using System.Text.RegularExpressions;
+﻿using AjaxControlToolkit;
 using MyFlightbook;
 using MyFlightbook.Instruction;
+using System;
+using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2012-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -108,8 +105,6 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        mfbTypeInDate1.DefaultDate = DateTime.Now;
-
         if (!IsPostBack)
         {
             mfbTypeInDate1.Date = DateTime.Now;

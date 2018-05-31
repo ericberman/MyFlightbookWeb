@@ -116,7 +116,7 @@
                 <p><asp:Label ID="lblPickStartingDate" runat="server" 
                         Text="Pick a date to use for the starting flights.  Good dates to choose are either (a) the date of your first flight, or (b) the date of the last flight in your logbook." 
                         meta:resourcekey="lblPickStartingDateResource1"></asp:Label> </p>
-                <p><uc1:mfbTypeInDate ID="mfbTypeInDate1" runat="server" /></p>
+                <p><uc1:mfbTypeInDate ID="mfbTypeInDate1" runat="server" DefaultType="Today" /></p>
                 <p><asp:Label ID="lblGranularity" runat="server" 
                         Text="How would you like to enter your totals?" 
                         meta:resourcekey="lblGranularityResource1"></asp:Label> </p>

@@ -33,7 +33,7 @@
         <asp:CheckBox ID="ckIsGlass" runat="server" AutoPostBack="true" OnCheckedChanged="ckIsGlass_CheckedChanged" Text="<%$ Resources:Aircraft, editAircraftHasGlass %>" />
         <asp:Panel ID="pnlGlassUpgradeDate" runat="server" Style="margin: 3px;">
             <asp:Label ID="lblDateOfGlassUpgrade" runat="server" Text="<%$ Resources:Aircraft, editAircraftGlassUpgradeDate %>"></asp:Label>
-            <uc10:mfbTypeInDate runat="server" ID="mfbDateOfGlassUpgrade" />
+            <uc10:mfbTypeInDate runat="server" ID="mfbDateOfGlassUpgrade" DefaultType="None" />
         </asp:Panel>
     </asp:Panel>
     

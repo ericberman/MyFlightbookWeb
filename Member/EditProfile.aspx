@@ -525,7 +525,7 @@
                                                     <td>
                                                         <asp:MultiView ID="mvDeadlineDue" runat="server" ActiveViewIndex="0">
                                                             <asp:View ID="vwDeadlineDueDate" runat="server">
-                                                                <uc2:mfbTypeInDate ID="mfbDeadlineDate" runat="server" />
+                                                                <uc2:mfbTypeInDate ID="mfbDeadlineDate" runat="server" DefaultType="None" />
                                                             </asp:View>
                                                             <asp:View ID="vwDeadlineDueHours" runat="server">
                                                                 <uc9:mfbDecimalEdit ID="decDueHours" runat="server" EditingMode="Decimal" Width="40" />
@@ -800,7 +800,7 @@
                                             <asp:Localize ID="locLastMedicalPrompt" runat="server"
                                                 Text="Date of Last Medical" meta:resourcekey="locLastMedicalPromptResource1"></asp:Localize></td>
                                         <td>
-                                            <uc2:mfbTypeInDate ID="dateMedical" ValidationGroup="valPilotInfo" runat="server" />
+                                            <uc2:mfbTypeInDate ID="dateMedical" ValidationGroup="valPilotInfo" runat="server" DefaultType="None" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -865,7 +865,7 @@
                                         <table>
                                             <tr>
                                                 <td><% =Resources.Profile.BasicMedEventDate %></td>
-                                                <td><uc2:mfbTypeInDate runat="server" ID="mfbBasicMedEventDate" /></td>
+                                                <td><uc2:mfbTypeInDate runat="server" ID="mfbBasicMedEventDate" DefaultType="Today" /></td>
                                             </tr>
                                             <tr>
                                                 <td><% =Resources.Profile.BasicMedEventActivity %></td>
@@ -979,7 +979,7 @@
                                         meta:resourcekey="txtCertificateResource1"></asp:TextBox> &nbsp;
                                     <cc1:TextBoxWatermarkExtender ID="wmeCertificate" WatermarkCssClass="watermark" WatermarkText="Instructor #" TargetControlID="txtCertificate" runat="server" BehaviorID="wmeCertificate" />
                                     <asp:Localize ID="locExpiration" runat="server" Text="Expiration" meta:resourcekey="locExpirationResource1"></asp:Localize>
-                                    <uc2:mfbTypeInDate ID="mfbTypeInDateCFIExpiration" runat="server" />
+                                    <uc2:mfbTypeInDate ID="mfbTypeInDateCFIExpiration" runat="server" DefaultType="None" />
                                     <br />
                                     <asp:Label ID="lblCertFineprint" runat="server" CssClass="fineprint" 
                                         Text="(Only necessary if you want to have records of student endorsements)" 
@@ -990,7 +990,7 @@
                                         meta:resourcekey="locLangProficiencyResource1"></asp:Localize>
                                 </h3>
                                 <div>
-                                    <uc2:mfbTypeInDate ID="mfbDateEnglishCheck" runat="server" />
+                                    <uc2:mfbTypeInDate ID="mfbDateEnglishCheck" runat="server" DefaultType="None" />
                                 </div>
                                 <div>
                                     <br />

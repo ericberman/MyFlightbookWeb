@@ -33,7 +33,7 @@
                         Text='<%# Bind("RegenPrompt") %>'></asp:Label>
                     <asp:MultiView ID="mvRegenTarget" runat="server" ActiveViewIndex='<%# ((bool) Eval("UsesHours")) ? 1 : 0  %>'>
                         <asp:View ID="vwRegenDate" runat="server">
-                            <uc1:mfbTypeInDate ID="mfbUpdateDeadlineDate" runat="server" />
+                            <uc1:mfbTypeInDate ID="mfbUpdateDeadlineDate" DefaultType="None" runat="server" />
                         </asp:View>
                         <asp:View ID="vwRegenHours" runat="server">
                             <uc1:mfbDecimalEdit ID="decNewHours" runat="server" EditingMode="Decimal" Width="40" />

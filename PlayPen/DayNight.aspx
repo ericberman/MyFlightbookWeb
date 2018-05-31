@@ -49,7 +49,7 @@
                 Date:
             </td>
             <td>
-                <uc1:mfbTypeInDate runat="server" ID="mfbTypeInDate" />
+                <uc1:mfbTypeInDate runat="server" ID="mfbTypeInDate" DefaultType="Today" />
             </td>
         </tr>
     </table>

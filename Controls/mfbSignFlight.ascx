@@ -205,7 +205,7 @@
                             meta:resourcekey="lblCFIDateResource1"></asp:Label>
                     </div>
                     <div>
-                        <uc2:mfbTypeInDate runat="server" ID="dropDateCFIExpiration" Visible="false" />
+                        <uc2:mfbTypeInDate runat="server" ID="dropDateCFIExpiration" Visible="false" DefaultType="Today" />
                         <asp:CustomValidator ID="valCFIExpiration" runat="server" 
                             ErrorMessage="To sign, your CFI certificate must not be expired." 
                             CssClass="error" Display="Dynamic" 

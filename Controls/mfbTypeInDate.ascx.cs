@@ -1,10 +1,11 @@
-using System;
-using System.Web.UI.WebControls;
 using MyFlightbook;
+using System;
+using System.Globalization;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -13,6 +14,8 @@ public partial class Controls_mfbTypeInDate : System.Web.UI.UserControl
 {
     #region Properties.
     private DateTime m_date;
+
+    public enum DefaultDateType { None, Today, Custom }
 
     /// <summary>
     /// Gets/sets the current date to display
@@ -30,10 +33,34 @@ public partial class Controls_mfbTypeInDate : System.Web.UI.UserControl
         }
     }
 
+    private const string szVSDefaultDate = "keyVSDefault";
     /// <summary>
     /// Gets/sets the date to use when the field is blank.  If the field is set to this value, the text field will be blanked out.
     /// </summary>
-    public DateTime DefaultDate { get; set; }
+    public DateTime DefaultDate
+    {
+        get { return ViewState[szVSDefaultDate] == null ? DateTime.Today : (DateTime)ViewState[szVSDefaultDate]; }
+        set
+        {
+            ViewState[szVSDefaultDate] = value;
+            TextBoxWatermarkExtender1.WatermarkText = value.HasValue() ? value.ToShortDateString() : CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
+        }
+    }
+
+    /// <summary>
+    /// Helper property to declaritively set the default date.
+    /// </summary>
+    public DefaultDateType DefaultType
+    {
+        get { return DefaultDate.HasValue() ? (DefaultDate.CompareTo(DateTime.Today) == 0 ? DefaultDateType.Today : DefaultDateType.Custom) : DefaultDateType.None; }
+        set
+        {
+            if (value == DefaultDateType.None)
+                DefaultDate = DateTime.MinValue;
+            else if (value == DefaultDateType.Today)
+                DefaultDate = DateTime.Today;
+        }
+    }
 
     /// <summary>
     /// Return the text control of the date box - so that it can be styled, for example.
@@ -79,8 +106,10 @@ public partial class Controls_mfbTypeInDate : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (String.IsNullOrEmpty(TextBoxWatermarkExtender1.WatermarkText))
+            DefaultType = DefaultDateType.Today;
+
         CalendarExtender1.Format = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
-        TextBoxWatermarkExtender1.WatermarkText = DateTime.Now.ToShortDateString();
         bool fUseHtml5Input = Request.IsMobileDeviceOrTablet() && !ForceAjax;
         txtDate.TextMode = fUseHtml5Input ? TextBoxMode.Date : TextBoxMode.SingleLine;    // use the HTML 5 support only on mobile devices.
         CalendarExtender1.Enabled = !fUseHtml5Input;

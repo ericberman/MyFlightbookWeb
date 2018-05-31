@@ -46,7 +46,7 @@
                         <tr>
                             <td colspan="2">
                                 <asp:RadioButton GroupName="DateRange" ID="rbCustom" Text="From: " onclick="javascript:setDates(true);"
-                                    runat="server" meta:resourcekey="rbCustomResource1" /><uc4:mfbTypeInDate ID="mfbTIDateFrom" runat="server" />&nbsp;<asp:Label ID="lblDateTo" runat="server" Text="To:" meta:resourcekey="lblDateToResource1"></asp:Label> <uc4:mfbTypeInDate ID="mfbTIDateTo" runat="server" />
+                                    runat="server" meta:resourcekey="rbCustomResource1" /><uc4:mfbTypeInDate ID="mfbTIDateFrom" DefaultType="None" runat="server" />&nbsp;<asp:Label ID="lblDateTo" runat="server" Text="To:" meta:resourcekey="lblDateToResource1"></asp:Label> <uc4:mfbTypeInDate ID="mfbTIDateTo" runat="server" DefaultType="None" />
                             </td>
                         </tr>
                     </table>
