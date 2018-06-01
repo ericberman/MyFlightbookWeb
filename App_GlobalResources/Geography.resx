@@ -117,136 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="badgeTitleAchieved" xml:space="preserve">
-    <value>Badge for this achievement</value>
+  <data name="regionAfrica" xml:space="preserve">
+    <value>Africa</value>
   </data>
-  <data name="badgeTitleBronze" xml:space="preserve">
-    <value>Bronze badge for this achievement - continue for silver!</value>
+  <data name="regionAntarctica" xml:space="preserve">
+    <value>Antarctica</value>
   </data>
-  <data name="badgeTitleGold" xml:space="preserve">
-    <value>Gold badge for this achievement - is there a higher level?</value>
+  <data name="regionAsia" xml:space="preserve">
+    <value>Asia</value>
   </data>
-  <data name="badgeTitlePlatinum" xml:space="preserve">
-    <value>Platinum badge for this achievement - Wow!!!</value>
+  <data name="regionAustralia" xml:space="preserve">
+    <value>Australia</value>
   </data>
-  <data name="badgeTitleSilver" xml:space="preserve">
-    <value>Silver badge for this achievement - continue for gold!</value>
+  <data name="regionEurope" xml:space="preserve">
+    <value>Europe</value>
   </data>
-  <data name="EarnedDate" xml:space="preserve">
-    <value>Earned {0:d}</value>
+  <data name="regionNorthAmerica" xml:space="preserve">
+    <value>North America</value>
   </data>
-  <data name="errInProgress" xml:space="preserve">
-    <value>Your achievements are being computed; please try again in a few moments.</value>
-  </data>
-  <data name="errNoBadgesEarned" xml:space="preserve">
-    <value>You have not yet earned any badges for your achievements.  Check back after you have added some flights to your account!</value>
-  </data>
-  <data name="HeaderText" xml:space="preserve">
-    <value>Congratulations - here are badges for your achievements!</value>
-  </data>
-  <data name="nameFirstSolo" xml:space="preserve">
-    <value>First Solo!</value>
-  </data>
-  <data name="nameNumberFlights" xml:space="preserve">
-    <value>Logged {0:#,###} Flights!</value>
-  </data>
-  <data name="nameNumberModels" xml:space="preserve">
-    <value>Flown {0} different models of aircraft!</value>
-  </data>
-  <data name="nameRatingATP" xml:space="preserve">
-    <value>New Rating: ATP!</value>
-  </data>
-  <data name="nameRatingCFI" xml:space="preserve">
-    <value>New Rating: CFI!</value>
-  </data>
-  <data name="nameRatingCFII" xml:space="preserve">
-    <value>New Rating: CFII!</value>
-  </data>
-  <data name="nameRatingCommercial" xml:space="preserve">
-    <value>New Rating: Commercial Pilot!</value>
-  </data>
-  <data name="nameRatingInstrument" xml:space="preserve">
-    <value>New Rating: Instrument!</value>
-  </data>
-  <data name="nameRatingPPL" xml:space="preserve">
-    <value>New Rating: Private Pilot!</value>
-  </data>
-  <data name="nameRatingRecreation" xml:space="preserve">
-    <value>New Rating: Recrational Pilot!</value>
-  </data>
-  <data name="nameRatingSport" xml:space="preserve">
-    <value>New Rating: Sport Pilot!</value>
-  </data>
-  <data name="btnForceRefresh" xml:space="preserve">
-    <value>Not seeing the badges you think you should see?  Click here to refresh.</value>
-  </data>
-  <data name="categoryMilestones" xml:space="preserve">
-    <value>Milestones</value>
-  </data>
-  <data name="categoryRatings" xml:space="preserve">
-    <value>Ratings</value>
-  </data>
-  <data name="categoryTraining" xml:space="preserve">
-    <value>Primary Training</value>
-  </data>
-  <data name="nameFirstLesson" xml:space="preserve">
-    <value>Began Flight Training!</value>
-  </data>
-  <data name="nameFirstNightLanding" xml:space="preserve">
-    <value>First Night Landing!</value>
-  </data>
-  <data name="nameFirstXC" xml:space="preserve">
-    <value>First Cross-Country Flight!</value>
-  </data>
-  <data name="nameNumberAircraft" xml:space="preserve">
-    <value>Flown {0:#,###} distinct aircraft!</value>
-  </data>
-  <data name="nameNumberAirports" xml:space="preserve">
-    <value>Airport Tourist: {0:#,###} airports!</value>
-  </data>
-  <data name="nameNumberCFI" xml:space="preserve">
-    <value>{0:#,###} hours as CFI logged!</value>
-  </data>
-  <data name="nameNumberPIC" xml:space="preserve">
-    <value>{0:#,###} hours as PIC logged!</value>
-  </data>
-  <data name="nameNumberSIC" xml:space="preserve">
-    <value>{0:#,###} hours as SIC logged!</value>
-  </data>
-  <data name="nameNumberTotal" xml:space="preserve">
-    <value>{0:#,###} total hours logged!</value>
-  </data>
-  <data name="categoryVisitedAirports" xml:space="preserve">
-    <value>Visited Airports</value>
-  </data>
-  <data name="nameNumberIMC" xml:space="preserve">
-    <value>"Flying Blind" - {0:#,###} hours of actual IMC time!</value>
-  </data>
-  <data name="nameNumberNight" xml:space="preserve">
-    <value>"Night Owl" - {0:#,###} hours of night flight!</value>
-  </data>
-  <data name="nameRatingMEI" xml:space="preserve">
-    <value>New Rating: Multi-Engine Instructor!</value>
-  </data>
-  <data name="nameFirstSoloXCFlight" xml:space="preserve">
-    <value>First Solo Cross-Country Flight!</value>
-  </data>
-  <data name="LevelReachedDate" xml:space="preserve">
-    <value>Level achieved {0:d}</value>
-  </data>
-  <data name="nameNumberApproaches" xml:space="preserve">
-    <value>{0:#,###} instrument approaches performed!</value>
-  </data>
-  <data name="nameNumberLandings" xml:space="preserve">
-    <value>{0:#,###} landings recorded!</value>
-  </data>
-  <data name="categoryMiscellaneous" xml:space="preserve">
-    <value>Miscellaneous</value>
-  </data>
-  <data name="nameAntarctica" xml:space="preserve">
-    <value>You flew in Antarctica.  (Seriously?  Wow!)</value>
-  </data>
-  <data name="nameContinents" xml:space="preserve">
-    <value>Inter-continental Flier: flown on {0} continents!</value>
+  <data name="regionSouthAmerica" xml:space="preserve">
+    <value>South America</value>
   </data>
 </root>

@@ -155,7 +155,7 @@ namespace MyFlightbook.Achievements
                         }
                     });
             }
-            catch 
+            catch
             {
                 pf.SetAchievementStatus(ComputeStatus.NeedsComputing);
             }
@@ -258,6 +258,7 @@ namespace MyFlightbook.Achievements
             Training = 100,
             Ratings = 200,
             Milestones = 300,
+            Miscellaneous = 500,
             AirportList = 10000
         }
 
@@ -298,6 +299,9 @@ namespace MyFlightbook.Achievements
             NumberOfIMCHours,
             NumberOfLandings,
             NumberOfApproaches,
+            NumberOfContinents,
+
+            Antarctica = BadgeCategory.Miscellaneous,
 
             AirportList00 = BadgeCategory.AirportList,
             AirportList01, AirportList02, AirportList03, AirportList04, AirportList05, AirportList06, AirportList07, AirportList08, AirportList09, AirportList10,
@@ -468,6 +472,8 @@ namespace MyFlightbook.Achievements
                     return Resources.Achievements.categoryTraining;
                 case BadgeCategory.AirportList:
                     return Resources.Achievements.categoryVisitedAirports;
+                case BadgeCategory.Miscellaneous:
+                    return Resources.Achievements.categoryMiscellaneous;
                 case BadgeCategory.BadgeCategoryUnknown:
                 default:
                     return string.Empty;
@@ -667,6 +673,9 @@ namespace MyFlightbook.Achievements
                     new RatingBadgeSport(),
                     new RatingBadgeMEI(),
 
+                    // Miscellaneous
+                    new FlightOfThePenguin(),
+
                     // Multi-level badges (counts)
                     new MultiLevelBadgeNumberFlights(),
                     new MultiLevelBadgeLandings(),
@@ -674,6 +683,7 @@ namespace MyFlightbook.Achievements
                     new MultiLevelBadgeNumberModels(),
                     new MultiLevelBadgeNumberAircraft(),
                     new MultiLevelBadgeNumberAirports(),
+                    new MultiLevelBadgeContinents(),
                     new MultiLevelBadgeTotalTime(),
                     new MultiLevelBadgePICTime(),
                     new MultiLevelBadgeSICTime(),
@@ -839,6 +849,40 @@ namespace MyFlightbook.Achievements
             }
         }
     }
+    #endregion
+
+    #region Miscelaneous badges
+    public class FlightOfThePenguin : Badge
+    {
+        public FlightOfThePenguin() : base(BadgeID.Antarctica, Resources.Achievements.nameAntarctica) { }
+
+        public override string BadgeImageOverlay { get { return "~/Images/BadgeOverlays/penguin.png"; } }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context) { }
+
+        public override void PostFlight(Dictionary<string, object> context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
+
+            if (rgva != null)
+            {
+                GeoRegionAntarctica antarctica = new GeoRegionAntarctica();
+                foreach (VisitedAirport va in rgva)
+                {
+                    if (antarctica.ContainsLocation(va.Airport.LatLong))
+                    {
+                        Level = AchievementLevel.Achieved;
+                        DateEarned = va.EarliestVisitDate;
+                        IDFlightEarned = va.FlightIDOfFirstVisit;
+                    }
+                }
+            }
+        }
+    }
+
+
     #endregion
 
     #region Multi-level badges based on integer counts
@@ -1123,6 +1167,44 @@ namespace MyFlightbook.Achievements
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
             AddToCount(cfr.cApproaches, cfr);
+        }
+    }
+
+    public class MultiLevelBadgeContinents : MultiLevelCountBadgeBase
+    {
+        public MultiLevelBadgeContinents() : base(BadgeID.NumberOfContinents, Resources.Achievements.nameContinents, 2, 3, 4, 6) { }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context) { }
+
+        public override void PostFlight(Dictionary<string, object> context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            if (context.ContainsKey(Achievement.KeyVisitedAirports))
+            {
+                VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
+                HashSet<string> hsContinents = new HashSet<string>();
+
+                if (rgva != null)
+                    foreach (VisitedAirport va in rgva)
+                        foreach (IPolyRegion ipr in KnownGeoRegions.AllContinents)
+                        {
+                            if (hsContinents.Contains(ipr.Name))
+                                continue;
+
+                            if (ipr.ContainsLocation(va.Airport.LatLong))
+                            {
+                                hsContinents.Add(ipr.Name); // record a visit to this continent regardless.
+                                if (AddToCount(1, null))
+                                {
+                                    DateEarned = va.EarliestVisitDate;
+                                    IDFlightEarned = va.FlightIDOfFirstVisit;
+                                }
+                                break;  // check next continent
+                            }
+                        }
+            }
+            base.PostFlight(context);
         }
     }
     #endregion
@@ -1432,5 +1514,6 @@ namespace MyFlightbook.Achievements
         }
     }
     #endregion
-#endregion
+
+    #endregion
 }
