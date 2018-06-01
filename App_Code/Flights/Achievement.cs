@@ -961,7 +961,7 @@ namespace MyFlightbook.Achievements
     /// </summary>
     public class MultiLevelBadgeNumberModels : MultiLevelCountBadgeBase
     {
-        HashSet<int> lstModelsFlown = new HashSet<int>();
+        HashSet<string> hsModelsFlown = new HashSet<string>();
 
         public MultiLevelBadgeNumberModels()
             : base(BadgeID.NumberOfModels, Resources.Achievements.nameNumberModels, 25, 50, 100, 200)
@@ -972,10 +972,10 @@ namespace MyFlightbook.Achievements
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            if (!lstModelsFlown.Contains(cfr.idModel) && cfr.Total > 0)
+            if (!hsModelsFlown.Contains(cfr.szFamily) && cfr.Total > 0 && cfr.fIsRealAircraft)
             {
                 AddToCount(1, cfr);
-                lstModelsFlown.Add(cfr.idModel);
+                hsModelsFlown.Add(cfr.szFamily);
             }
         }
     }
@@ -996,7 +996,7 @@ namespace MyFlightbook.Achievements
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            if (!lstAircraftFlown.Contains(cfr.idAircraft) && cfr.Total > 0)
+            if (!lstAircraftFlown.Contains(cfr.idAircraft) && cfr.Total > 0 && cfr.fIsRealAircraft)
             {
                 AddToCount(1, cfr);
                 lstAircraftFlown.Add(cfr.idAircraft);
