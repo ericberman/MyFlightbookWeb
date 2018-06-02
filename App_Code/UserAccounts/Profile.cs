@@ -1286,10 +1286,16 @@ namespace MyFlightbook
             // SFAR 73 support - check if there is an expired R22/R44 BFR
             DateTime dtBfrLastR22 = LastBFRR22();
             DateTime dtBfrLastR44 = LastBFRR44();
-            if (dtBfrLastR22.HasValue())
-                rgCS.Add(StatusForDate(NextBFR(dtBfrLastR22), Resources.Currency.NextFlightReviewR22, CurrencyStatusItem.CurrencyGroups.FlightExperience));
-            if (dtBfrLastR44.HasValue())
-                rgCS.Add(StatusForDate(NextBFR(dtBfrLastR44), Resources.Currency.NextFlightReviewR44, CurrencyStatusItem.CurrencyGroups.FlightExperience));
+
+            if (dtBfrLastR22.HasValue() || dtBfrLastR44.HasValue())
+            {
+                SFAR73Currency sFAR73Currency = new SFAR73Currency(UserName);   // database hit, unfortunately.  But only if you actually have R22/R44 experience!
+                if (dtBfrLastR22.HasValue())
+                    rgCS.Add(StatusForDate(sFAR73Currency.NextR22FlightReview(dtBfrLastR22), Resources.Currency.NextFlightReviewR22, CurrencyStatusItem.CurrencyGroups.FlightExperience));
+                if (dtBfrLastR44.HasValue())
+                    rgCS.Add(StatusForDate(sFAR73Currency.NextR44FlightReview(dtBfrLastR44), Resources.Currency.NextFlightReviewR44, CurrencyStatusItem.CurrencyGroups.FlightExperience));
+            }
+
             BFREvents = null; // clear the cache again (memory).
 
             if (CertificateExpiration.HasValue())

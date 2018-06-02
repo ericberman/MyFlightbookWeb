@@ -1970,6 +1970,63 @@ namespace MyFlightbook.FlightCurrency
         }
     }
 
+    /// <summary>
+    /// Compute Flight review requirements for SFAR 73 (regular R22/R44 currency is computed by piggybacking on type-rated currency)
+    /// </summary>
+    public class SFAR73Currency
+    {
+        private int R22Duration;
+        private int R44Duration;
+
+        public DateTime NextR22FlightReview(DateTime lastR22Review)
+        {
+            return lastR22Review.AddCalendarMonths(R22Duration);
+        }
+
+        public DateTime NextR44FlightReview(DateTime lastR44Review)
+        {
+            return lastR44Review.AddCalendarMonths(R44Duration);
+        }
+
+        public SFAR73Currency(string szUser)
+        {
+            if (string.IsNullOrEmpty(szUser))
+                return;
+
+            // Get Helicopter time and R22/R44 time to comply with SFAR 73
+            DBHelper dbh = new DBHelper(@"SELECT 
+                                                    SUM(f.totalflighttime) AS totalTime, m.typename
+                                                FROM
+                                                    flights f
+                                                        INNER JOIN
+                                                    aircraft ac ON f.idaircraft = ac.idaircraft
+                                                        INNER JOIN
+                                                    models m ON ac.idmodel = m.idmodel
+                                                WHERE
+                                                    f.username = ?user
+                                                        AND m.idcategoryclass = 7
+                                                GROUP BY m.typename");
+
+            double heliTime = 0.0;
+            double R22Time = 0.0;
+            double R44Time = 0.0;
+
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
+                (dr) =>
+                {
+                    double time = Convert.ToDouble(dr["totalTime"], CultureInfo.InvariantCulture);
+                    heliTime += time;
+                    if (((string)dr["typename"]).CompareCurrentCultureIgnoreCase("R22") == 0)
+                        R22Time += time;
+                    if (((string)dr["typename"]).CompareCurrentCultureIgnoreCase("R44") == 0)
+                        R44Time += time;
+                });
+            R44Time += Math.Min(R22Time, 25.0); // up to 25 hours of R22 time can credit towards R44 time
+
+            R22Duration = (heliTime >= 200.0) && R22Time >= 50.0 ? 24 : 12;
+            R44Duration = (heliTime >= 200.0) && R44Time >= 50.0 ? 24 : 12;
+        }
+    }
 
     /// <summary>
     /// NightCurrency class per 61.57
