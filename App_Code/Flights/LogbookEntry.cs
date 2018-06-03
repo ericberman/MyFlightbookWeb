@@ -2209,6 +2209,7 @@ namespace MyFlightbook
         public decimal InstrumentAircraftTotal { get; set; }
         public decimal InstrumentFSTDTotal { get; set; }
         public decimal GroundInstructionTotal { get; set; }
+        public decimal IFRTimeTotal { get; set; }
 
         // Glider counts
         public int SelfLaunchTotal { get; set; }
@@ -2592,6 +2593,7 @@ namespace MyFlightbook
                 InstrumentFSTDTotal += led.IsFSTD ? le.SimulatedIFR : 0;
                 SoloTotal += led.SoloTime;
                 GroundInstructionTotal += led.GroundInstructionTotal;
+                IFRTimeTotal += led.IFRTime;
                 NightTouchAndGoLandings += led.IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
 
                 SelfLaunchTotal += led.SelfLaunches;
