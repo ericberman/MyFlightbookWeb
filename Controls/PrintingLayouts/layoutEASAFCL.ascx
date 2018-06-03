@@ -47,7 +47,7 @@
                 <th class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderDay %></th>
                 <th class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderNight %></th>
                 <th class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderNight %></th>
-                <th class="headerSmall"><%=Resources.LogbookEntry.PrintHeaderIFR %></th>
+                <th class="headerSmall"><div><%=Resources.LogbookEntry.PrintHeaderIFR %></div><div style="text-align:center; font-size:smaller"><%=Resources.LogbookEntry.PrintHeaderIFRSubhead %></div></th>
                 <th class="headerSmall"><%=Resources.LogbookEntry.FieldPIC %></th>
                 <th class="headerSmall"><%=Resources.LogbookEntry.FieldSIC %></th>
                 <th class="headerSmall"><%=Resources.LogbookEntry.FieldDual %></th>
@@ -72,7 +72,7 @@
                     <td><%# Eval("NetDayLandings") %></td>
                     <td><%# Eval("NetNightLandings") %></td>
                     <td><%# Eval("Nighttime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                    <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                    <td><%# Eval("IFRTime").FormatDecimal(CurrentUser.UsesHHMM) %><div><%# Eval("InstrumentTimeDisplay") %></div></td>
                     <td><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("SIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM) %></td>

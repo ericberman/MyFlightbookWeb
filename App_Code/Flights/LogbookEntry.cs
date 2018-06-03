@@ -2124,6 +2124,27 @@ namespace MyFlightbook
             get { return DecPropertyMatchingPredicate(fp => fp.PropertyType.IsSolo); }
         }
 
+        public decimal IFRTime
+        {
+            get { return DecPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropIFRTime); }
+        }
+
+        /// <summary>
+        /// EASA layout uses IFR time, not IMC/Simulated, so show IFR time but parenthetically add actual/simulated)
+        /// </summary>
+        public string InstrumentTimeDisplay
+        {
+            get
+            {
+                decimal instrumenttime = IMC + SimulatedIFR;
+
+                if (instrumenttime == 0)
+                    return string.Empty;
+
+                return String.Format(CultureInfo.CurrentCulture, "({0} / {1})", (IMC == 0) ? "0" : IMC.FormatDecimal(UseHHMM), (SimulatedIFR == 0) ? "0" : SimulatedIFR.FormatDecimal(UseHHMM));
+            }
+        }
+
         #region Glider properties
         public int GroundLaunches
         {

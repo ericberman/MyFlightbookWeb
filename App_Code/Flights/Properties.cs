@@ -55,6 +55,7 @@ namespace MyFlightbook
             IDPropNightTakeoff = 73,
             IDPropWaterTakeoffs = 74,           // Not flagged as a known property - used for LogTenPro import
             IDPropSolo = 77,                    // Not flagged as a known property (flagged as solo)
+            IDPropIFRTime = 82,
             IDPropCheckrideSport = 89,
             IDPropInstructorName = 92,          // Not flagged as a known property
             IDPropTachStart = 95,

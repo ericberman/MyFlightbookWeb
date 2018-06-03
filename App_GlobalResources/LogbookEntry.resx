@@ -567,6 +567,9 @@
   <data name="PrintHeaderIFR" xml:space="preserve">
     <value>IFR</value>
   </data>
+  <data name="PrintHeaderIFRSubhead" xml:space="preserve">
+    <value>(Actual / Simulated)</value>
+  </data>  
   <data name="PrintHeaderLanding" xml:space="preserve">
     <value>Landings</value>
   </data>
