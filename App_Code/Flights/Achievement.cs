@@ -81,9 +81,8 @@ namespace MyFlightbook.Achievements
 
             List<Badge> lstInit = Badge.EarnedBadgesForUser(UserName);
 
-            // Checkrides - we used to examine flights to award checkrides, now we can get them directly.  So remove any Training badges from lstInit, and then get the checkride badges (below)
-            // and then ALWAYS compute checkride badges - it's fast, and because potentially unbounded, can't be persisted in database
-            lstInit.RemoveAll(b => b.Category == Badge.BadgeCategory.Ratings);
+            // Checkrides - we used to examine flights to award checkrides, now we can get them directly each time.
+            // It's fast, and because potentially unbounded, can't be persisted in database
             IEnumerable<CheckrideBadge> lstCheckrideBadges = CheckrideBadge.BadgesForUserCheckrides(UserName);
 
             if (pf.AchievementStatus == ComputeStatus.UpToDate)
@@ -287,16 +286,7 @@ namespace MyFlightbook.Achievements
             FirstSoloXC,
 
             // Ratings
-            PrivatePilot = BadgeCategory.Ratings,
-            Instrument,
-            Commercial,
-            ATP,
-            Sport,
-            Recreational,
-            CFI,
-            CFII,
-            MEI,
-            ComputedRating,
+            ComputedRating = BadgeCategory.Ratings,
 
             // Multi-level badges (counts)
             NumberOfModels = BadgeCategory.Milestones,
@@ -1220,124 +1210,6 @@ namespace MyFlightbook.Achievements
             }
             base.PostFlight(context);
         }
-    }
-    #endregion
-    #endregion
-
-    #region New Ratings
-    /// <summary>
-    /// Abstract base class for achieving various ratings
-    /// </summary>
-    public abstract class RatingBadgeBase : Badge
-    {
-        CustomPropertyType.KnownProperties idPropNewRating = CustomPropertyType.KnownProperties.None;
-
-        public override string BadgeImageOverlay
-        {
-            get { return "~/images/BadgeOverlays/certificate.png";}
-        }
-
-        protected RatingBadgeBase(BadgeID id, string szName, CustomPropertyType.KnownProperties idprop)
-            : base(id, szName)
-        {
-            idPropNewRating = idprop;
-        }
-
-        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, Object> context)
-        {
-            if (cfr == null)
-                throw new ArgumentNullException("cfr");
-
-            if (Level == AchievementLevel.None)
-            {
-                if (cfr.GetEventWithTypeID(idPropNewRating) != null)
-                {
-                    Level = AchievementLevel.Achieved;
-                    DateEarned = cfr.dtFlight;
-                    IDFlightEarned = cfr.flightID;
-                }
-            }
-        }
-    }
-
-    #region Concrete classes for getting new ratings
-    public class RatingBadgePPL : RatingBadgeBase
-    {
-        public RatingBadgePPL()
-            : base(BadgeID.PrivatePilot, Resources.Achievements.nameRatingPPL, CustomPropertyType.KnownProperties.IDPropCheckridePPL)
-        {
-        }
-    }
-
-    public class RatingBadgeInstrument : RatingBadgeBase
-    {
-        public RatingBadgeInstrument()
-            : base(BadgeID.Instrument, Resources.Achievements.nameRatingInstrument, CustomPropertyType.KnownProperties.IDPropCheckrideIFR)
-        {
-        }
-    }
-
-    public class RatingBadgeCommercial : RatingBadgeBase
-    {
-        public RatingBadgeCommercial()
-            : base(BadgeID.Commercial, Resources.Achievements.nameRatingCommercial, CustomPropertyType.KnownProperties.IDPropCheckrideCommercial)
-        {
-        }
-    }
-
-    public class RatingBadgeATP : RatingBadgeBase
-    {
-        public RatingBadgeATP()
-            : base(BadgeID.ATP, Resources.Achievements.nameRatingATP, CustomPropertyType.KnownProperties.IDPropCheckrideATP)
-        {
-        }
-
-        /// <summary>
-        /// You can earn an ATP in a sim
-        /// </summary>
-        public override bool CanEarnInSim { get { return true; } }
-
-        /// <summary>
-        /// Can earn ATP in a sim if it's certified landing OR if it's a real aircraft.
-        /// </summary>
-        /// <param name="cfr"></param>
-        /// <param name="context"></param>
-        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
-        {
-            if (cfr == null)
-                throw new ArgumentNullException("cfr");
-            if (cfr.fIsRealAircraft || cfr.fIsCertifiedLanding)
-                base.ExamineFlight(cfr, context);
-        }
-    }
-
-    public class RatingBadgeSport : RatingBadgeBase
-    {
-        public RatingBadgeSport()
-            : base(BadgeID.Sport, Resources.Achievements.nameRatingSport, CustomPropertyType.KnownProperties.IDPropCheckrideSport) { }
-    }
-
-    public class RatingBadgeRecreational : RatingBadgeBase
-    {
-        public RatingBadgeRecreational()
-            : base(BadgeID.Recreational, Resources.Achievements.nameRatingRecreation, CustomPropertyType.KnownProperties.IDPropCheckrideRecreational) { }
-    }
-
-    public class RatingBadgeCFI : RatingBadgeBase
-    {
-        public RatingBadgeCFI()
-            : base(BadgeID.CFI, Resources.Achievements.nameRatingCFI, CustomPropertyType.KnownProperties.IDPropCheckrideCFI) { }
-    }
-
-    public class RatingBadgeCFII : RatingBadgeBase
-    {
-        public RatingBadgeCFII()
-            : base(BadgeID.CFII, Resources.Achievements.nameRatingCFII, CustomPropertyType.KnownProperties.IDPropCheckrideCFII) { }
-    }
-
-    public class RatingBadgeMEI : RatingBadgeBase
-    {
-        public RatingBadgeMEI() : base(BadgeID.MEI, Resources.Achievements.nameRatingMEI, CustomPropertyType.KnownProperties.IDPropCheckrideMEI) { }
     }
     #endregion
     #endregion
