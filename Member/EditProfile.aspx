@@ -961,6 +961,32 @@
                         <Content>
                             <asp:Panel ID="pnlCertificates" runat="server" DefaultButton="btnUpdatePilotInfo" meta:resourcekey="pnlCertificatesResource1">
                                 <h3>
+                                    <asp:Localize ID="locRatings" runat="server" Text="Ratings" meta:resourcekey="locRatingsResource1"></asp:Localize></h3>
+                                <p>
+                                    <asp:Localize ID="locRatingsPrompt" runat="server" Text="These are your ratings, as determined from checkrides in your logbook. As such, the list may be incomplete." meta:resourcekey="locRatingsPromptResource1"></asp:Localize></p>
+                                <div>
+                                    <asp:GridView ID="gvRatings" CellPadding="4" runat="server" GridLines="None" AutoGenerateColumns="False" ShowHeader="False" meta:resourcekey="gvRatingsResource1">
+                                        <Columns>
+                                            <asp:BoundField DataField="LicenseName" meta:resourcekey="BoundFieldResource3" >
+                                            <ItemStyle Font-Bold="True" VerticalAlign="Top" />
+                                            </asp:BoundField>
+                                            <asp:TemplateField meta:resourcekey="TemplateFieldResource6">
+                                                <ItemTemplate>
+                                                    <asp:Repeater ID="rptPrivs" runat="server" DataSource='<%# Eval("Privileges") %>'>
+                                                        <ItemTemplate>
+                                                            <div><%# Container.DataItem %></div>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </ItemTemplate>
+                                                <ItemStyle VerticalAlign="Top" />
+                                            </asp:TemplateField>
+                                        </Columns>
+                                        <EmptyDataTemplate>
+                                            <asp:Localize ID="locNoRatingsFound" runat="server" Text="(No checkrides found)" meta:resourcekey="locNoRatingsFoundResource1"></asp:Localize>
+                                        </EmptyDataTemplate>
+                                    </asp:GridView>
+                                </div>
+                                <h3>
                                     <asp:Localize ID="locLicenseHeader" runat="server" Text="Pilot License" meta:resourcekey="locLicenseHeaderResource1"></asp:Localize>
                                 </h3>
                                 <div>

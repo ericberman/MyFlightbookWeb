@@ -249,4 +249,40 @@
   <data name="nameContinents" xml:space="preserve">
     <value>Inter-continental Flier: flown on {0} continents!</value>
   </data>
+  <data name="LicenseATP" xml:space="preserve">
+    <value>ATP License</value>
+  </data>
+  <data name="LicenseCFI" xml:space="preserve">
+    <value>CFI License</value>
+  </data>
+  <data name="LicenseCFII" xml:space="preserve">
+    <value>CFII License</value>
+  </data>
+  <data name="LicenseCommercial" xml:space="preserve">
+    <value>Commercial License</value>
+  </data>
+  <data name="LicenseInstrument" xml:space="preserve">
+    <value>Instrument License</value>
+  </data>
+  <data name="LicenseMEI" xml:space="preserve">
+    <value>MEI License</value>
+  </data>
+  <data name="LicensePPL" xml:space="preserve">
+    <value>Private Pilot License</value>
+  </data>
+  <data name="LicenseRecreational" xml:space="preserve">
+    <value>Recreational PIlot License</value>
+  </data>
+  <data name="LicenseSport" xml:space="preserve">
+    <value>Sport Pilot License</value>
+  </data>
+  <data name="LicenseNewPrivilege" xml:space="preserve">
+    <value>Additional Privilege</value>
+  </data>
+  <data name="LicenseNewRating" xml:space="preserve">
+    <value>New Rating</value>
+  </data>
+  <data name="ratingTypeTemplate" xml:space="preserve">
+    <value> - Type: {0}</value>
+  </data>
 </root>

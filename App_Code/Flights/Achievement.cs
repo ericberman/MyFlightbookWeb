@@ -81,8 +81,16 @@ namespace MyFlightbook.Achievements
 
             List<Badge> lstInit = Badge.EarnedBadgesForUser(UserName);
 
+            // Checkrides - we used to examine flights to award checkrides, now we can get them directly.  So remove any Training badges from lstInit, and then get the checkride badges (below)
+            // and then ALWAYS compute checkride badges - it's fast, and because potentially unbounded, can't be persisted in database
+            lstInit.RemoveAll(b => b.Category == Badge.BadgeCategory.Ratings);
+            IEnumerable<CheckrideBadge> lstCheckrideBadges = CheckrideBadge.BadgesForUserCheckrides(UserName);
+
             if (pf.AchievementStatus == ComputeStatus.UpToDate)
+            {
+                lstInit.AddRange(lstCheckrideBadges);
                 return lstInit;
+            }
 
             List<Badge> lstTotal = Badge.AvailableBadgesForUser(UserName);
 
@@ -154,6 +162,9 @@ namespace MyFlightbook.Achievements
                             b.Delete();
                         }
                     });
+
+                // Now add in all of the checkride badges.
+                lstTotal.AddRange(lstCheckrideBadges);
             }
             catch
             {
@@ -285,6 +296,7 @@ namespace MyFlightbook.Achievements
             CFI,
             CFII,
             MEI,
+            ComputedRating,
 
             // Multi-level badges (counts)
             NumberOfModels = BadgeCategory.Milestones,
@@ -577,7 +589,7 @@ namespace MyFlightbook.Achievements
             return ErrorString.Length == 0;
         }
 
-        public void Commit()
+        public virtual void Commit()
         {
             if (!FIsValid())
                 throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Error saving badge: {0}", ErrorString));
@@ -597,7 +609,7 @@ namespace MyFlightbook.Achievements
                 });
         }
 
-        public void Delete()
+        public virtual void Delete()
         {
             DBHelper dbh = new DBHelper("DELETE FROM badges WHERE BadgeID=?achieveID AND Username=?username");
             dbh.DoNonQuery((comm) =>
@@ -662,7 +674,8 @@ namespace MyFlightbook.Achievements
                     new TrainingBadgeFirstXC(),
                     new TrainingBadgeFirstSoloXC(),
 
-                    // Ratings
+                    // Ratings - obsolete
+                    /*
                     new RatingBadgeATP(),
                     new RatingBadgeCFI(),
                     new RatingBadgeCFII(),
@@ -672,6 +685,7 @@ namespace MyFlightbook.Achievements
                     new RatingBadgeRecreational(),
                     new RatingBadgeSport(),
                     new RatingBadgeMEI(),
+                    */
 
                     // Miscellaneous
                     new FlightOfThePenguin(),

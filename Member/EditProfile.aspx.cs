@@ -159,6 +159,10 @@ public partial class Member_EditProfile : System.Web.UI.Page
         gvIPC.DataSource = ProfileEvent.GetIPCEvents(User.Identity.Name);
         gvIPC.DataBind();
 
+        MyFlightbook.Achievements.UserRatings ur = new MyFlightbook.Achievements.UserRatings(m_pf.UserName);
+        gvRatings.DataSource = ur.Licenses;
+        gvRatings.DataBind();
+
         ProfileEvent[] rgpfeBFR = ProfileEvent.GetBFREvents(User.Identity.Name, m_pf.LastBFREvent);
 
         gvBFR.DataSource = rgpfeBFR;

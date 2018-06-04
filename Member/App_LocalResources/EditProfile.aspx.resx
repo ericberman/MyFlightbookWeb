@@ -198,6 +198,15 @@
   <data name="BoundFieldResource2.HeaderText" xml:space="preserve">
     <value />
   </data>
+  <data name="BoundFieldResource3.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource3.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource3.HeaderText" xml:space="preserve">
+    <value />
+  </data>
   <data name="BoundFieldResource4.AccessibleHeaderText" xml:space="preserve">
     <value />
   </data>
@@ -261,10 +270,16 @@
   <data name="btnUpdateCurrencyPrefsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="btnUpdateCurrencyPrefsResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="btnUpdateEmailPrefsResource1.Text" xml:space="preserve">
     <value>Update Preferences</value>
   </data>
   <data name="btnUpdateEmailPrefsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnUpdateLocalPrefsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="btnUpdateMedicalResource1.ToolTip" xml:space="preserve">
@@ -573,6 +588,15 @@
   <data name="gvOAuthClientsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="gvRatingsResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvRatingsResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvRatingsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="HyperLinkFieldResource1.AccessibleHeaderText" xml:space="preserve">
     <value />
   </data>
@@ -694,6 +718,9 @@
     <value>Preferences successfully updated</value>
   </data>
   <data name="lblCurrencyPrefsUpdatedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCurrencyPrefsUpdatedResource2.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblDeadlineAircraftOptionalResource1.Text" xml:space="preserve">
@@ -828,6 +855,9 @@
   <data name="lblLicenseFineprintResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblLocalPrefsUpdatedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblMedicalInfoResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
@@ -957,6 +987,9 @@
   <data name="ListItemResource1.Value" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="ListItemResource10.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="ListItemResource11.Text" xml:space="preserve">
     <value>(Unspecified)</value>
   </data>
@@ -1035,11 +1068,41 @@
   <data name="ListItemResource22.Value" xml:space="preserve">
     <value>CalendarMonths</value>
   </data>
+  <data name="ListItemResource23.Value" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="ListItemResource24.Value" xml:space="preserve">
+    <value>True</value>
+  </data>
+  <data name="ListItemResource25.Value" xml:space="preserve">
+    <value>AeromedicalCourse</value>
+  </data>
+  <data name="ListItemResource26.Value" xml:space="preserve">
+    <value>PhysicianVisit</value>
+  </data>
   <data name="ListItemResource3.Text" xml:space="preserve">
     <value>Show currency by Category/class/type</value>
   </data>
   <data name="ListItemResource3.Value" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="ListItemResource30.Text" xml:space="preserve">
+    <value>Show totals by category/class (and type, for models that require a type rating)</value>
+  </data>
+  <data name="ListItemResource30.Value" xml:space="preserve">
+    <value>CatClass</value>
+  </data>
+  <data name="ListItemResource31.Text" xml:space="preserve">
+    <value>Show totals by model</value>
+  </data>
+  <data name="ListItemResource31.Value" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="ListItemResource32.Text" xml:space="preserve">
+    <value>Show totals by model with common models grouped by family/ICAO Designator</value>
+  </data>
+  <data name="ListItemResource32.Value" xml:space="preserve">
+    <value>Family</value>
   </data>
   <data name="ListItemResource4.Text" xml:space="preserve">
     <value>Show currency for each make/model I have flown</value>
@@ -1052,6 +1115,27 @@
   </data>
   <data name="ListItemResource6.Value" xml:space="preserve">
     <value>PhysicianVisit</value>
+  </data>
+  <data name="ListItemResource7.Text" xml:space="preserve">
+    <value>Use FAA rules (calendar months)</value>
+  </data>
+  <data name="ListItemResource7.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListItemResource7.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource8.Text" xml:space="preserve">
+    <value>Use ICAO rules (day for day)</value>
+  </data>
+  <data name="ListItemResource8.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListItemResource8.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ListItemResource9.Value" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="lnkAuthDropboxResource1.Text" xml:space="preserve">
     <value />
@@ -1128,6 +1212,9 @@
   <data name="locCustCurrencyDescResource1.Text" xml:space="preserve">
     <value>You can define your own currency rules (can be useful for FBO or insurance rules)</value>
   </data>
+  <data name="locCustCurrencyDescResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="locCustomCurrencyHeaderResource1.Text" xml:space="preserve">
     <value>Custom Currency Rules</value>
   </data>
@@ -1179,6 +1266,9 @@
   <data name="locNoBFRFoundResource1.Text" xml:space="preserve">
     <value>(No flight reviews or checkrides found)</value>
   </data>
+  <data name="locNoRatingsFoundResource1.Text" xml:space="preserve">
+    <value>(No checkrides found)</value>
+  </data>
   <data name="locOAuthHeaderResource1.Text" xml:space="preserve">
     <value>You have authorized the following applications to access your data:</value>
   </data>
@@ -1199,6 +1289,12 @@
   </data>
   <data name="locQuestionPromptResource1.Text" xml:space="preserve">
     <value>New Security Question</value>
+  </data>
+  <data name="locRatingsPromptResource1.Text" xml:space="preserve">
+    <value>These are your ratings, as determined from checkrides in your logbook. As such, the list may be incomplete.</value>
+  </data>
+  <data name="locRatingsResource1.Text" xml:space="preserve">
+    <value>Ratings</value>
   </data>
   <data name="locRetypeEmailPromptResource1.Text" xml:space="preserve">
     <value>Retype Email</value>
@@ -1338,7 +1434,16 @@
   <data name="rbl117RulesResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="rbl117RulesResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="rblBasicMedActionResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblBasicMedActionResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblCloudBackupAppendDateResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="rblCurrencyPrefResource1.ToolTip" xml:space="preserve">
@@ -1347,7 +1452,13 @@
   <data name="rblDateEntryPreferencesResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="rblMedicalDurationTypeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="rblTimeEntryPreferenceResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblTotalsOptionsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="rbRegenIntervalResource1.Text" xml:space="preserve">
@@ -1470,6 +1581,24 @@
   <data name="TemplateFieldResource4.HeaderText" xml:space="preserve">
     <value />
   </data>
+  <data name="TemplateFieldResource5.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource5.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource5.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource6.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource6.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource6.HeaderText" xml:space="preserve">
+    <value />
+  </data>
   <data name="txtAddressResource1.Text" xml:space="preserve">
     <value />
   </data>
@@ -1576,42 +1705,6 @@
     <value />
   </data>
   <data name="ValidateEmailOKResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ListItemResource7.Text" xml:space="preserve">
-    <value>FAA rules (calendar months)</value>
-  </data>
-  <data name="ListItemResource7.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ListItemResource8.Text" xml:space="preserve">
-    <value>ICAO rules (day-for-day)</value>
-  </data>
-  <data name="ListItemResource8.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="rblMedicalDurationTypeResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ListItemResource30.Text" xml:space="preserve">
-    <value>Show totals by category/class (and type, for models that require a type rating)</value>
-  </data>
-  <data name="ListItemResource30.Value" xml:space="preserve">
-    <value>CatClass</value>
-  </data>
-  <data name="ListItemResource31.Text" xml:space="preserve">
-    <value>Show totals by model</value>
-  </data>
-  <data name="ListItemResource31.Value" xml:space="preserve">
-    <value>Model</value>
-  </data>
-  <data name="ListItemResource32.Text" xml:space="preserve">
-    <value>Show totals by model with common models grouped by family/ICAO Designator</value>
-  </data>
-  <data name="ListItemResource32.Value" xml:space="preserve">
-    <value>Family</value>
-  </data>
-  <data name="rblTotalsOptionsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
 </root>
