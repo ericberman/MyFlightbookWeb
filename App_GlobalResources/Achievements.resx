@@ -291,7 +291,10 @@
   <data name="PrivilegeCFII" xml:space="preserve">
     <value>Instrument</value>
   </data>
-  <data name="PrivilegeMEI" xml:space="preserve">
+  <data name="PrivilegeMultiEngine" xml:space="preserve">
     <value>Multi-Engine</value>
+  </data>
+  <data name="PrivilegeSingleEngine" xml:space="preserve">
+    <value>Single-Engine</value>
   </data>
 </root>

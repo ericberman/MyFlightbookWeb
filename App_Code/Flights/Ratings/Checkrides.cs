@@ -452,7 +452,7 @@ namespace MyFlightbook.Achievements
                 return;
             }
            
-            DBHelper dbh = new DBHelper(@"SELECT cpt.idproptype, f.date, f.idflight, m.typename, cc.Category, cc.Class
+            DBHelper dbh = new DBHelper(@"SELECT cpt.idproptype, f.date, f.idflight, m.typename, cc.Category, cc.Class, cc.idCatClass
                 FROM
                     flightproperties fp
                         INNER JOIN
@@ -486,6 +486,27 @@ namespace MyFlightbook.Achievements
                     {
                         case CustomPropertyType.KnownProperties.IDPropCheckrideIFR:
                             cr.Privilege = szCategory;
+                            break;
+                        case CustomPropertyType.KnownProperties.IDPropCheckrideCFI:
+                        case CustomPropertyType.KnownProperties.IDPropCheckrideMEI:
+                            {
+                                // CFI ratings are category/class, but not land/sea class, just single/multi.
+                                CategoryClass.CatClassID ccid = (CategoryClass.CatClassID)Convert.ToInt32(dr["idCatClass"], CultureInfo.InvariantCulture);
+                                switch (ccid)
+                                {
+                                    case CategoryClass.CatClassID.AMEL:
+                                    case CategoryClass.CatClassID.AMES:
+                                        cr.Privilege = String.Format(CultureInfo.CurrentCulture, "{0} {1} {2}", szCategory, Resources.Achievements.PrivilegeMultiEngine, szType).Trim();
+                                        break;
+                                    case CategoryClass.CatClassID.ASEL:
+                                    case CategoryClass.CatClassID.ASES:
+                                        cr.Privilege = String.Format(CultureInfo.CurrentCulture, "{0} {1} {2}", szCategory, Resources.Achievements.PrivilegeSingleEngine, szType).Trim();
+                                        break;
+                                    default:
+                                        cr.Privilege = String.Format(CultureInfo.CurrentCulture, "{0} {1} {2}", dr["Category"], dr["Class"], String.IsNullOrEmpty(szType) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Achievements.ratingTypeTemplate, szType)).Trim();
+                                        break;
+                                }
+                            }
                             break;
                         case CustomPropertyType.KnownProperties.IDPropCheckrideCFII:
                             cr.Privilege = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Resources.Achievements.PrivilegeCFII, szCategory);
