@@ -285,6 +285,9 @@
   <data name="ratingTypeTemplate" xml:space="preserve">
     <value> - Type: {0}</value>
   </data>
+  <data name="nameFlyingStreak" xml:space="preserve">
+    <value>Flying Streak: flew {0} days in a row!</value>
+  </data>
   <data name="PrivilegeCFII" xml:space="preserve">
     <value>Instrument</value>
   </data>

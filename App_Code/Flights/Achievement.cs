@@ -302,6 +302,7 @@ namespace MyFlightbook.Achievements
             NumberOfLandings,
             NumberOfApproaches,
             NumberOfContinents,
+            FlyingStreak,
 
             Antarctica = BadgeCategory.Miscellaneous,
 
@@ -688,6 +689,7 @@ namespace MyFlightbook.Achievements
                     new MultiLevelBadgeNumberAircraft(),
                     new MultiLevelBadgeNumberAirports(),
                     new MultiLevelBadgeContinents(),
+                    new MultiLevelBadgeFlyingStreak(),
                     new MultiLevelBadgeTotalTime(),
                     new MultiLevelBadgePICTime(),
                     new MultiLevelBadgeSICTime(),
@@ -1209,6 +1211,32 @@ namespace MyFlightbook.Achievements
                         }
             }
             base.PostFlight(context);
+        }
+    }
+
+    public class MultiLevelBadgeFlyingStreak : MultiLevelCountBadgeBase
+    {
+        int daysInARow = 0;
+        DateTime dtLastSeen = DateTime.MinValue;
+        
+        public MultiLevelBadgeFlyingStreak() : base(BadgeID.FlyingStreak, Resources.Achievements.nameFlyingStreak, 10, 20, 30, 50) { }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException("cfr");
+            DateTime dtFlight = cfr.dtFlight.Date;
+            if (dtFlight.CompareTo(dtLastSeen.Date) == 0)   // ignore multiple flights on the same day.
+                return;
+            else if (dtFlight.Subtract(dtLastSeen.Date).Days > 1)
+                daysInARow = 1;
+            else
+            {
+                daysInARow++;
+                AddToCount(daysInARow - Quantity, cfr);
+            }
+
+            dtLastSeen = cfr.dtFlight.Date;
         }
     }
     #endregion
