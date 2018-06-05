@@ -115,6 +115,10 @@ namespace MyFlightbook.Achievements
             if (cr != null)
             {
                 LicenseKind = cr.LicenseKind;
+
+                // Merge all CFII/MEI into CFI
+                if (cr.LicenseKind == LicenseKind.CFII || cr.LicenseKind == LicenseKind.MEI)
+                    LicenseKind = LicenseKind.CFI;
                 AddPrivilege(cr.Privilege);
             }
         }
@@ -424,9 +428,12 @@ namespace MyFlightbook.Achievements
                 AddMergedCheckridesToList(dlevels[lk]);
 
             AddMergedCheckridesToList(dictInstrument.Values);
-            AddMergedCheckridesToList(dictCFI.Values);
-            AddMergedCheckridesToList(dictCFII.Values);
-            AddMergedCheckridesToList(dictMEI.Values);
+
+            // MEI and CFII are really just flavors of CFI, so merge these together.
+            List<Checkride> lst = new List<Checkride>(dictCFI.Values);
+            lst.AddRange(dictCFII.Values);
+            lst.AddRange(dictMEI.Values);
+            AddMergedCheckridesToList(lst);
             m_lstLicenses.Sort();
         }
         #endregion
@@ -466,7 +473,7 @@ namespace MyFlightbook.Achievements
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("userName", Username); },
                 (dr) =>
                 {
-                    Checkride er = new Checkride()
+                    Checkride cr = new Checkride()
                     {
                         FlightID = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture),
                         DateEarned = Convert.ToDateTime(dr["date"], CultureInfo.InvariantCulture),
@@ -474,8 +481,21 @@ namespace MyFlightbook.Achievements
                     };
 
                     string szType = (string)dr["typename"];
-                    er.Privilege = (er.CheckrideProperty == CustomPropertyType.KnownProperties.IDPropCheckrideIFR) ? (string) dr["Category"] : String.Format(CultureInfo.CurrentCulture, "{0} {1} {2}", dr["Category"], dr["Class"], String.IsNullOrEmpty(szType) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Achievements.ratingTypeTemplate, szType)).Trim();
-                    lst.Add(er);
+                    string szCategory = (string)dr["Category"];
+                    switch (cr.CheckrideProperty)
+                    {
+                        case CustomPropertyType.KnownProperties.IDPropCheckrideIFR:
+                            cr.Privilege = szCategory;
+                            break;
+                        case CustomPropertyType.KnownProperties.IDPropCheckrideCFII:
+                            cr.Privilege = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Resources.Achievements.PrivilegeCFII, szCategory);
+                            break;
+                        default:
+                            cr.Privilege = String.Format(CultureInfo.CurrentCulture, "{0} {1} {2}", dr["Category"], dr["Class"], String.IsNullOrEmpty(szType) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Achievements.ratingTypeTemplate, szType)).Trim();
+                            break;
+                    }
+                    
+                    lst.Add(cr);
                 });
 
             // We now have a set of checkrides - now we need to figure out how they applied.

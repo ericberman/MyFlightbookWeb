@@ -250,31 +250,31 @@
     <value>Inter-continental Flier: flown on {0} continents!</value>
   </data>
   <data name="LicenseATP" xml:space="preserve">
-    <value>ATP License</value>
+    <value>ATP</value>
   </data>
   <data name="LicenseCFI" xml:space="preserve">
-    <value>CFI License</value>
+    <value>Flight Instructor</value>
   </data>
   <data name="LicenseCFII" xml:space="preserve">
-    <value>CFII License</value>
+    <value>CFII</value>
   </data>
   <data name="LicenseCommercial" xml:space="preserve">
-    <value>Commercial License</value>
+    <value>Commercial</value>
   </data>
   <data name="LicenseInstrument" xml:space="preserve">
-    <value>Instrument License</value>
+    <value>Instrument</value>
   </data>
   <data name="LicenseMEI" xml:space="preserve">
-    <value>MEI License</value>
+    <value>MEI </value>
   </data>
   <data name="LicensePPL" xml:space="preserve">
-    <value>Private Pilot License</value>
+    <value>Private Pilot</value>
   </data>
   <data name="LicenseRecreational" xml:space="preserve">
-    <value>Recreational PIlot License</value>
+    <value>Recreational PIlot</value>
   </data>
   <data name="LicenseSport" xml:space="preserve">
-    <value>Sport Pilot License</value>
+    <value>Sport Pilot</value>
   </data>
   <data name="LicenseNewPrivilege" xml:space="preserve">
     <value>Additional Privilege</value>
@@ -284,5 +284,11 @@
   </data>
   <data name="ratingTypeTemplate" xml:space="preserve">
     <value> - Type: {0}</value>
+  </data>
+  <data name="PrivilegeCFII" xml:space="preserve">
+    <value>Instrument</value>
+  </data>
+  <data name="PrivilegeMEI" xml:space="preserve">
+    <value>Multi-Engine</value>
   </data>
 </root>
