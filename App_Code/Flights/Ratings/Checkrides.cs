@@ -110,7 +110,7 @@ namespace MyFlightbook.Achievements
             AddPrivilege(szPriv);
         }
 
-        public PilotLicense(Checkride cr) : this()
+        internal PilotLicense(Checkride cr) : this()
         {
             if (cr != null)
             {
@@ -119,7 +119,6 @@ namespace MyFlightbook.Achievements
                 // Merge all CFII/MEI into CFI
                 if (cr.LicenseKind == LicenseKind.CFII || cr.LicenseKind == LicenseKind.MEI)
                     LicenseKind = LicenseKind.CFI;
-                AddPrivilege(cr.Privilege);
             }
         }
         #endregion
@@ -377,13 +376,27 @@ namespace MyFlightbook.Achievements
         private PilotLicense MergeCheckrides(IEnumerable<Checkride> lstIn)
         {
             PilotLicense pl = null;
+
+            if (lstIn == null)
+                return pl;
+
+            HashSet<string> hsPrivs = new HashSet<string>();
             foreach (Checkride cr in lstIn)
             {
                 if (pl == null)
                     pl = new PilotLicense(cr);
-                else
-                    pl.AddPrivilege(cr.Privilege);
+                hsPrivs.Add(cr.Privilege);
             }
+
+            // Sort and add privs
+            if (pl != null)
+            {
+                List<string> lstPrivs = new List<string>(hsPrivs);
+                lstPrivs.Sort();
+                foreach (string szPriv in lstPrivs)
+                    pl.AddPrivilege(szPriv);
+            }
+
             return pl;
         }
 
