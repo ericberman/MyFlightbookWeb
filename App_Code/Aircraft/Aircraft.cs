@@ -1,4 +1,7 @@
-﻿using System;
+﻿using JouniHeikniemi.Tools.Text;
+using MyFlightbook.Image;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
@@ -8,9 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using JouniHeikniemi.Tools.Text;
-using MyFlightbook.Image;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
@@ -1016,6 +1016,65 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Examines a proposed change of model for the aircraft and migrates to an existing clone - or creates it.
+        /// </summary>
+        /// <param name="idProposedModel">The ID of the proposed new model</param>
+        /// <param name="szUser">The user making the change (who will be migrated if necessary)</param>
+        /// <returns>True if the aircraft was cloned and any further processing should be stopped</returns>
+        public bool HandlePotentialClone(int idProposedModel, string szUser)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                return false;   // error condition or admin - don't do any cloning, allow this to go through, admin will review
+
+            /* Issue #95: Smarter cloning in case of model change
+              |If the new model is...                                    |Then do this...                                                  |Notification for admin review?|
+              |----------------------------------------------------------|-----------------------------------------------------------------|------------------------------|
+              |Different ICAO, or new and old empty ICAO                 |Clone                                                            |Yes                           |
+              |Same non-empty ICAO as an existing clone                  |Don't edit the model, but switch the user to the existing clone  |No                            |
+              |Same ICAO new cat class - (e.g., C-172 P to C-172 P Float)|Clone, if it didn't match existing clone above.                  |No                            |
+              |Same ICAO and cat class                                   |Treat as a minor edit.  E.g., C-172N to C-172P.                  |Yes                           |
+             */
+            MakeModel mmOld = MakeModel.GetModel(ModelID);
+            MakeModel mmNew = MakeModel.GetModel(idProposedModel);
+            List<Aircraft> lstClones = Aircraft.AircraftMatchingTail(TailNumber);
+            lstClones.RemoveAll(ac1 => ac1.AircraftID == this.AircraftID);
+
+            // See if we should migrate to an existing clone
+            // Prefer exact model match, but accept an ICAO match that is non-empty - this should catch the scenario of editing a Piper Cub to a Piper Cub on floats, for example
+            int idAircraftMatch = Aircraft.idAircraftUnknown;
+            foreach (Aircraft acClone in lstClones)
+            {
+                // Family name can be empty for an exact model match, but not for a family name match
+                if (acClone.ModelID == idProposedModel)
+                {
+                    idAircraftMatch = acClone.AircraftID;
+                    break;
+                }
+                else if (!String.IsNullOrEmpty(mmNew.FamilyName) && mmNew.FamilyName.CompareCurrentCultureIgnoreCase(MakeModel.GetModel(acClone.ModelID).FamilyName) == 0)
+                    idAircraftMatch = acClone.AircraftID;
+            }
+            if (idAircraftMatch != Aircraft.idAircraftUnknown)
+            {
+                Aircraft acNew = new Aircraft(idAircraftMatch);
+                UserAircraft ua = new UserAircraft(szUser);
+                ua.ReplaceAircraftForUser(acNew, this, true);
+                return true;
+            }
+
+            // Check for a minor edit: defined as same non-empty ICAO and same category class
+            if (!String.IsNullOrEmpty(mmNew.FamilyName) && mmNew.FamilyName.CompareCurrentCulture(mmOld.FamilyName) == 0 && mmNew.CategoryClassID == mmOld.CategoryClassID)
+                return false;   // any admin notification will be done outside of this
+
+            // If we are here, this is not a minor change - go ahead and clone and notify the admin.
+            Clone(idProposedModel, new string[] { szUser });
+            Profile pf = Profile.GetUser(szUser);
+            util.NotifyAdminEvent(String.Format(CultureInfo.CurrentCulture, "Aircraft {0} cloned", DisplayTailnumber),
+                String.Format(CultureInfo.CurrentCulture, "User: {0} ({1} <{2}>)\r\n\r\nhttps://{3}/logbook/Member/EditAircraft.aspx?id={4}&a=1\r\n\r\nOld Model: {5} ({6})\r\nNew Model: {7}, ({8})",
+                pf.UserName, pf.UserFullName, pf.Email, Branding.CurrentBrand.HostName, AircraftID, mmOld.DisplayName, mmOld.MakeModelID, mmNew.DisplayName, mmNew.MakeModelID), ProfileRoles.maskCanManageData | ProfileRoles.maskCanSupport); 
+            return true;
+        }
+
+        /// <summary>
         /// Commits changes to the aircraft to the db.
         /// </summary>
         public void CommitForUser(string szUser)
@@ -1084,28 +1143,23 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Commits the aircraft without specifying a user
-        /// </summary>
-        public void Commit()
-        {
-            CommitForUser(string.Empty);
-        }
-
-        /// <summary>
         /// Adds the aircraft for the specified user (will add the aircraft to the user's aircraft list)
         /// </summary>
         /// <param name="szUser">Username for whom the airplane is being added.</param>
-        public void Commit(string szUser)
+        public void Commit(string szUser = null)
         {
-            CommitForUser(szUser);
+            CommitForUser(szUser ?? string.Empty);
 
             // id should now be set to the id of the aircraft
             if (AircraftID < 0)
                 throw new MyFlightbookException("Somehow aircraftID is less than 0 after commit!");
 
-            UserAircraft ua = new UserAircraft(szUser);
-            ua.InvalidateCache();
-            ua.FAddAircraftForUser(this);
+            if (!string.IsNullOrEmpty(szUser))
+            {
+                UserAircraft ua = new UserAircraft(szUser);
+                ua.InvalidateCache();
+                ua.FAddAircraftForUser(this);
+            }
         }
         #endregion
 
@@ -1362,8 +1416,10 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             // Notify the admin here - model changed, I want to see it.
             string szSubject = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName);
             string szNotificationTemplate = Branding.ReBrand(Resources.Aircraft.AircraftModelChangedNotification);
-            string szMakeMatch = new MakeModel(acMatch.ModelID).DisplayName;
-            string szMakeThis = new MakeModel(this.ModelID).DisplayName;
+            MakeModel mmMatch = MakeModel.GetModel(acMatch.ModelID);
+            MakeModel mmThis = MakeModel.GetModel(this.ModelID);
+            string szMakeMatch = mmMatch.DisplayName + mmMatch.ICAODisplay;
+            string szMakeThis = mmThis.DisplayName + mmThis.ICAODisplay;
 
             // Admin events can merge duplicate models, so detect that
             if (String.Compare(szMakeMatch, szMakeThis, StringComparison.CurrentCultureIgnoreCase) == 0)
@@ -1467,7 +1523,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         /// </summary>
         /// <param name="idModelTarget">The model for the cloned aircraft</param>
         /// <param name="lstUsersToMigrate">The users that should migrate to the new aircraft</param>
-        public void Clone(int idModelTarget, ReadOnlyCollection<string> lstUsersToMigrate)
+        public void Clone(int idModelTarget, IEnumerable<string> lstUsersToMigrate)
         {
             if (lstUsersToMigrate == null)
                 throw new ArgumentNullException("lstUsersToMigrate");

@@ -519,7 +519,17 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         // c) Existing aircraft with other users: Treat as a new aircraft with the specified model; after commit, do any replacement as necessary
         // In other words, migrate the user to another aircraft if we are editing an existing aircraft, changing the tail, and there are other users.
         bool fChangedTail = (String.Compare(Aircraft.NormalizeTail(ac.TailNumber), Aircraft.NormalizeTail(szTailNew), true) != 0);
-        bool fMigrateUser = (!ac.IsNew && fChangedTail && (new AircraftStats(Page.User.Identity.Name, m_ac.AircraftID)).Users > 1);
+        bool fIsNew = ac.IsNew;
+        bool fChangedModel = ac.ModelID != SelectedModelID;
+        bool fOtherUsers = !fIsNew && (fChangedTail || fChangedModel) && (new AircraftStats(Page.User.Identity.Name, m_ac.AircraftID)).Users > 1;   // no need to compute user stats if new, or if tail and model are both unchanged
+        bool fMigrateUser = (!fIsNew && fChangedTail && fOtherUsers);
+
+        // Check for model change without tail number change on an existing aircraft
+        if (!AdminMode && !fIsNew && !fChangedTail && fChangedModel && fOtherUsers && ac.HandlePotentialClone(SelectedModelID, Page.User.Identity.Name))
+        {
+            Response.Redirect("~/Member/Aircraft.aspx");
+            return;
+        }
 
         // set the tailnumber regardless, using appropriate hyphenation (if hyphenation is specified)
         CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(szTailNew);
@@ -667,16 +677,32 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     #endregion
 
     #region Alternative Versions
+    protected void SwitchToAlternateVersion(int idAircraft, bool fMigrate)
+    {
+        Aircraft ac = new Aircraft(idAircraft);
+        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+        ua.ReplaceAircraftForUser(ac, m_ac, fMigrate);
+        Response.Redirect(fMigrate ? String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ac.AircraftID) : "~/Member/Aircraft.aspx");
+    }
+
     protected void gvAlternativeVersions_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
             throw new ArgumentNullException("e");
 
-        Aircraft ac = new Aircraft(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
-        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-        bool fMigrate = e.CommandName.CompareOrdinalIgnoreCase("_switchMigrate") == 0;
-        ua.ReplaceAircraftForUser(ac, m_ac, fMigrate);
-        Response.Redirect(fMigrate ? String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ac.AircraftID) : "~/Member/Aircraft.aspx");
+        if (e.CommandName.CompareCurrentCultureIgnoreCase("_switchMigrate") == 0)
+            SwitchToAlternateVersion(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture), true);
+        else if (e.CommandName.CompareCurrentCultureIgnoreCase("_switchNoMigrate") == 0)
+            SwitchToAlternateVersion(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture), false);
+        else if (e.CommandName.CompareCurrentCultureIgnoreCase("_merge") == 0)
+        {
+            Aircraft acClone = new Aircraft(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
+            if (!acClone.IsNew)
+            {
+                Aircraft.AdminMergeDupeAircraft(m_ac, acClone);
+                Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", m_ac.AircraftID));
+            }
+        }
     }
 
     protected void gvAlternativeVersions_RowDataBound(object sender, GridViewRowEventArgs e)

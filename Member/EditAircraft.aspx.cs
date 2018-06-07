@@ -140,7 +140,7 @@ public partial class EditMake : System.Web.UI.Page
                 if (ck.Checked && !String.IsNullOrEmpty(h.Value))
                     lstUsers.Add(h.Value);
             }
-            MfbEditAircraft1.Aircraft.Clone(MfbEditAircraft1.SelectedModelID, new System.Collections.ObjectModel.ReadOnlyCollection<string>(lstUsers));
+            MfbEditAircraft1.Aircraft.Clone(MfbEditAircraft1.SelectedModelID, lstUsers);
             Response.Redirect(Request.Url.PathAndQuery);
         }
     }

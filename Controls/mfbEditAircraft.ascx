@@ -278,21 +278,33 @@
                     </ItemTemplate>
                     <ItemStyle VerticalAlign="Middle" />
                 </asp:TemplateField>
-                <asp:BoundField DataField="LongModelDescription">
+                <asp:TemplateField>
                     <ItemStyle VerticalAlign="Middle" />
-                </asp:BoundField>
+                    <ItemTemplate>
+                        <asp:Label ID="lblAltModel" runat="server" Text='<%# MakeModel.GetModel(Convert.ToInt32(Eval("ModelID"), System.Globalization.CultureInfo.InvariantCulture)).ModelDisplayName %>'></asp:Label>
+                    </ItemTemplate>
+                </asp:TemplateField>
                 <asp:TemplateField>
                     <ItemTemplate>
                         <ul>
-                            <li><asp:LinkButton ID="lnkUseThis" runat="server"
+                            <li>
+                                <asp:LinkButton ID="lnkUseThis" runat="server"
                                 Text="<%$ Resources:Aircraft, editAircraftSwitchOtherVersion %>" CommandName="_switchMigrate"
                                 CommandArgument='<%# Bind("AircraftID") %>'></asp:LinkButton></li>
                             <li>
-                                    <asp:LinkButton ID="lnkAddThis" runat="server"
-                                        Text="<%$ Resources:Aircraft, editAircraftAddOtherVersion %>"
-                                        CommandName="_switchNoMigrate" CommandArgument='<%# Bind("AircraftID") %>'></asp:LinkButton>
+                                <asp:LinkButton ID="lnkAddThis" runat="server"
+                                    Text="<%$ Resources:Aircraft, editAircraftAddOtherVersion %>"
+                                    CommandName="_switchNoMigrate" CommandArgument='<%# Bind("AircraftID") %>'></asp:LinkButton>
                             </li>
                         </ul>
+                    </ItemTemplate>
+                    <ItemStyle VerticalAlign="Middle" />
+                </asp:TemplateField>
+                <asp:TemplateField>
+                    <ItemTemplate>
+                        <asp:Button ID="lnkMergeThis" runat="server" Visible="<%# AdminMode %>"
+                            Text="Merge into main (Admin)"
+                            CommandName="_merge" CommandArgument='<%# Bind("AircraftID") %>'></asp:Button>
                     </ItemTemplate>
                     <ItemStyle VerticalAlign="Middle" />
                 </asp:TemplateField>

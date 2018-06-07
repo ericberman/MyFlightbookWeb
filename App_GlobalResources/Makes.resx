@@ -210,4 +210,7 @@
   <data name="searchTip" xml:space="preserve">
     <value>Search for models</value>
   </data>
+  <data name="ICAOTemplate" xml:space="preserve">
+    <value> (ICAO: {0})</value>
+  </data>
 </root>

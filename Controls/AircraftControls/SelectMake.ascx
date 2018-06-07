@@ -67,7 +67,7 @@
     <asp:View ID="vwReadOnly" runat="server">
         <div style="vertical-align:middle">
             <asp:Label ID="lblMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:Label>&nbsp;&nbsp;
-            <asp:ImageButton ID="imgEditAircraftModel" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" />
+            <asp:ImageButton ID="imgEditAircraftModel" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" OnClick="btnChangeModelTweak_Click" />
         </div>
     </asp:View>
 </asp:MultiView>
@@ -87,36 +87,4 @@
         </ItemTemplate>
     </asp:Repeater>
 </ul>
-<asp:Panel ID="pnlAdviseModelChange" runat="server" BackColor="White" CssClass="modalpopup" Style="display:none; width: 450px;" DefaultButton="btnChangeModelCancel">
-    <p>
-        <asp:Label ID="lblAdviseModelChange" runat="server" Text="<%$ Resources:Aircraft, editAircraftModelChangeHeader %>" Font-Bold="True"></asp:Label>
-    </p>
-    <p><% =Branding.ReBrand(Resources.Aircraft.editAircraftModelChange1) %></p>
-    <p><% =Resources.Aircraft.editAircraftModelChange2 %></p>
-    <p><% =Resources.Aircraft.editAircraftModelChange3 %></p>
-    <div style="text-align:center">
-        <asp:Button ID="btnChangeModelTweak" runat="server" Width="45%" Text="<%$ Resources:Aircraft, editAircraftTweak %>" OnClick="btnChangeModelTweak_Click" />
-        <asp:Button ID="btnChangeModelClone" runat="server" Width="45%" Text="<%$ Resources:Aircraft, editAircraftClone %>" OnClick="btnChangeModelClone_Click" />
-        <br /><br />
-        <asp:Button ID="btnChangeModelCancel" runat="server" Width="30%" Text="<%$ Resources:LocalizedText, Cancel %>" />
-    </div>
-</asp:Panel>
-<ajaxToolkit:ModalPopupExtender runat="server" PopupControlID="pnlAdviseModelChange" BackgroundCssClass="modalBackground" CancelControlID="btnChangeModelCancel" ID="modalModelChange" BehaviorID="modalModelChange" TargetControlID="imgEditAircraftModel"></ajaxToolkit:ModalPopupExtender>
-<script type="text/javascript">
-    function hideModelChange() {
-        document.getElementById('<% =pnlAdviseModelChange.ClientID %>').style.display = 'none';
-        $find("modalModelChange").hide();
-    }
 
-    /* Handle escape to dismiss */
-    function pageLoad(sender, args) {
-        if (!args.get_isPartialLoad()) {
-            $addHandler(document, "keydown", onKeyDown);
-        }
-    }
-
-    function onKeyDown(e) {
-        if (e && e.keyCode == Sys.UI.Key.esc)
-            hideModelChange();
-    }
-</script>

@@ -147,6 +147,12 @@ namespace MyFlightbook
             }
         }
 
+        [Newtonsoft.Json.JsonIgnore]
+        public string ICAODisplay
+        {
+            get { return String.IsNullOrEmpty(FamilyName) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Makes.ICAOTemplate, FamilyName); }
+        }
+
         /// <summary>
         /// ID's of sample aircraft which that are of this make (read-only)
         /// </summary>
