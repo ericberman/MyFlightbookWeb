@@ -1069,8 +1069,8 @@ namespace MyFlightbook
             Clone(idProposedModel, new string[] { szUser });
             Profile pf = Profile.GetUser(szUser);
             util.NotifyAdminEvent(String.Format(CultureInfo.CurrentCulture, "Aircraft {0} cloned", DisplayTailnumber),
-                String.Format(CultureInfo.CurrentCulture, "User: {0} ({1} <{2}>)\r\n\r\nhttps://{3}/logbook/Member/EditAircraft.aspx?id={4}&a=1\r\n\r\nOld Model: {5} ({6})\r\nNew Model: {7}, ({8})",
-                pf.UserName, pf.UserFullName, pf.Email, Branding.CurrentBrand.HostName, AircraftID, mmOld.DisplayName, mmOld.MakeModelID, mmNew.DisplayName, mmNew.MakeModelID), ProfileRoles.maskCanManageData | ProfileRoles.maskCanSupport); 
+                String.Format(CultureInfo.CurrentCulture, "User: {0} ({1} <{2}>)\r\n\r\nhttps://{3}/logbook/Member/EditAircraft.aspx?id={4}&a=1\r\n\r\nOld Model: {5}, (modelID: {6})\r\n\r\nNew Model: {7}, (modelID: {8})",
+                pf.UserName, pf.UserFullName, pf.Email, Branding.CurrentBrand.HostName, AircraftID, mmOld.DisplayName + " " + mmOld.ICAODisplay, mmOld.MakeModelID, mmNew.DisplayName + " " + mmNew.ICAODisplay, mmNew.MakeModelID), ProfileRoles.maskCanManageData | ProfileRoles.maskCanSupport); 
             return true;
         }
 
