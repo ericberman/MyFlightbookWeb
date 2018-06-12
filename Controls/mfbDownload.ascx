@@ -193,6 +193,11 @@
                 <asp:Label ID="Label19" runat="server" Text='<%# Eval("CFIExpiration").FormatOptionalInvariantDate() %>'></asp:Label>
             </ItemTemplate>
         </asp:TemplateField>
+        <asp:TemplateField HeaderText="Public">
+            <ItemTemplate>
+                <asp:Label ID="lblPublic" runat="server" Text='<%# Eval("fPublic").FormatBooleanInt() %>'></asp:Label>
+            </ItemTemplate>
+        </asp:TemplateField>
     </Columns>
     <PagerSettings Mode="NumericFirstLast" Position="TopAndBottom" />
 </asp:GridView>

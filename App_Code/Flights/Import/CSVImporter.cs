@@ -106,6 +106,7 @@ namespace MyFlightbook.ImportFlights
         private static string[] colFlightEnd = { "Flight End", "FLT_END" };
         private static string[] colHobbsStart = { "Hobbs Start" };
         private static string[] colHobbsEnd = { "Hobbs End" };
+        private static string[] colPublic = { "Public" };
         private static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL", "ACFT_MDS" };
         private static string[] colFlightConditions = { "FS_ID" };  // For CAFRS - specifies flight conditions
         private static string[] colPIlotRole = { "DS_ID" };    // For CAFRS - specifies role of pilot ("Duty Position")
@@ -172,6 +173,7 @@ namespace MyFlightbook.ImportFlights
             dt.Columns.Add(new DataColumn(colHobbsStart[0], typeof(decimal)));
             dt.Columns.Add(new DataColumn(colHobbsEnd[0], typeof(decimal)));
             dt.Columns.Add(new DataColumn(colModelName[0], typeof(string)));
+            dt.Columns.Add(new DataColumn(colPublic[0], typeof(string)));
         }
 
         public static void WriteEntryToDataTable(LogbookEntry le, DataTable dt)
@@ -213,6 +215,7 @@ namespace MyFlightbook.ImportFlights
             dr[colHobbsStart[0]] = le.HobbsStart;
             dr[colHobbsEnd[0]] = le.HobbsEnd;
             dr[colModelName[0]] = le.ModelDisplay;
+            dr[colPublic[0]] = le.fIsPublic ? 1.FormatBooleanInt() : string.Empty;
 
             if (le.CustomProperties != null)
             {
@@ -524,6 +527,8 @@ namespace MyFlightbook.ImportFlights
                     le.FlightEnd = le.FlightEnd.AddDays(1);
                 le.HobbsStart = GetMappedDecimal(m_cm.iColHobbsStart);
                 le.HobbsEnd = GetMappedDecimal(m_cm.iColHobbsEnd);
+                if (m_cm.iColPublic >= 0)   // only set public flag if the column is present in the file being imported.
+                    le.fIsPublic = GetMappedBoolean(m_cm.iColPublic);
 
                 List<CustomFlightProperty> lstCustPropsForFlight = new List<CustomFlightProperty>();
                 foreach (ImportColumn ic in m_cm.CustomPropertiesToImport)
@@ -668,6 +673,7 @@ namespace MyFlightbook.ImportFlights
             public int iColTo { get; set; }
             public int iColFlightConditions { get; set; }
             public int iColPilotRole { get; set; }
+            public int iColPublic { get; set; }
             #endregion
 
             #region public properties
@@ -781,6 +787,7 @@ namespace MyFlightbook.ImportFlights
                 iColHobbsStart = ColumnIndex(colHobbsStart);
                 iColHobbsEnd = ColumnIndex(colHobbsEnd);
                 iColModel = ColumnIndex(colModelName);
+                iColPublic = ColumnIndex(colPublic);
                 iColFrom = ColumnIndex(colFrom);
                 iColTo = ColumnIndex(colTo);
                 iColFlightConditions = ColumnIndex(colFlightConditions);
