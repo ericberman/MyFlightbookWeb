@@ -1,11 +1,10 @@
 <%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="ResetPass.aspx.cs" Inherits="ResetPass" Title="MyFlightbook: Reset Password" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"></asp:Content>
-<asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server"></asp:Content>
-<asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
+<asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <asp:MultiView ID="mvResetPass" runat="server" ActiveViewIndex="0">
         <asp:View ID="vwEmail" runat="server">
-            <h1><asp:Label ID="lblResetPWMain" runat="server" Text="Reset Password" meta:resourcekey="lblResetPWMainResource1"></asp:Label></h1>
+            <h2><asp:Label ID="lblResetPWMain" runat="server" Text="Reset Password" meta:resourcekey="lblResetPWMainResource1"></asp:Label></h2>
             <asp:Panel ID="pnlEmail" runat="server" DefaultButton="btnSendEmail" meta:resourcekey="pnlEmailResource1">
                 <div><asp:Label ID="lblEmailPrompt" runat="server" AssociatedControlID="txtEmail" Text="Please enter the e-mail address associated with your account:" meta:resourcekey="lblEmailPromptResource1"></asp:Label></div>
                 <div>
@@ -17,11 +16,11 @@
             </asp:Panel>
         </asp:View>
         <asp:View ID="vwEmailSent" runat="server">
-            <h1><asp:Label ID="lblEmailSentHeader" runat="server" Text="Reset Password: E-mail sent" meta:resourcekey="lblEmailSentHeaderResource1"></asp:Label></h1>
+            <h2><asp:Label ID="lblEmailSentHeader" runat="server" Text="Reset Password: E-mail sent" meta:resourcekey="lblEmailSentHeaderResource1"></asp:Label></h2>
             <asp:Label ID="lblEmailSent" runat="server" meta:resourcekey="lblEmailSentResource1"></asp:Label>
         </asp:View>
         <asp:View ID="vwVerify" runat="server">
-            <h1><asp:Label ID="lblVerify" runat="server" Text="Reset Password: verify your identity" meta:resourcekey="lblVerifyResource1"></asp:Label></h1>
+            <h2><asp:Label ID="lblVerify" runat="server" Text="Reset Password: verify your identity" meta:resourcekey="lblVerifyResource1"></asp:Label></h2>
             <p><asp:Label ID="lblPleaseAnswer" runat="server" Text="Please provide the answer to the following question, which you provided when you created your account" meta:resourcekey="lblPleaseAnswerResource1"></asp:Label></p>
             <p><asp:Label ID="lblNoteExact" Font-Bold="True" runat="server" Text="<%$ Resources:LocalizedText, Note %>" meta:resourcekey="lblNoteExactResource1"></asp:Label> <asp:Label ID="lblExactPrompt" runat="server" Text="The answer must match EXACTLY, including capitalization, punctuation, and spaces." meta:resourcekey="lblExactPromptResource1"></asp:Label></p>
             <p>
@@ -33,7 +32,7 @@
             </p>
         </asp:View>
         <asp:View ID="vwNewPass" runat="server">
-            <h1><asp:Label ID="lblChangePassword" runat="server" Text="Reset Password: Choose a new password" meta:resourcekey="lblChangePasswordResource1"></asp:Label></h1>
+            <h2><asp:Label ID="lblChangePassword" runat="server" Text="Reset Password: Choose a new password" meta:resourcekey="lblChangePasswordResource1"></asp:Label></h2>
             <table style="padding:2px;">
                 <tr>
                     <td>
@@ -65,5 +64,6 @@
         </asp:View>
     </asp:MultiView>
     <asp:Label ID="lblErr" EnableViewState="False" CssClass="error" runat="server" meta:resourcekey="lblErrResource1"></asp:Label>
+    <div>&nbsp;</div>
 </asp:content>
 

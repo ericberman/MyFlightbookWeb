@@ -1,21 +1,13 @@
+using MyFlightbook;
 using System;
-using System.Data;
-using System.Configuration;
-using System.Collections;
 using System.Globalization;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
-using Andri.Web;
-using MyFlightbook;
-using Newtonsoft.Json;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
  * Flow here inspired by https://www.troyhunt.com/everything-you-ever-wanted-to-know/.
@@ -48,6 +40,7 @@ public partial class ResetPass : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        Master.Layout = MasterPage.LayoutMode.Accordion;
         if (!IsPostBack)
         {
             string sz = util.GetStringParam(Request, "t");
@@ -111,7 +104,7 @@ public partial class ResetPass : System.Web.UI.Page
                 PasswordResetRequest prr = new PasswordResetRequest() { UserName = szUser };
                 prr.FCommit();
 
-                string szURL = "https://" + Request.Url.Host + Request.RawUrl + "?t=" + HttpUtility.UrlEncode(prr.ID);
+                string szURL = "https://" + Request.Url.Host + Request.RawUrl + (Request.RawUrl.Contains("?") ? "&" : "?") + "t=" + HttpUtility.UrlEncode(prr.ID);
                 string szEmailBody = Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ResetPassEmail)).Replace("<% RESET_LINK %>", szURL);
                 MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(szUser);
 

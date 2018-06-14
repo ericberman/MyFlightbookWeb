@@ -48,6 +48,7 @@ BODY, body {
     max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
+    padding: 3px;
 }
 
 TABLE, table {
@@ -89,6 +90,10 @@ nobold, .vfPrompt .vfSubDesc {
 
 .logbookForm {
     background-color: white;
+}
+
+.hintPopup {
+    background-color: #e7e7e7;
 }
 
 /* Menu bar - see http://www.cssportal.com/css3-menu-generator/; customized from there */
