@@ -1094,7 +1094,7 @@ namespace MyFlightbook.Geography
                 sb.Append("(no polygon)");
             else
                 foreach (LatLong ll in BoundingPolygon)
-                    sb.Append(ll.ToAdhocFixString());
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0} ", ll.ToAdhocFixString());
 
             return sb.ToString();
         }
@@ -1173,10 +1173,10 @@ namespace MyFlightbook.Geography
                 new LatLong(-9.80501498722165, 142.210469339179),
                 new LatLong(-13.7299006546679, 163.709103861709),
                 new LatLong(53.3520024026076, 172.161152065312),
-                new LatLong(64.4717875927483, -171.40647801845),
-                new LatLong(65.7054468886283, -169.030367151875),
-                new LatLong(65.8174720832036, -168.928362279363),
-                new LatLong(75.3985684444915, -169.328244484287),
+                new LatLong(64.4717875927483, 188.593522),  // avoid wrapping issues - go more than 180 degrees east.
+                new LatLong(65.7054468886283, 190.9696328),
+                new LatLong(65.8174720832036, 191.0716377),
+                new LatLong(75.3985684444915, 190.6717555),
                 new LatLong(81.6089771036393, 84.8429070695296),
                 new LatLong(70.5369188387754, 63.6472730500082),
                 new LatLong(66, 69),
