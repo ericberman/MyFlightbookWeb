@@ -53,6 +53,7 @@
                         <asp:ListItem Value="UploadImage" Text="Upload an image (POST only)"></asp:ListItem>
                     </asp:DropDownList>
                     <asp:CheckBox ID="ckJSON" runat="server" Text="Request JSON data (default is XML)" />
+                    <div>For JSONP, provide a callback name (&callback=...): <asp:TextBox ID="txtCallBack" runat="server"></asp:TextBox></div>
                 </div>
                 <asp:MultiView ID="mvService" runat="server" ActiveViewIndex="0">
                     <asp:View ID="vwCustom" runat="server">

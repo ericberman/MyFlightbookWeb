@@ -237,7 +237,12 @@ namespace OAuthAuthorizationServer.Services
         #endregion
 
         #region Output
-        public enum OutputFormat { XML, JSON }
+        protected enum OutputFormat { XML, JSON, JSONP }
+
+        private string ObjectToJSon(object o)
+        {
+            return (o == null) ? string.Empty : JsonConvert.SerializeObject(o, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
+        }
 
         private void WriteObject(Stream s, object o)
         {
@@ -246,7 +251,10 @@ namespace OAuthAuthorizationServer.Services
             switch (ResultFormat)
             {
                 case OutputFormat.JSON:
-                    sz = JsonConvert.SerializeObject(o, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
+                    sz = ObjectToJSon(o);
+                    break;
+                case OutputFormat.JSONP:
+                    sz = String.Format(CultureInfo.InvariantCulture, "{0}({1})", ResponseCallback, ObjectToJSon(o));
                     break;
                 case OutputFormat.XML:
                     sz = o.SerializeXML();
@@ -284,11 +292,28 @@ namespace OAuthAuthorizationServer.Services
         protected HttpRequest OriginalRequest { get; set; }
 
         /// <summary>
+        /// For JSONP support rather than JSON, here's the callback function name.
+        /// </summary>
+        protected string ResponseCallback { get; set; }
+
+        /// <summary>
         /// The content type we should use for output.
         /// </summary>
         public string ContentType
         {
-            get { return (ResultFormat == OAuthServiceCall.OutputFormat.JSON) ? "application/json; charset=utf-8" : "text/xml; charset=utf-8"; }
+            get
+            {
+                switch (ResultFormat)
+                {
+                    case OutputFormat.JSON:
+                        return "application/json; charset=utf-8";
+                    case OutputFormat.JSONP:
+                        return "application/javascript; charset=utf-8";
+                    default:
+                    case OutputFormat.XML:
+                        return "text/xml; charset=utf-8";
+                }
+            }
         }
         #endregion
 
@@ -299,7 +324,8 @@ namespace OAuthAuthorizationServer.Services
                 throw new ArgumentNullException("request");
             OriginalRequest = request;
             ServiceCall = ServiceFromString(request.PathInfo);
-            ResultFormat = (util.GetIntParam(request, "json", 0) != 0) ? OutputFormat.JSON : OutputFormat.XML;
+            ResponseCallback = util.GetStringParam(request, "callback");
+            ResultFormat = (util.GetIntParam(request, "json", 0) != 0) ? (String.IsNullOrEmpty(ResponseCallback) ? OutputFormat.JSON : OutputFormat.JSONP) : OutputFormat.XML;
 
             using (RSACryptoServiceProvider rsaSigning = new RSACryptoServiceProvider())
             {

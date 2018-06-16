@@ -186,11 +186,12 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         {
             OAuthServiceID action = SelectedAction;
 
-            return String.Format(CultureInfo.InvariantCulture, "{0}{1}?access_token={2}&json={3}",
+            return String.Format(CultureInfo.InvariantCulture, "{0}{1}?access_token={2}&json={3}{4}",
                 action == OAuthServiceID.UploadImage ? txtImgUploadURL.Text : txtResourceURL.Text,
                 action == OAuthServiceID.none ? txtCustomVerb.Text : (action == OAuthServiceID.UploadImage ? string.Empty : action.ToString()),
                 lblToken.Text,
-                ckJSON.Checked ? "1" : "0");
+                ckJSON.Checked ? "1" : "0",
+                String.IsNullOrEmpty(txtCallBack.Text) ? string.Empty : "&callback=" + txtCallBack.Text);
         }
     }
 
@@ -335,7 +336,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                     response.EnsureSuccessStatusCode();
 
                     Page.Response.Clear();
-                    Response.ContentType = ckJSON.Checked ? "application/json; charset=utf-8" : "text/xml; charset=utf-8";
+                    Response.ContentType = ckJSON.Checked ? (String.IsNullOrEmpty(txtCallBack.Text) ? "application/json; charset=utf-8" : "application/javascript; charset=utf-8") : "text/xml; charset=utf-8";
                     System.Threading.Tasks.Task.Run(async () => { await response.Content.CopyToAsync(Page.Response.OutputStream); }).Wait();
                     Page.Response.Flush();
 
