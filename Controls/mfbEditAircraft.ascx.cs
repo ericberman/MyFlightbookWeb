@@ -446,16 +446,23 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     /// </summary>
     protected void AdjustForAircraftType()
     {
+        MakeModel mm = MakeModel.GetModel(m_ac.ModelID);
+
         Boolean fRealAircraft = IsRealAircraft;
         CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(m_ac.TailNumber);
+
+        if (mm.AllowedTypes == AllowedAircraftTypes.SimulatorOnly)
+        {
+            fRealAircraft = false;
+            cc = CountryCodePrefix.SimCountry;
+        }
+
         Boolean fIsNew = m_ac.IsNew;
         Boolean fHasModelSpecified = (m_ac.ModelID > 0);
 
         Boolean fIsAnonymous = ckAnonymous.Checked;
 
         mvTailnumber.SetActiveView(fRealAircraft ? vwRealAircraft : vwSimTail);
-
-        MakeModel mm = MakeModel.GetModel(m_ac.ModelID);
 
         // Show glass option if this is not, by model, a glass cockpit AND if it's not anonymous
         pnlGlassCockpit.Visible = !m_ac.IsAnonymous && !mm.IsAllGlass;
@@ -493,7 +500,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         else
         {
             // Sim 
-            if (fIsNew && fHasModelSpecified)
+            if (fHasModelSpecified)
                 m_ac.TailNumber = Aircraft.SuggestSims(m_ac.ModelID, m_ac.InstanceType)[0].TailNumber;
             vwSimTailDisplay.SetActiveView(fHasModelSpecified ? vwHasModel : vwNoModel);
 
