@@ -528,7 +528,13 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         bool fChangedTail = (String.Compare(Aircraft.NormalizeTail(ac.TailNumber), Aircraft.NormalizeTail(szTailNew), true) != 0);
         bool fIsNew = ac.IsNew;
         bool fChangedModel = ac.ModelID != SelectedModelID;
-        bool fOtherUsers = !fIsNew && (fChangedTail || fChangedModel) && (new AircraftStats(Page.User.Identity.Name, m_ac.AircraftID)).Users > 1;   // no need to compute user stats if new, or if tail and model are both unchanged
+
+        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+
+        // check if this isn't already in our aircraft list
+        int addToUserCount = (!fIsNew && fChangedModel && !AdminMode && ua.GetUserAircraftByID(m_ac.AircraftID) == null) ? 1 : 0;
+
+        bool fOtherUsers = !fIsNew && (fChangedTail || fChangedModel) && (new AircraftStats(Page.User.Identity.Name, m_ac.AircraftID)).Users + addToUserCount > 1;   // no need to compute user stats if new, or if tail and model are both unchanged
         bool fMigrateUser = (!fIsNew && fChangedTail && fOtherUsers);
 
         // Check for model change without tail number change on an existing aircraft
@@ -556,7 +562,6 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         ac.DefaultImage = mfbIl.DefaultImage;
 
         // Preserve any flags
-        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         if (!ac.IsNew)
         {
             Aircraft[] rgac = ua.GetAircraftForUser();
