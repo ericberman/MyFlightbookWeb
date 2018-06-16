@@ -39,10 +39,20 @@ public partial class EditMake : System.Web.UI.Page
         if (String.IsNullOrEmpty(prefixText))
             return new string[0];
         prefixText = Regex.Replace(prefixText, "[^a-zA-Z0-9 -]", string.Empty) + "%";
-        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT idaircraft, tailnumber FROM aircraft WHERE tailnumber LIKE ?prefix ORDER BY tailnumber ASC LIMIT {0}", count));
+        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT 
+                                                    ac.idaircraft, m.model, ac.tailnumber
+                                                FROM
+                                                    aircraft ac
+                                                        INNER JOIN
+                                                    models m ON ac.idmodel = m.idmodel
+                                                WHERE
+                                                    tailnumber LIKE ?prefix
+                                                ORDER BY tailnumber ASC
+                                                LIMIT {0}", 
+                                            count));
         List<string> lst = new List<string>();
         dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("prefix", prefixText); },
-            (dr) => { lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem((string) dr["tailnumber"], dr["idaircraft"].ToString())); });
+            (dr) => { lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(String.Format(CultureInfo.CurrentCulture, "{0} - {1}", dr["tailnumber"], dr["model"]), dr["idaircraft"].ToString())); });
         return lst.ToArray();
     }
 
