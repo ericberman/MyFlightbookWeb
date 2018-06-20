@@ -243,7 +243,11 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         if (!ua.CheckAircraftForUser(ac))
             ua.FAddAircraftForUser(ac);
 
-        le.FCommit(true);
+        bool result = le.FCommit(true);
+        if (!result || le.LastError != LogbookEntry.ErrorCode.None)
+            util.NotifyAdminEvent("Error copying flight to instructor's logbook",
+                String.Format(CultureInfo.CurrentCulture, "Flight: {0}, CFI: {1}, Student: {2}, ErrorCode: {3}, Error: {4}", le.ToString(), le.User, szStudentName, le.LastError, le.ErrorString),
+                ProfileRoles.maskSiteAdminOnly);
     }
 
     protected void btnSign_Click(object sender, EventArgs e)
