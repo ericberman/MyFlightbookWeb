@@ -36,7 +36,6 @@
             </td>
             <td>
                 <uc1:mfbTypeInDate ID="mfbTypeInDate1" runat="server" DefaultType="Today" />
-                <asp:CustomValidator ID="valNoBackDate" CssClass="error" Display="Dynamic" runat="server" OnServerValidate="valNoBackDate_ServerValidate" ErrorMessage="<%$ Resources:SignOff, errNoBackDating %>"></asp:CustomValidator>
                 <asp:CustomValidator ID="valNoPostDate" CssClass="error" Display="Dynamic" runat="server" OnServerValidate="valNoPostDate_ServerValidate" ErrorMessage="<%$ Resources:SignOff, errNoPostDating %>"></asp:CustomValidator>
             </td>
         </tr>

@@ -316,16 +316,6 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
         }
     }
 
-    protected void valNoBackDate_ServerValidate(object source, ServerValidateEventArgs args)
-    {
-        if (args == null)
-            throw new ArgumentNullException("args");
-
-        // Offer up to 20 days to get the endorsement in
-        if (StudentType == Endorsement.StudentTypes.Member && DateTime.Now.AddDays(-20).CompareTo(mfbTypeInDate1.Date) > 0)
-            args.IsValid = false;
-    }
-
     protected void valNoPostDate_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
