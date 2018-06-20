@@ -10,7 +10,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2016 MyFlightbook LLC
+ * Copyright (c) 2014-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -930,7 +930,13 @@ namespace MyFlightbook.Clubs
             if (!ValidateChange())
                 return false;
 
-            DBHelper dbh = new DBHelper("REPLACE INTO clubmembers SET idclub=?id, username=?user, role=?role, joindate=IF(joindate IS NULL, Now(), joindate)");
+            IEnumerable<ClubMember> members = MembersForClub(ClubID);
+            ClubMember cmExisting = members.FirstOrDefault<ClubMember>(cm => cm.UserName.CompareCurrentCulture(UserName) == 0);
+
+            // We don't use REPLACE INTO here because doing so loses the original joindate
+            DBHelper dbh = new DBHelper(cmExisting == null ? 
+                "INSERT INTO clubmembers SET idclub=?id, username=?user, role=?role, joindate=NOW()" :
+                "UPDATE clubmembers SET role=?role WHERE idclub=?id AND username=?user");
             bool fResult = dbh.DoNonQuery((comm) => 
             {
                 comm.Parameters.AddWithValue("id", ClubID);
