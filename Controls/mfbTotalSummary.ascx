@@ -1,7 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbTotalSummary.ascx.cs" Inherits="Controls_mfbTotalSummary" %>
 <asp:GridView ID="gvTotals" runat="server" AutoGenerateColumns="False" 
-    ShowHeader="False" GridLines="None" CellPadding="3" 
-    OnRowDataBound="gvTotals_RowDataBound" >
+    ShowHeader="False" GridLines="None" CellPadding="3" >
     <Columns>
         <asp:TemplateField ItemStyle-HorizontalAlign="Left" ItemStyle-VerticalAlign="Top">
             <ItemTemplate>
@@ -23,7 +22,7 @@
         </asp:TemplateField>
         <asp:TemplateField ItemStyle-HorizontalAlign="Right" ItemStyle-VerticalAlign="Top">
             <ItemTemplate>
-                <asp:Label ID="lblValue" runat="server" />
+                <asp:Label ID="lblValue" runat="server" Text='<%# ((MyFlightbook.FlightCurrency.TotalsItem) Container.DataItem).ValueString(UseHHMM) %>' />
             </ItemTemplate>
         </asp:TemplateField>
     </Columns>

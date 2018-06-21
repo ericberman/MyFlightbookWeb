@@ -15,11 +15,13 @@ using System.Web.UI.WebControls;
 public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
 {
     public enum TotalRecency { AllTime, TrailingYear, YearToDate};
-    protected Boolean m_fUseHHMM;
     private FlightQuery m_fq;
     private bool m_LinkTotalsToQuery = true;
 
+    #region properties
     public string Username { get; set; }
+
+    protected Boolean UseHHMM { get; set; }
 
     /// <summary>
     /// True (default) to linkify totals
@@ -29,11 +31,12 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
         get { return m_LinkTotalsToQuery; }
         set { m_LinkTotalsToQuery = value; }
     }
+    #endregion
 
     protected void Page_Init(object sender, EventArgs e)
     {
         if (Page.User.Identity.IsAuthenticated)
-            m_fUseHHMM = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UsesHHMM;
+            UseHHMM = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UsesHHMM;
     }
     
     protected void Page_Load(object sender, EventArgs e)
@@ -75,32 +78,6 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
             FlightQuery fq = new FlightQuery(Username);
             fq.DateRange = value;
             CustomRestriction = fq;
-        }
-    }
-
-    protected void gvTotals_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e != null && e.Row.RowType == DataControlRowType.DataRow)
-        {
-            TotalsItem ti = (TotalsItem)e.Row.DataItem;
-
-            Label lblValue = (Label)e.Row.FindControl("lblValue");
-
-            switch (ti.NumericType)
-            {
-                case TotalsItem.NumType.Integer:
-                    lblValue.Text = String.Format(CultureInfo.CurrentCulture, "{0:#,##0}", (int)ti.Value);
-                    break;
-                case TotalsItem.NumType.Decimal:
-                    lblValue.Text = String.Format(CultureInfo.CurrentCulture, "{0:F2}", ti.Value);
-                    break;
-                case TotalsItem.NumType.Time:
-                    lblValue.Text = ti.Value.FormatDecimal(ti.IsTime && m_fUseHHMM);
-                    break;
-                case TotalsItem.NumType.Currency:
-                    lblValue.Text = String.Format(CultureInfo.CurrentCulture, "{0:C}", ti.Value);
-                    break;
-            }
         }
     }
 }

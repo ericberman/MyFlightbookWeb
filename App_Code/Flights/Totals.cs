@@ -155,6 +155,28 @@ namespace MyFlightbook.FlightCurrency
         /// </summary>
         public FlightQuery Query { get; set; }
         #endregion
+
+        /// <summary>
+        /// Returns a formatted value string
+        /// </summary>
+        /// <param name="fUseHHMM">Whether or not to use hhmm format, if it's a time</param>
+        /// <returns>The formatted string in the current culture</returns>
+        public string ValueString(bool fUseHHMM)
+        {
+            switch (NumericType)
+            {
+                case TotalsItem.NumType.Integer:
+                    return String.Format(CultureInfo.CurrentCulture, "{0:#,##0}", (int) Value);
+                case TotalsItem.NumType.Decimal:
+                    return Value.FormatDecimal(false);
+                case TotalsItem.NumType.Time:
+                    return Value.FormatDecimal(IsTime && fUseHHMM);
+                case TotalsItem.NumType.Currency:
+                    return String.Format(CultureInfo.CurrentCulture, "{0:C}", Value);
+                default:
+                    return Value.ToString(CultureInfo.CurrentCulture);  // should never happen
+            }
+        }
     }
 
     public enum TotalsGrouping { CatClass, Model, Family }
