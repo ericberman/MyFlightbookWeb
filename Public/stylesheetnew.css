@@ -36,19 +36,20 @@
 {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
-    max-width: 1400px;
+    /* max-width: 1400px; */
     margin-left: auto;
     margin-right: auto;
 }
 
 BODY, body {
-    border-top: 7px solid #00bcd4;
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
     max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
-    padding: 3px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 0px, 3px, 3px, 5px;
 }
 
 TABLE, table {
@@ -77,6 +78,10 @@ nobold, .vfPrompt .vfSubDesc {
 
 .mfbDefault table {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.noprint #headerBar {
+    border-top: 7px solid #00bcd4;
 }
 
 .tabbargradient
@@ -570,6 +575,16 @@ nobold, .vfPrompt .vfSubDesc {
 }
 
 .mfbDefault .ajax__tab_body {
+}
+
+/* Autocomplete AJAX */
+.AutoExtender {
+    background-color: #e7e7e7;
+    border-radius: 5px;
+    padding: 3px;
+    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
 }
 
 
