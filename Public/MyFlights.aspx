@@ -37,14 +37,12 @@
 
             $(document).endlessScroll(
         {
-
             bottomPixels: 300,
             fireOnce: true,
             fireDelay: 2000,
             callback: function (p) {
 
                 // ajax call to fetch next set of rows 
-
                 $.ajax(
                 {
                     type: "POST",
@@ -61,7 +59,6 @@
                             // Append the row (which is raw HTML), and parse it
                             // We have to parse it for the "Comment" tag to show up.
                             $("#<% =gvMyFlights.ClientID %>").append(FlightRows[i].HTMLRowText);
-                            FB.XFBML.parse(document.getElementById(FlightRows[i].FBDivID));
                          }
                     }
                 }

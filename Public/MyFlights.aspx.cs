@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Encryptors;
+using MyFlightbook.FlightStats;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,12 +10,10 @@ using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Encryptors;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2016 MyFlightbook LLC
+ * Copyright (c) 2011-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,11 +23,11 @@ public partial class Public_MyFlights : System.Web.UI.Page
     private const int DefaultPageSize = 15;
 
     #region Infinite Scroll support
-    [WebMethod()]
     public static LogbookEntry[] GetFlights(string szUser, int skip, int pageSize)
     {
         return LogbookEntry.GetPublicFlightsForUser(szUser, skip, pageSize);
     }
+
 
     [WebMethod()]
     public static FlightRow[] HtmlRowsForFlights(string szUser, int skip, int pageSize)
@@ -39,17 +40,26 @@ public partial class Public_MyFlights : System.Web.UI.Page
             using (StringWriter sw = new StringWriter(CultureInfo.CurrentCulture))
                 HttpContext.Current.Server.Execute(p, sw, false);
 
-            LogbookEntry[] rgle = GetFlights(szUser, skip, pageSize);
+            IEnumerable<LogbookEntry> rgle = new LogbookEntry[0];
+            if (String.IsNullOrEmpty(szUser))
+            {
+                List<LogbookEntry> lst = new List<LogbookEntry>(FlightStats.GetFlightStats().RecentPublicFlights);
+                if (skip > 0)
+                    lst.RemoveRange(0, Math.Min(skip, lst.Count));
+                if (lst.Count > pageSize)
+                    lst.RemoveRange(pageSize, lst.Count - pageSize);
+                rgle = lst;
+            }
+            else
+                rgle = GetFlights(szUser, skip, pageSize);
+
             List<FlightRow> lstRows = new List<FlightRow>();
             foreach (LogbookEntry le in rgle)
             {
-                // UserControl tmp0 = new UserControl();
-                // Controls_mfbPublicFlightItem pfe = (Controls_mfbPublicFlightItem)tmp0.LoadControl("~/Controls/mfbPublicFlightItem.ascx");
                 Controls_mfbPublicFlightItem pfe = (Controls_mfbPublicFlightItem)p.LoadControl("~/Controls/mfbPublicFlightItem.ascx");
                 p.Form.Controls.Add(pfe);
 
                 pfe.Entry = le;
-                pfe.FBDivID = String.Format(CultureInfo.InvariantCulture, "FBComment{0}", le.FlightID);
 
                 // Now, write it out.
                 System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -59,7 +69,7 @@ public partial class Public_MyFlights : System.Web.UI.Page
                     pfe.RenderControl(htmlTW);
                 }
 
-                lstRows.Add(new FlightRow() { HTMLRowText = sb.ToString(), FBDivID = pfe.FBDivID });
+                lstRows.Add(new FlightRow() { HTMLRowText = sb.ToString(), FBDivID = string.Empty });
             }
 
             return lstRows.ToArray();
@@ -80,24 +90,23 @@ public partial class Public_MyFlights : System.Web.UI.Page
         // figure out who to show
         if (!IsPostBack)
         {
-            LogbookEntry[] rgle = new LogbookEntry[0];
+            IEnumerable<LogbookEntry> rgle = new LogbookEntry[0];
 
             string szUserEnc = util.GetStringParam(Request, "uid");
             UserName = string.Empty;
 
             if (String.IsNullOrEmpty(szUserEnc))
             {
-                if (Page.User.Identity.IsAuthenticated)
-                    UserName = Page.User.Identity.Name;
+                FlightStats fs = FlightStats.GetFlightStats();
+                List<LogbookEntry> lst = new List<LogbookEntry>(fs.RecentPublicFlights);
+                if (lst.Count > PageSize)
+                    lst.RemoveRange(PageSize, lst.Count - PageSize);
+                rgle = lst;
             }
             else
             {
                 SharedDataEncryptor enc = new SharedDataEncryptor(MFBConstants.keyEncryptMyFlights);
                 UserName = enc.Decrypt(szUserEnc);
-            }
-
-            if (!String.IsNullOrEmpty(UserName))
-            {
                 Profile pf = MyFlightbook.Profile.GetUser(UserName);
                 if (pf.UserFullName.Length > 0)
                     lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightPageHeader, pf.UserFullName);

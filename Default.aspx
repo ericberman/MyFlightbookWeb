@@ -31,7 +31,7 @@
                         </ItemTemplate>
                     </asp:Repeater>
                     <h2><asp:Localize ID="locRecentFlightsHeader" runat="server"></asp:Localize></h2>
-                    <p><asp:Label ID="lblRecentFlightsStats" Font-Bold="true" runat="server" Text="Label"></asp:Label></p>
+                    <p><asp:Hyperlink ID="lblRecentFlightsStats" Font-Bold="true" runat="server" NavigateUrl="~/Public/MyFlights.aspx"></asp:Hyperlink></p>
                     <div style="max-width: 480px; margin-left:auto; margin-right:auto;">
                         <uc1:imageSlider runat="server" ID="imageSlider" />
                     </div>

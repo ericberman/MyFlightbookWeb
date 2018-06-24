@@ -13,11 +13,6 @@ using System.Web;
 
 public partial class Controls_mfbPublicFlightItem : System.Web.UI.UserControl
 {
-    /// <summary>
-    /// The ID to use for the FB Div
-    /// </summary>
-    public string FBDivID { get; set; }
-
     private LogbookEntry m_le = null;
 
     public LogbookEntry Entry
@@ -49,14 +44,8 @@ public partial class Controls_mfbPublicFlightItem : System.Web.UI.UserControl
             mfbIlFlight.MaxImage = -1;
             mfbIlFlight.CanEdit = false;
             mfbIlFlight.Refresh();
-
-            fbComment1.URI = Branding.PublicFlightURL(value.FlightID);
-
         }
     }
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-
-    }
+    protected void Page_Load(object sender, EventArgs e) { }
 }

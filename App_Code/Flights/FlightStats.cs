@@ -80,7 +80,7 @@ FROM flights f
   INNER JOIN models m ON ac.idmodel=m.idmodel 
 WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND f.fPublic <> 0 
 ORDER BY f.date DESC, f.idflight DESC 
-LIMIT 100";
+LIMIT 200";
                 DBHelper dbh = new DBHelper(szQuery);
                 List<string> lstRoutes = new List<string>();
 
@@ -123,7 +123,7 @@ LIMIT 100";
                     });
 
                 if (HttpRuntime.Cache != null)
-                    HttpRuntime.Cache.Add(CacheKey(), fs, null, DateTime.Now.AddMinutes(15), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                    HttpRuntime.Cache.Add(CacheKey(), fs, null, DateTime.Now.AddMinutes(30), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
             }
             return fs;
         }
