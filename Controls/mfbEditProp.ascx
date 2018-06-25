@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditProp.ascx.cs" Inherits="Controls_mfbEditProp" %>
+﻿    <%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditProp.ascx.cs" Inherits="Controls_mfbEditProp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register src="mfbDateTime.ascx" tagname="mfbDateTime" tagprefix="uc1" %>
 <%@ Register src="mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc2" %>
@@ -17,7 +17,7 @@
                 CompletionListItemCssClass="AutoExtenderList" 
                 CompletionListHighlightedItemCssClass="AutoExtenderHighlight"
                 CompletionListCssClass="AutoExtender"
-                CompletionInterval="100" DelimiterCharacters="" MinimumPrefixLength="1" runat="server" TargetControlID="txtString"></asp:AutoCompleteExtender>
+                CompletionInterval="100" DelimiterCharacters="" CompletionSetCount="10" MinimumPrefixLength="0" runat="server" TargetControlID="txtString"></asp:AutoCompleteExtender>
         </asp:View>
         <asp:View ID="vwBool" runat="server"><asp:CheckBox ID="ckValue" runat="server" /></asp:View>
     </asp:MultiView>
