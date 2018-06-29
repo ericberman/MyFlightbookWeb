@@ -12,7 +12,7 @@ using VolunteerApp.Twitter;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2016 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -94,7 +94,7 @@ namespace MyFlightbook.SocialMedia
 
         public static string FACEBOOK_API_KEY { get { return LocalConfig.SettingForKey("FacebookAccessID"); } }
         public static string FACEBOOK_SECRET { get { return LocalConfig.SettingForKey("FacebookClientSecret"); } }
-        private const string oAuth2AuthorizeEndpoint = "https://graph.facebook.com/oauth/authorize?scope=publish_actions,public_profile";
+        private const string oAuth2AuthorizeEndpoint = "https://graph.facebook.com/oauth/authorize?scope=publish_actions";
         private const string oAuth2TokenEndpoint = "https://graph.facebook.com/oauth/access_token";
 
 
