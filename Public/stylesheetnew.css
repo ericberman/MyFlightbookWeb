@@ -588,6 +588,11 @@ nobold, .vfPrompt .vfSubDesc {
 }
 
 
+.AutoExtenderList:nth-last-child(1) {
+    border-bottom: none;
+}
+
+
 /* Printing */
 @media print {
     h1 { background-color:none;}

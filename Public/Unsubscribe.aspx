@@ -6,7 +6,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
-    <asp:Label ID="lblErr" EnableViewState="false" CssClass="error" runat="server" Text=""></asp:Label>
-    <asp:Label ID="lblSuccess" runat="server" Text=""></asp:Label>
+    <p><asp:Label ID="lblErr" EnableViewState="false" CssClass="error" runat="server" Text=""></asp:Label>
+    <asp:Label ID="lblSuccess" runat="server" Text=""></asp:Label></p>
 </asp:Content>
 

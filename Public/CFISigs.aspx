@@ -2,7 +2,7 @@
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" runat="Server"></asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" runat="Server">
-    <div style="max-width:800px; margin-left:auto; margin-right:auto;">
+    <div>
     <!-- Copyright (c) 2015 MyFlightbook LLC Contact myflightbook-at-gmail.com for more information -->
         <h1>1 Endorsements and Signed Flights</h1>
         <p>A method is needed by which an instructor can sign a student’s logbook, or by which an instructor can endorse a student.   Reference is made to <a href="https://www.faa.gov/regulations_policies/advisory_circulars/index.cfm/go/document.information/documentID/1029747" target="_blank">FAA circular AC No: 120-78A</a>, which outlines the criteria to be used to ensure that such a signature is acceptable to the FAA.</p>

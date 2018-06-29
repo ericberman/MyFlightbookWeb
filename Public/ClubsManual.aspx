@@ -5,7 +5,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" runat="Server">
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cpMain" runat="Server">
-<div style="width: 800px; margin-left: auto; margin-right: auto;">
+<div>
         <h1>Overview of Clubs on MyFlightbook</h1>
     <p>
         Flying clubs on MyFlightbook provide a convenient way to
