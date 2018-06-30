@@ -1319,7 +1319,7 @@ namespace MyFlightbook
         public Uri PublicFlightsURL(string szHost)
         {
             SharedDataEncryptor enc = new SharedDataEncryptor(MFBConstants.keyEncryptMyFlights);
-            return new Uri(String.Format(CultureInfo.InvariantCulture, "http://{0}{1}?uid={2}", szHost, VirtualPathUtility.ToAbsolute("~/public/myflights.aspx"), HttpUtility.UrlEncode(enc.Encrypt(this.UserName))));
+            return new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?uid={2}", szHost, VirtualPathUtility.ToAbsolute("~/public/myflights.aspx"), HttpUtility.UrlEncode(enc.Encrypt(this.UserName))));
         }
     }
 
