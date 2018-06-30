@@ -115,10 +115,10 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     public Boolean PrintView { get; set; }
 
     // backing variables for where to go when clicking date, paper clip, or menu items
-    private string m_szSendPageTarget = "~/Member/Logbook.aspx";
-    private string m_szDetailsPageTemplate = "~/Member/Logbook.aspx/{0}";
-    private string m_szEditPageTemplate = "~/member/Logbook.aspx/{0}";
-    private string m_szAnalysisPageTemplate = "~/member/FlightAnalysis.aspx?id={0}";
+    private string m_szSendPageTarget = "~/Member/LogbookNew.aspx";
+    private string m_szDetailsPageTemplate = "~/Member/FlightDetail.aspx/{0}";
+    private string m_szEditPageTemplate = "~/member/LogbookNew.aspx/{0}";
+    private string m_szAnalysisPageTemplate = "~/member/FlightDetail.aspx/{0}?tabID=Chart";
     private string m_szPublicRouteTemplate = "~/Public/ViewPublicFlight.aspx/{0}";
 
     /// <summary>
@@ -762,7 +762,7 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
                     .Replace("<% Route %>", HttpUtility.HtmlEncode(le.Route))
                     .Replace("<% Comments %>", HttpUtility.HtmlEncode(le.Comment))
                     .Replace("<% Time %>", le.TotalFlightTime.FormatDecimal(pfSender.UsesHHMM))
-                    .Replace("<% FlightLink %>", ResolveUrl(SendPageTarget) + "?src=" + HttpUtility.UrlEncode(le.EncodeShareKey())));
+                    .Replace("<% FlightLink %>", le.SendFlightUri(Branding.CurrentBrand.HostName, SendPageTarget).ToString()));
 
                 msg.Subject = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.SendFlightSubject, pfSender.UserFullName);
                 msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pfSender.UserFullName));

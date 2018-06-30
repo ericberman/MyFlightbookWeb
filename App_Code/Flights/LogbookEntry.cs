@@ -1795,7 +1795,12 @@ namespace MyFlightbook
 
         public Uri SocialMediaItemUri(string szHost = null)
         {
-            return String.Format(CultureInfo.InvariantCulture, "~/Public/ViewPublicFlight.aspx/{0}?v={1}", FlightID, (new Random()).Next(10000)).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
+            return SocialMediaLinks.ShareFlightUri(this, szHost);
+        }
+
+        public Uri SendFlightUri(string szHost = null, string szTarget = null)
+        {
+            return SocialMediaLinks.SendFlightUri(new UserAccessEncryptor().Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1}", this.FlightID, this.User)), szHost, szTarget);
         }
 
         public MFBImageInfo SocialMediaImage(string szHost = null)
@@ -1823,14 +1828,19 @@ namespace MyFlightbook
         }
         #endregion IPostable
 
-        /// <summary>
-        /// Creates an access token that can be used by one user to share a flight with another (for purposes of initializing a flight for them to enter)
-        /// </summary>
-        /// <returns>An encrypted token that can be used by the target user to initialize a flight from the owner of this one.</returns>
-        public string EncodeShareKey()
+        #region Sharing
+        public string SendFlightLink
         {
-            return new UserAccessEncryptor().Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1}", this.FlightID, this.User));
+            get { return SendFlightUri().ToString(); }
+            set { string sz = value; } // to enable serialization
         }
+
+        public string SocialMediaLink
+        {
+            get { return CanPost ? SocialMediaItemUri().AbsoluteUri : string.Empty; }
+            set { string sz = value; } // to enable serialization
+        }
+        #endregion
 
         #region Telemetry
         /// <summary>

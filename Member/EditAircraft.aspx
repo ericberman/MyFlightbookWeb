@@ -20,8 +20,6 @@
     <asp:HiddenField ID="hdnReturnURL" runat="server" />
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
-    <uc3:mfbLogbook ID="mfbLogbook1" runat="server" Visible="false" DetailsPageUrlFormatString="~/Member/FlightDetail.aspx/{0}"
-         EditPageUrlFormatString="~/Member/LogbookNew.aspx/{0}" AnalysisPageUrlFormatString="~/Member/FlightDetail.aspx/{0}?tabID=Chart" SendPageTarget="~/Member/LogbookNew.aspx" />
     <asp:HiddenField ID="hdnAdminMode" runat="server" />
     <asp:Panel ID="pnlAdminUserFlights" runat="server" Visible="false">
         <p>Clone an aircraft if the tailnumber can represent more than just this aircraft.  E.g., if N12345 used to be a piper cub and was re-assigned to a C-172, clone it to assign to the new aircraft.</p>

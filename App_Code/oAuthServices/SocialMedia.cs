@@ -19,6 +19,36 @@ using VolunteerApp.Twitter;
 
 namespace MyFlightbook.SocialMedia
 {
+    public static class SocialMediaLinks
+    {
+        /// <summary>
+        /// Returns the Uri to view a flight (useful for FB/Twitter/Etc.)
+        /// </summary>
+        /// <param name="le">The flight to be shared</param>
+        /// <param name="szHost">Hostname (if not provided, uses current brand)</param>
+        /// <returns></returns>
+        public static Uri ShareFlightUri(LogbookEntry le, string szHost = null)
+        {
+            if (le == null)
+                throw new ArgumentNullException("le");
+            return String.Format(CultureInfo.InvariantCulture, "~/Public/ViewPublicFlight.aspx/{0}?v={1}", le.FlightID, (new Random()).Next(10000)).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
+        }
+
+        /// <summary>
+        /// Returns a Uri to send a flight (i.e., to another pilot)
+        /// </summary>
+        /// <param name="szEncodedShareKey">Encoded key that can be decrypted to share the flight</param>
+        /// <param name="szHost">Hostname (if not provided, uses current brand)</param>
+        /// <param name="szTarget">Target, if provided; otherwises, uses LogbookNew</param>
+        /// <returns></returns>
+        public static Uri SendFlightUri(string szEncodedShareKey, string szHost = null, string szTarget = null)
+        {
+            if (szEncodedShareKey == null)
+                throw new ArgumentNullException("szEncodedShareKey");
+            return String.Format(CultureInfo.InvariantCulture, "{0}?src={1}", szTarget ?? "~/Member/LogbookNew.aspx", HttpUtility.UrlEncode(szEncodedShareKey)).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
+        }
+    }
+
     /// <summary>
     /// Interface to be implemented by an object that can be posted on social media
     /// </summary>
