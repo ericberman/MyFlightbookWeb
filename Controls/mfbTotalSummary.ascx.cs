@@ -21,7 +21,7 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
     #region properties
     public string Username { get; set; }
 
-    protected Boolean UseHHMM { get; set; }
+    public Boolean UseHHMM { get; set; }
 
     /// <summary>
     /// True (default) to linkify totals

@@ -1,16 +1,16 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Encryptors;
+using MyFlightbook.Payments;
+using MyFlightbook.Subscriptions;
+using System;
 using System.Globalization;
 using System.Threading;
 using System.Web;
 using System.Web.UI;
-using MyFlightbook;
-using MyFlightbook.Encryptors;
-using MyFlightbook.Payments;
-using MyFlightbook.Subscriptions;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2016 MyFlightbook LLC
+ * Copyright (c) 2012-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -92,6 +92,9 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
                     // Fix up the unsubscribe link.
                     lnkUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}/logbook/Member/EditProfile.aspx/{1}", Branding.CurrentBrand.HostName, tabID.pftPrefs.ToString());
                     lnkQuickUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}/logbook/Public/Unsubscribe.aspx?u={1}", Branding.CurrentBrand.HostName, HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(szUser)));
+
+                    // And set HHMM mode explicitly (since not otherwise going to be set in totals
+                    mfbTotalSummary.UseHHMM = mfbTotalSummaryYTD.UseHHMM = pf.UsesHHMM;
 
                     if (fMonthlySummary)
                     {
