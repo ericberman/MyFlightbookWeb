@@ -2791,7 +2791,7 @@ namespace MyFlightbook
                 case OptionalColumnType.Turbine:
                     {
                         MakeModel m = MakeModel.GetModel(ModelID);
-                        return OptionalColumnTotalIfCondition(m.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine || m.EngineType == MakeModel.TurbineLevel.Jet);
+                        return OptionalColumnTotalIfCondition(m.EngineType == MakeModel.TurbineLevel.TurboProp || m.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine || m.EngineType == MakeModel.TurbineLevel.Jet);
                     }
                 case OptionalColumnType.TurboProp:
                     return OptionalColumnTotalIfCondition(MakeModel.GetModel(ModelID).EngineType == MakeModel.TurbineLevel.TurboProp);
