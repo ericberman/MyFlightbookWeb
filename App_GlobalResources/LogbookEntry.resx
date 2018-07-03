@@ -855,4 +855,7 @@
   <data name="PrintHeaderCoPilotOrStudent" xml:space="preserve">
     <value>Co-Pilot/Student</value>
   </data>
+  <data name="PrintTotalsAllCatClass" xml:space="preserve">
+    <value>[All]</value>
+  </data>
 </root>

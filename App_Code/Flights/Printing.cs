@@ -552,6 +552,11 @@ namespace MyFlightbook.Printing
             // Assign page number, and index totals
             foreach (LogbookPrintedPage lpp in lstOut)
             {
+                // And add unstriped totals as needed
+                ConsolidateTotals(lpp.TotalsThisPage, LogbookEntryDisplay.LogbookRowType.PageTotal);
+                ConsolidateTotals(lpp.TotalsPreviousPages, LogbookEntryDisplay.LogbookRowType.PreviousTotal);
+                ConsolidateTotals(lpp.RunningTotals, LogbookEntryDisplay.LogbookRowType.RunningTotal);
+
                 lpp.TotalPages = pageNum;
                 int iTotal = 0;
                 foreach (LogbookEntryDisplay lep in lpp.TotalsThisPage.Values)
@@ -562,9 +567,22 @@ namespace MyFlightbook.Printing
                 iTotal = 0;
                 foreach (LogbookEntryDisplay lep in lpp.RunningTotals.Values)
                     lep.Index = iTotal++;
+
             }
 
             return lstOut;
+        }
+
+        private static void ConsolidateTotals(IDictionary<string, LogbookEntryDisplay> d, LogbookEntryDisplay.LogbookRowType rowType)
+        {
+            if (d == null || d.Count <= 1)
+                return;
+
+            LogbookEntryDisplay ledAll = new LogbookEntryDisplay() { RowType = rowType };
+            foreach (LogbookEntryDisplay led in d.Values)
+                ledAll.AddFrom(led);
+            ledAll.CatClassDisplay = Resources.LogbookEntry.PrintTotalsAllCatClass;
+            d[Resources.LogbookEntry.PrintTotalsAllCatClass] = ledAll;
         }
     }
 }
