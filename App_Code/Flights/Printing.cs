@@ -28,7 +28,7 @@ namespace MyFlightbook.Printing
         void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true, OptionalColumn[] optionalColumns = null);
     }
 
-    public enum PrintLayoutType { Native, EASA, USA, SACAA, Glider}
+    public enum PrintLayoutType { Native, EASA, USA, SACAA, NZ, Glider}
 
     #region Printing Layout implementations
     public abstract class PrintLayout
@@ -71,6 +71,8 @@ namespace MyFlightbook.Printing
                     return new PrintLayoutUSA() { CurrentUser = pf };
                 case PrintLayoutType.SACAA:
                     return new PrintLayoutSACAA() { CurrentUser = pf };
+                case PrintLayoutType.NZ:
+                    return new PrintLayoutNZ() { CurrentUser = pf };
                 case PrintLayoutType.Glider:
                     return new PrintLayoutGlider() { CurrentUser = pf };
                 default:
@@ -131,7 +133,6 @@ namespace MyFlightbook.Printing
         public override string CSSPath { get { return "~/Public/CSS/printGlider.css"; } }
     }
 
-
     public class PrintLayoutEASA : PrintLayout
     {
         public override int RowHeight(LogbookEntryDisplay le)
@@ -164,6 +165,23 @@ namespace MyFlightbook.Printing
         public override bool SupportsOptionalColumns { get { return false; } }
 
         public override string CSSPath { get { return "~/Public/CSS/printSACAA.css"; } }
+    }
+
+    public class PrintLayoutNZ : PrintLayout
+    {
+        public override int RowHeight(LogbookEntryDisplay le)
+        {
+            if (le == null)
+                throw new ArgumentNullException("le");
+            // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
+            return Math.Max(1, (le.Comment.Length + le.CustPropertyDisplay.Length) / 100);
+        }
+
+        public override bool SupportsImages { get { return true; } }
+
+        public override bool SupportsOptionalColumns { get { return true; } }
+
+        public override string CSSPath { get { return "~/Public/CSS/printNZ.css"; } }
     }
 
     public class PrintLayoutUSA : PrintLayout

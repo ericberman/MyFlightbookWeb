@@ -12,6 +12,8 @@
 <%@ Register Src="~/Controls/mfbEndorsementList.ascx" TagPrefix="uc1" TagName="mfbEndorsementList" %>
 <%@ Register Src="~/Controls/PrintingLayouts/LayoutSACAA.ascx" TagPrefix="uc1" TagName="LayoutSACAA" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutGlider.ascx" TagPrefix="uc1" TagName="layoutGlider" %>
+<%@ Register Src="~/Controls/PrintingLayouts/layoutNZ.ascx" TagPrefix="uc1" TagName="layoutNZ" %>
+
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblUserName" runat="server" ></asp:Label>
@@ -151,7 +153,10 @@
             <asp:View ID="vwSACAA" runat="server">
                 <uc1:LayoutSACAA runat="server" ID="LayoutSACAA" />
             </asp:View>
-            <asp:View ID="View1" runat="server">
+            <asp:View ID="vwNZ" runat="server">
+                <uc1:layoutNZ runat="server" ID="layoutNZ" />
+            </asp:View>
+            <asp:View ID="vwGlider" runat="server">
                 <uc1:layoutGlider runat="server" id="layoutGlider" />
             </asp:View>
         </asp:MultiView>

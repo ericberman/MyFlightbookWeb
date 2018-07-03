@@ -2224,6 +2224,22 @@ namespace MyFlightbook
             get { return StringPropertyMatchingPredicate(fp => fp.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropNameOfPIC); }
         }
 
+        /// <summary>
+        /// Quick access to the SIC Name, if specified - for printing.
+        /// </summary>
+        public string SICName
+        {
+            get { return StringPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNameOfSIC); }
+        }
+
+        /// <summary>
+        /// Quick access to the SIC Name, if specified - for printing.
+        /// </summary>
+        public string StudentName
+        {
+            get { return StringPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropStudentName); }
+        }
+
         public decimal PICUSTime
         {
             get { return DecPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropPICUS); }

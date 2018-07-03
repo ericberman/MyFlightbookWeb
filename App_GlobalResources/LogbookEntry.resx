@@ -569,7 +569,7 @@
   </data>
   <data name="PrintHeaderIFRSubhead" xml:space="preserve">
     <value>(Actual / Simulated)</value>
-  </data>  
+  </data>
   <data name="PrintHeaderLanding" xml:space="preserve">
     <value>Landings</value>
   </data>
@@ -848,5 +848,11 @@
   </data>
   <data name="importLabelFileWasConverted" xml:space="preserve">
     <value>File was identified as being from {0} and was converted.</value>
+  </data>
+  <data name="PrintFormatNZ" xml:space="preserve">
+    <value>Fewer Columns (New Zealand, etc.)</value>
+  </data>
+  <data name="PrintHeaderCoPilotOrStudent" xml:space="preserve">
+    <value>Co-Pilot/Student</value>
   </data>
 </root>
