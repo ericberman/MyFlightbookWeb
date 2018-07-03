@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace MyFlightbook.Printing
         /// <param name="user">The user for whom the pages are printed</param>
         /// <param name="includeImages">True to include images.</param>
         /// <param name="showFooter">True to display the certification/page numbers in the footer.</param>
-        void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true);
+        void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true, OptionalColumn[] optionalColumns = null);
     }
 
     public enum PrintLayoutType { Native, EASA, USA, SACAA, Glider}
@@ -42,9 +43,11 @@ namespace MyFlightbook.Printing
         public abstract int RowHeight(LogbookEntryDisplay le);
 
         /// <summary>
-        /// Does this template support imageS?
+        /// Does this template support images?
         /// </summary>
         public abstract bool SupportsImages { get; }
+
+        public abstract bool SupportsOptionalColumns { get; }
 
         /// <summary>
         /// The path to the stylesheet to use for the particular layout
@@ -81,6 +84,8 @@ namespace MyFlightbook.Printing
     {
         public override bool SupportsImages { get { return true; } }
 
+        public override bool SupportsOptionalColumns { get { return true; } }
+
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
@@ -113,6 +118,8 @@ namespace MyFlightbook.Printing
     {
         public override bool SupportsImages { get { return false; } }
 
+        public override bool SupportsOptionalColumns { get { return false; } }
+
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
@@ -137,6 +144,8 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsImages { get { return false; } }
 
+        public override bool SupportsOptionalColumns { get { return false; } }
+
         public override string CSSPath { get { return "~/Public/CSS/printEASA.css"; } }
     }
 
@@ -152,12 +161,16 @@ namespace MyFlightbook.Printing
 
         public override bool SupportsImages { get { return false; } }
 
+        public override bool SupportsOptionalColumns { get { return false; } }
+
         public override string CSSPath { get { return "~/Public/CSS/printSACAA.css"; } }
     }
 
     public class PrintLayoutUSA : PrintLayout
     {
         public override bool SupportsImages { get { return false; } }
+
+        public override bool SupportsOptionalColumns { get { return true; } }
 
         public override int RowHeight(LogbookEntryDisplay le)
         {
@@ -230,6 +243,8 @@ namespace MyFlightbook.Printing
                 }
             }
         }
+
+        public OptionalColumn[] OptionalColumns { get; set; }
         #endregion
 
         public PrintingOptions()
@@ -239,6 +254,7 @@ namespace MyFlightbook.Printing
             Layout = PrintLayoutType.Native;
             ExcludedPropertyIDs = new int[0];
             PropertySeparator = PropertySeparatorType.Space;
+            OptionalColumns = new OptionalColumn[0];
         }
     }
 
@@ -443,8 +459,9 @@ namespace MyFlightbook.Printing
         /// </summary>
         /// <param name="lstIn">The input set of flights.  Should be ALL RowType=Flight and should have rowheight property set</param>
         /// <param name="pageSize">Max # of flights per table to subtotal; flights with rowheight > 1 will take up more rows</param>
+        /// <param name="optionalColumns">Any optional columns to add</param>
         /// <returns>A new enumerable with per-page subtotals and (optional) running totals</returns>
-        public static IEnumerable<LogbookPrintedPage> Paginate(IEnumerable<LogbookEntryDisplay> lstIn, int pageSize)
+        public static IEnumerable<LogbookPrintedPage> Paginate(IEnumerable<LogbookEntryDisplay> lstIn, int pageSize, OptionalColumn[] optionalColumns)
         {
             if (lstIn == null)
                 throw new ArgumentNullException("lstIn");
@@ -469,6 +486,7 @@ namespace MyFlightbook.Printing
 
             foreach (LogbookEntryDisplay led in lstIn)
             {
+                led.OptionalColumns = optionalColumns;
                 if ((pageSize > 0 && flightIndexOnPage >= pageSize) || currentPage == null)   // need to start a new page.
                 {
                     flightIndexOnPage = 0;  // reset
@@ -478,11 +496,10 @@ namespace MyFlightbook.Printing
                     Dictionary<string, LogbookEntryDisplay> dictNewRunningTotals = new Dictionary<string, LogbookEntryDisplay>();
                     foreach (string szKeySrc in dictRunningTotals.Keys)
                     {
-                        LogbookEntryDisplay ledRunningNew = new LogbookEntryDisplay() { RowType = LogbookEntryDisplay.LogbookRowType.PreviousTotal };
-                        util.CopyObject(dictRunningTotals[szKeySrc], ledRunningNew);
+                        LogbookEntryDisplay ledRunningNew = JsonConvert.DeserializeObject<LogbookEntryDisplay>(JsonConvert.SerializeObject(dictRunningTotals[szKeySrc]));
+                        ledRunningNew.RowType = LogbookEntryDisplay.LogbookRowType.PreviousTotal;
                         dictPreviousTotals[szKeySrc] = ledRunningNew;
-                        ledRunningNew = new LogbookEntryDisplay();
-                        util.CopyObject(dictRunningTotals[szKeySrc], ledRunningNew);
+                        ledRunningNew = JsonConvert.DeserializeObject<LogbookEntryDisplay>(JsonConvert.SerializeObject(dictRunningTotals[szKeySrc]));
                         ledRunningNew.RowType = LogbookEntryDisplay.LogbookRowType.RunningTotal;
                         dictNewRunningTotals[szKeySrc] = ledRunningNew;
                     }
@@ -506,11 +523,11 @@ namespace MyFlightbook.Printing
                 if (pageSize > 0)
                 {
                     if (!dictPageTotals.ContainsKey(szCatClassKey))
-                        dictPageTotals[szCatClassKey] = new LogbookEntryDisplay() { RowType = LogbookEntryDisplay.LogbookRowType.PageTotal, CatClassDisplay = szCatClassKey };
+                        dictPageTotals[szCatClassKey] = new LogbookEntryDisplay() { RowType = LogbookEntryDisplay.LogbookRowType.PageTotal, CatClassDisplay = szCatClassKey, OptionalColumns = optionalColumns };
                     dictPageTotals[szCatClassKey].AddFrom(led);
                 }
                 if (!dictRunningTotals.ContainsKey(szCatClassKey))
-                    dictRunningTotals[szCatClassKey] = new LogbookEntryDisplay() { RowType = LogbookEntryDisplay.LogbookRowType.RunningTotal, CatClassDisplay = szCatClassKey };
+                    dictRunningTotals[szCatClassKey] = new LogbookEntryDisplay() { RowType = LogbookEntryDisplay.LogbookRowType.RunningTotal, CatClassDisplay = szCatClassKey, OptionalColumns = optionalColumns };
                 dictRunningTotals[szCatClassKey].AddFrom(led);
             }
 

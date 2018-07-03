@@ -229,6 +229,15 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Is this excluded from sums?
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public Boolean IsNoSum
+        {
+            get { return ((Flags & CFPPropertyFlag.cfpNosum) != CFPPropertyFlag.cfpFlagNone); }
+        }
+
+        /// <summary>
         /// Is this property an approach of some kind?
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]

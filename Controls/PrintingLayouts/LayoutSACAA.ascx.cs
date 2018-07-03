@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Printing;
+using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Printing;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,7 +18,7 @@ public partial class Controls_PrintingLayouts_LayoutSACAA : System.Web.UI.UserCo
     protected bool ShowFooter { get; set; }
 
     #region IPrintingTemplate
-    public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true)
+    public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true, OptionalColumn[] optionalColumns = null)
     {
         ShowFooter = showFooter;
         CurrentUser = user;

@@ -139,16 +139,17 @@ public partial class Member_PrintView : System.Web.UI.Page
     protected void RefreshLogbookData()
     {
         MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
-        mvLayouts.ActiveViewIndex = (int) PrintOptions1.Options.Layout;
+        PrintingOptions printingOptions = PrintOptions1.Options;
+        mvLayouts.ActiveViewIndex = (int) printingOptions.Layout;
         List<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, fAsc: true), pf.UserName, string.Empty, SortDirection.Ascending, pf.UsesHHMM, pf.UsesUTCDateOfFlight);
 
         IPrintingTemplate pt = ActiveTemplate;
 
-        PrintLayout pl = PrintLayout.LayoutForType(PrintOptions1.Options.Layout, CurrentUser);
+        PrintLayout pl = PrintLayout.LayoutForType(printingOptions.Layout, CurrentUser);
         bool fCanIncludeImages = pl.SupportsImages;
 
-        List<int> lstPropsToExclude = new List<int>(PrintOptions1.Options.ExcludedPropertyIDs);
-        string szPropSeparator = PrintOptions1.Options.PropertySeparatorText;
+        List<int> lstPropsToExclude = new List<int>(printingOptions.ExcludedPropertyIDs);
+        string szPropSeparator = printingOptions.PropertySeparatorText;
 
         // set up properties per flight, and compute rough lineheight
         foreach (LogbookEntryDisplay led in lstFlights)
@@ -160,7 +161,7 @@ public partial class Member_PrintView : System.Web.UI.Page
             led.CustomProperties = lstProps.ToArray();
             led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, pf.UsesHHMM, szPropSeparator);
 
-            if (PrintOptions1.Options.IncludeImages)
+            if (printingOptions.IncludeImages)
                 led.PopulateImages(true);
 
             led.RowHeight = pl.RowHeight(led);
@@ -168,7 +169,7 @@ public partial class Member_PrintView : System.Web.UI.Page
 
         Master.PrintingCSS = pl.CSSPath.ToAbsoluteURL(Request).ToString();
 
-        pt.BindPages(LogbookPrintedPage.Paginate(lstFlights, PrintOptions1.Options.FlightsPerPage), CurrentUser, PrintOptions1.Options.IncludeImages, !SuppressFooter);
+        pt.BindPages(LogbookPrintedPage.Paginate(lstFlights, printingOptions.FlightsPerPage, printingOptions.OptionalColumns), CurrentUser, printingOptions.IncludeImages, !SuppressFooter, printingOptions.OptionalColumns);
 
         pnlResults.Visible = true;
     }

@@ -12,6 +12,10 @@
             <thead class="header bordered">
                 <th colspan="2"></th>
                 <th><%=Resources.LogbookEntry.PrintHeaderAircraft %></th>
+                <th runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div><%# OptionalColumnName(0) %></div></th>
+                <th runat="server" id="optColumn2" Visible="<%# ShowOptionalColumn(1) %>"><div><%# OptionalColumnName(1) %></div></th>
+                <th runat="server" id="optColumn3" Visible="<%# ShowOptionalColumn(2) %>"><div><%# OptionalColumnName(2) %></div></th>
+                <th runat="server" id="optColumn4" Visible="<%# ShowOptionalColumn(3) %>"><div><%# OptionalColumnName(3) %></div></th>
                 <th><div><%=Resources.LogbookEntry.PrintHeaderApproachesShort %></div></th>
                 <th><div><%=Resources.LogbookEntry.FieldHold %></div></th>
                 <th><div><%=Resources.LogbookEntry.PrintHeaderLandingsShort %></div></th>
@@ -53,6 +57,10 @@
                             <div style="font-weight:bold"><%#: Eval("TailNumDisplay") %></div>
                             <div style="font-size:smaller"><%#: Eval("ModelDisplay") %> <%#: Eval("CatClassDisplay") %></div>
                         </td>
+                        <td class="numericColumn" runat="server" id="tdoptColumn1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
+                        <td class="numericColumn" runat="server" id="tdoptColumn2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(1) %></div></td>
+                        <td class="numericColumn" runat="server" id="tdoptColumn3" visible="<%# ShowOptionalColumn(2) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(2) %></div></td>
+                        <td class="numericColumn" runat="server" id="tdoptColumn4" visible="<%# ShowOptionalColumn(3) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(3) %></div></td>
                         <td class="numericColumn"><%# Eval("Approaches").FormatInt() %></td>
                         <td class="numericColumn"><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
                         <td class="numericColumn"><%# Eval("LandingDisplay") %></td>
@@ -78,6 +86,10 @@
                             <ItemTemplate>
                                 <%# (Container.ItemIndex != 0) ? "<tr class=\"subtotal\">" : string.Empty %>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).CatClassDisplay %></td>
+                                <td runat="server" id="tdoptColumnTotal1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(0, CurrentUser.UsesHHMM) %></div></td>
+                                <td runat="server" id="tdoptColumnTotal2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(1, CurrentUser.UsesHHMM) %></div></td>
+                                <td runat="server" id="tdoptColumnTotal3" visible="<%# ShowOptionalColumn(2) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(2, CurrentUser.UsesHHMM) %></div></td>
+                                <td runat="server" id="tdoptColumnTotal4" visible="<%# ShowOptionalColumn(3) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(3, CurrentUser.UsesHHMM) %></div></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
                                 <td></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).Landings.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>

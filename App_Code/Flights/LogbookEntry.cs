@@ -2072,6 +2072,106 @@ namespace MyFlightbook
     }
 
     /// <summary>
+    /// Specifies the kind of additional columns that can be displayed for printing.
+    /// </summary>
+    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, Turbine, Jet, TurboProp, CustomProp }
+
+    public enum OptionalColumnValueType { Decimal, Integer }
+
+    /// <summary>
+    /// An additional print column that can be displayed.
+    /// </summary>
+    [Serializable]
+    public class OptionalColumn
+    {
+        #region Properties
+        /// <summary>
+        /// What kind of property is this?
+        /// </summary>
+        public OptionalColumnType ColumnType { get; set; }
+
+        /// <summary>
+        /// If this is a property, what is the ID of the property?
+        /// </summary>
+        public int IDPropType { get; set; }
+
+        /// <summary>
+        /// The title for the column
+        /// </summary>
+        public string Title { get; set; }
+
+        public OptionalColumnValueType ValueType { get; set; }
+        #endregion
+
+        #region Constructors
+        public OptionalColumn()
+        {
+            ColumnType = OptionalColumnType.None;
+            IDPropType = (int)CustomPropertyType.KnownProperties.IDPropInvalid;
+            Title = string.Empty;
+            ValueType = OptionalColumnValueType.Decimal;
+        }
+
+        public OptionalColumn(OptionalColumnType type) : this()
+        {
+            ColumnType = type;
+            if (type == OptionalColumnType.CustomProp || type == OptionalColumnType.None)
+                throw new ArgumentOutOfRangeException("type");
+
+            ValueType = OptionalColumnValueType.Decimal;
+
+            switch (type)
+            {
+                case OptionalColumnType.Complex:
+                    Title = Resources.Makes.IsComplex;
+                    break;
+                case OptionalColumnType.Retract:
+                    Title = Resources.Makes.IsRetract;
+                    break;
+                case OptionalColumnType.Tailwheel:
+                    Title = Resources.Makes.IsTailwheel;
+                    break;
+                case OptionalColumnType.HighPerf:
+                    Title = Resources.Makes.IsHighPerf;
+                    break;
+                case OptionalColumnType.Turbine:
+                    Title = Resources.Makes.IsTurbine;
+                    break;
+                case OptionalColumnType.Jet:
+                    Title = Resources.Makes.IsJet;
+                    break;
+                case OptionalColumnType.TurboProp:
+                    Title = Resources.Makes.IsTurboprop;
+                    break;
+            }
+        }
+
+        public OptionalColumn(int idPropType) : this()
+        {
+            ColumnType = OptionalColumnType.CustomProp;
+            IDPropType = idPropType;
+            CustomPropertyType cpt = CustomPropertyType.GetCustomPropertyType(idPropType);
+            switch (cpt.Type)
+            {
+                case CFPPropertyType.cfpDecimal:
+                    break;
+                case CFPPropertyType.cfpInteger:
+                    ValueType = OptionalColumnValueType.Integer;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("idPropType");
+            }
+            Title = cpt.Title;
+        }
+        #endregion
+
+        public override string ToString()
+        {
+            return Title;
+        }
+    }
+
+    /// <summary>
     /// LogbookEntry that has additional read-only fields, optimized for display purposes vs. data interchange
     /// </summary>
     [Serializable]
@@ -2220,6 +2320,13 @@ namespace MyFlightbook
         public decimal InstrumentFSTDTotal { get; set; }
         public decimal GroundInstructionTotal { get; set; }
         public decimal IFRTimeTotal { get; set; }
+
+        public decimal[] OptionalColumnTotals { get; set; }
+
+        /// <summary>
+        /// Any additional columns to display.  Use OptionalColumnValue to get the value, or, after using AddFrom, use OptionalColumnTotalValue to retrieve the total
+        /// </summary>
+        public OptionalColumn[] OptionalColumns { get; set; }
 
         // Glider counts
         public int SelfLaunchTotal { get; set; }
@@ -2610,6 +2717,20 @@ namespace MyFlightbook
                 AeroLaunchTotal += led.AeroLaunches;
                 GroundLaunchTotal += led.GroundLaunches;
                 LandingsTotal += led.Landings;
+
+                if (OptionalColumns != null)
+                {
+                    if (OptionalColumnTotals == null || OptionalColumnTotals.Length != OptionalColumns.Length)
+                        OptionalColumnTotals = new decimal[OptionalColumns.Length];
+
+                    for (int i = 0; i < OptionalColumns.Length; i++)
+                    {
+                        if (OptionalColumns[i].ValueType == OptionalColumnValueType.Integer)
+                            OptionalColumnTotals[i] += led.OptionalColumnValue(i);
+                        else
+                            OptionalColumnTotals[i] = OptionalColumnTotals[i].AddMinutes(led.OptionalColumnValue(i));
+                    }
+                }
             }
             NightDualTotal += Math.Min(le.Nighttime, le.Dual);
             NightPICTotal += Math.Min(le.Nighttime, le.PIC);
@@ -2617,6 +2738,94 @@ namespace MyFlightbook
 
             FlightCount++;
         }
+
+        #region Optional Columns
+        private decimal OptionalColumnTotalIfCondition(bool f)
+        {
+            return f ? TotalFlightTime : 0.0M;
+        }
+
+        /// <summary>
+        /// Determines the value for an optional column from a logbookentrydisplay object
+        /// </summary>
+        /// <param name="columnIndex">The index of the optional column</param>
+        /// <returns></returns>
+        public decimal OptionalColumnValue(int columnIndex)
+        {
+            if (OptionalColumns == null || columnIndex < 0 || columnIndex >= OptionalColumns.Length)
+                return 0.0M;
+
+            OptionalColumn oc = OptionalColumns[columnIndex];
+
+            switch (oc.ColumnType)
+            {
+                case OptionalColumnType.Complex:
+                    return OptionalColumnTotalIfCondition(MakeModel.GetModel(ModelID).IsComplex);
+                case OptionalColumnType.Retract:
+                    return OptionalColumnTotalIfCondition(MakeModel.GetModel(ModelID).IsRetract);
+                case OptionalColumnType.Tailwheel:
+                    return OptionalColumnTotalIfCondition(MakeModel.GetModel(ModelID).IsTailWheel);
+                case OptionalColumnType.HighPerf:
+                    {
+                        MakeModel m = MakeModel.GetModel(ModelID);
+                        return OptionalColumnTotalIfCondition(m.PerformanceType == MakeModel.HighPerfType.HighPerf || (m.PerformanceType == MakeModel.HighPerfType.Is200HP && Date.CompareTo(Convert.ToDateTime(MakeModel.Date200hpHighPerformanceCutoverDate, CultureInfo.InvariantCulture)) < 0));
+                    }
+                case OptionalColumnType.Jet:
+                    return OptionalColumnTotalIfCondition(MakeModel.GetModel(ModelID).EngineType == MakeModel.TurbineLevel.Jet);
+                case OptionalColumnType.Turbine:
+                    {
+                        MakeModel m = MakeModel.GetModel(ModelID);
+                        return OptionalColumnTotalIfCondition(m.EngineType == MakeModel.TurbineLevel.UnspecifiedTurbine || m.EngineType == MakeModel.TurbineLevel.Jet);
+                    }
+                case OptionalColumnType.TurboProp:
+                    return OptionalColumnTotalIfCondition(MakeModel.GetModel(ModelID).EngineType == MakeModel.TurbineLevel.TurboProp);
+                case OptionalColumnType.CustomProp:
+                    {
+                        if (CustomProperties == null)
+                            return 0.0M;
+                        foreach (CustomFlightProperty cfp in CustomProperties)
+                        {
+                            if (cfp.PropTypeID == oc.IDPropType)
+                                return oc.ValueType == OptionalColumnValueType.Integer ? cfp.IntValue : cfp.DecValue;
+                        }
+                        return 0.0M;
+                    }
+                default:
+                    return 0.0M;
+            }
+        }
+
+        /// <summary>
+        /// Returns an index value or a total value formatted per the settings of the optional column
+        /// </summary>
+        /// <param name="value">The decimal value, retrieved from somewhere (e.g., could be a total)</param>
+        /// <param name="columnIndex">To which optional column does this belong?</param>
+        /// <param name="fUseHHMM">Use HHMM or decimal?</param>
+        /// <returns>Formatted string</returns>
+        public string OptionalColumnDisplayValue(decimal value, int columnIndex)
+        {
+            if (OptionalColumns == null || columnIndex < 0 || columnIndex >= OptionalColumns.Length)
+                return string.Empty;
+
+            return OptionalColumns[columnIndex].ValueType == OptionalColumnValueType.Integer ? ((int)value).FormatInt() : value.FormatDecimal(UseHHMM);
+        }
+
+        public string OptionalColumnDisplayValue(int columnIndex)
+        {
+            return OptionalColumnDisplayValue(OptionalColumnValue(columnIndex), columnIndex);
+        }
+
+        public decimal OptionalColumnTotalValue(int columnIndex)
+        {
+            return (OptionalColumnTotals == null || columnIndex < 0 || columnIndex > OptionalColumnTotals.Length) ? 0.0M : OptionalColumnTotals[columnIndex];
+        }
+
+        public string OptionalColumnTotalDisplayValue(int columnIndex, bool fUseHHMM)
+        {
+            UseHHMM = fUseHHMM;
+            return OptionalColumnTotals == null || columnIndex < 0 || columnIndex >= OptionalColumnTotals.Length ? string.Empty : OptionalColumnDisplayValue(OptionalColumnTotals[columnIndex], columnIndex);
+        }
+        #endregion
         #endregion
 
         #region IHistogramable support

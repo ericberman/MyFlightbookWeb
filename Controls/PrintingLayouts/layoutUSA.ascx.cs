@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Printing;
+using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Printing;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2017 MyFlightbook LLC
+ * Copyright (c) 2016-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,11 +17,25 @@ public partial class Controls_PrintingLayouts_layoutUSA : System.Web.UI.UserCont
 
     protected bool ShowFooter { get; set; }
 
+    protected OptionalColumn[] OptionalColumns { get; set; }
+
+    protected Boolean ShowOptionalColumn(int index)
+    {
+        return OptionalColumns != null && index >= 0 && index < OptionalColumns.Length;
+    }
+
+    protected string OptionalColumnName(int index)
+    {
+        return ShowOptionalColumn(index) ? OptionalColumns[index].Title : string.Empty;
+    }
+
     #region IPrintingTemplate
-    public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true)
+    public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true, OptionalColumn[] optionalColumns = null)
     {
         ShowFooter = showFooter;
         CurrentUser = user;
+        OptionalColumns = optionalColumns;
+
         rptPages.DataSource = lst;
         rptPages.DataBind();
     }

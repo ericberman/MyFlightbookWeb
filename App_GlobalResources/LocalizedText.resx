@@ -1423,7 +1423,7 @@
     <value>Printing of flight properties</value>
   </data>
   <data name="PrintViewPropertyInclusion" xml:space="preserve">
-    <value>Don't include these properties when printing:</value>
+    <value>Exclude these properties when printing:</value>
   </data>
   <data name="PrintViewPropertySeparator" xml:space="preserve">
     <value>Separate Properties with:</value>
@@ -1451,5 +1451,11 @@
   </data>
   <data name="FollowOnTwitter" xml:space="preserve">
     <value>%APP_NAME% on Twitter</value>
+  </data>
+  <data name="PrintViewOptionalColumnNone" xml:space="preserve">
+    <value>(None)</value>
+  </data>
+  <data name="PrintViewOptionalColumns" xml:space="preserve">
+    <value>Choose up to 4 additional columns to display:</value>
   </data>
 </root>
