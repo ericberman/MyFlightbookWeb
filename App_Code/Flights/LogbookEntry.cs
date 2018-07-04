@@ -2742,9 +2742,9 @@ namespace MyFlightbook
                     for (int i = 0; i < OptionalColumns.Length; i++)
                     {
                         if (OptionalColumns[i].ValueType == OptionalColumnValueType.Integer)
-                            OptionalColumnTotals[i] += led.OptionalColumnValue(i);
+                            OptionalColumnTotals[i] += led.RowType == LogbookRowType.Flight ? led.OptionalColumnValue(i) : led.OptionalColumnTotalValue(i);
                         else
-                            OptionalColumnTotals[i] = OptionalColumnTotals[i].AddMinutes(led.OptionalColumnValue(i));
+                            OptionalColumnTotals[i] = OptionalColumnTotals[i].AddMinutes(led.RowType == LogbookRowType.Flight ? led.OptionalColumnValue(i) : led.OptionalColumnTotalValue(i));
                     }
                 }
             }

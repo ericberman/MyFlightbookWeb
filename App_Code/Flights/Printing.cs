@@ -553,9 +553,9 @@ namespace MyFlightbook.Printing
             foreach (LogbookPrintedPage lpp in lstOut)
             {
                 // And add unstriped totals as needed
-                ConsolidateTotals(lpp.TotalsThisPage, LogbookEntryDisplay.LogbookRowType.PageTotal);
-                ConsolidateTotals(lpp.TotalsPreviousPages, LogbookEntryDisplay.LogbookRowType.PreviousTotal);
-                ConsolidateTotals(lpp.RunningTotals, LogbookEntryDisplay.LogbookRowType.RunningTotal);
+                ConsolidateTotals(lpp.TotalsThisPage, LogbookEntryDisplay.LogbookRowType.PageTotal, optionalColumns);
+                ConsolidateTotals(lpp.TotalsPreviousPages, LogbookEntryDisplay.LogbookRowType.PreviousTotal, optionalColumns);
+                ConsolidateTotals(lpp.RunningTotals, LogbookEntryDisplay.LogbookRowType.RunningTotal, optionalColumns);
 
                 lpp.TotalPages = pageNum;
                 int iTotal = 0;
@@ -573,12 +573,12 @@ namespace MyFlightbook.Printing
             return lstOut;
         }
 
-        private static void ConsolidateTotals(IDictionary<string, LogbookEntryDisplay> d, LogbookEntryDisplay.LogbookRowType rowType)
+        private static void ConsolidateTotals(IDictionary<string, LogbookEntryDisplay> d, LogbookEntryDisplay.LogbookRowType rowType, OptionalColumn[] optionalColumns)
         {
             if (d == null || d.Count <= 1)
                 return;
 
-            LogbookEntryDisplay ledAll = new LogbookEntryDisplay() { RowType = rowType };
+            LogbookEntryDisplay ledAll = new LogbookEntryDisplay() { RowType = rowType, OptionalColumns = optionalColumns };
             foreach (LogbookEntryDisplay led in d.Values)
                 ledAll.AddFrom(led);
             ledAll.CatClassDisplay = Resources.LogbookEntry.PrintTotalsAllCatClass;
