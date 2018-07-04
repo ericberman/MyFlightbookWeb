@@ -95,7 +95,13 @@ public partial class Public_MyFlights : System.Web.UI.Page
             string szUserEnc = util.GetStringParam(Request, "uid");
             UserName = string.Empty;
 
-            if (String.IsNullOrEmpty(szUserEnc))
+            if (!String.IsNullOrEmpty(szUserEnc))
+            { 
+                SharedDataEncryptor enc = new SharedDataEncryptor(MFBConstants.keyEncryptMyFlights);
+                UserName = enc.Decrypt(szUserEnc);
+            }
+
+            if (String.IsNullOrEmpty(UserName))
             {
                 FlightStats fs = FlightStats.GetFlightStats();
                 List<LogbookEntry> lst = new List<LogbookEntry>(fs.RecentPublicFlights);
@@ -105,8 +111,6 @@ public partial class Public_MyFlights : System.Web.UI.Page
             }
             else
             {
-                SharedDataEncryptor enc = new SharedDataEncryptor(MFBConstants.keyEncryptMyFlights);
-                UserName = enc.Decrypt(szUserEnc);
                 Profile pf = MyFlightbook.Profile.GetUser(UserName);
                 if (pf.UserFullName.Length > 0)
                     lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightPageHeader, pf.UserFullName);
