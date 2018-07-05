@@ -2720,19 +2720,19 @@ namespace MyFlightbook
             LogbookEntryDisplay led = le as LogbookEntryDisplay;
             if (led != null)
             {
-                PICUSTotal = PICUSTotal.AddMinutes(led.PICUSTime);
-                NightPICUSTotal = NightPICUSTotal.AddMinutes(Math.Min(le.Nighttime, led.PICUSTime));
-                InstrumentAircraftTotal = InstrumentAircraftTotal.AddMinutes(led.IsFSTD ? 0 : le.IMC);
-                InstrumentFSTDTotal = InstrumentFSTDTotal.AddMinutes(led.IsFSTD ? le.SimulatedIFR : 0);
-                SoloTotal = SoloTime.AddMinutes(led.SoloTime);
-                GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstructionTotal);
-                IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTime);
-                NightTouchAndGoLandings += led.IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
+                PICUSTotal = PICUSTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? led.PICUSTime : led.PICUSTotal);
+                NightPICUSTotal = NightPICUSTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, led.PICUSTime) : led.NightPICUSTotal);
+                InstrumentAircraftTotal = InstrumentAircraftTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? (led.IsFSTD ? 0 : le.IMC) : led.InstrumentAircraftTotal);
+                InstrumentFSTDTotal = InstrumentFSTDTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? (led.IsFSTD ? le.SimulatedIFR : 0) : led.InstrumentFSTDTotal);
+                SoloTotal = SoloTime.AddMinutes(led.RowType == LogbookRowType.Flight ? led.SoloTime : SoloTotal);
+                GroundInstructionTotal = GroundInstruction.AddMinutes(led.RowType == LogbookRowType.Flight ? led.GroundInstruction : led.GroundInstructionTotal);
+                IFRTimeTotal = IFRTimeTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? led.IFRTime : IFRTimeTotal);
+                NightTouchAndGoLandings += led.RowType == LogbookRowType.Flight ? led.IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo) : led.NightTouchAndGoLandings;
 
-                SelfLaunchTotal += led.SelfLaunches;
-                AeroLaunchTotal += led.AeroLaunches;
-                GroundLaunchTotal += led.GroundLaunches;
-                LandingsTotal += led.Landings;
+                SelfLaunchTotal += led.RowType == LogbookRowType.Flight ? led.SelfLaunches : led.SelfLaunchTotal;
+                AeroLaunchTotal += led.RowType == LogbookRowType.Flight ? led.AeroLaunches : led.AeroLaunchTotal;
+                GroundLaunchTotal += led.RowType == LogbookRowType.Flight ? led.GroundLaunches : led.GroundLaunchTotal;
+                LandingsTotal += led.RowType == LogbookRowType.Flight ? led.Landings : led.LandingsTotal;
 
                 if (OptionalColumns != null)
                 {
@@ -2748,9 +2748,9 @@ namespace MyFlightbook
                     }
                 }
             }
-            NightDualTotal = NightDualTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.Dual) : led.NightDualTotal);
-            NightPICTotal = NightPICTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.PIC) : led.NightPICTotal);
-            NightSICTotal = NightSICTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.SIC) : led.NightSICTotal);
+            NightDualTotal = NightDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.Dual) : led.NightDualTotal);
+            NightPICTotal = NightPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.PIC) : led.NightPICTotal);
+            NightSICTotal = NightSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.SIC) : led.NightSICTotal);
 
             FlightCount++;
         }
