@@ -1458,4 +1458,10 @@
   <data name="PrintViewOptionalColumns" xml:space="preserve">
     <value>Choose up to 4 additional columns to display:</value>
   </data>
+  <data name="PDFMargin" xml:space="preserve">
+    <value>Margins (mm)</value>
+  </data>
+  <data name="PDFMarginNote" xml:space="preserve">
+    <value>(default is 10mm)</value>
+  </data>
 </root>

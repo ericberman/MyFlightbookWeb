@@ -51,7 +51,11 @@ public partial class Member_PrintView : System.Web.UI.Page
                 PaperSize = (PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue),
                 Orientation = rbLandscape.Checked ? PDFOptions.PageOrientation.Landscape : PDFOptions.PageOrientation.Portrait,
                 FooterLeft = Resources.LogbookEntry.LogbookCertification,
-                FooterRight = PDFOptions.FooterPageCountArg
+                FooterRight = PDFOptions.FooterPageCountArg,
+                LeftMargin = decLeftMargin.IntValue,
+                RightMargin = decRightMargin.IntValue,
+                TopMargin = decTopMargin.IntValue,
+                BottomMargin = decBottomMargin.IntValue
             };
         }
     }

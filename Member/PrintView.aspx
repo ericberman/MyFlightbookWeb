@@ -13,6 +13,8 @@
 <%@ Register Src="~/Controls/PrintingLayouts/LayoutSACAA.ascx" TagPrefix="uc1" TagName="LayoutSACAA" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutGlider.ascx" TagPrefix="uc1" TagName="layoutGlider" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutNZ.ascx" TagPrefix="uc1" TagName="layoutNZ" %>
+<%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
+
 
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
@@ -120,6 +122,28 @@
                                 <asp:RadioButton ID="rbPortrait" GroupName="pdfOrientation" runat="server" style="vertical-align:middle;" />
                                 <label for="<%=rbPortrait.ClientID %>">
                                     <asp:Image ID="imgPortrait" runat="server" AlternateText="<%$ Resources:LocalizedText, PDFOrientationPortrait %>" ToolTip="<%$ Resources:LocalizedText, PDFOrientationPortrait %>" ImageUrl="~/images/portraitprint.png" ImageAlign="Middle" /></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div><% =Resources.LocalizedText.PDFMargin %></div><div class="fineprint"><% =Resources.LocalizedText.PDFMarginNote %></div></td>
+                            <td style="padding-left: 20px">
+                                <table>
+                                    <tr>
+                                        <td></td>
+                                        <td style="text-align:center"><uc1:mfbDecimalEdit runat="server" ID="decTopMargin" DefaultValueInt="10" Width="40" IntValue="10" EditingMode="Integer" /></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr style="vertical-align:middle">
+                                        <td><div><uc1:mfbDecimalEdit runat="server" ID="decLeftMargin" DefaultValueInt="10" Width="40" IntValue="10" EditingMode="Integer" /></div></td>
+                                        <td style="border: 1px dotted black; width: 80px; margin: 4px; height:80px">&nbsp;</td>
+                                        <td><div><uc1:mfbDecimalEdit runat="server" ID="decRightMargin" DefaultValueInt="10" Width="40" IntValue="10" EditingMode="Integer" /></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td style="text-align:center"><uc1:mfbDecimalEdit runat="server" ID="decBottomMargin" DefaultValueInt="10" Width="40" IntValue="10" EditingMode="Integer" /></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
                             </td>
                         </tr>
                         <tr>

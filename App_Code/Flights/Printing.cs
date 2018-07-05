@@ -296,6 +296,13 @@ namespace MyFlightbook.Printing
         /// </summary>
         public PageSize PaperSize { get; set; }
 
+        #region Optional margins
+        public int? TopMargin { get; set; }
+        public int? BottomMargin { get; set; }
+        public int? LeftMargin { get; set; }
+        public int? RightMargin { get; set; }
+        #endregion
+
         /// <summary>
         /// Text to display in lower left corner of each page
         /// </summary>
@@ -331,9 +338,13 @@ namespace MyFlightbook.Printing
                 throw new ArgumentNullException("inputFile");
             if (outputFile == null)
                 throw new ArgumentNullException("outputFile");
-            return String.Format(CultureInfo.InvariantCulture, "--orientation {0} --print-media-type --disable-javascript --footer-font-size 8 -s {1} {2} {3} {4} {5}",
+            return String.Format(CultureInfo.InvariantCulture, "--orientation {0} --print-media-type --disable-javascript --footer-font-size 8 -s {1} {2} {3} {4} {5} {6} {7} {8} {9}",
                 Orientation.ToString(),
                 PaperSize.ToString(),
+                TopMargin.HasValue ? String.Format(CultureInfo.InvariantCulture, "--margin-top {0}", TopMargin.Value) : string.Empty,
+                BottomMargin.HasValue ? String.Format(CultureInfo.InvariantCulture, "--margin-bottom {0}", BottomMargin.Value) : string.Empty,
+                LeftMargin.HasValue ? String.Format(CultureInfo.InvariantCulture, "--margin-left {0}", LeftMargin.Value) : string.Empty,
+                RightMargin.HasValue ? String.Format(CultureInfo.InvariantCulture, "--margin-right {0}", RightMargin.Value) : string.Empty,
                 String.IsNullOrEmpty(FooterLeft) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "--footer-left \"{0}\"", FooterLeft),
                 String.IsNullOrEmpty(FooterRight) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "--footer-right \"{0}\"", FooterRight),
                 inputFile,
