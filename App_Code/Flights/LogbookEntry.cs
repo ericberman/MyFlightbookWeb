@@ -2720,13 +2720,13 @@ namespace MyFlightbook
             LogbookEntryDisplay led = le as LogbookEntryDisplay;
             if (led != null)
             {
-                PICUSTotal += led.PICUSTime;
-                NightPICUSTotal += Math.Min(le.Nighttime, led.PICUSTime);
-                InstrumentAircraftTotal += led.IsFSTD ? 0 : le.IMC;
-                InstrumentFSTDTotal += led.IsFSTD ? le.SimulatedIFR : 0;
-                SoloTotal += led.SoloTime;
-                GroundInstructionTotal += led.GroundInstructionTotal;
-                IFRTimeTotal += led.IFRTime;
+                PICUSTotal = PICUSTotal.AddMinutes(led.PICUSTime);
+                NightPICUSTotal = NightPICUSTotal.AddMinutes(Math.Min(le.Nighttime, led.PICUSTime));
+                InstrumentAircraftTotal = InstrumentAircraftTotal.AddMinutes(led.IsFSTD ? 0 : le.IMC);
+                InstrumentFSTDTotal = InstrumentFSTDTotal.AddMinutes(led.IsFSTD ? le.SimulatedIFR : 0);
+                SoloTotal = SoloTime.AddMinutes(led.SoloTime);
+                GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstructionTotal);
+                IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTime);
                 NightTouchAndGoLandings += led.IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
 
                 SelfLaunchTotal += led.SelfLaunches;
@@ -2748,9 +2748,9 @@ namespace MyFlightbook
                     }
                 }
             }
-            NightDualTotal += Math.Min(le.Nighttime, le.Dual);
-            NightPICTotal += Math.Min(le.Nighttime, le.PIC);
-            NightSICTotal += Math.Min(le.Nighttime, le.SIC);
+            NightDualTotal = NightDualTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.Dual) : led.NightDualTotal);
+            NightPICTotal = NightPICTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.PIC) : led.NightPICTotal);
+            NightSICTotal = NightSICTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.SIC) : led.NightSICTotal);
 
             FlightCount++;
         }
