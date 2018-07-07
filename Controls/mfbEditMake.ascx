@@ -1,6 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditMake.ascx.cs" Inherits="Controls_mfbEditMake" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc1" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc2" TagName="mfbTooltip" %>
+
 <asp:Panel ID="Panel2" DefaultButton="btnAddMake" runat="server" 
     meta:resourcekey="Panel2Resource1">
     <div class="vfSection">
@@ -177,9 +179,6 @@
                 <div id="divMultiHeli" runat="server">
                     <asp:CheckBox ID="ckMultiHeli" Text="Multi-engine" runat="server" meta:resourcekey="ckMultiHeliResource1" />
                 </div>
-                <asp:CheckBox ID="ckAllGlass" runat="server" 
-                    Text="All aircraft of this model have glass cockpits." 
-                    meta:resourcekey="ckAllGlassResource1" /><br />
                 <asp:Panel ID="pnlHighPerfBlock" runat="server" 
                     meta:resourcekey="pnlHighPerfBlockResource1">
                     <asp:CheckBox ID="ckHighPerf" runat="server" Text="High-Performance" 
@@ -193,6 +192,19 @@
                     </asp:Panel>
                 </asp:Panel>
             </div>
+            <asp:Panel runat="server" ID="pnlAvionicsType" CssClass="vfSection">
+                <div><asp:Label Font-Bold="true" ID="lblAvionicsType" runat="server" Text="<%$ Resources:Makes, avionicsLabel %>"></asp:Label></div>
+                <div><asp:RadioButton ID="rbAvionicsAny" runat="server" GroupName="avionics" Checked="true" Text="<%$ Resources:Makes, avionicsAny %>" /></div>
+                <div><asp:RadioButton ID="rbAvionicsGlass" runat="server" GroupName="avionics" Text="<%$ Resources:Makes, avionicsGlass %>"/></div>
+                <asp:Panel runat="server" ID="pnlTAA">
+                    <asp:RadioButton ID="rbAvionicsTAA" runat="server" GroupName="avionics" Text="<%$ Resources:Makes, avionicsTAA %>" />
+                    <uc2:mfbTooltip runat="server" ID="mfbTooltip">
+                        <TooltipBody>
+                            <%=Resources.Makes.TAADefinition %>
+                        </TooltipBody>
+                    </uc2:mfbTooltip>
+                </asp:Panel>
+            </asp:Panel>
             <div id="divIsSimOnly" runat="server" visible="False" style="display:inline-block;vertical-align:top">
                 <asp:Label ID="lblAdminSimRestrictions" Font-Bold="True" runat="server" Text="ADMIN Sim/Anon Restrictions" meta:resourcekey="lblAdminSimRestrictionsResource1"></asp:Label>
                 <asp:RadioButtonList ID="rblAircraftAllowedTypes" runat="server" 

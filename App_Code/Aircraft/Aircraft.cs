@@ -491,7 +491,7 @@ namespace MyFlightbook
         [Newtonsoft.Json.JsonIgnore]
         public bool HasBeenFlown
         {
-            get { return (Stats != null && Stats.EarliestDate.HasValue);}
+            get { return (Stats != null && Stats.EarliestDate.HasValue); }
         }
 
         [Newtonsoft.Json.JsonIgnore]
@@ -602,7 +602,36 @@ namespace MyFlightbook
         /// <summary>
         /// True if the aircraft has a glass upgrade
         /// </summary>
-        public Boolean IsGlass { get; set; }
+        private Boolean IsGlass { get; set; }
+
+        /// <summary>
+        /// Has the aircraft been upgraded to TAA?  TAA = glass PFD + glass MFD (GPS) + at least 2-axis autopilot (61.129(j) as of Aug 27 2018
+        /// </summary>
+        private Boolean IsTAA { get; set; }
+
+        /// <summary>
+        /// Level of any upgrade.  Note that this could indicate no upgrade (e.g., "steam") but the model may override.  E.g., can't upgrade a 787, it's already TAA.
+        /// </summary>
+        public MakeModel.AvionicsTechnologyType AvionicsTechnologyUpgrade
+        {
+            get { return IsTAA ? MakeModel.AvionicsTechnologyType.TAA : (IsGlass ? MakeModel.AvionicsTechnologyType.Glass : MakeModel.AvionicsTechnologyType.None); }
+            set
+            {
+                switch (value)
+                {
+                    case MakeModel.AvionicsTechnologyType.None:
+                        IsGlass = IsTAA = false;
+                        break;
+                    case MakeModel.AvionicsTechnologyType.Glass:
+                        IsGlass = true;
+                        IsTAA = false;
+                        break;
+                    case MakeModel.AvionicsTechnologyType.TAA:
+                        IsGlass = IsTAA = true;
+                        break;
+                }
+            }
+        }
 
         #region Images
         /// <summary>
@@ -853,6 +882,7 @@ namespace MyFlightbook
         {
             get { return InstanceType == AircraftInstanceTypes.RealAircraft && TailNumber.StartsWith(CountryCodePrefix.szAnonPrefix, StringComparison.OrdinalIgnoreCase); }
         }
+        
         /// <summary>
         /// Optional date of the glass upgrade.
         /// </summary>
@@ -931,6 +961,7 @@ namespace MyFlightbook
             m_fIsTailwheel = Convert.ToBoolean(dr["fTailwheel"], CultureInfo.InvariantCulture);
             IsGlass = Convert.ToBoolean(dr["HasGlassUpgrade"], CultureInfo.InvariantCulture);
             GlassUpgradeDate = (DateTime?) util.ReadNullableField(dr, "GlassUpgradeDate", null);
+            IsTAA = Convert.ToBoolean(dr["HasTAAUpgrade"], CultureInfo.InvariantCulture);
             IsLocked = Convert.ToBoolean(dr["IsLocked"], CultureInfo.InvariantCulture);
 
             InstanceTypeDescription = dr["InstanceTypeDesc"].ToString();
@@ -967,7 +998,8 @@ namespace MyFlightbook
         {
             const string szCommitTemplate = @"{0} aircraft SET tailnumber = ?tailNumber, version=?version, idmodel = ?idModel, InstanceType = ?instanceType, 
                 LastAnnual = ?LastAnnual, LastVOR = ?LastVOR, LastAltimeter = ?LastAltimeter, LastTransponder = ?LastTransponder, LastPitotStatic=?LastPitotStatic,  
-                HasGlassUpgrade = ?HasGlass, GlassUpgradeDate=?glassUpgradeDate, PublicNotes=?PublicNotes, LastElt=?LastElt, Last100=?Last100, LastOil=?LastOil, LastEngine=?LastEngine, RegistrationDue=?RegistrationDue, IsLocked=?locked {1} ";
+                HasGlassUpgrade = ?HasGlass, GlassUpgradeDate=?glassUpgradeDate, HasTAAUpgrade=?IsTaa, PublicNotes=?PublicNotes, LastElt=?LastElt, Last100=?Last100, LastOil=?LastOil, LastEngine=?LastEngine, 
+                RegistrationDue=?RegistrationDue, IsLocked=?locked {1} ";
             string szQ = String.Format(CultureInfo.InvariantCulture, szCommitTemplate, IsNew ? "INSERT INTO" : "UPDATE", IsNew ? string.Empty : "WHERE idaircraft = ?idAircraft");
 
             DBHelper dbh = new DBHelper();
@@ -979,6 +1011,7 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("InstanceType", InstanceTypeID);
                     comm.Parameters.AddWithValue("HasGlass", IsGlass);
                     comm.Parameters.AddWithValue("glassUpgradeDate", GlassUpgradeDate.HasValue ? GlassUpgradeDate.Value : (DateTime?)null);
+                    comm.Parameters.AddWithValue("IsTaa", IsTAA);
                     comm.Parameters.AddWithValue("version", Version);
 
                     comm.Parameters.AddWithValue("LastAnnual", LastAnnual);

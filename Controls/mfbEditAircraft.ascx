@@ -14,6 +14,8 @@
 <%@ Register Src="~/Controls/mfbMakeListItem.ascx" TagPrefix="uc1" TagName="mfbMakeListItem" %>
 <%@ Register Src="~/Controls/AircraftControls/SelectMake.ascx" TagPrefix="uc1" TagName="SelectMake" %>
 <%@ Register src="../Controls/mfbATDFTD.ascx" tagname="mfbATDFTD" tagprefix="uc2" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
 
 <asp:Panel ID="pnlEditAircraft" runat="server" DefaultButton="btnAddAircraft">
     <asp:HiddenField ID="hdnAdminMode" runat="server" Value="false" />
@@ -30,13 +32,22 @@
     <div><asp:Label ID="lblTailnumber" Font-Size="X-Large" Font-Bold="true" runat="server"></asp:Label> <asp:CheckBox ID="ckLocked" runat="server" Text="<%$ Resources:Aircraft, editAircraftAdminLocked %>" /></div>
     <uc1:SelectMake runat="server" id="SelectMake1" OnModelChanged="SelectMake1_ModelChanged" OnMajorChangeRequested="SelectMake1_MajorChangeRequested" />
     <asp:Panel ID="pnlGlassCockpit" runat="server">
-        <asp:CheckBox ID="ckIsGlass" runat="server" AutoPostBack="true" OnCheckedChanged="ckIsGlass_CheckedChanged" Text="<%$ Resources:Aircraft, editAircraftHasGlass %>" />
+        <asp:Label ID="lblUpgradeType" runat="server" Text="<%$ Resources:Aircraft, editAircraftGlassUpgradeType %>"></asp:Label>
+        <div><asp:RadioButton ID="rbAvionicsNone" runat="server" AutoPostBack="true" OnCheckedChanged="rbGlassUpgrade_CheckedChanged" GroupName="avionics" Checked="true" Text="<%$ Resources:Aircraft, editAircraftGlassUpgradeNone %>" /></div>
+        <div><asp:RadioButton ID="rbAvionicsGlass" runat="server" AutoPostBack="true" OnCheckedChanged="rbGlassUpgrade_CheckedChanged" GroupName="avionics" Text="<%$ Resources:Aircraft, editAircraftGlassUpgrade %>"/></div>
+        <asp:Panel ID="pnlTAA" runat="server">
+            <asp:RadioButton ID="rbAvionicsTAA" runat="server" AutoPostBack="true" OnCheckedChanged="rbGlassUpgrade_CheckedChanged" GroupName="avionics" Text="<%$ Resources:Aircraft, editAircraftTAAUpgrade %>"/>
+            <uc1:mfbTooltip runat="server" ID="mfbTooltip">
+                <TooltipBody>
+                    <%=Resources.Makes.TAADefinition %>
+                </TooltipBody>
+            </uc1:mfbTooltip>
+        </asp:Panel>
         <asp:Panel ID="pnlGlassUpgradeDate" runat="server" Style="margin: 3px;">
             <asp:Label ID="lblDateOfGlassUpgrade" runat="server" Text="<%$ Resources:Aircraft, editAircraftGlassUpgradeDate %>"></asp:Label>
             <uc10:mfbTypeInDate runat="server" ID="mfbDateOfGlassUpgrade" DefaultType="None" />
         </asp:Panel>
     </asp:Panel>
-    
     <asp:MultiView ID="mvInstanceType" runat="server">
         <asp:View ID="vwInstanceNew" runat="server">
             <h3><% = Resources.Aircraft.editAircraftInstanceTypePrompt %></h3>

@@ -80,16 +80,35 @@ namespace MyFlightbook
         /// </summary>
         public enum HighPerfType { NotHighPerf = 0, HighPerf, Is200HP };
 
+        /// <summary>
+        /// Technology level for the model (or aircraft)
+        /// </summary>
+        public enum AvionicsTechnologyType {
+            /// <summary>
+            /// No specific technology (e.g., instances of this model may have steam gauges)
+            /// </summary>
+            None,
+            /// <summary>
+            /// Glass (PFD replacing 6-pack)
+            /// </summary>
+            Glass,
+            /// <summary>
+            /// Per 61.129(j) - PFD + MFD (with GPS/Moving map) + integrated 2-axis autopilot.
+            /// </summary>
+            TAA
+        }
+
         public const string Date200hpHighPerformanceCutoverDate = "1997-08-04";
 
         public override string ToString()
         {
-            return String.Format(CultureInfo.CurrentCulture, "{0} {1}: {2}{3}{4}{5}{6}{7}{8}{9}{10}{11}",
+            return String.Format(CultureInfo.CurrentCulture, "{0} {1}: {2}{3}{4}{5}{6}{7}{8}{9}{10}{11}{12}",
                 this.DisplayName,
                 String.IsNullOrEmpty(this.FamilyName) ? string.Empty : ModelQuery.ICAOPrefix + FamilyName,
                 this.EngineType.ToString(),
                 this.IsCertifiedSinglePilot ? "Single Pilot " : string.Empty,
                 this.IsAllGlass ? "All Glass " : string.Empty,
+                this.IsAllTAA ? "TAA " : string.Empty,
                 this.IsComplex ? "Complex " : String.Format(CultureInfo.CurrentCulture, "{0} {1} {2}", this.IsConstantProp ? "Constant Prop " : string.Empty, this.HasFlaps ? "Flaps " : string.Empty, this.IsRetract ? "Retract " : string.Empty),
                 this.IsHighPerf ? "High perf " : (this.Is200HP ? "200hp " : string.Empty),
                 this.IsMotorGlider ? "Motor glider " : string.Empty,
@@ -192,7 +211,37 @@ namespace MyFlightbook
         /// <summary>
         /// Are all aircraft in this make/model glass cockpit?
         /// </summary>
-        public Boolean IsAllGlass { get; set; }
+        private Boolean IsAllGlass { get; set; }
+
+        /// <summary>
+        /// Is this a TAA per 61.129(j) (as of Aug 27, 2018)?
+        /// Requires: (a) Glass PFD, (b) Glass MFD with GPS, and (c) autopilot capable of at least 2 axis.
+        /// </summary>
+        private Boolean IsAllTAA { get; set; }
+
+        /// <summary>
+        /// Minimum technology level for the avionics for this model
+        /// </summary>
+        public AvionicsTechnologyType AvionicsTechnology
+        {
+            get { return IsAllTAA && IsAllGlass ? AvionicsTechnologyType.TAA : (IsAllGlass ? AvionicsTechnologyType.Glass : AvionicsTechnologyType.None); }
+            set
+            {
+                switch (value)
+                {
+                    case AvionicsTechnologyType.None:
+                        IsAllGlass = IsAllTAA = false;
+                        break;
+                    case AvionicsTechnologyType.Glass:
+                        IsAllGlass = true;
+                        IsAllTAA = false;
+                        break;
+                    case AvionicsTechnologyType.TAA:
+                        IsAllGlass = IsAllTAA = true;
+                        break;
+                }
+            }
+        }
 
         /// <summary>
         /// The Mission/design/series for this make
@@ -413,7 +462,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
                 AllowedTypes = new Manufacturer(ManufacturerID).AllowedTypes;
 
             string szQ = String.Format(CultureInfo.InvariantCulture, "{0} models SET model = ?Model, modelname = ?modelName, typename = ?typeName, family=?familyname, idcategoryclass = ?idCatClass, idmanufacturer = ?idManufacturer, " +
-                        "fcomplex = ?IsComplex, fHighPerf = ?IsHighPerf, f200HP=?Is200hp, fTailwheel = ?IsTailWheel, fTurbine=?engineType, fGlassOnly=?IsGlassOnly, fRetract=?IsRetract, fCowlFlaps=?HasFlaps, " +
+                        "fcomplex = ?IsComplex, fHighPerf = ?IsHighPerf, f200HP=?Is200hp, fTailwheel = ?IsTailWheel, fTurbine=?engineType, fGlassOnly=?IsGlassOnly, fTAA=?IsTaa, fRetract=?IsRetract, fCowlFlaps=?HasFlaps, " +
                         "fConstantProp=?IsConstantProp, ArmyMissionDesignSeries=?armyMDS, fSimOnly=?simOnly, fMotorGlider=?motorglider, fMultiHelicopter=?multiHeli, fCertifiedSinglePilot=?singlePilot {1}",
                         IsNew ? "INSERT INTO" : "UPDATE",
                         IsNew ? String.Empty : String.Format(CultureInfo.InvariantCulture, "WHERE idModel = {0}", MakeModelID)
@@ -434,6 +483,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
                     comm.Parameters.AddWithValue("IsTailWheel", IsTailWheel);
                     comm.Parameters.AddWithValue("engineType", EngineType);
                     comm.Parameters.AddWithValue("IsGlassOnly", IsAllGlass);
+                    comm.Parameters.AddWithValue("IsTaa", IsAllTAA);
                     comm.Parameters.AddWithValue("IsRetract", IsRetract);
                     comm.Parameters.AddWithValue("HasFlaps", HasFlaps);
                     comm.Parameters.AddWithValue("IsConstantProp", IsConstantProp);
@@ -471,6 +521,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             HasFlaps = Convert.ToBoolean(dr["fCowlFlaps"], CultureInfo.InvariantCulture);
             IsRetract = Convert.ToBoolean(dr["fRetract"], CultureInfo.InvariantCulture);
             IsAllGlass = Convert.ToBoolean(dr["fGlassOnly"], CultureInfo.InvariantCulture);
+            IsAllTAA = Convert.ToBoolean(dr["fTAA"], CultureInfo.InvariantCulture);
             EngineType = (TurbineLevel)Convert.ToInt32(dr["fTurbine"], CultureInfo.InvariantCulture);
             MakeModelID = Convert.ToInt32(dr["idmodel"], CultureInfo.InvariantCulture);
             ArmyMDS = util.ReadNullableField(dr, "ArmyMissionDesignSeries", "").ToString();
@@ -684,7 +735,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         /// <summary>
         /// A list of human-readable attributes for this model
         /// </summary>
-        public IEnumerable<string> AttributeList(bool fGlassOverride = false)
+        public IEnumerable<string> AttributeList(AvionicsTechnologyType upgradeType = AvionicsTechnologyType.None, DateTime? upgradeDate = null)
         {
             // Get the model attributes
             List<string> lstAttributes = new List<string>();
@@ -710,7 +761,19 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             if (Is200HP) lstAttributes.Add(Resources.Makes.IsLegacyHighPerf);
             if (IsMotorGlider) lstAttributes.Add(Resources.Makes.IsTMG);
             if (IsMultiEngineHelicopter) lstAttributes.Add(Resources.Makes.IsMultiHelicopter);
-            if (IsAllGlass || fGlassOverride) lstAttributes.Add(Resources.Makes.IsGlass);
+
+            AvionicsTechnologyType avionicsTechnologyType = (AvionicsTechnologyType)Math.Max((int)AvionicsTechnology, (int)upgradeType);
+            switch (avionicsTechnologyType)
+            {
+                case AvionicsTechnologyType.None:
+                    break;
+                case AvionicsTechnologyType.Glass:
+                    lstAttributes.Add(upgradeDate.HasValue ? String.Format(CultureInfo.CurrentCulture, "{0} ({1})", Resources.Makes.IsGlass, upgradeDate.Value.ToShortDateString()) : Resources.Makes.IsGlass);
+                    break;
+                case AvionicsTechnologyType.TAA:
+                    lstAttributes.Add(upgradeDate.HasValue ? String.Format(CultureInfo.CurrentCulture, "{0} ({1})", Resources.Makes.IsTAA, upgradeDate.Value.ToShortDateString()) : Resources.Makes.IsTAA);
+                    break;
+            }
             if (IsCertifiedSinglePilot) lstAttributes.Add(Resources.Makes.IsCertifiedSinglePilot);
             if (IsComplex)
                 lstAttributes.Add(Resources.Makes.IsComplex);
@@ -734,7 +797,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         {
             get
             {
-                IEnumerable<string> col = AttributeList(false);
+                IEnumerable<string> col = AttributeList();
                 return col.Count() == 0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, "({0})", String.Join(", ", col));
             }
         }

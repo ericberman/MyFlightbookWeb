@@ -213,4 +213,26 @@
   <data name="ICAOTemplate" xml:space="preserve">
     <value> (ICAO: {0})</value>
   </data>
+  <data name="AllTAA" xml:space="preserve">
+    <value>All aircraft of this model are TAAs</value>
+  </data>
+  <data name="IsTAA" xml:space="preserve">
+    <value>Technically Advanced Airplane (TAA)</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="TAADefinition" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\taadefinition.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="avionicsAny" xml:space="preserve">
+    <value>Available in non-glass configurations</value>
+  </data>
+  <data name="avionicsGlass" xml:space="preserve">
+    <value>Glass PFD</value>
+  </data>
+  <data name="avionicsLabel" xml:space="preserve">
+    <value>Minimum available avionics</value>
+  </data>
+  <data name="avionicsTAA" xml:space="preserve">
+    <value>Glass PFD, MFD, and integrated Autopilot (TAA)</value>
+  </data>
 </root>

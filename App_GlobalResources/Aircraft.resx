@@ -364,10 +364,10 @@
     <value>Country</value>
   </data>
   <data name="editAircraftGlassUpgradeDate" xml:space="preserve">
-    <value>Date of upgrade to glass (optional):</value>
+    <value>Date of upgrade, if avionics are not factory-installed:</value>
   </data>
-  <data name="editAircraftHasGlass" xml:space="preserve">
-    <value>This aircraft has a glass cockpit</value>
+  <data name="editAircraftGlassUpgrade" xml:space="preserve">
+    <value>Glass PFD</value>
   </data>
   <data name="editAircraftImagesPrompt" xml:space="preserve">
     <value>Images</value>
@@ -574,5 +574,14 @@
   </data>
   <data name="errSimMustStartWithSim" xml:space="preserve">
     <value>Any aircraft that is not a real aircraft must have a tailnumber that begins with "SIM".  Real aircraft must NOT begin with SIM.</value>
+  </data>
+  <data name="editAircraftTAAUpgrade" xml:space="preserve">
+    <value>Glass PFD, MFD, and integrated Autopilot (TAA)</value>
+  </data>
+  <data name="editAircraftGlassUpgradeNone" xml:space="preserve">
+    <value>No upgrade beyond factory minimum</value>
+  </data>
+  <data name="editAircraftGlassUpgradeType" xml:space="preserve">
+    <value>Avionics upgrade or factory option:</value>
   </data>
 </root>

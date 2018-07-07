@@ -95,7 +95,8 @@ public partial class makes : System.Web.UI.Page
                 {
                     if (!String.IsNullOrEmpty(mm.FamilyName))
                         lst.Add(new LinkedString(ModelQuery.ICAOPrefix + mm.FamilyName));
-                    foreach (string sz in mm.AttributeList())
+
+                    foreach (string sz in mm.AttributeList(ac.AvionicsTechnologyUpgrade, ac.GlassUpgradeDate))
                         lst.Add(new LinkedString(sz));
                 }
 

@@ -20,17 +20,17 @@ using System.Web.UI.WebControls;
  * 
  * We have at least the following scenarios to handle/test
  * 
-| Scenario                                   | Change model?                    | Edit Tail?                    | Edit Glass?                |
-| -------------------------------------------|----------------------------------|-------------------------------|----------------------------|
-| New, Real, Registered                      | Yes                              | Yes                           | IF model isn't glass-only  |
-| New, Real, Anonymous                       | Yes                              | No                            | No                         |
-| New, Sim                                   | Yes                              | No - Read-only, with Sim note | No (**currently allowed**) |
-| Existing, Real, Registered, single user    | Yes                              | Yes (but see issue #80        | Yes                        |
-| Existing, Real, Registered, Multiple users | Yes, AFTER confirming minor edit | Yes (but see issue #80)       | If model isn't glass-only  |
-| Existing, Real, Anonymous                  | No                               | No                            | No (**currently allowed**) |
-| Existing, Sim                              | No                               | No                            | No (**currently allowed**) |
-| Existing - Locked, non-admin               | No                               | No                            | IF model isn't glass-only  |
-| Existing - Locked, Admin                   | Yes, AFTER confirmation          | No                            | IF model isn't glass-only  |
+| Scenario                                   | Change model?                    | Edit Tail?                    | Edit Glass/TAA?                |
+| -------------------------------------------|----------------------------------|-------------------------------|--------------------------------|
+| New, Real, Registered                      | Yes                              | Yes                           | IF model isn't glass/TAA-only  |
+| New, Real, Anonymous                       | Yes                              | No                            | No                             |
+| New, Sim                                   | Yes                              | No - Read-only, with Sim note | No (**currently allowed**)     |
+| Existing, Real, Registered, single user    | Yes                              | Yes (but see issue #80        | Yes                            |
+| Existing, Real, Registered, Multiple users | Yes, AFTER confirming minor edit | Yes (but see issue #80)       | If model isn't glass/TAA-only  |
+| Existing, Real, Anonymous                  | No                               | No                            | No (**currently allowed**)     |
+| Existing, Sim                              | No                               | No                            | No (**currently allowed**)     |
+| Existing - Locked, non-admin               | No                               | No                            | IF model isn't glass/TAA-only  |
+| Existing - Locked, Admin                   | Yes, AFTER confirmation          | No                            | IF model isn't glass/TAA-only  |
 
 And a few action scenarios to test (preserve existing behavior):
  * New Aircraft, type-ahead on tail number, select => Should redirect (or refill) using the selected aircraft 
@@ -111,6 +111,33 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     protected bool IsAnonymous
     {
         get { return CountryCodePrefix.BestMatchCountryCode(m_ac.TailNumber).IsAnonymous; }
+    }
+
+    protected MakeModel.AvionicsTechnologyType AvionicsUpgrade
+    {
+        get
+        {
+            return rbAvionicsNone.Checked ? MakeModel.AvionicsTechnologyType.None : (rbAvionicsGlass.Checked ? MakeModel.AvionicsTechnologyType.Glass : MakeModel.AvionicsTechnologyType.TAA);
+        }
+        set
+        {
+            switch (value)
+            {
+                case MakeModel.AvionicsTechnologyType.None:
+                    rbAvionicsNone.Checked = true;
+                    rbAvionicsGlass.Checked = rbAvionicsTAA.Checked = false;
+                    break;
+                case MakeModel.AvionicsTechnologyType.Glass:
+                    rbAvionicsGlass.Checked = true;
+                    rbAvionicsTAA.Checked = rbAvionicsNone.Checked = false;
+                    break;
+                case MakeModel.AvionicsTechnologyType.TAA:
+                    rbAvionicsTAA.Checked = true;
+                    rbAvionicsGlass.Checked = rbAvionicsNone.Checked = false;
+                    break;
+            }
+            pnlGlassUpgradeDate.Visible = value != MakeModel.AvionicsTechnologyType.None;
+        }
     }
     #endregion
 
@@ -375,7 +402,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         // disable editing of sims and anonymous aircraft.
         bool fIsLocked = (!AdminMode && m_ac.IsLocked);
         bool fCanEdit = IsRealAircraft && !IsAnonymous && !fIsLocked;
-        ckIsGlass.Enabled = ckAnonymous.Enabled = fCanEdit;
+        rbAvionicsNone.Enabled = rbAvionicsGlass.Enabled = rbAvionicsTAA.Enabled = ckAnonymous.Enabled = fCanEdit;
         pnlAnonymous.Visible = fIsNew;
 
 
@@ -397,7 +424,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         SelectMake1.AircraftAttributes = lstAttrib;
         SelectMake1.SelectedModelID = m_ac.ModelID;
 
-        ckIsGlass.Checked = m_ac.IsGlass;
+        AvionicsUpgrade = m_ac.AvionicsTechnologyUpgrade;
 
         mfbIl.Key = txtTail.Text = m_ac.TailNumber;
 
@@ -423,7 +450,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             SelectMake1.EditMode = Controls_AircraftControls_SelectMake.MakeEditMode.Locked;
 
         mfbDateOfGlassUpgrade.Date = m_ac.GlassUpgradeDate.HasValue ? m_ac.GlassUpgradeDate.Value : DateTime.MinValue;
-        pnlGlassUpgradeDate.Visible = ckIsGlass.Checked;
+        pnlGlassUpgradeDate.Visible = !rbAvionicsNone.Checked;
 
         AdjustForAircraftType();
 
@@ -465,7 +492,20 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         mvTailnumber.SetActiveView(fRealAircraft ? vwRealAircraft : vwSimTail);
 
         // Show glass option if this is not, by model, a glass cockpit AND if it's not anonymous
-        pnlGlassCockpit.Visible = !m_ac.IsAnonymous && !mm.IsAllGlass;
+        bool fRealRegistered = fRealAircraft && !m_ac.IsAnonymous;
+
+        // All avionics upgrade options are limited to real, registered aircraft.  Beyond that:
+        // - Can upgrade to glass if the model is not already glass or TAA (i.e., = steam)
+        // - Can upgrade to TAA if the model is not already TAA-only AND this is an airplane (TAA is airplane only).
+        // - So we will hide the overall avionics upgrade panel if no upgrade is possible.
+        rbAvionicsGlass.Visible = fRealRegistered && mm.AvionicsTechnology == MakeModel.AvionicsTechnologyType.None;
+        pnlTAA.Visible = fRealRegistered && mm.AvionicsTechnology != MakeModel.AvionicsTechnologyType.TAA;
+        pnlGlassCockpit.Visible = rbAvionicsGlass.Visible || pnlTAA.Visible;
+
+        // Sanity check
+        if ((rbAvionicsGlass.Checked && !rbAvionicsGlass.Visible) || (rbAvionicsTAA.Checked && !rbAvionicsTAA.Visible))
+            AvionicsUpgrade = MakeModel.AvionicsTechnologyType.None;
+
         ckAnonymous.Enabled = true;
         if (mm.AllowedTypes == AllowedAircraftTypes.SimOrAnonymous && fRealAircraft)
         {
@@ -554,8 +594,8 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
         ac.ModelID = SelectedModelID;
         ac.InstanceTypeID = (int) this.SelectedInstanceType;
-        ac.IsGlass = ckIsGlass.Checked;
-        ac.GlassUpgradeDate = (ac.IsGlass && mfbDateOfGlassUpgrade.Date.HasValue()) ? mfbDateOfGlassUpgrade.Date : (DateTime?) null;
+        ac.AvionicsTechnologyUpgrade = AvionicsUpgrade;
+        ac.GlassUpgradeDate = (ac.AvionicsTechnologyUpgrade != MakeModel.AvionicsTechnologyType.None && mfbDateOfGlassUpgrade.Date.HasValue()) ? mfbDateOfGlassUpgrade.Date : (DateTime?) null;
         ac.IsLocked = ckLocked.Checked;
         ac.PrivateNotes = txtPrivateNotes.Text;
         ac.PublicNotes = txtPublicNotes.Text;
@@ -681,7 +721,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     {
         m_ac.InstanceType = SelectedInstanceType;
         UpdateMask();
-        ckIsGlass.Checked = false;      // reset this since model changed.
+        AvionicsUpgrade = MakeModel.AvionicsTechnologyType.None;  // reset this since model changed.
         ckAnonymous.Checked = false;    // reset this as well.
 
         AdjustForAircraftType();
@@ -737,9 +777,9 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     }
     #endregion
 
-    protected void ckIsGlass_CheckedChanged(object sender, EventArgs e)
+    protected void rbGlassUpgrade_CheckedChanged(object sender, EventArgs e)
     {
-        pnlGlassUpgradeDate.Visible = ckIsGlass.Checked;
+        pnlGlassUpgradeDate.Visible = AvionicsUpgrade != MakeModel.AvionicsTechnologyType.None;
     }
 
     protected void SelectMake1_ModelChanged(object sender, MakeSelectedEventArgs e)
@@ -747,7 +787,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         if (e == null)
             throw new ArgumentNullException("e");
         m_ac.ModelID = e.SelectedModel;
-        ckIsGlass.Checked = false;  // reset this since model changed.
+        AvionicsUpgrade = MakeModel.AvionicsTechnologyType.None;  // reset this since model changed.
         AdjustForAircraftType();
     }
 

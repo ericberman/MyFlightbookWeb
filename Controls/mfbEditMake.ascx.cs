@@ -49,6 +49,29 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         }
     }
 
+    protected MakeModel.AvionicsTechnologyType AvionicsTechnology
+    {
+        get
+        {
+            return rbAvionicsAny.Checked ? MakeModel.AvionicsTechnologyType.None : (rbAvionicsGlass.Checked ? MakeModel.AvionicsTechnologyType.Glass : MakeModel.AvionicsTechnologyType.TAA);
+        }
+        set
+        {
+            switch (value)
+            {
+                case MakeModel.AvionicsTechnologyType.None:
+                    rbAvionicsAny.Checked = true;
+                    break;
+                case MakeModel.AvionicsTechnologyType.Glass:
+                    rbAvionicsGlass.Checked = true;
+                    break;
+                case MakeModel.AvionicsTechnologyType.TAA:
+                    rbAvionicsTAA.Checked = true;
+                    break;
+            }
+        }
+    }
+
     public event System.EventHandler MakeUpdated = null;
 
     protected void RepopulateManufacturerDropdown(string defVal = null)
@@ -124,7 +147,7 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         ckConstantProp.Checked = Model.IsConstantProp;
         ckCowlFlaps.Checked = Model.HasFlaps;
         ckRetract.Checked = Model.IsRetract;
-        ckAllGlass.Checked = Model.IsAllGlass;
+        AvionicsTechnology = Model.AvionicsTechnology;
         rblTurbineType.SelectedIndex = (int)Model.EngineType;
         rblAircraftAllowedTypes.SelectedIndex = (int) Model.AllowedTypes;
         ckTMG.Checked = ((Model.CategoryClassID == CategoryClass.CatClassID.Glider) && Model.IsMotorGlider);
@@ -194,7 +217,7 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         mk.IsConstantProp = ckConstantProp.Checked;
         mk.HasFlaps = ckCowlFlaps.Checked;
         mk.IsRetract = ckRetract.Checked;
-        mk.IsAllGlass = ckAllGlass.Checked;
+        mk.AvionicsTechnology = AvionicsTechnology;
         mk.EngineType = (MakeModel.TurbineLevel) rblTurbineType.SelectedIndex;
         mk.ArmyMDS = txtArmyMDS.Text;
         mk.AllowedTypes = (AllowedAircraftTypes) rblAircraftAllowedTypes.SelectedIndex;
