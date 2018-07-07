@@ -2587,7 +2587,7 @@ namespace MyFlightbook.FlightCurrency
                 return;
 
             // After Nov 26, 2018, the rules change: any combination of real aircraft, FTD, FFS, or ATD that adds up to 6 approaches + hold works.
-            if (DateTime.Now.CompareTo(ExaminerFlightRow.Nov2018Cutover) > 0)
+            if (DateTime.Now.CompareTo(ExaminerFlightRow.Nov2018Cutover) >= 0)
             {
                 if (cfr.cApproaches > 0)
                     AddApproaches(cfr.dtFlight, cfr.cApproaches);

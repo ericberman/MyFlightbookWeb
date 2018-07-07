@@ -465,36 +465,6 @@
   <data name="CommandFieldResource2.UpdateText" xml:space="preserve">
     <value>Update</value>
   </data>
-  <data name="CommandFieldResource3.AccessibleHeaderText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="CommandFieldResource3.CancelText" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="CommandFieldResource3.DeleteText" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="CommandFieldResource3.EditText" xml:space="preserve">
-    <value>Edit</value>
-  </data>
-  <data name="CommandFieldResource3.FooterText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="CommandFieldResource3.HeaderText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="CommandFieldResource3.InsertText" xml:space="preserve">
-    <value>Insert</value>
-  </data>
-  <data name="CommandFieldResource3.NewText" xml:space="preserve">
-    <value>New</value>
-  </data>
-  <data name="CommandFieldResource3.SelectText" xml:space="preserve">
-    <value>Select</value>
-  </data>
-  <data name="CommandFieldResource3.UpdateText" xml:space="preserve">
-    <value>Update</value>
-  </data>
   <data name="ConfirmNewPasswordLabelResource1.Text" xml:space="preserve">
     <value>Confirm New Password</value>
   </data>
@@ -682,12 +652,6 @@
     <value>(Only used when printing your logbook)</value>
   </data>
   <data name="lblAddressFinePrintResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblBasicMedErrResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblBasicMedErrResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblBFRHelpTextResource1.Text" xml:space="preserve">
@@ -883,9 +847,6 @@
     <value />
   </data>
   <data name="lblNextMedicalResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblNoDeadlinesResource2.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblNoDonationsResource1.Text" xml:space="preserve">
@@ -1329,12 +1290,6 @@
   <data name="PageResource1.Title" xml:space="preserve">
     <value>Edit Profile</value>
   </data>
-  <data name="pnlAddBasicMedEventResource1.GroupingText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="pnlAddBasicMedEventResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="pnlAddCustomCurrencyResource1.GroupingText" xml:space="preserve">
     <value />
   </data>
@@ -1345,12 +1300,6 @@
     <value />
   </data>
   <data name="pnlAddDeadlinesResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="pnlBasicMedResource1.GroupingText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="pnlBasicMedResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="pnlCanTweetResource1.GroupingText" xml:space="preserve">
@@ -1554,24 +1503,6 @@
   <data name="TemplateFieldResource1.HeaderText" xml:space="preserve">
     <value />
   </data>
-  <data name="TemplateFieldResource2.AccessibleHeaderText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="TemplateFieldResource2.FooterText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="TemplateFieldResource2.HeaderText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="TemplateFieldResource3.AccessibleHeaderText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="TemplateFieldResource3.FooterText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="TemplateFieldResource3.HeaderText" xml:space="preserve">
-    <value />
-  </data>
   <data name="TemplateFieldResource4.AccessibleHeaderText" xml:space="preserve">
     <value />
   </data>
@@ -1609,12 +1540,6 @@
     <value />
   </data>
   <data name="txtAnswerResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtBasicMedNotesResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtBasicMedNotesResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="txtCertificateResource1.Text" xml:space="preserve">
