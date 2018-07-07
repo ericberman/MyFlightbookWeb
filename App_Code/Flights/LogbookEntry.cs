@@ -2720,19 +2720,38 @@ namespace MyFlightbook
             LogbookEntryDisplay led = le as LogbookEntryDisplay;
             if (led != null)
             {
-                PICUSTotal = PICUSTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? led.PICUSTime : led.PICUSTotal);
-                NightPICUSTotal = NightPICUSTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, led.PICUSTime) : led.NightPICUSTotal);
-                InstrumentAircraftTotal = InstrumentAircraftTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? (led.IsFSTD ? 0 : le.IMC) : led.InstrumentAircraftTotal);
-                InstrumentFSTDTotal = InstrumentFSTDTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? (led.IsFSTD ? le.SimulatedIFR : 0) : led.InstrumentFSTDTotal);
-                SoloTotal = SoloTime.AddMinutes(led.RowType == LogbookRowType.Flight ? led.SoloTime : SoloTotal);
-                GroundInstructionTotal = GroundInstruction.AddMinutes(led.RowType == LogbookRowType.Flight ? led.GroundInstruction : led.GroundInstructionTotal);
-                IFRTimeTotal = IFRTimeTotal.AddMinutes(led.RowType == LogbookRowType.Flight ? led.IFRTime : IFRTimeTotal);
-                NightTouchAndGoLandings += led.RowType == LogbookRowType.Flight ? led.IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo) : led.NightTouchAndGoLandings;
+                if (led.RowType == LogbookRowType.Flight)
+                {
+                    PICUSTotal = PICUSTotal.AddMinutes(led.PICUSTime);
+                    NightPICUSTotal = NightPICUSTotal.AddMinutes(Math.Min(led.Nighttime, led.PICUSTime));
+                    InstrumentAircraftTotal = InstrumentAircraftTotal.AddMinutes((led.IsFSTD ? 0 : led.IMC));
+                    InstrumentFSTDTotal = InstrumentFSTDTotal.AddMinutes((led.IsFSTD ? led.SimulatedIFR : 0));
+                    SoloTotal = SoloTime.AddMinutes(led.SoloTime);
+                    GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstruction);
+                    IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTime);
+                    NightTouchAndGoLandings += led.IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
 
-                SelfLaunchTotal += led.RowType == LogbookRowType.Flight ? led.SelfLaunches : led.SelfLaunchTotal;
-                AeroLaunchTotal += led.RowType == LogbookRowType.Flight ? led.AeroLaunches : led.AeroLaunchTotal;
-                GroundLaunchTotal += led.RowType == LogbookRowType.Flight ? led.GroundLaunches : led.GroundLaunchTotal;
-                LandingsTotal += led.RowType == LogbookRowType.Flight ? led.Landings : led.LandingsTotal;
+                    SelfLaunchTotal += led.SelfLaunches;
+                    AeroLaunchTotal += led.AeroLaunches;
+                    GroundLaunchTotal += led.GroundLaunches;
+                    LandingsTotal += led.Landings;
+                }
+                else
+                {
+                    PICUSTotal = PICUSTotal.AddMinutes(led.PICUSTotal);
+                    NightPICUSTotal = NightPICUSTotal.AddMinutes(led.NightPICUSTotal);
+                    InstrumentAircraftTotal = InstrumentAircraftTotal.AddMinutes(led.InstrumentAircraftTotal);
+                    InstrumentFSTDTotal = InstrumentFSTDTotal.AddMinutes(led.InstrumentFSTDTotal);
+                    SoloTotal = SoloTime.AddMinutes(led.SoloTotal);
+                    GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstructionTotal);
+                    IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTimeTotal);
+                    NightTouchAndGoLandings += led.NightTouchAndGoLandings;
+
+                    SelfLaunchTotal += led.SelfLaunchTotal;
+                    AeroLaunchTotal += led.AeroLaunchTotal;
+                    GroundLaunchTotal += led.GroundLaunchTotal;
+                    LandingsTotal += led.LandingsTotal;
+                }
 
                 if (OptionalColumns != null)
                 {
