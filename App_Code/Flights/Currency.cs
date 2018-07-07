@@ -255,6 +255,7 @@ namespace MyFlightbook.FlightCurrency
         public Boolean fIsATD { get; set; }
         public Boolean fIsFTD { get; set; }
         public Boolean fIsComplex { get; set; }
+        public Boolean fIsTAA { get; set; }
         public MakeModel.TurbineLevel turbineLevel { get; set; }
         public Boolean fIsCertifiedSinglePilot { get; set; }
         public Decimal IMC { get; set; }
@@ -277,6 +278,12 @@ namespace MyFlightbook.FlightCurrency
         public DateTime dtEngineEnd { get; set; }
         public DateTime dtFlightStart { get; set; }
         public DateTime dtFlightEnd { get; set; }
+
+        private static DateTime s_Aug2018Cutover = new DateTime(2018, 8, 27);
+        private static DateTime s_Nov2018Cutover = new DateTime(2018, 11, 26);
+
+        public static DateTime Aug2018Cutover { get { return s_Aug2018Cutover; } }
+        public static DateTime Nov2018Cutover { get { return s_Nov2018Cutover; } }
 
         private List<CustomFlightProperty> m_lstPfe;    // backing list for FlightEvents
 
@@ -412,6 +419,7 @@ namespace MyFlightbook.FlightCurrency
             fIsATD = Convert.ToBoolean(dr["IsATD"], CultureInfo.InvariantCulture);
             fIsFTD = Convert.ToBoolean(dr["IsFTD"], CultureInfo.InvariantCulture);
             fIsComplex = Convert.ToBoolean(dr["fComplex"], CultureInfo.InvariantCulture);
+            fIsTAA = Convert.ToBoolean(dr["IsTAA"], CultureInfo.InvariantCulture);
             turbineLevel = (MakeModel.TurbineLevel)Convert.ToInt32(dr["fTurbine"], CultureInfo.InvariantCulture);
             fMotorGlider = Convert.ToBoolean(dr["fMotorGlider"], CultureInfo.InvariantCulture);
             fIsCertifiedSinglePilot = Convert.ToBoolean(dr["fCertifiedSinglePilot"], CultureInfo.InvariantCulture);
@@ -2262,11 +2270,11 @@ namespace MyFlightbook.FlightCurrency
         FlightCurrency fcIFRHold = new FlightCurrency(1, 6, true, "IFR - Holds");
         FlightCurrency fcIFRApproach = new FlightCurrency(6, 6, true, "IFR - Approaches");
 
-        // 61.57(c)(2)
+        // 61.57(c)(2) (OLD - expires Nov 26, 2018)
         FlightCurrency fcFTDHold = new FlightCurrency(1, 6, true, "IFR - Holds (FTD)");
         FlightCurrency fcFTDApproach = new FlightCurrency(6, 6, true, "IFR - Approaches (FTD)");
 
-        // 61.57(c)(3)
+        // 61.57(c)(3) (OLD - expires Nov 26, 2018)
         FlightCurrency fcATDHold = new FlightCurrency(1, 2, true, "IFR - Holds (ATD)");
         FlightCurrency fcATDApproach = new FlightCurrency(6, 2, true, "IFR - Approaches (ATD)");
         FlightCurrency fcUnusualAttitudesAsc = new FlightCurrency(2, 2, true, "Unusual Attitudes Recoveries, Ascending");
@@ -2303,6 +2311,8 @@ namespace MyFlightbook.FlightCurrency
          * I'll implement this interpretation here as LOOSE, and require an approach and hold in a real airplane but the balance in anything.
          * 
          * Update: 6/1/2013: I'm lossening this a bit more, so the hold can be in a real airplane OR ATD OR FS/FTD.
+         * 
+         * Update: 7/6/208 - pending changes to regs make all of this moot.
         */
 
         // 61.57(c)(4) - STRICT all data above is captured except we need a 6-month ATDHold/Approach as well
@@ -2311,10 +2321,10 @@ namespace MyFlightbook.FlightCurrency
         FlightCurrency fcFTDApproach6Month = new FlightCurrency(1, 6, true, "IFR - FS/FTD Approach");
         FlightCurrency fcAirplaneApproach6Month = new FlightCurrency(1, 6, true, "IFR - at least one approach in 6 months in airplane");
 
-        // 61.57(c)(4) - LOOSE Interpretation
+        // 61.57(c)(4) - LOOSE Interpretation  OBSOLETE AS OF Nov 26, 2018
         FlightCurrency fcComboApproach6Month = new FlightCurrency(6, 6, true, "IFR - 6 Approaches (Real AND (FS/FTD OR ATD))");
 
-        // 61.57(c)(5) - seems redundant with (c)(2).
+        // 61.57(c)(5) - seems redundant with (c)(2).  OBSOLETE
 
         // 61.57(d) - IPC (Instrument checkride counts here too)
         FlightCurrency fcIPCOrCheckride = new FlightCurrency(1, 6, true, "IPC or Instrument Checkride");
@@ -2572,6 +2582,22 @@ namespace MyFlightbook.FlightCurrency
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
+
+            if (!cfr.fIsCertifiedIFR)
+                return;
+
+            // After Nov 26, 2018, the rules change: any combination of real aircraft, FTD, FFS, or ATD that adds up to 6 approaches + hold works.
+            if (DateTime.Now.CompareTo(ExaminerFlightRow.Nov2018Cutover) > 0)
+            {
+                if (cfr.cApproaches > 0)
+                    AddApproaches(cfr.dtFlight, cfr.cApproaches);
+                if (cfr.cHolds > 0)
+                    AddHolds(cfr.dtFlight, cfr.cHolds);
+                return;
+            }
+
+            // Everything below is OBSOLETE as of Nov 26, 2018
+
             // Add any IFR-relevant flight events.
             cfr.ForEachEvent((pfe) =>
             {
@@ -2772,8 +2798,8 @@ namespace MyFlightbook.FlightCurrency
     {
         FlightCurrency fcGliderIFRTime = new FlightCurrency(1.0M, 6, true, "Instrument time in Glider or single-engine airplane with view limiting device");
         FlightCurrency fcGliderIFRTimePassengers = new FlightCurrency(2.0M, 6, true, "Instrument time in a glider.");
-        FlightCurrency fcGliderInstrumentManeuvers = new FlightCurrency(2.0M, 6, true, "Instrument Maneuvers per 61.57(c)(6)(i)");
-        FlightCurrency fcGliderInstrumentPassengers = new FlightCurrency(1, 6, true, "Instrument Maneuvers required for passengers, per 61.57(c)(6)(ii)");
+        FlightCurrency fcGliderInstrumentManeuvers = new FlightCurrency(2.0M, 6, true, "Instrument Maneuvers per 61.57(c)(6)(i) => (c)(3)(i)");
+        FlightCurrency fcGliderInstrumentPassengers = new FlightCurrency(1, 6, true, "Instrument Maneuvers required for passengers, per 61.57(c)(6)(ii) => (c)(3)(ii)");
         FlightCurrency fcGliderIPC = new FlightCurrency(1, 6, true, "Glider IPC");
 
         private Boolean m_fCacheValid = false;
@@ -2797,7 +2823,7 @@ namespace MyFlightbook.FlightCurrency
         }
 
         /// <summary>
-        /// Add IFR time for part 61.57(c)(6)(i)(A).  Can be in a glider OR ASEL under the hood
+        /// Add IFR time for part 61.57(c)(6)(i)(A) => (c)(3)(i)(A).  Can be in a glider OR ASEL under the hood
         /// </summary>
         /// <param name="dt">Date of the time</param>
         /// <param name="time">Amount of time to add</param>
@@ -2808,7 +2834,7 @@ namespace MyFlightbook.FlightCurrency
         }
 
         /// <summary>
-        /// Add IFR time for part 61.57(c)(6)(ii)(A).  MUST BE IN A GLIDER
+        /// Add IFR time for part 61.57(c)(6)(ii)(A) => (c)(3)(ii)(A).  MUST BE IN A GLIDER
         /// </summary>
         /// <param name="dt">Date of the time</param>
         /// <param name="time">Amount of time to add</param>
@@ -2819,7 +2845,7 @@ namespace MyFlightbook.FlightCurrency
         }
 
         /// <summary>
-        /// Add maneuvering time for part 61.57(c)(6)(i)(B).  Can be in a glider or single-engine airplane simulated IMC.
+        /// Add maneuvering time for part 61.57(c)(6)(i)(B) => (c)(3)(i)(B).  Can be in a glider or single-engine airplane simulated IMC.
         /// </summary>
         /// <param name="dt">Date of the time</param>
         /// <param name="time">Amount of time to add</param>
@@ -2830,7 +2856,7 @@ namespace MyFlightbook.FlightCurrency
         }
 
         /// <summary>
-        /// Add performance maneuvers for part 61.57(c)(6)(ii)(B).  Does NOT appear to need to have been in a glider.
+        /// Add performance maneuvers for part 61.57(c)(6)(ii)(B) => (c)(3)(ii)(B).  Does NOT appear to need to have been in a glider.
         /// </summary>
         /// <param name="dt"></param>
         public void AddPerformanceManeuvers(DateTime dt)
@@ -2849,7 +2875,7 @@ namespace MyFlightbook.FlightCurrency
         /// </summary>
         public void RefreshCurrencyOLD()
         {
-            // Compute currency according to 61.57(c)(6) (i) and (ii) including each one's expiration.  
+            // Compute currency according to 61.57(c)(6) (i) and (ii)  => (c)(3) including each one's expiration.  
 
             if (m_fCacheValid)
                 return;
@@ -2866,7 +2892,7 @@ namespace MyFlightbook.FlightCurrency
             CurrencyState cs6157c6iB = fcGliderInstrumentManeuvers.CurrentState;
             CurrencyState cs6157c6iiA = fcGliderIFRTimePassengers.CurrentState;
             CurrencyState cs6157c6iiB = fcGliderInstrumentPassengers.CurrentState;
-            // 61.57(c)(6)(i) - basic instrument currency
+            // 61.57(c)(6)(i)  => (c)(3)(i) - basic instrument currency
             if (fcGliderIFRTime.HasBeenCurrent && fcGliderInstrumentManeuvers.HasBeenCurrent)
             {
                 // find the earliest expiration
@@ -2882,7 +2908,7 @@ namespace MyFlightbook.FlightCurrency
 
                 m_fCurrentSolo = (m_csCurrent != CurrencyState.NotCurrent);
 
-                // at this point we've determined if you're current for solo (61.57(c)(6)(i)); now see if we can carry passengers
+                // at this point we've determined if you're current for solo (61.57(c)(6)(i))  => (c)(3)(i); now see if we can carry passengers
                 if (m_fCurrentSolo && fcGliderIFRTimePassengers.HasBeenCurrent && fcGliderInstrumentPassengers.HasBeenCurrent)
                 {
                     DateTime dtExpIFRTimePassengers = fcGliderIFRTimePassengers.ExpirationDate;
@@ -2932,15 +2958,15 @@ namespace MyFlightbook.FlightCurrency
         /// </summary>
         public void RefreshCurrency()
         {
-            // Compute currency according to 61.57(c)(6) (i) and (ii) including each one's expiration.  
+            // Compute currency according to 61.57(c)(6) ( => (c)(3)) (i) and (ii) including each one's expiration.  
 
             if (m_fCacheValid)
                 return;
 
-            // 61.57(c)(6)(i) - no passengers.  IPC covers this.
+            // 61.57(c)(6)(i) => (c)(3)(i) -  no passengers.  IPC covers this.
             FlightCurrency fc6157c6i = fcGliderIFRTime.AND(fcGliderInstrumentManeuvers).OR(fcGliderIPC);
 
-            // 61.57(c)(6)(ii) - passengers.  Above + two more.  Again, IPC covers this too.
+            // 61.57(c)(6)(ii) => (c)(3)(ii) -  passengers.  Above + two more.  Again, IPC covers this too.
             FlightCurrency fc6157c6ii = fc6157c6i.AND(fcGliderIFRTimePassengers).AND(fcGliderInstrumentPassengers).OR(fcGliderIPC);
 
             m_fCurrentSolo = fc6157c6i.IsCurrent();
@@ -3063,17 +3089,17 @@ namespace MyFlightbook.FlightCurrency
             {
                 if (cfr.IMC + cfr.IMCSim > 0)
                 {
-                    // 61.57(c)(6)(i)(A)
+                    // 61.57(c)(6)(i)(A) => (c)(3)(i)(A)
                     AddIFRTime(cfr.dtFlight, cfr.IMC + cfr.IMCSim);
 
-                    // 61.57(c)(6)(ii)(A)
+                    // 61.57(c)(6)(ii)(A) => (c)(3)(ii)(A)
                     if (cfr.fIsGlider)
                         AddIFRTimePassengers(cfr.dtFlight, cfr.IMC + cfr.IMCSim);
                 }
 
                 cfr.ForEachEvent((pfe) =>
                 {
-                    // 61.57(c)(6)(i)(B)
+                    // 61.57(c)(6)(i)(B) => (c)(3)(i)(B)
                     if (pfe.PropertyType.IsGliderInstrumentManeuvers)
                         AddManeuverTime(cfr.dtFlight, pfe.DecValue);
 

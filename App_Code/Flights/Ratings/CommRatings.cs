@@ -32,8 +32,10 @@ namespace MyFlightbook.MilestoneProgress
                 new Comm61129Glider(),
                 new Comm61129HotAirBalloon(),
                 new Comm61129GasBalloon(),
-                new Comm141SingleEngineAirplane(),
-                new Comm141MultiEngineAirplane(),
+                new Comm141SingleEngineAirplaneLand(),
+                new Comm141SingleEngineAirplaneSea(),
+                new Comm141MultiEngineAirplaneLand(),
+                new Comm141MultiEngineAirplaneSea(),
                 new Comm141Helicopter(),
                 new CASRCommAirplaneApprovedTraining(),
                 new CASRCommAirplaneNoApprovedTraining(),
@@ -126,9 +128,12 @@ namespace MyFlightbook.MilestoneProgress
         protected MilestoneItem miMinNightLandings { get; set; }
         protected MilestoneItem miDualAsPIC { get; set; }
         protected MilestoneItem miDualAsPICXC { get; set; }
+        protected bool AllowTAAForComplex { get; set; }
+
 
         protected Comm61129Base() {
             GeneralDisclaimer = Branding.ReBrand(Resources.MilestoneProgress.CommGeneralDisclaimer);
+            AllowTAAForComplex = DateTime.Now.CompareTo(ExaminerFlightRow.Aug2018Cutover) > 0;
         }
 
         /// <summary>
@@ -289,14 +294,14 @@ namespace MyFlightbook.MilestoneProgress
             {
                 case RatingType.CommercialASEL:
                     // can be complex OR turbine, can be AMEL or ASEL
-                    fIsComplex = IsComplexOrTurbine(cfr) && (cc.IdCatClass == CategoryClass.CatClassID.ASEL || cc.IdCatClass == CategoryClass.CatClassID.AMEL);
+                    fIsComplex = (cc.IdCatClass == CategoryClass.CatClassID.ASEL || cc.IdCatClass == CategoryClass.CatClassID.AMEL) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr));
                     break;
                 case RatingType.CommercialAMEL:
-                    // can be complex OR turbine, MUST be AMEL
-                    fIsComplex = IsComplexOrTurbine(cfr) && cc.IdCatClass == CategoryClass.CatClassID.AMEL;
+                    // can be complex OR turbine, MUST be multi-engine airplane.  TAA doesn't matter
+                    fIsComplex = IsComplexOrTurbine(cfr) && (cc.IdCatClass == CategoryClass.CatClassID.AMEL || cc.IdCatClass == CategoryClass.CatClassID.AMES);
                     break;
                 case RatingType.CommercialASES:
-                    fIsComplex = cfr.fIsComplex && cc.IdCatClass == CategoryClass.CatClassID.ASES;
+                    fIsComplex = (cc.IdCatClass == CategoryClass.CatClassID.ASES || cc.IdCatClass == CategoryClass.CatClassID.AMES) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr)); 
                     break;
                 case RatingType.CommercialAMES:
                     // Must be complex - turbine is not sufficient, MUST match catclass.
@@ -839,7 +844,12 @@ namespace MyFlightbook.MilestoneProgress
         protected MilestoneItem miSoloNightTakeoffs { get; set; }
         protected MilestoneItem miSoloNightLandings { get; set; }
 
-        protected Comm141Base() { }
+        protected bool AllowTAAForComplex { get; set; }
+
+        protected Comm141Base()
+        {
+            AllowTAAForComplex = DateTime.Now.CompareTo(ExaminerFlightRow.Aug2018Cutover) > 0;
+        }
 
         /// <summary>
         /// Determines if the flight aircraft is appropriate for the milestone
@@ -850,9 +860,11 @@ namespace MyFlightbook.MilestoneProgress
         {
             switch (RatingSought)
             {
-                case RatingType.Commercial141AirplaneSingleEngine:
+                case RatingType.Commercial141AirplaneSingleEngineLand:
+                case RatingType.Commercial141AirplaneSingleEngineSea:
                     return (ccid == CategoryClass.CatClassID.ASEL || ccid == CategoryClass.CatClassID.ASES);
-                case RatingType.Commercial141AirplaneMultiEngine:
+                case RatingType.Commercial141AirplaneMultiEngineLand:
+                case RatingType.Commercial141AirplaneMultiEngineSea:
                     return (ccid == CategoryClass.CatClassID.AMEL || ccid == CategoryClass.CatClassID.AMES);
                 case RatingType.Commercial141Helicopter:
                     return ccid == CategoryClass.CatClassID.Helicopter;
@@ -909,13 +921,28 @@ namespace MyFlightbook.MilestoneProgress
             if (cfr.fIsCertifiedIFR)
                 miInstrumentTraining.AddEvent(IMCTraining);
 
+            bool fIsComplex = false;
+            switch (RatingSought)
+            {
+                case RatingType.Commercial141AirplaneSingleEngineLand:
+                    fIsComplex = cfr.fIsRealAircraft && (cfr.idCatClassOverride == CategoryClass.CatClassID.ASEL || cfr.idCatClassOverride == CategoryClass.CatClassID.AMEL) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr));
+                    break;
+                case RatingType.Commercial141AirplaneSingleEngineSea:
+                    fIsComplex = cfr.fIsRealAircraft && (cfr.idCatClassOverride == CategoryClass.CatClassID.ASES || cfr.idCatClassOverride == CategoryClass.CatClassID.AMES) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr));
+                    break;
+                case RatingType.Commercial141AirplaneMultiEngineLand:
+                case RatingType.Commercial141AirplaneMultiEngineSea:
+                    fIsComplex = cfr.fIsRealAircraft && (cfr.idCatClassOverride == CategoryClass.CatClassID.AMEL || cfr.idCatClassOverride == CategoryClass.CatClassID.AMES) && IsComplexOrTurbine(cfr);
+                    break;
+            }
+            if (fIsComplex)
+                miComplexTurbineTraining.AddEvent(cfr.Dual);
+
             // Ignore anything that remains is not in the appropriate cat/class or not in a real aircraft
             if (!cfr.fIsRealAircraft || !IsAppropriateCategoryClassForRating(cfr.idCatClassOverride))
                 return;
 
             miInstrumentTrainingInCatClass.AddEvent(IMCTraining);
-            if (cfr.fIsComplex || cfr.turbineLevel == MakeModel.TurbineLevel.Jet || cfr.turbineLevel == MakeModel.TurbineLevel.TurboProp || cfr.turbineLevel == MakeModel.TurbineLevel.UnspecifiedTurbine)
-                miComplexTurbineTraining.AddEvent(cfr.Dual);
 
             AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
             double distFromStart = al.MaxDistanceFromStartingAirport();
@@ -1001,20 +1028,38 @@ namespace MyFlightbook.MilestoneProgress
 
     #region Concrete 141 commercial classes
     [Serializable]
-    public class Comm141SingleEngineAirplane : Comm141Base
+    public class Comm141SingleEngineAirplaneLand : Comm141Base
     {
-        public Comm141SingleEngineAirplane()
+        public Comm141SingleEngineAirplaneLand()
         {
-            Init("Part 141 Appendix D, 4(b)(1)", Resources.MilestoneProgress.Title141CommercialSingleEngine, RatingType.Commercial141AirplaneSingleEngine, Resources.MilestoneProgress.ratingAirplaneSingle, "(a)", 120, "(1)");
+            Init("Part 141 Appendix D, 4(b)(1)", Resources.MilestoneProgress.Title141CommercialSingleEngineLand, RatingType.Commercial141AirplaneSingleEngineLand, Resources.MilestoneProgress.ratingAirplaneSingle, "(a)", 120, "(1)");
         }
     }
 
     [Serializable]
-    public class Comm141MultiEngineAirplane : Comm141Base
+    public class Comm141SingleEngineAirplaneSea : Comm141Base
     {
-        public Comm141MultiEngineAirplane()
+        public Comm141SingleEngineAirplaneSea()
         {
-            Init("Part 141 Appendix D, 4(b)(2)", Resources.MilestoneProgress.Title141CommercialMultiEngine, RatingType.Commercial141AirplaneMultiEngine, Resources.MilestoneProgress.ratingAirplaneMulti, "(b)", 120, "(1)");
+            Init("Part 141 Appendix D, 4(b)(1)", Resources.MilestoneProgress.Title141CommercialSingleEngineSea, RatingType.Commercial141AirplaneSingleEngineSea, Resources.MilestoneProgress.ratingAirplaneSingle, "(a)", 120, "(1)");
+        }
+    }
+
+    [Serializable]
+    public class Comm141MultiEngineAirplaneLand : Comm141Base
+    {
+        public Comm141MultiEngineAirplaneLand()
+        {
+            Init("Part 141 Appendix D, 4(b)(2)", Resources.MilestoneProgress.Title141CommercialMultiEngineLand, RatingType.Commercial141AirplaneMultiEngineLand, Resources.MilestoneProgress.ratingAirplaneMulti, "(b)", 120, "(1)");
+        }
+    }
+
+    [Serializable]
+    public class Comm141MultiEngineAirplaneSea : Comm141Base
+    {
+        public Comm141MultiEngineAirplaneSea()
+        {
+            Init("Part 141 Appendix D, 4(b)(2)", Resources.MilestoneProgress.Title141CommercialMultiEngineSea, RatingType.Commercial141AirplaneMultiEngineSea, Resources.MilestoneProgress.ratingAirplaneMulti, "(b)", 120, "(1)");
         }
     }
 
