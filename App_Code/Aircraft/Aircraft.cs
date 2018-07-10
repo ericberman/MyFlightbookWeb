@@ -601,37 +601,14 @@ namespace MyFlightbook
 
         /// <summary>
         /// True if the aircraft has a glass upgrade
+        /// OBSOLETE!!! Do not use this any more; it is replaced by AvionicsTechnologyUpgrade; only preserved here for Windows Phone compatibility"
         /// </summary>
-        private Boolean IsGlass { get; set; }
+        public Boolean IsGlass { get; set; }
 
         /// <summary>
         /// Has the aircraft been upgraded to TAA?  TAA = glass PFD + glass MFD (GPS) + at least 2-axis autopilot (61.129(j) as of Aug 27 2018
         /// </summary>
         private Boolean IsTAA { get; set; }
-
-        /// <summary>
-        /// Level of any upgrade.  Note that this could indicate no upgrade (e.g., "steam") but the model may override.  E.g., can't upgrade a 787, it's already TAA.
-        /// </summary>
-        public MakeModel.AvionicsTechnologyType AvionicsTechnologyUpgrade
-        {
-            get { return IsTAA ? MakeModel.AvionicsTechnologyType.TAA : (IsGlass ? MakeModel.AvionicsTechnologyType.Glass : MakeModel.AvionicsTechnologyType.None); }
-            set
-            {
-                switch (value)
-                {
-                    case MakeModel.AvionicsTechnologyType.None:
-                        IsGlass = IsTAA = false;
-                        break;
-                    case MakeModel.AvionicsTechnologyType.Glass:
-                        IsGlass = true;
-                        IsTAA = false;
-                        break;
-                    case MakeModel.AvionicsTechnologyType.TAA:
-                        IsGlass = IsTAA = true;
-                        break;
-                }
-            }
-        }
 
         #region Images
         /// <summary>
@@ -743,9 +720,6 @@ namespace MyFlightbook
         {
             get { return String.Format(CultureInfo.CurrentCulture, "{0} ({1})", TailNumber, LongModelDescription); }
         }
-
-        [Newtonsoft.Json.JsonIgnore]
-        public string ICAO { get; set; }
 
         /// <summary>
         /// Returns a display tailnumber, mapping anonymous as appropriate
@@ -882,11 +856,38 @@ namespace MyFlightbook
         {
             get { return InstanceType == AircraftInstanceTypes.RealAircraft && TailNumber.StartsWith(CountryCodePrefix.szAnonPrefix, StringComparison.OrdinalIgnoreCase); }
         }
-        
+
+        [Newtonsoft.Json.JsonIgnore]
+        public string ICAO { get; set; }
+
         /// <summary>
         /// Optional date of the glass upgrade.
         /// </summary>
         public DateTime? GlassUpgradeDate { get; set; }
+
+        /// <summary>
+        /// Level of any upgrade.  Note that this could indicate no upgrade (e.g., "steam") but the model may override.  E.g., can't upgrade a 787, it's already TAA.
+        /// </summary>
+        public MakeModel.AvionicsTechnologyType AvionicsTechnologyUpgrade
+        {
+            get { return IsTAA ? MakeModel.AvionicsTechnologyType.TAA : (IsGlass ? MakeModel.AvionicsTechnologyType.Glass : MakeModel.AvionicsTechnologyType.None); }
+            set
+            {
+                switch (value)
+                {
+                    case MakeModel.AvionicsTechnologyType.None:
+                        IsGlass = IsTAA = false;
+                        break;
+                    case MakeModel.AvionicsTechnologyType.Glass:
+                        IsGlass = true;
+                        IsTAA = false;
+                        break;
+                    case MakeModel.AvionicsTechnologyType.TAA:
+                        IsGlass = IsTAA = true;
+                        break;
+                }
+            }
+        }
         #endregion
         #endregion
 
