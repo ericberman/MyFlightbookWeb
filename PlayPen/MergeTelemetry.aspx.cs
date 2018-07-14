@@ -13,13 +13,22 @@ using System.Globalization;
 
 public partial class PlayPen_MergeTelemetry : System.Web.UI.Page
 {
+    protected void Init()
+    {
+        Coordinates = new List<Position>();
+        HasAlt = HasTime = HasSpeed = true;
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
-            Coordinates = new List<Position>();
+            Init();
     }
 
     private string SessionKeyBase { get { return Page.User.Identity.Name + "telemmerge"; } }
+    private string SessionTime { get { return SessionKeyBase + "time"; } }
+    private string SessionAlt { get { return SessionKeyBase + "Alt"; } }
+    private string SessionSpeed { get { return SessionKeyBase + "Speed"; } }
 
     private List<Position> Coordinates
     {
@@ -27,22 +36,27 @@ public partial class PlayPen_MergeTelemetry : System.Web.UI.Page
         set { Session[SessionKeyBase] = value; }
     }
 
+    protected bool FromObj(object o)
+    {
+        return o == null ? true : Convert.ToBoolean(o, CultureInfo.InvariantCulture);
+    }
+
     protected bool HasTime
     {
-        get { return Convert.ToBoolean(hdnHasTime.Value, CultureInfo.InvariantCulture); }
-        set { hdnHasTime.Value = value.ToString(); }
+        get { return FromObj(Session[SessionTime]); }
+        set { Session[SessionTime] = value.ToString(); }
     }
 
     protected bool HasAlt
     {
-        get { return Convert.ToBoolean(hdnHasAlt.Value, CultureInfo.InvariantCulture); }
-        set { hdnHasAlt.Value = value.ToString(); }
+        get { return FromObj(Session[SessionAlt]); }
+        set { Session[SessionAlt] = value.ToString(); }
     }
 
     protected bool HasSpeed
     {
-        get { return Convert.ToBoolean(hdnHasSpeed.Value, CultureInfo.InvariantCulture); }
-        set { hdnHasSpeed.Value = value.ToString(); }
+        get { return FromObj(Session[SessionSpeed]); }
+        set { Session[SessionSpeed] = value.ToString(); }
     }
 
     protected void AjaxFileUpload1_UploadComplete(object sender, AjaxControlToolkit.AjaxFileUploadEventArgs e)
@@ -86,6 +100,7 @@ public partial class PlayPen_MergeTelemetry : System.Web.UI.Page
             using (FlightData fd = new FlightData())
                 fd.WriteGPXData(Response.OutputStream, Coordinates, HasTime, HasAlt, HasSpeed);
             Response.End();
+            Init();
         }
     }
 }
