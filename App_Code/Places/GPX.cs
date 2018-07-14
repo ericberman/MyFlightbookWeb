@@ -81,6 +81,33 @@ namespace MyFlightbook.Telemetry
             return new GPXPathRoot { xnamespace = ns, elements = ele };
         }
 
+        private XNamespace _badElfExtensionNamespace = null;
+        private XNamespace BadElfExtensionNamespace
+        {
+            get
+            {
+                if (_badElfExtensionNamespace == null)
+                    _badElfExtensionNamespace = "http://bad-elf.com/xmlschemas/GpxExtensionsV1";
+                return _badElfExtensionNamespace;
+            }
+        }
+
+        private XElement SpeedElement(XElement coord, GPXPathRoot root)
+        {
+            XElement xSpeed = coord.Descendants(root.xnamespace + "speed").FirstOrDefault();
+
+            xSpeed = coord.Descendants(root.xnamespace + "speed").FirstOrDefault();
+            if (xSpeed != null)
+                return xSpeed;
+
+            XElement xSpeedAlternative = coord.Descendants(root.xnamespace + "extensions").FirstOrDefault();
+
+            if (xSpeedAlternative == null)
+                return null;
+
+            return xSpeedAlternative.Descendants(BadElfExtensionNamespace + "speed").FirstOrDefault();
+        }
+
         /// <summary>
         /// Parses GPX-based flight data
         /// </summary>
@@ -101,8 +128,7 @@ namespace MyFlightbook.Telemetry
                 try
                 {
                     XDocument xml = XDocument.Load(new StreamReader(stream));
-                    XNamespace xNamespaceBadelf = "http://bad-elf.com/xmlschemas/GpxExtensionsV1";
-
+                    
                     GPXPathRoot root = FindRoot(xml);
 
                     if (root == null)
@@ -127,19 +153,13 @@ namespace MyFlightbook.Telemetry
                                 XElement xAlt = null;
                                 XElement xTime = null;
                                 XElement xSpeed = null;
-                                XElement xSpeedAlternative = null;
                                 XElement xBadElfSpeed = null;
 
                                 xLat = coord.Attribute("lat");
                                 xLon = coord.Attribute("lon");
                                 xAlt = coord.Descendants(root.xnamespace + "ele").FirstOrDefault();
                                 xTime = coord.Descendants(root.xnamespace + "time").FirstOrDefault();
-                                xSpeed = coord.Descendants(root.xnamespace + "speed").FirstOrDefault();
-                                xSpeedAlternative = xSpeed == null ? coord.Descendants(root.xnamespace + "extensions").FirstOrDefault() : null;
-
-                                if (xSpeedAlternative != null)
-                                    xBadElfSpeed = xSpeedAlternative.Descendants(xNamespaceBadelf + "speed").FirstOrDefault();
-
+                                xSpeed = SpeedElement(coord, root);
 
                                 fHasAlt = (xAlt != null);
                                 fHasDate = (xTime != null);
@@ -159,7 +179,7 @@ namespace MyFlightbook.Telemetry
                                         if (fHasDate)
                                             samp.Timestamp = xTime.Value.ParseUTCDate();
                                         if (fHasSpeed)
-                                            samp.Speed = Convert.ToDouble(xSpeed == null ? xBadElfSpeed.Value : xSpeed.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                            samp.Speed = Convert.ToDouble(xSpeed.Value, System.Globalization.CultureInfo.InvariantCulture);
                                         lst.Add(samp);
                                     }
                                     catch (System.FormatException)
