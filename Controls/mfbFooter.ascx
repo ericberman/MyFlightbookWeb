@@ -19,6 +19,9 @@
                 runat="server" Text="Contact Us" meta:resourcekey="lnkContactResource1"></asp:HyperLink></li>
                 <li><asp:HyperLink ID="lnkFAQ" runat="server" NavigateUrl="~/Public/FAQ.aspx" 
                     Text="FAQ" meta:resourcekey="lnkFAQResource1"></asp:HyperLink></li>
+                <li id="cellVideos" runat="server">
+                    <asp:HyperLink ID="lnkVideos" runat="server" Text="Videos" meta:resourcekey="lnkVideosResource1"></asp:HyperLink>
+                </li>
                 <li><asp:HyperLink ID="lnkBlog" runat="server" Text="Blog" Target="_blank" meta:resourcekey="lnkBlogResource1"></asp:HyperLink></li>
             </ul>
         </div>
@@ -59,5 +62,5 @@
             runat="server" Text="Classic View" meta:resourcekey="lnkViewClassicResource1"></asp:HyperLink>
     </asp:Panel>
     <div style="margin-top:3px; margin-bottom:6px;" ID="divSSLSeal" runat="server"><span id="siteseal"><script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=MbSEyzG679EfYseNolHmMeTjb9SSTum9qZBBZbXTqqb8vBPbEJNZtpY0EX4b"></script></span></div>
-    <div><asp:Label ID="lblCopyright" runat="server" Text="" meta:resourcekey="lblCopyrightResource1"></asp:Label></div>
+    <div><asp:Label ID="lblCopyright" runat="server" meta:resourcekey="lblCopyrightResource1"></asp:Label></div>
 </div>

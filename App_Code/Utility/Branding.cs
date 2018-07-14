@@ -72,6 +72,10 @@ namespace MyFlightbook
         /// </summary>
         public string StyleSheet { get; set; }
 
+        /// <summary>
+        /// Link to any video/tutorial channel
+        /// </summary>
+        public string VideoRef { get; set; }
         #endregion
 
         /// <summary>
@@ -86,7 +90,7 @@ namespace MyFlightbook
         /// <param name="szFacebook">Link to the facebook feed for this brand</param>
         /// <param name="szStyleSheet">Link to the stylesheet for this brand</param>
         /// <param name="szTwitter">Link to the twitter feed for this brand</param>
-        public Brand(BrandID ID, string szapp, string szhost, string szRoot, string szlogo, string szStyleSheet, string szEmail, string szFacebook, string szTwitter, string szBlog)
+        public Brand(BrandID ID, string szapp, string szhost, string szRoot, string szlogo, string szStyleSheet, string szEmail, string szFacebook, string szTwitter, string szBlog) : this(ID)
         {
             BrandID = ID;
             AppName = szapp;
@@ -98,6 +102,12 @@ namespace MyFlightbook
             TwitterFeed = szTwitter;
             StyleSheet = szStyleSheet;
             BlogAddress = szBlog;
+        }
+
+        public Brand(BrandID brandID)
+        {
+            BrandID = brandID;
+            AppName = HostName = Root = LogoURL = EmailAddress = FacebookFeed = TwitterFeed = StyleSheet = BlogAddress = VideoRef = string.Empty;
         }
 
         private const string szPrefixToIgnore = "www.";
@@ -120,12 +130,32 @@ namespace MyFlightbook
 
     public static class Branding
     {
-        static private Brand[] knownBrands = 
+        static private Brand[] knownBrands =
         {
-        new Brand(BrandID.brandMyFlightbook, "MyFlightbook", "myflightbook.com", "/logbook", "~/Public/myflightbooknew.png", string.Empty, "noreply@mg.myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook", "https://myflightbookblog.blogspot.com/"),
-        new Brand(BrandID.brandMyFlightbookNew, "MyFlightbook", "staging.myflightbook.com", "/logbook", "~/Public/mfblogonew.png", "~/Public/stylesheetnew.css", "noreply@mg.myflightbook.com", "http://www.facebook.com/MyFlightbook", "http://twitter.com/MyFlightbook", "https://myflightbookblog.blogspot.com/")
+        new Brand(BrandID.brandMyFlightbook) {
+            AppName ="MyFlightbook",
+            HostName = "myflightbook.com",
+            Root = "/logbook",
+            LogoURL = "~/Public/myflightbooknew.png",
+            StyleSheet = string.Empty,
+            EmailAddress ="noreply@mg.myflightbook.com",
+            FacebookFeed = "http://www.facebook.com/MyFlightbook",
+            TwitterFeed = "http://twitter.com/MyFlightbook",
+            BlogAddress = "https://myflightbookblog.blogspot.com/",
+            VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber"
+        },
+        new Brand(BrandID.brandMyFlightbookNew) {
+            AppName = "MyFlightbook",
+            HostName = "staging.myflightbook.com",
+            Root = "/logbook",
+            LogoURL = "~/Public/mfblogonew.png",
+            StyleSheet = "~/Public/stylesheetnew.css",
+            EmailAddress = "noreply@mg.myflightbook.com",
+            FacebookFeed = "http://www.facebook.com/MyFlightbook",
+            TwitterFeed = "http://twitter.com/MyFlightbook",
+            BlogAddress = "https://myflightbookblog.blogspot.com/"
+        }
         };
-
 
         private const string brandStateKey = "_brandid";
 

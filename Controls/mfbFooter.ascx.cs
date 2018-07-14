@@ -23,6 +23,7 @@ public partial class Controls_mfbFooter : System.Web.UI.UserControl
         {
             RSSCurrency1.Visible = Page.User.Identity.IsAuthenticated && Request.IsSecureConnection;
             lnkBlog.Visible = !String.IsNullOrEmpty(lnkBlog.NavigateUrl = Branding.CurrentBrand.BlogAddress);
+            lnkVideos.Visible = !String.IsNullOrEmpty(lnkVideos.NavigateUrl = Branding.CurrentBrand.VideoRef);
             cellFacebook.Visible = !String.IsNullOrEmpty(lnkFacebook.NavigateUrl = Branding.CurrentBrand.FacebookFeed);
             cellTwitter.Visible = !String.IsNullOrEmpty(lnkTwitter.NavigateUrl = Branding.CurrentBrand.TwitterFeed);
             lblCopyright.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.CopyrightDisplay, DateTime.Now.Year);
