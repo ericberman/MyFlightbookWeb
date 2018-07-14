@@ -101,6 +101,7 @@ namespace MyFlightbook.Telemetry
                 try
                 {
                     XDocument xml = XDocument.Load(new StreamReader(stream));
+                    XNamespace xNamespaceBadelf = "http://bad-elf.com/xmlschemas/GpxExtensionsV1";
 
                     GPXPathRoot root = FindRoot(xml);
 
@@ -126,16 +127,23 @@ namespace MyFlightbook.Telemetry
                                 XElement xAlt = null;
                                 XElement xTime = null;
                                 XElement xSpeed = null;
+                                XElement xSpeedAlternative = null;
+                                XElement xBadElfSpeed = null;
 
                                 xLat = coord.Attribute("lat");
                                 xLon = coord.Attribute("lon");
                                 xAlt = coord.Descendants(root.xnamespace + "ele").FirstOrDefault();
                                 xTime = coord.Descendants(root.xnamespace + "time").FirstOrDefault();
                                 xSpeed = coord.Descendants(root.xnamespace + "speed").FirstOrDefault();
+                                xSpeedAlternative = xSpeed == null ? coord.Descendants(root.xnamespace + "extensions").FirstOrDefault() : null;
+
+                                if (xSpeedAlternative != null)
+                                    xBadElfSpeed = xSpeedAlternative.Descendants(xNamespaceBadelf + "speed").FirstOrDefault();
+
 
                                 fHasAlt = (xAlt != null);
                                 fHasDate = (xTime != null);
-                                fHasSpeed = (xSpeed != null);
+                                fHasSpeed = (xSpeed != null || xBadElfSpeed != null);
                                 fHasLatLon = (xLat != null && xLon != null);
 
                                 if (!fHasAlt && !fHasDate && !fHasSpeed && !fHasLatLon)
@@ -151,7 +159,7 @@ namespace MyFlightbook.Telemetry
                                         if (fHasDate)
                                             samp.Timestamp = xTime.Value.ParseUTCDate();
                                         if (fHasSpeed)
-                                            samp.Speed = Convert.ToDouble(xSpeed.Value, System.Globalization.CultureInfo.InvariantCulture);
+                                            samp.Speed = Convert.ToDouble(xSpeed == null ? xBadElfSpeed.Value : xSpeed.Value, System.Globalization.CultureInfo.InvariantCulture);
                                         lst.Add(samp);
                                     }
                                     catch (System.FormatException)
