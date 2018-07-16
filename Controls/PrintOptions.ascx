@@ -40,7 +40,7 @@
         </asp:RadioButtonList>
     </div>
     <p>
-        <uc1:Expando runat="server" ID="Expando">
+        <uc1:Expando runat="server" ID="expPropertiesToExclude">
             <Header>
                 <asp:Label ID="lblPropertyExclusion" runat="server" Text="<%$ Resources:LocalizedText, PrintViewPropertyInclusion %>"></asp:Label>
             </Header>

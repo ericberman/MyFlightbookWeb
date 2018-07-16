@@ -136,6 +136,12 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             rgcptUser.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
             cklProperties.DataSource = rgcptUser;
             cklProperties.DataBind();
+            expPropertiesToExclude.Visible = rgcptUser.Count > 0;
+
+            // By default, exclude "Additional flight remarks"
+            foreach (ListItem li in cklProperties.Items)
+                if (Convert.ToInt32(li.Value, CultureInfo.InvariantCulture) == (int)CustomPropertyType.KnownProperties.IDPropAdditionalFlightRemarks)
+                    li.Selected = true;
 
             List<ListItem> lstOptionalColumnDropdowns = new List<ListItem>()
             {
