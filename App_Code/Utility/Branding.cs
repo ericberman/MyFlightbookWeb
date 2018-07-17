@@ -15,8 +15,7 @@ namespace MyFlightbook
     /// </summary>
     public enum BrandID
     {
-        brandMyFlightbook,
-        brandMyFlightbookNew,
+        brandMyFlightbook
     };
 
     public class Brand
@@ -136,25 +135,14 @@ namespace MyFlightbook
             AppName ="MyFlightbook",
             HostName = "myflightbook.com",
             Root = "/logbook",
-            LogoURL = "~/Public/myflightbooknew.png",
-            StyleSheet = string.Empty,
+            LogoURL = "~/Public/mfblogonew.png",
+            StyleSheet = "~/Public/stylesheetnew.css",
             EmailAddress ="noreply@mg.myflightbook.com",
             FacebookFeed = "http://www.facebook.com/MyFlightbook",
             TwitterFeed = "http://twitter.com/MyFlightbook",
             BlogAddress = "https://myflightbookblog.blogspot.com/",
             VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber"
-        },
-        new Brand(BrandID.brandMyFlightbookNew) {
-            AppName = "MyFlightbook",
-            HostName = "staging.myflightbook.com",
-            Root = "/logbook",
-            LogoURL = "~/Public/mfblogonew.png",
-            StyleSheet = "~/Public/stylesheetnew.css",
-            EmailAddress = "noreply@mg.myflightbook.com",
-            FacebookFeed = "http://www.facebook.com/MyFlightbook",
-            TwitterFeed = "http://twitter.com/MyFlightbook",
-            BlogAddress = "https://myflightbookblog.blogspot.com/"
-        }
+            }
         };
 
         private const string brandStateKey = "_brandid";
