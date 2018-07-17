@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Airports;
+using System;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -42,6 +38,7 @@ public partial class Public_FindAirport : System.Web.UI.Page
     protected void doSearch()
     {
         airport[] rgap = m_alResults.GetAirportList();
+        MfbGoogleMapManager1.Visible = rgap.Length > 0;     // avoid excess map loads
         gvResults.DataSource = rgap;
         gvResults.DataBind();
         MfbGoogleMapManager1.Map.SetAirportList(m_alResults);

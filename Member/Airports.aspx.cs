@@ -39,6 +39,7 @@ public partial class Member_Airports : System.Web.UI.Page
 
         gvAirports.DataSource = CurrentVisitedAirports;
         gvAirports.DataBind();
+        mfbGoogleMapManager1.Visible = CurrentVisitedAirports.Length > 0;   //  Avoid excessive map loads.
 
         AirportList alMatches = new AirportList(CurrentVisitedAirports);
 

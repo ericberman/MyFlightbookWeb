@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -73,6 +73,8 @@ public partial class MapRoute : System.Web.UI.Page
             ViewHistorical();
         else
             MapAirports(txtAirports.Text);
+
+        MfbGoogleMapManager1.Visible = !String.IsNullOrWhiteSpace(txtAirports.Text);    // cut down on pointless mapping.
     }
 
     protected void btnMapEm_Click(object sender, EventArgs e)
