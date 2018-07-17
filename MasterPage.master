@@ -13,8 +13,8 @@
     <meta name="format-detection" content="telephone=no" runat="server" id="metaFormat" visible="false" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" runat="server" id="metaViewport" visible="false" />
     <title></title>
-    <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon" />
-    <link rel="icon" href="/favicon.ico" type="image/vnd.microsoft.icon" /> 
+    <link rel="shortcut icon" href="/favicon.ico?v2" />
+    <link rel="icon" href="/favicon.ico?v2" /> 
     <link href="apple-icon-goes-here" runat="server" id="lnkAppleIcon" rel="apple-touch-icon" />
     <link href="mainstylgoeshere" runat="server" id="cssMain" rel="stylesheet" type="text/css" />
     <link rel="Stylesheet" type="text/css" runat="server" id="cssBeta" visible="false" />
