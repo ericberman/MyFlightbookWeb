@@ -251,7 +251,7 @@ namespace MyFlightbook.Mapping
 
                 foreach (AirportList airportlist in Airports)
                 {
-                    airport[] rgap = AllowDupeMarkers ? airportlist.GetAirportList() : airportlist.UniqueAirports.ToArray();
+                    airport[] rgap = AllowDupeMarkers ? airportlist.GetAirportList() : airportlist.GetNormalizedAirports();
 
                     List<string> lstRoute = new List<string>();
 
