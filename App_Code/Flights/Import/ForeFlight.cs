@@ -225,8 +225,8 @@ namespace MyFlightbook.ImportFlights
 
                 CustomProperties = PropertiesWithoutNullOrDefault(new CustomFlightProperty[]
                     {
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropDutyTimeStart, OnDuty, true),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropDutyTimeEnd, OffDuty, true),
+                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, OnDuty, true),
+                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, OffDuty, true),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, Solo),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, NightTakeoffs),
                         PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachStart, TachStart),

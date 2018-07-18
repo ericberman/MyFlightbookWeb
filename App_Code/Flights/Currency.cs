@@ -1573,14 +1573,18 @@ namespace MyFlightbook.FlightCurrency
         {
             #region properties
             /// <summary>
-            /// Start of the duty period
+            /// Start of the flight duty period
             /// </summary>
-            public DateTime DutyStart { get; set; }
+            public DateTime FlightDutyStart { get; set; }
 
             /// <summary>
-            /// End of the duty period
+            /// End of the flight duty period
             /// </summary>
-            public DateTime DutyEnd { get; set; }
+            public DateTime FlightDutyEnd { get; set; }
+
+            public DateTime? AdditionalDutyStart { get; set; }
+
+            public DateTime? AdditionalDutyEnd { get; set; }
 
             /// <summary>
             /// If present, holds the flight property for duty start that was found
@@ -1591,6 +1595,11 @@ namespace MyFlightbook.FlightCurrency
             /// If present, holds the flight property for duty end that was found.
             /// </summary>
             public CustomFlightProperty FPDutyEnd { get; set; }
+
+            public bool HasAdditionalDuty
+            {
+                get { return AdditionalDutyEnd.HasValue && AdditionalDutyStart.HasValue; }
+            }
 
             /// <summary>
             /// Was this explicit or inferred?
@@ -1607,7 +1616,8 @@ namespace MyFlightbook.FlightCurrency
             /// <param name="specification">What exactly was specified?</param>
             public EffectiveDutyPeriod()
             {
-                DutyStart = DutyEnd = DateTime.MinValue;
+                FlightDutyStart = FlightDutyEnd = DateTime.MinValue;
+                AdditionalDutyEnd = AdditionalDutyStart = null;
                 Specification = DutySpecification.None;
                 FPDutyEnd = FPDutyStart = null;
             }
@@ -1623,19 +1633,25 @@ namespace MyFlightbook.FlightCurrency
                 if (cfr == null)
                     throw new ArgumentNullException("cfr");
 
-                CustomFlightProperty pfeDutyStart = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyTimeStart);
-                CustomFlightProperty pfeDutyEnd = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyTimeEnd);
+                CustomFlightProperty pfeFlightDutyStart = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart);
+                CustomFlightProperty pfeFlightDutyEnd = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd);
+                CustomFlightProperty pfeAdditionalDutyStart = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyStart);
+                CustomFlightProperty pfeAdditionalDutyEnd = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyEnd);
 
-                if (pfeDutyStart != null)
-                    FPDutyStart = pfeDutyStart;
-                if (pfeDutyEnd != null)
-                    FPDutyEnd = pfeDutyEnd;
+                if (pfeFlightDutyStart != null)
+                    FPDutyStart = pfeFlightDutyStart;
+                if (pfeFlightDutyEnd != null)
+                    FPDutyEnd = pfeFlightDutyEnd;
+                if (pfeAdditionalDutyStart != null)
+                    AdditionalDutyStart = pfeAdditionalDutyStart.DateValue;
+                if (pfeAdditionalDutyEnd != null)
+                    AdditionalDutyEnd = pfeAdditionalDutyEnd.DateValue;
 
                 // if we have duty start/end values, then this is a true duty range.
                 if (FPDutyStart != null && FPDutyEnd != null && FPDutyEnd.DateValue.CompareTo(FPDutyStart.DateValue) >= 0)
                 {
-                    DutyStart = FPDutyStart.DateValue;
-                    DutyEnd = FPDutyEnd.DateValue;
+                    FlightDutyStart = FPDutyStart.DateValue;
+                    FlightDutyEnd = FPDutyEnd.DateValue;
                     Specification = DutySpecification.Both;
                     return;
                 }
@@ -1647,10 +1663,9 @@ namespace MyFlightbook.FlightCurrency
                 // OK, we didn't have both duty properties, or they weren't consistent (e.g., start later than end)
                 // Just block off the whole day for the duty, since we can't be certain when it began/end
                 DateTime dt = cfr.dtFlight;
-                DutyEnd = (DutyStart = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, DateTimeKind.Utc)).AddDays(1.0);
+                FlightDutyEnd = (FlightDutyStart = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, DateTimeKind.Utc)).AddDays(1.0);
             }
             #endregion
-
 
             /// <summary>
             /// Returns the timespan since the specified date that overlaps the nettime.  E.g., if you have 2.5 hours of CFI time and need to know how much of that fell in the window since
@@ -1676,8 +1691,8 @@ namespace MyFlightbook.FlightCurrency
                 if (cfr == null)
                     throw new ArgumentNullException("cfr");
 
-                DateTime dtDutyStart = DutyStart;
-                DateTime dtDutyEnd = DutyEnd;
+                DateTime dtDutyStart = FlightDutyStart;
+                DateTime dtDutyEnd = FlightDutyEnd;
 
                 if (cfr.dtFlightStart.HasValue() || cfr.dtEngineStart.HasValue())
                     dtDutyStart = dtDutyStart.LaterDate(cfr.dtFlightStart).LaterDate(cfr.dtEngineStart);
@@ -1717,7 +1732,12 @@ namespace MyFlightbook.FlightCurrency
         {
             if (pfe == null)
                 throw new ArgumentNullException("pfe");
-            return pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutyTimeEnd || pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutyTimeStart;
+
+            int typeID = pfe.PropTypeID;
+            return typeID == (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd ||
+                   typeID == (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart ||
+                   typeID == (int)CustomPropertyType.KnownProperties.IDPropDutyEnd ||
+                   typeID == (int)CustomPropertyType.KnownProperties.IDPropDutyStart;
         }
 
         public FAR117Currency(bool includeAllFlights = true)
@@ -1733,6 +1753,25 @@ namespace MyFlightbook.FlightCurrency
             dt365DaysAgo = DateTime.UtcNow.AddDays(-365);
         }
 
+        private void UpdateRest(DateTime dtDutyStart, DateTime dtDutyEnd)
+        {
+            if (dtDutyStart.CompareTo(dtDutyStart) > 0)
+                return; // invalid duty period
+
+            // Compute the start of the current rest period from the end of the latest duty period
+            currentRestPeriodStart = dtDutyEnd.LaterDate(currentRestPeriodStart);
+
+            // 117.25(b) - when was our last 30-hour rest period?
+            if (tsLongestRest11725b.CompareTo(TimeSpan.Zero) == 0)
+                tsLongestRest11725b = DateTime.UtcNow.Subtract(currentRestPeriodStart);
+            else if (dtLastDutyStart.CompareTo(dtDutyEnd) > 0 && dtLastDutyStart.CompareTo(dt168HoursAgo) > 0)
+            {
+                TimeSpan tsThisRestPeriod = dtLastDutyStart.Subtract(dt168HoursAgo.LaterDate(dtDutyEnd));
+                tsLongestRest11725b = tsLongestRest11725b.CompareTo(tsThisRestPeriod) > 0 ? tsLongestRest11725b : tsThisRestPeriod;
+            }
+            dtLastDutyStart = dtDutyStart;
+        }
+
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
@@ -1741,8 +1780,8 @@ namespace MyFlightbook.FlightCurrency
             EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr);
             HasSeenProperDutyPeriod = HasSeenProperDutyPeriod || edp.Specification != DutySpecification.None;
 
-            DateTime dtDutyStart = edp.DutyStart;
-            DateTime dtDutyEnd = edp.DutyEnd;
+            DateTime dtDutyStart = edp.FlightDutyStart;
+            DateTime dtDutyEnd = edp.FlightDutyEnd;
 
             // Add in flight times if 
             // (a) we include all flights OR
@@ -1772,13 +1811,19 @@ namespace MyFlightbook.FlightCurrency
             // Of course, if we're including all flights, then we ALWAYS process this flight using effective (computed) times.
             if (!fIncludeAllFlights)
             {
-                // if neither start nor end duty times were specified, return; no more processing to do on this flight.
+                // if neither start nor end duty times were specified, return; no more processing to do on this flight other than rest period computation.
                 if (edp.Specification == DutySpecification.None)
+                {
+                    // Handle any additional duty processing
+                    if (edp.HasAdditionalDuty)
+                        UpdateRest(edp.AdditionalDutyStart.Value, edp.AdditionalDutyEnd.Value);
                     return;
+                }
                 else if (m_edpCurrent == null && edp.Specification == DutySpecification.End) // we've found the end of a duty period - open up an active duty period
                     m_edpCurrent = edp;
                 else if (m_edpCurrent != null && edp.FPDutyStart != null)
                 {
+                    edp.AdditionalDutyEnd = m_edpCurrent.AdditionalDutyEnd; // be sure to capture any additional duty time from the END of FDP, recorded in a flight we saw previously.
                     dtDutyEnd = m_edpCurrent.FPDutyEnd.DateValue;
                     dtDutyStart = edp.FPDutyStart.DateValue;
                     m_edpCurrent = null;
@@ -1788,9 +1833,6 @@ namespace MyFlightbook.FlightCurrency
             if (!fIncludeAllFlights && m_edpCurrent != null)
                 return;
 
-            // Compute the start of the current rest period from the end of the latest duty period
-            currentRestPeriodStart = dtDutyEnd.LaterDate(currentRestPeriodStart);
-
             // 117.23(c)(1) - 60 hours of flight duty time in 168 consecutive hours
             if (dtDutyEnd.CompareTo(dt168HoursAgo) > 0)
                 tsDutyTime11723c1 = tsDutyTime11723c1.Add(dtDutyEnd.Subtract(dt168HoursAgo.LaterDate(dtDutyStart)));
@@ -1798,15 +1840,9 @@ namespace MyFlightbook.FlightCurrency
             if (dtDutyEnd.CompareTo(dt672HoursAgo) > 0)
                 tsDutyTime11723c2 = tsDutyTime11723c2.Add(dtDutyEnd.Subtract(dt672HoursAgo.LaterDate(dtDutyStart)));
 
-            // 117.25(b) - when was our last 30-hour rest period?
-            if (tsLongestRest11725b.CompareTo(TimeSpan.Zero) == 0)
-                tsLongestRest11725b = DateTime.UtcNow.Subtract(currentRestPeriodStart);
-            else if (dtLastDutyStart.CompareTo(dtDutyEnd) > 0 && dtLastDutyStart.CompareTo(dt168HoursAgo) > 0)
-            {
-                TimeSpan tsThisRestPeriod = dtLastDutyStart.Subtract(dt168HoursAgo.LaterDate(dtDutyEnd));
-                tsLongestRest11725b = tsLongestRest11725b.CompareTo(tsThisRestPeriod) > 0 ? tsLongestRest11725b : tsThisRestPeriod;
-            }
-            dtLastDutyStart = dtDutyStart;
+            // Do a rest computation, using the earlier of dutystart/FDP start and later of duty end/FDP end
+            UpdateRest(edp.AdditionalDutyStart.HasValue ? dtDutyStart.EarlierDate(edp.AdditionalDutyStart.Value) : dtDutyStart,
+                       edp.AdditionalDutyEnd.HasValue ? dtDutyEnd.LaterDate(edp.AdditionalDutyEnd.Value) : dtDutyEnd);
         }
 
         public IEnumerable<CurrencyStatusItem> Status
@@ -1883,7 +1919,7 @@ namespace MyFlightbook.FlightCurrency
 
             double netCFI = (double)cfr.CFI;
 
-            EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr) { DutyStart = DateTime.UtcNow.AddDays(-1), DutyEnd = DateTime.UtcNow };
+            EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr) { FlightDutyStart = DateTime.UtcNow.AddDays(-1), FlightDutyEnd = DateTime.UtcNow };
 
             TimeSpan ts = edp.TimeSince(dt24HoursAgo, netCFI, cfr);
             if (ts.TotalHours > 0)

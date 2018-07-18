@@ -94,8 +94,8 @@ namespace MyFlightbook
             IDPropInstructorOnBoard = 288,
             IDPropPassengerCount = 316,         // Not flagged as a known property
             IDPropMaximumAltitude = 321,
-            IDPropDutyTimeStart = 332,
-            IDPropDutyTimeEnd = 333,
+            IDPropFlightDutyTimeStart = 332,
+            IDPropFlightDutyTimeEnd = 333,
             IDPropNVGoggleOperations = 355,
             IDPropTakeoffTowered = 357,
             IDPropTakeoffToweredNight = 358,
@@ -116,7 +116,9 @@ namespace MyFlightbook
             IDPropMonitoredNightLandings = 563,
             IDPropMonitoredNightTakeoffs = 565,
             IDPropFMSApproaches = 583,
-            IDPropAdditionalFlightRemarks = 607 // Not flagged as a known property
+            IDPropAdditionalFlightRemarks = 607, // Not flagged as a known property
+            IDPropDutyStart = 608,
+            IDPropDutyEnd = 609
         }
 
         internal static class CFPPropertyFlag
@@ -1205,13 +1207,13 @@ GROUP BY fp.idPropType;";
             if (cfpTachStart != null && cfpTachEnd != null && cfpTachEnd.DecValue - cfpTachStart.DecValue > 0)
                 d[(int)CustomPropertyType.KnownProperties.IDPropTachEnd] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalTachTime, cfpTachEnd.DecValue - cfpTachStart.DecValue);
 
-            CustomFlightProperty cfpDutyStart = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutyTimeStart);
-            CustomFlightProperty cfpDutyEnd = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutyTimeEnd);
+            CustomFlightProperty cfpDutyStart = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart);
+            CustomFlightProperty cfpDutyEnd = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd);
             CustomFlightProperty cfpBlockOut = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut);
             CustomFlightProperty cfpBlockIn = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn);
 
             if (cfpDutyStart != null && cfpDutyEnd != null && cfpDutyEnd.DateValue.CompareTo(cfpDutyStart.DateValue) > 0)
-                d[(int)CustomPropertyType.KnownProperties.IDPropDutyTimeEnd] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalDutyTime, ((decimal)cfpDutyEnd.DateValue.Subtract(cfpDutyStart.DateValue).TotalHours).ToHHMM());
+                d[(int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalDutyTime, ((decimal)cfpDutyEnd.DateValue.Subtract(cfpDutyStart.DateValue).TotalHours).ToHHMM());
 
             if (cfpBlockOut != null && cfpBlockIn != null && cfpBlockIn.DateValue.CompareTo(cfpBlockOut.DateValue) > 0)
                 d[(int)CustomPropertyType.KnownProperties.IDBlockIn] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalBlockTime, ((decimal)cfpBlockIn.DateValue.Subtract(cfpBlockOut.DateValue).TotalHours).ToHHMM());
