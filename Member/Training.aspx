@@ -2,12 +2,9 @@
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="../Controls/mfbTypeInDate.ascx" TagName="mfbTypeInDate" TagPrefix="uc2" %>
-<%@ Register Src="../Controls/mfbTwitter.ascx" TagName="mfbTwitter" TagPrefix="uc3" %>
-<%@ Register src="../Controls/mfbFacebook.ascx" tagname="mfbFacebook" tagprefix="uc5" %>
 <%@ Register src="../Controls/mfbEndorsementList.ascx" tagname="mfbEndorsementList" tagprefix="uc6" %>
 <%@ Register src="../Controls/mfbMultiFileUpload.ascx" tagname="mfbMultiFileUpload" tagprefix="uc7" %>
 <%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc8" %>
-<%@ Register src="../Controls/mfbGooglePlus.ascx" tagname="mfbGooglePlus" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc9" %>
 <%@ Register src="../Controls/AccountQuestions.ascx" tagname="AccountQuestions" tagprefix="uc4" %>
 

@@ -169,8 +169,8 @@ namespace MyFlightbook
         #region creation/initialization
         public Profile()
         {
-            this.Certificate = this.Email = this.FirstName = this.GooglePlusAccessToken = this.LastName = this.OriginalPKID = this.OrignalEmail = this.PKID =
-                this.SecurityQuestion = this.TwitterAccessSecret = this.TwitterAccessToken = this.UserName = this.License = this.Address = string.Empty;
+            this.Certificate = this.Email = this.FirstName = this.LastName = this.OriginalPKID = this.OrignalEmail = this.PKID =
+                this.SecurityQuestion = this.UserName = this.License = this.Address = string.Empty;
             Role = ProfileRoles.UserRole.None;
             BlacklistedProperties = new List<int>();
         }
@@ -241,11 +241,6 @@ namespace MyFlightbook
         private DateTime m_dtCertificateExpiration = DateTime.MinValue;
         private DateTime m_dtEnglishProficiencyExpiration = DateTime.MinValue;
         private DateTime m_dtLastEmail = DateTime.MinValue;
-
-        /// <summary>
-        /// Access token for google plus
-        /// </summary>
-        public string GooglePlusAccessToken { get; set; }
 
         /// <summary>
         /// Should hobbs/engine/flight times be expanded by default?
@@ -552,23 +547,6 @@ namespace MyFlightbook
         /// </summary>
         public string LastName { get; set; }
 
-        #region social networking
-        /// <summary>
-        /// Twitter access token - empty if not set up
-        /// </summary>
-        public string TwitterAccessToken { get; set; }
-
-        /// <summary>
-        /// Twitter access secret - empty if not set up.
-        /// </summary>
-        public string TwitterAccessSecret { get; set; }
-
-        /// <summary>
-        /// The oauth access token for Facebook for the user
-        /// </summary>
-        public IAuthorizationState FacebookAccessToken { get; set; }
-        #endregion
-
         #region cloud storage
         /// <summary>
         /// The drop-box access token
@@ -844,31 +822,6 @@ namespace MyFlightbook
         }
         #endregion
 
-        #region SocialNetworking
-        /// <summary>
-        /// Tells whether the user is authorized to tweet
-        /// </summary>
-        /// <returns>True if can tweet</returns>
-        public Boolean CanTweet()
-        {
-            return (!String.IsNullOrEmpty(TwitterAccessSecret) && !String.IsNullOrEmpty(TwitterAccessToken));
-        }
-
-        /// <summary>
-        /// Tells whether the user is authorized to post on Facebook
-        /// </summary>
-        /// <returns>True if can post</returns>
-        public Boolean CanPostFacebook()
-        {
-            return FacebookAccessToken != null && !String.IsNullOrEmpty(FacebookAccessToken.AccessToken);
-        }
-
-        public Boolean CanPostGooglePlus()
-        {
-            return !String.IsNullOrEmpty(GooglePlusAccessToken);
-        }
-        #endregion
-
         /// <summary>
         /// Get the full name for a user, not just the username
         /// </summary>
@@ -996,10 +949,6 @@ namespace MyFlightbook
                 LastName = dr["LastName"].ToString();
                 Address = util.ReadNullableField(dr, "Address", string.Empty).ToString();
                 OriginalPKID = PKID = dr["PKID"].ToString();
-                TwitterAccessToken = dr["TwitterAccessToken"].ToString();
-                TwitterAccessSecret = dr["TwitterAccessSecret"].ToString();
-                FacebookAccessToken = AuthStateFromString(dr["FacebookAccessToken"].ToString());
-                GooglePlusAccessToken = (string)util.ReadNullableField(dr, "GPlusAccessToken", "");
 
                 DropboxAccessToken = (string)util.ReadNullableField(dr, "DropboxAccessToken", null);
                 GoogleDriveAccessToken = AuthStateFromString((string) util.ReadNullableField(dr, "GoogleDriveAccessToken", null));
@@ -1140,10 +1089,10 @@ namespace MyFlightbook
             if (!FIsValid())
                 return false;
 
-            szQ = @"UPDATE users SET Email=?Email, FirstName=?FirstName, LastName=?LastName, Address=?address, TwitterAccessToken=?TwitterAccesstoken, TwitterAccessSecret=?TwitterAccessSecret, FacebookAccessToken=?FacebookAccessToken, 
+            szQ = @"UPDATE users SET Email=?Email, FirstName=?FirstName, LastName=?LastName, Address=?address, 
             DropboxAccessToken=?dropboxAccesstoken, OnedriveAccessToken=?onedrive, GoogleDriveAccessToken=?gdrive, ICloudAccessToken=?icloud, DefaultCloudDriveID=?defcloud, OverwriteDropbox=?overwriteCloud,
             LastBFR = ?LastBFR, LastMedical=?LastMedical, MonthsToMedical=?MonthsToMedical, IsInstructor=?IsInstructor, UsesSIC=?UsesSIC, UsesHHMM=?UsesHHMM, UsesUTCDates=?useUTCDates, License=?license, CertificateNumber=?cert, CFIExpiration=?cfiExp, 
-            CurrencyFlags=?currencyFlags, GPlusAccessToken=?gpaccess, ShowTimes=?showTimes, EnglishProficiencyExpiration=?engProfExpiration, EmailSubscriptions=?subscriptions, LastEmail=?lastemail, AchievementStatus=?achievementstatus, PropertyBlackList=?blacklist
+            CurrencyFlags=?currencyFlags, ShowTimes=?showTimes, EnglishProficiencyExpiration=?engProfExpiration, EmailSubscriptions=?subscriptions, LastEmail=?lastemail, AchievementStatus=?achievementstatus, PropertyBlackList=?blacklist
             WHERE PKID = ?PKID";
 
             string szErr = "";
@@ -1155,9 +1104,6 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("FirstName", FirstName.LimitTo(15));
                     comm.Parameters.AddWithValue("LastName", LastName.LimitTo(15));
                     comm.Parameters.AddWithValue("address", Address.LimitTo(254));
-                    comm.Parameters.AddWithValue("TwitterAccesstoken", TwitterAccessToken);
-                    comm.Parameters.AddWithValue("TwitterAccessSecret", TwitterAccessSecret);
-                    comm.Parameters.AddWithValue("FacebookAccessToken", FacebookAccessToken == null ? null : JsonConvert.SerializeObject(FacebookAccessToken));
                     comm.Parameters.AddWithValue("dropboxAccessToken", DropboxAccessToken);
                     comm.Parameters.AddWithValue("onedrive", OneDriveAccessToken == null ? null : JsonConvert.SerializeObject(OneDriveAccessToken));
                     comm.Parameters.AddWithValue("gdrive", GoogleDriveAccessToken == null ? null : JsonConvert.SerializeObject(GoogleDriveAccessToken));
@@ -1176,7 +1122,6 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("cert", Certificate.LimitTo(89));
                     comm.Parameters.AddWithValue("cfiExp", CertificateExpiration);
                     comm.Parameters.AddWithValue("currencyFlags", (uint)CurrencyFlags);
-                    comm.Parameters.AddWithValue("gpaccess", GooglePlusAccessToken);
                     comm.Parameters.AddWithValue("showTimes", DisplayTimesByDefault);
                     comm.Parameters.AddWithValue("engProfExpiration", EnglishProficiencyExpiration);
                     comm.Parameters.AddWithValue("subscriptions", Subscriptions);

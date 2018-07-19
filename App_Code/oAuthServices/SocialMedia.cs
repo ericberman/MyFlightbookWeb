@@ -1,14 +1,13 @@
-﻿using System;
+﻿using DotNetOpenAuth.OAuth2;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Runtime.Serialization;
-using System.Web;
 using System.Text;
-using DotNetOpenAuth.OAuth2;
-using VolunteerApp.Twitter;
+using System.Web;
 
 /******************************************************
  * 
@@ -73,20 +72,6 @@ namespace MyFlightbook.SocialMedia
         /// Indicates if the item can be posted.
         /// </summary>
         bool CanPost { get; }
-    }
-
-    /// <summary>
-    /// Interface to be implemented by an object that can post to social media
-    /// </summary>
-    public interface ISocialMediaPostTarget
-    {
-        /// <summary>
-        /// Posts the postable item to social media on behalf of the specified user
-        /// </summary>
-        /// <param name="o">the iPostable object</param>
-        /// <param name="szUser">The user on whose behalf we are posting</param>
-        /// <param name="szHost">The host name; current branding if null</param>
-        bool PostToSocialMedia(IPostable o, string szUser, string szHost = null);
     }
 
     [DataContract]
@@ -232,6 +217,7 @@ namespace MyFlightbook.SocialMedia
         }
     }
 
+    /*
     /// <summary>
     /// ISocialMediaPostTarget implementer that can post to Facebook.
     /// </summary>
@@ -351,13 +337,14 @@ namespace MyFlightbook.SocialMedia
             catch (MyFlightbookException) { }
         }
     }
+    */
 
     /// <summary>
     /// ISocialMediaPostTarget implementer that can post to Twitter.
     /// </summary>
-    public class TwitterPoster : ISocialMediaPostTarget
+    public static class TwitterPoster
     {
-        private const string urlUpdate = "https://api.twitter.com/1.1/statuses/update.json";
+        // private const string urlUpdate = "https://api.twitter.com/1.1/statuses/update.json";
 
         /// <summary>
         /// The content to tweet, limited to the requisite 140 chars
@@ -386,6 +373,7 @@ namespace MyFlightbook.SocialMedia
             return sb.ToString();
         }
 
+        /*
         public bool PostToSocialMedia(IPostable o, string szUser, string szHost = null)
         {
             if (o == null)
@@ -410,11 +398,12 @@ namespace MyFlightbook.SocialMedia
             string result = oAuth.oAuthWebRequest(oAuthTwitter.Method.POST, urlUpdate, "status=" + HttpUtility.UrlEncode(TweetContent(o, szHost).ToString()));
             return result.Contains("created_at");
         }
+        */
     }
 
     public static class TwitterConstants
     {
-        public const string CallBackPageFormat = "~/Member/PostFlight.aspx";
+        // public const string CallBackPageFormat = "~/Member/PostFlight.aspx";
     }
 
     public static class GooglePlusConstants

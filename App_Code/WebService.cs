@@ -2,7 +2,6 @@ using MyFlightbook.Airports;
 using MyFlightbook.FlightCurrency;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
-using MyFlightbook.SocialMedia;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections;
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Mail;
 using System.ServiceModel;
 using System.Threading;
 using System.Web;
@@ -31,11 +29,13 @@ namespace MyFlightbook
         /// <summary>
         /// Post the flight to Facebook?
         /// </summary>
+        [Obsolete("Posting via oAuth to Facebook is no longer supported")]
         public Boolean PostToFacebook { get; set; }
 
         /// <summary>
         /// Post to Twitter?
         /// </summary>
+        [Obsolete("Posting via oAuth to Twitter is no longer supported")]
         public Boolean PostToTwitter { get; set; }
 
         /// <summary>
@@ -50,31 +50,11 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="fTwitter">Post to Twitter?</param>
         /// <param name="fFacebook">Post to Facebook?</param>
+        [Obsolete("Posting via oAuth to Facebook/Twitter is no longer supported")]
         public PostingOptions(Boolean fTwitter, Boolean fFacebook)
         {
             PostToFacebook = fFacebook;
             PostToTwitter = fTwitter;
-        }
-    }
-
-    /// <summary>
-    /// A bit of a hack to deal with the fact that we post a flight with pictures as two separate posts.
-    /// We delay posting to facebook to give some time for at least the first picture to be uploaded.
-    /// </summary>
-    public class DelayedPost
-    {
-        public DelayedPost()
-        {
-        }
-
-        public LogbookEntry Entry { get; set; }
-
-        public string HostName { get; set; }
-
-        public DelayedPost(LogbookEntry le, string host)
-        {
-            Entry = le;
-            HostName = host;
         }
     }
 
@@ -768,30 +748,9 @@ namespace MyFlightbook
         /// Handles any tasks to be done after a successful commit of a flight
         /// </summary>
         /// <param name="le"></param>
-        private void AfterFlightCommitTasks(LogbookEntry le, PostingOptions po)
+        private void AfterFlightCommitTasks(LogbookEntry le)
         {
             Profile pf = Profile.GetUser(le.User);
-            if (po != null)
-            {
-                if (po.PostToTwitter)
-                {
-                    if (pf.CanTweet())
-                        new TwitterPoster().PostToSocialMedia(le, pf.UserName);
-                    else
-                        util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.WebService.NotifyTwitterSetup, Branding.CurrentBrand.AppName),
-                            String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.EnableTwitter, pf.UserFullName),
-                            new MailAddress(pf.Email, pf.UserFullName),
-                            false, false);
-                }
-
-                if (po.PostToFacebook)
-                {
-                    if (pf.CanPostFacebook())
-                        ThreadPool.QueueUserWorkItem(new WaitCallback(PostFacebookAfterDelay), new DelayedPost(le, HttpContext.Current.Request.Url.Host));
-                    else
-                        MFBFacebook.NotifyFacebookNotSetUp(pf.UserName);
-                }
-            }
 
             // EventRecorder.WriteEvent(EventRecorder.MFBEventID.CommitFlight, szUser, "Commit Flight");
             EventRecorder.UpdateCount(EventRecorder.MFBCountID.WSFlight, 1);
@@ -807,6 +766,8 @@ namespace MyFlightbook
                 throw new ArgumentNullException("le");
             if (szAuthUserToken == null)
                 throw new ArgumentNullException("szAuthUserToken");
+            if (po != null)
+                po = null;  // avoid warning about unused po
 
             string szUser = GetEncryptedUser(szAuthUserToken);
 
@@ -853,18 +814,11 @@ namespace MyFlightbook
             // If it was successfully saved, then we can do post-processing.  This can be done outside of the lock since there isn't really any idempotency issue here.
             if (fSuccess)
             {
-                AfterFlightCommitTasks(le, po);
+                AfterFlightCommitTasks(le);
                 return le;
             }
             else
                 throw new MyFlightbookException(le.ErrorString);
-        }
-
-        static void PostFacebookAfterDelay(object delayedPost)
-        {
-            DelayedPost dp = (DelayedPost)delayedPost;
-            Thread.Sleep(60 * 1000); // sleep for a minute to allow any pictures to be posted
-            new FacebookPoster().PostToSocialMedia(dp.Entry, dp.Entry.User, Branding.CurrentBrand.HostName);
         }
 
         /// <summary>

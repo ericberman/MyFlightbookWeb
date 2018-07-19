@@ -1,19 +1,18 @@
-using System;
-using System.Linq;
-using System.Collections;
-using System.Globalization;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using MyFlightbook;
 using MyFlightbook.Image;
 using MyFlightbook.Payments;
 using MyFlightbook.Telemetry;
-using MyFlightbook.SocialMedia;
+using System;
+using System.Collections;
+using System.Globalization;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -108,7 +107,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         {
             if (le.User.CompareOrdinal(Page.User.Identity.Name) != 0 && le.CanEditThisFlight(Page.User.Identity.Name))
             {
-                pnlTwitter.Visible = pnlPictures.Visible = false;
+                pnlPublic.Visible = pnlPictures.Visible = false;
                 FlightUser = le.User;   // save the name of the owner of the flight.
             }
             else
@@ -315,21 +314,12 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         if (Request.IsMobileDevice())
             cmbAircraft.Width = txtRoute.Width = txtComments.Width = Unit.Pixel(130);
 
-        ckUpdateTwitter.Checked = mfbTwitter.FDefaultTwitterCheckboxState && (FlightID > 0);  // don't default the facebook/twitter checkboxes on if this is editing an existing flight.
-        ckFacebook.Checked = mfbFacebook1.FDefaultFacebookCheckboxState && (FlightID > 0);
-
         // Use the desired editing mode.
         MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
         Controls_mfbDecimalEdit.EditMode em = pf.UsesHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal;
         decCFI.EditingMode = decDual.EditingMode = decGrndSim.EditingMode = decIMC.EditingMode =
             decNight.EditingMode = decPIC.EditingMode = decSIC.EditingMode = decSimulatedIFR.EditingMode =
             decTotal.EditingMode = decXC.EditingMode = em;
-
-        // And enable/disable facebook/twitter:
-        ckFacebook.Visible = pf.CanPostFacebook();
-        ckUpdateTwitter.Visible = pf.CanTweet();
-        mvFacebook.SetActiveView(pf.CanPostFacebook() ? vwFacebookActive : vwFacebookInactive);
-        mvTwitter.SetActiveView(pf.CanTweet() ? vwTwitterActive : vwTwitterInactive);
 
         mfbEditPropSet1.CrossFillSourceClientID = decCFI.CrossFillSourceClientID = decDual.CrossFillSourceClientID = decGrndSim.CrossFillSourceClientID = decIMC.CrossFillSourceClientID = 
             decNight.CrossFillSourceClientID = decPIC.CrossFillSourceClientID = decSIC.CrossFillSourceClientID = decSimulatedIFR.CrossFillSourceClientID = decXC.CrossFillSourceClientID = decTotal.EditBox.ClientID;
@@ -542,16 +532,6 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
                     idResult = le.FlightID; // this must be >= 0 if the commit succeeded
 
-                    if (ckFacebook.Checked)
-                        mfbFacebook1.PostFlight(le);
-                    else if (FlightID == LogbookEntry.idFlightNew)
-                        mfbFacebook1.FDefaultFacebookCheckboxState = false; // if this was a new flight and the user didn't post on facebook, then don't default next time.
-
-                    if (ckUpdateTwitter.Checked)
-                        mfbTwitter.PostFlight(le);
-                    else if (FlightID == LogbookEntry.idFlightNew)
-                        mfbTwitter.FDefaultTwitterCheckboxState = false; // if this was a new flight and user didn't tweet, then don't default next time; if editing a flight, don't change the default state
-
                     // Badge computation may be wrong
                     MyFlightbook.Profile.GetUser(le.User).SetAchievementStatus(MyFlightbook.Achievements.Achievement.ComputeStatus.NeedsComputing);
                 }
@@ -604,18 +584,6 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             throw new ArgumentNullException("args");
         if (DateTime.Compare(mfbDate.Date, DateTime.Now.AddDays(3)) > 0)
             args.IsValid = false;
-    }
-
-    protected void lnkSetUpTwitter_Click(object sender, EventArgs e)
-    {
-        SocialNetworkAuthorization.PushRedirect(Request.Url.PathAndQuery);
-        Response.Redirect(mfbTwitter.AuthURL.ToString());
-    }
-
-    protected void lnkSetUpFacebook_Click(object sender, EventArgs e)
-    {
-        SocialNetworkAuthorization.PushRedirect(Request.Url.PathAndQuery);
-        MFBFacebook.Authorize();
     }
 
     protected void AutoFill(object sender, AutofillEventArgs e)

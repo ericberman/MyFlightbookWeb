@@ -603,24 +603,6 @@
   <data name="HyperLinkFieldResource3.Text" xml:space="preserve">
     <value />
   </data>
-  <data name="imgFacebookResource1.AlternateText" xml:space="preserve">
-    <value>Facebook</value>
-  </data>
-  <data name="imgFacebookResource1.ToolTip" xml:space="preserve">
-    <value>Facebook</value>
-  </data>
-  <data name="imgMyFlightbookResource1.AlternateText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="imgMyFlightbookResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="imgTwitterResource1.AlternateText" xml:space="preserve">
-    <value>Twitter</value>
-  </data>
-  <data name="imgTwitterResource1.ToolTip" xml:space="preserve">
-    <value>Twitter</value>
-  </data>
   <data name="Label1Resource1.Text" xml:space="preserve">
     <value>Thank-you - your payment has been successfully applied!</value>
   </data>
@@ -925,7 +907,7 @@
     <value />
   </data>
   <data name="lblSocialNetworkingPromptResource1.Text" xml:space="preserve">
-    <value>Sharing and Social Networking</value>
+    <value>Sharing</value>
   </data>
   <data name="lblSocialNetworkingPromptResource1.ToolTip" xml:space="preserve">
     <value />

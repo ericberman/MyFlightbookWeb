@@ -4,14 +4,14 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="mfbFlightInfo.ascx" tagname="mfbFlightInfo" tagprefix="uc4" %>
 <%@ Register src="mfbMultiFileUpload.ascx" tagname="mfbMultiFileUpload" tagprefix="uc5" %>
-<%@ Register src="mfbTwitter.ascx" tagname="mfbTwitter" tagprefix="uc6" %>
 <%@ Register src="mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc7" %>
 <%@ Register src="mfbFileUpload.ascx" tagname="mfbFileUpload" tagprefix="uc9" %>
-<%@ Register src="mfbFacebook.ascx" tagname="mfbFacebook" tagprefix="uc11" %>
 <%@ Register src="mfbVideoEntry.ascx" tagname="mfbVideoEntry" tagprefix="uc12" %>
 <%@ Register src="mfbEditPropSet.ascx" tagname="mfbEditPropSet" tagprefix="uc13" %>
 <%@ Register src="mfbFlightProperties.ascx" tagname="mfbFlightProperties" tagprefix="uc10" %>
 <%@ Register src="mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc14" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
 <asp:Panel ID="pnlContainer" runat="server" DefaultButton="btnAddFlight" 
     meta:resourcekey="pnlContainerResource1">
     <asp:Panel ID="pnlFlightInfo" runat="server" CssClass="flightinfoblock" 
@@ -287,99 +287,38 @@
             <uc12:mfbVideoEntry ID="mfbVideoEntry1" CanDelete="true" runat="server" />
         </div>
     </asp:Panel>
-    <asp:Panel ID="pnlTwitter" runat="server" CssClass="fullblock" 
+    <asp:Panel ID="pnlPublic" runat="server" CssClass="fullblock" 
         meta:resourcekey="pnlTwitterResource1">
         <div class="header">
             <asp:Label ID="lblSharingPrompt" runat="server" Text="Sharing" 
                 meta:resourcekey="lblSharingPromptResource1"></asp:Label>
         </div>
-        <div>
-            <table>
-                <tr>
-                    <td>
-                        <asp:CheckBox ID="ckPublic" CssClass="itemlabel" runat="server" TabIndex="30" 
-                            meta:resourcekey="ckPublicResource1" /></td>
-                    <td>
-                        <asp:Label ID="Label4" AssociatedControlID="ckPublic" runat="server" 
-                            CssClass="itemlabel" EnableViewState="False"><asp:Image
-                                ID="imgMFBPublic" runat="server" AlternateText="Share Flight Details" 
-                                ImageUrl="~/images/MFBIcon20x20.png" EnableViewState="False" 
-                                meta:resourcekey="imgMFBPublicResource1" />
-                        </asp:Label>
-                    </td>
-                    <td>
-                        <asp:Label ID="Label26" 
-                            AssociatedControlID="ckPublic" runat="server" 
-                            CssClass="itemlabel" EnableViewState="False"
-                            Text="Share details such as route, comments, and pictures with others"
-                            meta:resourcekey="Label26Resource1"></asp:Label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <asp:CheckBox ID="ckUpdateTwitter"  CssClass="itemlabel" runat="server" 
-                            TabIndex="29" meta:resourcekey="ckUpdateTwitterResource1" />
-                    </td>
-                    <td>
-                        <asp:Label ID="Label5" AssociatedControlID="ckUpdateTwitter" runat="server" 
-                            CssClass="itemlabel" EnableViewState="False">
-                        <asp:Image ID="Image2" runat="server" AlternateText="Twitter" ToolTip="Twitter" 
-                            ImageUrl="~/images/twitter20x20.png" EnableViewState="False" 
-                            meta:resourcekey="Image2Resource1" />
-                        </asp:Label>
-                    </td>
-                    <td>
-                        <asp:MultiView ID="mvTwitter" runat="server">
-                            <asp:View runat="server" ID="vwTwitterActive">
-                                <asp:Label ID="lblTwitter" AssociatedControlID="ckUpdateTwitter" runat="server" 
-                                    CssClass="itemlabel" EnableViewState="False" 
-                                    Text="Tweet this flight on Twitter" meta:resourcekey="lblTwitterResource1"></asp:Label>
-                            </asp:View>
-                            <asp:View runat="server" ID="vwTwitterInactive">
-                                <asp:LinkButton ID="lnkSetUpTwitter" runat="server" 
-                                    onclick="lnkSetUpTwitter_Click" 
-                                    Text="Set up to tweet selected flights to your feed on Twitter" 
-                                    meta:resourcekey="lnkSetUpTwitterResource1"></asp:LinkButton>
-                            </asp:View>
-                        </asp:MultiView>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <asp:CheckBox ID="ckFacebook" TabIndex="30" runat="server" 
-                            meta:resourcekey="ckFacebookResource1" />
-                    </td>
-                    <td>
-                        <asp:Label ID="Label3" AssociatedControlID="ckFacebook" runat="server" 
-                            CssClass="itemlabel" EnableViewState="False">
-                        <asp:Image 
-                            ID="Image5" runat="server" ImageUrl="~/images/facebookicon.gif"  
-                            AlternateText="Facebook" ToolTip="Facebook" EnableViewState="False" 
-                            meta:resourcekey="Image5Resource1" />
-                        </asp:Label>
-                    </td>
-                    <td>
-                        <asp:MultiView ID="mvFacebook" runat="server">
-                            <asp:View ID="vwFacebookActive" runat="server">
-                                <asp:Label ID="lblFacebook" AssociatedControlID="ckFacebook" runat="server" 
-                                    CssClass="itemlabel" EnableViewState="False" 
-                                    Text="Post this flight on Facebook" meta:resourcekey="lblFacebookResource1"></asp:Label>
-                            </asp:View>
-                            <asp:View ID="vwFacebookInactive" runat="server">
-                                <asp:LinkButton ID="lnkSetUpFacebook" runat="server" 
-                                    onclick="lnkSetUpFacebook_Click" 
-                                    Text="Set up to post selected flights to your account on Facebook" 
-                                    meta:resourcekey="lnkSetUpFacebookResource1"></asp:LinkButton>
-                            </asp:View>
-                        </asp:MultiView>
-                    </td>
-                </tr>
-            </table>
-            <asp:HiddenField ID="hdnItem" runat="server" Value="-1" />
-            <uc6:mfbTwitter ID="mfbTwitter" runat="server" />
-            <uc11:mfbFacebook ID="mfbFacebook1" runat="server" />
-        </div>
+        <p>
+            <span style="vertical-align:middle">
+                <asp:CheckBox ID="ckPublic" CssClass="itemlabel" runat="server" TabIndex="30" style="vertical-align:middle" 
+                    meta:resourcekey="ckPublicResource1" />&nbsp;
+                <asp:Label ID="Label4" AssociatedControlID="ckPublic" runat="server" 
+                    CssClass="itemlabel" EnableViewState="False">
+                    <asp:Image
+                        ID="imgMFBPublic" runat="server" AlternateText="Share Flight Details" style="vertical-align:middle"
+                        ImageUrl="~/images/mfbicon.png" EnableViewState="False" 
+                        meta:resourcekey="imgMFBPublicResource1" />&nbsp;
+                    <asp:Label ID="Label26" style="vertical-align:middle" 
+                        AssociatedControlID="ckPublic" runat="server" 
+                        CssClass="itemlabel" EnableViewState="False"
+                        Text="Share details such as route, comments, and pictures with others"
+                        meta:resourcekey="Label26Resource1">
+                    </asp:Label>
+                    <uc1:mfbTooltip runat="server" ID="mfbTooltip">
+                        <TooltipBody>
+                            <asp:Literal ID="litSharingDesc" runat="server" Text="<%$ Resources:LocalizedText, sharingdescription %>"></asp:Literal>
+                        </TooltipBody>
+                    </uc1:mfbTooltip>
+                </asp:Label>
+            </span>
+        </p>
     </asp:Panel>
+    <asp:HiddenField ID="hdnItem" runat="server" Value="-1" />
     <asp:Panel ID="pnlSubmit" runat="server" CssClass="fullblock" 
         meta:resourcekey="pnlSubmitResource1">
         <div style="text-align:center;">

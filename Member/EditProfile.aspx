@@ -3,12 +3,9 @@
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="../Controls/mfbTypeInDate.ascx" TagName="mfbTypeInDate" TagPrefix="uc2" %>
-<%@ Register Src="../Controls/mfbTwitter.ascx" TagName="mfbTwitter" TagPrefix="uc3" %>
-<%@ Register src="../Controls/mfbFacebook.ascx" tagname="mfbFacebook" tagprefix="uc5" %>
 <%@ Register src="../Controls/mfbEndorsementList.ascx" tagname="mfbEndorsementList" tagprefix="uc6" %>
 <%@ Register src="../Controls/mfbMultiFileUpload.ascx" tagname="mfbMultiFileUpload" tagprefix="uc7" %>
 <%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc8" %>
-<%@ Register src="../Controls/mfbGooglePlus.ascx" tagname="mfbGooglePlus" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc9" %>
 <%@ Register src="../Controls/AccountQuestions.ascx" tagname="AccountQuestions" tagprefix="uc4" %>
 <%@ Register Src="~/Controls/mfbDeadlines.ascx" TagPrefix="uc1" TagName="mfbDeadlines" %>
@@ -17,7 +14,6 @@
 <%@ Register Src="~/Controls/mfbSubscriptionManager.ascx" TagPrefix="uc1" TagName="mfbSubscriptionManager" %>
 <%@ Register Src="~/Controls/mfbCustomCurrencyList.ascx" TagPrefix="uc1" TagName="mfbCustomCurrencyList" %>
 <%@ Register Src="~/Controls/mfbBasicMedManager.ascx" TagPrefix="uc1" TagName="mfbBasicMedManager" %>
-
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -599,86 +595,19 @@
                     <cc1:AccordionPane ID="acpSocialNetworking" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpSocialNetworkingResource1">
                         <Header>
                             <asp:Label ID="lblSocialNetworkingPrompt" runat="server" 
-                                Text="Sharing and Social Networking" meta:resourcekey="lblSocialNetworkingPromptResource1"></asp:Label>
+                                Text="Sharing" meta:resourcekey="lblSocialNetworkingPromptResource1"></asp:Label>
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
-                                <table>
-                                    <tr valign="top">
-                                        <td style="width:150px">
-                                            <p><asp:Image ID="imgTwitter" runat="server" AlternateText="Twitter" Height="18px" 
-                                            ImageUrl="~/images/twitter_logo_header.png" 
-                                            ToolTip="Twitter" Width="82px" meta:resourcekey="imgTwitterResource1" /></p>
-                                        </td>
-                                        <td>
-                                            <asp:Panel ID="pnlCanTweet" runat="server" 
-                                                meta:resourcekey="pnlCanTweetResource1">
-                                                <p><asp:Label ID="lblCanTweet" runat="server" 
-                                                    meta:resourcekey="lblCanTweetResource1"></asp:Label></p>
-                                                <p><asp:LinkButton ID="lnkNoTweet" runat="server" OnClick="lnkNoTweet_Click" 
-                                                    meta:resourcekey="lnkNoTweetResource1"></asp:LinkButton></p>
-                                            </asp:Panel>
-                                            <asp:LinkButton ID="lnkSetUpTwitter" runat="server" 
-                                                OnClick="lnkSetUpTwitter_Click" 
-                                                meta:resourcekey="lnkSetUpTwitterResource1"></asp:LinkButton>
-                                            <uc3:mfbTwitter ID="mfbTwitter1" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr valign="top">
-                                        <td style="width:150px">
-                                            <p><asp:Image ID="imgFacebook" AlternateText="Facebook" ToolTip="Facebook" ImageUrl="~/images/facebooklogo.png" runat="server" meta:resourcekey="imgFacebookResource1" /></p>
-                                        </td>
-                                        <td>
-                                            <asp:Panel ID="pnlFacebookAuthorized" runat="server" 
-                                                meta:resourcekey="pnlFacebookAuthorizedResource1">
-                                                <p><asp:Localize ID="locFBIsAuthorized" runat="server" 
-                                                            meta:resourcekey="locFBIsAuthorizedResource1"></asp:Localize></p>
-                                                <p><asp:LinkButton
-                                                            ID="lnkNoFacebook" runat="server" onclick="lnkNoFacebook_Click" 
-                                                            meta:resourcekey="lnkNoFacebookResource1"></asp:LinkButton></p>
-                                            </asp:Panel>
-                                            <asp:LinkButton ID="lnkSetUpFacebook" runat="server" 
-                                                onclick="lnkSetUpFacebook_Click" 
-                                                meta:resourcekey="lnkSetUpFacebookResource1"></asp:LinkButton>
-                                            <uc5:mfbFacebook ID="mfbFacebook1" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <!-- Google Plus is not yet ready for prime-time -->
-                                    <tr runat="server" id="rowGPlus" visible="False" valign="top">
-                                        <td style="width:150px" runat="server">
-                                            <p><asp:Image ID="Image1" runat="server" 
-                                                ImageUrl="https://ssl.gstatic.com/s2/oz/images/google-logo-plus-0fbe8f0119f4a902429a5991af5db563.png" /></p>
-                                        </td>
-                                        <td runat="server">
-                                            <asp:Panel ID="pnlGooglePlus" runat="server">
-                                            <asp:Localize ID="locGPIsAuthorized" runat="server" Text="You have authorized MyFlightbook to post the flights you select on Google+."></asp:Localize>
-                                            <asp:LinkButton
-                                                    ID="lnkDeAuthGooglePlus" runat="server" 
-                                                    onclick="lnkDeAuthGooglePlus_Click" Text="Click here to de-authorize MyFlightbook on Google+"></asp:LinkButton>
-                                            </asp:Panel>
-                                            <asp:LinkButton ID="lnkAuthorizeGooglePlus" runat="server" 
-                                                onclick="lnkAuthorizeGooglePlus_Click" Text="Authorize MyFlightbook to post selected flights to your account on Google+"></asp:LinkButton>
-                                            <uc1:mfbGooglePlus ID="mfbGooglePlus1" runat="server" />
-                                        </td>
-                                    </tr>
-                                    <tr valign="top">
-                                        <td style="width:150px">
-                                            <p><asp:Image ID="imgMyFlightbook" Width="100px" runat="server" ImageAlign="Middle" meta:resourcekey="imgMyFlightbookResource1" />
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p><asp:Localize ID="locShareAllFlightsPrompt" runat="server" 
-                                                Text="Share your public flights with this link:" 
-                                                meta:resourcekey="locShareAllFlightsPromptResource1"></asp:Localize></p>
-                                            <p><asp:HyperLink ID="lnkMyFlights" runat="server" Target="_blank" 
-                                                meta:resourcekey="lnkMyFlightsResource1"></asp:HyperLink></p>
-                                            <p>
-                                            <asp:Localize ID="locShareAllFlightsDisclaimer" runat="server" 
-                                                Text="This will ONLY show flights that you have designated to be shared." 
-                                                meta:resourcekey="locShareAllFlightsDisclaimerResource1"></asp:Localize></p>
-                                        </td>
-                                    </tr>
-                                </table>
+                                <p><asp:Localize ID="locShareAllFlightsPrompt" runat="server" 
+                                    Text="Share your public flights with this link:" 
+                                    meta:resourcekey="locShareAllFlightsPromptResource1"></asp:Localize></p>
+                                <p><asp:HyperLink ID="lnkMyFlights" runat="server" Target="_blank" 
+                                    meta:resourcekey="lnkMyFlightsResource1"></asp:HyperLink></p>
+                                <p>
+                                <asp:Localize ID="locShareAllFlightsDisclaimer" runat="server" 
+                                    Text="This will ONLY show flights that you have designated to be shared." 
+                                    meta:resourcekey="locShareAllFlightsDisclaimerResource1"></asp:Localize></p>
                             </div>
                             <div class="prefSectionRow">
                                 <asp:Label ID="lblSocNetworkPrefsUpdated" runat="server" CssClass="success" EnableViewState="False"

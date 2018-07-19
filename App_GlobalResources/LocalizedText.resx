@@ -664,7 +664,7 @@
     <value>If you are not redirected, please click here.</value>
   </data>
   <data name="FacebookSharePrivateFlight" xml:space="preserve">
-    <value>This flight is currently a private flight, meaning that only the route will be visible to other people. Would you like to make the flight public, so that your comments and other flight details are shared with others? (You can always edit  the flight to stop sharing it.)</value>
+    <value>This flight is currently a private flight. Would you like to make the flight public?</value>
   </data>
   <data name="FacebookSharePrivateFlightGoAhead" xml:space="preserve">
     <value>Share all details</value>
@@ -1463,5 +1463,8 @@
   </data>
   <data name="PDFMarginNote" xml:space="preserve">
     <value>(default is 10mm)</value>
+  </data>
+  <data name="SharingDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\sharingdescription.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

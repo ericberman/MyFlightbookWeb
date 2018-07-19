@@ -1,13 +1,10 @@
 using MyFlightbook;
-using MyFlightbook.Basicmed;
 using MyFlightbook.CloudStorage;
 using MyFlightbook.FlightCurrency;
 using MyFlightbook.Payments;
-using MyFlightbook.SocialMedia;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -234,21 +231,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     private void InitSocialNetworking()
     {
-        lblCanTweet.Text = Branding.ReBrand(Resources.Profile.TwitterIsAuthed);
-        lnkNoTweet.Text = Branding.ReBrand(Resources.Profile.DeAuthTwitter);
-        lnkSetUpTwitter.Text = Branding.ReBrand(Resources.Profile.AuthorizeTwitter);
-        locFBIsAuthorized.Text = Branding.ReBrand(Resources.Profile.FacebookIsAuthed);
-        lnkNoFacebook.Text = Branding.ReBrand(Resources.Profile.DeAuthFacebook);
-        lnkSetUpFacebook.Text = Branding.ReBrand(Resources.Profile.AuthorizeFacebook);
-
-
-        ShowTweetState(m_pf.CanTweet());
-        imgMyFlightbook.ImageUrl = Branding.CurrentBrand.LogoURL;
-        imgMyFlightbook.ToolTip = imgMyFlightbook.AlternateText = Branding.CurrentBrand.AppName;
-
-        ShowFacebookState(m_pf.CanPostFacebook());
-        ShowGooglePlusState(m_pf.CanPostGooglePlus());
-
         // Sharing
         lnkMyFlights.Text = lnkMyFlights.NavigateUrl = m_pf.PublicFlightsURL(Request.Url.Host).AbsoluteUri;
     }
@@ -301,18 +283,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
             m_pf.FCommit();
 
             Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=backup", Request.Path));
-        }
-        if (!String.IsNullOrEmpty(Request.Params[MFBFacebook.OAuthParam]))   // redirect from FB oAuth request
-        {
-            try
-            {
-                m_pf.FacebookAccessToken = MFBFacebook.ConvertToken(Request);
-                m_pf.FCommit();
-                mfbFacebook1.PostPendingFlight();
-            }
-            catch (MyFlightbookException) { }
-
-            Response.Redirect(SocialNetworkAuthorization.PopRedirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=social", Request.Path)));
         }
     }
 
@@ -707,80 +677,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
         ckDeadlineUseHours.Visible = false;
         rbRegenManual.Checked = true;
         cpeDeadlines.ClientState = "true";
-    }
-    #endregion
-
-    #region Social Networking
-    protected void ShowTweetState(Boolean fCanTweet)
-    {
-        lnkSetUpTwitter.Visible = !fCanTweet;
-        pnlCanTweet.Visible = fCanTweet;
-    }
-
-    protected void ShowFacebookState(Boolean fCanPost)
-    {
-        lnkSetUpFacebook.Visible = !fCanPost;
-        pnlFacebookAuthorized.Visible = fCanPost;
-    }
-
-    protected void ShowGooglePlusState(Boolean fCanPost)
-    {
-        lnkAuthorizeGooglePlus.Visible = !fCanPost;
-        pnlGooglePlus.Visible = fCanPost;
-    }
-
-    protected void lnkNoTweet_Click(object sender, EventArgs e)
-    {
-        m_pf.TwitterAccessSecret = m_pf.TwitterAccessToken = "";
-        m_pf.FCommit(); // should be no need to validate profile object here - I'm just changing twitter settings.
-        ShowTweetState(m_pf.CanTweet());
-    }
-
-    protected void lnkNoFacebook_Click(object sender, EventArgs e)
-    {
-        m_pf.FacebookAccessToken = null;
-        m_pf.FCommit();
-        ShowFacebookState(m_pf.CanPostFacebook());
-    }
-
-    protected void lnkDeAuthGooglePlus_Click(object sender, EventArgs e)
-    {
-        m_pf.GooglePlusAccessToken = "";
-        m_pf.FCommit();
-        ShowGooglePlusState(m_pf.CanPostGooglePlus());
-    }
-
-    protected void lnkSetUpFacebook_Click(object sender, EventArgs e)
-    {
-        MFBFacebook.Authorize();
-    }
-
-    protected void lnkSetUpTwitter_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            SocialNetworkAuthorization.PushRedirect(Request.Url.PathAndQuery);
-            Response.Redirect(mfbTwitter1.AuthURL.ToString());
-        }
-        catch (MyFlightbookException ex)
-        {
-            lblSocNetworkPrefsUpdated.Text = ex.Message;
-            lblSocNetworkPrefsUpdated.CssClass = "error";
-        }
-    }
-
-    protected void lnkAuthorizeGooglePlus_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            SocialNetworkAuthorization.PushRedirect(Request.Url.PathAndQuery);
-            Response.Redirect(mfbGooglePlus1.AuthURL.ToString());
-        }
-        catch (MyFlightbookException ex)
-        {
-            lblSocNetworkPrefsUpdated.Text = ex.Message;
-            lblSocNetworkPrefsUpdated.CssClass = "error";
-        }
     }
     #endregion
 

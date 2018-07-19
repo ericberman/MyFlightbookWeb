@@ -446,23 +446,14 @@
   <data name="AuthorizeDropbox" xml:space="preserve">
     <value>Authorize %APP_NAME% to save backups to your Dropbox account</value>
   </data>
-  <data name="AuthorizeFacebook" xml:space="preserve">
-    <value>Authorize %APP_NAME% to post selected flights to your account on Facebook</value>
-  </data>
   <data name="AuthorizeGDrive" xml:space="preserve">
     <value>Authorize %APP_NAME% to save backups to your Google Drive account</value>
   </data>
   <data name="AuthorizeOneDrive" xml:space="preserve">
     <value>Authorize %APP_NAME% to save backups to your OneDrive account</value>
   </data>
-  <data name="AuthorizeTwitter" xml:space="preserve">
-    <value>Authorize %APP_NAME% to tweet selected flights to your feed on Twitter</value>
-  </data>
   <data name="DeAuthDropbox" xml:space="preserve">
     <value>De-authorize %APP_NAME% to save backups to your Dropbox account</value>
-  </data>
-  <data name="DeAuthFacebook" xml:space="preserve">
-    <value>Click here to de-authorize %APP_NAME% on Facebook</value>
   </data>
   <data name="DeAuthGDrive" xml:space="preserve">
     <value>Deauthorize %APP_NAME% to save backups to your Google Drive account</value>
@@ -470,23 +461,14 @@
   <data name="DeAuthOneDrive" xml:space="preserve">
     <value>Deauthorize %APP_NAME% to save backups to your OneDrive account</value>
   </data>
-  <data name="DeAuthTwitter" xml:space="preserve">
-    <value>Click here to de-authorize %APP_NAME% on Twitter</value>
-  </data>
   <data name="DropboxIsAuthed" xml:space="preserve">
     <value>You have authorized %APP_NAME% to save backups to your Dropbox account.</value>
-  </data>
-  <data name="FacebookIsAuthed" xml:space="preserve">
-    <value>You have authorized %APP_NAME% to post the flights you select on Facebook.</value>
   </data>
   <data name="GDriveIsAuthed" xml:space="preserve">
     <value>You have authorized %APP_NAME% to save backups to your Google Drive account.</value>
   </data>
   <data name="OneDriveIsAuthed" xml:space="preserve">
     <value>You have authorized %APP_NAME% to save backups to your OneDrive account.</value>
-  </data>
-  <data name="TwitterIsAuthed" xml:space="preserve">
-    <value>You have authorized %APP_NAME% to tweet the flights you select on Twitter.</value>
   </data>
   <data name="ReturnToStudent" xml:space="preserve">
     <value>← Return to logbook for student {0}</value>
