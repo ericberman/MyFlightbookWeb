@@ -1,4 +1,5 @@
 using MyFlightbook;
+using MyFlightbook.Mapping;
 using MyFlightbook.Airports;
 using MyFlightbook.Weather.ADDS;
 using System;
@@ -75,6 +76,8 @@ public partial class MapRoute : System.Web.UI.Page
             MapAirports(txtAirports.Text);
 
         MfbGoogleMapManager1.Visible = !String.IsNullOrWhiteSpace(txtAirports.Text);    // cut down on pointless mapping.
+
+        MfbGoogleMapManager1.Mode = (util.GetIntParam(Request, "sm", 0) != 0) ? GMap_Mode.Static : GMap_Mode.Dynamic;
     }
 
     protected void btnMapEm_Click(object sender, EventArgs e)

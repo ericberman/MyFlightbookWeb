@@ -375,9 +375,14 @@ function MFBMap()
                 for (i = 0; i < this.rgAirports.length; i++) {
                     var airportList = this.rgAirports[i];
                     var points = [];
+                    var airports = {};
+
                     for (j = 0; j < airportList.length; j++) {
                         point = new google.maps.LatLng(airportList[j].latitude, airportList[j].longitude);
-                        this.oms.addMarker(this.createNavaidMarker(point, airportList[j].Name + " (" + airportList[j].Code + ")", airportList[j], this.id));
+                        if (airports[airportList[j].Code] == null) {
+                            airports[airportList[j].Code] = point;
+                            this.oms.addMarker(this.createNavaidMarker(point, airportList[j].Name + " (" + airportList[j].Code + ")", airportList[j], this.id));
+                        }
                         points.push(point);
                     }
 

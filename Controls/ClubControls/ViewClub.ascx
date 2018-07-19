@@ -16,7 +16,7 @@
                     </asp:View>
                 </asp:MultiView>
                 <asp:Panel ID="pnlHomeAirport" runat="server" Visible='<%# !String.IsNullOrEmpty(Eval("HomeAirportCode").ToString()) %>'>
-                    <asp:HyperLink ID="lnkViewAirport" NavigateUrl='<%# String.Format("~/Public/MapRoute2.aspx/?Airports={0}", Eval("HomeAirport.Code")) %>' runat="server"><%# Eval("HomeAirport.Code") %></asp:HyperLink> - <%# Eval("HomeAirport.Name") %>
+                    <asp:HyperLink ID="lnkViewAirport" NavigateUrl='<%# String.Format("~/Public/MapRoute2.aspx/?sm=1&Airports={0}", Eval("HomeAirport.Code")) %>' runat="server"><%# Eval("HomeAirport.Code") %></asp:HyperLink> - <%# Eval("HomeAirport.Name") %>
                 </asp:Panel>
                 <asp:Panel ID="pnlLocation" Visible='<%# Eval("HasContactInfo") %>' runat="server">
                     <%# Eval("LocationString") %> <%# Eval("ContactPhone") %></asp:Panel>

@@ -128,7 +128,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
                 hdnID.Value = id.ToString(CultureInfo.InvariantCulture);
 
                 if (!le.fIsPublic && (String.Compare(le.User, User.Identity.Name, StringComparison.OrdinalIgnoreCase) != 0)) // not public and this isn't the owner...
-                    szRedirect = "~/public/MapRoute2.aspx?Airports=" + HttpUtility.UrlEncode(le.Route);
+                    szRedirect = "~/public/MapRoute2.aspx?sm=1&Airports=" + HttpUtility.UrlEncode(le.Route);
 
                 // display only selected components, if necessary
                 if (!String.IsNullOrEmpty(szComponents))
@@ -148,7 +148,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
 
                 string szRoute = le.Route;
                 lnkRoute.Text = HttpUtility.HtmlEncode(szRoute);
-                lnkRoute.NavigateUrl = "~/Public/MapRoute2.aspx?Airports=" + HttpUtility.UrlEncode(szRoute);
+                lnkRoute.NavigateUrl = "~/Public/MapRoute2.aspx?sm=1&Airports=" + HttpUtility.UrlEncode(szRoute);
 
                 Profile pf = MyFlightbook.Profile.GetUser(le.User);
                 lnkUser.Text = pf.UserFullName;
