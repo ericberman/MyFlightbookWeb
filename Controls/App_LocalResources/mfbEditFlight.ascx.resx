@@ -279,12 +279,6 @@
   <data name="Label26Resource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="Label2Resource1.Text" xml:space="preserve">
-    <value>[?]</value>
-  </data>
-  <data name="Label2Resource2.Text" xml:space="preserve">
-    <value>[?]</value>
-  </data>
   <data name="Label3Resource1.Text" xml:space="preserve">
     <value />
   </data>
@@ -399,12 +393,6 @@
   <data name="Label9Resource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="lblAltCatClassInfoResource1.Text" xml:space="preserve">
-    <value>[?]</value>
-  </data>
-  <data name="lblAltCatClassInfoResource1.ToolTip" xml:space="preserve">
-    <value>Useful for amphibian aircraft or aircraft that are part-time on floats and part-time on wheels.  For a flight that begins on water and lands on wheels (or vice-versa), record two separate flights.</value>
-  </data>
   <data name="lblErrorResource1.Text" xml:space="preserve">
     <value />
   </data>
@@ -422,12 +410,6 @@
   </data>
   <data name="lblFacebookResource1.ToolTip" xml:space="preserve">
     <value />
-  </data>
-  <data name="lblInfoResource1.Text" xml:space="preserve">
-    <value>[?]</value>
-  </data>
-  <data name="lblInfoResource1.ToolTip" xml:space="preserve">
-    <value>You can specify approach types with additional properties, below.</value>
   </data>
   <data name="lblPixForFlightResource1.Text" xml:space="preserve">
     <value />
