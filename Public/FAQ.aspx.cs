@@ -1,11 +1,13 @@
-﻿using System;
-using System.Web.UI.WebControls;
-using AjaxControlToolkit;
+﻿using AjaxControlToolkit;
 using MyFlightbook;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2016 MyFlightbook LLC
+ * Copyright (c) 2012-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -45,5 +47,24 @@ public partial class Public_FAQ : System.Web.UI.Page
                 acc.SelectedIndex = i;
             i++;
         }
+    }
+
+    protected void btnSearch_Click(object sender, EventArgs e)
+    {
+        IEnumerable<FAQGroup> results = null;
+        if (String.IsNullOrWhiteSpace(txtSearch.Text))
+            results = FAQGroup.CategorizedFAQs;
+        else
+        {
+            results = FAQGroup.CategorizedFAQItemsContainingWords(txtSearch.Text);
+            if (results.Count() == 0)
+            {
+                lblErr.Text = Resources.LocalizedText.FAQSearchNoResults;
+                results = FAQGroup.CategorizedFAQs;
+            }
+        }
+
+        rptFAQGroup.DataSource = results;
+        rptFAQGroup.DataBind();
     }
 }

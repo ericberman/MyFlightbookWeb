@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2017 MyFlightbook LLC
+ * Copyright (c) 2012-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,6 +33,7 @@ public partial class Member_FAQEdit : System.Web.UI.Page
             comm.Parameters.AddWithValue("Answer", txtAnswer.Text);
         }))
         {
+            FAQItem.FlushFAQCache();
             txtCategory.Text = txtQuestion.Text = txtAnswer.Text = string.Empty;
             gvFAQ.DataBind();
         }
@@ -42,6 +43,7 @@ public partial class Member_FAQEdit : System.Web.UI.Page
     {
         if (e == null)
             throw new ArgumentNullException("e");
+        FAQItem.FlushFAQCache();
         Controls_mfbHtmlEdit t = (Controls_mfbHtmlEdit)gvFAQ.Rows[e.RowIndex].FindControl("txtAnswer");
         sqlFAQ.UpdateParameters["Answer"] = new Parameter("Answer", System.Data.DbType.String, t.FixedHtml);
     }

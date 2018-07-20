@@ -1467,4 +1467,10 @@
   <data name="SharingDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\sharingdescription.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="FAQSearchNoResults" xml:space="preserve">
+    <value>No matching FAQ's found</value>
+  </data>
+  <data name="FAQSearchWatermark" xml:space="preserve">
+    <value>Search the FAQ</value>
+  </data>
 </root>

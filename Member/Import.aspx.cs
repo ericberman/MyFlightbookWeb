@@ -96,7 +96,7 @@ public partial class Member_Import : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            List<FAQItem> lst = new List<FAQItem>(FAQItem.AllFAQItems);
+            List<FAQItem> lst = new List<FAQItem>(FAQItem.CachedFAQItems);
             FAQItem fi = lst.Find(f => f.idFAQ == 44);
             if (fi != null)
             {
