@@ -205,8 +205,6 @@ N6789,B777
     </asp:Wizard>
     <asp:Label ID="lblImportError" runat="server" CssClass="error" 
         EnableViewState="False" meta:resourcekey="lblImportErrorResource1"></asp:Label>
-</asp:Content>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
     <asp:MultiView ID="mvAircraftToImport" runat="server" Visible="False">
         <asp:View ID="vwMatchExisting" runat="server">
             <table>
@@ -256,5 +254,7 @@ N6789,B777
             </asp:UpdatePanel>
         </asp:View>
     </asp:MultiView>
+</asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
 </asp:Content>
 

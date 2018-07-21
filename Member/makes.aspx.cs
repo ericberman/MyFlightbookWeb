@@ -1,19 +1,19 @@
+using MyFlightbook;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Web;
-using System.Globalization;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.HtmlControls;
 using System.Web.Services;
-using System.IO;
-using Newtonsoft.Json;
-using MyFlightbook;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2015 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -90,6 +90,7 @@ public partial class makes : System.Web.UI.Page
         }
 
         this.Master.SelectedTab = tabID.actMakes;
+        this.Master.Layout = MasterPage.LayoutMode.Accordion;
         this.Title = (string)GetLocalResourceObject("PageResource2.Title");
     }
 

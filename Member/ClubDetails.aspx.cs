@@ -1,18 +1,17 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Clubs;
+using MyFlightbook.Instruction;
+using MyFlightbook.Schedule;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Net.Mail;
-using MyFlightbook;
-using MyFlightbook.Clubs;
-using MyFlightbook.Schedule;
-using MyFlightbook.Instruction;
+using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2017 MyFlightbook LLC
+ * Copyright (c) 2014-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -43,6 +42,7 @@ public partial class Member_ClubDetails : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.actMyClubs;
+        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         if (Request.PathInfo.Length > 0 && Request.PathInfo.StartsWith("/", StringComparison.OrdinalIgnoreCase))
         {

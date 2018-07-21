@@ -39,8 +39,6 @@
             </asp:Panel>
         </p>
     </div>
-</asp:Content>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <div style="max-width:800px">
@@ -165,4 +163,6 @@
             </div>
         </ContentTemplate>
     </asp:UpdatePanel>
+</asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
 </asp:Content>

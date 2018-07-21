@@ -28,8 +28,6 @@
         </td>
     </tr>
     </table>
-</asp:Content>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
     <asp:GridView ID="gvSims" runat="server" AutoGenerateColumns="false" OnRowCommand="addAircraft"
             OnRowDataBound="gvSims_DataBound" GridLines="None" CellPadding="5" >
         <Columns>
@@ -54,5 +52,7 @@
             <asp:Localize ID="locNoMatchingSims" Text="<%$ Resources:LocalizedText, SelectSimsNoMatchingSimsFound %>" runat="server"></asp:Localize>
         </EmptyDataTemplate>
     </asp:GridView>
+</asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
 </asp:Content>
 

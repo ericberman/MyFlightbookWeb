@@ -18,8 +18,6 @@
         <uc1:mfbEditAircraft id="MfbEditAircraft1" runat="server" OnAircraftUpdated="AircraftUpdated"></uc1:mfbEditAircraft>
     </div>
     <asp:HiddenField ID="hdnReturnURL" runat="server" />
-</asp:Content>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
     <asp:HiddenField ID="hdnAdminMode" runat="server" />
     <asp:Panel ID="pnlAdminUserFlights" runat="server" Visible="false">
         <p>Clone an aircraft if the tailnumber can represent more than just this aircraft.  E.g., if N12345 used to be a piper cub and was re-assigned to a C-172, clone it to assign to the new aircraft.</p>
@@ -69,4 +67,6 @@ GROUP BY ua.username">
             </Columns>
         </asp:GridView>
     </asp:Panel>
+</asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
 </asp:Content>

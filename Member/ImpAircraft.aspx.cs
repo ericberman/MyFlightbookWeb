@@ -97,6 +97,7 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
         Page.Session.Timeout = 60;
 
         this.Master.SelectedTab = tabID.actImportAircraft;
+        this.Master.Layout = MasterPage.LayoutMode.Accordion;
         this.Title = Master.Title = (string)GetLocalResourceObject("PageResource1.Title");
 
         if (IsPostBack)

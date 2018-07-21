@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Collections.ObjectModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2016 MyFlightbook LLC
+ * Copyright (c) 2011-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -61,6 +61,7 @@ public partial class Member_BrowseSims : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         this.Master.SelectedTab = tabID.tabAircraft;
+        this.Master.Layout = MasterPage.LayoutMode.Accordion;
         this.Master.Title = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.TitleAircraft, Branding.CurrentBrand.AppName);
         if (!IsPostBack)
         {

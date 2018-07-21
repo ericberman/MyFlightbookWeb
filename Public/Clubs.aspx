@@ -74,8 +74,6 @@
             }
         </script>
     </asp:Panel>
-</asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
     <asp:Panel ID="pnlYourClubs" runat="server">
         <h2><% =Resources.Club.HeaderYourClubs %></h2>
         <asp:GridView ID="gvClubs" CellPadding="5" AutoGenerateColumns="false" runat="server" OnRowDataBound="gvClubs_RowDataBound" GridLines="None" ShowHeader="False">
@@ -92,5 +90,7 @@
             </EmptyDataTemplate>
         </asp:GridView>
     </asp:Panel>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
 </asp:Content>
 

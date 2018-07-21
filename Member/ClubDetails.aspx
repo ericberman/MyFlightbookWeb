@@ -70,8 +70,6 @@
         <asp:LinkButton ID="lnkLeaveGroup" Text="<%$ Resources:Club, ButtonLeaveClub %>" runat="server" OnClick="lnkLeaveGroup_Click"></asp:LinkButton>
         <asp:ConfirmButtonExtender ID="confirmLeave" runat="server" TargetControlID="lnkLeaveGroup" ConfirmText="<%$ Resources:Club, errConfirmLeaveClub %>"></asp:ConfirmButtonExtender>
     </asp:Panel>
-</asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
     <asp:MultiView ID="mvMain" runat="server">
         <asp:View ID="vwSchedules" runat="server">
             <uc3:mfbEditAppt ID="mfbEditAppt1" runat="server" />
@@ -145,5 +143,7 @@
 
         </asp:View>
     </asp:MultiView>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
 </asp:Content>
 

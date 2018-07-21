@@ -1,4 +1,8 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Airports;
+using MyFlightbook.Clubs;
+using MyFlightbook.Payments;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,15 +11,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Airports;
-using MyFlightbook.Clubs;
-using MyFlightbook.Payments;
-using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2016 MyFlightbook LLC
+ * Copyright (c) 2014-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -93,6 +92,7 @@ public partial class Public_Clubs : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.actMyClubs;
+        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         if (!IsPostBack)
         {

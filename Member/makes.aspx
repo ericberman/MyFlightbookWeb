@@ -91,8 +91,6 @@
     </asp:MultiView>
     <p><% =Resources.Makes.searchWildcardTip %></p>
     <asp:HiddenField runat="server" ID="hdnQueryJSON" />
-</asp:Content>
-<asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
     <div style="width:800px">
         <table width="100%" runat="server" id="tblHeaderRow" visible="false">
             <tr>
@@ -177,4 +175,6 @@
     </script>
     <asp:Label ID="lblError" runat="server" CssClass="error" 
         meta:resourcekey="lblErrorResource1"></asp:Label><br />
+</asp:Content>
+<asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
 </asp:content>
