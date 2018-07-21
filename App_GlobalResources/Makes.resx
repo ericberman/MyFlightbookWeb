@@ -235,4 +235,17 @@
   <data name="avionicsTAA" xml:space="preserve">
     <value>Glass PFD, MFD, and integrated Autopilot (TAA)</value>
   </data>
+  <data name="MakeStatsAircraftCount" xml:space="preserve">
+    <value>You have {0} aircraft of this model</value>
+  </data>
+  <data name="MakeStatsFlightsCount" xml:space="preserve">
+    <value>You have {0} flight(s) in this model {1}</value>
+    <comment>{1} is MakeStatsFlightsDateRange</comment>
+  </data>
+  <data name="MakeStatsFlightsDateRange" xml:space="preserve">
+    <value>between {0:d} and {1:d}</value>
+  </data>
+  <data name="editModelPrompt" xml:space="preserve">
+    <value>Edit this model</value>
+  </data>
 </root>

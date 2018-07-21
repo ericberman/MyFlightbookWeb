@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using MyFlightbook.Image;
 
 /******************************************************
  * 
@@ -57,6 +58,38 @@ namespace MyFlightbook
 
             return (SimpleMakeModel[])al.ToArray(typeof(SimpleMakeModel));
         }
+    }
+
+    /// <summary>
+    /// Stats for the user in this model
+    /// </summary>
+    [Serializable]
+    public class MakeModelStats
+    {
+        #region properties
+        /// <summary>
+        /// Number of flights for the user.
+        /// </summary>
+        public int NumFlights { get; set; }
+
+        /// <summary>
+        /// First flight in this model?
+        /// </summary>
+        public DateTime? EarliestFlight { get; set; }
+
+        /// <summary>
+        /// Last flight in this model?
+        /// </summary>
+        public DateTime? LatestFlight { get; set; }
+        #endregion
+
+        #region Constructors
+        public MakeModelStats()
+        {
+            NumFlights = 0;
+            EarliestFlight = LatestFlight = null;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -174,6 +207,9 @@ namespace MyFlightbook
 
         /// <summary>
         /// ID's of sample aircraft which that are of this make (read-only)
+        /// This is generally the result of a group_concat when retrieving multiple models at once;
+        /// the aircraft can then be scanned to find sample images.
+        /// Use SampleImages to directly query the database for images for a single aircraft
         /// </summary>
         public int[] SampleAircraft()
         {
@@ -191,6 +227,64 @@ namespace MyFlightbook
             for (int i = cSamples - 1; i >= 0; i--)
                 rgIds[i] = Convert.ToInt32(rgSz[i], CultureInfo.InvariantCulture);
             return rgIds;
+        }
+
+        /// <summary>
+        /// Directly returns sample images from the database.  This is more efficient than SampleAircraft, but only for a single model at a time.
+        /// </summary>
+        /// <param name="limit">Maximum number of images to return; 10 by default</param>
+        /// <returns></returns>
+        public IEnumerable<MFBImageInfo> SampleImages(int limit = 10)
+        {
+            List<MFBImageInfo> lst = new List<MFBImageInfo>();
+            DBHelper dbh = new DBHelper(@"SELECT 
+                                            i.*
+                                        FROM
+                                            images i
+                                                INNER JOIN
+                                            aircraft ac ON i.ImageKey = ac.idaircraft
+                                        WHERE
+                                            i.VirtPathID = 1 AND ac.idmodel = ?modelid
+                                        LIMIT ?limit;");
+            dbh.ReadRows(
+                (comm) =>
+                    {
+                        comm.Parameters.AddWithValue("modelid", MakeModelID);
+                        comm.Parameters.AddWithValue("limit", limit);
+                    },
+                (dr) => { lst.Add(MFBImageInfo.ImageFromDBRow(dr)); });
+            return lst;
+        }
+
+        public MakeModelStats StatsForUser(string szUser)
+        {
+            MakeModelStats mms = new MakeModelStats();
+
+            if (String.IsNullOrWhiteSpace(szUser))
+                return mms;
+
+            DBHelper dbh = new DBHelper(@"SELECT 
+                    COUNT(idflight) AS numflights,
+                    MIN(date) AS EarliestDate,
+                    MAX(date) AS LatestDate
+                FROM
+                    flights f
+                        INNER JOIN
+                    aircraft ac ON f.idaircraft = ac.idaircraft
+                WHERE
+                    ac.idmodel = ?modelid AND username = ?user;");
+            dbh.ReadRow((comm) =>
+            {
+                comm.Parameters.AddWithValue("user", szUser);
+                comm.Parameters.AddWithValue("modelid", MakeModelID);
+            },
+                (dr) =>
+                {
+                    mms.NumFlights = Convert.ToInt32(dr["numflights"], CultureInfo.InvariantCulture);
+                    mms.EarliestFlight = (DateTime?)util.ReadNullableField(dr, "EarliestDate", null);
+                    mms.LatestFlight = (DateTime?)util.ReadNullableField(dr, "LatestDate", null);
+                });
+            return mms;
         }
 
         /// <summary>

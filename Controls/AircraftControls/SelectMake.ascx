@@ -66,7 +66,7 @@
     </asp:View>
     <asp:View ID="vwReadOnly" runat="server">
         <div style="vertical-align:middle">
-            <asp:Label ID="lblMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:Label>&nbsp;&nbsp;
+            <asp:HyperLink ID="lnkMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:HyperLink>
             <asp:ImageButton ID="imgEditAircraftModel" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" OnClick="btnChangeModelTweak_Click" />
         </div>
     </asp:View>
