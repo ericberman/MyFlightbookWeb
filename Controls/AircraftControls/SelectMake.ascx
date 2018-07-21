@@ -66,7 +66,10 @@
     </asp:View>
     <asp:View ID="vwReadOnly" runat="server">
         <div style="vertical-align:middle">
-            <asp:HyperLink ID="lnkMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:HyperLink>
+            <asp:MultiView ID="mvModelDisplay" runat="server" ActiveViewIndex="0">
+                <asp:View ID="vwStaticModel" runat="server"><asp:Label ID="lblMakeModel"  Font-Size="Larger" Font-Bold="true" runat="server"></asp:Label></asp:View>
+                <asp:View ID="vwLinkedModel" runat="server"><asp:HyperLink ID="lnkMakeModel" runat="server" Font-Size="Larger" Font-Bold="true"></asp:HyperLink></asp:View>
+            </asp:MultiView>
             <asp:ImageButton ID="imgEditAircraftModel" ToolTip="<%$ Resources:Aircraft, editAircraftModelPrompt %>" ImageUrl="~/images/pencilsm.png" runat="server" OnClick="btnChangeModelTweak_Click" />
         </div>
     </asp:View>
