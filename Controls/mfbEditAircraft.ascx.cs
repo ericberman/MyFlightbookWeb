@@ -436,7 +436,9 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
         SetUpSchedules();
 
-        btnAddAircraft.Text = fIsNew ? Resources.LocalizedText.EditAircraftAddAircraft : Resources.LocalizedText.EditAircraftUpdateAircraft;
+        bool fIsKnown = AdminMode || (!fIsNew && (new UserAircraft(Page.User.Identity.Name)).GetUserAircraftByID(m_ac.AircraftID) != null);
+
+        btnAddAircraft.Text = fIsKnown ? Resources.LocalizedText.EditAircraftUpdateAircraft : Resources.LocalizedText.EditAircraftAddAircraft;
 
         // Set the edit mode, based on chart above, which breaks down as:
         // Editing automatically enabled IF new aircraft OR real, registered, unlocked, single user.
