@@ -2,6 +2,8 @@
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbMakeListItem.ascx" tagname="mfbMakeListItem" tagprefix="uc2" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc2" TagName="mfbTooltip" %>
+<%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc2" TagName="mfbSearchbox" %>
+
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Localize ID="locMakesHeader" runat="server" 
@@ -11,11 +13,6 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript" src='<%= ResolveUrl("~/public/endless-scroll.js") %>'></script>
     <script type="text/javascript" src='<%= ResolveUrl("~/public/jquery.json-2.4.min.js") %>'></script>
-    <script type="text/javascript">
-        function RefreshUpdatePanel() {
-            __doPostBack('<%= txtFilter.ClientID %>', '');
-        };
-    </script>
     <div style="float:right; margin: 5px; padding:5px; max-width: 200px; border: 1px solid black">
         <asp:Localize ID="locPageTop" runat="server" Text="Don&#39;t see the make/model of aircraft that you fly?" 
             meta:resourcekey="locPageTopResource1"></asp:Localize>
@@ -25,13 +22,8 @@
     <h2><asp:Label ID="lblSearchPrompt" runat="server" Text="Find models of aircraft"></asp:Label></h2>
     <asp:MultiView ID="mvSearchForm" runat="server" ActiveViewIndex="0">
         <asp:View ID="vwSimpleSearch" runat="server">
-            <asp:Panel ID="Panel1" runat="server" DefaultButton="btnSimpleSearch" meta:resourcekey="pnlSearchResource2">
-                <asp:Localize ID="Localize1" runat="server" Text="Find Models" meta:resourcekey="locFilterMakesResource2"></asp:Localize>&nbsp;<asp:TextBox ID="txtFilter" runat="server" meta:resourcekey="txtFilterResource1"></asp:TextBox>&nbsp;
-                <asp:Button ID="btnSimpleSearch" runat="server" Text="Search" OnClick="FilterTextChanged" meta:resourcekey="btnSimpleSearchResource1" />
-                <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Makes, SearchTip %>" runat="server" TargetControlID="txtFilter" />
-                <br />
-                <asp:LinkButton ID="lnkAdvanced" runat="server" Text="Advanced Search" OnClick="lnkAdvanced_Click" meta:resourcekey="lnkAdvancedResource1"></asp:LinkButton>
-            </asp:Panel>
+            <uc2:mfbSearchbox runat="server" ID="mfbSearchbox" Hint="<%$ Resources:Makes, SearchTip %>" OnSearchClicked="FilterTextChanged" />
+            <div><asp:LinkButton ID="lnkAdvanced" runat="server" Text="Advanced Search" OnClick="lnkAdvanced_Click" meta:resourcekey="lnkAdvancedResource1"></asp:LinkButton></div>
         </asp:View>
         <asp:View ID="vwAdvancedSearch" runat="server">
             <asp:Panel ID="pnlSearch" runat="server" DefaultButton="btnSearch" meta:resourcekey="pnlSearchResource2">

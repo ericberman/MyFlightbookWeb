@@ -1,6 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbHeader.ascx.cs" Inherits="Controls_mfbHeader" %>
 <%@ Register Src="XMLNav.ascx" TagName="XMLNav" TagPrefix="uc2" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc2" TagName="mfbSearchbox" %>
+
 <div class="noprint">
     <asp:Panel runat="server" ID="FullHeader" style="width: 100%">
         <div id="headerBar">
@@ -9,17 +11,7 @@
             </div>
             <div id="headerSearchAndSign">
                 <div id="headerSearchBox">
-                    <asp:Panel ID="pnlSearch" runat="server" DefaultButton="btnSearch" style="padding-top:3px;">
-                        <div style="border: 1px solid darkgray; border-radius: 14px; height: 24px; display: table-cell; vertical-align: middle; text-align:left; padding-left: 8px; padding-right:3px; ">
-                            <asp:Image ID="Image1" runat="server" ImageUrl="~/images/Search.png" ImageAlign="AbsMiddle" Height="20px" />
-                            <asp:TextBox ID="txtSearch" runat="server" Width="120px" Font-Size="8pt" BorderStyle="None" style="vertical-align:middle"></asp:TextBox>
-                            <cc1:TextBoxWatermarkExtender
-                                ID="TextBoxWatermarkExtender1" runat="server" TargetControlID="txtSearch" EnableViewState="false"
-                                WatermarkText="<%$ Resources:LocalizedText, SearchBoxWatermark %>" WatermarkCssClass="watermark">
-                            </cc1:TextBoxWatermarkExtender>
-                        </div>
-                        <asp:Button ID="btnSearch" style="display:none" runat="server" Text="<%$ Resources:LocalizedText, SearchBoxGo %>" CausesValidation="false" onclick="btnSearch_Click" Font-Size="9px" CssClass="itemlabel" />
-                    </asp:Panel>
+                    <uc2:mfbSearchbox runat="server" ID="mfbSearchbox" OnSearchClicked="btnSearch_Click" Hint="<%$ Resources:LocalizedText, SearchBoxWatermark %>" />
                 </div>
                 <div id="headerLoginStatus">
                     <asp:Label ID="lblUser" runat="server" Text="<%$ Resources:LocalizedText, LoginStatusWelcome %>" Visible="false"></asp:Label> 

@@ -98,7 +98,7 @@ public partial class makes : System.Web.UI.Page
     {
         ModelQuery mq = ActiveQuery;
         mq.Skip = 0;
-        mq.FullText = txtFilter.Text;
+        mq.FullText = mfbSearchbox.SearchText;
         mq.Model = txtModel.Text;
         mq.ModelName = txtModelName.Text;
         mq.TypeName = txtTypeName.Text;
@@ -185,7 +185,7 @@ public partial class makes : System.Web.UI.Page
     protected void lnkAdvanced_Click(object sender, EventArgs e)
     {
         mvSearchForm.SetActiveView(vwAdvancedSearch);
-        txtFilter.Text = string.Empty;
+        mfbSearchbox.SearchText = string.Empty;
     }
 
     protected void lnkSimpleSearch_Click(object sender, EventArgs e)

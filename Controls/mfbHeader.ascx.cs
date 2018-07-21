@@ -3,7 +3,7 @@ using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2016 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -73,6 +73,6 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
 
     protected void btnSearch_Click(object sender, EventArgs e)
     {
-        Response.Redirect("~/Member/LogbookNew.aspx?s=" + System.Web.HttpUtility.UrlEncode(txtSearch.Text));
+        Response.Redirect("~/Member/LogbookNew.aspx?s=" + System.Web.HttpUtility.UrlEncode(mfbSearchbox.SearchText));
     }
 }

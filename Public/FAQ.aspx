@@ -1,28 +1,22 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="FAQ.aspx.cs" Inherits="Public_FAQ" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
+<%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc1" TagName="mfbSearchbox" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" runat="server">
     <% =Branding.ReBrand(Resources.LocalizedText.FAQHeader) %>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
-            <asp:Panel ID="pnlSearch" runat="server" DefaultButton="btnSearch" style="padding-top:3px;">
+            <div style="padding-top:3px;">
                 <% =Branding.ReBrand(Resources.LocalizedText.FAQDesc) %>
                 <asp:HyperLink ID="lnkContact" runat="server" NavigateUrl="~/Public/ContactMe.aspx" Text="<%$ Resources:LocalizedText, FAQContactUs %>"></asp:HyperLink>
                 <div style="display:inline-block; vertical-align:middle;">
-                    <div style="border: 1px solid darkgray; border-radius: 14px; height: 24px; display: table-cell; vertical-align: middle; text-align:left; padding-left: 8px; padding-right:3px; ">
-                        <asp:Image ID="Image1" runat="server" ImageUrl="~/images/Search.png" ImageAlign="AbsMiddle" Height="20px" />
-                        <asp:TextBox ID="txtSearch" runat="server" Width="120px" Font-Size="8pt" BorderStyle="None" style="vertical-align:middle"></asp:TextBox>
-                        <cc1:TextBoxWatermarkExtender
-                            ID="TextBoxWatermarkExtender1" runat="server" TargetControlID="txtSearch" EnableViewState="false"
-                            WatermarkText="<%$ Resources:LocalizedText, FAQSearchWatermark %>" WatermarkCssClass="watermark">
-                        </cc1:TextBoxWatermarkExtender>
-                    </div>
+                    <uc1:mfbSearchbox runat="server" ID="mfbSearchbox" OnSearchClicked="btnSearch_Click" Hint="<%$ Resources:LocalizedText, FAQSearchWatermark %>" />
                 </div>
-                <asp:Button ID="btnSearch" style="display:none" runat="server" Text="<%$ Resources:LocalizedText, SearchBoxGo %>" CausesValidation="false" onclick="btnSearch_Click" Font-Size="9px" CssClass="itemlabel" />
                 <asp:Label ID="lblErr" CssClass="error" runat="server" EnableViewState="false"></asp:Label>
-            </asp:Panel>
+            </div>
             <asp:Repeater ID="rptFAQGroup" runat="server" OnItemDataBound="rptFAQGroup_ItemDataBound">
                 <ItemTemplate>
                     <h2><%# Eval("Category") %></h2>

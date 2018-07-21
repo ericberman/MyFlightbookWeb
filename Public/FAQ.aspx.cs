@@ -52,11 +52,11 @@ public partial class Public_FAQ : System.Web.UI.Page
     protected void btnSearch_Click(object sender, EventArgs e)
     {
         IEnumerable<FAQGroup> results = null;
-        if (String.IsNullOrWhiteSpace(txtSearch.Text))
+        if (String.IsNullOrWhiteSpace(mfbSearchbox.SearchText))
             results = FAQGroup.CategorizedFAQs;
         else
         {
-            results = FAQGroup.CategorizedFAQItemsContainingWords(txtSearch.Text);
+            results = FAQGroup.CategorizedFAQItemsContainingWords(mfbSearchbox.SearchText);
             if (results.Count() == 0)
             {
                 lblErr.Text = Resources.LocalizedText.FAQSearchNoResults;

@@ -50,7 +50,7 @@ public partial class Public_FindAirport : System.Web.UI.Page
     {
         gvResults.Visible = true;
         m_alResults = new AirportList();
-        m_alResults.InitFromSearch(txtSearch.Text);
+        m_alResults.InitFromSearch(mfbSearchbox.SearchText);
         ViewState[szVSResults] = m_alResults;
 
         doSearch();
