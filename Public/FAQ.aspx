@@ -22,11 +22,10 @@
                     <h2><%# Eval("Category") %></h2>
                     <cc1:Accordion ID="accFAQGroup" RequireOpenedPane="false" SelectedIndex="-1" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250" >
                         <HeaderTemplate>
-                            <%# Eval("Question") %>
+                            <a name='<%# Eval("idFAQ") %>'></a><%# Eval("Question") %>
                         </HeaderTemplate>
                         <ContentTemplate>
                             <div style="padding: 5px">
-                                <a name='<%# Eval("idFAQ") %>'></a>
                                 <div style="float:right">
                                     <asp:HyperLink ID="lnkPermalink" NavigateUrl='<%# "~/Public/FAQ.aspx?q=" + Eval("idFAQ") + "#" + Eval("idFAQ") %>' runat="server">
                                         <asp:Image ID="imgPermalink" style="opacity: 0.5;" ToolTip="<%$ Resources:LocalizedText, FAQPermaLink %>" ImageUrl="~/images/Link.png" runat="server" />
