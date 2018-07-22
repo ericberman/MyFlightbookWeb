@@ -2609,9 +2609,32 @@ namespace MyFlightbook
             get { return ApproachDescription.ExtractApproaches(Comment); }
         }
 
+        /// <summary>
+        /// Comment with everything after "///" removed.
+        /// </summary>
+        public string RedactedComment
+        {
+            get
+            {
+                int index = Comment.IndexOf("///", StringComparison.CurrentCulture);
+                return (index >= 0) ? Comment.Substring(0, index) : Comment;
+            }
+        }
+
+        /// <summary>
+        /// Comment with approaches underlined, links highlighted, and simpel markdown applied
+        /// </summary>
         public string CommentWithReplacedApproaches
         {
             get { return ApproachDescription.ReplaceApproaches(Comment.Linkify()); }
+        }
+
+        /// <summary>
+        /// Same as CommentWithReplacedApproaches except that it uses a redacted comment.
+        /// </summary>
+        public string RedactedCommentWithReplacedApproaches
+        {
+            get { return ApproachDescription.ReplaceApproaches(RedactedComment.Linkify()); }
         }
 
         public string PropertiesWithReplacedApproaches

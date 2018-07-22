@@ -1,13 +1,13 @@
-﻿using System;
-using System.Web;
+﻿using Newtonsoft.Json;
+using System;
 using System.Globalization;
 using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Threading.Tasks;
 using System.Net.Http;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Web;
 
 /******************************************************
  * 
@@ -416,23 +416,28 @@ namespace MyFlightbook
         public static string Linkify(this string sz, bool fMarkdown = true)
         {
             if (regexpWebLink == null)
-                regexpWebLink = new Regex("https?://([\\w+?\\.\\w+])+([a-zA-Z0-9\\~\\!\\@\\#\\$\\%\\^\\&amp;\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\'\\,]*)?", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                regexpWebLink = new Regex("(\\[(?<linkText>[^\\]\\r\\n]*)\\])?\\(?(?<linkRef>https?://([\\w+?\\.\\w+])+([a-zA-Z0-9\\~\\!\\@\\#\\$\\%\\^\\&amp;\\*\\(_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\'\\,]*)?)\\)?", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             // avoid injection by escaping explicit HTML elements before linkifying, since linkify itself can't be used in an escaped (i.e., <%: %>) context or it will be escaped.
-            sz = sz.EscapeHTML();
+            sz = sz.EscapeHTML().Replace("&#13;", "\r").Replace("&#10;", "\n");
 
-            MatchCollection mc = regexpWebLink.Matches(sz);
-
-            foreach (Match m in mc)
-            {
-                string szReplace = m.Value;
+            sz = regexpWebLink.Replace(sz, (m) => {
+                string szReplace = m.Groups["linkText"].Value;
+                string szLink = m.Groups["linkRef"].Value;
+                string szTrailingPeriod = string.Empty;
 
                 // trailing period is allowed in the URL, but I don't want to linkify it.
-                if (m.Value.EndsWith(".", StringComparison.Ordinal))
-                    szReplace = m.Value.Substring(0, m.Value.Length - 1);
+                if (szLink.EndsWith(".", StringComparison.Ordinal))
+                {
+                    szLink = szLink.Substring(0, szLink.Length - 1);
+                    szTrailingPeriod = ".";
+                }
 
-                sz = sz.Replace(szReplace, "<a href=\"" + szReplace + "\" target=\"_blank\">" + szReplace + "</a>");
-            }
+                if (String.IsNullOrWhiteSpace(szReplace))
+                    szReplace = szLink;
+
+                return "<a href=\"" + szLink + "\" target=\"_blank\">" + szReplace + "</a>" + szTrailingPeriod;
+            });
 
             if (fMarkdown)
             {
@@ -441,7 +446,7 @@ namespace MyFlightbook
 
                 sz = regexMarkDown.Replace(sz, (m) =>
                 {
-                    if (m.Groups.Count < 3 || m.Value.Contains("&#13;") || m.Value.Contains("&#10;")) // Ignore anything with a newline/carriage return.
+                    if (m.Groups.Count < 3 || m.Value.Contains("&#13;") || m.Value.Contains("&#10;") || m.Value.Contains("\r") || m.Value.Contains("\n")) // Ignore anything with a newline/carriage return.
                         return m.Value;
 
                     string szCode = m.Groups[1].Value.CompareOrdinalIgnoreCase("*") == 0 ? "strong" : "em";

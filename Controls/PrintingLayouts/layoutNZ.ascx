@@ -52,7 +52,7 @@
                         <td><%#: Eval("SICName") %> <%#: Eval("StudentName") %></td>
                         <td>
                             <div><span style="font-weight:bold"><%#: Eval("Route") %></span>
-                            <span runat="server" id="divComments" dir="auto"><%# ((string) Eval("Comment")).Linkify() %></span></div>
+                            <span runat="server" id="divComments" dir="auto"><%# Eval("RedactedCommentWithReplacedApproaches") %></span></div>
                             <asp:Panel ID="pnlFlightTimes" runat="server" Visible="<%# CurrentUser.DisplayTimesByDefault %>">
                                 <asp:Panel EnableViewState="false" ID="pnlEngineTime" runat="server">
                                     <%# Eval("EngineTimeDisplay") %>
