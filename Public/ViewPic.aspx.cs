@@ -23,9 +23,9 @@ public partial class Public_ViewPic : System.Web.UI.Page
         catch (InvalidCastException) { }
         catch (OverflowException) { }
         catch (ArgumentException) { }
-            
+
         this.Title = szThumb;
-        if (ic != MFBImageInfo.ImageClass.Unknown && !String.IsNullOrEmpty(szKey) && !String.IsNullOrEmpty(szThumb))
+        if (ic != MFBImageInfo.ImageClass.Unknown && !String.IsNullOrEmpty(szKey) && !String.IsNullOrEmpty(szThumb) && !szThumb.Contains("?"))  // Googlebot seems to be adding "?resize=300,300
         {
             MFBImageInfo mfbii = new MFBImageInfo(ic, szKey, szThumb);
             if (mfbii == null)
