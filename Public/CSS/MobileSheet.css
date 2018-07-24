@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -127,10 +127,6 @@
 #headerSearchBox, #headerLoginStatus
 {
     display: inline-block;
-}
-
-.tabbargradient
-{
 }
 
 /* Sidebar for mobile */

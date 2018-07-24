@@ -47,6 +47,5 @@
                 </div>
             </div>
         </div>
-        <div class="tabbargradient" style="width:100%" runat="server" id="gradientBar">&nbsp;</div>
     </asp:Panel>
 </div>

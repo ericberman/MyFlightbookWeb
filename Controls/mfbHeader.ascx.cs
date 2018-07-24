@@ -24,12 +24,6 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
         set { XMLNav1.TabList = value; }
     }
 
-    public bool ShowGradient
-    {
-        get { return gradientBar.Visible; }
-        set { gradientBar.Visible = value; }
-    }
-
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)

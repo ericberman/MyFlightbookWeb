@@ -1,14 +1,14 @@
+using MyFlightbook;
 using System;
-using System.Linq;
 using System.Globalization;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -97,10 +97,8 @@ public partial class MasterPage : System.Web.UI.MasterPage
 
     protected PlaceHolder SidebarPlaceholder
     {
-        get { return UseNewUI ? plcSecondaryNavTop : plcSecondaryNavSide; }
+        get { return plcSecondaryNavSide; }
     }
-
-    protected bool UseNewUI { get; set; }
 
     public bool ShowSponsoredAd
     {
@@ -237,24 +235,6 @@ public partial class MasterPage : System.Web.UI.MasterPage
 
     protected void SetUpSidebar()
     {
-        // Use new UI or old UI, persist in cookie.
-        const string keyNewUI = "cookieNewUI";
-        int forceNewUI = util.GetIntParam(Request, "newui", -1);
-        if (forceNewUI == -1)
-            UseNewUI = Request.Cookies[keyNewUI] != null && Request.Cookies[keyNewUI].Value.Length > 0;
-        else if (forceNewUI == 0)
-        {
-            UseNewUI = false;
-            Response.Cookies[keyNewUI].Value = null;
-        }
-        else
-        {
-            UseNewUI = true;
-            Response.Cookies[keyNewUI].Value = "yes";
-        }
-        cssBeta.Visible = UseNewUI;
-        mfbHeader.ShowGradient = !UseNewUI;
-        cssBeta.Href = ResolveUrl("~/Public/CSS/newUI.css");
         // set up the sidebar
         Panel p = new Panel();
         SidebarPlaceholder.Controls.Add(p);
@@ -292,9 +272,9 @@ public partial class MasterPage : System.Web.UI.MasterPage
             lnkPrivacy.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName);
 
             lnkAppleIcon.Href = ResolveUrl("~/images/apple-touch-icon.png");
-            cssMain.Href = "~/Public/stylesheet.css".ToAbsoluteURL(Request).ToString() + "?v=2";    // to enable forced reload
+            cssMain.Href = "~/Public/stylesheet.css".ToAbsoluteURL(Request).ToString() + "?v=3";    // to enable forced reload
             cssMobile.Visible = mfbHeader.IsMobile = MfbFooter.IsMobile = IsMobileSession();
-            cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css");
+            cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css?v=2");
             string szStyle = Branding.CurrentBrand.StyleSheet;
             if (szStyle.Length > 0)
             {

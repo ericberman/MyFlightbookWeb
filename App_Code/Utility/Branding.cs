@@ -136,7 +136,7 @@ namespace MyFlightbook
             HostName = "myflightbook.com",
             Root = "/logbook",
             LogoURL = "~/Public/mfblogonew.png",
-            StyleSheet = "~/Public/stylesheetnew.css",
+            StyleSheet = string.Empty,
             EmailAddress ="noreply@mg.myflightbook.com",
             FacebookFeed = "http://www.facebook.com/MyFlightbook",
             TwitterFeed = "http://twitter.com/MyFlightbook",

@@ -1,19 +1,64 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
+
+/* 
+    open_sans and roboto used from http://www.1001fonts.com/open-sans-font.html and http://www.1001fonts.com/roboto-font.html; 
+    Licensed under Appache License 2.0, free for commercial use
+
+*/
+@font-face {
+    font-family: open_sans;
+    font-weight: bold;
+    font-style: normal;
+    src: url('Fonts/open-sans.bold.ttf') format('opentype')
+}
+
+@font-face {
+    font-family: open_sans;
+    font-weight: normal;
+    font-style: normal;
+    src: url('Fonts/open-sans.regular.ttf') format('opentype')
+}
+
+@font-face {
+    font-family: roboto_bold;
+    font-weight: bold;
+    src: url('Fonts/roboto.bold.ttf') format('opentype')
+}
+
+
 /* Basic HTML */
-BODY, body, .mfbDefault
-{
-    font-family: Arial;
+.mfbDefault {
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
+    /* max-width: 1400px; */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.mfbDefault table {
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+
+BODY, body {
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 9pt;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 0px, 3px, 3px, 5px;
 }
 
 TABLE, table
 {
-    font-family: Arial;
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
 }
 
@@ -21,7 +66,15 @@ H1
 {
     font-size: 18px;
     font-weight: bold;
-    color: #4983B7;
+    color: black;
+    width: 100%;
+    background-color: #00bcd4;
+    padding: 4px;
+    text-align: center;
+    margin: 0px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
 }
 H2
 {
@@ -56,6 +109,10 @@ H4
     clear:both;
     width: 100%;
     text-align: center;
+}
+
+.noprint #headerBar {
+    border-top: 7px solid #00bcd4;
 }
 
 #headerLogo
@@ -99,15 +156,6 @@ H4
 {
 }
 
-.tabbargradient
-{
-    background-image: url(../images/TabBarGradient.gif);
-    background-repeat: repeat-x;
-    height: 15px;
-    display:block;
-    clear:both;
-}
-
 /* Data entry form */
 .header
 {
@@ -121,7 +169,7 @@ H4
 
 .logbookForm
 {
-    background-color: #ffffcc;
+    background-color: white;
 }
 
 .hint
@@ -139,7 +187,7 @@ H4
     margin: 3px;
     max-width: 50%;
     display: none;
-    background-color: #DDECFF;
+    background-color: #e7e7e7;
     -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
     box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
@@ -292,14 +340,17 @@ H4
 }
 
 /* Autocomplete AJAX */
-.AutoExtender
-{
+.AutoExtender {
     font-weight: normal;
     border: solid 1px #006699;
     line-height: 20px;
-    padding: 0px;
-    background-color: #ffffcc;
     list-style-type: none;
+    background-color: #e7e7e7;
+    border-radius: 5px;
+    padding: 3px;
+    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
 }
 
 .AutoExtenderList
@@ -317,6 +368,11 @@ H4
     cursor: pointer;
     list-style-type: none;
 }
+
+.AutoExtenderList:nth-last-child(1) {
+    border-bottom: none;
+}
+
 
 /* Accordian AJAX */
 .accordianHeader{
@@ -376,7 +432,7 @@ H4
 
 .accordionMenuContent {
     padding: 4px;
-    background-color: #ffffcc;
+    background-color: white;
     position: static;
     border: black 1px solid;
     margin: 15px;
@@ -527,12 +583,6 @@ H4
 
 #menu-bar li 
 {
-  border-top-right-radius: 8px;
-  -webkit-top-right-radius: 8px;
-  -moz-top-right-radius: 8px;
-  border-top-left-radius: 8px;
-  -webkit-top-left-radius: 8px;
-  -moz-top-left-radius: 8px;
   margin-right:1px;
   margin-left: 1px;
   margin-top: 0px;
@@ -542,39 +592,24 @@ H4
   height: 34px;
   position: relative;
   list-style: none;
-  background: #EEEEEE;
-  background-image: linear-gradient(to bottom, #EEEEEE 0%, #A9A9A9 100%);
-  background-image: -ms-linear-gradient(top, #EEEEEE 0%, #A9A9A9 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#EEEEEE, endColorstr=#A9A9A9);
-  background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#A9A9A9));
-  background: -moz-linear-gradient(top,  #EEEEEE,  #A9A9A9);
+  background: #fafafa;
 }
+
 #menu-bar a {
-  font-weight: bold;
-  font-family: arial;
+  font-weight: normal;
+  font-family: roboto_bold;
   font-style: normal;
-  font-size: 12px;
-  color: #666666;
+  font-size: 10pt;
+  color: #263238;
   text-decoration: none;
   display: block;
-  padding: 11px 15px 11px 15px;
+  padding: 8px 8px 8px 8px;
   margin: 0;
 }
 #menu-bar .current a, #menu-bar li:hover > a {
-  border-top-right-radius: 8px;
-  -webkit-top-right-radius: 8px;
-  -moz-top-right-radius: 8px;
-  border-top-left-radius: 8px;
-  -webkit-top-left-radius: 8px;
-  -moz-top-left-radius: 8px;
-  font-weight: bold;
-  background: #0399D4;
-  background-image: linear-gradient(to bottom, #A9A9A9 0%, #CCCCCC 100%);
-  background-image: -ms-linear-gradient(top, #A9A9A9 0%, #CCCCCC 100%);
-  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr=#A9A9A9, endColorstr=#CCCCCC);
-  background: -webkit-gradient(linear, left top, left bottom, from(#A9A9A9), to(#CCCCCC));
-  background: -moz-linear-gradient(top,  #A9A9A9, #CCCCCC);
-  color: black;
+  font-weight: normal;
+  background: #cdcdcd;
+  color: #263238;
 }
 #menu-bar ul li:hover a, #menu-bar li:hover li a 
 {
@@ -582,26 +617,17 @@ H4
   background: none;
   filter:none;
   border: none;
-  color: #666;
-  -box-shadow: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
+  color: black;
 }
 #menu-bar ul a:hover {
-  background: #0399D4 !important;
-  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr=#04ACEC, endColorstr=#0186BA);
-  background: -webkit-gradient(linear, left top, left bottom, from(#04ACEC), to(#0186BA)) !important;
-  background: -moz-linear-gradient(top,  #04ACEC,  #0186BA) !important;
-  color: #FFFFFF !important;
+  background: #e7e7e7 !important;
+  color: black !important;
   border-radius: 0px;
   -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
 }
 #menu-bar ul {
-  background: #DDDDDD;
-  filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#CFCFCF);
-  background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#CFCFCF));
-  background: -moz-linear-gradient(top,  #FFFFFF,  #CFCFCF);
+  background: #f3f6f6;
   display: none;
   margin: 3px, 0, 0, 0;
   padding: 0;
@@ -609,11 +635,13 @@ H4
   position: absolute;
   top: 34px;
   left: 0;
-  border: solid 1px #B4B4B4;
+  border: none;
+  font-weight:normal;
   -webkit-box-shadow: 2px 2px 3px #222222;
   -moz-box-shadow: 2px 2px 3px #222222;
   box-shadow: 2px 2px 3px #222222;
 }
+
 #menu-bar li:hover > ul {
   display: block;  z-index: 100;
 }
@@ -630,9 +658,9 @@ H4
 #menu-bar ul a {
   padding:10px 0px 10px 15px;
   color:#424242 !important;
-  font-size:12px;
+  font-size:10pt;
   font-style:normal;
-  font-family:arial;
+  font-family:roboto_bold;
   font-weight: normal;
 }
 #menu-bar ul li:first-child > a {
@@ -653,15 +681,52 @@ H4
   html[xmlns] #menu-bar {
   display: block;
 }
+
 * html #menu-bar {
   height: 1%;
+}
+
+/* Icons on menu bar */
+#menu-bar .topTab, #menu-bar .current a, #menu-bar a.topTab:hover, #menu-bar li:hover > a {
+    background-size: 12pt 12pt;
+    background-repeat: no-repeat;
+    background-position-y: center;
+    background-position-x: 4pt;
+    padding-left: 20pt;
+}
+
+#menu-bar #tabIDtabHome, #tabIDtabHome.featureDescriptorIcon {
+    padding-left: 8px;
+}
+
+#menu-bar #tabIDtabLogbook, #tabIDtabLogbook.featureAreaDescriptorIcon {
+    background-image: url('tabimages/LogbookTab.png');
+}
+
+#menu-bar #tabIDtabAircraft, #tabIDtabAircraft.featureAreaDescriptorIcon {
+    background-image: url('tabimages/AircraftTab.png');
+}
+
+#menu-bar #tabIDtabMaps, #tabIDtabMaps.featureAreaDescriptorIcon {
+    background-image: url('tabimages/AirportTab.png');
+}
+
+#menu-bar #tabIDtabTraining, #tabIDtabTraining.featureAreaDescriptorIcon {
+    background-image: url('tabimages/TrainingTab.png');
+}
+
+#menu-bar #tabIDtabProfile, #tabIDtabProfile.featureAreaDescriptorIcon {
+    background-image: url('tabimages/ProfileTab.png');
+}
+
+#menu-bar #tabIDtabAdmin, #tabIDtabAdmin.featureAreaDescriptorIcon {
+    background-image: url('tabimages/AdminTab.png');
 }
 
 /* Sidebar UI */
 .topForm
 {
-    border-top: solid 1px black;
-    background-color: #ffffcc;
+    background-color: white;
 }
 
 .sidebarContainer
@@ -676,41 +741,53 @@ H4
     vertical-align:top;
     margin: 0px;
     height:100%;
+    background-color:white;
 }
 
 .sidebarRight
 {
-    background-color: #ffffcc;
-    display:inline-block;
-    height:100%;
+    background-color: white;
+    padding: 5px;
+    display: inline-block;
+    height: 100%;
     width: 100%;
-    min-width:280px;
-    max-width:800px;
+    min-width: 280px;
+    max-width: 800px;
     margin: 0px;
-    padding-left: 5px;
 }
 
 .sidebarSelected {
-    background-color: #ffffcc;
-    font-weight: bold;
-    border-left: solid 1px black;
-    border-bottom: solid 1px black;
-    height: 40px;
     line-height: 40px;
-    padding-left: 5px;
     display: block;
+    margin: 3px;
+    padding: 3px;
+    background-color: #cdcdcd;
+    font-family: roboto_bold;
+    font-weight: normal;
+    font-size: 10pt;
+    border: 1px solid #aaaaaa;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    height: 40px;
+    text-align: center;
 }
 
 .sidebarUnSelected {
-    background-color: #eeeeee;
-    font-weight: normal;
-    border-left: solid 1px black;
-    border-right: solid 1px black;
-    border-bottom: solid 1px black;
-    height: 40px;
     line-height: 40px;
-    padding-left: 5px;
     display: block;
+    margin: 3px;
+    padding: 3px;
+    background-color: white;
+    font-family: roboto_bold;
+    font-weight: normal;
+    font-size: 10pt;
+    height: 40px;
+    border: 1px solid #aaaaaa;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    text-align: center;
 }
 
 td.sidebarUnSelected a, td.sidebarUnSelected a:visited, td.sidebarUnSelected a:link, td.sidebarUnSelected a:active
@@ -840,23 +917,10 @@ a img
     padding: 3px;
 }
 
-/* Home page flights */
-.HoverHighlight:hover
-{
-    background-color: #CCCCCC;
-    text-decoration: none;
-}
-
-.HoverHighlight
-{
-    background-color: White;
-    text-decoration: none;
-}
-
 .EntryBlock
 {
     padding: 4px;
-    background-color: #ffffcc;
+    background-color: white;
     position: static;
     border: black 1px solid;
     margin: 15px;
@@ -904,13 +968,20 @@ a img
 }
 
 /* Footer */
-.footerContainer
-{
-    text-align:center; 
-    clear:both; 
-    margin-left:auto; 
-    margin-right:auto; 
-    width:100%;
+.footerContainer {
+    text-align: center;
+    clear: both;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    width: 100%;
+    border-top: 12px solid #07afb9;
+    background-color: #263238;
+    color: white;
+    font-weight: normal;
+    font-family: roboto_bold;
+    font-size: 9pt;
+    border-top: 10px solid #07a5b9;
 }
 
 .footerItem
@@ -923,6 +994,14 @@ a img
 .footerItem li {
     list-style-type:none;
     display:block;
+}
+
+.footerContainer hr {
+    display: none;
+}
+
+.footerContainer a, footerContainer a:visited, footerContainer a:hover {
+    color: white;
 }
 
 /* Data entry form tables */
@@ -1159,19 +1238,17 @@ table.dataDescription thead tr td
 }
 
 #homePagePromo.welcomeHeader {
-    background-color: #03a9f4;
-    background-color: #eeeeee;
-    border: 1px solid darkgray;
-    border-radius: 6px;
+    background-color: #00bcd4;
     padding: 4px;
-    margin-left: auto;
-    margin-right: auto;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box; /* Firefox, other Gecko */
     box-sizing: border-box; /* Opera/IE 8+ */
-    box-shadow: 6px 6px 5px #888888;
+    width: 100%;
+    max-width: 100%;
+    color: white;
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin: 0px;
 }
-
 
 .welcomeHeader p {
     font-size:larger;
@@ -1179,8 +1256,32 @@ table.dataDescription thead tr td
     text-align:center;
 }
 
-.welcomeHeader li {
+#homePagePromo.welcomeHeader p {
+    text-align: center;
+    font-size: 24pt;
+    line-height: 1.0;
+    font-weight: bold;
 }
+
+#homePagePromo.welcomeHeader ul {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#homePagePromo.welcomeHeader li {
+    display: inline;
+    font-size: 12pt;
+    text-align: left;
+}
+
+#homePagePromo.welcomeHeader li:before {
+    content: "•";
+    margin-left: 6px;
+    margin-right: 6px;
+    display: inline-block;
+}
+
 
 .featureAreaDescriptionHeader {
     font-weight:bold;
@@ -1189,11 +1290,17 @@ table.dataDescription thead tr td
 }
 
 .featureAreaDescriptionBody {
-    font-size: 10pt;
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: normal;
+    font-size: 9pt;
 }
 
 .featureAreaDescriptorIcon {
-    display:none;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-size: 24pt 24pt;
+    line-height: 24pt;
+    display: block;
 }
 
 /* Ajax styling */
@@ -1233,41 +1340,25 @@ table.dataDescription thead tr td
 
 /* Tabs*/
 .mfbDefault.ajax__tab_xp .ajax__tab_header {
-    font-family: Arial, sans-serif;
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
 }
 
 .mfbDefault .ajax__tab_panel, .mfbDefault .ajax__tab_body, .mfbDefault .ajax__scroll_none {
-    font-family: Arial, sans-serif;
+    font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
-}
-
-.mfbDefault .ajax__tab_header {
-}
-
-.mfbDefault .ajax__tab_header .ajax__tab_outer {
-}
-
-.mfbDefault .ajax__tab_header .ajax__tab_inner {
-}
-
-.mfbDefault .ajax__tab_hover .ajax__tab_outer {
-}
-
-.mfbDefault .ajax__tab_hover .ajax__tab_inner {
-}
-
-.mfbDefault .ajax__tab_active .ajax__tab_outer {
-}
-
-.mfbDefault .ajax__tab_active .ajax__tab_inner {
-}
-
-.mfbDefault .ajax__tab_body {
 }
 
 /* Printing */
 @media print {
+    h1 {
+        background-color: none;
+    }
+
+    BODY, body {
+        border: none;
+    }
+
    thead {display: table-header-group;}
    tfoot {display: table-footer-group;}
    .noprint, .sidebarContainer, .footerContainer {display:none; border:none;}
