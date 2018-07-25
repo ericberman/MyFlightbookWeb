@@ -110,7 +110,7 @@ namespace MyFlightbook.Printing
                 times = (times + 1) / 2;
             }
 
-            return Math.Max(1 + imgHeight + sigHeight + times, (le.Comment.Length + le.CustPropertyDisplay.Length) / 100);
+            return Math.Max(1 + imgHeight + sigHeight + times, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
         public override string CSSPath { get { return "~/Public/CSS/printNative.css"; } }
@@ -127,7 +127,7 @@ namespace MyFlightbook.Printing
             if (le == null)
                 throw new ArgumentNullException("le");
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
-            return Math.Max(1, (le.Comment.Length + le.CustPropertyDisplay.Length) / 100);
+            return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
         public override string CSSPath { get { return "~/Public/CSS/printGlider.css"; } }
@@ -140,7 +140,7 @@ namespace MyFlightbook.Printing
             if (le == null)
                 throw new ArgumentNullException("le");
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
-            return Math.Max(1, (le.Comment.Length + le.CustPropertyDisplay.Length) / 100);
+            return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
         public override bool SupportsImages { get { return false; } }
@@ -157,7 +157,7 @@ namespace MyFlightbook.Printing
             if (le == null)
                 throw new ArgumentNullException("le");
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
-            return Math.Max(1, (le.Comment.Length + le.CustPropertyDisplay.Length) / 100);
+            return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
         public override bool SupportsImages { get { return false; } }
@@ -174,7 +174,7 @@ namespace MyFlightbook.Printing
             if (le == null)
                 throw new ArgumentNullException("le");
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
-            return Math.Max(1, (le.Comment.Length + le.CustPropertyDisplay.Length) / 100);
+            return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
 
         public override bool SupportsImages { get { return true; } }
@@ -195,7 +195,7 @@ namespace MyFlightbook.Printing
             if (le == null)
                 throw new ArgumentNullException("le");
             // Very rough computation: look at customproperties + comments, shoot for ~120chars/line
-            int linesOfText = (int) Math.Ceiling(le.Comment.Length / 120.0) + (int) Math.Ceiling(le.CustPropertyDisplay.Length / 120.0);
+            int linesOfText = (int) Math.Ceiling(le.RedactedComment.Length / 120.0) + (int) Math.Ceiling(le.CustPropertyDisplay.Length / 120.0);
             int routeLine = le.Airports.Count() > 2 ? 1 : 0;
             return Math.Max(1, (linesOfText + routeLine + 1) / 2);
         }
