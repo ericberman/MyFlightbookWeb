@@ -22,6 +22,11 @@
         <asp:BoundField DataField="RawTailNumber" HeaderText="Tail Number" ReadOnly="True" />
         <asp:BoundField DataField="idAircraft" HeaderText="Aircraft ID" ReadOnly="true" />
         <asp:BoundField DataField="CatClassDisplay" HeaderText="Category/Class" ReadOnly="True" />
+        <asp:TemplateField HeaderText="Alternate Cat/Class">
+            <ItemTemplate>
+                <asp:Label ID="lblCatClassOverride" runat="server" Text='<%# ((int) Eval("IsOverridden")) == 0 ? "0" : Eval("CatClassOverride").ToString() %>'></asp:Label>
+            </ItemTemplate>
+        </asp:TemplateField>
         <asp:BoundField DataField="cInstrumentApproaches" HeaderText="Approaches">
             <ItemStyle HorizontalAlign="Right" />
         </asp:BoundField>

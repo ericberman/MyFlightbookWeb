@@ -99,7 +99,7 @@ namespace MyFlightbook.ImportFlights
         private static string[] colFrom = { "From", "flight_from", "Departure", "Origin", "LOC_FROM" };
         private static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "LOC_TO" };
         private static string[] colComment = { "Comments", "Remarks" };
-        private static string[] colCatClassOverride = { "CatClassOverride" };
+        public static string[] colCatClassOverride = { "Alternate Cat/Class", "Cat/Class Override", "CatClassOverride" };
         private static string[] colEngineStart = { "Engine Start", "Depart" };
         private static string[] colEngineEnd = { "Engine End", "Arrive" };
         private static string[] colFlightStart = { "Flight Start", "FLT_BEGIN" };
@@ -471,6 +471,7 @@ namespace MyFlightbook.ImportFlights
                     ac = m_cm.AircraftForUser[szTail];
                 le.AircraftID = ac.AircraftID;
                 le.TailNumDisplay = ac.DisplayTailnumber;
+                le.CatClassOverride = GetMappedInt(m_cm.iColCatClassOverride);
 
                 if (m_rgszRow[m_cm.iColDate].Length > 0)
                 {

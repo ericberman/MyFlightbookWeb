@@ -74,6 +74,23 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
     {
         if (User.Length > 0)
         {
+            // See whether or not to show catclassoverride column
+            bool fShowAltCatClass = false;
+            DBHelper dbh = new DBHelper("SELECT COALESCE(MAX(idCatClassOverride), 0) AS useAltCatClass FROM flights f WHERE f.username=?user");
+            dbh.ReadRow(
+                (comm) => { comm.Parameters.AddWithValue("user", User); },
+                (dr) => { fShowAltCatClass = Convert.ToInt32(dr["useAltCatClass"], CultureInfo.InvariantCulture) > 0; });
+
+            if (!fShowAltCatClass)
+            {
+                foreach (DataControlField dcf in gvFlightLogs.Columns)
+                    if (dcf.HeaderText.CompareCurrentCultureIgnoreCase(MyFlightbook.ImportFlights.CSVImporter.colCatClassOverride[0]) == 0)
+                    {
+                        gvFlightLogs.Columns.Remove(dcf);
+                        break;
+                    }
+            }
+
             using (MySqlCommand comm = new MySqlCommand())
             {
                 DBHelper.InitCommandObject(comm, LogbookEntry.QueryCommand(Restriction));
