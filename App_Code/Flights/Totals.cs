@@ -566,6 +566,11 @@ namespace MyFlightbook.FlightCurrency
                     while (dr.Read())
                     {
                         CustomPropertyType cpt = new CustomPropertyType(dr);
+
+                        // don't include blacklisted properties in totals.
+                        if (pf.BlacklistedProperties.Exists(i => i == cpt.PropTypeID))
+                            continue;
+
                         List<CustomPropertyType> lstCpt = new List<CustomPropertyType>(Restriction.PropertyTypes);
                         if (!lstCpt.Exists(c => c.PropTypeID == cpt.PropTypeID))
                             lstCpt.Add(cpt);
