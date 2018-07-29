@@ -84,7 +84,7 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
             if (!fShowAltCatClass)
             {
                 foreach (DataControlField dcf in gvFlightLogs.Columns)
-                    if (dcf.HeaderText.CompareCurrentCultureIgnoreCase(MyFlightbook.ImportFlights.CSVImporter.colCatClassOverride[0]) == 0)
+                    if (dcf.HeaderText.CompareCurrentCultureIgnoreCase("Alternate Cat/Class") == 0)
                     {
                         gvFlightLogs.Columns.Remove(dcf);
                         break;
