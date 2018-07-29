@@ -1,5 +1,9 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbCustCurrency.ascx.cs" Inherits="Controls_mfbCustCurrency" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
+
 <asp:Panel ID="pnlCustCurrency" runat="server" DefaultButton="btnAddCurrencyRule">
     <table>
         <tr>
@@ -25,31 +29,31 @@
                     Text="<%$ Resources:Currency, CustomCurrencyPerformPrompt %>"></asp:Localize>
             </td>
             <td>
-                <asp:DropDownList ID="cmbLimitType" runat="server">
-                    <asp:ListItem Selected="True" Value="Minimum" Text="<%$ Resources:Currency, CustomCurrencyMinEventsPrompt %>"></asp:ListItem>
-                    <asp:ListItem Value="Maximum" Text="<%$ Resources:Currency, CustomCurrencyMaxEventsPrompt %>"></asp:ListItem>
-                </asp:DropDownList>
-                <asp:TextBox ID="txtNumEvents" Width="50px" runat="server"></asp:TextBox>
-                <cc1:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1"
-                    runat="server" TargetControlID="txtNumEvents"
-                    WatermarkCssClass="watermark" WatermarkText="0"></cc1:TextBoxWatermarkExtender>
-                <cc1:FilteredTextBoxExtender ID="FilteredTextBoxExtender1"
-                    runat="server" FilterType="Numbers"
-                    TargetControlID="txtNumEvents"></cc1:FilteredTextBoxExtender>
-                <asp:DropDownList ID="cmbEventTypes" runat="server"
-                    ValidationGroup="vgAddCurrencyRule">
-                </asp:DropDownList>
-                <div>
-                    <asp:RequiredFieldValidator ID="valRequireEvents" runat="server"
-                        ControlToValidate="txtNumEvents" CssClass="error" Display="Dynamic"
-                        ErrorMessage="<%$ Resources:Currency, errCustomCurrencyInvalidEventCount %>"
-                        ValidationGroup="vgAddCurrencyRule"></asp:RequiredFieldValidator>
-                    <asp:CustomValidator ID="valRangeCheckEvents" runat="server"
-                        ControlToValidate="txtNumEvents" CssClass="error" Display="Dynamic"
-                        ErrorMessage="<%$ Resources:Currency, errCustomCurrencyInvalidEventCount %>"
-                        OnServerValidate="valRangeCheckEvents_ServerValidate"
-                        ValidationGroup="vgAddCurrencyRule"></asp:CustomValidator>
-                </div>
+                <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                    <ContentTemplate>
+                        <asp:DropDownList ID="cmbLimitType" runat="server">
+                            <asp:ListItem Selected="True" Value="Minimum" Text="<%$ Resources:Currency, CustomCurrencyMinEventsPrompt %>"></asp:ListItem>
+                            <asp:ListItem Value="Maximum" Text="<%$ Resources:Currency, CustomCurrencyMaxEventsPrompt %>"></asp:ListItem>
+                        </asp:DropDownList>
+                        <uc1:mfbDecimalEdit runat="server" ID="decMinEvents" Width="40px" />
+                        <asp:DropDownList ID="cmbEventTypes" runat="server" AutoPostBack="true" OnSelectedIndexChanged="cmbEventTypes_SelectedIndexChanged"
+                            ValidationGroup="vgAddCurrencyRule">
+                            <asp:ListItem Selected="True" Value="-1" Text="<%$ Resources:Currency, CustomCurrencySelectEvent %>"></asp:ListItem>
+                        </asp:DropDownList>
+                        <div>
+                            <asp:CustomValidator ID="valRangeCheckEvents" runat="server"
+                                CssClass="error" Display="Dynamic"
+                                ErrorMessage="<%$ Resources:Currency, errCustomCurrencyInvalidEventCount %>"
+                                OnServerValidate="valRangeCheckEvents_ServerValidate"
+                                ValidationGroup="vgAddCurrencyRule"></asp:CustomValidator>
+                            <asp:CustomValidator ID="valCheckEventSelected" runat="server"
+                                CssClass="error" Display="Dynamic"
+                                ErrorMessage="<%$ Resources:Currency, errCustomCurrencyNoEvent %>"
+                                OnServerValidate="valCheckEventSelected_ServerValidate"
+                                ValidationGroup="vgAddCurrencyRule"></asp:CustomValidator>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </td>
         </tr>
         <tr>
@@ -90,7 +94,7 @@
         <tr style="vertical-align:top;">
             <td>
                 <asp:Localize ID="locCustCurrencyModelPrompt" runat="server"
-                    Text="<%$ Resources:Currency, CustomCurrencyRestrictModels %>"></asp:Localize>
+                    Text="<%$ Resources:Currency, CustomCurrencyRestrictModels %>"></asp:Localize></asp:Localize><uc1:mfbTooltip runat="server" ID="mfbTooltip2" BodyContent="<%$ Resources:Currency, CustomCurrencyMultipleSelectHint %>" />
             </td>
             <td>
                 <asp:ListBox ID="lstModels" runat="server" ValidationGroup="vgAddCurrencyRule" SelectionMode="Multiple"
@@ -100,7 +104,7 @@
         <tr style="vertical-align:top;">
             <td>
                 <asp:Localize ID="locCustCurrencyAircraftPrompt" runat="server"
-                    Text="<%$ Resources:Currency, CustomCurrencyRestrictAircraft %>"></asp:Localize>
+                    Text="<%$ Resources:Currency, CustomCurrencyRestrictAircraft %>"></asp:Localize></asp:Localize><uc1:mfbTooltip runat="server" ID="mfbTooltip1" BodyContent="<%$ Resources:Currency, CustomCurrencyMultipleSelectHint %>" />
             </td>
             <td>
                 <asp:ListBox ID="lstAircraft" runat="server"
@@ -131,6 +135,35 @@
                     ValidationGroup="vgAddCurrencyRule">
                     <asp:ListItem Selected="True" Text="<%$ Resources:Currency, CustomCurrencyRestrictAny %>" Value="0"></asp:ListItem>
                 </asp:DropDownList>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <asp:Localize ID="locContainsAiport" runat="server"
+                    Text="<%$ Resources:Currency, CustomCurrencyRestrictAirports %>"></asp:Localize>
+            </td>
+            <td>
+                <asp:TextBox ID="txtAirport" runat="server"></asp:TextBox>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <asp:Localize ID="locContainsText" runat="server"
+                    Text="<%$ Resources:Currency, CustomCurrencyRestrictText %>"></asp:Localize>
+            </td>
+            <td>
+                <asp:TextBox ID="txtContainedText" runat="server"></asp:TextBox>
+            </td>
+        </tr>
+        <tr style="vertical-align:top;">
+            <td>
+                <asp:Localize ID="locHasProperties" runat="server"
+                    Text="<%$ Resources:Currency, CustomCurrencyRestrictProperties %>"></asp:Localize><uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:Currency, CustomCurrencyMultipleSelectHint %>" />
+            </td>
+            <td>
+                <asp:ListBox ID="lstProps" runat="server"
+                    ValidationGroup="vgAddCurrencyRule" SelectionMode="Multiple" 
+                    DataTextField="Title" DataValueField="PropTypeID" Width="300px"></asp:ListBox>
             </td>
         </tr>
         <tr>

@@ -246,6 +246,7 @@ namespace MyFlightbook.FlightCurrency
         public string szArmyMDS { get; set; }
         public string szFamily { get; set; }
         public string szModel { get; set; }
+        public string Comments { get; set; }
         public string Route { get; set; }
         public Boolean fTailwheel { get; set; }
         public Boolean fNight { get; set; }
@@ -294,17 +295,6 @@ namespace MyFlightbook.FlightCurrency
         #endregion
 
         #region Helper utilities for FlightEvents
-        /// <summary>
-        /// Add Events to the properties to examine
-        /// </summary>
-        /// <param name="lst"></param>
-        /// <returns></returns>
-        public IEnumerable<CustomFlightProperty> AddEvents(IEnumerable<CustomFlightProperty> lst)
-        {
-            m_lstPfe.AddRange(lst);
-            return m_lstPfe;
-        }
-
         /// <summary>
         /// Convenience to iterate over the events
         /// </summary>
@@ -410,6 +400,7 @@ namespace MyFlightbook.FlightCurrency
             if (String.IsNullOrEmpty(szFamily))
                 szFamily = szModel;
             Route = dr["Route"].ToString();
+            Comments = dr["Comments"].ToString();
             fTailwheel = Convert.ToBoolean(dr["fTailwheel"], CultureInfo.InvariantCulture);
             Night = (Convert.ToDecimal(dr["night"], CultureInfo.InvariantCulture));
             fNight = (Night > 0.0M);
@@ -441,7 +432,7 @@ namespace MyFlightbook.FlightCurrency
             dtFlightStart = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtFlightStart", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
             dtFlightEnd = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtFlightEnd", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
 
-            m_lstPfe = new List<CustomFlightProperty>();
+            m_lstPfe = new List<CustomFlightProperty>(CustomFlightProperty.PropertiesFromJSONTuples((string)util.ReadNullableField(dr, "CustomPropsJSON", string.Empty), flightID));
         }
     }
 
@@ -632,7 +623,6 @@ namespace MyFlightbook.FlightCurrency
             Dictionary<string, ICurrencyExaminer> dictFlightCurrency = new Dictionary<string, ICurrencyExaminer>();   // Flight currency per 61.57(a), striped by category/class/type.  Also does night and tailwheel
             Dictionary<string, ArmyMDSCurrency> dictArmyCurrency = new Dictionary<string, ArmyMDSCurrency>();     // Flight currency per AR 95-1
             Dictionary<string, CurrencyExaminer> dictIFRCurrency = new Dictionary<string, CurrencyExaminer>();      // IFR currency per 61.57(c)(1) or 61.57(c)(2) (Real airplane or certified flight simulator
-            Dictionary<int, List<CustomFlightProperty>> dictFlightEvents = new Dictionary<int, List<CustomFlightProperty>>();     // flight events (IPC, Instrument checkrides, etc.), keyed by flight ID
             Dictionary<string, FlightCurrency> dictPICProficiencyChecks = new Dictionary<string, FlightCurrency>();     // PIC Proficiency checks
 
             GliderIFRCurrency gliderIFR = new GliderIFRCurrency(); // IFR currency in a glider.
@@ -643,21 +633,7 @@ namespace MyFlightbook.FlightCurrency
             // PIC Proficiency check in ANY aircraft
             FlightCurrency fcPICPCInAny = new FlightCurrency(1, 12, true, "61.58(a) - PIC Check in ANY type-rated aircraft");
 
-            // Minor performance optimization to see if we should bother computing FAR 117 currency
-            bool fIncludeFAR117 = false;
-
-            // get all custom flight properties that could contribute to currency of one sort or another
-            // and stick them into a hashtable for retrieval down below by flightID.
-            IEnumerable<CustomFlightProperty> rgPfe = CustomFlightProperty.GetFlaggedEvents(szUser);
-            foreach (CustomFlightProperty pfe in rgPfe)
-            {
-                if (!dictFlightEvents.ContainsKey(pfe.FlightID))
-                    dictFlightEvents[pfe.FlightID] = new List<CustomFlightProperty>();
-                fIncludeFAR117 = fIncludeFAR117 || FAR117Currency.IsFAR117Property(pfe);
-                dictFlightEvents[pfe.FlightID].Add(pfe);
-            }
-
-            fIncludeFAR117 &= pf.UsesFAR117DutyTime;    // One last short-circuit - don't compute 117 if the user doesn't want it.
+            bool fIncludeFAR117 = pf.UsesFAR117DutyTime; 
 
             bool fUses61217 = pf.UsesFAR61217Currency;
             FAR61217Currency fc61217 = new FAR61217Currency();
@@ -686,10 +662,6 @@ namespace MyFlightbook.FlightCurrency
                     // keep running totals of PIC and Total time.
                     totalTime += cfr.Total;
                     picTime += cfr.PIC;
-
-                    List<CustomFlightProperty> lst = null;
-                    if (dictFlightEvents.TryGetValue(cfr.flightID, out lst))
-                        cfr.AddEvents(lst);
 
                     // do any custom currencies first because we may short-circuit everything else if this is unmanned
                     foreach (CustomCurrency cc in rgCustomCurrency)

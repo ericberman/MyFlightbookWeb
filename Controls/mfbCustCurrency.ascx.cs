@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -75,6 +75,11 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         cmbCatClass.DataSource = rgCatClass;
         cmbCatClass.DataBind();
 
+        List<CustomPropertyType> lstCpt = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.Name));
+        lstCpt.RemoveAll(cpt => !cpt.IsFavorite);
+        lstProps.DataSource = lstCpt;
+        lstProps.DataBind();
+
         // Get the categories (as opposed to catclass); this is something of a hack, but it avoids an extra DB call
         Dictionary<string, string> dictCategories = new Dictionary<string, string>();
         foreach (CategoryClass cc in rgCatClass)
@@ -113,10 +118,15 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
     {
         if (args == null)
             throw new ArgumentNullException("args");
-        int i;
-        if (!int.TryParse(txtNumEvents.Text, out i))
+        if (decMinEvents.Value <= 0 || decMinEvents.Value > 2000)
             args.IsValid = false;
-        if (i < 0 || i > 2000)
+    }
+
+    protected void valCheckEventSelected_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        if (args == null)
+            throw new ArgumentNullException("args");
+        if (Convert.ToInt32(cmbEventTypes.SelectedValue, CultureInfo.InvariantCulture) < 0)
             args.IsValid = false;
     }
 
@@ -125,7 +135,8 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         // clear the form
         txtRuleName.Text = string.Empty;
         cmbEventTypes.SelectedIndex = 0;
-        txtNumEvents.Text = txtTimeFrame.Text = string.Empty;
+        decMinEvents.Value = 1;
+        txtTimeFrame.Text = txtAirport.Text = txtContainedText.Text = string.Empty;
         cmbMonthsDays.SelectedIndex = 0;
 
         foreach (ListItem li in lstAircraft.Items)
@@ -134,6 +145,7 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
             li.Selected = false;
         cmbCatClass.SelectedIndex = 0;
         cmbCategory.SelectedIndex = 0;
+        lstProps.SelectedIndex = 0;
         UpdateTimeframeEnabledState();
     }
 
@@ -155,7 +167,17 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         hdnCCId.Value = cc.ID.ToString(CultureInfo.InvariantCulture);
         txtRuleName.Text = cc.DisplayName;
         cmbLimitType.SelectedValue = cc.CurrencyLimitType.ToString();
-        txtNumEvents.Text = cc.RequiredEvents.ToString(CultureInfo.CurrentCulture);
+        if (cc.EventType.IsIntegerOnly())
+        {
+            decMinEvents.EditingMode = Controls_mfbDecimalEdit.EditMode.Integer;
+            decMinEvents.IntValue = (int) cc.RequiredEvents;
+        }
+        else
+        {
+            decMinEvents.EditingMode = Controls_mfbDecimalEdit.EditMode.Decimal;
+            decMinEvents.Value = cc.RequiredEvents;
+        }
+
         cmbEventTypes.SelectedValue = ((int) cc.EventType).ToString(CultureInfo.InvariantCulture);
         SelectedTimespanType = cc.TimespanType;
         txtTimeFrame.Text = cc.TimespanType.IsAligned() ? string.Empty : cc.ExpirationSpan.ToString(CultureInfo.InvariantCulture);
@@ -166,6 +188,24 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
             li.Selected = cc.AircraftRestriction.Contains(Convert.ToInt32(li.Value, CultureInfo.InvariantCulture));
         cmbCategory.SelectedValue = cc.CategoryRestriction;
         cmbCatClass.SelectedValue = cc.CatClassRestriction.ToString();
+
+        txtAirport.Text = cc.AirportRestriction;
+        txtContainedText.Text = cc.TextRestriction;
+        if (cc.PropertyRestriction != null)
+        {
+            HashSet<int> hsPropsChecked = new HashSet<int>(cc.PropertyRestriction);
+            foreach (ListItem li in lstProps.Items)
+            {
+                int propID = Convert.ToInt32(li.Value, CultureInfo.InvariantCulture);
+                li.Selected = cc.PropertyRestriction.Contains(propID);
+                hsPropsChecked.Remove(propID);
+            }
+
+            // Add in any properties that were not found above!  (I.e., blacklisted or otherwise not favorite)
+            IEnumerable<CustomPropertyType> rgBlackListProps = CustomPropertyType.GetCustomPropertyTypes(hsPropsChecked);
+            foreach (CustomPropertyType cpt in rgBlackListProps)
+                lstProps.Items.Add(new ListItem(cpt.Title, cpt.PropTypeID.ToString(CultureInfo.InvariantCulture)) { Selected = true });
+        }
 
         btnAddCurrencyRule.Visible = cc.ID <= 0;    // only show the add button if we're doing a new currency.
     }
@@ -179,7 +219,7 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         CustomCurrency.LimitType lt = CustomCurrency.LimitType.Minimum;
         if (Enum.TryParse<CustomCurrency.LimitType>(cmbLimitType.SelectedValue, out lt))
             cc.CurrencyLimitType = lt;
-        cc.RequiredEvents = Convert.ToInt32(txtNumEvents.Text, CultureInfo.CurrentCulture);
+        cc.RequiredEvents = decMinEvents.Value;
         cc.EventType = (CustomCurrency.CustomCurrencyEventType)Convert.ToInt32(cmbEventTypes.SelectedValue, CultureInfo.InvariantCulture);
         cc.TimespanType = SelectedTimespanType;
         cc.ExpirationSpan = cc.TimespanType.IsAligned() ? 0 : Convert.ToInt32(txtTimeFrame.Text, CultureInfo.CurrentCulture);
@@ -188,6 +228,10 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         cc.AircraftRestriction = IDsFromList(lstAircraft);
         cc.CatClassRestriction = (CategoryClass.CatClassID)Enum.Parse(typeof(CategoryClass.CatClassID), cmbCatClass.SelectedValue);
         cc.CategoryRestriction = cmbCategory.SelectedValue.Trim();
+
+        cc.TextRestriction = txtContainedText.Text;
+        cc.AirportRestriction = txtAirport.Text;
+        cc.PropertyRestriction = IDsFromList(lstProps);
 
         m_cc = cc;
     }
@@ -230,5 +274,20 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
             if (li.Selected)
                 lst.Add(Convert.ToInt32(li.Value, CultureInfo.InvariantCulture));
         return lst;
+    }
+
+    protected void cmbEventTypes_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        CustomCurrency.CustomCurrencyEventType ccet = (CustomCurrency.CustomCurrencyEventType)Convert.ToInt32(cmbEventTypes.SelectedValue, CultureInfo.InvariantCulture);
+        decimal val = decMinEvents.Value;
+        if (ccet.IsIntegerOnly()) {
+            decMinEvents.EditingMode = Controls_mfbDecimalEdit.EditMode.Integer;
+            decMinEvents.IntValue = (int)val;
+        }
+        else
+        {
+            decMinEvents.EditingMode = Controls_mfbDecimalEdit.EditMode.Decimal;
+            decMinEvents.Value = val;
+        }
     }
 }

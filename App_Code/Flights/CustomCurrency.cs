@@ -261,6 +261,42 @@ namespace MyFlightbook.FlightCurrency
             string[] rgsz = LabelsForEventType(ccet);
             return (rgsz == null || rgsz.Length < 2) ? ccet.ToString() : rgsz[1];
         }
+
+        public static bool IsIntegerOnly(this CustomCurrency.CustomCurrencyEventType ccet)
+        {
+            switch (ccet)
+            {
+                case CustomCurrency.CustomCurrencyEventType.Flights:
+                case CustomCurrency.CustomCurrencyEventType.Landings:
+                case CustomCurrency.CustomCurrencyEventType.IFRApproaches:
+                case CustomCurrency.CustomCurrencyEventType.BaseCheck:
+                case CustomCurrency.CustomCurrencyEventType.UASLaunch:
+                case CustomCurrency.CustomCurrencyEventType.UASRecovery:
+                case CustomCurrency.CustomCurrencyEventType.NightLandings:
+                case CustomCurrency.CustomCurrencyEventType.NightTakeoffs:
+                case CustomCurrency.CustomCurrencyEventType.PICLandings:
+                case CustomCurrency.CustomCurrencyEventType.PICNightLandings:
+                case CustomCurrency.CustomCurrencyEventType.HoistOperations:
+                case CustomCurrency.CustomCurrencyEventType.LandingsHighAltitude:
+                case CustomCurrency.CustomCurrencyEventType.CAP5Checkride:
+                case CustomCurrency.CustomCurrencyEventType.CAP91Checkride:
+                case CustomCurrency.CustomCurrencyEventType.FMSApproaches:
+                    return true;
+                case CustomCurrency.CustomCurrencyEventType.TotalHours:
+                case CustomCurrency.CustomCurrencyEventType.Hours:
+                case CustomCurrency.CustomCurrencyEventType.IFRHours:
+                case CustomCurrency.CustomCurrencyEventType.GroundSimHours:
+                case CustomCurrency.CustomCurrencyEventType.BackseatHours:
+                case CustomCurrency.CustomCurrencyEventType.FrontSeatHours:
+                case CustomCurrency.CustomCurrencyEventType.NVHours:
+                case CustomCurrency.CustomCurrencyEventType.NVGoggles:
+                case CustomCurrency.CustomCurrencyEventType.NVFLIR:
+                case CustomCurrency.CustomCurrencyEventType.NightFlight:
+                case CustomCurrency.CustomCurrencyEventType.HoursDual:
+                default:
+                    return false;
+            }
+        }
         #endregion
     }
 
@@ -303,7 +339,7 @@ namespace MyFlightbook.FlightCurrency
             HoursDual = 25
         };
 
-        public enum CurrencyRefType { Aircraft = 0, Models = 1 };
+        public enum CurrencyRefType { Aircraft = 0, Models = 1, Properties = 2 };
 
         /// <summary>
         /// Is this a required minimum number of events, or a "do not exceed?"
@@ -312,7 +348,7 @@ namespace MyFlightbook.FlightCurrency
 
         private const int ID_UNKNOWN = -1;
 
-        string m_szTailNumbers, m_szModelNames, m_szCatClass;
+        string m_szTailNumbers, m_szModelNames, m_szCatClass, m_szPropertyNames;
 
         #region Initialization
         public CustomCurrency()
@@ -334,7 +370,7 @@ namespace MyFlightbook.FlightCurrency
             ID = Convert.ToInt32(dr["idCurrency"], CultureInfo.InvariantCulture);
             UserName = dr["username"].ToString();
             DisplayName = dr["name"].ToString();
-            Discrepancy = RequiredEvents = Convert.ToInt32(dr["minEvents"], CultureInfo.InvariantCulture);
+            Discrepancy = RequiredEvents = Convert.ToDecimal(dr["minEvents"], CultureInfo.InvariantCulture);
             CurrencyLimitType = (LimitType)Convert.ToInt32(dr["limitType"], CultureInfo.InvariantCulture);
 
             // MUST do calendar month THEN set Expiration span property, NOT the member variable.  This sets dtEarliest.
@@ -364,14 +400,18 @@ namespace MyFlightbook.FlightCurrency
             EventType = (CustomCurrencyEventType)Convert.ToInt32(dr["eventType"], CultureInfo.InvariantCulture);
             CategoryRestriction = dr["categoryRestriction"].ToString();
             CatClassRestriction = (CategoryClass.CatClassID)Convert.ToInt32(dr["catClassRestriction"], CultureInfo.InvariantCulture);
+            AirportRestriction = dr["airportRestriction"].ToString();
+            TextRestriction = dr["textRestriction"].ToString();
 
             ModelsRestriction = new List<int>(dr["ModelsRestriction"].ToString().ToInts());
             AircraftRestriction = new List<int>(dr["AircraftRestriction"].ToString().ToInts());
+            PropertyRestriction = new List<int>(dr["PropertyRestriction"].ToString().ToInts());
 
             // convenience properties - not persisted
             m_szTailNumbers = dr["AircraftDisplay"].ToString();
             m_szModelNames = dr["ModelsDisplay"].ToString();
             m_szCatClass = dr["CatClassDisplay"].ToString();
+            m_szPropertyNames = dr["PropertyDisplay"].ToString();
         }
         #endregion
         
@@ -406,6 +446,21 @@ namespace MyFlightbook.FlightCurrency
         /// </summary>
         public CategoryClass.CatClassID CatClassRestriction { get; set; }
 
+        /// <summary>
+        /// Airport which must be visited
+        /// </summary>
+        public string AirportRestriction { get; set; }
+
+        /// <summary>
+        /// Text contained in the comments field or any text properties
+        /// </summary>
+        public string TextRestriction { get; set; }
+
+        /// <summary>
+        /// ID's of properties that must be present
+        /// </summary>
+        public IEnumerable<int> PropertyRestriction { get; set; }
+
         override public string DiscrepancyString
         {
             get
@@ -415,7 +470,7 @@ namespace MyFlightbook.FlightCurrency
                 if (TimespanType.IsAligned())
                     return CurrentState == CurrencyState.OK ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyAlignedDueDate, AlignedDueDate.Value.ToShortDateString());
                 else
-                    return IsCurrent() ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, this.Discrepancy, EventTypeLabel(this.Discrepancy, EventType));
+                    return IsCurrent() ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, this.Discrepancy.ToString(EventType.IsIntegerOnly() ? "0" : "#,#.0#", CultureInfo.CurrentCulture), EventTypeLabel(this.Discrepancy, EventType));
             }
         }
 
@@ -562,7 +617,7 @@ namespace MyFlightbook.FlightCurrency
 
             string szSet = @"SET 
 username=?uname, name=?name, minEvents=?minEvents, limitType=?limit, timespan=?timespan, timespantype=?timespanType, eventType=?eventType, 
-categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestriction";
+categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestriction, airportRestriction=?airportRestriction, textRestriction=?textRestriction";
 
             string szQ = String.Format(CultureInfo.InvariantCulture, "REPLACE INTO customcurrency {0}{1}", szSet, fIsNew ? string.Empty : ", idCurrency=?id");
 
@@ -572,14 +627,16 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 {
                     comm.Parameters.AddWithValue("id", ID);
                     comm.Parameters.AddWithValue("uname", UserName);
-                    comm.Parameters.AddWithValue("name", DisplayName);
+                    comm.Parameters.AddWithValue("name", DisplayName.LimitTo(44));
                     comm.Parameters.AddWithValue("minEvents", RequiredEvents);
                     comm.Parameters.AddWithValue("limit", (int)CurrencyLimitType);
                     comm.Parameters.AddWithValue("timespan", ExpirationSpan);
                     comm.Parameters.AddWithValue("timespantype", (int)TimespanType);
                     comm.Parameters.AddWithValue("eventType", (int)EventType);
-                    comm.Parameters.AddWithValue("categoryRestriction", String.IsNullOrEmpty(CategoryRestriction) ? "" : CategoryRestriction);
+                    comm.Parameters.AddWithValue("categoryRestriction", String.IsNullOrEmpty(CategoryRestriction) ? string.Empty : CategoryRestriction);
                     comm.Parameters.AddWithValue("catClassrestriction", (int)CatClassRestriction);
+                    comm.Parameters.AddWithValue("airportRestriction", AirportRestriction.LimitTo(45));
+                    comm.Parameters.AddWithValue("textRestriction", TextRestriction.LimitTo(254));
                 });
 
             string szErr = (dbh.LastError.Length > 0) ? szErr = "Error saving customcurrency: " + szQ + "\r\n" + dbh.LastError : "";
@@ -610,6 +667,12 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 dbh.DoNonQuery();
             }
 
+            foreach (int idProp in PropertyRestriction)
+            {
+                dbh.CommandText = String.Format(CultureInfo.InvariantCulture, szInsert, ID, idProp, (int)CurrencyRefType.Properties);
+                dbh.DoNonQuery();
+            }
+
             return (szErr.Length == 0);
         }
 
@@ -630,9 +693,10 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         {
             StringBuilder sb = new StringBuilder();
             string szLimit = (CurrencyLimitType == LimitType.Minimum) ? Resources.Currency.CustomCurrencyMinEventsPrompt : Resources.Currency.CustomCurrencyMaxEventsPrompt;
+            string szMinEvents = String.Format(CultureInfo.CurrentCulture, EventType.IsIntegerOnly() ? "{0:0}" : "{0:#,#.0#}", RequiredEvents);
             string szBase = TimespanType.IsAligned() ?
-                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescriptionAligned, szLimit, RequiredEvents, EventTypeLabel(RequiredEvents, EventType), TimespanType.DisplayString()) :
-                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescription, szLimit, RequiredEvents, EventTypeLabel(RequiredEvents, EventType), ExpirationSpan, TimespanType.DisplayString());
+                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescriptionAligned, szLimit, szMinEvents, EventTypeLabel(RequiredEvents, EventType), TimespanType.DisplayString()) :
+                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescription, szLimit, szMinEvents, EventTypeLabel(RequiredEvents, EventType), ExpirationSpan, TimespanType.DisplayString());
 
             if (ModelsRestriction.Count() > 0)
                 sb.AppendFormat(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyModel, m_szModelNames);
@@ -648,6 +712,15 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             }
             if (AircraftRestriction.Count() > 0)
                 sb.AppendFormat(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyAircraft, m_szTailNumbers);
+
+            if (!String.IsNullOrWhiteSpace(AirportRestriction))
+                sb.AppendFormat(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyAirports, AirportRestriction);
+
+            if (!String.IsNullOrWhiteSpace(TextRestriction))
+                sb.AppendFormat(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyText, TextRestriction);
+
+            if (PropertyRestriction != null && PropertyRestriction.Count() > 0)
+                sb.AppendFormat(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyProperties, m_szPropertyNames);
 
             string szRestrict = sb.ToString();
             if (szRestrict.EndsWith(";", StringComparison.Ordinal))
@@ -706,6 +779,15 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 List<Aircraft> lstAircraft = new List<Aircraft>();
                 Array.ForEach<Aircraft>(ua.GetAircraftForUser(), (ac) => { if (AircraftRestriction.Contains(ac.AircraftID)) lstAircraft.Add(ac); });
                 fq.AircraftList = lstAircraft.ToArray();
+
+                if (!String.IsNullOrEmpty(AirportRestriction))
+                    fq.AirportList = Airports.AirportList.NormalizeAirportList(AirportRestriction);
+
+                if (!String.IsNullOrEmpty(TextRestriction))
+                    fq.GeneralText = TextRestriction;
+
+                if (PropertyRestriction != null && PropertyRestriction.Count() > 0)
+                    fq.PropertyTypes = CustomPropertyType.GetCustomPropertyTypes(PropertyRestriction).ToArray();
 
                 CustomPropertyType.KnownProperties prop = CustomPropertyType.KnownProperties.IDPropInvalid;
                 List<CustomPropertyType> lstprops = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes());
@@ -808,26 +890,71 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             get { return System.Web.HttpUtility.UrlEncode(Query.ToBase64CompressedJSONString()); }
         }
 
+        private bool CheckMatchesCriteria(ExaminerFlightRow cfr)
+        {
+            // quickly see if we can ignore this.
+            int idmodel = cfr.idModel;
+            if (ModelsRestriction != null && ModelsRestriction.Count() > 0 && !ModelsRestriction.Any(model => model == idmodel))
+                return false;
+            if (!String.IsNullOrEmpty(CategoryRestriction) && cfr.szCategory.ToString().CompareTo(CategoryRestriction) != 0)
+                return false;
+            if (CatClassRestriction > 0 && cfr.idCatClassOverride != CatClassRestriction)
+                return false;
+            int idAircraft = Convert.ToInt32(cfr.idAircraft);
+            if (AircraftRestriction != null && AircraftRestriction.Count() > 0 && !AircraftRestriction.Any(idac => idac == idAircraft))
+                return false;
+            if (AlignedStartDate.HasValue && AlignedStartDate.Value.CompareTo(cfr.dtFlight) > 0)
+                return false;
+            if (PropertyRestriction != null && PropertyRestriction.Count() > 0)
+            {
+                if (cfr.FlightEvents.Count() == 0)  // short circuit, plus empty set can be superset of other sets.
+                    return false;
+
+                HashSet<int> hsProps = new HashSet<int>(PropertyRestriction);
+                HashSet<int> hsFlight = new HashSet<int>();
+                foreach (CustomFlightProperty cfp in cfr.FlightEvents)
+                    hsFlight.Add(cfp.PropTypeID);
+
+                if (!hsFlight.IsSupersetOf(hsProps))
+                    return false;
+            }
+            if (!String.IsNullOrWhiteSpace(TextRestriction))
+            {
+                string szUpper = TextRestriction.ToUpper();
+                bool fFound = false;
+                if (cfr.Comments.ToUpper().Contains(szUpper))
+                    fFound = true;
+                if (!fFound)
+                {
+                    foreach (CustomFlightProperty cfp in cfr.FlightEvents)
+                        if (cfp.PropertyType.Type == CFPPropertyType.cfpString && cfp.TextValue.ToUpper().Contains(szUpper))
+                        {
+                            fFound = true;
+                            break;
+                        }
+                }
+                if (!fFound)
+                    return false;
+            }
+            if (!String.IsNullOrWhiteSpace(AirportRestriction))
+            {
+                string[] szAirports = Airports.AirportList.NormalizeAirportList(AirportRestriction.ToUpper());
+                string szRouteUpper = cfr.Route.ToUpper();
+                foreach (string szAirport in szAirports)
+                    if (!szRouteUpper.Contains(szAirport))
+                        return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Looks at the events in the flight for custom currency computations.
         /// </summary>
         /// <param name="cfr">The flight row to examine</param>
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
-            // quickly see if we can ignore this.
-            int idmodel = cfr.idModel;
-            if (ModelsRestriction != null && ModelsRestriction.Count() > 0 && !ModelsRestriction.Any(model => model == idmodel))
+            if (!CheckMatchesCriteria(cfr))
                 return;
-            if (!String.IsNullOrEmpty(CategoryRestriction) && cfr.szCategory.ToString().CompareTo(CategoryRestriction) != 0)
-                return;
-            if (CatClassRestriction > 0 && cfr.idCatClassOverride != CatClassRestriction)
-                return;
-            int idAircraft = Convert.ToInt32(cfr.idAircraft);
-            if (AircraftRestriction != null && AircraftRestriction.Count() > 0 && !AircraftRestriction.Any(idac => idac == idAircraft))
-                return;
-            if (AlignedStartDate.HasValue && AlignedStartDate.Value.CompareTo(cfr.dtFlight) > 0)
-                return;
-
             // don't look at anything older than necessary if we're a *maximum* currency
             // since we start out current and lose it over time, so "has been current" is always true.
             if (CurrencyLimitType == LimitType.Maximum && cfr.dtFlight.CompareTo(EarliestDate) < 0)

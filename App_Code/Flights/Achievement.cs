@@ -104,18 +104,6 @@ namespace MyFlightbook.Achievements
 
             try
             {
-                // get all custom flight properties that could contribute to currency of one sort or another
-                // and stick them into a dictionary for retrieval down below by flightID.
-                Dictionary<int, List<CustomFlightProperty>> dctFlightEvents = new Dictionary<int, List<CustomFlightProperty>>();     // flight events (IPC, Instrument checkrides, etc.), keyed by flight ID
-                IEnumerable<CustomFlightProperty> rgPfe = CustomFlightProperty.GetFlaggedEvents(UserName);
-                foreach (CustomFlightProperty pfe in rgPfe)
-                {
-                    List<CustomFlightProperty> lstpf = (dctFlightEvents.ContainsKey(pfe.FlightID) ? dctFlightEvents[pfe.FlightID] : null);
-                    if (lstpf == null)
-                        dctFlightEvents.Add(pfe.FlightID, lstpf = new List<CustomFlightProperty>());
-                    lstpf.Add(pfe);
-                }
-
                 // We do 3 passes against the badges:
                 // 1st pass: setup/initialize
                 lstTotal.ForEach((b) => { b.PreFlight(BadgeContext); });
@@ -131,9 +119,6 @@ namespace MyFlightbook.Achievements
                     (dr) =>
                     {
                         ExaminerFlightRow cfr = new ExaminerFlightRow(dr);
-
-                        if (dctFlightEvents.ContainsKey(cfr.flightID))
-                            cfr.AddEvents(dctFlightEvents[cfr.flightID]);
 
                         lstTotal.ForEach((b) => {
                             if (cfr.fIsRealAircraft || b.CanEarnInSim)

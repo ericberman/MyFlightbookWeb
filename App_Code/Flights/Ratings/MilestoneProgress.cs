@@ -1,10 +1,10 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.FlightCurrency;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
-using MyFlightbook.Airports;
-using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
@@ -475,18 +475,6 @@ namespace MyFlightbook.MilestoneProgress
             if (String.IsNullOrEmpty(Username))
                 throw new MyFlightbookException("Cannot compute milestones on an empty user!");
 
-            // get all custom flight properties that could contribute to currency of one sort or another
-            // and stick them into a dictionary for retrieval down below by flightID.
-            Dictionary<int, List<CustomFlightProperty>> dctFlightEvents = new Dictionary<int, List<CustomFlightProperty>>();     // flight events (IPC, Instrument checkrides, etc.), keyed by flight ID
-            IEnumerable<CustomFlightProperty> rgPfe = CustomFlightProperty.GetFlaggedEvents(Username);
-            foreach (CustomFlightProperty pfe in rgPfe)
-            {
-                List<CustomFlightProperty> lstpf = (dctFlightEvents.ContainsKey(pfe.FlightID) ? dctFlightEvents[pfe.FlightID] : null);
-                if (lstpf == null)
-                    dctFlightEvents.Add(pfe.FlightID, lstpf = new List<CustomFlightProperty>());
-                lstpf.Add(pfe);
-            }
-
             List<ExaminerFlightRow> lstRows = new List<ExaminerFlightRow>();
             StringBuilder sbRoutes = new StringBuilder();
 
@@ -500,8 +488,6 @@ namespace MyFlightbook.MilestoneProgress
                 (dr) =>
                 {
                     ExaminerFlightRow cfr = new ExaminerFlightRow(dr);
-                    if (dctFlightEvents.ContainsKey(cfr.flightID))
-                        cfr.AddEvents(dctFlightEvents[cfr.flightID]);
                     sbRoutes.AppendFormat("{0} ", cfr.Route);
                     lstRows.Add(cfr);   // we'll examine it below, after we've populated the routes
                 });

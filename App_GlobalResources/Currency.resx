@@ -848,4 +848,34 @@
   <data name="errCustomCurrencyNameTooLong" xml:space="preserve">
     <value>Name too long; please limit to 45 characters</value>
   </data>
+  <data name="CustomCurrencyAirports" xml:space="preserve">
+    <value>Visits airports: {0};</value>
+  </data>
+  <data name="CustomCurrencyMultipleSelectHint" xml:space="preserve">
+    <value>You can select multiple items in this list by holding down the control or command keys (depending on your system) while you click.</value>
+  </data>
+  <data name="CustomCurrencyProperties" xml:space="preserve">
+    <value>Has properties: {0};</value>
+  </data>
+  <data name="CustomCurrencyRestrictAirports" xml:space="preserve">
+    <value>Visits these airports</value>
+  </data>
+  <data name="CustomCurrencyRestrictProperties" xml:space="preserve">
+    <value>Contains these properties</value>
+  </data>
+  <data name="CustomCurrencyRestrictText" xml:space="preserve">
+    <value>Contains this text</value>
+  </data>
+  <data name="CustomCurrencySelectEvent" xml:space="preserve">
+    <value>(Please Select)</value>
+  </data>
+  <data name="CustomCurrencyText" xml:space="preserve">
+    <value>Contains: "{0}";</value>
+  </data>
+  <data name="errCustomCurrencyNoEvent" xml:space="preserve">
+    <value>Please choose an event type</value>
+  </data>
+  <data name="errCustomCurrencyNoFraction" xml:space="preserve">
+    <value>Number must be an integer value for the selected activity</value>
+  </data>
 </root>
