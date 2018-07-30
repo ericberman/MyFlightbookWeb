@@ -1,16 +1,15 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Web;
-using MySql.Data.MySqlClient;
 using System.IO;
 using System.Net;
-using System.Text;
+using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2016 MyFlightbook LLC
+ * Copyright (c) 2013-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -248,13 +247,14 @@ namespace MyFlightbook.Payments
         /// <summary>
         /// Finds the total of payments since a given date in a list.
         /// </summary>
-        /// <param name="dt">The threshold date</param>
+        /// <param name="dtStart">The threshold date</param>
+        /// <param name="dtEnd">The latest date to contribute</param>
         /// <param name="lst">The list of payments</param>
         /// <returns>The total amount of the payments</returns>
-        public static decimal PaymentsSinceDate(DateTime dt, List<Payment> lst)
+        public static decimal PaymentsInDateRange(DateTime dtStart, DateTime dtEnd, List<Payment> lst)
         {
             decimal total = 0;
-            lst.ForEach((p) => { if (p.Timestamp.CompareTo(dt) >= 0) total += p.CreditedAmount; });
+            lst.ForEach((p) => { if (p.Timestamp.CompareTo(dtStart) >= 0 && p.Timestamp.CompareTo(dtEnd) <= 0) total += p.CreditedAmount; });
             return total;
         }
 
@@ -882,7 +882,7 @@ ORDER BY dateEarned ASC ";
                     foreach (Gratuity g in lstKnownGratuities)
                     {
                         // see if this payment + priors qualifies
-                        if (Payment.PaymentsSinceDate(p.Timestamp.Subtract(g.Window), lstPayments) >= g.Threshold)
+                        if (Payment.PaymentsInDateRange(p.Timestamp.Subtract(g.Window), p.Timestamp.Date, lstPayments) >= g.Threshold)
                         {
                             // Find the existing gratuity, if any, for the user
                             // Add it to the list to update if we either have a new one, or if we have extended the epxiration
