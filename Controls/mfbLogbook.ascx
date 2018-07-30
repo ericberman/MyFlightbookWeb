@@ -26,9 +26,10 @@
                 <asp:Image ID="imgProgress" ImageUrl="~/images/ajax-loader.gif" runat="server" />
             </ProgressTemplate>
         </asp:UpdateProgress>
-        <asp:GridView ID="gvFlightLogs" runat="server" AutoGenerateColumns="False" BorderStyle="None"
+        <div style="margin-left: 5px; margin-right: 5px">
+            <asp:GridView ID="gvFlightLogs" runat="server" AutoGenerateColumns="False" BorderStyle="None"
             CellPadding="3" DataKeyNames="FlightID" AllowSorting="True" 
-            ShowHeader="true" ShowFooter="true" UseAccessibleHeader="true"
+            ShowHeader="true" ShowFooter="true" UseAccessibleHeader="true" Width="100%"
             Font-Size="8pt" AllowPaging="True" HeaderStyle-HorizontalAlign="Center"
             OnRowDataBound="gvFlightLogs_RowDataBound" EnableViewState="false" 
             PagerSettings-Mode="NumericFirstLast"
@@ -308,6 +309,7 @@
                 <p><%=Resources.LogbookEntry.EmptyLogbook %></p>
             </EmptyDataTemplate>
         </asp:GridView>
+        </div>
         <asp:Panel ID="pnlSendFlight" runat="server" Width="480px" DefaultButton="btnSendFlight" CssClass="modalpopup" style="display:none">
             <asp:Localize ID="locSendPrompt" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightPrompt %>"></asp:Localize>
             <asp:HiddenField ID="hdnFlightToSend" runat="server" />
