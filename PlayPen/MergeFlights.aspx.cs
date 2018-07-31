@@ -44,6 +44,10 @@ public partial class PlayPen_MergeFlights : System.Web.UI.Page
         Master.SelectedTab = tabID.lbtImport;
         Master.Layout = MasterPage.LayoutMode.Accordion;
         wzMerge.PreRender += new EventHandler(wzMerges_PreRender);
+
+        if (!Page.User.Identity.IsAuthenticated)
+            Response.Redirect("~/Default.aspx");
+
         if (!IsPostBack)
             RefreshFlightsList();
     }
