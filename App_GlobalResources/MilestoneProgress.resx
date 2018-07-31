@@ -1345,4 +1345,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="Title141CommercialSingleEngineSea" xml:space="preserve">
     <value>Part 141 - Commercial, Airplane, Single Engine Sea</value>
   </data>
+  <data name="Part135XCNote" xml:space="preserve">
+    <value>Cross-country time here uses the logged Cross-Country time for a flight or the Total Time, if the route has more than one airport, whichever is greater</value>
+  </data>
 </root>
