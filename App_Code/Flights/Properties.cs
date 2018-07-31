@@ -1197,6 +1197,16 @@ GROUP BY fp.idPropType;";
             return d;
         }
 
+        private static void AddTotalElapsedTime(Dictionary<int, string> d, IEnumerable<CustomFlightProperty> rgprops, int propStart, int propEnd, string szFormat)
+        {
+            CustomFlightProperty cfpStart = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == propStart);
+            CustomFlightProperty cfpEnd = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == propEnd);
+
+            if (cfpStart != null && cfpEnd != null && cfpEnd.DateValue.CompareTo(cfpStart.DateValue) > 0)
+                d[propEnd] = String.Format(CultureInfo.CurrentCulture, szFormat, ((decimal)cfpEnd.DateValue.Subtract(cfpStart.DateValue).TotalHours).ToHHMM());
+
+        }
+
         private static Dictionary<int, string> ComputeTotals(IEnumerable<CustomFlightProperty> rgprops)
         {
             Dictionary<int, string> d = new Dictionary<int, string>();
@@ -1207,16 +1217,9 @@ GROUP BY fp.idPropType;";
             if (cfpTachStart != null && cfpTachEnd != null && cfpTachEnd.DecValue - cfpTachStart.DecValue > 0)
                 d[(int)CustomPropertyType.KnownProperties.IDPropTachEnd] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalTachTime, cfpTachEnd.DecValue - cfpTachStart.DecValue);
 
-            CustomFlightProperty cfpDutyStart = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart);
-            CustomFlightProperty cfpDutyEnd = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd);
-            CustomFlightProperty cfpBlockOut = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut);
-            CustomFlightProperty cfpBlockIn = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn);
-
-            if (cfpDutyStart != null && cfpDutyEnd != null && cfpDutyEnd.DateValue.CompareTo(cfpDutyStart.DateValue) > 0)
-                d[(int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalDutyTime, ((decimal)cfpDutyEnd.DateValue.Subtract(cfpDutyStart.DateValue).TotalHours).ToHHMM());
-
-            if (cfpBlockOut != null && cfpBlockIn != null && cfpBlockIn.DateValue.CompareTo(cfpBlockOut.DateValue) > 0)
-                d[(int)CustomPropertyType.KnownProperties.IDBlockIn] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalBlockTime, ((decimal)cfpBlockIn.DateValue.Subtract(cfpBlockOut.DateValue).TotalHours).ToHHMM());
+            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, Resources.LogbookEntry.TotalDutyTime);
+            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropDutyStart, (int)CustomPropertyType.KnownProperties.IDPropDutyEnd, Resources.LogbookEntry.TotalDutyTime);
+            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDBlockOut, (int)CustomPropertyType.KnownProperties.IDBlockIn, Resources.LogbookEntry.TotalBlockTime);
 
             return d;
         }
