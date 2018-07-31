@@ -1,4 +1,9 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.CSV;
+using MyFlightbook.Geography;
+using MyFlightbook.Solar;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,10 +15,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
-using MyFlightbook.Airports;
-using MyFlightbook.Geography;
-using MyFlightbook.Solar;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
@@ -633,6 +634,39 @@ namespace MyFlightbook.Telemetry
         public TelemetryDataTable() : base() { Locale = CultureInfo.CurrentCulture; }
 
         protected TelemetryDataTable(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context) { Locale = CultureInfo.CurrentCulture; }
+
+        /// <summary>
+        /// Merges overlapping data from another TelemetryDataTable
+        /// </summary>
+        /// <param name="src">The source table</param>
+        public void MergeWith(DataTable src)
+        {
+            if (src == null)
+                return;
+
+            HashSet<string> hsColumnsThis = new HashSet<string>();
+            foreach (DataColumn c in Columns)
+                hsColumnsThis.Add(c.ColumnName);
+
+            HashSet<string> hsColumnsSrc = new HashSet<string>();
+            foreach (DataColumn c in src.Columns)
+                hsColumnsSrc.Add(c.ColumnName);
+
+            hsColumnsThis.IntersectWith(hsColumnsSrc);
+
+            // check for no overlappin columns
+            if (hsColumnsThis.Count == 0)
+                return;
+
+            foreach (DataRow dr in src.Rows)
+            {
+                DataRow drNew = this.NewRow();
+                foreach (string szColumn in hsColumnsThis)
+                    drNew[szColumn] = dr[szColumn];
+
+                Rows.Add(drNew);
+            }
+        }
     }
 
     /// <summary>
@@ -1037,6 +1071,29 @@ namespace MyFlightbook.Telemetry
 
             PathDistance = d;
             return d;
+        }
+
+        /// <summary>
+        /// Writes the flight data in CSV format to the target stream
+        /// </summary>
+        /// <param name="s"></param>
+        public void WriteCSVData(Stream s)
+        {
+            if (s == null)
+                throw new ArgumentNullException("s");
+            CsvWriter.WriteToStream(new StreamWriter(s, Encoding.UTF8), Data, true, true);
+        }
+
+        /// <summary>
+        /// Returns the flight data in CSV format in a string
+        /// </summary>
+        public string WriteCSVData()
+        {
+            using (StringWriter writer = new StringWriter(CultureInfo.CurrentCulture))
+            {
+                CsvWriter.WriteToStream(writer, Data, true, true);
+                return writer.ToString();
+            }
         }
 
         /// <summary>
@@ -1771,6 +1828,41 @@ namespace MyFlightbook.Telemetry
             if (!HasCompressedPath)
                 InitFromTelemetry();
             return GoogleData.DecodedPath();
+        }
+        #endregion
+
+        #region Merging
+        /// <summary>
+        /// Returns a merged telemetry reference from a list of references
+        /// </summary>
+        /// <param name="lstIn">The input references</param>
+        /// <param name="idFlight">The flight with which the target will be associated</param>
+        /// <returns>A merged telemetry reference.</returns>
+        public static TelemetryReference MergedTelemetry(IEnumerable<TelemetryReference> lstIn, int idFlight)
+        {
+            if (lstIn == null || lstIn.Count() == 0)
+                return null;
+            if (lstIn.Count() == 1)
+                return lstIn.ElementAt(0);
+
+            List<TelemetryReference> lst = new List<TelemetryReference>(lstIn);
+
+            using (FlightData fdTarget = new FlightData())
+            {
+                fdTarget.ParseFlightData(lst[0].LoadData());
+                lst.RemoveAt(0);
+
+                foreach (TelemetryReference tr in lst)
+                {
+                    using (FlightData fdSrc = new FlightData())
+                    {
+                        fdSrc.ParseFlightData(tr.LoadData());
+                        fdTarget.Data.MergeWith(fdSrc.Data);
+                    }
+                }
+
+                return new TelemetryReference(fdTarget.WriteCSVData(), idFlight);
+            }
         }
         #endregion
 

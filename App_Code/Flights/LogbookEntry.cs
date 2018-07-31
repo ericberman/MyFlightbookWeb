@@ -1937,6 +1937,140 @@ namespace MyFlightbook
             PIC = PIC.AddMinutes(le.PIC);
             TotalFlightTime = TotalFlightTime.AddMinutes(le.TotalFlightTime);
         }
+
+        private void MergeProperty(CustomFlightProperty cfpExisting, CustomFlightProperty cfp)
+        {
+            if (cfpExisting == null || cfp == null || cfp.PropertyType == null)
+                return;
+
+            switch (cfp.PropertyType.Type)
+            {
+                default:
+                case CFPPropertyType.cfpBoolean:
+                    break;
+                case CFPPropertyType.cfpCurrency:
+                    cfpExisting.DecValue = cfp.DecValue;
+                    break;
+                case CFPPropertyType.cfpDate:
+                case CFPPropertyType.cfpDateTime:
+                    switch (cfp.PropertyType.PropTypeID)
+                    {
+                        case (int)CustomPropertyType.KnownProperties.IDBlockOut:
+                        case (int)CustomPropertyType.KnownProperties.IDPropTachStart:
+                        case (int)CustomPropertyType.KnownProperties.IDPropDutyStart:
+                        case (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart:
+                            cfpExisting.DateValue = cfp.DateValue.EarlierDate(cfpExisting.DateValue);
+                            break;
+                        case (int)CustomPropertyType.KnownProperties.IDBlockIn:
+                        case (int)CustomPropertyType.KnownProperties.IDPropTachEnd:
+                        case (int)CustomPropertyType.KnownProperties.IDPropDutyEnd:
+                        case (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd:
+                            cfpExisting.DateValue = cfp.DateValue.LaterDate(cfpExisting.DateValue);
+                            break;
+                    }
+                    break;
+                case CFPPropertyType.cfpDecimal:
+                    if (cfp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
+                        cfpExisting.DecValue = Math.Min(cfpExisting.DecValue, cfp.DecValue);
+                    else if (cfp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachEnd)
+                        cfpExisting.DecValue = Math.Max(cfpExisting.DecValue, cfp.DecValue);
+                    else if (cfp.PropertyType.IsNoSum)
+                        cfpExisting.DecValue = cfp.DecValue;
+                    else
+                        cfpExisting.DecValue += cfp.DecValue;
+                    break;
+                case CFPPropertyType.cfpInteger:
+                    if (cfp.PropertyType.IsNoSum)
+                        cfpExisting.IntValue = cfp.IntValue;
+                    else
+                        cfpExisting.IntValue += cfp.IntValue;
+                    break;
+                case CFPPropertyType.cfpString:
+                    cfpExisting.TextValue = cfp.TextValue;
+                    break;
+            }
+        }
+
+        private void MergePropertiesFrom(List<CustomFlightProperty> lstCfpThis, LogbookEntry le)
+        {
+            if (le == null)
+                return;
+            // Merge properties, being smart on tach, block, duty, and flight duty time.
+            if (le.CustomProperties != null)
+            {
+                foreach (CustomFlightProperty cfp in le.CustomProperties)
+                {
+                    CustomFlightProperty cfpExisting = lstCfpThis.FirstOrDefault(fp => fp.PropTypeID == cfp.PropTypeID);
+                    if (cfpExisting == null)
+                    {
+                        cfp.FlightID = FlightID;
+                        lstCfpThis.Add(cfp);
+                    }
+                    else
+                        MergeProperty(cfpExisting, cfp);
+                }
+            }
+        }
+
+        private void MergeImagesFrom(LogbookEntry le)
+        {
+            if (le.FlightImages != null)
+            {
+                foreach (MFBImageInfo mfbii in le.FlightImages)
+                    mfbii.MoveImage(FlightID.ToString(CultureInfo.InvariantCulture));
+            }
+        }
+
+        /// <summary>
+        /// Merges this flight with a set of other flights.  All flights should have telemetry and images populated.
+        /// THIS IS DESTRUCTIVE - the other flights will be deleted!!!
+        /// </summary>
+        /// <param name="lst">The enumerable of other flights with which to merge</param>
+        public void MergeFrom(IEnumerable<LogbookEntry> lst)
+        {
+            if (lst == null || lst.Count() == 0)
+                return;
+
+            List<CustomFlightProperty> lstCfpThis = new List<CustomFlightProperty>(CustomProperties);
+
+            List<TelemetryReference> lstPaths = new List<TelemetryReference>();
+
+            if (HasFlightData)
+                lstPaths.Add(Telemetry);
+
+            foreach (LogbookEntry le in lst)
+            {
+                AddFrom(le);
+                Comment = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Comment, le.Comment);
+                string[] newAirports = Regex.Split(le.Route, "\\W", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                foreach (string airport in newAirports)
+                    if (!Route.TrimEnd().EndsWith(airport, StringComparison.CurrentCultureIgnoreCase))
+                        Route = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Route, airport);
+                HobbsStart = (HobbsStart == 0.0M || le.HobbsStart == 0.0M) ? Math.Max(HobbsStart, le.HobbsStart) : Math.Min(HobbsStart, le.HobbsStart);
+                HobbsEnd = Math.Max(this.HobbsEnd, le.HobbsEnd);
+                EngineStart = (!EngineStart.HasValue() || !le.EngineStart.HasValue()) ? EngineStart.LaterDate(le.EngineStart) : EngineStart.EarlierDate(le.EngineStart);
+                EngineEnd = EngineEnd.LaterDate(le.EngineEnd);
+                FlightStart = (!FlightStart.HasValue() || !le.FlightStart.HasValue()) ? FlightStart.LaterDate(le.FlightStart) : FlightStart.EarlierDate(le.FlightStart);
+                FlightEnd = FlightEnd.LaterDate(le.FlightEnd);
+
+                MergePropertiesFrom(lstCfpThis, le);
+                MergeImagesFrom(le);
+                if (le.HasFlightData)
+                    lstPaths.Add(le.Telemetry);
+            }
+
+            CustomProperties = lstCfpThis.ToArray();
+            TelemetryReference tr = TelemetryReference.MergedTelemetry(lstPaths, FlightID);
+            if (tr != null)
+                FlightData = tr.RawData;
+
+            // Commit this flight
+            ((LogbookEntry) this).FCommit(true, false);
+
+            // And delete the input flights
+            foreach (LogbookEntry le in lst)
+                LogbookEntry.FDeleteEntry(le.FlightID, le.User);
+        }
         #endregion
 
         public override string ToString()
