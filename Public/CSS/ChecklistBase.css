@@ -1,0 +1,122 @@
+﻿/******************************************************
+ * 
+ * Copyright (c) 2018 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
+/* Tabs */
+.checklistTab .ajax__tab_header {
+    text-transform:uppercase;
+    font-weight: bold;
+    color: black;
+}
+
+/* Check items */
+.rowEven {
+    vertical-align: middle;
+    font-family: Arial;
+}
+
+.rowOdd {
+    background-color: #E8E8E8;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    vertical-align: middle;
+    font-family: Arial;
+}
+
+.checkCell {
+    width: 32pt;
+    height: 24pt;
+    padding-left: 8pt;
+}
+
+.checkCell input[type=checkbox] {
+    transform: scale(1.8);
+}
+
+.challengeItem {
+    text-transform: uppercase;
+    font-weight:bold;
+}
+
+.responseItem {
+    text-transform:uppercase;
+}
+
+.checklistCell {
+    padding: 10px, 5px, 10px, 5px;
+    height: 48px;
+}
+
+.responseCell {
+    padding: 10px, 5px, 10px, 5px;
+    text-align: right;
+    height: 48px;
+}
+
+.activeItem {
+    font-size: 18pt;
+}
+
+/* Accordion style headers */
+
+.checklistHeader {
+    text-transform: uppercase;
+    font-weight: bold;
+    line-height: 18pt;
+    background-color: lightgrey;
+    padding: 3px;
+    margin-top: 4px;
+    border: 1px solid gray;
+    border-radius: 7px;
+}
+
+.checklistHeaderSelected {
+    font-weight: bold;
+    text-transform: uppercase;
+    line-height: 18pt;
+    background-color: lightgrey;
+    background-image: linear-gradient(to bottom, #cdcdcd, #d9d9d9, #e6e6e6, #f2f2f2, #ffffff);
+    padding: 3px;
+    margin-top: 4px;
+    border-top: 1px solid gray;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+
+.checklistHeaderContent {
+    padding: 3px;
+    border-bottom: 1px solid gray;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+
+/* Subheader */
+.checklistSubHeader {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Atomic content */
+.checklistContentStyleNormal {
+}
+
+.checklistContentStyleEmphasis {
+    font-weight:bold;
+}
+
+.checklistContentStyleEmergency {
+    color: red;
+    font-weight:bold;
+    background-color: yellow;
+    width: 100%;
+}
+
+
+
