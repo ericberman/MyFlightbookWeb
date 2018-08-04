@@ -5,13 +5,20 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
     <asp:Panel ID="pnlEditor" runat="server">
         <h2>Cheat sheet:</h2>
+        <h3>Plain text:</h3>
+        <ul>
+            <li>XXX - Plain text</li>
+            <li>*XXX - Emphasized line of text (boldface)</li>
+            <li>**XXX Really emphasized line of text (e.g., for emergency)</li>
+        </ul>
+        <h3>Grouping/sections</h3>
         <ul>
             <li>Tab xxx - The following sections goes in a tab with title xxx</li>
             <li>- XXX - Expandable/Collapsible header; subsequent items grouped in it</li>
             <li>-- XXX - Non-expandable header</li>
-            <li>* Emphasize this line (boldface)</li>
-            <li>** Really emphasize this line (e.g., for emergency)</li>
-            <li>XXX - Plain text</li>
+        </ul>
+        <h3>Checklist items</h3>
+        <ul>
             <li>[] xxx...yyy: Checkbox with challenge x and optional response y</li>
             <li>[E+]([E-]) - Checkbox denoting engine start (stop)</li>
             <li>[B+]([B-]) - Checkbox denoting block out (in)</li>
