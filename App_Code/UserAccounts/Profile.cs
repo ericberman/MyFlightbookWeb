@@ -330,6 +330,15 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Suppress aircraft characteristics in totals (complex, turbine, tailwheel, etc.)
+        /// </summary>
+        public Boolean SuppressModelFeatureTotals
+        {
+            get { return hasFlag(CurrencyOptionFlag.flagSuppressModelFeatureTotals); }
+            set { setCurrencyFlag(CurrencyOptionFlag.flagSuppressModelFeatureTotals, value); }
+        }
+
+        /// <summary>
         /// Does this user use FAR 117-mandated rest periods?
         /// </summary>
         public Boolean UsesFAR117DutyTime

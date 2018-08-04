@@ -273,6 +273,9 @@
   <data name="btnUpdateCurrencyPrefsResource2.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="btnUpdateCurrencyPrefsResource3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="btnUpdateEmailPrefsResource1.Text" xml:space="preserve">
     <value>Update Preferences</value>
   </data>
@@ -280,6 +283,9 @@
     <value />
   </data>
   <data name="btnUpdateLocalPrefsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnUpdateLocalPrefsResource2.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="btnUpdateMedicalResource1.ToolTip" xml:space="preserve">
@@ -328,6 +334,12 @@
     <value>Deadline is determined using aircraft hours, not a date</value>
   </data>
   <data name="ckDeadlineUseHoursResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ckIncludeModelFeatureTotalsResource1.Text" xml:space="preserve">
+    <value>Include subtotals for model features like complex, turbine, tailwheel, etc.</value>
+  </data>
+  <data name="ckIncludeModelFeatureTotalsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="ckLAPLCurrencyResource1.Text" xml:space="preserve">
@@ -669,6 +681,9 @@
   <data name="lblCurrencyPrefsUpdatedResource2.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblCurrencyPrefsUpdatedResource3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblDeadlineAircraftOptionalResource1.Text" xml:space="preserve">
     <value>(Optional)</value>
   </data>
@@ -802,6 +817,9 @@
     <value />
   </data>
   <data name="lblLocalPrefsUpdatedResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblLocalPrefsUpdatedResource2.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblMedicalInfoResource1.ToolTip" xml:space="preserve">
@@ -1023,6 +1041,15 @@
   <data name="ListItemResource26.Value" xml:space="preserve">
     <value>PhysicianVisit</value>
   </data>
+  <data name="ListItemResource27.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource28.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ListItemResource29.Value" xml:space="preserve">
+    <value>False</value>
+  </data>
   <data name="ListItemResource3.Text" xml:space="preserve">
     <value>Show currency by Category/class/type</value>
   </data>
@@ -1046,6 +1073,9 @@
   </data>
   <data name="ListItemResource32.Value" xml:space="preserve">
     <value>Family</value>
+  </data>
+  <data name="ListItemResource33.Value" xml:space="preserve">
+    <value>True</value>
   </data>
   <data name="ListItemResource4.Text" xml:space="preserve">
     <value>Show currency for each make/model I have flown</value>
@@ -1314,6 +1344,12 @@
   <data name="pnlFreeDropboxGratuityResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="pnlLoose6157Resource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlLoose6157Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="pnlMedicalResource1.GroupingText" xml:space="preserve">
     <value />
   </data>
@@ -1368,6 +1404,9 @@
   <data name="rbl117RulesResource2.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="rbl117RulesResource3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="rblBasicMedActionResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
@@ -1375,6 +1414,9 @@
     <value />
   </data>
   <data name="rblCloudBackupAppendDateResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblCloudBackupAppendDateResource2.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="rblCurrencyPrefResource1.ToolTip" xml:space="preserve">

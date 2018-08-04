@@ -286,10 +286,10 @@
                             <div class="prefSectionRow">
                                 <asp:Button ID="btnUpdateLocalPrefs" runat="server"  
                                     Text="<%$ Resources:LocalizedText, profileUpdatePreferences %>" 
-                                    ValidationGroup="valPrefs" onclick="btnUpdateLocalPrefs_Click" />
+                                    ValidationGroup="valPrefs" onclick="btnUpdateLocalPrefs_Click" meta:resourcekey="btnUpdateLocalPrefsResource2" />
                                 <br />
                                 <asp:Label ID="lblLocalPrefsUpdated" runat="server" CssClass="success" EnableViewState="False"
-                                    Text="<%$ Resources:LocalizedText, profilePreferencesUpdated %>" Visible="False"></asp:Label>
+                                    Text="<%$ Resources:LocalizedText, profilePreferencesUpdated %>" Visible="False" meta:resourcekey="lblLocalPrefsUpdatedResource2"></asp:Label>
                             </div>
                         </Content>
                     </cc1:AccordionPane>
@@ -395,6 +395,7 @@
                                     <asp:ListItem Text="Show totals by model" Value="Model" meta:resourcekey="ListItemResource31" />
                                     <asp:ListItem Text="Show totals by model with common models grouped by family/ICAO Designator" Value="Family" meta:resourcekey="ListItemResource32" />
                                 </asp:RadioButtonList>
+                                <div><asp:CheckBox ID="ckIncludeModelFeatureTotals" runat="server" Text="Include subtotals for model features like complex, turbine, tailwheel, etc." meta:resourcekey="ckIncludeModelFeatureTotalsResource1" /></div>
                                 <div><asp:Localize ID="locExpireCurrency" Text="When a currency is expired, display it:" runat="server" meta:resourcekey="locExpireCurrencyResource1"></asp:Localize> <asp:DropDownList ID="cmbExpiredCurrency" runat="server" meta:resourcekey="cmbExpiredCurrencyResource1"></asp:DropDownList></div>
                                 <h3><%=Resources.Currency.CurrencyPrefsHeader %></h3>
                                 <div><asp:CheckBox ID="ckUseArmyCurrency" runat="server" Text="Show AR 95-1 (US Army) Currency" meta:resourcekey="ckUseArmyCurrencyResource1" /></div>
@@ -411,7 +412,7 @@
                                 <div><asp:CheckBox ID="ckUse13529xCurrency" runat="server" Text="Show FAR 135.293, 297, 299 Status" meta:resourcekey="ckUse135CurrencyResource1" /></div>
                                 <div><asp:CheckBox ID="ckUse13526xCurrency" runat="server" Text="Show FAR 135.265/135.267 Progress" meta:resourcekey="ckUse13526xCurrencyResource1" /></div>
                                 <div><asp:CheckBox ID="ckUse61217Currency" runat="server" Text="<%$ Resources:Currency, Part61217Option %>" meta:resourcekey="ckUse61217CurrencyResource1" /></div>
-                                <asp:Panel runat="server" ID="pnlLoose6157">
+                                <asp:Panel runat="server" ID="pnlLoose6157" meta:resourcekey="pnlLoose6157Resource1">
                                     <asp:CheckBox ID="ck6157c4Pref" runat="server" meta:resourcekey="ck6157c4PrefResource1" Text="Use loose interpretation of 61.57(c)(4)" /> 
                                     <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes" meta:resourcekey="lnkCurrencyNotesResource1" runat="server" Text="(See notes on currency computations for details)" Target="_blank" NavigateUrl="~/Public/CurrencyDisclaimer.aspx#instrument"></asp:HyperLink></span>
                                 </asp:Panel>
@@ -434,10 +435,10 @@
                             <div class="prefSectionRow">
                                 <asp:Button ID="btnUpdateCurrencyPrefs" runat="server"  
                                     Text="<%$ Resources:LocalizedText, profileUpdatePreferences %>" 
-                                    ValidationGroup="valPrefs" onclick="btnUpdateCurrencyPrefs_Click" />
+                                    ValidationGroup="valPrefs" onclick="btnUpdateCurrencyPrefs_Click" meta:resourcekey="btnUpdateCurrencyPrefsResource3" />
                                 <br />
                                 <asp:Label ID="lblCurrencyPrefsUpdated" runat="server" CssClass="success" EnableViewState="False"
-                                    Text="<%$ Resources:LocalizedText, profilePreferencesUpdated %>" Visible="False"></asp:Label>
+                                    Text="<%$ Resources:LocalizedText, profilePreferencesUpdated %>" Visible="False" meta:resourcekey="lblCurrencyPrefsUpdatedResource3"></asp:Label>
                             </div>
                         </Content>
                     </cc1:AccordionPane>
@@ -511,7 +512,7 @@
                                                     </td>
                                                     <td>
                                                         <asp:DropDownList ID="cmbDeadlineAircraft" runat="server" AppendDataBoundItems="True" AutoPostBack="True" DataTextField="TailNumber" DataValueField="AircraftID" meta:resourcekey="cmbDeadlineAircraftResource1" OnSelectedIndexChanged="cmbDeadlineAircraft_SelectedIndexChanged">
-                                                            <asp:ListItem meta:resourcekey="ListItemResource20" Selected="True" Text="(None)" Value=""></asp:ListItem>
+                                                            <asp:ListItem meta:resourcekey="ListItemResource20" Selected="True" Text="(None)"></asp:ListItem>
                                                         </asp:DropDownList>
                                                         <asp:CheckBox ID="ckDeadlineUseHours" runat="server" AutoPostBack="True" meta:resourcekey="ckDeadlineUseHoursResource1" OnCheckedChanged="ckDeadlineUseHours_CheckedChanged" Text="Deadline is determined using aircraft hours, not a date" Visible="False" />
                                                     </td>
@@ -622,8 +623,7 @@
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
-                                <p><asp:Localize ID="locAboutCloudStorage" runat="server" 
-                                    Text="" meta:resourcekey="locAboutCloudStorageResource1"></asp:Localize></p>
+                                <p><asp:Localize ID="locAboutCloudStorage" runat="server" meta:resourcekey="locAboutCloudStorageResource1"></asp:Localize></p>
                                 <table>
                                     <tr valign="top">
                                         <td style="width:180px">

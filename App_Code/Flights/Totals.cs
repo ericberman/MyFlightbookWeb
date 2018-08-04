@@ -750,7 +750,8 @@ namespace MyFlightbook.FlightCurrency
                     ComputeTotalsForCustomProperties(comm, pf);
 
                     // Get model-based time (retract, complex, etc.)
-                    ComputeTotalsForModelFeature(comm, szTempTableName, pf);
+                    if (!pf.SuppressModelFeatureTotals)
+                        ComputeTotalsForModelFeature(comm, szTempTableName, pf);
 
                     // Now get full totals
                     comm.CommandText = szQTotals;
