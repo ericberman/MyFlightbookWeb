@@ -858,4 +858,7 @@
   <data name="PrintTotalsAllCatClass" xml:space="preserve">
     <value>[All]</value>
   </data>
+  <data name="FlightAverageSpeed" xml:space="preserve">
+    <value>, Average Speed: {0:#,#.0}kts</value>
+  </data>
 </root>

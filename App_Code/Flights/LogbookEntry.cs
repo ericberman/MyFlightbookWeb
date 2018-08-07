@@ -1876,7 +1876,7 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Returns the distances flown on this flight
+        /// Returns the distances and average speed flown on this flight
         /// </summary>
         /// <param name="PathDistance">The pre-computed TELEMETRY distance in NM, if known (performance imprevement), or null</param>
         /// <returns></returns>
@@ -1896,14 +1896,21 @@ namespace MyFlightbook
             double dRoute = al.DistanceForRoute();
             double dPath = PathDistance.HasValue ? PathDistance.Value : 0.0;
 
+            double time = (FlightStart.HasValue() && FlightEnd.HasValue()) ? FlightEnd.Subtract(FlightStart).TotalHours : (double) TotalFlightTime;
+
+            string szAverageSpeed = string.Empty;
+
             if (dRoute + dPath > 0)
             {
+                if (time > 0)
+                    szAverageSpeed = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightAverageSpeed, Math.Max(dPath, dRoute) / time);
+
                 if (dPath > 0 && dRoute > 0)
-                    return String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceLong, dPath, dRoute);
+                    return String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceLong, dPath, dRoute) + szAverageSpeed;
                 else if (dPath > 0)
-                    return String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistancePathOnly, dPath);
+                    return String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistancePathOnly, dPath) + szAverageSpeed;
                 else
-                    return String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceRouteOnly, dRoute);
+                    return String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceRouteOnly, dRoute) + szAverageSpeed;
             }
             return string.Empty;
         }
