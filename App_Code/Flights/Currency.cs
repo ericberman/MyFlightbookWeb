@@ -2343,6 +2343,7 @@ namespace MyFlightbook.FlightCurrency
         private CurrencyState m_csCurrent = CurrencyState.NotCurrent;
         private DateTime m_dtExpiration = DateTime.MinValue;
         private string m_szDiscrepancy = string.Empty;
+        private Boolean fSeenCheckride = false;
 
         #region Adding Events
         /// <summary>
@@ -2595,65 +2596,59 @@ namespace MyFlightbook.FlightCurrency
             if (!cfr.fIsCertifiedIFR)
                 return;
 
-            // After Nov 26, 2018, the rules change: any combination of real aircraft, FTD, FFS, or ATD that adds up to 6 approaches + hold works.
-            if (DateTime.Now.CompareTo(ExaminerFlightRow.Nov2018Cutover) >= 0)
-            {
-                if (cfr.cApproaches > 0)
-                    AddApproaches(cfr.dtFlight, cfr.cApproaches);
-                if (cfr.cHolds > 0)
-                    AddHolds(cfr.dtFlight, cfr.cHolds);
+            // Once we see a checkride (vs. a vanilla IPC), any prior approaches/holds/etc. are clearly for training and
+            // thus we shouldn't count them for currency.  Otherwise, we might warn that an IPC is required due to a gap in training when
+            // one isn't actually.
+            if (fSeenCheckride)
                 return;
-            }
 
-            // Everything below is OBSOLETE as of Nov 26, 2018
-
-            // Add any IFR-relevant flight events.
             cfr.ForEachEvent((pfe) =>
             {
                 // add any IPC or IPC equivalents
                 if (pfe.PropertyType.IsIPC)
                     AddIPC(cfr.dtFlight);
+                if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropCheckrideIFR)
+                    fSeenCheckride = true;
+            });
 
-                if (cfr.fIsATD)
+            // add any potentially relevant IFR currency events.
+            // After Nov 26, 2018, the rules change: any combination of real aircraft, FTD, FFS, or ATD that adds up to 6 approaches + hold works.
+            if (cfr.fIsRealAircraft || DateTime.Now.CompareTo(ExaminerFlightRow.Nov2018Cutover) >= 0)
+            {
+                if (cfr.cApproaches > 0)
+                    AddApproaches(cfr.dtFlight, cfr.cApproaches);
+                if (cfr.cHolds > 0)
+                    AddHolds(cfr.dtFlight, cfr.cHolds);
+            }
+            // Other IFR currency events for ATD's
+            else if (cfr.fIsATD)
+            {
+                // Add any IFR-relevant flight events for 61.57(c)(3)
+                cfr.ForEachEvent((pfe) =>
                 {
                     // Add unusal attitudes performed in an ATD
                     if (pfe.PropertyType.IsUnusualAttitudeAscending)
                         AddUARecoveryAsc(cfr.dtFlight, pfe.IntValue);
                     if (pfe.PropertyType.IsUnusualAttitudeDescending)
                         AddUARecoveryDesc(cfr.dtFlight, pfe.IntValue);
-                }
-            });
+                });
 
-            // add any potentially relevant IFR currency events.
-            if (cfr.fIsCertifiedIFR)
-            {
-                fcComboApproach6Month.AddRecentFlightEvents(cfr.dtFlight, cfr.cApproaches);
+                if (cfr.cApproaches > 0)
+                    AddATDApproaches(cfr.dtFlight, cfr.cApproaches);
+                if (cfr.cHolds > 0)
+                    AddATDHold(cfr.dtFlight, cfr.cHolds);
 
-                if (cfr.fIsRealAircraft)
-                {
-                    if (cfr.cApproaches > 0)
-                        AddApproaches(cfr.dtFlight, cfr.cApproaches);
-                    if (cfr.cHolds > 0)
-                        AddHolds(cfr.dtFlight, cfr.cHolds);
-                }
-                // Other IFR currency events for ATD's
-                else if (cfr.fIsATD)
-                {
-                    if (cfr.cApproaches > 0)
-                        AddATDApproaches(cfr.dtFlight, cfr.cApproaches);
-                    if (cfr.cHolds > 0)
-                        AddATDHold(cfr.dtFlight, cfr.cHolds);
-
-                    AddATDInstrumentTime(cfr.dtFlight, cfr.IMC + cfr.IMCSim);
-                }
-                else if (cfr.fIsFTD)
-                {
-                    if (cfr.cApproaches > 0)
-                        AddFTDApproaches(cfr.dtFlight, cfr.cApproaches);
-                    if (cfr.cHolds > 0)
-                        AddFTDHold(cfr.dtFlight, cfr.cHolds);
-                }
+                AddATDInstrumentTime(cfr.dtFlight, cfr.IMC + cfr.IMCSim);
             }
+            else if (cfr.fIsFTD)
+            {
+                if (cfr.cApproaches > 0)
+                    AddFTDApproaches(cfr.dtFlight, cfr.cApproaches);
+                if (cfr.cHolds > 0)
+                    AddFTDHold(cfr.dtFlight, cfr.cHolds);
+            }
+
+            fcComboApproach6Month.AddRecentFlightEvents(cfr.dtFlight, cfr.cApproaches);
         }
         #endregion
     }
