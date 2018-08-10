@@ -1,5 +1,6 @@
 using MyFlightbook;
 using System;
+using System.Web;
 using System.Web.Security;
 using System.Web.UI.WebControls;
 
@@ -12,6 +13,20 @@ using System.Web.UI.WebControls;
 
 public partial class newuser : System.Web.UI.Page
 {
+    protected override void OnError(EventArgs e)
+    {
+        Exception ex = Server.GetLastError();
+
+        if (ex.GetType() == typeof(HttpRequestValidationException))
+        {
+            Context.ClearError();
+            Response.Redirect("~/SecurityError.aspx");
+            Response.End();
+        }
+        else
+            base.OnError(e);
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.Layout = MasterPage.LayoutMode.Accordion;

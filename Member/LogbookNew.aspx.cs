@@ -1,27 +1,42 @@
-﻿using System;
-using System.Globalization;
-using System.Web;
-using System.Web.UI;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Printing;
 using MyFlightbook.SocialMedia;
 using Newtonsoft.Json;
+using System;
+using System.Globalization;
+using System.Web;
+using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 /*
- * TODO: What were the bugs?
- * Search form is heaviest item remaining on the page.  Lazy load it too?  It does a bunch of DB calls - maybe don't lazy load it but rather cache things like aircraft and used properties so that it doesn't need to be in viewstate, 
- * making page load faster and less DB intensive...
 TODO: Modify the print link in javascript on the client for performance?
  */
 public partial class Member_LogbookNew : System.Web.UI.Page
 {
+    /// <summary>
+    /// Catches injection errors (e.g., a &lt; in places it's not allowed)
+    /// </summary>
+    /// <param name="e"></param>
+    protected override void OnError(EventArgs e)
+    {
+        Exception ex = Server.GetLastError();
+
+        if (ex.GetType() == typeof(HttpRequestValidationException))
+        {
+            Context.ClearError();
+            Response.Redirect("~/SecurityError.aspx");
+            Response.End();
+        }
+        else
+            base.OnError(e);
+    }
+
     private const string szParamIDFlight = "idFlight";
 
     public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }
