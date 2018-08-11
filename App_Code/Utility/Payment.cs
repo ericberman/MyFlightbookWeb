@@ -205,14 +205,14 @@ namespace MyFlightbook.Payments
         #endregion
 
         #region Getting transaction records
-        private static Collection<Payment> RecordsForQuery(string szQ, Action<MySqlCommand> initCommand)
+        private static IEnumerable<Payment> RecordsForQuery(string szQ, Action<MySqlCommand> initCommand)
         {
             DBHelper dbh = new DBHelper(szQ);
             List<Payment> lst = new List<Payment>();
             dbh.ReadRows(
                 (comm) => { initCommand(comm); },
                 (dr) => { lst.Add(new Payment(dr)); });
-            return new Collection<Payment>(lst);
+            return lst;
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace MyFlightbook.Payments
         /// </summary>
         /// <param name="szUser">The name of the user</param>
         /// <returns>A list containing the records in reverse chronological order</returns>
-        public static Collection<Payment> RecordsForUser(string szUser)
+        public static IEnumerable<Payment> RecordsForUser(string szUser)
         {
             return RecordsForQuery("SELECT * FROM payments WHERE Username=?szUser ORDER BY Date DESC", (comm) => { comm.Parameters.AddWithValue("szUser", szUser); });
         }
@@ -230,7 +230,7 @@ namespace MyFlightbook.Payments
         /// </summary>
         /// <param name="txID">The ID</param>
         /// <returns></returns>
-        public static Collection<Payment> RecordsWithID(string txID)
+        public static IEnumerable<Payment> RecordsWithID(string txID)
         {
             return RecordsForQuery("SELECT * FROM payments WHERE TransactionID=?txID ORDER BY Date DESC", (comm) => { comm.Parameters.AddWithValue("txID", txID); });
         }
@@ -239,9 +239,14 @@ namespace MyFlightbook.Payments
         /// Returns all payments made in the system.
         /// </summary>
         /// <returns></returns>
-        public static Collection<Payment> AllRecords()
+        public static IEnumerable<Payment> AllRecords()
         {
             return RecordsForQuery("SELECT * FROM payments ORDER BY Date DESC", (comm) => { });
+        }
+
+        public static IEnumerable<Payment> AllRecordsForValidUsers()
+        {
+            return RecordsForQuery("SELECT p.* FROM payments p LEFT JOIN users u ON p.username = u.username WHERE u.username IS NOT NULL ORDER BY Date DESC", (comm) => { });
         }
 
         /// <summary>
@@ -805,7 +810,7 @@ ORDER BY dateEarned ASC ";
         /// <returns></returns>
         private static Dictionary<string, Collection<Payment>> PaymentListsForUser(string szUser)
         {
-            List<Payment> lstAllPayments = new List<Payment>(String.IsNullOrEmpty(szUser) ? Payment.AllRecords() : Payment.RecordsForUser(szUser));
+            List<Payment> lstAllPayments = new List<Payment>(String.IsNullOrEmpty(szUser) ? Payment.AllRecordsForValidUsers() : Payment.RecordsForUser(szUser));
 
             // Sort the list in Ascending order by date
             lstAllPayments.Sort((p1, p2) => { return p1.Timestamp.CompareTo(p2.Timestamp); });
