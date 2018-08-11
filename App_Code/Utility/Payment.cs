@@ -254,7 +254,7 @@ namespace MyFlightbook.Payments
         public static decimal PaymentsInDateRange(DateTime dtStart, DateTime dtEnd, List<Payment> lst)
         {
             decimal total = 0;
-            lst.ForEach((p) => { if (p.Timestamp.CompareTo(dtStart) >= 0 && p.Timestamp.CompareTo(dtEnd) <= 0) total += p.CreditedAmount; });
+            lst.ForEach((p) => { if (p.Timestamp.Date.CompareTo(dtStart) >= 0 && p.Timestamp.Date.CompareTo(dtEnd) <= 0) total += p.CreditedAmount; });
             return total;
         }
 
@@ -882,7 +882,7 @@ ORDER BY dateEarned ASC ";
                     foreach (Gratuity g in lstKnownGratuities)
                     {
                         // see if this payment + priors qualifies
-                        if (Payment.PaymentsInDateRange(p.Timestamp.Subtract(g.Window), p.Timestamp.Date, lstPayments) >= g.Threshold)
+                        if (Payment.PaymentsInDateRange(p.Timestamp.Subtract(g.Window).Date, p.Timestamp.Date, lstPayments) >= g.Threshold)
                         {
                             // Find the existing gratuity, if any, for the user
                             // Add it to the list to update if we either have a new one, or if we have extended the epxiration
