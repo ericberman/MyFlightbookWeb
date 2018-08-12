@@ -112,7 +112,7 @@ public partial class PlayPen_MergeFlights : System.Web.UI.Page
         }
     }
 
-    private bool IsValid()
+    private bool IsValidToMerge()
     {
         IEnumerable<LogbookEntry> flights = SelectedFlights;
         if (flights.Count() < 2)
@@ -159,7 +159,7 @@ public partial class PlayPen_MergeFlights : System.Web.UI.Page
             throw new ArgumentNullException("e");
         if (wzMerge.ActiveStep == wsSelectFlights)
         {
-            if (!IsValid())
+            if (!IsValidToMerge())
             {
                 e.Cancel = true;
                 SelectedFlights = null;

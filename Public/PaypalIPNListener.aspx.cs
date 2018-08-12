@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Text;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Payments;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -59,10 +60,11 @@ public partial class Public_PaypalIPNListener : System.Web.UI.Page
             if (String.IsNullOrEmpty(szTransactionID))
                 sbErr.AppendFormat(CultureInfo.CurrentCulture, "No transaction ID is specified!\r\n\r\n");
 
-            Collection<Payment> lst = Payment.RecordsWithID(szTransactionID);
+            IEnumerable<Payment> lst = Payment.RecordsWithID(szTransactionID);
             // Note: it's possible via e-check to get two notifications, one that is pending and one that is completed.
             // Pending shows as payment_status: Pending, completed shows as payment_status=Completed
-            if (lst.Count > 0)
+            int cPayments = lst.Count();
+            if (cPayments > 0)
                 sbErr.AppendFormat(CultureInfo.CurrentCulture, "Duplicate transaction ID: {0}\r\n\r\n", szTransactionID);
 
             switch (transType)
@@ -78,11 +80,11 @@ public partial class Public_PaypalIPNListener : System.Web.UI.Page
                         if (String.IsNullOrEmpty(szParentTxnID))
                             sbErr.AppendFormat(CultureInfo.CurrentCulture, "Refund with no parent transaction\r\n\r\n");
                         lst = Payment.RecordsWithID(szParentTxnID);
-                        if (lst.Count > 1)
+                        if (cPayments > 1)
                             sbErr.AppendFormat(CultureInfo.CurrentCulture, "Multiple records found for parent transaction of refund\r\n\r\n");
-                        else if (lst.Count == 0)
+                        else if (cPayments == 0)
                             sbErr.AppendFormat(CultureInfo.CurrentCulture, "No parent record found for parent transaction of refund\r\n\r\n");
-                        szUser = lst[0].Username;
+                        szUser = lst.ElementAt(0).Username;
                     }
                     break;
                 default:

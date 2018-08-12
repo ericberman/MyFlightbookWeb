@@ -13,7 +13,7 @@ using System.Globalization;
 
 public partial class PlayPen_MergeTelemetry : System.Web.UI.Page
 {
-    protected void Init()
+    protected void InitPage()
     {
         Coordinates = new List<Position>();
         HasAlt = HasTime = HasSpeed = true;
@@ -22,7 +22,7 @@ public partial class PlayPen_MergeTelemetry : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
-            Init();
+            InitPage();
     }
 
     private string SessionKeyBase { get { return Page.User.Identity.Name + "telemmerge"; } }
@@ -100,7 +100,7 @@ public partial class PlayPen_MergeTelemetry : System.Web.UI.Page
             using (FlightData fd = new FlightData())
                 fd.WriteGPXData(Response.OutputStream, Coordinates, HasTime, HasAlt, HasSpeed);
             Response.End();
-            Init();
+            InitPage();
         }
     }
 }
