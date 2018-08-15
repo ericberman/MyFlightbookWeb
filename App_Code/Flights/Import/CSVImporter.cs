@@ -472,6 +472,8 @@ namespace MyFlightbook.ImportFlights
                 le.AircraftID = ac.AircraftID;
                 le.TailNumDisplay = ac.DisplayTailnumber;
                 le.CatClassOverride = GetMappedInt(m_cm.iColCatClassOverride);
+                le.ModelDisplay = ac.ModelDescription;  // for display
+                le.CatClassDisplay = (le.CatClassOverride == 0) ? ac.CategoryClassDisplay : CategoryClass.CategoryClassFromID((CategoryClass.CatClassID) le.CatClassOverride).CatClass;
 
                 if (m_rgszRow[m_cm.iColDate].Length > 0)
                 {
@@ -726,7 +728,12 @@ namespace MyFlightbook.ImportFlights
                 {
                     foreach (Aircraft ac in rgac)
                     {
-                        dictReturn[Aircraft.NormalizeTail(ac.TailNumber)] = ac;
+                        // Issue #163: bias towards active over inactive.
+                        // We add the aircraft to the dictionary if it's (a) not there, or (b) there but the existing one is inactive.
+                        // I.e., if the existing aircraft in the dictionary is present and active, then we don't overwrite it.
+                        string szKey = Aircraft.NormalizeTail(ac.TailNumber);
+                        if (!dictReturn.ContainsKey(szKey) || dictReturn[szKey].HideFromSelection)
+                            dictReturn[szKey] = ac;
 
                         // To support broken systems like crewtrac, which don't use standard naming, allow for "#ALTxxx#" in the private notes
                         // as a way to map.  E.g., Virgin America uses simple 3-digit aircraft IDs like "483" for N483VA.  
