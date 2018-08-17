@@ -7,7 +7,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -104,6 +104,9 @@ public partial class Public_authredir : System.Web.UI.Page
         foreach (string szKey in Request.QueryString.Keys)
             if (szKey != "u" && szKey != "p" && szKey != "d")
                 lstParams.Add(String.Format(CultureInfo.InvariantCulture, "{0}={1}", szKey, Request.Params[szKey]));
+
+        if (lstParams.Contains("naked=1"))
+            Session["IsNaked"] = true;
 
         if (szDest.Length == 0)
             Response.Redirect(szDestErr);
