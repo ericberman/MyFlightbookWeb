@@ -6,19 +6,17 @@
 
 
 
-<asp:Panel ID="pnlEditEndorsement" runat="server" BorderStyle="Solid" Style="padding:5px;" BorderWidth="1px" BorderColor="Black" Width="600px" BackColor="#CCCCCC">
+<asp:Panel ID="pnlEditEndorsement" runat="server" BorderStyle="Solid" Style="padding:5px; max-width: 480px;" BorderWidth="1px" BorderColor="Black" BackColor="#CCCCCC">
     <table style="width: 100%">
         <tr>
-            <td style="font-weight: bold; width:25%">
-                <asp:Literal runat="server" Text="<%$ Resources:SignOff, EditEndorsementEndorsementPrompt %>" /></td>
-            <td>
+            <td colspan="2">
                 <asp:TextBox ID="txtTitle" runat="server" Width="100%"></asp:TextBox>
                 <asp:TextBoxWatermarkExtender ID="wmeCustomTitle" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Signoff, EndorsementTitleWatermark %>" TargetControlID="txtTitle" runat="server" />
                 <div><asp:RequiredFieldValidator ID="valTitleRequired" runat="server" Display="Dynamic" EnableClientScript="true" ErrorMessage="<%$ Resources:Signoff, errTitleRequired %>" ControlToValidate="txtTitle" CssClass="error"></asp:RequiredFieldValidator></div>
             </td>
         </tr>
         <tr>
-            <td style="font-weight: bold; width:25%">
+            <td style="font-weight: bold;">
                 <asp:Literal ID="Literal1" runat="server" Text="<%$ Resources:SignOff, EditEndorsementFARPrompt %>" /></td>
             <td>
                 <asp:Label ID="lblEndorsementFAR" runat="server" Text=""></asp:Label></td>
@@ -130,16 +128,14 @@
                 </asp:MultiView>
             </td>
         </tr>
-        <tr runat="server" id="rowScribble" visible="false" style="vertical-align:top">
-            <td><b><asp:Localize ID="locSignPrompt" runat="server" Text="<%$ Resources:Signoff, SignFlightAffirmation %>"></asp:Localize></b></td>
-            <td>
-                <uc1:mfbScribbleSignature runat="server" id="mfbScribbleSignature" />
-            </td>
-        </tr>
-        <tr>
-            <td></td><td style="text-align:right"><asp:Button ID="btnAddEndorsement" runat="server" 
-                Text="<%$ Resources:SignOff, EditEndorsementAddEndorsement %>" onclick="btnAddEndorsement_Click" /></td>
-        </tr>
     </table>
+    <div runat="server" id="rowScribble" visible="false">
+        <div><b><asp:Localize ID="locSignPrompt" runat="server" Text="<%$ Resources:Signoff, SignFlightAffirmation %>"></asp:Localize></b></div>
+        <uc1:mfbScribbleSignature runat="server" id="mfbScribbleSignature" />
+    </div>
+    <div style="text-align:right;">
+        <asp:Button ID="btnAddEndorsement" runat="server" 
+                Text="<%$ Resources:SignOff, EditEndorsementAddEndorsement %>" onclick="btnAddEndorsement_Click" />
+    </div>
     <asp:HiddenField ID="hdnEndorsementID" Value="-1" runat="server" />
 </asp:Panel>
