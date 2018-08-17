@@ -410,12 +410,19 @@ detect modification of those as well.&nbsp; The encryption happens outside of th
         <p>Endorsements are not tied to an individual flight (which is why they are in the back of the book for paper logbooks), and as such are much simpler than signed flights discussed above.   (For this reason, MyFlightbook implemented them much earlier than signed flights).</p>
         <h2>4.2 
  User Flow</h2>
-        <p>Endorsements are always remote, per the definitions above.   So the flow is as follows:</p>
+        <p>Endorsements largely follow the same model as for signing flights (above), but with a few small differences:</p>
         <ol>
-            <li>Student and Instructor set up a relationship on the MyFlightbook web site.</li>
-            <li>The instructor can select a student and then choose to add a new endorsement for the student.</li>
+            <li><b>Student Initiated – Mobile Device, Ad-Hoc:</b>   In this scenario, the student has an account on MyFlightbook and the instructor may or may not have one, but we bypass the establishment of an account/relationship in order to quickly issue an endorsement on-the-spot.   This is called “Ad-hoc” because no relationship is established.   Because we cannot authenticate the CFI in any other way, but the student has a mobile device, a digitized handwritten signature is captured.   This is the only scenario we allow where a digitized handwritten signature is used, because it is the only one where we can assume that the CFI has physical access to the mobile device that is signed in to the student’s account.   </li>
+            <li><b>Student Initiated – Mobile Device, Authenticated</b>: In this scenario, the CFI has both a MyFlightbook account AND the student and CFI have established a student/CFI relationship.   This might be a typical scenario for primary flight training.   Because the instructor is known to MyFlightbook, a digitized handwritten signature is not necessary.   However, the CFI must still authenticate themselves to the device by providing their password.</li>
+            <li><b>CFI Initiated – Remote, Authenticated.</b>The CFI and Student are both on MyFlightbook and have a relationship.   The CFI may choose, from within their own account, to issue an endorsement directly to a student.</li>
+            <li><strong>CFI Initiated - Offline Student.</strong>&nbsp; This is more of a record keeping task than it is an official endorsement.&nbsp; The CFI creates a record of an endorsement given to a student that is not on MyFlightbook.&nbsp; This is entirely for recordkeeping within the CFI&#39;s account; the student receives nothing from this process.&nbsp; As such, this is not an &quot;official&quot; endorsement.</li>
         </ol>
-        <p>That’s really it. Endorsements require an authenticated account and an unexpired CFI certificate, which satisfies the various authentication requirements.&nbsp; Endorsements cannot be deleted or edited, and since they are not validating an underlying object such as a flight, there is no need to even encrypt them or compute a hash, and there is no notion of endorsement becoming invalid.</p>
+        <p>Endorsements cannot be deleted or edited, and since they are not validating an underlying object such as a flight, there is no need to even encrypt them or compute a hash, and there is no notion of endorsement becoming invalid.</p>
+        <p>In 2018, a few validations were relaxed:</p>
+        <ul>
+            <li>Backdating of endorsements is now allowed, under the premise that transparency makes such practice clear.&nbsp; The date of issue is captured, which can be backdated, as is the date of creation, which cannot.&nbsp; When these two dates differ, both are clearly displayed, so that there is no ambiguity about what happened.&nbsp; E.g., if an endorsement is issued on August 8 2015 with a date of August 8 2015, then simply &quot;August 8&quot; is shown.&nbsp; But if an endorsement is issued on May 5 2017 with a date of Aug 8 2015, then both the date of the endorsement (August 5 2015) and the date of creation (May 5 2017) are displayed</li>
+            <li>Since Ground Instructor certificates do not expire and Ground Instructors can issue some endorsements, an expiration date is no longer strictly required.&nbsp; If present, though, it must be later than the date of the endorsement.&nbsp; E.g., for an endorsement with an effective date of August 5 2015, the certificate expiration must either not be present, or must be on or after August 5 2015. </li>
+        </ul>
         <h2>4.3 
  Data Model</h2>
         <p>Each endorsement consists of the following:</p>
@@ -423,9 +430,11 @@ detect modification of those as well.&nbsp; The encryption happens outside of th
             <li>A template (form) which must be filled out</li>
             <li>The name of the student</li>
             <li>The name of the instructor</li>
-            <li>The Instructor’s CFI number (cannot be empty)</li>
-            <li>The instructor’s CFI Expiration (must be in the future)</li>
+            <li>Either the username (in the database) of the instructor, if it is digitally issued, or a digitized scribble-signature.</li>
+            <li>The Instructor’s CFI (or other appropriate certificate) number (cannot be empty)</li>
+            <li>The instructor’s CFI Expiration (must be after the date of the endorsement, if present; some certificates such as ground instructor, allow for issuance of endorsements, but do not expire)</li>
             <li>The date that the endorsement is given</li>
+            <li>The date that the endorsement is created</li>
             <li>(Optional) the relevant FAR for the endorsement.</li>
         </ul>
         <h2>4.4 
@@ -438,6 +447,7 @@ detect modification of those as well.&nbsp; The encryption happens outside of th
             <li>2014-01: Reformatting, fix a few typos, added some definitions</li>
             <li>2014-03: Added a bit more clarity around encryption of hashes/tamper detection.</li>
             <li>2016-10: Updated to reference AC120-78A (previously had been AC120-78).</li>
+            <li>2018-08: Updated to reference endorsement updates</li>
         </ul>
         </div>
 </asp:Content>
