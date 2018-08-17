@@ -214,7 +214,7 @@
     <value>Please type a new secret question and answer</value>
   </data>
   <data name="EndorsementDisclaimer" xml:space="preserve">
-    <value>This functionality provides a record of an endorsement only.</value>
+    <value>You can issue an endorsement to a student, or record an endorsement that you have given to a student off-line</value>
   </data>
   <data name="EndorsementRequest" xml:space="preserve">
     <value>Let us know what we should add.</value>
@@ -223,7 +223,7 @@
     <value>Don't see a template you need?</value>
   </data>
   <data name="EndorsementReturnToProfile" xml:space="preserve">
-    <value>Return to Profile</value>
+    <value>Return to Students</value>
     <comment>Shown when there is an error.</comment>
   </data>
   <data name="EndorsementsExistingEndorsementHeader" xml:space="preserve">

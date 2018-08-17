@@ -130,7 +130,7 @@
     <value>Erreur dans l'endossement: </value>
   </data>
   <data name="errExpiredCertificate" xml:space="preserve">
-    <value>Qualification d'instructeur expirée.</value>
+    <value>Le certificat de l'instructeur a expiré ou il manque une date d'expiration.</value>
   </data>
   <data name="errGetFailed" xml:space="preserve">
     <value>Impossible d'endosser pour élève {1} et/ou instructeur {2}; exception: {2}</value>

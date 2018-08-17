@@ -1,7 +1,7 @@
 ﻿
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -88,6 +88,9 @@
             var btnClear = document.getElementById("btnClear");
             btnClear.addEventListener("click", function () {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                var hdnControl = document.getElementById(imgDataControlId);
+                if (hdnControl)
+                    hdnControl.value = "";
             }, false);
         }
 

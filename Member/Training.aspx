@@ -18,20 +18,17 @@
         <asp:View runat="server" ID="vwEndorsements">
             <div style="float:right"><asp:HyperLink ID="lnkPrintFriendly" Target="_blank" runat="server" Text="Printer Friendly View" meta:resourcekey="lnkPrintFriendlyResource1" ></asp:HyperLink></div>
             <h2>
-                <asp:Localize ID="locEndorsementsSectionPrompt" runat="server" 
-                     Text="Endorsements" meta:resourcekey="locEndorsementsSectionPromptResource1"></asp:Localize>
-            </h2>
-            <h3>
                 <asp:Localize ID="locEndorsementsPrompt" runat="server" 
                      Text="Your Endorsements" meta:resourcekey="locEndorsementsPromptResource1"></asp:Localize>
-            </h3>
+            </h2>
             <uc6:mfbEndorsementList ID="mfbEndorsementList1" runat="server" />
+            <p><asp:HyperLink ID="lnkAddEndorsement" runat="server" Text="Add an endorsement..." NavigateUrl="~/Member/AddEndorsement.aspx"></asp:HyperLink></p>
             <div class="noprint">
-                <h3>
+                <h2>
                     <asp:Localize ID="locScannedEndorsementsHeader" runat="server" 
                          
                         Text="Images of physical endorsements" meta:resourcekey="locScannedEndorsementsHeaderResource1"></asp:Localize>
-                </h3>
+                </h2>
                 <p>
                     <asp:Localize ID="locScannedEndorsementDesc" runat="server" 
                          

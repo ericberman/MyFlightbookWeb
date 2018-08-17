@@ -130,7 +130,7 @@
     <value>Error committing endorsement: </value>
   </data>
   <data name="errExpiredCertificate" xml:space="preserve">
-    <value>Instructor's certificate has expired.</value>
+    <value>Instructor's certificate has expired or is missing an expiration date.</value>
   </data>
   <data name="errGetFailed" xml:space="preserve">
     <value>Unable to get endorsements for student {1} and/or instructor {2}; exception: {2}</value>
@@ -399,5 +399,26 @@
   </data>
   <data name="OwnedEndorsementDeleteTooltip" xml:space="preserve">
     <value>Delete this endorsement.  BE CAREFUL - this is permanent</value>
+  </data>
+  <data name="EndorsementNoDate" xml:space="preserve">
+    <value>(No Expiration Provided)</value>
+  </data>
+  <data name="errBothScribbleAndCFI" xml:space="preserve">
+    <value>Endorsement has both digitized scribble signature and associated CFI user.</value>
+  </data>
+  <data name="errInstructorBadPassword" xml:space="preserve">
+    <value>Please enter the correct password for this account</value>
+  </data>
+  <data name="errInstructorPasswordRequiredToEndorse" xml:space="preserve">
+    <value>The instructor must provide a password to issue this endorsement</value>
+  </data>
+  <data name="errScribbleRequired" xml:space="preserve">
+    <value>Please provide a scribbled signature</value>
+  </data>
+  <data name="EndorsementEditTemplate" xml:space="preserve">
+    <value>Fill in the template:</value>
+  </data>
+  <data name="EndorsementPickTemplate" xml:space="preserve">
+    <value>Pick an endorsement Template:</value>
   </data>
 </root>

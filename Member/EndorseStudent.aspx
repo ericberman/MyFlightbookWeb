@@ -13,9 +13,10 @@
         <h2><asp:Label ID="lblNewEndorsementHeader" runat="server" Text=""></asp:Label></h2>
         <p>
             <asp:Label ID="lblNote" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label>
-            <asp:Localize ID="locEndorsementDisclaimer" runat="server" Text="<%$ Resources:Profile, EndorsementDisclaimer %>"></asp:Localize><br />
+            <asp:Localize ID="locEndorsementDisclaimer" runat="server" Text="<%$ Resources:Profile, EndorsementDisclaimer %>"></asp:Localize>
             <asp:HyperLink ID="lnkCFISigs" Text='<%$ Resources:SignOff, CFISigsLinkLabel %>' Target="_blank" runat="server" NavigateUrl="~/Public/CFISigs.aspx" ></asp:HyperLink>
         </p>
+        <h2><%=Resources.SignOff.EndorsementPickTemplate %></h2>
         <p>
             <asp:DropDownList style="border: 1px solid black"
                 ID="cmbTemplates" runat="server" AutoPostBack="True" 
@@ -24,12 +25,13 @@
             <asp:Localize ID="locRequestEndorsement" runat="server" Text="<%$ Resources:Profile, EndorsementRequestPrompt %>"></asp:Localize>
             <asp:HyperLink ID="lnkContactUs" NavigateUrl="~/Public/ContactMe.aspx" runat="server" Text="<%$ Resources:Profile, EndorsementRequest %>"></asp:HyperLink>
         </p>
+        <h2><%= Resources.SignOff.EndorsementEditTemplate %></h2>
         <uc3:mfbEditEndorsement ID="mfbEditEndorsement1" runat="server" OnNewEndorsement="OnNewEndorsement" />
     </asp:Panel>
     <asp:Panel ID="pnlError" runat="server" Visible="false">
         <asp:Label ID="lblError" CssClass="error" runat="server" Text=""></asp:Label>
         <br />
-        <asp:HyperLink ID="lnkReturnHome" NavigateUrl="~/Member/EditProfile.aspx/pftPilotInfo" runat="server" Text="<%$ Resources:Profile, EndorsementReturnToProfile %>"></asp:HyperLink>
+        <asp:HyperLink ID="lnkReturnHome" NavigateUrl="~/Member/Training.aspx/instStudents" runat="server" Text="<%$ Resources:Profile, EndorsementReturnToProfile %>"></asp:HyperLink>
     </asp:Panel>
     <br />
     <asp:Panel ID="pnlExistingEndorsements" runat="server">

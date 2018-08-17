@@ -61,6 +61,38 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
         }
     }
 
+    protected string szVSMode = "vsSigningMode";
+    /// <summary>
+    /// Signing mode
+    /// </summary>
+    public EndorsementMode Mode
+    {
+        get {
+            return ViewState[szVSMode] == null ? EndorsementMode.InstructorPushAuthenticated : (EndorsementMode)ViewState[szVSMode]; }
+        set {
+            ViewState[szVSMode] = value;
+
+            if (value == EndorsementMode.StudentPullAuthenticated)
+            {
+                rowPassword.Visible = true;
+                valCorrectPassword.Enabled = valPassword.Enabled = true;
+            }
+            else
+            {
+                rowPassword.Visible = false;
+                valCorrectPassword.Enabled = valPassword.Enabled = false;
+            }
+
+            mvCFI.SetActiveView(value == EndorsementMode.StudentPullAdHoc ? vwAdhocCFI : vwStaticCFI);
+            mvCFICert.SetActiveView(value == EndorsementMode.StudentPullAdHoc ? vwAdhocCert : vwStaticCert);
+            mvCertExpiration.SetActiveView(value == EndorsementMode.StudentPullAdHoc ? vwAdhocCertExpiration : vwStaticCertExpiration);
+
+            rowScribble.Visible = (value == EndorsementMode.StudentPullAdHoc);
+            valRequiredCFI.Enabled = valRequiredCert.Enabled = (value == EndorsementMode.StudentPullAdHoc);
+            mfbScribbleSignature.Enabled = (value == EndorsementMode.StudentPullAdHoc);
+        }
+    }
+
     /// <summary>
     /// CFI
     /// </summary>
@@ -76,6 +108,8 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
             lblCFICert.Text = value.Certificate;
             lblCFIExp.Text = value.CertificateExpiration.ToShortDateString();
             ViewState[keyVSSourceUser] = value.UserName;
+            lblPassPrompt.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, value.UserFirstName);
+            mvCertExpiration.SetActiveView(Mode != EndorsementMode.StudentPullAdHoc && value.CertificateExpiration.HasValue() ? vwStaticCertExpiration : vwAdhocCertExpiration);
         }
     }
 
@@ -108,6 +142,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
         if (!IsPostBack)
         {
             mfbTypeInDate1.Date = DateTime.Now;
+            mfbDateCertExpiration.Date = mfbDateCertExpiration.DefaultDate = DateTime.MinValue;
         }
         else
         {
@@ -301,10 +336,34 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
     {
         if (Page.IsValid && NewEndorsement != null)
         {
-            Endorsement endorsement = new Endorsement(Page.User.Identity.Name);
-            Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
-            endorsement.CFICertificate = pf.Certificate;
-            endorsement.CFIExpirationDate = pf.CertificateExpiration;
+            Endorsement endorsement;
+
+            switch (Mode)
+            {
+                default:
+                case EndorsementMode.InstructorOfflineStudent:
+                case EndorsementMode.InstructorPushAuthenticated:
+                    {
+                        Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
+                        endorsement = new Endorsement(Page.User.Identity.Name) { CFICertificate = pf.Certificate, CFIExpirationDate = pf.CertificateExpiration };
+                        if (!pf.CertificateExpiration.HasValue() && mfbDateCertExpiration.Date.HasValue())
+                        {
+                            endorsement.CFIExpirationDate = pf.CertificateExpiration = mfbDateCertExpiration.Date;
+                            pf.FCommit();   // save it to the profile.
+                        }
+                    }
+                    break;
+                case EndorsementMode.StudentPullAdHoc:
+                    endorsement = new Endorsement(string.Empty) { CFICachedName = txtCFI.Text, CFICertificate = txtCFICert.Text, CFIExpirationDate = mfbDateCertExpiration.Date };
+                    endorsement.DigitizedSig = mfbScribbleSignature.Base64Data();
+                    if (endorsement.DigitizedSig == null)
+                        return;
+                    break;
+                case EndorsementMode.StudentPullAuthenticated:
+                    endorsement = new Endorsement(SourceUser.UserName) { CFICertificate = SourceUser.Certificate, CFIExpirationDate = SourceUser.CertificateExpiration };
+                    break;
+            }
+
             endorsement.Date = mfbTypeInDate1.Date;
             endorsement.EndorsementText = TemplateText();
             endorsement.StudentType = StudentType;
@@ -322,6 +381,16 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
             throw new ArgumentNullException("args");
         // Don't allow any post dating, but allow 1 day of slop due to time zone
         if (DateTime.Now.AddDays(1).CompareTo(mfbTypeInDate1.Date) < 0)
+            args.IsValid = false;
+    }
+
+    protected void valCorrectPassword_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        if (args == null)
+            throw new ArgumentNullException("args");
+        if (String.IsNullOrEmpty(txtPassConfirm.Text))
+            return; // other validator will catch that
+        if (SourceUser == null || !System.Web.Security.Membership.ValidateUser(SourceUser.UserName, txtPassConfirm.Text))
             args.IsValid = false;
     }
 }

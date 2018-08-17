@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Text;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using AjaxControlToolkit;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Instruction;
+using System;
+using System.Globalization;
+using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2016 MyFlightbook LLC
+ * Copyright (c) 2010-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -61,14 +54,15 @@ public partial class Member_EndorseStudent : System.Web.UI.Page
                         lblNewEndorsementHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsNewEndorsementHeader, szTargetUser);
                         lblExistingEndorsementHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsExistingEndorsementHeader, szTargetUser);
                         mfbEditEndorsement1.TargetUser = pfTarget;
+                        mfbEditEndorsement1.Mode = EndorsementMode.InstructorPushAuthenticated;
                     }
+                    else
+                        mfbEditEndorsement1.Mode = EndorsementMode.InstructorOfflineStudent;
 
                     Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
 
                     if (pf.Certificate.Length == 0)
                         throw new MyFlightbookValidationException(Resources.Profile.errNoCFICertificate);
-                    if (!pf.CertificateExpiration.HasValue())
-                        throw new MyFlightbookValidationException(Resources.Profile.errNoCFIExpiration);
 
                     mfbEditEndorsement1.SourceUser = pf;
 

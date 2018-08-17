@@ -1,21 +1,45 @@
-﻿using System;
+﻿using MyFlightbook.Clubs;
+using MyFlightbook.Encryptors;
+using MyFlightbook.Image;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Mail;
 using System.Web;
-using MyFlightbook.Clubs;
-using MyFlightbook.Encryptors;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2016 MyFlightbook LLC
+ * Copyright (c) 2010-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 namespace MyFlightbook.Instruction
 {
+    /// <summary>
+    /// Available endorsement modes.
+    /// </summary>
+    public enum EndorsementMode
+    {
+        /// <summary>
+        /// Indicates that the instructor is issuing a digitally signed endorsement
+        /// </summary>
+        InstructorPushAuthenticated,
+        /// <summary>
+        /// Indicates that the instructor is recording an endorsement given off-line
+        /// </summary>
+        InstructorOfflineStudent,
+        /// <summary>
+        /// Indicates that the student is driving, instructor will provide their password
+        /// </summary>
+        StudentPullAuthenticated,
+        /// <summary>
+        /// Indicates that the student is driving, instructor will scribble
+        /// </summary>
+        StudentPullAdHoc
+    }
+
     /// <summary>
     /// Summary description for Endorsement
     /// </summary>
@@ -49,6 +73,24 @@ namespace MyFlightbook.Instruction
         public bool IsExternalEndorsement
         {
             get { return StudentType == StudentTypes.External; }
+        }
+
+        /// <summary>
+        /// A scribble-signature for a digitized sig
+        /// </summary>
+        public byte[] DigitizedSig { get; set; }
+
+        public string DigitizedSigLink
+        {
+            get { return ScribbleImage.DataLinkForByteArray(DigitizedSig); }
+        }
+
+        /// <summary>
+        /// Is this an ad-hoc endorsement (scribble signature vs. member instructor?)
+        /// </summary>
+        public bool IsAdHocEndorsement
+        {
+            get { return String.IsNullOrEmpty(InstructorName) && DigitizedSig != null && DigitizedSig.Length > 0; }
         }
 
         /// <summary>
@@ -113,9 +155,9 @@ namespace MyFlightbook.Instruction
         }
 
         /// <summary>
-        /// Full name of the cached CFI name, in case the instructor's account is ever deleted
+        /// Full name of the cached CFI name, in case the instructor's account is ever deleted, or for ad-hoc endorsements.
         /// </summary>
-        protected string CFICachedName { get; set; }
+        public string CFICachedName { get; set; }
 
         /// <summary>
         /// Return the full name of the instructor.
@@ -156,28 +198,57 @@ namespace MyFlightbook.Instruction
             Title = dr["Title"].ToString();
             FARReference = dr["FARRef"].ToString();
             CFICachedName = util.ReadNullableString(dr, "CFIFullName");
+
+            if (!(dr["FileSize"] is DBNull))
+            {
+                int FileSize = Convert.ToInt32(dr["FileSize"], CultureInfo.InvariantCulture);
+                DigitizedSig = new byte[FileSize];
+                dr.GetBytes(dr.GetOrdinal("DigitizedSignature"), 0, DigitizedSig, 0, FileSize);
+            }
+            else
+                DigitizedSig = null;
         }
         #endregion
 
-        public void FCommit()
+        protected void Validate()
         {
-            string szQ = (this.ID < 0) ? "INSERT INTO endorsements SET CFI=?cfi, CFIFullName=?cfifullname, Student=?Student, StudentType=?studentType, Date=?dt, DateCreated=Now(), CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref" :
-                "UPDATE endorsements SET CFI=?cfi, Student=?Student, StudentType=?studentType, Date=?dt, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref WHERE ID=?id";
-
-            if (InstructorName.Length == 0)
-                throw new MyFlightbookException(Resources.SignOff.errNoInstructor);
             if (StudentName.Length == 0)
                 throw new MyFlightbookException(Resources.SignOff.errNoStudent);
-            if (StudentType == StudentTypes.Member && !new CFIStudentMap(InstructorName).IsInstructorOf(StudentName))
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.SignOff.errNoRelationship, InstructorName, StudentName));
+
+            if (DigitizedSig == null || DigitizedSig.Length == 0)
+            {
+                // Not an ad-hoc endorsement: requires a valid instructor name and a valid expiration date
+                if (String.IsNullOrWhiteSpace(InstructorName))
+                    throw new MyFlightbookException(Resources.SignOff.errNoInstructor);
+                if (!CFIExpirationDate.HasValue() || CFIExpirationDate.CompareTo(Date) < 0)
+                    throw new MyFlightbookException(Resources.SignOff.errExpiredCertificate);
+
+                if (StudentType == StudentTypes.Member && !new CFIStudentMap(InstructorName).IsInstructorOf(StudentName))
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.SignOff.errNoRelationship, InstructorName, StudentName));
+            }
+            else
+            {
+                // Verify that we don't also have an instructor name
+                if (!String.IsNullOrWhiteSpace(InstructorName))
+                    throw new MyFlightbookValidationException(Resources.SignOff.errBothScribbleAndCFI);
+                // And no expiration is OK (e.g., for ground instructors), but it needs to be after date of issuance of endorsement
+                if (CFIExpirationDate.HasValue() && CFIExpirationDate.CompareTo(Date) < 0)
+                    throw new MyFlightbookException(Resources.SignOff.errExpiredCertificate);
+            }
             if (CFICertificate.Length == 0)
                 throw new MyFlightbookException(Resources.SignOff.errNoCertificate);
-            if (CFIExpirationDate.CompareTo(DateTime.Now) < 0)
-                throw new MyFlightbookException(Resources.SignOff.errExpiredCertificate);
             if (EndorsementText.Length == 0)
                 throw new MyFlightbookException(Resources.SignOff.errNoEndorsement);
             if (Title.Length == 0)
                 throw new MyFlightbookException(Resources.SignOff.errNoTitle);
+        }
+
+        public void FCommit()
+        {
+            string szQ = (this.ID < 0) ? "INSERT INTO endorsements SET CFI=?cfi, CFIFullName=?cfifullname, Student=?Student, StudentType=?studentType, Date=?dt, DateCreated=Now(), CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig " :
+                "UPDATE endorsements SET CFI=?cfi, Student=?Student, StudentType=?studentType, Date=?dt, CFINum=?cfiNumber, CFIExpiration=?dtExp, Endorsement=?bodytext, Title=?title, FARRef=?farref, DigitizedSignature=?digsig WHERE ID=?id";
+
+            Validate();
 
             DBHelper dbh = new DBHelper(szQ);
             dbh.DoNonQuery((cmd) =>
@@ -192,7 +263,8 @@ namespace MyFlightbook.Instruction
                 cmd.Parameters.AddWithValue("bodytext", EndorsementText);
                 cmd.Parameters.AddWithValue("title", Title);
                 cmd.Parameters.AddWithValue("farref", FARReference);
-                cmd.Parameters.AddWithValue("cfifullname", Profile.GetUser(InstructorName).UserFullName);
+                cmd.Parameters.AddWithValue("cfifullname", IsAdHocEndorsement ? CFICachedName : Profile.GetUser(InstructorName).UserFullName);
+                cmd.Parameters.AddWithValue("digsig", IsAdHocEndorsement ? DigitizedSig : null);
             });
 
             if (dbh.LastError.Length > 0)
@@ -234,7 +306,7 @@ namespace MyFlightbook.Instruction
 
             string szRestrict = (fStudent ? szQStudent : "") + (fStudent && fInstructor ? " AND " : "") + (fInstructor ? szQInstructor : "");
             List<Endorsement> lst = new List<Endorsement>();
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture,"SELECT * FROM Endorsements WHERE {0}", szRestrict));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT *, LENGTH(DigitizedSignature) AS FileSize FROM Endorsements WHERE {0}", szRestrict));
 
             if (!dbh.ReadRows(
                 (comm) =>

@@ -1,11 +1,10 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
@@ -58,7 +57,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
                     pnlRowPassword.Visible = false;
                     valCorrectPassword.Enabled = valPassword.Enabled = false;
-                    valCertificateRequired.Enabled = valCFIExpiration.Enabled = valNameRequired.Enabled = valBadEmail.Enabled = valEmailRequired.Enabled = valSignature.Enabled = true;
+                    valCertificateRequired.Enabled = valCFIExpiration.Enabled = valNameRequired.Enabled = valBadEmail.Enabled = valEmailRequired.Enabled = mfbScribbleSignature.Enabled = true;
 
                     // Can't copy the flight
                     pnlCopyFlight.Visible = false;
@@ -95,7 +94,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                             ckCopyFlight.Checked = copyFlight;
                     }
 
-                    valCertificateRequired.Enabled = valCFIExpiration.Enabled = valNameRequired.Enabled = valBadEmail.Enabled = valEmailRequired.Enabled = valSignature.Enabled = false;
+                    valCertificateRequired.Enabled = valCFIExpiration.Enabled = valNameRequired.Enabled = valBadEmail.Enabled = valEmailRequired.Enabled = mfbScribbleSignature.Enabled = false;
                     break;
             }
         }
@@ -203,8 +202,6 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         r.DataBind();
     }
 
-    protected const string szDataURLPrefix = "data:image/png;base64,";
-
     protected void CopyToInstructor(LogbookEntry le)
     {
         // Now make it look like the CFI's: their username, swap DUAL for CFI time, ensure that PIC time is present.
@@ -258,34 +255,12 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         switch (SigningMode)
         {
             case SignMode.AdHoc:
-                try
                 {
-                    string szSigB64 = hdnSigData.Value.Substring(szDataURLPrefix.Length);
-                    byte[] rgbSignature = Convert.FromBase64CharArray(szSigB64.ToCharArray(), 0, szSigB64.Length);
-
-                    if (rgbSignature.Length > 10000) // this may not be compressed (e.g., from Android) - compress it.
-                    {
-                        using (Stream st = new MemoryStream(rgbSignature))
-                        {
-                            using (Stream stDst = new MemoryStream())
-                            {
-                                using (System.Drawing.Image image = System.Drawing.Image.FromStream(st))
-                                {
-                                    image.Save(stDst, System.Drawing.Imaging.ImageFormat.Png);
-                                    rgbSignature = new byte[stDst.Length];
-                                    stDst.Position = 0;
-                                    stDst.Read(rgbSignature, 0, (int)stDst.Length);
-                                }
-                            }
-                        }
-                    }
-
-                    Flight.SignFlightAdHoc(txtCFIName.Text, txtCFIEmail.Text, txtCFICertificate.Text, dropDateCFIExpiration.Date, txtComments.Text, rgbSignature);
-                }
-                catch (MyFlightbookException ex)
-                {
-                    lblErr.Text = ex.Message;
-                    return;
+                    byte[] rgSig = mfbScribbleSignature.Base64Data();
+                    if (rgSig != null)
+                        Flight.SignFlightAdHoc(txtCFIName.Text, txtCFIEmail.Text, txtCFICertificate.Text, dropDateCFIExpiration.Date, txtComments.Text, rgSig);
+                    else
+                        return;
                 }
                 break;
             case SignMode.Authenticated:
@@ -360,22 +335,6 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
             {
                 args.IsValid = false;
             }
-        }
-    }
-
-    protected void valSignature_ServerValidate(object source, ServerValidateEventArgs args)
-    {
-        if (args == null)
-            throw new ArgumentNullException("args");
-
-        if (SigningMode == SignMode.AdHoc)
-        {
-            if (String.IsNullOrEmpty(hdnSigData.Value))
-                args.IsValid = false;
-
-            // verify that this begins with data:image/png;base64,...
-            if (!hdnSigData.Value.StartsWith(szDataURLPrefix, StringComparison.OrdinalIgnoreCase))
-                args.IsValid = false;
         }
     }
 

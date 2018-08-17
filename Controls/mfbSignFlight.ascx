@@ -4,18 +4,7 @@
 <%@ Register src="mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc3" %>
 <%@ Register src="mfbEditFlight.ascx" tagname="mfbEditFlight" tagprefix="uc4" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc2" TagName="mfbTypeInDate" %>
-
-
-<script type="text/javascript" src='<%= Page.ResolveUrl("~/public/signature.js") %>'></script>  
-<script type="text/javascript" src='<%= Page.ResolveUrl("~/public/todataurl-png.js") %>'></script>
-<script type="text/javascript">
-    function loaded() {
-        var signature = new ns.SignatureControl({ imgDataControlId : "<% = hdnSigData.ClientID %>" });
-        signature.init();
-    }
-
-    window.addEventListener('DOMContentLoaded', loaded, false);
-</script> 
+<%@ Register Src="~/Controls/mfbScribbleSignature.ascx" TagPrefix="uc1" TagName="mfbScribbleSignature" %>
 <asp:Panel ID="pnlMain" runat="server" meta:resourcekey="pnlMainResource1">
     <p><asp:Label ID="lblNote" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label> 
         <asp:Label ID="lblSignatureDisclaimer" runat="server" CssClass="fineprint" Text=""></asp:Label></p>
@@ -133,24 +122,28 @@
                         <div>
                             <asp:TextBox ID="txtCFIName" runat="server" Width="280px" 
                                 meta:resourcekey="txtCFINameResource1"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="valNameRequired" runat="server" ControlToValidate="txtCFIEmail"
+                            <div>
+                            <asp:RequiredFieldValidator ID="valNameRequired" runat="server" ControlToValidate="txtCFIName"
                                     ErrorMessage="You must provide your name to sign a flight." 
-                                    Display="Dynamic" ToolTip="Name is required." 
+                                    Display="Dynamic" ToolTip="Name is required." CssClass="error" 
                                 meta:resourcekey="RequiredFieldValidator1Resource1"></asp:RequiredFieldValidator>
+                            </div>
                         </div>
                         <div><asp:Label ID="lblCFIEmailPrompt" runat="server" 
                                 Text="<%$ Resources:Signoff, CFIEmail %>" Font-Bold="True" 
                                 meta:resourcekey="lblCFIEmailPromptResource1"></asp:Label></div>
                         <div>
                             <asp:TextBox ID="txtCFIEmail" TextMode="Email" runat="server" Width="280px" meta:resourcekey="txtCFIEmailResource1"></asp:TextBox>
+                            <div>
                             <asp:RequiredFieldValidator ID="valEmailRequired" runat="server" ControlToValidate="txtCFIEmail"
                                 ErrorMessage="You must provide a valid e-mail address to sign a flight." 
-                                Display="Dynamic" ToolTip="E-mail is required." 
+                                Display="Dynamic" ToolTip="E-mail is required." CssClass="error" 
                                 meta:resourcekey="EmailRequiredResource1"></asp:RequiredFieldValidator>
                             <asp:RegularExpressionValidator ID="valBadEmail" runat="server" ControlToValidate="txtCFIEmail"
                                 Display="Dynamic" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
-                                ErrorMessage="Please enter a valid e-mail address." 
+                                ErrorMessage="Please enter a valid e-mail address." CssClass="error" 
                                 meta:resourcekey="EmailRegExpResource1"></asp:RegularExpressionValidator>
+                            </div>
                         </div>
                     </asp:Panel>
                     <asp:Panel ID="pnlCFIName" runat="server"><% = (CFIProfile == null) ? string.Empty : CFIProfile.UserFullName %></asp:Panel>
@@ -167,7 +160,7 @@
                                 ControlToValidate="txtPassConfirm" CssClass="error" 
                                 meta:resourcekey="valPasswordResource1" Display="Dynamic"></asp:RequiredFieldValidator>
                             <asp:CustomValidator Enabled="False"
-                                ID="valCorrectPassword" runat="server" 
+                                ID="valCorrectPassword" runat="server" CssClass="error" 
                                 ErrorMessage="Please enter the correct password for this account" 
                                 onservervalidate="valCorrectPassword_ServerValidate" Display="Dynamic" 
                                 meta:resourcekey="valCorrectPasswordResource1"></asp:CustomValidator>
@@ -192,10 +185,12 @@
                     <div>
                         <asp:TextBox ID="txtCFICertificate" runat="server" Visible="False" 
                             Width="280px" meta:resourcekey="txtCFICertificateResource1"></asp:TextBox>
+                        <div>
                         <asp:RequiredFieldValidator ID="valCertificateRequired" runat="server" ControlToValidate="txtCFICertificate"
                                 ErrorMessage="You must provide a valid CFI certificate." 
-                                Display="Dynamic" ToolTip="Certificate is required." 
+                                Display="Dynamic" ToolTip="Certificate is required." CssClass="error" 
                             meta:resourcekey="RequiredFieldValidator2Resource1"></asp:RequiredFieldValidator>
+                        </div>
                     </div>
                     <div>
                         <asp:Label ID="lblCFIDatePrompt" runat="server" 
@@ -206,24 +201,19 @@
                     </div>
                     <div>
                         <uc2:mfbTypeInDate runat="server" ID="dropDateCFIExpiration" Visible="false" DefaultType="Today" />
+                        <div>
                         <asp:CustomValidator ID="valCFIExpiration" runat="server" 
                             ErrorMessage="To sign, your CFI certificate must not be expired." 
                             CssClass="error" Display="Dynamic" 
                             onservervalidate="valCFIExpiration_ServerValidate" 
                             meta:resourcekey="valCFIExpirationResource1"></asp:CustomValidator>
+                        </div>
                     </div>
                     <asp:Panel ID="rowSignature" Visible="False" runat="server" 
                         meta:resourcekey="rowSignatureResource1">
                         <div><asp:Label ID="lblSignaturePrompt" runat="server" Text="Signature" 
                                 Font-Bold="True" meta:resourcekey="lblSignaturePromptResource1"></asp:Label></div>
-                        <div><canvas id="signatureCanvas" width="280px" height="120px" style="border: solid 2px black; background-color:White"></canvas></div>
-                        <div><input id="btnClear" type="button" value="Clear" /> <span id="statusText"></span></div>
-                        <asp:HiddenField ID="hdnSigData" runat="server" />
-                        <asp:CustomValidator ID="valSignature" runat="server" 
-                            ErrorMessage="Please provide a signature." 
-                            CssClass="error" Display="Dynamic" 
-                            onservervalidate="valSignature_ServerValidate" 
-                            meta:resourcekey="valSignatureResource1"></asp:CustomValidator>
+                        <uc1:mfbScribbleSignature runat="server" id="mfbScribbleSignature" />
                     </asp:Panel>
                     <asp:Panel ID="pnlCopyFlight" runat="server">
                         <asp:CheckBox ID="ckCopyFlight" runat="server" />

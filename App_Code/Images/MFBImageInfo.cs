@@ -1,26 +1,26 @@
-﻿using System;
-using System.Configuration;
-using System.Linq;
-using System.Threading;
-using System.Web;
-using System.Globalization;
-using System.IO;
-using System.Web.UI;
-using System.Web.Hosting;
-using gma.Drawing.ImageInfo;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using MyFlightbook.Geography;
-using System.Security.Cryptography;
-using Amazon;
+﻿using Amazon;
+using Amazon.ElasticTranscoder.Model;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Amazon.ElasticTranscoder.Model;
 using AWSNotifications;
+using gma.Drawing.ImageInfo;
+using MyFlightbook.Geography;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Web;
+using System.Web.Hosting;
+using System.Web.UI;
 
 
 /******************************************************
@@ -2612,6 +2612,77 @@ namespace MyFlightbook.Image
         public MFBImageInfoEvent(MFBImageInfo img = null) : base()
         {
             Image = img;
+        }
+    }
+
+    /// <summary>
+    /// Encapsulates utilities for scribbled PNG signatures, including presentation as a data: URL
+    /// </summary>
+    public static class ScribbleImage
+    {
+        private const string DataURLPrefix = "data:image/png;base64,";
+
+        /// <summary>
+        /// Returns a data:... URL for the specified byte array
+        /// </summary>
+        /// <param name="rgb">The byte array</param>
+        /// <returns>A url which can be used in-line for images</returns>
+        public static string DataLinkForByteArray(byte[] rgb)
+        {
+            if (rgb == null)
+                return string.Empty;
+
+            return DataURLPrefix + Convert.ToBase64String(rgb);
+        }
+
+        /// <summary>
+        /// Validates that the specified data URL is well formed and contains data
+        /// </summary>
+        /// <param name="szLink"></param>
+        /// <returns></returns>
+        public static bool IsValidDataURL(string szLink)
+        {
+            if (String.IsNullOrWhiteSpace(szLink))
+                return false;
+
+            if (!szLink.StartsWith(DataURLPrefix, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            return szLink.Length > DataURLPrefix.Length;
+        }
+
+        /// <summary>
+        /// Retrieves the bytes from a data: URL
+        /// </summary>
+        /// <param name="szLink">The data: URL</param>
+        /// <returns>The bytes of the PNG.</returns>
+        public static byte[] FromDataLinkURL(string szLink)
+        {
+            if (szLink == null)
+                return new byte[0];
+
+            string szSigB64 = szLink.Substring(ScribbleImage.DataURLPrefix.Length);
+            byte[] rgbSignature = Convert.FromBase64CharArray(szSigB64.ToCharArray(), 0, szSigB64.Length);
+
+            if (rgbSignature.Length > 10000) // this may not be compressed (e.g., from Android) - compress it.
+            {
+                using (Stream st = new MemoryStream(rgbSignature))
+                {
+                    using (Stream stDst = new MemoryStream())
+                    {
+                        using (System.Drawing.Image image = System.Drawing.Image.FromStream(st))
+                        {
+                            image.Save(stDst, System.Drawing.Imaging.ImageFormat.Png);
+                            rgbSignature = new byte[stDst.Length];
+                            stDst.Position = 0;
+                            stDst.Read(rgbSignature, 0, (int)stDst.Length);
+                        }
+                    }
+                }
+            }
+
+            return rgbSignature;
+
         }
     }
 }

@@ -1,6 +1,11 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditEndorsement.ascx.cs" Inherits="Controls_mfbEditEndorsement" %>
 <%@ Register src="mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc1" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+<%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc2" TagName="mfbTypeInDate" %>
+<%@ Register Src="~/Controls/mfbScribbleSignature.ascx" TagPrefix="uc1" TagName="mfbScribbleSignature" %>
+
+
+
 <asp:Panel ID="pnlEditEndorsement" runat="server" BorderStyle="Solid" Style="padding:5px;" BorderWidth="1px" BorderColor="Black" Width="600px" BackColor="#CCCCCC">
     <table style="width: 100%">
         <tr>
@@ -54,12 +59,40 @@
                 </asp:MultiView>
             </td>
         </tr>
+        <tr runat="server" visible="false" id="rowPassword">
+            <td>
+                <asp:Label ID="lblPassPrompt" runat="server" Text="<%$ Resources:SignOff, SignReEnterPassword %>" 
+                                Font-Bold="True"></asp:Label>
+            </td>
+            <td>
+                <asp:TextBox ID="txtPassConfirm" runat="server" TextMode="Password"></asp:TextBox><br />
+                <div><asp:RequiredFieldValidator ID="valPassword" runat="server" 
+                    ErrorMessage="<%$ Resources:SignOff, errInstructorPasswordRequiredToEndorse %>" Enabled="False"
+                    ControlToValidate="txtPassConfirm" CssClass="error" 
+                    Display="Dynamic"></asp:RequiredFieldValidator></div>
+                <div><asp:CustomValidator Enabled="False"
+                    ID="valCorrectPassword" runat="server" CssClass="error" 
+                    ErrorMessage="<%$ Resources:Signoff, errInstructorBadPassword %>" 
+                    onservervalidate="valCorrectPassword_ServerValidate" Display="Dynamic"></asp:CustomValidator></div>
+            </td>
+        </tr>
         <tr>
             <td>
                 <b><asp:Literal ID="Literal4" runat="server" Text="<%$ Resources:SignOff, EditEndorsementInstructorPrompt %>" /></b>
             </td>
             <td>
-                <asp:Label ID="lblCFI" runat="server" Text=""></asp:Label>
+                <asp:MultiView ID="mvCFI" runat="server" ActiveViewIndex="0">
+                    <asp:View ID="vwStaticCFI" runat="server">
+                        <asp:Label ID="lblCFI" runat="server"></asp:Label>
+                    </asp:View>
+                    <asp:View ID="vwAdhocCFI" runat="server">
+                        <asp:TextBox ID="txtCFI" runat="server"></asp:TextBox>
+                        <div>
+                            <asp:RequiredFieldValidator ID="valRequiredCFI" runat="server" ErrorMessage="<%$ Resources:SignOff, errNoInstructor %>" ControlToValidate="txtCFI"
+                                Display="Dynamic" CssClass="error"></asp:RequiredFieldValidator>
+                        </div>
+                    </asp:View>
+                </asp:MultiView>             
             </td>
         </tr>
         <tr>
@@ -67,7 +100,19 @@
                 <b><asp:Literal ID="Literal5" runat="server" Text="<%$ Resources:SignOff, EditEndorsementCFIPrompt %>" /></b>
             </td>
             <td>
-                <asp:Label ID="lblCFICert" runat="server" Text=""></asp:Label>
+                <asp:MultiView ID="mvCFICert" runat="server" ActiveViewIndex="0">
+                    <asp:View ID="vwStaticCert" runat="server">
+                        <asp:Label ID="lblCFICert" runat="server"></asp:Label>
+                    </asp:View>
+                    <asp:View ID="vwAdhocCert" runat="server">
+                        <asp:TextBox runat="server" ID="txtCFICert"></asp:TextBox>
+                        <div>
+                            <asp:RequiredFieldValidator ID="valRequiredCert" runat="server" ErrorMessage="<%$ Resources:SignOff, errNeedCertificate %>" ControlToValidate="txtCFICert"
+                                Display="Dynamic" CssClass="error"></asp:RequiredFieldValidator>
+                        </div>
+                    </asp:View>
+                </asp:MultiView>
+                
             </td>
         </tr>
         <tr>
@@ -75,7 +120,20 @@
                 <b><asp:Literal ID="Literal6" runat="server" Text="<%$ Resources:SignOff, EditEndorsementExpirationPrompt %>" /></b>
             </td>
             <td>
-                <asp:Label ID="lblCFIExp" runat="server" Text=""></asp:Label>
+                <asp:MultiView ID="mvCertExpiration" runat="server">
+                    <asp:View ID="vwStaticCertExpiration" runat="server">
+                        <asp:Label ID="lblCFIExp" runat="server"></asp:Label>
+                    </asp:View>
+                    <asp:View ID="vwAdhocCertExpiration" runat="server">
+                        <uc2:mfbTypeInDate runat="server" ID="mfbDateCertExpiration" DefaultType="None" />
+                    </asp:View>
+                </asp:MultiView>
+            </td>
+        </tr>
+        <tr runat="server" id="rowScribble" visible="false" style="vertical-align:top">
+            <td><b><asp:Localize ID="locSignPrompt" runat="server" Text="<%$ Resources:Signoff, SignFlightAffirmation %>"></asp:Localize></b></td>
+            <td>
+                <uc1:mfbScribbleSignature runat="server" id="mfbScribbleSignature" />
             </td>
         </tr>
         <tr>
