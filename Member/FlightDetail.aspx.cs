@@ -3,6 +3,7 @@ using MyFlightbook.Airports;
 using MyFlightbook.Geography;
 using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;
+using MyFlightbook.Weather.ADDS;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,10 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook.Weather.ADDS;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -311,11 +311,15 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         {
             cmbFormat.Items[(int)DownloadFormat.KML].Enabled = true;
             cmbFormat.Items[(int)DownloadFormat.GPX].Enabled = true;
+            mfbGoogleMapManager1.Mode = MyFlightbook.Mapping.GMap_Mode.Dynamic;
+            pnlMapControls.Visible = true;
         }
         else
         {
             cmbFormat.Items[(int)DownloadFormat.KML].Enabled = false;
             cmbFormat.Items[(int)DownloadFormat.GPX].Enabled = false;
+            mfbGoogleMapManager1.Mode = MyFlightbook.Mapping.GMap_Mode.Static;
+            pnlMapControls.Visible = false;
         }
         lnkZoomToFit.NavigateUrl = mfbGoogleMapManager1.ZoomToFitScript;
     }

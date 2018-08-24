@@ -315,10 +315,12 @@
         </asp:Panel>
     </asp:Panel>
     <asp:Panel runat="server" ID="pnlMap" Style="width: 80%; margin-left: 10%; margin-right: 10%;" meta:resourcekey="pnlMapResource1">
+        <asp:Panel ID="pnlMapControls" runat="server">
         <asp:HyperLink ID="lnkZoomToFit" runat="server"
             Text="Zoom to fit all flight data" meta:resourcekey="lnkZoomToFitResource1"></asp:HyperLink>&nbsp;|&nbsp;<asp:LinkButton
                 ID="lnkClearEvents" runat="server"
                 OnClick="lnkClearEvents_Click" Text="Clear added markers" meta:resourcekey="lnkClearEventsResource1"></asp:LinkButton>
+        </asp:Panel>
         <uc1:mfbGoogleMapManager ID="mfbGoogleMapManager1" runat="server" Height="600px" />
     </asp:Panel>
     <asp:HiddenField ID="hdnFlightID" runat="server" />
