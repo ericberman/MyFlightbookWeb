@@ -1,5 +1,8 @@
 <%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="DefaultMini.aspx.cs" Inherits="DefaultMini" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
+<asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
+    <asp:Label ID="lblHeader" runat="server" Text=""></asp:Label>
+</asp:Content>
 <asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
     <asp:Localize ID="locDefaultMiniPrompt" runat="server" 
         Text="What would you like to do?" 

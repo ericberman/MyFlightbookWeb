@@ -270,9 +270,9 @@ public partial class MasterPage : System.Web.UI.MasterPage
             lnkPrivacy.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName);
 
             lnkAppleIcon.Href = ResolveUrl("~/images/apple-touch-icon.png");
-            cssMain.Href = "~/Public/stylesheet.css".ToAbsoluteURL(Request).ToString() + "?v=6";    // to enable forced reload
+            cssMain.Href = "~/Public/stylesheet.css".ToAbsoluteURL(Request).ToString() + "?v=7";    // to enable forced reload
             cssMobile.Visible = mfbHeader.IsMobile = MfbFooter.IsMobile = IsMobileSession();
-            cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css?v=2");
+            cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css?v=7");
             string szStyle = Branding.CurrentBrand.StyleSheet;
             if (szStyle.Length > 0)
             {
