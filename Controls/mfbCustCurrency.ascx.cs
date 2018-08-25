@@ -145,7 +145,8 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
             li.Selected = false;
         cmbCatClass.SelectedIndex = 0;
         cmbCategory.SelectedIndex = 0;
-        lstProps.SelectedIndex = 0;
+        foreach (ListItem li in lstProps.Items)
+            li.Selected = false;
         UpdateTimeframeEnabledState();
     }
 
