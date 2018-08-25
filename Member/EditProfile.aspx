@@ -512,7 +512,7 @@
                                                     </td>
                                                     <td>
                                                         <asp:DropDownList ID="cmbDeadlineAircraft" runat="server" AppendDataBoundItems="True" AutoPostBack="True" DataTextField="TailNumber" DataValueField="AircraftID" meta:resourcekey="cmbDeadlineAircraftResource1" OnSelectedIndexChanged="cmbDeadlineAircraft_SelectedIndexChanged">
-                                                            <asp:ListItem meta:resourcekey="ListItemResource20" Selected="True" Text="(None)"></asp:ListItem>
+                                                            <asp:ListItem meta:resourcekey="ListItemResource20" Selected="True" Text="(None)" Value=""></asp:ListItem>
                                                         </asp:DropDownList>
                                                         <asp:CheckBox ID="ckDeadlineUseHours" runat="server" AutoPostBack="True" meta:resourcekey="ckDeadlineUseHoursResource1" OnCheckedChanged="ckDeadlineUseHours_CheckedChanged" Text="Deadline is determined using aircraft hours, not a date" Visible="False" />
                                                     </td>

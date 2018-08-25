@@ -1021,7 +1021,7 @@
     <value>(None)</value>
   </data>
   <data name="ListItemResource20.Value" xml:space="preserve">
-    <value>(None)</value>
+    <value />
   </data>
   <data name="ListItemResource21.Text" xml:space="preserve">
     <value>Days</value>
