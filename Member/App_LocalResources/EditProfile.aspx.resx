@@ -741,6 +741,12 @@
   <data name="lblDisplayResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblDonateCryptoResource1.Text" xml:space="preserve">
+    <value>Prefer cryptocurrency?  MyFlightbook now accepts Bitcoin and Ethereum</value>
+  </data>
+  <data name="lblDonateCryptoResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblDonateHeaderResource1.Text" xml:space="preserve">
     <value>Donations</value>
   </data>
@@ -1015,7 +1021,7 @@
     <value>(None)</value>
   </data>
   <data name="ListItemResource20.Value" xml:space="preserve">
-    <value />
+    <value>(None)</value>
   </data>
   <data name="ListItemResource21.Text" xml:space="preserve">
     <value>Days</value>
@@ -1077,6 +1083,18 @@
   <data name="ListItemResource33.Value" xml:space="preserve">
     <value>True</value>
   </data>
+  <data name="ListItemResource34.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource35.Value" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ListItemResource36.Value" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="ListItemResource37.Value" xml:space="preserve">
+    <value>True</value>
+  </data>
   <data name="ListItemResource4.Text" xml:space="preserve">
     <value>Show currency for each make/model I have flown</value>
   </data>
@@ -1114,6 +1132,12 @@
     <value />
   </data>
   <data name="lnkAuthDropboxResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkContactResource1.Text" xml:space="preserve">
+    <value>Contact us for details.</value>
+  </data>
+  <data name="lnkContactResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lnkCurrencyNotesResource1.Text" xml:space="preserve">
@@ -1407,6 +1431,9 @@
   <data name="rbl117RulesResource3.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="rbl117RulesResource4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="rblBasicMedActionResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
@@ -1417,6 +1444,9 @@
     <value />
   </data>
   <data name="rblCloudBackupAppendDateResource2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblCloudBackupAppendDateResource3.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="rblCurrencyPrefResource1.ToolTip" xml:space="preserve">

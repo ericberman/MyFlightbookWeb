@@ -951,6 +951,7 @@
                 </asp:Repeater>
             </ul>
             <iframe id="iframeDonate" src="../Donate.aspx" style="border:none;" width="300" height="120"></iframe>
+            <div><asp:Label ID="lblDonateCrypto" runat="server" Text="Prefer cryptocurrency?  MyFlightbook now accepts Bitcoin and Ethereum" meta:resourcekey="lblDonateCryptoResource1"></asp:Label> <asp:HyperLink ID="lnkContact" runat="server" Text="Contact us for details." NavigateUrl="~/Public/ContactMe.aspx" meta:resourcekey="lnkContactResource1"></asp:HyperLink></div>
             <h2><asp:Label ID="lblDonationHistory" runat="server" Text="Your donation history"
                     meta:resourcekey="lblDonationHistoryResource1" ></asp:Label>
             </h2>
