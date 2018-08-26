@@ -575,7 +575,7 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
                 mfbIl.Refresh();
 
                 // wire up images
-                if (mfbIl.Images.ImageArray.Count > 0 || le.Videos.Count > 0)
+                if (mfbIl.Images.ImageArray.Count > 0 || le.Videos.Count() > 0)
                     e.Row.FindControl("pnlImagesHover").Visible = true;
                 else
                     e.Row.FindControl("pnlFlightImages").Visible = false;

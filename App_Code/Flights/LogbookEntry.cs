@@ -8,7 +8,6 @@ using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -305,7 +304,7 @@ namespace MyFlightbook
         /// <summary>
         /// Videos associated with the flight.
         /// </summary>
-        public Collection<VideoRef> Videos { get; set; }
+        public IEnumerable<VideoRef> Videos { get; set; }
 
         #region Signature properties
         /// <summary>
@@ -1549,7 +1548,7 @@ namespace MyFlightbook
             CatClassDisplay = ModelDisplay = TailNumDisplay = String.Empty;
             CFISignatureState = SignatureState.None;
             CustomProperties = new CustomFlightProperty[0];
-            Videos = new Collection<VideoRef>();
+            Videos = new List<VideoRef>();
             Telemetry = new TelemetryReference();
         }
 
@@ -1641,8 +1640,10 @@ namespace MyFlightbook
                     if (!String.IsNullOrEmpty(szVids))
                     {
                         VideoRef[] vids = Newtonsoft.Json.JsonConvert.DeserializeObject<VideoRef[]>(szVids);
+                        List<VideoRef> lst = new List<VideoRef>();
                         foreach (VideoRef vid in vids)
-                            Videos.Add(vid);
+                            lst.Add(vid);
+                        Videos = lst;
                     }
 
                     return true;

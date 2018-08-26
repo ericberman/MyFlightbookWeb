@@ -87,7 +87,7 @@ namespace MyFlightbook
                 }
             }
 
-            if (le.Videos.Count > 0)
+            if (le.Videos.Count() > 0)
             {
                 foreach (VideoRef v in le.Videos)
                     WriteVideo(tw, v);
@@ -209,7 +209,7 @@ namespace MyFlightbook
                             le.FlightImages = (dImages.ContainsKey(le.FlightID)) ? dImages[le.FlightID].ToArray() : new MFBImageInfo[0];
 
                             // skip any flights here that don't have images, videos, or telemetry
-                            if (le.FlightImages.Length > 0 || le.Videos.Count > 0 || le.HasFlightData)
+                            if (le.FlightImages.Length > 0 || le.Videos.Count() > 0 || le.HasFlightData)
                                 WriteFlightInfo(tw, zip, le);
                             iRow++;
                         });
