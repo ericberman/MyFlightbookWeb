@@ -15,6 +15,8 @@
 <%@ Register Src="~/Controls/mfbQueryDescriptor.ascx" TagPrefix="uc1" TagName="mfbQueryDescriptor" %>
 <%@ Register Src="~/Controls/METAR.ascx" TagPrefix="uc1" TagName="METAR" %>
 <%@ Register Src="~/Controls/mfbEditableImage.ascx" TagPrefix="uc1" TagName="mfbEditableImage" %>
+<%@ Register Src="~/Controls/mfbVideoEntry.ascx" TagPrefix="uc1" TagName="mfbVideoEntry" %>
+
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Localize ID="locPageHeader" runat="server" Text="<%$ Resources:LogbookEntry, FlightDetailsHeader %>"></asp:Localize>
@@ -159,6 +161,7 @@
                             <div style="text-align:center">
                                 <uc1:mfbImageList ID="mfbilFlight" runat="server" Columns="2" MapLinkType="ZoomOnLocalMap" CanEdit="false" MaxImage="-1" ImageClass="Flight" IncludeDocs="false" />
                             </div>
+                            <div><uc1:mfbVideoEntry runat="server" ID="mfbVideoEntry1" CanAddVideos="false" /></div>
                             <asp:HyperLink ID="lnkEditFlight" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>"
                                 Visible="<%# ((LogbookEntryDisplay) Container.DataItem).User.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0 %>"
                                 Style="float: right" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}", Eval("FlightID")) %>' meta:resourcekey="lnkEditFlightResource1"></asp:HyperLink>

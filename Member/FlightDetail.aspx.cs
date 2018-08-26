@@ -1,6 +1,7 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Airports;
 using MyFlightbook.Geography;
+using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Weather.ADDS;
@@ -605,6 +606,11 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         mfbilFlight.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
         mfbilFlight.Refresh();
         mfbGoogleMapManager1.Map.Images = mfbilFlight.Images.ImageArray;
+
+        Controls_mfbVideoEntry ve = (Controls_mfbVideoEntry)fv.FindControl("mfbVideoEntry1");
+        ve.Videos.Clear();
+        foreach (VideoRef vr in le.Videos)
+            ve.Videos.Add(vr);
 
         Controls_mfbAirportServices aptSvc = (Controls_mfbAirportServices)fv.FindControl("mfbAirportServices1");
         aptSvc.GoogleMapID = mfbGoogleMapManager1.MapID;
