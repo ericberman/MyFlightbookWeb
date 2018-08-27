@@ -99,6 +99,7 @@ namespace MyFlightbook
             IDPropNVGoggleOperations = 355,
             IDPropTakeoffTowered = 357,
             IDPropTakeoffToweredNight = 358,
+            IDPropTakeoffUntoweredNight = 449,
             IDPropNightTouchAndGo = 397,
             IDProp135293Knowledge = 427,
             IDProp135293Competency = 428,

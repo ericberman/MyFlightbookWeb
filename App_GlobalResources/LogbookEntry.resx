@@ -861,4 +861,7 @@
   <data name="FlightAverageSpeed" xml:space="preserve">
     <value>, Average Speed: {0:#,#.0}kts</value>
   </data>
+  <data name="errNightTakeoffPropertiesExceedNightTakeoffCount" xml:space="preserve">
+    <value>Flight has {0} total night takeoff(s), but {1} night takeoffs at towered/untowered airports.</value>
+  </data>
 </root>

@@ -186,7 +186,7 @@ namespace MyFlightbook
             set { szError = value; }
         }
 
-        public enum ErrorCode { None, Unknown, NotFound, NotOwned, InvalidUser, InvalidAircraft, NegativeTime, NegativeCount, InvalidHobbs, InvalidEngine, InvalidFlight, InvalidDate, InvalidLandings, InvalidApproaches, DataTooLong, MissingNight }
+        public enum ErrorCode { None, Unknown, NotFound, NotOwned, InvalidUser, InvalidAircraft, NegativeTime, NegativeCount, InvalidHobbs, InvalidEngine, InvalidFlight, InvalidDate, InvalidLandings, InvalidApproaches, InvalidNightTakeoffs, DataTooLong, MissingNight }
 
         private ErrorCode m_lastErr = ErrorCode.None;
         /// <summary>
@@ -1138,11 +1138,22 @@ namespace MyFlightbook
 
         private bool ValidateApproaches()
         {
-            // sum up total approaches in properties
+            // sum up total approaches in properties and night takeoffs
             int cApproachProperties = 0;
+            int cNightTakeoffs = 0, cDescribedNightTakeoffs = 0;
+            CustomFlightProperty cfpNightTakeoffs = null;
             foreach (CustomFlightProperty cfp in CustomProperties)
+            {
                 if (cfp.PropertyType.IsApproach)
                     cApproachProperties += cfp.IntValue;
+                else if (cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff)
+                {
+                    cfpNightTakeoffs = cfp;
+                    cNightTakeoffs = cfp.IntValue;
+                }
+                else if (cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffToweredNight || cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffUntoweredNight)
+                    cDescribedNightTakeoffs += cfp.IntValue;
+            }
 
             // No approach count specified - just set it as a convenience (as we did above for landings); otherwise, be conservative and report an error.
             if (Approaches == 0 && cApproachProperties > 0)
@@ -1152,6 +1163,23 @@ namespace MyFlightbook
             {
                 m_lastErr = ErrorCode.InvalidApproaches;
                 szError = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errApproachPropertiesExceedApproachCount, Approaches, cApproachProperties);
+                return false;
+            }
+
+            // do the same for night takeoffs
+            if (cfpNightTakeoffs == null && cNightTakeoffs == 0 && cDescribedNightTakeoffs > 0)
+            {
+                cNightTakeoffs = cDescribedNightTakeoffs;
+                List<CustomFlightProperty> lst = new List<CustomFlightProperty>(CustomProperties);
+                CustomFlightProperty cfpNightTO = new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropNightTakeoff)) { IntValue = cNightTakeoffs };
+                lst.Add(cfpNightTO);
+                CustomProperties = lst.ToArray();
+            }
+
+            if (cNightTakeoffs < cDescribedNightTakeoffs)
+            {
+                m_lastErr = ErrorCode.InvalidNightTakeoffs;
+                szError = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errNightTakeoffPropertiesExceedNightTakeoffCount, cNightTakeoffs, cDescribedNightTakeoffs);
                 return false;
             }
 
