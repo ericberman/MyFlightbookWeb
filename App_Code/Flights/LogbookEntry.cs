@@ -304,7 +304,7 @@ namespace MyFlightbook
         /// <summary>
         /// Videos associated with the flight.
         /// </summary>
-        public IEnumerable<VideoRef> Videos { get; set; }
+        public VideoRef[] Videos { get; set; }
 
         #region Signature properties
         /// <summary>
@@ -1548,7 +1548,7 @@ namespace MyFlightbook
             CatClassDisplay = ModelDisplay = TailNumDisplay = String.Empty;
             CFISignatureState = SignatureState.None;
             CustomProperties = new CustomFlightProperty[0];
-            Videos = new List<VideoRef>();
+            Videos = new VideoRef[0];
             Telemetry = new TelemetryReference();
         }
 
@@ -1643,7 +1643,7 @@ namespace MyFlightbook
                         List<VideoRef> lst = new List<VideoRef>();
                         foreach (VideoRef vid in vids)
                             lst.Add(vid);
-                        Videos = lst;
+                        Videos = lst.ToArray();
                     }
 
                     return true;
