@@ -162,9 +162,10 @@
                                 <uc1:mfbImageList ID="mfbilFlight" runat="server" Columns="2" MapLinkType="ZoomOnLocalMap" CanEdit="false" MaxImage="-1" ImageClass="Flight" IncludeDocs="false" />
                             </div>
                             <div><uc1:mfbVideoEntry runat="server" ID="mfbVideoEntry1" CanAddVideos="false" /></div>
-                            <asp:HyperLink ID="lnkEditFlight" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>"
-                                Visible="<%# ((LogbookEntryDisplay) Container.DataItem).User.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0 %>"
-                                Style="float: right" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}", Eval("FlightID")) %>' meta:resourcekey="lnkEditFlightResource1"></asp:HyperLink>
+                            <input id="btnEdit" type="button" value="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>" runat="server"
+                                visible='<%# ((String) Eval("User")).CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0 %>'
+                                style="float: right" 
+                                onclick='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:window.location.href=\"{0}\"", ResolveClientUrl(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}", Eval("FlightID")))) %>' />
                         </ItemTemplate>
                     </asp:FormView>
                 </Content>
