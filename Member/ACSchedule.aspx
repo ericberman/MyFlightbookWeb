@@ -44,7 +44,7 @@
                         cc.dpCalendar.startDate = args.day;
                         cc.dpCalendar.update();
                         updateDate(args.day.d);
-                        $find('mpeChooseDateBehavior').hide();
+                        $find('cpeDate').set_Collapsed(true);
                         cc.refreshEvents(); 
                     }
                 }
@@ -75,11 +75,12 @@
                 <span style="text-size-adjust: 125%">
                     <asp:Panel ID="pnlDateSelector" runat="server" meta:resourcekey="pnlDateSelectorResource1"></asp:Panel>
                 </span>
-                <br />
-                <asp:Button ID="btnClose" runat="server" Text="Close" meta:resourcekey="btnCloseResource1" />
             </asp:Panel>
-            <cc1:ModalPopupExtender ID="mpeChooseDate" runat="server" TargetControlID="pnlChangeDatePop" BackgroundCssClass="modalBackground" BehaviorID="mpeChooseDateBehavior" CancelControlID="btnClose" OkControlID="btnClose" PopupControlID="pnlChangeDate" DynamicServicePath="" >
-            </cc1:ModalPopupExtender>
+            <cc1:CollapsiblePanelExtender ID="cpeDate" runat="server"
+                ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>" CollapsedText ="<%$ Resources:LocalizedText, ClickToShow %>"
+                ExpandControlID="pnlChangeDatePop" CollapseControlID="pnlChangeDatePop" BehaviorID="cpeDate"
+                Collapsed="true" TargetControlID="pnlChangeDate" TextLabelID="lblShowHide">
+            </cc1:CollapsiblePanelExtender>
             <div style="margin-top: 50px;">
                 <asp:Repeater ID="rptSchedules" runat="server" OnItemDataBound="rptSchedules_ItemDataBound">
                     <ItemTemplate>
