@@ -188,12 +188,14 @@ namespace MyFlightbook.Telemetry
             public XNamespace nsAlt22 { get; set; }
             public XNamespace nsAlt21 { get; set; }
             public StringBuilder sbErr { get; set; }
+            public XDocument xmlDoc { get; set; }
 
             public KMLElements(XDocument xml)
             {
                 if (xml == null)
                     throw new ArgumentNullException("xml");
 
+                xmlDoc = xml;
                 ele = null;
                 ele22 = null;
                 eleCoords = null;
@@ -331,14 +333,15 @@ namespace MyFlightbook.Telemetry
 
             // Derive speed or see if it is available in extended data.
             bool fHasSpeed = false;
-            var extendedData = k.ele22.Descendants(k.ns + "ExtendedData").Descendants(k.ns + "SchemaData").Descendants(k.ns22 + "SimpleArrayData");
+
+            var extendedData = k.xmlDoc.Descendants(k.ns22 + "SimpleArrayData");
             if (extendedData != null)
             {
                 // Go through the items to find speed
                 foreach (XElement e in extendedData)
                 {
                     var attr = e.Attribute("name");
-                    if (attr != null && String.Compare(attr.Value, "speedKts", StringComparison.OrdinalIgnoreCase) == 0)
+                    if (attr != null && (String.Compare(attr.Value, "speedKts", StringComparison.OrdinalIgnoreCase) == 0 || String.Compare(attr.Value, "speed_kts", StringComparison.OrdinalIgnoreCase) == 0))
                     {
                         int i = 0;
                         int maxSample = lstSamples.Count;
