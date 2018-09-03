@@ -38,5 +38,6 @@
         </asp:View>
     </asp:MultiView>
     <asp:Label ID="lblErr" CssClass="error" runat="server" Text="" EnableViewState="false"></asp:Label>
+    <asp:HiddenField ID="hdnUser" runat="server" />
 </asp:Content>
 

@@ -18,20 +18,29 @@ public partial class Public_SignEntry : System.Web.UI.Page
 {
     private const string szVSPrevSignedFlights = "vsPrevSignedFlights";
 
+    protected string Username
+    {
+        get { return hdnUser.Value; }
+        set { hdnUser.Value = value; }
+    }
+
+
     protected Dictionary<string, LogbookEntry> PreviouslySignedAdhocFlights
     {
         get
         {
             if (ViewState[szVSPrevSignedFlights] == null)
             {
-                FlightQuery fq = new FlightQuery(Page.User.Identity.Name) { IsSigned = true };
+                if (Username == null)
+                    throw new MyFlightbookValidationException("No username for previously signed flights");
+                FlightQuery fq = new FlightQuery(Username) { IsSigned = true };
                 DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq));
                 Dictionary<string, LogbookEntry> d = new Dictionary<string, LogbookEntry>();
                 dbh.ReadRows(
                     (comm) => { }, 
                     (dr) => 
                     {
-                        LogbookEntry le = new LogbookEntry(dr, Page.User.Identity.Name);
+                        LogbookEntry le = new LogbookEntry(dr, Username);
                         // Add it to the dictionary if:
                         // a) It has a digitized signature (i.e., scribble)
                         // b) it isn't already in there, or
@@ -58,7 +67,6 @@ public partial class Public_SignEntry : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.tabUnknown;
-        string szUser = String.Empty;
 
         if (!IsPostBack)
         {
@@ -67,22 +75,22 @@ public partial class Public_SignEntry : System.Web.UI.Page
             if (!String.IsNullOrEmpty(szAuthToken))
             {
                 using (MFBWebService ws = new MFBWebService())
-                    szUser = ws.GetEncryptedUser(szAuthToken);
+                    Username = ws.GetEncryptedUser(szAuthToken);
             }
 
             bool fIsLocalOrSecure = MFBWebService.CheckSecurity(Request);
 
             // If no valid auth token, fall back to the authenticated name.
-            if (String.IsNullOrEmpty(szUser) && Page.User.Identity.IsAuthenticated && fIsLocalOrSecure)
-                szUser = Page.User.Identity.Name;
+            if (String.IsNullOrEmpty(Username) && Page.User.Identity.IsAuthenticated && fIsLocalOrSecure)
+                Username = Page.User.Identity.Name;
 
             // Require a secure connection for other than debugging.
             if (!fIsLocalOrSecure && !Request.IsSecureConnection)
-                szUser = string.Empty;
+                Username = string.Empty;
 
             try
             {
-                if (String.IsNullOrEmpty(szUser))
+                if (String.IsNullOrEmpty(Username))
                     throw new MyFlightbookException(Resources.SignOff.errSignNotAuthorized);
 
                 int idFlight = util.GetIntParam(Request, "idFlight", LogbookEntry.idFlightNew);
@@ -90,11 +98,11 @@ public partial class Public_SignEntry : System.Web.UI.Page
                     throw new MyFlightbookException(Resources.SignOff.errSignNotAuthorized);
 
                 LogbookEntry le = new LogbookEntry();
-                if (!le.FLoadFromDB(idFlight, szUser))
+                if (!le.FLoadFromDB(idFlight, Username))
                     throw new MyFlightbookException(Resources.SignOff.errSignNotAuthorized);
 
                 mfbSignFlight.Flight = le;
-                CFIStudentMap sm = new CFIStudentMap(szUser);
+                CFIStudentMap sm = new CFIStudentMap(Username);
                 Dictionary<string, LogbookEntry> d = PreviouslySignedAdhocFlights;
 
                 // If no instructors, and no previously signed flights, assume ad-hoc and go straight to accept terms.
