@@ -10,111 +10,114 @@
         <asp:Label ID="lblSignatureDisclaimer" runat="server" CssClass="fineprint" Text=""></asp:Label></p>
         <asp:MultiView ID="mvFlightToSign" ActiveViewIndex="0" runat="server">
             <asp:View ID="vwEntrySummary" runat="server">
-                <asp:FormView ID="fvEntryToSign" runat="server" EnableModelValidation="True" meta:resourcekey="fvEntryToSignResource1" OnDataBound="fvEntryToSign_OnDataBound">
-                    <ItemTemplate>
-                        <table cellpadding="3px" style="background-color:#CCCCCC">
-                            <tr style="vertical-align: text-top">
-                                <td colspan="4"><span style="font-weight: bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></span>(<%# Eval("TailNumDisplay") %>- <%# Eval("ModelDisplay") %>) </td>
-                            </tr>
-                            <tr style="vertical-align: text-top">
-                                <td>
-                                    <asp:Label ID="Label2" runat="server" Font-Bold="True" meta:resourcekey="Label2Resource1" Text="<%$ Resources:LogbookEntry, PublicFlightComments %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("Comment") %></td>
-                                <td>
-                                    <asp:Label ID="Label3" runat="server" Font-Bold="True" meta:resourcekey="Label3Resource1" Text="<%$ Resources:LogbookEntry, PublicFlightRoute %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("Route") %></td>
-                            </tr>
-                            <tr style="vertical-align: text-top">
-                                <td>
-                                    <asp:Label ID="lblLandingPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblLandingPromptResource1" Text="<%$ Resources:LogbookEntry, FieldLanding %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("Landings") %></td>
-                                <td>
-                                    <asp:Label ID="lblNightLandingsPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblNightLandingsPromptResource1" Text="<%$ Resources:LogbookEntry, FieldNightLandings %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("NightLandings") %></td>
-                            </tr>
-                            <tr style="vertical-align: text-top">
-                                <td>
-                                    <asp:Label ID="lblApproachesPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblApproachesPromptResource1" Text="<%$ Resources:LogbookEntry, FieldApproaches %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("Approaches") %></td>
-                                <td>
-                                    <asp:Label ID="lblHoldPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblHoldPromptResource1" Text="<%$ Resources:LogbookEntry, FieldHold %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
-                            </tr>
-                            <tr style="vertical-align: text-top">
-                                <td>
-                                    <asp:Label ID="Label7" runat="server" Font-Bold="True" meta:resourcekey="Label7Resource1" Text="<%$ Resources:LogbookEntry, FieldXCountry %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("CrossCountry").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td>
-                                    <asp:Label ID="Label9" runat="server" Font-Bold="True" meta:resourcekey="Label9Resource1" Text="<%$ Resources:LogbookEntry, FieldNight %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("Nighttime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                            </tr>
-                            <tr style="vertical-align: text-top">
-                                <td>
-                                    <asp:Label ID="Label11" runat="server" Font-Bold="True" meta:resourcekey="Label11Resource1" Text="<%$ Resources:LogbookEntry, FieldSimIMC %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("SimulatedIFR").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td>
-                                    <asp:Label ID="Label13" runat="server" Font-Bold="True" meta:resourcekey="Label13Resource1" Text="<%$ Resources:LogbookEntry, FieldIMC %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                            </tr>
-                            <tr style="vertical-align: text-top">
-                                <td>
-                                    <asp:Label ID="Label1" runat="server" Font-Bold="True" meta:resourcekey="Label1Resource1" Text="<%$ Resources:LogbookEntry, FieldGroundSim %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("GroundSim").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td>
-                                    <asp:Label ID="Label4" runat="server" Font-Bold="True" meta:resourcekey="Label4Resource1" Text="<%$ Resources:LogbookEntry, FieldDual %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                            </tr>
-                            <tr style="vertical-align: text-top">
-                                <td>
-                                    <asp:Label ID="Label6" runat="server" Font-Bold="True" meta:resourcekey="Label6Resource1" Text="<%$ Resources:LogbookEntry, FieldCFI %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td>
-                                    <asp:Label ID="Label16" runat="server" Font-Bold="True" meta:resourcekey="Label16Resource1" Text="<%$ Resources:LogbookEntry, FieldSIC %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("SIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                            </tr>
-                            <tr style="vertical-align: text-top">
-                                <td>
-                                    <asp:Label ID="Label18" runat="server" Font-Bold="True" meta:resourcekey="Label18Resource1" Text="<%$ Resources:LogbookEntry, FieldPIC %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td>
-                                    <asp:Label ID="Label20" runat="server" Font-Bold="True" meta:resourcekey="Label20Resource1" Text="<%$ Resources:LogbookEntry, FieldTotal %>"></asp:Label>
-                                </td>
-                                <td><%# Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                            </tr>
-                            <tr style="vertical-align: text-top">
-                                <td colspan="4">
-                                    <asp:Repeater ID="rptProps" runat="server">
-                                        <ItemTemplate>
-                                            <%# Eval("DisplayString") %>
-                                        </ItemTemplate>
-                                        <SeparatorTemplate>
-                                            <br />
-                                        </SeparatorTemplate>
-                                    </asp:Repeater>
-                                </td>
-                            </tr>
-                        </table>
-                    </ItemTemplate>
-                </asp:FormView>
-                <asp:LinkButton ID="lnkEditFlightToSign" Visible="false" runat="server" OnClick="lnkEditFlightToSign_Click" Text="<%$ Resources:SignOff, InstructorEditFlightPrompt %>"></asp:LinkButton>
-                <hr />
-                <h2><% =Resources.SignOff.SignFlightAffirmation %></h2>
-                <div style="padding: 3px">
+                <div class="signFlightFlightToSign">
+                    <asp:FormView ID="fvEntryToSign" runat="server" EnableModelValidation="True" meta:resourcekey="fvEntryToSignResource1" OnDataBound="fvEntryToSign_OnDataBound">
+                        <ItemTemplate>
+                            <table>
+                                <tr style="vertical-align: text-top">
+                                    <td colspan="4">
+                                        <div><span style="font-weight: bold; font-size:larger"><%# ((DateTime) Eval("Date")).ToShortDateString() %> <%# Eval("TailNumDisplay") %></span> (<%# Eval("CatClassDisplay") %> <%# Eval("ModelDisplay") %>)</div>
+                                        <div><span style="font-weight:bold;"><%# Eval("Route") %></span> <%# Eval("Comment") %></div>
+                                </tr>
+                                <tr style="vertical-align: text-top">
+                                    <td>
+                                        <asp:Label ID="lblLandingPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblLandingPromptResource1" Text="<%$ Resources:LogbookEntry, FieldLanding %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("Landings").FormatInt() %></td>
+                                    <td>
+                                        <asp:Label ID="lblNightLandingsPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblNightLandingsPromptResource1" Text="<%$ Resources:LogbookEntry, FieldNightLandings %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("NightLandings").FormatInt() %></td>
+                                </tr>
+                                <tr style="vertical-align: text-top">
+                                    <td>
+                                        <asp:Label ID="lblApproachesPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblApproachesPromptResource1" Text="<%$ Resources:LogbookEntry, FieldApproaches %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("Approaches").FormatInt() %></td>
+                                    <td>
+                                        <asp:Label ID="lblHoldPrompt" runat="server" Font-Bold="True" meta:resourcekey="lblHoldPromptResource1" Text="<%$ Resources:LogbookEntry, FieldHold %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
+                                </tr>
+                                <tr style="vertical-align: text-top">
+                                    <td>
+                                        <asp:Label ID="Label7" runat="server" Font-Bold="True" meta:resourcekey="Label7Resource1" Text="<%$ Resources:LogbookEntry, FieldXCountry %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("CrossCountry").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                    <td>
+                                        <asp:Label ID="Label9" runat="server" Font-Bold="True" meta:resourcekey="Label9Resource1" Text="<%$ Resources:LogbookEntry, FieldNight %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("Nighttime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                </tr>
+                                <tr style="vertical-align: text-top">
+                                    <td>
+                                        <asp:Label ID="Label11" runat="server" Font-Bold="True" meta:resourcekey="Label11Resource1" Text="<%$ Resources:LogbookEntry, FieldSimIMCFull %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("SimulatedIFR").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                    <td>
+                                        <asp:Label ID="Label13" runat="server" Font-Bold="True" meta:resourcekey="Label13Resource1" Text="<%$ Resources:LogbookEntry, FieldIMC %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                </tr>
+                                <tr style="vertical-align: text-top">
+                                    <td>
+                                        <asp:Label ID="Label1" runat="server" Font-Bold="True" meta:resourcekey="Label1Resource1" Text="<%$ Resources:LogbookEntry, FieldGroundSimFull %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("GroundSim").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                    <td>
+                                        <asp:Label ID="Label4" runat="server" Font-Bold="True" meta:resourcekey="Label4Resource1" Text="<%$ Resources:LogbookEntry, FieldDual %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                </tr>
+                                <tr style="vertical-align: text-top">
+                                    <td>
+                                        <asp:Label ID="Label6" runat="server" Font-Bold="True" meta:resourcekey="Label6Resource1" Text="<%$ Resources:LogbookEntry, FieldCFI %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                    <td>
+                                        <asp:Label ID="Label16" runat="server" Font-Bold="True" meta:resourcekey="Label16Resource1" Text="<%$ Resources:LogbookEntry, FieldSIC %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("SIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                </tr>
+                                <tr style="vertical-align: text-top">
+                                    <td>
+                                        <asp:Label ID="Label18" runat="server" Font-Bold="True" meta:resourcekey="Label18Resource1" Text="<%$ Resources:LogbookEntry, FieldPIC %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                    <td>
+                                        <asp:Label ID="Label20" runat="server" Font-Bold="True" meta:resourcekey="Label20Resource1" Text="<%$ Resources:LogbookEntry, FieldTotal %>"></asp:Label>
+                                    </td>
+                                    <td><%# Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                </tr>
+                                <tr style="vertical-align: text-top">
+                                    <td colspan="4">
+                                        <asp:Repeater ID="rptProps" runat="server">
+                                            <ItemTemplate>
+                                                <%# Eval("DisplayString") %>
+                                            </ItemTemplate>
+                                            <SeparatorTemplate>
+                                                <br />
+                                            </SeparatorTemplate>
+                                        </asp:Repeater>
+                                    </td>
+                                </tr>
+                                <%--
+                                    // Only allow editing if the CFI is:
+                                    // a) authenticated (i.e., not ad-hoc signing)
+                                    // b) signed in (no need for a password)
+                                    // c) named on the flight (i.e., the flight is awaiting this CFI's signature or has previously signed it)
+                                --%>
+                                <tr runat="server" visible='<%# SigningMode == SignMode.Authenticated && Page.User.Identity.IsAuthenticated && ((LogbookEntry) Container.DataItem).CanEditThisFlight(Page.User.Identity.Name) %>'>
+                                    <td colspan="4">
+                                        <asp:LinkButton ID="lnkEditFlightToSign" runat="server" OnClick="lnkEditFlightToSign_Click" Text="<%$ Resources:SignOff, InstructorEditFlightPrompt %>"></asp:LinkButton>
+                                    </td>
+                                </tr>
+                            </table>
+                        </ItemTemplate>
+                    </asp:FormView>
+                </div>
+                <div class="signFlightSignatureBlock">
+                    <h2><asp:Image ID="imgSig" runat="server" ImageUrl="~/images/sigok.png" ImageAlign="AbsMiddle" /> <% =Resources.SignOff.SignFlightAffirmation %> <asp:Label ID="lblCFIName" runat="server" Text=""></asp:Label></h2>
                     <asp:Panel ID="rowEmail" runat="server" meta:resourcekey="rowEmailResource1">
                         <div><asp:Label ID="lblInstructorNamePrompt" runat="server" Font-Bold="True" 
                                 Text="<%$ Resources:SignOff, EditEndorsementInstructorPrompt %>" 
@@ -146,14 +149,47 @@
                             </div>
                         </div>
                     </asp:Panel>
-                    <asp:Panel ID="pnlCFIName" runat="server"><% = (CFIProfile == null) ? string.Empty : CFIProfile.UserFullName %></asp:Panel>
+                    <div>
+                        <asp:Label ID="lblCFICertificatePrompt" runat="server" 
+                            Text="<%$ Resources:SignOff, EditEndorsementCFIPrompt %>" 
+                            Font-Bold="True" meta:resourcekey="lblCFICertificatePromptResource1"></asp:Label>
+                            <asp:Label ID="lblCFICertificate" runat="server" 
+                            meta:resourcekey="lblCFICertificateResource1"></asp:Label>
+                    </div>
+                    <div>
+                        <asp:TextBox ID="txtCFICertificate" runat="server" Visible="False" 
+                            Width="280px" meta:resourcekey="txtCFICertificateResource1"></asp:TextBox>
+                        <div>
+                        <asp:RequiredFieldValidator ID="valCertificateRequired" runat="server" ControlToValidate="txtCFICertificate"
+                                ErrorMessage="You must provide a valid CFI certificate." 
+                                Display="Dynamic" ToolTip="Certificate is required." CssClass="error" 
+                            meta:resourcekey="RequiredFieldValidator2Resource1"></asp:RequiredFieldValidator>
+                        </div>
+                    </div>
+                    <div>
+                        <asp:Label ID="lblCFIDatePrompt" runat="server" 
+                            Text="<%$ Resources:SignOff, EditEndorsementExpirationPrompt %>" 
+                            Font-Bold="True" meta:resourcekey="lblCFIDatePromptResource1"></asp:Label>
+                            <asp:Label ID="lblCFIDate" runat="server" 
+                            meta:resourcekey="lblCFIDateResource1"></asp:Label>
+                    </div>
+                    <div>
+                        <uc2:mfbTypeInDate runat="server" ID="dropDateCFIExpiration" Visible="false" Width="280px" DefaultType="Today" />
+                        <div>
+                        <asp:CustomValidator ID="valCFIExpiration" runat="server" 
+                            ErrorMessage="To sign, your CFI certificate must not be expired." 
+                            CssClass="error" Display="Dynamic" 
+                            onservervalidate="valCFIExpiration_ServerValidate" 
+                            meta:resourcekey="valCFIExpirationResource1"></asp:CustomValidator>
+                        </div>
+                    </div>
                     <asp:Panel ID="pnlRowPassword" runat="server" Visible="False"
                         meta:resourcekey="pnlRowPasswordResource1">
                         <div>
                             <asp:Label ID="lblPassPrompt" runat="server" Text="<%$ Resources:SignOff, SignReEnterPassword %>" 
                                 Font-Bold="True" meta:resourcekey="lblPassPromptResource2"></asp:Label></div>
                         <div>
-                            <asp:TextBox ID="txtPassConfirm" runat="server" TextMode="Password" 
+                            <asp:TextBox ID="txtPassConfirm" runat="server" TextMode="Password" Width="280px"   
                                 meta:resourcekey="txtPassConfirmResource1"></asp:TextBox><br />
                             <asp:RequiredFieldValidator ID="valPassword" runat="server" 
                                 ErrorMessage="The instructor must provide a password to sign this flight." Enabled="False"
@@ -175,40 +211,6 @@
                         <asp:TextBox ID="txtComments" runat="server" Rows="3" Width="280px" 
                             TextMode="MultiLine" meta:resourcekey="txtCommentsResource1"></asp:TextBox>
                     </div>
-                    <div>
-                        <asp:Label ID="lblCFICertificatePrompt" runat="server" 
-                            Text="<%$ Resources:SignOff, EditEndorsementCFIPrompt %>" 
-                            Font-Bold="True" meta:resourcekey="lblCFICertificatePromptResource1"></asp:Label>
-                         <asp:Label ID="lblCFICertificate" runat="server" 
-                            meta:resourcekey="lblCFICertificateResource1"></asp:Label>
-                    </div>
-                    <div>
-                        <asp:TextBox ID="txtCFICertificate" runat="server" Visible="False" 
-                            Width="280px" meta:resourcekey="txtCFICertificateResource1"></asp:TextBox>
-                        <div>
-                        <asp:RequiredFieldValidator ID="valCertificateRequired" runat="server" ControlToValidate="txtCFICertificate"
-                                ErrorMessage="You must provide a valid CFI certificate." 
-                                Display="Dynamic" ToolTip="Certificate is required." CssClass="error" 
-                            meta:resourcekey="RequiredFieldValidator2Resource1"></asp:RequiredFieldValidator>
-                        </div>
-                    </div>
-                    <div>
-                        <asp:Label ID="lblCFIDatePrompt" runat="server" 
-                            Text="<%$ Resources:SignOff, EditEndorsementExpirationPrompt %>" 
-                            Font-Bold="True" meta:resourcekey="lblCFIDatePromptResource1"></asp:Label>
-                         <asp:Label ID="lblCFIDate" runat="server" 
-                            meta:resourcekey="lblCFIDateResource1"></asp:Label>
-                    </div>
-                    <div>
-                        <uc2:mfbTypeInDate runat="server" ID="dropDateCFIExpiration" Visible="false" DefaultType="Today" />
-                        <div>
-                        <asp:CustomValidator ID="valCFIExpiration" runat="server" 
-                            ErrorMessage="To sign, your CFI certificate must not be expired." 
-                            CssClass="error" Display="Dynamic" 
-                            onservervalidate="valCFIExpiration_ServerValidate" 
-                            meta:resourcekey="valCFIExpirationResource1"></asp:CustomValidator>
-                        </div>
-                    </div>
                     <asp:Panel ID="rowSignature" Visible="False" runat="server" 
                         meta:resourcekey="rowSignatureResource1">
                         <div><asp:Label ID="lblSignaturePrompt" runat="server" Text="Signature" 
@@ -218,15 +220,15 @@
                     <asp:Panel ID="pnlCopyFlight" runat="server">
                         <asp:CheckBox ID="ckCopyFlight" runat="server" />
                     </asp:Panel>
-                </div>
-                <div style="text-align:center">
-                    <asp:Button ID="btnCancel" runat="server" 
-                        Text="<%$ Resources:SignOff, CancelSignFlight %>" Visible="False" 
-                        onclick="btnCancel_Click" meta:resourcekey="btnCancelResource1" />
-                    &nbsp;&nbsp;
-                    <asp:Button ID="btnSign" runat="server" 
-                        Text="<%$ Resources:SignOff, SignFlight %>" onclick="btnSign_Click" 
-                        meta:resourcekey="btnSignResource1" />
+                    <div style="text-align:center">
+                        <asp:Button ID="btnCancel" runat="server" 
+                            Text="<%$ Resources:SignOff, CancelSignFlight %>" Visible="False" 
+                            onclick="btnCancel_Click" meta:resourcekey="btnCancelResource1" />
+                        &nbsp;&nbsp;
+                        <asp:Button ID="btnSign" runat="server" 
+                            Text="<%$ Resources:SignOff, SignFlight %>" onclick="btnSign_Click" 
+                            meta:resourcekey="btnSignResource1" />
+                    </div>
                 </div>
             </asp:View>
             <asp:View ID="vwEntryEdit" runat="server">

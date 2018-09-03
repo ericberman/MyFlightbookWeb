@@ -1,21 +1,60 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Instruction;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Instruction;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Public_SignEntry : System.Web.UI.Page
 {
+    private const string szVSPrevSignedFlights = "vsPrevSignedFlights";
+
+    protected Dictionary<string, LogbookEntry> PreviouslySignedAdhocFlights
+    {
+        get
+        {
+            if (ViewState[szVSPrevSignedFlights] == null)
+            {
+                FlightQuery fq = new FlightQuery(Page.User.Identity.Name) { IsSigned = true };
+                DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq));
+                Dictionary<string, LogbookEntry> d = new Dictionary<string, LogbookEntry>();
+                dbh.ReadRows(
+                    (comm) => { }, 
+                    (dr) => 
+                    {
+                        LogbookEntry le = new LogbookEntry(dr, Page.User.Identity.Name);
+                        // Add it to the dictionary if:
+                        // a) It has a digitized signature (i.e., scribble)
+                        // b) it isn't already in there, or
+                        // c) this flight has a later CFI expiration than the one we found (overwriting it).
+                        if (le.HasDigitizedSig)
+                        {
+                            string szKey = le.CFIName.ToUpper(CultureInfo.CurrentCulture);
+                            if (!d.ContainsKey(szKey))
+                                d[szKey] = le;
+                            else
+                            {
+                                LogbookEntry lePrev = d[szKey];
+                                if (lePrev.CFIExpiration.CompareTo(le.CFIExpiration) < 0)
+                                    d[szKey] = le;
+                            }
+                        }
+                    });
+                ViewState[szVSPrevSignedFlights] = d;
+            }
+            return (Dictionary<string, LogbookEntry>) ViewState[szVSPrevSignedFlights];
+        }
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.tabUnknown;
@@ -56,7 +95,10 @@ public partial class Public_SignEntry : System.Web.UI.Page
 
                 mfbSignFlight.Flight = le;
                 CFIStudentMap sm = new CFIStudentMap(szUser);
-                if (sm.Instructors.Count() == 0)
+                Dictionary<string, LogbookEntry> d = PreviouslySignedAdhocFlights;
+
+                // If no instructors, and no previously signed flights, assume ad-hoc and go straight to accept terms.
+                if (sm.Instructors.Count() == 0 && d.Keys.Count == 0)
                 {
                     mfbSignFlight.SigningMode = Controls_mfbSignFlight.SignMode.AdHoc;
                     mfbSignFlight.CFIProfile = null;
@@ -64,13 +106,24 @@ public partial class Public_SignEntry : System.Web.UI.Page
                 }
                 else
                 {
-                    cmbInstructors.DataSource = sm.Instructors;
-                    cmbInstructors.DataBind();
+                    rptInstructors.DataSource = sm.Instructors;
+                    rptInstructors.DataBind();
+
+                    List<string> lstKeys = new List<string>(d.Keys);
+                    lstKeys.Sort();
+                    List<LogbookEntry> lstPrevInstructors = new List<LogbookEntry>();
+
+                    foreach (string sz in lstKeys)
+                        lstPrevInstructors.Add(d[sz]);
+
+                    rptPriorInstructors.DataSource = lstPrevInstructors;
+                    rptPriorInstructors.DataBind();
+
                     mvSignFlight.SetActiveView(vwPickInstructor);
                 }
 
 
-                lblHeader.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.SignOff.SignFlightHeader, MyFlightbook.Profile.GetUser(le.User).UserFullName);
+                lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightHeader, MyFlightbook.Profile.GetUser(le.User).UserFullName);
                 lblDisclaimerResponse.Text = Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement1);
                 lblDisclaimerResponse2.Text = Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement2);
             }
@@ -81,17 +134,44 @@ public partial class Public_SignEntry : System.Web.UI.Page
         }
     }
 
-    protected void ChooseInstructor()
+    #region Selecting an instructor
+    protected void lnkNewInstructor_Click(object sender, EventArgs e)
     {
-        bool fIsNewInstructor = String.IsNullOrEmpty(cmbInstructors.SelectedValue);
-        mfbSignFlight.CFIProfile = fIsNewInstructor ? null : MyFlightbook.Profile.GetUser(cmbInstructors.SelectedValue);
-        mvSignFlight.SetActiveView(fIsNewInstructor ? vwAcceptTerms : vwSign);
+        mfbSignFlight.CFIProfile = null;
+        mvSignFlight.SetActiveView(vwAcceptTerms);
     }
 
-    protected void cmbInstructors_SelectedIndexChanged(object sender, EventArgs e)
+    protected void chooseInstructor(object sender, CommandEventArgs e)
     {
-        ChooseInstructor();
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        string szInstructor = e.CommandArgument.ToString();
+        if (String.IsNullOrEmpty(szInstructor))
+            throw new ArgumentException("Invalid instructor - empty!");
+
+        if (e.CommandName.CompareCurrentCultureIgnoreCase("Existing") == 0)
+        {
+            mfbSignFlight.CFIProfile = MyFlightbook.Profile.GetUser(szInstructor);
+            mvSignFlight.SetActiveView(vwSign);
+        }
+        else if (e.CommandName.CompareCurrentCultureIgnoreCase("Prior") == 0)
+        {
+            Dictionary<string, LogbookEntry> d = PreviouslySignedAdhocFlights;
+            string szKey = szInstructor.ToUpper(CultureInfo.CurrentCulture);
+            if (d.ContainsKey(szKey))  // should always be true
+            {
+                LogbookEntry le = PreviouslySignedAdhocFlights[szKey];
+                mfbSignFlight.CFIName = le.CFIName;
+                mfbSignFlight.CFIEmail = le.CFIEmail;
+                mfbSignFlight.CFICertificate = le.CFICertificate;
+                mfbSignFlight.CFIExpiration = le.CFIExpiration;
+            }
+
+            mvSignFlight.SetActiveView(vwAcceptTerms);
+        }
     }
+    #endregion
 
     protected void SigningFinished(object sender, EventArgs e)
     {
@@ -104,10 +184,5 @@ public partial class Public_SignEntry : System.Web.UI.Page
             mvSignFlight.SetActiveView(vwSign);
         else
             lblErr.Text = Resources.SignOff.errAcceptDisclaimer;
-    }
-
-    protected void btnNewInstructor_Click(object sender, EventArgs e)
-    {
-        ChooseInstructor();
     }
 }

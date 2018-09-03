@@ -27,6 +27,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
     public enum SignMode { Authenticated, AdHoc };
 
+    #region properties
     /// <summary>
     /// Show or hide the cancel button
     /// </summary>
@@ -63,7 +64,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     pnlCopyFlight.Visible = false;
 
                     // Can't edit the flight
-                    lnkEditFlightToSign.Visible = false;
+                    lblCFIName.Text = string.Empty;
 
                     break;
                 case SignMode.Authenticated:
@@ -80,8 +81,8 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
                     // need to collect and validate a password if the currently logged is NOT the person signing.
                     bool fNeedPassword = (CFIProfile == null || CFIProfile.UserName.CompareOrdinal(CurrentUser.UserName) != 0);
+                    lblCFIName.Text = CFIProfile == null ? string.Empty : CFIProfile.UserFullName;
                     pnlRowPassword.Visible = fNeedPassword;
-                    pnlCFIName.Visible = !fNeedPassword;
                     valCorrectPassword.Enabled = valPassword.Enabled = fNeedPassword;
 
                     // Offer to copy the flight for the CFI
@@ -176,16 +177,35 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
             ViewState[szKeyVSIDFlight] = value.FlightID;
             ViewState[szKeyVSIDStudent] = value.User;
 
-            // Only allow editing if the CFI is:
-            // a) authenticated (i.e., not ad-hoc signing)
-            // b) signed in (no need for a password)
-            // c) named on the flight (i.e., the flight is awaiting this CFI's signature or has previously signed it)
-            lnkEditFlightToSign.Visible = SigningMode == SignMode.Authenticated && Page.User.Identity.IsAuthenticated && value.CanEditThisFlight(Page.User.Identity.Name);
-
             fvEntryToSign.DataSource = new List<LogbookEntry> { value };
             fvEntryToSign.DataBind();
         }
     }
+
+    public string CFIName
+    {
+        get { return txtCFIName.Text; }
+        set { txtCFIName.Text = value; }
+    }
+
+    public string CFICertificate
+    {
+        get { return txtCFICertificate.Text; }
+        set { txtCFICertificate.Text = value; }
+    }
+
+    public DateTime CFIExpiration
+    {
+        get { return dropDateCFIExpiration.Date; }
+        set { dropDateCFIExpiration.Date = value; }
+    }
+
+    public string CFIEmail
+    {
+        get { return txtCFIEmail.Text; }
+        set { txtCFIEmail.Text = value; }
+    }
+    #endregion
 
     protected void Page_Load(object sender, EventArgs e)
     {

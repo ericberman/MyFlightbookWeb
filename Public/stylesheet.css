@@ -1353,6 +1353,40 @@ table.dataDescription thead tr td
     font-size: 9pt;
 }
 
+/* Signature radio button items */
+.signFlightFlightToSign {
+    display: inline-block;
+    margin: 5px;
+    vertical-align:top;
+}
+
+.signFlightFlightToSign > table {
+    background-color: #DDDDDD;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    border: 1px solid black;
+    margin-left:auto;
+    margin-right:auto;
+    padding: 3px;
+}
+
+.signFlightFlightToSign td {
+    padding: 3px;
+}
+
+.signFlightSignatureBlock {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+    vertical-align: top;
+}
+
+.signFlightInstructorChoice {
+    line-height: 24pt;
+    font-weight:bold;
+}
+
 /* Printing */
 @media print {
     h1 {

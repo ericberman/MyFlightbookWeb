@@ -421,4 +421,7 @@
   <data name="EndorsementPickTemplate" xml:space="preserve">
     <value>Pick an endorsement Template:</value>
   </data>
+  <data name="AdHocSignatureTooltip" xml:space="preserve">
+    <value>This instructor is not in the list of your known instructors, so a scribble signature will be offered</value>
+  </data>
 </root>

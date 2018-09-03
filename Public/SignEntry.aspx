@@ -6,14 +6,20 @@
     <h2><asp:Label ID="lblHeader" runat="server" Text=""></asp:Label></h2>
     <asp:MultiView ID="mvSignFlight" runat="server" ActiveViewIndex="0">
         <asp:View runat="server" ID="vwPickInstructor">
-            <asp:Label ID="Label2" runat="server" Text="<%$ Resources:SignOff, ChooseInstructorsPrompt %>"></asp:Label>
-            <asp:DropDownList ID="cmbInstructors" runat="server" AutoPostBack="true" AppendDataBoundItems="true" DataValueField="UserName" DataTextField="UserFullName" 
-                onselectedindexchanged="cmbInstructors_SelectedIndexChanged">
-                <asp:ListItem Selected="True" Text="<%$ Resources:SignOff, NewInstructor %>" Value=""></asp:ListItem>
-            </asp:DropDownList>
-            <asp:Button ID="btnNewInstructor" runat="server" 
-                Text="<%$ Resources:LocalizedText, NextPrompt %>" onclick="btnNewInstructor_Click" 
-                />
+            <div><asp:Label ID="Label2" runat="server" Text="<%$ Resources:SignOff, ChooseInstructorsPrompt %>"></asp:Label></div>
+            <asp:Repeater ID="rptInstructors" runat="server">
+                <ItemTemplate>
+                    <div class="signFlightInstructorChoice"><asp:Image ID="imgAdHoc" runat="server" ImageUrl="~/images/signaturesm.png" style="visibility:hidden;" />
+                        <asp:LinkButton ID="lnkExistingInstructor" runat="server" OnCommand="chooseInstructor" CommandName="Existing" CommandArgument='<%# Eval("UserName") %>' Text='<%# Eval("UserFullName") %>'></asp:LinkButton></div>
+                </ItemTemplate>
+            </asp:Repeater>
+            <asp:Repeater ID="rptPriorInstructors" runat="server">
+                <ItemTemplate>
+                    <div class="signFlightInstructorChoice"><asp:Image ID="imgAdHoc" runat="server" ImageUrl="~/images/signaturesm.png" ToolTip="<%$ Resources:SignOff, AdHocSignatureTooltip %>" AlternateText="<%$ Resources:SignOff, AdHocSignatureTooltip %>" />
+                        <asp:LinkButton ID="lnkPriorInstructors" runat="server" OnCommand="chooseInstructor" CommandName="Prior" CommandArgument='<%# Eval("CFIName") %>' Text='<%# Eval("CFIName") %>'></asp:LinkButton></div>
+                </ItemTemplate>
+            </asp:Repeater>
+            <div class="signFlightInstructorChoice"><asp:Image ID="imgAdHoc" runat="server" ImageUrl="~/images/signaturesm.png" ToolTip="<%$ Resources:SignOff, AdHocSignatureTooltip %>" AlternateText="<%$ Resources:SignOff, AdHocSignatureTooltip %>" /> <asp:LinkButton ID="lnkNewInstructor" runat="server" Text='<%$ Resources:SignOff, NewInstructor %>' OnClick="lnkNewInstructor_Click"></asp:LinkButton></div>
         </asp:View>
         <asp:View runat="server" ID="vwAcceptTerms">
             <p><asp:Label ID="lblDisclaimerResponse" runat="server" Text=""></asp:Label></p>

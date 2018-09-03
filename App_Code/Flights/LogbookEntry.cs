@@ -345,7 +345,7 @@ namespace MyFlightbook
         /// <summary>
         /// CACHED email of the CFI at the point of signing.  May no longer be their email.
         /// </summary>
-        internal string CFIEmail { get; set; }
+        public string CFIEmail { get; set; }
 
         /// <summary>
         /// CACHED name of CFI at the point of signing.  May no longer be their name.

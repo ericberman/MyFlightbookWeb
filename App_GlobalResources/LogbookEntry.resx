@@ -410,7 +410,7 @@
     <value>Additional Flight Properties</value>
   </data>
   <data name="FieldNightLandings" xml:space="preserve">
-    <value>Night Landings:</value>
+    <value>Night Landings</value>
   </data>
   <data name="ImportPreviewNotSuccessful" xml:space="preserve">
     <value>Errors were encountered; please review and fix the issues below before importing.</value>
@@ -863,5 +863,11 @@
   </data>
   <data name="errNightTakeoffPropertiesExceedNightTakeoffCount" xml:space="preserve">
     <value>Flight has {0} total night takeoff(s), but {1} night takeoffs at towered/untowered airports.</value>
+  </data>
+  <data name="FieldGroundSimFull" xml:space="preserve">
+    <value>Ground Sim</value>
+  </data>
+  <data name="FieldSimIMCFull" xml:space="preserve">
+    <value>Sim. Instrument</value>
   </data>
 </root>
