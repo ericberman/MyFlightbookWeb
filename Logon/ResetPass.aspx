@@ -15,8 +15,14 @@
             </asp:Panel>
         </asp:View>
         <asp:View ID="vwEmailSent" runat="server">
-            <h2><asp:Label ID="lblEmailSentHeader" runat="server" Text="Reset Password: E-mail sent" meta:resourcekey="lblEmailSentHeaderResource1"></asp:Label></h2>
+            <h2><asp:Label ID="lblEmailSentHeader" runat="server" Text="Reset Password: E-mail sent." meta:resourcekey="lblEmailSentHeaderResource1"></asp:Label></h2>
             <asp:Label ID="lblEmailSent" runat="server" meta:resourcekey="lblEmailSentResource1"></asp:Label>
+            <p><asp:Label ID="lblNotReceived" runat="server" Text="If you don't receive it momentarily..." meta:resourcekey="lblNotReceivedResource1"></asp:Label></p>
+            <ul>
+                <li><asp:Label ID="lblNoAccount" runat="server" Text="Verify that the email address you used is one for which an account exists.  For security, we don't tell you whether or not an account exists." meta:resourcekey="lblNoAccountResource1"></asp:Label></li>
+                <li><asp:Label ID="lblJunk" runat="server" Text="Check your junk mail folder" meta:resourcekey="lblJunkResource1"></asp:Label></li>
+                <li><asp:Hyperlink ID="lnkContactUs" runat="server" Text="Contact Us" NavigateUrl="~/Public/ContactMe.aspx" meta:resourcekey="lnkContactUsResource1"></asp:Hyperlink></li>
+            </ul>
         </asp:View>
         <asp:View ID="vwVerify" runat="server">
             <h2><asp:Label ID="lblVerify" runat="server" Text="Reset Password: verify your identity" meta:resourcekey="lblVerifyResource1"></asp:Label></h2>

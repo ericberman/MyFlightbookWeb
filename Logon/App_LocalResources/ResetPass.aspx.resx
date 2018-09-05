@@ -154,7 +154,7 @@
     <value />
   </data>
   <data name="lblEmailSentHeaderResource1.Text" xml:space="preserve">
-    <value>Reset Password: E-mail sent</value>
+    <value>Reset Password: E-mail sent.</value>
   </data>
   <data name="lblEmailSentHeaderResource1.ToolTip" xml:space="preserve">
     <value />
@@ -177,13 +177,31 @@
   <data name="lblExactPromptResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblJunkResource1.Text" xml:space="preserve">
+    <value>Check your junk mail folder</value>
+  </data>
+  <data name="lblJunkResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblNewPassResource1.Text" xml:space="preserve">
     <value>New Password</value>
   </data>
   <data name="lblNewPassResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblNoAccountResource1.Text" xml:space="preserve">
+    <value>Verify that the email address you used is one for which an account exists.  For security, we don't tell you whether or not an account exists.</value>
+  </data>
+  <data name="lblNoAccountResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblNoteExactResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNotReceivedResource1.Text" xml:space="preserve">
+    <value>If you don't receive it momentarily...</value>
+  </data>
+  <data name="lblNotReceivedResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblPleaseAnswerResource1.Text" xml:space="preserve">
@@ -214,6 +232,12 @@
     <value>Reset Password: verify your identity</value>
   </data>
   <data name="lblVerifyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkContactUsResource1.Text" xml:space="preserve">
+    <value>Contact Us</value>
+  </data>
+  <data name="lnkContactUsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="NewPasswordCompareResource1.ErrorMessage" xml:space="preserve">

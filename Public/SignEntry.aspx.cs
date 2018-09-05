@@ -31,8 +31,6 @@ public partial class Public_SignEntry : System.Web.UI.Page
         {
             if (ViewState[szVSPrevSignedFlights] == null)
             {
-                if (Username == null)
-                    throw new MyFlightbookValidationException("No username for previously signed flights");
                 FlightQuery fq = new FlightQuery(Username) { IsSigned = true };
                 DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq));
                 Dictionary<string, LogbookEntry> d = new Dictionary<string, LogbookEntry>();
@@ -103,6 +101,10 @@ public partial class Public_SignEntry : System.Web.UI.Page
 
                 mfbSignFlight.Flight = le;
                 CFIStudentMap sm = new CFIStudentMap(Username);
+
+                if (Username == null)
+                    throw new MyFlightbookValidationException("No username for previously signed flights");
+
                 Dictionary<string, LogbookEntry> d = PreviouslySignedAdhocFlights;
 
                 // If no instructors, and no previously signed flights, assume ad-hoc and go straight to accept terms.
@@ -165,6 +167,9 @@ public partial class Public_SignEntry : System.Web.UI.Page
         }
         else if (e.CommandName.CompareCurrentCultureIgnoreCase("Prior") == 0)
         {
+            if (Username == null)
+                throw new MyFlightbookValidationException("No username for previously signed flights");
+
             Dictionary<string, LogbookEntry> d = PreviouslySignedAdhocFlights;
             string szKey = szInstructor.ToUpper(CultureInfo.CurrentCulture);
             if (d.ContainsKey(szKey))  // should always be true

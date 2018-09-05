@@ -857,8 +857,11 @@ namespace MyFlightbook
             get { return InstanceType == AircraftInstanceTypes.RealAircraft && TailNumber.StartsWith(CountryCodePrefix.szAnonPrefix, StringComparison.OrdinalIgnoreCase); }
         }
 
+        /// <summary>
+        /// Used pretty much exclusively for group-by in aircraft view; don't rely on it for much - use the model as normative.
+        /// </summary>
         [Newtonsoft.Json.JsonIgnore]
-        public string ICAO { get; set; }
+        public string ICAO { get; private set; }
 
         /// <summary>
         /// Optional date of the glass upgrade.
