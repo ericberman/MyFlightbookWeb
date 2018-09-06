@@ -802,7 +802,7 @@ namespace MyFlightbook
         public DateTime LastBFRR22()
         {
             ProfileEvent[] rgPfe = CachedBFREvents();
-            for (int i = rgPfe.Length - 1; i > 0; i--)
+            for (int i = rgPfe.Length - 1; i >= 0; i--)
                 if (rgPfe[i].IsR22)
                     return rgPfe[i].Date;
             return DateTime.MinValue;
@@ -814,7 +814,7 @@ namespace MyFlightbook
         public DateTime LastBFRR44()
         {
             ProfileEvent[] rgPfe = CachedBFREvents();
-            for (int i = rgPfe.Length - 1; i > 0; i--)
+            for (int i = rgPfe.Length - 1; i >= 0; i--)
                 if (rgPfe[i].IsR44)
                     return rgPfe[i].Date;
             return DateTime.MinValue;
