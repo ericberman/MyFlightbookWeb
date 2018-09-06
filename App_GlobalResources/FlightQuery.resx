@@ -325,4 +325,7 @@
   <data name="ContainsTypeNone" xml:space="preserve">
     <value>(none)</value>
   </data>
+  <data name="AircraftFeatureTAA" xml:space="preserve">
+    <value>Technically Advanced Aircraft (TAA)</value>
+  </data>
 </root>

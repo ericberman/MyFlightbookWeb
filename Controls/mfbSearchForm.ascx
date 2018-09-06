@@ -4,6 +4,8 @@
 <%@ Register src="mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc3" %>
 <%@ Register src="mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc4" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc2" TagName="popmenu" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc2" TagName="mfbTooltip" %>
+
 
 <asp:Panel ID="pnlSearch" runat="server" DefaultButton="btnSearch" 
     meta:resourcekey="pnlSearchResource1">
@@ -229,102 +231,64 @@
                         meta:resourcekey="lblAircraftCharsLabelResource1"></asp:Label>:</p>
                 <asp:Panel ID="pnlAircraftType" runat="server" style="overflow:hidden" 
                     meta:resourcekey="pnlAircraftTypeResource1">
-                    <table>
-                           <tr>
-                               <td style="vertical-align: top">
-                                   <asp:CheckBox ID="ckTailwheel" runat="server" Text="Tailwheel" 
-                                       meta:resourcekey="ckTailwheelResource1" /></td>
-                               <td style="vertical-align: top">
-                                   <asp:CheckBox ID="ckComplex" runat="server" 
-                                       Text="Complex" meta:resourcekey="ckComplexResource1" />
-                               </td>
-                               <td style="vertical-align: top">
-                                   <asp:RadioButton ID="rbEngineAny" GroupName="EngineGroup" Text="Any Engine" 
-                                       Checked="True" runat="server" meta:resourcekey="rbEngineAnyResource1" />
-                               </td>
-                               <td style="vertical-align: top">
-                                   <asp:RadioButton ID="rbInstanceAny" GroupName="InstanceGroup" 
-                                       Text="All aircraft" Checked="True" runat="server" 
-                                       meta:resourcekey="rbInstanceAnyResource1" />
-                               </td>
-                           </tr>
-                           <tr>
-                               <td style="vertical-align: top">
-                                   <asp:CheckBox ID="ckHighPerf" runat="server" Text="High Performance" 
-                                       meta:resourcekey="ckHighPerfResource1" />
-                               </td>
-                               <td style="vertical-align: top">
-                                   &nbsp; &nbsp;&nbsp;&nbsp;
-                                   <asp:CheckBox ID="ckRetract" runat="server" Text="Retractable gear" 
-                                       meta:resourcekey="ckRetractResource1" /></td>
-                               <td style="vertical-align: top">
-                                   <asp:RadioButton ID="rbEnginePiston" GroupName="EngineGroup" Text="Piston" 
-                                       runat="server" meta:resourcekey="rbEnginePistonResource1" />
-                               </td>
-                               <td style="vertical-align: top">
-                                   <asp:RadioButton ID="rbInstanceReal" GroupName="InstanceGroup" 
-                                       Text="Real Aircraft" runat="server" 
-                                       meta:resourcekey="rbInstanceRealResource1" />
-                               </td>
-                           </tr>
-                           <tr>
-                               <td style="vertical-align: top">
-                                  <asp:CheckBox ID="ckGlass" runat="server" Text="Glass Cockpit" 
-                                       meta:resourcekey="ckGlassResource1" /></td>
-                               <td style="vertical-align: top">
-                                   &nbsp;&nbsp; &nbsp;&nbsp;
-                                   <asp:CheckBox ID="ckProp" runat="server" Text="Constant speed prop" 
-                                       meta:resourceKey="ckPropResource2" /></td> 
-                               <td style="vertical-align: top">
-                                   <asp:RadioButton ID="rbEngineTurboprop" GroupName="EngineGroup" 
-                                       Text="TurboProp" runat="server" meta:resourcekey="rbEngineTurbopropResource1" />
-                               </td>
-                               <td style="vertical-align: top">
-                                   <asp:RadioButton ID="rbInstanceTrainingDevices" GroupName="InstanceGroup" 
-                                       Text="Training Device (FTD/ATD/Sim)" runat="server" 
-                                       meta:resourcekey="rbInstanceTrainingDevicesResource1" />
-                               </td>
-                           </tr>
-                           <tr>
-                               <td style="vertical-align: top">
-                                   <asp:CheckBox ID="ckMotorGlider" runat="server" 
+                    <div style="display:inline-block; vertical-align:top;">
+                        <div><asp:CheckBox ID="ckTailwheel" runat="server" Text="Tailwheel" 
+                                       meta:resourcekey="ckTailwheelResource1" /></div>
+                        <div><asp:CheckBox ID="ckHighPerf" runat="server" Text="High Performance" 
+                                       meta:resourcekey="ckHighPerfResource1" /></div>
+                        <div><asp:CheckBox ID="ckGlass" runat="server" Text="Glass Cockpit" 
+                                       meta:resourcekey="ckGlassResource1" /></div>
+                        <div>
+                            <asp:CheckBox ID="ckTAA" runat="server" Text="TAA" 
+                                       meta:resourcekey="ckTAA1" />
+                            <uc2:mfbTooltip runat="server" ID="mfbTooltip">
+                                <TooltipBody><%=Resources.Makes.TAADefinition %></TooltipBody>
+                            </uc2:mfbTooltip>
+                        </div>
+                        <div><asp:CheckBox ID="ckMotorGlider" runat="server" 
                                        Text="<%$ Resources:FlightQuery, AircraftFeatureMotorGlider %>" 
-                                       meta:resourcekey="ckMotorGliderResource1" />
-                               </td>
-                               <td style="vertical-align: top">
-                                                                  &nbsp;&nbsp; &nbsp;&nbsp;
+                                       meta:resourcekey="ckMotorGliderResource1" /></div>
+                        <div><asp:CheckBox ID="ckMultiEngineHeli" runat="server" 
+                                       Text="<%$ Resources:FlightQuery, AircraftFeatureMultiEngineHelicopter %>" meta:resourcekey="ckMultiEngineHeliResource1" /></div>
+                    </div>
+                    <div style="display:inline-block; vertical-align:top;">
+                        <div><asp:CheckBox ID="ckComplex" runat="server" 
+                                       Text="Complex" meta:resourcekey="ckComplexResource1" /></div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;
+                                   <asp:CheckBox ID="ckRetract" runat="server" Text="Retractable gear" 
+                                       meta:resourcekey="ckRetractResource1" /></div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <asp:CheckBox ID="ckProp" runat="server" Text="Constant speed prop" 
+                                       meta:resourceKey="ckPropResource2" /></div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;
                                    <asp:CheckBox ID="ckCowl" runat="server" Text="Flaps" 
-                                       meta:resourcekey="ckCowlResource1" /></td>
-                               <td style="vertical-align: top">
-                                   <asp:RadioButton ID="rbEngineJet" GroupName="EngineGroup" Text="Jet" 
-                                       runat="server" meta:resourcekey="rbEngineJetResource1" />
-                               </td>
-                               <td style="vertical-align: top">
-                                   &nbsp;</td>
-                           </tr>
-                           <tr>
-                               <td style="vertical-align: top">
-                                   <asp:CheckBox ID="ckMultiEngineHeli" runat="server" 
-                                       Text="<%$ Resources:FlightQuery, AircraftFeatureMultiEngineHelicopter %>" meta:resourcekey="ckMultiEngineHeliResource1" />
-                               </td>
-                               <td style="vertical-align: top">
-                                   &nbsp;</td>
-                               <td style="vertical-align: top">
-                                   <asp:RadioButton ID="rbEngineTurbine" runat="server" GroupName="EngineGroup" 
-                                       Text="Turbine (Any)" meta:resourcekey="rbEngineTurbineResource1" />
-                               </td>
-                               <td style="vertical-align: top">
-                                   &nbsp;</td>
-                           </tr>
-                           <tr>
-                               <td style="vertical-align: top">&nbsp;</td>
-                               <td style="vertical-align: top">&nbsp;</td>
-                               <td style="vertical-align: top">
-                                   <asp:RadioButton ID="rbEngineElectric" runat="server" GroupName="EngineGroup" 
-                                       Text="Electric" meta:resourcekey="rbEngineElectricResource1" /></td>
-                               <td style="vertical-align: top">&nbsp;</td>
-                           </tr>
-                       </table>
+                                       meta:resourcekey="ckCowlResource1" /></div>
+                    </div>
+                    <div style="display:inline-block; vertical-align:top;">
+                        <div><asp:RadioButton ID="rbEngineAny" GroupName="EngineGroup" Text="Any Engine" 
+                                       Checked="True" runat="server" meta:resourcekey="rbEngineAnyResource1" /></div>
+                        <div><asp:RadioButton ID="rbEnginePiston" GroupName="EngineGroup" Text="Piston" 
+                                       runat="server" meta:resourcekey="rbEnginePistonResource1" /></div>
+                        <div><asp:RadioButton ID="rbEngineTurboprop" GroupName="EngineGroup" 
+                                       Text="TurboProp" runat="server" meta:resourcekey="rbEngineTurbopropResource1" /></div>
+                        <div><asp:RadioButton ID="rbEngineJet" GroupName="EngineGroup" Text="Jet" 
+                                       runat="server" meta:resourcekey="rbEngineJetResource1" /></div>
+                        <div><asp:RadioButton ID="rbEngineTurbine" runat="server" GroupName="EngineGroup" 
+                                       Text="Turbine (Any)" meta:resourcekey="rbEngineTurbineResource1" /></div>
+                        <div><asp:RadioButton ID="rbEngineElectric" runat="server" GroupName="EngineGroup" 
+                                       Text="Electric" meta:resourcekey="rbEngineElectricResource1" /></div>
+                    </div>
+                    <div style="display:inline-block; vertical-align:top;">
+                        <div><asp:RadioButton ID="rbInstanceAny" GroupName="InstanceGroup" 
+                                       Text="All aircraft" Checked="True" runat="server" 
+                                       meta:resourcekey="rbInstanceAnyResource1" /></div>
+                        <div><asp:RadioButton ID="rbInstanceReal" GroupName="InstanceGroup" 
+                                       Text="Real Aircraft" runat="server" 
+                                       meta:resourcekey="rbInstanceRealResource1" /></div>
+                        <div><asp:RadioButton ID="rbInstanceTrainingDevices" GroupName="InstanceGroup" 
+                                       Text="Training Device (FTD/ATD/FFS)" runat="server" 
+                                       meta:resourcekey="rbInstanceTrainingDevicesResource1" /></div>
+                    </div>
                 </asp:Panel>
                 <p class="header" runat="server" id="CustomPropsHeader"><asp:Localize ID="locProps" 
                         runat="server" Text="Flight had one of these properties:" 

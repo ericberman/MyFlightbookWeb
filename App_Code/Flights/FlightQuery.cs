@@ -309,7 +309,7 @@ namespace MyFlightbook
         public Boolean IsRetract { get; set; }
 
         /// <summary>
-        /// Deprecated!!!  Use IsGlass instead.
+        /// Like IsGlass, but deeper: requires GPS moving map and autopilot.
         /// </summary>
         public Boolean IsTechnicallyAdvanced { get; set; }
 
@@ -377,13 +377,13 @@ namespace MyFlightbook
             get
             {
                 return (AircraftInstanceTypes != AircraftInstanceRestriction.AllAircraft) || (EngineType != EngineTypeRestriction.AllEngines) ||
-                    IsComplex || HasFlaps || IsHighPerformance || IsConstantSpeedProp || IsRetract || IsTailwheel || IsGlass || IsMotorglider || IsMultiEngineHeli;
+                    IsComplex || HasFlaps || IsHighPerformance || IsConstantSpeedProp || IsRetract || IsTailwheel || IsGlass || IsTechnicallyAdvanced || IsMotorglider || IsMultiEngineHeli;
             }
             set
             {
                 if (value)  // ONLY reset
                     return;
-                IsComplex = HasFlaps = IsHighPerformance = IsConstantSpeedProp = IsRetract = IsTailwheel = IsGlass = IsMotorglider = IsMultiEngineHeli = false;
+                IsComplex = HasFlaps = IsHighPerformance = IsConstantSpeedProp = IsRetract = IsTailwheel = IsGlass = IsTechnicallyAdvanced = IsMotorglider = IsMultiEngineHeli = false;
                 AircraftInstanceTypes = AircraftInstanceRestriction.AllAircraft;
                 EngineType = EngineTypeRestriction.AllEngines;
             }
@@ -933,6 +933,7 @@ namespace MyFlightbook
             AddClause(sbQuery, "(models.fTailwheel <> 0)", IsTailwheel);
             AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " (models.fHighPerf <> 0 OR (date < '{0}' AND models.f200HP <> 0))", MakeModel.Date200hpHighPerformanceCutoverDate), IsHighPerformance);
             AddClause(sbQuery, "(models.fGlassOnly <> 0 OR (Aircraft.HasGlassUpgrade <> 0 AND (Aircraft.GlassUpgradeDate IS NULL OR date >= Aircraft.GlassUpgradeDate)))", IsGlass);
+            AddClause(sbQuery, "(models.fTAA <> 0 OR (Aircraft.HasTAAUpgrade <> 0 AND (Aircraft.GlassUpgradeDate IS NULL OR date >= Aircraft.GlassUpgradeDate)))", IsTechnicallyAdvanced);
 
             if (IsComplex)
                 AddClause(sbQuery, "(models.fComplex <> 0 OR (models.fCowlFlaps <> 0 AND models.fConstantProp <> 0 AND (models.fRetract <> 0 OR (flights.idCatClassOverride IN (3,4) OR (flights.idCatClassOverride = 0 AND models.idcategoryclass IN (3,4))))))");
@@ -953,6 +954,7 @@ namespace MyFlightbook
             AppendIfChecked(sbType, IsRetract, Resources.FlightQuery.AircraftFeatureRetractableGear);
             AppendIfChecked(sbType, IsTailwheel, Resources.FlightQuery.AircraftFeatureTailwheel);
             AppendIfChecked(sbType, IsGlass, Resources.FlightQuery.AircraftFeatureGlass);
+            AppendIfChecked(sbType, IsTechnicallyAdvanced, Resources.FlightQuery.AircraftFeatureTAA);
             AppendIfChecked(sbType, IsMotorglider, Resources.FlightQuery.AircraftFeatureMotorGlider);
             AppendIfChecked(sbType, IsMultiEngineHeli, Resources.FlightQuery.AircraftFeatureMultiEngineHelicopter);
 

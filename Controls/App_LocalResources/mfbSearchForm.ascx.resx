@@ -606,4 +606,10 @@
   <data name="lnkShowAllAircraft1.Text" xml:space="preserve">
     <value>Show All Aircraft</value>
   </data>
+  <data name="ckTAA1.Text" xml:space="preserve">
+    <value>TAA</value>
+  </data>
+  <data name="ckTAA1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
 </root>

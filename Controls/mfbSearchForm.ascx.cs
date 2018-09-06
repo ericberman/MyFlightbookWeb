@@ -92,7 +92,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         txtModelNameText.Text = string.Empty;
 
         // clear the types. 
-        ckComplex.Checked = ckCowl.Checked = ckHighPerf.Checked = ckProp.Checked = ckRetract.Checked = ckGlass.Checked = ckTailwheel.Checked = ckMotorGlider.Checked = ckMultiEngineHeli.Checked = false;
+        ckComplex.Checked = ckCowl.Checked = ckHighPerf.Checked = ckProp.Checked = ckRetract.Checked = ckGlass.Checked = ckTAA.Checked = ckTailwheel.Checked = ckMotorGlider.Checked = ckMultiEngineHeli.Checked = false;
 
         // And clear the "contains times
         ckFSLanding.Checked = ckNightLandings.Checked = ckApproaches.Checked = ckHolds.Checked =
@@ -234,6 +234,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         ckTailwheel.Checked = m_fq.IsTailwheel;
         ckHighPerf.Checked = m_fq.IsHighPerformance;
         ckGlass.Checked = m_fq.IsGlass;
+        ckTAA.Checked = m_fq.IsTechnicallyAdvanced;
         ckMotorGlider.Checked = m_fq.IsMotorglider;
         ckMultiEngineHeli.Checked = m_fq.IsMultiEngineHeli;
         ckComplex.Checked = m_fq.IsComplex;
@@ -274,7 +275,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
                 break;
         }
 
-        cpeAircraftChars.Collapsed = !(ckTailwheel.Checked || ckHighPerf.Checked || ckGlass.Checked || ckMotorGlider.Checked || ckMultiEngineHeli.Checked ||
+        cpeAircraftChars.Collapsed = !(ckTailwheel.Checked || ckHighPerf.Checked || ckGlass.Checked || ckTAA.Checked || ckMotorGlider.Checked || ckMultiEngineHeli.Checked ||
             ckComplex.Checked || ckRetract.Checked || ckProp.Checked || ckCowl.Checked ||
             m_fq.EngineType != FlightQuery.EngineTypeRestriction.AllEngines || m_fq.AircraftInstanceTypes != FlightQuery.AircraftInstanceRestriction.AllAircraft);
     }
@@ -544,6 +545,7 @@ function setDates(isCustom)
         m_fq.IsTailwheel = ckTailwheel.Checked;
         m_fq.IsHighPerformance = ckHighPerf.Checked;
         m_fq.IsGlass = ckGlass.Checked;
+        m_fq.IsTechnicallyAdvanced = ckTAA.Checked;
         m_fq.IsComplex = ckComplex.Checked;
         m_fq.HasFlaps = ckCowl.Checked;
         m_fq.IsConstantSpeedProp = ckProp.Checked;
