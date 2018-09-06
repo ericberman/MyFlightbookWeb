@@ -861,7 +861,7 @@ namespace MyFlightbook
         /// Used pretty much exclusively for group-by in aircraft view; don't rely on it for much - use the model as normative.
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
-        public string ICAO { get; private set; }
+        public string ICAO { get; set; }
 
         /// <summary>
         /// Optional date of the glass upgrade.
