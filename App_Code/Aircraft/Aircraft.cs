@@ -2452,26 +2452,29 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
 
                         if (mr != null && iColAircraftID >= 0 && ua != null)
                         {
-                            int idAircraft = Convert.ToInt32(rgszRow[iColAircraftID], CultureInfo.InvariantCulture);
-                            Aircraft ac = ua.GetUserAircraftByID(idAircraft);
-                            if (ac != null && Aircraft.NormalizeTail(szTail).CompareCurrentCultureIgnoreCase(Aircraft.NormalizeTail(ac.TailNumber)) == 0)   // double check that the tails match too!
+                            int idAircraft = Aircraft.idAircraftUnknown;
+                            if (int.TryParse(rgszRow[iColAircraftID], NumberStyles.Integer | NumberStyles.AllowTrailingWhite | NumberStyles.AllowLeadingWhite, CultureInfo.InvariantCulture, out idAircraft))
                             {
-                                mr.BestMatchAircraft = ac;
-                                bool fChanged = false;
-                                if (iColFrequentlyUsed >= 0)
+                                Aircraft ac = ua.GetUserAircraftByID(idAircraft);
+                                if (ac != null && Aircraft.NormalizeTail(szTail).CompareCurrentCultureIgnoreCase(Aircraft.NormalizeTail(ac.TailNumber)) == 0)   // double check that the tails match too!
                                 {
-                                    bool newVal = !rgszRow[iColFrequentlyUsed].SafeParseBoolean();  // meaning is inverted - internally it's "hide", externally it's "show" (i.e., frequently used).
-                                    fChanged = (newVal != ac.HideFromSelection);
-                                    ac.HideFromSelection = newVal;
-                                }
-                                if (iColPrivatenotes >= 0)
-                                {
-                                    fChanged = fChanged || ac.PrivateNotes.CompareCurrentCultureIgnoreCase(rgszRow[iColPrivatenotes]) != 0;
-                                    ac.PrivateNotes = rgszRow[iColPrivatenotes];
-                                }
+                                    mr.BestMatchAircraft = ac;
+                                    bool fChanged = false;
+                                    if (iColFrequentlyUsed >= 0)
+                                    {
+                                        bool newVal = !rgszRow[iColFrequentlyUsed].SafeParseBoolean();  // meaning is inverted - internally it's "hide", externally it's "show" (i.e., frequently used).
+                                        fChanged = (newVal != ac.HideFromSelection);
+                                        ac.HideFromSelection = newVal;
+                                    }
+                                    if (iColPrivatenotes >= 0)
+                                    {
+                                        fChanged = fChanged || ac.PrivateNotes.CompareCurrentCultureIgnoreCase(rgszRow[iColPrivatenotes]) != 0;
+                                        ac.PrivateNotes = rgszRow[iColPrivatenotes];
+                                    }
 
-                                if (fChanged)
-                                    ua.FAddAircraftForUser(ac);
+                                    if (fChanged)
+                                        ua.FAddAircraftForUser(ac);
+                                }
                             }
                         }
                     }
