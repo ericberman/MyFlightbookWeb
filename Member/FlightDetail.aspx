@@ -69,6 +69,12 @@
             var gm = getMfbMap();
             gm.oms.addMarker(gm.addEventMarker(p, s));
         }
+
+        function showUnitConvert(sender) {
+            var r1 = document.getElementById("rowUnitConvert1");
+            var r2 = document.getElementById("rowUnitConvert2");
+            r1.style.visibility = r2.style.visibility = (sender.value == "Original") ? "hidden" : "visible";
+        }
     </script>
     <uc4:mfbAccordionProxyExtender runat="server" ID="mfbAccordionProxyExtender" AccordionControlID="AccordionCtrl" HeaderProxyIDs="apcFlight,apcAircraft,apcChart,apcRaw,apcDownload" />
     <asp:Panel ID="pnlAccordionMenuContainer" CssClass="accordionMenuContainer" runat="server" meta:resourcekey="pnlAccordionMenuContainerResource1">
@@ -267,37 +273,49 @@
             </ajaxToolkit:AccordionPane>
             <ajaxToolkit:AccordionPane runat="server" ID="acpDownload" meta:resourcekey="acpDownloadResource1">
                 <Content>
-                    <div>
-                        &nbsp;<asp:Localize ID="locDownloadPrompt" runat="server"
-                            Text="Download this data as:" meta:resourcekey="locDownloadPromptResource1"></asp:Localize>
-                        <br />
-                        <asp:DropDownList ID="cmbFormat" runat="server" meta:resourcekey="cmbFormatResource1">
-                            <asp:ListItem Selected="True" Value="Original" Text="Original Format" meta:resourcekey="ListItemResource1"></asp:ListItem>
-                            <asp:ListItem Value="CSV" Text="Text (CSV / Spreadsheet)" meta:resourcekey="ListItemResource2"></asp:ListItem>
-                            <asp:ListItem Enabled="False" Value="KML" Text="KML (Google Earth)" meta:resourcekey="ListItemResource3"></asp:ListItem>
-                            <asp:ListItem Enabled="False" Value="GPX" Text="GPX" meta:resourcekey="ListItemResource4"></asp:ListItem>
-                        </asp:DropDownList>
-                        <br />
-                        <asp:Localize ID="locSpeedUnitsPrompt" runat="server" Text="Speed units are:" meta:resourcekey="locSpeedUnitsPromptResource1"></asp:Localize>
-                        <br />
-                        <asp:DropDownList ID="cmbSpeedUnits" runat="server" meta:resourcekey="cmbSpeedUnitsResource1">
-                            <asp:ListItem Selected="True" Value="0" Text="Knots" meta:resourcekey="ListItemResource5"></asp:ListItem>
-                            <asp:ListItem Value="1" Text="Miles/Hour" meta:resourcekey="ListItemResource6"></asp:ListItem>
-                            <asp:ListItem Value="2" Text="Meters/Second" meta:resourcekey="ListItemResource7"></asp:ListItem>
-                            <asp:ListItem Value="3" Text="Feet/Second" meta:resourcekey="ListItemResource8"></asp:ListItem>
-                        </asp:DropDownList>
-                        <br />
-                        <asp:Localize ID="locAltUnitsPrompt" runat="server" Text="Altitude units are:" meta:resourcekey="locAltUnitsPromptResource1"></asp:Localize>
-                        <br />
-                        <asp:DropDownList ID="cmbAltUnits" runat="server" meta:resourcekey="cmbAltUnitsResource1">
-                            <asp:ListItem Selected="True" Value="0" Text="Feet" meta:resourcekey="ListItemResource9"></asp:ListItem>
-                            <asp:ListItem Value="1" Text="Meters" meta:resourcekey="ListItemResource10"></asp:ListItem>
-                        </asp:DropDownList>
-                        <br />
-                        <br />
-                        <asp:Button ID="btnDownload" runat="server" CausesValidation="False" OnClick="btnDownload_Click"
-                            Text="Download" meta:resourcekey="btnDownloadResource1" />
-                    </div>
+                    <table style="margin-left:auto; margin-right:auto;">
+                        <tr>
+                            <td>
+                                <asp:Localize ID="locDownloadPrompt" runat="server"
+                                                            Text="Download this data as:" meta:resourcekey="locDownloadPromptResource1"></asp:Localize>
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="cmbFormat" runat="server" meta:resourcekey="cmbFormatResource1" onchange="javascript:showUnitConvert(this);">
+                                    <asp:ListItem Selected="True" Value="Original" Text="Original Format" meta:resourcekey="ListItemResource1"></asp:ListItem>
+                                    <asp:ListItem Value="CSV" Text="Text (CSV / Spreadsheet)" meta:resourcekey="ListItemResource2"></asp:ListItem>
+                                    <asp:ListItem Enabled="False" Value="KML" Text="KML (Google Earth)" meta:resourcekey="ListItemResource3"></asp:ListItem>
+                                    <asp:ListItem Enabled="False" Value="GPX" Text="GPX" meta:resourcekey="ListItemResource4"></asp:ListItem>
+                                </asp:DropDownList>
+                            </td>
+                        </tr>
+                        <tr id="rowUnitConvert1" style="visibility:hidden;">
+                            <td>
+                                <asp:Localize ID="locSpeedUnitsPrompt" runat="server" Text="Speed in original data is:" meta:resourcekey="locSpeedUnitsPromptResource1"></asp:Localize>
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="cmbSpeedUnits" runat="server" meta:resourcekey="cmbSpeedUnitsResource1">
+                                    <asp:ListItem Selected="True" Value="0" Text="Knots" meta:resourcekey="ListItemResource5"></asp:ListItem>
+                                    <asp:ListItem Value="1" Text="Miles/Hour" meta:resourcekey="ListItemResource6"></asp:ListItem>
+                                    <asp:ListItem Value="2" Text="Meters/Second" meta:resourcekey="ListItemResource7"></asp:ListItem>
+                                    <asp:ListItem Value="3" Text="Feet/Second" meta:resourcekey="ListItemResource8"></asp:ListItem>
+                                </asp:DropDownList>
+                            </td>
+                        </tr>
+                        <tr id="rowUnitConvert2" style="visibility:hidden;">
+                            <td>
+                                <asp:Localize ID="locAltUnitsPrompt" runat="server" Text="Altitude in original data is:" meta:resourcekey="locAltUnitsPromptResource1"></asp:Localize>
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="cmbAltUnits" runat="server" meta:resourcekey="cmbAltUnitsResource1">
+                                    <asp:ListItem Selected="True" Value="0" Text="Feet" meta:resourcekey="ListItemResource9"></asp:ListItem>
+                                    <asp:ListItem Value="1" Text="Meters" meta:resourcekey="ListItemResource10"></asp:ListItem>
+                                </asp:DropDownList>
+                            </td>
+                        </tr>
+                        <tr><td>&nbsp;</td><td></td></tr>
+                        <tr><td></td><td><asp:Button ID="btnDownload" runat="server" CausesValidation="False" OnClick="btnDownload_Click"
+                        Text="Download" meta:resourcekey="btnDownloadResource1" /></td></tr>
+                    </table>
                 </Content>
             </ajaxToolkit:AccordionPane>
         </Panes>

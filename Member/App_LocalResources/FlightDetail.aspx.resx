@@ -526,42 +526,24 @@
     <value />
   </data>
   <data name="locAltUnitsPromptResource1.Text" xml:space="preserve">
-    <value>Altitude units are:</value>
-  </data>
-  <data name="locAltUnitsPromptResource2.Text" xml:space="preserve">
-    <value>Altitude units are:</value>
+    <value>Altitude in original data is:</value>
   </data>
   <data name="locDataToChartResource1.Text" xml:space="preserve">
     <value>Data to chart:</value>
   </data>
-  <data name="locDataToChartResource2.Text" xml:space="preserve">
-    <value>Data to chart:</value>
-  </data>
   <data name="locDownloadPromptResource1.Text" xml:space="preserve">
-    <value>Download this data as:</value>
-  </data>
-  <data name="locDownloadPromptResource2.Text" xml:space="preserve">
     <value>Download this data as:</value>
   </data>
   <data name="locErrorsFoundResource1.Text" xml:space="preserve">
     <value>Errors were found in loading flight data</value>
   </data>
   <data name="locSpeedUnitsPromptResource1.Text" xml:space="preserve">
-    <value>Speed units are:</value>
-  </data>
-  <data name="locSpeedUnitsPromptResource2.Text" xml:space="preserve">
-    <value>Speed units are:</value>
+    <value>Speed in original data is:</value>
   </data>
   <data name="locXAxisSelectionResource1.Text" xml:space="preserve">
     <value>X-axis:</value>
   </data>
-  <data name="locXAxisSelectionResource2.Text" xml:space="preserve">
-    <value>X-axis:</value>
-  </data>
   <data name="locY2AxisSelectionResource1.Text" xml:space="preserve">
-    <value>2nd data to chart:</value>
-  </data>
-  <data name="locY2AxisSelectionResource2.Text" xml:space="preserve">
     <value>2nd data to chart:</value>
   </data>
   <data name="PageResource1.Title" xml:space="preserve">
