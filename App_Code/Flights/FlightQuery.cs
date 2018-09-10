@@ -563,7 +563,7 @@ namespace MyFlightbook
         {
             get
             {
-                if (Filters.Count == 0)
+                if (Filters == null || Filters.Count == 0)
                     return Resources.FlightQuery.FilterNone;
 
                 StringBuilder sb = new StringBuilder();
