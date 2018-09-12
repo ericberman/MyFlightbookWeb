@@ -9,6 +9,15 @@
                 document.getElementById('<% = hdnSelectedModel.ClientID %>').value = eventArgs._value;
                 document.getElementById('<% = lnkPopulateModel.ClientID %>').click();
             }
+
+            function pageLoad(sender, args) {
+                $find("cpeFilter").add_expandComplete(setFocusForSearch);
+            }
+
+            function setFocusForSearch() {
+                if(!$find("cpeFilter").get_collapsed())
+                $get("<%=txtFilter.ClientID%>").focus();
+            }
         </script>
         <table>
             <tr>

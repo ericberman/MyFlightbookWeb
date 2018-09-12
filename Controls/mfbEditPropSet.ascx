@@ -1,5 +1,15 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditPropSet.ascx.cs" Inherits="Controls_mfbEditPropSet" %>
 <%@ Register src="mfbEditProp.ascx" tagname="mfbEditProp" tagprefix="uc1" %>
+        <script type="text/javascript" language="javascript">
+        function pageLoad(sender, args) {
+            $find("<%=CollapsiblePanelExtender1.ClientID%>").add_expandComplete(setFocusForSearch);
+        }
+
+        function setFocusForSearch() {
+            if(!$find("<%=CollapsiblePanelExtender1.ClientID%>").get_collapsed())
+               $get("<%=txtFilter.ClientID%>").focus();
+        }
+        </script>
         <div style="margin-bottom: 3px;">
             <div><asp:Label ID="lblAddPrompt" runat="server" Text="<%$ Resources:LogbookEntry, propAdditionalPropertiesPrompt %>"></asp:Label></div>
             <table>
