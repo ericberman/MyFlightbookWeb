@@ -25,7 +25,7 @@ using System.Xml;
 
 namespace MyFlightbook.Telemetry
 {
-    public enum KnownColumnTypes { ctInt = 0, ctDec, ctFloat, ctString, ctLatLong, ctDateTime, ctPosition, ctUnixTimeStamp, ctTimeZoneOffset, ctNakedDate, ctNakedTime };
+    public enum KnownColumnTypes { ctInt = 0, ctDec, ctFloat, ctString, ctLatLong, ctDateTime, ctPosition, ctUnixTimeStamp, ctTimeZoneOffset, ctNakedDate, ctNakedTime, ctNakedUTCDate, ctNakedUTCTime };
 
     public static class KnownColumnNames
     {
@@ -118,6 +118,39 @@ namespace MyFlightbook.Telemetry
             return i;
         }
 
+        private object ParseToNakedTime(string szValue, bool fUTC = false)
+        {
+            GroupCollection g = regNakedTime.Match(szValue).Groups;
+            if (g.Count > 3)
+                return new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Convert.ToInt32(g[1].Value, CultureInfo.InvariantCulture), Convert.ToInt32(g[2].Value, CultureInfo.InvariantCulture), String.IsNullOrEmpty(g[3].Value) ? 0 : Convert.ToInt32(g[3].Value, CultureInfo.InvariantCulture), fUTC ? DateTimeKind.Utc : DateTimeKind.Unspecified);
+            return null;
+        }
+
+        private object ParseUnixTimeStamp(string szValue)
+        {
+            // UnixTimeStamp, at least in ForeFlight, is # of ms since Jan 1 1970.
+            Int64 i = 0;
+            if (Int64.TryParse(szValue, out i))
+                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(i / 1000);
+            else
+                return szValue.ParseUTCDate();
+        }
+
+        private object ParseLatLong(string szValue)
+        {
+            if (String.IsNullOrEmpty(szValue))
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errBadLatLong, string.Empty));
+            double d;
+
+            if (!double.TryParse(szValue, out d))
+                d = new DMSAngle(szValue).Value;
+
+            if (d > 180.0 || d < -180.0 || d == 0.0000)
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errBadLatLong, d));
+
+            return d;
+        }
+
         public object ParseToType(string szValue)
         {
             object o = null;
@@ -126,41 +159,25 @@ namespace MyFlightbook.Telemetry
             {
                 switch (Type)
                 {
+                    case KnownColumnTypes.ctNakedUTCTime:
                     case KnownColumnTypes.ctNakedTime:
-                        {
-                            GroupCollection g = regNakedTime.Match(szValue).Groups;
-                            if (g.Count > 3)
-                                o = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Convert.ToInt32(g[1].Value, CultureInfo.InvariantCulture), Convert.ToInt32(g[2].Value, CultureInfo.InvariantCulture), String.IsNullOrEmpty(g[3].Value) ? 0 : Convert.ToInt32(g[3].Value, CultureInfo.InvariantCulture));
-                        }
+                        o = ParseToNakedTime(szValue, Type == KnownColumnTypes.ctNakedUTCTime);
                         break;
                     case KnownColumnTypes.ctDateTime:
                     case KnownColumnTypes.ctNakedDate:
                         o = Convert.ToDateTime(szValue, CultureInfo.CurrentCulture);
                         break;
+                    case KnownColumnTypes.ctNakedUTCDate:
+                        o = DateTime.SpecifyKind(Convert.ToDateTime(szValue, CultureInfo.CurrentCulture), DateTimeKind.Utc);
+                        break;
                     case KnownColumnTypes.ctUnixTimeStamp:
-                        // UnixTimeStamp, at least in ForeFlight, is # of ms since Jan 1 1970.
-                        {
-                            Int64 i = 0;
-                            if (Int64.TryParse(szValue, out i))
-                                o = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(i / 1000);
-                            else
-                                o = szValue.ParseUTCDate();
-                        }
+                        o = ParseUnixTimeStamp(szValue);
                         break;
                     case KnownColumnTypes.ctDec:
                         o = regStripUnits.Match(szValue).Captures[0].Value.SafeParseDecimal();
                         break;
                     case KnownColumnTypes.ctLatLong:
-                        if (String.IsNullOrEmpty(szValue))
-                            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errBadLatLong, string.Empty));
-                        double d;
-
-                        if (!double.TryParse(szValue, out d))
-                            d = new DMSAngle(szValue).Value;
-
-                        if (d > 180.0 || d < -180.0 || d == 0.0000)
-                            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errBadLatLong, d));
-                        o = d;
+                        o = ParseLatLong(szValue);
                         break;
                     case KnownColumnTypes.ctFloat:
                         o = regStripUnits.Match(szValue).Captures[0].Value.SafeParseDouble();
@@ -222,6 +239,8 @@ namespace MyFlightbook.Telemetry
                 case KnownColumnTypes.ctUnixTimeStamp:
                 case KnownColumnTypes.ctNakedDate:
                 case KnownColumnTypes.ctNakedTime:
+                case KnownColumnTypes.ctNakedUTCDate:
+                case KnownColumnTypes.ctNakedUTCTime:
                     return typeof(DateTime);
                 case KnownColumnTypes.ctDec:
                     return typeof(Decimal);
