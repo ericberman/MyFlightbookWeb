@@ -5,31 +5,26 @@
 <%@ Register src="mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc3" %>
 <%@ Register src="mfbTimeZone.ascx" tagname="mfbTimeZone" tagprefix="uc1" %>
 <%@ Register src="popmenu.ascx" tagname="popmenu" tagprefix="uc4" %>
-<asp:Panel ID="pnlFlightInfo" runat="server" 
-    meta:resourcekey="pnlFlightInfoResource1">
-    <asp:Panel ID="pnlHobbs" runat="server" CssClass="flightinfoitem" 
-        meta:resourcekey="pnlHobbsResource1">
+<asp:Panel ID="pnlFlightInfo" runat="server">
+    <asp:Panel ID="pnlHobbs" runat="server" CssClass="flightinfoitem">
         <table>
             <tr class="itemlabel">
                 <td colspan="2">
-                    <asp:Label ID="lblHobbs" runat="server" Text="Hobbs" Font-Bold="True" 
-                        meta:resourcekey="lblHobbsResource1"></asp:Label>
+                    <asp:Label ID="lblHobbs" runat="server" Text="<%$ Resources:LogbookEntry, Hobbs %>" Font-Bold="True"></asp:Label>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblHobbsStart" runat="server" Text="Start:" 
-                        meta:resourcekey="lblHobbsStartResource1"></asp:Label>
+                    <asp:Label ID="lblHobbsStart" runat="server" Text="<%$ Resources:LogbookEntry, ShortStart %>"></asp:Label>
                 </td>
                 <td>
                     <uc3:mfbDecimalEdit ID="decHobbsStart" runat="server" Width="70" />
-                    &nbsp;&nbsp;&nbsp;
+                    <asp:Image ID="imgHighWater" onclick="javascript:onHobbsAutofill();" runat="server" ImageUrl="~/images/cross-fill.png" ToolTip="<%$ Resources:LogbookEntry, HobbsCrossfillTip %>" AlternateText="<%$ Resources:LogbookEntry, HobbsCrossfillTip %>" />
                 </td>
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblHobbsEnd" runat="server" Text="End:" 
-                        meta:resourcekey="lblHobbsEndResource1"></asp:Label>
+                    <asp:Label ID="lblHobbsEnd" runat="server" Text="<%$ Resources:LogbookEntry, ShortEnd %>"></asp:Label>
                 </td>
                 <td>
                     <uc3:mfbDecimalEdit ID="decHobbsEnd" runat="server" Width="70" />
@@ -37,19 +32,16 @@
             </tr>
         </table>
     </asp:Panel>
-    <asp:Panel ID="pnlEngine" runat="server" CssClass="flightinfoitem" 
-        meta:resourcekey="pnlEngineResource1">
+    <asp:Panel ID="pnlEngine" runat="server" CssClass="flightinfoitem">
         <table style="vertical-align:baseline">
             <tr class="itemlabel">
                 <td colspan="2">
-                    <asp:Label ID="lblEngine" runat="server" Text="Engine (UTC)" Font-Bold="True" 
-                        meta:resourcekey="lblEngineResource1"></asp:Label>
+                    <asp:Label ID="lblEngine" runat="server" Text="<%$ Resources:LogbookEntry, FieldEngineUTC %>" Font-Bold="True"></asp:Label>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblEngineStart" runat="server" Text="Start:" 
-                        meta:resourcekey="lblEngineStartResource1"></asp:Label>
+                    <asp:Label ID="lblEngineStart" runat="server" Text="<%$ Resources:LogbookEntry, ShortStart %>"></asp:Label>
                 </td>
                 <td>
                     <uc2:mfbDateTime ID="mfbEngineStart" runat="server" />&nbsp;&nbsp;&nbsp;
@@ -57,8 +49,7 @@
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblEngineEnd" runat="server" Text="End:" 
-                        meta:resourcekey="lblEngineEndResource1"></asp:Label>
+                    <asp:Label ID="lblEngineEnd" runat="server" Text="<%$ Resources:LogbookEntry, ShortEnd %>"></asp:Label>
                 </td>
                 <td>
                     <uc2:mfbDateTime ID="mfbEngineEnd" runat="server" />
@@ -66,19 +57,16 @@
             </tr>
         </table>
     </asp:Panel>
-    <asp:Panel ID="pnlFlight" runat="server" CssClass="flightinfoitem" 
-        meta:resourcekey="pnlFlightResource1">
+    <asp:Panel ID="pnlFlight" runat="server" CssClass="flightinfoitem">
         <table>
             <tr class="itemlabel">
                 <td colspan="2">
-                    <asp:Label ID="lblFlight" runat="server" Text="Flight (UTC)" Font-Bold="True" 
-                        meta:resourcekey="lblFlightResource1"></asp:Label>
+                    <asp:Label ID="lblFlight" runat="server" Text="<%$ Resources:LogbookEntry, FieldFlightUTC %>" Font-Bold="True"></asp:Label>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblFlightStart" runat="server" Text="Start:" 
-                        meta:resourcekey="lblFlightStartResource1"></asp:Label>
+                    <asp:Label ID="lblFlightStart" runat="server" Text="<%$ Resources:LogbookEntry, ShortStart %>"></asp:Label>
                 </td>
                 <td>
                     <uc2:mfbDateTime ID="mfbFlightStart" runat="server" />&nbsp;&nbsp;&nbsp;
@@ -86,8 +74,7 @@
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblFlightEnd" runat="server" Text="End:" 
-                        meta:resourcekey="lblFlightEndResource1"></asp:Label>
+                    <asp:Label ID="lblFlightEnd" runat="server" Text="<%$ Resources:LogbookEntry, ShortEnd %>"></asp:Label>
                 </td>
                 <td>
                     <uc2:mfbDateTime ID="mfbFlightEnd" runat="server" />
@@ -96,37 +83,30 @@
         </table>
     </asp:Panel>
     <div style="clear:both;"></div>
-    <asp:Panel ID="pnlFlightData" runat="server" CssClass="flightinfoitem" 
-        meta:resourcekey="pnlFlightDataResource1">
+    <asp:Panel ID="pnlFlightData" runat="server" CssClass="flightinfoitem">
         <table>
             <tr class="itemlabel">
                 <td>
-                    <asp:Label ID="lblTelemetryData" Font-Bold="True" runat="server" 
-                        Text="Flight telemetry data" meta:resourcekey="lblTelemetryDataResource1"></asp:Label>
+                    <asp:Label ID="lblTelemetryData" Font-Bold="True" runat="server" Text="<%$ Resources:LogbookEntry, FieldTelemetry %>"></asp:Label>
                     <asp:HyperLink ID="lnkLearnMore" CssClass="fineprint" runat="server" 
-                        NavigateUrl="~/Public/FlightDataKey.aspx" Target="_blank" Text="Learn More" 
-                        meta:resourcekey="lnkLearnMoreResource1"></asp:HyperLink>
+                        NavigateUrl="~/Public/FlightDataKey.aspx" Target="_blank" Text="<%$ Resources:LogbookEntry, FieldTelemetryLearnMore %>"></asp:HyperLink>
                 </td>
                 <td>
                     <asp:MultiView ID="mvData" runat="server">
                         <asp:View ID="vwNoData" runat="server">
-                            <asp:FileUpload ID="mfbUploadFlightData" runat="server" 
-                                meta:resourcekey="mfbUploadFlightDataResource1" />
+                            <asp:FileUpload ID="mfbUploadFlightData" runat="server" />
                         </asp:View>
                         <asp:View ID="vwData" runat="server">
                             <asp:HyperLink ID="lnkFlightData" Target="_blank" runat="server">
                                 <asp:Image ID="Image1" runat="server" ImageUrl="~/images/Clip.png" 
-                                    ToolTip="Flight has associated data" meta:resourcekey="Image1Resource1" /> 
+                                    ToolTip="<%$ Resources:LogbookEntry, FlightHasDataTooltip %>" /> 
                             </asp:HyperLink>
                             <asp:Label ID="lblFlightHasData" runat="server" 
-                                Text="This flight has attached data." 
-                                meta:resourcekey="lblFlightHasDataResource1"></asp:Label>
+                                Text="<%$ Resources:LogbookEntry, FlightHasData %>"></asp:Label>
                                 <asp:LinkButton ID="lnkUploadNewData" runat="server" 
-                                onclick="lnkUploadNewData_Click" Text="Attach new data" 
-                                meta:resourcekey="lnkUploadNewDataResource1"></asp:LinkButton>&nbsp;&nbsp;
+                                onclick="lnkUploadNewData_Click" Text="<%$ Resources:LogbookEntry, TelemetryAttachNew %>"></asp:LinkButton>&nbsp;&nbsp;
                                 <asp:LinkButton ID="lnkDeletedata" runat="server" CausesValidation="False"
-                                onclick="lnkDeletedata_Click" Text="Delete this data" 
-                                meta:resourcekey="lnkDeletedataResource1"></asp:LinkButton>
+                                onclick="lnkDeletedata_Click" Text="<%$ Resources:LogbookEntry, TelemetryDelete %>"></asp:LinkButton>
                                 <cc1:ConfirmButtonExtender
                                     ID="ConfirmButtonExtender1" runat="server" 
                                 ConfirmText="<%$ Resources:LocalizedText, FlightInfoConfirmDelete %>" 
@@ -139,19 +119,15 @@
         </table>
     </asp:Panel>
     <div style="clear:both;"></div>
-    <asp:Panel ID="pnlAutoFill" runat="server" CssClass="flightinfoitem" 
-        meta:resourcekey="pnlAutoFillResource1">
+    <asp:Panel ID="pnlAutoFill" runat="server" CssClass="flightinfoitem">
         <table>
             <tr class="itemlabel">
                 <td>
-                    <asp:Label ID="lblAutoFill" Font-Bold="True" runat="server" Text="Auto-fill" 
-                        meta:resourcekey="lblAutoFillResource1"></asp:Label><br />
-                    <asp:Label ID="lblAutoFillDesc" runat="server" 
-                        Text="Auto-fill fills in missing information that can be determined from your route of flight, the times provided above, and any optional telemetry file you provide above." 
-                        meta:resourcekey="lblAutoFillDescResource1"></asp:Label>
+                    <asp:Label ID="lblAutoFill" Font-Bold="True" runat="server" Text="<%$ Resources:LogbookEntry, AutoFillPrompt %>"></asp:Label><br />
+                    <asp:Label ID="lblAutoFillDesc" runat="server" Text="<%$ Resources:LogbookEntry, AutoFillDescription %>"></asp:Label>
                 </td>
                 <td><asp:Button ID="btnAutoFill" runat="server" onclick="onAutofill" 
-                        Text="AutoFill" meta:resourcekey="btnAutoFillResource1"></asp:Button></td>
+                        Text="<%$ Resources:LogbookEntry, AutoFill %>"></asp:Button></td>
                 <td>
                     <uc4:popmenu ID="popmenu1" runat="server">
                         <MenuContent>
@@ -217,3 +193,36 @@
     <asp:HiddenField ID="hdnFlightID" Value="-1" runat="server" />
     <uc1:mfbTimeZone ID="mfbTimeZone1" runat="server" />
 </asp:Panel>
+<script type="text/javascript">
+    window.onload = function () {
+        document.getElementById('<% =imgHighWater.ClientID %>').style.display = (currentlySelectedAircraft) ? "inline-block" : "none";
+    }
+
+    function onHobbsAutofill() {
+        if (!currentlySelectedAircraft)
+            return;
+
+        var id = currentlySelectedAircraft();
+
+        if (id === null || id === '')
+            return;
+
+        var params = new Object();
+        params.idAircraft = id;
+        var d = JSON.stringify(params);
+        $.ajax(
+        {
+            url: '<% =ResolveUrl("~/Member/LogbookNew.aspx/HighWaterMarkHobbsForAircraft") %>',
+            type: "POST", data: d, dataType: "json", contentType: "application/json",
+            error: function (xhr, status, error) {
+                window.alert(xhr.responseJSON.Message);
+                if (onError !== null)
+                    onError();
+            },
+            complete: function (response) { },
+            success: function (response) {
+                $find('<% =decHobbsStart.EditBoxWE.ClientID %>').set_text(response.d);
+            }
+        });
+    }
+</script>

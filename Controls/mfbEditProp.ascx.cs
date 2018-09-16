@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
+using System.Globalization;
 using System.Web.UI;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2016 MyFlightbook LLC
+ * Copyright (c) 2013-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -70,6 +71,51 @@ public partial class Controls_mfbEditProp : System.Web.UI.UserControl
         }
     }
 
+    protected void SetUpCrossFillTach()
+    {
+        imgXFillTach.Visible = true;
+
+        string szXFillScript = String.Format(CultureInfo.InvariantCulture, @"
+    window.onload = function () {{
+        document.getElementById('{0}').style.display = (currentlySelectedAircraft) ? ""inline-block"" : ""none"";
+    }}
+
+    function onTachAutofill()
+    {{
+        if (!currentlySelectedAircraft)
+            return;
+
+        var id = currentlySelectedAircraft();
+
+        if (id === null || id === '')
+            return;
+
+        var params = new Object();
+        params.idAircraft = id;
+        var d = JSON.stringify(params);
+        $.ajax(
+        {{
+            url: '{1}',
+            type: ""POST"", data: d, dataType: ""json"", contentType: ""application/json"",
+            error: function(xhr, status, error) {{
+                window.alert(xhr.responseJSON.Message);
+                if (onError !== null)
+                    onError();
+            }},
+            complete: function(response) {{ }},
+            success: function(response) {{
+                $find('{2}').set_text(response.d);
+            }}
+        }});
+    }}",
+        imgXFillTach.ClientID,
+        ResolveUrl("~/Member/LogbookNew.aspx/HighWaterMarkTachForAircraft"),
+        mfbDecEdit.EditBoxWE.ClientID
+    );
+
+        Page.ClientScript.RegisterClientScriptBlock(GetType(), "CrossFillHobbs", szXFillScript, true);
+    }
+
     protected void ToForm()
     {
         CustomFlightProperty fp = m_fp;
@@ -91,12 +137,14 @@ public partial class Controls_mfbEditProp : System.Web.UI.UserControl
                 mvProp.SetActiveView(vwDecimal);
                 break;
             case CFPPropertyType.cfpDecimal:
+                mvProp.SetActiveView(vwDecimal);    // need to do this before setting the cross-fill image to visible
                 // Set the cross-fill source before setting the editing mode.
                 if (!fp.PropertyType.IsBasicDecimal)
                     mfbDecEdit.CrossFillSourceClientID = CrossFillSourceClientID;
+                if (fp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
+                    SetUpCrossFillTach();
                 mfbDecEdit.EditingMode = (!fp.PropertyType.IsBasicDecimal && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UsesHHMM ? Controls_mfbDecimalEdit.EditMode.HHMMFormat : Controls_mfbDecimalEdit.EditMode.Decimal);
                 mfbDecEdit.Value = fp.DecValue;
-                mvProp.SetActiveView(vwDecimal);
                 break;
             case CFPPropertyType.cfpCurrency:
                 mfbDecEdit.EditingMode = Controls_mfbDecimalEdit.EditMode.Currency;

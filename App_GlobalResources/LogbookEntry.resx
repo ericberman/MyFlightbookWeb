@@ -870,4 +870,49 @@
   <data name="FieldSimIMCFull" xml:space="preserve">
     <value>Sim. Instrument</value>
   </data>
+  <data name="AutoFill" xml:space="preserve">
+    <value>Auto Fill</value>
+  </data>
+  <data name="AutoFillDescription" xml:space="preserve">
+    <value>Auto-fill fills in missing information that can be determined from your route of flight, the times provided above, and any optional telemetry file you provide above.</value>
+  </data>
+  <data name="AutoFillPrompt" xml:space="preserve">
+    <value>Auto-fill</value>
+  </data>
+  <data name="FieldEngineUTC" xml:space="preserve">
+    <value>Engine (UTC)</value>
+  </data>
+  <data name="FieldFlightUTC" xml:space="preserve">
+    <value>Flight (UTC)</value>
+  </data>
+  <data name="FieldTelemetry" xml:space="preserve">
+    <value>Flight telemetry data</value>
+  </data>
+  <data name="FieldTelemetryLearnMore" xml:space="preserve">
+    <value>Learn More</value>
+  </data>
+  <data name="FlightHasData" xml:space="preserve">
+    <value>This flight has associated data</value>
+  </data>
+  <data name="FlightHasDataTooltip" xml:space="preserve">
+    <value>Flight has associated data</value>
+  </data>
+  <data name="HobbsCrossfillTip" xml:space="preserve">
+    <value>Set to highest previous Hobbs value you've recorded in the selected aircraft</value>
+  </data>
+  <data name="ShortEnd" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="ShortStart" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="TachCrossfillTip" xml:space="preserve">
+    <value>Set to highest previous tachometer value you've recorded in the selected aircraft</value>
+  </data>
+  <data name="TelemetryAttachNew" xml:space="preserve">
+    <value>Attach new data</value>
+  </data>
+  <data name="TelemetryDelete" xml:space="preserve">
+    <value>Delete this data</value>
+  </data>
 </root>

@@ -43,6 +43,11 @@
                 <asp:DropDownList ID="cmbAircraft" runat="server" TabIndex="2" Width="200px" 
                     meta:resourcekey="cmbAircraftResource1">
                 </asp:DropDownList>
+                <script type="text/javascript">
+                    function currentlySelectedAircraft() {
+                        return document.getElementById('<% =cmbAircraft.ClientID %>').value;
+                    }
+                </script>
                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
                     ControlToValidate="cmbAircraft" Display="Dynamic"
                     CssClass="error" 

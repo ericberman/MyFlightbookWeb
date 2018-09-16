@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Globalization;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 
 /******************************************************
@@ -19,6 +20,58 @@ TODO: Modify the print link in javascript on the client for performance?
  */
 public partial class Member_LogbookNew : System.Web.UI.Page
 {
+    #region Webservices
+    /// <summary>
+    /// Returns the high-watermark starting hobbs for the specified aircraft.
+    /// </summary>
+    /// <param name="idAircraft"></param>
+    /// <returns>0 if unknown.</returns>
+    [WebMethod(EnableSession = true)]
+    public static string HighWaterMarkHobbsForAircraft(int idAircraft)
+    {
+        if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            throw new MyFlightbookException("You must be authenticated to make this call");
+
+        decimal val = 0.0M;
+        DBHelper dbh = new DBHelper(@"SELECT  MAX(hobbsstart) AS highWater FROM flights WHERE username = ?user AND idaircraft = ?id");
+        dbh.ReadRow((comm) =>
+        {
+            comm.Parameters.AddWithValue("user", HttpContext.Current.User.Identity.Name);
+            comm.Parameters.AddWithValue("id", idAircraft);
+        },
+        (dr) =>
+        {
+            val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0));
+        });
+        return val.ToString("0.0#", CultureInfo.CurrentCulture);
+    }
+
+    /// <summary>
+    /// Returns the high-watermark starting hobbs for the specified aircraft.
+    /// </summary>
+    /// <param name="idAircraft"></param>
+    /// <returns>0 if unknown.</returns>
+    [WebMethod(EnableSession = true)]
+    public static string HighWaterMarkTachForAircraft(int idAircraft)
+    {
+        if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            throw new MyFlightbookException("You must be authenticated to make this call");
+
+        decimal val = 0.0M;
+        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT MAX(decvalue) AS highWater FROM flightproperties fp INNER JOIN flights f ON fp.idflight = f.idflight WHERE f.username = ?user AND f.idaircraft = ?id AND fp.idproptype = {0}", (int) CustomPropertyType.KnownProperties.IDPropTachEnd));
+        dbh.ReadRow((comm) =>
+        {
+            comm.Parameters.AddWithValue("user", HttpContext.Current.User.Identity.Name);
+            comm.Parameters.AddWithValue("id", idAircraft);
+        },
+        (dr) =>
+        {
+            val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0));
+        });
+        return val.ToString("0.0#", CultureInfo.CurrentCulture);
+    }
+    #endregion
+
     /// <summary>
     /// Catches injection errors (e.g., a &lt; in places it's not allowed)
     /// </summary>
