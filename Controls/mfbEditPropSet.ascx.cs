@@ -1,13 +1,13 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -156,7 +156,8 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
                 ddlValue[ddlValue.length] = ddl.options[i].value;
             }
         }
-        window.onload = CacheItems;
+
+        addLoadEvent(CacheItems);
 
         function FilterItems(value) {
             ddl.options.length = 0;

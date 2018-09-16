@@ -23,7 +23,23 @@
 </head>
 <body id="masterbody" runat="server">
 <div id="fb-root"></div>
-<script type="text/javascript">(function (d, s, id) {
+<script type="text/javascript">
+
+    function addLoadEvent(func) {
+        var oldonload = window.onload;
+        if (typeof window.onload !== 'function') {
+            window.onload = func;
+        } else {
+            window.onload = function () {
+                if (oldonload) {
+                    oldonload();
+                }
+                func();
+            }
+        }
+    }
+
+    (function (d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s); js.id = id;

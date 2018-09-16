@@ -76,9 +76,9 @@ public partial class Controls_mfbEditProp : System.Web.UI.UserControl
         imgXFillTach.Visible = true;
 
         string szXFillScript = String.Format(CultureInfo.InvariantCulture, @"
-    window.onload = function () {{
+    addLoadEvent(function () {{
         document.getElementById('{0}').style.display = (currentlySelectedAircraft) ? ""inline-block"" : ""none"";
-    }}
+    }});
 
     function onTachAutofill()
     {{
