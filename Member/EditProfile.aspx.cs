@@ -20,9 +20,6 @@ using System.Web.UI.WebControls;
 public partial class Member_EditProfile : System.Web.UI.Page
 {
     private Profile m_pf = null;
-    private const string szParamDropboxAuth = "dbOAuth";
-    private const string szParamGDriveAuth = "gdOAuth";
-    private const string szParam1DriveAuth = "1dOAuth";
 
     protected override void OnError(EventArgs e)
     {
@@ -264,21 +261,21 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     private void HandleOAuthRedirect()
     {
-        if (!String.IsNullOrEmpty(Request.Params[szParamDropboxAuth])) // redirect from Dropbox oAuth request.
+        if (!String.IsNullOrEmpty(Request.Params[MFBDropbox.szParamDropboxAuth])) // redirect from Dropbox oAuth request.
         {
             m_pf.DropboxAccessToken = new MFBDropbox().ConvertToken(Request).AccessToken;
             m_pf.FCommit();
 
             Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=backup", Request.Path));
         }
-        if (!String.IsNullOrEmpty(Request.Params[szParamGDriveAuth])) // redirect from GDrive oAuth request.
+        if (!String.IsNullOrEmpty(Request.Params[GoogleDrive.szParamGDriveAuth])) // redirect from GDrive oAuth request.
         {
             m_pf.GoogleDriveAccessToken = new GoogleDrive().ConvertToken(Request);
             m_pf.FCommit();
 
             Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=backup", Request.Path));
         }
-        if (!String.IsNullOrEmpty(Request.Params[szParam1DriveAuth])) // redirect from OneDrive oAuth request.
+        if (!String.IsNullOrEmpty(Request.Params[OneDrive.szParam1DriveAuth])) // redirect from OneDrive oAuth request.
         {
             m_pf.OneDriveAccessToken = (DotNetOpenAuth.OAuth2.AuthorizationState)Session[OneDrive.TokenSessionKey];
             m_pf.FCommit();
@@ -685,12 +682,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
     #region Cloud Storage
     protected void lnkAuthDropbox_Click(object sender, EventArgs e)
     {
-        Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}?{3}=1",
-            Request.IsLocal && !Request.IsSecureConnection ? "http" : "https",
-            Request.Url.Host,
-            ResolveUrl("~/Member/EditProfile.aspx/pftPrefs"),
-            szParamDropboxAuth));
-        new MFBDropbox().Authorize(uri);
+        new MFBDropbox().Authorize(Request, ResolveUrl("~/Member/EditProfile.aspx/pftPrefs"), MFBDropbox.szParamDropboxAuth);
     }
 
     protected void lnkDeAuthDropbox_Click(object sender, EventArgs e)
@@ -715,11 +707,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     protected void lnkAuthorizeGDrive_Click(object sender, EventArgs e)
     {
-        Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?{2}=1",
-            Request.Url.Host,
-            Request.Url.AbsolutePath,
-            szParamGDriveAuth));
-        new GoogleDrive().Authorize(uri);
+        new GoogleDrive().Authorize(Request, Request.Url.AbsolutePath, GoogleDrive.szParamGDriveAuth);
     }
 
     protected void lnkDeAuthGDrive_Click(object sender, EventArgs e)

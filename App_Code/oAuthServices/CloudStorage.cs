@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
-using DotNetOpenAuth.OAuth2;
+﻿using DotNetOpenAuth.OAuth2;
 using Dropbox.Api;
 using Microsoft.OneDrive.Sdk;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
 using VolunteerApp.Twitter;
 
 /******************************************************
  * 
- * Copyright (c) 2016 MyFlightbook LLC
+ * Copyright (c) 2016-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -134,6 +136,26 @@ namespace MyFlightbook.CloudStorage
             Client().RequestUserAuthorization(Scopes, szCallbackUri);
         }
 
+        protected Uri RedirectUri(HttpRequest request, string basepath, string param)
+        {
+            if (request == null)
+                throw new ArgumentNullException("request");
+            if (basepath == null)
+                throw new ArgumentNullException("basepath");
+            if (param == null)
+                throw new ArgumentNullException("param");
+            return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}?{3}=1",
+                request.IsLocal && !request.IsSecureConnection ? "http" : "https",
+                request.Url.Host,
+                basepath,
+                param));
+        }
+
+        public void Authorize(HttpRequest request, string basepath, string param)
+        {
+            Authorize(RedirectUri(request, basepath, param));
+        }
+
         /// <summary>
         /// Sees if the access token can be used.  Must be:
         /// a) Present
@@ -148,7 +170,7 @@ namespace MyFlightbook.CloudStorage
             if (String.IsNullOrEmpty(AuthState.AccessToken))
                 return false;
 
-            if (AuthState.AccessTokenExpirationUtc.HasValue && AuthState.AccessTokenExpirationUtc.Value.CompareTo(DateTime.Now.ToUniversalTime()) < 0)
+            if (AuthState.AccessTokenExpirationUtc.HasValue && AuthState.AccessTokenExpirationUtc.Value.CompareTo(DateTime.UtcNow) < 0)
                 return false;
 
             return true;
@@ -177,13 +199,13 @@ namespace MyFlightbook.CloudStorage
         /// </summary>
         /// <param name="Request">The http request</param>
         /// <returns>The granted access token</returns>
-        public AuthorizationState ConvertToken(HttpRequest Request)
+        public virtual AuthorizationState ConvertToken(HttpRequest Request)
         {
             WebServerClient consumer = new WebServerClient(Description(), AppKey, AppSecret);
             consumer.ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(AppSecret);
             IAuthorizationState grantedAccess = consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
             // Kindof a hack below, but we convert from IAuthorizationState to AuthorizationState via JSON so that we have a concrete object that we can instantiate.
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<AuthorizationState>(Newtonsoft.Json.JsonConvert.SerializeObject(grantedAccess));
+            return JsonConvert.DeserializeObject<AuthorizationState>(JsonConvert.SerializeObject(grantedAccess));
         }
 
         public static string CloudStorageName(StorageID sid)
@@ -229,6 +251,8 @@ namespace MyFlightbook.CloudStorage
         }
         #endregion
 
+        public const string szParamGDriveAuth = "gdOAuth";
+
         private const string szURLUploadEndpoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
         private const string szURLUpdateEndpointTemplate = "https://www.googleapis.com/upload/drive/v3/files/{0}?uploadType=multipart";
         private const string szURLViewFilesEndpointTemplate = "https://www.googleapis.com/drive/v3/files?q={0}&access_token={1}";
@@ -244,6 +268,51 @@ namespace MyFlightbook.CloudStorage
         public GoogleDrive(IAuthorizationState authstate) : this(MyFlightbook.Branding.CurrentBrand.AppName)
         {
             AuthState = authstate;
+        }
+
+        public override AuthorizationState ConvertToken(HttpRequest Request)
+        {
+            if (Request == null)
+                throw new ArgumentNullException("Request");
+
+            HttpWebRequest hr = (HttpWebRequest)HttpWebRequest.Create(new Uri(oAuth2TokenEndpoint));
+            hr.Method = "POST";
+            hr.ContentType = "application/x-www-form-urlencoded";
+
+            string szPostData = String.Format(CultureInfo.InvariantCulture, "code={0}&client_id={1}&client_secret={2}&redirect_uri={3}&grant_type=authorization_code",
+                    Request["code"],
+                    AppKey,
+                    AppSecret,
+                    RedirectUri(Request, Request.Path, szParamGDriveAuth).ToString());
+
+            byte[] rgbData = System.Text.Encoding.UTF8.GetBytes(szPostData);
+            hr.ContentLength = rgbData.Length;
+            using (Stream s = hr.GetRequestStream())
+            {
+                s.Write(rgbData, 0, rgbData.Length);
+            }
+
+            WebResponse response = hr.GetResponse();
+            using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+            {
+                string result = sr.ReadToEnd();
+
+                // JSonConvert can't deserialize space-delimited scopes into a hashset, so we need to do that manually.  Uggh.
+                Dictionary<string, string> d = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
+
+                AuthorizationState authstate = new AuthorizationState(d.ContainsKey("scope") ? OAuthUtilities.SplitScopes(d["scope"]) : null);
+                authstate.AccessToken = d.ContainsKey("access_token") ? d["access_token"] : string.Empty;
+                authstate.AccessTokenIssueDateUtc = DateTime.UtcNow;
+                if (d.ContainsKey("expires_in"))
+                {
+                    int exp = 0;
+                    if (int.TryParse(d["expires_in"], NumberStyles.Integer, CultureInfo.InvariantCulture, out exp))
+                        authstate.AccessTokenExpirationUtc = DateTime.UtcNow.AddSeconds(exp);
+                }
+                authstate.RefreshToken = d.ContainsKey("refresh_token") ? d["refresh_token"] : string.Empty;
+
+                return authstate;
+            }
         }
 
         protected async Task<string> CreateFolder(string szFolderName)
@@ -467,6 +536,7 @@ namespace MyFlightbook.CloudStorage
     public class OneDrive : CloudStorageBase
     {
         public const string TokenSessionKey = "sessionkeyforonedrive";
+        public const string szParam1DriveAuth = "1dOAuth";
 
         protected IOneDriveClient Client { get; set; }
 
@@ -583,6 +653,7 @@ namespace MyFlightbook.CloudStorage
     public class MFBDropbox: CloudStorageBase
     {
         public enum TokenStatus { None, oAuth1, oAuth2 }
+        public const string szParamDropboxAuth = "dbOAuth";
 
         public MFBDropbox()
             : base("DropboxAccessID", "DropboxClientSecret", "https://www.dropbox.com/oauth2/authorize", "https://api.dropboxapi.com/oauth2/token", null, "https://api.dropboxapi.com/2/auth/token/from_oauth1", "https://api.dropboxapi.com/2/auth/token/revoke")
