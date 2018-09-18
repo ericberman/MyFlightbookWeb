@@ -150,6 +150,19 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// Flushes stats for user aircraft; called when a flight is deleted, updated, or added.  No-op if no cached aircraft
+        /// </summary>
+        public void FlushStatsForUser()
+        {
+            if (CachedAircraft == null)
+                return;
+
+            IEnumerable<Aircraft> rgac = GetAircraftForUser();
+            foreach (Aircraft ac in rgac)
+                ac.Stats = null;
+        }
+
+        /// <summary>
         /// Checks to see if the user already knows about the specified aircraft
         /// </summary>
         /// <param name="ac">The aircraft to check</param>

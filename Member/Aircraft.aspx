@@ -152,6 +152,18 @@
                         </asp:TemplateField>
                         <asp:BoundField HeaderText="Public Notes" DataField="PublicNotes" HtmlEncode="true" />
                         <asp:BoundField HeaderText="Private Notes" DataField="PrivateNotes" HtmlEncode="true" />
+                        <asp:BoundField HeaderText="FlightCount" DataField="Stats.UserFlights" />
+                        <asp:BoundField HeaderText="Hours" DataField="Stats.Hours" DataFormatString="{0:0.0#}" />
+                        <asp:TemplateField HeaderText="First Flight">
+                            <ItemTemplate>
+                                <asp:Label ID="lblFirstFlight" runat="server" Text='<%# ((Aircraft) Container.DataItem).Stats.EarliestDate.HasValue ? ((Aircraft) Container.DataItem).Stats.EarliestDate.Value.ToShortDateString() : string.Empty %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Last Flight">
+                            <ItemTemplate>
+                                <asp:Label ID="lblLast" runat="server" Text='<%# ((Aircraft) Container.DataItem).Stats.LatestDate.HasValue ? ((Aircraft) Container.DataItem).Stats.LatestDate.Value.ToShortDateString() : string.Empty %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
                 <asp:Repeater ID="rptAircraftGroups" runat="server" OnItemDataBound="rptAircraftGroups_ItemDataBound">

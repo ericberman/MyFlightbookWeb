@@ -57,13 +57,23 @@ public partial class makes : System.Web.UI.Page
         Refresh();
     }
 
-    protected void Refresh()
+    /// <summary>
+    /// Populates stats, if needed.
+    /// </summary>
+    protected void PopulateStats()
     {
-        if (GroupingMode == AircraftGroup.GroupMode.Recency && String.IsNullOrEmpty(hdnStatsFetched.Value))
+        if (String.IsNullOrEmpty(hdnStatsFetched.Value))
         {
             hdnStatsFetched.Value = "yes";
             AircraftStats.PopulateStatsForAircraft(SourceAircraft, Page.User.Identity.Name);
         }
+    }
+
+    protected void Refresh()
+    {
+        if (GroupingMode == AircraftGroup.GroupMode.Recency)
+            PopulateStats();
+
         rptAircraftGroups.DataSource = AircraftGroup.AssignToGroups(SourceAircraft, IsAdminMode ? AircraftGroup.GroupMode.All : GroupingMode);
         rptAircraftGroups.DataBind();
     }
@@ -99,6 +109,7 @@ public partial class makes : System.Web.UI.Page
 
     protected void lnkDownloadCSV_Click(object sender, EventArgs e)
     {
+        PopulateStats();
         gvAircraftToDownload.DataSource = SourceAircraft;
         gvAircraftToDownload.DataBind();
         Response.Clear();

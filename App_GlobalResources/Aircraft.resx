@@ -584,4 +584,13 @@
   <data name="editAircraftGlassUpgradeType" xml:space="preserve">
     <value>Avionics upgrade or factory option:</value>
   </data>
+  <data name="AircraftStatsHours" xml:space="preserve">
+    <value> ({0})</value>
+  </data>
+  <data name="AircraftStatsHoursDecimal" xml:space="preserve">
+    <value>{0:#,##0.0#} hours</value>
+  </data>
+  <data name="AircraftStatsHoursHHMM" xml:space="preserve">
+    <value>{0} total</value>
+  </data>
 </root>

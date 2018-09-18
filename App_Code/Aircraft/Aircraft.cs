@@ -179,10 +179,6 @@ namespace MyFlightbook
     [Serializable]
     public class AircraftStats
     {
-        private int m_cFlightsUser = 0;
-        private int m_cFlightsTotal = 0;
-        private int m_cUsers = 0;
-
         #region Properties
         /// <summary>
         /// The ID of the aircraft for which stats are desired
@@ -197,28 +193,24 @@ namespace MyFlightbook
         /// <summary>
         /// The number of flights for the specified airplane by the specified user
         /// </summary>
-        public int UserFlights
-        {
-            get { return m_cFlightsUser; }
-        }
+        public int UserFlights { get; private set; }
 
         /// <summary>
         /// The number of users who have flights with this aircraft
         /// </summary>
-        public int Users
-        {
-            get { return m_cUsers; }
-        }
+        public int Users { get; private set; }
 
         public string[] UserNames { get; set; }
 
         /// <summary>
         /// The number of flights for the specified airplane, period.
         /// </summary>
-        public int Flights
-        {
-            get { return m_cFlightsTotal; }
-        }
+        public int Flights { get; private set; }
+
+        /// <summary>
+        /// Hours (total) in the aircraft
+        /// </summary>
+        public decimal Hours { get; private set; }
 
         /// <summary>
         /// Date of the earliest date for the user in this aircraft, if known
@@ -240,10 +232,23 @@ namespace MyFlightbook
             {
                 if (UserFlights == 0)
                     return new LinkedString(Resources.Aircraft.AircraftStatsNeverFlown, null);
-                else return
-                        new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsFlown, UserFlights,
-                  EarliestDate.HasValue && LatestDate.HasValue ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsDate, EarliestDate.Value.ToShortDateString(), LatestDate.Value.ToShortDateString()) : string.Empty),
+                else
+                {
+                    Profile pf = Profile.GetUser(User);
+                    string szTotalHours = Hours > 0 ? String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHours, pf.UsesHHMM ? 
+                        String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHoursHHMM, Hours.ToHHMM()) : 
+                        String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsHoursDecimal, Hours)) : string.Empty;
+
+                    return
+
+                        new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftStatsFlown, 
+                                            UserFlights,
+                                            EarliestDate.HasValue && LatestDate.HasValue ? String.Format(CultureInfo.CurrentCulture, 
+                                                    Resources.Aircraft.AircraftStatsDate, 
+                                                    EarliestDate.Value.ToShortDateString(), LatestDate.Value.ToShortDateString()) : 
+                                            string.Empty) + szTotalHours,
                     String.IsNullOrEmpty(User) ? null : String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?ft=Totals&fq={0}", HttpUtility.UrlEncode(new FlightQuery() { UserName = User, AircraftIDList = new int[] { AircraftID } }.ToBase64CompressedJSONString())));
+                }
             }
         }
         #endregion
@@ -251,9 +256,9 @@ namespace MyFlightbook
         #region Constructors
         private void InitFromDataReader(MySqlDataReader dr)
         {
-            m_cFlightsTotal = Convert.ToInt32(dr["numFlights"], CultureInfo.InvariantCulture);
-            m_cFlightsUser = Convert.ToInt32(dr["flightsForUser"], CultureInfo.InvariantCulture);
-            m_cUsers = Convert.ToInt32(dr["numUsers"], CultureInfo.InvariantCulture);
+            Flights = Convert.ToInt32(dr["numFlights"], CultureInfo.InvariantCulture);
+            UserFlights = Convert.ToInt32(dr["flightsForUser"], CultureInfo.InvariantCulture);
+            Users = Convert.ToInt32(dr["numUsers"], CultureInfo.InvariantCulture);
             UserNames = dr["userNames"].ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
             object o = dr["EarliestDate"];
@@ -265,6 +270,9 @@ namespace MyFlightbook
             o = dr["idaircraft"];
             if (o != DBNull.Value)
                 AircraftID = Convert.ToInt32(o, CultureInfo.InvariantCulture);
+            o = dr["hours"];
+            if (o != DBNull.Value)
+                Hours = Convert.ToDecimal(o, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -306,6 +314,7 @@ namespace MyFlightbook
                     COUNT(DISTINCT(ua.username)) AS numUsers,
                     GROUP_CONCAT(DISTINCT ua.username SEPARATOR ';') AS userNames,
                     COUNT(DISTINCT(f2.idflight)) AS flightsForUser,
+                    SUM(ROUND(f2.TotalFlightTime*60)/60) * (COUNT(DISTINCT(f2.idflight))/COUNT(f2.idflight)) AS hours,
                     MIN(f2.date) AS EarliestDate,
                     MAX(f2.date) AS LatestDate
                 FROM aircraft ac
@@ -471,33 +480,9 @@ namespace MyFlightbook
         public AircraftStats Stats { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
-        public DateTime? FirstFlightDate
-        {
-            get { return (Stats == null) ? null : Stats.EarliestDate; }
-        }
-
-        [Newtonsoft.Json.JsonIgnore]
-        public DateTime? LastFlightDate
-        {
-            get { return (Stats == null) ? null : Stats.LatestDate; }
-        }
-
-        [Newtonsoft.Json.JsonIgnore]
-        public int FlightCount
-        {
-            get { return (Stats == null) ? 0 : Stats.UserFlights; }
-        }
-
-        [Newtonsoft.Json.JsonIgnore]
         public bool HasBeenFlown
         {
             get { return (Stats != null && Stats.EarliestDate.HasValue); }
-        }
-
-        [Newtonsoft.Json.JsonIgnore]
-        public LinkedString StatsDisplay
-        {
-            get { return (Stats == null) ? new LinkedString() : Stats.UserStatsDisplay; }
         }
         #endregion
 

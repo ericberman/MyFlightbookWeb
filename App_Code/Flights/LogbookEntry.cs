@@ -1337,6 +1337,9 @@ namespace MyFlightbook
             // And any associated telemetry
             TelemetryReference.DeleteFile(id);
 
+            // Flights have changed, so aircraft stats are invalid.
+            new UserAircraft(szUser).FlushStatsForUser();
+
             return true;
         }
 
@@ -1406,22 +1409,6 @@ namespace MyFlightbook
                 fHold=?fHold, Route=?Route, Comments=?Comments, username=?userName, fPublic=?fPublic, hobbsStart=?hobbsStart, hobbsEnd=?hobbsEnd, 
                 dtFlightStart=?dtFlightStart, dtFlightEnd=?dtFlightEnd, dtEngineStart=?dtEngineStart, dtEngineEnd=?dtEngineEnd, cfi=?cfi, SIC=?SIC
                 {0} {1} ";
-
-            /*
-            if (fUpdateFlightData && this.FlightData != null && this.FlightData.Length > MaxTelemetrySize)
-            {
-                // quick check for admin - DON'T HIT DB because we are in a critical section for the webservice.
-                Profile pf = Profile.CachedProfileForUser(User);
-                if (pf == null || pf.Role != ProfileRoles.UserRole.SiteAdmin)
-                {
-                    // Send the telemetry via email on a background thread so that we don't block
-                    string szdata = this.FlightData;
-                    new System.Threading.Thread(() => { SendLargeTelemetry(this.User, szdata); }).Start();
-                    fUpdateFlightData = false;
-                    this.FlightData = string.Empty;
-                }
-            }
-             * */
 
             string szSet = String.Format(szSetTemplate, (fUpdateSignature ? szSetSig : szRefreshSig), (fUpdateFlightData ? szSetTelemetry : ""));
 
@@ -1548,7 +1535,10 @@ namespace MyFlightbook
                 vid.Commit();
             }
 
-            MyFlightbook.FlightStats.FlightStats.RefreshForFlight(this);
+            FlightStats.FlightStats.RefreshForFlight(this);
+
+            // Flights have changed, so aircraft stats are invalid.
+            new UserAircraft(User).FlushStatsForUser();
 
             return (szError.Length == 0);
         }
