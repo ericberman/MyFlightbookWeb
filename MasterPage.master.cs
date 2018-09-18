@@ -130,8 +130,22 @@ public partial class MasterPage : System.Web.UI.MasterPage
         set { cssPrinting.Href = value; cssPrinting.Visible = !String.IsNullOrEmpty(value); }
     }
 
+    private const string szSessForceAccordion = "sessForceAccordion";
+    private bool ForceAccordion
+    {
+        get
+        {
+            object o = Session[szSessForceAccordion];
+            return o == null ? false : (bool)o;
+        }
+        set { Session[szSessForceAccordion] = value; }
+    }
+
     private void SetLayout(LayoutMode lm)
     {
+        if (ForceAccordion)
+            lm = LayoutMode.Accordion;
+
         switch (lm)
         {
             default:
@@ -244,6 +258,12 @@ public partial class MasterPage : System.Web.UI.MasterPage
     protected void Page_Load(object sender, EventArgs e)
     {
         Response.ContentType = "text/html; charset=utf-8";
+
+        if (Request["noside"] != null)
+            ForceAccordion = util.GetIntParam(Request, "noside", 0) != 0;
+
+        if (ForceAccordion)
+            Layout = LayoutMode.Accordion;
 
         string szRequestedLayout = util.GetStringParam(Request, "lm");
         if (!String.IsNullOrEmpty(szRequestedLayout))
