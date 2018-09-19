@@ -218,7 +218,7 @@
                                     <asp:PlaceHolder ID="plcICAOMatch" runat="server"></asp:PlaceHolder>
                                     <asp:Button ID="btnFixLocationICAO" runat="server" Text="Update location" CommandArgument="ICAO" CommandName="FixLocation" />
                                     <asp:Button ID="btnFixTypeICAO" runat="server" Text="Update Type" CommandArgument="ICAO" CommandName="FixType" />
-                                    <asp:Button ID="btnOverwriteICAO" runat="server" Text="Overwrite" CommandArgument="FAA" CommandName="Overwrite" />
+                                    <asp:Button ID="btnOverwriteICAO" runat="server" Text="Overwrite" CommandArgument="ICAO" CommandName="Overwrite" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="IATA">
@@ -226,7 +226,7 @@
                                     <asp:PlaceHolder ID="plcIATAMatch" runat="server"></asp:PlaceHolder>
                                     <asp:Button ID="btnFixLocationIATA" runat="server" Text="Update location" CommandArgument="IATA" CommandName="FixLocation" />
                                     <asp:Button ID="btnFixTypeIATA" runat="server" Text="Update Type" CommandArgument="IATA" CommandName="FixType" />
-                                    <asp:Button ID="btnOverwriteIATA" runat="server" Text="Overwrite" CommandArgument="FAA" CommandName="Overwrite" />
+                                    <asp:Button ID="btnOverwriteIATA" runat="server" Text="Overwrite" CommandArgument="IATA" CommandName="Overwrite" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
