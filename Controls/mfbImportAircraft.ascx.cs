@@ -148,7 +148,14 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
     protected AircraftImportMatchRow MatchRowFromGridviewRow(GridViewRow grow)
     {
         HiddenField h = (HiddenField)grow.FindControl("hdnMatchRowID");
-        int id = Convert.ToInt32(h.Value);
+        int id;
+        try
+        {
+            id = Convert.ToInt32(h.Value);
+        } catch (FormatException ex)
+        {
+            throw new FormatException(String.Format(CultureInfo.CurrentCulture, "invalid number in hdnMatchRowID: '{0}'", h.Value == null ? "(null)" : h.Value), ex);
+        }
         return CandidatesForImport.FirstOrDefault<AircraftImportMatchRow>(mr => mr.ID == id);
     }
 
