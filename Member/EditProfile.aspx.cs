@@ -270,8 +270,11 @@ public partial class Member_EditProfile : System.Web.UI.Page
         }
         if (!String.IsNullOrEmpty(Request.Params[GoogleDrive.szParamGDriveAuth])) // redirect from GDrive oAuth request.
         {
-            m_pf.GoogleDriveAccessToken = new GoogleDrive().ConvertToken(Request);
-            m_pf.FCommit();
+            if (String.IsNullOrEmpty(util.GetStringParam(Request, "error")))
+            {
+                m_pf.GoogleDriveAccessToken = new GoogleDrive().ConvertToken(Request);
+                m_pf.FCommit();
+            }
 
             Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=backup", Request.Path));
         }
