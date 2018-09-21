@@ -39,41 +39,24 @@
             <Columns>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldFlight %>" SortExpression="Date">
                     <ItemTemplate>
-                        <asp:HyperLink ID="lnkEditFlight" Font-Bold="true" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' NavigateUrl='<%# DetailsPath(Eval("FlightID")) %>'></asp:HyperLink>
-                        <span class="noprint" style="float:right">
+                        <div class="noprint" style="float:right">
                             &nbsp;&nbsp;
                             <asp:Panel ID="pnlImagesHover" runat="server" Visible="false" style="display:inline-block;">
                                 <asp:HyperLink ID="lnkViewPublic" NavigateUrl='<%# PublicPath(Eval("FlightID")) %>' runat="server">
-                                    <asp:Image ID="imgCamera" ImageUrl="~/Images/camera.png" runat="server" Visible="<%# !PrintView %>" 
+                                    <asp:Image ID="imgCamera" ImageUrl="~/Images/camera.png" runat="server"
                                         ToolTip="<%$ Resources:LogbookEntry, LogbookFlightHasPicturesTooltip %>"
                                         AlternateText="<%$ Resources:LogbookEntry, LogbookFlightHasPicturesTooltip %>" />
-                                    <cc1:HoverMenuExtender ID="hoverMenuImages" Enabled="<%# !PrintView %>" TargetControlID="imgCamera" PopupControlID="pnlFlightImages" OffsetX="20" OffsetY="-100" runat="server"></cc1:HoverMenuExtender>
+                                    <cc1:HoverMenuExtender ID="hoverMenuImages" TargetControlID="imgCamera" PopupControlID="pnlFlightImages" OffsetX="20" OffsetY="-100" runat="server"></cc1:HoverMenuExtender>
                                 </asp:HyperLink>
                             </asp:Panel>
-                            <asp:HyperLink ID="lnkViewflightData" runat="server" Visible='<%# Convert.ToBoolean(Eval("HasFlightData")) && !PrintView %>' NavigateUrl='<%# AnalyzePath(Eval("FlightID")) %>'>
+                            <asp:HyperLink ID="lnkViewflightData" runat="server" Visible='<%# Convert.ToBoolean(Eval("HasFlightData")) %>' NavigateUrl='<%# AnalyzePath(Eval("FlightID")) %>'>
                                 <asp:Image ID="imgViewFlightData" ImageUrl="~/images/Clip.png" AlternateText="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" ToolTip="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" runat="server" /></asp:HyperLink>
-                        </span>
-                        &nbsp;<asp:HyperLink ID="lnkRoute" runat="server" Text='<%#: Eval("Route") %>' NavigateUrl='<%# String.Format("~/Public/ViewPublicFlight.aspx/{0}", Eval("FlightID")) %>'></asp:HyperLink>
-                        <asp:Panel ID="pnlSignature" runat="server" Visible='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.None %>'>
-                            <div style="float:left; padding:3px;">
-                                <asp:HyperLink ID="lnkImageSig" runat="server" NavigateUrl='<%# ((bool) Eval("HasDigitizedSig")) ? String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) : string.Empty %>'>
-                                    <asp:Image ID="imgSigState" ToolTip='<%# Eval("SignatureStateDescription") %>' AlternateText='<%# Eval("SignatureStateDescription") %>' ImageUrl='<%# ((bool) Eval("HasValidSig")) ? "~/Images/sigok.png" : "~/Images/siginvalid.png" %>' ImageAlign="Middle" runat="server" />
-                                </asp:HyperLink>
-                                <cc1:HoverMenuExtender ID="HoverMenuExtender1" TargetControlID="imgSigState" Enabled="<%# !PrintView %>" PopupControlID="pnlSigState" OffsetX="10" OffsetY="10" runat="server"></cc1:HoverMenuExtender>
-                                <asp:Panel ID="pnlSigState" runat="server" CssClass='<%# PrintView ? string.Empty : "hintPopup" %>' Visible='<%# Convert.ToBoolean(Eval("HasDigitizedSig")) %>'>
-                                    <asp:Image ID="imgDigitizedSig" runat="server" ImageUrl='<%# String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) %>' />
-                                </asp:Panel>
-                            </div>
-                            <asp:Label ID="lblSigData" runat="server"
-                                CssClass='<%# ((bool) Eval("HasValidSig")) ? "signatureValid" : "signatureInvalid" %>'>
-                                <div><%#: ((string) Eval("SignatureMainLine")) %></div>
-                                <div><%#: Eval("SignatureCommentLine") %></div>
-                            </asp:Label>
-                            <asp:Panel ID="pnlInvalidSig" runat="server" Visible='<%# !(bool) Eval("HasValidSig") %>'>
-                                <asp:Label ID="lblSigInvalid" runat="server" Font-Bold="true" CssClass="signatureInvalid" Text="<%$ Resources:SignOff, FlightSignatureInvalid %>"></asp:Label>
-                            </asp:Panel>
-                        </asp:Panel>
-                        <div runat="server" id="divComments" style="clear:left; white-space: pre-line;" dir="auto"><asp:Label ID="lblComments" runat="server" Text='<%# Eval("CommentWithReplacedApproaches") %>'></asp:Label></div>
+                        </div>
+                        <div>
+                            <asp:HyperLink ID="lnkEditFlight" Font-Bold="true" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger" NavigateUrl='<%# DetailsPath(Eval("FlightID")) %>'></asp:HyperLink>
+                            <asp:HyperLink Font-Bold="true" ID="lnkRoute" runat="server" Text='<%#: Eval("Route") %>' NavigateUrl='<%# String.Format("~/Public/ViewPublicFlight.aspx/{0}", Eval("FlightID")) %>'></asp:HyperLink>
+                            <span runat="server" id="divComments" style="clear:left; white-space: pre-line;" dir="auto"><asp:Label ID="lblComments" runat="server" Text='<%# Eval("CommentWithReplacedApproaches") %>'></asp:Label></span>
+                        </div>
                         <asp:Panel ID="pnlFlightTimes" runat="server" Visible="<%# Viewer.DisplayTimesByDefault %>">
                             <asp:Panel ID="pnlEngineTime" runat="server">
                                 <%# Eval("EngineTimeDisplay") %>
@@ -88,7 +71,34 @@
                         <asp:Panel ID="pnlProps" runat="server">
                             <div style="white-space:pre-line"><%# Eval("PropertiesWithReplacedApproaches") %></div>
                         </asp:Panel>
-                        <asp:Panel ID="pnlFlightImages" runat="server" CssClass='<%# PrintView ? string.Empty : "hintPopup" %>'>
+                        <asp:Panel ID="pnlSignature" CssClass="signatureBlock" runat="server" Visible='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.None %>'>
+                            <div style="display: inline-block; vertical-align:middle;">
+                                <table>
+                                    <tr>
+                                        <td style="vertical-align:middle">
+                                            <asp:HyperLink ID="lnkImageSig" runat="server" NavigateUrl='<%# ((bool) Eval("HasDigitizedSig")) ? String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) : string.Empty %>'>
+                                                <asp:Image ID="imgSigState" ToolTip='<%# Eval("SignatureStateDescription") %>' AlternateText='<%# Eval("SignatureStateDescription") %>' ImageUrl='<%# ((bool) Eval("HasValidSig")) ? "~/Images/sigok.png" : "~/Images/siginvalid.png" %>' ImageAlign="Middle" runat="server" />
+                                            </asp:HyperLink>
+                                            <cc1:HoverMenuExtender ID="HoverMenuExtender1" TargetControlID="imgSigState" PopupControlID="pnlSigState" OffsetX="10" OffsetY="10" runat="server"></cc1:HoverMenuExtender>
+                                            <asp:Panel ID="pnlSigState" runat="server" CssClass="hintPopup" Visible='<%# Convert.ToBoolean(Eval("HasDigitizedSig")) %>'>
+                                                <asp:Image ID="imgDigitizedSig" runat="server" ImageUrl='<%# String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) %>' />
+                                            </asp:Panel>
+                                        </td>
+                                        <td style="vertical-align:middle">
+                                            <asp:Label ID="lblSigData" runat="server"
+                                                CssClass='<%# ((bool) Eval("HasValidSig")) ? "signatureValid" : "signatureInvalid" %>'>
+                                                <div><%#: ((string) Eval("SignatureMainLine")) %></div>
+                                                <div><%#: Eval("SignatureCommentLine") %></div>
+                                            </asp:Label>
+                                            <asp:Panel ID="pnlInvalidSig" runat="server" Visible='<%# !(bool) Eval("HasValidSig") %>'>
+                                                <asp:Label ID="lblSigInvalid" runat="server" Font-Bold="true" CssClass="signatureInvalid" Text="<%$ Resources:SignOff, FlightSignatureInvalid %>"></asp:Label>
+                                            </asp:Panel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </asp:Panel>
+                        <asp:Panel ID="pnlFlightImages" runat="server" CssClass="hintPopup">
                             <uc1:mfbImageList ID="mfbilFlights" runat="server" Columns="2" CanEdit="false" ImageClass="Flight" IncludeDocs="false" MaxImage="-1" />
                         </asp:Panel>
                     </ItemTemplate>
@@ -236,7 +246,7 @@
                 <asp:TemplateField>
                     <ItemStyle CssClass="noprint" />
                     <ItemTemplate>
-                        <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights && !PrintView %>">
+                        <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights %>">
                             <MenuContent>
                                 <div><uc2:mfbMiniFacebook ID="mfbMiniFacebook" runat="server" /></div>
                                 <div><uc4:mfbTweetThis ID="mfbTweetThis" runat="server" /></div>
@@ -276,7 +286,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField >
                     <ItemTemplate>
-                        <asp:LinkButton ID="lnkDelete" Visible="<%# IsViewingOwnFlights && !PrintView %>" CommandName="_Delete" CommandArgument='<%# Eval("FlightID").ToString() %>' runat="server">
+                        <asp:LinkButton ID="lnkDelete" Visible="<%# IsViewingOwnFlights %>" CommandName="_Delete" CommandArgument='<%# Eval("FlightID").ToString() %>' runat="server">
                             <asp:Image ID="imgDelete" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" runat="server" /></asp:LinkButton>
                         <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDelete" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:LogbookEntry, LogbookConfirmDelete %>">
                         </cc1:ConfirmButtonExtender>

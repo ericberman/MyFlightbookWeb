@@ -34,8 +34,11 @@
                 <ItemTemplate>
                     <tr class="bordered">
                         <td colspan="2">
-                            <asp:Label Font-Bold="true" EnableViewState="false" ID="lblStaticDate" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>'></asp:Label>&nbsp;<%#: Eval("Route") %>
-                            <div runat="server" id="divComments" style="clear:left; white-space:pre-line;" dir="auto"><%# Eval("RedactedCommentWithReplacedApproaches") %></div>
+                            <div>
+                                <asp:Label Font-Bold="true" EnableViewState="false" ID="lblStaticDate" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger"></asp:Label>
+                                <span style="font-weight:bold"><%#: Eval("Route") %></span>
+                                <span runat="server" id="divComments" style="white-space:pre-line;" dir="auto"><%# Eval("RedactedCommentWithReplacedApproaches") %></span>
+                            </div>
                             <asp:Panel ID="pnlFlightTimes" runat="server" Visible="<%# CurrentUser.DisplayTimesByDefault %>">
                                 <asp:Panel EnableViewState="false" ID="pnlEngineTime" runat="server">
                                     <%# Eval("EngineTimeDisplay") %>

@@ -109,11 +109,6 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     }
 
     #region URL templates for clickable items.
-    /// <summary>
-    /// Specifies whether to show a print view (images in-line or on-hover)
-    /// </summary>
-    public Boolean PrintView { get; set; }
-
     // backing variables for where to go when clicking date, paper clip, or menu items
     private string m_szSendPageTarget = "~/Member/LogbookNew.aspx";
     private string m_szDetailsPageTemplate = "~/Member/FlightDetail.aspx/{0}";

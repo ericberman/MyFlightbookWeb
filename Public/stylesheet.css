@@ -305,6 +305,27 @@ H4
     color:Red;
 }
 
+.signatureBlock {
+    border: 1px double #DDDDDD;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    background-color: #F8F8f8;
+    margin: 3px;
+    padding: 3px;
+    display: inline-block;
+    background-color: #F8F8F8;
+}
+
+.bordered .signatureBlock tr td {
+    background-color: #F8F8F8;
+    border: none;
+}
+
+.signatureBlockSig {
+    display:inline-block;
+    vertical-align: middle;
+}
+
 .fineprint
 {
     font-weight: normal;
