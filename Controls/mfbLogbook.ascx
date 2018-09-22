@@ -69,7 +69,11 @@
                             </asp:Panel>
                         </asp:Panel>
                         <asp:Panel ID="pnlProps" runat="server">
-                            <div style="white-space:pre-line"><%# Eval("PropertiesWithReplacedApproaches") %></div>
+                            <asp:Repeater ID="rptProps" runat="server" DataSource='<%# Eval("PropertiesWithReplacedApproaches") %>'>
+                                <ItemTemplate>
+                                    <div><%# Container.DataItem %></div>
+                                </ItemTemplate>
+                            </asp:Repeater>
                         </asp:Panel>
                         <asp:Panel ID="pnlSignature" CssClass="signatureBlock" runat="server" Visible='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.None %>'>
                             <div style="display: inline-block; vertical-align:middle;">

@@ -2797,9 +2797,9 @@ namespace MyFlightbook
             get { return ApproachDescription.ReplaceApproaches(RedactedComment.Linkify()); }
         }
 
-        public string PropertiesWithReplacedApproaches
+        public IEnumerable<string> PropertiesWithReplacedApproaches
         {
-            get { return String.IsNullOrEmpty(CustPropertyDisplay) ? string.Empty : ApproachDescription.ReplaceApproaches(CustPropertyDisplay.Linkify()); }
+            get { return CustomFlightProperty.PropDisplayAsList(CustomProperties, UseHHMM, true, true); }
         }
         #endregion
         #endregion

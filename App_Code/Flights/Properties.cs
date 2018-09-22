@@ -1234,22 +1234,38 @@ GROUP BY fp.idPropType;";
         /// <returns>A human-readable list of properties</returns>
         public static string PropListDisplay(IEnumerable<CustomFlightProperty> rgprops, bool fUseHHMM = false, string separator = null)
         {
+            return String.Join(separator ?? Environment.NewLine, PropDisplayAsList(rgprops, fUseHHMM));
+        }
+
+        /// <summary>
+        /// Returns an enumeration of property display strings, linkifying and replacing approaches as needed
+        /// </summary>
+        /// <param name="rgprops">The input properties</param>
+        /// <param name="fUseHHMM">Indicates if HHMM format should be used</param>
+        /// <param name="fLinkify">True to highlight links</param>
+        /// <param name="fReplaceApproaches">True to highlight approaches</param>
+        /// <returns></returns>
+        public static IEnumerable<string> PropDisplayAsList(IEnumerable<CustomFlightProperty> rgprops, bool fUseHHMM, bool fLinkify = false, bool fReplaceApproaches = false)
+        {
+            List<string> lst = new List<string>();
+
             // short-circuit empty properties
             if (rgprops == null || rgprops.Count() == 0)
-                return string.Empty;
+                return lst;
 
             Dictionary<int, string> d = ComputeTotals(rgprops);
             StringBuilder sb = new StringBuilder();
             foreach (CustomFlightProperty cfp in rgprops)
             {
-                sb.Append(fUseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString);
-                if (d.ContainsKey(cfp.PropTypeID))
-                    sb.Append(Resources.LocalizedText.LocalizedSpace + d[cfp.PropTypeID]);
-
-                sb.Append(separator ?? Environment.NewLine);
+                string sz = (fUseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString) + (d.ContainsKey(cfp.PropTypeID) ? Resources.LocalizedText.LocalizedSpace + d[cfp.PropTypeID] : string.Empty);
+                if (fLinkify)
+                    sz = sz.Linkify();
+                if (fReplaceApproaches)
+                    sz = ApproachDescription.ReplaceApproaches(sz);
+                lst.Add(sz);
             }
 
-            return sb.ToString();
+            return lst;
         }
     }
 
