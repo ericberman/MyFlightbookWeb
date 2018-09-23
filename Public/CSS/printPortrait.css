@@ -1,0 +1,85 @@
+﻿body {
+}
+
+table.pageTable {
+    border-spacing: 0px;
+    border-collapse: separate;
+}
+
+td.rowHeader {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+tr.bordered {
+    page-break-inside: avoid;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border: 1px solid black;
+}
+
+tr.bordered td {
+    padding: 3px;
+    page-break-inside: avoid;
+    font-size: smaller;
+}
+
+.header {
+    font-size: smaller;
+}
+
+.numericColumn {
+    width: .6cm;
+    border: 1px solid black;
+    background-color: white;
+    padding: 2px;
+}
+
+tr.bordered td.row1 {
+    padding: 2px;
+}
+
+.rowHeader {
+    padding: 2px;
+    border: 1px solid white;
+}
+
+tr.subtotal td {
+    padding: 2px;
+    border: 1px solid gray;
+    page-break-inside: avoid;
+    font-weight: bold;
+}
+
+tr.subtotal td.subtotalLabel {
+    text-align: right;
+    width: 150px;
+}
+
+tr.subtotal td.noborder {
+    border: none;
+}
+
+
+@media screen {
+    td.row1 {
+        background-color: #ccd8e7;
+    }
+
+    tr.bordered td.row1 {
+        border: 1px solid #e6ecfe;
+    }
+
+    th.rowHeader {
+        background-color: #4e75a3;
+        color:white;
+    }
+
+    tr.bordered {
+        background-color: #e6ecfe;
+    }
+
+    td.rowValue {
+        background-color: white;
+    }
+}

@@ -28,7 +28,7 @@ namespace MyFlightbook.Printing
         void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true, OptionalColumn[] optionalColumns = null);
     }
 
-    public enum PrintLayoutType { Native, EASA, USA, SACAA, NZ, Glider}
+    public enum PrintLayoutType { Native, Portrait, EASA, USA, SACAA, NZ, Glider}
 
     #region Printing Layout implementations
     public abstract class PrintLayout
@@ -65,6 +65,8 @@ namespace MyFlightbook.Printing
             {
                 case PrintLayoutType.Native:
                     return new PrintLayoutNative() { CurrentUser = pf };
+                case PrintLayoutType.Portrait:
+                    return new PrintLayoutPortrait() { CurrentUser = pf };
                 case PrintLayoutType.EASA:
                     return new PrintLayoutEASA() { CurrentUser = pf };
                 case PrintLayoutType.USA:
@@ -114,6 +116,40 @@ namespace MyFlightbook.Printing
         }
 
         public override string CSSPath { get { return "~/Public/CSS/printNative.css"; } }
+    }
+
+    public class PrintLayoutPortrait : PrintLayout
+    {
+        public override bool SupportsImages { get { return true; } }
+
+        public override bool SupportsOptionalColumns { get { return true; } }
+
+        public override int RowHeight(LogbookEntryDisplay le)
+        {
+            if (le == null)
+                throw new ArgumentNullException("le");
+            // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
+            // Signature can be about 3 lines tall
+            int sigHeight = le.CFISignatureState == LogbookEntry.SignatureState.None ? 0 : (le.HasDigitizedSig ? 2 : 1);
+            int imgHeight = le.FlightImages != null && le.FlightImages.Length > 0 ? 3 : 0;
+
+            // see how many rows of times we have - IF the user shows them
+            int times = 0;
+
+            if (CurrentUser != null && CurrentUser.DisplayTimesByDefault)
+            {
+                times = String.IsNullOrEmpty(le.EngineTimeDisplay) ? 0 : 1;
+                times += String.IsNullOrEmpty(le.FlightTimeDisplay) ? 0 : 1;
+                times += String.IsNullOrEmpty(le.HobbsDisplay) ? 0 : 1;
+
+                // if there are 1 or 2 rows of times, add 1 to rowheight.  If 3, add 2.
+                times = (times + 1) / 2;
+            }
+
+            return Math.Max(1 + imgHeight + sigHeight + times, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
+        }
+
+        public override string CSSPath { get { return "~/Public/CSS/printPortrait.css"; } }
     }
 
     public class PrintLayoutGlider : PrintLayout

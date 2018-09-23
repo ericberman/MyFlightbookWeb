@@ -915,4 +915,10 @@
   <data name="TelemetryDelete" xml:space="preserve">
     <value>Delete this data</value>
   </data>
+  <data name="PrintFormatPortrait" xml:space="preserve">
+    <value>Portrait</value>
+  </data>
+  <data name="PrintHeaderExperience" xml:space="preserve">
+    <value>Experience</value>
+  </data>
 </root>

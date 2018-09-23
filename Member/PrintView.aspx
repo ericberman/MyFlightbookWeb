@@ -14,6 +14,8 @@
 <%@ Register Src="~/Controls/PrintingLayouts/layoutGlider.ascx" TagPrefix="uc1" TagName="layoutGlider" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutNZ.ascx" TagPrefix="uc1" TagName="layoutNZ" %>
 <%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
+<%@ Register Src="~/Controls/PrintingLayouts/layoutPortrait.ascx" TagPrefix="uc1" TagName="layoutPortrait" %>
+
 
 
 
@@ -167,6 +169,9 @@
         <asp:MultiView ID="mvLayouts" runat="server" ActiveViewIndex="0">
             <asp:View ID="vwNative" runat="server">
                 <uc1:layoutNative runat="server" ID="layoutNative" />
+            </asp:View>
+            <asp:View ID="vwPortrait" runat="server">
+                <uc1:layoutPortrait runat="server" id="layoutPortrait" />
             </asp:View>
             <asp:View ID="vwEASA" runat="server">
                 <uc1:layoutEASAFCL runat="server" id="layoutEASAFCL" />
