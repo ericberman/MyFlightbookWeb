@@ -4,7 +4,7 @@
 <div><% =Resources.LogbookEntry.PrintFormatPrompt %> 
     <asp:DropDownList ID="cmbLayout" runat="server" AutoPostBack="True" OnSelectedIndexChanged="cmbLayout_SelectedIndexChanged">
         <asp:ListItem Value="Native" Selected="True" Text="<%$ Resources:LogbookEntry, PrintFormatNative %>"></asp:ListItem>
-        <asp:ListItem Value="Portrait" Selected="True" Text="<%$ Resources:LogbookEntry, PrintFormatPortrait %>"></asp:ListItem>
+        <asp:ListItem Value="Portrait" Text="<%$ Resources:LogbookEntry, PrintFormatPortrait %>"></asp:ListItem>
         <asp:ListItem Value="EASA" Text="<%$ Resources:LogbookEntry, PrintFormatEASA %>"></asp:ListItem>
         <asp:ListItem Value="USA" Text="<%$ Resources:LogbookEntry, PrintFormatUSA %>"></asp:ListItem>
         <asp:ListItem Value="SACAA" Text="<%$ Resources:LogbookEntry, PrintFormatSACAA %>"></asp:ListItem>
