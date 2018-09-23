@@ -1,11 +1,11 @@
-﻿using System;
-using System.Web.UI;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Instruction;
+using System;
+using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,7 +30,6 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.tabTraining;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         if (!IsPostBack)
         {

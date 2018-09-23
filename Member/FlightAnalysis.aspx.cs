@@ -1,18 +1,18 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Airports;
+using MyFlightbook.Geography;
+using MyFlightbook.Instruction;
+using MyFlightbook.Telemetry;
+using System;
 using System.Data;
 using System.Globalization;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Text;
-using MyFlightbook;
-using MyFlightbook.Airports;
-using MyFlightbook.Telemetry;
-using MyFlightbook.Instruction;
-using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2017 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -159,7 +159,6 @@ public partial class Member_FlightAnalysis : System.Web.UI.Page
             throw new MyFlightbookException("No valid ID passed");
 
         Master.SelectedTab = tabID.tabLogbook;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         if (!IsPostBack)
         {

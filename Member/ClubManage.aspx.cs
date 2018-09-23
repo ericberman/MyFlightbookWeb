@@ -41,7 +41,6 @@ public partial class Member_ClubManage : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.actMyClubs;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         try
         {

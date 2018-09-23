@@ -33,7 +33,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
             if (string.Compare(sz, szAirports, StringComparison.OrdinalIgnoreCase) == 0)
                 mfbAirportServices1.Visible = true;
             if (string.Compare(sz, szPix, StringComparison.OrdinalIgnoreCase) == 0)
-                imgsliderFlights.Visible = true;
+                divImages.Visible = true;
             if (string.Compare(sz, szVids, StringComparison.OrdinalIgnoreCase) == 0)
                 mfbVideoEntry1.Visible = true;
             if (string.Compare(sz, szDetails, StringComparison.OrdinalIgnoreCase) == 0)
@@ -102,8 +102,6 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Master.Layout = MasterPage.LayoutMode.Accordion;
-
         if (!IsPostBack)
         {
             string szRedirect = string.Empty;
@@ -137,7 +135,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
                     this.Master.HasFooter = this.Master.HasHeader = false;
                     FullPageBottom.Visible = FullPageTop.Visible = false;
 
-                    pnlFB.Visible = pnlDetails.Visible = divMap.Visible = mfbAirportServices1.Visible = lnkShowMapOnly.Visible = imgsliderFlights.Visible = mfbVideoEntry1.Visible = false;
+                    divImages.Visible = pnlFB.Visible = pnlDetails.Visible = divMap.Visible = mfbAirportServices1.Visible = lnkShowMapOnly.Visible = imgsliderFlights.Visible = mfbVideoEntry1.Visible = false;
 
                     ShowComponents(szComponents.Split(','));
                 }

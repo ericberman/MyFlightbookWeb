@@ -18,7 +18,6 @@ public partial class Member_AddEndorsement : System.Web.UI.Page
     {
         this.Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleTraining, Branding.CurrentBrand.AppName);
         Master.SelectedTab = tabID.tabTraining;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         if (!IsPostBack)
         {

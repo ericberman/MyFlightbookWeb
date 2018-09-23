@@ -14,7 +14,6 @@ public partial class DefaultMini : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         // Keep it mobile for this session!
-        Master.Layout = MasterPage.LayoutMode.Accordion;
         this.Master.SetMobile(true);
         lblHeader.Text = User.Identity.IsAuthenticated ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageWelcomeBack, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFirstName) : String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName);
     }

@@ -1,5 +1,4 @@
 ﻿using MyFlightbook;
-using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -64,8 +63,8 @@ public partial class Public_AllMakes : Page
             int clevels = rgIds.Length;
             if (clevels >= mvLevelToShow.Views.Count)
                 return;
-            mvLevelToShow.ActiveViewIndex = clevels;
-
+            mvHeader.ActiveViewIndex = mvLevelToShow.ActiveViewIndex = clevels;
+            
             try
             {
                 switch (clevels)

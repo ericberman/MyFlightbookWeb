@@ -1,17 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="oAuthClientTest.aspx.cs" Inherits="Public_oAuthClientTest" %>
-
 <%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
-
-
-
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
-    
-    
+    OAuth Test Bed
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
-</asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
     <table>
         <tr>
             <td>Authorization URL:</td>

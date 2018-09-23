@@ -1,12 +1,13 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="MobileApps.aspx.cs" Inherits="Public_MobileApps" Culture="auto" meta:resourcekey="PageResource1" %>
 
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
+    <asp:Localize ID="locHeader" runat="server" Text="Mobile Apps"
+                meta:resourcekey="locHeaderResource1"></asp:Localize>
+</asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="Server">
     <asp:UpdatePanel runat="server" ID="updatePanel">
         <ContentTemplate>
-        <h1>
-            <asp:Localize ID="locHeader" runat="server" Text="Mobile Apps"
-                meta:resourcekey="locHeaderResource1"></asp:Localize></h1>
         <div style="display: inline-block; vertical-align: top;">
             <asp:Literal ID="litMobileAppPromo" runat="server"
                 meta:resourcekey="litMobileAppPromoResource1"></asp:Literal>

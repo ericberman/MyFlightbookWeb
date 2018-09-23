@@ -3,7 +3,11 @@
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbTandC.ascx" tagname="mfbTandC" tagprefix="uc1" %>
 <%@ Register src="../Controls/AccountQuestions.ascx" tagname="AccountQuestions" tagprefix="uc2" %>
-<asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"></asp:Content>
+<asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
+    <asp:Localize ID="locCreateAccountPageHeader" runat="server" 
+                                Text="Create an account - it's Free!" 
+                                meta:resourcekey="locCreateAccountPageHeaderResource1"></asp:Localize>
+</asp:Content>
 <asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
     <asp:Panel ID="pnlCreateUser" runat="server" 
         meta:resourcekey="pnlCreateUserResource1">
@@ -17,9 +21,6 @@
                 <asp:CreateUserWizardStep ID="CreateUserWizardStep1" runat="server" 
                     meta:resourcekey="CreateUserWizardStep1Resource1">
                     <ContentTemplate>
-                        <h1><asp:Localize ID="locCreateAccountPageHeader" runat="server" 
-                                Text="Create an account - it's Free!" 
-                                meta:resourcekey="locCreateAccountPageHeaderResource1"></asp:Localize></h1>
                         <h2><% =Resources.LocalizedText.TermsAndConditionsHeader %></h2>
                         <uc1:mfbTandC ID="mfbTandC1" runat="server"  />
                         <asp:Panel ID="pnlStep1" runat="server" DefaultButton="CreateUser" 

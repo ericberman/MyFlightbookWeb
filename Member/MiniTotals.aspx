@@ -2,7 +2,10 @@
 <%@ Register Src="../Controls/mfbSimpleTotals.ascx" TagName="mfbSimpleTotals" TagPrefix="uc2" %>
 <%@ Register Src="../Controls/mfbCurrency.ascx" TagName="mfbCurrency" TagPrefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
-<asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
+    <asp:Label ID="lblUserName" runat="server" meta:resourcekey="lblUserNameResource1"></asp:Label>
+</asp:Content>
+<asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
     <uc1:mfbCurrency ID="MfbCurrency1" runat="server" />
     <br />
     <uc2:mfbSimpleTotals ID="MfbSimpleTotals1" runat="server" MobileView="true" />

@@ -66,7 +66,6 @@ public partial class EditMake : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         this.Master.SelectedTab = tabID.actMakes;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         int idModel = util.GetIntParam(Request, "id", -1);
         IEnumerable<Aircraft> rgac = AircraftWithModel(idModel);

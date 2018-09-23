@@ -73,8 +73,6 @@
         <br />
         <asp:Label ID="lblError" runat="server" CssClass="error"></asp:Label>
     </asp:Panel>
-</asp:Content>
-<asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
     <div><asp:HyperLink ID="lnkZoomOut" runat="server" Visible="False" Text="<%$Resources:Airports, MapZoomOut %>"></asp:HyperLink>&nbsp;</div>
     <div style="margin-left:20px; width:80%; float:left; clear:left;">
         <uc1:mfbGoogleMapManager ID="MfbGoogleMapManager1" runat="server" Height="600px" />
@@ -88,4 +86,4 @@
     </div>
         
     <div style="width:100%; clear:both; float:none;">&nbsp;</div>
-</asp:content>
+</asp:Content>

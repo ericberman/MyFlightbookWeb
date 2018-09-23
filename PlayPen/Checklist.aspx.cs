@@ -469,8 +469,6 @@ Review Power-off Landing Checklist
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Master.Layout = MasterPage.LayoutMode.Accordion;
-
         string szCSSRef = String.Format(CultureInfo.InvariantCulture, "<link href=\"{0}?v=6\" type=\"text/css\" rel=\"stylesheet\">", ResolveClientUrl("~/Public/CSS/ChecklistBase.css"));
         Literal lit = new Literal();
         Header.Controls.Add(lit);

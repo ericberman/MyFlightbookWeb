@@ -5,13 +5,15 @@
 <%@ Register Src="~/Controls/mfbImageList.ascx" TagPrefix="uc1" TagName="mfbImageList" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
+    <asp:MultiView ID="mvHeader" runat="server">
+        <asp:View ID="vwManHeader" runat="server">Aircraft Manufacturers</asp:View>
+        <asp:View ID="vwModelsHeader" runat="server">Models</asp:View>
+        <asp:View ID="vwAircraftHeader" runat="server"><asp:Label ID="lblModel" runat="server" Text=""></asp:Label></asp:View>
+    </asp:MultiView>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
-</asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
     <asp:MultiView ID="mvLevelToShow" runat="server">
         <asp:View ID="vwManufacturers" runat="server">
-            <h1>Aircraft Manufacturers</h1>
             <asp:GridView ID="gvManufacturers" runat="server" EnableViewState="false" AutoGenerateColumns="false" GridLines="None" AllowPaging="false" ShowHeader="false">
                 <Columns>
                     <asp:HyperLinkField DataTextField="ManufacturerName" DataNavigateUrlFields="ManufacturerID" DataNavigateUrlFormatString="AllMakes.aspx/{0}" />
@@ -19,7 +21,6 @@
             </asp:GridView>
         </asp:View>
         <asp:View ID="vwModels" runat="server">
-            <h1>Models</h1>
             <asp:GridView ID="gvMakes" GridLines="None" CellPadding="10" runat="server" EnableViewState="False"
                 AutoGenerateColumns="False" OnRowDataBound="MakesRowDataBound" 
                     ShowHeader="False" AllowPaging="false"
@@ -35,7 +36,6 @@
             </asp:GridView>
         </asp:View>
         <asp:View ID="vwAircraft" runat="server">
-            <h1><asp:Label ID="lblModel" runat="server" Text=""></asp:Label></h1>
             <ul>
                 <asp:Repeater ID="rptAttributes" runat="server">
                     <ItemTemplate>

@@ -1,10 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="CFISigs.aspx.cs" Inherits="Public_CFISigs" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" runat="Server"></asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" runat="Server">1 Endorsements and Signed Flights</asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" runat="Server">
     <div>
     <!-- Copyright (c) 2015 MyFlightbook LLC Contact myflightbook-at-gmail.com for more information -->
-        <h1>1 Endorsements and Signed Flights</h1>
         <p>A method is needed by which an instructor can sign a student’s logbook, or by which an instructor can endorse a student.   Reference is made to <a href="https://www.faa.gov/regulations_policies/advisory_circulars/index.cfm/go/document.information/documentID/1029747" target="_blank">FAA circular AC No: 120-78A</a>, which outlines the criteria to be used to ensure that such a signature is acceptable to the FAA.</p>
         <p>This document describes the implementation used by MyFlightbook.   It has NOT been vetted by the FAA (indeed, the FAA does not appear to certify compliance); it is a description of how I have chosen to implement my interpretation of the requirements.</p>
         <h1>2 

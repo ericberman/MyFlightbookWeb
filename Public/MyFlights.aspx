@@ -4,12 +4,13 @@
 <%@ Register Src="../Controls/mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>
 <%@ Register src="../Controls/fbComment.ascx" tagname="fbComment" tagprefix="uc3" %>
 <%@ Register src="../Controls/mfbPublicFlightItem.ascx" tagname="mfbPublicFlightItem" tagprefix="uc4" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
+    <asp:Label ID="lblHeader" runat="server" Text=""></asp:Label>
+</asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="Server">
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript" src='<%= ResolveUrl("~/public/endless-scroll.js") %>'></script>
     <script type="text/javascript" src='<%= ResolveUrl("~/public/jquery.json-2.4.min.js") %>'></script>
-    <h1>
-        <asp:Label ID="lblHeader" runat="server" Text=""></asp:Label></h1>
     <asp:GridView ID="gvMyFlights" runat="server" OnRowDataBound="gvMyFlights_rowDataBound"
         GridLines="None" Visible="true" AutoGenerateColumns="false" CellPadding="5" EnableViewState="false"
         AllowPaging="false" AllowSorting="false" ShowFooter="false" ShowHeader="false" >

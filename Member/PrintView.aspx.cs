@@ -87,7 +87,7 @@ public partial class Member_PrintView : System.Web.UI.Page
             if (!String.IsNullOrEmpty(szFQParam))
             {
                 mfbSearchForm1.Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
-                Master.Sidebar.Visible = Master.HasFooter = Master.HasHeader = false;
+                Master.HasFooter = Master.HasHeader = false;
                 if (!mfbSearchForm1.Restriction.IsDefault)
                     TabContainer1.ActiveTab = tpFilter;
             }

@@ -42,7 +42,6 @@ public partial class Member_ClubDetails : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.actMyClubs;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         if (Request.PathInfo.Length > 0 && Request.PathInfo.StartsWith("/", StringComparison.OrdinalIgnoreCase))
         {

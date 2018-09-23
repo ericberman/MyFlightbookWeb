@@ -1,14 +1,14 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.StartingFlight;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.StartingFlight;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2017 MyFlightbook LLC
+ * Copyright (c) 2012-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -192,7 +192,6 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.lbtStartingTotals;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         wizStartingTotals.PreRender +=new EventHandler(wizStartingTotals_PreRender);
 

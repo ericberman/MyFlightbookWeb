@@ -9,7 +9,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -37,7 +37,6 @@ public partial class Public_ContactMe : System.Web.UI.Page
             entry.Visible = true;
             Thanks.Visible = false;
             Master.SelectedTab = tabID.tabHome;
-            Master.Layout = MasterPage.LayoutMode.Accordion;
             Title = Resources.LocalizedText.ContactUsTitle;
             if (User.Identity.IsAuthenticated)
             {

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MyFlightbook;
+using System;
 using System.Globalization;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -38,13 +34,12 @@ public partial class Member_SignFlight : System.Web.UI.Page
             LogbookEntry le = new LogbookEntry();
             le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true);
 
-            lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightHeader, MyFlightbook.Profile.GetUser(le.User).UserFullName);
-
             if (!le.CanSignThisFlight(Page.User.Identity.Name, out szError))
                 lblError.Text = szError;
             else
             {
                 pnlSign.Visible = true;
+                lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightHeader, MyFlightbook.Profile.GetUser(le.User).UserFullName);
                 mfbSignFlight1.Flight = le;
 
                 mfbSignFlight1.ShowCancel = hdnReturnURL.Value.Length > 0;

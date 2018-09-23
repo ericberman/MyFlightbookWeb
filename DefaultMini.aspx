@@ -3,7 +3,7 @@
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblHeader" runat="server" Text=""></asp:Label>
 </asp:Content>
-<asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
+<asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
     <asp:Localize ID="locDefaultMiniPrompt" runat="server" 
         Text="What would you like to do?" 
         meta:resourcekey="locDefaultMiniPromptResource1"></asp:Localize>

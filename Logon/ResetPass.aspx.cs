@@ -40,7 +40,6 @@ public partial class ResetPass : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Master.Layout = MasterPage.LayoutMode.Accordion;
         if (!IsPostBack)
         {
             string sz = util.GetStringParam(Request, "t");

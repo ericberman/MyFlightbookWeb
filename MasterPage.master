@@ -60,24 +60,19 @@
             <asp:Button ID="btnStopImpersonating" runat="server" Text="Stop" onclick="btnStopImpersonating_Click" />
         </asp:Panel>    
         <uc2:mfbHeader ID="mfbHeader" runat="server" />
-        <asp:PlaceHolder ID="plcSecondaryNavTop" runat="server"></asp:PlaceHolder>
-        <asp:Panel ID="pnlTitle" runat="server" CssClass="noprint">
-            <h1>
-                <asp:ContentPlaceHolder ID="cpPageTitle" runat="server">
-                </asp:ContentPlaceHolder>
-            </h1>
+        <asp:Panel ID="pnlTitle" runat="server" CssClass="noprint centeredBody">
+            <h1><asp:ContentPlaceHolder ID="cpPageTitle" runat="server"></asp:ContentPlaceHolder></h1>
         </asp:Panel>
         <div style="float:right;">
             <uc5:SponsoredAd ID="SponsoredAd1" runat="server" SponsoredAdID="1" Visible="false" />
         </div>
-        <asp:Panel ID="pnlTopForm" runat="server" Visible="false" CssClass="topForm">
-            <asp:PlaceHolder ID="plcSecondaryNavSide" runat="server"></asp:PlaceHolder>
+        <asp:Panel ID="pnlTopForm" runat="server" CssClass="topForm">
             <asp:Panel ID="pnlSideBarRight" runat="server" CssClass="sidebarRight">
                 <asp:ContentPlaceHolder ID="cpTopForm" runat="server">
                 </asp:ContentPlaceHolder>        
             </asp:Panel>
         </asp:Panel>
-        <div style="clear:left;">
+        <div>
             <asp:contentplaceholder id="cpMain" runat="server">
             </asp:contentplaceholder>
         </div>

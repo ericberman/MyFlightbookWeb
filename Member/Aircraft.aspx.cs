@@ -36,7 +36,6 @@ public partial class makes : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         this.Master.SelectedTab = tabID.actMyAircraft;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
         this.Title = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.AircraftTitle, Branding.CurrentBrand.AppName);
 
         idModel = util.GetIntParam(Request, "m", -1);

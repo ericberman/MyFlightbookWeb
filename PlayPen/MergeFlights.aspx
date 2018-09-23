@@ -3,6 +3,7 @@
 <%@ Register Src="~/Controls/mfbLogbook.ascx" TagPrefix="uc1" TagName="mfbLogbook" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
+    Merge Flights
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <asp:Wizard ID="wzMerge" runat="server" DisplaySideBar="false" finishcompletebuttonText="Merge" Width="100%" OnNextButtonClick="wzMerge_NextButtonClick" OnFinishButtonClick="wzMerge_FinishButtonClick">

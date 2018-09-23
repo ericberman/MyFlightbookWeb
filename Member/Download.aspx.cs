@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Microsoft.OneDrive.Sdk;
+using MyFlightbook;
+using MyFlightbook.CloudStorage;
+using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Web.UI;
-using Microsoft.OneDrive.Sdk;
-using MyFlightbook;
-using MyFlightbook.CloudStorage;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2017 MyFlightbook LLC
+ * Copyright (c) 2010-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,7 +18,6 @@ public partial class Member_FindFlights : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.lbtDownload;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         if (!IsPostBack)
         {

@@ -51,7 +51,6 @@ public partial class Public_Home : System.Web.UI.Page
     {
         Master.SelectedTab = tabID.tabHome;
         Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitleWithDescription, Branding.CurrentBrand.AppName);
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         string s = util.GetStringParam(Request, "m");
         if (s.Length > 0)

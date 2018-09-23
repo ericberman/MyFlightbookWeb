@@ -223,7 +223,6 @@ public partial class Member_FlightDetail : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.tabLogbook;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         if (!IsPostBack)
         {

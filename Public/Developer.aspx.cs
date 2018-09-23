@@ -37,7 +37,6 @@ public partial class Public_Developer : System.Web.UI.Page
         if (!IsPostBack)
         {
             Master.SelectedTab = tabID.tabHome;
-            Master.Layout = MasterPage.LayoutMode.Accordion;
 
             if (Page.User.Identity.IsAuthenticated)
             {

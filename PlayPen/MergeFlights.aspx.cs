@@ -42,7 +42,6 @@ public partial class PlayPen_MergeFlights : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.lbtImport;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
         wzMerge.PreRender += new EventHandler(wzMerges_PreRender);
 
         if (!Page.User.Identity.IsAuthenticated)

@@ -29,7 +29,6 @@ public partial class newuser : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Master.Layout = MasterPage.LayoutMode.Accordion;
     }
 
     protected void CreatingUser(object sender, LoginCancelEventArgs e)

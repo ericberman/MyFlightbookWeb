@@ -41,9 +41,6 @@
     <br />
     <asp:Label ID="lblError" runat="server" CssClass="error" 
         meta:resourcekey="lblErrorResource1"></asp:Label>
-</asp:Content>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
-    <br />
     <div style="margin-left:20px; width:80%; float:left; clear:left;">
         <uc1:mfbGoogleMapManager ID="MfbGoogleMapManager1" runat="server" Height="600px" Width="100%" />
     </div>

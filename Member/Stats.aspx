@@ -3,9 +3,6 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="../Controls/adminStats.ascx" tagname="adminStats" tagprefix="uc1" %>
 <%@ Register src="../Controls/GoogleChart.ascx" tagname="GoogleChart" tagprefix="uc2" %>
-<asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" Runat="Server">
-    Stats
-</asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="server">
     <uc1:adminStats ID="adminStats1" runat="server" />
 </asp:Content>

@@ -4,7 +4,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,8 +16,6 @@ public partial class login : System.Web.UI.Page
         HtmlForm mainform = (HtmlForm)Master.FindControl("form1");
         if (mainform != null && mfbSignIn1.DefButtonUniqueID.Length > 0)
             mainform.DefaultButton = mfbSignIn1.DefButtonUniqueID;
-
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         Master.Title = locHeader.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName);
     }

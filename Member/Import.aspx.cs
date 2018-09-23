@@ -87,7 +87,6 @@ public partial class Member_Import : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.lbtImport;
-        Master.Layout = MasterPage.LayoutMode.Accordion;
 
         wzImportFlights.PreRender += new EventHandler(wzImportFlights_PreRender);
 

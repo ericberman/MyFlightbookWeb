@@ -108,6 +108,8 @@
             </ajaxToolkit:AccordionPane>
         </Panes>
     </ajaxToolkit:Accordion>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
     <uc1:mfbLogbook ID="mfbLogbook1" runat="server" OnItemDeleted="mfbLogbook1_ItemDeleted" DetailsPageUrlFormatString="~/Member/FlightDetail.aspx/{0}"
          EditPageUrlFormatString="~/Member/LogbookNew.aspx/{0}" AnalysisPageUrlFormatString="~/Member/FlightDetail.aspx/{0}?tabID=Chart" SendPageTarget="~/Member/LogbookNew.aspx" />
     <asp:Button ID="btnPopWelcome" runat="server" Text="" style="display:none" />
@@ -135,7 +137,5 @@
         TargetControlID="btnPopWelcome" 
     CancelControlID="btnClose" Enabled="True">
     </ajaxToolkit:ModalPopupExtender>
-</asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">
 </asp:Content>
 

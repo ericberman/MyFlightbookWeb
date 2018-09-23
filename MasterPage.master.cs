@@ -1,10 +1,10 @@
 using MyFlightbook;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -15,21 +15,6 @@ using System.Web.UI.WebControls;
 
 public partial class MasterPage : System.Web.UI.MasterPage
 {
-    /// <summary>
-    /// Which layout to use?
-    /// </summary>
-    public enum LayoutMode
-    {
-        /// <summary>
-        /// MyFlightbook "Classic" - has a yellow top form with secondary navigation on the left
-        /// </summary>
-        Classic,
-        /// <summary>
-        /// MyFlightbook "Accordion" - puts everything into the topform, but no yellow background, no secondary nav
-        /// </summary>
-        Accordion
-    }
-
     #region properties
     private const string szKeyIsNakedSession = "IsNakedSession";
     protected bool IsNaked
@@ -49,11 +34,8 @@ public partial class MasterPage : System.Web.UI.MasterPage
             TabList t = mfbHeader.TabList;
             tabID tidTop = t.TopLevelTab(value);
             mfbHeader.SelectedTab = tidTop;
-            Sidebar.CurrentTab = value;
-            Sidebar.TabList = t.ChildTabList(tidTop);
-            bool fHasSecondaryNav = Sidebar.TabList.Tabs.Count() > 0;
+            bool fHasSecondaryNav = t.ChildTabList(tidTop).Tabs.Count() > 0;
             pnlTopForm.Visible = pnlTopForm.Visible || fHasSecondaryNav;  // if sidebar is visible, DEFINITELY want pnlTopForm visible, if sidebar isn't visible, don't necessarily want to make it visible
-            SidebarPlaceholder.Visible = pnlTopForm.Visible && fHasSecondaryNav && !IsNaked;
         }
     }
 
@@ -84,22 +66,6 @@ public partial class MasterPage : System.Web.UI.MasterPage
         set { Page.Header.Title = value; }
     }
 
-    private Controls_mfbLogbookSidebar m_sidebar = null;
-    public Controls_mfbLogbookSidebar Sidebar
-    {
-        get
-        {
-            if (m_sidebar == null)
-                SetUpSidebar();
-            return m_sidebar;
-        }
-    }
-
-    protected PlaceHolder SidebarPlaceholder
-    {
-        get { return plcSecondaryNavSide; }
-    }
-
     public bool ShowSponsoredAd
     {
         get { return SponsoredAd1.Visible; }
@@ -109,14 +75,17 @@ public partial class MasterPage : System.Web.UI.MasterPage
     /// <summary>
     /// Print the side-by-side nav at the top?
     /// </summary>
-    private bool m_noPrint = false;
     public bool SuppressTopNavPrint
     {
-        get { return m_noPrint; }
+        get { return pnlTopForm.CssClass.Contains("noprint"); }
         set
         {
-            m_noPrint = value;
-            SetLayout(Layout);  // force the correct CSS class
+            HashSet<string> hs = new HashSet<string>(pnlTopForm.CssClass.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+            if (value)
+                hs.Add("noprint");
+            else
+                hs.Remove("noprint");
+            pnlTopForm.CssClass = String.Join(" ", hs);
         }
     }
 
@@ -128,54 +97,6 @@ public partial class MasterPage : System.Web.UI.MasterPage
     {
         get { return cssPrinting.Href; }
         set { cssPrinting.Href = value; cssPrinting.Visible = !String.IsNullOrEmpty(value); }
-    }
-
-    private const string szSessForceAccordion = "sessForceAccordion";
-    private bool ForceAccordion
-    {
-        get
-        {
-            object o = Session[szSessForceAccordion];
-            return o == null ? false : (bool)o;
-        }
-        set { Session[szSessForceAccordion] = value; }
-    }
-
-    private void SetLayout(LayoutMode lm)
-    {
-        if (ForceAccordion)
-            lm = LayoutMode.Accordion;
-
-        switch (lm)
-        {
-            default:
-            case LayoutMode.Classic:
-                {
-                    pnlTopForm.Visible = true;
-                    SidebarPlaceholder.Visible = true;
-                    pnlSideBarRight.CssClass = "sidebarRight";
-                    pnlTitle.CssClass = string.Empty;
-                }
-                break;
-            case LayoutMode.Accordion:
-                {
-                    pnlTopForm.Visible = true;
-                    SidebarPlaceholder.Visible = false;
-                    pnlSideBarRight.CssClass = "centeredBody";
-                    pnlTitle.CssClass = "centeredBody";
-                }
-                break;
-        }
-
-        if (SuppressTopNavPrint)
-            pnlTopForm.CssClass += " noprint";
-    }
-
-    private LayoutMode m_Mode = LayoutMode.Classic;
-    public LayoutMode Layout
-    {
-        get { return m_Mode; }
-        set { SetLayout(m_Mode = value); }
     }
     #endregion
 
@@ -241,37 +162,11 @@ public partial class MasterPage : System.Web.UI.MasterPage
         }
 
         util.SetCulture(Request.UserLanguages[0]);
-
-        SetUpSidebar();
-    }
-
-    protected void SetUpSidebar()
-    {
-        // set up the sidebar
-        Panel p = new Panel();
-        SidebarPlaceholder.Controls.Add(p);
-        p.CssClass = "sidebarLeft";
-        m_sidebar = (Controls_mfbLogbookSidebar)LoadControl("~/Controls/mfbLogbookSidebar.ascx");
-        p.Controls.Add(Sidebar);
     }
 
     protected void Page_Load(object sender, EventArgs e)
     {
         Response.ContentType = "text/html; charset=utf-8";
-
-        if (Request["noside"] != null)
-            ForceAccordion = util.GetIntParam(Request, "noside", 0) != 0;
-
-        if (ForceAccordion)
-            Layout = LayoutMode.Accordion;
-
-        string szRequestedLayout = util.GetStringParam(Request, "lm");
-        if (!String.IsNullOrEmpty(szRequestedLayout))
-        {
-            LayoutMode m;
-            if (Enum.TryParse<LayoutMode>(szRequestedLayout, out m))
-                Layout = m;
-        }
 
         if (!IsPostBack)
         {
@@ -309,7 +204,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
 
             IsNaked = util.GetIntParam(Request, "naked", 0) != 0 || (Session["IsNaked"] != null && ((bool) Session["IsNaked"]) == true);
             if (IsNaked)
-                pnlCookies.Visible = SidebarPlaceholder.Visible = mfbHeader.Visible = MfbFooter.Visible = SponsoredAd1.Visible = false;
+                pnlCookies.Visible = mfbHeader.Visible = MfbFooter.Visible = SponsoredAd1.Visible = false;
 
             bool fIsImpersonating = ProfileRoles.IsImpersonating(Page.User.Identity.Name);
             pnlImpersonation.Visible = fIsImpersonating;

@@ -2,8 +2,10 @@
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbSignFlight.ascx" tagname="mfbSignFlight" tagprefix="uc3" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
-    <h2><asp:Label ID="lblHeader" runat="server" Text=""></asp:Label></h2>
+<asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" Runat="Server">
+    <asp:Label ID="lblHeader" runat="server" Text=""></asp:Label>
+</asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" Runat="Server">
     <asp:MultiView ID="mvSignFlight" runat="server" ActiveViewIndex="0">
         <asp:View runat="server" ID="vwPickInstructor">
             <div><asp:Label ID="Label2" runat="server" Text="<%$ Resources:SignOff, ChooseInstructorsPrompt %>"></asp:Label></div>

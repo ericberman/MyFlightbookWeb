@@ -5,7 +5,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     Merge Telemetry
 </asp:Content>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
+<asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="Server">
     <p>Upload the files to merge:</p>
 
     <asp:AjaxFileUpload ID="AjaxFileUpload1" runat="server" CssClass="mfbDefault" Width="600"

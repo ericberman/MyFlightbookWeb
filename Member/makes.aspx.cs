@@ -90,7 +90,6 @@ public partial class makes : System.Web.UI.Page
         }
 
         this.Master.SelectedTab = tabID.actMakes;
-        this.Master.Layout = MasterPage.LayoutMode.Accordion;
         this.Title = (string)GetLocalResourceObject("PageResource2.Title");
     }
 

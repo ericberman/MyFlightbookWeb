@@ -1,12 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="ClubsManual.aspx.cs" Inherits="Public_ClubsManual" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" runat="Server">
+    Overview of Clubs on MyFlightbook
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" runat="Server">
-</asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="cpMain" runat="Server">
 <div>
-        <h1>Overview of Clubs on MyFlightbook</h1>
     <p>
         Flying clubs on MyFlightbook provide a convenient way to
 manage aircraft that are shared among multiple pilots, whether in a club/FBO

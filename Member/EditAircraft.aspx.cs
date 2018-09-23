@@ -81,7 +81,6 @@ public partial class EditMake : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         this.Master.SelectedTab = tabID.tabAircraft;
-        this.Master.Layout = MasterPage.LayoutMode.Accordion;
         this.Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleAircraft, Branding.CurrentBrand.AppName);
 
         if (!IsPostBack)

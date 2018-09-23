@@ -2,10 +2,10 @@
     CodeFile="MiniLogbook.aspx.cs" Inherits="_Default" Title="Flying Logbook" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbEditFlight.ascx" tagname="mfbEditFlight" tagprefix="uc4" %>
-
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
-    <h1><asp:Label ID="lblUserName" runat="server" 
-            meta:resourcekey="lblUserNameResource1"></asp:Label></h1>
+<asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
+    <asp:Label ID="lblUserName" runat="server" meta:resourcekey="lblUserNameResource1"></asp:Label>
+</asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="Server">
     <asp:Panel ID="pnlSuccess" runat="server" Visible="false" EnableViewState="false"
         meta:resourcekey="pnlSuccessResource1">
         <asp:Label ID="lblSuccessText" runat="server" Font-Bold="True" 

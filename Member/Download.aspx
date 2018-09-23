@@ -11,8 +11,9 @@
 <%@ Register src="../Controls/mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc4" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><% = Resources.LocalizedText.DownloadHeader %></asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
+    <div style="width:600px; margin-left: auto; margin-right: auto">
     <p><% = Resources.LocalizedText.DownloadYourData %></p>
-    <table cellpadding="5" width="600px">
+    <table cellpadding="5">
         <tr valign="top">
             <td style="width:50%">
                 <div style="vertical-align:middle;">
@@ -117,6 +118,7 @@
             </td>
         </tr>
     </table>
+    </div>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
 </asp:Content>

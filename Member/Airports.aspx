@@ -19,12 +19,12 @@
                     Text="you may have visited more airports than this; this is only the count of distinct 3- or 4-letter codes within the 'Route' field of flights in your account." 
                     meta:resourcekey="locVANoteResource1"></asp:Localize>
             </p>
-            <br />
+            <div>
                 <asp:Button ID="btnChangeQuery" runat="server" Text="Change Query..." 
                     onclick="btnChangeQuery_Click" 
                     meta:resourcekey="btnChangeQueryResource1" />
                 <uc2:mfbQueryDescriptor ID="mfbQueryDescriptor1" runat="server" ShowEmptyFilter="true" OnQueryUpdated="mfbQueryDescriptor1_QueryUpdated" />
-            </p>
+            </div>
             <asp:Panel ID="Panel1" runat="server" ScrollBars="Vertical" Height="300px" 
             meta:resourcekey="Panel1Resource1">
                 <asp:GridView ID="gvAirports" runat="server" AllowSorting="True" 
@@ -152,13 +152,11 @@
             <uc3:mfbSearchForm ID="mfbSearchForm1" runat="server" OnQuerySubmitted="ShowResults" OnReset="ClearForm" InitialCollapseState="true" />
         </asp:View>
     </asp:MultiView>
-</asp:Content>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
     <p>
         <asp:HyperLink ID="lnkZoomOut" runat="server" Text="Zoom to fit all airports" 
         meta:resourcekey="lnkZoomOutResource1"></asp:HyperLink>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </p>
-    <div style="margin-left:20px; width:80%; float:left; clear:left;">
+    <div style="width:100%;">
         <uc1:mfbGoogleMapManager ID="mfbGoogleMapManager1" runat="server" Height="400px" />
         <br />
         <br />

@@ -12,11 +12,12 @@
 <%@ Register Src="~/Controls/imageSlider.ascx" TagPrefix="uc1" TagName="imageSlider" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
 
-
-<asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
+<asp:Content id="Content2" contentplaceholderid="cpPageTitle" runat="Server">
     <div id="FullPageTop" runat="server">
-        <h1><asp:Label ID="lblHeader" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightHeader %>"></asp:Label></h1>
+        <asp:Label ID="lblHeader" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightHeader %>"></asp:Label>
     </div>
+</asp:Content>
+<asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
     <asp:Panel ID="pnlDetails" runat="server">
         <span><asp:HyperLink ID="lnkUser" runat="server"></asp:HyperLink></span> - 
         <span><asp:HyperLink ID="lnkRoute" runat="server"></asp:HyperLink></span>
@@ -26,13 +27,14 @@
     <div style="margin-left:auto;margin-right:auto; width:640px;"><uc7:mfbVideoEntry ID="mfbVideoEntry1" runat="server" CanAddVideos="false" /></div>
     <uc1:mfbImageList ID="mfbIlFlight" ImageClass="Flight" runat="server" Columns="4" CanEdit="false" MaxImage="-1" MapLinkType="ZoomOnLocalMap" AltText="" Visible="false" />
     <div>
-        <div style="max-width:480px; margin-left:auto; margin-right:auto; ">
+        <div style="max-width:480px; margin-left:auto; margin-right:auto; " runat="server" id="divImages">
             <uc1:imageSlider runat="server" ID="imgsliderFlights" />
         </div>
         <uc1:mfbImageList ID="mfbIlAirplane" ImageClass="Aircraft" MaxImage="-1" CanEdit="false" Columns="2" runat="server" Visible="false" />
         <div id="divMap" runat="server">
             <div style="text-align:center;">
-                <asp:HyperLink ID="lnkZoomOut" runat="server" Visible="False" Text="<%$ Resources:Airports, MapZoomOut %>"></asp:HyperLink>&nbsp;&nbsp;&nbsp;&nbsp;<asp:HyperLink ID="lnkShowMapOnly" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowOnlyMap %>"></asp:HyperLink>&nbsp;&nbsp;
+                <asp:HyperLink ID="lnkZoomOut" runat="server" Visible="False" Text="<%$ Resources:Airports, MapZoomOut %>">
+                </asp:HyperLink>&nbsp;&nbsp;&nbsp;&nbsp;<asp:HyperLink ID="lnkShowMapOnly" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowOnlyMap %>"></asp:HyperLink>&nbsp;&nbsp;
                 <asp:LinkButton ID="lnkViewKML" runat="server" Visible="false" 
                     onclick="lnkViewKML_Click" Text="<%$ Resources:LogbookEntry, PublicFlightKMLDownload %>"></asp:LinkButton>
                 <div style="float:right">
