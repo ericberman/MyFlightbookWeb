@@ -921,4 +921,7 @@
   <data name="PrintHeaderExperience" xml:space="preserve">
     <value>Experience</value>
   </data>
+  <data name="PrintHeaderCategoryClassShort" xml:space="preserve">
+    <value>Cat/Class</value>
+  </data>
 </root>

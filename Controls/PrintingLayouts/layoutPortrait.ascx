@@ -11,13 +11,14 @@
         <table class="pageTable">
             <thead class="printheader bordered">
                 <tr>
-                    <td colspan="<% =Math.Min(OptionalColumns.Count(), 4) + 9 %>"></td>
+                    <td colspan="<% =Math.Min(OptionalColumns.Count(), 4) + 10 %>"></td>
                     <th colspan="3" class="rowHeader"><% =Resources.LogbookEntry.PrintHeaderExperience %></th>
                     <th colspan="4" class="rowHeader"><% =Resources.LogbookEntry.PrintHeaderInstrumentTime %></th>
                 </tr>
                 <tr>
                     <th><%=Resources.LogbookEntry.PrintHeaderDate %></th>
                     <th><%=Resources.LogbookEntry.PrintHeaderModel %></th>
+                    <th><%=Resources.LogbookEntry.PrintHeaderCategoryClassShort %></th>
                     <th><%=Resources.LogbookEntry.PrintHeaderAircraft %></th>
                     <th class="rowHeader" runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div><%# OptionalColumnName(0) %></div></th>
                     <th class="rowHeader" runat="server" id="optColumn2" Visible="<%# ShowOptionalColumn(1) %>"><div><%# OptionalColumnName(1) %></div></th>
@@ -45,6 +46,7 @@
                     <tr class="bordered">
                         <td class="row1"><asp:Label Font-Bold="true" EnableViewState="false" ID="lblStaticDate" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>'></asp:Label></td>
                         <td class="row1"><asp:Label ID="lblModel" runat="server" Text='<%#: Eval("ModelDisplay") %>'></asp:Label></td>
+                        <td class="row1"><asp:Label ID="lblCatClass" runat="server" Text='<%#: Eval("CatClassDisplay") %>'></asp:Label></td>
                         <td class="row1"><%#: Eval("TailNumDisplay") %></td>
                         <td class="numericColumn" runat="server" id="tdoptColumn1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
                         <td class="numericColumn" runat="server" id="tdoptColumn2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(1) %></div></td>
@@ -67,7 +69,7 @@
                         <td class="numericColumn"><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
                     </tr>
                     <tr class="bordered">
-                        <td colspan="<% =Math.Min(OptionalColumns.Count(), 4) + 16 %>">
+                        <td colspan="<% =ColumnCount %>">
                             <span><%#: Eval("Route") %></span>
                             <span runat="server" id="divComments" style="white-space:pre-line;" dir="auto"><%# Eval("RedactedCommentWithReplacedApproaches") %></span>
                             <asp:Panel ID="pnlFlightTimes" runat="server" Visible="<%# CurrentUser.DisplayTimesByDefault %>">
@@ -89,20 +91,20 @@
                         </td>
                     </tr>
                     <tr class="spacerMargin">
-                        <td colspan="<% =Math.Min(OptionalColumns.Count(), 4) + 16 %>"></td>
+                        <td colspan="<% =ColumnCount %>"></td>
                     </tr>
                     <tr class="spacer">
-                        <td colspan="<% =Math.Min(OptionalColumns.Count(), 4) + 16 %>"></td>
+                        <td colspan="<% =ColumnCount %>"></td>
                     </tr>
                     <tr class="spacerMargin">
-                        <td colspan="<% =Math.Min(OptionalColumns.Count(), 4) + 16 %>"></td>
+                        <td colspan="<% =ColumnCount %>"></td>
                     </tr>
                 </ItemTemplate>
             </asp:Repeater>
             <asp:Repeater ID="rptSubtotalCollections" runat="server" EnableViewState="false" OnItemDataBound="rptSubtotalCollections_ItemDataBound">
                 <ItemTemplate>
                     <tr class="subtotal">
-                        <td class="noborder" rowspan='<%# Eval("SubtotalCount") %>'></td>
+                        <td class="noborder" colspan="2" rowspan='<%# Eval("SubtotalCount") %>'></td>
                         <td class="subtotalLabel" rowspan='<%# Eval("SubtotalCount") %>'><%# Eval("GroupTitle") %></td>
                         <asp:Repeater ID="rptSubtotals" runat="server">
                             <ItemTemplate>

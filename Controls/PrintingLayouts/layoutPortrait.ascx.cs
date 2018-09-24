@@ -33,6 +33,11 @@ public partial class Controls_PrintingLayouts_layoutPortrait : System.Web.UI.Use
         return ShowOptionalColumn(index) ? OptionalColumns[index].Title : string.Empty;
     }
 
+    protected int ColumnCount
+    {
+        get { return Math.Min(OptionalColumns.Length, 4) + 17; }
+    }
+
     #region IPrintingTemplate
     public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true, OptionalColumn[] optionalColumns = null)
     {
