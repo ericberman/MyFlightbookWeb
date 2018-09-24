@@ -1252,7 +1252,7 @@
     <value>Last Name</value>
   </data>
   <data name="locLicenseHeaderResource1.Text" xml:space="preserve">
-    <value>Pilot License</value>
+    <value>Certificate (License) #</value>
   </data>
   <data name="locMedicalDurationPromptResource1.Text" xml:space="preserve">
     <value>Duration</value>

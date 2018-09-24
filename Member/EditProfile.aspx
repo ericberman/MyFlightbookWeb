@@ -822,7 +822,7 @@
                                     </asp:GridView>
                                 </div>
                                 <h3>
-                                    <asp:Localize ID="locLicenseHeader" runat="server" Text="Pilot License" meta:resourcekey="locLicenseHeaderResource1"></asp:Localize>
+                                    <asp:Localize ID="locLicenseHeader" runat="server" Text="Certificate (License) #" meta:resourcekey="locLicenseHeaderResource1"></asp:Localize>
                                 </h3>
                                 <div>
                                     <asp:TextBox ID="txtLicense" dir="auto" runat="server" ValidationGroup="valPilotInfo" meta:resourcekey="txtLicenseResource1"></asp:TextBox>

@@ -9,7 +9,7 @@
     <ItemTemplate>
         <uc1:pageHeader runat="server" ID="pageHeader" UserName="<%# CurrentUser.UserName %>" />
         <table class="pageTable">
-            <thead class="header bordered">
+            <thead class="printheader bordered">
                 <tr>
                     <td colspan="<% =Math.Min(OptionalColumns.Count(), 4) + 9 %>"></td>
                     <th colspan="3" class="rowHeader"><% =Resources.LogbookEntry.PrintHeaderExperience %></th>
@@ -87,6 +87,15 @@
                                 <uc1:mfbImageList ID="mfbilFlights" runat="server" Columns="3" CanEdit="false" ImageClass="Flight" IncludeDocs="false" MaxImage="3" />
                             </asp:Panel>
                         </td>
+                    </tr>
+                    <tr class="spacerMargin">
+                        <td colspan="<% =Math.Min(OptionalColumns.Count(), 4) + 16 %>"></td>
+                    </tr>
+                    <tr class="spacer">
+                        <td colspan="<% =Math.Min(OptionalColumns.Count(), 4) + 16 %>"></td>
+                    </tr>
+                    <tr class="spacerMargin">
+                        <td colspan="<% =Math.Min(OptionalColumns.Count(), 4) + 16 %>"></td>
                     </tr>
                 </ItemTemplate>
             </asp:Repeater>

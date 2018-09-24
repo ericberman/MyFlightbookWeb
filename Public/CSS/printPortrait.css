@@ -6,6 +6,11 @@ table.pageTable {
     border-collapse: separate;
 }
 
+table.pageTable tr.bordered {
+    border-spacing: 3px;
+    border: 1px solid red;
+}
+
 td.rowHeader {
     margin-left: 2px;
     margin-right: 2px;
@@ -18,13 +23,24 @@ tr.bordered {
     border: 1px solid black;
 }
 
+tr.spacer {
+    height: 1px;
+    width: 100%;
+    background-color: darkgray;
+}
+
+tr.spacerMargin {
+    height: 1px;
+    width: 100%;
+}
+
 tr.bordered td {
     padding: 3px;
     page-break-inside: avoid;
     font-size: smaller;
 }
 
-.header {
+.printheader {
     font-size: smaller;
 }
 
@@ -80,6 +96,11 @@ tr.subtotal td.noborder {
     }
 
     td.rowValue {
+        background-color: white;
+    }
+
+    tr.spacer {
+        height: 1px;
         background-color: white;
     }
 }
