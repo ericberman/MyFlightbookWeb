@@ -49,7 +49,7 @@
                 </div>
             </div>
             <div style="margin-left:auto; margin-right:auto;">
-                <uc2:mfbGoogleMap ID="MfbGoogleMap1" runat="server" Width="100%" Height="400px" />
+                <uc2:mfbGoogleMap ID="MfbGoogleMap1" runat="server" Width="100%" AllowResize="false" Height="400px" />
                 <div style="text-align:center">
                     <asp:Panel ID="pnlDistance" runat="server" Visible="false">
                         <asp:Label ID="lblDistance" runat="server" Text=""></asp:Label>

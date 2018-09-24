@@ -343,7 +343,7 @@
                 ID="lnkClearEvents" runat="server"
                 OnClick="lnkClearEvents_Click" Text="Clear added markers" meta:resourcekey="lnkClearEventsResource1"></asp:LinkButton>
         </asp:Panel>
-        <uc1:mfbGoogleMapManager ID="mfbGoogleMapManager1" runat="server" Height="600px" />
+        <uc1:mfbGoogleMapManager ID="mfbGoogleMapManager1" runat="server" AllowResize="false" Height="600px" />
     </asp:Panel>
     <asp:HiddenField ID="hdnFlightID" runat="server" />
 </asp:Content>

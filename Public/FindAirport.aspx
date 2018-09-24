@@ -42,7 +42,7 @@
     <asp:Label ID="lblError" runat="server" CssClass="error" 
         meta:resourcekey="lblErrorResource1"></asp:Label>
     <div style="margin-left:20px; width:80%; float:left; clear:left;">
-        <uc1:mfbGoogleMapManager ID="MfbGoogleMapManager1" runat="server" Height="600px" Width="100%" />
+        <uc1:mfbGoogleMapManager ID="MfbGoogleMapManager1" runat="server" Height="600px" Width="100%" AllowResize="false" />
     </div>
     <div id="ads" style="float:right; width: 130px; padding:4px; clear:right;">
         <uc2:mfbGoogleAdSense ID="mfbGoogleAdSense2" runat="server" LayoutStyle="adStyleVertical" />

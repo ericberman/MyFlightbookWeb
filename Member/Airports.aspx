@@ -157,7 +157,7 @@
         meta:resourcekey="lnkZoomOutResource1"></asp:HyperLink>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </p>
     <div style="width:100%;">
-        <uc1:mfbGoogleMapManager ID="mfbGoogleMapManager1" runat="server" Height="400px" />
+        <uc1:mfbGoogleMapManager ID="mfbGoogleMapManager1" runat="server" AllowResize="false" Height="400px" />
         <br />
         <br />
     </div>

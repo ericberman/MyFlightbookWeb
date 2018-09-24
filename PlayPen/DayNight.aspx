@@ -55,7 +55,7 @@
     </table>
     <p>
     <asp:Button ID="btnTimes" runat="server" Text="Get Times" OnClick="btnTimes_Click" /></p>
-    <uc1:mfbGoogleMapManager ID="mfbGoogleMapManager1" runat="server" ZoomFactor="World" Height="400px"
+    <uc1:mfbGoogleMapManager ID="mfbGoogleMapManager1" runat="server" AllowResize="false" ZoomFactor="World" Height="400px"
          />
     <asp:Panel ID="pnlKey" runat="server" Visible="false">
         <p>All times are for UTC-DATE: <asp:Label Font-Bold="true" ID="lblUTCDate" runat="server"></asp:Label>.  Each cell is the time (UTC) followed by the solar angle (angle of the sun over the horizon).</p>

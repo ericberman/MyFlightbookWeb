@@ -46,7 +46,7 @@
     <asp:Panel ID="pnlSearchResults" runat="server" Visible="false">
         <h2><% =Resources.Club.HeaderFoundClubs %></h2>
         <div><asp:Localize ID="locClickPrompt" Text="<%$ Resources:Club, LabelClickClubForDetails %>" runat="server"></asp:Localize></div>
-        <uc2:mfbGoogleMapManager ID="mfbGoogleMapManager2" ShowRoute="false" runat="server" />
+        <uc2:mfbGoogleMapManager ID="mfbGoogleMapManager2" ShowRoute="false" AllowResize="false" runat="server" />
         <asp:Panel ID="pnlDynamicClubDetails" runat="server">
         </asp:Panel>
         <script type="text/javascript">

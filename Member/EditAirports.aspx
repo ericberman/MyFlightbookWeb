@@ -155,7 +155,7 @@
                 </td>
                 <td valign="top" width="90%">
                     <div style="margin-left: 20px; margin-right:10px;">
-                        <uc1:mfbGoogleMapManager ID="MfbGoogleMapManager1" runat="server" Height="400px"
+                        <uc1:mfbGoogleMapManager ID="MfbGoogleMapManager1" runat="server" AllowResize="false" Height="400px"
                             Width="100%" />
                     </div>
                 </td>
