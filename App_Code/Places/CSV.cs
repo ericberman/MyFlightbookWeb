@@ -257,7 +257,7 @@ namespace MyFlightbook.Telemetry
                             do
                             {
                                 rgszHeader = csvr.GetCSVLine(true);
-                            } while (rgszHeader != null && (rgszHeader.Length < 2 || rgszHeader[0].StartsWith("#", StringComparison.OrdinalIgnoreCase) || rgszHeader[0].StartsWith("Date (yyyy-mm-dd)", StringComparison.OrdinalIgnoreCase)));
+                            } while (rgszHeader != null && (rgszHeader.Length < 2 || rgszHeader[0].StartsWith("#", StringComparison.OrdinalIgnoreCase) || rgszHeader[0].Contains("Date (yyyy-mm-dd)")));
                         }
                         catch (CSVReaderInvalidCSVException ex)
                         {
