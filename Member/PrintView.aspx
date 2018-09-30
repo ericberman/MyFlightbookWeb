@@ -35,7 +35,6 @@
                 <ContentTemplate>
                     <asp:MultiView ID="mvSearch" runat="server" ActiveViewIndex="0">
                         <asp:View ID="vwDescriptor" runat="server">
-                            <p><% =Resources.LocalizedText.PrintViewIncludeHeader %></p>
                             <table>
                                 <tr>
                                     <td>
@@ -137,7 +136,7 @@
                                     </tr>
                                     <tr style="vertical-align:middle">
                                         <td><div><uc1:mfbDecimalEdit runat="server" ID="decLeftMargin" DefaultValueInt="10" Width="40" IntValue="10" EditingMode="Integer" /></div></td>
-                                        <td style="border: 1px dotted black; width: 80px; margin: 4px; height:80px">&nbsp;</td>
+                                        <td style="border: 1px dotted black; width: 60px; margin: 4px; height:60px">&nbsp;</td>
                                         <td><div><uc1:mfbDecimalEdit runat="server" ID="decRightMargin" DefaultValueInt="10" Width="40" IntValue="10" EditingMode="Integer" /></div></td>
                                     </tr>
                                     <tr>

@@ -1473,4 +1473,7 @@
   <data name="FAQSearchWatermark" xml:space="preserve">
     <value>Search the FAQ</value>
   </data>
+  <data name="PrintViewIncludePreviousPageTotals" xml:space="preserve">
+    <value>Repeat previous page totals in subtotals for each page</value>
+  </data>
 </root>

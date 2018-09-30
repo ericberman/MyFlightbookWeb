@@ -52,6 +52,8 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
                 AddOptionalColumnForValue(ddl.SelectedValue, lst);
             m_options.OptionalColumns = lst.ToArray();
 
+            m_options.IncludePullForwardTotals = ckPullForwardTotals.Checked;
+
             return m_options;
         }
         set
@@ -80,6 +82,9 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
                     OptionalColumnDropDowns[i].SelectedValue = oc.ColumnType == OptionalColumnType.CustomProp ? oc.IDPropType.ToString(CultureInfo.InvariantCulture) : oc.ColumnType.ToString();
                 }
             }
+
+            ckPullForwardTotals.Checked = value.IncludePullForwardTotals;
+            ckPullForwardTotals.Visible = m_options.FlightsPerPage > 0;
 
             AdjustForLayoutCapabilities(m_options);
         }
@@ -178,6 +183,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
 
     protected void cmbFlightsPerPage_SelectedIndexChanged(object sender, EventArgs e)
     {
+        ckPullForwardTotals.Visible = cmbFlightsPerPage.SelectedIndex > 0;
         NotifyDelegate();
     }
 
@@ -213,6 +219,11 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
     }
 
     protected void cmbOptionalColumn4_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        NotifyDelegate();
+    }
+
+    protected void ckPullForwardTotals_CheckedChanged(object sender, EventArgs e)
     {
         NotifyDelegate();
     }

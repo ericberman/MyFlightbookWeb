@@ -243,7 +243,7 @@ namespace MyFlightbook.Printing
     #endregion
 
     /// <summary>
-    /// 
+    /// Encapsulates a set of options for printing.
     /// </summary>
     [Serializable]
     public class PrintingOptions
@@ -277,6 +277,11 @@ namespace MyFlightbook.Printing
         public PropertySeparatorType PropertySeparator { get; set; }
 
         /// <summary>
+        /// If true, pull forward totals from previous pages (conserves space on the page); just shows this page and running total.  True by defalt.
+        /// </summary>
+        public bool IncludePullForwardTotals { get; set; }
+
+        /// <summary>
         /// Returns the text to use to separate properties (based on PropertySeparator)
         /// </summary>
         public string PropertySeparatorText
@@ -305,6 +310,7 @@ namespace MyFlightbook.Printing
         {
             FlightsPerPage = 15;    // default
             IncludeImages = false;
+            IncludePullForwardTotals = true;
             Layout = PrintLayoutType.Native;
             ExcludedPropertyIDs = new int[0];
             PropertySeparator = PropertySeparatorType.Space;
@@ -525,8 +531,9 @@ namespace MyFlightbook.Printing
         /// <param name="lstIn">The input set of flights.  Should be ALL RowType=Flight and should have rowheight property set</param>
         /// <param name="pageSize">Max # of flights per table to subtotal; flights with rowheight > 1 will take up more rows</param>
         /// <param name="optionalColumns">Any optional columns to add</param>
+        /// <param name="pullForwardTotals">Whether or not to pull forward totals from the previous page</param>
         /// <returns>A new enumerable with per-page subtotals and (optional) running totals</returns>
-        public static IEnumerable<LogbookPrintedPage> Paginate(IEnumerable<LogbookEntryDisplay> lstIn, int pageSize, OptionalColumn[] optionalColumns)
+        public static IEnumerable<LogbookPrintedPage> Paginate(IEnumerable<LogbookEntryDisplay> lstIn, int pageSize, OptionalColumn[] optionalColumns, bool pullForwardTotals)
         {
             if (lstIn == null)
                 throw new ArgumentNullException("lstIn");
@@ -615,6 +622,8 @@ namespace MyFlightbook.Printing
                 foreach (LogbookEntryDisplay lep in lpp.RunningTotals.Values)
                     lep.Index = iTotal++;
 
+                if (!pullForwardTotals)
+                    lpp.TotalsPreviousPages.Clear();
             }
 
             return lstOut;
