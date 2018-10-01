@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Ionic.Zip;
+using MyFlightbook.Basicmed;
+using MyFlightbook.CloudStorage;
+using MyFlightbook.Image;
+using MyFlightbook.Instruction;
+using MyFlightbook.Telemetry;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,16 +13,10 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
-using Ionic.Zip;
-using MyFlightbook.Basicmed;
-using MyFlightbook.CloudStorage;
-using MyFlightbook.Image;
-using MyFlightbook.Instruction;
-using MyFlightbook.Telemetry;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2017 MyFlightbook LLC
+ * Copyright (c) 2008-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -54,7 +54,9 @@ namespace MyFlightbook
             tw.RenderEndTag();  // P
         }
 
-        const string szThumbFolder = "Thumbs";
+        const string szThumbFolderEndorsements = "thumbsendorsement";
+        const string szThumbFolderBasicMed = "thumbsbasicmed";
+        const string szThumbFolderFlights = "thumbsFlights";
 
         private void WriteFlightInfo(HtmlTextWriter tw, ZipFile zip, LogbookEntry le)
         {
@@ -77,11 +79,11 @@ namespace MyFlightbook
             {
                 foreach (MFBImageInfo mfbii in le.FlightImages)
                 {
-                    mfbii.ToHtml(tw);
+                    mfbii.ToHtml(tw, szThumbFolderFlights);
                     // Add the image to the zip
                     string imgPath = System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail);
                     if (File.Exists(imgPath))
-                        zip.AddFile(imgPath, szThumbFolder);
+                        zip.AddFile(imgPath, szThumbFolderFlights);
                     else
                         mfbii.DeleteFromDB();   // clean up an orphan.
                 }
@@ -109,7 +111,7 @@ namespace MyFlightbook
 
             using (ZipFile zip = new ZipFile())
             {
-                System.IO.StringWriter sw = new System.IO.StringWriter();
+                StringWriter sw = new StringWriter();
                 HtmlTextWriter tw = new HtmlTextWriter(sw);
 
                 tw.RenderBeginTag(HtmlTextWriterTag.Html);
@@ -133,8 +135,8 @@ namespace MyFlightbook
                 il.Refresh(true);
                 foreach (MFBImageInfo mfbii in il.ImageArray)
                 {
-                    zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szThumbFolder);
-                    mfbii.ToHtml(tw);
+                    zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szThumbFolderEndorsements);
+                    mfbii.ToHtml(tw, szThumbFolderEndorsements);
                     mfbii.UnCache();
                 }
 
@@ -161,8 +163,8 @@ namespace MyFlightbook
                     ilBasicMed.Refresh(true);
                     foreach (MFBImageInfo mfbii in ilBasicMed.ImageArray)
                     {
-                        zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szThumbFolder);
-                        mfbii.ToHtml(tw);
+                        zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szThumbFolderBasicMed);
+                        mfbii.ToHtml(tw, szThumbFolderBasicMed);
                         mfbii.UnCache();
                     }
                 }

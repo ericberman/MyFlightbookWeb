@@ -1553,10 +1553,22 @@ namespace MyFlightbook.Image
         }
 
         #region Misc
-        public void ToHtml(HtmlTextWriter tw)
+        /// <summary>
+        /// Renders the image to html, using a thumbnail and linking to the full image
+        /// </summary>
+        /// <param name="tw">HtmlTextWriter</param>
+        /// <param name="szThumbFolder">The thumbnail folder, "thumbs/" if null</param>
+        public void ToHtml(HtmlTextWriter tw, string szThumbFolder)
         {
             if (tw == null)
                 throw new ArgumentNullException("tw");
+
+            if (szThumbFolder == null)
+                szThumbFolder = "thumbs/";
+
+            if (!szThumbFolder.EndsWith("/", StringComparison.Ordinal))
+                szThumbFolder += "/";
+
             tw.AddStyleAttribute(HtmlTextWriterStyle.Display, "inline-block");
             tw.AddStyleAttribute(HtmlTextWriterStyle.Padding, "3px");
             tw.RenderBeginTag(HtmlTextWriterTag.Div);
@@ -1564,7 +1576,7 @@ namespace MyFlightbook.Image
             tw.AddAttribute(HtmlTextWriterAttribute.Href, ResolveFullImage());
             tw.RenderBeginTag(HtmlTextWriterTag.A);
 
-            tw.AddAttribute(HtmlTextWriterAttribute.Src, (ImageType == MFBImageInfo.ImageFileType.PDF || ImageType == MFBImageInfo.ImageFileType.S3PDF) ? String.Format(CultureInfo.InvariantCulture, "http://{0}/logbook/images/pdficon_large.png", Branding.CurrentBrand.HostName) : "thumbs/" + ThumbnailFile);
+            tw.AddAttribute(HtmlTextWriterAttribute.Src, (ImageType == MFBImageInfo.ImageFileType.PDF || ImageType == MFBImageInfo.ImageFileType.S3PDF) ? String.Format(CultureInfo.InvariantCulture, "http://{0}/logbook/images/pdficon_large.png", Branding.CurrentBrand.HostName) : szThumbFolder + ThumbnailFile);
             tw.RenderBeginTag(HtmlTextWriterTag.Img);
             tw.RenderEndTag();  // img
             tw.RenderEndTag();  // a
