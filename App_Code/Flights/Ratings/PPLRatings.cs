@@ -1,13 +1,13 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.FlightCurrency;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using MyFlightbook.Airports;
-using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -595,7 +595,7 @@ namespace MyFlightbook.MilestoneProgress
             {
                 Collection<MilestoneItem> l = new Collection<MilestoneItem>();
 
-                if (miHoursInHeavierThanAir.IsSatisfied)
+                if (!miHoursInHeavierThanAir.IsSatisfied)
                 {
                     l.Add(miHoursInGlider1);
                     l.Add(miMinFlights1i);
