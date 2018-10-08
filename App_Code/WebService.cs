@@ -1330,7 +1330,11 @@ namespace MyFlightbook
 
             string szSearch = prefixText.ToUpperInvariant();
 
-            return lst.FindAll(sz => sz.ToUpperInvariant().StartsWith(szSearch)).ToArray();
+            lst = lst.FindAll(sz => sz.ToUpperInvariant().StartsWith(szSearch));
+            if (lst.Count > count && count >= 1)
+                lst.RemoveRange(count - 1, lst.Count - count);
+
+            return lst.ToArray();
         }
         #endregion
 
