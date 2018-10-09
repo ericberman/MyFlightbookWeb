@@ -2909,7 +2909,7 @@ namespace MyFlightbook
                     NightPICUSTotal = NightPICUSTotal.AddMinutes(Math.Min(led.Nighttime, led.PICUSTime));
                     InstrumentAircraftTotal = InstrumentAircraftTotal.AddMinutes((led.IsFSTD ? 0 : led.IMC));
                     InstrumentFSTDTotal = InstrumentFSTDTotal.AddMinutes((led.IsFSTD ? led.SimulatedIFR : 0));
-                    SoloTotal = SoloTime.AddMinutes(led.SoloTime);
+                    SoloTotal = SoloTotal.AddMinutes(led.SoloTime);
                     GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstruction);
                     IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTime);
                     NightTouchAndGoLandings += led.IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
