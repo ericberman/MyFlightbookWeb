@@ -51,9 +51,16 @@ public partial class makes : System.Web.UI.Page
         lblAdminMode.Visible = IsAdminMode;
         pnlDownload.Visible = !IsAdminMode;
 
+        RefreshAircraftList();
+
+        Refresh();
+    }
+
+    protected void RefreshAircraftList()
+    {
+        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         UserAircraft.AircraftRestriction r = IsAdminMode ? UserAircraft.AircraftRestriction.AllMakeModel : UserAircraft.AircraftRestriction.UserAircraft;
         SourceAircraft = ua.GetAircraftForUser(r, idModel);
-        Refresh();
     }
 
     /// <summary>
@@ -64,9 +71,7 @@ public partial class makes : System.Web.UI.Page
         if (String.IsNullOrEmpty(hdnStatsFetched.Value))
         {
             hdnStatsFetched.Value = "yes";
-            UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-            UserAircraft.AircraftRestriction r = IsAdminMode ? UserAircraft.AircraftRestriction.AllMakeModel : UserAircraft.AircraftRestriction.UserAircraft;
-            SourceAircraft = ua.GetAircraftForUser(r, idModel);
+            RefreshAircraftList();
             AircraftStats.PopulateStatsForAircraft(SourceAircraft, Page.User.Identity.Name);
         }
     }
@@ -104,6 +109,7 @@ public partial class makes : System.Web.UI.Page
 
     protected void AircraftList_AircraftDeleted(object sender, CommandEventArgs e)
     {
+        RefreshAircraftList();
         Refresh(true);
     }
 
