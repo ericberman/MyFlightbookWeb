@@ -1,10 +1,9 @@
 ﻿using MyFlightbook;
 using System;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -33,6 +32,8 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
 
     public event EventHandler<EventArgs> FavoriteChanged = null;
 
+    public event EventHandler<EventArgs> AircraftPrefChanged = null;
+
     public bool EnableAircraftViewState
     {
         get { return gvAircraft.EnableViewState; }
@@ -40,10 +41,7 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
     }
     #endregion
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-
-    }
+    protected void Page_Load(object sender, EventArgs e) {  }
 
     public void AddPictures(Object sender, GridViewRowEventArgs e)
     {
@@ -147,6 +145,8 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
         ac.RoleForPilot = (Aircraft.PilotRole)Enum.Parse(typeof(Aircraft.PilotRole), rbl.SelectedValue);
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         ua.FAddAircraftForUser(ac);
+        if (AircraftPrefChanged != null)
+            AircraftPrefChanged(this, e);
     }
 
     protected void ckShowInFavorites_CheckedChanged(object sender, EventArgs e)
@@ -157,6 +157,6 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         ua.FAddAircraftForUser(ac);
         if (FavoriteChanged != null)
-            FavoriteChanged(sender, e);
+            FavoriteChanged(this, e);
     }
 }

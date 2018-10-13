@@ -64,12 +64,18 @@ public partial class makes : System.Web.UI.Page
         if (String.IsNullOrEmpty(hdnStatsFetched.Value))
         {
             hdnStatsFetched.Value = "yes";
+            UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+            UserAircraft.AircraftRestriction r = IsAdminMode ? UserAircraft.AircraftRestriction.AllMakeModel : UserAircraft.AircraftRestriction.UserAircraft;
+            SourceAircraft = ua.GetAircraftForUser(r, idModel);
             AircraftStats.PopulateStatsForAircraft(SourceAircraft, Page.User.Identity.Name);
         }
     }
 
-    protected void Refresh()
+    protected void Refresh(bool fForceStats = false)
     {
+        if (fForceStats)
+            hdnStatsFetched.Value = string.Empty;
+
         if (GroupingMode == AircraftGroup.GroupMode.Recency)
             PopulateStats();
 
@@ -98,12 +104,17 @@ public partial class makes : System.Web.UI.Page
 
     protected void AircraftList_AircraftDeleted(object sender, CommandEventArgs e)
     {
-        Refresh();
+        Refresh(true);
     }
 
     protected void AircraftList_FavoriteChanged(object sender, EventArgs e)
     {
-        Refresh();
+        Refresh(true);
+    }
+
+    protected void AircraftList_AircraftPrefChanged(object sender, EventArgs e)
+    {
+        Refresh(true);
     }
 
     protected void lnkDownloadCSV_Click(object sender, EventArgs e)

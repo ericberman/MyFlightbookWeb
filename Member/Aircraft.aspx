@@ -22,7 +22,6 @@
                 <asp:ListItem Text="<%$ Resources:Aircraft, ViewAircraftRecency %>" Value="Recency"></asp:ListItem>
             </asp:DropDownList>
         </asp:Panel>
-        <asp:HiddenField ID="hdnStatsFetched" runat="server" />
         <p>
             <asp:Button ID="btnAddNew" runat="server" Text="<%$ Resources:LocalizedText, MyAircraftAddAircraft %>" 
             onclick="btnAddNew_Click" />
@@ -41,6 +40,7 @@
     </div>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
+            <asp:HiddenField ID="hdnStatsFetched" runat="server" />
             <div style="max-width:800px">
                 <asp:GridView ID="gvAircraftToDownload" runat="server" AutoGenerateColumns="false" EnableViewState="false">
                     <Columns>
@@ -169,7 +169,7 @@
                 <asp:Repeater ID="rptAircraftGroups" runat="server" OnItemDataBound="rptAircraftGroups_ItemDataBound">
                     <ItemTemplate>
                         <h2><asp:Label ID="lblGroupNames" runat="server" Text='<%# Eval("GroupTitle") %>'></asp:Label></h2>
-                        <uc1:AircraftList runat="server" ID="AircraftList" OnAircraftDeleted="AircraftList_AircraftDeleted" OnFavoriteChanged="AircraftList_FavoriteChanged" />
+                        <uc1:AircraftList runat="server" ID="AircraftList" OnAircraftDeleted="AircraftList_AircraftDeleted" OnFavoriteChanged="AircraftList_FavoriteChanged" OnAircraftPrefChanged="AircraftList_AircraftPrefChanged" />
                     </ItemTemplate>
                 </asp:Repeater>
             </div>
