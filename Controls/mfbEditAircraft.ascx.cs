@@ -691,22 +691,11 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
     protected void lnkPopulateAircraft_Click(object sender, EventArgs e)
     {
-        if (!String.IsNullOrEmpty(txtTail.Text) && m_ac.IsNew)
+        if (!String.IsNullOrEmpty(txtTail.Text))
         {
             int aircraftID = Aircraft.idAircraftUnknown;
             if (int.TryParse(hdnSelectedAircraftID.Value, out aircraftID))
-            {
                 Response.Redirect("~/Member/EditAircraft.aspx?id=" + aircraftID.ToString(CultureInfo.InvariantCulture));
-            }
-            else
-            {
-                Aircraft ac = new Aircraft(txtTail.Text);
-                if (!ac.IsNew)
-                {
-                    AircraftID = ac.AircraftID;
-                    InitFormForAircraft();
-                }
-            }
         }
     }
 
