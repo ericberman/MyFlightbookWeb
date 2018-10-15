@@ -38,6 +38,7 @@
             OnPageIndexChanging="gridView_PageIndexChanging">
             <Columns>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldFlight %>" SortExpression="Date">
+                    <HeaderStyle Font-Bold="true" HorizontalAlign="Left" />
                     <ItemTemplate>
                         <div class="noprint" style="float:right">
                             &nbsp;&nbsp;
@@ -122,7 +123,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldTail %>" SortExpression="TailNumDisplay">
                     <ItemStyle HorizontalAlign="Center" />
-                    <HeaderStyle HorizontalAlign="Center" />
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemTemplate>
                         <asp:HyperLink ID="lnkTail" NavigateUrl='<%# String.Format("~/Member/EditAircraft.aspx?id={0}", Eval("AircraftID")) %>' runat="server">
                             <asp:Label ID="lblTail" runat="server" Text='<%# Eval("TailNumDisplay") %>'></asp:Label>
@@ -145,7 +146,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldCatClassType %>" SortExpression="CatClassDisplay">
                     <ItemStyle HorizontalAlign="Center" />
-                    <HeaderStyle HorizontalAlign="Center" />
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemTemplate>
                         <asp:MultiView ID="mvCatClass" runat="server" ActiveViewIndex='<%# Convert.ToBoolean(Eval("IsOverridden")) ? 1 : 0 %>'>
                             <asp:View ID="vwDefaultCatClass" runat="server">
@@ -162,13 +163,13 @@
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldApproaches %>" SortExpression="Approaches">
                     <ItemStyle HorizontalAlign="Center" />
-                    <HeaderStyle HorizontalAlign="Center" Font-Bold="true" />
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemTemplate>
                         <%# Eval("Approaches").FormatInt() %>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldHold %>" SortExpression="fHoldingProcedures">
-                    <HeaderStyle HorizontalAlign="Center" />
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle Font-Bold="true" Font-Size="Larger" HorizontalAlign="Center" />
                     <ItemTemplate>
                         <%# Eval("fHoldingProcedures").FormatBoolean() %>
@@ -181,67 +182,77 @@
                             <uc5:mfbTooltip ID="mfbTooltip1" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookLandingKey %>" />
                         </span>
                     </HeaderTemplate>
-                    <HeaderStyle HorizontalAlign="Center" />
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle HorizontalAlign="Center" />
                     <ItemTemplate>
                         <%# Eval("LandingDisplay") %>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldXCountry %>" SortExpression="CrossCountry">
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle HorizontalAlign="Right" />
                     <ItemTemplate>
                         <%# Eval("CrossCountry").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldNight %>" SortExpression="Nighttime">
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle HorizontalAlign="Right" />
                     <ItemTemplate>
                         <%# Eval("Nighttime").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldSimIMC %>" SortExpression="SimulatedIFR">
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle HorizontalAlign="Right" />
                     <ItemTemplate>
                         <%# Eval("SimulatedIFR").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldIMC %>" SortExpression="IMC">
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle HorizontalAlign="Right" />
                     <ItemTemplate>
                         <%# Eval("IMC").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldGroundSim %>" SortExpression="GroundSim">
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle HorizontalAlign="Right" />
                     <ItemTemplate>
                         <%# Eval("GroundSim").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldDual %>" SortExpression="Dual">
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle HorizontalAlign="Right" />
                     <ItemTemplate>
                         <%# Eval("Dual").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldCFI %>" SortExpression="CFI">
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle HorizontalAlign="Right" />
                     <ItemTemplate>
                         <%# Eval("CFI").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldSIC %>" SortExpression="SIC">
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle HorizontalAlign="Right" />
                     <ItemTemplate>
                         <%# Eval("SIC").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>            
                  <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldPIC %>" SortExpression="PIC">
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle HorizontalAlign="Right" />
                     <ItemTemplate>
                         <%# Eval("PIC").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldTotal %>" SortExpression="TotalFlightTime">
+                    <HeaderStyle HorizontalAlign="Center" Font-Bold="false" />
                     <ItemStyle HorizontalAlign="Right" />
                     <ItemTemplate>
                         <%# Eval("TotalFlightTime").FormatDecimal(Viewer.UsesHHMM)%>
