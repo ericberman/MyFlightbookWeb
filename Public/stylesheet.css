@@ -972,6 +972,37 @@ a img
     font-size:8pt;
 }
 
+/* Logbook gridview header */
+.headerBase {
+    font-weight: normal;
+    color: #444444;
+}
+
+.headerBase a {
+    color: #444444;
+}
+
+.headerBase a:hover {
+    color:initial;
+    text-decoration:none;
+}
+
+.headerSortAsc {
+    font-weight: bold;
+}
+
+.headerSortAsc::after {
+    content: '▲';
+}
+
+.headerSortDesc {
+    font-weight: bold;
+}
+
+.headerSortDesc::after {
+    content: '▼';
+}
+
 /* Wizard steps */
 .wizStepCompleted
 {

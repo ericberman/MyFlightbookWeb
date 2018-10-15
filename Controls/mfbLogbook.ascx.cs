@@ -508,7 +508,7 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
             LastSortDir = e.SortDirection;
 
             foreach (DataControlField dcf in gv.Columns)
-                dcf.HeaderStyle.Font.Bold = dcf.SortExpression.CompareCurrentCultureIgnoreCase(e.SortExpression) == 0;
+                dcf.HeaderStyle.CssClass = "headerBase" + ((dcf.SortExpression.CompareCurrentCultureIgnoreCase(e.SortExpression) == 0) ? (e.SortDirection == SortDirection.Ascending ? " headerSortAsc" : " headerSortDesc") : string.Empty);
 
             LogbookEntryDisplay.SortLogbook(lst, LastSortExpr, LastSortDir);
             BindData();
