@@ -18,9 +18,25 @@
 </div>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
-        <div runat="server" id="rowShowPages">
-            <span class="noprint"><asp:LinkButton ID="lnkShowInPages" runat="server" OnClick="lnkShowInPages_Click" Text="<%$ Resources:LogbookEntry, LogbookShowInPages %>" ></asp:LinkButton></span>
-        </div>
+        <asp:Panel ID="pnlHeader" runat="server">
+            <table>
+                <tr>
+                    <td><asp:Label ID="lblNumFlights" runat="server"></asp:Label></td>
+                    <td>
+                        <span class="noprint">
+                            <uc7:popmenu ID="popmenuHeader" runat="server">
+                                <MenuContent>
+                                    <div><asp:RadioButton ID="rblShowInPages" runat="server" AutoPostBack="true" OnCheckedChanged="lnkShowInPages_Click" Text="<%$ Resources:LogbookEntry, LogbookShowInPages %>" GroupName="rblPagingGroup" /></div>
+                                    <div><asp:RadioButton ID="rblShowAll" runat="server" AutoPostBack="true" OnCheckedChanged="lnkShowAll_Click" CausesValidation="false" Text="<%$ Resources:LogbookEntry, LogbookShowAll %>" GroupName="rblPagingGroup" /></div>
+                                    <div><asp:CheckBox ID="ckCompactView" runat="server" Text="<%$ Resources:LogbookEntry, LogbookCompactView %>" CausesValidation="false" AutoPostBack="true" OnCheckedChanged="ckCompactView_CheckedChanged" /></div>
+                                    <div><asp:CheckBox ID="ckIncludeImages" runat="server" Text="<%$ Resources:LogbookEntry, LogbookIncludeImages %>" CausesValidation="false" AutoPostBack="true" OnCheckedChanged="ckIncludeImages_CheckedChanged" /></div>
+                                </MenuContent>
+                            </uc7:popmenu>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </asp:Panel>
         <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="UpdatePanel1">
             <ProgressTemplate>
                 <asp:Image ID="imgProgress" ImageUrl="~/images/ajax-loader.gif" runat="server" />
@@ -44,10 +60,10 @@
                             &nbsp;&nbsp;
                             <asp:Panel ID="pnlImagesHover" runat="server" Visible="false" style="display:inline-block;">
                                 <asp:HyperLink ID="lnkViewPublic" NavigateUrl='<%# PublicPath(Eval("FlightID")) %>' runat="server">
-                                    <asp:Image ID="imgCamera" ImageUrl="~/Images/camera.png" runat="server"
+                                    <asp:Image ID="imgCamera" ImageUrl="~/Images/camera.png" runat="server" Visible="<%# !ShowImagesInline %>"
                                         ToolTip="<%$ Resources:LogbookEntry, LogbookFlightHasPicturesTooltip %>"
                                         AlternateText="<%$ Resources:LogbookEntry, LogbookFlightHasPicturesTooltip %>" />
-                                    <cc1:HoverMenuExtender ID="hoverMenuImages" TargetControlID="imgCamera" PopupControlID="pnlFlightImages" OffsetX="20" OffsetY="-100" runat="server"></cc1:HoverMenuExtender>
+                                    <cc1:HoverMenuExtender ID="hoverMenuImages" TargetControlID="imgCamera" Enabled="<%# !ShowImagesInline %>" PopupControlID="pnlFlightImages" OffsetX="20" OffsetY="-100" runat="server"></cc1:HoverMenuExtender>
                                 </asp:HyperLink>
                             </asp:Panel>
                             <asp:HyperLink ID="lnkViewflightData" runat="server" Visible='<%# Convert.ToBoolean(Eval("HasFlightData")) %>' NavigateUrl='<%# AnalyzePath(Eval("FlightID")) %>'>
@@ -55,9 +71,12 @@
                         </div>
                         <div>
                             <asp:HyperLink ID="lnkEditFlight" Font-Bold="true" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger" NavigateUrl='<%# DetailsPath(Eval("FlightID")) %>'></asp:HyperLink>
-                            <asp:HyperLink Font-Bold="true" ID="lnkRoute" runat="server" Text='<%#: Eval("Route") %>' NavigateUrl='<%# String.Format("~/Public/ViewPublicFlight.aspx/{0}", Eval("FlightID")) %>'></asp:HyperLink>
+                            <asp:HyperLink Font-Bold="true" ID="lnkRoute" runat="server" Text='<%#: Eval("Route") %>' NavigateUrl='<%# PublicPath(Eval("FlightID")) %>'></asp:HyperLink>
                             <span runat="server" id="divComments" style="clear:left; white-space: pre-line;" dir="auto"><asp:Label ID="lblComments" runat="server" Text='<%# Eval("CommentWithReplacedApproaches") %>'></asp:Label></span>
+                            <asp:Image ID="imgExpandProps" runat="server" Visible='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).PropertiesWithReplacedApproaches.Count() > 0 %>' ImageUrl="~/images/expand.png" />
                         </div>
+                        <cc1:CollapsiblePanelExtender ID="cpeDisplayMode" runat="server" Collapsed='<%# IsCompact %>' Enabled='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).PropertiesWithReplacedApproaches.Count() > 0  %>'
+                            TargetControlID="pnlProps" CollapsedImage="~/images/expand.png" ExpandedImage="~/images/collapse.png" CollapseControlID="imgExpandProps" ExpandControlID="imgExpandProps" ImageControlID="imgExpandProps" />
                         <asp:Panel ID="pnlFlightTimes" runat="server" Visible="<%# Viewer.DisplayTimesByDefault %>">
                             <asp:Panel ID="pnlEngineTime" runat="server">
                                 <%# Eval("EngineTimeDisplay") %>
@@ -103,7 +122,7 @@
                                 </table>
                             </div>
                         </asp:Panel>
-                        <asp:Panel ID="pnlFlightImages" runat="server" CssClass="hintPopup">
+                        <asp:Panel ID="pnlFlightImages" runat="server" CssClass='<%# ShowImagesInline ? string.Empty : "hintPopup" %>'>
                             <uc1:mfbImageList ID="mfbilFlights" runat="server" Columns="2" CanEdit="false" ImageClass="Flight" IncludeDocs="false" MaxImage="-1" />
                         </asp:Panel>
                     </ItemTemplate>
@@ -313,16 +332,17 @@
                     <ItemStyle CssClass="noprint" />
                 </asp:TemplateField>
             </Columns>
-            <PagerSettings Mode="NextPreviousFirstLast" Position="Top" />
+            <PagerSettings Mode="NextPreviousFirstLast" Position="Bottom" />
+            <PagerStyle HorizontalAlign="Center" />
             <AlternatingRowStyle CssClass="logbookAlternateRow" />
             <RowStyle CssClass="logbookRow" />
             <PagerTemplate>
-                <div style="float:left; vertical-align: middle;"><asp:Label ID="lblNumFlights" runat="server" Text=""></asp:Label> <asp:LinkButton ID="lnkShowAll" runat="server" OnClick="lnkShowAll_Click" CausesValidation="false" Text="<%$ Resources:LogbookEntry, LogbookShowAll %>" ></asp:LinkButton></div>
-                <asp:Panel ID="pnlPager" runat="server" DefaultButton="btnSetPage" style="float:right; font-weight:bold;">
+                <asp:Panel ID="pnlPager" runat="server" DefaultButton="btnSetPage" style="font-weight:bold; padding: 5px;">
                     <asp:LinkButton ID="lnkFirst" CommandArgument="First" CommandName="Page" runat="server" Text="<<" CausesValidation="false"></asp:LinkButton>&nbsp;&nbsp;
                     <asp:LinkButton ID="lnkPrev" CommandArgument="Prev" CommandName="Page" runat="server" Text="<" CausesValidation="false" ></asp:LinkButton>&nbsp;&nbsp;
                     <asp:Label ID="lblCurPagePrompt" runat="server" Text="<%$ Resources:LogbookEntry, LogbookPagePrompt %>" Visible="false"></asp:Label> 
                     <asp:TextBox ID="decPage" runat="server" Width="50px" BorderColor="LightGray" BorderStyle="Solid" BorderWidth="1"></asp:TextBox>
+                    <span style="font-weight:normal"><uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:LogbookEntry, LogbookPagerTip %>" /></span>
                     <asp:Label ID="lblTotalPagePrompt" runat="server" Text="<%$ Resources:LogbookEntry, LogbookPageTotalPagePrompt %>" Visible="false"></asp:Label> <asp:Label ID="lblPage" runat="server" Text="{0}"></asp:Label>
                     <asp:Button ID="btnSetPage" runat="server" Text="<%$ Resources:LogbookEntry, LogbookGoToPage %>" onclick="btnSetPage_Click" style="display:none;" />&nbsp;&nbsp;
                     <asp:LinkButton ID="lnkNext" CommandArgument="Next" CommandName="Page"  runat="server" Text=">" CausesValidation="false" ></asp:LinkButton>&nbsp;&nbsp;

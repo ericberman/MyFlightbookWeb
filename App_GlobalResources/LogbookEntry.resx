@@ -924,4 +924,13 @@
   <data name="PrintHeaderCategoryClassShort" xml:space="preserve">
     <value>Cat/Class</value>
   </data>
+  <data name="LogbookCompactView" xml:space="preserve">
+    <value>Compact View</value>
+  </data>
+  <data name="LogbookIncludeImages" xml:space="preserve">
+    <value>Show Flight Images In-line</value>
+  </data>
+  <data name="LogbookPagerTip" xml:space="preserve">
+    <value>Hint: you can type a page number to jump to the specified page, a 4-digit year to jump to that year, or a full-date to jump to the page containing that date.</value>
+  </data>
 </root>

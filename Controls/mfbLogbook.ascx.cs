@@ -91,15 +91,6 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     }
 
     /// <summary>
-    /// Show/hide the "Show in Pages" link.
-    /// </summary>
-    public Boolean PagingLinkVisible
-    {
-        get { return rowShowPages.Visible; }
-        set { rowShowPages.Visible = value; }
-    }
-
-    /// <summary>
     /// Specifies whether or not paging should be offered
     /// </summary>
     public Boolean AllowPaging
@@ -289,6 +280,36 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         }
     }
     #endregion
+
+    #region Display Options
+    const string szCookieCompact = "mfbLogbookDisplayCompact";
+    const string szCookieImages = "mfbLogbookDisplayImages";
+
+    private bool m_isCompact = false;
+    private bool m_showImagesInline = false;
+
+    protected bool IsCompact
+    {
+        get { return m_isCompact; }
+        set
+        {
+            m_isCompact = value;
+            Response.Cookies[szCookieCompact].Value = value.ToString();
+            Response.Cookies[szCookieCompact].Expires = DateTime.Now.AddYears(20);
+        }
+    }
+
+    protected bool ShowImagesInline
+    {
+        get { return m_showImagesInline; }
+        set
+        {
+            m_showImagesInline = value;
+            Response.Cookies[szCookieImages].Value = value.ToString();
+            Response.Cookies[szCookieImages].Expires = DateTime.Now.AddYears(20);
+        }
+    }
+    #endregion
     #endregion
 
     /// <summary>
@@ -328,11 +349,20 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     {
         FlushCache();
         BindData(Data);
+        lblNumFlights.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.NumberOfFlights, CachedData.Count());
     }
 
     protected void Page_Init(object sender, EventArgs e)
     {
         gvFlightLogs.PageSize = util.GetIntParam(Request, "pageSize", 25);   // will set gvflightlogs.pagesize
+
+        HttpCookie cookie = Request.Cookies[szCookieCompact];
+        bool f = false;
+        if (cookie != null)
+            f |= bool.TryParse(cookie.Value, out m_isCompact);
+        cookie = Request.Cookies[szCookieImages];
+        if (cookie != null)
+            f |= bool.TryParse(cookie.Value, out m_showImagesInline);
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -364,6 +394,11 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
                 FlushCache();
                 HasBeenBound = false;
             }
+
+            ckCompactView.Checked = m_isCompact;
+            ckIncludeImages.Checked = m_showImagesInline;
+            rblShowInPages.Checked = gvFlightLogs.AllowPaging;
+            rblShowAll.Checked = !rblShowInPages.Checked;
         }
 
         if (!HasBeenBound)
@@ -536,10 +571,6 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
                 e.Row.Cells.RemoveAt(i);
             e.Row.Cells[0].ColumnSpan = cCols;
         }
-        else if (e.Row.RowType == DataControlRowType.Pager)
-        {
-            ((Label) e.Row.FindControl("lblNumFlights")).Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.NumberOfFlights, CachedData.Count());
-        }
         else if (e.Row.RowType == DataControlRowType.DataRow)
         {
             LogbookEntryDisplay le = (LogbookEntryDisplay) e.Row.DataItem;
@@ -650,11 +681,6 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
         ShowButton(lnkLast, gvFlightLogs.PageIndex < gvFlightLogs.PageCount - 1);
 
         Control lnkShowAll = gvr.Cells[0].FindControl("lnkShowAll");
-        
-        if (lnkShowAll != null)
-            lnkShowAll.Visible = AllowPaging;
-
-        rowShowPages.Visible = !AllowPaging;
     }
 
     protected void gvFlightLogs_DataBound(Object sender, EventArgs e)
@@ -668,9 +694,22 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
         // This will enable printing to work properly.
         if (AllowPaging == false && gvFlightLogs.HeaderRow != null && gvFlightLogs.FooterRow != null)
         {
-            gvFlightLogs.HeaderRow.TableSection = System.Web.UI.WebControls.TableRowSection.TableHeader;
-            gvFlightLogs.FooterRow.TableSection = System.Web.UI.WebControls.TableRowSection.TableFooter;
+            gvFlightLogs.HeaderRow.TableSection = TableRowSection.TableHeader;
+            gvFlightLogs.FooterRow.TableSection = TableRowSection.TableFooter;
         }
+    }
+
+    #region Layout control
+    protected void ckCompactView_CheckedChanged(object sender, EventArgs e)
+    {
+        ckCompactView.Checked = IsCompact = ((CheckBox)sender).Checked;
+        BindData();
+    }
+
+    protected void ckIncludeImages_CheckedChanged(object sender, EventArgs e)
+    {
+        ckIncludeImages.Checked = ShowImagesInline = ((CheckBox)sender).Checked;
+        BindData();
     }
 
     protected void lnkShowAll_Click(object sender, EventArgs e)
@@ -684,6 +723,7 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
         ViewState[szKeyAllowsPaging] = AllowPaging = true;
         BindData();
     }
+    #endregion
 
     /// <summary>
     /// Let the user type in a page, a date, or a year to jump quickly to that page/date/year
@@ -694,7 +734,7 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
     {
         TextBox decPageNum = null;
 
-        decPageNum = (TextBox)((sender == gvFlightLogs.TopPagerRow.FindControl("btnSetPage") ? gvFlightLogs.TopPagerRow.FindControl("decPage") : gvFlightLogs.BottomPagerRow.FindControl("decPage")));
+        decPageNum = (TextBox)gvFlightLogs.BottomPagerRow.FindControl("decPage");
 
         try
         {
