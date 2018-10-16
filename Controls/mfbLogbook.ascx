@@ -73,7 +73,7 @@
                             <asp:HyperLink ID="lnkEditFlight" Font-Bold="true" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger" NavigateUrl='<%# DetailsPath(Eval("FlightID")) %>'></asp:HyperLink>
                             <asp:HyperLink Font-Bold="true" ID="lnkRoute" runat="server" Text='<%#: Eval("Route") %>' NavigateUrl='<%# PublicPath(Eval("FlightID")) %>'></asp:HyperLink>
                             <span runat="server" id="divComments" style="clear:left; white-space: pre-line;" dir="auto"><asp:Label ID="lblComments" runat="server" Text='<%# Eval("CommentWithReplacedApproaches") %>'></asp:Label></span>
-                            <asp:Image ID="imgExpandProps" runat="server" Visible='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).PropertiesWithReplacedApproaches.Count() > 0 %>' ImageUrl="~/images/expand.png" />
+                            <span class="noprint"><asp:Image ID="imgExpandProps" runat="server" Visible='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).PropertiesWithReplacedApproaches.Count() > 0 %>' ImageUrl="~/images/expand.png" /></span>
                         </div>
                         <cc1:CollapsiblePanelExtender ID="cpeDisplayMode" runat="server" Collapsed='<%# IsCompact %>' Enabled='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).PropertiesWithReplacedApproaches.Count() > 0  %>'
                             TargetControlID="pnlProps" CollapsedImage="~/images/expand.png" ExpandedImage="~/images/collapse.png" CollapseControlID="imgExpandProps" ExpandControlID="imgExpandProps" ImageControlID="imgExpandProps" />
