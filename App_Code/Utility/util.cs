@@ -463,8 +463,8 @@ namespace MyFlightbook
                 myError = myError.InnerException;
             }
 
-            var viewState = myError as ViewStateException;
-            util.NotifyAdminEvent("Error on the myflightbook site" + ((viewState == null) ? string.Empty : " (Viewstate)"), ErrorMessage.ToString(), ProfileRoles.maskSiteAdminOnly);
+            string szError = ErrorMessage.ToString();
+            util.NotifyAdminEvent("Error on the myflightbook site" + (szError.Contains("Invalid viewstate") ? " (Viewstate)" : string.Empty), szError, ProfileRoles.maskSiteAdminOnly);
         }
         #endregion
 
