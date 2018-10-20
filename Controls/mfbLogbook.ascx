@@ -280,7 +280,7 @@
                 <asp:TemplateField>
                     <ItemStyle CssClass="noprint" />
                     <ItemTemplate>
-                        <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights %>">
+                        <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights %>" OffsetX="-160">
                             <MenuContent>
                                 <div><uc2:mfbMiniFacebook ID="mfbMiniFacebook" runat="server" /></div>
                                 <div><uc4:mfbTweetThis ID="mfbTweetThis" runat="server" /></div>
