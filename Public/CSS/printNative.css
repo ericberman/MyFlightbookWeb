@@ -49,6 +49,18 @@ thead.header th > div {
     width: .6cm;
 }
 
+thead.header th > div.custColumn {
+    -webkit-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+    transform: rotate(0);
+    width: 1.0cm;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:normal;
+}
+
 .header {
     font-weight:bold;
     text-align:left;
