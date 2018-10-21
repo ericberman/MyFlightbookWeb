@@ -12,10 +12,10 @@
             <thead class="header bordered">
                 <th colspan="2"></th>
                 <th><%=Resources.LogbookEntry.PrintHeaderAircraft %></th>
-                <th runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div><%# OptionalColumnName(0) %></div></th>
-                <th runat="server" id="optColumn2" Visible="<%# ShowOptionalColumn(1) %>"><div><%# OptionalColumnName(1) %></div></th>
-                <th runat="server" id="optColumn3" Visible="<%# ShowOptionalColumn(2) %>"><div><%# OptionalColumnName(2) %></div></th>
-                <th runat="server" id="optColumn4" Visible="<%# ShowOptionalColumn(3) %>"><div><%# OptionalColumnName(3) %></div></th>
+                <th runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div class="custColumn"><%# OptionalColumnName(0) %></div></th>
+                <th runat="server" id="optColumn2" Visible="<%# ShowOptionalColumn(1) %>"><div class="custColumn"><%# OptionalColumnName(1) %></div></th>
+                <th runat="server" id="optColumn3" Visible="<%# ShowOptionalColumn(2) %>"><div class="custColumn"><%# OptionalColumnName(2) %></div></th>
+                <th runat="server" id="optColumn4" Visible="<%# ShowOptionalColumn(3) %>"><div class="custColumn"><%# OptionalColumnName(3) %></div></th>
                 <th><div><%=Resources.LogbookEntry.PrintHeaderApproachesShort %></div></th>
                 <th><div><%=Resources.LogbookEntry.FieldHold %></div></th>
                 <th><div><%=Resources.LogbookEntry.PrintHeaderLandingsShort %></div></th>
