@@ -634,7 +634,7 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                 <h2><asp:Label ID="lblEndorsements" runat="server" Text=""></asp:Label></h2>
                 <p>To edit: </p>
                 <ul>
-                    <li>{x} for a single-line entry with watermak &quot;x&quot;</li>
+                    <li>{x} for a single-line entry with watermark &quot;x&quot;</li>
                     <li>{Freeform} for freeform multi-line text (no watermark prompt)</li>
                     <li>{Date} for the date (prefilled)</li>
                     <li>{Student} for the Student&#39;s name (pre-filled)</li>
