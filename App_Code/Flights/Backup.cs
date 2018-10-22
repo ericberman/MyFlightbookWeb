@@ -159,12 +159,13 @@ namespace MyFlightbook
                 IEnumerable<BasicMedEvent> lstBMed = BasicMedEvent.EventsForUser(User.UserName);
                 foreach (BasicMedEvent bme in lstBMed)
                 {
+                    string szZipFolder = String.Format(CultureInfo.InvariantCulture, "{0}-{1}", bme.ImageKey, szThumbFolderBasicMed);
                     ImageList ilBasicMed = new ImageList(MFBImageInfo.ImageClass.BasicMed, bme.ImageKey);
                     ilBasicMed.Refresh(true);
                     foreach (MFBImageInfo mfbii in ilBasicMed.ImageArray)
                     {
-                        zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szThumbFolderBasicMed);
-                        mfbii.ToHtml(tw, szThumbFolderBasicMed);
+                        zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szZipFolder);
+                        mfbii.ToHtml(tw, szZipFolder);
                         mfbii.UnCache();
                     }
                 }
