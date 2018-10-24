@@ -107,6 +107,12 @@ public partial class Member_ClubDetails : System.Web.UI.Page
     #region Guest
     protected void btnSendMessage_Click(object sender, EventArgs e)
     {
+        if (!Page.IsValid)
+        {
+            mpuGuestContact.Show();
+            return;
+        }
+
         Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
         IEnumerable<ClubMember> lst = ClubMember.AdminsForClub(CurrentClub.ID);
         using (MailMessage msg = new MailMessage())

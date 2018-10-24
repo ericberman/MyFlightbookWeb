@@ -34,7 +34,7 @@
         <asp:View ID="vwTopGuest" runat="server">
             <div class="callout">
                 <p><asp:Localize ID="lblNotMember" runat="server" Text="<%$ Resources:Club, LabelNotAMember %>"></asp:Localize></p>
-                <p><asp:Localize ID="locSendMessage" Text="<%$ Resources:Club, LabelSendMessage %>" runat="server"></asp:Localize> <asp:HyperLink ID="lnkSendMessage" Text="<%$ Resources:Club, LinkSendMessage %>" runat="server"></asp:HyperLink></p>
+                <p><asp:Localize ID="locSendMessage" Text="<%$ Resources:Club, LabelSendMessage %>" runat="server"></asp:Localize> <asp:HyperLink ID="lnkSendMessage" style="cursor:pointer;" Text="<%$ Resources:Club, LinkSendMessage %>" runat="server"></asp:HyperLink></p>
             </div>
             <asp:Panel ID="pnlContact" DefaultButton="btnSendMessage" runat="server" CssClass="modalpopup" style="display:none; width: 450px;">
                 <p><asp:Localize ID="locSendPrompt" runat="server" Text="<%$ Resources:Club, LabelMessagePrompt %>"></asp:Localize></p>
@@ -58,6 +58,19 @@
             </asp:Panel>
             <asp:ModalPopupExtender ID="mpuGuestContact" runat="server" BackgroundCssClass="modalBackground" CancelControlID="btnCancel" PopupControlID="pnlContact" BehaviorID="mpuGuestContact" TargetControlID="lnkSendMessage"></asp:ModalPopupExtender>
             <p><asp:Label ID="lblMessageStatus" runat="server" CssClass="success" Text="<%$ Resources:Club, StatusMessageSent %>" EnableViewState="false" Visible="false"></asp:Label></p>
+            <script type="text/javascript">
+                        /* Handle escape to dismiss */
+                        function pageLoad(sender, args) {
+                            if (!args.get_isPartialLoad()) {
+                                $addHandler(document, "keydown", onKeyDown);
+                            }
+                        }
+
+                        function onKeyDown(e) {
+                            if (e && e.keyCode == Sys.UI.Key.esc)
+                                $find("mpuGuestContact").hide();
+                        }
+            </script>
         </asp:View>
         <asp:View ID="vwTopMember" runat="server"></asp:View>
         <asp:View ID="vwTopAdmin" runat="server">
