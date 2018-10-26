@@ -37,7 +37,7 @@
                 </asp:HyperLink>&nbsp;&nbsp;&nbsp;&nbsp;<asp:HyperLink ID="lnkShowMapOnly" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowOnlyMap %>"></asp:HyperLink>&nbsp;&nbsp;
                 <asp:LinkButton ID="lnkViewKML" runat="server" Visible="false" 
                     onclick="lnkViewKML_Click" Text="<%$ Resources:LogbookEntry, PublicFlightKMLDownload %>"></asp:LinkButton>
-                <div style="float:right">
+                <div style="float:right; text-align:left;">
                     <uc1:popmenu runat="server" ID="popmenu">
                         <MenuContent>
                             <h3><% =Resources.Airports.mapShowOptions %></h3>
