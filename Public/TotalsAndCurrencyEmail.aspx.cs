@@ -17,6 +17,33 @@ using System.Web.UI;
 
 public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
 {
+    protected void KickOffRun()
+    {
+        // see if this is coming from the local machine
+        string szIPThis = System.Net.Dns.GetHostAddresses(Request.Url.Host)[0].ToString();
+        if (String.Compare(Request.UserHostAddress, szIPThis, StringComparison.CurrentCultureIgnoreCase) == 0)
+        {
+            // request came from this machine - make a request to ourselves and send it out in email
+            EmailSubscriptionManager em = new EmailSubscriptionManager();
+            em.ActiveBrand = Branding.CurrentBrand;
+            if (util.GetIntParam(Request, "dbg", 0) != 0)
+                em.UserRestriction = Page.User.Identity.Name;
+            string szTasksToRun = util.GetStringParam(Request, "tasks");
+            if (!String.IsNullOrEmpty(szTasksToRun))
+            {
+                try { em.TasksToRun = (EmailSubscriptionManager.SelectedTasks)Convert.ToInt32(szTasksToRun, CultureInfo.InvariantCulture); }
+                catch (FormatException)
+                { em.TasksToRun = EmailSubscriptionManager.SelectedTasks.All; }
+            }
+            new Thread(new ThreadStart(em.NightlyRun)).Start();
+            lblSuccess.Visible = true;
+        }
+        else
+        {
+            lblErr.Visible = true;
+        }
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -31,41 +58,20 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
             // If you request it from THIS machine, then we perform a very simple authentication (pass an encrypted datetime) to ourselves.
             // If we receive this request with a valid encrypted key, we return the email for the specified user.
             if (String.IsNullOrEmpty(szAuthKey))
-            {
-                // see if this is coming from the local machine
-                string szIPThis = System.Net.Dns.GetHostAddresses(Request.Url.Host)[0].ToString();
-                if (String.Compare(Request.UserHostAddress, szIPThis, StringComparison.CurrentCultureIgnoreCase) == 0)
-                {
-                    // request came from this machine - make a request to ourselves and send it out in email
-                    EmailSubscriptionManager em = new EmailSubscriptionManager();
-                    em.ActiveBrand = Branding.CurrentBrand;
-                    if (util.GetIntParam(Request, "dbg", 0) != 0)
-                        em.UserRestriction = Page.User.Identity.Name;
-                    string szTasksToRun = util.GetStringParam(Request, "tasks");
-                    if (!String.IsNullOrEmpty(szTasksToRun))
-                    {
-                        try { em.TasksToRun = (EmailSubscriptionManager.SelectedTasks)Convert.ToInt32(szTasksToRun, CultureInfo.InvariantCulture); }
-                        catch (FormatException)
-                        { em.TasksToRun = EmailSubscriptionManager.SelectedTasks.All; }
-                    }
-                    new Thread(new ThreadStart(em.NightlyRun)).Start();
-                    lblSuccess.Visible = true;
-                }
-                else
-                {
-                    lblErr.Visible = true;
-                }
-            }
+                KickOffRun();
             else
             {
                 try
                 {
-                    AdminAuthEncryptor enc = new AdminAuthEncryptor();
-                    string szDate = enc.Decrypt(szAuthKey);
-                    DateTime dt = DateTime.Parse(szDate, CultureInfo.InvariantCulture);
-                    double elapsedSeconds = DateTime.Now.Subtract(dt).TotalSeconds;
-                    if (elapsedSeconds < 0 || elapsedSeconds > 10)
-                        throw new MyFlightbookException("Unauthorized attempt to view stats for mail");
+                    if (szAuthKey.CompareCurrentCultureIgnoreCase("local") != 0 || !Page.User.Identity.IsAuthenticated)
+                    {
+                        AdminAuthEncryptor enc = new AdminAuthEncryptor();
+                        string szDate = enc.Decrypt(szAuthKey);
+                        DateTime dt = DateTime.Parse(szDate, CultureInfo.InvariantCulture);
+                        double elapsedSeconds = DateTime.Now.Subtract(dt).TotalSeconds;
+                        if (elapsedSeconds < 0 || elapsedSeconds > 10)
+                            throw new MyFlightbookException("Unauthorized attempt to view stats for mail");
+                    }
 
                     Profile pf = MyFlightbook.Profile.GetUser(szUser);
                     EmailSubscriptionManager em = new EmailSubscriptionManager(pf.Subscriptions);
@@ -114,6 +120,11 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
                         FlightQuery fqYTD = new FlightQuery(pf.UserName);
                         fqYTD.DateRange = fAnnual ? FlightQuery.DateRanges.PrevYear : FlightQuery.DateRanges.YTD;
                         mfbTotalSummaryYTD.CustomRestriction = fqYTD;
+
+                        if (fAnnual)
+                            mfbRecentAchievements.Refresh(szUser, new DateTime(DateTime.Now.Year - 1, 1, 1), new DateTime(DateTime.Now.Year, 12, 31), true);
+                        else
+                            mfbRecentAchievements.Refresh(szUser, new DateTime(DateTime.Now.Year, 1, 1), DateTime.Now, true);
                     }
                     else
                     {

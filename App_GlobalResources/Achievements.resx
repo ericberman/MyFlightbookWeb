@@ -297,4 +297,64 @@
   <data name="PrivilegeSingleEngine" xml:space="preserve">
     <value>Single-Engine</value>
   </data>
+  <data name="RecentAchievementFlyingStreak" xml:space="preserve">
+    <value>{0} days from {1:d} to {2:d}</value>
+  </data>
+  <data name="RecentAchievementMostFlightsInDay" xml:space="preserve">
+    <value>{0} flights on {1:d}</value>
+  </data>
+  <data name="RecentAchievementsAirportsOnFlight" xml:space="preserve">
+    <value>{0} airports on {1:d}</value>
+  </data>
+  <data name="RecentAchievementsAirportsVisited" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="RecentAchievementsDistinctAircraft" xml:space="preserve">
+    <value>{0} </value>
+  </data>
+  <data name="RecentAchievementsDistinctModels" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="RecentAchievementsDistinctModelsAndFamilies" xml:space="preserve">
+    <value>{0} (comprising {1} families of models)</value>
+  </data>
+  <data name="RecentAchievementsFlyingDayCount" xml:space="preserve">
+    <value>{0} days out of {1} ({2:#0.0}% of days in period)</value>
+  </data>
+  <data name="RecentAchievementsFurthestFlight" xml:space="preserve">
+    <value>{0:#,##0.0}nm on {1:d}</value>
+  </data>
+  <data name="RecentAchievementsLongestFlight" xml:space="preserve">
+    <value>{0} hours on {1:d}</value>
+  </data>
+  <data name="RecentAchievementFlyingStreakTitle" xml:space="preserve">
+    <value>Longest streak of consecutive flying days:</value>
+  </data>
+  <data name="RecentAchievementMostFlightsInDayTitle" xml:space="preserve">
+    <value>Most flights on a single day:</value>
+  </data>
+  <data name="RecentAchievementsAirportsOnFlightTitle" xml:space="preserve">
+    <value>Most airports in a single flight:</value>
+  </data>
+  <data name="RecentAchievementsAirportsVisitedTitle" xml:space="preserve">
+    <value>Distinct airports visited:</value>
+  </data>
+  <data name="RecentAchievementsDistinctAircraftTitle" xml:space="preserve">
+    <value>Distinct aircraft flown:</value>
+  </data>
+  <data name="RecentAchievementsDistinctModelsTitle" xml:space="preserve">
+    <value>Distinct models flown:</value>
+  </data>
+  <data name="RecentAchievementsFlyingDayCountTitle" xml:space="preserve">
+    <value>Total days flown:</value>
+  </data>
+  <data name="RecentAchievementsFurthestFlightTitle" xml:space="preserve">
+    <value>Furthest flight:</value>
+  </data>
+  <data name="RecentAchievementsLongestFlightTitle" xml:space="preserve">
+    <value>Longest flight:</value>
+  </data>
+  <data name="RecentAchievementsTitle" xml:space="preserve">
+    <value>Recent flying stats and achievements for {0:d} to {1:d}</value>
+  </data>
 </root>

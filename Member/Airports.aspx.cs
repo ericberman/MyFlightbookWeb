@@ -26,6 +26,21 @@ public partial class Member_Airports : System.Web.UI.Page
         this.Master.SelectedTab = tabID.mptVisited;
         Title = (string)GetLocalResourceObject("PageResource1.Title");
 
+        if (!IsPostBack)
+        {
+            string szQuery = util.GetStringParam(Request, "fq");
+            if (!String.IsNullOrEmpty(szQuery))
+            {
+                FlightQuery fq = FlightQuery.FromBase64CompressedJSON(szQuery);
+                if (fq.UserName.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0)
+                {
+                    mfbSearchForm1.Restriction = fq;
+                    mfbSearchForm1.Restriction.Refresh();
+                    UpdateDescription();
+                }
+            }
+        }
+
         RefreshData(!IsPostBack);
     }
 

@@ -1,14 +1,14 @@
-﻿using System;
+﻿using MyFlightbook.CloudStorage;
+using MyFlightbook.Payments;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Web;
-using MyFlightbook.CloudStorage;
-using MyFlightbook.Payments;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2016 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -471,7 +471,7 @@ namespace MyFlightbook.Subscriptions
         {
             Encryptors.AdminAuthEncryptor enc = new Encryptors.AdminAuthEncryptor();
 
-            String szURL = String.Format(CultureInfo.InvariantCulture, "http://{0}{1}?k={2}&u={3}&p={4}", ActiveBrand.HostName, VirtualPathUtility.ToAbsolute("~/public/TotalsAndcurrencyEmail.aspx"), HttpUtility.UrlEncode(enc.Encrypt(DateTime.Now.ToString("s", CultureInfo.InvariantCulture))), HttpUtility.UrlEncode(pf.UserName), HttpUtility.UrlEncode(szParam));
+            String szURL = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}?k={2}&u={3}&p={4}", ActiveBrand.HostName, VirtualPathUtility.ToAbsolute("~/public/TotalsAndcurrencyEmail.aspx"), HttpUtility.UrlEncode(enc.Encrypt(DateTime.Now.ToString("s", CultureInfo.InvariantCulture))), HttpUtility.UrlEncode(pf.UserName), HttpUtility.UrlEncode(szParam));
             try
             {
                 using (System.Net.WebClient wc = new System.Net.WebClient())
