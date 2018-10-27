@@ -2351,6 +2351,16 @@ namespace MyFlightbook
         public string CustPropertyDisplay { get; set; }
 
         /// <summary>
+        /// Display category/class but without any type.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public string CategoryClassNoType
+        {
+            get { return RowType == LogbookRowType.Flight ? CategoryClass.CategoryClassFromID((CategoryClass.CatClassID) EffectiveCatClass).CatClass : string.Empty; }
+        }
+
+        /// <summary>
         /// The ID of the model of aircraft
         /// </summary>
         public int ModelID { get; set; }
@@ -2819,7 +2829,7 @@ namespace MyFlightbook
         {
             ModelID = Convert.ToInt32(dr["idModel"], CultureInfo.InvariantCulture);
             IsOverridden = Convert.ToBoolean(dr["IsOverridden"], CultureInfo.InvariantCulture);
-            EffectiveCatClass = Convert.ToInt32(dr["CatClassOverride"], CultureInfo.InvariantCulture);
+            EffectiveCatClass = (IsOverridden) ? Convert.ToInt32(dr["CatClassOverride"], CultureInfo.InvariantCulture) : EffectiveCatClass = Convert.ToInt32(dr["idcategoryclass"], CultureInfo.InvariantCulture);
 
             CustPropertyDisplay = CustomFlightProperty.PropListDisplay(CustomProperties, UseHHMM);
         }

@@ -63,7 +63,7 @@
                     <td><%# Eval("NetNightLandings") %></td>
                     <td><%#: (((int)Eval("EffectiveCatClass")) == (int) CategoryClass.CatClassID.ASEL) ? Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) : string.Empty %></td>
                     <td><%#: (((int)Eval("EffectiveCatClass")) == (int) CategoryClass.CatClassID.AMEL) ? Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) : string.Empty %></td>
-                    <td><%#: (((int)Eval("EffectiveCatClass")) != (int) CategoryClass.CatClassID.ASEL && ((int)Eval("EffectiveCatClass")) != (int) CategoryClass.CatClassID.AMEL) ? Eval("CatClassDisplay") + ": " + Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) : string.Empty %></td>
+                    <td><%#: (((int)Eval("EffectiveCatClass")) != (int) CategoryClass.CatClassID.ASEL && ((int)Eval("EffectiveCatClass")) != (int) CategoryClass.CatClassID.AMEL) ? Eval("CategoryClassNoType") + ": " + Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) : string.Empty %></td>
                     <td><%# Eval("Nighttime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("SimulatedIFR").FormatDecimal(CurrentUser.UsesHHMM) %></td>
