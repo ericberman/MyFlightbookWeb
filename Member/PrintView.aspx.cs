@@ -152,7 +152,14 @@ public partial class Member_PrintView : System.Web.UI.Page
         PrintLayout pl = PrintLayout.LayoutForType(printingOptions.Layout, CurrentUser);
         bool fCanIncludeImages = pl.SupportsImages;
 
-        List<int> lstPropsToExclude = new List<int>(printingOptions.ExcludedPropertyIDs);
+        // Exclude both excluded properties and properties that have been moved to their own columns
+        HashSet<int> lstPropsToExclude = new HashSet<int>(printingOptions.ExcludedPropertyIDs);
+        HashSet<int> lstPropsInOwnColumns = new HashSet<int>();
+        foreach (OptionalColumn oc in printingOptions.OptionalColumns)
+        {
+            if (oc.ColumnType == OptionalColumnType.CustomProp)
+                lstPropsInOwnColumns.Add(oc.IDPropType);
+        }
         string szPropSeparator = printingOptions.PropertySeparatorText;
 
         // set up properties per flight, and compute rough lineheight
@@ -160,9 +167,13 @@ public partial class Member_PrintView : System.Web.UI.Page
         {
             // Fix up properties according to the printing options
             List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
-            lstProps.RemoveAll(cfp => lstPropsToExclude.Contains(cfp.PropTypeID));
 
-            led.CustomProperties = lstProps.ToArray();
+            // Remove from the total property set all explicitly excluded properties...
+            lstProps.RemoveAll(cfp => lstPropsToExclude.Contains(cfp.PropTypeID));
+            led.CustomProperties = lstProps.ToArray();  
+
+            // ...and then additionally exclude from the display any that's in its own column to avoid redundancy.
+            lstProps.RemoveAll(cfp => lstPropsInOwnColumns.Contains(cfp.PropTypeID));
             led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, pf.UsesHHMM, szPropSeparator);
 
             if (printingOptions.IncludeImages)
