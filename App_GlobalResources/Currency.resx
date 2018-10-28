@@ -878,4 +878,10 @@
   <data name="errCustomCurrencyNoFraction" xml:space="preserve">
     <value>Number must be an integer value for the selected activity</value>
   </data>
+  <data name="CustomCurrencyEventNightTouchAndGo" xml:space="preserve">
+    <value>Night touch-and-go landing</value>
+  </data>
+  <data name="CustomCurrencyEventNightTouchAndGos" xml:space="preserve">
+    <value>Night touch-and-go landings</value>
+  </data>
 </root>

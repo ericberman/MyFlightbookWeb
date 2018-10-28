@@ -233,7 +233,8 @@ namespace MyFlightbook.FlightCurrency
                         { CustomCurrency.CustomCurrencyEventType.NightFlight, new string[] { Resources.Currency.CustomCurrencyEventNightHour, Resources.Currency.CustomCurrencyEventNightHours } },
                         { CustomCurrency.CustomCurrencyEventType.CAP5Checkride, new string[] { Resources.Currency.CustomCurrencyEventCap5Checkride, Resources.Currency.CustomCurrencyEventCap5Checkrides } },
                         { CustomCurrency.CustomCurrencyEventType.CAP91Checkride, new string[] { Resources.Currency.CustomCurrencyEventCap91Checkride, Resources.Currency.CustomCurrencyEventCap91Checkrides } },
-                        { CustomCurrency.CustomCurrencyEventType.FMSApproaches, new string[] { Resources.Currency.CustomCurrencyEventFMSApproach, Resources.Currency.CustomCurrencyEventFMSApproaches } }
+                        { CustomCurrency.CustomCurrencyEventType.FMSApproaches, new string[] { Resources.Currency.CustomCurrencyEventFMSApproach, Resources.Currency.CustomCurrencyEventFMSApproaches } },
+                        {CustomCurrency.CustomCurrencyEventType.NightTouchAndGo, new string[] {Resources.Currency.CustomCurrencyEventNightTouchAndGo, Resources.Currency.CustomCurrencyEventNightTouchAndGos} }
                     };
             }
 
@@ -273,6 +274,7 @@ namespace MyFlightbook.FlightCurrency
                 case CustomCurrency.CustomCurrencyEventType.UASLaunch:
                 case CustomCurrency.CustomCurrencyEventType.UASRecovery:
                 case CustomCurrency.CustomCurrencyEventType.NightLandings:
+                case CustomCurrency.CustomCurrencyEventType.NightTouchAndGo:
                 case CustomCurrency.CustomCurrencyEventType.NightTakeoffs:
                 case CustomCurrency.CustomCurrencyEventType.PICLandings:
                 case CustomCurrency.CustomCurrencyEventType.PICNightLandings:
@@ -336,7 +338,8 @@ namespace MyFlightbook.FlightCurrency
             CAP5Checkride = 22,
             CAP91Checkride = 23,
             FMSApproaches = 24,
-            HoursDual = 25
+            HoursDual = 25,
+            NightTouchAndGo = 26
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1, Properties = 2 };
@@ -834,6 +837,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     case CustomCurrencyEventType.NightLandings:
                         fq.HasNightLandings = true;
                         break;
+                    case CustomCurrencyEventType.NightTouchAndGo:
+                        prop = CustomPropertyType.KnownProperties.IDPropNightTouchAndGo;
+                        break;
                     case CustomCurrencyEventType.NightTakeoffs:
                         fq.PropertyTypes = lstprops.FindAll(cpt => cpt.IsNightTakeOff).ToArray();
                         break;
@@ -1038,6 +1044,10 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         if (pfe.PropertyType.IsNightTakeOff)
                             AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
                     });
+                    break;
+                case CustomCurrencyEventType.NightTouchAndGo:
+                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo)) != null)
+                        AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
                     break;
                 case CustomCurrencyEventType.NightFlight:
                     AddRecentFlightEvents(cfr.dtFlight, cfr.Night);
