@@ -4,7 +4,7 @@
     Overview of Clubs on MyFlightbook
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" runat="Server">
-<div>
+    <div>
     <p>
         Flying clubs on MyFlightbook provide a convenient way to
 manage aircraft that are shared among multiple pilots, whether in a club/FBO
@@ -105,7 +105,7 @@ club.  The only way to find out about the club will be by invitation in that
 case.
     </li>
             <li>You can specify policy for notifications <b>when an item is
-deleted</b>.  This can be useful if there might be somebody else who would want
+deleted, added or modified</b>.  This can be useful if there might be somebody else who would want
 to fly the airplane, optimizing usage of the plane.  The options are to send no
 notification, notification just to the admins, or notification to everybody in
 the club.
@@ -138,7 +138,7 @@ management bar:
             src="ClubsManual_files/image019.png" />
     </p>
 
-    <p>Click that to expand the management tools:</p>
+    <p>Click on &quot;Manage Club&quot; that to view the management tools:</p>
 
     <p style="text-align:center">
         <img border="0" id="Picture 3" alt="Expanded management bar"
@@ -214,7 +214,16 @@ Click Add to add it.
         <img border="0" id="Picture 5" alt="Add Aircraft"
             src="ClubsManual_files/image021.jpg" />
     </p>
-
+    <p style="text-align:left">
+        Once an aircraft is added, you can edit it by clicking the &quot;Edit&quot; button.&nbsp; There is also a place to enter high-watermark hours (hobbs or tach, as you desire), which can be useful for aircraft maintenance (described below).
+        If the aircraft has been used in club flights and tach or hobbs have been recorded, there is an option to cross-fill those values directly into this field.
+    </p>
+    <p style="text-align:center">
+        <img border="0" id="updatehrs" alt="Update Hours"
+            src="ClubsManual_files/updatehours.png" />
+    </p>
+        <p style="text-align:left">
+            The reason that this isn&#39;t done automatically for you is to avoid erroneous values (e.g., somebody putting hobbs in the tach field or vice versa) polluting the high-water value.</p>
     <h3>Club Details</h3>
 
     <p>
@@ -233,7 +242,7 @@ hours for insurance purposes.
     </p>
 
     <p>
-        Put in the starting and Ending dates and click “Refresh” to
+        For a flying report, put in the starting and Ending dates and click “Refresh” to
 see a report and, optionally, download it to a spreadsheet.
     </p>
     <p style="text-align:center">
@@ -241,13 +250,17 @@ see a report and, optionally, download it to a spreadsheet.
             src="ClubsManual_files/image022.jpg" />
     </p>
 
-    <p>
+        <p>
         For privacy reasons, the report only includes flights by
 club members in club aircraft during the time window that they are members of
 the club.  The data returned includes the date of the flight, the aircraft used
 for the flight, the total time logged for the flight, and any hobbs or tach
 time recorded for the flight.
     </p>
+        <p>
+            Just for fun, there is also an option to download all of the routes flown in a KML (Google Earth) file.</p>
+        <p>
+            The maintenance report allows you to track scheduled maintenance for an aircraft, and lets you view upcoming maintenance across all club aircraft.&nbsp; This includes the standard &quot;AV1ATES&quot; inspections (Annual, VOR, 100 hour, Altimeter, Transponder, ELT, and pitot-Static), as well as oil changes, engine replacement, and registration renewal dates.&nbsp; If you&#39;ve filled in the high-water mark for an aircraft (described above), you can quickly see how close you are getting to non-calendar-driven items like oil changes or engine replacement.</p>
 
     <h2>Using the club to schedule an aircraft</h2>
 
