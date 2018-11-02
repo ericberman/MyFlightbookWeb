@@ -357,4 +357,13 @@
   <data name="RecentAchievementsTitle" xml:space="preserve">
     <value>Recent flying stats and achievements for {0:d} to {1:d}</value>
   </data>
+  <data name="LicenseNight" xml:space="preserve">
+    <value>Night</value>
+  </data>
+  <data name="nameRatingNight" xml:space="preserve">
+    <value>New Rating: Night!</value>
+  </data>
+  <data name="PrivilegeNight" xml:space="preserve">
+    <value>Any aircraft for which you are rated</value>
+  </data>
 </root>

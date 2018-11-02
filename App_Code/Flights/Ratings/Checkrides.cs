@@ -20,7 +20,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// All kinds of licenses known to the system, in sort order
     /// </summary>
-    public enum LicenseKind { Unknown, Sport, Recreational, Private, Commercial, ATP, Instrument, CFI, CFII, MEI }
+    public enum LicenseKind { Unknown, Sport, Recreational, Private, Commercial, ATP, Instrument, CFI, CFII, MEI, Night }
 
     /// <summary>
     /// Level of ratings.  Instrument/CFI/CFII/MEI don't have "higher" levels, but you progress on the other ones.
@@ -54,6 +54,8 @@ namespace MyFlightbook.Achievements
                     return Resources.Achievements.LicenseInstrument;
                 case LicenseKind.MEI:
                     return Resources.Achievements.LicenseMEI;
+                case LicenseKind.Night:
+                    return Resources.Achievements.LicenseNight;
                 case LicenseKind.Private:
                     return Resources.Achievements.LicensePPL;
                 case LicenseKind.Recreational:
@@ -228,6 +230,8 @@ namespace MyFlightbook.Achievements
         private Dictionary<string, Checkride> dictCFI = new Dictionary<string, Checkride>();
         private Dictionary<string, Checkride> dictMEI = new Dictionary<string, Checkride>();
         private Dictionary<string, Checkride> dictCFII = new Dictionary<string, Checkride>();
+
+        private Dictionary<string, Checkride> dictNight = new Dictionary<string, Checkride>();
         #endregion
 
         #region Properties
@@ -355,6 +359,10 @@ namespace MyFlightbook.Achievements
                         er.LicenseKind = LicenseKind.MEI;
                         AddToDictionary(currentLevel, currentLevel, dictMEI, er);
                         break;
+                    case CustomPropertyType.KnownProperties.IDPropNightRating:
+                        er.LicenseKind = LicenseKind.Night;
+                        AddToDictionary(RatingLevel.None, RatingLevel.None, dictNight, er);
+                        break;
                 }
             }
 
@@ -368,6 +376,7 @@ namespace MyFlightbook.Achievements
             m_lstCheckrides.AddRange(dictCFI.Values);
             m_lstCheckrides.AddRange(dictCFII.Values);
             m_lstCheckrides.AddRange(dictMEI.Values);
+            m_lstCheckrides.AddRange(dictNight.Values);
             m_lstCheckrides.Sort();
         }
         #endregion
@@ -441,6 +450,7 @@ namespace MyFlightbook.Achievements
                 AddMergedCheckridesToList(dlevels[lk]);
 
             AddMergedCheckridesToList(dictInstrument.Values);
+            AddMergedCheckridesToList(dictNight.Values);
 
             // MEI and CFII are really just flavors of CFI, so merge these together.
             List<Checkride> lst = new List<Checkride>(dictCFI.Values);
@@ -479,7 +489,7 @@ namespace MyFlightbook.Achievements
                         INNER JOIN
                     categoryclass cc ON m.idcategoryclass = cc.idcatclass
                 WHERE
-                    fp.idproptype IN (39 , 40, 42, 43, 45, 89, 131, 161, 176, 177, 225)
+                    fp.idproptype IN (39 , 40, 42, 43, 45, 89, 131, 161, 176, 177, 225, 623)
                         AND f.username = ?userName
                 ORDER BY date ASC");
 
@@ -523,6 +533,9 @@ namespace MyFlightbook.Achievements
                             break;
                         case CustomPropertyType.KnownProperties.IDPropCheckrideCFII:
                             cr.Privilege = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Resources.Achievements.PrivilegeCFII, szCategory);
+                            break;
+                        case CustomPropertyType.KnownProperties.IDPropNightRating:
+                            cr.Privilege = Resources.Achievements.PrivilegeNight;
                             break;
                         default:
                             cr.Privilege = String.Format(CultureInfo.CurrentCulture, "{0} {1} {2}", dr["Category"], dr["Class"], String.IsNullOrEmpty(szType) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Achievements.ratingTypeTemplate, szType)).Trim();
