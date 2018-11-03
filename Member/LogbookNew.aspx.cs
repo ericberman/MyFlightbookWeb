@@ -33,7 +33,7 @@ public partial class Member_LogbookNew : System.Web.UI.Page
             throw new MyFlightbookException("You must be authenticated to make this call");
 
         decimal val = 0.0M;
-        DBHelper dbh = new DBHelper(@"SELECT  MAX(hobbsstart) AS highWater FROM flights WHERE username = ?user AND idaircraft = ?id");
+        DBHelper dbh = new DBHelper(@"SELECT  MAX(hobbsEnd) AS highWater FROM flights WHERE username = ?user AND idaircraft = ?id");
         dbh.ReadRow((comm) =>
         {
             comm.Parameters.AddWithValue("user", HttpContext.Current.User.Identity.Name);
