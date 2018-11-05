@@ -493,12 +493,12 @@ namespace MyFlightbook.CloudStorage
                     dictMeta["parents"] = new List<string>() { RootFolderID };
 
                 // Create the form.  The form itself needs the authtoken header
-                using (MultipartFormDataContent form = new MultipartFormDataContent())
+                using (MultipartContent form = new MultipartContent("related"))
                 {
                     // Next add the metadata - it is in Json format
                     string szJSonMeta = JsonConvert.SerializeObject(dictMeta);
-                    StringContent metadata = new StringContent(szJSonMeta);
-                    metadata.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                    StringContent metadata = new StringContent(szJSonMeta, System.Text.Encoding.UTF8);
+                    metadata.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json") { CharSet = "UTF-8" };
                     form.Add(metadata);
 
                     // Finally, add the body, with its appropriate mime type.
@@ -511,8 +511,8 @@ namespace MyFlightbook.CloudStorage
                         response = (String.IsNullOrEmpty(idExisting)) ?
                             await httpClient.PostAsync(szURLUploadEndpoint, form) :
                             await httpClient.PatchAsync(new Uri(String.Format(szURLUpdateEndpointTemplate, idExisting)), form);
-                        response.EnsureSuccessStatusCode();
                         szResult = response.Content.ReadAsStringAsync().Result;
+                        response.EnsureSuccessStatusCode();
                         return (String.IsNullOrEmpty(szResult)) ? null : JsonConvert.DeserializeObject<Dictionary<string, string>>(szResult);
                     }
                     catch (System.Net.Http.HttpRequestException ex)
@@ -520,7 +520,7 @@ namespace MyFlightbook.CloudStorage
                         if (response == null)
                             throw new MyFlightbookException("Unknown error in GoogleDrive.PutFile", ex);
                         else
-                            throw new MyFlightbookException(response.ReasonPhrase);
+                            throw new MyFlightbookException(response.ReasonPhrase + " " + (String.IsNullOrEmpty(szResult) ? "" : szResult));
                     }
                 }
             }
