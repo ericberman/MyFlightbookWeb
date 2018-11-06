@@ -238,6 +238,8 @@
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:BoundField DataField="Total Engine" HeaderText="<%$ Resources:Club, ReportHeaderTotalEngine %>" DataFormatString="{0:0.0#}" />
+                            <asp:BoundField DataField="Oil Added" HeaderText="<%$ Resources:Club, ReportHeaderOilAdded %>" DataFormatString="{0:0.0#}" />
+                            <asp:BoundField DataField="Fuel Added" HeaderText="<%$ Resources:Club, ReportHeaderFuelAdded %>" DataFormatString="{0:0.0#}" />
                         </Columns>
                         <EmptyDataTemplate>
                             <p><% =Resources.Club.ReportNoData %></p>
@@ -254,7 +256,9 @@
                     IF (YEAR(f.dtFlightEnd) &gt; 1 AND YEAR(f.dtFlightStart) &gt; 1, (UNIX_TIMESTAMP(f.dtFlightEnd)-UNIX_TIMESTAMP(f.dtFlightStart))/3600, 0) AS 'Total Flight',
                     IF (YEAR(f.dtEngineEnd) &gt; 1 AND YEAR(f.dtEngineStart) &gt; 1, (UNIX_TIMESTAMP(f.dtEngineEnd)-UNIX_TIMESTAMP(f.dtEngineStart))/3600, 0) AS 'Total Engine',
                     f.HobbsEnd - f.HobbsStart AS 'Total Hobbs', 
-                    fp2.decValue - fp.decValue AS 'Total Tach'
+                    fp2.decValue - fp.decValue AS 'Total Tach',
+                    fp3.decValue AS 'Oil Added',
+                    fp4.decValue AS 'Fuel Added'
 FROM flights f 
 INNER JOIN clubmembers cm ON f.username = cm.username
 INNER JOIN users u ON u.username=cm.username
@@ -263,10 +267,13 @@ INNER JOIN clubaircraft ca ON ca.idaircraft=f.idaircraft
 INNER JOIN aircraft ac ON ca.idaircraft=ac.idaircraft
 LEFT JOIN flightproperties fp on (fp.idflight=f.idflight AND fp.idproptype=95)
 LEFT JOIN flightproperties fp2 on (fp2.idflight=f.idflight AND fp2.idproptype=96)
+LEFT JOIN flightproperties fp3 on (fp3.idflight=f.idflight AND fp3.idproptype=365)
+LEFT JOIN flightproperties fp4 on (fp4.idflight=f.idflight AND fp4.idproptype=94)
 WHERE
 c.idClub = ?idClub AND
 f.date &gt;= GREATEST(?startDate, cm.joindate, c.creationDate) AND
 f.date &lt;= ?endDate
+ORDER BY f.DATE ASC
 ">
                 </asp:SqlDataSource>
                 <h3><% =Resources.Club.ReportHeaderMaintenance %></h3>
