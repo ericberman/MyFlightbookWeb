@@ -8,6 +8,7 @@
         <asp:ListItem Value="Portrait" Text="<%$ Resources:LogbookEntry, PrintFormatPortrait %>"></asp:ListItem>
         <asp:ListItem Value="EASA" Text="<%$ Resources:LogbookEntry, PrintFormatEASA %>"></asp:ListItem>
         <asp:ListItem Value="USA" Text="<%$ Resources:LogbookEntry, PrintFormatUSA %>"></asp:ListItem>
+        <asp:ListItem Value="Canada" Text="<%$ Resources:LogbookEntry, PrintFormatCanada %>"></asp:ListItem>
         <asp:ListItem Value="SACAA" Text="<%$ Resources:LogbookEntry, PrintFormatSACAA %>"></asp:ListItem>
         <asp:ListItem Value="NZ" Text="<%$ Resources:LogbookEntry, PrintFormatNZ %>"></asp:ListItem>
         <asp:ListItem Value="Glider" Text="<%$ Resources:LogbookEntry, PrintFormatGlider %>"></asp:ListItem>

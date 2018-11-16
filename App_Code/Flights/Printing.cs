@@ -28,7 +28,7 @@ namespace MyFlightbook.Printing
         void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true, OptionalColumn[] optionalColumns = null);
     }
 
-    public enum PrintLayoutType { Native, Portrait, EASA, USA, SACAA, NZ, Glider}
+    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, NZ, Glider}
 
     #region Printing Layout implementations
     public abstract class PrintLayout
@@ -71,6 +71,8 @@ namespace MyFlightbook.Printing
                     return new PrintLayoutEASA() { CurrentUser = pf };
                 case PrintLayoutType.USA:
                     return new PrintLayoutUSA() { CurrentUser = pf };
+                case PrintLayoutType.Canada:
+                    return new PrintLayoutCanada() { CurrentUser = pf };
                 case PrintLayoutType.SACAA:
                     return new PrintLayoutSACAA() { CurrentUser = pf };
                 case PrintLayoutType.NZ:
@@ -218,6 +220,23 @@ namespace MyFlightbook.Printing
         public override bool SupportsOptionalColumns { get { return true; } }
 
         public override string CSSPath { get { return "~/Public/CSS/printNZ.css"; } }
+    }
+
+    public class PrintLayoutCanada : PrintLayout
+    {
+        public override int RowHeight(LogbookEntryDisplay le)
+        {
+            if (le == null)
+                throw new ArgumentNullException("le");
+            // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
+            return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
+        }
+
+        public override bool SupportsImages { get { return true; } }
+
+        public override bool SupportsOptionalColumns { get { return true; } }
+
+        public override string CSSPath { get { return "~/Public/CSS/printCanada.css"; } }
     }
 
     public class PrintLayoutUSA : PrintLayout

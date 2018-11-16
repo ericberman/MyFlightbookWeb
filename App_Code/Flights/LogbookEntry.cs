@@ -2357,7 +2357,7 @@ namespace MyFlightbook
         [Newtonsoft.Json.JsonIgnore]
         public string CategoryClassNoType
         {
-            get { return RowType == LogbookRowType.Flight ? CategoryClass.CategoryClassFromID((CategoryClass.CatClassID) EffectiveCatClass).CatClass : string.Empty; }
+            get { return RowType == LogbookRowType.Flight ? CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)EffectiveCatClass).CatClass : string.Empty; }
         }
 
         /// <summary>
@@ -2391,7 +2391,7 @@ namespace MyFlightbook
         /// </summary>
         public string PICName
         {
-            get { return StringPropertyMatchingPredicate(fp => fp.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropNameOfPIC); }
+            get { return StringPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNameOfPIC); }
         }
 
         /// <summary>
@@ -2423,6 +2423,19 @@ namespace MyFlightbook
         public decimal IFRTime
         {
             get { return DecPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropIFRTime); }
+        }
+
+        public int NightTakeoffs
+        {
+            get { return IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff); }
+        }
+
+        public int DayTakeoffs
+        {
+            get
+            {
+                return Math.Max(IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffAny) - NightTakeoffs, 0);
+            }
         }
 
         /// <summary>
@@ -2471,7 +2484,7 @@ namespace MyFlightbook
 
         public int MaxAltitude
         {
-            get { return IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMaximumAltitude || fp.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropGliderMaxAltitude); }
+            get { return IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMaximumAltitude || fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGliderMaxAltitude); }
         }
 
         public int ReleaseAltitude
@@ -2496,12 +2509,28 @@ namespace MyFlightbook
             get { return TailNumDisplay.StartsWith(CountryCodePrefix.SimCountry.Prefix, StringComparison.OrdinalIgnoreCase); }
         }
 
+        public decimal NightXC
+        {
+            get { return Math.Min(Nighttime, CrossCountry); }
+        }
+
+        public decimal DayXC
+        {
+            get { return Math.Max(CrossCountry - NightXC, 0.0M); }
+        }
+
         public decimal SoloTotal { get; set; }
         public decimal PICUSTotal { get; set; }
         public decimal NightDualTotal { get; set; }
         public decimal NightPICTotal { get; set; }
         public decimal NightPICUSTotal { get; set; }
         public decimal NightSICTotal { get; set; }
+        public decimal XCDualTotal { get; set; }
+        public decimal XCPICTotal { get; set; }
+        public decimal XCNightDualTotal { get; set; }
+        public decimal XCNightPICTotal { get; set; }
+        public int DayTakeoffTotal { get; set; }
+        public int NightTakeoffTotal { get; set; }
         public decimal InstrumentAircraftTotal { get; set; }
         public decimal InstrumentFSTDTotal { get; set; }
         public decimal GroundInstructionTotal { get; set; }
@@ -2907,6 +2936,17 @@ namespace MyFlightbook
         }
 
         #region Printing support
+        private void AddComboTotalsFromEntry(LogbookEntry le, LogbookEntryDisplay led)
+        {
+            NightDualTotal = NightDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.Dual) : led.NightDualTotal);
+            NightPICTotal = NightPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.PIC) : led.NightPICTotal);
+            NightSICTotal = NightSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.SIC) : led.NightSICTotal);
+            XCDualTotal = XCDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.Dual) : led.XCDualTotal);
+            XCNightDualTotal = XCNightDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.Dual)) : led.XCNightDualTotal);
+            XCPICTotal = XCPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.PIC) : led.XCPICTotal);
+            XCNightPICTotal = XCNightPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.PIC)) : led.XCNightPICTotal);
+        }
+
         public override void AddFrom(LogbookEntry le)
         {
             base.AddFrom(le);
@@ -2928,6 +2968,8 @@ namespace MyFlightbook
                     AeroLaunchTotal += led.AeroLaunches;
                     GroundLaunchTotal += led.GroundLaunches;
                     LandingsTotal += led.Landings;
+                    DayTakeoffTotal += led.DayTakeoffs;
+                    NightTakeoffTotal += led.NightTakeoffs;
                 }
                 else
                 {
@@ -2944,6 +2986,8 @@ namespace MyFlightbook
                     AeroLaunchTotal += led.AeroLaunchTotal;
                     GroundLaunchTotal += led.GroundLaunchTotal;
                     LandingsTotal += led.LandingsTotal;
+                    DayTakeoffTotal += led.DayTakeoffTotal;
+                    NightTakeoffTotal += led.NightTakeoffTotal;
                 }
 
                 if (OptionalColumns != null)
@@ -2960,9 +3004,8 @@ namespace MyFlightbook
                     }
                 }
             }
-            NightDualTotal = NightDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.Dual) : led.NightDualTotal);
-            NightPICTotal = NightPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.PIC) : led.NightPICTotal);
-            NightSICTotal = NightSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, le.SIC) : led.NightSICTotal);
+
+            AddComboTotalsFromEntry(le, led);
 
             FlightCount++;
         }

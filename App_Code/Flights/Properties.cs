@@ -58,6 +58,7 @@ namespace MyFlightbook
             IDPropIFRTime = 82,
             IDPropCheckrideSport = 89,
             IDPropInstructorName = 92,          // Not flagged as a known property
+            IDPropTakeoffAny = 93,              // Not flagged as a known property
             IDPropTachStart = 95,
             IDPropTachEnd = 96,
             IDPropInstrumentExaminor = 107,
