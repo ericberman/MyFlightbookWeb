@@ -1220,7 +1220,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} hours of flight training</value>
   </data>
   <data name="CommSoloNote" xml:space="preserve">
-    <value>Time spent performing duties of PIC with an authorized instructor on board may count towards this; however, since this is a substitute for solo, any dual instruction time received will be subtracted from duties-of-PIC time, which may prevent a flight from counting towards this.  (Google "FAA duties of PIC Kuhn" for details)</value>
+    <value>Time spent performing duties of PIC with an authorized instructor on board may count towards this; however, since this is a substitute for solo, any dual instruction time received will be subtracted from duties-of-PIC time, which may prevent a flight from counting towards this.  (Google "FAA duties of PIC Kuhn" for details)  Also, note that you may use solo time OR duties-of-PIC-with-an-instructor, but not both; whichever has more time is displayed here.  (Google "FAA 2016 Grannis Solo" for details.) </value>
   </data>
   <data name="CommGliderFlightsPIC" xml:space="preserve">
     <value>{0} flights as PIC in a glider</value>

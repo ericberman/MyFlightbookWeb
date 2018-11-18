@@ -121,11 +121,16 @@ namespace MyFlightbook.MilestoneProgress
         protected MilestoneItem miMinXCCategory { get; set; }
         protected MilestoneItem miMinXCCategoryNight { get; set; }
         protected MilestoneItem miMinTestPrep { get; set; }
-        protected MilestoneItem miMinSoloOrPICCategory { get; set; }
-        protected MilestoneItem miMinSoloORPICXC { get; set; }
-        protected MilestoneItem miMinNight { get; set; }
-        protected MilestoneItem miMinNightTO { get; set; }
-        protected MilestoneItem miMinNightLandings { get; set; }
+        protected MilestoneItem miMinSoloCategory { get; set; }
+        protected MilestoneItem miMinSoloXC { get; set; }
+        protected MilestoneItem miMinSoloNight { get; set; }
+        protected MilestoneItem miMinSoloNightTO { get; set; }
+        protected MilestoneItem miMinSoloNightLandings { get; set; }
+        protected MilestoneItem miMinSoloSubCategory { get; set; }
+        protected MilestoneItem miMinSoloSubXC { get; set; }
+        protected MilestoneItem miMinSoloSubNight { get; set; }
+        protected MilestoneItem miMinSoloSubNightTO { get; set; }
+        protected MilestoneItem miMinSoloSubNightLandings { get; set; }
         protected MilestoneItem miDualAsPIC { get; set; }
         protected MilestoneItem miDualAsPICXC { get; set; }
         protected bool AllowTAAForComplex { get; set; }
@@ -196,11 +201,18 @@ namespace MyFlightbook.MilestoneProgress
             miMinXCCategoryNight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommXCCategoryNight, szCatClass, _minDistanceXCTraining), ResolvedFAR("(3)(iv)"), Resources.MilestoneProgress.NoteNightXC, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miMinTestPrep = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinTestPrep, szCatClass), ResolvedFAR("(3)(v)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Time, 3.0M);
 
-            miMinSoloOrPICCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommPICSoloCategory, _minSoloPIC, szCatClass), ResolvedFAR("(4)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Time, _minSoloPIC);
-            miMinSoloORPICXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommPICSoloXCCategory, szCatClass), ResolvedFAR("(4)(i)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.AchieveOnce, 1);
-            miMinNight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinNightFlight, szCatClass), ResolvedFAR("(4)(ii)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Time, 5);
-            miMinNightTO = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinNightTakeoffs, szCatClass), ResolvedFAR("(4)(ii)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Count, 10);
-            miMinNightLandings = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinNightLandings, szCatClass), ResolvedFAR("(4)(ii)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Count, 10);
+            miMinSoloCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommPICSoloCategory, _minSoloPIC, szCatClass), ResolvedFAR("(4)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Time, _minSoloPIC);
+            miMinSoloXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommPICSoloXCCategory, szCatClass), ResolvedFAR("(4)(i)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.AchieveOnce, 1);
+            miMinSoloNight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinNightFlight, szCatClass), ResolvedFAR("(4)(ii)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Time, 5);
+            miMinSoloNightTO = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinNightTakeoffs, szCatClass), ResolvedFAR("(4)(ii)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Count, 10);
+            miMinSoloNightLandings = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinNightLandings, szCatClass), ResolvedFAR("(4)(ii)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Count, 10);
+
+            // Solo substitutions (i.e., DPIC with Instructor on Board)
+            miMinSoloSubCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommPICSoloCategory, _minSoloPIC, szCatClass), ResolvedFAR("(4)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Time, _minSoloPIC);
+            miMinSoloSubXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommPICSoloXCCategory, szCatClass), ResolvedFAR("(4)(i)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.AchieveOnce, 1);
+            miMinSoloSubNight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinNightFlight, szCatClass), ResolvedFAR("(4)(ii)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Time, 5);
+            miMinSoloSubNightTO = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinNightTakeoffs, szCatClass), ResolvedFAR("(4)(ii)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Count, 10);
+            miMinSoloSubNightLandings = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinNightLandings, szCatClass), ResolvedFAR("(4)(ii)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Count, 10);
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
@@ -223,7 +235,7 @@ namespace MyFlightbook.MilestoneProgress
 
             // 61.129(a/b)(2)
             decimal soloTime = 0.0M;
-            decimal instructorOnBoardTime = 0.0M;
+            decimal substituteSolo = 0.0M;
             bool fInstructorOnBoard = false;
             decimal dutiesOfPICTime = 0.0M;
             int cNightLandingsAtToweredAirport = 0;
@@ -249,7 +261,7 @@ namespace MyFlightbook.MilestoneProgress
             }
 
             if (fInstructorOnBoard)
-                instructorOnBoardTime = Math.Max(Math.Min(dutiesOfPICTime, cfr.Total - cfr.Dual), 0);    // dual received does NOT count as duties of PIC time here
+                substituteSolo = Math.Max(Math.Min(dutiesOfPICTime, cfr.Total - cfr.Dual), 0);    // dual received does NOT count as duties of PIC time here
 
             decimal PIC = Math.Max(cfr.PIC, soloTime);
             decimal PICXC = Math.Min(PIC, cfr.XC);
@@ -259,8 +271,8 @@ namespace MyFlightbook.MilestoneProgress
             // for why this is not the same as dual.
             decimal PICSubstRemaining = Math.Max(miDualAsPIC.Threshold - miDualAsPIC.Progress, 0);
             decimal PICSubstXCRemaining = Math.Max(miDualAsPICXC.Threshold - miDualAsPICXC.Progress, 0);
-            decimal PICSubst = Math.Min(PICSubstRemaining, instructorOnBoardTime);   // add in any duties-of-PIC time with instructor on-board 
-            decimal PICSubstXC = Math.Min(PICSubstXCRemaining, Math.Min(instructorOnBoardTime, cfr.XC));
+            decimal PICSubst = Math.Min(PICSubstRemaining, substituteSolo);   // add in any duties-of-PIC time with instructor on-board 
+            decimal PICSubstXC = Math.Min(PICSubstXCRemaining, Math.Min(substituteSolo, cfr.XC));
             miDualAsPIC.AddEvent(PICSubst);
             miDualAsPICXC.AddEvent(PICSubstXC);
 
@@ -335,38 +347,57 @@ namespace MyFlightbook.MilestoneProgress
 
                 // (4)
                 // Solo time for section 4 is defined as EITHER solo time OR duties of PIC time with an authorized instructor on board.  We computed the latter above
-                soloTime = Math.Max(soloTime, instructorOnBoardTime);
+                // We'll compute twice: once for actual solo, once for substitute solo (Duties of PIC with an authorized instructor on board); we can only use one OR the other, not mix-and-match
+                // See https://www.faa.gov/about/office_org/headquarters_offices/agc/practice_areas/regulations/interpretations/data/interps/2016/grannis%20-%20%282016%29%20legal%20interpretation.pdf
 
-                miMinSoloOrPICCategory.AddEvent(soloTime);
-
-                // (4)(i) - Long solo cross-country
-                if (soloTime > 0 && cfr.XC > 0 && cfr.cLandingsThisFlight >= 3 && al.GetNormalizedAirports().Count() >= 3)
+                if (soloTime > 0 || substituteSolo > 0)
                 {
-                    bool fMeetsReqs = false;
-                    switch (RatingSought)
+                    miMinSoloCategory.AddEvent(soloTime);
+                    miMinSoloSubCategory.AddEvent(substituteSolo);
+
+                    // (4)(i) - Long solo cross-country
+                    if (cfr.XC > 0 && cfr.cLandingsThisFlight >= 3 && al.GetNormalizedAirports().Count() >= 3)
                     {
-                        case RatingType.CommercialHelicopter:
-                            fMeetsReqs = al.MaxSegmentForRoute() > 50.0 && distFromStart >= 50.0;
-                            break;
-                        case RatingType.CommercialAMEL:
-                        case RatingType.CommercialAMES:
-                        case RatingType.CommercialASEL:
-                        case RatingType.CommercialASES:
-                            fMeetsReqs = al.DistanceForRoute() > 300 && (al.GetNormalizedAirports()[0].IsHawaiian ? al.MaxSegmentForRoute() >= 150 : distFromStart >= 250);
-                            break;
-                        default:
-                            break;
+                        bool fMeetsReqs = false;
+                        switch (RatingSought)
+                        {
+                            case RatingType.CommercialHelicopter:
+                                fMeetsReqs = al.MaxSegmentForRoute() > 50.0 && distFromStart >= 50.0;
+                                break;
+                            case RatingType.CommercialAMEL:
+                            case RatingType.CommercialAMES:
+                            case RatingType.CommercialASEL:
+                            case RatingType.CommercialASES:
+                                fMeetsReqs = al.DistanceForRoute() > 300 && (al.GetNormalizedAirports()[0].IsHawaiian ? al.MaxSegmentForRoute() >= 150 : distFromStart >= 250);
+                                break;
+                            default:
+                                break;
+                        }
+                        if (fMeetsReqs)
+                        {
+                            if (soloTime > 0)
+                                miMinSoloXC.MatchFlightEvent(cfr);
+                            if (substituteSolo > 0)
+                                miMinSoloSubXC.MatchFlightEvent(cfr);
+                        }
                     }
-                    if (fMeetsReqs)
-                        miMinSoloORPICXC.MatchFlightEvent(cfr);
-                }
 
-                // (4)(ii)
-                if (soloTime > 0 && (cfr.Night - cfr.IMC) > 0.0M)
-                {
-                    miMinNight.AddEvent(Math.Min(soloTime, cfr.Night - cfr.IMC));
-                    miMinNightTO.AddEvent(Math.Max(nightTakeoffs, cNightTakefoffsAtToweredAirport));
-                    miMinNightLandings.AddEvent(Math.Max(cfr.cFullStopNightLandings, cNightLandingsAtToweredAirport));
+                    // (4)(ii)
+                    if ((cfr.Night - cfr.IMC) > 0.0M)
+                    {
+                        if (soloTime > 0)
+                        {
+                            miMinSoloNight.AddEvent(Math.Min(soloTime, cfr.Night - cfr.IMC));
+                            miMinSoloNightTO.AddEvent(Math.Max(nightTakeoffs, cNightTakefoffsAtToweredAirport));
+                            miMinSoloNightLandings.AddEvent(Math.Max(cfr.cFullStopNightLandings, cNightLandingsAtToweredAirport));
+                        }
+                        if (substituteSolo > 0)
+                        {
+                            miMinSoloSubNight.AddEvent(Math.Min(substituteSolo, cfr.Night - cfr.IMC));
+                            miMinSoloSubNightTO.AddEvent(Math.Max(nightTakeoffs, cNightTakefoffsAtToweredAirport));
+                            miMinSoloSubNightLandings.AddEvent(Math.Max(cfr.cFullStopNightLandings, cNightLandingsAtToweredAirport));
+                        }
+                    }
                 }
             }
         }
@@ -390,11 +421,22 @@ namespace MyFlightbook.MilestoneProgress
                 l.Add(miMinXCCategory);
                 l.Add(miMinXCCategoryNight);
                 l.Add(miMinTestPrep);
-                l.Add(miMinSoloOrPICCategory);
-                l.Add(miMinSoloORPICXC);
-                l.Add(miMinNight);
-                l.Add(miMinNightTO);
-                l.Add(miMinNightLandings);
+                if (miMinSoloCategory.Progress >= miMinSoloSubCategory.Progress)
+                {
+                    l.Add(miMinSoloCategory);
+                    l.Add(miMinSoloXC);
+                    l.Add(miMinSoloNight);
+                    l.Add(miMinSoloNightTO);
+                    l.Add(miMinSoloNightLandings);
+                }
+                else
+                {
+                    l.Add(miMinSoloSubCategory);
+                    l.Add(miMinSoloSubXC);
+                    l.Add(miMinSoloSubNight);
+                    l.Add(miMinSoloSubNightTO);
+                    l.Add(miMinSoloSubNightLandings);
+                }
                 return l;
             }
         }
@@ -467,7 +509,7 @@ namespace MyFlightbook.MilestoneProgress
             miMinXCCategory.FARRef = ResolvedFAR("(3)(ii)");
             miMinXCCategoryNight.FARRef = ResolvedFAR("(3)(iii)");
             miMinTestPrep.FARRef = ResolvedFAR("(3)(iv)");
-            miMinSoloORPICXC.Title = Resources.MilestoneProgress.CommSoloXCHelicopter;
+            miMinSoloXC.Title = miMinSoloSubXC.Title = Resources.MilestoneProgress.CommSoloXCHelicopter;
         }
 
         public override Collection<MilestoneItem> Milestones
