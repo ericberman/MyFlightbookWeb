@@ -271,6 +271,23 @@ public partial class Member_LogbookNew : System.Web.UI.Page
         Restriction = mfbSearchForm1.Restriction;
         Refresh();
         AccordionCtrl.SelectedIndex = -1;
+
+        int idxLast = -1;
+        if (Int32.TryParse(hdnLastViewedPaneIndex.Value, out idxLast))
+        {
+            if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcTotals.ID))
+            {
+                apcTotals_ControlClicked(apcTotals, null);
+                AccordionCtrl.SelectedIndex = idxLast;
+            }
+            else if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcAnalysis.ID))
+            {
+                apcAnalysis_ControlClicked(apcAnalysis, null);
+                AccordionCtrl.SelectedIndex = idxLast;
+            }
+            else if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcPrintView.ID))
+                AccordionCtrl.SelectedIndex = idxLast;
+        }
     }
 
     protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClicked fic)
@@ -353,6 +370,7 @@ public partial class Member_LogbookNew : System.Web.UI.Page
         TurnOffLazyLoad(sender);
         mfbTotalSummary1.Visible = true;
         mfbTotalSummary1.CustomRestriction = Restriction;
+        hdnLastViewedPaneIndex.Value = mfbAccordionProxyExtender1.IndexForProxyID(apcTotals.ID).ToString(CultureInfo.InvariantCulture);
     }
 
     protected void apcAnalysis_ControlClicked(object sender, EventArgs e)
@@ -360,6 +378,7 @@ public partial class Member_LogbookNew : System.Web.UI.Page
         TurnOffLazyLoad(sender);
         mfbChartTotals1.Visible = true;
         mfbChartTotals1.Refresh(mfbLogbook1.Data);
+        hdnLastViewedPaneIndex.Value = mfbAccordionProxyExtender1.IndexForProxyID(apcAnalysis.ID).ToString(CultureInfo.InvariantCulture);
     }
     #endregion
 

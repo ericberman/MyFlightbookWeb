@@ -14,6 +14,13 @@
     <asp:Label ID="lblUserName" runat="server"></asp:Label>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
+    <asp:HiddenField ID="hdnLastViewedPaneIndex" runat="server" />
+    <script type="text/javascript">
+        function onAccordionPaneShown(idx) {
+            if (idx != 1)
+                document.getElementById("<% =hdnLastViewedPaneIndex.ClientID %>").value = idx;
+        }
+    </script>
     <uc8:mfbAccordionProxyExtender ID="mfbAccordionProxyExtender1" AccordionControlID="AccordionCtrl" HeaderProxyIDs="apcNewFlight,apcFilter,apcTotals,apcCurrency,apcAnalysis,apcPrintView,apcMore" runat="server" />
     <asp:Panel ID="pnlAccordionMenuContainer" CssClass="accordionMenuContainer" runat="server">
         <uc9:mfbAccordionProxyControl ID="apcNewFlight" LabelText="<%$ Resources:LocalizedText, LogTabNewFlight %>" runat="server" />
