@@ -259,7 +259,7 @@ namespace MyFlightbook.CloudStorage
         private string RootFolderID { get; set; }
 
         public GoogleDrive(string szRootPath = "")
-            : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.appdata", "https://www.googleapis.com/auth/drive.file" })
+            : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/drive.appdata", "https://www.googleapis.com/auth/drive.file" })
         {
             RootPath = String.IsNullOrEmpty(szRootPath) ? Branding.CurrentBrand.AppName : szRootPath;
             RootFolderID = string.Empty;
