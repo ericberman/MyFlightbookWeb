@@ -227,7 +227,7 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
             case GoogleColumnDataType.date:
             case GoogleColumnDataType.datetime:
             case GoogleColumnDataType.timeofday:
-                return String.Format(CultureInfo.InvariantCulture, "new Date({0})", ((DateTime)o).ToString("yyyy, M - 1, dd, HH, mm, ss", System.Globalization.CultureInfo.InvariantCulture));
+                return String.Format(CultureInfo.InvariantCulture, "new Date({0})", ((DateTime)o).ToString("yyyy, M - 1, d, H, m, s", System.Globalization.CultureInfo.InvariantCulture));
             case GoogleColumnDataType.boolean:
                 return ((bool)o) ? "true" : "false";
             case GoogleColumnDataType.number:
