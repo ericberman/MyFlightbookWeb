@@ -11,7 +11,7 @@
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    <script type="text/javascript" src='<%= ResolveUrl("~/public/daypilot-all.min.js") %>'></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript" src='<%= ResolveUrl("~/public/jquery.json-2.4.min.js") %>'></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/mfbcalendar.js") %>'></script>
+    <script type="text/javascript" src='<%= ResolveUrl("~/public/mfbcalendar.js?v1") %>'></script>
     <uc1:mfbEditAppt ID="mfbEditAppt1" runat="server" />
     <asp:MultiView ID="mvStatus" runat="server">
         <asp:View ID="vwNoClub" runat="server">

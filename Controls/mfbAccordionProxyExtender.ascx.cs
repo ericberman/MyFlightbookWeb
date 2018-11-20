@@ -160,7 +160,7 @@ public partial class Controls_mfbAccordionProxyExtender : System.Web.UI.UserCont
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/mfbAccordionProxy.js"));
+        Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/mfbAccordionProxy.js?v=1"));
     }
 
     protected void Page_PreRender(object sender, EventArgs e)
