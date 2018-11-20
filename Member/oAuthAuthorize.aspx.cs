@@ -12,7 +12,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -64,6 +64,11 @@ public partial class Secure_oAuthAuthorize : System.Web.UI.Page
         catch (HttpException ex)
         {
             RejectWithError(ex.Message);
+        }
+        catch (MyFlightbook.MyFlightbookException ex)
+        {
+            lblErr.Text = ex.Message;
+            mvAuthorize.SetActiveView(vwErr);
         }
     }
 

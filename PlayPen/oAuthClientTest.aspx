@@ -7,13 +7,66 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
     <table>
         <tr>
+            <td>Client ID:</td>
+            <td>
+                <asp:TextBox ID="txtClientID" runat="server" Width="400px"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="reqClientID" runat="server" ErrorMessage="Client ID is required for authorization" ControlToValidate="txtClientID" CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
+            </td>
+        </tr>
+        <tr>
+            <td>Client Secret:</td>
+            <td>
+                <asp:TextBox ID="txtClientSecret" runat="server" Width="400px"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="reqClientSecret" runat="server" ErrorMessage="Client secret is required for authorization" ControlToValidate="txtClientSecret"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <h2>1) Authorization</h2>
+                <p>Pass your client ID to the the authorization URL (below).  The user signs in and authorizes the app to have the requested permissions</p>
+                <p>The user is then redirected back to the Ridirect URL (below), along with an authorization, which can be used to get a token.</p>
+            </td>
+        </tr>
+        <tr>
             <td>Authorization URL:</td>
             <td><asp:TextBox ID="txtAuthURL" runat="server" Width="400px">https://myflightbook.com/logbook/member/oAuthAuthorize.aspx</asp:TextBox></td>
         </tr>
         <tr>
-            <td>Token URL:</td>
+            <td>Redirect URL:</td>
             <td>
-    <asp:TextBox ID="txtTokenURL" runat="server" Width="400px">https://myflightbook.com/logbook/public/oAuthToken.aspx</asp:TextBox>
+                <asp:TextBox ID="txtRedirectURL" runat="server" Width="400px">https://myflightbook.com/logbook/playpen/oAuthClientTest.aspx</asp:TextBox>
+            </td>
+        </tr>
+        <tr>
+            <td>Scope:</td>
+            <td>
+                <asp:TextBox ID="txtScope" runat="server" Width="400px">currency totals addflight readflight addaircraft readaircraft visited namedqueries images</asp:TextBox>
+                <asp:RequiredFieldValidator ID="reqScopeRequired" runat="server" ErrorMessage="At least some scopes are required for authorization" ControlToValidate="txtScope"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
+                <p><asp:Button ID="btnGetAuth" runat="server" Text="Get Authorization" OnClick="btnGetAuth_Click" /></p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <h2>2) Convert the authorization into an authtoken</h2>
+                <p>The authorization proves that the user gave your app permission, but the authorization is not secure because it was visible in the user's browser and if hijacked could be used by others</p>
+                <p>So now you convert it to a secure oAuth authtoken by passing that authorization back to the server - over a secure server-to-server channel (i.e., from your app, not using the browser) 
+                    along with your client ID and secret, using the Token URL below.</p>
+                <p>The presence of the client ID and secret prove that your app is your app.  If successful, an authtoken is returned.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>Token URL</td>
+            <td>
+                <asp:TextBox ID="txtTokenURL" runat="server" Width="400px">https://myflightbook.com/logbook/public/oAuthToken.aspx</asp:TextBox>
+                <asp:RequiredFieldValidator ID="valReqToken" runat="server" ErrorMessage="A token endpoint (URL) is required" ControlToValidate="txtScope"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
+                <p><asp:Button ID="btnGetToken" runat="server" Text="Get Token" OnClick="btnGetToken_Click" /></p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <h2>3. Use the authtoken to interact with the server</h2>
+                <p>You can use "POST" for any of the actions, GET for only some of them (that don't require things like file upload)</p>
+                <p>You can request results in either XML or JSON</p>
             </td>
         </tr>
         <tr style="vertical-align:top">
@@ -21,6 +74,7 @@
                 <div class="fineprint">(minus verb, other data)</div></td>
             <td>
                 <asp:TextBox ID="txtResourceURL" runat="server" Width="400px">https://myflightbook.com/logbook/public/oAuthToken.aspx/</asp:TextBox>
+                <asp:RequiredFieldValidator ID="valReqResource" runat="server" ErrorMessage="The URL for resources is required." ControlToValidate="txtScope"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
             </td>
         </tr>
         <tr style="vertical-align:top">
@@ -184,42 +238,14 @@
             </td>
         </tr>
         <tr>
-            <td>Client ID:</td>
-            <td>
-                <asp:TextBox ID="txtClientID" runat="server" Width="400px"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="reqClientID" runat="server" ErrorMessage="Client ID is required for authorization" ControlToValidate="txtClientID" ValidationGroup="vgAuthorize" CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
-            </td>
-        </tr>
-        <tr>
-            <td>Client Secret:</td>
-            <td>
-                <asp:TextBox ID="txtClientSecret" runat="server" Width="400px"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="reqClientSecret" runat="server" ErrorMessage="Client secret is required for authorization" ControlToValidate="txtClientSecret"  ValidationGroup="vgAuthorize" CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
-            </td>
-        </tr>
-        <tr>
-            <td>Redirect URL:</td>
-            <td>
-                <asp:TextBox ID="txtRedirectURL" runat="server" Width="400px">https://myflightbook.com/logbook/playpen/oAuthClientTest.aspx</asp:TextBox>
-            </td>
-        </tr>
-        <tr>
-            <td>Scope:</td>
-            <td>
-                <asp:TextBox ID="txtScope" runat="server" Width="400px">currency totals addflight readflight addaircraft readaircraft visited namedqueries images</asp:TextBox>
-            </td>
-        </tr>
-        <tr>
             <td>State</td>
             <td>
                 <asp:TextBox ID="txtState" runat="server" Width="400px"></asp:TextBox>
             </td>
         </tr>
     </table>
-    <br />
-    <asp:Button ID="btnGetAuth" runat="server" Text="Get Authorization" OnClick="btnGetAuth_Click" />
-    &nbsp;<asp:Button ID="btnGetToken" runat="server" Text="Get Token" OnClick="btnGetToken_Click" />
-    &nbsp;<asp:Button ID="btnGetResrouce" runat="server" Text="Get Resource (GET)" OnClick="btnGetResrouce_Click" />
+    
+    <asp:Button ID="btnGetResrouce" runat="server" Text="Get Resource (GET)" OnClick="btnGetResrouce_Click" />
     &nbsp;<asp:Button ID="btnPostResource" runat="server" Text="Get Resource (POST)" OnClick="btnPostResource_Click" />
     &nbsp;<asp:Button ID="btnClearState" runat="server" OnClick="btnClearState_Click" Text="Clear State" />
     <div><asp:Label ID="lblErr" EnableViewState="false" runat="server" CssClass="error"></asp:Label></div>

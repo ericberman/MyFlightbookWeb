@@ -35,7 +35,17 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
     protected PageState CurrentPageState
     {
-        get { return (PageState)Session["oAuthClientPageState"]; }
+        get
+        {
+            try
+            {
+                return (PageState)Session["oAuthClientPageState"];
+            }
+            catch (InvalidCastException)
+            {
+                return null;
+            }
+        }
         set { Session["oAuthClientPageState"] = value; }
     }
 
@@ -135,7 +145,6 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
     protected void btnGetAuth_Click(object sender, EventArgs e)
     {
-        Validate("vgAuthorize");
         if (Page.IsValid)
         {
             try
@@ -145,6 +154,10 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 client.RequestUserAuthorization(Scopes, RedirURL);
             }
             catch (MyFlightbook.MyFlightbookException ex)
+            {
+                lblErr.Text = ex.Message;
+            }
+            catch (DotNetOpenAuth.Messaging.ProtocolException ex)
             {
                 lblErr.Text = ex.Message;
             }
@@ -162,7 +175,6 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
     protected void btnGetToken_Click(object sender, EventArgs e)
     {
-        Validate("vgAuthorize");
         if (!Page.IsValid)
             return;
         try
@@ -172,7 +184,10 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             consumer.ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(CurrentPageState.ClientSecret);
             IAuthorizationState grantedAccess = consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
 
-            lblToken.Text = grantedAccess.AccessToken;
+            if (grantedAccess == null)
+                lblErr.Text = "Null access token returned - invalid authorization passed?";
+            else
+                lblToken.Text = grantedAccess.AccessToken;
         }
         catch (DotNetOpenAuth.Messaging.ProtocolException ex)
         {
@@ -344,17 +359,25 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                     Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
                     HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
                 }
-                catch (System.Threading.ThreadAbortException)
+                catch (System.Threading.ThreadAbortException ex)
                 {
+                    lblErr.Text = ex.Message;
                 }
-                catch (HttpUnhandledException)
+                catch (HttpUnhandledException ex)
                 {
+                    lblErr.Text = ex.Message;
                 }
-                catch (HttpException)
+                catch (HttpException ex)
                 {
+                    lblErr.Text = ex.Message;
                 }
-                catch (System.Net.WebException)
+                catch (System.Net.Http.HttpRequestException ex)
                 {
+                    lblErr.Text = ex.Message;
+                }
+                catch (System.Net.WebException ex)
+                {
+                    lblErr.Text = ex.Message;
                 }
             }
         }
