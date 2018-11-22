@@ -185,9 +185,12 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             IAuthorizationState grantedAccess = consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
 
             if (grantedAccess == null)
-                lblErr.Text = "Null access token returned - invalid authorization passed?";
-            else
-                lblToken.Text = grantedAccess.AccessToken;
+                throw new MyFlightbook.MyFlightbookValidationException("Null access token returned - invalid authorization passed?");
+            lblToken.Text = grantedAccess.AccessToken;
+        }
+        catch (MyFlightbook.MyFlightbookValidationException ex)
+        {
+            lblErr.Text = ex.Message;
         }
         catch (DotNetOpenAuth.Messaging.ProtocolException ex)
         {
@@ -315,12 +318,13 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification ="FXCop is reporting a false positive for stringcontent below")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "FXCop is reporting a false positive for stringcontent below")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     protected void btnPostResource_Click(object sender, EventArgs e)
     {
         ToSession();
         NameValueCollection postParams = new NameValueCollection()
-               {
+        {
                    { "locale", "en_US" },
                };
 
