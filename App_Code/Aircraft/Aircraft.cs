@@ -2425,6 +2425,9 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                     InitHeaders(csvr.GetCSVLine(true));
                     while ((rgszRow = csvr.GetCSVLine(fFirstRow)) != null)
                     {
+                        if (rgszRow == null || rgszRow.Length == 0)
+                            continue;
+
                         string szTail = rgszRow[iColTail].Trim().ToUpper(CultureInfo.CurrentCulture);
                         string szModelGiven = rgszRow[iColModel].Trim();
 
