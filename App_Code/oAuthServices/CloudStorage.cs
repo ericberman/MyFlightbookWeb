@@ -319,6 +319,8 @@ namespace MyFlightbook.CloudStorage
         {
             HttpResponseMessage response = null;
 
+            string szResult = string.Empty;
+
             using (HttpClient httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
@@ -327,7 +329,7 @@ namespace MyFlightbook.CloudStorage
                 Dictionary<string, string> dictMeta = new Dictionary<string, string>() { { "name", szFolderName }, { "mimeType", "application/vnd.google-apps.folder" } };
 
                 // Create the form.  The form itself needs the authtoken header
-                using (MultipartFormDataContent form = new MultipartFormDataContent())
+                using (MultipartContent form = new MultipartContent("related"))
                 {
                     // Next add the metadata - it is in Json format
                     StringContent metadata = new StringContent(JsonConvert.SerializeObject(dictMeta));
@@ -337,8 +339,8 @@ namespace MyFlightbook.CloudStorage
                     try
                     {
                         response = await httpClient.PostAsync(szURLUploadEndpoint, form);
+                        szResult = response.Content.ReadAsStringAsync().Result;
                         response.EnsureSuccessStatusCode();
-                        string szResult = response.Content.ReadAsStringAsync().Result;
                         if (!String.IsNullOrEmpty(szResult))
                         {
                             GoogleDriveFileMetadata gfm = JsonConvert.DeserializeObject<GoogleDriveFileMetadata>(szResult);
@@ -351,7 +353,7 @@ namespace MyFlightbook.CloudStorage
                         if (response == null)
                             throw new MyFlightbookException("Unknown error in GoogleDrive.CreateFolder", ex);
                         else
-                            throw new MyFlightbookException(response.ReasonPhrase);
+                            throw new MyFlightbookException(response.ReasonPhrase + " " + szResult);
                     }
                 }
 
