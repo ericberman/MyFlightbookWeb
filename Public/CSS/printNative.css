@@ -47,6 +47,8 @@ thead.header th > div {
     -ms-transform: rotate(315deg);
     transform: rotate(315deg);
     width: .6cm;
+    text-overflow:ellipsis;
+    font-size: smaller;
 }
 
 thead.header th > div.custColumn {
@@ -58,6 +60,7 @@ thead.header th > div.custColumn {
     width: 1.0cm;
     overflow:hidden;
     text-overflow:ellipsis;
+    font-size: smaller;
     white-space:normal;
 }
 
