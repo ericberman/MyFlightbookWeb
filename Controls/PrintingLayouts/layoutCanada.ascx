@@ -10,18 +10,18 @@
         <table class="pageTable">
             <thead class="header bordered">
             <tr class="bordered">
-                <th class="headerBig" style="width:10ch" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderDate %></th>
-                <th class="headerBig" style="width:1.2cm" colspan="2"><% =Resources.LogbookEntry.PrintHeaderAircraft %></th>
+                <th class="headerBig" style="width:10ch; border-right: 2px solid black;" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderDate %></th>
+                <th class="headerBig" style="width:1.2cm; border-right: 2px solid black;" colspan="2"><% =Resources.LogbookEntry.PrintHeaderAircraft %></th>
                 <th class="headerBig" style="width:1cm" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderPICName %></th>
-                <th class="headerBig" style="width:1cm" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderCoPilotOrStudent %></th>
-                <th class="headerBig" colspan="2" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderRoute %></th>
-                <th class="headerBig" rowspan="3"><%=Resources.LogbookEntry.PrintHeaderRemarks %></th>
-                <th class="headerBig" colspan="3" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
-                <th class="headerBig" colspan="3" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
-                <th class="headerBig" colspan="4"><% =Resources.LogbookEntry.PrintHeaderInstrumentTime %></th>
-                <th class="headerBig" colspan="4"><% =Resources.LogbookEntry.PrintHeaderCrossCountry %></th>
-                <th class="headerBig" style="width:1cm" rowspan="3" runat="server" id="headerCFI" visible="<%# CurrentUser.IsInstructor %>"><% =Resources.LogbookEntry.FieldCFI %></th>
-                <th class="headerBig" colspan="2" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderTakeoffsLandings %></th>
+                <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3"><% =Resources.LogbookEntry.PrintHeaderCoPilotOrStudent %></th>
+                <th class="headerBig" colspan="2" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderRoute %></th>
+                <th class="headerBig" rowspan="3" style="border-right: 2px solid black;"><%=Resources.LogbookEntry.PrintHeaderRemarks %></th>
+                <th class="headerBig" colspan="3" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
+                <th class="headerBig" colspan="3" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
+                <th class="headerBig" colspan="4" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderInstrumentTime %></th>
+                <th class="headerBig" colspan="4" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderCrossCountry %></th>
+                <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3" runat="server" id="headerCFI" visible="<%# CurrentUser.IsInstructor %>"><% =Resources.LogbookEntry.FieldCFI %></th>
+                <th class="headerBig" colspan="2" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderTakeoffsLandings %></th>
                 <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div><%# OptionalColumnName(0) %></div></th>
                 <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn2" Visible="<%# ShowOptionalColumn(1) %>"><div><%# OptionalColumnName(1) %></div></th>
                 <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn3" Visible="<%# ShowOptionalColumn(2) %>"><div><%# OptionalColumnName(2) %></div></th>
@@ -30,46 +30,46 @@
             </tr>
             <tr class="bordered">
                 <th class="headerSmall oddRow" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderModel %></th>
-                <th class="headerSmall oddRow" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderRegistration %></th>
+                <th class="headerSmall oddRow" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderRegistration %></th>
 
                 <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><% =Resources.LogbookEntry.FieldIMC %></th>
                 <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><% =Resources.LogbookEntry.FieldSimIMC %></th>
                 <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><% =Resources.LogbookEntry.FieldGroundSim %></th>
-                <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><%=Resources.LogbookEntry.PrintHeaderApproaches %></th>
-                <th class="headerSmall oddRow"  colspan="2"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
-                <th class="headerSmall oddRow"  colspan="2"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
+                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;" rowspan="2"><%=Resources.LogbookEntry.PrintHeaderApproaches %></th>
+                <th class="headerSmall oddRow" colspan="2"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
+                <th class="headerSmall oddRow" style="border-right: 2px solid black;"  colspan="2"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
             </tr>
             <tr class="bordered">
                 <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderFrom %></th>
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderTo %></th>
+                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderTo %></th>
 
                 <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
                 <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldSIC %></th>
+                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;"><% =Resources.LogbookEntry.FieldSIC %></th>
 
                 <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
                 <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldSIC %></th>
+                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;"><% =Resources.LogbookEntry.FieldSIC %></th>
 
                 <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
+                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
                 <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
-                <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
+                <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
                 <th class="headerSmall oddRow"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
-                <th class="headerSmall oddRow"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
+                <th class="headerSmall oddRow" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
             </tr>
             </thead>
             <asp:Repeater ID="rptFlight" runat="server" OnItemDataBound="rptFlight_ItemDataBound">
                 <ItemTemplate>
                     <tr class="bordered <%# Container.ItemIndex % 2 == 0 ? "evenRow" : "oddRow" %> <%# Container.ItemIndex == 0 ? "topThick" : string.Empty %>">
-                        <td class="centered" style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
+                        <td class="centered" style="font-weight:bold; border-right: 2px solid black;"><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
                         <td class="centered"><div><%#: Eval("ModelDisplay") %></div><div><%#: Eval("CatClassDisplay") %></div></td>
-                        <td class="centered"><%#: Eval("TailNumDisplay") %></td>
+                        <td class="centered" style="border-right: 2px solid black;"><%#: Eval("TailNumDisplay") %></td>
                         <td class="centered"><%#: Eval("PICName") %></td>
-                        <td class="centered"><%#: Eval("SICName") %> <%#: Eval("StudentName") %></td>
+                        <td class="centered" style="border-right: 2px solid black;"><%#: Eval("SICName") %> <%#: Eval("StudentName") %></td>
                         <td class="centered"><%#: Eval("Departure") %></td>
-                        <td class="centered"><%#: Eval("Destination") %></td>
-                        <td>
+                        <td class="centered" style="border-right: 2px solid black;"><%#: Eval("Destination") %></td>
+                        <td style="border-right: 2px solid black;">
                             <div><%#: ((string[]) Eval("Airports")).Count() <= 2 ? string.Empty : String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.PrintFullRoute, Eval("Route")) %></div>
                             <span runat="server" id="divComments" dir="auto"><%# Eval("RedactedCommentWithReplacedApproaches") %></span></div>
                             <asp:Panel ID="pnlFlightTimes" runat="server" Visible="<%# CurrentUser.DisplayTimesByDefault %>">
@@ -91,24 +91,24 @@
                         </td>
                         <td><%# Math.Max(((decimal)Eval("Dual")) - ((decimal)Eval("Nighttime")), 0.0M).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td><%# Math.Max(((decimal)Eval("PIC")) - ((decimal)Eval("Nighttime")), 0.0M).FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                        <td><%# Math.Max(((decimal)Eval("SIC")) - ((decimal)Eval("Nighttime")), 0.0M).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td style="border-right: 2px solid black;"><%# Math.Max(((decimal)Eval("SIC")) - ((decimal)Eval("Nighttime")), 0.0M).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td><%# Math.Min(((decimal)Eval("Dual")), ((decimal)Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td><%# Math.Min(((decimal)Eval("PIC")), ((decimal)Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                        <td><%# Math.Min(((decimal)Eval("SIC")), ((decimal)Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td style="border-right: 2px solid black;"><%# Math.Min(((decimal)Eval("SIC")), ((decimal)Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                         <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td><%# Eval("SimulatedIFR").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td><%# Eval("GroundSim").FormatDecimal(CurrentUser.UsesHHMM)%></td>
-                        <td><%# Eval("Approaches") %></td>
+                        <td style="border-right: 2px solid black;"><%# Eval("Approaches") %></td>
 
                         <td><%# Math.Min((decimal)Eval("Dual"), (decimal) Eval("DayXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                        <td><%# Math.Min((decimal)Eval("PIC"), (decimal) Eval("DayXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td style="border-right: 2px solid black;"><%# Math.Min((decimal)Eval("PIC"), (decimal) Eval("DayXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td><%# Math.Min(((decimal)Eval("Dual")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                        <td><%# Math.Min(((decimal)Eval("PIC")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                        <td runat="server" id="CFIrow" visible='<%# CurrentUser.IsInstructor %>' ><%# ((decimal)Eval("CFI")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td style="border-right: 2px solid black;"><%# Math.Min(((decimal)Eval("PIC")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td visible='<%# CurrentUser.IsInstructor %>' style="border-right: 2px solid black;"><%# ((decimal)Eval("CFI")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                         <td class="centered"><%# Eval("DayTakeoffs") %>&nbsp;/&nbsp;<%# Math.Max((int) Eval("Landings") - (int) Eval("NightLandings") - (int) Eval("NightTouchAndGoLandings"), 0) %></td>
-                        <td class="centered"><%# Eval("NightTakeoffs") %>&nbsp;/&nbsp;<%# (int) Eval("NightLandings") + (int) Eval("NightTouchAndGoLandings") %></td>
+                        <td class="centered" style="border-right: 2px solid black;"><%# Eval("NightTakeoffs") %>&nbsp;/&nbsp;<%# (int) Eval("NightLandings") + (int) Eval("NightTouchAndGoLandings") %></td>
 
                         <td runat="server" id="td1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
                         <td runat="server" id="td2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(1) %></div></td>
@@ -127,29 +127,29 @@
                         <asp:Repeater ID="rptSubtotals" runat="server">
                             <ItemTemplate>
                                 <%# (Container.ItemIndex != 0) ? "<tr class=\"subtotal" + (Container.ItemIndex % 2 == 0 ? " evenRow" : " oddRow") + "\">" : string.Empty %>
-                                <td><%# ((LogbookEntryDisplay) Container.DataItem).CatClassDisplay %></td>
+                                <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).CatClassDisplay %></td>
 
                                 <td><%# Math.Max(((LogbookEntryDisplay) Container.DataItem).Dual - ((LogbookEntryDisplay) Container.DataItem).NightDualTotal, 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# Math.Max(((LogbookEntryDisplay) Container.DataItem).PIC - ((LogbookEntryDisplay) Container.DataItem).NightPICTotal, 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td><%# Math.Max(((LogbookEntryDisplay) Container.DataItem).SIC - ((LogbookEntryDisplay) Container.DataItem).NightSICTotal, 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td style="border-right: 2px solid black;"><%# Math.Max(((LogbookEntryDisplay) Container.DataItem).SIC - ((LogbookEntryDisplay) Container.DataItem).NightSICTotal, 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).NightDualTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).NightPICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td><%# ((LogbookEntryDisplay) Container.DataItem).NightSICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).NightSICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).IMC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).SimulatedIFR.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).GroundSim.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
+                                <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
 
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).XCDualTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).XCPICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).XCNightDualTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td><%# ((LogbookEntryDisplay) Container.DataItem).XCNightPICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).XCNightPICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
-                                <td runat="server" id="nightCFISubtotal" visible='<%# CurrentUser.IsInstructor %>'><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td runat="server" style="border-right: 2px solid black;" id="nightCFISubtotal" visible='<%# CurrentUser.IsInstructor %>'><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                                 <td class="centered"><%# (int) Eval("DayTakeoffTotal") %>&nbsp;/&nbsp;<%# (int) Eval("LandingsTotal") - (int) Eval("NightLandings") - (int) Eval("NightTouchAndGoLandings") %></td>
-                                <td class="centered"><%# (int) Eval("NightTakeoffTotal") %>&nbsp;/&nbsp;<%# (int) Eval("NightLandings") + (int) Eval("NightTouchAndGoLandings") %></td>
+                                <td class="centered" style="border-right: 2px solid black;"><%# (int) Eval("NightTakeoffTotal") %>&nbsp;/&nbsp;<%# (int) Eval("NightLandings") + (int) Eval("NightTouchAndGoLandings") %></td>
 
                                 <td runat="server" id="tdoptColumnTotal1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(0, CurrentUser.UsesHHMM) %></div></td>
                                 <td runat="server" id="tdoptColumnTotal2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(1, CurrentUser.UsesHHMM) %></div></td>
