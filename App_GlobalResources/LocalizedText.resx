@@ -1476,4 +1476,7 @@
   <data name="PrintViewIncludePreviousPageTotals" xml:space="preserve">
     <value>Repeat previous page totals in subtotals for each page</value>
   </data>
+  <data name="DropDownListSeparator" xml:space="preserve">
+    <value>──────────────</value>
+  </data>
 </root>

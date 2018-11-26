@@ -158,16 +158,39 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
                 new ListItem(Resources.Makes.IsTurboprop, OptionalColumnType.TurboProp.ToString()),
                 new ListItem(Resources.Makes.IsTurbine, OptionalColumnType.Turbine.ToString()),
                 new ListItem(Resources.Makes.IsJet, OptionalColumnType.Jet.ToString()),
+                new ListItem(Resources.LocalizedText.DropDownListSeparator, string.Empty),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.ATD), OptionalColumnType.ATD.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.FTD), OptionalColumnType.FTD.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.FFS), OptionalColumnType.FFS.ToString()),
+                new ListItem(Resources.LocalizedText.DropDownListSeparator, string.Empty),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.ASEL), OptionalColumnType.ASEL.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.AMEL), OptionalColumnType.AMEL.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.ASES), OptionalColumnType.ASES.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.AMES), OptionalColumnType.AMES.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.Helicopter), OptionalColumnType.Helicopter.ToString()),
+                new ListItem(OptionalColumn.TitleForType(OptionalColumnType.Glider), OptionalColumnType.Glider.ToString()),
             };
+            if (rgcptUserOptionalColumns.Count > 0)
+                lstOptionalColumnDropdowns.Add(new ListItem(Resources.LocalizedText.DropDownListSeparator, string.Empty));
             rgcptUserOptionalColumns.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
             foreach (CustomPropertyType cpt in rgcptUserOptionalColumns)
                 lstOptionalColumnDropdowns.Add(new ListItem(cpt.Title, cpt.PropTypeID.ToString(CultureInfo.InvariantCulture)));
+
             foreach (DropDownList ddl in OptionalColumnDropDowns)
             {
                 ddl.DataSource = lstOptionalColumnDropdowns;
                 ddl.DataBind();
             }
         }
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        // need to disable the separators in the optional column dropdowns on each postback since ASP.NET doesn't preserve that state.
+        foreach (DropDownList ddl in OptionalColumnDropDowns)
+            foreach (ListItem li in ddl.Items)
+                if (String.IsNullOrEmpty(li.Value) && li.Text.CompareCurrentCulture(Resources.LocalizedText.DropDownListSeparator) == 0)
+                    li.Attributes.Add("disabled", "disabled");
     }
 
     protected void NotifyDelegate()

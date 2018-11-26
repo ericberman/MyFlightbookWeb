@@ -2234,7 +2234,7 @@ namespace MyFlightbook
     /// <summary>
     /// Specifies the kind of additional columns that can be displayed for printing.
     /// </summary>
-    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, Turbine, Jet, TurboProp, CustomProp }
+    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp }
 
     public enum OptionalColumnValueType { Decimal, Integer }
 
@@ -2279,31 +2279,7 @@ namespace MyFlightbook
                 throw new ArgumentOutOfRangeException("type");
 
             ValueType = OptionalColumnValueType.Decimal;
-
-            switch (type)
-            {
-                case OptionalColumnType.Complex:
-                    Title = Resources.Makes.IsComplex;
-                    break;
-                case OptionalColumnType.Retract:
-                    Title = Resources.Makes.IsRetract;
-                    break;
-                case OptionalColumnType.Tailwheel:
-                    Title = Resources.Makes.IsTailwheel;
-                    break;
-                case OptionalColumnType.HighPerf:
-                    Title = Resources.Makes.IsHighPerf;
-                    break;
-                case OptionalColumnType.Turbine:
-                    Title = Resources.Makes.IsTurbine;
-                    break;
-                case OptionalColumnType.Jet:
-                    Title = Resources.Makes.IsJet;
-                    break;
-                case OptionalColumnType.TurboProp:
-                    Title = Resources.Makes.IsTurboprop;
-                    break;
-            }
+            Title = TitleForType(type);
         }
 
         public OptionalColumn(int idPropType) : this()
@@ -2324,6 +2300,47 @@ namespace MyFlightbook
             Title = cpt.Title;
         }
         #endregion
+
+        public static string TitleForType(OptionalColumnType type)
+        {
+            switch (type)
+            {
+                case OptionalColumnType.CustomProp:
+                case OptionalColumnType.None:
+                    return string.Empty;
+                case OptionalColumnType.Complex:
+                    return Resources.Makes.IsComplex;
+                case OptionalColumnType.Retract:
+                    return Resources.Makes.IsRetract;
+                case OptionalColumnType.Tailwheel:
+                    return Resources.Makes.IsTailwheel;
+                case OptionalColumnType.HighPerf:
+                    return Resources.Makes.IsHighPerf;
+                case OptionalColumnType.Turbine:
+                    return Resources.Makes.IsTurbine;
+                case OptionalColumnType.Jet:
+                    return Resources.Makes.IsJet;
+                case OptionalColumnType.TurboProp:
+                    return Resources.Makes.IsTurboprop;
+                case OptionalColumnType.ASEL:
+                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASEL).CatClass;
+                case OptionalColumnType.AMEL:
+                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.AMEL).CatClass;
+                case OptionalColumnType.ASES:
+                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASES).CatClass;
+                case OptionalColumnType.AMES:
+                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.AMES).CatClass;
+                case OptionalColumnType.Glider:
+                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Glider).CatClass;
+                case OptionalColumnType.Helicopter:
+                    return CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Helicopter).CatClass;
+                case OptionalColumnType.ATD:
+                case OptionalColumnType.FTD:
+                case OptionalColumnType.FFS:
+                    return type.ToString();
+            }
+            throw new ArgumentOutOfRangeException("type", "Unknown OptionalColumnType: " + type.ToString());
+        }
 
         public override string ToString()
         {
@@ -2453,6 +2470,11 @@ namespace MyFlightbook
                 return String.Format(CultureInfo.CurrentCulture, "({0} / {1})", (IMC == 0) ? "0" : IMC.FormatDecimal(UseHHMM), (SimulatedIFR == 0) ? "0" : SimulatedIFR.FormatDecimal(UseHHMM));
             }
         }
+
+        /// <summary>
+        /// Instance type used for the flight.
+        /// </summary>
+        public AircraftInstanceTypes InstanceType { get; set; }
 
         #region Glider properties
         public int GroundLaunches
@@ -2861,6 +2883,8 @@ namespace MyFlightbook
             EffectiveCatClass = (IsOverridden) ? Convert.ToInt32(dr["CatClassOverride"], CultureInfo.InvariantCulture) : EffectiveCatClass = Convert.ToInt32(dr["idcategoryclass"], CultureInfo.InvariantCulture);
 
             CustPropertyDisplay = CustomFlightProperty.PropListDisplay(CustomProperties, UseHHMM);
+
+            InstanceType = (AircraftInstanceTypes) Convert.ToInt32(dr["InstanceType"], CultureInfo.InvariantCulture);
         }
 
         protected LogbookEntryDisplay(MySqlDataReader dr, string szUser, bool fUseHHMM, bool fUseUTCDate)
@@ -3016,6 +3040,23 @@ namespace MyFlightbook
             return f ? TotalFlightTime : 0.0M;
         }
 
+        private decimal OptionalColumnGroundSimIfType(AircraftInstanceTypes instanceType)
+        {
+            return instanceType == InstanceType ? GroundSim : 0.0M;
+        }
+
+        private decimal OptionalColumnPropertyTotal(OptionalColumn oc)
+        {
+            if (oc == null || CustomProperties == null)
+                return 0.0M;
+            foreach (CustomFlightProperty cfp in CustomProperties)
+            {
+                if (cfp.PropTypeID == oc.IDPropType)
+                    return oc.ValueType == OptionalColumnValueType.Integer ? cfp.IntValue : cfp.DecValue;
+            }
+            return 0.0M;
+        }
+
         /// <summary>
         /// Determines the value for an optional column from a logbookentrydisplay object
         /// </summary>
@@ -3050,17 +3091,26 @@ namespace MyFlightbook
                     }
                 case OptionalColumnType.TurboProp:
                     return OptionalColumnTotalIfCondition(MakeModel.GetModel(ModelID).EngineType == MakeModel.TurbineLevel.TurboProp);
+                case OptionalColumnType.ASEL:
+                    return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.ASEL);
+                case OptionalColumnType.AMEL:
+                    return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.AMEL);
+                case OptionalColumnType.ASES:
+                    return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.ASES);
+                case OptionalColumnType.AMES:
+                    return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.AMES);
+                case OptionalColumnType.Glider:
+                    return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.Glider);
+                case OptionalColumnType.Helicopter:
+                    return OptionalColumnTotalIfCondition(EffectiveCatClass == (int)CategoryClass.CatClassID.Helicopter);
+                case OptionalColumnType.ATD:
+                    return OptionalColumnGroundSimIfType(AircraftInstanceTypes.CertifiedATD);
+                case OptionalColumnType.FTD:
+                    return OptionalColumnGroundSimIfType(AircraftInstanceTypes.CertifiedIFRSimulator);
+                case OptionalColumnType.FFS:
+                    return OptionalColumnGroundSimIfType(AircraftInstanceTypes.CertifiedIFRAndLandingsSimulator);
                 case OptionalColumnType.CustomProp:
-                    {
-                        if (CustomProperties == null)
-                            return 0.0M;
-                        foreach (CustomFlightProperty cfp in CustomProperties)
-                        {
-                            if (cfp.PropTypeID == oc.IDPropType)
-                                return oc.ValueType == OptionalColumnValueType.Integer ? cfp.IntValue : cfp.DecValue;
-                        }
-                        return 0.0M;
-                    }
+                    return OptionalColumnPropertyTotal(oc);
                 default:
                     return 0.0M;
             }
