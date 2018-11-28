@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2017 MyFlightbook LLC
+ * Copyright (c) 2009-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,7 +22,11 @@ public partial class Controls_mfbMaintainAircraft : System.Web.UI.UserControl
     public int AircraftID
     {
         get { return Convert.ToInt32(hdnIDAircraft.Value, CultureInfo.InvariantCulture); }
-        set { hdnIDAircraft.Value = value.ToString(CultureInfo.InvariantCulture); }
+        set
+        {
+            hdnIDAircraft.Value = value.ToString(CultureInfo.InvariantCulture);
+            mfbDeadlines1.AircraftID = value;
+        }
     }
 
     /// <summary>
@@ -77,7 +81,6 @@ public partial class Controls_mfbMaintainAircraft : System.Web.UI.UserControl
         mfbDeadlines1.UserName = Page.User.Identity.Name;
         mfbDeadlines1.AircraftID = AircraftID;
         mfbDeadlines1.ForceRefresh();
-        rowDeadlines.Visible =  mfbDeadlines1.DeadlineCount > 0;
     }
 
     private void SetTextForDate(Label lbl, DateTime dt)
@@ -131,6 +134,50 @@ public partial class Controls_mfbMaintainAircraft : System.Web.UI.UserControl
 
     protected void mfbDeadlines1_DeadlineUpdated(object sender, DeadlineEventArgs e)
     {
-        UpdateMaintHistory();
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        if (e.OriginalDeadline == null || e.NewDeadline == null)
+            return;
+
+        string szDiff = e.NewDeadline.DifferenceDescription(e.OriginalDeadline);
+        if (!String.IsNullOrEmpty(szDiff) && e.NewDeadline.IsSharedAircraftDeadline)
+        {
+            MaintenanceLog ml = new MaintenanceLog() { AircraftID = e.NewDeadline.AircraftID, ChangeDate = DateTime.Now, User = Page.User.Identity.Name, Description = szDiff, Comment = string.Empty };
+            ml.FAddToLog();
+
+            UpdateMaintHistory();
+        }
+    }
+
+    protected void mfbDeadlines1_DeadlineAdded(object sender, DeadlineEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        if (e.NewDeadline.IsSharedAircraftDeadline)
+        {
+            MaintenanceLog ml = new MaintenanceLog() { AircraftID = e.NewDeadline.AircraftID, ChangeDate = DateTime.Now, User = Page.User.Identity.Name, Description = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineCreated, e.NewDeadline.DisplayName), Comment = string.Empty };
+            ml.FAddToLog();
+
+            UpdateMaintHistory();
+        }
+    }
+
+    protected void mfbDeadlines1_DeadlineDeleted(object sender, DeadlineEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        if (e.OriginalDeadline == null)
+            return;
+
+        if (e.OriginalDeadline.IsSharedAircraftDeadline)
+        {
+            MaintenanceLog ml = new MaintenanceLog() { AircraftID = e.OriginalDeadline.AircraftID, ChangeDate = DateTime.Now, User = Page.User.Identity.Name, Description = String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineDeleted, e.OriginalDeadline.DisplayName), Comment = string.Empty };
+            ml.FAddToLog();
+
+            UpdateMaintHistory();
+        }
     }
 }

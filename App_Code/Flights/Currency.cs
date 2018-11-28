@@ -102,7 +102,7 @@ namespace MyFlightbook.FlightCurrency
     [DataContract]
     public class CurrencyStatusItem
     {
-        public enum CurrencyGroups { None, FlightExperience, FlightReview, Aircraft, Certificates, Medical, Deadline, CustomCurrency }
+        public enum CurrencyGroups { None, FlightExperience, FlightReview, Aircraft, AircraftDeadline, Certificates, Medical, Deadline, CustomCurrency }
 
         #region properties
         /// <summary>
@@ -147,6 +147,7 @@ namespace MyFlightbook.FlightCurrency
                         szResult = VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftPilotInfo?pane=flightreview");
                         break;
                     case CurrencyGroups.Aircraft:
+                    case CurrencyGroups.AircraftDeadline:
                         szResult = VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", AssociatedResourceID));
                         break;
                     case CurrencyGroups.Certificates:
@@ -218,7 +219,13 @@ namespace MyFlightbook.FlightCurrency
         static public IEnumerable<CurrencyStatusItem> GetCurrencyItemsForUser(string szUser)
         {
             List<CurrencyStatusItem> lst = new List<CurrencyStatusItem>(CurrencyExaminer.ComputeCurrency(szUser));
-            lst.AddRange(MaintenanceLog.AircraftInspectionWarningsForUser(szUser));
+
+            List<DeadlineCurrency> deadlines = new List<DeadlineCurrency>(DeadlineCurrency.DeadlinesForUserCurrency(szUser));
+
+            List<DeadlineCurrency> lstNoAircraft = deadlines.FindAll(dc => !dc.HasAssociatedAircraft);
+            List<DeadlineCurrency> lstWithAircraft = deadlines.FindAll(dc => dc.HasAssociatedAircraft);
+            lst.AddRange(MaintenanceLog.AircraftInspectionWarningsForUser(szUser, lstWithAircraft));
+            lst.AddRange(DeadlineCurrency.CurrencyForDeadlines(lstNoAircraft));
             lst.AddRange(Profile.GetUser(szUser).WarningsForUser());
             return lst;
         }

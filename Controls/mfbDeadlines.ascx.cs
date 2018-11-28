@@ -8,17 +8,19 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_mfbDeadlines : System.Web.UI.UserControl
+public partial class Controls_mfbDeadlines : UserControl
 {
     private const string szDeadlinesKey = "viewstateKeyDeadlines";
     private const string szAircraftKey = "viewstateKeyAircraft";
 
     public event EventHandler<DeadlineEventArgs> DeadlineUpdated = null;
+    public event EventHandler<DeadlineEventArgs> DeadlineAdded = null;
+    public event EventHandler<DeadlineEventArgs> DeadlineDeleted = null;
 
     #region Properties
     private List<DeadlineCurrency> UserDeadlines
@@ -26,7 +28,7 @@ public partial class Controls_mfbDeadlines : System.Web.UI.UserControl
         get
         {
             if (ViewState[szDeadlinesKey] == null)
-                ViewState[szDeadlinesKey] = new List<DeadlineCurrency>(DeadlineCurrency.DeadlinesForUser(Page.User.Identity.Name, AircraftID));
+                ViewState[szDeadlinesKey] = new List<DeadlineCurrency>(DeadlineCurrency.DeadlinesForUser(UserName, AircraftID, true));  // if an aircraft is specified, will pull in shared deadlines too.
             return (List<DeadlineCurrency>)ViewState[szDeadlinesKey];
         }
         set { ViewState[szDeadlinesKey] = value; }
@@ -47,6 +49,19 @@ public partial class Controls_mfbDeadlines : System.Web.UI.UserControl
     {
         get { return hdnUser.Value; }
         set { hdnUser.Value = value; }
+    }
+
+    /// <summary>
+    /// True if any new deadline should be shared (i.e., owned by an aircraft not a user)
+    /// </summary>
+    public bool CreateShared
+    {
+        get { return String.IsNullOrEmpty(hdnCreateShared.Value) ? false : Convert.ToBoolean(hdnCreateShared.Value, CultureInfo.InvariantCulture); }
+        set
+        {
+            hdnCreateShared.Value = value.ToString(CultureInfo.InvariantCulture);
+            rowAircraft.Visible = !value;
+        }
     }
     #endregion
 
@@ -70,6 +85,16 @@ public partial class Controls_mfbDeadlines : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (!IsPostBack)
+        {
+            UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+            List<Aircraft> lstDeadlineAircraft = new List<Aircraft>(ua.GetAircraftForUser());
+            lstDeadlineAircraft.RemoveAll(ac => ac.InstanceType != AircraftInstanceTypes.RealAircraft);
+            lstDeadlineAircraft.RemoveAll(ac => ac.HideFromSelection);
+            cmbDeadlineAircraft.DataSource = lstDeadlineAircraft;
+            cmbDeadlineAircraft.DataBind();
+            decRegenInterval.EditBox.Attributes["onfocus"] = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').checked = true;", rbRegenInterval.ClientID);
+        }
     }
 
     protected void gvDeadlines_RowCommand(object sender, CommandEventArgs e)
@@ -82,6 +107,8 @@ public partial class Controls_mfbDeadlines : System.Web.UI.UserControl
             {
                 dc.FDelete();
                 ForceRefresh();
+                if (DeadlineDeleted != null)
+                    DeadlineDeleted(this, new DeadlineEventArgs(dc, null));
             }
         }
     }
@@ -139,18 +166,87 @@ public partial class Controls_mfbDeadlines : System.Web.UI.UserControl
             gvDeadlines.EditIndex = -1;
             ForceRefresh();
 
-            if (dc.AircraftID > 0)
-            {
-                string szDiff = dc.DifferenceDescription(dcOriginal);
-                if (!String.IsNullOrEmpty(szDiff))
-                {
-                    MaintenanceLog ml = new MaintenanceLog() { AircraftID = dc.AircraftID, ChangeDate = DateTime.Now, User = UserName, Description = szDiff, Comment = string.Empty };
-                    ml.FAddToLog();
-                }
-            }
-
             if (DeadlineUpdated != null)
                 DeadlineUpdated(this, new DeadlineEventArgs(dcOriginal, dc));
         }
     }
+
+    #region New Deadlines
+    protected void SetNewDeadlineMode(bool fHours)
+    {
+        mvDeadlineDue.SetActiveView(fHours ? vwDeadlineDueHours : vwDeadlineDueDate);
+        mvRegenInterval.SetActiveView(fHours ? vwDeadlineHours : vwDeadlineCalendarRange);
+        if (fHours)
+            mfbDeadlineDate.Date = DateTime.MinValue;
+        else
+            decDueHours.Value = 0.0M;
+    }
+
+    protected void ckDeadlineUseHours_CheckedChanged(object sender, EventArgs e)
+    {
+        SetNewDeadlineMode(ckDeadlineUseHours.Checked);
+    }
+
+    protected void cmbDeadlineAircraft_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ckDeadlineUseHours.Visible = !String.IsNullOrEmpty(cmbDeadlineAircraft.SelectedValue);
+        if (!ckDeadlineUseHours.Visible)
+            ckDeadlineUseHours.Checked = false;
+        SetNewDeadlineMode(ckDeadlineUseHours.Checked);
+    }
+
+    protected void btnAddDeadline_Click(object sender, EventArgs e)
+    {
+        int regenspan;
+        DeadlineCurrency.RegenUnit ru = rbRegenManual.Checked ? DeadlineCurrency.RegenUnit.None : (ckDeadlineUseHours.Checked ? DeadlineCurrency.RegenUnit.Hours : (DeadlineCurrency.RegenUnit)Enum.Parse(typeof(DeadlineCurrency.RegenUnit), cmbRegenRange.SelectedValue));
+        switch (ru)
+        {
+            default:
+            case DeadlineCurrency.RegenUnit.None:
+                regenspan = 0;
+                break;
+            case DeadlineCurrency.RegenUnit.Days:
+            case DeadlineCurrency.RegenUnit.CalendarMonths:
+            case DeadlineCurrency.RegenUnit.Hours:
+                regenspan = decRegenInterval.IntValue;
+                break;
+        }
+
+        decimal aircraftHours = decDueHours.Value;
+        int idAircraft = 0;
+        if (CreateShared)
+            idAircraft = AircraftID;
+        else
+        {
+            if (!String.IsNullOrEmpty(cmbDeadlineAircraft.SelectedValue))
+                idAircraft = Convert.ToInt32(cmbDeadlineAircraft.SelectedValue, CultureInfo.InvariantCulture);
+        }
+
+        DeadlineCurrency dc = new DeadlineCurrency(CreateShared ? null : UserName, txtDeadlineName.Text, mfbDeadlineDate.Date, regenspan, ru, idAircraft, aircraftHours);
+        if (dc.IsValid() && dc.FCommit())
+        {
+            ForceRefresh();
+            ResetDeadlineForm();
+            Refresh();
+            if (DeadlineAdded != null)
+                DeadlineAdded(this, new DeadlineEventArgs(null, dc));
+        }
+        else
+            lblErrDeadline.Text = dc.ErrorString;
+    }
+
+    protected void ResetDeadlineForm()
+    {
+        ckDeadlineUseHours.Checked = false;
+        AircraftID = AircraftID;    // will cause cmbDeadline to hide/show as needed.
+        cmbDeadlineAircraft.SelectedValue = (AircraftID > 0) ? AircraftID.ToString(CultureInfo.InvariantCulture) : string.Empty;
+        SetNewDeadlineMode(false);
+        txtDeadlineName.Text = string.Empty;
+        mfbDeadlineDate.Date = DateTime.MinValue;
+        decDueHours.Value = decRegenInterval.IntValue = 0;
+        ckDeadlineUseHours.Visible = false;
+        rbRegenManual.Checked = true;
+        cpeDeadlines.ClientState = "true";
+    }
+    #endregion
 }

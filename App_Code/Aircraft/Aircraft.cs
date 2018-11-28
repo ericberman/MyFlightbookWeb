@@ -1636,6 +1636,14 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                     comm.Parameters.AddWithValue("idaircraftOld", ac.AircraftID);
                 });
 
+            // Migrate any deadlines
+            new DBHelper().DoNonQuery("UPDATE deadlines SET aircraftID=?idaircraftNew WHERE aircraftID=?idaircraftOld",
+                (comm) =>
+                {
+                    comm.Parameters.AddWithValue("idaircraftNew", this.AircraftID);
+                    comm.Parameters.AddWithValue("idaircraftOld", ac.AircraftID);
+                });
+
             // Migrate any images
             ImageList ilSrc = new ImageList(MFBImageInfo.ImageClass.Aircraft, ac.AircraftID.ToString());
             ilSrc.Refresh();

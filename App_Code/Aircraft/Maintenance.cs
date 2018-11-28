@@ -1,11 +1,10 @@
-﻿using System;
+﻿using MyFlightbook.FlightCurrency;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
-using System.Web;
-using MyFlightbook.FlightCurrency;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
@@ -365,10 +364,12 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
             return rgar;
         }
 
-        public static IEnumerable<CurrencyStatusItem> AircraftInspectionWarningsForUser(string szUser)
+        public static IEnumerable<CurrencyStatusItem> AircraftInspectionWarningsForUser(string szUser, IEnumerable<DeadlineCurrency> aircraftDeadlines)
         {
             Aircraft[] rgar = MaintenanceLog.AircraftMaintainedByUser(szUser);
             List<CurrencyStatusItem> arcs = new List<CurrencyStatusItem>();
+
+            List<DeadlineCurrency> lstDeadlines = (aircraftDeadlines == null) ? new List<DeadlineCurrency>() : new List<DeadlineCurrency>(aircraftDeadlines);
 
             if (rgar != null)
             {
@@ -383,6 +384,8 @@ WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
                     AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyXPonder, mr.NextTransponder, ar.AircraftID);
                     AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyVOR, mr.NextVOR, ar.AircraftID);
                     AddPendingInspection(arcs, ar.TailNumber + Resources.Aircraft.CurrencyRegistration, mr.RegistrationExpiration, ar.AircraftID);
+
+                    arcs.AddRange(DeadlineCurrency.CurrencyForDeadlines(lstDeadlines.FindAll(dc => ar.AircraftID == dc.AircraftID)));
                 }
             }
 

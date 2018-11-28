@@ -292,15 +292,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
         // Custom Currencies.
         mfbCustomCurrencyList1.RefreshCustomCurrencyList();
 
-        // for deadline aircraft, restrict to real aircraft
-        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-        List<Aircraft> lstDeadlineAircraft = new List<Aircraft>(ua.GetAircraftForUser());
-        lstDeadlineAircraft.RemoveAll(ac => ac.InstanceType != AircraftInstanceTypes.RealAircraft);
-        lstDeadlineAircraft.RemoveAll(ac => ac.HideFromSelection);
-        cmbDeadlineAircraft.DataSource = lstDeadlineAircraft;
-        cmbDeadlineAircraft.DataBind();
-        decRegenInterval.EditBox.Attributes["onfocus"] = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').checked = true;", rbRegenInterval.ClientID);
-
         mfbDeadlines1.UserName = Page.User.Identity.Name;
         mfbDeadlines1.Refresh();
     }
@@ -613,73 +604,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
         }
     }
     #region Deadlines
-    protected void SetNewDeadlineMode(bool fHours)
-    {
-        mvDeadlineDue.SetActiveView(fHours ? vwDeadlineDueHours : vwDeadlineDueDate);
-        mvRegenInterval.SetActiveView(fHours ? vwDeadlineHours : vwDeadlineCalendarRange);
-        if (fHours)
-            mfbDeadlineDate.Date = DateTime.MinValue;
-        else
-            decDueHours.Value = 0.0M;
-    }
-
-    protected void ckDeadlineUseHours_CheckedChanged(object sender, EventArgs e)
-    {
-        SetNewDeadlineMode(ckDeadlineUseHours.Checked);
-    }
-
-    protected void cmbDeadlineAircraft_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        ckDeadlineUseHours.Visible = !String.IsNullOrEmpty(cmbDeadlineAircraft.SelectedValue);
-        if (!ckDeadlineUseHours.Visible)
-            ckDeadlineUseHours.Checked = false;
-        SetNewDeadlineMode(ckDeadlineUseHours.Checked);
-    }
-
-    protected void btnAddDeadline_Click(object sender, EventArgs e)
-    {
-        int regenspan;
-        DeadlineCurrency.RegenUnit ru = rbRegenManual.Checked ? DeadlineCurrency.RegenUnit.None : (ckDeadlineUseHours.Checked ? DeadlineCurrency.RegenUnit.Hours : (DeadlineCurrency.RegenUnit)Enum.Parse(typeof(DeadlineCurrency.RegenUnit), cmbRegenRange.SelectedValue));
-        switch (ru)
-        {
-            default:
-            case DeadlineCurrency.RegenUnit.None:
-                regenspan = 0;
-                break;
-            case DeadlineCurrency.RegenUnit.Days:
-            case DeadlineCurrency.RegenUnit.CalendarMonths:
-            case DeadlineCurrency.RegenUnit.Hours:
-                regenspan = decRegenInterval.IntValue;
-                break;
-        }
-
-        decimal aircraftHours = decDueHours.Value;
-        int idAircraft = 0;
-        if (!String.IsNullOrEmpty(cmbDeadlineAircraft.SelectedValue))
-            idAircraft = Convert.ToInt32(cmbDeadlineAircraft.SelectedValue, CultureInfo.InvariantCulture);
-
-        DeadlineCurrency dc = new DeadlineCurrency(Page.User.Identity.Name, txtDeadlineName.Text, mfbDeadlineDate.Date, regenspan, ru, idAircraft, aircraftHours);
-        if (dc.IsValid() && dc.FCommit())
-        {
-            mfbDeadlines1.ForceRefresh();
-            ResetDeadlineForm();
-        }
-        else
-            lblErrDeadline.Text = dc.ErrorString;
-    }
-
-    protected void ResetDeadlineForm()
-    {
-        ckDeadlineUseHours.Checked = false;
-        cmbDeadlineAircraft.SelectedValue = string.Empty;
-        SetNewDeadlineMode(false);
-        txtDeadlineName.Text = string.Empty;
-        mfbDeadlineDate.Date = DateTime.MinValue;
-        decDueHours.Value = decRegenInterval.IntValue = 0;
-        ckDeadlineUseHours.Visible = false;
-        rbRegenManual.Checked = true;
-        cpeDeadlines.ClientState = "true";
-    }
     #endregion
 
     #region Cloud Storage

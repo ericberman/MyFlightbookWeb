@@ -16,7 +16,7 @@ namespace MyFlightbook.FlightCurrency
     /// Custom Deadlines class
     /// </summary>
     [Serializable]
-    public class DeadlineCurrency
+    public class DeadlineCurrency : IComparable
     {
         public enum RegenUnit { None, Days, CalendarMonths, Hours };
         public enum DeadlineMode { Calendar, Hours };
@@ -149,6 +149,22 @@ namespace MyFlightbook.FlightCurrency
         {
             get { return Mode == DeadlineMode.Hours; }
         }
+
+        /// <summary>
+        /// Is this deadline shared among multiple users (i.e., tied to an aircraft rather than to a specific user?)
+        /// </summary>
+        public bool IsSharedAircraftDeadline
+        {
+            get { return Username == null && AircraftID > 0; }
+        }
+
+        /// <summary>
+        /// Says whether or not the AircraftID is meaningful.
+        /// </summary>
+        public bool HasAssociatedAircraft
+        {
+            get { return AircraftID > 0; }
+        }
         #endregion
 
         #region Initialization
@@ -176,7 +192,7 @@ namespace MyFlightbook.FlightCurrency
             if (dr == null)
                 throw new ArgumentNullException("dr");
             ID = Convert.ToInt32(dr["idDeadlines"], CultureInfo.InvariantCulture);
-            Username = (string)dr["username"];
+            Username = (string) util.ReadNullableField(dr, "username", null);
             Name = (string)dr["Name"];
             Expiration = Convert.ToDateTime(dr["expiration"], CultureInfo.InvariantCulture);
             RegenSpan = Convert.ToInt32(dr["regenspan"], CultureInfo.InvariantCulture);
@@ -193,6 +209,8 @@ namespace MyFlightbook.FlightCurrency
 
             if (String.IsNullOrEmpty(Name))
                 ErrorString = Resources.Currency.errDeadlineNoName;
+            if (String.IsNullOrEmpty(Username) && AircraftID <= 0)
+                ErrorString = "BUG: need to have EITHER a user owner OR an aircraft owner";
             if (RegenSpan <= 0 && RegenType != RegenUnit.None)
                 ErrorString = Resources.Currency.errDeadlineNoSpan;
             if (!Expiration.HasValue() && AircraftHours <= 0)
@@ -280,15 +298,26 @@ namespace MyFlightbook.FlightCurrency
         }
 
         /// <summary>
-        /// Retrieves all of the deadlines for the specified user
+        /// Retrieves all of the deadlines owned by the specified user
         /// </summary>
         /// <param name="szUser">The username</param>
+        /// <param name="fIncludeSharedAircraftDeadlines">True to include deadlines for shared aircraft (i.e., for currency)</param>
         /// <param name="idAircraft">The aircraft to which to restrict</param>
         /// <returns>A list of matching deadlines.</returns>
-        public static IEnumerable<DeadlineCurrency> DeadlinesForUser(string szUser, int idAircraft = Aircraft.idAircraftUnknown)
+        public static IEnumerable<DeadlineCurrency> DeadlinesForUser(string szUser, int idAircraft = Aircraft.idAircraftUnknown, bool fIncludeSharedDeadlines = false)
         {
+            string szWhere = string.Empty;
+            const string szQBase = "SELECT d.*, ac.tailnumber FROM deadlines d LEFT JOIN aircraft ac ON d.aircraftID = ac.idaircraft WHERE ";
+
+            if (idAircraft <= 0)   // just user deadlines - no restriction on aircraft
+                szWhere = "username=?user";
+            else if (fIncludeSharedDeadlines)               // AircraftID matches, either yours or shared
+                szWhere = "aircraftID=?id AND (username=?user OR username IS NULL)";
+            else                                            // AircraftID matches, only yours
+                szWhere = "aircraftID=?id AND username=?user ";
+
             List<DeadlineCurrency> lst = new List<DeadlineCurrency>();
-            DBHelper dbh = new DBHelper("SELECT d.*, ac.tailnumber FROM deadlines d LEFT JOIN aircraft ac ON d.aircraftID = ac.idaircraft WHERE username=?user " + (idAircraft == Aircraft.idAircraftUnknown ? string.Empty : " AND aircraftID=?id"));
+            DBHelper dbh = new DBHelper(szQBase + szWhere);
             dbh.ReadRows(
                 (comm) => 
                 {
@@ -300,33 +329,83 @@ namespace MyFlightbook.FlightCurrency
         }
 
         /// <summary>
-        /// Return the currency status for all of the user's current deadlines.
+        /// Retrieves all deadlines that are owned by aircraft that the user maintains.  
+        /// I.e., shared aircraft deadlines for which (a) the user has recorded SOME maintenance on the aircraft and (b) the aircraft is active.
         /// </summary>
-        /// <param name="szUser">The user</param>
+        /// <param name="szUser">The username</param>
+        /// <returns>A list (enumerable) of matching deadline currencies.</returns>
+        public static IEnumerable<DeadlineCurrency> SharedAircraftDeadlinesForUser(string szUser)
+        {
+            string szQ = @"SELECT 
+    d.*, ac.tailnumber
+FROM
+    useraircraft ua
+        INNER JOIN
+    maintenancelog ml ON ua.username = ml.user
+        INNER JOIN
+    deadlines d ON (ml.idaircraft = d.aircraftID
+        AND d.username IS NULL)
+        INNER JOIN
+    aircraft ac ON d.aircraftID = ac.idaircraft
+WHERE
+    ua.username = ?user
+        AND (ua.Flags & 0x0008) = 0
+GROUP BY d.iddeadlines";
+
+            List<DeadlineCurrency> lst = new List<DeadlineCurrency>();
+            DBHelper dbh = new DBHelper(szQ);
+            dbh.ReadRows(
+                (comm) => { comm.Parameters.AddWithValue("user", szUser); },
+                (dr) => { lst.Add(new DeadlineCurrency(dr)); });
+            return lst;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lstIn"></param>
         /// <param name="daysForWarning">How many days to use for "getting close"</param>
         /// <returns></returns>
-        public static IEnumerable<CurrencyStatusItem> CurrencyForUser(string szUser, int daysForWarning = 30)
+        public static IEnumerable<CurrencyStatusItem> CurrencyForDeadlines(IEnumerable<DeadlineCurrency> lstIn, int daysForWarning = 30)
         {
             List<CurrencyStatusItem> lst = new List<CurrencyStatusItem>();
-            IEnumerable<DeadlineCurrency> deadlines = DeadlinesForUser(szUser);
 
-            foreach (DeadlineCurrency dc in deadlines)
+            if (lstIn == null)
+                return lst;
+
+            foreach (DeadlineCurrency dc in lstIn)
             {
                 string szLabel = dc.AircraftID > 0 ? String.Format(CultureInfo.CurrentCulture, "{0} - {1}", dc.TailNumber, dc.Name) : dc.Name;
 
                 if (dc.UsesHours)
-                    lst.Add(new CurrencyStatusItem(szLabel, dc.AircraftHours.ToString("#,##0.0#", CultureInfo.CurrentCulture), CurrencyState.NoDate, string.Empty) { AssociatedResourceID = dc.AircraftID, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Deadline });
+                    lst.Add(new CurrencyStatusItem(szLabel, dc.AircraftHours.ToString("#,##0.0#", CultureInfo.CurrentCulture), CurrencyState.NoDate, string.Empty)
+                    { AssociatedResourceID = dc.AircraftID, CurrencyGroup = (dc.IsSharedAircraftDeadline ? CurrencyStatusItem.CurrencyGroups.AircraftDeadline : CurrencyStatusItem.CurrencyGroups.Deadline) });
                 else if (dc.Expiration.HasValue())
                 {
                     TimeSpan ts = dc.Expiration.Subtract(DateTime.Now);
                     int days = (int)Math.Ceiling(ts.TotalDays);
                     CurrencyState cs = (ts.Days < 0) ? CurrencyState.NotCurrent : ((days < daysForWarning) ? CurrencyState.GettingClose : CurrencyState.OK);
                     lst.Add(new CurrencyStatusItem(szLabel, dc.Expiration.ToShortDateString(), cs, cs == CurrencyState.GettingClose ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
-                                                                               (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty) { AssociatedResourceID = dc.AircraftID, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.Deadline });
+                                                                               (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty)
+                    { AssociatedResourceID = dc.AircraftID, CurrencyGroup = (dc.IsSharedAircraftDeadline ? CurrencyStatusItem.CurrencyGroups.AircraftDeadline : CurrencyStatusItem.CurrencyGroups.Deadline) });
                 }
 
             }
             return lst;
+        }
+
+        /// <summary>
+        /// Return the currency status for all of the user's current deadlines, including ones owned by aircraft that (a) are in their profile, (b) are active, and (c) they have performed maintenance on.
+        /// </summary>
+        /// <param name="szUser">The user</param>
+        /// <returns></returns>
+        public static IEnumerable<DeadlineCurrency> DeadlinesForUserCurrency(string szUser)
+        {
+            List<DeadlineCurrency> deadlines = new List<DeadlineCurrency>(DeadlinesForUser(szUser));
+            deadlines.AddRange(SharedAircraftDeadlinesForUser(szUser));
+            deadlines.Sort();
+
+            return deadlines;
         }
 
         /// <summary>
@@ -356,6 +435,18 @@ namespace MyFlightbook.FlightCurrency
             if (!UsesHours && dcOriginal.Expiration.CompareTo(Expiration) != 0)
                 return String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineChangedDate, Name, dcOriginal.Expiration, Expiration);
             return string.Empty;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+                return 1;
+
+            DeadlineCurrency dc = (DeadlineCurrency)obj;
+            if (dc.AircraftID == AircraftID)
+                return DisplayName.CompareCurrentCultureIgnoreCase(dc.DisplayName);
+            else
+                return AircraftID.CompareTo(dc.AircraftID);
         }
         #endregion
     }

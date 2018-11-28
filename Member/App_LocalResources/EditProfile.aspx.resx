@@ -246,12 +246,6 @@
   <data name="btnAddBasicMedEventResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="btnAddDeadlineResource1.Text" xml:space="preserve">
-    <value>Add Deadline</value>
-  </data>
-  <data name="btnAddDeadlineResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="btnBlackListResource1.Text" xml:space="preserve">
     <value />
   </data>
@@ -330,12 +324,6 @@
   <data name="ckCanadianCurrencyResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="ckDeadlineUseHoursResource1.Text" xml:space="preserve">
-    <value>Deadline is determined using aircraft hours, not a date</value>
-  </data>
-  <data name="ckDeadlineUseHoursResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="ckIncludeModelFeatureTotalsResource1.Text" xml:space="preserve">
     <value>Include subtotals for model features like complex, turbine, tailwheel, etc.</value>
   </data>
@@ -412,9 +400,6 @@
     <value />
   </data>
   <data name="cmbMonthsMedicalResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="cmbRegenRangeResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="CommandFieldResource1.AccessibleHeaderText" xml:space="preserve">
@@ -636,12 +621,6 @@
   <data name="lblAddCustomCurrencyResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="lblAddDeadlinesResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblAddDeadlinesResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="lblAddressFinePrintResource1.Text" xml:space="preserve">
     <value>(Only used when printing your logbook)</value>
   </data>
@@ -682,54 +661,6 @@
     <value />
   </data>
   <data name="lblCurrencyPrefsUpdatedResource3.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblDeadlineAircraftOptionalResource1.Text" xml:space="preserve">
-    <value>(Optional)</value>
-  </data>
-  <data name="lblDeadlineAircraftOptionalResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblDeadlineAircraftResource1.Text" xml:space="preserve">
-    <value>Associated Aircraft:</value>
-  </data>
-  <data name="lblDeadlineAircraftResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblDeadlineDaysResource2.Text" xml:space="preserve">
-    <value>Extend the deadline by:</value>
-  </data>
-  <data name="lblDeadlineDaysResource2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblDeadlineManualResource1.Text" xml:space="preserve">
-    <value>Manually update or delete the deadline</value>
-  </data>
-  <data name="lblDeadlineManualResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblDeadlineNameResource1.Text" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="lblDeadlineNameResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblDeadlinesheader2Resource1.Text" xml:space="preserve">
-    <value>Examples include certificate/registration expirations, inspections mandated by airworthiness directives, employer-imposed deadlines, and such</value>
-  </data>
-  <data name="lblDeadlinesheader2Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblDeadlinesHeader3Resource1.Text" xml:space="preserve">
-    <value>A deadline may be due based on a calendar date, or, if associated with an aircraft, by the hours on that aircraft (typically hobbs or tachometer).</value>
-  </data>
-  <data name="lblDeadlinesHeader3Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblDeadlinesHeaderResource1.Text" xml:space="preserve">
-    <value>You can define custom deadlines that will appear in your currency.  The difference from other currencies is that a deadline isn't impacted by your flying.</value>
-  </data>
-  <data name="lblDeadlinesHeaderResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblDeadlinesSectionResource1.Text" xml:space="preserve">
@@ -780,34 +711,10 @@
   <data name="lblEmailPrefsUpdatedResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="lblErrResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblErrResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="lblFieldsToShowResource2.Text" xml:space="preserve">
     <value>Show the following for flights:</value>
   </data>
   <data name="lblFieldsToShowResource2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblHoursResource1.Text" xml:space="preserve">
-    <value>Hours</value>
-  </data>
-  <data name="lblHoursResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblHoursTipResource1.Text" xml:space="preserve">
-    <value>(Typically tach or hobbs)</value>
-  </data>
-  <data name="lblHoursTipResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblInitialDueDateResource2.Text" xml:space="preserve">
-    <value>Deadline is due:</value>
-  </data>
-  <data name="lblInitialDueDateResource2.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblIPCHelpTextResource1.Text" xml:space="preserve">
@@ -912,18 +819,6 @@
   <data name="lblQuestionResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="lblRegenExplainResource1.Text" xml:space="preserve">
-    <value>When the deadline has passed and you've done whatever is required:</value>
-  </data>
-  <data name="lblRegenExplainResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblRegenResource1.Text" xml:space="preserve">
-    <value>Regeneration:</value>
-  </data>
-  <data name="lblRegenResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="lblShowcurrencyResource1.Text" xml:space="preserve">
     <value />
   </data>
@@ -1016,24 +911,6 @@
   </data>
   <data name="ListItemResource2.Value" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="ListItemResource20.Text" xml:space="preserve">
-    <value>(None)</value>
-  </data>
-  <data name="ListItemResource20.Value" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ListItemResource21.Text" xml:space="preserve">
-    <value>Days</value>
-  </data>
-  <data name="ListItemResource21.Value" xml:space="preserve">
-    <value>Days</value>
-  </data>
-  <data name="ListItemResource22.Text" xml:space="preserve">
-    <value>Calendar Months</value>
-  </data>
-  <data name="ListItemResource22.Value" xml:space="preserve">
-    <value>CalendarMonths</value>
   </data>
   <data name="ListItemResource23.Value" xml:space="preserve">
     <value>False</value>
@@ -1464,18 +1341,6 @@
   <data name="rblTotalsOptionsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="rbRegenIntervalResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="rbRegenIntervalResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="rbRegenManualResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="rbRegenManualResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="RegularExpressionValidator1Resource1.ErrorMessage" xml:space="preserve">
     <value>Please enter a valid email address</value>
   </data>
@@ -1600,12 +1465,6 @@
     <value />
   </data>
   <data name="txtCertificateResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtDeadlineNameResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtDeadlineNameResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="txtEmail2Resource1.Text" xml:space="preserve">

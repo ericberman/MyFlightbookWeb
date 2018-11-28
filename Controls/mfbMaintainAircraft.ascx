@@ -4,6 +4,10 @@
 <%@ Register Src="mfbDecimalEdit.ascx" TagName="mfbDecimalEdit" TagPrefix="uc3" %>
 <%@ Register Src="mfbTypeInDate.ascx" TagName="mfbTypeInDate" TagPrefix="uc4" %>
 <%@ Register Src="~/Controls/mfbDeadlines.ascx" TagPrefix="uc1" TagName="mfbDeadlines" %>
+<%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
+
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <table>
@@ -145,41 +149,50 @@
                 <td>
                 </td>
             </tr>
-            <tr runat="server" id="rowDeadlines">
+            <tr>
                 <td class="label" style="vertical-align:top;">
                     <% =Resources.Currency.deadlinesHeaderDeadlines %>
+                    <uc1:mfbTooltip runat="server" id="mfbTooltip">
+                        <TooltipBody>
+                            <% =Resources.Currency.DeadlineDescription %>
+                        </TooltipBody>
+                    </uc1:mfbTooltip>
                 </td>
                 <td colspan="2">
-                    <uc1:mfbDeadlines runat="server" ID="mfbDeadlines1" OnDeadlineUpdated="mfbDeadlines1_DeadlineUpdated"  />
+                    <uc1:mfbDeadlines runat="server" ID="mfbDeadlines1" OnDeadlineUpdated="mfbDeadlines1_DeadlineUpdated" CreateShared="true" OnDeadlineAdded="mfbDeadlines1_DeadlineAdded" OnDeadlineDeleted="mfbDeadlines1_DeadlineDeleted" />
                 </td>
             </tr>
             <tr>
                 <td colspan="3">
-                    <h3><asp:Localize ID="locChangeHistoryHeader" runat="server" Text="Change History:" 
-                        meta:resourcekey="locChangeHistoryHeaderResource1"></asp:Localize></h3>
-                    <asp:Panel ID="pnlChangeHistory" runat="server" ScrollBars="Vertical" Height="72px" BorderStyle="Solid" BorderColor="Black" BorderWidth="1" meta:resourcekey="pnlChangeHistoryResource1">
-                        <asp:GridView ID="gvMaintLog" runat="server" Width="100%"
-                            AutoGenerateColumns="False" GridLines="None" OnPageIndexChanging="gvMaintLog_PageIndexChanging"
-                            CellPadding="5" ShowHeader="False" meta:resourcekey="gvMaintLogResource1">
-                            <RowStyle BorderStyle="None" />
-                            <Columns>
-                                <asp:BoundField DataField="ChangeDate" DataFormatString="{0:d}" meta:resourcekey="BoundFieldResource1" />
-                                <asp:BoundField DataField="Description" meta:resourcekey="BoundFieldResource2" />
-                                <asp:TemplateField meta:resourcekey="TemplateFieldResource1">
-                                    <ItemTemplate>
-                                        <asp:Localize ID="locChangedBy" runat="server" Text="By:" 
-                                            meta:resourcekey="locChangedByResource1"></asp:Localize>
-                                        <%# Eval("FullDisplayName") %>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:BoundField DataField="Comment" meta:resourcekey="BoundFieldResource3" />
-                            </Columns>
-                            <AlternatingRowStyle BackColor="#E0E0E0" BorderStyle="None" />
-                            <EmptyDataTemplate>
-                                <asp:Label ID="lblNoHistory" runat="server" Text="(No changes)" meta:resourcekey="lblNoHistoryResource1"></asp:Label>
-                            </EmptyDataTemplate>
-                        </asp:GridView>
-                    </asp:Panel>
+                    <uc1:Expando runat="server" ID="expandoMaintHistory">
+                        <Header>
+                            <asp:Localize ID="locChangeHistoryHeader" runat="server" Text="Change History:" 
+                                meta:resourcekey="locChangeHistoryHeaderResource1"></asp:Localize>
+                        </Header>
+                        <Body>
+                            <asp:GridView ID="gvMaintLog" runat="server" Width="100%"
+                                AutoGenerateColumns="False" GridLines="None" OnPageIndexChanging="gvMaintLog_PageIndexChanging"
+                                CellPadding="5" ShowHeader="False" meta:resourcekey="gvMaintLogResource1">
+                                <RowStyle BorderStyle="None" />
+                                <Columns>
+                                    <asp:BoundField DataField="ChangeDate" DataFormatString="{0:d}" meta:resourcekey="BoundFieldResource1" />
+                                    <asp:BoundField DataField="Description" meta:resourcekey="BoundFieldResource2" />
+                                    <asp:TemplateField meta:resourcekey="TemplateFieldResource1">
+                                        <ItemTemplate>
+                                            <asp:Localize ID="locChangedBy" runat="server" Text="By:" 
+                                                meta:resourcekey="locChangedByResource1"></asp:Localize>
+                                            <%# Eval("FullDisplayName") %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="Comment" meta:resourcekey="BoundFieldResource3" />
+                                </Columns>
+                                <AlternatingRowStyle BackColor="#E0E0E0" BorderStyle="None" />
+                                <EmptyDataTemplate>
+                                    <asp:Label ID="lblNoHistory" runat="server" Text="(No changes)" meta:resourcekey="lblNoHistoryResource1"></asp:Label>
+                                </EmptyDataTemplate>
+                            </asp:GridView>
+                        </Body>
+                    </uc1:Expando>
                 </td>
             </tr>
         </table>

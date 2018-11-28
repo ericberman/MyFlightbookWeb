@@ -1258,9 +1258,6 @@ namespace MyFlightbook
             if (EnglishProficiencyExpiration.HasValue())
                 rgCS.Add(StatusForDate(EnglishProficiencyExpiration, Resources.Currency.NextLanguageProficiency, CurrencyStatusItem.CurrencyGroups.Certificates));
 
-            // Now get any custom deadlines.
-            rgCS.AddRange(DeadlineCurrency.CurrencyForUser(UserName, 30));
-
             return rgCS;
         }
         #endregion

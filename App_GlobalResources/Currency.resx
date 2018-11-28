@@ -884,4 +884,13 @@
   <data name="CustomCurrencyEventNightTouchAndGos" xml:space="preserve">
     <value>Night touch-and-go landings</value>
   </data>
+  <data name="DeadlineCreated" xml:space="preserve">
+    <value>Deadline Created: {0}</value>
+  </data>
+  <data name="DeadlineDeleted" xml:space="preserve">
+    <value>Deadline Deleted: {0}</value>
+  </data>
+  <data name="DeadlineDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\deadlinedescription.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
 </root>
