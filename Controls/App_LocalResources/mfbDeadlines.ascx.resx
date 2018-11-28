@@ -312,13 +312,4 @@
   <data name="txtDeadlineNameResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="valDeadlineNameResource1.ErrorMessage" xml:space="preserve">
-    <value>Please give this deadline a name.</value>
-  </data>
-  <data name="valDeadlineNameResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="valDeadlineNameResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
 </root>

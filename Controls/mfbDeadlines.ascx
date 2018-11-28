@@ -79,7 +79,6 @@
                     </td>
                     <td>
                         <asp:TextBox ID="txtDeadlineName" runat="server" meta:resourcekey="txtDeadlineNameResource1"></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="valDeadlineName" runat="server" ControlToValidate="txtDeadlineName" CssClass="error" ErrorMessage="Please give this deadline a name." meta:resourceKey="valDeadlineNameResource1" ValidationGroup="vgAddDeadlines"></asp:RequiredFieldValidator>
                     </td>
                 </tr>
                 <tr style="vertical-align:top" runat="server" id="rowAircraft">
