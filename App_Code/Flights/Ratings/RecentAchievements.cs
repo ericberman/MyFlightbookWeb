@@ -143,7 +143,7 @@ namespace MyFlightbook.MilestoneProgress
 
             miLongestStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1);
             miFlyingDates = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlyingDayCountTitle, MilestoneItem.MilestoneType.Count, 1);
-            miMostFlightsInDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostFlightsInDayTitle, MilestoneItem.MilestoneType.Count, 1);
+            miMostFlightsInDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostFlightsInDayTitle, MilestoneItem.MilestoneType.Count, 2);
             miLongestFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsLongestFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miFurthestFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFurthestFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miAircraft = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsDistinctAircraftTitle, MilestoneItem.MilestoneType.Count, 1);
