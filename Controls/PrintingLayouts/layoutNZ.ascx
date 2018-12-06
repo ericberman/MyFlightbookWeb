@@ -46,7 +46,7 @@
                 <ItemTemplate>
                     <tr class="bordered">
                         <td style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></td>
-                        <td><div><%#: Eval("ModelDisplay") %></div><div><%#: Eval("CatClassDisplay") %></div></td>
+                        <td><div><%#: Eval("ModelDisplay") %> (<%#: Eval("CatClassDisplay") %>)</div></td>
                         <td><%#: Eval("TailNumDisplay") %></td>
                         <td><%#: Eval("PICName") %></td>
                         <td><%#: Eval("SICName") %> <%#: Eval("StudentName") %></td>
