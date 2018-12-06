@@ -267,7 +267,10 @@ namespace MyFlightbook.Printing
     [Serializable]
     public class PrintingOptions
     {
+
         public enum PropertySeparatorType { Space, Comma, Semicolon, Newline }
+
+        public enum ModelDisplayMode { Full, Short, ICAO }
 
         #region properties
         /// <summary>
@@ -289,6 +292,11 @@ namespace MyFlightbook.Printing
         /// Properties to exclude from printing
         /// </summary>
         public int[] ExcludedPropertyIDs { get; set; }
+
+        /// <summary>
+        /// How do we want to display model names?
+        /// </summary>
+        public ModelDisplayMode DisplayMode { get; set; }
 
         /// <summary>
         /// Character to use to separate properties in print layout
@@ -330,6 +338,7 @@ namespace MyFlightbook.Printing
             FlightsPerPage = 15;    // default
             IncludeImages = false;
             IncludePullForwardTotals = true;
+            DisplayMode = ModelDisplayMode.Full;
             Layout = PrintLayoutType.Native;
             ExcludedPropertyIDs = new int[0];
             PropertySeparator = PropertySeparatorType.Space;

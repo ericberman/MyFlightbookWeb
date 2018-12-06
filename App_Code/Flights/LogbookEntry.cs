@@ -2377,6 +2377,10 @@ namespace MyFlightbook
             get { return RowType == LogbookRowType.Flight ? CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)EffectiveCatClass).CatClass : string.Empty; }
         }
 
+        public string ShortModelName { get; set; }
+
+        public string FamilyName { get; set; }
+
         /// <summary>
         /// The ID of the model of aircraft
         /// </summary>
@@ -2885,6 +2889,8 @@ namespace MyFlightbook
             CustPropertyDisplay = CustomFlightProperty.PropListDisplay(CustomProperties, UseHHMM);
 
             InstanceType = (AircraftInstanceTypes) Convert.ToInt32(dr["InstanceType"], CultureInfo.InvariantCulture);
+            ShortModelName = (string)dr["ShortModelDisplay"];
+            FamilyName = (string)dr["FamilyDisplay"];
         }
 
         protected LogbookEntryDisplay(MySqlDataReader dr, string szUser, bool fUseHHMM, bool fUseUTCDate)

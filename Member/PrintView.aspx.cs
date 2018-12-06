@@ -168,6 +168,19 @@ public partial class Member_PrintView : System.Web.UI.Page
             // Fix up properties according to the printing options
             List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
 
+            // And fix up model as well.
+            switch (printingOptions.DisplayMode) {
+                case PrintingOptions.ModelDisplayMode.Full:
+                    break;
+                case PrintingOptions.ModelDisplayMode.Short:
+                    led.ModelDisplay = led.ShortModelName;
+                    break;
+                case PrintingOptions.ModelDisplayMode.ICAO:
+                    led.ModelDisplay = led.FamilyName;
+                    break;
+            }
+
+
             // Remove from the total property set all explicitly excluded properties...
             lstProps.RemoveAll(cfp => lstPropsToExclude.Contains(cfp.PropTypeID));
             led.CustomProperties = lstProps.ToArray();  

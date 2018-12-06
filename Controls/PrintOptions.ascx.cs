@@ -54,6 +54,8 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
 
             m_options.IncludePullForwardTotals = ckPullForwardTotals.Checked;
 
+            m_options.DisplayMode = (PrintingOptions.ModelDisplayMode)cmbModelDisplay.SelectedIndex;
+
             return m_options;
         }
         set
@@ -85,6 +87,8 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
 
             ckPullForwardTotals.Checked = value.IncludePullForwardTotals;
             ckPullForwardTotals.Visible = m_options.FlightsPerPage > 0;
+
+            cmbModelDisplay.SelectedIndex = (int)value.DisplayMode;
 
             AdjustForLayoutCapabilities(m_options);
         }
@@ -247,6 +251,11 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
     }
 
     protected void ckPullForwardTotals_CheckedChanged(object sender, EventArgs e)
+    {
+        NotifyDelegate();
+    }
+
+    protected void cmbModelDisplay_SelectedIndexChanged(object sender, EventArgs e)
     {
         NotifyDelegate();
     }

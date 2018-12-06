@@ -24,12 +24,24 @@
     </asp:DropDownList>
     <div><asp:CheckBox ID="ckPullForwardTotals" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludePreviousPageTotals %>" Checked="true" AutoPostBack="true" OnCheckedChanged="ckPullForwardTotals_CheckedChanged" /></div>
 </asp:Panel>
+<asp:Panel ID="pnlModelDisplay" runat="server">
+    <p><asp:Label ID="lblModelDisplay" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, PrintViewModelDisplay %>"></asp:Label></p>
+    <asp:DropDownList ID="cmbModelDisplay" runat="server" AutoPostBack="true" OnSelectedIndexChanged="cmbModelDisplay_SelectedIndexChanged">
+        <asp:ListItem Text="<%$ Resources:LocalizedText, PrintViewModelDisplayFull %>" Value="Full" Selected="True"></asp:ListItem>
+        <asp:ListItem Text="<%$ Resources:LocalizedText, PrintViewModelDisplayShort %>" Value="Short"></asp:ListItem>
+        <asp:ListItem Text="<%$ Resources:LocalizedText, PrintViewModelDisplayICAO %>" Value="ICAO"></asp:ListItem>
+    </asp:DropDownList>
+</asp:Panel>
 <asp:Panel ID="pnlOptionalColumns" runat="server">
     <p><asp:Label ID="lblOptionalColumnsHeader" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, PrintViewOptionalColumns %>"></asp:Label></p>
-    <p><asp:DropDownList ID="cmbOptionalColumn1" runat="server" AutoPostBack="true" DataTextField="Text" DataValueField="Value" OnSelectedIndexChanged="cmbOptionalColumn1_SelectedIndexChanged"></asp:DropDownList></p> 
-    <p><asp:DropDownList ID="cmbOptionalColumn2" runat="server" AutoPostBack="true" DataTextField="Text" DataValueField="Value" OnSelectedIndexChanged="cmbOptionalColumn2_SelectedIndexChanged"></asp:DropDownList></p>
-    <p><asp:DropDownList ID="cmbOptionalColumn3" runat="server" AutoPostBack="true" DataTextField="Text" DataValueField="Value" OnSelectedIndexChanged="cmbOptionalColumn3_SelectedIndexChanged"></asp:DropDownList></p>
-    <p><asp:DropDownList ID="cmbOptionalColumn4" runat="server" AutoPostBack="true" DataTextField="Text" DataValueField="Value" OnSelectedIndexChanged="cmbOptionalColumn4_SelectedIndexChanged"></asp:DropDownList></p>
+    <div style="display:inline-block">
+        <p><asp:DropDownList ID="cmbOptionalColumn1" runat="server" AutoPostBack="true" DataTextField="Text" DataValueField="Value" OnSelectedIndexChanged="cmbOptionalColumn1_SelectedIndexChanged"></asp:DropDownList></p> 
+        <p><asp:DropDownList ID="cmbOptionalColumn2" runat="server" AutoPostBack="true" DataTextField="Text" DataValueField="Value" OnSelectedIndexChanged="cmbOptionalColumn2_SelectedIndexChanged"></asp:DropDownList></p>
+    </div>
+    <div style="display:inline-block">
+        <p><asp:DropDownList ID="cmbOptionalColumn3" runat="server" AutoPostBack="true" DataTextField="Text" DataValueField="Value" OnSelectedIndexChanged="cmbOptionalColumn3_SelectedIndexChanged"></asp:DropDownList></p>
+        <p><asp:DropDownList ID="cmbOptionalColumn4" runat="server" AutoPostBack="true" DataTextField="Text" DataValueField="Value" OnSelectedIndexChanged="cmbOptionalColumn4_SelectedIndexChanged"></asp:DropDownList></p>
+    </div>
 </asp:Panel>
 <asp:Panel ID="pnlProperties" runat="server" style="padding:3px">
     <p>
