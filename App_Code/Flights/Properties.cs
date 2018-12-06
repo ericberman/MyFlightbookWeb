@@ -1185,7 +1185,7 @@ ORDER BY f.Date Desc");
             if (String.IsNullOrEmpty(szUser))
                 return null;
 
-            const string szQ = @"SELECT cp.title, fp.idPropType AS PropTypeID, GROUP_CONCAT(DISTINCT fp.StringValue SEPARATOR '\t') AS PrevVals 
+            const string szQ = @"SELECT cp.title, fp.idPropType AS PropTypeID, GROUP_CONCAT(DISTINCT fp.StringValue ORDER BY f.date DESC SEPARATOR '\t') AS PrevVals 
 FROM Flightproperties fp
 INNER JOIN CustomPropertyTypes cp ON fp.idProptype=cp.idProptype
 INNER JOIN Flights f ON fp.idFlight=f.idflight
