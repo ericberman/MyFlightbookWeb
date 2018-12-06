@@ -80,6 +80,7 @@ namespace MyFlightbook
             IDBlockOut = 187,
             IDPropCFIITime = 192,
             IDPropGroundInstructionGiven = 198,
+            IDPropGliderTow = 202,              // Not flagged as a known property
             IDPropGliderTowedLaunch = 222,
             IDPropGliderMaxAltitude = 223,
             IDPropGliderReleaseAltitude = 224,

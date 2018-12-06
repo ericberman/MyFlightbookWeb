@@ -234,7 +234,8 @@ namespace MyFlightbook.FlightCurrency
                         { CustomCurrency.CustomCurrencyEventType.CAP5Checkride, new string[] { Resources.Currency.CustomCurrencyEventCap5Checkride, Resources.Currency.CustomCurrencyEventCap5Checkrides } },
                         { CustomCurrency.CustomCurrencyEventType.CAP91Checkride, new string[] { Resources.Currency.CustomCurrencyEventCap91Checkride, Resources.Currency.CustomCurrencyEventCap91Checkrides } },
                         { CustomCurrency.CustomCurrencyEventType.FMSApproaches, new string[] { Resources.Currency.CustomCurrencyEventFMSApproach, Resources.Currency.CustomCurrencyEventFMSApproaches } },
-                        {CustomCurrency.CustomCurrencyEventType.NightTouchAndGo, new string[] {Resources.Currency.CustomCurrencyEventNightTouchAndGo, Resources.Currency.CustomCurrencyEventNightTouchAndGos} }
+                        { CustomCurrency.CustomCurrencyEventType.NightTouchAndGo, new string[] {Resources.Currency.CustomCurrencyEventNightTouchAndGo, Resources.Currency.CustomCurrencyEventNightTouchAndGos} },
+                        { CustomCurrency.CustomCurrencyEventType.GliderTow, new string[] {Resources.Currency.CustomCurrencyEventGliderTow, Resources.Currency.CustomCurrencyEventGliderTows } }
                     };
             }
 
@@ -283,6 +284,7 @@ namespace MyFlightbook.FlightCurrency
                 case CustomCurrency.CustomCurrencyEventType.CAP5Checkride:
                 case CustomCurrency.CustomCurrencyEventType.CAP91Checkride:
                 case CustomCurrency.CustomCurrencyEventType.FMSApproaches:
+                case CustomCurrency.CustomCurrencyEventType.GliderTow:
                     return true;
                 case CustomCurrency.CustomCurrencyEventType.TotalHours:
                 case CustomCurrency.CustomCurrencyEventType.Hours:
@@ -339,7 +341,8 @@ namespace MyFlightbook.FlightCurrency
             CAP91Checkride = 23,
             FMSApproaches = 24,
             HoursDual = 25,
-            NightTouchAndGo = 26
+            NightTouchAndGo = 26,
+            GliderTow = 27
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1, Properties = 2 };
@@ -874,6 +877,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     case CustomCurrencyEventType.FMSApproaches:
                         prop = CustomPropertyType.KnownProperties.IDPropFMSApproaches;
                         break;
+                    case CustomCurrencyEventType.GliderTow:
+                        prop = CustomPropertyType.KnownProperties.IDPropGliderTow;
+                        break;
                     case CustomCurrencyEventType.HoursDual:
                         fq.HasDual = true;
                         break;
@@ -1081,6 +1087,10 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     break;
                 case CustomCurrencyEventType.FMSApproaches:
                     if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFMSApproaches)) != null)
+                        AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
+                    break;
+                case CustomCurrencyEventType.GliderTow:
+                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropGliderTow)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
                     break;
             }

@@ -893,4 +893,10 @@
   <data name="DeadlineDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\deadlinedescription.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="CustomCurrencyEventGliderTow" xml:space="preserve">
+    <value>Glider Tow</value>
+  </data>
+  <data name="CustomCurrencyEventGliderTows" xml:space="preserve">
+    <value>Glider Tows</value>
+  </data>
 </root>
