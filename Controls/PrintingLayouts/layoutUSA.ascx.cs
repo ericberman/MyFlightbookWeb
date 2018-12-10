@@ -19,14 +19,11 @@ public partial class Controls_PrintingLayouts_layoutUSA : System.Web.UI.UserCont
 
     protected OptionalColumn[] OptionalColumns { get; set; }
 
-    protected Boolean ShowOptionalColumn(int index)
+    protected string OtherCatClassValue(LogbookEntryDisplay led)
     {
-        return OptionalColumns != null && index >= 0 && index < OptionalColumns.Length;
-    }
-
-    protected string OptionalColumnName(int index)
-    {
-        return ShowOptionalColumn(index) ? OptionalColumns[index].Title : string.Empty;
+        return (led != null && led.EffectiveCatClass != (int)CategoryClass.CatClassID.ASEL && led.EffectiveCatClass != (int)CategoryClass.CatClassID.AMEL && OptionalColumn.ShowOtherCatClass(OptionalColumns, (CategoryClass.CatClassID)led.EffectiveCatClass)) ? 
+            String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0}: {1}", led.CategoryClassNoType, led.TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM)) : 
+            string.Empty;
     }
 
     #region IPrintingTemplate

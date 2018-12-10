@@ -2342,9 +2342,114 @@ namespace MyFlightbook
             throw new ArgumentOutOfRangeException("type", "Unknown OptionalColumnType: " + type.ToString());
         }
 
-        public override string ToString()
+        public bool IsCatClass
         {
-            return Title;
+            get
+            {
+                switch (ColumnType)
+                {
+                    default:
+                        return false;
+                    case OptionalColumnType.AMEL:
+                    case OptionalColumnType.AMES:
+                    case OptionalColumnType.ASEL:
+                    case OptionalColumnType.ASES:
+                    case OptionalColumnType.Glider:
+                    case OptionalColumnType.Helicopter:
+                        return true;
+                }
+            }
+        }
+
+        public static int CatClassColumnCount(IEnumerable<OptionalColumn> optionalColumns)
+        {
+            return (optionalColumns == null) ? 0 : optionalColumns.Count(oc => oc.IsCatClass);
+        }
+
+        public override string ToString() { return Title; }
+
+        public enum OptionalColumnRestriction { None, CatClassOnly, NotCatClass };
+
+        /// <summary>
+        /// Indicates whether or not to show a column at the specified index.  Can restrict to category/class columns if the layout would group those separate from other optional columns
+        /// </summary>
+        /// <param name="OptionalColumns"></param>
+        /// <param name="index"></param>
+        /// <param name="restriction"></param>
+        /// <returns></returns>
+        public static bool ShowOptionalColumn(IEnumerable<OptionalColumn> OptionalColumns, int index, OptionalColumnRestriction restriction)
+        {
+            if (OptionalColumns == null || index < 0 || index >= OptionalColumns.Count())
+                return false;
+
+            switch (restriction)
+            {
+                default:
+                case OptionalColumnRestriction.None:
+                    return true;
+                case OptionalColumnRestriction.CatClassOnly:
+                    return OptionalColumns.ElementAt(index).IsCatClass;
+                case OptionalColumnRestriction.NotCatClass:
+                    return !OptionalColumns.ElementAt(index).IsCatClass;
+            }
+        }
+
+        /// <summary>
+        /// Title for a given column to display
+        /// </summary>
+        /// <param name="OptionalColumns"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static string OptionalColumnName(IEnumerable<OptionalColumn> OptionalColumns, int index)
+        {
+            return ShowOptionalColumn(OptionalColumns, index, OptionalColumnRestriction.None) ? OptionalColumns.ElementAt(index).Title : string.Empty;
+        }
+
+        /// <summary>
+        /// For layouts that have a column for all times not otherwise in columns, answers whether or not the given catclass has its own columnID.  If true, should show this in the "other" bucket, if false, should suppress
+        /// </summary>
+        /// <param name="OptionalColumns"></param>
+        /// <param name="catClassID"></param>
+        /// <returns></returns>
+        public static bool ShowOtherCatClass(IEnumerable<OptionalColumn> OptionalColumns, CategoryClass.CatClassID catClassID)
+        {
+            if (OptionalColumns == null)
+                return true;
+
+            foreach (OptionalColumn oc in OptionalColumns)
+            {
+                switch (catClassID)
+                {
+                    default:
+                        break;
+                    case CategoryClass.CatClassID.AMEL:
+                        if (oc.ColumnType == OptionalColumnType.AMEL)
+                            return false;
+                        break;
+                    case CategoryClass.CatClassID.ASEL:
+                        if (oc.ColumnType == OptionalColumnType.ASEL)
+                            return false;
+                        break;
+                    case CategoryClass.CatClassID.ASES:
+                        if (oc.ColumnType == OptionalColumnType.ASES)
+                            return false;
+                        break;
+                    case CategoryClass.CatClassID.AMES:
+                        if (oc.ColumnType == OptionalColumnType.AMES)
+                            return false;
+                        break;
+                    case CategoryClass.CatClassID.Helicopter:
+                        if (oc.ColumnType == OptionalColumnType.Helicopter)
+                            return false;
+                        break;
+                    case CategoryClass.CatClassID.Glider:
+                        if (oc.ColumnType == OptionalColumnType.Glider)
+                            return false;
+                        break;
+                }
+            }
+
+            return true;
         }
     }
 
