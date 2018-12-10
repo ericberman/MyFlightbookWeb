@@ -513,7 +513,12 @@ function setDates(isCustom)
 
             foreach (ListItem li in cklAircraft.Items)
                 if (li.Selected)
-                    lstAircraft.Add(Array.Find(rgAircraft, ac => ac.AircraftID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)));
+                {
+                    // ac can be null if it's been deleted between the form being populated and this method being called.  Ignore it in that case.
+                    Aircraft acQuery = Array.Find(rgAircraft, ac => ac.AircraftID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture));
+                    if (acQuery != null)
+                        lstAircraft.Add(acQuery);
+                }
 
             m_fq.AircraftList = lstAircraft.ToArray();
         }
