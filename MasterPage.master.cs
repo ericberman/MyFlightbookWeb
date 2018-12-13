@@ -23,6 +23,13 @@ public partial class MasterPage : System.Web.UI.MasterPage
         set { Session[szKeyIsNakedSession] = value; }
     }
 
+    private const string szKeyIsNightSession = "IsNightSession";
+    protected bool IsNight
+    {
+        get { return (Session[szKeyIsNightSession] != null && (Boolean)Session[szKeyIsNightSession] == true); }
+        set { Session[szKeyIsNightSession] = value; }
+    }
+
     /// <summary>
     /// Get/set the selected tab, by name.
     /// </summary>
@@ -205,6 +212,13 @@ public partial class MasterPage : System.Web.UI.MasterPage
             IsNaked = util.GetIntParam(Request, "naked", 0) != 0 || (Session["IsNaked"] != null && ((bool) Session["IsNaked"]) == true);
             if (IsNaked)
                 pnlCookies.Visible = mfbHeader.Visible = MfbFooter.Visible = SponsoredAd1.Visible = false;
+
+            string nightRequest = util.GetStringParam(Request, "night");
+            if (nightRequest.CompareCurrentCultureIgnoreCase("yes") == 0)
+                IsNight = true;
+            else if (nightRequest.CompareCurrentCultureIgnoreCase("no") == 0)
+                IsNight = false;
+            cssNight.Visible = IsNight;
 
             bool fIsImpersonating = ProfileRoles.IsImpersonating(Page.User.Identity.Name);
             pnlImpersonation.Visible = fIsImpersonating;

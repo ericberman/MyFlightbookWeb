@@ -1,0 +1,50 @@
+﻿body {
+    background-color: #263238 !important;
+    color: white;
+}
+
+a, a:visited {
+    color: #00bcd4;
+}
+
+h1 {
+    color: #00bcd4;
+    background-color: #263238;
+}
+
+p, div, h2, h3, topTab, a.topTab, a.topTab:visited, #menu-bar .topTab, #menu-bar .current a, #menu-bar a.topTab:hover, #menu-bar li:hover > a {
+    color: white;
+}
+
+.topForm, .sidebarRight, .noprint {
+    background-color: #263238 !important;
+    color: white;
+}
+
+#menu-bar, #menu-bar li, #menu-bar .current a, .watermark {
+    background-color: transparent;
+}
+
+.endorsement, callout, .accordianHeader {
+    background-color: #686868;
+}
+
+.accordianHeaderSelected {
+    background-color: #AAAAAA;
+}
+
+.draggableItem {
+    background-color: darkgray;
+}
+
+.logbookAlternateRow {
+    background-color: #263238;
+}
+
+.headerBase, .headerBase a, .headerBase a:hover {
+    color: white;
+}
+
+.signFlightFlightToSign > table {
+    background-color: #686868;
+}
