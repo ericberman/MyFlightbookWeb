@@ -84,8 +84,13 @@
             <div style="margin-top: 50px;">
                 <asp:Repeater ID="rptSchedules" runat="server" OnItemDataBound="rptSchedules_ItemDataBound">
                     <ItemTemplate>
-                        <div style="clear:both;">
+                        <div style="clear:both;" class="hostedSchedule">
                             <h3><asp:HyperLink ID="lnkClub" NavigateUrl='<%# String.Format("~/Member/ClubDetails.aspx/{0}", Eval("ID")) %>' runat="server"><%# Eval("Name") %></asp:HyperLink></h3>
+                            <style type="text/css">
+                                p, div, h2, h3, topTab, a.topTab, a.topTab:visited, #menu-bar .topTab, #menu-bar .current a, #menu-bar a.topTab:hover, #menu-bar li:hover > a {
+                                    color: unset;
+                                }
+                            </style>
                             <uc2:mfbResourceSchedule ID="schedAircraft" NavInitClientFunction="InitClubNav" HideNavContainer="true" ShowResourceDetails="false" ClubID='<%# Eval("ID") %>' ResourceID="<%# AircraftID.ToString() %>" runat="server">
                             </uc2:mfbResourceSchedule>
                             <asp:Label ID="lblUpcoming" runat="server" Text="Upcoming scheduled items:" meta:resourcekey="lblUpcomingResource1"></asp:Label>
