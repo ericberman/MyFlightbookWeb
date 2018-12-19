@@ -38,7 +38,7 @@
             </td>
         </tr>
         <tr>
-            <td>Scope:</td>
+            <td style="vertical-align:top">Scope:</td>
             <td>
                 <asp:TextBox ID="txtScope" runat="server" Width="400px">currency totals addflight readflight addaircraft readaircraft visited namedqueries images</asp:TextBox>
                 <asp:RequiredFieldValidator ID="reqScopeRequired" runat="server" ErrorMessage="At least some scopes are required for authorization" ControlToValidate="txtScope"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
@@ -55,7 +55,7 @@
             </td>
         </tr>
         <tr>
-            <td>Token URL</td>
+            <td style="vertical-align:top">Token URL</td>
             <td>
                 <asp:TextBox ID="txtTokenURL" runat="server" Width="400px">https://myflightbook.com/logbook/public/oAuthToken.aspx</asp:TextBox>
                 <asp:RequiredFieldValidator ID="valReqToken" runat="server" ErrorMessage="A token endpoint (URL) is required" ControlToValidate="txtScope"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
@@ -70,11 +70,12 @@
             </td>
         </tr>
         <tr style="vertical-align:top">
-            <td><div>Resource URL:</div>
+            <td style="vertical-align:top"><div>Resource URL:</div>
                 <div class="fineprint">(minus verb, other data)</div></td>
             <td>
-                <asp:TextBox ID="txtResourceURL" runat="server" Width="400px">https://myflightbook.com/logbook/public/oAuthToken.aspx/</asp:TextBox>
-                <asp:RequiredFieldValidator ID="valReqResource" runat="server" ErrorMessage="The URL for resources is required." ControlToValidate="txtScope"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
+                <div><asp:TextBox ID="txtResourceURL" runat="server" Width="400px">https://myflightbook.com/logbook/public/oAuthToken.aspx/</asp:TextBox>
+                <asp:RequiredFieldValidator ID="valReqResource" runat="server" ErrorMessage="The URL for resources is required." ControlToValidate="txtScope"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator></div>
+                <div><asp:CheckBox ID="ckDebug" runat="server" Checked="true" Text="Show errors instead of throwing exceptions" /> <span style="fineprint">(Only works with logbook/public/oAuthToken.aspx)</span></div>
             </td>
         </tr>
         <tr style="vertical-align:top">
@@ -245,7 +246,7 @@
         </tr>
     </table>
     
-    <asp:Button ID="btnGetResrouce" runat="server" Text="Get Resource (GET)" OnClick="btnGetResrouce_Click" />
+    <asp:Button ID="btnGetResource" runat="server" Text="Get Resource (GET)" OnClick="btnGetResource_Click" />
     &nbsp;<asp:Button ID="btnPostResource" runat="server" Text="Get Resource (POST)" OnClick="btnPostResource_Click" />
     &nbsp;<asp:Button ID="btnClearState" runat="server" OnClick="btnClearState_Click" Text="Clear State" />
     <div><asp:Label ID="lblErr" EnableViewState="false" runat="server" CssClass="error"></asp:Label></div>

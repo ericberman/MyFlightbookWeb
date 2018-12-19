@@ -46,7 +46,7 @@ public partial class Public_Developer : System.Web.UI.Page
                     if (scope != MFBOAuthScope.none)
                         cklScopes.Items.Add(new ListItem(MFBOauthServer.ScopeDescription(scope), scope.ToString()));
 
-                gvMyServices.DataSource = OwnedClients;
+                gvMyServices.DataSource = (util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanSupport) ? MFBOauth2Client.GetAvailableClients() : OwnedClients;
                 gvMyServices.DataBind();
             }
             else

@@ -204,16 +204,17 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         {
             OAuthServiceID action = SelectedAction;
 
-            return String.Format(CultureInfo.InvariantCulture, "{0}{1}?access_token={2}&json={3}{4}",
+            return String.Format(CultureInfo.InvariantCulture, "{0}{1}?access_token={2}&json={3}{4}{5}",
                 action == OAuthServiceID.UploadImage ? txtImgUploadURL.Text : txtResourceURL.Text,
                 action == OAuthServiceID.none ? txtCustomVerb.Text : (action == OAuthServiceID.UploadImage ? string.Empty : action.ToString()),
                 lblToken.Text,
                 ckJSON.Checked ? "1" : "0",
-                String.IsNullOrEmpty(txtCallBack.Text) ? string.Empty : "&callback=" + txtCallBack.Text);
+                String.IsNullOrEmpty(txtCallBack.Text) ? string.Empty : "&callback=" + txtCallBack.Text,
+                ckDebug.Checked ? "&dbg=1" : string.Empty);
         }
     }
 
-    protected void btnGetResrouce_Click(object sender, EventArgs e)
+    protected void btnGetResource_Click(object sender, EventArgs e)
     {
         ToSession();
         StringBuilder sb = new StringBuilder(ResourcePath);
