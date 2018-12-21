@@ -2160,17 +2160,17 @@ namespace MyFlightbook
                     case AutoFillOptions.AutoFillTotalOption.None:
                         break;
                     case AutoFillOptions.AutoFillTotalOption.EngineTime:
-                        if (EngineStart.HasValue() && EngineEnd.HasValue())
+                        if (EngineStart.HasValue() && EngineEnd.HasValue() && EngineStart.CompareTo(EngineEnd) < 0)
                         {
-                            TotalFlightTime = Convert.ToDecimal(TimeSpan.FromTicks(EngineEnd.Ticks - EngineStart.Ticks).TotalHours);
+                            TotalFlightTime = (decimal) EngineEnd.Subtract(EngineStart).TotalHours;
                             break;
                         }
                         goto case AutoFillOptions.AutoFillTotalOption.FlightTime;
                     // else fall through and do flight time.
                     case AutoFillOptions.AutoFillTotalOption.FlightTime:
-                        if (FlightStart.HasValue() && FlightEnd.HasValue())
+                        if (FlightStart.HasValue() && FlightEnd.HasValue() && FlightStart.CompareTo(FlightEnd) < 0)
                         {
-                            TotalFlightTime = Convert.ToDecimal(TimeSpan.FromTicks(FlightEnd.Ticks - FlightStart.Ticks).TotalHours);
+                            TotalFlightTime = (decimal) FlightEnd.Subtract(FlightStart).TotalHours;
                             break;
                         }
                         goto case AutoFillOptions.AutoFillTotalOption.HobbsTime;

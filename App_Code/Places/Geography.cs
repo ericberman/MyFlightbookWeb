@@ -628,9 +628,9 @@ namespace MyFlightbook.Geography
             // double delta = 2 * Math.Asin(Math.Sqrt(Math.Pow((Math.Sin((rlat1 - rlat2) / 2)), 2) + Math.Cos(rlat1) * Math.Cos(rlat2) * Math.Pow(Math.Sin((rlon1 - rlon2) / 2), 2)));
             double sin_delta = Math.Sin(delta);
 
-            // Compute path at 1-minute intervals.
+            // Compute path at 1-minute intervals, subtracting off one minute since we'll add a few "full-stop" samples below.
             TimeSpan ts = dtEnd.Subtract(dtStart);
-            double minutes = ts.TotalMinutes;
+            double minutes = ts.TotalMinutes - 1;
 
             if (minutes > 48 * 60 || minutes <= 0)  // don't do paths more than 48 hours, or negative times.
                 return lst;
@@ -660,9 +660,9 @@ namespace MyFlightbook.Geography
             }
 
             // Add a few stopped fields at the end to make it clear that there's a full-stop.  Separate them by a few seconds each.
-            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(10), 0));
-            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(20), 0));
-            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(30), 0));
+            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(3), 0));
+            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(6), 0));
+            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(9), 0));
 
             return lst;
         }
