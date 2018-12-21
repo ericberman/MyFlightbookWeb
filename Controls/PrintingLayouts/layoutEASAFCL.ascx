@@ -101,7 +101,7 @@
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).NetDayLandings %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).NetNightLandings %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).Nighttime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).IFRTimeTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td><%# ((LogbookEntryDisplay) Container.DataItem).IFRTimeTotal.FormatDecimal(CurrentUser.UsesHHMM) %> <%# ((LogbookEntryDisplay) Container.DataItem).InstrumentTimeDisplay %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).PIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).SIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).Dual.FormatDecimal(CurrentUser.UsesHHMM) %></td>

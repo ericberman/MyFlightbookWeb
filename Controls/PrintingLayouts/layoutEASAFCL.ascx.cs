@@ -51,6 +51,9 @@ public partial class Controls_PrintingLayouts_layoutEASAFCL : System.Web.UI.User
             throw new ArgumentNullException("e");
 
         LogbookPrintedPageSubtotalsCollection sc = (LogbookPrintedPageSubtotalsCollection)e.Item.DataItem;
+        bool fHHMM = CurrentUser.UsesHHMM;
+        foreach (LogbookEntryDisplay led in sc.Subtotals)
+            led.UseHHMM = fHHMM;
         Repeater rpt = (Repeater)e.Item.FindControl("rptSubtotals");
         rpt.DataSource = sc.Subtotals;
         rpt.DataBind();
