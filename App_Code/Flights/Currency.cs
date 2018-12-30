@@ -1770,15 +1770,31 @@ namespace MyFlightbook.FlightCurrency
             if (fIncludeAllFlights || m_edpCurrent != null || edp.Specification != DutySpecification.None)
             {
                 DateTime dtFlight = DateTime.SpecifyKind(cfr.dtFlight, DateTimeKind.Utc);
-                DateTime dtEffectiveEnd = new DateTime(cfr.dtFlight.Year, cfr.dtFlight.Month, cfr.dtFlight.Day, 23, 59, 0, DateTimeKind.Utc);
 
-                // compute an effective flight start time for the flight
-                DateTime flightStart = dtFlight.LaterDate(cfr.dtFlightStart).LaterDate(cfr.dtEngineStart);
-                DateTime flightEnd = dtEffectiveEnd.EarlierDate(cfr.dtFlightEnd.HasValue() ? cfr.dtFlightEnd : DateTime.MaxValue).EarlierDate(cfr.dtEngineEnd.HasValue() ? cfr.dtEngineEnd : DateTime.MaxValue);
+                DateTime flightStart, flightEnd;
+
+                if (cfr.dtEngineStart.HasValue() && cfr.dtEngineEnd.HasValue())
+                {
+                    flightStart = cfr.dtEngineStart;
+                    flightEnd = cfr.dtEngineEnd;
+                } else if (cfr.dtFlightStart.HasValue() && cfr.dtFlightEnd.HasValue())
+                {
+                    flightStart = cfr.dtFlightStart;
+                    flightEnd = cfr.dtFlightEnd;
+                }
+                else
+                {
+                    // use 11:59pm as the flight end time and compute flight start based off of that to pull as much of it as possible 
+                    // into the 672 hour or 365 day window.  (I.e., most conservative)
+                    flightEnd = new DateTime(cfr.dtFlight.Year, cfr.dtFlight.Month, cfr.dtFlight.Day, 23, 59, 0, DateTimeKind.Utc);
+                    if (dtDutyEnd.HasValue())
+                        flightEnd = flightEnd.EarlierDate(dtDutyEnd);
+                    flightStart = flightEnd.AddHours(-(double) cfr.Total);
+                }
 
                 // 117.23(b)(1) - 100 hours of flight time in 672 consecutive
                 if (flightEnd.CompareTo(dt672HoursAgo) > 0)
-                    hoursFlightTime11723b1 += (cfr.Total - Math.Max((decimal) dt672HoursAgo.Subtract(flightStart).TotalHours, 0));
+                    hoursFlightTime11723b1 += Math.Max((cfr.Total - Math.Max((decimal) dt672HoursAgo.Subtract(flightStart).TotalHours, 0.0M)), 0.0M);
                 // 117.23(b)(2) - 1000 hours in 365 consecutive days.  This is NOT hour-for-hour, so can simply compare dates.
                 if (flightEnd.CompareTo(dt365DaysAgo) > 0)
                     hoursFlightTime11723b2 += cfr.Total;
