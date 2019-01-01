@@ -1,25 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+﻿using MyFlightbook;
+using MyFlightbook.FlightCurrency;
 using MySql.Data.MySqlClient;
-using System.Globalization;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using MyFlightbook;
-using MyFlightbook.FlightCurrency;
+using System.Globalization;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2016 MyFlightbook LLC
+ * Copyright (c) 2011-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Member_8710Form : System.Web.UI.Page
 {
+    protected class ClassTotal
+    {
+        public string ClassName { get; set; }
+        public decimal Total { get; set; }
+        public decimal PIC { get; set; }
+        public decimal SIC { get; set; }
+    }
+
+    protected bool UseHHMM { get; set; }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         this.Master.SelectedTab = tabID.lbt8710;
@@ -27,14 +35,16 @@ public partial class Member_8710Form : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            lblUserName.Text = Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText._8710FormForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
+            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+            lblUserName.Text = Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText._8710FormForUserHeader, pf.UserFullName);
+            UseHHMM = pf.UsesHHMM;
             RefreshFormData();
             MfbLogbook1.Visible = !this.Master.IsMobileSession();
             Master.ShowSponsoredAd = false;
         }
     }
 
-    private Dictionary<string, List<TotalsItem>> ClassTotals { get; set; }
+    private Dictionary<string, List<ClassTotal>> ClassTotals { get; set; }
 
     protected void RefreshFormData()
     {
@@ -62,7 +72,7 @@ public partial class Member_8710Form : System.Web.UI.Page
         // get the class totals
         try
         {
-            ClassTotals = new Dictionary<string, List<TotalsItem>>();
+            ClassTotals = new Dictionary<string, List<ClassTotal>>();
             DBHelper dbh = new DBHelper(args);
             dbh.ReadRows((c) => { }, (d) =>
             {
@@ -72,8 +82,16 @@ public partial class Member_8710Form : System.Web.UI.Page
                 if (!String.IsNullOrEmpty(szCategory) && !String.IsNullOrEmpty(szClass) && !String.IsNullOrEmpty(szCatClass))
                 {
                     if (!ClassTotals.ContainsKey(szCategory))
-                        ClassTotals[szCategory] = new List<TotalsItem>();
-                    ClassTotals[szCategory].Add(new TotalsItem(szCatClass, Convert.ToDecimal(d["TotalTime"], CultureInfo.InvariantCulture)));
+                        ClassTotals[szCategory] = new List<ClassTotal>();
+                    List<ClassTotal> lst = ClassTotals[szCategory];
+                    ClassTotal ct = new ClassTotal()
+                    {
+                        ClassName = szCatClass,
+                        Total = Convert.ToDecimal(d["TotalTime"], CultureInfo.InvariantCulture),
+                        PIC = Convert.ToDecimal(d["PIC"], CultureInfo.InvariantCulture),
+                        SIC = Convert.ToDecimal(d["SIC"], CultureInfo.InvariantCulture)
+                    };
+                    lst.Add(ct);
                 }
             });
         }
@@ -161,9 +179,10 @@ public partial class Member_8710Form : System.Web.UI.Page
         {
             string szCategory = (string) DataBinder.Eval(e.Row.DataItem, "Category");
             if (!String.IsNullOrEmpty(szCategory) && ClassTotals.ContainsKey(szCategory)) {
-                GridView gvClassTotals = (GridView)e.Row.FindControl("gvClassTotals");
-                gvClassTotals.DataSource = ClassTotals[szCategory];
-                gvClassTotals.DataBind();
+                ((Control)e.Row.FindControl("pnlClassTotals")).Visible = true;
+                Repeater rptClasstotals = (Repeater)e.Row.FindControl("rptClassTotals");
+                rptClasstotals.DataSource = ClassTotals[szCategory];
+                rptClasstotals.DataBind();
             }
 
         }
