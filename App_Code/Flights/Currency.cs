@@ -1752,6 +1752,40 @@ namespace MyFlightbook.FlightCurrency
             dtLastDutyStart = dtDutyStart;
         }
 
+        private void Add11723BTime(ExaminerFlightRow cfr, DateTime dtDutyEnd)
+        {
+            DateTime dtFlight = DateTime.SpecifyKind(cfr.dtFlight, DateTimeKind.Utc);
+
+            DateTime flightStart, flightEnd;
+
+            if (cfr.dtEngineStart.HasValue() && cfr.dtEngineEnd.HasValue())
+            {
+                flightStart = cfr.dtEngineStart;
+                flightEnd = cfr.dtEngineEnd;
+            }
+            else if (cfr.dtFlightStart.HasValue() && cfr.dtFlightEnd.HasValue())
+            {
+                flightStart = cfr.dtFlightStart;
+                flightEnd = cfr.dtFlightEnd;
+            }
+            else
+            {
+                // use 11:59pm as the flight end time and compute flight start based off of that to pull as much of it as possible 
+                // into the 672 hour or 365 day window.  (I.e., most conservative)
+                flightEnd = new DateTime(cfr.dtFlight.Year, cfr.dtFlight.Month, cfr.dtFlight.Day, 23, 59, 0, DateTimeKind.Utc);
+                if (dtDutyEnd.HasValue())
+                    flightEnd = flightEnd.EarlierDate(dtDutyEnd);
+                flightStart = flightEnd.AddHours(-(double)cfr.Total);
+            }
+
+            // 117.23(b)(1) - 100 hours of flight time in 672 consecutive
+            if (flightEnd.CompareTo(dt672HoursAgo) > 0)
+                hoursFlightTime11723b1 += Math.Max((cfr.Total - Math.Max((decimal)dt672HoursAgo.Subtract(flightStart).TotalHours, 0.0M)), 0.0M);
+            // 117.23(b)(2) - 1000 hours in 365 consecutive days.  This is NOT hour-for-hour, so can simply compare dates.
+            if (flightEnd.CompareTo(dt365DaysAgo) > 0)
+                hoursFlightTime11723b2 += cfr.Total;
+        }
+
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
@@ -1768,37 +1802,7 @@ namespace MyFlightbook.FlightCurrency
             // (b) we don't include all flights but we have a currently active duty period, OR
             // (c) this flight has some duty period specified
             if (fIncludeAllFlights || m_edpCurrent != null || edp.Specification != DutySpecification.None)
-            {
-                DateTime dtFlight = DateTime.SpecifyKind(cfr.dtFlight, DateTimeKind.Utc);
-
-                DateTime flightStart, flightEnd;
-
-                if (cfr.dtEngineStart.HasValue() && cfr.dtEngineEnd.HasValue())
-                {
-                    flightStart = cfr.dtEngineStart;
-                    flightEnd = cfr.dtEngineEnd;
-                } else if (cfr.dtFlightStart.HasValue() && cfr.dtFlightEnd.HasValue())
-                {
-                    flightStart = cfr.dtFlightStart;
-                    flightEnd = cfr.dtFlightEnd;
-                }
-                else
-                {
-                    // use 11:59pm as the flight end time and compute flight start based off of that to pull as much of it as possible 
-                    // into the 672 hour or 365 day window.  (I.e., most conservative)
-                    flightEnd = new DateTime(cfr.dtFlight.Year, cfr.dtFlight.Month, cfr.dtFlight.Day, 23, 59, 0, DateTimeKind.Utc);
-                    if (dtDutyEnd.HasValue())
-                        flightEnd = flightEnd.EarlierDate(dtDutyEnd);
-                    flightStart = flightEnd.AddHours(-(double) cfr.Total);
-                }
-
-                // 117.23(b)(1) - 100 hours of flight time in 672 consecutive
-                if (flightEnd.CompareTo(dt672HoursAgo) > 0)
-                    hoursFlightTime11723b1 += Math.Max((cfr.Total - Math.Max((decimal) dt672HoursAgo.Subtract(flightStart).TotalHours, 0.0M)), 0.0M);
-                // 117.23(b)(2) - 1000 hours in 365 consecutive days.  This is NOT hour-for-hour, so can simply compare dates.
-                if (flightEnd.CompareTo(dt365DaysAgo) > 0)
-                    hoursFlightTime11723b2 += cfr.Total;
-            }
+                Add11723BTime(cfr, dtDutyEnd);
 
             // If we haven't yet seen the start of an open duty period, don't compute the rest yet (need to know the close off point), 
             // so store the end of the duty period in m_edpCurrent and leave the computation to a subsequent flight.
