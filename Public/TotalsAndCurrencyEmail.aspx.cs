@@ -122,7 +122,7 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
                         mfbTotalSummaryYTD.CustomRestriction = fqYTD;
 
                         if (fAnnual)
-                            mfbRecentAchievements.Refresh(szUser, new DateTime(DateTime.Now.Year - 1, 1, 1), new DateTime(DateTime.Now.Year, 12, 31), true);
+                            mfbRecentAchievements.Refresh(szUser, new DateTime(DateTime.Now.Year - 1, 1, 1), new DateTime(DateTime.Now.Year - 1, 12, 31), true);
                         else
                             mfbRecentAchievements.Refresh(szUser, new DateTime(DateTime.Now.Year, 1, 1), DateTime.Now, true);
                     }
