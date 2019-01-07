@@ -1491,4 +1491,7 @@
   <data name="PrintViewModelDisplayShort" xml:space="preserve">
     <value>Compact</value>
   </data>
+  <data name="GoogleDriveBadAuth" xml:space="preserve">
+    <value>Your authorization for %APP_NAME% is no longer valid.  Please re-authorize %APP_NAME% for Google Drive.</value>
+  </data>
 </root>

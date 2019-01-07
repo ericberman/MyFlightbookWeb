@@ -176,6 +176,36 @@ namespace MyFlightbook.CloudStorage
             return true;
         }
 
+        // code for GDriveError, ExtractResponseString here from https://stackoverflow.com/questions/25032513/how-to-get-error-message-returned-by-dotnetopenauth-oauth2-on-client-side
+        protected class GDriveError
+        {
+            public string error { get; set; }
+            public string error_description { get; set; }
+            public string error_uri { get; set; }
+
+            public GDriveError()
+            {
+                error = error_description = error_uri = string.Empty;
+            }
+        }
+
+        private string ExtractResponseString(WebException webException)
+        {
+            if (webException == null || webException.Response == null)
+                return null;
+
+            var responseStream =
+                webException.Response.GetResponseStream() as MemoryStream;
+
+            if (responseStream == null)
+                return null;
+
+            var responseBytes = responseStream.ToArray();
+
+            var responseString = System.Text.Encoding.UTF8.GetString(responseBytes);
+            return responseString;
+        }
+
         /// <summary>
         /// Refreshes the access token if (a) there is a refresh token, and (b) there is not an unexpired accesstoken
         /// </summary>
@@ -189,13 +219,26 @@ namespace MyFlightbook.CloudStorage
                     return false;
 
                 WebServerClient client = Client();
-                client.RefreshAuthorization(AuthState);
+                try
+                {
+                    client.RefreshAuthorization(AuthState);
+                }
+                catch (DotNetOpenAuth.Messaging.ProtocolException ex)
+                {
+                    GDriveError error = JsonConvert.DeserializeObject<GDriveError>(ExtractResponseString(ex.InnerException as WebException));
+                    if (error == null)
+                        throw;
+                    else if (error.error.CompareCurrentCultureIgnoreCase("invalid_grant") == 0)
+                        throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.GoogleDriveBadAuth), ex);
+                    else
+                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error from Google Drive: {0} {1} {2}", error.error, error.error_description, error.error_uri), ex);
+                }
                 return true;
             });
         }
 
         /// <summary>
-        /// Convert an authoriztion token for an access token.
+        /// Convert an authorization token for an access token.
         /// </summary>
         /// <param name="Request">The http request</param>
         /// <returns>The granted access token</returns>
