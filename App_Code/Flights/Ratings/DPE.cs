@@ -133,11 +133,12 @@ namespace MyFlightbook.MilestoneProgress
                 miPICCategory.AddEvent(cfr.PIC);
                 miCFICategory.AddEvent(cfr.CFI);
 
+                miCFIITimeInCategory.AddEvent(instrumentInstruction);
+
                 if (cfr.idCatClassOverride == catClass.IdCatClass)
                 {
                     miPICClass.AddEvent(cfr.PIC);
                     miCFIClass.AddEvent(cfr.CFI);
-                    miCFIITimeInCategory.AddEvent(instrumentInstruction);
                 }
             }
         }
