@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -369,6 +369,16 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             rowClubSchedules.Visible = true;
             rptSchedules.DataSource = lstClubs;
             rptSchedules.DataBind();
+
+            // If *any* club has policy PrependsScheduleWithOwnerName, set the default text for it
+            foreach (Club c in lstClubs)
+            {
+                if (c.PrependsScheduleWithOwnerName)
+                {
+                    mfbEditAppt1.DefaultTitle = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName;
+                    break;
+                }
+            }
         }
     }
 

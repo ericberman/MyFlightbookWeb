@@ -30,6 +30,7 @@
     </div>
     <asp:HiddenField runat="server" ID="hdnApptID"></asp:HiddenField>
     <asp:HiddenField ID="hdnResource" runat="server" />
+    <asp:HiddenField ID="hdnDefaultTitle" runat="server" />
 </asp:Panel>
 <div style="display: none">
     <asp:Button ID="btnDummy" runat="server" Text="" />
@@ -121,6 +122,8 @@
         function newAppt(e, onSave) {
             e.onSave = onSave;
             e.onDelete = function (e) { };
+            if (e.data.text === '')
+                e.data.text = document.getElementById('<% =hdnDefaultTitle.ClientID %>').value;
             editAppt(e, true);
         }
     </script>

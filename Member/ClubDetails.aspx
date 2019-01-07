@@ -20,7 +20,7 @@
     <script type="text/javascript" src='<%= ResolveUrl("~/public/daypilot-all.min.js") %>'></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript" src='<%= ResolveUrl("~/public/jquery.json-2.4.min.js") %>'></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/mfbcalendar.js?v=1") %>'></script>
+    <script type="text/javascript" src='<%= ResolveUrl("~/public/mfbcalendar.js?v=2") %>'></script>
     <p><asp:HyperLink ID="lnkViewAll" runat="server" NavigateUrl="~/Public/Clubs.aspx?noredir=1" Text="<%$ Resources:Club, LabelViewAllClubs %>"></asp:HyperLink></p>
     <asp:MultiView ID="mvPromoStatus" runat="server">
         <asp:View ID="vwPromotional" runat="server">

@@ -11,7 +11,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2018 MyFlightbook LLC
+ * Copyright (c) 2014-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -90,6 +90,9 @@ public partial class Member_ClubDetails : System.Web.UI.Page
 
                     // Initialize from the cookie, if possible.
                     rbScheduleMode.SelectedValue = SchedulePreferences.DefaultScheduleMode.ToString();
+
+                    if (CurrentClub.PrependsScheduleWithOwnerName)
+                        mfbEditAppt1.DefaultTitle = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName;
 
                     RefreshAircraft();
                 }

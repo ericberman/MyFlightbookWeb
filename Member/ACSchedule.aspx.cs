@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -41,6 +41,16 @@ public partial class Member_ACSchedule : System.Web.UI.Page
                     mvStatus.SetActiveView(vwMember);
                     rptSchedules.DataSource = lstClubsForUserInAircraft;
                     rptSchedules.DataBind();
+
+                    // If *any* club has policy PrependsScheduleWithOwnerName, set the default text for it
+                    foreach (Club c in lstClubsForUserInAircraft)
+                    {
+                        if (c.PrependsScheduleWithOwnerName)
+                        {
+                            mfbEditAppt1.DefaultTitle = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName;
+                            break;
+                        }
+                    }
                 }
                 else if ((lstClubsForAircraft = Club.ClubsForAircraft(AircraftID)).Count() > 0)   // if the aircraft belongs to a club but you don't, show those clubs
                 {

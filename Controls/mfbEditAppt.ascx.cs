@@ -3,13 +3,22 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2017 MyFlightbook LLC
+ * Copyright (c) 2014-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Controls_mfbEditAppt : System.Web.UI.UserControl
 {
+    /// <summary>
+    /// Text to use by default for new appointments (typically owner's name)
+    /// </summary>
+    public string DefaultTitle
+    {
+        get { return hdnDefaultTitle.Value; }
+        set { hdnDefaultTitle.Value = value; }
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
