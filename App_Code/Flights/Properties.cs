@@ -975,11 +975,17 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                 throw;
             }
 
+            if (tuples == null)
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "tuples == null for string {0}, idFlight {1}", szJSON ?? "(null)", idFlight));
+
             CustomFlightProperty[] result = new CustomFlightProperty[tuples.Count];
 
             int i = 0;
             foreach (JArray tuple in tuples)
             {
+                if (tuple.Count < 3)
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "tuple has fewer than 3 elements: {0}, idFlight {1}", szJSON ?? "(null)", idFlight));
+
                 int idProp = (int)tuple[0];
                 int idPropType = (int)tuple[1];
                 string value = (string)tuple[2];
