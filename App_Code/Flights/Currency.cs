@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -813,7 +813,8 @@ namespace MyFlightbook.FlightCurrency
                         if (!dictArmyCurrency.ContainsKey(cfr.szArmyMDS))
                             dictArmyCurrency.Add(cfr.szArmyMDS, new ArmyMDSCurrency(szKeyPrefix + cfr.szArmyMDS));
 
-                        dictArmyCurrency[cfr.szArmyMDS].AddRecentFlightEvents(cfr.dtFlight, 1);
+                        if (cfr.fIsRealAircraft)
+                            dictArmyCurrency[cfr.szArmyMDS].AddRecentFlightEvents(cfr.dtFlight, 1);
 
                         // NV - is striped by MDS, but "similar" aircraft are allowed, so we use family to group all of the *H-60* blackhawks. 
                         // E.g., UH-60M and HH-60A/L are different for plain currency but the same for NV currency

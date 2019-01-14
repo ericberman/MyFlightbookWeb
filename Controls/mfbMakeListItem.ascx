@@ -24,6 +24,9 @@
                                 <asp:Panel ID="pnlICAO" Visible='<%# !String.IsNullOrEmpty((string) Eval("FamilyName")) %>' runat="server">
                                     <% = ModelQuery.ICAOPrefix %> <%# Eval("FamilyName") %>
                                 </asp:Panel>
+                                <asp:Panel ID="pnlMDS" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("ArmyMDS")) %>'>
+                                    <% = Resources.LocalizedText.EditMakeWatermarkMDS %> <%# Eval("ArmyMDS") %>
+                                </asp:Panel>
                             </td>
                             <td style="width:30%">
                                 <asp:Label ID="lblCategoryClass" runat="server" Text='<%# Eval("CategoryClassDisplay") %>' Font-Bold='<%# SortMode == ModelQuery.ModelSortMode.CatClass %>' Font-Size='<%# SortMode == ModelQuery.ModelSortMode.CatClass ? FontUnit.Larger : FontUnit.Empty %>'></asp:Label>
