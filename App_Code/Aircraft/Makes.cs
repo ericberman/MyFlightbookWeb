@@ -12,7 +12,7 @@ using MyFlightbook.Image;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -135,9 +135,10 @@ namespace MyFlightbook
 
         public override string ToString()
         {
-            return String.Format(CultureInfo.CurrentCulture, "{0} {1}: {2}{3}{4}{5}{6}{7}{8}{9}{10}{11}{12}",
+            return String.Format(CultureInfo.CurrentCulture, "{0} {1} {2} {3} {4}{5}{6}{7}{8}{9}{10}{11}{12}{13}",
                 this.DisplayName,
-                String.IsNullOrEmpty(this.FamilyName) ? string.Empty : ModelQuery.ICAOPrefix + FamilyName,
+                this.ICAODisplay,
+                String.IsNullOrEmpty(this.ArmyMDS) ? string.Empty : "MDS: " + ArmyMDS,
                 this.EngineType.ToString(),
                 this.IsCertifiedSinglePilot ? "Single Pilot " : string.Empty,
                 this.IsAllGlass ? "All Glass " : string.Empty,
