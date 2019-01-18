@@ -23,6 +23,9 @@
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <asp:MultiView ID="mvProfile" runat="server">
         <asp:View runat="server" ID="vwAccount">
+            <h2>
+                <asp:Localize ID="locAccountHeader" runat="server" meta:resourcekey="locAccountHeaderResource1" Text="Account Settings"></asp:Localize>
+            </h2>
             <cc1:Accordion ID="accordianAccount" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250" meta:resourcekey="accordianAccountResource1">
                 <Panes>
                     <cc1:AccordionPane runat="server" ID="acpName" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpNameResource1">
@@ -224,6 +227,21 @@
                                     </tr>
                                 </table>
                             </asp:Panel>
+                        </Content>
+                    </cc1:AccordionPane>
+                    <cc1:AccordionPane ID="acpDeletion" runat="server" ContentCssClass="" HeaderCssClass="">
+                        <Header>
+                            <asp:Localize ID="locHeadDeletion" runat="server" Text="<%$ Resources:Profile, ProfileDeleteHeader %>"></asp:Localize>
+                        </Header>
+                        <Content>
+                            <p><asp:Localize ID="locDeleteFlights" runat="server" Text="<%$ Resources:Profile, ProfileBulkDeleteFlightsPrompt %>"></asp:Localize></p>
+                            <div><asp:Button ID="btnDeleteFlights" Font-Bold="true" ForeColor="Red" runat="server" Text="<%$ Resources:Profile, ProfileBulkDeleteFlights %>" OnClick="btnDeleteFlights_Click" /></div>
+                            <div><asp:Label ID="lblDeleteFlightsCompleted" runat="server" Text="<%$ Resources:Profile, ProfileDeleteFlightsCompleted %>" CssClass="success" Font-Bold="true" Visible="false" EnableViewState="false"></asp:Label></div>
+                            <cc1:ConfirmButtonExtender ID="confirmDeleteFlights" ConfirmText="<%$ Resources:Profile, ProfileBulkDeleteConfirm %>" TargetControlID="btnDeleteFlights" runat="server" />
+                            <p><asp:Localize ID="locCloseAccount" runat="server" Text="<%$ Resources:Profile, ProfileDeleteAccountPrompt %>"></asp:Localize></p>
+                            <div><asp:Button ID="btnCloseAccount" Font-Bold="true" ForeColor="Red" runat="server" Text="<%$ Resources:Profile, ProfileDeleteAccount %>" OnClick="btnCloseAccount_Click" /></div>
+                            <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" ConfirmText="<%$ Resources:Profile, ProfileDeleteAccountConfirm %>" TargetControlID="btnCloseAccount" runat="server" />
+                            <asp:Label ID="lblDeleteErr" runat="server" EnableViewState="false" CssClass="error"></asp:Label>
                         </Content>
                     </cc1:AccordionPane>
                 </Panes>
@@ -607,6 +625,9 @@
             </cc1:Accordion>
         </asp:View>
         <asp:View runat="server" ID="vwPilotInfo">
+            <h2>
+                <asp:Localize ID="locPilotHeader" runat="server" meta:resourcekey="locPilotHeaderResource1" Text="Pilot Information"></asp:Localize>
+            </h2>
             <cc1:Accordion ID="accordianPilotInfo" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" meta:resourcekey="accordianPrefsResource1" TransitionDuration="250">
                 <Panes>
                     <cc1:AccordionPane runat="server" ID="acpMedical" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpMedicalResource1" >

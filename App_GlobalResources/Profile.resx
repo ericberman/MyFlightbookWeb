@@ -491,4 +491,28 @@
   <data name="appDescriptionTraining" xml:space="preserve">
     <value>Track your progress towards ratings, record endorsements, and manage relationships with students and instructors.  You can even earn badges for various achievements!</value>
   </data>
+  <data name="ProfileBulkDeleteConfirm" xml:space="preserve">
+    <value>Are you sure you want to delete ALL of your flights?  This CANNOT be undone!</value>
+  </data>
+  <data name="ProfileBulkDeleteFlights" xml:space="preserve">
+    <value>Delete my flights</value>
+  </data>
+  <data name="ProfileBulkDeleteFlightsPrompt" xml:space="preserve">
+    <value>If you want to start over with your logbook, you can bulk-delete all of your flights from your account.  THIS CANNOT BE UNDONE!  Make sure you have a backup first!</value>
+  </data>
+  <data name="ProfileDeleteAccount" xml:space="preserve">
+    <value>Close my account</value>
+  </data>
+  <data name="ProfileDeleteAccountConfirm" xml:space="preserve">
+    <value>Are you sure you want to close your account?  This CANNOT be undone!</value>
+  </data>
+  <data name="ProfileDeleteAccountPrompt" xml:space="preserve">
+    <value>While we're sorry to see anybody go, you can close your account at any time.  THIS CANNOT BE UNDONE!  Make sure you have a backup first!</value>
+  </data>
+  <data name="ProfileDeleteHeader" xml:space="preserve">
+    <value>Big Red Buttons</value>
+  </data>
+  <data name="ProfileDeleteFlightsCompleted" xml:space="preserve">
+    <value>Your flights have been deleted.</value>
+  </data>
 </root>

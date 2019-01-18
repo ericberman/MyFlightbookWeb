@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2018 MyFlightbook LLC
+ * Copyright (c) 2010-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -549,6 +549,35 @@ public partial class Member_EditProfile : System.Web.UI.Page
             lblQAChangeSuccess.Text = ex.Message;
             lblQAChangeSuccess.CssClass = "error";
         }
+    }
+    #endregion
+
+    #region Account closure and bulk delete
+    protected void btnDeleteFlights_Click(object sender, EventArgs e)
+    {
+        MembershipUser mu = Membership.GetUser(Page.User.Identity.Name, false);
+        if (mu == null)
+            return;
+        try
+        {
+            ProfileAdmin.DeleteForUser(mu, ProfileAdmin.DeleteLevel.OnlyFlights);
+            lblDeleteFlightsCompleted.Visible = true;
+        }
+        catch (MyFlightbookException ex) { lblDeleteErr.Text = ex.Message; }
+    }
+
+    protected void btnCloseAccount_Click(object sender, EventArgs e)
+    {
+        MembershipUser mu = Membership.GetUser(Page.User.Identity.Name, false);
+        if (mu == null)
+            return;
+        try
+        {
+            ProfileAdmin.DeleteForUser(mu, ProfileAdmin.DeleteLevel.EntireUser);
+            FormsAuthentication.SignOut();
+            Response.Redirect("~");
+        }
+        catch (MyFlightbookException ex) { lblDeleteErr.Text = ex.Message; }
     }
     #endregion
 

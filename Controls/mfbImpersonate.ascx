@@ -10,43 +10,25 @@
         DataSourceID="sqlUsers" onrowcommand="gvUsers_RowCommand">
         <Columns>
             <asp:BoundField DataField="Username" HeaderText="User Name" />
-            <asp:BoundField DataField="email" HeaderText="Email" />
-            <asp:BoundField DataField="FirstName" HeaderText="First Name" />
-            <asp:BoundField DataField="lastname" HeaderText="Last Name" />
-            <asp:TemplateField>
+            <asp:TemplateField HeaderText="Email">
+                <ItemTemplate>
+                    <%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} {1} &lt;{2}&gt;", Eval("FirstName"), Eval("LastName"), Eval("email")) %>
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="Actions">
                 <ItemTemplate>
                     <asp:Button ID="btnImpersonate" CommandName="Impersonate" runat="server" Text="Impersonate" CommandArgument='<%# Bind("PKID") %>' />
-                </ItemTemplate>
-            </asp:TemplateField>
-            <asp:TemplateField>
-                <ItemTemplate>
                     <asp:Button ID="btnResetPass" CommandName="ResetPassword" runat="server" Text="Reset Password" CommandArgument='<%# Bind("PKID") %>' />
-                </ItemTemplate>
-            </asp:TemplateField>
-            <asp:TemplateField>
-                <ItemTemplate>
                     <asp:Button ID="btnDeleteUser" runat="server" Text="Delete User" CommandName="DeleteUser" CommandArgument='<%# Bind("PKID") %>' />
                     <cc1:ConfirmButtonExtender ID="btnDelete_ConfirmButtonExtender" runat="server" 
                         TargetControlID="btnDeleteUser" ConfirmOnFormSubmit="True" ConfirmText="Are you sure you want to DELETE THIS USER?  This action cannot be undone!">
                     </cc1:ConfirmButtonExtender>
-                </ItemTemplate>
-            </asp:TemplateField>
-            <asp:TemplateField>
-                <ItemTemplate>
                     <asp:Button ID="btnDeleteFlights" runat="server" 
                         Text="Delete only flights for user" CommandName="DeleteFlightsForUser" CommandArgument='<%# Bind("PKID") %>' />
                     <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" 
                         TargetControlID="btnDeleteFlights" ConfirmOnFormSubmit="True" ConfirmText="Are you sure you want to delete the FLIGHTS for this user?  This action cannot be undone!">
                     </cc1:ConfirmButtonExtender>
-                </ItemTemplate>
-            </asp:TemplateField>
-            <asp:TemplateField>
-                <ItemTemplate>
                     <asp:Button ID="btnSendMessage" runat="server" Text="Send Message" CommandName="SendMessage" CommandArgument='<%# Bind("PKID") %>' />
-                </ItemTemplate>
-            </asp:TemplateField>
-            <asp:TemplateField>
-                <ItemTemplate>
                     <asp:Button ID="btnEndowClub" runat="server" Text="Endow Club Creation" CommandName="EndowClub" CommandArgument='<%# Bind("PKID") %>' />
                 </ItemTemplate>
             </asp:TemplateField>

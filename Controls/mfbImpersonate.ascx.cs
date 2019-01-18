@@ -1,14 +1,14 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Globalization;
+using System.Text;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2016 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -110,7 +110,7 @@ public partial class Controls_mfbImpersonate : System.Web.UI.UserControl
         {
             try
             {
-                ProfileAdmin.ADMINDeleteForUser(mu, MyFlightbook.ProfileAdmin.DeleteLevel.EntireUser);
+                ProfileAdmin.DeleteForUser(mu, MyFlightbook.ProfileAdmin.DeleteLevel.EntireUser);
                 lblResetErr.Text = String.Format("User {0} ({1}) successfully deleted.", mu.UserName, mu.Email);
             }
             catch (Exception ex) { lblResetErr.Text = ex.Message; }
@@ -119,7 +119,7 @@ public partial class Controls_mfbImpersonate : System.Web.UI.UserControl
         {
             try
             {
-                ProfileAdmin.ADMINDeleteForUser(mu, MyFlightbook.ProfileAdmin.DeleteLevel.OnlyFlights);
+                ProfileAdmin.DeleteForUser(mu, MyFlightbook.ProfileAdmin.DeleteLevel.OnlyFlights);
                 lblResetErr.Text = String.Format("Flights for User {0} ({1}) successfully deleted.", mu.UserName, mu.Email);
             }
             catch (Exception ex) { lblResetErr.Text = ex.Message; }

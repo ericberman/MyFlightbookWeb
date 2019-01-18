@@ -22,7 +22,7 @@ using System.Web.Security;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1301,7 +1301,15 @@ namespace MyFlightbook
             return mp.GetUser(szUserToReset, false);
         }
 
-        public enum DeleteLevel { OnlyFlights, EntireUser };
+        public enum DeleteLevel {
+            /// <summary>
+            /// Deletes flights for the user (and their images, telemetry, and associated badges)
+            /// </summary>
+            OnlyFlights,
+            /// <summary>
+            /// Deletes the entire user account, including flights.
+            /// </summary>
+            EntireUser };
 
         private static void SendDeleteWithBackupAndThankyou(MembershipUser mu, DeleteLevel dl)
         {
@@ -1329,13 +1337,9 @@ namespace MyFlightbook
             catch (InvalidOperationException) { }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        public static void ADMINDeleteForUser(MembershipUser mu, DeleteLevel dl)
+        public static void DeleteForUser(MembershipUser mu, DeleteLevel dl)
         {
-            if (mu == null)
-                return;
-
-            if (String.IsNullOrEmpty(mu.UserName))
+            if (mu == null || String.IsNullOrEmpty(mu.UserName))
                 throw new MyFlightbookException("Don't try to delete anything for a user without specifying a user!!!");
 
             try
@@ -1349,110 +1353,118 @@ namespace MyFlightbook
                 DBHelper dbh = new DBHelper(dba);
                 dbh.ReadRow((comm) => { }, (dr) => { cUsersWithUsername = Convert.ToInt32(dr["NumUsers"], CultureInfo.InvariantCulture); });
 
-                if (cUsersWithUsername == 0)    // shouldn't happen.
-                    return;
+                if (cUsersWithUsername == 0)    // shouldn't happen
+                    throw new MyFlightbookException("No users found with username " + mu.UserName);
+                if (cUsersWithUsername > 1)    // shouldn't happen.
+                    throw new MyFlightbookException("Multiple users with username " + mu.UserName);
 
-                if (cUsersWithUsername == 1)
-                {
-                    SendDeleteWithBackupAndThankyou(mu, dl);
+                SendDeleteWithBackupAndThankyou(mu, dl);
 
-                    // See if the user is an owner of a club
-                    dbh.CommandText = "SELECT COUNT(*) AS numClubs FROM clubs c INNER JOIN clubmembers cm ON c.idclub=cm.idclub WHERE c.creator=?uname OR (cm.username=?uname AND cm.role=2)";
-                    int cOwnedClubs = 0;
-                    dbh.ReadRow((comm) => { }, (dr) => { cOwnedClubs = Convert.ToInt32(dr["numClubs"], CultureInfo.InvariantCulture); });
-                    if (cOwnedClubs > 0)
-                        throw new MyFlightbookException("User is owner of clubs; need to delete those clubs first");
+                // See if the user is an owner of a club
+                dbh.CommandText = "SELECT COUNT(*) AS numClubs FROM clubs c INNER JOIN clubmembers cm ON c.idclub=cm.idclub WHERE c.creator=?uname OR (cm.username=?uname AND cm.role=2)";
+                int cOwnedClubs = 0;
+                dbh.ReadRow((comm) => { }, (dr) => { cOwnedClubs = Convert.ToInt32(dr["numClubs"], CultureInfo.InvariantCulture); });
+                if (cOwnedClubs > 0)
+                    throw new MyFlightbookException("User is owner of clubs; need to delete those clubs first");
 
-                    // Remove any images for the user's flights (only works if images UseDB is true...)
-                    System.Collections.Generic.List<MFBImageInfo> lstMfbii = new System.Collections.Generic.List<MFBImageInfo>();
-                    dbh.CommandText = @"SELECT f.idflight, f.username, i.* 
-                            FROM images i 
-                            LEFT JOIN flights f ON i.imagekey=f.idflight
-                            WHERE (i.VirtPathID=0 AND f.username=?uname)";
-                    dbh.ReadRows((comm) => { }, (dr) => { lstMfbii.Add(MFBImageInfo.ImageFromDBRow(dr)); });
-                    foreach (MFBImageInfo mfbii in lstMfbii)
-                        mfbii.DeleteImage();
+                // Remove any images for the user's flights (only works if images UseDB is true...)
+                List<MFBImageInfo> lstMfbii = new List<MFBImageInfo>();
+                dbh.CommandText = @"SELECT f.idflight, f.username, i.* 
+                        FROM images i 
+                        LEFT JOIN flights f ON i.imagekey=f.idflight
+                        WHERE (i.VirtPathID=0 AND f.username=?uname)";
+                dbh.ReadRows((comm) => { }, (dr) => { lstMfbii.Add(MFBImageInfo.ImageFromDBRow(dr)); });
+                foreach (MFBImageInfo mfbii in lstMfbii)
+                    mfbii.DeleteImage();
 
-                    System.Collections.Generic.List<TelemetryReference> lstTelemetry = new List<TelemetryReference>();
-                    dbh.CommandText = @"SELECT ft.* FROM flights f INNER JOIN flighttelemetry ft ON f.idflight=ft.idflight WHERE f.username=?uname";
-                    dbh.ReadRows((comm) => { }, (dr) => { lstTelemetry.Add(new TelemetryReference(dr)); });
-                    lstTelemetry.ForEach((ts) => { ts.DeleteFile(); }); // only need to delete the file; the flighttelemetry row will be deleted when we delete the flights (below), so don't need the excess DB hits.
+                List<TelemetryReference> lstTelemetry = new List<TelemetryReference>();
+                dbh.CommandText = @"SELECT ft.* FROM flights f INNER JOIN flighttelemetry ft ON f.idflight=ft.idflight WHERE f.username=?uname";
+                dbh.ReadRows((comm) => { }, (dr) => { lstTelemetry.Add(new TelemetryReference(dr)); });
+                lstTelemetry.ForEach((ts) => { ts.DeleteFile(); }); // only need to delete the file; the flighttelemetry row will be deleted when we delete the flights (below), so don't need the excess DB hits.
 
-                    // Remove any flights for the user
-                    dbh.CommandText = "DELETE FROM flights WHERE username=?uname";
-                    dbh.DoNonQuery((comm) => { });
+                // Remove any flights for the user
+                dbh.CommandText = "DELETE FROM flights WHERE username=?uname";
+                dbh.DoNonQuery((comm) => { });
 
-                    // And any badges that have been earned
-                    MyFlightbook.Achievements.Badge.DeleteBadgesForUser(mu.UserName, dl == DeleteLevel.OnlyFlights);
-
-                    if (dl == DeleteLevel.EntireUser)
-                    {
-                        // Remove the user's aircraft
-                        dbh.CommandText = "DELETE FROM useraircraft WHERE username=?uname";
-                        dbh.DoNonQuery();
-
-                        // Remove from student records
-                        dbh.CommandText = "DELETE FROM students WHERE StudentName=?uname";
-                        dbh.DoNonQuery();
-                        dbh.CommandText = "DELETE FROM students WHERE CFIName=?uname";
-                        dbh.DoNonQuery();
-
-                        // Remove from maintenance logs.
-                        dbh.CommandText = "DELETE FROM maintenancelog WHERE User=?uname";
-                        dbh.DoNonQuery();
-
-                        dbh.CommandText = "DELETE FROM customcurrency WHERE Username=?uname";
-                        dbh.DoNonQuery();
-
-                        dbh.CommandText = "DELETE FROM deadlines WHERE username=?uname";
-                        dbh.DoNonQuery();
-
-                        dbh.CommandText = "DELETE FROM airports WHERE sourceusername=?uname";
-                        dbh.DoNonQuery();
-
-                        dbh.CommandText = "DELETE FROM badges WHERE username=?uname";
-                        dbh.DoNonQuery();
-
-                        dbh.CommandText = "DELETE FROM earnedgratuities WHERE username=?uname";
-                        dbh.DoNonQuery();
-
-                        // Remove the user from the logs
-                        dbh.CommandText = "DELETE FROM wsevents WHERE user=?uname";
-                        dbh.DoNonQuery();
-
-                        // And delete their endorsements - images were deleted above
-                        dbh.CommandText = "DELETE FROM endorsements WHERE StudentType=0 AND Student=?uname";
-                        dbh.DoNonQuery();
-                        ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, mu.UserName);
-                        il.Refresh(true);
-                        foreach (MFBImageInfo mfbii in il.ImageArray)
-                            mfbii.DeleteImage();
-
-                        // Delete basicmed records
-                        foreach (Basicmed.BasicMedEvent bme in Basicmed.BasicMedEvent.EventsForUser(mu.UserName))
-                            bme.Delete();
-
-                        // Delete from any clubs
-                        dbh.CommandText = "DELETE FROM clubmembers WHERE username=?uname";
-                        dbh.DoNonQuery();
-
-                        // And from schedules
-                        dbh.CommandText = "DELETE FROM scheduledevents WHERE username=?uname";
-                        dbh.DoNonQuery();
-                    }
-                }
+                // And any badges that have been earned
+                Badge.DeleteBadgesForUser(mu.UserName, dl == DeleteLevel.OnlyFlights);
 
                 if (dl == DeleteLevel.EntireUser)
-                {
-                    // Finally, delete the user
-                    dbh.CommandText = "DELETE FROM users WHERE PKID=?pkid";
-                    dbh.DoNonQuery();
-                }
+                    DeleteEntireUserAccount(mu);
             }
             catch (Exception ex)
             {
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception deleting for user ({0}): {1}", dl.ToString(), ex.Message), ex);
             }
+        }
+
+        /// <summary>
+        /// Deletes an entire user account.  requires that all flight data & images already have been deleted, and other validation on the membership user has been validated.
+        /// </summary>
+        /// <param name="mu">The membership user to delete.  MUST HAVE BEEN VALIDATED - non-null, unique username</param>
+        private static void DeleteEntireUserAccount(MembershipUser mu)
+        {
+            DBHelperCommandArgs dba = new DBHelperCommandArgs("SELECT COUNT(*) AS NumUsers FROM users WHERE username=?uname");
+            dba.AddWithValue("uname", mu.UserName);
+            dba.AddWithValue("pkid", mu.ProviderUserKey);
+            DBHelper dbh = new DBHelper(dba);
+
+            // Remove the user's aircraft
+            dbh.CommandText = "DELETE FROM useraircraft WHERE username=?uname";
+            dbh.DoNonQuery();
+
+            // Remove from student records
+            dbh.CommandText = "DELETE FROM students WHERE StudentName=?uname";
+            dbh.DoNonQuery();
+            dbh.CommandText = "DELETE FROM students WHERE CFIName=?uname";
+            dbh.DoNonQuery();
+
+            // Remove from maintenance logs.
+            dbh.CommandText = "DELETE FROM maintenancelog WHERE User=?uname";
+            dbh.DoNonQuery();
+
+            dbh.CommandText = "DELETE FROM customcurrency WHERE Username=?uname";
+            dbh.DoNonQuery();
+
+            dbh.CommandText = "DELETE FROM deadlines WHERE username=?uname";
+            dbh.DoNonQuery();
+
+            dbh.CommandText = "DELETE FROM airports WHERE sourceusername=?uname";
+            dbh.DoNonQuery();
+
+            dbh.CommandText = "DELETE FROM badges WHERE username=?uname";
+            dbh.DoNonQuery();
+
+            dbh.CommandText = "DELETE FROM earnedgratuities WHERE username=?uname";
+            dbh.DoNonQuery();
+
+            // Remove the user from the logs
+            dbh.CommandText = "DELETE FROM wsevents WHERE user=?uname";
+            dbh.DoNonQuery();
+
+            // And delete their endorsements - flight images should have already been deleted before this method was called
+            dbh.CommandText = "DELETE FROM endorsements WHERE StudentType=0 AND Student=?uname";
+            dbh.DoNonQuery();
+            ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, mu.UserName);
+            il.Refresh(true);
+            foreach (MFBImageInfo mfbii in il.ImageArray)
+                mfbii.DeleteImage();
+
+            // Delete basicmed records
+            foreach (Basicmed.BasicMedEvent bme in Basicmed.BasicMedEvent.EventsForUser(mu.UserName))
+                bme.Delete();
+
+            // Delete from any clubs
+            dbh.CommandText = "DELETE FROM clubmembers WHERE username=?uname";
+            dbh.DoNonQuery();
+
+            // And from schedules
+            dbh.CommandText = "DELETE FROM scheduledevents WHERE username=?uname";
+            dbh.DoNonQuery();
+
+            // Finally, delete the user
+            dbh.CommandText = "DELETE FROM users WHERE PKID=?pkid";
+            dbh.DoNonQuery();
         }
 
         /// <summary>
