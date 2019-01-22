@@ -274,11 +274,14 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     /// </summary>
     protected void SetUpCountryCode()
     {
+        string szDefLocale = Request.UserLanguages != null && Request.UserLanguages.Length > 0 ? Request.UserLanguages[0] : string.Empty;
+        if (szDefLocale.Length > 4)
+            szDefLocale = szDefLocale.Substring(3, 2);
+
         if (m_ac.IsNew)
         {
-            string[] rgLocale = Request.UserLanguages;
-            if (rgLocale != null && rgLocale.Length > 0 && rgLocale[0].Length > 4)
-                cmbCountryCode.SelectedValue = CountryCodePrefix.DefaultCountryCodeForLocale(Request.UserLanguages[0].Substring(3, 2)).HyphenatedPrefix;
+            if (szDefLocale.Length > 0)
+                cmbCountryCode.SelectedValue = CountryCodePrefix.DefaultCountryCodeForLocale(szDefLocale).HyphenatedPrefix;
             else
                 cmbCountryCode.SelectedIndex = 0;
             UpdateMask();
@@ -293,7 +296,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             if (szPrefix.Length > 0) // Should be!
             {
                 szTail = szTail.Substring(szPrefix.Length);
-                cmbCountryCode.SelectedValue = (ccp.IsSim) ? CountryCodePrefix.DefaultCountryCodeForLocale(Request.UserLanguages[0].Substring(3, 2)).HyphenatedPrefix : szPrefix;
+                cmbCountryCode.SelectedValue = (ccp.IsSim) ? CountryCodePrefix.DefaultCountryCodeForLocale(szDefLocale).HyphenatedPrefix : szPrefix;
                 UpdateMask();
             }
             else
