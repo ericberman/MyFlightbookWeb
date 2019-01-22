@@ -73,54 +73,54 @@
                             <asp:HyperLink ID="lnkEditFlight" Font-Bold="true" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger" NavigateUrl='<%# DetailsPath(Eval("FlightID")) %>'></asp:HyperLink>
                             <asp:HyperLink Font-Bold="true" ID="lnkRoute" runat="server" Text='<%#: Eval("Route") %>' NavigateUrl='<%# PublicPath(Eval("FlightID")) %>'></asp:HyperLink>
                             <span runat="server" id="divComments" style="clear:left; white-space: pre-line;" dir="auto"><asp:Label ID="lblComments" runat="server" Text='<%# Eval("CommentWithReplacedApproaches") %>'></asp:Label></span>
-                            <span class="noprint"><asp:Image ID="imgExpandProps" runat="server" Visible='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).PropertiesWithReplacedApproaches.Count() > 0 %>' ImageUrl="~/images/expand.png" /></span>
+                            <span class="noprint"><asp:Image ID="imgExpandProps" runat="server" Visible='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).CanCollapse(Viewer.DisplayTimesByDefault) %>' ImageUrl="~/images/expand.png" /></span>
                         </div>
-                        <cc1:CollapsiblePanelExtender ID="cpeDisplayMode" runat="server" Collapsed='<%# IsCompact %>' Enabled='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).PropertiesWithReplacedApproaches.Count() > 0  %>'
+                        <cc1:CollapsiblePanelExtender ID="cpeDisplayMode" runat="server" Collapsed='<%# IsCompact %>' Enabled='<%# IsCompact && ((LogbookEntryDisplay) Container.DataItem).CanCollapse(Viewer.DisplayTimesByDefault) %>'
                             TargetControlID="pnlProps" CollapsedImage="~/images/expand.png" ExpandedImage="~/images/collapse.png" CollapseControlID="imgExpandProps" ExpandControlID="imgExpandProps" ImageControlID="imgExpandProps" />
-                        <asp:Panel ID="pnlFlightTimes" runat="server" Visible="<%# Viewer.DisplayTimesByDefault %>">
-                            <asp:Panel ID="pnlEngineTime" runat="server">
-                                <%# Eval("EngineTimeDisplay") %>
-                            </asp:Panel>
-                            <asp:Panel ID="pnlFlightTime" runat="server">
-                                <%# Eval("FlightTimeDisplay") %>
-                            </asp:Panel>
-                            <asp:Panel ID="pnlHobbs" runat="server">
-                                <%# Eval("HobbsDisplay") %>
-                            </asp:Panel>
-                        </asp:Panel>
                         <asp:Panel ID="pnlProps" runat="server">
+                            <asp:Panel ID="pnlFlightTimes" runat="server" Visible="<%# Viewer.DisplayTimesByDefault %>">
+                                <asp:Panel ID="pnlEngineTime" runat="server">
+                                    <%# Eval("EngineTimeDisplay") %>
+                                </asp:Panel>
+                                <asp:Panel ID="pnlFlightTime" runat="server">
+                                    <%# Eval("FlightTimeDisplay") %>
+                                </asp:Panel>
+                                <asp:Panel ID="pnlHobbs" runat="server">
+                                    <%# Eval("HobbsDisplay") %>
+                                </asp:Panel>
+                            </asp:Panel>
                             <asp:Repeater ID="rptProps" runat="server" DataSource='<%# Eval("PropertiesWithReplacedApproaches") %>'>
                                 <ItemTemplate>
                                     <div><%# Container.DataItem %></div>
                                 </ItemTemplate>
                             </asp:Repeater>
-                        </asp:Panel>
-                        <asp:Panel ID="pnlSignature" CssClass="signatureBlock" runat="server" Visible='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.None %>'>
-                            <div style="display: inline-block; vertical-align:middle;">
-                                <table>
-                                    <tr>
-                                        <td style="vertical-align:middle">
-                                            <asp:HyperLink ID="lnkImageSig" runat="server" NavigateUrl='<%# ((bool) Eval("HasDigitizedSig")) ? String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) : string.Empty %>'>
-                                                <asp:Image ID="imgSigState" ToolTip='<%# Eval("SignatureStateDescription") %>' AlternateText='<%# Eval("SignatureStateDescription") %>' ImageUrl='<%# ((bool) Eval("HasValidSig")) ? "~/Images/sigok.png" : "~/Images/siginvalid.png" %>' ImageAlign="Middle" runat="server" />
-                                            </asp:HyperLink>
-                                            <cc1:HoverMenuExtender ID="HoverMenuExtender1" TargetControlID="imgSigState" PopupControlID="pnlSigState" OffsetX="10" OffsetY="10" runat="server"></cc1:HoverMenuExtender>
-                                            <asp:Panel ID="pnlSigState" runat="server" CssClass="hintPopup" Visible='<%# Convert.ToBoolean(Eval("HasDigitizedSig")) %>'>
-                                                <asp:Image ID="imgDigitizedSig" runat="server" ImageUrl='<%# String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) %>' />
-                                            </asp:Panel>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <asp:Label ID="lblSigData" runat="server"
-                                                CssClass='<%# ((bool) Eval("HasValidSig")) ? "signatureValid" : "signatureInvalid" %>'>
-                                                <div><%#: ((string) Eval("SignatureMainLine")) %></div>
-                                                <div><%#: Eval("SignatureCommentLine") %></div>
-                                            </asp:Label>
-                                            <asp:Panel ID="pnlInvalidSig" runat="server" Visible='<%# !(bool) Eval("HasValidSig") %>'>
-                                                <asp:Label ID="lblSigInvalid" runat="server" Font-Bold="true" CssClass="signatureInvalid" Text="<%$ Resources:SignOff, FlightSignatureInvalid %>"></asp:Label>
-                                            </asp:Panel>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                            <asp:Panel ID="pnlSignature" CssClass="signatureBlock" runat="server" Visible='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.None %>'>
+                                <div style="display: inline-block; vertical-align:middle;">
+                                    <table>
+                                        <tr>
+                                            <td style="vertical-align:middle">
+                                                <asp:HyperLink ID="lnkImageSig" runat="server" NavigateUrl='<%# ((bool) Eval("HasDigitizedSig")) ? String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) : string.Empty %>'>
+                                                    <asp:Image ID="imgSigState" ToolTip='<%# Eval("SignatureStateDescription") %>' AlternateText='<%# Eval("SignatureStateDescription") %>' ImageUrl='<%# ((bool) Eval("HasValidSig")) ? "~/Images/sigok.png" : "~/Images/siginvalid.png" %>' ImageAlign="Middle" runat="server" />
+                                                </asp:HyperLink>
+                                                <cc1:HoverMenuExtender ID="HoverMenuExtender1" TargetControlID="imgSigState" PopupControlID="pnlSigState" OffsetX="10" OffsetY="10" runat="server"></cc1:HoverMenuExtender>
+                                                <asp:Panel ID="pnlSigState" runat="server" CssClass="hintPopup" Visible='<%# Convert.ToBoolean(Eval("HasDigitizedSig")) %>'>
+                                                    <asp:Image ID="imgDigitizedSig" runat="server" ImageUrl='<%# String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) %>' />
+                                                </asp:Panel>
+                                            </td>
+                                            <td style="vertical-align:middle">
+                                                <asp:Label ID="lblSigData" runat="server"
+                                                    CssClass='<%# ((bool) Eval("HasValidSig")) ? "signatureValid" : "signatureInvalid" %>'>
+                                                    <div><%#: ((string) Eval("SignatureMainLine")) %></div>
+                                                    <div><%#: Eval("SignatureCommentLine") %></div>
+                                                </asp:Label>
+                                                <asp:Panel ID="pnlInvalidSig" runat="server" Visible='<%# !(bool) Eval("HasValidSig") %>'>
+                                                    <asp:Label ID="lblSigInvalid" runat="server" Font-Bold="true" CssClass="signatureInvalid" Text="<%$ Resources:SignOff, FlightSignatureInvalid %>"></asp:Label>
+                                                </asp:Panel>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </asp:Panel>
                         </asp:Panel>
                         <asp:Panel ID="pnlFlightImages" runat="server" CssClass='<%# ShowImagesInline ? string.Empty : "hintPopup" %>'>
                             <uc1:mfbImageList ID="mfbilFlights" runat="server" Columns="2" CanEdit="false" ImageClass="Flight" IncludeDocs="false" MaxImage="-1" />

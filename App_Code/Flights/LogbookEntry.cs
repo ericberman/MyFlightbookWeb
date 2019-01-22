@@ -18,7 +18,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -2807,6 +2807,16 @@ namespace MyFlightbook
                 else
                     return string.Empty;
             }
+        }
+
+        /// <summary>
+        /// Determines if a given flight is collapsible.
+        /// </summary>
+        /// <param name="showTimes">Whether or not to show times (hobbs/flight/engine)</param>
+        /// <returns></returns>
+        public bool CanCollapse(bool showTimes)
+        {
+            return CFISignatureState != SignatureState.None || PropertiesWithReplacedApproaches.Count() > 0 || (showTimes && !String.IsNullOrEmpty(HobbsDisplay + EngineTimeDisplay + FlightTimeDisplay));
         }
 
         /// <summary>
