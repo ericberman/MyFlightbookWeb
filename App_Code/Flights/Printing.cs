@@ -6,7 +6,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -306,6 +306,7 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// If true, pull forward totals from previous pages (conserves space on the page); just shows this page and running total.  True by defalt.
         /// </summary>
+        [System.ComponentModel.DefaultValue(true)]
         public bool IncludePullForwardTotals { get; set; }
 
         /// <summary>
