@@ -991,9 +991,9 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             List<MySqlParameter> lstParams = new List<MySqlParameter>();
 
             // Add each of the terms
-            string[] rgTerms = FullText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rgTerms = FullText.Replace("-", string.Empty).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < rgTerms.Length; i++)
-                AddQueryTerm(rgTerms[i], String.Format(CultureInfo.InvariantCulture, "FullText{0}", i), "Concat(model, ' ', manufacturers.manufacturer, ' ', typename, ' ', family, ' ', modelname, ' ', categoryclass.CatClass)", lstWhereTerms, lstParams);
+                AddQueryTerm(rgTerms[i], String.Format(CultureInfo.InvariantCulture, "FullText{0}", i), "Concat(REPLACE(model, '-', ''), ' ', manufacturers.manufacturer, ' ', typename, ' ', family, ' ', modelname, ' ', categoryclass.CatClass)", lstWhereTerms, lstParams);
 
             string szPreferred = "0";
             if (PreferModelNameMatch)
