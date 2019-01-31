@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -118,14 +118,11 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         if (fAdminMode && !le.IsNewFlight && le.CFISignatureState != LogbookEntry.SignatureState.None)
         {
             LogbookEntry.SignatureSanityCheckState sscs = le.AdminSignatureSanityCheckState;
-            if (sscs != LogbookEntry.SignatureSanityCheckState.OK)
-            {
-                pnlAdminFixSignature.Visible = true;
-                lblSigSavedState.Text = le.CFISignatureState.ToString();
-                lblSigSanityCheck.Text = sscs.ToString();
-                lblSigSavedHash.Text = le.DecryptedFlightHash;
-                lblSigCurrentHash.Text = le.DecryptedCurrentHash;
-            }
+            pnlAdminFixSignature.Visible = true;
+            lblSigSavedState.Text = le.CFISignatureState.ToString();
+            lblSigSanityCheck.Text = sscs.ToString();
+            lblSigSavedHash.Text = le.DecryptedFlightHash;
+            lblSigCurrentHash.Text = le.DecryptedCurrentHash;
         }
 
         // If the user has entered another flight this session, default to that date rather than today
