@@ -142,7 +142,7 @@
                                 <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
 
                                 <td><%# Math.Max((((LogbookEntryDisplay) Container.DataItem).XCDualTotal - ((LogbookEntryDisplay) Container.DataItem).XCNightDualTotal), 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td><%# ((LogbookEntryDisplay) Container.DataItem).XCPICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td><%# Math.Max((((LogbookEntryDisplay) Container.DataItem).XCPICTotal - ((LogbookEntryDisplay) Container.DataItem).XCNightPICTotal), 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).XCNightDualTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).XCNightPICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
