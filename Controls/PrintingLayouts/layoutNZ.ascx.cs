@@ -37,6 +37,8 @@ public partial class Controls_PrintingLayouts_layoutNZ : System.Web.UI.UserContr
     #region IPrintingTemplate
     public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {
+        if (options == null)
+            throw new ArgumentNullException("options");
         ShowFooter = showFooter;
         IncludeImages = options.IncludeImages;
         CurrentUser = user;

@@ -29,6 +29,8 @@ public partial class Controls_PrintingLayouts_layoutUSA : System.Web.UI.UserCont
     #region IPrintingTemplate
     public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {
+        if (options == null)
+            throw new ArgumentNullException("options");
         ShowFooter = showFooter;
         CurrentUser = user;
         OptionalColumns = options.OptionalColumns;
