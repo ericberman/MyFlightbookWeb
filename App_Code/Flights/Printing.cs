@@ -23,9 +23,9 @@ namespace MyFlightbook.Printing
         /// </summary>
         /// <param name="lst">The enumerable set of printed pages</param>
         /// <param name="user">The user for whom the pages are printed</param>
-        /// <param name="includeImages">True to include images.</param>
         /// <param name="showFooter">True to display the certification/page numbers in the footer.</param>
-        void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true, OptionalColumn[] optionalColumns = null);
+        /// <param name="options">The options used for printing</param>
+        void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true);
     }
 
     public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, NZ, Glider}

@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -32,13 +32,16 @@ public partial class Controls_PrintingLayouts_layoutNZ : System.Web.UI.UserContr
         return ShowOptionalColumn(index) ? OptionalColumns[index].Title : string.Empty;
     }
 
+    protected string PropSeparator { get; set; }
+
     #region IPrintingTemplate
-    public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true, OptionalColumn[] optionalColumns = null)
+    public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {
         ShowFooter = showFooter;
-        IncludeImages = includeImages;
+        IncludeImages = options.IncludeImages;
         CurrentUser = user;
-        OptionalColumns = optionalColumns;
+        OptionalColumns = options.OptionalColumns;
+        PropSeparator = options.PropertySeparatorText;
 
         rptPages.DataSource = lst;
         rptPages.DataBind();
@@ -53,6 +56,14 @@ public partial class Controls_PrintingLayouts_layoutNZ : System.Web.UI.UserContr
             throw new ArgumentNullException("e");
 
         LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
+
+        HashSet<int> hsRedundantProps = new HashSet<int>() { (int)CustomPropertyType.KnownProperties.IDPropStudentName, (int)CustomPropertyType.KnownProperties.IDPropNameOfPIC };
+        foreach (LogbookEntryDisplay led in lep.Flights)
+        {
+            List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
+            lstProps.RemoveAll(cfp => hsRedundantProps.Contains(cfp.PropTypeID));
+            led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, CurrentUser.UsesHHMM, PropSeparator);
+        }
 
         Repeater rpt = (Repeater)e.Item.FindControl("rptFlight");
         rpt.DataSource = lep.Flights;

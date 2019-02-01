@@ -15,7 +15,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2018 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -197,7 +197,7 @@ public partial class Member_PrintView : System.Web.UI.Page
 
         Master.PrintingCSS = pl.CSSPath.ToAbsoluteURL(Request).ToString();
 
-        pt.BindPages(LogbookPrintedPage.Paginate(lstFlights, printingOptions.FlightsPerPage, printingOptions.OptionalColumns, printingOptions.IncludePullForwardTotals), CurrentUser, printingOptions.IncludeImages, !SuppressFooter, printingOptions.OptionalColumns);
+        pt.BindPages(LogbookPrintedPage.Paginate(lstFlights, printingOptions.FlightsPerPage, printingOptions.OptionalColumns, printingOptions.IncludePullForwardTotals), CurrentUser, printingOptions, !SuppressFooter);
 
         pnlResults.Visible = true;
     }

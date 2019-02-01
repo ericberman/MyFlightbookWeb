@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2018 MyFlightbook LLC
+ * Copyright (c) 2016-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -27,11 +27,11 @@ public partial class Controls_PrintingLayouts_layoutUSA : System.Web.UI.UserCont
     }
 
     #region IPrintingTemplate
-    public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, bool includeImages = false, bool showFooter = true, OptionalColumn[] optionalColumns = null)
+    public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {
         ShowFooter = showFooter;
         CurrentUser = user;
-        OptionalColumns = optionalColumns;
+        OptionalColumns = options.OptionalColumns;
 
         rptPages.DataSource = lst;
         rptPages.DataBind();
