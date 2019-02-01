@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -73,7 +73,7 @@ public partial class Member_FlightAnalysis : System.Web.UI.Page
     /// Loads the data for the specified flight, parsing the CSV file, and thus initializing m_fd.  This is cached, so it's OK to call multiple times.
     /// </summary>
     /// <param name="idFlight">ID of the flight with data to load</param>
-    protected void LoadData(LogbookEntry le)
+    protected void LoadData(LogbookEntryBase le)
     {
         if (le == null)
             throw new ArgumentNullException("le");

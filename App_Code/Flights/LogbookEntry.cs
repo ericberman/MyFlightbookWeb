@@ -29,7 +29,7 @@ namespace MyFlightbook
     /// Represents a logbook entry, including validation.  Supports retrieval from the database, updates, and entry of new rows
     /// </summary>
     [Serializable]
-    public class LogbookEntry : IPostable
+    public abstract class LogbookEntryBase
     {
         public const int idFlightNew = -1;
         public const int idFlightNone = -1;
@@ -192,9 +192,12 @@ namespace MyFlightbook
         /// <summary>
         /// Error code for last error
         /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public ErrorCode LastError
         {
             get { return m_lastErr; }
+            protected set { m_lastErr = value; }
         }
 
         /// <summary>
@@ -378,32 +381,9 @@ namespace MyFlightbook
 
         #endregion
 
-        #endregion
-
-        #region CustomProperties
-        public string StringPropertyMatchingPredicate(Predicate<CustomFlightProperty> pred)
-        {
-            if (CustomProperties == null || CustomProperties.Length == 0)
-                return string.Empty;
-            CustomFlightProperty cfp = Array.Find<CustomFlightProperty>(CustomProperties, pred);
-            return (cfp == null) ? string.Empty : cfp.TextValue;
-        }
-
-        public int IntPropertyMatchingPredicate(Predicate<CustomFlightProperty> pred)
-        {
-            if (CustomProperties == null || CustomProperties.Length == 0)
-                return 0;
-            CustomFlightProperty cfp = Array.Find<CustomFlightProperty>(CustomProperties, pred);
-            return (cfp == null) ? 0 : cfp.IntValue;
-        }
-
-        public decimal DecPropertyMatchingPredicate(Predicate<CustomFlightProperty> pred)
-        {
-            if (CustomProperties == null || CustomProperties.Length == 0)
-                return 0.0M;
-            CustomFlightProperty cfp = Array.Find<CustomFlightProperty>(CustomProperties, pred);
-            return (cfp == null) ? 0.0M : cfp.DecValue;
-        }
+        // These are overridden in child classes; declared here so that we don't have to expose LogbookEntryBase serializable
+        public virtual string SendFlightLink { get; set; }
+        public virtual string SocialMediaLink { get; set; }
         #endregion
 
         #region SignedFlights
@@ -830,7 +810,7 @@ namespace MyFlightbook
             return idFlight == LogbookEntry.idFlightNew || idFlight == LogbookEntry.idFlightNone || idFlight < 0;
         }
 
-        #region test for equality
+        #region Comparison
         private bool HasEqualDates(LogbookEntry le)
         {
             return Date.Year == le.Date.Year &&
@@ -1242,66 +1222,9 @@ namespace MyFlightbook
         #endregion
 
         #region Object Creation
-        /// <summary>
-        /// Create a new LogbookEntry object, loading from the database using the specified ID.  Loads ALL telemetry.
-        /// <param name="flightID">The ID of the flight to load</param>
-        /// <param name="szUser">The name of the owner of the flight.</param>
-        /// <param name="lto">Options for loading telemetry; default is to load all telemetry</param>
-        /// <param name="fForceLoad">Specifies whether the flight should be loaded even if its username doesn't match szuser</param>
-        /// </summary>
-        public LogbookEntry(int flightID, string szUser = null, LoadTelemetryOption lto = LoadTelemetryOption.None, bool fForceLoad = false)
-            : this()
-        {
-            if (flightID != idFlightNew && !String.IsNullOrEmpty(szUser))
-                FLoadFromDB(flightID, szUser, lto, fForceLoad);
-        }
-
-        public LogbookEntry()
+        protected LogbookEntryBase()
         {
             InitObject();
-        }
-
-        /// <summary>
-        /// Creates a new flight initialized from another user's flight, as created using EncodeShareKey
-        /// </summary>
-        /// <param name="szKey">The key - MUST be from EncodeShareKey</param>
-        /// <param name="szTargetUser">The target user.  MUST MATCH the target user passed to EncodeShareKeyForUser</param>
-        /// <returns>A new LogbookEntry object - Check the ErrorString for any potential errors.</returns>
-        public LogbookEntry(string szKey) : this()
-        {
-            string sz = new UserAccessEncryptor().Decrypt(szKey);
-            string[] rgSz = sz.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            try
-            {
-                if (rgSz.Length == 2)
-                {
-                    LogbookEntry leSrc = new LogbookEntry(Convert.ToInt32(rgSz[0], CultureInfo.InvariantCulture), rgSz[1], LoadTelemetryOption.LoadAll);
-                    if (!String.IsNullOrEmpty(leSrc.ErrorString))
-                        throw new MyFlightbookException(leSrc.ErrorString);
-
-                    leSrc.Clone(this);
-
-                    // clear out any role like PIC/SIC that likely doesn't carry over to the target pilot.
-                    CFI = Dual = PIC = SIC = 0.0M;
-                }
-            }
-            catch (MyFlightbookException ex)
-            {
-                m_lastErr = ErrorCode.Unknown;
-                szError = ex.Message;
-            }
-        }
-
-        /// <summary>
-        /// Create an entry from a datareader row for the specified user
-        /// </summary>
-        /// <param name="dr">The data reader</param>
-        /// <param name="szUser">The user - MUST own the object!</param>
-        /// <param name="lto">Whether or not to load telemetry - NOT LOADED BY DEFAULT</param>
-        public LogbookEntry(MySqlDataReader dr, string szUser, LoadTelemetryOption lto = LoadTelemetryOption.None)
-            : this()
-        {
-            InitFromDataReader(dr, szUser, lto);
         }
         #endregion
 
@@ -1576,8 +1499,10 @@ namespace MyFlightbook
         /// <param name="dr">The data row containing the logbook entry</param>
         /// <param name="szUser">The expected username</param>
         /// <returns>True if successful</returns>
-        private Boolean InitFromDataReader(MySqlDataReader dr, string szUser, LoadTelemetryOption lto)
+        protected Boolean InitFromDataReader(MySqlDataReader dr, string szUser, LoadTelemetryOption lto)
         {
+            if (dr == null)
+                throw new ArgumentNullException("dr");
             try
             {
                 if (string.Compare(dr["username"].ToString().Trim(), szUser, StringComparison.OrdinalIgnoreCase) == 0)
@@ -1797,69 +1722,6 @@ namespace MyFlightbook
         {
             return FLoadFromDB(idRow, szUserName, lto, fForceLoad, null);
         }
-
-        #region IPostable
-        [Newtonsoft.Json.JsonIgnore]
-        public string SocialMediaComment
-        {
-            get
-            {
-                string szURL = string.Empty;
-
-                string sz1 = Route.Trim();
-                string sz2 = Comment.Trim();
-                return (sz1.Length > 0 && sz2.Length > 0) ? sz1 + Resources.LocalizedText.ColonConnector + sz2 : sz1 + sz2;
-            }
-        }
-
-        public Uri SocialMediaItemUri(string szHost = null)
-        {
-            return SocialMediaLinks.ShareFlightUri(this, szHost);
-        }
-
-        public Uri SendFlightUri(string szHost = null, string szTarget = null)
-        {
-            return SocialMediaLinks.SendFlightUri(new UserAccessEncryptor().Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1}", this.FlightID, this.User)), szHost, szTarget);
-        }
-
-        public MFBImageInfo SocialMediaImage(string szHost = null)
-        {
-            string szImageURL = string.Empty;
-            PopulateImages();
-            if (FlightImages.Length > 0)
-                return FlightImages[0].ImageType == MFBImageInfo.ImageFileType.JPEG ? FlightImages[0] : FlightImages[0];    // use video thumbnail if it's for a video, since we can't use the video link itself.
-            else
-            {
-                // Use the preferred aircraft, if one is specified.
-                UserAircraft ua = new UserAircraft(User);
-                Aircraft ac = ua.GetUserAircraftByID(AircraftID) ?? new Aircraft(AircraftID);
-                ac.PopulateImages();
-                if (ac.AircraftImages.Count > 0)
-                    return ac.AircraftImages[0];
-            }
-            return null;
-        }
-
-        [Newtonsoft.Json.JsonIgnore]
-        public bool CanPost
-        {
-            get { return (fIsPublic || Route.Length > 0); }
-        }
-        #endregion IPostable
-
-        #region Sharing
-        public string SendFlightLink
-        {
-            get { return SendFlightUri().ToString(); }
-            set { string sz = value; } // to enable serialization
-        }
-
-        public string SocialMediaLink
-        {
-            get { return CanPost ? SocialMediaItemUri().AbsoluteUri : string.Empty; }
-            set { string sz = value; } // to enable serialization
-        }
-        #endregion
 
         #region Telemetry
         /// <summary>
@@ -2231,6 +2093,136 @@ namespace MyFlightbook
         #endregion
     }
 
+    [Serializable]
+    public class LogbookEntry : LogbookEntryBase, IPostable
+    {
+        #region IPostable
+        [Newtonsoft.Json.JsonIgnore]
+        public string SocialMediaComment
+        {
+            get
+            {
+                string szURL = string.Empty;
+
+                string sz1 = Route.Trim();
+                string sz2 = Comment.Trim();
+                return (sz1.Length > 0 && sz2.Length > 0) ? sz1 + Resources.LocalizedText.ColonConnector + sz2 : sz1 + sz2;
+            }
+        }
+
+        public Uri SocialMediaItemUri(string szHost = null)
+        {
+            return SocialMediaLinks.ShareFlightUri(this, szHost);
+        }
+
+        public Uri SendFlightUri(string szHost = null, string szTarget = null)
+        {
+            return SocialMediaLinks.SendFlightUri(new UserAccessEncryptor().Encrypt(String.Format(CultureInfo.InvariantCulture, "{0} {1}", this.FlightID, this.User)), szHost, szTarget);
+        }
+
+        public MFBImageInfo SocialMediaImage(string szHost = null)
+        {
+            string szImageURL = string.Empty;
+            PopulateImages();
+            if (FlightImages.Length > 0)
+                return FlightImages[0].ImageType == MFBImageInfo.ImageFileType.JPEG ? FlightImages[0] : FlightImages[0];    // use video thumbnail if it's for a video, since we can't use the video link itself.
+            else
+            {
+                // Use the preferred aircraft, if one is specified.
+                UserAircraft ua = new UserAircraft(User);
+                Aircraft ac = ua.GetUserAircraftByID(AircraftID) ?? new Aircraft(AircraftID);
+                ac.PopulateImages();
+                if (ac.AircraftImages.Count > 0)
+                    return ac.AircraftImages[0];
+            }
+            return null;
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public bool CanPost
+        {
+            get { return (fIsPublic || Route.Length > 0); }
+        }
+
+        #region Sharing
+        // Send flight and social media links are
+        // done as overrides so that the WSDL doesn't have to refer to LogbookEntryBase.
+        public override string SendFlightLink
+        {
+            get { return SendFlightUri().ToString(); }
+            set { string sz = value; } // to enable serialization
+        }
+
+        public override string SocialMediaLink
+        {
+            get { return CanPost ? SocialMediaItemUri().AbsoluteUri : string.Empty; }
+            set { string sz = value; } // to enable serialization
+        }
+        #endregion
+        #endregion IPostable
+
+        #region Constructors
+        public LogbookEntry() : base() { }
+
+        /// <summary>
+        /// Create a new LogbookEntry object, loading from the database using the specified ID.  Loads ALL telemetry.
+        /// <param name="flightID">The ID of the flight to load</param>
+        /// <param name="szUser">The name of the owner of the flight.</param>
+        /// <param name="lto">Options for loading telemetry; default is to load all telemetry</param>
+        /// <param name="fForceLoad">Specifies whether the flight should be loaded even if its username doesn't match szuser</param>
+        /// </summary>
+        public LogbookEntry(int flightID, string szUser = null, LoadTelemetryOption lto = LoadTelemetryOption.None, bool fForceLoad = false)
+            : this()
+        {
+            if (flightID != idFlightNew && !String.IsNullOrEmpty(szUser))
+                FLoadFromDB(flightID, szUser, lto, fForceLoad);
+        }
+
+        /// <summary>
+        /// Creates a new flight initialized from another user's flight, as created using EncodeShareKey
+        /// </summary>
+        /// <param name="szKey">The key - MUST be from EncodeShareKey</param>
+        /// <param name="szTargetUser">The target user.  MUST MATCH the target user passed to EncodeShareKeyForUser</param>
+        /// <returns>A new LogbookEntry object - Check the ErrorString for any potential errors.</returns>
+        public LogbookEntry(string szKey) : this()
+        {
+            string sz = new UserAccessEncryptor().Decrypt(szKey);
+            string[] rgSz = sz.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                if (rgSz.Length == 2)
+                {
+                    LogbookEntry leSrc = new LogbookEntry(Convert.ToInt32(rgSz[0], CultureInfo.InvariantCulture), rgSz[1], LoadTelemetryOption.LoadAll);
+                    if (!String.IsNullOrEmpty(leSrc.ErrorString))
+                        throw new MyFlightbookException(leSrc.ErrorString);
+
+                    leSrc.Clone(this);
+
+                    // clear out any role like PIC/SIC that likely doesn't carry over to the target pilot.
+                    CFI = Dual = PIC = SIC = 0.0M;
+                }
+            }
+            catch (MyFlightbookException ex)
+            {
+                LastError = ErrorCode.Unknown;
+                ErrorString = ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Create an entry from a datareader row for the specified user
+        /// </summary>
+        /// <param name="dr">The data reader</param>
+        /// <param name="szUser">The user - MUST own the object!</param>
+        /// <param name="lto">Whether or not to load telemetry - NOT LOADED BY DEFAULT</param>
+        public LogbookEntry(MySqlDataReader dr, string szUser, LoadTelemetryOption lto = LoadTelemetryOption.None)
+            : this()
+        {
+            InitFromDataReader(dr, szUser, lto);
+        }
+        #endregion
+    }
+
     /// <summary>
     /// Specifies the kind of additional columns that can be displayed for printing.
     /// </summary>
@@ -2460,6 +2452,32 @@ namespace MyFlightbook
     public class LogbookEntryDisplay : LogbookEntry, IHistogramable
     {
         public enum LogbookRowType { Flight, PageTotal, PreviousTotal, Subtotal, RunningTotal }
+
+        #region CustomProperties
+        private string StringPropertyMatchingPredicate(Predicate<CustomFlightProperty> pred)
+        {
+            if (CustomProperties == null || CustomProperties.Length == 0)
+                return string.Empty;
+            CustomFlightProperty cfp = Array.Find<CustomFlightProperty>(CustomProperties, pred);
+            return (cfp == null) ? string.Empty : cfp.TextValue;
+        }
+
+        private int IntPropertyMatchingPredicate(Predicate<CustomFlightProperty> pred)
+        {
+            if (CustomProperties == null || CustomProperties.Length == 0)
+                return 0;
+            CustomFlightProperty cfp = Array.Find<CustomFlightProperty>(CustomProperties, pred);
+            return (cfp == null) ? 0 : cfp.IntValue;
+        }
+
+        private decimal DecPropertyMatchingPredicate(Predicate<CustomFlightProperty> pred)
+        {
+            if (CustomProperties == null || CustomProperties.Length == 0)
+                return 0.0M;
+            CustomFlightProperty cfp = Array.Find<CustomFlightProperty>(CustomProperties, pred);
+            return (cfp == null) ? 0.0M : cfp.DecValue;
+        }
+        #endregion
 
         #region properties
         /// <summary>
@@ -2717,7 +2735,7 @@ namespace MyFlightbook
         /// </summary>
         public bool UseUTCDates { get; set; }
 
-        public static string LandingDisplayForFlight(LogbookEntry le)
+        public static string LandingDisplayForFlight(LogbookEntryBase le)
         {
             if (le == null)
                 return string.Empty;

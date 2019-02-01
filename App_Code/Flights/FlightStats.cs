@@ -6,7 +6,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -46,7 +46,7 @@ namespace MyFlightbook.FlightStats
         /// Updates recent flights for the specified flight, removing it if it is no longer public
         /// </summary>
         /// <param name="le"></param>
-        public static void RefreshForFlight(LogbookEntry le)
+        public static void RefreshForFlight(LogbookEntryBase le)
         {
             FlightStats fs = CachedStats();
 

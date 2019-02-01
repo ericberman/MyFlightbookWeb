@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -159,7 +159,7 @@ public partial class Member_Import : System.Web.UI.Page
             throw new ArgumentNullException("le");
     }
 
-    protected void AddErrorRow(LogbookEntry le, string szContext, int iRow)
+    protected void AddErrorRow(LogbookEntryBase le, string szContext, int iRow)
     {
         if (le == null)
             throw new ArgumentNullException("le");

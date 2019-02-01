@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2018 MyFlightbook LLC
+ * Copyright (c) 2012-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -78,7 +78,7 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     /// <param name="sfc">the column to read</param>
     /// <param name="sf">The starting flight</param>
     /// <returns>The appropriate column value</returns>
-    protected Decimal GetValueForColumn(StartingFlightColumn sfc, LogbookEntry sf)
+    protected Decimal GetValueForColumn(StartingFlightColumn sfc, LogbookEntryBase sf)
     {
         if (sf == null)
             throw new ArgumentNullException("sf");
@@ -102,7 +102,7 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     /// <param name="sfc">The column to read</param>
     /// <param name="sf">The target starting flight</param>
     /// <param name="value">The value</param>
-    protected void SetValueForColumn(StartingFlightColumn sfc, LogbookEntry sf, Decimal value)
+    protected void SetValueForColumn(StartingFlightColumn sfc, LogbookEntryBase sf, Decimal value)
     {
         if (sf == null)
             throw new ArgumentNullException("sf");
@@ -128,7 +128,7 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     /// </summary>
     /// <param name="sf">The starting flight from which to initialize</param>
     /// <param name="iRow">The row</param>
-    protected void ToRow(LogbookEntry sf, int iRow)
+    protected void ToRow(LogbookEntryBase sf, int iRow)
     {
         int iCol = 0;
         foreach (StartingFlightColumn sfc in Enum.GetValues(typeof(StartingFlightColumn)))
@@ -144,7 +144,7 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     /// </summary>
     /// <param name="sf">The starting flight</param>
     /// <param name="iRow">The row</param>
-    protected void FromRow(LogbookEntry sf, int iRow)
+    protected void FromRow(LogbookEntryBase sf, int iRow)
     {
         int iCol = 0;
         foreach (StartingFlightColumn sfc in Enum.GetValues(typeof(StartingFlightColumn)))

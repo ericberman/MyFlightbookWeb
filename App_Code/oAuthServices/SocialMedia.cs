@@ -11,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -26,7 +26,7 @@ namespace MyFlightbook.SocialMedia
         /// <param name="le">The flight to be shared</param>
         /// <param name="szHost">Hostname (if not provided, uses current brand)</param>
         /// <returns></returns>
-        public static Uri ShareFlightUri(LogbookEntry le, string szHost = null)
+        public static Uri ShareFlightUri(LogbookEntryBase le, string szHost = null)
         {
             if (le == null)
                 throw new ArgumentNullException("le");

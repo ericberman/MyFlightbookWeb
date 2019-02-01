@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -176,7 +176,7 @@ namespace MyFlightbook.ImportFlights
             dt.Columns.Add(new DataColumn(colPublic[0], typeof(string)));
         }
 
-        public static void WriteEntryToDataTable(LogbookEntry le, DataTable dt)
+        public static void WriteEntryToDataTable(LogbookEntryBase le, DataTable dt)
         {
             if (dt == null)
                 throw new ArgumentNullException("dt");
