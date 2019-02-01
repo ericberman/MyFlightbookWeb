@@ -105,7 +105,7 @@
                         <td style="border-right: 2px solid black;"><%# Math.Min((decimal)Eval("PIC"), (decimal) Eval("DayXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td><%# Math.Min(((decimal)Eval("Dual")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td style="border-right: 2px solid black;"><%# Math.Min(((decimal)Eval("PIC")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                        <td visible='<%# CurrentUser.IsInstructor %>' style="border-right: 2px solid black;"><%# ((decimal)Eval("CFI")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td runat="server" visible='<%# CurrentUser.IsInstructor %>' style="border-right: 2px solid black;"><%# ((decimal)Eval("CFI")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                         <td class="centered"><%# Eval("DayTakeoffs") %>&nbsp;/&nbsp;<%# Math.Max((int) Eval("Landings") - (int) Eval("NightLandings") - (int) Eval("NightTouchAndGoLandings"), 0) %></td>
                         <td class="centered" style="border-right: 2px solid black;"><%# Eval("NightTakeoffs") %>&nbsp;/&nbsp;<%# (int) Eval("NightLandings") + (int) Eval("NightTouchAndGoLandings") %></td>
