@@ -903,80 +903,6 @@ namespace MyFlightbook
 
             return true;
         }
-
-        /// <summary>
-        /// Get the differences between this and another entry, which is considered the NEW entry
-        /// </summary>
-        /// <param name="le"></param>
-        /// <returns></returns>
-        public IEnumerable<PropertyDelta> CompareTo(LogbookEntryBase le, bool fUseHHMM)
-        {
-            if (le == null)
-                return null;
-
-            List<PropertyDelta> lst = new List<PropertyDelta>();
-
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.PrintHeaderDate, Date.ToShortDateString(), le.Date.ToShortDateString(), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldTail, TailNumDisplay, le.TailNumDisplay, lst);
-
-            if (CatClassOverride != le.CatClassOverride)
-            {
-                CategoryClass ccThis = CategoryClass.CategoryClassFromID((CategoryClass.CatClassID) CatClassOverride);
-                CategoryClass ccNew = CategoryClass.CategoryClassFromID((CategoryClass.CatClassID) le.CatClassOverride);
-                PropertyDelta.AddPotentialChange(Resources.LogbookEntry.PrintHeaderCategory2, ccThis.CatClass, ccNew.CatClass, lst);
-            }
-
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.HobbsStart, HobbsStart.FormatDecimal(fUseHHMM), le.HobbsStart.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.HobbsEnd, HobbsEnd.FormatDecimal(fUseHHMM), le.HobbsEnd.FormatDecimal(fUseHHMM), lst);
-
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldEngineStart, EngineStart.UTCFormattedStringOrEmpty(false), le.EngineStart.UTCFormattedStringOrEmpty(false), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldEngineEnd, EngineEnd.UTCFormattedStringOrEmpty(false), le.EngineEnd.UTCFormattedStringOrEmpty(false), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldFlightStart, FlightStart.UTCFormattedStringOrEmpty(false), le.FlightStart.UTCFormattedStringOrEmpty(false), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldFlightEnd, FlightEnd.UTCFormattedStringOrEmpty(false), le.FlightEnd.UTCFormattedStringOrEmpty(false), lst);
-
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldComments, Comment, le.Comment, lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldRoute, Route, le.Route, lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldApproaches, Approaches.FormatInt(), le.Approaches.FormatInt(), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldHold, fHoldingProcedures ? Resources.LogbookEntry.PropertyYes : string.Empty, le.fHoldingProcedures ? Resources.LogbookEntry.PropertyYes : string.Empty, lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldLanding, Landings.FormatInt(), le.Landings.FormatInt(), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldNightLandings, NightLandings.FormatInt(), le.NightLandings.FormatInt(), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldDayLandings, FullStopLandings.FormatInt(), le.FullStopLandings.FormatInt(), lst);
-
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldXCountry, CrossCountry.FormatDecimal(fUseHHMM), le.CrossCountry.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldNight, Nighttime.FormatDecimal(fUseHHMM), le.Nighttime.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldSimIMCFull, IMC.FormatDecimal(fUseHHMM), le.IMC.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldIMC, SimulatedIFR.FormatDecimal(fUseHHMM), le.SimulatedIFR.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldGroundSimFull, GroundSim.FormatDecimal(fUseHHMM), le.GroundSim.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldDual, Dual.FormatDecimal(fUseHHMM), le.Dual.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldSIC, SIC.FormatDecimal(fUseHHMM), le.SIC.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldPIC, PIC.FormatDecimal(fUseHHMM), le.PIC.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldCFI, CFI.FormatDecimal(fUseHHMM), le.CFI.FormatDecimal(fUseHHMM), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldTotal, TotalFlightTime.FormatDecimal(fUseHHMM), le.TotalFlightTime.FormatDecimal(fUseHHMM), lst);
-
-            List<CustomFlightProperty> lstPropsThis = new List<CustomFlightProperty>(CustomProperties);
-            List<CustomFlightProperty> lstPropsNew = new List<CustomFlightProperty>(le.CustomProperties);
-
-            lstPropsThis.Sort((cfp1, cfp2) => { return cfp1.PropTypeID.CompareTo(cfp2.PropTypeID); });
-            lstPropsNew.Sort((cfp1, cfp2) => { return cfp1.PropTypeID.CompareTo(cfp2.PropTypeID); });
-
-            foreach (CustomFlightProperty cfp in lstPropsThis)
-            {
-                CustomFlightProperty cfpNew = lstPropsNew.FirstOrDefault(c => c.PropTypeID == cfp.PropTypeID);
-                if (cfpNew == null)
-                    lst.Add(new PropertyDelta(cfp.PropertyType.Title, cfp.ValueString, string.Empty));
-                else
-                {
-                    PropertyDelta.AddPotentialChange(cfp.PropertyType.Title, cfp.DisplayString, cfpNew.DisplayString, lst);
-                    lstPropsNew.Remove(cfpNew);
-                }
-            }
-            foreach (CustomFlightProperty cfp in lstPropsNew)
-                PropertyDelta.AddPotentialChange(cfp.PropertyType.Title, string.Empty, cfp.ValueString, lst);
-
-            lst.Sort();
-
-            return lst;
-        }
         #endregion
 
         /// <summary>
@@ -1053,49 +979,6 @@ namespace MyFlightbook
                 limit > 0 || offset > 0 ? String.Format(CultureInfo.InvariantCulture, " LIMIT {0},{1}", offset, limit) : string.Empty);   // LIMIT clause
 
             return comm;
-        }
-
-        /// <summary>
-        /// Fill FlightImages with images from the flight.
-        /// <param name="fOnlyImages">Indicates if only images should be returned (i.e., no PDF or movie)</param>
-        /// </summary>
-        public void PopulateImages(bool fOnlyImages = false)
-        {
-            ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, FlightID.ToString(CultureInfo.InvariantCulture));
-            il.Refresh(true, null, !fOnlyImages);
-            FlightImages = il.ImageArray.ToArray();
-        }
-
-        /// <summary>
-        /// Performs auto-fill based on the pilot role specified in the aircraft.
-        /// </summary>
-        /// <param name="ac"></param>
-        public void AutofillForAircraft(Aircraft ac)
-        {
-            if (ac == null)
-                throw new ArgumentNullException("ac");
-
-            if (IsNewFlight)
-            {
-                switch (ac.RoleForPilot)
-                {
-                    default:
-                    case Aircraft.PilotRole.None:
-                        break;
-                    case Aircraft.PilotRole.CFI:
-                        if (CFI == 0)
-                            CFI = TotalFlightTime;
-                        break;
-                    case Aircraft.PilotRole.PIC:
-                        if (PIC == 0)
-                            PIC = TotalFlightTime;
-                        break;
-                    case Aircraft.PilotRole.SIC:
-                        if (SIC == 0)
-                            SIC = TotalFlightTime;
-                        break;
-                }
-            }
         }
 
         #region Validation
@@ -1239,6 +1122,8 @@ namespace MyFlightbook
 
             return true;
         }
+
+        public abstract void AutofillForAircraft(Aircraft ac);
 
         /// <summary>
         /// Validates the aircraft for the flight.  THIS PERFORMS AUTOFILL based on aircraft preferences, so it can modify the flight.
@@ -2039,132 +1924,6 @@ namespace MyFlightbook
         {
             return String.Format(CultureInfo.CurrentCulture, "{0:d}: {1}{2} {3}", this.Date, String.IsNullOrEmpty(this.TailNumDisplay) ? String.Empty : String.Format(CultureInfo.CurrentCulture, "({0}) ", this.TailNumDisplay), this.Comment, this.Route);
         }
-
-        #region Auto-fill utility functions
-        /// <summary>
-        /// Computes auto hobbs based on the specified options.
-        /// </summary>
-        /// <param name="opt">The autofill options</param>
-        public void AutoHobbs(AutoFillOptions opt)
-        {
-            if (opt == null)
-                throw new ArgumentNullException("opt");
-
-            if (HobbsStart != 0 && HobbsEnd <= HobbsStart)
-            {
-                switch (opt.AutoFillHobbs)
-                {
-                    case AutoFillOptions.AutoFillHobbsOption.None:
-                        break;
-                    case AutoFillOptions.AutoFillHobbsOption.EngineTime:
-                        if (EngineStart.CompareTo(DateTime.MinValue) != 0 && EngineEnd.CompareTo(DateTime.MinValue) != 0)
-                        {
-                            HobbsEnd = HobbsStart + Convert.ToDecimal(TimeSpan.FromTicks(EngineEnd.Ticks - EngineStart.Ticks).TotalHours);
-                            break;
-                        }
-                        // else Fall through to flight time
-                        goto case AutoFillOptions.AutoFillHobbsOption.FlightTime;
-                    case AutoFillOptions.AutoFillHobbsOption.FlightTime:
-                        if (FlightStart.CompareTo(DateTime.MinValue) != 0 && FlightEnd.CompareTo(DateTime.MinValue) != 0)
-                        {
-                            HobbsEnd = HobbsStart + Convert.ToDecimal(TimeSpan.FromTicks(FlightEnd.Ticks - FlightStart.Ticks).TotalHours);
-                            break;
-                        }
-                        // else fall through to total time.
-                        goto case AutoFillOptions.AutoFillHobbsOption.TotalTime;
-                    case AutoFillOptions.AutoFillHobbsOption.TotalTime:
-                        HobbsEnd = HobbsStart + TotalFlightTime;
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Computes auto totals based on the specified options.  Only makes changes if TotalFlighttime is 0.
-        /// </summary>
-        /// <param name="opt"></param>
-        public void AutoTotals(AutoFillOptions opt)
-        {
-            if (opt == null)
-                throw new ArgumentNullException("opt");
-            
-            // Compute total time based on autofill options
-            if (TotalFlightTime == 0)
-            {
-                switch (opt.AutoFillTotal)
-                {
-                    case AutoFillOptions.AutoFillTotalOption.None:
-                        break;
-                    case AutoFillOptions.AutoFillTotalOption.EngineTime:
-                        if (EngineStart.HasValue() && EngineEnd.HasValue() && EngineStart.CompareTo(EngineEnd) < 0)
-                        {
-                            TotalFlightTime = (decimal) EngineEnd.Subtract(EngineStart).TotalHours;
-                            break;
-                        }
-                        goto case AutoFillOptions.AutoFillTotalOption.FlightTime;
-                    // else fall through and do flight time.
-                    case AutoFillOptions.AutoFillTotalOption.FlightTime:
-                        if (FlightStart.HasValue() && FlightEnd.HasValue() && FlightStart.CompareTo(FlightEnd) < 0)
-                        {
-                            TotalFlightTime = (decimal) FlightEnd.Subtract(FlightStart).TotalHours;
-                            break;
-                        }
-                        goto case AutoFillOptions.AutoFillTotalOption.HobbsTime;
-                    // else fall through and do hobbs time.
-                    case AutoFillOptions.AutoFillTotalOption.HobbsTime:
-                        if (HobbsStart > 0 && HobbsEnd > HobbsStart)
-                        {
-                            TotalFlightTime = HobbsEnd - HobbsStart;
-                            break;
-                        }
-                        goto case AutoFillOptions.AutoFillTotalOption.BlockTime;
-                    // else fall through and do block time.
-                    case AutoFillOptions.AutoFillTotalOption.BlockTime:
-                        {
-                            CustomFlightProperty cfpBlockOut = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut);
-                            CustomFlightProperty cfpBlockIn = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn);
-
-                            if (cfpBlockIn != null && cfpBlockOut != null && !cfpBlockIn.IsDefaultValue && !cfpBlockOut.IsDefaultValue && cfpBlockIn.DateValue.CompareTo(cfpBlockOut.DateValue) > 0)
-                                TotalFlightTime = (decimal) cfpBlockIn.DateValue.Subtract(cfpBlockOut.DateValue).TotalHours;
-                        }
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Performs final tasks after autofill.  Specifically does auto-cross country, closes off the last landing (if needed, and adds a night landing if it was at night)
-        /// </summary>
-        /// <param name="opt">The autofill options</param>
-        public void AutoFillFinish(AutoFillOptions opt)
-        {
-            if (opt == null)
-                throw new ArgumentNullException("opt");
-            AirportList al = new AirportList(Route);
-            if (TotalFlightTime > 0)
-            {
-                if (al.MaxDistanceForRoute() > opt.CrossCountryThreshold)
-                    CrossCountry = TotalFlightTime;
-            }
-
-            airport[] rgap = al.GetNormalizedAirports();
-            if (String.IsNullOrEmpty(FlightData) && TotalFlightTime > 0 && rgap.Length > 1)
-            {
-                // add a landing if there is total time and no other landings detected.
-                if (Landings == 0)
-                    Landings = 1;
-
-                // if only one landing is specified, and the flight-end time is known, and it is night, add a night landing.
-                if (rgap.Length == 2 && Landings == 1 && NightLandings == 0 && FlightEnd.HasValue())
-                {
-                    MyFlightbook.Geography.LatLong ll = rgap[1].LatLong;
-                    MyFlightbook.Solar.SunriseSunsetTimes sst = new MyFlightbook.Solar.SunriseSunsetTimes(FlightEnd, ll.Latitude, ll.Longitude);
-                    if (sst.IsFAANight)
-                        NightLandings = 1;
-                }
-            }
-        }
-        #endregion
     }
 
     [Serializable]
@@ -2295,9 +2054,258 @@ namespace MyFlightbook
             InitFromDataReader(dr, szUser, lto);
         }
         #endregion
+
+        #region images
+        /// <summary>
+        /// Fill FlightImages with images from the flight.
+        /// <param name="fOnlyImages">Indicates if only images should be returned (i.e., no PDF or movie)</param>
+        /// </summary>
+        public void PopulateImages(bool fOnlyImages = false)
+        {
+            ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, FlightID.ToString(CultureInfo.InvariantCulture));
+            il.Refresh(true, null, !fOnlyImages);
+            FlightImages = il.ImageArray.ToArray();
+        }
+        #endregion
+
+        #region Autofill
+        /// <summary>
+        /// Performs auto-fill based on the pilot role specified in the aircraft.
+        /// </summary>
+        /// <param name="ac"></param>
+        public override void AutofillForAircraft(Aircraft ac)
+        {
+            if (ac == null)
+                throw new ArgumentNullException("ac");
+
+            if (IsNewFlight)
+            {
+                switch (ac.RoleForPilot)
+                {
+                    default:
+                    case Aircraft.PilotRole.None:
+                        break;
+                    case Aircraft.PilotRole.CFI:
+                        if (CFI == 0)
+                            CFI = TotalFlightTime;
+                        break;
+                    case Aircraft.PilotRole.PIC:
+                        if (PIC == 0)
+                            PIC = TotalFlightTime;
+                        break;
+                    case Aircraft.PilotRole.SIC:
+                        if (SIC == 0)
+                            SIC = TotalFlightTime;
+                        break;
+                }
+            }
+        }
+        #endregion
+
+        #region Comparison
+        /// <summary>
+        /// Get the differences between this and another entry, which is considered the NEW entry
+        /// </summary>
+        /// <param name="le"></param>
+        /// <returns></returns>
+        public IEnumerable<PropertyDelta> CompareTo(LogbookEntryBase le, bool fUseHHMM)
+        {
+            if (le == null)
+                return null;
+
+            List<PropertyDelta> lst = new List<PropertyDelta>();
+
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.PrintHeaderDate, Date.ToShortDateString(), le.Date.ToShortDateString(), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldTail, TailNumDisplay, le.TailNumDisplay, lst);
+
+            if (CatClassOverride != le.CatClassOverride)
+            {
+                CategoryClass ccThis = CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)CatClassOverride);
+                CategoryClass ccNew = CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)le.CatClassOverride);
+                PropertyDelta.AddPotentialChange(Resources.LogbookEntry.PrintHeaderCategory2, ccThis.CatClass, ccNew.CatClass, lst);
+            }
+
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.HobbsStart, HobbsStart.FormatDecimal(fUseHHMM), le.HobbsStart.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.HobbsEnd, HobbsEnd.FormatDecimal(fUseHHMM), le.HobbsEnd.FormatDecimal(fUseHHMM), lst);
+
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldEngineStart, EngineStart.UTCFormattedStringOrEmpty(false), le.EngineStart.UTCFormattedStringOrEmpty(false), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldEngineEnd, EngineEnd.UTCFormattedStringOrEmpty(false), le.EngineEnd.UTCFormattedStringOrEmpty(false), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldFlightStart, FlightStart.UTCFormattedStringOrEmpty(false), le.FlightStart.UTCFormattedStringOrEmpty(false), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldFlightEnd, FlightEnd.UTCFormattedStringOrEmpty(false), le.FlightEnd.UTCFormattedStringOrEmpty(false), lst);
+
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldComments, Comment, le.Comment, lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldRoute, Route, le.Route, lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldApproaches, Approaches.FormatInt(), le.Approaches.FormatInt(), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldHold, fHoldingProcedures ? Resources.LogbookEntry.PropertyYes : string.Empty, le.fHoldingProcedures ? Resources.LogbookEntry.PropertyYes : string.Empty, lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldLanding, Landings.FormatInt(), le.Landings.FormatInt(), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldNightLandings, NightLandings.FormatInt(), le.NightLandings.FormatInt(), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldDayLandings, FullStopLandings.FormatInt(), le.FullStopLandings.FormatInt(), lst);
+
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldXCountry, CrossCountry.FormatDecimal(fUseHHMM), le.CrossCountry.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldNight, Nighttime.FormatDecimal(fUseHHMM), le.Nighttime.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldSimIMCFull, IMC.FormatDecimal(fUseHHMM), le.IMC.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldIMC, SimulatedIFR.FormatDecimal(fUseHHMM), le.SimulatedIFR.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldGroundSimFull, GroundSim.FormatDecimal(fUseHHMM), le.GroundSim.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldDual, Dual.FormatDecimal(fUseHHMM), le.Dual.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldSIC, SIC.FormatDecimal(fUseHHMM), le.SIC.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldPIC, PIC.FormatDecimal(fUseHHMM), le.PIC.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldCFI, CFI.FormatDecimal(fUseHHMM), le.CFI.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldTotal, TotalFlightTime.FormatDecimal(fUseHHMM), le.TotalFlightTime.FormatDecimal(fUseHHMM), lst);
+
+            List<CustomFlightProperty> lstPropsThis = new List<CustomFlightProperty>(CustomProperties);
+            List<CustomFlightProperty> lstPropsNew = new List<CustomFlightProperty>(le.CustomProperties);
+
+            lstPropsThis.Sort((cfp1, cfp2) => { return cfp1.PropTypeID.CompareTo(cfp2.PropTypeID); });
+            lstPropsNew.Sort((cfp1, cfp2) => { return cfp1.PropTypeID.CompareTo(cfp2.PropTypeID); });
+
+            foreach (CustomFlightProperty cfp in lstPropsThis)
+            {
+                CustomFlightProperty cfpNew = lstPropsNew.FirstOrDefault(c => c.PropTypeID == cfp.PropTypeID);
+                if (cfpNew == null)
+                    lst.Add(new PropertyDelta(cfp.PropertyType.Title, cfp.ValueString, string.Empty));
+                else
+                {
+                    PropertyDelta.AddPotentialChange(cfp.PropertyType.Title, cfp.DisplayString, cfpNew.DisplayString, lst);
+                    lstPropsNew.Remove(cfpNew);
+                }
+            }
+            foreach (CustomFlightProperty cfp in lstPropsNew)
+                PropertyDelta.AddPotentialChange(cfp.PropertyType.Title, string.Empty, cfp.ValueString, lst);
+
+            lst.Sort();
+
+            return lst;
+        }
+        #endregion
+
+        #region Auto-fill utility functions
+        /// <summary>
+        /// Computes auto hobbs based on the specified options.
+        /// </summary>
+        /// <param name="opt">The autofill options</param>
+        public void AutoHobbs(AutoFillOptions opt)
+        {
+            if (opt == null)
+                throw new ArgumentNullException("opt");
+
+            if (HobbsStart != 0 && HobbsEnd <= HobbsStart)
+            {
+                switch (opt.AutoFillHobbs)
+                {
+                    case AutoFillOptions.AutoFillHobbsOption.None:
+                        break;
+                    case AutoFillOptions.AutoFillHobbsOption.EngineTime:
+                        if (EngineStart.CompareTo(DateTime.MinValue) != 0 && EngineEnd.CompareTo(DateTime.MinValue) != 0)
+                        {
+                            HobbsEnd = HobbsStart + Convert.ToDecimal(TimeSpan.FromTicks(EngineEnd.Ticks - EngineStart.Ticks).TotalHours);
+                            break;
+                        }
+                        // else Fall through to flight time
+                        goto case AutoFillOptions.AutoFillHobbsOption.FlightTime;
+                    case AutoFillOptions.AutoFillHobbsOption.FlightTime:
+                        if (FlightStart.CompareTo(DateTime.MinValue) != 0 && FlightEnd.CompareTo(DateTime.MinValue) != 0)
+                        {
+                            HobbsEnd = HobbsStart + Convert.ToDecimal(TimeSpan.FromTicks(FlightEnd.Ticks - FlightStart.Ticks).TotalHours);
+                            break;
+                        }
+                        // else fall through to total time.
+                        goto case AutoFillOptions.AutoFillHobbsOption.TotalTime;
+                    case AutoFillOptions.AutoFillHobbsOption.TotalTime:
+                        HobbsEnd = HobbsStart + TotalFlightTime;
+                        break;
+                }
+            }
         }
 
         /// <summary>
+        /// Computes auto totals based on the specified options.  Only makes changes if TotalFlighttime is 0.
+        /// </summary>
+        /// <param name="opt"></param>
+        public void AutoTotals(AutoFillOptions opt)
+        {
+            if (opt == null)
+                throw new ArgumentNullException("opt");
+
+            // Compute total time based on autofill options
+            if (TotalFlightTime == 0)
+            {
+                switch (opt.AutoFillTotal)
+                {
+                    case AutoFillOptions.AutoFillTotalOption.None:
+                        break;
+                    case AutoFillOptions.AutoFillTotalOption.EngineTime:
+                        if (EngineStart.HasValue() && EngineEnd.HasValue() && EngineStart.CompareTo(EngineEnd) < 0)
+                        {
+                            TotalFlightTime = (decimal)EngineEnd.Subtract(EngineStart).TotalHours;
+                            break;
+                        }
+                        goto case AutoFillOptions.AutoFillTotalOption.FlightTime;
+                    // else fall through and do flight time.
+                    case AutoFillOptions.AutoFillTotalOption.FlightTime:
+                        if (FlightStart.HasValue() && FlightEnd.HasValue() && FlightStart.CompareTo(FlightEnd) < 0)
+                        {
+                            TotalFlightTime = (decimal)FlightEnd.Subtract(FlightStart).TotalHours;
+                            break;
+                        }
+                        goto case AutoFillOptions.AutoFillTotalOption.HobbsTime;
+                    // else fall through and do hobbs time.
+                    case AutoFillOptions.AutoFillTotalOption.HobbsTime:
+                        if (HobbsStart > 0 && HobbsEnd > HobbsStart)
+                        {
+                            TotalFlightTime = HobbsEnd - HobbsStart;
+                            break;
+                        }
+                        goto case AutoFillOptions.AutoFillTotalOption.BlockTime;
+                    // else fall through and do block time.
+                    case AutoFillOptions.AutoFillTotalOption.BlockTime:
+                        {
+                            CustomFlightProperty cfpBlockOut = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut);
+                            CustomFlightProperty cfpBlockIn = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn);
+
+                            if (cfpBlockIn != null && cfpBlockOut != null && !cfpBlockIn.IsDefaultValue && !cfpBlockOut.IsDefaultValue && cfpBlockIn.DateValue.CompareTo(cfpBlockOut.DateValue) > 0)
+                                TotalFlightTime = (decimal)cfpBlockIn.DateValue.Subtract(cfpBlockOut.DateValue).TotalHours;
+                        }
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Performs final tasks after autofill.  Specifically does auto-cross country, closes off the last landing (if needed, and adds a night landing if it was at night)
+        /// </summary>
+        /// <param name="opt">The autofill options</param>
+        public void AutoFillFinish(AutoFillOptions opt)
+        {
+            if (opt == null)
+                throw new ArgumentNullException("opt");
+            AirportList al = new AirportList(Route);
+            if (TotalFlightTime > 0)
+            {
+                if (al.MaxDistanceForRoute() > opt.CrossCountryThreshold)
+                    CrossCountry = TotalFlightTime;
+            }
+
+            airport[] rgap = al.GetNormalizedAirports();
+            if (String.IsNullOrEmpty(FlightData) && TotalFlightTime > 0 && rgap.Length > 1)
+            {
+                // add a landing if there is total time and no other landings detected.
+                if (Landings == 0)
+                    Landings = 1;
+
+                // if only one landing is specified, and the flight-end time is known, and it is night, add a night landing.
+                if (rgap.Length == 2 && Landings == 1 && NightLandings == 0 && FlightEnd.HasValue())
+                {
+                    MyFlightbook.Geography.LatLong ll = rgap[1].LatLong;
+                    MyFlightbook.Solar.SunriseSunsetTimes sst = new MyFlightbook.Solar.SunriseSunsetTimes(FlightEnd, ll.Latitude, ll.Longitude);
+                    if (sst.IsFAANight)
+                        NightLandings = 1;
+                }
+            }
+        }
+        #endregion
+    }
+
+    /// <summary>
     /// Specifies the kind of additional columns that can be displayed for printing.
     /// </summary>
     public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp }
