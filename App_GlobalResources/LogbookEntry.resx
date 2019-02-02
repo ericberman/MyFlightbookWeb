@@ -939,4 +939,13 @@
   <data name="PrintHeaderTakeoffsLandings" xml:space="preserve">
     <value>Takeoffs / Landings</value>
   </data>
+  <data name="CompareAdded" xml:space="preserve">
+    <value>Added</value>
+  </data>
+  <data name="CompareDeleted" xml:space="preserve">
+    <value>Deleted</value>
+  </data>
+  <data name="CompareModified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
 </root>

@@ -40,6 +40,11 @@ namespace MyFlightbook.ImportFlights
         public List<LogbookEntry> FlightsToImport { get; set; }
 
         /// <summary>
+        /// Set of flights to be modified, in original state (for comparison)
+        /// </summary>
+        public Dictionary<int, LogbookEntry> OriginalFlightsToModify { get; set; }
+
+        /// <summary>
         /// The aircraft that were encountered that are not yet in the user's profile
         /// </summary>
         public IEnumerable<AircraftImportMatchRow> MissingAircraft
@@ -852,6 +857,7 @@ namespace MyFlightbook.ImportFlights
             using (CSVReader csvr = new CSVReader(fileContent))
             {
                 FlightsToImport = new List<LogbookEntry>();
+                OriginalFlightsToModify = new Dictionary<int, LogbookEntry>();
                 int iRow = 0;
 
                 bool fUseHHMM = Profile.GetUser(szUser).UsesHHMM;
@@ -902,6 +908,21 @@ namespace MyFlightbook.ImportFlights
                     }
                     m_ImportContext.AircraftToImport.ProcessParseResultsForUser(szUser);
                     m_missingAircraft.AddRange(m_ImportContext.AircraftToImport.AllMissing);
+
+                    // Collect base versions of any flights being modified.
+                    HashSet<int> hsModifiedFlightIDs = new HashSet<int>();
+                    foreach (LogbookEntry le in FlightsToImport)
+                        if (!le.IsNewFlight)
+                            hsModifiedFlightIDs.Add(le.FlightID);
+
+                    if (hsModifiedFlightIDs.Count > 0)
+                    {
+                        IEnumerable<LogbookEntryDisplay> lstFlightsToModify = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(szUser)), szUser, "FlightID", System.Web.UI.WebControls.SortDirection.Ascending, false, false);
+                        foreach (LogbookEntry le in lstFlightsToModify)
+                            if (hsModifiedFlightIDs.Contains(le.FlightID))
+                                OriginalFlightsToModify.Add(le.FlightID, le);
+                    }
+
                 }
                 catch (MyFlightbookException ex)
                 {

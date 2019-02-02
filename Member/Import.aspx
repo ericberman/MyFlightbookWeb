@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Import.aspx.cs" Inherits="Member_Import" Title="Import Logbook" culture="auto" meta:resourcekey="PageResource1"  %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Import.aspx.cs" Inherits="Member_Import" Title="Import Logbook" culture="auto" meta:resourcekey="PageResource1"  %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbImportAircraft.ascx" tagname="mfbImportAircraft" tagprefix="uc1" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
@@ -30,7 +30,7 @@
                 Title="1. Prepare your data for import" meta:resourcekey="wsCreateFileResource1" >
                 <p>
                     <asp:Label ID="lblNewDirectImport" runat="server" Text="<%$ Resources:LocalizedText, HeaderDownloadIsNew %>" Font-Bold="true" meta:resourcekey="lblNewDirectImportResource1"></asp:Label>
-                    <asp:Label ID="lblDirectImport" runat="server" Text="If your data is from FOREFLIGHT, ZULULOG, LOGTEN PRO, or ELOGSITE�you should be able to simply export your data in <a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'>CSV</a> format from that program and import it directly here." meta:resourcekey="lblDirectImportResource1"></asp:Label>
+                    <asp:Label ID="lblDirectImport" runat="server" Text="If your data is from FOREFLIGHT, ZULULOG, LOGTEN PRO, or ELOGSITE…you should be able to simply export your data in <a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'>CSV</a> format from that program and import it directly here." meta:resourcekey="lblDirectImportResource1"></asp:Label>
                 </p>
                 <p>
                     <asp:Localize ID="locStep1DescSpreadsheet" runat="server" Text="Otherwise, you must first create a table of your flights in a spreadsheet such as Excel and save it in <a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'>CSV</a> (spreadsheet) format.  The first row of the table must be headers that identify which column is which, with one flight per row on the rows that follow." meta:resourcekey="locStep1DescSpreadsheetResource1"></asp:Localize>
@@ -190,6 +190,15 @@
                                             </div>
                                             <div><%# Eval("Comment") %></div>
                                             <div><asp:PlaceHolder ID="plcAdditional" runat="server"></asp:PlaceHolder></div>
+                                            <asp:Panel ID="pnlDiffs" runat="server" Visible="false" style="background-color:#eeeeee; border:1px solid darkgray; margin:3px;">
+                                                <ul>
+                                                    <asp:Repeater ID="rptDiffs" runat="server">
+                                                        <ItemTemplate>
+                                                            <li><%# Container.DataItem.ToString() %></li>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </ul>
+                                            </asp:Panel>
                                         </td>
                                         <td runat="server">
                                             <div style="font-weight:bold"><%# Eval("TailNumDisplay") %></div>

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -142,7 +143,7 @@ public partial class Member_Import : System.Web.UI.Page
 
         // Add a concatenation of each property to the row as well.
         foreach (CustomFlightProperty cfp in le.CustomProperties)
-            AddTextRow(plc, cfp.DisplayString);
+            AddTextRow(plc, UseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString);
 
         if (!String.IsNullOrEmpty(le.ErrorString))
         {
@@ -150,6 +151,18 @@ public partial class Member_Import : System.Web.UI.Page
 
             if (ErrorContext.ContainsKey(iRow))
                 ((Label)e.Item.FindControl("lblRawRow")).Text = ErrorContext[iRow];
+        }
+
+        if (!le.IsNewFlight && CurrentImporter != null && CurrentImporter.OriginalFlightsToModify.ContainsKey(le.FlightID))
+        {
+            IEnumerable<PropertyDelta> lst = CurrentImporter.OriginalFlightsToModify[le.FlightID].CompareTo(le, UseHHMM);
+            if (lst.Count() > 0)
+            {
+                e.Item.FindControl("pnlDiffs").Visible = true;
+                Repeater diffs = (Repeater)e.Item.FindControl("rptDiffs");
+                diffs.DataSource = lst;
+                diffs.DataBind();
+            }
         }
     }
 

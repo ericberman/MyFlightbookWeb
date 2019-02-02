@@ -903,6 +903,80 @@ namespace MyFlightbook
 
             return true;
         }
+
+        /// <summary>
+        /// Get the differences between this and another entry, which is considered the NEW entry
+        /// </summary>
+        /// <param name="le"></param>
+        /// <returns></returns>
+        public IEnumerable<PropertyDelta> CompareTo(LogbookEntryBase le, bool fUseHHMM)
+        {
+            if (le == null)
+                return null;
+
+            List<PropertyDelta> lst = new List<PropertyDelta>();
+
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.PrintHeaderDate, Date.ToShortDateString(), le.Date.ToShortDateString(), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldTail, TailNumDisplay, le.TailNumDisplay, lst);
+
+            if (CatClassOverride != le.CatClassOverride)
+            {
+                CategoryClass ccThis = CategoryClass.CategoryClassFromID((CategoryClass.CatClassID) CatClassOverride);
+                CategoryClass ccNew = CategoryClass.CategoryClassFromID((CategoryClass.CatClassID) le.CatClassOverride);
+                PropertyDelta.AddPotentialChange(Resources.LogbookEntry.PrintHeaderCategory2, ccThis.CatClass, ccNew.CatClass, lst);
+            }
+
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.HobbsStart, HobbsStart.FormatDecimal(fUseHHMM), le.HobbsStart.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.HobbsEnd, HobbsEnd.FormatDecimal(fUseHHMM), le.HobbsEnd.FormatDecimal(fUseHHMM), lst);
+
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldEngineStart, EngineStart.UTCFormattedStringOrEmpty(false), le.EngineStart.UTCFormattedStringOrEmpty(false), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldEngineEnd, EngineEnd.UTCFormattedStringOrEmpty(false), le.EngineEnd.UTCFormattedStringOrEmpty(false), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldFlightStart, FlightStart.UTCFormattedStringOrEmpty(false), le.FlightStart.UTCFormattedStringOrEmpty(false), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldFlightEnd, FlightEnd.UTCFormattedStringOrEmpty(false), le.FlightEnd.UTCFormattedStringOrEmpty(false), lst);
+
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldComments, Comment, le.Comment, lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldRoute, Route, le.Route, lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldApproaches, Approaches.FormatInt(), le.Approaches.FormatInt(), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldHold, fHoldingProcedures ? Resources.LogbookEntry.PropertyYes : string.Empty, le.fHoldingProcedures ? Resources.LogbookEntry.PropertyYes : string.Empty, lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldLanding, Landings.FormatInt(), le.Landings.FormatInt(), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldNightLandings, NightLandings.FormatInt(), le.NightLandings.FormatInt(), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldDayLandings, FullStopLandings.FormatInt(), le.FullStopLandings.FormatInt(), lst);
+
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldXCountry, CrossCountry.FormatDecimal(fUseHHMM), le.CrossCountry.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldNight, Nighttime.FormatDecimal(fUseHHMM), le.Nighttime.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldSimIMCFull, IMC.FormatDecimal(fUseHHMM), le.IMC.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldIMC, SimulatedIFR.FormatDecimal(fUseHHMM), le.SimulatedIFR.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldGroundSimFull, GroundSim.FormatDecimal(fUseHHMM), le.GroundSim.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldDual, Dual.FormatDecimal(fUseHHMM), le.Dual.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldSIC, SIC.FormatDecimal(fUseHHMM), le.SIC.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldPIC, PIC.FormatDecimal(fUseHHMM), le.PIC.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldCFI, CFI.FormatDecimal(fUseHHMM), le.CFI.FormatDecimal(fUseHHMM), lst);
+            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldTotal, TotalFlightTime.FormatDecimal(fUseHHMM), le.TotalFlightTime.FormatDecimal(fUseHHMM), lst);
+
+            List<CustomFlightProperty> lstPropsThis = new List<CustomFlightProperty>(CustomProperties);
+            List<CustomFlightProperty> lstPropsNew = new List<CustomFlightProperty>(le.CustomProperties);
+
+            lstPropsThis.Sort((cfp1, cfp2) => { return cfp1.PropTypeID.CompareTo(cfp2.PropTypeID); });
+            lstPropsNew.Sort((cfp1, cfp2) => { return cfp1.PropTypeID.CompareTo(cfp2.PropTypeID); });
+
+            foreach (CustomFlightProperty cfp in lstPropsThis)
+            {
+                CustomFlightProperty cfpNew = lstPropsNew.FirstOrDefault(c => c.PropTypeID == cfp.PropTypeID);
+                if (cfpNew == null)
+                    lst.Add(new PropertyDelta(cfp.PropertyType.Title, cfp.ValueString, string.Empty));
+                else
+                {
+                    PropertyDelta.AddPotentialChange(cfp.PropertyType.Title, cfp.DisplayString, cfpNew.DisplayString, lst);
+                    lstPropsNew.Remove(cfpNew);
+                }
+            }
+            foreach (CustomFlightProperty cfp in lstPropsNew)
+                PropertyDelta.AddPotentialChange(cfp.PropertyType.Title, string.Empty, cfp.ValueString, lst);
+
+            lst.Sort();
+
+            return lst;
+        }
         #endregion
 
         /// <summary>
@@ -2221,9 +2295,9 @@ namespace MyFlightbook
             InitFromDataReader(dr, szUser, lto);
         }
         #endregion
-    }
+        }
 
-    /// <summary>
+        /// <summary>
     /// Specifies the kind of additional columns that can be displayed for printing.
     /// </summary>
     public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp }
@@ -3471,6 +3545,98 @@ namespace MyFlightbook
         public string ToCanonicalString()
         {
             return String.Format(CultureInfo.CurrentCulture, "{0}-{1}-{2}@{3}", Count, Description, CanonicalRunway, AirportCode);
+        }
+    }
+
+    [Serializable]
+    public class PropertyDelta : IComparable
+    {
+        public enum ChangeType { Unchanged, Added, Deleted, Modified }
+
+        #region Properties
+        /// <summary>
+        /// The display name of the property/field that was changed
+        /// </summary>
+        public string PropName { get; set; }
+
+        /// <summary>
+        /// The old value for the property/field, null or empty if it wasn't previously present (has been added)
+        /// </summary>
+        public string OldValue { get; set; }
+
+        /// <summary>
+        /// The new value for the property/field, null or empty if it has been deleted
+        /// </summary>
+        public string NewValue { get; set; }
+
+        public ChangeType Change
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(OldValue) && String.IsNullOrEmpty(NewValue))
+                    return ChangeType.Unchanged;
+                else if (String.IsNullOrEmpty(OldValue) && !String.IsNullOrEmpty(NewValue))
+                    return ChangeType.Added;
+                else if (String.IsNullOrEmpty(NewValue) && !String.IsNullOrEmpty(OldValue))
+                    return ChangeType.Deleted;
+                else if (NewValue.CompareCurrentCulture(OldValue) == 0)
+                    return ChangeType.Unchanged;
+                else
+                    return ChangeType.Modified;
+            }
+        }
+        #endregion
+
+        #region Constructors
+        public PropertyDelta()
+        {
+            PropName = string.Empty;
+        }
+
+        public PropertyDelta(string name, string oldVal, string newVal) : this()
+        {
+            PropName = name;
+            OldValue = oldVal;
+            NewValue = newVal;
+        }
+        #endregion
+
+        public static void AddPotentialChange(string name, string oldVal, string newVal, IList<PropertyDelta> lst)
+        {
+            if (lst == null)
+                throw new ArgumentNullException("lst");
+            if (String.IsNullOrEmpty(name))
+                throw new ArgumentOutOfRangeException("name");
+
+            PropertyDelta pd = new PropertyDelta(name, oldVal, newVal);
+            if (pd.Change != ChangeType.Unchanged)
+                lst.Add(pd);
+        }
+
+        public override string ToString()
+        {
+            switch (Change)
+            {
+                default:
+                case ChangeType.Unchanged:
+                    return string.Empty;
+                case ChangeType.Added:
+                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1} ({2})", Resources.LogbookEntry.CompareAdded, PropName, NewValue);
+                case ChangeType.Deleted:
+                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1} ({2})", Resources.LogbookEntry.CompareDeleted, PropName, OldValue);
+                case ChangeType.Modified:
+                    return String.Format(CultureInfo.CurrentCulture, "{0}: {1}: {2} ==> {3}", Resources.LogbookEntry.CompareModified, PropName, OldValue, NewValue);
+            }
+        }
+
+        public int CompareTo(object obj)
+        {
+            PropertyDelta pd = (PropertyDelta)obj;
+
+            if (pd.Change == Change)
+                return PropName.CompareCurrentCultureIgnoreCase(pd.PropName);
+            else
+                return Change.CompareTo(pd.Change);
         }
     }
 }
