@@ -115,14 +115,27 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         }
 
         // Enable Admin Signature fix-up
-        if (fAdminMode && !le.IsNewFlight && le.CFISignatureState != LogbookEntry.SignatureState.None)
+        if (!le.IsNewFlight && le.CFISignatureState != LogbookEntryBase.SignatureState.None)
         {
-            LogbookEntry.SignatureSanityCheckState sscs = le.AdminSignatureSanityCheckState;
-            pnlAdminFixSignature.Visible = true;
-            lblSigSavedState.Text = le.CFISignatureState.ToString();
-            lblSigSanityCheck.Text = sscs.ToString();
             lblSigSavedHash.Text = le.DecryptedFlightHash;
             lblSigCurrentHash.Text = le.DecryptedCurrentHash;
+
+            if (le.CFISignatureState == LogbookEntry.SignatureState.Invalid)
+            {
+                pnlSigEdits.Visible = true;
+                LogbookEntry leNew = LogbookEntry.LogbookEntryFromHash(lblSigCurrentHash.Text);
+                LogbookEntry leSaved = LogbookEntry.LogbookEntryFromHash(lblSigSavedHash.Text);
+                rptDiffs.DataSource = leSaved.CompareTo(leNew, CurrentUser.UsesHHMM);
+                rptDiffs.DataBind();
+            }
+
+            if (fAdminMode)
+            {
+                LogbookEntry.SignatureSanityCheckState sscs = le.AdminSignatureSanityCheckState;
+                pnlAdminFixSignature.Visible = true;
+                lblSigSavedState.Text = le.CFISignatureState.ToString();
+                lblSigSanityCheck.Text = sscs.ToString();
+            }
         }
 
         // If the user has entered another flight this session, default to that date rather than today

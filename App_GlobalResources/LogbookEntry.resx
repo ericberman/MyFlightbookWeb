@@ -948,4 +948,7 @@
   <data name="CompareModified" xml:space="preserve">
     <value>Modified</value>
   </data>
+  <data name="CompareHeader" xml:space="preserve">
+    <value>Changes to this flight:</value>
+  </data>
 </root>

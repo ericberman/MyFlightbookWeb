@@ -435,13 +435,77 @@ namespace MyFlightbook
                 sbPropHash.AppendFormat(CultureInfo.InvariantCulture, "ID{0}V{1}", cfp.PropTypeID, cfp.ValueStringInvariant);
             }
 
-            string szHash = String.Format(System.Globalization.CultureInfo.InvariantCulture, "ID{0}DT{1}AC{2}A{3}H{4}L{5}NL{6}XC{7:0.0}N{8:0.0}SI{9:0.0}IM{10:0.0}GS{11:0.0}DU{12:0.0}CF{13:0.0}SI{14:0.0}PI{15:0.0}TT{16:0.0}PR{17}CC{18}CM{19}",
+            string szHash = String.Format(CultureInfo.InvariantCulture, "ID{0}DT{1}AC{2}A{3}H{4}L{5}NL{6}XC{7:0.0}N{8:0.0}SI{9:0.0}IM{10:0.0}GS{11:0.0}DU{12:0.0}CF{13:0.0}SI{14:0.0}PI{15:0.0}TT{16:0.0}PR{17}CC{18}CM{19}",
                 FlightID, Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), AircraftID, Approaches, fHoldingProcedures ? 1 : 0, Landings, NightLandings, CrossCountry,
                 Nighttime, SimulatedIFR, IMC, GroundSim,
                 Dual, CFI, SIC, PIC, TotalFlightTime, sbPropHash.ToString(), CatClassOverride, Comment);
 
             string szSig = (new UserEncryptor(User)).Encrypt(szHash);
             return szSig.Substring(0, Math.Min(1024, szSig.Length));
+        }
+
+        public static LogbookEntry LogbookEntryFromHash(string szHash)
+        {
+            if (String.IsNullOrEmpty(szHash))
+                throw new ArgumentNullException("szHash");
+
+            Regex rFlight = new Regex("^ID(?<ID>\\d+)DT(?<Date>[0-9-]+)AC(?<Aircraft>\\d+)A(?<Approaches>\\d+)H(?<Hold>[01])L(?<Landings>\\d+)NL(?<NightLandings>\\d+)XC(?<XC>[0-9.]+)N(?<Night>[0-9.]+)SI(?<SimInst>[0-9.]+)IM(?<IMC>[0-9.]+)GS(?<GroundSim>[0-9.]+)DU(?<Dual>[0-9.]+)CF(?<CFI>[0-9.]+)SI(?<SIC>[0-9.]+)PI(?<PIC>[0-9.]+)TT(?<Total>[0-9.]+)PR(?<props>.*)CC(?<CatClassOver>\\d+)CM(?<Comments>.*)$", RegexOptions.Compiled);
+
+            LogbookEntry le = new LogbookEntry();
+
+            MatchCollection mc = rFlight.Matches(szHash);
+            if (mc.Count == 1)
+            {
+                GroupCollection gc = mc[0].Groups;
+                le.FlightID = Convert.ToInt32(gc["ID"].Value, CultureInfo.InvariantCulture);
+                le.Date = Convert.ToDateTime(gc["Date"].Value, CultureInfo.InvariantCulture);
+                le.AircraftID = Convert.ToInt32(gc["Aircraft"].Value, CultureInfo.InvariantCulture);
+                le.Approaches = Convert.ToInt32(gc["Approaches"].Value, CultureInfo.InvariantCulture);
+                le.fHoldingProcedures = gc["Hold"].Value.CompareOrdinal("1") == 0;
+                le.Landings = Convert.ToInt32(gc["Landings"].Value, CultureInfo.InvariantCulture);
+                le.NightLandings = Convert.ToInt32(gc["NightLandings"].Value, CultureInfo.InvariantCulture);
+                le.CrossCountry = Convert.ToDecimal(gc["XC"].Value, CultureInfo.InvariantCulture);
+                le.Nighttime = Convert.ToDecimal(gc["Night"].Value, CultureInfo.InvariantCulture);
+                le.SimulatedIFR = Convert.ToDecimal(gc["SimInst"].Value, CultureInfo.InvariantCulture);
+                le.IMC = Convert.ToDecimal(gc["IMC"].Value, CultureInfo.InvariantCulture);
+                le.GroundSim = Convert.ToDecimal(gc["GroundSim"].Value, CultureInfo.InvariantCulture);
+                le.Dual = Convert.ToDecimal(gc["Dual"].Value, CultureInfo.InvariantCulture);
+                le.CFI = Convert.ToDecimal(gc["CFI"].Value, CultureInfo.InvariantCulture);
+                le.SIC = Convert.ToDecimal(gc["SIC"].Value, CultureInfo.InvariantCulture);
+                le.PIC = Convert.ToDecimal(gc["PIC"].Value, CultureInfo.InvariantCulture);
+                le.TotalFlightTime = Convert.ToDecimal(gc["Total"].Value, CultureInfo.InvariantCulture);
+                le.CatClassOverride = Convert.ToInt32(gc["CatClassOver"].Value, CultureInfo.InvariantCulture);
+                le.Comment = gc["Comments"].Value;
+
+                Aircraft ac = new Aircraft(le.AircraftID);
+                le.TailNumDisplay = ac.DisplayTailnumber;
+
+                string[] rgProps = gc["props"].Value.Split(new string[] { "ID" }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (rgProps.Length > 0)
+                {
+                    Regex rProp = new Regex("(?<PropID>\\d+)V(?<Value>.+)", RegexOptions.Compiled);
+                    List<CustomFlightProperty> lst = new List<CustomFlightProperty>();
+                    foreach (string szProp in rgProps)
+                    {
+                        MatchCollection mProp = rProp.Matches(szProp);
+                        if (mProp.Count > 0)
+                        {
+                            GroupCollection gcProp = mProp[0].Groups;
+                            if (gcProp.Count == 3)
+                            {
+                                CustomPropertyType cpt = new CustomPropertyType(Convert.ToInt32(gcProp["PropID"].Value, CultureInfo.InvariantCulture));
+                                CustomFlightProperty cfp = new CustomFlightProperty(cpt) { FlightID = le.FlightID };
+                                cfp.InitFromString(gcProp["Value"].Value);
+                                lst.Add(cfp);
+                            }
+                        }
+                    }
+                    le.CustomProperties = lst.ToArray();
+                }
+            }
+
+            return le;
         }
 
         public enum SignatureSanityCheckState { OK, ValidButShouldBeInvalid, InvalidButShouldBeValid, LocalizedButShouldBeInvariant, NoneButHasData };

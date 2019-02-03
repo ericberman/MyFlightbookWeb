@@ -337,6 +337,16 @@
         </div>
         <div>&nbsp;</div>
     </asp:Panel>
+    <asp:Panel ID="pnlSigEdits" runat="server" Visible="false">
+        <p><asp:Label ID="lblChanges" runat="server" Text="<%$ Resources:LogbookEntry, CompareHeader %>"></asp:Label></p>
+        <ul>
+            <asp:Repeater ID="rptDiffs" runat="server">
+                <ItemTemplate>
+                    <li><%# Container.DataItem.ToString() %></li>
+                </ItemTemplate>
+            </asp:Repeater>
+        </ul>
+    </asp:Panel>
     <asp:Panel ID="pnlAdminFixSignature" runat="server" Visible="false">
         <table>
             <tr>
