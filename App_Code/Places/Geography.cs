@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -78,7 +78,7 @@ namespace MyFlightbook.Geography
                     }
                 }
                 // Else, try matching on decimal ("W122.23.15")
-                mc = Regex.Matches(szAngleString, "([NEWSnews])[ .]?(\\d{0,3})[ .]?(\\d{0,2})[ .]?(\\d{0,2})");
+                mc = Regex.Matches(szAngleString, "([NEWSnews])[ .]?(\\d{0,3})[ .]?(\\d{0,2})[ .]?(\\d{0,2})",  RegexOptions.Compiled);
                 if (mc != null && mc.Count > 0 && mc[0].Groups.Count >= 4)
                 {
                     GroupCollection gc = mc[0].Groups;
@@ -88,7 +88,18 @@ namespace MyFlightbook.Geography
                     Seconds = Convert.ToDouble(gc[4].Value, CultureInfo.InvariantCulture);
                     return;
                 }
-
+                // Finally, try matching on degrees and minutes ("48°01.3358")
+                mc = Regex.Matches(szAngleString, "-?(\\d+)°(\\d+([.,]\\d+)?)", RegexOptions.Compiled);
+                if (mc != null && mc.Count > 0 && mc[0].Groups.Count >= 3)
+                {
+                    GroupCollection gc = mc[0].Groups;
+                    Sign = szAngleString.StartsWith("-", StringComparison.CurrentCultureIgnoreCase) ? -1 : 1;
+                    Degrees = Convert.ToInt32(gc[1].Value, CultureInfo.InvariantCulture);
+                    double min = Convert.ToDouble(gc[2].Value, CultureInfo.InvariantCulture);
+                    Minutes = (int) Math.Truncate(min);
+                    Seconds = Math.Round((min - Minutes) * 60);
+                    return;
+                }
             }
             catch (FormatException)
             { }
