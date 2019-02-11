@@ -2184,9 +2184,9 @@ namespace MyFlightbook
 
             if (CatClassOverride != le.CatClassOverride)
             {
-                CategoryClass ccThis = CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)CatClassOverride);
-                CategoryClass ccNew = CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)le.CatClassOverride);
-                PropertyDelta.AddPotentialChange(Resources.LogbookEntry.PrintHeaderCategory2, ccThis.CatClass, ccNew.CatClass, lst);
+                CategoryClass ccThis = CatClassOverride == 0 ? null : CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)CatClassOverride);
+                CategoryClass ccNew = le.CatClassOverride == 0 ? null : CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)le.CatClassOverride);
+                PropertyDelta.AddPotentialChange(Resources.LogbookEntry.PrintHeaderCategory2, ccThis == null ? null : ccThis.CatClass, ccNew == null ? null : ccNew.CatClass, lst);
             }
 
             PropertyDelta.AddPotentialChange(Resources.LogbookEntry.HobbsStart, HobbsStart.FormatDecimal(fUseHHMM), le.HobbsStart.FormatDecimal(fUseHHMM), lst);
