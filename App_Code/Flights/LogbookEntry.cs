@@ -3651,7 +3651,7 @@ namespace MyFlightbook
                     return ChangeType.Added;
                 else if (String.IsNullOrEmpty(NewValue) && !String.IsNullOrEmpty(OldValue))
                     return ChangeType.Deleted;
-                else if (NewValue.CompareCurrentCulture(OldValue) == 0)
+                else if (NewValue.Trim().CompareCurrentCulture(OldValue.Trim()) == 0)
                     return ChangeType.Unchanged;
                 else
                     return ChangeType.Modified;
