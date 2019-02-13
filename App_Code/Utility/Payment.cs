@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2018 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -791,6 +791,16 @@ ORDER BY dateEarned ASC ";
             return f;
         }
 
+        private static void ResetSessionForGratuities(string szUser)
+        {
+            System.Web.SessionState.HttpSessionState sess = ((HttpContext.Current != null) ? HttpContext.Current.Session : null);
+            if (sess == null)
+                return;
+
+            foreach (Gratuity.GratuityTypes gt in (Gratuity.GratuityTypes[]) Enum.GetValues(typeof(Gratuity.GratuityTypes)))
+                sess.Remove(SessionKeyForUser(szUser, gt));
+        }
+
         /// <summary>
         /// Deletes all gratuities for the specified user
         /// </summary>
@@ -867,10 +877,15 @@ ORDER BY dateEarned ASC ";
         /// <param name="fResetReminders">True to reset reminders to 0 (i.e., no reminders sent)</param>
         public static void UpdateEarnedGratuities(string szUser, bool fResetReminders)
         {
+            if (String.IsNullOrEmpty(szUser))
+                return;
+
             Dictionary<string, Collection<Payment>> dictPayments = PaymentListsForUser(szUser);
 
             ReadOnlyCollection<Gratuity> lstKnownGratuities = Gratuity.KnownGratuities;
             List<EarnedGrauity> lstUpdatedGratuityList = new List<EarnedGrauity>();
+
+            ResetSessionForGratuities(szUser);
 
             // Go through each user's payment history (could be just the one user) and determine their gratuities.
             foreach (string szKey in dictPayments.Keys)
