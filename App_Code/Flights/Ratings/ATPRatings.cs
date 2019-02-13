@@ -1,11 +1,11 @@
-﻿using System;
+﻿using MyFlightbook.FlightCurrency;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -122,7 +122,7 @@ namespace MyFlightbook.MilestoneProgress
                 cfr.ForEachEvent((pe) => { if (pe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropFlightEngineerTime) flightEngineerTime += pe.DecValue; });
 
                 if (flightEngineerTime > 0)
-                    miTotal.AddTrainingEvent(flightEngineerTime / 3.0M, ATPMaxFlightEngineer, false);
+                    miTotal.AddTrainingEvent(flightEngineerTime / 3.0M, ATPMaxFlightEngineer, true);
             }
 
             // Remainder must be done in a real aircraft and it must be in an airplane.  
