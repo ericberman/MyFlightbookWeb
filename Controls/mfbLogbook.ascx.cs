@@ -1,17 +1,17 @@
+using MyFlightbook;
 using System;
-using System.Globalization;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
-using MyFlightbook;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2018 MyFlightbook LLC
+ * Copyright (c) 2012-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -342,6 +342,11 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         HasBeenBound = true;
     }
 
+    public void RefreshNumFlights()
+    {
+        lblNumFlights.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.NumberOfFlights, CachedData.Count());
+    }
+
     /// <summary>
     /// Publicly visible force-refresh method.  ALWAYS bypasses the cache and uses provided data or hits the database
     /// </summary>
@@ -349,7 +354,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     {
         FlushCache();
         BindData(Data);
-        lblNumFlights.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.NumberOfFlights, CachedData.Count());
+        RefreshNumFlights();
     }
 
     protected void Page_Init(object sender, EventArgs e)
@@ -491,6 +496,7 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
             LogbookEntryDisplay.FDeleteEntry(idFlight, this.User);
             FlushCache();
             BindData(Data);
+            RefreshNumFlights();
             if (ItemDeleted != null)
                 ItemDeleted(this, new LogbookEventArgs(idFlight));
         }
