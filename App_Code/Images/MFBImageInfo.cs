@@ -1357,8 +1357,8 @@ namespace MyFlightbook.Image
                 // Now that the image has been rotated, we do NOT want to flag it as rotated any more.
                 inf.Image.RemovePropertyItem((int)PropertyTagId.Orientation);
             }
-            catch (ArgumentException)
-            { }
+            catch (InvalidCastException) { }
+            catch (ArgumentException) { }
             finally
             {
                 // nothing to do...move on if property were was not found.
