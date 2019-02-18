@@ -282,33 +282,41 @@
                     <ItemTemplate>
                         <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights %>" OffsetX="-160">
                             <MenuContent>
-                                <div><uc2:mfbMiniFacebook ID="mfbMiniFacebook" runat="server" /></div>
-                                <div><uc4:mfbTweetThis ID="mfbTweetThis" runat="server" /></div>
-                                <div>
+                                <div style="line-height: 26px;">
                                     <asp:HyperLink ID="lnkEditThisFlight" runat="server">
                                         <asp:Image ID="imgPencil" runat="server" style="padding-right: 4px;" ImageUrl="~/images/pencilsm.png" />
                                         <asp:Label ID="lblEditFlight" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>"></asp:Label>
                                     </asp:HyperLink>
                                 </div>
-                                <div>
+                                <div style="line-height: 26px">
+                                    <asp:LinkButton ID="lnkDelete" CommandName="_Delete" runat="server">
+                                        <asp:Image ID="imgDelete" style="padding-right: 10px" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" runat="server" />
+                                        <asp:Label ID="lblDeleteThis" runat="server" Text="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>"></asp:Label>
+                                    </asp:LinkButton>
+                                    <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDelete" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:LogbookEntry, LogbookConfirmDelete %>">
+                                    </cc1:ConfirmButtonExtender>
+                                </div>
+                                <div style="line-height: 26px"><uc2:mfbMiniFacebook ID="mfbMiniFacebook" runat="server" /></div>
+                                <div style="line-height: 26px"><uc4:mfbTweetThis ID="mfbTweetThis" runat="server" /></div>
+                                <div style="line-height: 26px">
                                     <asp:HyperLink ID="lnkRequestSignature" runat="server">
                                         <asp:Image ID="imgSignature" runat="server" style="padding-right: 4px" ImageUrl="~/images/signaturesm.png" />
                                         <asp:Label ID="lblRequestSignature" runat="server" Text="<%$ Resources:SignOff, RequestSignature %>"></asp:Label>
                                     </asp:HyperLink>
                                 </div>
-                                <div>
+                                <div style="line-height: 26px">
                                     <asp:LinkButton ID="lnkClone" runat="server" CommandName="CloneFlight">
                                         <asp:Image ID="imgClone" runat="server" style="padding-right:4px;" ImageUrl="~/images/copyflight.png" />
                                         <asp:Label ID="lblClone" runat="server" Text="<%$ Resources:LogbookEntry, RepeatFlight %>"></asp:Label>
                                     </asp:LinkButton>
                                 </div>
-                                <div>
+                                <div style="line-height: 26px">
                                     <asp:LinkButton ID="lnkReverse" runat="server" CommandName="ReverseFlight">
                                         <asp:Image ID="imgReverse" runat="server" style="padding-right:4px;" ImageUrl="~/images/copyflightreverse.png" />
                                         <asp:Label ID="lblReverse" runat="server" Text="<%$ Resources:LogbookEntry, RepeatReverseFlight %>"></asp:Label>
                                     </asp:LinkButton>
                                 </div>
-                                <div>
+                                <div style="line-height: 26px">
                                     <asp:LinkButton ID="lnkSendFlight" runat="server" CommandName="SendFlight">
                                         <asp:Image ID="imgSendFlight" style="padding-right:4px" ImageUrl="~/images/sendflight.png" runat="server" />
                                         <asp:Label ID="lblSendFlight" runat="server" Text="<%$ Resources:LogbookEntry, SendFlight %>"></asp:Label>
@@ -320,10 +328,6 @@
                 </asp:TemplateField>
                 <asp:TemplateField >
                     <ItemTemplate>
-                        <asp:LinkButton ID="lnkDelete" Visible="<%# IsViewingOwnFlights %>" CommandName="_Delete" CommandArgument='<%# Eval("FlightID").ToString() %>' runat="server">
-                            <asp:Image ID="imgDelete" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" runat="server" /></asp:LinkButton>
-                        <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDelete" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:LogbookEntry, LogbookConfirmDelete %>">
-                        </cc1:ConfirmButtonExtender>
                         <asp:HyperLink ID="lnkSignEntry" runat="server"
                             NavigateUrl='<%# String.Format("~/Member/SignFlight.aspx?idFlight={0}&ret={1}", Eval("FlightID"), HttpUtility.UrlEncode(Page.Request.Url.PathAndQuery)) %>'
                             Text='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) == LogbookEntry.SignatureState.Invalid ? Resources.SignOff.LogbookResign : Resources.SignOff.LogbookSign %>' 

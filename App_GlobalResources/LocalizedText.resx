@@ -546,7 +546,7 @@
     <value>RSS Feed of Flight Currency</value>
   </data>
   <data name="TweetThis" xml:space="preserve">
-    <value>Tweet This</value>
+    <value>Tweet this</value>
   </data>
   <data name="TypeInDateInvalidDate" xml:space="preserve">
     <value>&lt;br /&gt;Please enter a valid date.&lt;br /&gt;</value>

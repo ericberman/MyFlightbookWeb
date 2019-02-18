@@ -594,12 +594,14 @@ f1.dtFlightEnd = f2.dtFlightEnd)) ";
 
             // fix the ID of the delete button to prevent replay attacks
             string szDelID = String.Format(CultureInfo.InvariantCulture, "lnkDel{0}", le.FlightID);
-            LinkButton lbDelete = (LinkButton)e.Row.FindControl("lnkDelete");
+            LinkButton lbDelete = (LinkButton)popup.FindControl("lnkDelete");
+            lbDelete.Visible = IsViewingOwnFlights;
+            lbDelete.CommandArgument = le.FlightID.ToString(CultureInfo.InvariantCulture);
             lbDelete.ID = szDelID;
             // If the host wants notifications of deletions, register full postback.
             if (ItemDeleted != null)
                 ScriptManager.GetCurrent(Page).RegisterPostBackControl(lbDelete);
-            ((AjaxControlToolkit.ConfirmButtonExtender)e.Row.FindControl("ConfirmButtonExtender1")).TargetControlID = szDelID;
+            ((AjaxControlToolkit.ConfirmButtonExtender)popup.FindControl("ConfirmButtonExtender1")).TargetControlID = szDelID;
 
             // Bind to images.
             Controls_mfbImageList mfbIl = (Controls_mfbImageList)e.Row.FindControl("mfbilFlights");
