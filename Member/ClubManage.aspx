@@ -349,7 +349,7 @@ ORDER BY f.DATE ASC
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Aircraft, Maintenance100Due %>">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblNext100" runat="server" CssClass='<%# CSSFoValue((decimal) Eval("HighWater"), (decimal) Eval("Maintenance.Next100"), 10) %>' Text='<%# ValueString (Eval("Maintenance.Next100")) %>' />
+                                    <asp:Label ID="lblNext100" runat="server" CssClass='<%# CSSForValue((decimal) Eval("HighWater"), (decimal) Eval("Maintenance.Next100"), 10) %>' Text='<%# ValueString (Eval("Maintenance.Next100")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOil %>">
@@ -358,15 +358,15 @@ ORDER BY f.DATE ASC
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue25 %>">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblOil25" runat="server" CssClass='<%# CSSFoValue((decimal) Eval("HighWater"), (decimal) Eval("LastOilChange"), 5, 25) %>' Text='<%# ValueString (Eval("LastOilChange"), 25) %>' /></ItemTemplate>
+                                    <asp:Label ID="lblOil25" runat="server" CssClass='<%# CSSForValue((decimal) Eval("HighWater"), (decimal) Eval("LastOilChange"), 5, 25) %>' Text='<%# ValueString (Eval("LastOilChange"), 25) %>' /></ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue50 %>">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblOil50" runat="server" CssClass='<%# CSSFoValue((decimal) Eval("HighWater"), (decimal) Eval("LastOilChange"), 10, 50) %>' Text='<%# ValueString (Eval("LastOilChange"), 50) %>' /></ItemTemplate>
+                                    <asp:Label ID="lblOil50" runat="server" CssClass='<%# CSSForValue((decimal) Eval("HighWater"), (decimal) Eval("LastOilChange"), 10, 50) %>' Text='<%# ValueString (Eval("LastOilChange"), 50) %>' /></ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue100 %>">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblOil100" runat="server" CssClass='<%# CSSFoValue((decimal) Eval("HighWater"), (decimal) Eval("LastOilChange"), 15, 100) %>' Text='<%# ValueString (Eval("LastOilChange"), 100) %>' /></ItemTemplate>
+                                    <asp:Label ID="lblOil100" runat="server" CssClass='<%# CSSForValue((decimal) Eval("HighWater"), (decimal) Eval("LastOilChange"), 15, 100) %>' Text='<%# ValueString (Eval("LastOilChange"), 100) %>' /></ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceEngine %>">
                                 <ItemTemplate>
@@ -375,6 +375,11 @@ ORDER BY f.DATE ASC
                             <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceRegistration %>">
                                 <ItemTemplate>
                                     <asp:Label ID="lblRegistration" runat="server" CssClass='<%# CSSForDate((DateTime) Eval("RegistrationDue")) %>' Text='<%# ValueString (Eval("RegistrationDue")) %>' /></ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="<%$ Resources:Currency, deadlinesHeaderDeadlines %>">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblDeadlines" runat="server" Text='<%# MyFlightbook.FlightCurrency.DeadlineCurrency.CoalescedDeadlinesForAircraft(null, (int) Eval("AircraftID")) %>' />
+                                </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
                         <EmptyDataTemplate>

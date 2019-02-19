@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -121,6 +121,23 @@ public partial class makes : System.Web.UI.Page
     protected void AircraftList_AircraftPrefChanged(object sender, EventArgs e)
     {
         Refresh(true);
+    }
+
+    protected string ValueString(object o, decimal offSet = 0.0M)
+    {
+        if (o is DateTime)
+        {
+            DateTime dt = (DateTime)o;
+            if (dt != null && dt.HasValue())
+                return dt.ToShortDateString();
+        }
+        else if (o is decimal)
+        {
+            decimal d = (decimal)o;
+            if (d > 0)
+                return (d + offSet).ToString("#,##0.0#", CultureInfo.CurrentCulture);
+        }
+        return string.Empty;
     }
 
     protected void lnkDownloadCSV_Click(object sender, EventArgs e)

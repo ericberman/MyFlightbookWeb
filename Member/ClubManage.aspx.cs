@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2018 MyFlightbook LLC
+ * Copyright (c) 2017-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -369,7 +369,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
         return string.Empty;
     }
 
-    protected string CSSFoValue(decimal current, decimal due, int hoursWarning, int offSet = 0)
+    protected string CSSForValue(decimal current, decimal due, int hoursWarning, int offSet = 0)
     {
         if (due > 0)
             due += offSet;

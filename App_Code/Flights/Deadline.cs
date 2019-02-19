@@ -1,11 +1,11 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -447,6 +447,26 @@ GROUP BY d.iddeadlines";
                 return DisplayName.CompareCurrentCultureIgnoreCase(dc.DisplayName);
             else
                 return AircraftID.CompareTo(dc.AircraftID);
+        }
+        #endregion
+
+        #region Export
+        /// <summary>
+        /// Provide a coalesced set of deadlines for a given user/aircraft in a single string (enables CSV export)
+        /// </summary>
+        /// <param name="szUser">User.  May be null for aircraft-only deadlines</param>
+        /// <param name="idAircraft">Deadlines to display</param>
+        /// <param name="separator">Separator to use</param>
+        /// <returns>A string that can be placed in a label</returns>
+        public static string CoalescedDeadlinesForAircraft(string szUser, int idAircraft, string separator = "\r\n")
+        {
+            if (idAircraft <= 0)
+                throw new MyFlightbookValidationException("Can't show coalesced deadlines for aircraft with invalid aircraft ID");
+            IEnumerable<DeadlineCurrency> rgdc = DeadlineCurrency.DeadlinesForUser(szUser, idAircraft, true);
+            List<string> lst = new List<string>();
+            foreach (DeadlineCurrency dc in rgdc)
+                lst.Add(String.Format(CultureInfo.CurrentCulture, "{0} - {1}", dc.Name, dc.ExpirationDisplay));
+            return String.Join(separator, lst);
         }
         #endregion
     }

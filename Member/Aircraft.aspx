@@ -65,84 +65,103 @@
                                 <asp:Label ID="lblFullName" runat="server" Text='<%# MakeModel.GetModel((int) Eval("ModelID")).ModelDisplayNameNoCatclass %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Last Annual">
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAnnual %>">
                             <ItemTemplate>
                                 <asp:Label ID="lblAnnual" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastAnnual")) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Last VOR">
-                            <ItemTemplate>
-                                <asp:Label ID="lblVOR" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastVOR")) %>'></asp:Label>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Last Altimeter">
-                            <ItemTemplate>
-                                <asp:Label ID="lblAltimeter" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastAltimeter")) %>'></asp:Label>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Last Transponder">
-                            <ItemTemplate>
-                                <asp:Label ID="lblXPonder" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastTransponder")) %>'></asp:Label>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Last ELT">
-                            <ItemTemplate>
-                                <asp:Label ID="lblElt" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastELT")) %>'></asp:Label>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Last Pitot Static">
-                            <ItemTemplate>
-                                <asp:Label ID="lblPitot" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastStatic")) %>'></asp:Label>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Next Annual">
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAnnualDue %>">
                             <ItemTemplate>
                                 <asp:Label ID="lblAnnual" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextAnnual) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Next VOR">
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceTransponder %>">
                             <ItemTemplate>
-                                <asp:Label ID="lblVOR" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextVOR) %>'></asp:Label>
+                                <asp:Label ID="lblXPonder" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastTransponder")) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Next Altimeter">
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceTransponderDue %>">
                             <ItemTemplate>
-                                <asp:Label ID="lblAltimeter" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextAltimeter) %>'></asp:Label>
+                                <asp:Label ID="lblXPonderDue" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextTransponder) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Next Transponder">
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenancePitotStatic %>">
                             <ItemTemplate>
-                                <asp:Label ID="lblXPonder" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextTransponder) %>'></asp:Label>
+                                <asp:Label ID="lblPitot" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastStatic")) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Next ELT">
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenancePitotStaticDue %>">
                             <ItemTemplate>
-                                <asp:Label ID="lblElt" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextELT) %>'></asp:Label>
+                                <asp:Label ID="lblPitotDue" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextStatic) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Next Pitot Static">
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAltimeter %>">
                             <ItemTemplate>
-                                <asp:Label ID="lblPitot" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextStatic) %>'></asp:Label>
+                                <asp:Label ID="lblAltimeter" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastAltimeter")) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Last100">
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAltimeterDue %>">
                             <ItemTemplate>
-                                <asp:Label ID="lbl100" runat="server" Text='<%# Eval("Last100").FormatDecimal(false) %>'></asp:Label>
+                                <asp:Label ID="lblAltimeterDue" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextAltimeter) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Oil Change">
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceELT %>">
                             <ItemTemplate>
-                                <asp:Label ID="lblOil" runat="server" Text='<%# Eval("LastOilChange").FormatDecimal(false) %>'></asp:Label>
+                                <asp:Label ID="lblElt" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastELT")) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Engine Time">
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceELTDue %>">
                             <ItemTemplate>
-                                <asp:Label ID="lblEngine" runat="server" Text='<%# Eval("LastNewEngine").FormatDecimal(false) %>'></asp:Label>
+                                <asp:Label ID="lblEltDue" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextELT) %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Registration Renewal Date">
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceVOR %>">
                             <ItemTemplate>
-                                <asp:Label ID="lblRegistration" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("RegistrationDue")) %>'></asp:Label>
+                                <asp:Label ID="lblVOR" runat="server" Text='<%# FormatOptionalDate((DateTime) Eval("LastVOR")) %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceVORDue %>">
+                            <ItemTemplate>
+                                <asp:Label ID="lblVORDue" runat="server" Text='<%# FormatOptionalDate(((Aircraft) Container.DataItem).Maintenance.NextVOR) %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, Maintenance100 %>">
+                            <ItemTemplate>
+                                <asp:Label ID="lbl100" runat="server" Text='<%# ((Aircraft) Container.DataItem).Maintenance.Last100.FormatDecimal(false) %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, Maintenance100Due %>">
+                            <ItemTemplate>
+                                <asp:Label ID="lblNext100" runat="server" Text='<%# ValueString(Eval("Maintenance.Next100")) %>' />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOil %>">
+                            <ItemTemplate>
+                                <asp:Label ID="lblLastOil" runat="server" Text='<%# ValueString (Eval("LastOilChange")) %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue25 %>">
+                            <ItemTemplate>
+                                <asp:Label ID="lblOil25" runat="server" Text='<%# ValueString (Eval("LastOilChange"), 25) %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue50 %>">
+                            <ItemTemplate>
+                                <asp:Label ID="lblOil50" runat="server" Text='<%# ValueString (Eval("LastOilChange"), 50) %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue100 %>">
+                            <ItemTemplate>
+                                <asp:Label ID="lblOil100" runat="server" Text='<%# ValueString (Eval("LastOilChange"), 100) %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceEngine %>">
+                            <ItemTemplate>
+                                <asp:Label ID="lblLastEngine" runat="server" Text='<%# ValueString (Eval("LastNewEngine")) %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceRegistration %>">
+                            <ItemTemplate>
+                                <asp:Label ID="lblRegistration" runat="server" Text='<%# ValueString (Eval("RegistrationDue")) %>' /></ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="<%$ Resources:Currency, deadlinesHeaderDeadlines %>">
+                            <ItemTemplate>
+                                <asp:Label ID="lblDeadlines" runat="server" Text='<%# MyFlightbook.FlightCurrency.DeadlineCurrency.CoalescedDeadlinesForAircraft(Page.User.Identity.Name, (int) Eval("AircraftID")) %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Frequently Used">
