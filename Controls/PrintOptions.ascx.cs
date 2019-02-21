@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2018 MyFlightbook LLC
+ * Copyright (c) 2016-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -54,7 +54,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
 
             m_options.IncludePullForwardTotals = ckPullForwardTotals.Checked;
 
-            m_options.DisplayMode = (PrintingOptions.ModelDisplayMode)cmbModelDisplay.SelectedIndex;
+            m_options.DisplayMode = (PrintingOptions.ModelDisplayMode)rblModelDisplay.SelectedIndex;
 
             return m_options;
         }
@@ -88,7 +88,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             ckPullForwardTotals.Checked = value.IncludePullForwardTotals;
             ckPullForwardTotals.Visible = m_options.FlightsPerPage > 0;
 
-            cmbModelDisplay.SelectedIndex = (int)value.DisplayMode;
+            rblModelDisplay.SelectedIndex = (int)value.DisplayMode;
 
             AdjustForLayoutCapabilities(m_options);
         }
@@ -255,7 +255,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
         NotifyDelegate();
     }
 
-    protected void cmbModelDisplay_SelectedIndexChanged(object sender, EventArgs e)
+    protected void rblModelDisplay_SelectedIndexChanged(object sender, EventArgs e)
     {
         NotifyDelegate();
     }

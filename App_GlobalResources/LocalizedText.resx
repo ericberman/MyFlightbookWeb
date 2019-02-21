@@ -1483,13 +1483,13 @@
     <value>Make/Model/Variant Display</value>
   </data>
   <data name="PrintViewModelDisplayFull" xml:space="preserve">
-    <value>Full</value>
+    <value>Full (e.g., "C-172 S, Cessna Skyhawk SP")</value>
   </data>
   <data name="PrintViewModelDisplayICAO" xml:space="preserve">
-    <value>ICAO Only</value>
+    <value>ICAO Only (e.g., "C172")</value>
   </data>
   <data name="PrintViewModelDisplayShort" xml:space="preserve">
-    <value>Compact</value>
+    <value>Compact (e.g., "Cessna C-172 S")</value>
   </data>
   <data name="GoogleDriveBadAuth" xml:space="preserve">
     <value>Your authorization for %APP_NAME% is no longer valid.  Please re-authorize %APP_NAME% for Google Drive.</value>

@@ -26,11 +26,11 @@
 </asp:Panel>
 <asp:Panel ID="pnlModelDisplay" runat="server">
     <p><asp:Label ID="lblModelDisplay" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, PrintViewModelDisplay %>"></asp:Label></p>
-    <asp:DropDownList ID="cmbModelDisplay" runat="server" AutoPostBack="true" OnSelectedIndexChanged="cmbModelDisplay_SelectedIndexChanged">
+    <asp:RadioButtonList ID="rblModelDisplay" runat="server" AutoPostBack="true" OnSelectedIndexChanged="rblModelDisplay_SelectedIndexChanged">
         <asp:ListItem Text="<%$ Resources:LocalizedText, PrintViewModelDisplayFull %>" Value="Full" Selected="True"></asp:ListItem>
         <asp:ListItem Text="<%$ Resources:LocalizedText, PrintViewModelDisplayShort %>" Value="Short"></asp:ListItem>
         <asp:ListItem Text="<%$ Resources:LocalizedText, PrintViewModelDisplayICAO %>" Value="ICAO"></asp:ListItem>
-    </asp:DropDownList>
+    </asp:RadioButtonList>
 </asp:Panel>
 <asp:Panel ID="pnlOptionalColumns" runat="server">
     <p><asp:Label ID="lblOptionalColumnsHeader" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, PrintViewOptionalColumns %>"></asp:Label></p>
