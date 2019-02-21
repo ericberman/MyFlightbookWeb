@@ -90,6 +90,7 @@ public partial class Member_PrintView : System.Web.UI.Page
                 Master.HasFooter = Master.HasHeader = false;
                 if (!mfbSearchForm1.Restriction.IsDefault)
                     TabContainer1.ActiveTab = tpFilter;
+                lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", szFQParam);
             }
 
             if (util.GetIntParam(Request, "pdfErr", 0) != 0)
@@ -129,6 +130,7 @@ public partial class Member_PrintView : System.Web.UI.Page
             throw new ArgumentNullException("e");
         mfbSearchForm1.Restriction = e.Query;
         mvSearch.SetActiveView(vwDescriptor);
+        lnkReturnToFlights.NavigateUrl = "~/Member/LogbookNew.aspx";
     }
 
     protected void FilterResults(object sender, FlightQueryEventArgs e)
@@ -138,6 +140,7 @@ public partial class Member_PrintView : System.Web.UI.Page
         RefreshLogbookData();
         mfbTotalSummary1.DataBind();
         mvSearch.SetActiveView(vwDescriptor);
+        lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(mfbSearchForm1.Restriction.ToBase64CompressedJSONString()));
     }
 
     protected void RefreshLogbookData()
@@ -213,6 +216,7 @@ public partial class Member_PrintView : System.Web.UI.Page
             throw new ArgumentNullException("fic");
         mfbSearchForm1.Restriction = mfbSearchForm1.Restriction.ClearRestriction(fic.FilterItem);
         FilterResults(sender, new FlightQueryEventArgs(mfbSearchForm1.Restriction));
+        lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(mfbSearchForm1.Restriction.ToBase64CompressedJSONString()));
     }
 
     protected void lnkDownloadPDF_Click(object sender, EventArgs e)

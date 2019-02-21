@@ -23,6 +23,7 @@
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <div class="noprint">
         <p><asp:Label ID="lblDescription" runat="server" Text="<%$ Resources:LocalizedText, PrintViewDescription %>" ></asp:Label></p>
+        <p><asp:HyperLink ID="lnkReturnToFlights" runat="server" Text="<%$ Resources:LocalizedText, PrintViewReturnLogbook %>"></asp:HyperLink></p>
         <ajaxToolkit:TabContainer ID="TabContainer1" runat="server" CssClass="mfbDefault" ActiveTabIndex="0" >
             <ajaxToolkit:TabPanel ID="tpOptions" runat="server" HeaderText="<%$ Resources:LocalizedText, PrintViewTabOptions %>" >
                 <ContentTemplate>
