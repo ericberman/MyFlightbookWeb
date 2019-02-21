@@ -337,15 +337,38 @@ public partial class Member_Import : System.Web.UI.Page
             return;
         }
 
+        int cFlightsAdded = 0;
+        int cFlightsUpdated = 0;
+        int cFlightsWithErrors = 0;
+
         csvimporter.FCommit((le, fIsNew) => {
                     if (String.IsNullOrEmpty(le.ErrorString))
+                    {
                         AddTextRow(plcProgress, String.Format(CultureInfo.CurrentCulture, fIsNew ? Resources.LogbookEntry.ImportRowAdded : Resources.LogbookEntry.ImportRowUpdated, le.ToString()), "success");
+                        if (fIsNew)
+                            cFlightsAdded++;
+                        else
+                            cFlightsUpdated++;
+                    }
                     else
+                    {
                         AddTextRow(plcProgress, String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportRowNotAdded, le.ToString(), le.ErrorString), "error");
+                        cFlightsWithErrors++;
+                    }
                 }, 
                 (le, ex) => {
                     AddTextRow(plcProgress, String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportRowNotAdded, le.ToString(), ex.Message), "error");
                 });
+
+        List<string> lstResults = new List<string>();
+        if (cFlightsAdded > 0)
+            lstResults.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportFlightsAdded, cFlightsAdded));
+        if (cFlightsUpdated > 0)
+            lstResults.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportFlightsUpdated, cFlightsUpdated));
+        if (cFlightsWithErrors > 0)
+            lstResults.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportFlightsAdded, cFlightsWithErrors));
+        rptImportResults.DataSource = lstResults;
+        rptImportResults.DataBind();
         MyFlightbook.Profile.GetUser(Page.User.Identity.Name).SetAchievementStatus(MyFlightbook.Achievements.Achievement.ComputeStatus.NeedsComputing);
         mvPreviewResults.SetActiveView(vwImportResults);
         wzImportFlights.Visible = false;

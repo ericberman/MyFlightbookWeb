@@ -951,4 +951,13 @@
   <data name="CompareHeader" xml:space="preserve">
     <value>Changes to this flight:</value>
   </data>
+  <data name="ImportFlightsAdded" xml:space="preserve">
+    <value>{0} flight(s) added</value>
+  </data>
+  <data name="ImportFlightsUpdated" xml:space="preserve">
+    <value>{0} flight(s) updated</value>
+  </data>
+  <data name="ImportFlightsWithErrors" xml:space="preserve">
+    <value>{0} flight(s) had errors</value>
+  </data>
 </root>

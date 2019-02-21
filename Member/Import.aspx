@@ -134,6 +134,13 @@
     </asp:Wizard>
     <asp:Panel ID="pnlImportSuccessful" runat="server" Visible="False" meta:resourcekey="pnlImportSuccessfulResource1" >
         <p><asp:Label ID="lblImportSuccessful" runat="server" Text="Import complete - results are shown below" meta:resourcekey="lblImportSuccessfulResource1" ></asp:Label></p>
+        <ul>
+            <asp:Repeater ID="rptImportResults" runat="server">
+                <ItemTemplate>
+                    <li><%# Container.DataItem %></li>
+                </ItemTemplate>
+            </asp:Repeater>
+        </ul>
         <p><asp:HyperLink ID="btnDone" runat="server" Text="View my flights" NavigateUrl="~/Member/LogbookNew.aspx" meta:resourcekey="btnDoneResource1"  /></p>
     </asp:Panel>
     <br /><br />

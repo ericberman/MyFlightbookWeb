@@ -2180,7 +2180,8 @@ namespace MyFlightbook
             List<PropertyDelta> lst = new List<PropertyDelta>();
 
             PropertyDelta.AddPotentialChange(Resources.LogbookEntry.PrintHeaderDate, Date.ToShortDateString(), le.Date.ToShortDateString(), lst);
-            PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldTail, TailNumDisplay, le.TailNumDisplay, lst);
+            if (AircraftID != le.AircraftID)
+                PropertyDelta.AddPotentialChange(Resources.LogbookEntry.FieldTail, TailNumDisplay, le.TailNumDisplay, lst);
 
             if (CatClassOverride != le.CatClassOverride)
             {
