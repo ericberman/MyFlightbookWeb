@@ -447,7 +447,7 @@
     <value>Additional properties for your flight:</value>
   </data>
   <data name="propSelectAdditionalProperty" xml:space="preserve">
-    <value>(Select a property to add)</value>
+    <value>(Select a property to edit/add)</value>
   </data>
   <data name="NewPropertyPrompt1" xml:space="preserve">
     <value>Contact us</value>
