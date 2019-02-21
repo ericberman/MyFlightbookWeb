@@ -1163,7 +1163,7 @@
     <value>(No image available)</value>
   </data>
   <data name="DownloadAsPDF" xml:space="preserve">
-    <value>Download as PDF</value>
+    <value>Create a PDF to download</value>
   </data>
   <data name="DownloadAsPDFTabHeader" xml:space="preserve">
     <value>PDF Download</value>
