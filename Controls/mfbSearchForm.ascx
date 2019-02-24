@@ -183,14 +183,23 @@
                         meta:resourcekey="lblAirplaneLabelResource1"></asp:Label>:</p>
                 <asp:Panel ID="pnlAirplanes" runat="server" style="overflow:hidden" 
                     meta:resourcekey="pnlAirplanesResource1">
-                        <asp:CheckBoxList ID="cklAircraft" runat="server"
-                                       DataTextField="DisplayTailNumber" DataValueField="AircraftID" 
-                            RepeatColumns="6" RepeatDirection="Horizontal" 
-                            meta:resourcekey="cklAircraftResource1">
-                        </asp:CheckBoxList>
-                        <asp:Panel ID="pnlShowAllAircraft" runat="server">
-                            <asp:LinkButton ID="lnkShowAllAircraft" runat="server" Text="Show All Aircraft" meta:resourcekey="lnkShowAllAircraft1" OnClick="lnkShowAllAircraft_Click"></asp:LinkButton>
-                        </asp:Panel>
+                    <asp:UpdatePanel ID="updpanelAircraft" runat="server">
+                        <ContentTemplate>
+                            <asp:CheckBoxList ID="cklAircraft" runat="server"
+                                           DataTextField="DisplayTailNumber" DataValueField="AircraftID" 
+                                RepeatColumns="6" RepeatDirection="Horizontal" 
+                                meta:resourcekey="cklAircraftResource1">
+                            </asp:CheckBoxList>
+                            <asp:Panel ID="pnlShowAllAircraft" runat="server">
+                                <asp:LinkButton ID="lnkShowAllAircraft" runat="server" Text="Show All Aircraft" meta:resourcekey="lnkShowAllAircraft1" OnClick="lnkShowAllAircraft_Click"></asp:LinkButton>
+                            </asp:Panel>
+                            <table>
+                                <tr>
+                                    <td><asp:CheckBox ID="ckAllAircraft" runat="server" AutoPostBack="true" OnCheckedChanged="ckAllAircraft_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></td>
+                                </tr>
+                            </table>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </asp:Panel>
                 <p class="header" runat="server" id="MakesHeader">
                     <asp:Localize ID="locMakes"
@@ -201,15 +210,24 @@
                 </p>
                 <asp:Panel ID="pnlMakes" runat="server" Style="overflow: hidden"
                     meta:resourcekey="pnlMakesResource1">
-                    <asp:CheckBoxList ID="cklMakes" runat="server"
-                        DataTextField="DisplayName" DataValueField="MakeModelID"
-                        RepeatColumns="3" RepeatDirection="Horizontal"
-                        meta:resourcekey="cklMakesResource1">
-                    </asp:CheckBoxList>
-                    <div>
-                        <asp:Label ID="Label1" runat="server" meta:resourcekey="Label1Resource1" Text="Make/Model contains:"></asp:Label>
-                        <asp:TextBox ID="txtModelNameText" runat="server" meta:resourcekey="txtModelNameTextResource1"></asp:TextBox>
-                    </div>
+                    <asp:UpdatePanel ID="updpanelMakes" runat="server">
+                        <ContentTemplate>
+                            <asp:CheckBoxList ID="cklMakes" runat="server"
+                                DataTextField="DisplayName" DataValueField="MakeModelID"
+                                RepeatColumns="3" RepeatDirection="Horizontal"
+                                meta:resourcekey="cklMakesResource1">
+                            </asp:CheckBoxList>
+                            <div>
+                                <asp:Label ID="Label1" runat="server" meta:resourcekey="Label1Resource1" Text="Make/Model contains:"></asp:Label>
+                                <asp:TextBox ID="txtModelNameText" runat="server" meta:resourcekey="txtModelNameTextResource1"></asp:TextBox>
+                            </div>
+                            <table>
+                                <tr>
+                                    <td><asp:CheckBox ID="ckAllMakes" runat="server" AutoPostBack="true" OnCheckedChanged="ckAllMakes_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></td>
+                                </tr>
+                            </table>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </asp:Panel>
                 <p class="header" runat="server" id="CatClassHeader"><asp:Localize ID="locCatClass" 
                         runat="server" Text="Flight was in these categories/classes:" 
@@ -218,10 +236,19 @@
                         meta:resourcekey="lblCatClassResource1"></asp:Label>:</p>
                 <asp:Panel ID="pnlCatClass" runat="server" style="overflow:hidden" 
                     meta:resourcekey="pnlCatClassResource1">
-                    <asp:CheckBoxList ID="cklCatClass" DataValueField="IDCatClassAsInt" 
-                        DataTextField="CatClass" runat="server" RepeatColumns="4" 
-                        RepeatDirection="Horizontal" meta:resourcekey="cklCatClassResource1">
-                    </asp:CheckBoxList>
+                    <asp:UpdatePanel ID="updpanelCatClass" runat="server">
+                        <ContentTemplate>
+                            <asp:CheckBoxList ID="cklCatClass" DataValueField="IDCatClassAsInt" 
+                                DataTextField="CatClass" runat="server" RepeatColumns="4" 
+                                RepeatDirection="Horizontal" meta:resourcekey="cklCatClassResource1">
+                            </asp:CheckBoxList>
+                            <table>
+                                <tr>
+                                    <td><asp:CheckBox ID="ckAllCatClass" runat="server" AutoPostBack="true" OnCheckedChanged="ckAllCatClass_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></td>
+                                </tr>
+                            </table>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </asp:Panel>
                 <p class="header" runat="server" id="AircraftCharsHeader">
                     <asp:Localize ID="locAircraftCharacteristics" runat="server" 

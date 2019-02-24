@@ -1497,4 +1497,7 @@
   <data name="PrintViewReturnLogbook" xml:space="preserve">
     <value>Return to logbook</value>
   </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>(Select All)</value>
+  </data>
 </root>

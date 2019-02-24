@@ -1,15 +1,15 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Airports;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Airports;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2017 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -390,12 +390,15 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
             pnlShowAllAircraft.Visible = false;
         cklAircraft.DataSource = fShowAll ? rgac : rgacActive;
         cklAircraft.DataBind();
+        ckAllAircraft.Visible = cklAircraft.Items.Count > 0;
         
         cklMakes.DataSource = MakeModel.ModelsForAircraft(rgac);
         cklMakes.DataBind();
+        ckAllMakes.Visible = cklMakes.Items.Count > 0;
 
         cklCatClass.DataSource = CategoryClass.CategoryClasses();
         cklCatClass.DataBind();
+        ckAllCatClass.Visible = cklCatClass.Items.Count > 0;
 
         CustomPropertyType[] rgCpt = CustomPropertyType.GetCustomPropertyTypes(Username);
         List<CustomPropertyType> al = new List<CustomPropertyType>();
@@ -735,5 +738,23 @@ function setDates(isCustom)
         m_fq = GetFlightQuery();
         pnlShowAllAircraft.Visible = false;
         RefreshFormForQuery();
+    }
+
+    protected void ckAllAircraft_CheckedChanged(object sender, EventArgs e)
+    {
+        foreach (ListItem li in cklAircraft.Items)
+            li.Selected = ckAllAircraft.Checked;
+    }
+
+    protected void ckAllMakes_CheckedChanged(object sender, EventArgs e)
+    {
+        foreach (ListItem li in cklMakes.Items)
+            li.Selected = ckAllMakes.Checked;
+    }
+
+    protected void ckAllCatClass_CheckedChanged(object sender, EventArgs e)
+    {
+        foreach (ListItem li in cklCatClass.Items)
+            li.Selected = ckAllCatClass.Checked;
     }
 }

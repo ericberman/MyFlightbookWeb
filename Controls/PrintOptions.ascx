@@ -56,15 +56,23 @@
         </asp:RadioButtonList>
     </div>
     <div>&nbsp;</div>
-    <uc1:Expando runat="server" ID="expPropertiesToExclude">
-        <Header>
-            <asp:Label ID="lblPropertyExclusion" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, PrintViewPropertyInclusion %>"></asp:Label>
-        </Header>
-        <Body>
-            <p></p>
-            <asp:CheckBoxList ID="cklProperties" runat="server" DataTextField="Title" DataValueField="PropTypeID" RepeatColumns="2" RepeatDirection="Horizontal" AutoPostBack="true" OnSelectedIndexChanged="cklProperties_SelectedIndexChanged" />
-        </Body>
-    </uc1:Expando>
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+        <ContentTemplate>
+            <uc1:Expando runat="server" ID="expPropertiesToExclude">
+                <Header>
+                    <asp:Label ID="lblPropertyExclusion" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, PrintViewPropertyInclusion %>" />
+                </Header>
+                <Body>
+                    <asp:CheckBoxList ID="cklProperties" runat="server" DataTextField="Title" DataValueField="PropTypeID" RepeatColumns="2" RepeatDirection="Horizontal" AutoPostBack="true" OnSelectedIndexChanged="cklProperties_SelectedIndexChanged" />
+                    <table>
+                        <tr>
+                            <td><asp:CheckBox ID="ckCheckAll" runat="server" AutoPostBack="true" OnCheckedChanged="ckCheckAll_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></td>
+                        </tr>
+                    </table>
+                </Body>
+            </uc1:Expando>
+        </ContentTemplate>
+    </asp:UpdatePanel>
 </asp:Panel>
 
 <div>&nbsp;</div>

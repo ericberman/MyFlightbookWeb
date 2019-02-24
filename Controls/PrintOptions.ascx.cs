@@ -145,6 +145,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             rgcptUser.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
             cklProperties.DataSource = rgcptUser;
             cklProperties.DataBind();
+            ckCheckAll.Visible = rgcptUser.Count > 0;
             expPropertiesToExclude.Visible = rgcptUser.Count > 0;
 
             // By default, exclude "Additional flight remarks"
@@ -258,5 +259,11 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
     protected void rblModelDisplay_SelectedIndexChanged(object sender, EventArgs e)
     {
         NotifyDelegate();
+    }
+
+    protected void ckCheckAll_CheckedChanged(object sender, EventArgs e)
+    {
+        foreach (ListItem ck in cklProperties.Items)
+            ck.Selected = ckCheckAll.Checked;
     }
 }
