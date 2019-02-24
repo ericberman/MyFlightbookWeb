@@ -390,15 +390,14 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
             pnlShowAllAircraft.Visible = false;
         cklAircraft.DataSource = fShowAll ? rgac : rgacActive;
         cklAircraft.DataBind();
-        ckAllAircraft.Visible = cklAircraft.Items.Count > 0;
+        ckAllAircraft.Visible = cklAircraft.Items.Count > 4;
         
         cklMakes.DataSource = MakeModel.ModelsForAircraft(rgac);
         cklMakes.DataBind();
-        ckAllMakes.Visible = cklMakes.Items.Count > 0;
+        ckAllMakes.Visible = cklMakes.Items.Count > 4;
 
         cklCatClass.DataSource = CategoryClass.CategoryClasses();
         cklCatClass.DataBind();
-        ckAllCatClass.Visible = cklCatClass.Items.Count > 0;
 
         CustomPropertyType[] rgCpt = CustomPropertyType.GetCustomPropertyTypes(Username);
         List<CustomPropertyType> al = new List<CustomPropertyType>();

@@ -145,7 +145,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             rgcptUser.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
             cklProperties.DataSource = rgcptUser;
             cklProperties.DataBind();
-            ckCheckAll.Visible = rgcptUser.Count > 0;
+            ckCheckAll.Visible = rgcptUser.Count > 4;
             expPropertiesToExclude.Visible = rgcptUser.Count > 0;
 
             // By default, exclude "Additional flight remarks"

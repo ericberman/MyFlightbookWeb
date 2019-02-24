@@ -217,15 +217,15 @@
                                 RepeatColumns="3" RepeatDirection="Horizontal"
                                 meta:resourcekey="cklMakesResource1">
                             </asp:CheckBoxList>
-                            <div>
-                                <asp:Label ID="Label1" runat="server" meta:resourcekey="Label1Resource1" Text="Make/Model contains:"></asp:Label>
-                                <asp:TextBox ID="txtModelNameText" runat="server" meta:resourcekey="txtModelNameTextResource1"></asp:TextBox>
-                            </div>
                             <table>
                                 <tr>
                                     <td><asp:CheckBox ID="ckAllMakes" runat="server" AutoPostBack="true" OnCheckedChanged="ckAllMakes_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></td>
                                 </tr>
                             </table>
+                            <div>
+                                <asp:Label ID="Label1" runat="server" meta:resourcekey="Label1Resource1" Text="Make/Model contains:"></asp:Label>
+                                <asp:TextBox ID="txtModelNameText" runat="server" meta:resourcekey="txtModelNameTextResource1"></asp:TextBox>
+                            </div>
                         </ContentTemplate>
                     </asp:UpdatePanel>
                 </asp:Panel>
