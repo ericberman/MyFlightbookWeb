@@ -93,7 +93,7 @@ namespace MyFlightbook.Geography
                 if (mc != null && mc.Count > 0 && mc[0].Groups.Count >= 3)
                 {
                     GroupCollection gc = mc[0].Groups;
-                    Sign = szAngleString.StartsWith("-", StringComparison.CurrentCultureIgnoreCase) ? -1 : 1;
+                    Sign = (szAngleString != null && szAngleString.StartsWith("-", StringComparison.CurrentCultureIgnoreCase)) ? -1 : 1;
                     Degrees = Convert.ToInt32(gc[1].Value, CultureInfo.InvariantCulture);
                     double min = Convert.ToDouble(gc[2].Value, CultureInfo.InvariantCulture);
                     Minutes = (int) Math.Truncate(min);
