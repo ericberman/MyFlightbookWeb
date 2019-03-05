@@ -8,7 +8,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2018 MyFlightbook LLC
+ * Copyright (c) 2010-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -71,7 +71,7 @@ public partial class Member_FindFlights : System.Web.UI.Page
 
         try
         {
-            if (new MFBDropbox().ValidateDropboxToken(pf, true, true) == MFBDropbox.TokenStatus.None)
+            if (await new MFBDropbox().ValidateDropboxToken(pf, true, true) == MFBDropbox.TokenStatus.None)
                 return;
 
             Dropbox.Api.Files.FileMetadata result = await lb.BackupToDropbox();

@@ -10,11 +10,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using VolunteerApp.Twitter;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2018 MyFlightbook LLC
+ * Copyright (c) 2016-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -713,7 +712,7 @@ namespace MyFlightbook.CloudStorage
         /// <param name="fCommit">True to update the database with the oAuth 2.0 credential</param>
         /// <param name="fDisable">True to disable the old oAuth 1.0</param>
         /// <returns>The state of the dropbox access token PRIOR to upgrade.</returns>
-        public TokenStatus ValidateDropboxToken(MyFlightbook.Profile pf, bool fCommit = false, bool fDisable = false)
+        async public Task<TokenStatus> ValidateDropboxToken(MyFlightbook.Profile pf, bool fCommit = false, bool fDisable = false)
         {
             TokenStatus result = TokenStatus.None;
 
@@ -746,26 +745,19 @@ namespace MyFlightbook.CloudStorage
                         }
                     }
 
-                    oAuthTwitter oat = new oAuthTwitter();
-                    oat.Token = szRawToken;
-                    oat.TokenSecret = szRawSecret;
-                    oat.ConsumerKey = dbAppKey;
-                    oat.ConsumerSecret = dbSecret;
 
                     try
                     {
-                        string szJSON = oat.oAuthWebRequest(oAuthTwitter.Method.POST, oAuth1UpgradeEndpoint, null);
-                        Dictionary<string, string> dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(szJSON);
-                        pf.DropboxAccessToken = dict["access_token"];
+                        DropboxAppClient client = new DropboxAppClient(dbAppKey, dbSecret);
+                        var tokenFromOAuth1Result = await client.Auth.TokenFromOauth1Async(szRawToken, szRawSecret);
+                        pf.DropboxAccessToken = tokenFromOAuth1Result.Oauth2Token;
 
                         if (fCommit)
                             pf.FCommit();
-                        // And disable the access token:
-                        if (fDisable)
-                            oat.oAuthWebRequest(oAuthTwitter.Method.POST, oAuthTokenDisableEndpoint, null);
+
                         result = TokenStatus.oAuth1;
                     }
-                    catch (System.Net.WebException ex)
+                    catch (WebException ex)
                     {
                         Stream ResponseStream = ex.Response.GetResponseStream();
                         StreamReader reader = new System.IO.StreamReader(ResponseStream, System.Text.Encoding.Default);

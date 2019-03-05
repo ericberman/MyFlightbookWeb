@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -237,7 +237,7 @@ namespace MyFlightbook.Subscriptions
                     {
                         case StorageID.Dropbox:
                             {
-                                MFBDropbox.TokenStatus ts = new MFBDropbox().ValidateDropboxToken(pf, true, true);
+                                MFBDropbox.TokenStatus ts = await new MFBDropbox().ValidateDropboxToken(pf, true, true);
                                 if (ts == MFBDropbox.TokenStatus.None)
                                     continue;
 
