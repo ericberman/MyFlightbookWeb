@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2018 MyFlightbook LLC
+ * Copyright (c) 2010-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -327,7 +327,7 @@ namespace MyFlightbook.Airports
             {
                 if (va.Airport == null)
                     continue;
-                string szLocKey = String.Format("{0}La{1:F2}Lo{2:F2}", va.Airport.FacilityTypeCode, va.Airport.LatLong.Latitude, va.Airport.LatLong.Longitude);
+                string szLocKey = va.Airport.GeoHashKey;
 
                 // If the code is already present AND it has a longer code than this one, then merge them
                 if (dDedupe.ContainsKey(szLocKey))
@@ -658,6 +658,15 @@ namespace MyFlightbook.Airports
             get { return LatLong != null && LatLong.Latitude <= 26 && LatLong.Latitude >= 18 && LatLong.Longitude >= -173 && LatLong.Longitude <= -154; }
         }
         #endregion  // Attributes
+
+        /// <summary>
+        /// Hash code that rounds the location so that multiple airports of the same type at approximately the same location will merge.
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public string GeoHashKey
+        {
+            get { return String.Format(CultureInfo.InvariantCulture, "{0}La{1:F2}Lo{2:F2}", FacilityTypeCode, LatLong.Latitude, LatLong.Longitude); }
+        }
         #endregion  // properties
 
         private Boolean isNew = false;

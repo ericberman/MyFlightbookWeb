@@ -7,7 +7,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2018 MyFlightbook LLC
+ * Copyright (c) 2014-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -39,6 +39,8 @@ public partial class Member_Achievements : System.Web.UI.Page
             rptBadgeset.DataSource = BadgeSet.BadgeSetsFromBadges(lst);
             rptBadgeset.DataBind();
         }
+        mfbRecentAchievements.AutoDateRange = true;
+        mfbRecentAchievements.Refresh(Page.User.Identity.Name, DateTime.MaxValue, DateTime.MinValue, false);
     }
 
     protected void ForceRefresh()

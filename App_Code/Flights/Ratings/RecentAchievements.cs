@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -47,8 +47,8 @@ namespace MyFlightbook.MilestoneProgress
     public class RecentAchievements : MilestoneProgress
     {
         #region Properties
-        protected DateTime StartDate { get; private set; }
-        protected DateTime EndDate { get; private set; }
+        public DateTime StartDate { get; private set; }
+        public DateTime EndDate { get; private set; }
 
         // flying streak
         protected DateTime? LastFlyingDayOfStreak { get; set; }
@@ -57,6 +57,11 @@ namespace MyFlightbook.MilestoneProgress
         protected DateTime? FirstDayOfCurrentStreak { get; set; }
         protected int FlyingDayStreak { get { return LastFlyingDayOfStreak.HasValue && FirstFlyingDayOfStreak.HasValue ? LastFlyingDayOfStreak.Value.Subtract(FirstFlyingDayOfStreak.Value).Days + 1 : 0; } }
         protected int CurrentFlyingDayStreak { get { return LastDayOfCurrentStreak.HasValue && FirstDayOfCurrentStreak.HasValue ? LastDayOfCurrentStreak.Value.Subtract(FirstDayOfCurrentStreak.Value).Days + 1 : 0; } }
+
+        /// <summary>
+        /// If true, compute date range dynamically based on flights seen; if false, only look at flights in specified date range.
+        /// </summary>
+        public bool AutoDateRange { get; set; }
 
         // # of distinct dates with flights, flights per day
         protected Dictionary<string, int> FlightDates { get; set; }
@@ -203,6 +208,12 @@ namespace MyFlightbook.MilestoneProgress
                 throw new ArgumentNullException("cfr");
             DateTime dtFlight = cfr.dtFlight.Date;
 
+            if (AutoDateRange)
+            {
+                StartDate = StartDate.EarlierDate(dtFlight);
+                EndDate = EndDate.LaterDate(dtFlight);
+            }
+
             // ignore anything not in a real aircraft or outside of our date range
             if (!cfr.fIsRealAircraft || dtFlight.CompareTo(StartDate) < 0 || dtFlight.CompareTo(EndDate) > 0)
                 return;
@@ -271,14 +282,11 @@ namespace MyFlightbook.MilestoneProgress
             int cUniqueAirports = al.UniqueAirports.Count();
             foreach (airport ap in al.UniqueAirports)
             {
+                // Dedupe as we go based on latitude/longitude, ignoring non-ports.  
+                // We don't actually need the facility name here - so we can just round off the latitude/longitude and distinguish by type code.
+                // Note: this can differ slightly from Visited Airports counts because for achievements, we're ignoring flights in training devices; visited airports doesn't ignore them.
                 if (ap.IsPort)
-                {
-                    // Dedupe as we go - do the K-hack check; if the K version is in the AirportListOfRoutes, use that.  I.e., just pre-pend a "K" to ANY three-letter airport code.
-                    if (ap.Code.Length == 3)
-                        Airports.Add("K" + ap.Code);
-                    else
-                        Airports.Add(ap.Code);
-                }
+                    Airports.Add(ap.GeoHashKey);
             }
 
             if (cUniqueAirports > MostAirportsFlightCount)
