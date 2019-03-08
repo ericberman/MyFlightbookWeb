@@ -279,14 +279,21 @@ namespace MyFlightbook.MilestoneProgress
                 miFurthestFlight.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsFurthestFlight, distance, dtFlight);
             }
 
-            int cUniqueAirports = al.UniqueAirports.Count();
+            int cUniqueAirports = 0;
             foreach (airport ap in al.UniqueAirports)
             {
                 // Dedupe as we go based on latitude/longitude, ignoring non-ports.  
                 // We don't actually need the facility name here - so we can just round off the latitude/longitude and distinguish by type code.
                 // Note: this can differ slightly from Visited Airports counts because for achievements, we're ignoring flights in training devices; visited airports doesn't ignore them.
                 if (ap.IsPort)
-                    Airports.Add(ap.GeoHashKey);
+                {
+                    string szHash = ap.GeoHashKey;
+                    if (!Airports.Contains(szHash))
+                    {
+                        Airports.Add(ap.GeoHashKey);
+                        cUniqueAirports++;
+                    }
+                }
             }
 
             if (cUniqueAirports > MostAirportsFlightCount)
