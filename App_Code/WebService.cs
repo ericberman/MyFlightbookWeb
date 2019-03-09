@@ -17,7 +17,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -350,6 +350,29 @@ namespace MyFlightbook
                 throw new MyFlightbookException(Resources.WebService.errNewAircraftFailed);
 
             return AircraftForUser(szAuthUserToken);
+        }
+
+        /// <summary>
+        /// Returns a set of aircraft matching a prefix for a given user
+        /// </summary>
+        /// <param name="szAuthToken">User (helps prevent scraping)</param>
+        /// <param name="szPrefix">Prefix.  Requires at least 3 characters</param>
+        /// <returns>Matching aircraft</returns>
+        [WebMethod]
+        public Aircraft[] AircraftMatchingPrefix(string szAuthToken, string szPrefix)
+        {
+            if (string.IsNullOrWhiteSpace(szPrefix))
+                return new Aircraft[0];
+
+            if (szAuthToken == null)
+                throw new MyFlightbookException(Resources.WebService.errBadAuth);
+
+            string szUser = GetEncryptedUser(szAuthToken);
+
+            if (szUser.Length == 0)
+                throw new MyFlightbookException(Resources.WebService.errBadAuth);
+
+            return Aircraft.AircraftWithPrefix(szPrefix).ToArray();
         }
 
         /// <summary>

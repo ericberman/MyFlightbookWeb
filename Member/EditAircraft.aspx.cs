@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -38,21 +38,10 @@ public partial class EditMake : System.Web.UI.Page
     {
         if (String.IsNullOrEmpty(prefixText))
             return new string[0];
-        prefixText = Regex.Replace(prefixText, "[^a-zA-Z0-9 -]", string.Empty) + "%";
-        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT 
-                                                    ac.idaircraft, m.model, ac.tailnumber
-                                                FROM
-                                                    aircraft ac
-                                                        INNER JOIN
-                                                    models m ON ac.idmodel = m.idmodel
-                                                WHERE
-                                                    tailnumber LIKE ?prefix
-                                                ORDER BY tailnumber ASC
-                                                LIMIT {0}", 
-                                            count));
+        IEnumerable<Aircraft> lstAircraft = Aircraft.AircraftWithPrefix(prefixText, count);
         List<string> lst = new List<string>();
-        dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("prefix", prefixText); },
-            (dr) => { lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(String.Format(CultureInfo.CurrentCulture, "{0} - {1}", dr["tailnumber"], dr["model"]), dr["idaircraft"].ToString())); });
+        foreach (Aircraft ac in lstAircraft)
+            lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(String.Format(CultureInfo.CurrentCulture, "{0} - {1}", ac.TailNumber, ac.ModelDescription), ac.AircraftID.ToString(CultureInfo.InvariantCulture)));
         return lst.ToArray();
     }
 

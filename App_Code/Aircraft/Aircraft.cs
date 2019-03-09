@@ -14,7 +14,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -972,6 +972,31 @@ namespace MyFlightbook
             List<Aircraft> lst = new List<Aircraft>();
             new DBHelper(dba).ReadRows(
                 (comm) => { },
+                (dr) => { lst.Add(new Aircraft(dr)); }
+                );
+            return lst;
+        }
+
+        /// <summary>
+        /// Get a list of aircraft that match the specified prefix
+        /// </summary>
+        /// <param name="szPrefix">The prefix.  ONLY ALPHANUMERIC characters are used</param>
+        /// <param name="maxCount">Maximum number of results to return</param>
+        /// <returns>Matching aircraft</returns>
+        public static IEnumerable<Aircraft> AircraftWithPrefix(string szPrefix, int maxCount = 10)
+        {
+            List<Aircraft> lst = new List<Aircraft>();
+
+            if (String.IsNullOrEmpty(szPrefix) || szPrefix.Length < 3)
+                return lst;
+
+            if (maxCount < 1)
+                maxCount = 10;
+
+            szPrefix = Regex.Replace(szPrefix, "[^a-zA-Z0-9]", string.Empty) + "%";
+            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", " WHERE REPLACE(aircraft.TailNumber, '-', '') LIKE ?prefix") + String.Format(CultureInfo.InvariantCulture, " LIMIT {0}", maxCount));
+            new DBHelper(dba).ReadRows(
+                (comm) => { comm.Parameters.AddWithValue("prefix", szPrefix); },
                 (dr) => { lst.Add(new Aircraft(dr)); }
                 );
             return lst;
