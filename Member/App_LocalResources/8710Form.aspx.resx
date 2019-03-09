@@ -153,6 +153,15 @@
   <data name="BoundFieldResource4.HeaderText" xml:space="preserve">
     <value />
   </data>
+  <data name="BoundFieldResource5.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource5.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource5.HeaderText" xml:space="preserve">
+    <value>Last Flight</value>
+  </data>
   <data name="btnEditQueryResource1.Text" xml:space="preserve">
     <value>Change Query</value>
   </data>
@@ -177,6 +186,15 @@
   <data name="gvClassTotalsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="gvRollupResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvRollupResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvRollupResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblNoMatchingFlightsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
@@ -185,6 +203,18 @@
   </data>
   <data name="lblUserNameResource1.ToolTip" xml:space="preserve">
     <value />
+  </data>
+  <data name="ListItemResource1.Text" xml:space="preserve">
+    <value>8710 (IACRA) Report</value>
+  </data>
+  <data name="ListItemResource1.Value" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ListItemResource2.Text" xml:space="preserve">
+    <value>Rollup by model</value>
+  </data>
+  <data name="ListItemResource2.Value" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="loc8710DiclaimerHeaderResource1.Text" xml:space="preserve">
     <value>Totals are computed using the criteria below:</value>
@@ -200,6 +230,12 @@
   </data>
   <data name="loc8710NotesResource1.Text" xml:space="preserve">
     <value>Notes:</value>
+  </data>
+  <data name="locApproach12Resource1.Text" xml:space="preserve">
+    <value>12 Month: </value>
+  </data>
+  <data name="locApproach6Resource1.Text" xml:space="preserve">
+    <value>6 Month: </value>
   </data>
   <data name="locCrossCountryDualHeaderResource1.Text" xml:space="preserve">
     <value>Cross&lt;br /&gt;Country&lt;br /&gt;Instruc-&lt;br /&gt;tion&lt;br /&gt;Received</value>
@@ -246,6 +282,12 @@
   <data name="locSICNightResource1.Text" xml:space="preserve">
     <value>SIC</value>
   </data>
+  <data name="locTotal12Resource1.Text" xml:space="preserve">
+    <value>12 Month: </value>
+  </data>
+  <data name="LocTotal24Resource1.Text" xml:space="preserve">
+    <value>24 Month: </value>
+  </data>
   <data name="locXCPICHeaderResource1.Text" xml:space="preserve">
     <value>Cross&lt;br /&gt;Country&lt;br /&gt;PIC/SIC</value>
   </data>
@@ -256,6 +298,99 @@
     <value>Logbook for</value>
   </data>
   <data name="PageResource1.Title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlApproaches12Resource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlApproaches12Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlApproaches6Resource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlApproaches6Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlApproachesResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlApproachesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlClassTotalsResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlClassTotalsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlJetPICResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlJetPICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlJetSICResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlJetSICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlMultiPICResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlMultiPICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlMultiSICResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlMultiSICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlPICResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlPICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlSICResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlSICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTotal12Resource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTotal12Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTotal24Resource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTotal24Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTotalResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTotalResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTurboPropPICResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTurboPropPICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTurboPropSICResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlTurboPropSICResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rblReportResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="TemplateFieldResource1.AccessibleHeaderText" xml:space="preserve">
@@ -312,6 +447,48 @@
   <data name="TemplateFieldResource14.HeaderText" xml:space="preserve">
     <value />
   </data>
+  <data name="TemplateFieldResource15.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource15.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource15.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource16.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource16.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource16.HeaderText" xml:space="preserve">
+    <value>(PIC/SIC)</value>
+  </data>
+  <data name="TemplateFieldResource17.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource17.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource18.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource18.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource18.HeaderText" xml:space="preserve">
+    <value>TurboProp&lt;br /&gt;(PIC/SIC)</value>
+  </data>
+  <data name="TemplateFieldResource19.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource19.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource19.HeaderText" xml:space="preserve">
+    <value>Jet&lt;br /&gt;(PIC/SIC)</value>
+  </data>
   <data name="TemplateFieldResource2.AccessibleHeaderText" xml:space="preserve">
     <value />
   </data>
@@ -321,6 +498,78 @@
   <data name="TemplateFieldResource2.HeaderText" xml:space="preserve">
     <value>Instruc-&lt;br /&gt;tion&lt;br /&gt;Received</value>
   </data>
+  <data name="TemplateFieldResource20.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource20.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource20.HeaderText" xml:space="preserve">
+    <value>Multi&lt;br /&gt;(PIC/SIC)</value>
+  </data>
+  <data name="TemplateFieldResource21.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource21.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource21.HeaderText" xml:space="preserve">
+    <value>Flight&lt;br /&gt;Eng.</value>
+  </data>
+  <data name="TemplateFieldResource22.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource22.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource22.HeaderText" xml:space="preserve">
+    <value>Military</value>
+  </data>
+  <data name="TemplateFieldResource23.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource23.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource24.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource24.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource25.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource25.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource26.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource26.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource27.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource27.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource28.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource28.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource28.HeaderText" xml:space="preserve">
+    <value>Total&lt;br /&gt;(All//12/24)&lt;br /&gt;Month</value>
+  </data>
+  <data name="TemplateFieldResource29.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource29.FooterText" xml:space="preserve">
+    <value />
+  </data>
   <data name="TemplateFieldResource3.AccessibleHeaderText" xml:space="preserve">
     <value />
   </data>
@@ -329,6 +578,15 @@
   </data>
   <data name="TemplateFieldResource3.HeaderText" xml:space="preserve">
     <value>Solo</value>
+  </data>
+  <data name="TemplateFieldResource30.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource30.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource30.HeaderText" xml:space="preserve">
+    <value>Apprch&lt;br /&gt;(All/6/12)&lt;br /&gt;Month</value>
   </data>
   <data name="TemplateFieldResource4.AccessibleHeaderText" xml:space="preserve">
     <value />

@@ -11,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -631,7 +631,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public static string FormatDecimal(this object o, bool fUseHHMM)
         {
-            if (o == null || o == System.DBNull.Value) return "";
+            if (o == null || o == System.DBNull.Value) return string.Empty;
             Decimal d = Convert.ToDecimal(o, CultureInfo.CurrentCulture);
             return d == 0.0M ? string.Empty : (fUseHHMM ? d.ToHHMM() : d.ToString("#,#0.0#", CultureInfo.CurrentCulture));
         }
@@ -643,7 +643,10 @@ namespace MyFlightbook
         /// <returns>The resulting string</returns>
         public static string FormatInt(this object o)
         {
-            return (o == null || o == System.DBNull.Value || Convert.ToInt32(o, CultureInfo.InvariantCulture) == 0) ? "" : o.ToString();
+            if (o == null || o == System.DBNull.Value)
+                return string.Empty;
+            int i = Convert.ToInt32(o, CultureInfo.InvariantCulture);
+            return (i == 0) ? "" : i.ToString("#,##0", CultureInfo.CurrentCulture);
         }
 
         /// <summary>

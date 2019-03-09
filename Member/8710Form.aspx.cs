@@ -1,5 +1,4 @@
 ﻿using MyFlightbook;
-using MyFlightbook.FlightCurrency;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2018 MyFlightbook LLC
+ * Copyright (c) 2011-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -58,6 +57,9 @@ public partial class Member_8710Form : System.Web.UI.Page
         string szHaving = String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause;
         string szQueryClassTotals = String.Format(CultureInfo.InvariantCulture, szQueryTemplate, szRestrict, szHaving, "f.InstanceTypeID, f.CatClassID"); 
         string szQueryMain = String.Format(CultureInfo.InvariantCulture, szQueryTemplate, szRestrict, szHaving, "f.category");
+
+        string szQueryRollup = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["RollupGridQuery"].ToString(), szRestrict, szHaving);
+
 
         DBHelperCommandArgs args = new DBHelperCommandArgs(szQueryClassTotals);
 
@@ -114,12 +116,15 @@ public partial class Member_8710Form : System.Web.UI.Page
                     {
                         gv8710.DataSource = dr;
                         gv8710.DataBind();
-                        UpdateDescription();
-                        if (!this.Master.IsMobileSession())
-                        {
-                            MfbLogbook1.Restriction = fq;
-                            MfbLogbook1.RefreshData();
-                        }
+                    }
+
+                    comm.CommandText = szQueryRollup;
+                    using (dr = comm.ExecuteReader())
+                    {
+                        gvRollup.DataSource = dr;
+                        gvRollup.DataBind();
+                        if (gvRollup.Rows.Count > 0)
+                            gvRollup.Rows[gvRollup.Rows.Count - 1].Font.Bold = true;
                     }
                 }
                 catch (Exception ex)
@@ -131,6 +136,13 @@ public partial class Member_8710Form : System.Web.UI.Page
                     if (comm.Connection != null && comm.Connection.State != ConnectionState.Closed)
                         comm.Connection.Close();
                 }
+            }
+
+            UpdateDescription();
+            if (!this.Master.IsMobileSession())
+            {
+                MfbLogbook1.Restriction = fq;
+                MfbLogbook1.RefreshData();
             }
         }
     }
@@ -186,5 +198,63 @@ public partial class Member_8710Form : System.Web.UI.Page
             }
 
         }
+    }
+
+    protected string ModelDisplay(object o)
+    {
+        System.Data.Common.DbDataRecord dr = o as System.Data.Common.DbDataRecord;
+
+        if (o == null || o == DBNull.Value || dr == null || dr["Family"] == DBNull.Value)
+            return Resources.LogbookEntry.FieldTotal;
+
+        string szFamily = (string)dr["Family"];
+        return szFamily.StartsWith("(", StringComparison.CurrentCultureIgnoreCase) ? szFamily : (string)dr["ModelDisplay"];
+    }
+
+    protected string FormatMultiDecimal(bool fUseHHMM, string separator, params object[] values)
+    {
+        if (values == null)
+            return string.Empty;
+
+        bool fHasValue = false;
+
+        List<string> lst = new List<string>();
+        foreach (object value in values)
+        {
+            if (values == null)
+                continue;
+
+            decimal d = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+            lst.Add(d == 0.0M ? "0" : d.FormatDecimal(fUseHHMM));
+            fHasValue = fHasValue || d != 0.0M;
+        }
+
+        return fHasValue ? String.Join(separator, lst) : string.Empty;
+    }
+
+    protected string FormatMultiInt(string separator, params object[] values)
+    {
+        if (values == null)
+            return string.Empty;
+
+        bool fHasValue = false;
+
+        List<string> lst = new List<string>();
+        foreach (object value in values)
+        {
+            if (values == null)
+                continue;
+
+            int i = Convert.ToInt32(value, CultureInfo.InvariantCulture);
+            lst.Add(i == 0 ? "0" : i.FormatInt());
+            fHasValue = fHasValue || i != 0;
+        }
+
+        return fHasValue ? String.Join(separator, lst) : string.Empty;
+    }
+
+    protected void rblReport_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        mvReport.ActiveViewIndex = rblReport.SelectedIndex;
     }
 }
