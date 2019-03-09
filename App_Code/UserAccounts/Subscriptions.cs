@@ -229,207 +229,215 @@ namespace MyFlightbook.Subscriptions
                 StorageID sid = StorageID.None;
                 if (eg.UserProfile != null && ((sid = eg.UserProfile.BestCloudStorage) != StorageID.None) && eg.CurrentStatus != EarnedGrauity.EarnedGratuityStatus.Expired)
                 {
-                    Profile pf = eg.UserProfile;
-
-                    LogbookBackup lb = new LogbookBackup(pf);
-
-                    switch (sid)
+                    try
                     {
-                        case StorageID.Dropbox:
-                            {
-                                MFBDropbox.TokenStatus ts = await new MFBDropbox().ValidateDropboxToken(pf, true, true);
-                                if (ts == MFBDropbox.TokenStatus.None)
-                                    continue;
+                        Profile pf = eg.UserProfile;
 
-                                try
-                                {
-                                    Dropbox.Api.Files.FileMetadata result = null;
-                                    result = await lb.BackupToDropbox(Branding.CurrentBrand);
-                                    sb.AppendFormat(CultureInfo.CurrentCulture, "Dropbox: user {0} ", pf.UserName);
-                                    if (ts == MFBDropbox.TokenStatus.oAuth1)
-                                        sb.Append("Token UPDATED from oauth1! ");
-                                    sb.AppendFormat(CultureInfo.CurrentCulture, "Logbook backed up for user {0}...", pf.UserName);
-                                    System.Threading.Thread.Sleep(0);
-                                    result = await lb.BackupImagesToDropbox(Branding.CurrentBrand);
-                                    System.Threading.Thread.Sleep(0);
-                                    sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
-                                }
-                                catch (Dropbox.Api.ApiException<Dropbox.Api.Files.UploadError> ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (Dropbox.Api.ApiException<Dropbox.Api.Files.UploadError) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    string szMessage = (ex.ErrorResponse.IsPath && ex.ErrorResponse.AsPath != null && ex.ErrorResponse.AsPath.Value.Reason.IsInsufficientSpace) ? Resources.LocalizedText.DropboxErrorOutOfSpace : ex.Message;
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, szMessage, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                }
-                                catch (Dropbox.Api.AuthException ex)
-                                {
-                                    // De-register dropbox.
-                                    pf.DropboxAccessToken = string.Empty;
-                                    pf.FCommit();
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (AuthException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, Resources.LocalizedText.DropboxErrorDeAuthorized), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                }
-                                catch (Dropbox.Api.BadInputException ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (BadInputException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
-                                }
-                                catch (Dropbox.Api.HttpException ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (HttpException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                }
-                                catch (Dropbox.Api.AccessException ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (AccessException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                }
-                                catch (Dropbox.Api.DropboxException ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (Base dropbox exception) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                }
-                                catch (UnauthorizedAccessException ex)
-                                {
-                                    // De-register dropbox.
-                                    pf.DropboxAccessToken = string.Empty;
-                                    pf.FCommit();
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (UnauthorizedAccess) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, Resources.LocalizedText.DropboxErrorDeAuthorized), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                }
-                                catch (MyFlightbookException ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (MyFlightbookException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                }
-                                catch (System.IO.FileNotFoundException ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
-                                }
-                                catch (Exception ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n{3}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message, ex.StackTrace);
-                                    if (ex.InnerException != null)
-                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Inner exception: {0}\r\n{1}", ex.InnerException.Message, ex.InnerException.StackTrace);
-                                }
-                            }
-                            break;
-                        case StorageID.OneDrive:
-                            {
-                                try
-                                {
-                                    if (pf.OneDriveAccessToken == null)
-                                        throw new UnauthorizedAccessException();
+                        LogbookBackup lb = new LogbookBackup(pf);
 
-                                    Microsoft.OneDrive.Sdk.Item item = null;
-                                    OneDrive od = new OneDrive(pf.OneDriveAccessToken);
-                                    item = await lb.BackupToOneDrive(od);
-                                    sb.AppendFormat(CultureInfo.CurrentCulture, "OneDrive: user {0} ", pf.UserName);
-                                    sb.AppendFormat(CultureInfo.CurrentCulture, "Logbook backed up for user {0}...", pf.UserName);
-                                    System.Threading.Thread.Sleep(0);
-                                    item = await lb.BackupImagesToOneDrive(od, Branding.CurrentBrand);
-                                    System.Threading.Thread.Sleep(0);
-                                    sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
+                        switch (sid)
+                        {
+                            case StorageID.Dropbox:
+                                {
+                                    MFBDropbox.TokenStatus ts = await new MFBDropbox().ValidateDropboxToken(pf, true, true);
+                                    if (ts == MFBDropbox.TokenStatus.None)
+                                        continue;
 
-                                    // if we are here we were successful, so save the updated refresh token
-                                    if (String.Compare(pf.OneDriveAccessToken.RefreshToken, od.AuthState.RefreshToken, StringComparison.Ordinal) != 0)
+                                    try
                                     {
-                                        pf.OneDriveAccessToken.RefreshToken = od.AuthState.RefreshToken;
+                                        Dropbox.Api.Files.FileMetadata result = null;
+                                        result = await lb.BackupToDropbox(Branding.CurrentBrand);
+                                        sb.AppendFormat(CultureInfo.CurrentCulture, "Dropbox: user {0} ", pf.UserName);
+                                        if (ts == MFBDropbox.TokenStatus.oAuth1)
+                                            sb.Append("Token UPDATED from oauth1! ");
+                                        sb.AppendFormat(CultureInfo.CurrentCulture, "Logbook backed up for user {0}...", pf.UserName);
+                                        System.Threading.Thread.Sleep(0);
+                                        result = await lb.BackupImagesToDropbox(Branding.CurrentBrand);
+                                        System.Threading.Thread.Sleep(0);
+                                        sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
+                                    }
+                                    catch (Dropbox.Api.ApiException<Dropbox.Api.Files.UploadError> ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (Dropbox.Api.ApiException<Dropbox.Api.Files.UploadError) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        string szMessage = (ex.ErrorResponse.IsPath && ex.ErrorResponse.AsPath != null && ex.ErrorResponse.AsPath.Value.Reason.IsInsufficientSpace) ? Resources.LocalizedText.DropboxErrorOutOfSpace : ex.Message;
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, szMessage, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (Dropbox.Api.AuthException ex)
+                                    {
+                                        // De-register dropbox.
+                                        pf.DropboxAccessToken = string.Empty;
                                         pf.FCommit();
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (AuthException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, Resources.LocalizedText.DropboxErrorDeAuthorized), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (Dropbox.Api.BadInputException ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (BadInputException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
+                                    }
+                                    catch (Dropbox.Api.HttpException ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (HttpException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (Dropbox.Api.AccessException ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (AccessException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (Dropbox.Api.DropboxException ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (Base dropbox exception) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (UnauthorizedAccessException ex)
+                                    {
+                                        // De-register dropbox.
+                                        pf.DropboxAccessToken = string.Empty;
+                                        pf.FCommit();
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (UnauthorizedAccess) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, Resources.LocalizedText.DropboxErrorDeAuthorized), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (MyFlightbookException ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (MyFlightbookException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (System.IO.FileNotFoundException ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n{3}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message, ex.StackTrace);
+                                        if (ex.InnerException != null)
+                                            sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Inner exception: {0}\r\n{1}", ex.InnerException.Message, ex.InnerException.StackTrace);
                                     }
                                 }
-                                catch (Microsoft.OneDrive.Sdk.OneDriveException ex)
+                                break;
+                            case StorageID.OneDrive:
                                 {
-                                    string szMessage = OneDrive.MessageForException(ex);
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (OneDriveException) {0}: {1}\r\n\r\n", pf.UserName, szMessage + " " + ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.OneDriveFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.OneDriveFailure, pf.UserFullName, szMessage, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                }
-                                catch (MyFlightbookException ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (MyFlightbookException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.OneDriveFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.OneDriveFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                }
-                                catch (UnauthorizedAccessException ex)
-                                {
-                                    // De-register oneDrive.
-                                    pf.OneDriveAccessToken = null;
-                                    pf.FCommit();
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (UnauthorizedAccess) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.OneDriveFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.OneDriveFailure, pf.UserFullName, ex.Message, Resources.LocalizedText.DropboxErrorDeAuthorized), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                }
-                                catch (System.IO.FileNotFoundException ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
-                                }
-                                catch (Exception ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n{3}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message, ex.StackTrace);
-                                }
-                            }
-                            break;
-                        case StorageID.GoogleDrive:
-                            {
-                                try
-                                {
-                                    if (pf.GoogleDriveAccessToken == null)
-                                        throw new UnauthorizedAccessException();
+                                    try
+                                    {
+                                        if (pf.OneDriveAccessToken == null)
+                                            throw new UnauthorizedAccessException();
 
-                                    GoogleDrive gd = new GoogleDrive(pf.GoogleDriveAccessToken);
-                                    bool fRefreshed = await gd.RefreshAccessToken();
-
-                                    sb.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive: user {0} ", pf.UserName);
-                                    IReadOnlyDictionary<string, string> meta = await lb.BackupToGoogleDrive(gd, Branding.CurrentBrand);
-                                    if (meta != null)
+                                        Microsoft.OneDrive.Sdk.Item item = null;
+                                        OneDrive od = new OneDrive(pf.OneDriveAccessToken);
+                                        item = await lb.BackupToOneDrive(od);
+                                        sb.AppendFormat(CultureInfo.CurrentCulture, "OneDrive: user {0} ", pf.UserName);
                                         sb.AppendFormat(CultureInfo.CurrentCulture, "Logbook backed up for user {0}...", pf.UserName);
-                                    System.Threading.Thread.Sleep(0);
-                                    meta = await lb.BackupImagesToGoogleDrive(gd, Branding.CurrentBrand);
-                                    System.Threading.Thread.Sleep(0);
-                                    if (meta != null)
+                                        System.Threading.Thread.Sleep(0);
+                                        item = await lb.BackupImagesToOneDrive(od, Branding.CurrentBrand);
+                                        System.Threading.Thread.Sleep(0);
                                         sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
 
-                                    // if we are here we were successful, so save the updated refresh token
-                                    if (fRefreshed)
+                                        // if we are here we were successful, so save the updated refresh token
+                                        if (String.Compare(pf.OneDriveAccessToken.RefreshToken, od.AuthState.RefreshToken, StringComparison.Ordinal) != 0)
+                                        {
+                                            pf.OneDriveAccessToken.RefreshToken = od.AuthState.RefreshToken;
+                                            pf.FCommit();
+                                        }
+                                    }
+                                    catch (Microsoft.OneDrive.Sdk.OneDriveException ex)
+                                    {
+                                        string szMessage = OneDrive.MessageForException(ex);
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (OneDriveException) {0}: {1}\r\n\r\n", pf.UserName, szMessage + " " + ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.OneDriveFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.OneDriveFailure, pf.UserFullName, szMessage, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (MyFlightbookException ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (MyFlightbookException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.OneDriveFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.OneDriveFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (UnauthorizedAccessException ex)
+                                    {
+                                        // De-register oneDrive.
+                                        pf.OneDriveAccessToken = null;
                                         pf.FCommit();
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (UnauthorizedAccess) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.OneDriveFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.OneDriveFailure, pf.UserFullName, ex.Message, Resources.LocalizedText.DropboxErrorDeAuthorized), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (System.IO.FileNotFoundException ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n{3}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message, ex.StackTrace);
+                                    }
                                 }
-                                catch (MyFlightbookException ex)
+                                break;
+                            case StorageID.GoogleDrive:
                                 {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user (MyFlightbookException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.GoogleDriveFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.GoogleDriveFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    try
+                                    {
+                                        if (pf.GoogleDriveAccessToken == null)
+                                            throw new UnauthorizedAccessException();
+
+                                        GoogleDrive gd = new GoogleDrive(pf.GoogleDriveAccessToken);
+                                        bool fRefreshed = await gd.RefreshAccessToken();
+
+                                        sb.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive: user {0} ", pf.UserName);
+                                        IReadOnlyDictionary<string, string> meta = await lb.BackupToGoogleDrive(gd, Branding.CurrentBrand);
+                                        if (meta != null)
+                                            sb.AppendFormat(CultureInfo.CurrentCulture, "Logbook backed up for user {0}...", pf.UserName);
+                                        System.Threading.Thread.Sleep(0);
+                                        meta = await lb.BackupImagesToGoogleDrive(gd, Branding.CurrentBrand);
+                                        System.Threading.Thread.Sleep(0);
+                                        if (meta != null)
+                                            sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
+
+                                        // if we are here we were successful, so save the updated refresh token
+                                        if (fRefreshed)
+                                            pf.FCommit();
+                                    }
+                                    catch (MyFlightbookException ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user (MyFlightbookException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.GoogleDriveFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.GoogleDriveFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (UnauthorizedAccessException ex)
+                                    {
+                                        // De-register GoogleDrive.
+                                        pf.GoogleDriveAccessToken = null;
+                                        pf.FCommit();
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user (UnauthorizedAccess) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.GoogleDriveFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.GoogleDriveFailure, pf.UserFullName, ex.Message, Resources.LocalizedText.DropboxErrorDeAuthorized), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (System.IO.FileNotFoundException ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
+                                    }
                                 }
-                                catch (UnauthorizedAccessException ex)
-                                {
-                                    // De-register GoogleDrive.
-                                    pf.GoogleDriveAccessToken = null;
-                                    pf.FCommit();
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user (UnauthorizedAccess) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
-                                    util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.GoogleDriveFailureSubject, ActiveBrand),
-                                        Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.GoogleDriveFailure, pf.UserFullName, ex.Message, Resources.LocalizedText.DropboxErrorDeAuthorized), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                }
-                                catch (System.IO.FileNotFoundException ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
-                                }
-                                catch (Exception ex)
-                                {
-                                    sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
-                                }
-                            }
-                            break;
-                        case StorageID.iCloud:
-                            break;
-                        default:
-                            break;
+                                break;
+                            case StorageID.iCloud:
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string szError = String.Format(CultureInfo.CurrentCulture, "eg user={0}{1}\r\n\r\n{2}\r\n\r\n{3}", eg == null ? "NULL eg!" : eg.Username, (eg != null && eg.UserProfile == null) ? " NULL PROFILE" : string.Empty, sbFailures.ToString(), sb.ToString());
+                        util.NotifyAdminException("ERROR running nightly backup", new Exception(szError, ex));
                     }
                 }
             };
