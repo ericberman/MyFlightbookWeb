@@ -81,6 +81,10 @@ public partial class Member_FindFlights : System.Web.UI.Page
 
             lblDropBoxSuccess.Visible = true;
         }
+        catch (Dropbox.Api.ApiException<Dropbox.Api.Auth.TokenFromOAuth1Error> ex)
+        {
+            ShowDropboxError(ex.Message);
+        }
         catch (Dropbox.Api.AuthException ex)
         {
             ShowDropboxError(ex.Message);

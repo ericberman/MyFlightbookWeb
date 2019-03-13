@@ -239,12 +239,12 @@ namespace MyFlightbook.Subscriptions
                         {
                             case StorageID.Dropbox:
                                 {
-                                    MFBDropbox.TokenStatus ts = await new MFBDropbox().ValidateDropboxToken(pf, true, true);
-                                    if (ts == MFBDropbox.TokenStatus.None)
-                                        continue;
-
                                     try
                                     {
+                                        MFBDropbox.TokenStatus ts = await new MFBDropbox().ValidateDropboxToken(pf, true, true);
+                                        if (ts == MFBDropbox.TokenStatus.None)
+                                            continue;
+
                                         Dropbox.Api.Files.FileMetadata result = null;
                                         result = await lb.BackupToDropbox(Branding.CurrentBrand);
                                         sb.AppendFormat(CultureInfo.CurrentCulture, "Dropbox: user {0} ", pf.UserName);
@@ -262,6 +262,15 @@ namespace MyFlightbook.Subscriptions
                                         string szMessage = (ex.ErrorResponse.IsPath && ex.ErrorResponse.AsPath != null && ex.ErrorResponse.AsPath.Value.Reason.IsInsufficientSpace) ? Resources.LocalizedText.DropboxErrorOutOfSpace : ex.Message;
                                         util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
                                             Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, szMessage, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
+                                    }
+                                    catch (Dropbox.Api.ApiException<Dropbox.Api.Auth.TokenFromOAuth1Error> ex)
+                                    {
+                                        // De-register dropbox.
+                                        pf.DropboxAccessToken = string.Empty;
+                                        pf.FCommit();
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (TokenFromOAuth1Error, token removed) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.DropboxFailureSubject, ActiveBrand),
+                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.DropboxFailure, pf.UserFullName, ex.Message, Resources.LocalizedText.DropboxErrorDeAuthorized), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
                                     }
                                     catch (Dropbox.Api.AuthException ex)
                                     {
