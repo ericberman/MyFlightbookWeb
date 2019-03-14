@@ -1035,7 +1035,17 @@ namespace MyFlightbook.Telemetry
                         else if (fHasUTCOffset)
                             timestamp = DateTime.SpecifyKind(timestamp.AddMinutes(Convert.ToInt32(dr[KnownColumnNames.UTCOffSet], CultureInfo.InvariantCulture)), DateTimeKind.Utc);
                         else if (fHasTimeKind)
-                            timestamp = DateTime.SpecifyKind(timestamp, (DateTimeKind)dr[KnownColumnNames.TIMEKIND]);
+                        {
+                            DateTimeKind kind = DateTimeKind.Unspecified;
+                            if (!Enum.TryParse<DateTimeKind>(dr[KnownColumnNames.TIMEKIND].ToString(), out kind))
+                            {
+                                int intKind = 0;
+                                if (int.TryParse(dr[KnownColumnNames.TIMEKIND].ToString(), out intKind))
+                                    kind = (DateTimeKind)intKind;
+                            }
+                            if (kind != DateTimeKind.Unspecified)
+                                timestamp = DateTime.SpecifyKind(timestamp, kind);
+                        }
                     }
 
                     if (fHasSpeed)
