@@ -1,4 +1,5 @@
 ﻿using JouniHeikniemi.Tools.Text;
+using MyFlightbook.Telemetry;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -851,8 +852,9 @@ namespace MyFlightbook.ImportFlights
         /// <param name="szUser">The username for whom the import is being performed</param>
         /// <param name="rowHasError">Delegate called for a row that has an error.  Has the entry (error string indicates the error), the raw row data, and the index of the row</param>
         /// <param name="rowOK">Delegate called for a row that does not have an error.  Has the entry and the row index</param>
+        /// <param name="afo">If not null, contains the options for performing autofill on flights.</param>
         /// <returns>false for an error (look at "ErrorString" for information).</returns>
-        public bool FInitFromStream(Stream fileContent, string szUser, Action<LogbookEntry, int> rowOK, Action<LogbookEntry, string, int> rowHasError)
+        public bool FInitFromStream(Stream fileContent, string szUser, Action<LogbookEntry, int> rowOK, Action<LogbookEntry, string, int> rowHasError, AutoFillOptions afo)
         {
             using (CSVReader csvr = new CSVReader(fileContent))
             {
@@ -893,6 +895,12 @@ namespace MyFlightbook.ImportFlights
                         try
                         {
                             le = rr.FlightFromRow(le, rgszRow);
+
+                            if (afo != null && le.CrossCountry == 0.0M && le.Nighttime == 0.0M)
+                            {
+                                using (FlightData fd = new FlightData())
+                                    fd.AutoFill(le, afo);
+                            }
                             if (rowOK != null)
                                 rowOK(le, iRow);
                         }

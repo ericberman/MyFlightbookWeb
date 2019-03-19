@@ -64,6 +64,7 @@
                     <asp:FileUpload ID="fuPreview" runat="server" meta:resourcekey="fuPreviewResource1" 
                          />
                 </p>
+                <p><asp:CheckBox ID="ckAutofill" runat="server" Text="Try to autofill fields like night and cross-country, if not already provided." meta:resourcekey="ckAutofillResource1" /></p>
                 <div style="white-space:pre"><asp:Label ID="lblFileRequired" runat="server" Text="" CssClass="error" EnableViewState="false" meta:resourcekey="lblFileRequiredResource1"></asp:Label></div>
             </asp:WizardStep>
             <asp:WizardStep ID="wsMissingAircraft" runat="server" Title="3. Review missing aircraft" meta:resourcekey="wsMissingAircraftResource1"  >
@@ -197,7 +198,7 @@
                                             </div>
                                             <div><%# Eval("Comment") %></div>
                                             <div><asp:PlaceHolder ID="plcAdditional" runat="server"></asp:PlaceHolder></div>
-                                            <asp:Panel ID="pnlDiffs" runat="server" Visible="false" style="background-color:#eeeeee; border:1px solid darkgray; margin:3px;">
+                                            <asp:Panel ID="pnlDiffs" runat="server" Visible="False" style="background-color:#eeeeee; border:1px solid darkgray; margin:3px;">
                                                 <ul>
                                                     <asp:Repeater ID="rptDiffs" runat="server">
                                                         <ItemTemplate>

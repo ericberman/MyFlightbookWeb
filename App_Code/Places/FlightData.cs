@@ -18,7 +18,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2018 MyFlightbook LLC
+ * Copyright (c) 2010-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -287,6 +287,9 @@ namespace MyFlightbook.Telemetry
         #endregion
     }
 
+    /// <summary>
+    /// Container for options that can affect how autofill operates
+    /// </summary>
     public class AutoFillOptions
     {
         public enum AutoFillTotalOption { None, FlightTime, EngineTime, HobbsTime, BlockTime };
@@ -305,6 +308,12 @@ namespace MyFlightbook.Telemetry
         private const int LandingSpeedDifferentialLow = 10;
         private const int LandingSpeedDifferentialHigh = 15;
 
+        private const string keyCookieSpeed = "autoFillDefaultSpeed";
+        private const string keyCookieHeliport = "autoFillDefaultHeliport";
+        private const string keyCookieEstimateNight = "autoFillEstimateNight";
+        private const string keyCookieNightDef = "autoFillNightDefinition";
+        private const string keyCookieNightLandingDef = "autoFillNightLandingDef";
+
         #region Constructors
         public AutoFillOptions()
         {
@@ -318,7 +327,58 @@ namespace MyFlightbook.Telemetry
             LandingSpeed = DefaultLandingSpeedKts;
             AutoSynthesizePath = true;
         }
+
+        public AutoFillOptions(HttpCookieCollection cookies) : this()
+        {
+            if (cookies != null)
+            {
+                int defaultSpeed;
+                if (cookies[keyCookieSpeed] == null || !int.TryParse(cookies[keyCookieSpeed].Value, out defaultSpeed))
+                    defaultSpeed = AutoFillOptions.DefaultTakeoffSpeed;
+                TakeOffSpeed = defaultSpeed;
+                LandingSpeed = AutoFillOptions.BestLandingSpeedForTakeoffSpeed((int) TakeOffSpeed);
+
+                bool includeHeliports;
+                if (cookies[keyCookieHeliport] == null || !bool.TryParse(cookies[keyCookieHeliport].Value, out includeHeliports))
+                    includeHeliports = false;
+                IncludeHeliports = includeHeliports;
+
+                bool estimateNight = true;
+                if (cookies[keyCookieEstimateNight] == null || !bool.TryParse(cookies[keyCookieEstimateNight].Value, out estimateNight))
+                    estimateNight = true;
+                AutoSynthesizePath = estimateNight;
+
+                AutoFillOptions.NightCritera nightCritera = AutoFillOptions.NightCritera.EndOfCivilTwilight;
+                if (cookies[keyCookieNightDef] == null || !Enum.TryParse<AutoFillOptions.NightCritera>(cookies[keyCookieNightDef].Value, out nightCritera))
+                    nightCritera = AutoFillOptions.NightCritera.EndOfCivilTwilight;
+                Night = nightCritera;
+
+                AutoFillOptions.NightLandingCriteria nightLandingCriteria = AutoFillOptions.NightLandingCriteria.SunsetPlus60;
+                if (cookies[keyCookieNightLandingDef] == null || !Enum.TryParse<AutoFillOptions.NightLandingCriteria>(cookies[keyCookieNightLandingDef].Value, out nightLandingCriteria))
+                    nightLandingCriteria = AutoFillOptions.NightLandingCriteria.SunsetPlus60;
+                NightLanding = nightLandingCriteria;
+            }
+        }
         #endregion
+
+        public void ToCookies(HttpCookieCollection cookies)
+        {
+            if (cookies == null)
+                throw new ArgumentNullException("cookies");
+
+            cookies[keyCookieSpeed].Value = TakeOffSpeed.ToString(CultureInfo.InvariantCulture);
+            cookies[keyCookieHeliport].Value = IncludeHeliports.ToString(CultureInfo.InvariantCulture);
+            cookies[keyCookieEstimateNight].Value = AutoSynthesizePath.ToString(CultureInfo.InvariantCulture);
+            cookies[keyCookieNightDef].Value = Night.ToString();
+            cookies[keyCookieNightLandingDef].Value = NightLanding.ToString();
+
+            cookies[keyCookieSpeed].Expires =
+                cookies[keyCookieHeliport].Expires =
+                cookies[keyCookieEstimateNight].Expires =
+                cookies[keyCookieNightDef].Expires =
+                cookies[keyCookieNightLandingDef].Expires =
+                    DateTime.Now.AddYears(10);
+        }
 
         #region Properties
         /// <summary>
@@ -1516,7 +1576,8 @@ namespace MyFlightbook.Telemetry
                 le.CrossCountry = 0;
                 le.TotalFlightTime = 0;
                 le.Nighttime = 0;
-                le.FlightStart = le.FlightEnd = DateTime.MinValue;
+                if (!fSyntheticPath)
+                    le.FlightStart = le.FlightEnd = DateTime.MinValue;
                 if (le.CustomProperties != null)
                     foreach (CustomFlightProperty cfp in le.CustomProperties)
                         if (cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff)

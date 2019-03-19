@@ -648,6 +648,9 @@ namespace MyFlightbook.Geography
 
             // We need to derive an average speed.  But no need to compute - just assume constant speed.
             double distance = llStart.DistanceFrom(llEnd);
+            if (distance < 1.0) // don't compute path for distance < 1nm
+                return lst;
+
             double speed = ConversionFactors.MetersPerSecondPerKnot * (distance / ts.TotalHours);
 
             lst.Add(new Position(llStart, 0, dtStart, speed));
