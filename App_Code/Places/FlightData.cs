@@ -1340,6 +1340,11 @@ namespace MyFlightbook.Telemetry
             /// The name of the column to use for zime zone offset
             /// </summary>
             public string TimeZoneColumnName { get; set; }
+
+            /// <summary>
+            /// True to use Position column, false to use Lat/Lon columns
+            /// </summary>
+            public bool HasPosition { get; set; }
             #endregion
 
             public AutoFillContext(AutoFillOptions opt, LogbookEntry le)
@@ -1351,6 +1356,7 @@ namespace MyFlightbook.Telemetry
                 HasSpeed = HasDateTimeKind = HasTimezone = false;
                 LastPositionReport = null;
                 TotalNight = 0.0;
+                HasPosition = false;
                 RouteSoFar = new StringBuilder();
                 DateColumn = SpeedColumn = TimeZoneColumnName = string.Empty;
             }
@@ -1480,7 +1486,7 @@ namespace MyFlightbook.Telemetry
                 bool fIsNightForLandings = false;
                 bool fIsNightForFlight = false;
 
-                LatLong ll = LatLong.TryParse(dr[KnownColumnNames.LAT], dr[KnownColumnNames.LON], CultureInfo.CurrentCulture);
+                LatLong ll = HasPosition ? (LatLong) dr[KnownColumnNames.POS] : LatLong.TryParse(dr[KnownColumnNames.LAT], dr[KnownColumnNames.LON], CultureInfo.CurrentCulture);
                 if (ll != null)
                 {
                     po = new Position(ll.Latitude, ll.Longitude, dtSample);
@@ -1588,6 +1594,7 @@ namespace MyFlightbook.Telemetry
                     SpeedColumn = HasSpeed ? KnownColumnNames.SPEED : ((m_dt.Columns[KnownColumnNames.DERIVEDSPEED] != null) ? KnownColumnNames.DERIVEDSPEED : string.Empty),
                     HasDateTimeKind = (m_dt.Columns[KnownColumnNames.TIMEKIND] != null),
                     HasTimezone = HasTimezone,
+                    HasPosition = (m_dt.Columns[KnownColumnNames.POS] != null),
                     TimeZoneColumnName = Data.TimeZoneHeader
                 };
 
