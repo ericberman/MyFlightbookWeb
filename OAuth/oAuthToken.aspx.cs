@@ -31,7 +31,9 @@ public partial class Member_oAuthToken : System.Web.UI.Page
                 Response.Clear();
                 Response.ContentType = "application/json; charset=utf-8";
                 Response.Write(wr.Body);
-                Response.End();
+                HttpContext.Current.Response.Flush(); // Sends all currently buffered output to the client.
+                HttpContext.Current.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
+                HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
             }
             else
             {
