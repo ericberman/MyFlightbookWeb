@@ -57,7 +57,7 @@
         <tr>
             <td style="vertical-align:top">Token URL</td>
             <td>
-                <asp:TextBox ID="txtTokenURL" runat="server" Width="400px">https://myflightbook.com/logbook/public/oAuthToken.aspx</asp:TextBox>
+                <asp:TextBox ID="txtTokenURL" runat="server" Width="400px">https://myflightbook.com/logbook/OAuth/oAuthToken.aspx</asp:TextBox>
                 <asp:RequiredFieldValidator ID="valReqToken" runat="server" ErrorMessage="A token endpoint (URL) is required" ControlToValidate="txtScope"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
                 <p><asp:Button ID="btnGetToken" runat="server" Text="Get Token" OnClick="btnGetToken_Click" /></p>
             </td>
@@ -73,9 +73,8 @@
             <td style="vertical-align:top"><div>Resource URL:</div>
                 <div class="fineprint">(minus verb, other data)</div></td>
             <td>
-                <div><asp:TextBox ID="txtResourceURL" runat="server" Width="400px">https://myflightbook.com/logbook/public/oAuthToken.aspx/</asp:TextBox>
+                <div><asp:TextBox ID="txtResourceURL" runat="server" Width="400px">https://myflightbook.com/logbook/OAuth/oAuthToken.aspx/</asp:TextBox>
                 <asp:RequiredFieldValidator ID="valReqResource" runat="server" ErrorMessage="The URL for resources is required." ControlToValidate="txtScope"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator></div>
-                <div><asp:CheckBox ID="ckDebug" runat="server" Checked="true" Text="Show errors instead of throwing exceptions" /> <span style="fineprint">(Only works with logbook/public/oAuthToken.aspx)</span></div>
             </td>
         </tr>
         <tr style="vertical-align:top">

@@ -11,7 +11,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -204,13 +204,12 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         {
             OAuthServiceID action = SelectedAction;
 
-            return String.Format(CultureInfo.InvariantCulture, "{0}{1}?access_token={2}&json={3}{4}{5}",
+            return String.Format(CultureInfo.InvariantCulture, "{0}{1}?access_token={2}&json={3}{4}",
                 action == OAuthServiceID.UploadImage ? txtImgUploadURL.Text : txtResourceURL.Text,
                 action == OAuthServiceID.none ? txtCustomVerb.Text : (action == OAuthServiceID.UploadImage ? string.Empty : action.ToString()),
                 lblToken.Text,
                 ckJSON.Checked ? "1" : "0",
-                String.IsNullOrEmpty(txtCallBack.Text) ? string.Empty : "&callback=" + txtCallBack.Text,
-                ckDebug.Checked ? "&dbg=1" : string.Empty);
+                String.IsNullOrEmpty(txtCallBack.Text) ? string.Empty : "&callback=" + txtCallBack.Text);
         }
     }
 
@@ -326,8 +325,8 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         ToSession();
         NameValueCollection postParams = new NameValueCollection()
         {
-                   { "locale", "en_US" },
-               };
+            { "locale", "en_US" },
+        };
 
         AddPostParams(postParams);
 
@@ -350,9 +349,13 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
             using (HttpClient httpClient = new HttpClient())
             {
+                HttpResponseMessage response = null;
+                string szError = string.Empty;
                 try
                 {
-                    HttpResponseMessage response = httpClient.PostAsync(new Uri(ResourcePath), form).Result;
+                    response = httpClient.PostAsync(new Uri(ResourcePath), form).Result;
+                    if (!response.IsSuccessStatusCode)
+                        szError = response.Content.ReadAsStringAsync().Result;
                     response.EnsureSuccessStatusCode();
 
                     Page.Response.Clear();
@@ -370,19 +373,19 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 }
                 catch (HttpUnhandledException ex)
                 {
-                    lblErr.Text = ex.Message;
+                    lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
                 }
                 catch (HttpException ex)
                 {
-                    lblErr.Text = ex.Message;
+                    lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
                 }
-                catch (System.Net.Http.HttpRequestException ex)
+                catch (HttpRequestException ex)
                 {
-                    lblErr.Text = ex.Message;
+                    lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
                 }
                 catch (System.Net.WebException ex)
                 {
-                    lblErr.Text = ex.Message;
+                    lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
                 }
             }
         }
