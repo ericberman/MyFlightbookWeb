@@ -96,7 +96,7 @@ These are tasks to do ONLY on the live site; there should be no need to set them
 * Set up a scheduled task to send nightly stats, delete drop-box cache, send nightly email.
 * Install root files (support directory) so that http://xxx/ will go straight to the default home page, and so that favicon.ico will work.  Need to edit the file and ensure that default.aspx is the top-level default doc.
 * Ensure reverse DNS is set up for host so that email can be received
-* Set up custom errors
+* Set up custom errors in web.config, but TURN THEM OFF in IIS so that oAuth will return errors.  IIS->(site)->Error Pages->Edit Feature Settings->Detailed Errors.
 * Ensure that 3306 (database) port is closed, ensure that firewall is otherwise appropriately configured
 
 ## Additional attributions and licenses
