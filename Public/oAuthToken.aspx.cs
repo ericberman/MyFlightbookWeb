@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -39,7 +39,9 @@ public partial class Member_oAuthToken : System.Web.UI.Page
                     Response.Clear();
                     Response.ContentType = service.ContentType;
                     service.Execute(Response.OutputStream);
-                    Response.End();
+                    HttpContext.Current.Response.Flush(); // Sends all currently buffered output to the client.
+                    HttpContext.Current.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
+                    HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
                 }
             }
         }
@@ -50,6 +52,7 @@ public partial class Member_oAuthToken : System.Web.UI.Page
             {
                 Response.Clear();
                 Response.ContentType = "text/plain";
+                Response.StatusCode = 500;
                 Response.ContentEncoding = System.Text.Encoding.UTF8;
                 Response.Write("Error: " + ex.Message + "\r\n");
                 Response.Write(ex.ToStringDescriptive() + "\r\n");
