@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.FlightCurrency;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using MyFlightbook.Airports;
-using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,7 +29,7 @@ namespace MyFlightbook.MilestoneProgress
         }
     }
 
-    #region EASA (JAA/JAR) Licensing - see http://www.jaa.nl/publications/section1.html for documents, specifically JAR-FCL 1 (aeroplane) and JAR-FCL 2 (Helicopter); now see https://www.easa.europa.eu/system/files/dfu/Part-FCL.pdf
+    #region EASA (JAA/JAR) Licensing - see http://www.jaa.nl/publications/section1.html for documents, specifically JAR-FCL 1 (aeroplane) and JAR-FCL 2 (Helicopter); now see https://www.easa.europa.eu/system/files/dfu/Part-FCL.pdf; now see http://skyrise.aero/wp-content/uploads/2016/07/Licensing-requirements-quick-reference-rev5-01-07-2015_publication_V04.pdf
     [Serializable]
     public abstract class JAAPrivatePilot : MilestoneProgress
     {
@@ -93,7 +93,7 @@ namespace MyFlightbook.MilestoneProgress
             if (!fIsMatch || !cfr.fIsCertifiedIFR)
                 return;
 
-            miTotal.AddTrainingEvent(Math.Min(cfr.Dual, cfr.fIsRealAircraft ? cfr.Total : cfr.GroundSim), JAASimSub, fIsSim);
+            miTotal.AddTrainingEvent(fIsSim ? cfr.GroundSim : cfr.Total, JAASimSub, fIsSim);
 
             // Everything below here must be done in a real aircraft
             if (!cfr.fIsRealAircraft)
