@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`users` 
+ADD COLUMN `CloudAhoyAccessToken` TEXT NULL AFTER `DefaultCloudDriveID`;
