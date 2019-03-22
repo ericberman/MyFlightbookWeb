@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 /******************************************************
@@ -15,8 +17,9 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
     /// A flight as represented in CloudAhoy
     /// </summary>
     [Serializable]
-    public enum CloudAhoyManuevers
+    public enum CloudAhoyManeuvers
     {
+        unknown,
         chandelle,
         land,
         lineupAndWait,
@@ -73,6 +76,8 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
     public class CloudAhoyCrewDescriptor
     {
         public int PIC { get; set; }
+        public int checkride { get; set; }
+        public int solo { get; set; }
         public int currentUser { get; set; }
         public string role { get; set; }
         public string name { get; set; }
@@ -111,6 +116,8 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
         public long time { get; set; }
         public string url { get; set; }
         public string userRole { get; set; }
+
+        private Dictionary<CustomPropertyType.KnownProperties, CustomFlightProperty> DictProps { get; set; }
         #endregion
 
         public CloudAhoyFlight()
@@ -120,6 +127,102 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
             crew = new CloudAhoyCrewDescriptor[0];
             maneuvers = new CloudAhoyManeuverDescriptor[0];
             cfiaScore = flightId = remarks = url = userRole = string.Empty;
+            DictProps = new Dictionary<CustomPropertyType.KnownProperties, CustomFlightProperty>();
+        }
+
+        private void PopulateCrewInfo(LogbookEntry le)
+        {
+            if (crew == null)
+                return;
+            foreach (CloudAhoyCrewDescriptor cd in crew)
+            {
+                if (cd.currentUser != 0)
+                {
+                    if (cd.PIC != 0)
+                        le.PIC = le.TotalFlightTime;
+
+                    CloudAhoyRoles role = CloudAhoyRoles.None;
+
+                    if (Enum.TryParse<CloudAhoyRoles>(cd.role.Replace(" ", string.Empty), out role))
+                    {
+                        switch (role)
+                        {
+                            case CloudAhoyRoles.Instructor:
+                                le.CFI = le.TotalFlightTime;
+                                break;
+                            case CloudAhoyRoles.Student:
+                                le.Dual = le.TotalFlightTime;
+                                break;
+                            case CloudAhoyRoles.SafetyPilot:
+                                DictProps[CustomPropertyType.KnownProperties.IDPropSafetyPilotTime] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSafetyPilotTime, le.TotalFlightTime);
+                                break;
+                            case CloudAhoyRoles.Copilot:
+                                le.SIC = le.TotalFlightTime;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    if (cd.solo != 0)
+                        DictProps[CustomPropertyType.KnownProperties.IDPropSolo] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, le.TotalFlightTime);
+                }
+            }
+        }
+
+        private void PopulateManeuvers(LogbookEntry le)
+        {
+            if (maneuvers == null)
+                return;
+
+            foreach (CloudAhoyManeuverDescriptor md in maneuvers)
+            {
+                CloudAhoyManeuvers maneuver = CloudAhoyManeuvers.unknown;
+                if (Enum.TryParse<CloudAhoyManeuvers>(md.code, out maneuver))
+                {
+                    switch (maneuver)
+                    {
+                        case CloudAhoyManeuvers.land:
+                            le.Landings++;
+                            break;
+                        case CloudAhoyManeuvers.stopAndGo:
+                            le.Landings++;
+                            le.FullStopLandings++;
+                            break;
+                        case CloudAhoyManeuvers.touchAndGo:
+                            le.Landings++;
+                            break;
+                        case CloudAhoyManeuvers.missedApproach:
+                            le.Approaches++;
+                            break;
+                        case CloudAhoyManeuvers.slowFlight:
+                            DictProps[CustomPropertyType.KnownProperties.IDPropManeuverSlowFlight] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropManeuverSlowFlight, true);
+                            break;
+                        case CloudAhoyManeuvers.chandelle:
+                            DictProps[CustomPropertyType.KnownProperties.IDPropManeuverChandelle] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropManeuverChandelle, true);
+                            break;
+                        case CloudAhoyManeuvers.sTurns:
+                            DictProps[CustomPropertyType.KnownProperties.IDPropManeuverSTurns] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropManeuverSTurns, true);
+                            break;
+                        case CloudAhoyManeuvers.stall:
+                            DictProps[CustomPropertyType.KnownProperties.IDPropPowerOffStall] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPowerOffStall, true);
+                            break;
+                        case CloudAhoyManeuvers.autoRotate:
+                            DictProps[CustomPropertyType.KnownProperties.IDPropAutoRotate] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAutoRotate, true);
+                            break;
+                        case CloudAhoyManeuvers.hover:
+                            DictProps[CustomPropertyType.KnownProperties.IDPropHover] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropHover, true);
+                            break;
+                        case CloudAhoyManeuvers.tow:
+                            if (!DictProps.ContainsKey(CustomPropertyType.KnownProperties.IDPropGliderTow))
+                                DictProps[CustomPropertyType.KnownProperties.IDPropGliderTow] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGliderTow, 0);
+                            DictProps[CustomPropertyType.KnownProperties.IDPropGliderTow].IntValue++;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         }
 
         public override LogbookEntry ToLogbookEntry()
@@ -132,6 +235,8 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
                 aircraft = new CloudAhoyAircraftDescriptor();
 
             DateTime dtStart = DateTimeOffset.FromUnixTimeSeconds(time).DateTime;
+
+            DictProps.Clear();
 
             LogbookEntry le = new LogbookEntry()
             {
@@ -146,42 +251,10 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
                 Date = dtStart.Date
             };
 
-            if (crew != null)
-            {
-                foreach (CloudAhoyCrewDescriptor cd in crew)
-                {
-                    if (cd.currentUser != 0)
-                    {
-                        if (cd.PIC != 0)
-                            le.PIC = le.TotalFlightTime;
+            PopulateCrewInfo(le);
+            PopulateManeuvers(le);
 
-                        CloudAhoyRoles role = CloudAhoyRoles.None;
-
-                        if (Enum.TryParse<CloudAhoyRoles>(cd.role, out role))
-                        {
-                            switch (role)
-                            {
-                                case CloudAhoyRoles.Instructor:
-                                    le.CFI = le.TotalFlightTime;
-                                    break;
-                                case CloudAhoyRoles.Student:
-                                    le.Dual = le.TotalFlightTime;
-                                    break;
-                                case CloudAhoyRoles.SafetyPilot:
-                                    // TODO: Add safety pilot property
-                                    break;
-                                case CloudAhoyRoles.Copilot:
-                                    le.SIC = le.TotalFlightTime;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // TODO: Add in maneuvers
+            le.CustomProperties = PropertiesWithoutNullOrDefault(DictProps.Values).ToArray();
 
             return le;
         }

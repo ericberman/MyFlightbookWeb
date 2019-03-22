@@ -12,7 +12,7 @@ using System.Web.Caching;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -39,7 +39,10 @@ namespace MyFlightbook
             // But as a practical matter renumbering/deletion doesn't happen and these are unlikely to expand beyond the single property.
             IDPropInvalid = -1,
             None = 0,
+            IDPropManeuverChandelle = 22,
             IDPropNVGoggleTime = 26,
+            IDPropPowerOffStall = 27,
+            IDPropSafetyPilotTime = 30,         // Not flagged as a known property
             IDPropWaterLandings = 36,           // Not flagged as a known property
             IDPropCheckridePPL = 39,
             IDPropCheckrideIFR = 40,
@@ -65,7 +68,9 @@ namespace MyFlightbook
             IDPropMilitaryCoPilottime = 110,
             IDPropHoistOperations = 118,
             IDPropPassengerNames = 120,         // Not flagged as a known property
+            IDPropManeuverSlowFlight = 121,     // Not flagged as a known property
             IDPropCheckrideRecreational = 131,
+            IDPropManeuverSTurns = 132,
             IDPropFlightNumber = 156,           // Not flagged as a known property
             IDPropGroundInstructionReceived = 158,
             IDPropCheckrideNewCatClassType = 161,
@@ -73,6 +78,7 @@ namespace MyFlightbook
             IDPropStudentName = 166,            // Not flagged as a known property - just used for copying to instructor's flight.
             IDPropCheckrideCFI = 176,
             IDPropCheckrideCFII = 177,
+            IDPropSafetyPilotName = 178,        // Not flagged as a known property
             IDPropNameOfPIC = 183,              // Note: this one isn't flagged as a known property, just used for logbookentrydisplay to print.
             IDPropNameOfSIC = 184,              // Not flagged as a known property
             IDPropDutiesOfPIC = 185,
@@ -81,6 +87,8 @@ namespace MyFlightbook
             IDPropCFIITime = 192,
             IDPropGroundInstructionGiven = 198,
             IDPropGliderTow = 202,              // Not flagged as a known property
+            IDPropHover = 204,
+            IDPropAutoRotate = 205,
             IDPropGliderTowedLaunch = 222,
             IDPropGliderMaxAltitude = 223,
             IDPropGliderReleaseAltitude = 224,
