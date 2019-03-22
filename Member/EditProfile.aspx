@@ -611,6 +611,29 @@
                             </asp:Panel>
                         </Content>
                     </cc1:AccordionPane>
+                    <cc1:AccordionPane ID="acpCloudAhoy" runat="server" Visible="false" meta:resourcekey="acpCloudAhoyResource1">
+                        <Header>
+                            <asp:Localize ID="locCloudAhoy" runat="server" Text="CloudAhoy" meta:resourcekey="locCloudAhoyResource1" />
+                        </Header>
+                        <Content>
+                            <table>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <asp:MultiView ID="mvCloudAhoy" runat="server">
+                                            <asp:View ID="vwAuthCloudAhoy" runat="server">
+                                                <p><asp:LinkButton ID="lnkAuthCloudAhoy" runat="server" OnClick="lnkAuthCloudAhoy_Click" meta:resourcekey="lnkAuthCloudAhoyResource1"></asp:LinkButton></p>
+                                            </asp:View>
+                                            <asp:View ID="vwDeAuthCloudAhoy" runat="server">
+                                                <p><asp:Localize ID="locCloudAhoyIsAuthed" runat="server" meta:resourcekey="locCloudAhoyIsAuthedResource1"></asp:Localize></p>
+                                                <p><asp:LinkButton ID="lnkDeAuthCloudAhoy" runat="server" OnClick="lnkDeAuthCloudAhoy_Click" meta:resourcekey="lnkDeAuthCloudAhoyResource1"></asp:LinkButton></p>
+                                            </asp:View>
+                                        </asp:MultiView>
+                                    </td>
+                                </tr>
+                            </table>
+                        </Content>
+                    </cc1:AccordionPane>
                     <cc1:AccordionPane ID="acpoAuthApps" runat="server" Visible="False" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpoAuthAppsResource1">
                         <Header>
                             <asp:Localize ID="locPrefOAuthApps" Text="Authorized Applications" runat="server" meta:resourcekey="locPrefOAuthAppsResource1"></asp:Localize>

@@ -1,6 +1,7 @@
 using MyFlightbook;
 using MyFlightbook.CloudStorage;
 using MyFlightbook.FlightCurrency;
+using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.Payments;
 using System;
 using System.Collections.Generic;
@@ -256,6 +257,11 @@ public partial class Member_EditProfile : System.Web.UI.Page
         lnkDeAuthOneDrive.Text = Branding.ReBrand(Resources.Profile.DeAuthOneDrive);
         locOneDriveIsAuthed.Text = Branding.ReBrand(Resources.Profile.OneDriveIsAuthed);
 
+        mvCloudAhoy.SetActiveView(m_pf.CloudAhoyToken == null ? vwAuthCloudAhoy : vwDeAuthCloudAhoy);
+        lnkAuthCloudAhoy.Text = Branding.ReBrand(Resources.Profile.AuthorizeCloudAhoy);
+        lnkDeAuthCloudAhoy.Text = Branding.ReBrand(Resources.Profile.DeAuthCloudAhoy);
+        locCloudAhoyIsAuthed.Text = Branding.ReBrand(Resources.Profile.CloudAhoyIsAuthed);
+
         rblCloudBackupAppendDate.SelectedValue = m_pf.OverwriteCloudBackup.ToString(CultureInfo.InvariantCulture);
     }
 
@@ -320,43 +326,36 @@ public partial class Member_EditProfile : System.Web.UI.Page
             acpLocalPrefs.Visible = String.IsNullOrEmpty(Request["nolocalprefs"]);
             int paneIndexOffset = acpLocalPrefs.Visible ? 0 : -1;
 
+            AjaxControlToolkit.AccordionPane acpTarget = null;
             switch (szPane)
             {
                 case "backup":
-                    for (int i = 0; i < accordianPrefs.Panes.Count; i++)
-                        if (accordianPrefs.Panes[i] == acpBackup)
-                        {
-                            accordianPrefs.SelectedIndex = i + paneIndexOffset;
-                            break;
-                        }
+                    acpTarget = acpBackup;
                     break;
                 case "social":
-                    for (int i = 0; i < accordianPrefs.Panes.Count; i++)
-                        if (accordianPrefs.Panes[i] == acpSocialNetworking)
-                        {
-                            accordianPrefs.SelectedIndex = i + paneIndexOffset;
-                            break;
-                        }
+                    acpTarget = acpSocialNetworking;
                     break;
                 case "deadlines":
-                    for (int i = 0; i < accordianPrefs.Panes.Count; i++)
-                        if (accordianPrefs.Panes[i] == acpCustomDeadlines)
-                        {
-                            accordianPrefs.SelectedIndex = i + paneIndexOffset;
-                            break;
-                        }
+                    acpTarget = acpCustomDeadlines;
                     break;
                 case "custcurrency":
-                    for (int i = 0; i < accordianPrefs.Panes.Count; i++)
-                        if (accordianPrefs.Panes[i] == acpCustomCurrencies)
-                        {
-                            accordianPrefs.SelectedIndex = i + paneIndexOffset;
-                            break;
-                        }
+                    acpTarget = acpCustomCurrencies;
+                    break;
+                case "cloudahoy":
+                    acpTarget = acpCloudAhoy;
                     break;
                 default:
                     break;
             }
+
+            acpCloudAhoy.Visible = (acpTarget == acpCloudAhoy);
+
+            for (int i = 0; i < accordianPrefs.Panes.Count; i++)
+                if (accordianPrefs.Panes[i] == acpTarget)
+                {
+                    accordianPrefs.SelectedIndex = i + paneIndexOffset;
+                    break;
+                }
         }
 
         InitDeadlinesAndCurrencies();
@@ -691,6 +690,20 @@ public partial class Member_EditProfile : System.Web.UI.Page
         m_pf.FCommit();
     }
     #endregion // Social Networking
+
+    #region CloudAhoy
+    protected void lnkAuthCloudAhoy_Click(object sender, EventArgs e)
+    {
+        new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)).Authorize(new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}/logbook/public/CloudAhoyRedir.aspx", Request.Url.Host)));
+    }
+
+    protected void lnkDeAuthCloudAhoy_Click(object sender, EventArgs e)
+    {
+        m_pf.CloudAhoyToken = null;
+        m_pf.FCommit();
+        mvCloudAhoy.SetActiveView(vwAuthCloudAhoy);
+    }
+    #endregion
 
     #region Property Blacklist
     protected void UpdateBlacklist(bool fForceDB = false)

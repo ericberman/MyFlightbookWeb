@@ -129,6 +129,9 @@
   <data name="acpCertificatesResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="acpCloudAhoyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="acpCurrencyResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
@@ -1005,6 +1008,12 @@
   <data name="ListItemResource9.Value" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="lnkAuthCloudAhoyResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkAuthCloudAhoyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lnkAuthDropboxResource1.Text" xml:space="preserve">
     <value />
   </data>
@@ -1021,6 +1030,12 @@
     <value>(See notes on currency computations for details)</value>
   </data>
   <data name="lnkCurrencyNotesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkDeAuthCloudAhoyResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkDeAuthCloudAhoyResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lnkDeAuthDropboxResource1.Text" xml:space="preserve">
@@ -1076,6 +1091,12 @@
   </data>
   <data name="locCertPromptResource1.Text" xml:space="preserve">
     <value>CFI (or CFII / GI / DPE / etc.) Certificate #</value>
+  </data>
+  <data name="locCloudAhoyIsAuthedResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locCloudAhoyResource1.Text" xml:space="preserve">
+    <value>CloudAhoy</value>
   </data>
   <data name="locCloudStorageResource1.Text" xml:space="preserve">
     <value>Cloud Backup</value>

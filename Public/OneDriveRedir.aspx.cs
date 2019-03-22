@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using MyFlightbook.CloudStorage;
+﻿using MyFlightbook.CloudStorage;
+using System;
+
+/******************************************************
+ * 
+ * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
 
 public partial class Public_OneDriveRedir : System.Web.UI.Page
 {

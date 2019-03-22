@@ -628,6 +628,11 @@ namespace MyFlightbook
         #endregion
 
         /// <summary>
+        /// oAuth token for CloudAhoy
+        /// </summary>
+        public IAuthorizationState CloudAhoyToken { get; set; }
+
+        /// <summary>
         /// User's email address
         /// </summary>
         public string Email { get; set; }
@@ -966,6 +971,8 @@ namespace MyFlightbook
                 DefaultCloudStorage = (StorageID)Convert.ToInt32(dr["DefaultCloudDriveID"], CultureInfo.InvariantCulture);
                 OverwriteCloudBackup = Convert.ToBoolean(dr["OverwriteDropbox"], CultureInfo.InvariantCulture);
 
+                CloudAhoyToken = AuthStateFromString((string)util.ReadNullableField(dr, "CloudAhoyAccessToken", null));
+
                 m_LastBFR = Convert.ToDateTime(util.ReadNullableField(dr, "LastBFR", DateTime.MinValue), CultureInfo.InvariantCulture);
                 LastMedical = Convert.ToDateTime(util.ReadNullableField(dr, "LastMedical", DateTime.MinValue), CultureInfo.InvariantCulture);
                 EnglishProficiencyExpiration = Convert.ToDateTime(util.ReadNullableField(dr, "EnglishProficiencyExpiration", DateTime.MinValue), CultureInfo.InvariantCulture);
@@ -1099,7 +1106,7 @@ namespace MyFlightbook
                 return false;
 
             szQ = @"UPDATE users SET Email=?Email, FirstName=?FirstName, LastName=?LastName, Address=?address, 
-            DropboxAccessToken=?dropboxAccesstoken, OnedriveAccessToken=?onedrive, GoogleDriveAccessToken=?gdrive, ICloudAccessToken=?icloud, DefaultCloudDriveID=?defcloud, OverwriteDropbox=?overwriteCloud,
+            DropboxAccessToken=?dropboxAccesstoken, OnedriveAccessToken=?onedrive, GoogleDriveAccessToken=?gdrive, ICloudAccessToken=?icloud, DefaultCloudDriveID=?defcloud, OverwriteDropbox=?overwriteCloud, CloudAhoyAccessToken=?cloudAhoy,
             LastBFR = ?LastBFR, LastMedical=?LastMedical, MonthsToMedical=?MonthsToMedical, IsInstructor=?IsInstructor, UsesSIC=?UsesSIC, UsesHHMM=?UsesHHMM, UsesUTCDates=?useUTCDates, License=?license, CertificateNumber=?cert, CFIExpiration=?cfiExp, 
             CurrencyFlags=?currencyFlags, ShowTimes=?showTimes, EnglishProficiencyExpiration=?engProfExpiration, EmailSubscriptions=?subscriptions, LastEmail=?lastemail, AchievementStatus=?achievementstatus, PropertyBlackList=?blacklist
             WHERE PKID = ?PKID";
@@ -1119,6 +1126,7 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("icloud", ICloudDriveAccessToken == null ? null : JsonConvert.SerializeObject(ICloudDriveAccessToken));
                     comm.Parameters.AddWithValue("defcloud", (int)DefaultCloudStorage);
                     comm.Parameters.AddWithValue("overwriteCloud", OverwriteCloudBackup ? 1 : 0);
+                    comm.Parameters.AddWithValue("cloudAhoy", CloudAhoyToken == null ? null : JsonConvert.SerializeObject(CloudAhoyToken));
                     comm.Parameters.AddWithValue("LastBFR", m_LastBFR);
                     comm.Parameters.AddWithValue("LastMedical", LastMedical);
                     comm.Parameters.AddWithValue("MonthsToMedical", MonthsToMedical);

@@ -515,4 +515,13 @@
   <data name="ProfileDeleteFlightsCompleted" xml:space="preserve">
     <value>Your flights have been deleted.</value>
   </data>
+  <data name="AuthorizeCloudAhoy" xml:space="preserve">
+    <value>Authorize %APP_NAME% to work with CloudAhoy</value>
+  </data>
+  <data name="CloudAhoyIsAuthed" xml:space="preserve">
+    <value>You have authorized %APP_NAME% to work with CloudAhoy</value>
+  </data>
+  <data name="DeAuthCloudAhoy" xml:space="preserve">
+    <value>Deauthorize %APP_NAME% on CloudAhoy</value>
+  </data>
 </root>
