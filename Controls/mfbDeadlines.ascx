@@ -69,8 +69,7 @@
                 </ul>
             </EmptyDataTemplate>
         </asp:GridView>
-        <div><asp:Label ID="lblAddDeadlines" runat="server" Font-Bold="True" meta:resourcekey="lblAddDeadlinesResource1"></asp:Label> <asp:Label ID="lblDeadlineDescription" runat="server" Text="[?]" CssClass="hint" meta:resourcekey="lblDeadlineDescriptionResource1"></asp:Label></div>
-        <cc1:HoverMenuExtender ID="hoverMenuDescription" runat="server" TargetControlID="lblDeadlineDescription" OffsetX="10" OffsetY="10" PopupControlID="pnlDeadlineDesc" BehaviorID="hoverMenuDescription" DynamicServicePath=""></cc1:HoverMenuExtender>
+        <div><asp:Label ID="lblAddDeadlines" runat="server" Font-Bold="True" meta:resourcekey="lblAddDeadlinesResource1"></asp:Label></div>
         <asp:Panel ID="pnlAddDeadlines" runat="server" DefaultButton="btnAddDeadline" style="overflow:hidden" meta:resourcekey="pnlAddDeadlinesResource1">
             <table style="border-spacing: 5px;">
                 <tr style="vertical-align:middle">
