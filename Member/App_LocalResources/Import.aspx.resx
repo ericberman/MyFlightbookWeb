@@ -598,4 +598,16 @@
   <data name="ckAutofillResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblCloudAhoyPromptResource1.Text" xml:space="preserve">
+    <value>Flown with CloudAhoy lately?</value>
+  </data>
+  <data name="lblCloudAhoyPromptResource1.Tooltip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkImportCloudAhoyResource1.Text" xml:space="preserve">
+    <value>Import recent flights from CloudAhoy</value>
+  </data>
+  <data name="lnkImportCloudAhoyResource1.Tooltip" xml:space="preserve">
+    <value />
+  </data>
 </root>

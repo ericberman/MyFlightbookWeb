@@ -1,5 +1,7 @@
 using MyFlightbook;
 using MyFlightbook.ImportFlights;
+using MyFlightbook.OAuth.CloudAhoy;
+using MyFlightbook.ImportFlights.CloudAhoy;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
@@ -93,10 +95,12 @@ public partial class Member_Import : System.Web.UI.Page
         wzImportFlights.PreRender += new EventHandler(wzImportFlights_PreRender);
 
         Title = (string)GetLocalResourceObject("PageResource1.Title");
-        UseHHMM = MyFlightbook.Profile.GetUser(User.Identity.Name).UsesHHMM;
+        Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+        UseHHMM = pf.UsesHHMM;
 
         if (!IsPostBack)
         {
+            pnlCloudAhoy.Visible = pf.CloudAhoyToken != null;
             List<FAQItem> lst = new List<FAQItem>(FAQItem.CachedFAQItems);
             FAQItem fi = lst.Find(f => f.idFAQ == 44);
             if (fi != null)
@@ -424,5 +428,21 @@ public partial class Member_Import : System.Web.UI.Page
     {
         SetWizardStep(wsUpload);
         ((Control)sender).Visible = false;
+    }
+
+    protected async void lnkImportCloudAhoy_Click(object sender, EventArgs e)
+    {
+        Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+        CloudAhoyClient client = new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)) { AuthState = pf.CloudAhoyToken };
+        IEnumerable<CloudAhoyFlight> rgcaf = await client.GetFlights(User.Identity.Name);
+
+        foreach (CloudAhoyFlight caf in rgcaf)
+        {
+            PendingFlight pendingflight = caf.ToLogbookEntry() as PendingFlight;
+            if (pendingflight != null)
+                pendingflight.Commit();
+        }
+
+        Response.Redirect("~/Member/ReviewPendingFlights.aspx");
     }
 }

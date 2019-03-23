@@ -43,9 +43,10 @@ namespace MyFlightbook.OAuth.CloudAhoy
         /// <summary>
         /// Retrieves flights from cloudahoy
         /// </summary>
+        /// <param name="szUserName">User for whome the flights are being retrieved</param>
         /// <exception cref="HttpRequestException"></exception>
         /// <returns></returns>
-        public async Task<IEnumerable<CloudAhoyFlight>> GetFlights()
+        public async Task<IEnumerable<CloudAhoyFlight>> GetFlights(string szUserName)
         {
             HttpResponseMessage response = null;
 
@@ -60,7 +61,11 @@ namespace MyFlightbook.OAuth.CloudAhoy
                     response = await httpClient.GetAsync(FlightsEndpoint);
                     szResult = response.Content.ReadAsStringAsync().Result;
                     response.EnsureSuccessStatusCode();
-                    return JsonConvert.DeserializeObject<CloudAhoyFlight[]>(szResult, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
+                    CloudAhoyFlight[] rgFlights = JsonConvert.DeserializeObject<CloudAhoyFlight[]>(szResult, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
+                    if (szUserName != null)
+                        foreach (CloudAhoyFlight caf in rgFlights)
+                            caf.UserName = szUserName;
+                    return rgFlights;
                 }
                 catch (HttpRequestException)
                 {

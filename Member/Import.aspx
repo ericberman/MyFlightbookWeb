@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Import.aspx.cs" Inherits="Member_Import" Title="Import Logbook" culture="auto" meta:resourcekey="PageResource1"  %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Import.aspx.cs" Inherits="Member_Import" Title="Import Logbook" culture="auto" meta:resourcekey="PageResource1" Async="true" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbImportAircraft.ascx" tagname="mfbImportAircraft" tagprefix="uc1" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
@@ -32,6 +32,10 @@
                     <asp:Label ID="lblNewDirectImport" runat="server" Text="<%$ Resources:LocalizedText, HeaderDownloadIsNew %>" Font-Bold="true" meta:resourcekey="lblNewDirectImportResource1"></asp:Label>
                     <asp:Label ID="lblDirectImport" runat="server" Text="If your data is from FOREFLIGHT, ZULULOG, LOGTEN PRO, or ELOGSITE…you should be able to simply export your data in <a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'>CSV</a> format from that program and import it directly here." meta:resourcekey="lblDirectImportResource1"></asp:Label>
                 </p>
+                <asp:Panel ID="pnlCloudAhoy" runat="server" Visible="false">
+                    <p><asp:Label ID="lblCloudAhoyPrompt" runat="server" Text="Flown with CloudAhoy lately?" meta:resourcekey="lblCloudAhoyPromptResource1"></asp:Label>
+                        <asp:LinkButton ID="lnkImportCloudAhoy" runat="server" Text="Import recent flights from CloudAhoy" meta:resourcekey="lnkImportCloudAhoyResource1" OnClick="lnkImportCloudAhoy_Click" /></p>
+                </asp:Panel>
                 <p>
                     <asp:Localize ID="locStep1DescSpreadsheet" runat="server" Text="Otherwise, you must first create a table of your flights in a spreadsheet such as Excel and save it in <a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'>CSV</a> (spreadsheet) format.  The first row of the table must be headers that identify which column is which, with one flight per row on the rows that follow." meta:resourcekey="locStep1DescSpreadsheetResource1"></asp:Localize>
                 </p>

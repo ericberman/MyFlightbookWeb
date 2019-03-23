@@ -118,6 +118,9 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
         public string userRole { get; set; }
 
         private Dictionary<CustomPropertyType.KnownProperties, CustomFlightProperty> DictProps { get; set; }
+
+        public UserAircraft AircraftForUser { get; set; }
+        public string UserName { get; set; }
         #endregion
 
         public CloudAhoyFlight()
@@ -127,7 +130,11 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
             crew = new CloudAhoyCrewDescriptor[0];
             maneuvers = new CloudAhoyManeuverDescriptor[0];
             cfiaScore = flightId = remarks = url = userRole = string.Empty;
+
             DictProps = new Dictionary<CustomPropertyType.KnownProperties, CustomFlightProperty>();
+
+            UserName = null;
+            AircraftForUser = null;
         }
 
         private void PopulateCrewInfo(LogbookEntry le)
@@ -238,13 +245,13 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
 
             DictProps.Clear();
 
-            LogbookEntry le = new LogbookEntry()
+            PendingFlight le = new PendingFlight()
             {
                 FlightID = LogbookEntry.idFlightNew,
                 TailNumDisplay = aircraft.registration,
                 ModelDisplay = aircraft.model,
                 Route = sb.ToString().Trim(),
-                Comment = String.IsNullOrEmpty(url) ? remarks : String.Format(CultureInfo.CurrentCulture, "{0} ({1})", remarks, url),
+                Comment = (String.IsNullOrEmpty(url) ? remarks : String.Format(CultureInfo.CurrentCulture, "{0} ({1})", remarks, url)).Trim(),
                 TotalFlightTime = duration / 3600.0M,
                 EngineStart = dtStart,
                 EngineEnd = dtStart.AddSeconds(duration),
@@ -255,6 +262,18 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
             PopulateManeuvers(le);
 
             le.CustomProperties = PropertiesWithoutNullOrDefault(DictProps.Values).ToArray();
+
+            if (!string.IsNullOrEmpty(flightId))
+                le.PendingID = flightId;
+
+            if (!String.IsNullOrEmpty(UserName))
+            {
+                le.User = UserName;
+                UserAircraft ua = AircraftForUser ?? new UserAircraft(UserName);
+                Aircraft ac = ua.GetUserAircraftByTail(le.TailNumDisplay);
+                if (ac != null)
+                    le.AircraftID = ac.AircraftID;
+            }
 
             return le;
         }

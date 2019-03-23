@@ -184,6 +184,15 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         mfbDate.Focus();
     }
 
+    public void SetPendingFlight(PendingFlight pendingFlight)
+    {
+        if (pendingFlight == null)
+            throw new ArgumentNullException("pendingFlight");
+        SetUpNewOrEdit(LogbookEntry.idFlightNew);
+        hdnPendingID.Value = pendingFlight.PendingID;
+        InitFormFromLogbookEntry(pendingFlight);
+    }
+
     private void AutoExpandLandings(LogbookEntry le)
     {
         cpeLandingDetails.Collapsed = !(le.NightLandings + le.FullStopLandings > 0 ||
@@ -457,7 +466,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
     /// <returns></returns>
     protected LogbookEntry InitLogbookEntryFromForm()
     {
-        LogbookEntry le = new LogbookEntry();
+        LogbookEntry le = (String.IsNullOrEmpty(hdnPendingID.Value) ? new LogbookEntry() : new PendingFlight(hdnPendingID.Value));
         le.FlightID = FlightID;
         le.User = String.IsNullOrEmpty(FlightUser) ? Page.User.Identity.Name : FlightUser;
 

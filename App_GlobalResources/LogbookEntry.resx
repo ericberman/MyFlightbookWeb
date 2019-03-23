@@ -960,4 +960,13 @@
   <data name="ImportFlightsWithErrors" xml:space="preserve">
     <value>{0} flight(s) had errors</value>
   </data>
+  <data name="ReviewPendingFlightsHeader" xml:space="preserve">
+    <value>Review Pending Flights</value>
+  </data>
+  <data name="ReviewPendingFlightsNoFlights" xml:space="preserve">
+    <value>No flights are awaiting review.</value>
+  </data>
+  <data name="ReviewPendingFlightsPrompt" xml:space="preserve">
+    <value>Any flights that have not yet occured, or which need to be edited before adding to your logbook, are shown here.</value>
+  </data>
 </root>

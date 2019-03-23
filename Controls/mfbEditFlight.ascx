@@ -324,6 +324,7 @@
         </p>
     </asp:Panel>
     <asp:HiddenField ID="hdnItem" runat="server" Value="-1" />
+    <asp:HiddenField ID="hdnPendingID" runat="server" Value="" />
     <asp:Panel ID="pnlSubmit" runat="server" CssClass="fullblock" 
         meta:resourcekey="pnlSubmitResource1">
         <div style="text-align:center;">
