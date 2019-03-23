@@ -1,7 +1,7 @@
 using MyFlightbook;
 using MyFlightbook.ImportFlights;
-using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.ImportFlights.CloudAhoy;
+using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;

@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 /******************************************************
  * 
@@ -25,6 +24,20 @@ namespace MyFlightbook
         /// The ID of the flight in the PENDING table.  This can be 
         /// </summary>
         public string PendingID { get; set; }
+
+        // Null this out to avoid pointless JSON bloat
+        public override string SendFlightLink
+        {
+            get { return null; }
+            set { }
+        }
+
+        // Null this out to avoid pointless JSON bloat
+        public override string SocialMediaLink
+        {
+            get { return null; }
+            set { }
+        }
         #endregion
 
         #region Constructors
@@ -48,18 +61,6 @@ namespace MyFlightbook
             // Populating an object doesn't fully flesh out a custom property with its type
             foreach (CustomFlightProperty cfp in this.CustomProperties)
                 cfp.InitPropertyType(new CustomPropertyType[] { CustomPropertyType.GetCustomPropertyType(cfp.PropTypeID) });
-        }
-
-        public override string SendFlightLink
-        {
-            get { return null; }
-            set { }
-        }
-
-        public override string SocialMediaLink
-        {
-            get { return null; }
-            set { }
         }
         #endregion
 

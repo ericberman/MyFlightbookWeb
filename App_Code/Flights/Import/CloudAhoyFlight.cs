@@ -13,9 +13,7 @@ using System.Text;
 
 namespace MyFlightbook.ImportFlights.CloudAhoy
 {
-    /// <summary>
-    /// A flight as represented in CloudAhoy
-    /// </summary>
+    #region components of a cloudahoy flight
     [Serializable]
     public enum CloudAhoyManeuvers
     {
@@ -101,7 +99,11 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
             maneuverId = url = code = label = string.Empty;
         }
     }
+    #endregion
 
+    /// <summary>
+    /// A flight as represented in CloudAhoy
+    /// </summary>
     public class CloudAhoyFlight : ExternalFormat
     {
         #region Properties
@@ -119,10 +121,10 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
 
         private Dictionary<CustomPropertyType.KnownProperties, CustomFlightProperty> DictProps { get; set; }
 
-        public UserAircraft AircraftForUser { get; set; }
         public string UserName { get; set; }
         #endregion
 
+        #region Constructors
         public CloudAhoyFlight()
         {
             aircraft = new CloudAhoyAircraftDescriptor();
@@ -134,9 +136,15 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
             DictProps = new Dictionary<CustomPropertyType.KnownProperties, CustomFlightProperty>();
 
             UserName = null;
-            AircraftForUser = null;
         }
 
+        public CloudAhoyFlight(string szUser) : this()
+        {
+            UserName = szUser;
+        }
+        #endregion
+
+        #region Conversion to pending flight
         private void PopulateCrewInfo(LogbookEntry le)
         {
             if (crew == null)
@@ -269,7 +277,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
             if (!String.IsNullOrEmpty(UserName))
             {
                 le.User = UserName;
-                UserAircraft ua = AircraftForUser ?? new UserAircraft(UserName);
+                UserAircraft ua = new UserAircraft(UserName);
                 Aircraft ac = ua.GetUserAircraftByTail(le.TailNumDisplay);
                 if (ac != null)
                     le.AircraftID = ac.AircraftID;
@@ -277,5 +285,6 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
 
             return le;
         }
+        #endregion
     }
 }

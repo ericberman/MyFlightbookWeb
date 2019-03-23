@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="ReviewPendingFlights.aspx.cs" Inherits="Member_ReviewPendingFlights" culture="auto" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="ReviewPendingFlights.aspx.cs" Inherits="Member_ReviewPendingFlights" Culture="auto" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="~/Controls/mfbLogbook.ascx" TagPrefix="uc1" TagName="mfbLogbook" %>
 <%@ Register Src="~/Controls/mfbEditFlight.ascx" TagPrefix="uc1" TagName="mfbEditFlight" %>
@@ -8,10 +8,11 @@
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <asp:MultiView ID="mvPendingFlights" runat="server" ActiveViewIndex="0">
         <asp:View ID="vwList" runat="server">
-            <p><asp:Label ID="lblReviewPending" runat="server" Text="<%$ Resources: LogbookEntry,ReviewPendingFlightsPrompt %>"></asp:Label></p>
-            <asp:GridView ID="gvPendingFlights" runat="server" AutoGenerateColumns="false" CellPadding="3" DataKeyNames="PendingID" AllowSorting="True" 
+            <p>
+                <asp:Label ID="lblReviewPending" runat="server" Text="<%$ Resources: LogbookEntry,ReviewPendingFlightsPrompt %>"></asp:Label></p>
+            <asp:GridView ID="gvPendingFlights" runat="server" AutoGenerateColumns="false" CellPadding="3" DataKeyNames="PendingID" AllowSorting="True"
                 ShowHeader="true" ShowFooter="true" UseAccessibleHeader="true" Width="100%" GridLines="None"
-            Font-Size="8pt" AllowPaging="false" OnRowDataBound="gvPendingFlights_RowDataBound" OnSorting="gvPendingFlights_Sorting" OnRowCommand="gvPendingFlights_RowCommand">
+                Font-Size="8pt" AllowPaging="false" OnRowDataBound="gvPendingFlights_RowDataBound" OnSorting="gvPendingFlights_Sorting" OnRowCommand="gvPendingFlights_RowCommand">
                 <EmptyDataTemplate>
                     <p><%=Resources.LogbookEntry.ReviewPendingFlightsNoFlights %></p>
                 </EmptyDataTemplate>
@@ -22,7 +23,8 @@
                             <div>
                                 <asp:LinkButton ID="lnkEditFlight" Font-Bold="true" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger" CommandName="_Edit" CommandArgument='<%# Eval("PendingID") %>'></asp:LinkButton>
                                 <asp:Label Font-Bold="true" ID="lnkRoute" runat="server" Text='<%#: Eval("Route") %>'></asp:Label>
-                                <span runat="server" id="divComments" style="clear:left; white-space: pre-line;" dir="auto"><asp:Label ID="lblComments" runat="server" Text='<%# ApproachDescription.ReplaceApproaches(Eval("Comment").ToString().Linkify()) %>'></asp:Label></span>
+                                <span runat="server" id="divComments" style="clear: left; white-space: pre-line;" dir="auto">
+                                    <asp:Label ID="lblComments" runat="server" Text='<%# ApproachDescription.ReplaceApproaches(Eval("Comment").ToString().Linkify()) %>'></asp:Label></span>
                             </div>
                         </ItemTemplate>
                     </asp:TemplateField>
@@ -54,63 +56,63 @@
                             <%# LogbookEntryDisplay.LandingDisplayForFlight((LogbookEntry) Container.DataItem) %>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldXCountry %>" SortExpression="CrossCountry">
+                    <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldXCountry %>" SortExpression="CrossCountry">
                         <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
                         <ItemStyle HorizontalAlign="Right" />
                         <ItemTemplate>
                             <%# Eval("CrossCountry").FormatDecimal(Viewer.UsesHHMM)%>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldNight %>" SortExpression="Nighttime">
+                    <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldNight %>" SortExpression="Nighttime">
                         <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
                         <ItemStyle HorizontalAlign="Right" />
                         <ItemTemplate>
                             <%# Eval("Nighttime").FormatDecimal(Viewer.UsesHHMM)%>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldSimIMC %>" SortExpression="SimulatedIFR">
+                    <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldSimIMC %>" SortExpression="SimulatedIFR">
                         <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
                         <ItemStyle HorizontalAlign="Right" />
                         <ItemTemplate>
                             <%# Eval("SimulatedIFR").FormatDecimal(Viewer.UsesHHMM)%>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldIMC %>" SortExpression="IMC">
+                    <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldIMC %>" SortExpression="IMC">
                         <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
                         <ItemStyle HorizontalAlign="Right" />
                         <ItemTemplate>
                             <%# Eval("IMC").FormatDecimal(Viewer.UsesHHMM)%>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldGroundSim %>" SortExpression="GroundSim">
+                    <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldGroundSim %>" SortExpression="GroundSim">
                         <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
                         <ItemStyle HorizontalAlign="Right" />
                         <ItemTemplate>
                             <%# Eval("GroundSim").FormatDecimal(Viewer.UsesHHMM)%>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldDual %>" SortExpression="Dual">
+                    <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldDual %>" SortExpression="Dual">
                         <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
                         <ItemStyle HorizontalAlign="Right" />
                         <ItemTemplate>
                             <%# Eval("Dual").FormatDecimal(Viewer.UsesHHMM)%>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldCFI %>" SortExpression="CFI">
+                    <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldCFI %>" SortExpression="CFI">
                         <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
                         <ItemStyle HorizontalAlign="Right" />
                         <ItemTemplate>
                             <%# Eval("CFI").FormatDecimal(Viewer.UsesHHMM)%>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldSIC %>" SortExpression="SIC">
+                    <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldSIC %>" SortExpression="SIC">
                         <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
                         <ItemStyle HorizontalAlign="Right" />
                         <ItemTemplate>
                             <%# Eval("SIC").FormatDecimal(Viewer.UsesHHMM)%>
                         </ItemTemplate>
-                    </asp:TemplateField>            
-                     <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldPIC %>" SortExpression="PIC">
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldPIC %>" SortExpression="PIC">
                         <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
                         <ItemStyle HorizontalAlign="Right" />
                         <ItemTemplate>
@@ -127,7 +129,7 @@
                     <asp:TemplateField>
                         <ItemTemplate>
                             <asp:LinkButton ID="lnkDelete" CommandName="_Delete" CommandArgument='<%# Eval("PendingID") %>' runat="server">
-                                <asp:Image ID="imgDelete" style="padding-right: 10px" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" runat="server" />
+                                <asp:Image ID="imgDelete" Style="padding-right: 10px" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" runat="server" />
                             </asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
@@ -139,6 +141,5 @@
         </asp:View>
     </asp:MultiView>
 </asp:Content>
-<asp:content id="ContentMain" contentplaceholderid="cpMain" runat="Server">
-    
-</asp:content>
+<asp:Content ID="ContentMain" ContentPlaceHolderID="cpMain" runat="Server">
+</asp:Content>
