@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -792,9 +792,6 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 if (!String.IsNullOrEmpty(TextRestriction))
                     fq.GeneralText = TextRestriction;
 
-                if (PropertyRestriction != null && PropertyRestriction.Count() > 0)
-                    fq.PropertyTypes = CustomPropertyType.GetCustomPropertyTypes(PropertyRestriction).ToArray();
-
                 CustomPropertyType.KnownProperties prop = CustomPropertyType.KnownProperties.IDPropInvalid;
                 List<CustomPropertyType> lstprops = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes());
                 switch (EventType)
@@ -888,6 +885,17 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 }
                 if (prop != CustomPropertyType.KnownProperties.IDPropInvalid)
                     fq.PropertyTypes = lstprops.FindAll(cpt => cpt.PropTypeID == (int)prop).ToArray();
+
+                if (PropertyRestriction != null && PropertyRestriction.Count() > 0)
+                {
+                    // Merge additional properties with any "intrinsic" properties from the type of custom currency above.
+                    HashSet<CustomPropertyType> hs = new HashSet<CustomPropertyType>(fq.PropertyTypes ?? new CustomPropertyType[0]);
+
+                    foreach (int i in PropertyRestriction)
+                        hs.Add(CustomPropertyType.GetCustomPropertyType(i));
+
+                    fq.PropertyTypes = hs.ToArray();
+                }
 
                 return fq;
             }
