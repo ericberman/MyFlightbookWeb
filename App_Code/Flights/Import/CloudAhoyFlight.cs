@@ -198,8 +198,6 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
                     switch (maneuver)
                     {
                         case CloudAhoyManeuvers.land:
-                            le.Landings++;
-                            break;
                         case CloudAhoyManeuvers.stopAndGo:
                             le.Landings++;
                             le.FullStopLandings++;
