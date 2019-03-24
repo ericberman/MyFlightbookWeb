@@ -1,13 +1,13 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.FlightCurrency;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using MyFlightbook.Airports;
-using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -421,7 +421,11 @@ namespace MyFlightbook.MilestoneProgress
                 l.Add(miMinXCCategory);
                 l.Add(miMinXCCategoryNight);
                 l.Add(miMinTestPrep);
-                if (miMinSoloCategory.Progress >= miMinSoloSubCategory.Progress)
+
+                bool fSoloMet = miMinSoloCategory.IsSatisfied && miMinSoloXC.IsSatisfied && miMinSoloNight.IsSatisfied && miMinSoloNightTO.IsSatisfied && miMinSoloNightLandings.IsSatisfied;
+                bool fSubSoloMet = miMinSoloSubCategory.IsSatisfied && miMinSoloSubXC.IsSatisfied && miMinSoloSubNight.IsSatisfied && miMinSoloSubNightTO.IsSatisfied && miMinSoloSubNightLandings.IsSatisfied;
+
+                if (fSoloMet || (!fSubSoloMet && miMinSoloCategory.Progress >= miMinSoloSubCategory.Progress))
                 {
                     l.Add(miMinSoloCategory);
                     l.Add(miMinSoloXC);
