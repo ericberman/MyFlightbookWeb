@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2016 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -162,7 +162,8 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
 
     protected void UpdateRowsForCatClass(CategoryClass.CatClassID idCatClass)
     {
-        divTMG.Visible = (idCatClass == CategoryClass.CatClassID.Glider);
+        bool fIsGlider = idCatClass == CategoryClass.CatClassID.Glider;
+        divTMG.Visible = fIsGlider;
         divTailwheel.Visible = CategoryClass.IsAirplane(idCatClass) && !CategoryClass.IsSeaClass(idCatClass);
         divMultiHeli.Visible = (idCatClass == CategoryClass.CatClassID.Helicopter);
 
@@ -170,7 +171,7 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         rowEngineType.Visible = hasEngine;
         pnlHighPerfBlock.Visible = ckConstantProp.Enabled = ckComplex.Enabled = hasEngine;
 
-        divComplex.Style["display"] = hasEngine ? "inline-block" : "none";
+        divComplex.Style["display"] = hasEngine || fIsGlider ? "inline-block" : "none";
         if (!hasEngine)
         {
             ckComplex.Checked = ckConstantProp.Checked = ckCowlFlaps.Checked = ckRetract.Checked = false;
