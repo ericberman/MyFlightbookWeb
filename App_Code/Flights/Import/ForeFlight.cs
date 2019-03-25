@@ -11,7 +11,7 @@ using JouniHeikniemi.Tools.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2018 MyFlightbook LLC
+ * Copyright (c) 2017-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -31,7 +31,7 @@ namespace MyFlightbook.ImportFlights
     public class ForeFlight : ExternalFormat
     {
         private static Regex rLatLon = new Regex("(\\d{0,2}[.,]\\d*)\\D{0,2}°?([NS])/(\\d{0,3}[.,]\\d*)\\D{0,2}°?([EW])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static Regex regApproach = new Regex("\\b(?<count>\\d{1,2});(?<desc>[-a-zA-Z/]{3,}?(?: \\(GPS\\))?(?:-[abcxyzABCXYZ])?);(?:RWY)?(?<rwy>[0-3]?\\d[LRC]?);(?<airport>[a-zA-Z0-9]{3,4})[ ;]?(?<remark>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static Regex regApproach = new Regex("\\b(?<count>\\d{1,2});(?<desc>[-a-zA-Z/]{3,}?(?: \\(GPS\\))?(?:-[abcxyzABCXYZ])?)[; ](?:RWY)?(?<rwy>[0-3]?\\d[LRC]?)(?:/[^;]*)?[ ;](?<airport>[a-zA-Z0-9]{3,4})[ ;]?(?<remark>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         #region Properties
         public DateTime Date { get; set; }
@@ -161,10 +161,9 @@ namespace MyFlightbook.ImportFlights
                         foreach (Match m in mc)
                         {
                             ApproachDescription ad = new ApproachDescription(m);
-                            sbApproaches.Append(ad.ToCanonicalString() + Resources.LocalizedText.LocalizedSpace + m.Groups["remark"].Value + Resources.LocalizedText.LocalizedSpace);
+                            sbApproaches.Append(ad.ToCanonicalString() + Resources.LocalizedText.LocalizedSpace + m.Groups["remark"].Value.Replace(";", " ").Trim() + Resources.LocalizedText.LocalizedSpace);
                             cApproaches += ad.Count;
                         }
-                        
                     }
                     catch (FormatException) { }
                 }
