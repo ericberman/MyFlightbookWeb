@@ -1,10 +1,10 @@
 using MySql.Data.MySqlClient;
 using System;
-using System.Web;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.Runtime.Serialization;
+using System.Web;
 
 /******************************************************
  * 
@@ -943,7 +943,7 @@ namespace MyFlightbook.FlightCurrency
             // Glider IFR currency is it's own thing too.  Because ASEL can enable glider IFR currency, we need to
             // only show IFR currency if you have ever also been current for landings in a glider.
             CurrencyExaminer fcGlider = dictFlightCurrency.ContainsKey(szCategoryGlider) ? (CurrencyExaminer)dictFlightCurrency[szCategoryGlider] : null;
-            if (fcGlider != null && fcGlider.HasBeenCurrent && gliderIFR.HasBeenCurrent && fcGlider.ExpirationDate.CompareTo(dtCutoff) > 0)
+            if (fcGlider != null && fcGlider.HasBeenCurrent && gliderIFR.HasBeenCurrent && fcGlider.ExpirationDate.CompareTo(dtCutoff) > 0 && gliderIFR.ExpirationDate.CompareTo(dtCutoff) > 0)
             {
                 string szPrivilege = gliderIFR.Privilege;
                 arcs.Add(new CurrencyStatusItem(Resources.Currency.IFRGlider + (szPrivilege.Length > 0 ? " - " + szPrivilege : string.Empty), gliderIFR.StatusDisplay, gliderIFR.CurrentState, gliderIFR.DiscrepancyString));
@@ -954,7 +954,7 @@ namespace MyFlightbook.FlightCurrency
             lstNV.AddRange(nvCurrencyHeli.CurrencyEvents);
             lstNV.ForEach((ce) =>
             {
-                if (ce.HasBeenCurrent)
+                if (ce.HasBeenCurrent && ce.ExpirationDate.CompareTo(dtCutoff) > 0)
                     arcs.Add(new CurrencyStatusItem(ce.DisplayName, ce.StatusDisplay, ce.CurrentState, ce.DiscrepancyString));
             });
 
@@ -975,7 +975,7 @@ namespace MyFlightbook.FlightCurrency
                 FlightCurrency fcInType = dictPICProficiencyChecks[szKey];
                 FlightCurrency fcComputed = fcInType.AND(fcPICPCInAny);
 
-                if (fcComputed.HasBeenCurrent)
+                if (fcComputed.HasBeenCurrent && fcComputed.ExpirationDate.CompareTo(dtCutoff) > 0)
                     arcs.Add(new CurrencyStatusItem(String.Format(Resources.Currency.NextPICProficiencyCheck, szKey), fcComputed.StatusDisplay, fcComputed.CurrentState, string.Empty));
             }
 
@@ -991,13 +991,13 @@ namespace MyFlightbook.FlightCurrency
 
             // UAS's
             fcUAS.Finalize(totalTime, picTime);
-            if (fcUAS.HasBeenCurrent)
+            if (fcUAS.HasBeenCurrent && fcUAS.ExpirationDate.CompareTo(dtCutoff) > 0)
                 arcs.Add(new CurrencyStatusItem(fcUAS.DisplayName, fcUAS.StatusDisplay, fcUAS.CurrentState, fcUAS.DiscrepancyString));
 
             // Finally add in any custom currencies
             foreach (CustomCurrency cc in rgCustomCurrency)
             {
-                if (cc.HasBeenCurrent)
+                if (cc.HasBeenCurrent && cc.ExpirationDate.CompareTo(dtCutoff) > 0)
                     arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString) { Query = cc.Query, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.CustomCurrency });
             }
 
