@@ -192,7 +192,7 @@ namespace MyFlightbook.ImportFlights
             if (AircraftID.StartsWith(CountryCodePrefix.szSimPrefix, StringComparison.CurrentCultureIgnoreCase))
                 AircraftID = CountryCodePrefix.szSimPrefix;
 
-            string szModel = Regex.Replace(((String.IsNullOrEmpty(Model) ? TypeCode : Model) ?? string.Empty), " *[([]?SIM[)\\]]?$", String.Empty, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
+            string szModel = Regex.Replace(((String.IsNullOrEmpty(TypeCode) ? Model : TypeCode) ?? string.Empty), " *[([]?SIM[)\\]]?$", String.Empty, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
 
             LogbookEntry le = new LogbookEntry()
             {
