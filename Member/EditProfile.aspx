@@ -558,13 +558,13 @@
                                         </td>
                                     </tr>
                                     <tr valign="top" runat="server" id="rowGDrive">
-                                        <td style="width:180px" runat="server">
+                                        <td style="width:180px">
                                             <!-- This comes from https://developers.google.com/drive/v2/web/branding, per their guidelines -->
                                             <asp:Image ID="GDriveLogo" 
                                                 ImageUrl="~/images/google-drive-logo-lockup.png" runat="server" 
                                                 AlternateText="GoogleDrive" Width="180px" />
                                         </td>
-                                        <td runat="server">
+                                        <td>
                                             <asp:MultiView ID="mvGDriveState" runat="server">
                                                 <asp:View ID="vwAuthGDrive" runat="server">
                                                     <p><asp:LinkButton ID="lnkAuthorizeGDrive" runat="server" OnClick="lnkAuthorizeGDrive_Click"></asp:LinkButton></p>
@@ -578,13 +578,13 @@
                                         </td>
                                     </tr>
                                     <tr valign="top" runat="server" id="rowOneDrive">
-                                        <td style="width:180px" runat="server">
+                                        <td style="width:180px">
                                             <!-- This comes from https://msdn.microsoft.com/en-us/onedrive/dn673556.aspx, per their guidelines -->
                                             <asp:Image ID="Image3" 
                                                 ImageUrl="~/images/OneDrive_rgb_Blue2728.png" runat="server" 
                                                 AlternateText="OneDrive" Width="180px" />
                                         </td>
-                                        <td runat="server">
+                                        <td>
                                             <asp:MultiView ID="mvOneDriveState" runat="server">
                                                 <asp:View ID="vwAuthOneDrive" runat="server">
                                                     <p><asp:LinkButton ID="lnkAuthorizeOneDrive" runat="server" OnClick="lnkAuthorizeOneDrive_Click"></asp:LinkButton></p>
@@ -618,7 +618,7 @@
                         <Content>
                             <table>
                                 <tr>
-                                    <td></td>
+                                    <td><asp:Image ID="imgCloudAhoy" runat="server" ImageUrl="~/images/CloudAhoyTrans.png" AlternateText="CloudAhoy" ToolTip="CloudAhoy" /></td>
                                     <td>
                                         <asp:MultiView ID="mvCloudAhoy" runat="server">
                                             <asp:View ID="vwAuthCloudAhoy" runat="server">
