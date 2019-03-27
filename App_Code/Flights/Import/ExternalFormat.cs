@@ -222,7 +222,7 @@ namespace MyFlightbook.ImportFlights
 
     public abstract class ExternalFormatImporter
     {
-        private static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new CrewTracImporter(), new RosterBusterImporter() };
+        private static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new CrewTracImporter(), new RosterBusterImporter(), new CrewLog() };
 
         /// <summary>
         /// Initializes an enumerable of the external format from a datatable.

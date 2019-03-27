@@ -71,6 +71,9 @@ namespace MyFlightbook
             IDPropManeuverSlowFlight = 121,     // Not flagged as a known property
             IDPropCheckrideRecreational = 131,
             IDPropManeuverSTurns = 132,
+            IDPropPart121 = 153,
+            IDPropPart135 = 154,
+            IDPropPart91 = 155,
             IDPropFlightNumber = 156,           // Not flagged as a known property
             IDPropGroundInstructionReceived = 158,
             IDPropCheckrideNewCatClassType = 161,
@@ -120,6 +123,7 @@ namespace MyFlightbook
             IDPropUASKnowledgeTest10773 = 527,
             IDPropUASTrainingCourse10774 = 528,
             IDPropPilotFlyingTime = 529,        // Not flagged as a known property
+            IDPropPilotMonitoringTime = 530,
             IDPropInstrumentInstructionTime = 542,
             IDPropCoPilotTime = 546,
             IDPropPilotMonitoring = 560,
