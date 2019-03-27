@@ -997,7 +997,7 @@ namespace MyFlightbook.FlightCurrency
             // Finally add in any custom currencies
             foreach (CustomCurrency cc in rgCustomCurrency)
             {
-                if (cc.HasBeenCurrent && cc.ExpirationDate.CompareTo(dtCutoff) > 0)
+                if (cc.HasBeenCurrent && (!cc.ExpirationDate.HasValue() || cc.ExpirationDate.CompareTo(dtCutoff) > 0))
                     arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString) { Query = cc.Query, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.CustomCurrency });
             }
 
