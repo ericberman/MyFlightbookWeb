@@ -319,7 +319,7 @@
     <value />
   </data>
   <data name="lblDirectImportResource1.Text" xml:space="preserve">
-    <value>If your data is from FOREFLIGHT, ZULULOG, LOGTEN PRO, or ELOGSITE…you should be able to simply export your data in &lt;a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'&gt;CSV&lt;/a&gt; format from that program and import it directly here</value>
+    <value>If your data is from FOREFLIGHT, ZULULOG, LOGTEN PRO, CREWLOG, CREWTRAC, or ELOGSITE…you should be able to simply export your data in &lt;a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'&gt;CSV&lt;/a&gt; format from that program and import it directly here.</value>
   </data>
   <data name="lblDirectImportResource1.ToolTip" xml:space="preserve">
     <value />

@@ -40,7 +40,7 @@
                 </asp:Panel>
                 <p>
                     <asp:Label ID="lblNewDirectImport" runat="server" Text="<%$ Resources:LocalizedText, HeaderDownloadIsNew %>" Font-Bold="true" meta:resourcekey="lblNewDirectImportResource1"></asp:Label>
-                    <asp:Label ID="lblDirectImport" runat="server" Text="If your data is from FOREFLIGHT, ZULULOG, LOGTEN PRO, or ELOGSITE…you should be able to simply export your data in <a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'>CSV</a> format from that program and import it directly here." meta:resourcekey="lblDirectImportResource1"></asp:Label>
+                    <asp:Label ID="lblDirectImport" runat="server" Text="If your data is from FOREFLIGHT, ZULULOG, LOGTEN PRO, CREWLOG, CREWTRAC, or ELOGSITE…you should be able to simply export your data in <a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'>CSV</a> format from that program and import it directly here." meta:resourcekey="lblDirectImportResource1"></asp:Label>
                 </p>
                 <p>
                     <asp:Localize ID="locStep1DescSpreadsheet" runat="server" Text="Otherwise, you must first create a table of your flights in a spreadsheet such as Excel and save it in <a href='http://en.wikipedia.org/wiki/Comma-separated_values' target='_blank\'>CSV</a> (spreadsheet) format.  The first row of the table must be headers that identify which column is which, with one flight per row on the rows that follow." meta:resourcekey="locStep1DescSpreadsheetResource1"></asp:Localize>
