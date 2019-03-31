@@ -168,7 +168,7 @@
     <value>Simulators/FTDs/ATDs/etc. MUST begin with the prefix '{0}'</value>
   </data>
   <data name="errNoMakeModel" xml:space="preserve">
-    <value>No model specified for aircraft</value>
+    <value>No model found for aircraft</value>
   </data>
   <data name="errNoTail" xml:space="preserve">
     <value>No tail number supplied.</value>

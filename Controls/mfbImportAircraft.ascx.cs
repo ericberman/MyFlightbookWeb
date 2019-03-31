@@ -1,7 +1,7 @@
 ﻿using MyFlightbook;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Web.UI;
@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2018 MyFlightbook LLC
+ * Copyright (c) 2016-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,9 +17,6 @@ using System.Web.UI.WebControls;
 public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
 {
     #region Properties
-
-    private const string szsessMakesKey = "sessMakesKey";
-    private const string szsessAllManufacturers = "sessManufacturers";
     private const string szvsMatchRowsKey = "vsMatchRowsKey";
     private const string szvsModelMapping = "vsModelMappingDict";
 
@@ -32,28 +29,6 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
             gvAircraftCandidates.DataSource = value;
             gvAircraftCandidates.DataBind();
         }
-    }
-
-    private Collection<MakeModel> AllMakes
-    {
-        get
-        {
-            if (Session[szsessMakesKey] == null)
-                Session[szsessMakesKey] = MakeModel.MatchingMakes();
-            return (Collection<MakeModel>)Session[szsessMakesKey];
-        }
-        set { Session[szsessMakesKey] = value; }
-    }
-
-    private IEnumerable<Manufacturer> AllManufacturers
-    {
-        get
-        {
-            if (Session[szsessAllManufacturers] == null)
-                Session[szsessAllManufacturers] = Manufacturer.AllManufacturers();
-            return (IEnumerable<Manufacturer>)Session[szsessAllManufacturers];
-        }
-        set { Session[szsessAllManufacturers] = value; }
     }
 
     public  IDictionary<string, MakeModel> ModelMapping
@@ -72,15 +47,13 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
     {
         Page.ClientScript.RegisterClientScriptInclude("jquery1", ResolveClientUrl("https://code.jquery.com/jquery-1.10.1.min.js"));
         Page.ClientScript.RegisterClientScriptInclude("jquery2", ResolveClientUrl("~/public/jquery.json-2.4.min.js"));
-        Page.ClientScript.RegisterClientScriptInclude("MFBAircraftImportScript", ResolveClientUrl("~/Public/ImpAircraft.js"));
-        if (!IsPostBack)
-        {
-        }
-        else
+        Page.ClientScript.RegisterClientScriptInclude("MFBAircraftImportScript", ResolveClientUrl("~/Public/ImpAircraft.js?v=1"));
+        if (IsPostBack)
         {
             // fix up the state of any aircraft that might have been added asynchronously (i.e., via web service call, in which case the viewstate is out of date)
             if (CandidatesForImport != null)
                 AircraftImportMatchRow.RefreshRecentlyAddedAircraftForUser(CandidatesForImport, Page.User.Identity.Name);
+            UpdateGrid();
         }
     }
 
@@ -88,80 +61,6 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
     {
         gvAircraftCandidates.DataSource = CandidatesForImport;
         gvAircraftCandidates.DataBind();
-    }
-
-    public void Refresh()
-    {
-        AllMakes = null;
-        AllManufacturers = null;
-    }
-
-    protected void cmbManufacturer_DataChanged(object sender, EventArgs e)
-    {
-        GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
-        AircraftImportMatchRow mr = MatchRowFromGridviewRow(grow);
-        DropDownList cmbModel = (DropDownList)grow.FindControl("cmbModel");
-        int idMan = Convert.ToInt32(((DropDownList)sender).SelectedValue, CultureInfo.InvariantCulture);
-        List<MakeModel> lst = ModelsForManufacturer(idMan);
-        mr.SpecifiedModel = lst[0];
-        mr.BestMatchAircraft.ModelID = lst[0].MakeModelID;
-        mr.BestMatchAircraft.ModelCommonName = lst[0].DisplayName;
-        mr.BestMatchAircraft.FixTailAndValidate();
-        UpdateGrid();
-    }
-
-    protected void cmbModel_DataChanged(object sender, EventArgs e)
-    {
-        GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
-        DropDownList cmbModel = (DropDownList)grow.FindControl("cmbModel");
-        DropDownList cmbInst = (DropDownList)grow.FindControl("cmbInstType");
-        AircraftImportMatchRow mr = MatchRowFromGridviewRow(grow);
-        mr.BestMatchAircraft.InstanceTypeID = Convert.ToInt32(cmbInst.SelectedValue, CultureInfo.InvariantCulture);
-        mr.BestMatchAircraft.InstanceTypeDescription = cmbInst.SelectedItem.Text;
-        mr.BestMatchAircraft.ModelID = Convert.ToInt32(cmbModel.SelectedValue, CultureInfo.InvariantCulture);
-        mr.SpecifiedModel = null;
-        foreach (MakeModel mm in AllMakes)
-        {
-            if (mm.MakeModelID == mr.BestMatchAircraft.ModelID)
-            {
-                mr.SpecifiedModel = mm;
-                break;
-            }
-        }
-        if (mr.SpecifiedModel == null)
-            mr.BestMatchAircraft.ModelID = MakeModel.UnknownModel;
-        else
-            mr.BestMatchAircraft.ModelCommonName = mr.SpecifiedModel.DisplayName;
-
-        mr.BestMatchAircraft.FixTailAndValidate();
-
-        UpdateGrid();
-    }
-
-    protected List<MakeModel> ModelsForManufacturer(int idMan)
-    {
-        List<MakeModel> lstModelsForManufacturer = new List<MakeModel>(AllMakes).FindAll(mm => mm.ManufacturerID == idMan);
-        lstModelsForManufacturer.Sort((m1, m2) => { return m1.ModelDisplayName.CompareTo(m2.ModelDisplayName); });
-        return lstModelsForManufacturer;
-    }
-
-    protected AircraftImportMatchRow MatchRowFromGridviewRow(GridViewRow grow)
-    {
-        HiddenField h = (HiddenField)grow.FindControl("hdnMatchRowID");
-        int id;
-        try
-        {
-            id = Convert.ToInt32(h.Value);
-        } catch (FormatException ex)
-        {
-            throw new FormatException(String.Format(CultureInfo.CurrentCulture, "invalid number in hdnMatchRowID: '{0}'", h.Value == null ? "(null)" : h.Value), ex);
-        }
-        return CandidatesForImport.FirstOrDefault<AircraftImportMatchRow>(mr => mr.ID == id);
-    }
-
-    protected void gvAircraftCandidates_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        UpdateGrid();
     }
 
     protected void gvAircraftCandidates_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -174,60 +73,55 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
             GridView gv = (GridView)sender;
             GridViewRow gvr = e.Row;
 
-            // Column 0: select or not
-            LinkButton lnkEdit = (LinkButton)gvr.FindControl("lnkEdit");
-            lnkEdit.Visible = mr.State == AircraftImportMatchRow.MatchState.UnMatched;
-            lnkEdit.CommandArgument = gvr.RowIndex.ToString(CultureInfo.InvariantCulture);
-
-            // Column 1: Aircraft tail.  Link to registration, if necessary
+            // Column 0: Aircraft tail.  Link to registration, if necessary
             HyperLink lnkFAA = (HyperLink)e.Row.FindControl("lnkFAA");
             lnkFAA.NavigateUrl = Aircraft.LinkForTailnumberRegistry(mr.TailNumber);
             ((Label)gvr.FindControl("lblGivenTail")).Visible = !(lnkFAA.Visible = !String.IsNullOrEmpty(lnkFAA.NavigateUrl));
             ((Label)gvr.FindControl("lblAircraftVersion")).Text = (mr.BestMatchAircraft != null && mr.BestMatchAircraft.Version > 0) ? Resources.Aircraft.ImportAlternateVersion : string.Empty;
 
-            // Column 2 - Best match
-            MultiView mvMatch = (MultiView)e.Row.FindControl("mvMatch");
-            mvMatch.ActiveViewIndex = 0;
-
+            // Column 1 - Best match
             DropDownList cmbInst = (DropDownList)e.Row.FindControl("cmbInstType");
-            DropDownList cmbModel = (DropDownList)e.Row.FindControl("cmbModel");
-            DropDownList cmbManufacturer = (DropDownList)e.Row.FindControl("cmbManufacturer");
-            if (e.Row.RowIndex == gv.SelectedIndex && mr.State == AircraftImportMatchRow.MatchState.UnMatched)
+
+            HiddenField hdnContext = (HiddenField)e.Row.FindControl("hdnContext");
+            if (mr.State == AircraftImportMatchRow.MatchState.UnMatched)
             {
+                Label lblInstType = (Label)e.Row.FindControl("lblType");
                 cmbInst.DataSource = AircraftInstance.GetInstanceTypes();
                 cmbInst.DataBind();
                 cmbInst.SelectedValue = mr.BestMatchAircraft.InstanceTypeID.ToString(CultureInfo.InvariantCulture);
 
-                cmbManufacturer.DataSource = AllManufacturers;
-                cmbManufacturer.DataBind();
-                int idMan = (mr.SpecifiedModel == null) ? Manufacturer.UnsavedID : mr.SpecifiedModel.ManufacturerID;
-                int idModel = (mr.SpecifiedModel == null) ? MakeModel.UnknownModel : mr.SpecifiedModel.MakeModelID;
-                cmbManufacturer.SelectedValue = idMan.ToString(CultureInfo.InvariantCulture);
-
-                cmbModel.DataSource = ModelsForManufacturer(idMan);
-                cmbModel.DataBind();
-                cmbModel.SelectedValue = idModel.ToString(CultureInfo.InvariantCulture);
-
-                mvMatch.ActiveViewIndex = 1;
-
-                e.Row.BackColor = System.Drawing.Color.FromArgb(0xCC, 0xCC, 0xCC);
-                e.Row.BorderColor = System.Drawing.Color.Black;
-                e.Row.BorderStyle = BorderStyle.Solid;
-                e.Row.BorderWidth = Unit.Pixel(1);
-            }
-            else
-            {
-                cmbInst.Items.Clear();
-                cmbModel.Items.Clear();
-                cmbManufacturer.Items.Clear();
+                cmbInst.Attributes["onchange"] = String.Format(CultureInfo.InvariantCulture, "javascript:updateInstanceDesc('{0}', '{1}', '{2}');", cmbInst.ClientID, lblInstType.ClientID, hdnContext.ClientID);
             }
 
-            // column 3 - "Add this" and status
+            // column 2 - "Add this" and status
             Button btnAddThis = (Button)gvr.FindControl("btnAddThis");
             Label lProblem = (Label)e.Row.FindControl("lblACErr");
             Label lblAllGood = (Label)e.Row.FindControl("lblAllGood");
             lblAllGood.Style["display"] = (mr.State == AircraftImportMatchRow.MatchState.JustAdded) ? "block" : "none";
             ((Label)gvr.FindControl("lblAlreadyInProfile")).Visible = mr.State == AircraftImportMatchRow.MatchState.MatchedInProfile;
+
+            Panel pnlStaticMake = (Panel)e.Row.FindControl("pnlStaticMake");
+            Panel pnlEditMake = (Panel)e.Row.FindControl("pnlEditMake");
+            Image imgEdit = (Image)e.Row.FindControl("imgEdit");
+            imgEdit.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:toggleModelEdit('{0}', '{1}');", pnlStaticMake.ClientID, pnlEditMake.ClientID);
+            TextBox textBox = (TextBox)e.Row.FindControl("txtSearch");
+
+            HiddenField hdnModel = (HiddenField)e.Row.FindControl("hdnSelectedModel");
+            Label lblModel = (Label)e.Row.FindControl("lblSelectedMake");
+            Dictionary<string, object> d = new Dictionary<string, object>() {
+                { "lblID", lblModel.ClientID },         // ID of the label to display the selected model
+                { "lblErr", lProblem.ClientID },        // ID of the label for displaying an error
+                { "lblAllGood", lblAllGood.ClientID },  // ID of the label for displaying success
+                { "mdlID", hdnModel.ClientID },         // ID of the hidden control with the selected model ID
+                { "cmbInstance", cmbInst.ClientID },    // ID of the drop-down with the instance type specified
+                { "progressID", popupAddingInProgress.BehaviorID }, // ID of the progress behavior ID
+                { "btnAdd", btnAddThis.ClientID },      // ID of the "Add this" button
+                { "pnlStaticMake", pnlStaticMake.ClientID },    // ID of the static view of the model/instance type to import
+                { "pnlEditMake", pnlEditMake.ClientID },    // ID of the edit view to import
+                { "matchRow", mr }                      // The match row with any additional context
+            };
+            AjaxControlToolkit.AutoCompleteExtender autoCompleteExtender = (AjaxControlToolkit.AutoCompleteExtender)e.Row.FindControl("autocompleteModel");
+            hdnContext.Value = autoCompleteExtender.ContextKey = JsonConvert.SerializeObject(d);
 
             switch (mr.State)
             {
@@ -239,30 +133,37 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
                 case AircraftImportMatchRow.MatchState.MatchedExisting:
                     btnAddThis.Visible = true;
                     btnAddThis.Text = Resources.Aircraft.ImportExistingAircraft;
-                    btnAddThis.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "addExistingAircraft({0}, '{1}', '{2}', '{3}'); return false;", 
-                        mr.BestMatchAircraft.AircraftID, btnAddThis.ClientID, lblAllGood.ClientID, popupAddingInProgress.BehaviorID);
+                    btnAddThis.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "addExistingAircraft(JSON.parse(document.getElementById('{0}').value)); return false;", hdnContext.ClientID);
                     break;
                 case AircraftImportMatchRow.MatchState.UnMatched:
+                    imgEdit.Visible = true;
+                    e.Row.FindControl("pnlEditMake").Visible = true;
                     btnAddThis.Visible = true;
                     btnAddThis.Text = Resources.Aircraft.ImportAddNewAircraft;
-                    if (e.Row.RowIndex != gv.SelectedIndex && mr.State == AircraftImportMatchRow.MatchState.UnMatched && mr.BestMatchAircraft != null)
+                    hdnModel.Value = mr.BestMatchAircraft.ModelID.ToString(CultureInfo.InvariantCulture);
+                    if (mr.SuggestedModel == null || !String.IsNullOrEmpty(mr.BestMatchAircraft.ErrorString))
                     {
-                        // Bypass a postback if it is an error-free non-selected row.  This should avoid some of the viewstate errors we've been getting for click-click-click down the list of buttons
-                        btnAddThis.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "addNewAircraft('{0}', '{1}', {2}, '{3}', {4}, '{5}'); return false;",
-                            btnAddThis.ClientID,
-                            lblAllGood.ClientID,
-                            mr.BestMatchAircraft.ModelID,
-                            mr.BestMatchAircraft.TailNumber,
-                            mr.BestMatchAircraft.InstanceTypeID,
-                            popupAddingInProgress.BehaviorID);
+                        textBox.Text = mr.ModelGiven;
+                        pnlEditMake.Style["display"] = "block";
+                        pnlStaticMake.Style["display"] = "none";
+                        btnAddThis.Style["display"] = "none";
                     }
+                    else
+                    {
+                        textBox.Text = string.Empty;
+                        pnlEditMake.Style["display"] = "none";
+                        pnlStaticMake.Style["display"] = "block";
+                        btnAddThis.Style["display"] = "block";
+                    }
+
+                    btnAddThis.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "addNewAircraft(JSON.parse(document.getElementById('{0}').value)); return false;", hdnContext.ClientID);
                     break;
             }
 
             if (mr.BestMatchAircraft != null && mr.BestMatchAircraft.ErrorString.Length > 0)
             {
                 lProblem.Text = mr.BestMatchAircraft.ErrorString;
-                btnAddThis.Visible = false;
+                btnAddThis.Style["display"] = "none";
             }
             else
             {
@@ -271,8 +172,7 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
                 if (mr.State == AircraftImportMatchRow.MatchState.JustAdded)
                 {
                     lblAllGood.Style["display"] = "block";
-                    btnAddThis.Visible = false;
-                    lnkEdit.Visible = false; // disable the Edit button
+                    btnAddThis.Style["display"] = "none";
                 }
             }
         }
@@ -297,12 +197,7 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
                 mr.BestMatchAircraft.InstanceTypeDescription = AircraftInstance.GetInstanceTypes()[mr.BestMatchAircraft.InstanceTypeID - 1].DisplayName;
 
             mr.State = AircraftImportMatchRow.MatchState.JustAdded;
-            gvAircraftCandidates.SelectedIndex = -1; // don't select anything.
             UpdateGrid();
-        }
-        else if (e.CommandName.CompareOrdinalIgnoreCase("Select") == 0)
-        {
-            gvAircraftCandidates.SelectedIndex = idRow;
         }
     }
 }

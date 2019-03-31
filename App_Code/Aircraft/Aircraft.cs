@@ -1380,7 +1380,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         {
             if (IsAnonymous)
                 TailNumber = Aircraft.AnonymousTailnumberForModel(ModelID);
-            if (InstanceType != AircraftInstanceTypes.RealAircraft)
+            if (InstanceType != AircraftInstanceTypes.RealAircraft && TailNumber.StartsWith(CountryCodePrefix.szSimPrefix, StringComparison.CurrentCultureIgnoreCase))
                 TailNumber = Aircraft.SuggestSims(ModelID, InstanceType)[0].TailNumber;
 
             return IsValid(true);

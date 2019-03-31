@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -182,9 +182,6 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
     {
         if (mfbEditMake1.MakeID != -1)
         {
-            mfbImportAircraftExisting.Refresh();
-            mfbImportAircraftNew.Refresh();
-
             // refresh the list of make/models and select the newly added make
             UpdateGrid();
 

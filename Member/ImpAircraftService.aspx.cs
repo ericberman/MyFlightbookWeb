@@ -1,11 +1,14 @@
 ﻿using MyFlightbook;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Web;
 using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2017 MyFlightbook LLC
+ * Copyright (c) 2016-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -37,17 +40,55 @@ public partial class Member_ImpAircraftService : System.Web.UI.Page
             throw new MyFlightbookException("Unauthenticated call to add new aircraft");
 
         if (string.IsNullOrEmpty(szTail))
-            throw new ArgumentException("Invalid tail in AddNewAircraft: " + szTail);
+            throw new ArgumentException("Missing tail in AddNewAircraft");
 
         string szCurrentUser = HttpContext.Current.User.Identity.Name;
 
-        Aircraft ac = new Aircraft();
-        ac.TailNumber = szTail;
-        ac.ModelID = idModel;
-        ac.InstanceTypeID = instanceType;
-        ac.CommitForUser(szCurrentUser);
+        Aircraft ac = new Aircraft() { TailNumber = szTail, ModelID = idModel, InstanceTypeID = instanceType };
+
+        if (ac.FixTailAndValidate())
+            ac.CommitForUser(szCurrentUser);
 
         new UserAircraft(szCurrentUser).FAddAircraftForUser(ac);
+    }
+
+    [WebMethod(EnableSession = true)]
+    public static string ValidateAircraft(string szTail, int idModel, int instanceType)
+    {
+        if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            throw new MyFlightbookException("Unauthenticated call to ValidateAircraft");
+
+        if (string.IsNullOrEmpty(szTail))
+            throw new ArgumentException("Empty tail in ValidateAircraft");
+
+        Aircraft ac = new Aircraft() { TailNumber = szTail, ModelID = idModel, InstanceTypeID = instanceType };
+        ac.FixTailAndValidate();
+        return ac.ErrorString;
+    }
+
+    [WebMethod(EnableSession = true)]
+    public static string[] SuggestFullModelsWithTargets(string prefixText, int count, string contextKey)
+    {
+        if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            throw new MyFlightbookException("Unauthenticated call to add new aircraft");
+
+        if (String.IsNullOrEmpty(prefixText))
+            return new string[0];
+
+        Dictionary<string, object> dictContextIn = contextKey == null ? new Dictionary<string, object>() : JsonConvert.DeserializeObject<Dictionary<string, object>>(contextKey);
+
+        ModelQuery modelQuery = new ModelQuery() { FullText = prefixText.Replace("-", "*"), PreferModelNameMatch = true, Skip = 0, Limit = count };
+        List<string> lst = new List<string>();
+        foreach (MakeModel mm in MakeModel.MatchingMakes(modelQuery))
+        {
+            Dictionary<string, object> d = new Dictionary<string, object>(dictContextIn);
+            string modelID = mm.MakeModelID.ToString(CultureInfo.InvariantCulture);
+            string modelDisplay = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithDash, mm.ManufacturerDisplay, mm.ModelDisplayName);
+            d["modelID"] = modelID;
+            d["modelDisplay"] = modelDisplay;
+            lst.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(modelDisplay, JsonConvert.SerializeObject(d)));
+        }
+        return lst.ToArray();
     }
     #endregion
 

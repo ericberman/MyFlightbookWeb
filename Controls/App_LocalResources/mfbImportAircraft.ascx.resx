@@ -147,6 +147,12 @@
   <data name="imgProgressResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="imgSearchResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgSearchResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblACErrResource1.Text" xml:space="preserve">
     <value />
   </data>
@@ -154,7 +160,7 @@
     <value />
   </data>
   <data name="lblAddingAircraftResource1.Text" xml:space="preserve">
-    <value>Adding aircraft...</value>
+    <value>Working...</value>
   </data>
   <data name="lblAddingAircraftResource1.ToolTip" xml:space="preserve">
     <value />
@@ -216,6 +222,9 @@
   <data name="lblPopupPlaceholderResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblSelectedMakeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblTypeResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
@@ -235,6 +244,12 @@
     <value />
   </data>
   <data name="pnlAddingAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlSearchModelsResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlSearchModelsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="TemplateFieldResource1.AccessibleHeaderText" xml:space="preserve">
@@ -265,6 +280,12 @@
     <value />
   </data>
   <data name="TemplateFieldResource4.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtSearchResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtSearchResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
 </root>
