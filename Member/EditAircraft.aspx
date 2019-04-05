@@ -13,7 +13,7 @@
     <script type="text/javascript" src='<%= ResolveUrl("~/public/daypilot-all.min.js") %>'></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript" src='<%= ResolveUrl("~/public/jquery.json-2.4.min.js") %>'></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/mfbcalendar.js?v=2") %>'></script>
+    <script type="text/javascript" src='<%= ResolveUrl("~/public/mfbcalendar.js?v=3") %>'></script>
     <div class="noprint">
         <uc1:mfbEditAircraft id="MfbEditAircraft1" runat="server" OnAircraftUpdated="AircraftUpdated"></uc1:mfbEditAircraft>
     </div>

@@ -198,6 +198,7 @@
             // Fix up the user's display name
             e.data.text = base.addPrefix(e.data.text, szDisplay);
             base.dpCalendar.events.add(e);
+            base.refreshEvents();
         };
         params.onDelete = function (args, onSuccess) {
             args.preventDefault();
