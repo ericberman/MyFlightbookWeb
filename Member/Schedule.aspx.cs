@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.Script.Serialization;
-using System.Web.Services;
-using System.Globalization;
-using System.Threading;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Clubs;
 using MyFlightbook.Schedule;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Web;
+using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -107,7 +103,8 @@ public partial class Member_Schedule : System.Web.UI.Page
         {
             if (IsValidCaller(clubID))
             {
-                TimeZoneInfo tzi = Club.ClubWithID(clubID).TimeZone;
+                Club c = Club.ClubWithID(clubID);
+                TimeZoneInfo tzi = c.TimeZone;
                 ScheduledEvent scheduledevent = ScheduledEvent.AppointmentByID(id, tzi);
                 ScheduledEvent scheduledeventOrig = new ScheduledEvent();
 
@@ -120,7 +117,7 @@ public partial class Member_Schedule : System.Web.UI.Page
 
                     scheduledevent.StartUtc = ScheduledEvent.ToUTC(start, tzi);
                     scheduledevent.EndUtc = ScheduledEvent.ToUTC(end, tzi);
-                    scheduledevent.Body = text;
+                    scheduledevent.Body = (String.IsNullOrWhiteSpace(text) && c.PrependsScheduleWithOwnerName) ? MyFlightbook.Profile.GetUser(scheduledevent.OwningUser).UserFullName : text;
                     if (!String.IsNullOrEmpty(resource))
                         scheduledevent.ResourceID = resource;
                     if (!scheduledevent.FCommit())
