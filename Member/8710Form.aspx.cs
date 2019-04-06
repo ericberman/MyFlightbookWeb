@@ -221,7 +221,7 @@ public partial class Member_8710Form : System.Web.UI.Page
         List<string> lst = new List<string>();
         foreach (object value in values)
         {
-            if (values == null)
+            if (value == null || value == DBNull.Value)
                 continue;
 
             decimal d = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
