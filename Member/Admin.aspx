@@ -168,7 +168,7 @@
                             </tr>
                         </table>
                         <asp:Panel ID="pnlFindAircraft" runat="server" DefaultButton="btnFindAircraftByTail">
-                            Find aircraft by tail:
+                            Find aircraft by tail (use % as wildcard):
                             <asp:TextBox ID="txtTailToFind" runat="server"></asp:TextBox>
                             <asp:Button ID="btnFindAircraftByTail" runat="server" 
                                 onclick="btnFindAircraftByTail_Click" Text="Find" />

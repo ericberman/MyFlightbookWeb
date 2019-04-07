@@ -18,7 +18,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -732,7 +732,17 @@ public partial class Member_Admin : System.Web.UI.Page
         if (String.IsNullOrEmpty(txtTailToFind.Text))
             return;
 
-        gvFoundAircraft.DataSource = Aircraft.AircraftMatchingTail(txtTailToFind.Text);
+        string szTailToMatch = Regex.Replace(txtTailToFind.Text, "[^a-zA-Z0-9#%]", string.Empty);
+
+        DBHelper dbh = new DBHelper("SELECT * FROM aircraft WHERE REPLACE(UPPER(tailnumber), '-', '') LIKE ?tailNum");
+
+        List<Aircraft> lstAc = new List<Aircraft>();
+        dbh.ReadRows(
+            (comm) => { comm.Parameters.AddWithValue("tailNum", szTailToMatch); },
+            (dr) => { lstAc.Add(new Aircraft() { AircraftID = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture), TailNumber = (string)dr["tailnumber"] });
+        });
+
+        gvFoundAircraft.DataSource = lstAc;
         gvFoundAircraft.DataBind();
         mvAircraftIssues.SetActiveView(vwMatchingAircraft);
     }
