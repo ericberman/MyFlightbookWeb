@@ -62,6 +62,13 @@ namespace MyFlightbook
             foreach (CustomFlightProperty cfp in this.CustomProperties)
                 cfp.InitPropertyType(new CustomPropertyType[] { CustomPropertyType.GetCustomPropertyType(cfp.PropTypeID) });
         }
+
+        public PendingFlight(LogbookEntry le) : this()
+        {
+            if (le == null)
+                return;
+            JsonConvert.PopulateObject(JsonConvert.SerializeObject(le, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }), this);
+        }
         #endregion
 
         #region Database
@@ -87,6 +94,14 @@ namespace MyFlightbook
         {
             DBHelper dbh = new DBHelper("DELETE FROM pendingflights WHERE id=?idflight");
             dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idflight", id); });
+        }
+
+        static public void DeletePendingFlightsForUser(string szUser)
+        {
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException("szUser");
+            DBHelper dbh = new DBHelper("DELETE FROM pendingflights WHERE username=?uname");
+            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("uname", szUser); });
         }
 
         /// <summary>

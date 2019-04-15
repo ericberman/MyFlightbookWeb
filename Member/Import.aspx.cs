@@ -314,6 +314,8 @@ public partial class Member_Import : System.Web.UI.Page
 
                 ((Button)wzImportFlights.FindControl("FinishNavigationTemplateContainerID$btnNewFile")).Visible = true;
             }
+
+            ((AjaxControlToolkit.ConfirmButtonExtender)wzImportFlights.FindControl("FinishNavigationTemplateContainerID$confirmImportWithErrors")).Enabled = csvimporter.HasErrors;
         }
     }
 
@@ -334,7 +336,7 @@ public partial class Member_Import : System.Web.UI.Page
         if (e == null)
             throw new ArgumentNullException("e");
 
-        if (csvimporter == null || csvimporter.HasErrors)
+        if (csvimporter == null)
         {
             lblError.Text = Resources.LogbookEntry.ImportNotSuccessful;
             e.Cancel = true;
@@ -347,7 +349,8 @@ public partial class Member_Import : System.Web.UI.Page
         int cFlightsUpdated = 0;
         int cFlightsWithErrors = 0;
 
-        csvimporter.FCommit((le, fIsNew) => {
+        csvimporter.FCommit((le, fIsNew) =>
+                {
                     if (String.IsNullOrEmpty(le.ErrorString))
                     {
                         AddTextRow(plcProgress, String.Format(CultureInfo.CurrentCulture, fIsNew ? Resources.LogbookEntry.ImportRowAdded : Resources.LogbookEntry.ImportRowUpdated, le.ToString()), "success");
@@ -358,13 +361,18 @@ public partial class Member_Import : System.Web.UI.Page
                     }
                     else
                     {
-                        AddTextRow(plcProgress, String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportRowNotAdded, le.ToString(), le.ErrorString), "error");
+                        PendingFlight pf = new PendingFlight(le) { User = User.Identity.Name };
+                        pf.Commit();
+                        lnkPending.Visible = true;
+                        AddTextRow(plcProgress, String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportRowAddedPending, le.ToString(), le.ErrorString), "error");
                         cFlightsWithErrors++;
                     }
                 }, 
-                (le, ex) => {
+                (le, ex) =>
+                {
                     AddTextRow(plcProgress, String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportRowNotAdded, le.ToString(), ex.Message), "error");
-                });
+                }, 
+                true);
 
         List<string> lstResults = new List<string>();
         if (cFlightsAdded > 0)
@@ -372,7 +380,7 @@ public partial class Member_Import : System.Web.UI.Page
         if (cFlightsUpdated > 0)
             lstResults.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportFlightsUpdated, cFlightsUpdated));
         if (cFlightsWithErrors > 0)
-            lstResults.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportFlightsAdded, cFlightsWithErrors));
+            lstResults.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportFlightsWithErrors, cFlightsWithErrors));
         rptImportResults.DataSource = lstResults;
         rptImportResults.DataBind();
         MyFlightbook.Profile.GetUser(Page.User.Identity.Name).SetAchievementStatus(MyFlightbook.Achievements.Achievement.ComputeStatus.NeedsComputing);

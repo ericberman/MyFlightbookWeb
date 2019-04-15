@@ -1500,4 +1500,10 @@
   <data name="SelectAll" xml:space="preserve">
     <value>(Select All)</value>
   </data>
+  <data name="LogbookPendingFlightsDescription" xml:space="preserve">
+    <value>Review flights that have not yet been added to your logbook</value>
+  </data>
+  <data name="PendingFlightsLink" xml:space="preserve">
+    <value>Pending Flights</value>
+  </data>
 </root>

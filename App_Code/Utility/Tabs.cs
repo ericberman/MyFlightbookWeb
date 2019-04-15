@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Xml.Linq;
 using System.Web;
+using System.Xml.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2017 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -41,7 +41,7 @@ namespace MyFlightbook
         lbtImport,
         lbtStartingTotals,
         lbtPrintView,
-        lbtLogbook,
+        lbtPending,
 
         // profile tabs
         pftName = 200,

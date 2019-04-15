@@ -222,6 +222,9 @@
   <data name="LogbookNew" xml:space="preserve">
     <value>Logbook</value>
   </data>
+  <data name="LogbookPending" xml:space="preserve">
+    <value>Pending Flights</value>
+  </data>
   <data name="LogbookPrintView" xml:space="preserve">
     <value>Print View</value>
   </data>

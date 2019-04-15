@@ -30,7 +30,11 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
     protected IEnumerable<PendingFlight> Flights
     {
         get { return (IEnumerable<PendingFlight>)ViewState[szVSKeyFlights]; }
-        set { ViewState[szVSKeyFlights] = value; }
+        set
+        {
+            ViewState[szVSKeyFlights] = value;
+            lnkDeleteAll.Visible = (value != null && value.Count() > 0);
+        }
     }
 
     protected Boolean HasPrevSort
@@ -59,23 +63,21 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
     }
     #endregion
 
+    protected void Refresh()
+    {
+        gvPendingFlights.DataSource = Flights = PendingFlight.PendingFlightsForUser(Viewer.UserName);
+        gvPendingFlights.DataBind();
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
-        Master.SelectedTab = tabID.lbtImport;
+        Master.SelectedTab = tabID.lbtPending;
 
         if (!IsPostBack)
         {
             Page.Title = Resources.LogbookEntry.ReviewPendingFlightsHeader;
-            gvPendingFlights.DataSource = Flights = PendingFlight.PendingFlightsForUser(Viewer.UserName);
-            gvPendingFlights.DataBind();
+            Refresh();
         }
-    }
-
-    protected void gvPendingFlights_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException("e");
-
     }
 
     protected void gvPendingFlights_Sorting(object sender, GridViewSortEventArgs e)
@@ -152,8 +154,13 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
 
     protected void mfbEditFlight_FlightUpdated(object sender, EventArgs e)
     {
-        gvPendingFlights.DataSource = Flights = PendingFlight.PendingFlightsForUser(Viewer.UserName);
-        gvPendingFlights.DataBind();
+        Refresh();
         mvPendingFlights.SetActiveView(vwList);
+    }
+
+    protected void lnkDeleteAll_Click(object sender, EventArgs e)
+    {
+        PendingFlight.DeletePendingFlightsForUser(Page.User.Identity.Name);
+        Refresh();
     }
 }

@@ -110,6 +110,17 @@
                                 <% =Branding.ReBrand(Resources.LocalizedText.LogbookStartingTotalsDescription) %>
                             </td>
                         </tr>
+                        <tr>
+                            <td style="text-align:center;">
+                                <asp:Image ID="imgPendingFlights" ImageUrl="~/images/pendingflights.png" runat="server" />
+                            </td>
+                            <td>
+                                <asp:HyperLink ID="lnkPendingFlights" Font-Bold="true" NavigateUrl="~/Member/ReviewPendingFlights.aspx" runat="server" Text="<%$ Resources:LocalizedText, PendingFlightsLink %>"></asp:HyperLink>
+                            </td>
+                            <td>
+                                <% =Branding.ReBrand(Resources.LocalizedText.LogbookPendingFlightsDescription) %>
+                            </td>
+                        </tr>
                     </table>
                 </Content>
             </ajaxToolkit:AccordionPane>

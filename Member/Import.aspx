@@ -74,7 +74,18 @@
                     <asp:FileUpload ID="fuPreview" runat="server" meta:resourcekey="fuPreviewResource1" 
                          />
                 </p>
-                <p><asp:CheckBox ID="ckAutofill" runat="server" Text="Try to autofill fields like night and cross-country, if not already provided." meta:resourcekey="ckAutofillResource1" /></p>
+                <div>
+                    <table>
+                        <tr style="vertical-align:top">
+                            <td><asp:CheckBox ID="ckAutofill" runat="server" meta:resourcekey="ckAutofillResource1" /></td>
+                            <td>
+                                <asp:Label ID="lblAutofillLabel" runat="server"  Text="Try to autofill fields like night and cross-country, if not already provided." meta:resourcekey="lblAutofillLabel1" AssociatedControlID="ckAutofill"></asp:Label><br />
+                                <asp:Label ID="lblNoteAutofill" runat="server" Text="<%$ Resources:LocalizedText, Note %>" CssClass="fineprint" Font-Bold="true" AssociatedControlID="ckAutofill"></asp:Label>
+                                <asp:Label ID="locAutofill" runat="server" Text="All flight/engine times must be UTC for night computation to work." CssClass="fineprint" meta:resourcekey="locAutofill1" AssociatedControlID="ckAutofill"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
                 <div style="white-space:pre"><asp:Label ID="lblFileRequired" runat="server" Text="" CssClass="error" EnableViewState="false" meta:resourcekey="lblFileRequiredResource1"></asp:Label></div>
             </asp:WizardStep>
             <asp:WizardStep ID="wsMissingAircraft" runat="server" Title="3. Review missing aircraft" meta:resourcekey="wsMissingAircraftResource1"  >
@@ -106,31 +117,34 @@
             </asp:WizardStep>
             <asp:WizardStep ID="wsPreview" runat="server" Title="4. Preview" meta:resourcekey="wsPreviewResource1" 
                 >
-                <asp:Localize ID="locPreviewReady" runat="server" 
+                <p><asp:Localize ID="locPreviewReady" runat="server" 
                     Text="When you are ready, you can import your data." meta:resourcekey="locPreviewReadyResource1" 
-                    ></asp:Localize>
-                <asp:Label ID="lblPreviewDontWorry" runat="server" Font-Bold="True" 
-                    Text="Nothing will be imported if any problems are found." meta:resourcekey="lblPreviewDontWorryResource1" 
-                    ></asp:Label>
-                <br /><br />
-                <asp:Label ID="lblImportant2" Font-Bold="true" runat="server" 
-                    Text="Important: " meta:resourcekey="lblImportant2Resource1" ></asp:Label>
-                <asp:Label ID="lblOnlyClickOnce" runat="server" 
-                    Text="Only click to import once; otherwise, you can end up with duplicate entries." meta:resourcekey="lblOnlyClickOnceResource1" 
-                    ></asp:Label>
-                <asp:Label ID="lblUpdateOverwriteKey" runat="server" Text="Use the icons below to determine whether a flight is going to be updated, or if a new flight is going to be created." meta:resourcekey="lblUpdateOverwriteKeyResource1" ></asp:Label>
-                <table>
-                    <tr valign="middle">
-                        <td><asp:Image ID="imgAddKey" runat="server" ImageAlign="Middle" ImageUrl="~/images/add.png" meta:resourcekey="imgAddKeyResource1"  /></td>
-                        <td><asp:Label ID="lblKeyAdd" runat="server" Text="Flight will be ADDED - be sure it's not already present, or it will be a duplicate!" meta:resourcekey="lblKeyAddResource1" ></asp:Label></td>
-                    </tr>
-                    <tr valign="middle">
-                        <td><asp:Image ID="imgUpdateKey" runat="server" ImageAlign="Middle" ImageUrl="~/images/update.png" meta:resourcekey="imgUpdateKeyResource1"  /></td>
-                        <td><asp:Label ID="lblKeyUpdate" runat="server" Text="Flight to import matches an existing flight in your logbook and the existing flight will be updated." meta:resourcekey="lblKeyUpdateResource1" ></asp:Label></td>
-                    </tr>
-                </table>
+                    ></asp:Localize></p>
+                <p>
+                    <asp:Label ID="lblImportant2" Font-Bold="true" runat="server" 
+                        Text="Important: " meta:resourcekey="lblImportant2Resource1" ></asp:Label>
+                    <asp:Label ID="lblOnlyClickOnce" runat="server" 
+                        Text="Only click to import once!" meta:resourcekey="lblOnlyClickOnceResource1" 
+                        ></asp:Label>
+                </p>
+                <div>
+                    <asp:Label ID="lblUpdateOverwriteKey" runat="server" Text="Use the icons below to determine whether a flight is going to be updated, or if a new flight is going to be created." meta:resourcekey="lblUpdateOverwriteKeyResource1" ></asp:Label>
+                    <table>
+                        <tr valign="middle">
+                            <td>&nbsp;&nbsp;</td>
+                            <td><asp:Image ID="imgAddKey" runat="server" ImageAlign="Middle" ImageUrl="~/images/add.png" meta:resourcekey="imgAddKeyResource1"  /></td>
+                            <td><asp:Label ID="lblKeyAdd" runat="server" Text="Flight will be ADDED - be sure it's not already present, or it will be a duplicate!" meta:resourcekey="lblKeyAddResource1" ></asp:Label></td>
+                        </tr>
+                        <tr valign="middle">
+                            <td>&nbsp;&nbsp;</td>
+                            <td><asp:Image ID="imgUpdateKey" runat="server" ImageAlign="Middle" ImageUrl="~/images/update.png" meta:resourcekey="imgUpdateKeyResource1"  /></td>
+                            <td><asp:Label ID="lblKeyUpdate" runat="server" Text="Flight to import matches an existing flight in your logbook and the existing flight will be updated." meta:resourcekey="lblKeyUpdateResource1" ></asp:Label></td>
+                        </tr>
+                    </table>
+                </div>
                 <asp:Label ID="lblError" runat="server" CssClass="error" EnableViewState="False" meta:resourcekey="lblErrorResource1"  ></asp:Label>
                 <asp:PlaceHolder ID="plcErrorList" runat="server" EnableViewState="false"></asp:PlaceHolder>
+                <div>&nbsp;</div>
             </asp:WizardStep>
         </WizardSteps>
         <StepNavigationTemplate>
@@ -140,7 +154,8 @@
         <FinishNavigationTemplate>
             <asp:Button ID="btnNewFile" OnClick="btnNewFile_Click" Runat="server" Visible="false" Text="Upload a new file " />
             <asp:Button CommandName="MovePrevious" Runat="server" Text="Previous" />
-            <asp:Button CommandName="MoveComplete" Runat="server" Text="Import" />
+            <asp:Button CommandName="MoveComplete" Runat="server" ID="btnImport" Text="Import" />
+            <ajaxToolkit:ConfirmButtonExtender ID="confirmImportWithErrors" runat="server" ConfirmText="<%$ Resources:LogbookEntry, ImportErrorsConfirm %>" TargetControlID="btnImport" />
         </FinishNavigationTemplate>
     </asp:Wizard>
     <asp:Panel ID="pnlImportSuccessful" runat="server" Visible="False" meta:resourcekey="pnlImportSuccessfulResource1" >
@@ -152,7 +167,16 @@
                 </ItemTemplate>
             </asp:Repeater>
         </ul>
-        <p><asp:HyperLink ID="btnDone" runat="server" Text="View my flights" NavigateUrl="~/Member/LogbookNew.aspx" meta:resourcekey="btnDoneResource1"  /></p>
+        <p>
+            <asp:HyperLink ID="lnkDone" runat="server" NavigateUrl="~/Member/LogbookNew.aspx">
+                <asp:Image ID="imgViewFlights" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" />&nbsp;
+                <asp:Label ID="lblViewFlights" runat="server" Text="View my flights" meta:resourceky="lblViewFlightsResource1"></asp:Label>
+            </asp:HyperLink></p>
+        <p>
+            <asp:HyperLink ID="lnkPending" runat="server" NavigateUrl="~/Member/ReviewPendingFlights.aspx" Visible="false">
+                <asp:Image ID="imgViewPending" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" />&nbsp;
+                <asp:Label ID="lblViewPending" runat="server" Text="Review pending flights" meta:resourceky="lblViewPendingResource1"></asp:Label>
+            </asp:HyperLink></p>
     </asp:Panel>
     <br /><br />
 </asp:Content>

@@ -279,10 +279,10 @@
   <data name="BoundFieldResource9.HeaderText" xml:space="preserve">
     <value>IMC</value>
   </data>
-  <data name="btnDoneResource1.Text" xml:space="preserve">
-    <value>View my flights</value>
+  <data name="lnkDoneResource1.Text" xml:space="preserve">
+    <value />
   </data>
-  <data name="btnDoneResource1.ToolTip" xml:space="preserve">
+  <data name="lnkDoneResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="fuPreviewResource1.ToolTip" xml:space="preserve">
@@ -400,7 +400,7 @@
     <value />
   </data>
   <data name="lblOnlyClickOnceResource1.Text" xml:space="preserve">
-    <value>Only click to import once; otherwise, you can end up with duplicate entries.</value>
+    <value>Only click to import once!</value>
   </data>
   <data name="lblOnlyClickOnceResource1.ToolTip" xml:space="preserve">
     <value />
@@ -415,12 +415,6 @@
     <value>1. Prepare your flights</value>
   </data>
   <data name="lblPrepareFlightsResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblPreviewDontWorryResource1.Text" xml:space="preserve">
-    <value>Nothing will be imported if any problems are found.</value>
-  </data>
-  <data name="lblPreviewDontWorryResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblSimHintResource1.Text" xml:space="preserve">
@@ -593,7 +587,7 @@
     <value />
   </data>
   <data name="ckAutofillResource1.Text" xml:space="preserve">
-    <value>Try to autofill fields like night and cross-country, if not already provided.</value>
+    <value />
   </data>
   <data name="ckAutofillResource1.ToolTip" xml:space="preserve">
     <value />
@@ -608,6 +602,36 @@
     <value>Import recent flights from CloudAhoy</value>
   </data>
   <data name="lnkImportCloudAhoyResource1.Tooltip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAutofillLabel1.Text" xml:space="preserve">
+    <value>Try to autofill fields like night and cross-country, if not already provided.</value>
+  </data>
+  <data name="lblAutofillLabel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblViewFlightsResource1.Text" xml:space="preserve">
+    <value>View my flights</value>
+  </data>
+  <data name="lblViewFlightsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblViewPendingResource1.Text" xml:space="preserve">
+    <value>Review pending flights</value>
+  </data>
+  <data name="lblViewPendingResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkPendingResource1.Text" xml:space="preserve">
+    <value>Review pending flights</value>
+  </data>
+  <data name="lnkPendingResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locAutofill1.Text" xml:space="preserve">
+    <value>All flight/engine times must be UTC for night computation to work.</value>
+  </data>
+  <data name="locAutofill1.ToolTip" xml:space="preserve">
     <value />
   </data>
 </root>

@@ -12,9 +12,9 @@
                 <asp:Label ID="lblReviewPending" runat="server" Text="<%$ Resources: LogbookEntry,ReviewPendingFlightsPrompt %>"></asp:Label></p>
             <asp:GridView ID="gvPendingFlights" runat="server" AutoGenerateColumns="false" CellPadding="3" DataKeyNames="PendingID" AllowSorting="True"
                 ShowHeader="true" ShowFooter="true" UseAccessibleHeader="true" Width="100%" GridLines="None"
-                Font-Size="8pt" AllowPaging="false" OnRowDataBound="gvPendingFlights_RowDataBound" OnSorting="gvPendingFlights_Sorting" OnRowCommand="gvPendingFlights_RowCommand">
+                Font-Size="8pt" AllowPaging="false" OnSorting="gvPendingFlights_Sorting" OnRowCommand="gvPendingFlights_RowCommand">
                 <EmptyDataTemplate>
-                    <p><%=Resources.LogbookEntry.ReviewPendingFlightsNoFlights %></p>
+                    <ul><li><%=Resources.LogbookEntry.ReviewPendingFlightsNoFlights %></li></ul>
                 </EmptyDataTemplate>
                 <Columns>
                     <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldFlight %>" SortExpression="Date">
@@ -135,6 +135,10 @@
                     </asp:TemplateField>
                 </Columns>
             </asp:GridView>
+            <div>
+                <asp:LinkButton ID="lnkDeleteAll" Visible="false" runat="server" Text="<%$ Resources:LogbookEntry, ReviewPendingFlightsDelete %>" OnClick="lnkDeleteAll_Click" />
+                <ajaxToolkit:ConfirmButtonExtender ID="confirmDeleteAll" runat="server" ConfirmText="<%$ Resources:LogbookEntry, ReviewPendingFlightsDeleteConfirm %>" TargetControlID="lnkDeleteAll" />
+            </div>
         </asp:View>
         <asp:View ID="vwEdit" runat="server">
             <uc1:mfbEditFlight runat="server" ID="mfbEditFlight" OnFlightEditCanceled="mfbEditFlight_FlightEditCanceled" OnFlightUpdated="mfbEditFlight_FlightUpdated" CanCancel="true" />

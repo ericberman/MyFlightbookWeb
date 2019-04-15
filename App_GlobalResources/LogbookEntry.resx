@@ -969,4 +969,20 @@
   <data name="ReviewPendingFlightsPrompt" xml:space="preserve">
     <value>Any flights that have not yet occured, or which need to be edited before adding to your logbook, are shown here.</value>
   </data>
+  <data name="ImportErrorsConfirm" xml:space="preserve">
+    <value>Some flights have errors.
+
+If you proceed, flights with errors will be imported into your "pending flights" for review while those without errors will be imported into your logbook.  
+
+Proceed with import?</value>
+  </data>
+  <data name="ImportRowAddedPending" xml:space="preserve">
+    <value>Flight was added to Pending Flights to be reviewed/fixed! (Error: {1}): {0}</value>
+  </data>
+  <data name="ReviewPendingFlightsDelete" xml:space="preserve">
+    <value>Delete all pending flights</value>
+  </data>
+  <data name="ReviewPendingFlightsDeleteConfirm" xml:space="preserve">
+    <value>This cannot be undone - are you sure you want to delete all of your pending flights?</value>
+  </data>
 </root>

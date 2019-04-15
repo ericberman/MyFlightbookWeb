@@ -948,10 +948,12 @@ namespace MyFlightbook.ImportFlights
         /// Commits the initialized flights
         /// </summary>
         /// <param name="OnRowAdded">Delegate called for each flight that is commited</param>
+        /// <param name="OnRowFailure">Delegate called for each flight that fails</param>
+        /// <param name="fAllowErrors">Indicates whether or not errors are allowed</param>
         /// <returns>True for success</returns>
-        public bool FCommit(Action<LogbookEntry, bool> OnRowAdded, Action<LogbookEntry, Exception> OnRowFailure)
+        public bool FCommit(Action<LogbookEntry, bool> OnRowAdded, Action<LogbookEntry, Exception> OnRowFailure, bool fAllowErrors)
         {
-            if (FlightsToImport == null || HasErrors)
+            if (FlightsToImport == null || (!fAllowErrors && HasErrors))
                 return false;
 
             int cFlightsImported = 0;

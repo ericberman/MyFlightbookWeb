@@ -1345,6 +1345,30 @@ namespace MyFlightbook
             catch (InvalidOperationException) { }
         }
 
+        private static void DeleteUserImages(DBHelper dbh)
+        {
+            List<MFBImageInfo> lstMfbii = new List<MFBImageInfo>();
+            dbh.CommandText = @"SELECT f.idflight, f.username, i.* 
+                        FROM images i 
+                        LEFT JOIN flights f ON i.imagekey=f.idflight
+                        WHERE (i.VirtPathID=0 AND f.username=?uname)";
+            dbh.ReadRows((comm) => { }, (dr) => { lstMfbii.Add(MFBImageInfo.ImageFromDBRow(dr)); });
+            foreach (MFBImageInfo mfbii in lstMfbii)
+                mfbii.DeleteImage();
+        }
+
+        private static void DeleteUserFlights(DBHelper dbh)
+        {
+            List<TelemetryReference> lstTelemetry = new List<TelemetryReference>();
+            dbh.CommandText = @"SELECT ft.* FROM flights f INNER JOIN flighttelemetry ft ON f.idflight=ft.idflight WHERE f.username=?uname";
+            dbh.ReadRows((comm) => { }, (dr) => { lstTelemetry.Add(new TelemetryReference(dr)); });
+            lstTelemetry.ForEach((ts) => { ts.DeleteFile(); }); // only need to delete the file; the flighttelemetry row will be deleted when we delete the flights (below), so don't need the excess DB hits.
+
+            // Remove any flights for the user
+            dbh.CommandText = "DELETE FROM flights WHERE username=?uname";
+            dbh.DoNonQuery((comm) => { });
+        }
+
         public static void DeleteForUser(MembershipUser mu, DeleteLevel dl)
         {
             if (mu == null || String.IsNullOrEmpty(mu.UserName))
@@ -1376,23 +1400,11 @@ namespace MyFlightbook
                     throw new MyFlightbookException("User is owner of clubs; need to delete those clubs first");
 
                 // Remove any images for the user's flights (only works if images UseDB is true...)
-                List<MFBImageInfo> lstMfbii = new List<MFBImageInfo>();
-                dbh.CommandText = @"SELECT f.idflight, f.username, i.* 
-                        FROM images i 
-                        LEFT JOIN flights f ON i.imagekey=f.idflight
-                        WHERE (i.VirtPathID=0 AND f.username=?uname)";
-                dbh.ReadRows((comm) => { }, (dr) => { lstMfbii.Add(MFBImageInfo.ImageFromDBRow(dr)); });
-                foreach (MFBImageInfo mfbii in lstMfbii)
-                    mfbii.DeleteImage();
+                DeleteUserImages(dbh);
 
-                List<TelemetryReference> lstTelemetry = new List<TelemetryReference>();
-                dbh.CommandText = @"SELECT ft.* FROM flights f INNER JOIN flighttelemetry ft ON f.idflight=ft.idflight WHERE f.username=?uname";
-                dbh.ReadRows((comm) => { }, (dr) => { lstTelemetry.Add(new TelemetryReference(dr)); });
-                lstTelemetry.ForEach((ts) => { ts.DeleteFile(); }); // only need to delete the file; the flighttelemetry row will be deleted when we delete the flights (below), so don't need the excess DB hits.
+                DeleteUserFlights(dbh);
 
-                // Remove any flights for the user
-                dbh.CommandText = "DELETE FROM flights WHERE username=?uname";
-                dbh.DoNonQuery((comm) => { });
+                PendingFlight.DeletePendingFlightsForUser(mu.UserName);
 
                 // And any badges that have been earned
                 Badge.DeleteBadgesForUser(mu.UserName, dl == DeleteLevel.OnlyFlights);

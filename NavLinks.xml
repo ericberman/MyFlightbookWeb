@@ -66,6 +66,12 @@
         <ID>lbtPrintView</ID>
         <Roles></Roles>
       </Item>
+      <Item>
+        <Text>LogbookPending</Text>
+        <Link>~/Member/ReviewPendingFlights.aspx</Link>
+        <ID>lbtPending</ID>
+        <Roles></Roles>
+      </Item>
     </Items>
   </Item>
   <Item>

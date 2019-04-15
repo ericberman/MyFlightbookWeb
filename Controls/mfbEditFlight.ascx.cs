@@ -188,7 +188,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
     {
         if (pendingFlight == null)
             throw new ArgumentNullException("pendingFlight");
-        SetUpNewOrEdit(LogbookEntry.idFlightNew);
+        SetUpNewOrEdit(pendingFlight.FlightID);
         hdnPendingID.Value = pendingFlight.PendingID;
         InitFormFromLogbookEntry(pendingFlight);
     }
