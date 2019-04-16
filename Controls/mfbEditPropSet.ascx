@@ -1,14 +1,16 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditPropSet.ascx.cs" Inherits="Controls_mfbEditPropSet" %>
 <%@ Register src="mfbEditProp.ascx" tagname="mfbEditProp" tagprefix="uc1" %>
         <script type="text/javascript" language="javascript">
-        function pageLoad(sender, args) {
-            $find("<%=CollapsiblePanelExtender1.ClientID%>").add_expandComplete(setFocusForSearch);
-        }
+            function pageLoad(sender, args) {
+                $find("<%=cpeText.ClientID%>").add_expandComplete(setFocusForSearch);
+            }
 
-        function setFocusForSearch() {
-            if(!$find("<%=CollapsiblePanelExtender1.ClientID%>").get_collapsed())
-               $get("<%=txtFilter.ClientID%>").focus();
-        }
+            function setFocusForSearch() {
+                if (!$find("<%=cpeText.ClientID%>").get_collapsed())
+                    $get("<%=txtFilter.ClientID%>").focus();
+            }
+
+            addLoadEvent(function () { CacheItems(document.getElementById("<% =cmbPropsToAdd.ClientID %>")); });
         </script>
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
             <Triggers>
@@ -23,10 +25,10 @@
                                 <asp:Image ID="imgSearch" ImageUrl="~/images/Search.png" runat="server" />
                             </td>
                             <td>
-                                <ajaxToolkit:CollapsiblePanelExtender ID="CollapsiblePanelExtender1" Collapsed="true" runat="server" CollapseControlID="imgSearch" TargetControlID="pnlSearchProps" ExpandControlID="imgSearch" ExpandDirection="Horizontal" TextLabelID="pnlSearchProps" />
+                                <ajaxToolkit:CollapsiblePanelExtender ID="cpeText" Collapsed="true" runat="server" CollapseControlID="imgSearch" TargetControlID="pnlSearchProps" ExpandControlID="imgSearch" ExpandDirection="Horizontal" TextLabelID="pnlSearchProps" />
                                 <asp:Panel ID="pnlSearchProps" runat="server" EnableViewState="false">
                                     <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LogbookEntry, PropertyWatermark %>" runat="server" TargetControlID="txtFilter" />
-                                    <asp:TextBox ID="txtFilter" EnableViewState="false" runat="server" Width="100px" onkeyup="FilterItems(this.value)"></asp:TextBox>
+                                    <asp:TextBox ID="txtFilter" EnableViewState="false" runat="server" Width="100px"></asp:TextBox>
                                     <div><asp:Label ID="lblFilterMessage" CssClass="fineprint" runat="server" EnableViewState="false"></asp:Label></div>
                                 </asp:Panel>
                             </td>

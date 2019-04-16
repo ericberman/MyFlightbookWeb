@@ -1,13 +1,14 @@
 ﻿using MyFlightbook;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2018 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -141,44 +142,8 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
     protected void Page_Load(object sender, EventArgs e)
     {
         RecreateControls(); // set them up for postback or initial
-        // Javascript below adapted from http://www.aspsnippets.com/Articles/Filter-and-Search-ASP.Net-DropDownList-items-using-JavaScript.aspx
-        string szFilterScript = @"
-        var ddlText, ddlValue, ddl, lblMesg;
-
-        function CacheItems() {
-            ddlText = new Array();
-            ddlValue = new Array();
-            ddl = document.getElementById(""" + cmbPropsToAdd.ClientID + @""");
-            lblMesg = document.getElementById(""" + lblFilterMessage.ClientID + @""");
-            for (var i = 0; i < ddl.options.length; i++)
-            {
-                ddlText[ddlText.length] = ddl.options[i].text;
-                ddlValue[ddlValue.length] = ddl.options[i].value;
-            }
-        }
-
-        addLoadEvent(CacheItems);
-
-        function FilterItems(value) {
-            ddl.options.length = 0;
-            value = value.toUpperCase();
-            for (var i = 0; i < ddlText.length; i++)
-            {
-                if (i == 0 || ddlText[i].toUpperCase().indexOf(value) != -1)
-                    AddItem(ddlText[i], ddlValue[i]);
-            }
-
-            lblMesg.innerHTML = ddl.options.length - 1  + """ + Resources.LogbookEntry.PropertiesFound + @""";
-        }
-
-        function AddItem(text, value) {
-            var opt = document.createElement(""option"");
-            opt.text = text;
-            opt.value = value;
-            ddl.options.add(opt);
-        }";
-
-        Page.ClientScript.RegisterClientScriptBlock(GetType(), "propFilter", szFilterScript, true);
+        Page.ClientScript.RegisterClientScriptInclude("filterDropdown", ResolveClientUrl("~/Public/Scripts/DropDownFilter.js"));
+        txtFilter.Attributes["onkeyup"] = String.Format(CultureInfo.InvariantCulture, "FilterItems(this, '{0}', '{1}', '{2}')", cmbPropsToAdd.ClientID, lblFilterMessage.ClientID, Resources.LogbookEntry.PropertiesFound);
     }
 
     protected void SegregateProperties()
@@ -283,6 +248,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         SegregateProperties();                          // add the new property to the list
         PopulateControls();                             // And re-populate.
         txtFilter.Text = string.Empty;
-        CollapsiblePanelExtender1.Collapsed = true;
+        cpeText.Collapsed = true;
+        cpeText.ClientState = "true";
     }
 }
