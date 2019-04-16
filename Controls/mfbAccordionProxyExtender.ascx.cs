@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016 MyFlightbook LLC
+ * Copyright (c) 2016-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -160,7 +160,7 @@ public partial class Controls_mfbAccordionProxyExtender : System.Web.UI.UserCont
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/mfbAccordionProxy.js?v=1"));
+        Page.ClientScript.RegisterClientScriptInclude("accordionExtender", ResolveClientUrl("~/public/Scripts/mfbAccordionProxy.js?v=1"));
     }
 
     protected void Page_PreRender(object sender, EventArgs e)

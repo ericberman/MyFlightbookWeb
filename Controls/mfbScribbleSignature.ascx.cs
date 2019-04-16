@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -38,8 +38,8 @@ public partial class Controls_mfbScribbleSignature : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Page.ClientScript.RegisterClientScriptInclude("signatureScript", ResolveClientUrl("~/public/signature.js?v=2"));
-        Page.ClientScript.RegisterClientScriptInclude("dataURL", ResolveClientUrl("~/public/todataurl-png.js"));
+        Page.ClientScript.RegisterClientScriptInclude("signatureScript", ResolveClientUrl("~/public/Scripts/signature.js?v=2"));
+        Page.ClientScript.RegisterClientScriptInclude("dataURL", ResolveClientUrl("~/public/Scripts/todataurl-png.js"));
     }
 
     protected void valSignature_ServerValidate(object source, ServerValidateEventArgs args)

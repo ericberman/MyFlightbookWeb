@@ -46,8 +46,8 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
     protected void Page_Load(object sender, EventArgs e)
     {
         Page.ClientScript.RegisterClientScriptInclude("jquery1", ResolveClientUrl("https://code.jquery.com/jquery-1.10.1.min.js"));
-        Page.ClientScript.RegisterClientScriptInclude("jquery2", ResolveClientUrl("~/public/jquery.json-2.4.min.js"));
-        Page.ClientScript.RegisterClientScriptInclude("MFBAircraftImportScript", ResolveClientUrl("~/Public/ImpAircraft.js?v=1"));
+        Page.ClientScript.RegisterClientScriptInclude("jquery2", ResolveClientUrl("~/public/Scripts/jquery.json-2.4.min.js"));
+        Page.ClientScript.RegisterClientScriptInclude("MFBAircraftImportScript", ResolveClientUrl("~/Public/Scripts/ImpAircraft.js?v=1"));
         if (IsPostBack)
         {
             // fix up the state of any aircraft that might have been added asynchronously (i.e., via web service call, in which case the viewstate is out of date)
