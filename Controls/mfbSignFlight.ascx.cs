@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2018 MyFlightbook LLC
+ * Copyright (c) 2012-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -309,13 +309,13 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     // Prepare for signing
                     Flight.SignFlight(CFIProfile.UserName, txtComments.Text);
 
-                    Response.Cookies[szKeyCookieCopy].Value = ckCopyFlight.Checked.ToString();
-                    Response.Cookies[szKeyCookieCopy].Expires = DateTime.Now.AddYears(10);
-
                     // Copy the flight to the CFI's logbook if needed.
                     // We modify a new copy of the flight; this avoids modifying this.Flight, but ensures we get every property
                     if (ckCopyFlight.Checked)
                         CopyToInstructor(Flight.Clone());
+
+                    Response.Cookies[szKeyCookieCopy].Value = ckCopyFlight.Checked.ToString();
+                    Response.Cookies[szKeyCookieCopy].Expires = DateTime.Now.AddYears(10);
                 }
                 catch (MyFlightbookException ex)
                 {
