@@ -2902,25 +2902,47 @@ namespace MyFlightbook
             get { return LandingDisplayForFlight(this); }
         }
 
+        public static string FormatHobbs(decimal HobbsStart, decimal HobbsEnd)
+        {
+            if (HobbsStart > 0 || HobbsEnd > 0)
+            {
+                if (HobbsStart > 0.0M && HobbsEnd > 0.0M)
+                    return String.Format(CultureInfo.CurrentCulture, "{3}: {0:#,#.0} {4} {1:#,#.0} ({2:#,#.0})", HobbsStart, HobbsEnd, HobbsEnd - HobbsStart, Resources.LogbookEntry.Hobbs, Resources.LogbookEntry.RangeSeparator);
+                else if (HobbsStart > 0.0M)
+                    return String.Format(CultureInfo.CurrentCulture, "{1}: {0:#,#.0}", HobbsStart, Resources.LogbookEntry.HobbsStart);
+                else
+                    return String.Format(CultureInfo.CurrentCulture, "{1}: {0:#,#.0}", HobbsEnd, Resources.LogbookEntry.HobbsEnd);
+            }
+            else
+                return string.Empty;
+        }
+
         /// <summary>
         /// Formats any hobbs values in a readable manner, including the total hobbs if both are present.
         /// </summary>
         public string HobbsDisplay
         {
-            get
+            get { return FormatHobbs(HobbsStart, HobbsEnd); }
+        }
+
+        public static string FormatFlightTime(DateTime FlightStart, DateTime FlightEnd, bool UseUTCDates, bool UseHHMM)
+        {
+            if (FlightStart.HasValue() || FlightEnd.HasValue())
             {
-                if (HobbsStart > 0 || HobbsEnd > 0)
+
+                if (FlightStart.HasValue() && FlightEnd.HasValue())
                 {
-                    if (HobbsStart > 0.0M && HobbsEnd > 0.0M)
-                        return String.Format(CultureInfo.CurrentCulture, "{3}: {0:#,#.0} {4} {1:#,#.0} ({2:#,#.0})", HobbsStart, HobbsEnd, HobbsEnd - HobbsStart, Resources.LogbookEntry.Hobbs, Resources.LogbookEntry.RangeSeparator);
-                    else if (HobbsStart > 0.0M)
-                        return String.Format(CultureInfo.CurrentCulture, "{1}: {0:#,#.0}", HobbsStart, Resources.LogbookEntry.HobbsStart);
-                    else
-                        return String.Format(CultureInfo.CurrentCulture, "{1}: {0:#,#.0}", HobbsEnd, Resources.LogbookEntry.HobbsEnd);
+                    TimeSpan dtFlight = FlightEnd.Subtract(FlightStart);
+                    return String.Format(CultureInfo.CurrentCulture, "{3}: {0} {4} {1} ({2})", FlightStart.UTCFormattedStringOrEmpty(UseUTCDates), FlightEnd.UTCFormattedStringOrEmpty(UseUTCDates), dtFlight.TotalHours.FormatDecimal(UseHHMM), Resources.LogbookEntry.FieldFlightTime, Resources.LogbookEntry.RangeSeparator);
                 }
+                else if (FlightStart.HasValue())
+                    return String.Format(CultureInfo.CurrentCulture, "{1}: {0}", FlightStart.UTCFormattedStringOrEmpty(UseUTCDates), Resources.LogbookEntry.FieldFlightStart);
                 else
-                    return string.Empty;
+                    return String.Format(CultureInfo.CurrentCulture, "{1}: {0}", FlightEnd.UTCFormattedStringOrEmpty(UseUTCDates), Resources.LogbookEntry.FieldFlightEnd);
+
             }
+            else
+                return string.Empty;
         }
 
         /// <summary>
@@ -2928,25 +2950,25 @@ namespace MyFlightbook
         /// </summary>
         public string FlightTimeDisplay
         {
-            get
+            get { return FormatFlightTime(FlightStart, FlightEnd, UseUTCDates, UseHHMM); }
+        }
+
+        public static string FormatEngineTime(DateTime EngineStart, DateTime EngineEnd, bool UseUTCDates, bool UseHHMM)
+        {
+            if (EngineStart.HasValue() || EngineEnd.HasValue())
             {
-                if (FlightStart.HasValue() || FlightEnd.HasValue())
+                if (EngineStart.HasValue() && EngineEnd.HasValue())
                 {
-
-                    if (FlightStart.HasValue() && FlightEnd.HasValue())
-                    {
-                        TimeSpan dtFlight = FlightEnd.Subtract(FlightStart);
-                        return String.Format(CultureInfo.CurrentCulture, "{3}: {0} {4} {1} ({2})", FlightStart.UTCFormattedStringOrEmpty(UseUTCDates), FlightEnd.UTCFormattedStringOrEmpty(UseUTCDates), dtFlight.TotalHours.FormatDecimal(UseHHMM), Resources.LogbookEntry.FieldFlightTime, Resources.LogbookEntry.RangeSeparator);
-                    }
-                    else if (FlightStart.HasValue())
-                        return String.Format(CultureInfo.CurrentCulture, "{1}: {0}", FlightStart.UTCFormattedStringOrEmpty(UseUTCDates), Resources.LogbookEntry.FieldFlightStart);
-                    else
-                        return String.Format(CultureInfo.CurrentCulture, "{1}: {0}", FlightEnd.UTCFormattedStringOrEmpty(UseUTCDates), Resources.LogbookEntry.FieldFlightEnd);
-
+                    TimeSpan dtEngine = EngineEnd.Subtract(EngineStart);
+                    return String.Format(CultureInfo.CurrentCulture, "{3}: {0} {4} {1} ({2})", EngineStart.UTCFormattedStringOrEmpty(UseUTCDates), EngineEnd.UTCFormattedStringOrEmpty(UseUTCDates), dtEngine.TotalHours.FormatDecimal(UseHHMM), Resources.LogbookEntry.FieldEngine, Resources.LogbookEntry.RangeSeparator);
                 }
+                else if (EngineStart.HasValue())
+                    return String.Format(CultureInfo.CurrentCulture, "{1}: {0}", EngineStart.UTCFormattedStringOrEmpty(UseUTCDates), Resources.LogbookEntry.FieldEngineStart);
                 else
-                    return string.Empty;
+                    return String.Format(CultureInfo.CurrentCulture, "{1}: {0}", EngineEnd.UTCFormattedStringOrEmpty(UseUTCDates), Resources.LogbookEntry.FieldEngineEnd);
             }
+            else
+                return string.Empty;
         }
 
         /// <summary>
@@ -2954,24 +2976,7 @@ namespace MyFlightbook
         /// </summary>
         public string EngineTimeDisplay
         {
-            get
-            {
-
-                if (EngineStart.HasValue() || EngineEnd.HasValue())
-                {
-                    if (EngineStart.HasValue() && EngineEnd.HasValue())
-                    {
-                        TimeSpan dtEngine = EngineEnd.Subtract(EngineStart);
-                        return String.Format(CultureInfo.CurrentCulture, "{3}: {0} {4} {1} ({2})", EngineStart.UTCFormattedStringOrEmpty(UseUTCDates), EngineEnd.UTCFormattedStringOrEmpty(UseUTCDates), dtEngine.TotalHours.FormatDecimal(UseHHMM), Resources.LogbookEntry.FieldEngine, Resources.LogbookEntry.RangeSeparator);
-                    }
-                    else if (EngineStart.HasValue())
-                        return String.Format(CultureInfo.CurrentCulture, "{1}: {0}", EngineStart.UTCFormattedStringOrEmpty(UseUTCDates), Resources.LogbookEntry.FieldEngineStart);
-                    else
-                        return String.Format(CultureInfo.CurrentCulture, "{1}: {0}", EngineEnd.UTCFormattedStringOrEmpty(UseUTCDates), Resources.LogbookEntry.FieldEngineEnd);
-                }
-                else
-                    return string.Empty;
-            }
+            get { return FormatEngineTime(EngineStart, EngineEnd, UseUTCDates, UseHHMM); }
         }
 
         /// <summary>

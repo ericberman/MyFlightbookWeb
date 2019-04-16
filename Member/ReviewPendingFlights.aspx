@@ -26,6 +26,24 @@
                                 <span runat="server" id="divComments" style="clear: left; white-space: pre-line;" dir="auto">
                                     <asp:Label ID="lblComments" runat="server" Text='<%# ApproachDescription.ReplaceApproaches(Eval("Comment").ToString().Linkify()) %>'></asp:Label></span>
                             </div>
+                            <asp:Panel ID="pnlProps" runat="server">
+                                <asp:Panel ID="pnlFlightTimes" runat="server" Visible="<%# Viewer.DisplayTimesByDefault %>">
+                                    <div>
+                                        <%# LogbookEntryDisplay.FormatEngineTime((DateTime) Eval("EngineStart"), (DateTime) Eval("EngineEnd"), Viewer.UsesUTCDateOfFlight, Viewer.UsesHHMM) %>
+                                    </div>
+                                    <div>
+                                        <%# LogbookEntryDisplay.FormatEngineTime((DateTime) Eval("FlightStart"), (DateTime) Eval("FlightEnd"), Viewer.UsesUTCDateOfFlight, Viewer.UsesHHMM) %>
+                                    </div>
+                                    <div>
+                                        <%# LogbookEntryDisplay.FormatHobbs((decimal) Eval("HobbsStart"), (decimal) Eval("HobbsEnd")) %>
+                                    </div>
+                                </asp:Panel>
+                                <asp:Repeater ID="rptProps" runat="server" DataSource='<%# CustomFlightProperty.PropDisplayAsList((IEnumerable<CustomFlightProperty>)Eval("CustomProperties"), Viewer.UsesHHMM, true, true) %>'>
+                                    <ItemTemplate>
+                                        <div><%# Container.DataItem %></div>
+                                    </ItemTemplate>
+                                </asp:Repeater>
+                            </asp:Panel>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldTail %>" SortExpression="TailNumDisplay">
@@ -134,6 +152,8 @@
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
+                <AlternatingRowStyle CssClass="logbookAlternateRow" />
+                <RowStyle CssClass="logbookRow" />
             </asp:GridView>
             <div>
                 <asp:LinkButton ID="lnkDeleteAll" Visible="false" runat="server" Text="<%$ Resources:LogbookEntry, ReviewPendingFlightsDelete %>" OnClick="lnkDeleteAll_Click" />
