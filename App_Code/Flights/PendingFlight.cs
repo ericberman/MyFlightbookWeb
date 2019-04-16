@@ -23,6 +23,7 @@ namespace MyFlightbook
         /// <summary>
         /// The ID of the flight in the PENDING table.  This can be 
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string PendingID { get; set; }
 
         // Null this out to avoid pointless JSON bloat
