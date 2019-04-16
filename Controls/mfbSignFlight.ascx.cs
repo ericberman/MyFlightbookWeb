@@ -88,13 +88,6 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     // Offer to copy the flight for the CFI
                     pnlCopyFlight.Visible = CFIProfile != null;
                     ckCopyFlight.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignFlightCopy, CFIProfile == null ? String.Empty : CFIProfile.UserFullName);
-                    if (Request.Cookies[szKeyCookieCopy] != null)
-                    {
-                        bool copyFlight = false;
-                        if (Boolean.TryParse(Request.Cookies[szKeyCookieCopy].Value, out copyFlight))
-                            ckCopyFlight.Checked = copyFlight;
-                    }
-
                     valCertificateRequired.Enabled = valCFIExpiration.Enabled = valNameRequired.Enabled = valBadEmail.Enabled = valEmailRequired.Enabled = mfbScribbleSignature.Enabled = false;
                     break;
             }
@@ -212,6 +205,13 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         if (!IsPostBack)
         {
             lblSignatureDisclaimer.Text = Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer);
+
+            if (Request.Cookies[szKeyCookieCopy] != null)
+            {
+                bool copyFlight = false;
+                if (Boolean.TryParse(Request.Cookies[szKeyCookieCopy].Value, out copyFlight))
+                    ckCopyFlight.Checked = copyFlight;
+            }
         }
     }
 
