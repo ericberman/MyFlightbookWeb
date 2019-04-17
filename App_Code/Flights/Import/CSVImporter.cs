@@ -714,7 +714,7 @@ namespace MyFlightbook.ImportFlights
             {
                 for (int i = 0; i < rgsz.Length; i++)
                 {
-                    object o = m_htHeader[rgsz[i].ToUpperInvariant()];
+                    object o = m_htHeader[rgsz[i].ToUpperInvariant().Trim()];
                     if (o != null)
                         return (int)o;
                 }
