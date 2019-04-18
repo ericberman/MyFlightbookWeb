@@ -172,7 +172,34 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
             fvEntryToSign.DataSource = new List<LogbookEntry> { value };
             fvEntryToSign.DataBind();
+
+            if (value.SIC > 0)  // see if this is possibly an SIC endorsement per AC 135-43
+            {
+                Aircraft ac = new Aircraft(value.AircraftID);
+                MakeModel m = MakeModel.GetModel(ac.ModelID);
+                if (m.IsCertifiedSinglePilot)
+                {
+                    ckSignSICEndorsement.Visible = true;
+                    lblSICTemplate.Text = AC135_43Text;
+                }
+            }
         }
+    }
+
+    private string AC135_43Text
+    {
+        get
+        {
+            return Resources.SignOff.AC135_43SICSignoffTemplate
+                        .Replace("[SIC]", MyFlightbook.Profile.GetUser(m_le.User).UserFullName)
+                        .Replace("[Route]", String.IsNullOrWhiteSpace(m_le.Route) ? Resources.SignOff.AC135_43NoRoute : m_le.Route)
+                        .Replace("[Date]", m_le.Date.ToShortDateString());
+        }
+    }
+
+    private string SigningComments
+    {
+        get { return ckSignSICEndorsement.Checked ? lblSICTemplate.Text : txtComments.Text; }
     }
 
     public string CFIName
@@ -213,6 +240,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     ckCopyFlight.Checked = copyFlight;
             }
         }
+        dropDateCFIExpiration.DefaultDate = DateTime.MinValue;
     }
 
     protected void fvEntryToSign_OnDataBound(object sender, EventArgs e)
@@ -234,7 +262,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         lstProps.RemoveAll(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropStudentName);
         lstProps.Add(new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropStudentName)) { FlightID = le.FlightID, TextValue = szStudentName });
 
-        le.Comment = String.IsNullOrEmpty(le.Comment) ? txtComments.Text : String.Format(CultureInfo.CurrentCulture, Resources.SignOff.StudentNameTemplate, le.Comment, txtComments.Text);
+        le.Comment = String.IsNullOrEmpty(le.Comment) ? SigningComments : String.Format(CultureInfo.CurrentCulture, Resources.SignOff.StudentNameTemplate, le.Comment, SigningComments);
         le.User = CFIProfile.UserName;  // Swap username, of course, but do so AFTER adjusting the comment above (where we had the user's name)
         le.PIC = le.CFI = Flight.Dual;  // Assume you were PIC for the time you were giving instruction.
         le.Dual = 0.0M;
@@ -272,20 +300,20 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         if (!Page.IsValid)
             return;
 
-        switch (SigningMode)
+        try
         {
-            case SignMode.AdHoc:
-                {
-                    byte[] rgSig = mfbScribbleSignature.Base64Data();
-                    if (rgSig != null)
-                        Flight.SignFlightAdHoc(txtCFIName.Text, txtCFIEmail.Text, txtCFICertificate.Text, dropDateCFIExpiration.Date, txtComments.Text, rgSig);
-                    else
-                        return;
-                }
-                break;
-            case SignMode.Authenticated:
-                try
-                {
+            switch (SigningMode)
+            {
+                case SignMode.AdHoc:
+                    {
+                        byte[] rgSig = mfbScribbleSignature.Base64Data();
+                        if (rgSig != null)
+                            Flight.SignFlightAdHoc(txtCFIName.Text, txtCFIEmail.Text, txtCFICertificate.Text, dropDateCFIExpiration.Date, SigningComments, rgSig, ckSignSICEndorsement.Checked);
+                        else
+                            return;
+                    }
+                    break;
+                case SignMode.Authenticated:
                     string szError = String.Empty;
 
                     bool needProfileRefresh = !CFIProfile.CanSignFlights(out szError);
@@ -307,7 +335,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                         CFIProfile.FCommit();
 
                     // Prepare for signing
-                    Flight.SignFlight(CFIProfile.UserName, txtComments.Text);
+                    Flight.SignFlight(CFIProfile.UserName, SigningComments);
 
                     // Copy the flight to the CFI's logbook if needed.
                     // We modify a new copy of the flight; this avoids modifying this.Flight, but ensures we get every property
@@ -316,18 +344,18 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
                     Response.Cookies[szKeyCookieCopy].Value = ckCopyFlight.Checked.ToString();
                     Response.Cookies[szKeyCookieCopy].Expires = DateTime.Now.AddYears(10);
-                }
-                catch (MyFlightbookException ex)
-                {
-                    lblErr.Text = ex.Message;
-                    return;
-                }
-                catch (MyFlightbookValidationException ex)
-                {
-                    lblErr.Text = ex.Message;
-                    return;
-                }
-                break;
+                    break;
+            }
+        }
+        catch (MyFlightbookException ex)
+        {
+            lblErr.Text = ex.Message;
+            return;
+        }
+        catch (MyFlightbookValidationException ex)
+        {
+            lblErr.Text = ex.Message;
+            return;
         }
 
         if (SigningFinished != null)
@@ -383,5 +411,14 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         LogbookEntry le = new LogbookEntry();
         le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true);
         Flight = le;    // force a refresh
+    }
+
+    protected void ckSignSICEndorsement_CheckedChanged(object sender, EventArgs e)
+    {
+        bool fUseTemplate = ((CheckBox)sender).Checked;
+        mvComments.SetActiveView(fUseTemplate ? vwTemplate : vwEdit);
+
+        valCFIExpiration.Enabled = !fUseTemplate;
+        CFIExpiration = (m_pfCFI == null || fUseTemplate) ? DateTime.MinValue : m_pfCFI.CertificateExpiration;
     }
 }

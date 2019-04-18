@@ -668,8 +668,7 @@ namespace MyFlightbook
             if (!String.IsNullOrEmpty(FlightHash) &&
                 !String.IsNullOrEmpty(SignatureHash) &&
                 !String.IsNullOrEmpty(CFICertificate) &&
-                (!String.IsNullOrEmpty(CFIUsername) || !String.IsNullOrEmpty(CFIEmail)) &&
-                CFIExpiration != null && CFIExpiration.CompareTo(DateTime.MinValue) > 0)
+                (!String.IsNullOrEmpty(CFIUsername) || !String.IsNullOrEmpty(CFIEmail)))
                 CFISignatureState = (IsValidSignature() && IsValidSigningDetails()) ? SignatureState.Valid : SignatureState.Invalid;
             else
                 CFISignatureState = SignatureState.None;
@@ -729,14 +728,18 @@ namespace MyFlightbook
         /// <param name="dtCertificateExp">Expiration date of the certificate</param>
         /// <param name="szCFIComments">Comments</param>
         /// <param name="szCFIName">CFI's Name</param>
+        /// <param name="fAllowEmptyCertificateExpiration">True to suppress the certificate expiration</param>
         /// <param name="rgPngDigitization">byte array of the PNG of the CFI's signature.</param>
-        public void SignFlightAdHoc(string szCFIName, string szCFIEmail, string szCFICertificate, DateTime dtCertificateExp, string szCFIComments, byte[] rgPngDigitization)
+        public void SignFlightAdHoc(string szCFIName, string szCFIEmail, string szCFICertificate, DateTime dtCertificateExp, string szCFIComments, byte[] rgPngDigitization, bool fAllowEmptyCertificateExpiration)
         {
             if (String.IsNullOrEmpty(szCFIName) || String.IsNullOrEmpty(szCFIEmail))
                 throw new MyFlightbookException(Resources.SignOff.errNoInstructor);
             if (String.IsNullOrEmpty(szCFICertificate))
                 throw new MyFlightbookException(Resources.SignOff.errNeedCertificate);
-            if (dtCertificateExp == null || dtCertificateExp.AddDays(1).CompareTo(DateTime.Now) < 0)
+            // Two possible errors around certificate expiration:
+            // (a) There is no value provided and we aren't allowing empty certificate expiration OR
+            // (b) there IS a value and it has expired.
+            if ((!dtCertificateExp.HasValue() && !fAllowEmptyCertificateExpiration) || (dtCertificateExp.HasValue() && dtCertificateExp.AddDays(1).CompareTo(DateTime.Now) < 0))
                 throw new MyFlightbookException(Resources.SignOff.errSignExpiredCertificate);
             if (rgPngDigitization == null || rgPngDigitization.Length < 100)
                 throw new MyFlightbookException(Resources.SignOff.errSignNoDigitizedSignature);
@@ -3013,7 +3016,9 @@ namespace MyFlightbook
         [System.Xml.Serialization.XmlIgnore]
         public string SignatureMainLine
         {
-            get { return String.Format(CultureInfo.CurrentCulture, Resources.SignOff.FlightSignatureTemplate, CFISignatureDate.ToShortDateString(), CFIName, CFICertificate, CFIExpiration.ToShortDateString()); }
+            get { return CFIExpiration.HasValue() ?
+                    String.Format(CultureInfo.CurrentCulture, Resources.SignOff.FlightSignatureTemplate, CFISignatureDate.ToShortDateString(), CFIName, CFICertificate, CFIExpiration.ToShortDateString()) :
+                    String.Format(CultureInfo.CurrentCulture, Resources.SignOff.FlightSignatureTemplateNoExpiration, CFISignatureDate.ToShortDateString(), CFIName, CFICertificate); }
         }
 
         [System.Xml.Serialization.XmlIgnore]

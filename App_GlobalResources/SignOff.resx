@@ -220,7 +220,7 @@
     <value>Flight has been modified since being signed; signature is no longer valid.</value>
   </data>
   <data name="FlightSignatureTemplate" xml:space="preserve">
-    <value>Signed on {0} by {1} (CFI # {2}, Expiration {3})</value>
+    <value>Signed on {0} by {1} (Certificate #{2}, Expiration {3})</value>
     <comment>e.g. "Signed on {date} by {CFI Name} (CFI #1234, Expiration Mar 22, 2013)"</comment>
   </data>
   <data name="errSignNotAuthorized" xml:space="preserve">
@@ -251,7 +251,7 @@
     <value>Add Endorsement</value>
   </data>
   <data name="EditEndorsementCFIPrompt" xml:space="preserve">
-    <value>CFI, CFII, GI, or DPE #:</value>
+    <value>Certificate (CFI, CFII, GI, etc.) #:</value>
   </data>
   <data name="EditEndorsementDatePrompt" xml:space="preserve">
     <value>Date of endorsement:</value>
@@ -423,5 +423,15 @@
   </data>
   <data name="AdHocSignatureTooltip" xml:space="preserve">
     <value>This instructor is not in the list of your known instructors, so a scribble signature will be offered</value>
+  </data>
+  <data name="AC135_43NoRoute" xml:space="preserve">
+    <value>(no route)</value>
+  </data>
+  <data name="AC135_43SICSignoffTemplate" xml:space="preserve">
+    <value>I certify that [SIC] served as an SIC in accordance with § 61.159(c) on the following flight: [Route] on [Date].</value>
+  </data>
+  <data name="FlightSignatureTemplateNoExpiration" xml:space="preserve">
+    <value>Signed on {0} by {1} (Certificate #{2})</value>
+    <comment>e.g. "Signed on {date} by {CFI Name} (Certificate #1234)"</comment>
   </data>
 </root>

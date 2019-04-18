@@ -360,4 +360,10 @@
   <data name="valSignatureResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="ckSignSICEndorsementResource1.Text" xml:space="preserve">
+    <value>Use SIC Endorsement from AC 135-43</value>
+  </data>
+  <data name="ckSignSICEndorsementResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
 </root>

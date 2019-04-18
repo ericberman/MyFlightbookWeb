@@ -173,44 +173,56 @@
                             <asp:Label ID="lblCFIDate" runat="server" 
                             meta:resourcekey="lblCFIDateResource1"></asp:Label>
                     </div>
-                    <div>
-                        <uc2:mfbTypeInDate runat="server" ID="dropDateCFIExpiration" Visible="false" Width="280px" DefaultType="Today" />
-                        <div>
-                        <asp:CustomValidator ID="valCFIExpiration" runat="server" 
-                            ErrorMessage="To sign, your CFI certificate must not be expired." 
-                            CssClass="error" Display="Dynamic" 
-                            onservervalidate="valCFIExpiration_ServerValidate" 
-                            meta:resourcekey="valCFIExpirationResource1"></asp:CustomValidator>
-                        </div>
-                    </div>
-                    <asp:Panel ID="pnlRowPassword" runat="server" Visible="False"
-                        meta:resourcekey="pnlRowPasswordResource1">
-                        <div>
-                            <asp:Label ID="lblPassPrompt" runat="server" Text="<%$ Resources:SignOff, SignReEnterPassword %>" 
-                                Font-Bold="True" meta:resourcekey="lblPassPromptResource2"></asp:Label></div>
-                        <div>
-                            <asp:TextBox ID="txtPassConfirm" runat="server" TextMode="Password" Width="280px"   
-                                meta:resourcekey="txtPassConfirmResource1"></asp:TextBox><br />
-                            <asp:RequiredFieldValidator ID="valPassword" runat="server" 
-                                ErrorMessage="The instructor must provide a password to sign this flight." Enabled="False"
-                                ControlToValidate="txtPassConfirm" CssClass="error" 
-                                meta:resourcekey="valPasswordResource1" Display="Dynamic"></asp:RequiredFieldValidator>
-                            <asp:CustomValidator Enabled="False"
-                                ID="valCorrectPassword" runat="server" CssClass="error" 
-                                ErrorMessage="Please enter the correct password for this account" 
-                                onservervalidate="valCorrectPassword_ServerValidate" Display="Dynamic" 
-                                meta:resourcekey="valCorrectPasswordResource1"></asp:CustomValidator>
-                        </div>
-                    </asp:Panel>
-                    <div>
-                        <asp:Label ID="lblCFICommentsPrompt" runat="server" 
-                            Text="<%$ Resources:Signoff, CFIComments %>" Font-Bold="True" 
-                            meta:resourcekey="lblCFICommentsPromptResource1"></asp:Label>
-                    </div>
-                    <div>
-                        <asp:TextBox ID="txtComments" runat="server" Rows="3" Width="280px" 
-                            TextMode="MultiLine" meta:resourcekey="txtCommentsResource1"></asp:TextBox>
-                    </div>
+                    <asp:UpdatePanel ID="updPanelComments" runat="server">
+                        <ContentTemplate>
+                            <div>
+                                <uc2:mfbTypeInDate runat="server" ID="dropDateCFIExpiration" Visible="false" Width="280px" DefaultType="Today" />
+                                <div>
+                                <asp:CustomValidator ID="valCFIExpiration" runat="server" 
+                                    ErrorMessage="To sign, your CFI certificate must not be expired." 
+                                    CssClass="error" Display="Dynamic" 
+                                    onservervalidate="valCFIExpiration_ServerValidate" 
+                                    meta:resourcekey="valCFIExpirationResource1"></asp:CustomValidator>
+                                </div>
+                            </div>
+                            <asp:Panel ID="pnlRowPassword" runat="server" Visible="False"
+                                meta:resourcekey="pnlRowPasswordResource1">
+                                <div>
+                                    <asp:Label ID="lblPassPrompt" runat="server" Text="<%$ Resources:SignOff, SignReEnterPassword %>" 
+                                        Font-Bold="True" meta:resourcekey="lblPassPromptResource2"></asp:Label></div>
+                                <div>
+                                    <asp:TextBox ID="txtPassConfirm" runat="server" TextMode="Password" Width="280px"   
+                                        meta:resourcekey="txtPassConfirmResource1"></asp:TextBox><br />
+                                    <asp:RequiredFieldValidator ID="valPassword" runat="server" 
+                                        ErrorMessage="The instructor must provide a password to sign this flight." Enabled="False"
+                                        ControlToValidate="txtPassConfirm" CssClass="error" 
+                                        meta:resourcekey="valPasswordResource1" Display="Dynamic"></asp:RequiredFieldValidator>
+                                    <asp:CustomValidator Enabled="False"
+                                        ID="valCorrectPassword" runat="server" CssClass="error" 
+                                        ErrorMessage="Please enter the correct password for this account" 
+                                        onservervalidate="valCorrectPassword_ServerValidate" Display="Dynamic" 
+                                        meta:resourcekey="valCorrectPasswordResource1"></asp:CustomValidator>
+                                </div>
+                            </asp:Panel>
+                            <div>
+                                <asp:Label ID="lblCFICommentsPrompt" runat="server" 
+                                    Text="<%$ Resources:Signoff, CFIComments %>" Font-Bold="True" 
+                                    meta:resourcekey="lblCFICommentsPromptResource1"></asp:Label>
+                            </div>
+                            <div><asp:CheckBox ID="ckSignSICEndorsement" runat="server" Text="Use SIC Endorsement from AC 135-43" Visible="false" AutoPostBack="true" meta:resourcekey="ckSignSICEndorsementResource1" OnCheckedChanged="ckSignSICEndorsement_CheckedChanged" /></div>
+                            <div>
+                                <asp:MultiView ID="mvComments" runat="server" ActiveViewIndex="0">
+                                    <asp:View ID="vwEdit" runat="server">
+                                        <asp:TextBox ID="txtComments" runat="server" Rows="3" Width="280px" 
+                                            TextMode="MultiLine" meta:resourcekey="txtCommentsResource1"></asp:TextBox>
+                                    </asp:View>
+                                    <asp:View ID="vwTemplate" runat="server">
+                                        <asp:Label ID="lblSICTemplate" runat="server" Width="280px" BorderColor="Gray" BorderStyle="Solid" BorderWidth="1px" style="padding: 4px"></asp:Label>
+                                    </asp:View>
+                                </asp:MultiView>
+                            </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                     <asp:Panel ID="rowSignature" Visible="False" runat="server" 
                         meta:resourcekey="rowSignatureResource1">
                         <div><asp:Label ID="lblSignaturePrompt" runat="server" Text="Signature" 
@@ -220,6 +232,8 @@
                     <asp:Panel ID="pnlCopyFlight" runat="server">
                         <asp:CheckBox ID="ckCopyFlight" runat="server" />
                     </asp:Panel>
+                    <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="False" 
+                        meta:resourcekey="lblErrResource1"></asp:Label></div>
                     <div style="text-align:center">
                         <asp:Button ID="btnCancel" runat="server" 
                             Text="<%$ Resources:SignOff, CancelSignFlight %>" Visible="False" 
@@ -235,8 +249,6 @@
                 <uc4:mfbEditFlight ID="mfbEditFlight1" runat="server" OnFlightUpdated="mfbEditFlight1_FlightUpdated" />
             </asp:View>
         </asp:MultiView>
-
-    <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="False" 
-        meta:resourcekey="lblErrResource1"></asp:Label>
+    <div>
     <div><br />&nbsp;<br />&nbsp;<br />&nbsp;</div>
 </asp:Panel>

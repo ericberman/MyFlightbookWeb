@@ -220,7 +220,7 @@
     <value>La ligne du vol a été modifiée depuis la signature; la signature n'est plus valable.</value>
   </data>
   <data name="FlightSignatureTemplate" xml:space="preserve">
-    <value>Signé le {0} par {1} (Instructeur # {2}, fin de validité {3})</value>
+    <value>Signé le {0} par {1} (Certificat #{2}, fin de validité {3})</value>
     <comment>Par ex; : "Signé le {date} par {Nom de l'instructeur} (Instructeur #1234, fin de validité  22 mars, 2013)"</comment>
   </data>
   <data name="errSignNotAuthorized" xml:space="preserve">
@@ -251,7 +251,7 @@
     <value>Ajouter endossement</value>
   </data>
   <data name="EditEndorsementCFIPrompt" xml:space="preserve">
-    <value>Instructeur/IFR instructeur#:</value>
+    <value>Certificat (CFI, CFII, etc.) #</value>
   </data>
   <data name="EditEndorsementDatePrompt" xml:space="preserve">
     <value>Date de endossement:</value>
@@ -345,5 +345,15 @@
   <data name="StudentNameTemplate" xml:space="preserve">
     <value>Commentaire de l'étudiant: {0} Mes notes: {1}</value>
     <comment>{0} is the comments in the student's logbook , {1} are any other comments/remarks from the CFI</comment>
+  </data>
+  <data name="AC135_43NoRoute" xml:space="preserve">
+    <value>(pas de route)</value>
+  </data>
+  <data name="AC135_43SICSignoffTemplate" xml:space="preserve">
+    <value>Je certifie que [SIC] a servi de SIC conformément au § 61.159 (c) sur le vol suivant: [Route] le [Date]</value>
+  </data>
+  <data name="FlightSignatureTemplateNoExpiration" xml:space="preserve">
+    <value>Signé le {0} par {1} (Certificat #{2})</value>
+    <comment>e.g. "Signed on {date} by {CFI Name} (Certificate #1234)"</comment>
   </data>
 </root>
