@@ -177,7 +177,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
             {
                 Aircraft ac = new Aircraft(value.AircraftID);
                 MakeModel m = MakeModel.GetModel(ac.ModelID);
-                if (m.IsCertifiedSinglePilot)
+                if (m.CategoryClassID == CategoryClass.CatClassID.AMEL || m.EngineType.IsTurbine())
                 {
                     ckSignSICEndorsement.Visible = true;
                     lblSICTemplate.Text = AC135_43Text;
