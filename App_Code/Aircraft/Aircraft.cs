@@ -1,6 +1,7 @@
 ﻿using JouniHeikniemi.Tools.Text;
 using MyFlightbook.Image;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -1123,66 +1124,55 @@ namespace MyFlightbook
 
         /// <summary>
         /// Commits changes to the aircraft to the db.
+        /// <param name="szUser">The name of the user - can be empty but not null</param>
         /// </summary>
         public void CommitForUser(string szUser)
         {
             if (!IsValid())
                 throw new MyFlightbookException(ErrorString);
 
+            if (szUser == null)
+                throw new ArgumentNullException("szUser");
+
             // Check for a tailnumber collision with a DIFFERENT existing aircraft
             // Then check to see if THIS ID is in the list (if the list has any hits at all)
             // 4 possible cases:
             //  (a) This is NEW, Aircraft ID is in the list - CAN'T HAPPEN
-            //  (b) This is NEW, Aircraft ID is NOT in the list - MATCH TO THE FIRST HIT AND RETURN
+            //  (b) This is NEW, Aircraft ID is NOT in the list - xxxMATCH TO THE FIRST HIT AND RETURNxxx Issue #277: match to a good hit or clone.  See ReuseOrCloneAircraft
             //  (c) This is EXISTING, Aircraft ID is in the list - WE JUST FOUND OURSELVES; CONTINUE AND UPDATE
-            //  (d) This is EXISTING, Aircraft ID is NOT in the list - IF WE WEREN'T IN THE LIST, WE MUST HAVE CHANGED OUR TAILNUMBER TO AN EXISTING AIRCRAFT; MATCH TO THE FIRST HIT AND RETURN
-            // (b) and (d) reduce to basically mean that if we are NOT in the list, we should initialize to the first hit and return.
+            //  (d) This is EXISTING, Aircraft ID is NOT in the list - IF WE WEREN'T IN THE LIST, WE MUST HAVE CHANGED OUR TAILNUMBER TO AN EXISTING AIRCRAFT; MATCH TO THE FIRST good hit or clone
+            // (b) and (d) reduce to basically mean that if THIS aircraft is NOT already in the list of existing aircraft with this tail, we should initialize best existing hit and return, or else clone if no good hit.
             //
             // There are two additional wrinkles to this:
-            //  (b.2): the model specified on this aircraft does NOT match the model specified on the first match in the list.  We will use the model of the existing
-            //         aircraft, but should notify the user of this fact, IF the existing aircraft is being used in flights; if not, we can continue and overwrite it.
+            //  (b) & (d): the model did not match the specified model but was matched to a close one.  E.g., the user specified a C-172 but there was a C-172S, so we're mapping to that: need to notify them that this happened
             //  (c.2): the model does not match the specified model.  We are CHANGING the model of the aircraft, and thus need to notify all users of this aircraft of this fact.  
-            //  (d.2): is the same as (b.2), but since the aircraft already exists, we'll keep both aircraft (and just initialize this object instance to the other one); no notifications necessary
             //  
+            //  So in the case of c.2, any determiniation that we need to clone (vs. changing the underlying aircraft) needs to have ALREADY BEEN MADE by the caller, by calling HandlePotentialClone
+            // 
             //  In any of these cases, we want to check if the existing aircraft has any flights; if not, then we can override the existing aircraft's model
             List<Aircraft> lstSimilarTails = Aircraft.AircraftMatchingTail(TailNumber);
-            Aircraft acMatch = null;
             if (lstSimilarTails.Count > 0)
             {
-                // prefer an exact match over 1st-hit match
-                foreach (Aircraft ac in lstSimilarTails)
-                    if (ac.AircraftID == AircraftID)
-                        acMatch = ac;
-                if (acMatch == null)
-                    acMatch = lstSimilarTails[0];
+                Aircraft acThis = lstSimilarTails.FirstOrDefault(ac => ac.AircraftID == AircraftID);
 
-                // (b) and (b.2)
-                if (this.AircraftID == Aircraft.idAircraftUnknown)
+                // (b) and (d)
+                if (IsNew || acThis == null)
                 {
-                    int modelIDRequested = this.ModelID;
-                    bool fReuseExisting = NotifyNewAircraftModelIgnored(acMatch, szUser);
-                    this.LoadAircraftByTailNum(acMatch.TailNumber);
-                    if (fReuseExisting)
-                        return;
-                    else
-                        this.ModelID = modelIDRequested;    // continue on to overwrite existing definition.
-                }
-                else // (c) or (d) - this is an existing aircraft
-                {
-                    if (this.AircraftID == acMatch.AircraftID)
+                    Aircraft ac = ReuseOrCloneAircraft(lstSimilarTails, this.ModelID, szUser);
+                    if (ac != null)
                     {
-                        // was found in list - case (c) and (c.2)
-                        // Since this is a MODIFY, we will let the change go through and notify the other users (ignoring the return result)
-                        NotifyModelChanged(acMatch, szUser);
-                    }
-                    else
-                    {
-                        // (d) and (d.2)
-                        // This specific aircraft ID was NOT found in list, we're colliding with another aircraft.  Load that aircraft and return
-                        this.LoadAircraftByTailNum(acMatch.TailNumber);
+                        // We had a hard (same model) or a soft (same family) match to another aircraft.  Any notification has already been sent out by ReuseOrCloneAircraft, as needed.
+                        JsonConvert.PopulateObject(JsonConvert.SerializeObject(ac, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }), this);
                         return;
                     }
+                    // Now fall through - Version (if we're cloning) and/or model (if we're just modifying an otherwise un-used existing aircraft) have been modified by ReuseOrCloneAircraft.
                 }
+                else 
+                    // (c) - We are EXISTING and we are in the list: modifying ourselves (NOTE: HandlePotentialClone check for cloning should already have been done before we got here!)
+                    // This aircraft was found in list - case (c) and (c.2)
+                    // Since this is a MODIFY, we will let the change go through and notify the other users (ignoring the return result)
+                    // By definition, acThis is not null
+                    NotifyIfModelChanged(acThis, szUser);
             }
 
             // If we're here, it's time to save the changes
@@ -1411,15 +1401,46 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         /// <param name="acMatch">The aircraft in the system that was matched</param>
         /// <param name="szUser">The name of the user; no notification is sent if this is null or empty</param>
         /// <returns>true if there is a model conflict and the matching aircraft should be re-used; false if the there is no conflict or if the matching aircraft should be overwritten</returns>
-        private bool NotifyNewAircraftModelIgnored(Aircraft acMatch, string szUser)
+        private Aircraft ReuseOrCloneAircraft(IEnumerable<Aircraft> rgac, int modelIDRequested, string szUser)
         {
-            if (this.ModelID == acMatch.ModelID)
-                return false;
+            // Go through all of the siblings.  Find one that is either an exact match on model (in which case re-use it), or a good match
+            // if we find a good match, we'll re-use that.  if not, we'll 
+            MakeModel mmThis = MakeModel.GetModel(modelIDRequested);
+            bool fHasFamily = !String.IsNullOrEmpty(mmThis.FamilyName);
 
-            // see if we need to use the matching aircraft's model
-            AircraftStats acs = new AircraftStats(String.Empty, acMatch.AircraftID);
-            if (acs.Users != 0)
+            Aircraft acMatch = null;
+            foreach (Aircraft ac in rgac)
             {
+                if (this.ModelID == ac.ModelID) // perfect match - return it
+                    return ac;
+
+                // We'll define a close match as: (a) same non-empty family, (b) same category/class, and (c) same instancetype (c should never be false)
+                MakeModel mmNew = MakeModel.GetModel(ac.ModelID);
+                if (fHasFamily &&
+                    mmThis.FamilyName.CompareCurrentCultureIgnoreCase(mmNew.FamilyName) == 0 &&
+                    mmNew.CategoryClassID == mmThis.CategoryClassID &&
+                    ac.InstanceType == this.InstanceType)
+                    acMatch = ac;
+            }
+
+            // If there's no good match, let's plan to clone 
+            if (acMatch == null)
+            {
+                ModelID = modelIDRequested;
+                Version = GetNewVersion(rgac);
+                return null;
+            }
+
+            // We can redefine the existing aircraft if it has no users
+            if (new AircraftStats(String.Empty, acMatch.AircraftID).Users == 0)
+            { 
+                ModelID = modelIDRequested;
+                AircraftID = acMatch.AircraftID;
+                return null;    // we're going to edit the underlying aircraft
+            }
+            else
+            {
+                // otherwise, re-use the underlying aircraft as-is
                 if (!String.IsNullOrEmpty(szUser))
                 {
                     Profile pf = Profile.GetUser(szUser);
@@ -1433,11 +1454,8 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                     string szSubject = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.ModelCollisionSubjectLine, this.TailNumber, Branding.CurrentBrand.AppName);
                     util.NotifyUser(szSubject, szNotification, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
                 }
-
-                return true;
+                return acMatch;
             }
-
-            return false;
         }
 
         /// <summary>
@@ -1449,7 +1467,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         /// </summary>
         /// <param name="acMatch">The aircraft in the system that was matched</param>
         /// <param name="szUser">The name of the user; no notification is sent if this is null or empty</param>
-        private void NotifyModelChanged(Aircraft acMatch, string szUser)
+        private void NotifyIfModelChanged(Aircraft acMatch, string szUser)
         {
             if (this.ModelID == acMatch.ModelID)
                 return;
@@ -1566,6 +1584,20 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         }
 
         /// <summary>
+        /// Returns a new version that is higher than all other versions for this aircraft.
+        /// </summary>
+        /// <param name="rgac"></param>
+        /// <returns></returns>
+        private int GetNewVersion(IEnumerable<Aircraft> rgac)
+        {
+            int max = 0;
+            foreach (Aircraft ac in rgac)
+                max = Math.Max(max, ac.Version);
+
+            return max + 1;
+        }
+
+        /// <summary>
         /// Admin function to clone an aircraft and migrate the specified users to the new aircraft
         /// </summary>
         /// <param name="idModelTarget">The model for the cloned aircraft</param>
@@ -1592,10 +1624,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             MaintenanceChanges = new List<MaintenanceLog>();
             ModelID = idModelTarget;
 
-            // Find the highest existing version and increment one beyond that.
-            List<Aircraft> lstAc = AircraftMatchingTail(this.TailNumber);
-            lstAc.ForEach((ac) => { if (ac.Version > this.Version) this.Version = ac.Version; });
-            Version++;
+            Version = GetNewVersion(AircraftMatchingTail(this.TailNumber));
             CommitToDB();
 
             foreach (string szUser in lstUsersToMigrate)
