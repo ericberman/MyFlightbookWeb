@@ -3,7 +3,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2018 MyFlightbook LLC
+ * Copyright (c) 2012-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -15,7 +15,7 @@ namespace MyFlightbook
     /// </summary>
     public enum BrandID
     {
-        brandMyFlightbook
+        brandMyFlightbook, brandMyFlightbookStaging
     };
 
     public class Brand
@@ -142,7 +142,16 @@ namespace MyFlightbook
             TwitterFeed = "http://twitter.com/MyFlightbook",
             BlogAddress = "https://myflightbookblog.blogspot.com/",
             VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber"
-            }
+            },
+        new Brand(BrandID.brandMyFlightbookStaging)
+        {
+            AppName = "MFBStaging",
+            HostName = "staging.myflightbook.com",
+            Root = "/logbook",
+            LogoURL = "~/Public/myflightbooknewstaging.png",
+            StyleSheet = "~/Public/CSS/staging.css",
+            EmailAddress = "noreply@mg.myflightbook.com"
+        }
         };
 
         private const string brandStateKey = "_brandid";

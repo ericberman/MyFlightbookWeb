@@ -1,0 +1,39 @@
+﻿/* Basic HTML */
+.mfbDefault {
+    font-family: 'Comic Sans MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+BODY, body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    background-color: lightgray;
+}
+
+TABLE, table {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+H1 {
+    color: navajowhite;
+    background-color: rebeccapurple;
+}
+
+H2 {
+    color: rebeccapurple;
+}
+
+.topForm, .sidebarRight {
+    background-color: lightgray;
+}
+
+.logbookRow, .logbookAlternateRow {
+    vertical-align: top;
+    border-bottom: 1px solid #cccccc;
+}
+
+.logbookAlternateRow {
+    background-color: darkgray;
+}
+
+    .logbookRow:nth-last-child(2), .logbookAlternateRow:nth-last-child(2) {
+        border-bottom: none;
+    }
