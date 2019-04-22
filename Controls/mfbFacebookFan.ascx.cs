@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Xml.Linq;
+﻿using MyFlightbook;
+using System;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -25,6 +15,7 @@ public partial class Controls_mfbFacebookFan : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        if (!IsPostBack)
+            pnlFacebook.Visible = !String.IsNullOrEmpty(Branding.CurrentBrand.FacebookFeed);
     }
 }
