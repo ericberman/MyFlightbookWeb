@@ -966,6 +966,21 @@ namespace MyFlightbook
             DefaultImage = Convert.ToString(dr["DefaultImage"], CultureInfo.InvariantCulture) ?? string.Empty;
         }
 
+        /// <summary>
+        /// Initialize this aircraft from another one
+        /// </summary>
+        /// <param name="ac"></param>
+        protected void InitFromAircraft(Aircraft ac)
+        {
+            if (ac == null)
+                return;
+
+            JsonConvert.PopulateObject(JsonConvert.SerializeObject(ac, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }), this);
+            // strip any images
+            DefaultImage = string.Empty;
+            rgImages = new List<MFBImageInfo>();
+        }
+
         public static IEnumerable<Aircraft> AircraftFromIDs(IEnumerable<int> ids)
         {
             string szIDs = String.Join(",", ids);
@@ -1143,9 +1158,10 @@ namespace MyFlightbook
             //  (d) This is EXISTING, Aircraft ID is NOT in the list - IF WE WEREN'T IN THE LIST, WE MUST HAVE CHANGED OUR TAILNUMBER TO AN EXISTING AIRCRAFT; MATCH TO THE FIRST good hit or clone
             // (b) and (d) reduce to basically mean that if THIS aircraft is NOT already in the list of existing aircraft with this tail, we should initialize best existing hit and return, or else clone if no good hit.
             //
-            // There are two additional wrinkles to this:
+            // There are a few additional wrinkles to this:
             //  (b) & (d): the model did not match the specified model but was matched to a close one.  E.g., the user specified a C-172 but there was a C-172S, so we're mapping to that: need to notify them that this happened
             //  (c.2): the model does not match the specified model.  We are CHANGING the model of the aircraft, and thus need to notify all users of this aircraft of this fact.  
+            //  (c.3): the model does not match the specified model, but an alternative existing clone does - Just add that clone 
             //  
             //  So in the case of c.2, any determiniation that we need to clone (vs. changing the underlying aircraft) needs to have ALREADY BEEN MADE by the caller, by calling HandlePotentialClone
             // 
@@ -1162,17 +1178,27 @@ namespace MyFlightbook
                     if (ac != null)
                     {
                         // We had a hard (same model) or a soft (same family) match to another aircraft.  Any notification has already been sent out by ReuseOrCloneAircraft, as needed.
-                        JsonConvert.PopulateObject(JsonConvert.SerializeObject(ac, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }), this);
+                        InitFromAircraft(ac);
                         return;
                     }
                     // Now fall through - Version (if we're cloning) and/or model (if we're just modifying an otherwise un-used existing aircraft) have been modified by ReuseOrCloneAircraft.
                 }
-                else 
+                else
+                {
                     // (c) - We are EXISTING and we are in the list: modifying ourselves (NOTE: HandlePotentialClone check for cloning should already have been done before we got here!)
                     // This aircraft was found in list - case (c) and (c.2)
                     // Since this is a MODIFY, we will let the change go through and notify the other users (ignoring the return result)
                     // By definition, acThis is not null
+
+                    // Check for (c.3)
+                    Aircraft acMatchingClone = lstSimilarTails.FirstOrDefault(ac => ac.ModelID == ModelID && ac.AircraftID != AircraftID);
+                    if (acMatchingClone != null)
+                    {
+                        InitFromAircraft(acMatchingClone);
+                        return;
+                    }
                     NotifyIfModelChanged(acThis, szUser);
+                }
             }
 
             // If we're here, it's time to save the changes
