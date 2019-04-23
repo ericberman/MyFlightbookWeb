@@ -329,6 +329,7 @@
         meta:resourcekey="pnlSubmitResource1">
         <div style="text-align:center;">
             <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LogbookEntry, EditFlightInlineCancel %>" OnClick="btnCancel_Click" Visible="false" />&nbsp;&nbsp;
+            <asp:Button ID="btnAddPending" runat="server" Text="Add Pending" Visible="false" OnClick="btnAddPending_Click" meta:resourcekey="btnAddPendingResource1" />
             <asp:Button ID="btnAddFlight" runat="server" Text="Add Flight" 
                 OnClick="btnAddFlight_Click" TabIndex="31" 
                 meta:resourcekey="btnAddFlightResource1"/>

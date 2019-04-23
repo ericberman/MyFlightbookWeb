@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`pendingflights` 
+CHANGE COLUMN `jsonflight` `jsonflight` MEDIUMTEXT NOT NULL ;

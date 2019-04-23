@@ -217,6 +217,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         if (!IsPostBack)
         {
             InitBasicControls();
+            btnAddPending.Visible = util.GetIntParam(Request, "pend", 0) != 0;
         }
         else
             ProcessImages(FlightID);
@@ -582,6 +583,21 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
                 FlightUpdated(sender, e);
         }
     }
+
+    protected void btnAddPending_Click(object sender, EventArgs e)
+    {
+        if (String.IsNullOrWhiteSpace(hdnPendingID.Value))
+            hdnPendingID.Value = new PendingFlight().PendingID;
+
+        PendingFlight le = (PendingFlight) InitLogbookEntryFromForm();
+        le.FlightData = mfbFlightInfo1.Telemetry;
+
+        // No need - by definition - to handle errors.
+        le.Commit();
+        if (FlightUpdated != null)
+            FlightUpdated(sender, e);
+    }
+
     protected void lnkAddAircraft_Click(object sender, EventArgs e)
     {
         LogbookEntry le = InitLogbookEntryFromForm();
