@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -228,6 +229,9 @@ public partial class Member_Import : System.Web.UI.Page
             SetWizardStep(wsUpload);
             return;
         }
+
+        // issue #280: some files have \r\r\n as line separators!
+        rgb = Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(rgb).Replace("\r\r\n", "\r\n"));
 
         // Validate the file
         ExternalFormatImporter efi = ExternalFormatImporter.GetImporter(rgb);
