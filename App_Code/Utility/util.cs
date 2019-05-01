@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -464,7 +464,8 @@ namespace MyFlightbook
             }
 
             string szError = ErrorMessage.ToString();
-            util.NotifyAdminEvent("Error on the myflightbook site" + (szError.Contains("Invalid viewstate") ? " (Viewstate)" : string.Empty), szError, ProfileRoles.maskSiteAdminOnly);
+            if (!szError.Contains("Invalid viewstate"))
+                util.NotifyAdminEvent("Error on the myflightbook site" + (szError.Contains("Invalid viewstate") ? " (Viewstate)" : string.Empty), szError, ProfileRoles.maskSiteAdminOnly);
         }
         #endregion
 
