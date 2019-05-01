@@ -35,7 +35,10 @@ namespace MyFlightbook.MilestoneProgress
                 new ATPRestrictedAirplaneAMEL160F(),
                 new ATPRestrictedAirplaneAMES160F(),
                 new ATPHelicopter(),
-                new ATPPoweredLift() };
+                new ATPPoweredLift(),
+                new ATPCanadaAirplane(),
+                new ATPCanadaHelicopter()
+            };
         }
     }
 
@@ -472,6 +475,216 @@ namespace MyFlightbook.MilestoneProgress
                 l.Add(miMinPLPICNight);
                 l.Add(miMinInstrument);
                 return l;
+            }
+        }
+    }
+    #endregion
+    #endregion
+
+    #region Canada
+    /// <summary>
+    /// ATP Airplane - http://www.tc.gc.ca/eng/civilaviation/regserv/cars/part4-standards-421-1086.htm?WT.mc_id=vl7fd#421_34
+    /// </summary>
+    [Serializable]
+    public abstract class ATPCanadaBase : MilestoneProgress
+    {
+        protected int MinHours;
+        protected int MinInCategory;
+        protected int MinPICInCategory;
+        protected int MaxPICUSInCategory;
+        protected int MinXC;
+        protected int MinPICXC;
+        protected int MinPICXCNight;
+        protected int MinNight;
+        protected int MinNightInCategory;
+        protected int MinXCPICAdditional;
+        protected int MinXCSICPICAdditional;
+        protected int MinInstrument;
+        protected int MaxSimulator;
+        protected int MaxInstrumentAlternativeCategory;
+        protected string Category;
+        protected string AltCategory;
+
+        #region MilestoneItems
+        protected MilestoneItem miTotal { get; set; }
+        protected MilestoneItem miCategory { get; set; }
+        protected MilestoneItem miXC { get; set; }
+        protected MilestoneItem miPIC { get; set; }
+        protected MilestoneItem miPICXC { get; set; }
+        protected MilestoneItem miPICXCNight { get; set; }
+        protected MilestoneItem miNight { get; set; }
+        protected MilestoneItem miNightInCategory { get; set; }
+        protected MilestoneItem miXCPICAdditional { get; set; }
+        protected MilestoneItem miXCSICPICAdditional { get; set; }
+        protected MilestoneItem miInstrument { get; set; }
+
+        protected MilestoneItem miInstrumentAltCategory { get; set; }
+        #endregion
+
+        protected void InitMilestones(string catDisplay, string altCatDisplay)
+        {
+            miTotal = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPTotalTime, MinHours), ResolvedFAR(string.Empty), string.Empty, MilestoneItem.MilestoneType.Time, MinHours);
+            miCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPTotalTimeInCategory, MinInCategory, catDisplay), ResolvedFAR(string.Empty), string.Empty, MilestoneItem.MilestoneType.Time, MinInCategory);
+            miPIC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPPIC, MinPICInCategory, catDisplay), ResolvedFAR("(a)"), String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPPICUSNote, MaxPICUSInCategory), MilestoneItem.MilestoneType.Time, MinPICInCategory);
+            miPICXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPPICXC, MinPICXC, catDisplay), ResolvedFAR("(a)"), string.Empty, MilestoneItem.MilestoneType.Time, MinPICXC);
+            miPICXCNight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPPICXCNight, MinPICXCNight, catDisplay), ResolvedFAR("(a)"), string.Empty, MilestoneItem.MilestoneType.Time, MinPICXCNight);
+            miXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPXC, MinXC, catDisplay), ResolvedFAR("(c)"), string.Empty, MilestoneItem.MilestoneType.Time, MinXC);
+            miNight = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPNight, MinNight), ResolvedFAR("(b)"), string.Empty, MilestoneItem.MilestoneType.Time, MinNight);
+            miNightInCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPNightCategory, MinNightInCategory, catDisplay), ResolvedFAR("(b)"), string.Empty, MilestoneItem.MilestoneType.Time, MinNightInCategory);
+            miXCPICAdditional = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPExtraXC, MinXCPICAdditional), ResolvedFAR("(c)"), Resources.MilestoneProgress.CAATPExtraXCNote, MilestoneItem.MilestoneType.Time, MinXCPICAdditional);
+            miXCSICPICAdditional = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPExtraXC, MinXCPICAdditional), ResolvedFAR("(c)"), Resources.MilestoneProgress.CAATPExtraXCNote, MilestoneItem.MilestoneType.Time, MinXCSICPICAdditional);
+            miInstrument = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPInstrument, MinInstrument), ResolvedFAR("(d)"), String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CAATPInstrumentNote, MaxInstrumentAlternativeCategory, altCatDisplay), MilestoneItem.MilestoneType.Time, MinInstrument);
+            miInstrumentAltCategory = new MilestoneItem(string.Empty, string.Empty, string.Empty, MilestoneItem.MilestoneType.Time, 0.0M);
+        }
+
+        protected ATPCanadaBase(string title, string category, string altcategory, string basefar, RatingType ratingtype)
+        {
+            Title = title;
+            Category = category;
+            AltCategory = altcategory;
+            BaseFAR = basefar;
+            RatingSought = ratingtype;
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException("cfr");
+
+            if (!cfr.fIsRealAircraft && cfr.fIsCertifiedIFR)
+                miInstrument.AddTrainingEvent(cfr.IMCSim, MaxSimulator, !cfr.fIsRealAircraft);
+
+            if (!cfr.fIsRealAircraft)
+                return;
+
+            miTotal.AddEvent(cfr.Total);
+
+            decimal CoPilot = cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryCoPilottime) + cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropCoPilotTime);
+
+            miNight.AddEvent(Math.Min(CoPilot + cfr.PIC, cfr.Night));
+
+            // Can add PIC or PICUS, but only up to MinPICUSInCategory for the latter.
+            // So if a flight has, say, an hour of PIC and an hour of PICUS, it's possible that they're double-logged.  Looking at the database, that seems common.
+            // E.g., a 1.5 hour flight has 1.5 hours of PIC and 1.5 hours of PICUS.
+            // To be conservative, we'll subtract off any PICUS from PIC; the remainder is PIC time we can use unlimited.
+            // Thus we can compute total PIC time for a flight as PIC+PICUS - which will possibly undercount but never overcount.
+            decimal PICUS = cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropPICUS);
+            decimal netPIC = Math.Max(cfr.PIC - PICUS, 0.0M);
+
+            miXCPICAdditional.AddEvent(Math.Min(cfr.PIC, cfr.XC));
+            miXCSICPICAdditional.AddEvent(Math.Min(cfr.Total, Math.Min(cfr.PIC + cfr.SIC + CoPilot, cfr.XC)));
+
+            if (cfr.szCategory.CompareCurrentCultureIgnoreCase(Category) == 0)
+            {
+                miCategory.AddEvent(cfr.Total);
+                miXC.AddEvent(cfr.XC);
+
+                miPIC.AddEvent(netPIC);
+                miPICXC.AddEvent(Math.Min(netPIC, cfr.XC));
+                miPICXCNight.AddEvent(Math.Min(netPIC, Math.Min(cfr.XC, cfr.Night)));
+
+                miPIC.AddTrainingEvent(PICUS, MaxPICUSInCategory, true);
+                miPICXC.AddTrainingEvent(Math.Min(PICUS, cfr.XC), MaxPICUSInCategory, true);
+                miPICXCNight.AddTrainingEvent(Math.Min(PICUS, Math.Min(cfr.XC, cfr.Night)), MaxPICUSInCategory, true);
+
+                miNightInCategory.AddEvent(Math.Min(CoPilot + cfr.PIC, cfr.Night));
+
+                miInstrument.AddEvent(cfr.IMC + cfr.IMCSim);
+            }
+            else if (cfr.szCategory.CompareCurrentCultureIgnoreCase(AltCategory) == 0)
+                miInstrumentAltCategory.AddTrainingEvent(cfr.IMC + cfr.IMCSim, MaxInstrumentAlternativeCategory, true);
+        }
+    }
+
+    #region concrete ATP Canada classes
+    [Serializable]
+    /// <summary>
+    /// ATP Airplane - http://www.tc.gc.ca/eng/civilaviation/regserv/cars/part4-standards-421-1086.htm?WT.mc_id=vl7fd#421_34(4)
+    /// </summary>
+    public class ATPCanadaAirplane : ATPCanadaBase
+    {
+        public ATPCanadaAirplane() : base(Resources.MilestoneProgress.TitleCAATPAirplane,
+            CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASEL).Category,
+            CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Helicopter).Category,            
+            "421.34(4)",
+            RatingType.ATPAirplane)
+        {
+            MinHours = 1500;
+            MinInCategory = 900;
+            MinXC = 0;
+            MinPICInCategory = 250;
+            MaxPICUSInCategory = 100;
+            MinPICXC = 100;
+            MinPICXCNight = 25;
+            MinNight = 100;
+            MinNightInCategory = 30;
+            MinXCPICAdditional = 100;
+            MinXCSICPICAdditional = 200;
+            MinInstrument = 75;
+            MaxSimulator = 25;
+            MaxInstrumentAlternativeCategory = 35;
+            InitMilestones(Resources.MilestoneProgress.CAATPAeroplanes, Resources.MilestoneProgress.CAATPHelicopters);
+        }
+
+        public override Collection<MilestoneItem> Milestones
+        {
+            get
+            {
+                // "Additional" PICXC appears to need to be above and beyond the hours in-category, so subtract off those
+                // we'll then return that one (using straight PIC-XC), if it's met OR if the alternative isn't met; otherwise, we'll return the alternative.
+                miXCPICAdditional.Progress = Math.Max(miXCPICAdditional.Progress - miPICXC.Threshold, 0);
+                MilestoneItem miAdditionalPICXC = miXCPICAdditional.IsSatisfied || !miXCSICPICAdditional.IsSatisfied ? miXCPICAdditional : miXCSICPICAdditional;
+
+                // We can also add instrument time in alternative category to the training time.  (Couldn't do this with training event because we're already using the limit for sims)
+                miInstrument.AddEvent(Math.Min(miInstrumentAltCategory.Progress, MaxInstrumentAlternativeCategory));
+
+                return new Collection<MilestoneItem>() {
+                    miTotal, miCategory, miPIC, miPICXC, miPICXCNight, miNight, miNightInCategory, miAdditionalPICXC, miInstrument };
+            }
+        }
+    }
+
+    [Serializable]
+    /// <summary>
+    /// ATP Helicopter - http://www.tc.gc.ca/eng/civilaviation/regserv/cars/part4-standards-421-1086.htm?WT.mc_id=vl7fd#421_35(4)
+    /// </summary>
+    public class ATPCanadaHelicopter : ATPCanadaBase
+    {
+        public ATPCanadaHelicopter() : base(Resources.MilestoneProgress.TitleCAATPHelicopter, 
+            CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.Helicopter).Category, 
+            CategoryClass.CategoryClassFromID(CategoryClass.CatClassID.ASEL).Category,
+            "421.35(4)", 
+            RatingType.ATPHelicopter)
+        {
+            MinHours = 1000;
+            MinInCategory = 600;
+            MinXC = 200;
+            MinPICInCategory = 250;
+            MaxPICUSInCategory = 150;
+            MinPICXC = 100;
+            MinPICXCNight = 0;
+            MinNight = 50;
+            MinNightInCategory = 15;
+            MinXCPICAdditional = 100;
+            MinXCSICPICAdditional = 200;
+            MinInstrument = 30;
+            MaxSimulator = 0;
+            MaxInstrumentAlternativeCategory = 15;
+
+            InitMilestones(Resources.MilestoneProgress.CAATPHelicopters, Resources.MilestoneProgress.CAATPAeroplanes);
+
+            miPICXC.FARRef = ResolvedFAR("(c)");
+        }
+
+        public override Collection<MilestoneItem> Milestones
+        {
+            get
+            {
+                // We can also add instrument time in alternative category to the training time.  (Couldn't do this with training event because we're already using the limit for sims)
+                miInstrument.AddEvent(Math.Min(miInstrumentAltCategory.Progress, MaxInstrumentAlternativeCategory));
+
+                return new Collection<MilestoneItem>() {
+                    miTotal, miCategory, miPIC,  miNight, miNightInCategory, miXC, miPICXC, miInstrument };
             }
         }
     }

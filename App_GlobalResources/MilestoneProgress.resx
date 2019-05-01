@@ -1348,4 +1348,55 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="Part135XCNote" xml:space="preserve">
     <value>Cross-country time here uses the logged Cross-Country time for a flight or the Total Time, if the route has more than one airport, whichever is greater</value>
   </data>
+  <data name="CAATPExtraXC" xml:space="preserve">
+    <value>{0} additional hours of cross-country time as PIC</value>
+  </data>
+  <data name="CAATPExtraXCNote" xml:space="preserve">
+    <value>Or, 200 hours of any combination of PIC/Co-Pilot cross-country time</value>
+  </data>
+  <data name="CAATPInstrument" xml:space="preserve">
+    <value>{0} hours of instrument flight</value>
+  </data>
+  <data name="CAATPInstrumentNote" xml:space="preserve">
+    <value>Up to {0} hours of time in {1} can apply towards this</value>
+  </data>
+  <data name="CAATPNight" xml:space="preserve">
+    <value>{0} hours of night as PIC or co-pilot</value>
+  </data>
+  <data name="CAATPNightCategory" xml:space="preserve">
+    <value>{0} hours of night as PIC or co-pilot in {1}</value>
+  </data>
+  <data name="CAATPPIC" xml:space="preserve">
+    <value>{0} hours as PIC in {1}</value>
+  </data>
+  <data name="CAATPPICUSNote" xml:space="preserve">
+    <value>Up to {0} hours of PICUS time may be applied here; if both PICUS and PIC are logged on a flight, they are assumed to be simultaneous.</value>
+  </data>
+  <data name="CAATPPICXC" xml:space="preserve">
+    <value>{0} hours of cross-country PIC in {1}</value>
+  </data>
+  <data name="CAATPPICXCNight" xml:space="preserve">
+    <value>{0} hours of night cross-country PIC in {1}</value>
+  </data>
+  <data name="CAATPTotalTime" xml:space="preserve">
+    <value>{0} hours of flight time</value>
+  </data>
+  <data name="CAATPTotalTimeInCategory" xml:space="preserve">
+    <value>{0} hours of flight time in {1}</value>
+  </data>
+  <data name="TitleCAATPAirplane" xml:space="preserve">
+    <value>Canada - ATP, Airplane</value>
+  </data>
+  <data name="TitleCAATPHelicopter" xml:space="preserve">
+    <value>Canada - ATP, Helicopter</value>
+  </data>
+  <data name="CAATPAeroplanes" xml:space="preserve">
+    <value>aeroplanes</value>
+  </data>
+  <data name="CAATPHelicopters" xml:space="preserve">
+    <value>helicopters</value>
+  </data>
+  <data name="CAATPXC" xml:space="preserve">
+    <value>{0} hours of cross-country time in {1}</value>
+  </data>
 </root>
