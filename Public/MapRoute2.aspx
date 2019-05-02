@@ -16,7 +16,7 @@
         <div><asp:Localize ID="locMapPrompt" runat="server" Text="<%$ Resources:Airports, MapPrompt %>"></asp:Localize>
             <uc6:mfbTooltip ID="mfbTooltip1" runat="server" BodyContent="<%$ Resources:Airports, MapNavaidTip %>" /></div>
         <div><asp:TextBox ID="txtAirports" Width="600px" TextMode="MultiLine" Rows="1" runat="server"></asp:TextBox></div>
-        <div><asp:Button ID="btnMapEm" runat="server" OnClick="btnMapEm_Click" Text="<%$ Resources:Airports, MapUpdateMap %>" /></div>
+        <div><asp:Button ID="btnMapEm" runat="server" OnClick="btnMapEm_Click" Text="<%$ Resources:Airports, MapUpdateMap %>" /> <asp:Button ID="btnOptimizeRoute" runat="server" Text="Optimize Route" Visible="false" OnClick="btnOptimizeRoute_Click" /></div>
         <asp:UpdatePanel ID="pnlShowMeters" runat="server">
             <ContentTemplate>
                 <asp:Panel ID="pnlMetars" runat="server">

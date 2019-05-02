@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -56,6 +56,8 @@ public partial class MapRoute : System.Web.UI.Page
                 if (Session[txtAirports.Text] != null)
                     CurrentVisitedRoute = (VisitedRoute)Session[txtAirports.Text];
             }
+
+            btnOptimizeRoute.Visible = (util.GetStringParam(Request, "tsp").Length > 0);
         }
 
 
@@ -82,7 +84,7 @@ public partial class MapRoute : System.Web.UI.Page
 
     protected void btnMapEm_Click(object sender, EventArgs e)
     {
-        Response.Redirect(Request.Url.AbsolutePath + "?Airports=" + HttpUtility.UrlEncode(txtAirports.Text)); 
+        Response.Redirect(Request.Url.AbsolutePath + "?Airports=" + HttpUtility.UrlEncode(txtAirports.Text) + (btnOptimizeRoute.Visible ? "&tsp=1" : string.Empty)); 
     }
 
     private void SetAirportsInMap(IEnumerable<AirportList> lst)
@@ -205,4 +207,14 @@ public partial class MapRoute : System.Web.UI.Page
         }
     }
     #endregion
+
+    protected void btnOptimizeRoute_Click(object sender, EventArgs e)
+    {
+        List<airport> lst = new List<airport>(AirportList.ListsFromRoutes(txtAirports.Text).Result[0].UniqueAirports);
+        if (lst.Count == 0)
+            return;
+        IEnumerable<airport> path = TravelingSalesman.ShortestPath(lst);
+        txtAirports.Text = String.Join(" ", path.Select(ap => ap.Code));
+        btnMapEm_Click(sender, e);
+    }
 }

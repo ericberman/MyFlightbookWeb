@@ -2170,4 +2170,228 @@ namespace MyFlightbook.Airports
             return rgShuffle;
         }
     }
+
+    /// <summary>
+    /// Solution to TSP for a collection of airports, code adapted from https://stackoverflow.com/questions/2927469/traveling-salesman-problem-2-opt-algorithm-c-sharp-implementation
+    /// </summary>
+    public static class TravelingSalesman
+    {
+        private class Stop
+        {
+            public Stop(airport ap)
+            {
+                Airport = ap;
+            }
+
+
+            public Stop Next { get; set; }
+
+            public airport Airport { get; set; }
+
+
+            public Stop Clone()
+            {
+                return new Stop(Airport);
+            }
+
+
+            public static double Distance(Stop first, Stop other)
+            {
+                return first.Airport.DistanceFromAirport(other.Airport);
+            }
+
+
+            //list of nodes, including this one, that we can get to
+            public IEnumerable<Stop> CanGetTo()
+            {
+                var current = this;
+                while (true)
+                {
+                    yield return current;
+                    current = current.Next;
+                    if (current == this) break;
+                }
+            }
+
+
+            public override bool Equals(object obj)
+            {
+                return Airport.Code.CompareCurrentCultureIgnoreCase(((Stop)obj).Airport.Code) == 0;
+            }
+
+
+            public override int GetHashCode()
+            {
+                return Airport.GetHashCode();
+            }
+
+
+            public override string ToString()
+            {
+                return Airport.FullName;
+            }
+        }
+        
+        private class Tour
+        {
+            public Tour(IEnumerable<Stop> stops)
+            {
+                Anchor = stops.First();
+            }
+
+
+            //the set of tours we can make with 2-opt out of this one
+            public IEnumerable<Tour> GenerateMutations()
+            {
+                for (Stop stop = Anchor; stop.Next != Anchor; stop = stop.Next)
+                {
+                    //skip the next one, since you can't swap with that
+                    Stop current = stop.Next.Next;
+                    while (current != Anchor)
+                    {
+                        yield return CloneWithSwap(stop.Airport, current.Airport);
+                        current = current.Next;
+                    }
+                }
+            }
+            
+            public Stop Anchor { get; set; }
+            
+            public Tour CloneWithSwap(airport firstairport, airport secondairport)
+            {
+                Stop firstFrom = null, secondFrom = null;
+                var stops = UnconnectedClones();
+                stops.Connect(true);
+
+                foreach (Stop stop in stops)
+                {
+                    if (stop.Airport == firstairport) firstFrom = stop;
+
+                    if (stop.Airport == secondairport) secondFrom = stop;
+                }
+
+                //the swap part
+                var firstTo = firstFrom.Next;
+                var secondTo = secondFrom.Next;
+
+                //reverse all of the links between the swaps
+                firstTo.CanGetTo()
+                       .TakeWhile(stop => stop != secondTo)
+                       .Reverse()
+                       .Connect(false);
+
+                firstTo.Next = secondTo;
+                firstFrom.Next = secondFrom;
+
+                var tour = new Tour(stops);
+                return tour;
+            }
+
+
+            public IList<Stop> UnconnectedClones()
+            {
+                return Cycle().Select(stop => stop.Clone()).ToList();
+            }
+
+
+            public double Cost()
+            {
+                return Cycle().Aggregate(
+                    0.0,
+                    (sum, stop) =>
+                    sum + Stop.Distance(stop, stop.Next));
+            }
+
+
+            private IEnumerable<Stop> Cycle()
+            {
+                return Anchor.CanGetTo();
+            }
+
+
+            public override string ToString()
+            {
+                string path = String.Join(
+                    "->",
+                    Cycle().Select(stop => stop.ToString()).ToArray());
+                return String.Format(CultureInfo.CurrentCulture, "Cost: {0}, Path:{1}", Cost(), path);
+            }
+
+            public IEnumerable<airport> Path()
+            {
+                return Cycle().Select(stop => stop.Airport);
+            }
+        }
+
+        public static IEnumerable<airport> ShortestPath(IEnumerable<airport> airports)
+        {
+            if (airports == null)
+                return new airport[0];
+            if (airports.Count() <= 2)
+                return airports;
+
+            var lstStops = new List<Stop>();
+            foreach (airport ap in airports)
+                lstStops.Add(new Stop(ap));
+
+            lstStops.NearestNeighbors().Connect(true);
+
+            Tour startingTour = new Tour(lstStops);
+
+            //the actual algorithm
+            while (true)
+            {
+                var newTour = startingTour.GenerateMutations()
+                                          .MinBy(tour => tour.Cost());
+                if (newTour.Cost() < startingTour.Cost()) startingTour = newTour;
+                else break;
+            }
+
+            // Success?
+            return startingTour.Path();
+        }
+
+        //take an ordered list of nodes and set their next properties
+        private static void Connect(this IEnumerable<Stop> stops, bool loop)
+        {
+            Stop prev = null, first = null;
+            foreach (var stop in stops)
+            {
+                if (first == null) first = stop;
+                if (prev != null) prev.Next = stop;
+                prev = stop;
+            }
+
+            if (loop)
+            {
+                prev.Next = first;
+            }
+        }
+
+
+        //T with the smallest func(T)
+        private static T MinBy<T, TComparable>(
+            this IEnumerable<T> xs,
+            Func<T, TComparable> func)
+            where TComparable : IComparable<TComparable>
+        {
+            return xs.DefaultIfEmpty().Aggregate(
+                (maxSoFar, elem) =>
+                func(elem).CompareTo(func(maxSoFar)) > 0 ? maxSoFar : elem);
+        }
+
+
+        //return an ordered nearest neighbor set
+        private static IEnumerable<Stop> NearestNeighbors(this IEnumerable<Stop> stops)
+        {
+            var stopsLeft = stops.ToList();
+            for (var stop = stopsLeft.First();
+                 stop != null;
+                 stop = stopsLeft.MinBy(s => Stop.Distance(stop, s)))
+            {
+                stopsLeft.Remove(stop);
+                yield return stop;
+            }
+        }
+    }
 }
