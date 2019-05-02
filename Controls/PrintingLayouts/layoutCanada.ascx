@@ -139,7 +139,7 @@
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).IMC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).SimulatedIFR.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).GroundSim.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
+                                <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.FormatInt() %></td>
 
                                 <td><%# Math.Max((((LogbookEntryDisplay) Container.DataItem).XCDualTotal - ((LogbookEntryDisplay) Container.DataItem).XCNightDualTotal), 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# Math.Max((((LogbookEntryDisplay) Container.DataItem).XCPICTotal - ((LogbookEntryDisplay) Container.DataItem).XCNightPICTotal), 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
