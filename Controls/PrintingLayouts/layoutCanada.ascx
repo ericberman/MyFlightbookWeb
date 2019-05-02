@@ -99,7 +99,7 @@
                         <td><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td><%# Eval("SimulatedIFR").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td><%# Eval("GroundSim").FormatDecimal(CurrentUser.UsesHHMM)%></td>
-                        <td style="border-right: 2px solid black;"><%# Eval("Approaches") %></td>
+                        <td style="border-right: 2px solid black;"><%# ((int) Eval("Approaches")).FormatInt() %></td>
 
                         <td><%# Math.Min((decimal)Eval("Dual"), (decimal) Eval("DayXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td style="border-right: 2px solid black;"><%# Math.Min((decimal)Eval("PIC"), (decimal) Eval("DayXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
