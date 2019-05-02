@@ -1506,4 +1506,7 @@
   <data name="PendingFlightsLink" xml:space="preserve">
     <value>Pending Flights</value>
   </data>
+  <data name="PilotsLabel" xml:space="preserve">
+    <value>Pilots: </value>
+  </data>
 </root>

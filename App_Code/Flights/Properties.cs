@@ -103,6 +103,7 @@ namespace MyFlightbook
             IDPropFlightEngineerTime = 257,
             IDPropCAP91Checkride = 258,
             IDPropNameOfExaminer = 260,         // Not flagged as a known property
+            IDPropApproachName = 267,
             IDPropPICUS = 279,
             IDPropInstructorOnBoard = 288,
             IDPropPassengerCount = 316,         // Not flagged as a known property
@@ -124,6 +125,7 @@ namespace MyFlightbook
             IDPropUASTrainingCourse10774 = 528,
             IDPropPilotFlyingTime = 529,        // Not flagged as a known property
             IDPropPilotMonitoringTime = 530,
+            IDPropReliefPilotTime = 535,
             IDPropInstrumentInstructionTime = 542,
             IDPropCoPilotTime = 546,
             IDPropPilotMonitoring = 560,
