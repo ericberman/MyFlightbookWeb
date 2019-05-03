@@ -174,12 +174,12 @@ public partial class EditMake : System.Web.UI.Page
     {
         if (szTail == null)
             throw new ArgumentNullException("szTail");
-        szTail = szTail.ToUpper(CultureInfo.CurrentCulture);
+        szTail = szTail.ToUpper(CultureInfo.CurrentCulture).Replace("-", string.Empty);
         if (szTail.Contains("ATD"))
             return AircraftInstanceTypes.CertifiedATD;
         else if (Regex.IsMatch(szTail, "(D-?SIM)|FFS"))
             return AircraftInstanceTypes.CertifiedIFRAndLandingsSimulator;
-        else if (Regex.IsMatch(szTail, "FS|SIM|FTD|REDBIR|FRASC"))
+        else if (Regex.IsMatch(szTail, "FS|SIM|FTD|REDB|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF"))
             return AircraftInstanceTypes.CertifiedIFRSimulator;
         else
             return AircraftInstanceTypes.RealAircraft;
