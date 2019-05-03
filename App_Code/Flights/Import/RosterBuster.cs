@@ -86,7 +86,7 @@ namespace MyFlightbook.ImportFlights
 
         private MatchCollection Matches = null;
 
-        private static Regex regRosterBuster = new Regex("^\\(?(?<route>\\w{3,4}[- ]+\\w{3,4})\\)?,\\(?(?<startZ>\\d{4}Z)-(?<endZ>\\d{4}Z)\\)? ?(?<FlightNum>[^,]*),(?<StartDate>[^,]+),(?<StartTime>[^,]*),(?<EndDate>[^,]+),(?<EndTime>[^,]*),[^,]*,[^,]*,(?<Timezone>[^,]*).*$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        private static Regex regRosterBuster = new Regex("^\\(?(?<route>\\w{3,4}[- ]+\\w{3,4})\\)?,\\(?(?<startZ>\\d{4}Z)-(?<endZ>\\d{4}Z)\\)? ?(?<FlightNum>[^,]*),(?<StartDate>[^,]+),(?<StartTime>[^,]*),(?<EndDate>[^,]+),(?<EndTime>[^,]*),([^,]*,){2}(?<Timezone>[^,]*).*$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
         public override string Name { get { return "RosterBuster"; } }
 

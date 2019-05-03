@@ -393,94 +393,6 @@ namespace MyFlightbook.ImportFlights
                 if (idAircraft == 0)
                     idAircraft = Aircraft.idAircraftUnknown;
 
-                // check that we know about the aircraft or, if not, if it's in the system then add it for the user.
-                string szTail = Aircraft.NormalizeTail(le.TailNumDisplay = m_rgszRow[m_cm.iColTail].Trim().ToUpperInvariant());
-
-                // See if the aircraft exists
-                Aircraft ac = null;
-
-                if (String.IsNullOrEmpty(szTail.Trim()))
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportUnknownAircraft, szTail));
-
-                if (m_cm.AircraftForUser.ContainsKey(szTail))
-                {
-                    if (idAircraft > 0)
-                    {
-                        UserAircraft ua = new UserAircraft(m_cm.User);
-                        Aircraft acByID = ua.GetUserAircraftByID(idAircraft);
-                        if (acByID != null && Aircraft.NormalizeTail(acByID.TailNumber).CompareCurrentCultureIgnoreCase(szTail) == 0)   // it matches - use aircraft ID for disambiguation
-                            ac = acByID;
-                    }
-                }
-                else
-                {
-                    if (!dictFoundAircraft.ContainsKey(szTail)) // Avoid more than one DB hit per aircraft
-                        dictFoundAircraft[szTail] = Aircraft.AircraftMatchingTail(szTail);
-                    List<Aircraft> lst = dictFoundAircraft[szTail];
-                    if (lst.Count == 1) // it exists and there are no alternative versions (i.e., no ambiguity) - just go ahead and add it.
-                    {
-                        m_cm.AircraftForUser[szTail] = lst[0];
-                        new UserAircraft(m_cm.User).FAddAircraftForUser(lst[0]);
-                    }
-                    else
-                    {
-                        /* 
-                         * Aircraft not found - 3 scenarios
-                         *  a) No model column or no model specified - just throw a "no aircraft found" exception.
-                         *  b) Model column specified - add it to the list of aircraft to import.  Still throw the "no aircraft found" exception, because we need to resolve this before import
-                         *  c) anonymous or sim prefix - look it up in the user's profile and match to that if found, and then continue.
-                         */
-                        bool fFoundAnonOrSim = false;
-                        string szModel = string.Empty;
-
-                        if (m_cm.iColModel >= 0 && !String.IsNullOrEmpty(szModel = m_rgszRow[m_cm.iColModel]))
-                        {
-                            MakeModel mappedModel = (m_cm.ModelMapping != null && m_cm.ModelMapping.ContainsKey(szModel)) ? m_cm.ModelMapping[szModel] : null;   // see if we have a mapping for this, BEFORE trimming the comma
-
-                            // trim anything after a comma, if necessary
-                            int i = szModel.IndexOf(",");
-                            if (i > 0)
-                                szModel = szModel.Substring(0, i);
-
-                            if (CountryCodePrefix.IsNakedSim(szTail) || CountryCodePrefix.IsNakedAnon(szTail))
-                            {
-                                string szModelNormal = AircraftImportMatchRow.NormalizeModel(szModel);
-                                foreach (string szExistingTail in m_cm.AircraftForUser.Keys)
-                                {
-                                    if (szExistingTail.StartsWith(szTail, StringComparison.CurrentCultureIgnoreCase))
-                                    {
-                                        Aircraft acExisting = m_cm.AircraftForUser[szExistingTail];
-                                        int modelIDExisting = acExisting.ModelID;
-                                        if ((mappedModel != null && mappedModel.MakeModelID == modelIDExisting) ||
-                                            (AircraftImportMatchRow.NormalizeModel(MakeModel.GetModel(modelIDExisting).Model).StartsWith(szModelNormal, StringComparison.CurrentCultureIgnoreCase)))
-                                            {
-                                                fFoundAnonOrSim = true;     // don't throw an exception
-                                                szTail = szExistingTail;    // Map to this aircraft
-                                                break;
-                                            }
-                                    }
-                                }
-                            }
-
-                            if (!fFoundAnonOrSim)
-                                m_cm.AircraftToImport.AddMatchCandidate(szTail, szModel);
-                        }
-                        else
-                            m_cm.AircraftToImport.AddMatchCandidate(szTail, szModel, false);
-
-                        if (!fFoundAnonOrSim)
-                            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportUnknownAircraft, szTail));
-                    }
-                }
-
-                if (ac == null)
-                    ac = m_cm.AircraftForUser[szTail];
-                le.AircraftID = ac.AircraftID;
-                le.TailNumDisplay = ac.DisplayTailnumber;
-                le.CatClassOverride = GetMappedInt(m_cm.iColCatClassOverride);
-                le.ModelDisplay = ac.ModelDescription;  // for display
-                le.CatClassDisplay = (le.CatClassOverride == 0) ? ac.CategoryClassDisplay : CategoryClass.CategoryClassFromID((CategoryClass.CatClassID) le.CatClassOverride).CatClass;
-
                 if (m_rgszRow[m_cm.iColDate].Length > 0)
                 {
                     try
@@ -586,6 +498,94 @@ namespace MyFlightbook.ImportFlights
                 }
 
                 le.CustomProperties = lstCustPropsForFlight.ToArray();
+
+                // check that we know about the aircraft or, if not, if it's in the system then add it for the user.
+                string szTail = Aircraft.NormalizeTail(le.TailNumDisplay = m_rgszRow[m_cm.iColTail].Trim().ToUpperInvariant());
+
+                // See if the aircraft exists
+                Aircraft ac = null;
+
+                if (String.IsNullOrEmpty(szTail.Trim()))
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportUnknownAircraft, szTail));
+
+                if (m_cm.AircraftForUser.ContainsKey(szTail))
+                {
+                    if (idAircraft > 0)
+                    {
+                        UserAircraft ua = new UserAircraft(m_cm.User);
+                        Aircraft acByID = ua.GetUserAircraftByID(idAircraft);
+                        if (acByID != null && Aircraft.NormalizeTail(acByID.TailNumber).CompareCurrentCultureIgnoreCase(szTail) == 0)   // it matches - use aircraft ID for disambiguation
+                            ac = acByID;
+                    }
+                }
+                else
+                {
+                    if (!dictFoundAircraft.ContainsKey(szTail)) // Avoid more than one DB hit per aircraft
+                        dictFoundAircraft[szTail] = Aircraft.AircraftMatchingTail(szTail);
+                    List<Aircraft> lst = dictFoundAircraft[szTail];
+                    if (lst.Count == 1) // it exists and there are no alternative versions (i.e., no ambiguity) - just go ahead and add it.
+                    {
+                        m_cm.AircraftForUser[szTail] = lst[0];
+                        new UserAircraft(m_cm.User).FAddAircraftForUser(lst[0]);
+                    }
+                    else
+                    {
+                        /* 
+                         * Aircraft not found - 3 scenarios
+                         *  a) No model column or no model specified - just throw a "no aircraft found" exception.
+                         *  b) Model column specified - add it to the list of aircraft to import.  Still throw the "no aircraft found" exception, because we need to resolve this before import
+                         *  c) anonymous or sim prefix - look it up in the user's profile and match to that if found, and then continue.
+                         */
+                        bool fFoundAnonOrSim = false;
+                        string szModel = string.Empty;
+
+                        if (m_cm.iColModel >= 0 && !String.IsNullOrEmpty(szModel = m_rgszRow[m_cm.iColModel]))
+                        {
+                            MakeModel mappedModel = (m_cm.ModelMapping != null && m_cm.ModelMapping.ContainsKey(szModel)) ? m_cm.ModelMapping[szModel] : null;   // see if we have a mapping for this, BEFORE trimming the comma
+
+                            // trim anything after a comma, if necessary
+                            int i = szModel.IndexOf(",");
+                            if (i > 0)
+                                szModel = szModel.Substring(0, i);
+
+                            if (CountryCodePrefix.IsNakedSim(szTail) || CountryCodePrefix.IsNakedAnon(szTail))
+                            {
+                                string szModelNormal = AircraftImportMatchRow.NormalizeModel(szModel);
+                                foreach (string szExistingTail in m_cm.AircraftForUser.Keys)
+                                {
+                                    if (szExistingTail.StartsWith(szTail, StringComparison.CurrentCultureIgnoreCase))
+                                    {
+                                        Aircraft acExisting = m_cm.AircraftForUser[szExistingTail];
+                                        int modelIDExisting = acExisting.ModelID;
+                                        if ((mappedModel != null && mappedModel.MakeModelID == modelIDExisting) ||
+                                            (AircraftImportMatchRow.NormalizeModel(MakeModel.GetModel(modelIDExisting).Model).StartsWith(szModelNormal, StringComparison.CurrentCultureIgnoreCase)))
+                                            {
+                                                fFoundAnonOrSim = true;     // don't throw an exception
+                                                szTail = szExistingTail;    // Map to this aircraft
+                                                break;
+                                            }
+                                    }
+                                }
+                            }
+
+                            if (!fFoundAnonOrSim)
+                                m_cm.AircraftToImport.AddMatchCandidate(szTail, szModel);
+                        }
+                        else
+                            m_cm.AircraftToImport.AddMatchCandidate(szTail, szModel, false);
+
+                        if (!fFoundAnonOrSim)
+                            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportUnknownAircraft, szTail));
+                    }
+                }
+
+                if (ac == null)
+                    ac = m_cm.AircraftForUser[szTail];
+                le.AircraftID = ac.AircraftID;
+                le.TailNumDisplay = ac.DisplayTailnumber;
+                le.ModelDisplay = ac.ModelDescription;  // for display
+                le.CatClassOverride = GetMappedInt(m_cm.iColCatClassOverride);
+                le.CatClassDisplay = (le.CatClassOverride == 0) ? ac.CategoryClassDisplay : CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)le.CatClassOverride).CatClass;
 
                 if (!le.IsValid())
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportFlightIsInvalid, le.ErrorString));
