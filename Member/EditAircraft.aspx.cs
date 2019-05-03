@@ -179,7 +179,7 @@ public partial class EditMake : System.Web.UI.Page
             return AircraftInstanceTypes.CertifiedATD;
         else if (Regex.IsMatch(szTail, "(D-?SIM)|FFS"))
             return AircraftInstanceTypes.CertifiedIFRAndLandingsSimulator;
-        else if (Regex.IsMatch(szTail, "FS|SIM|FTD"))
+        else if (Regex.IsMatch(szTail, "FS|SIM|FTD|REDBIR|FRASC"))
             return AircraftInstanceTypes.CertifiedIFRSimulator;
         else
             return AircraftInstanceTypes.RealAircraft;

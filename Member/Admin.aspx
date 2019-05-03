@@ -443,10 +443,9 @@ LEFT JOIN (select idaircraft, tailnumber, m.idmodel, model, modelname
 LEFT JOIN Flights f ON f.idaircraft=ac.idaircraft
 WHERE
 	ac.tailnumber RLIKE '^N-?[ABD-FH-KM-QT-WYZ][-0-9A-Z]+'
-    OR (ac.tailnumber LIKE 'N7_7%' AND man.idmanufacturer=3) 
     OR modelTails.tailnumber IS NOT NULL
     OR REPLACE(RIGHT(ac.tailnumber, LENGTH(ac.tailnumber) - 1), '-', '') = REPLACE(RIGHT(m.model, LENGTH(m.model) - 1), '-', '')
-    OR (ac.instancetype=1 AND ac.tailnumber RLIKE 'SIM|FTD|ATD|FFS')
+    OR (ac.instancetype=1 AND REPLACE(ac.tailnumber, '-', '') RLIKE 'SIM|FTD|ATD|FFS|REDBIR|FRAS')
 GROUP BY ac.idaircraft
 ORDER BY tailnumber ASC"></asp:SqlDataSource>
                             </asp:View>
