@@ -1190,7 +1190,37 @@ namespace MyFlightbook
             return true;
         }
 
-        public abstract void AutofillForAircraft(Aircraft ac);
+        /// <summary>
+        /// Performs auto-fill based on the pilot role specified in the aircraft.
+        /// </summary>
+        /// <param name="ac"></param>
+        public void AutofillForAircraft(Aircraft ac)
+        {
+            if (ac == null)
+                throw new ArgumentNullException("ac");
+
+            if (IsNewFlight)
+            {
+                switch (ac.RoleForPilot)
+                {
+                    default:
+                    case Aircraft.PilotRole.None:
+                        break;
+                    case Aircraft.PilotRole.CFI:
+                        if (CFI == 0)
+                            CFI = TotalFlightTime;
+                        break;
+                    case Aircraft.PilotRole.PIC:
+                        if (PIC == 0)
+                            PIC = TotalFlightTime;
+                        break;
+                    case Aircraft.PilotRole.SIC:
+                        if (SIC == 0)
+                            SIC = TotalFlightTime;
+                        break;
+                }
+            }
+        }
 
         /// <summary>
         /// Validates the aircraft for the flight.  THIS PERFORMS AUTOFILL based on aircraft preferences, so it can modify the flight.
@@ -2132,40 +2162,6 @@ namespace MyFlightbook
             ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, FlightID.ToString(CultureInfo.InvariantCulture));
             il.Refresh(true, null, !fOnlyImages);
             FlightImages = il.ImageArray.ToArray();
-        }
-        #endregion
-
-        #region Autofill
-        /// <summary>
-        /// Performs auto-fill based on the pilot role specified in the aircraft.
-        /// </summary>
-        /// <param name="ac"></param>
-        public override void AutofillForAircraft(Aircraft ac)
-        {
-            if (ac == null)
-                throw new ArgumentNullException("ac");
-
-            if (IsNewFlight)
-            {
-                switch (ac.RoleForPilot)
-                {
-                    default:
-                    case Aircraft.PilotRole.None:
-                        break;
-                    case Aircraft.PilotRole.CFI:
-                        if (CFI == 0)
-                            CFI = TotalFlightTime;
-                        break;
-                    case Aircraft.PilotRole.PIC:
-                        if (PIC == 0)
-                            PIC = TotalFlightTime;
-                        break;
-                    case Aircraft.PilotRole.SIC:
-                        if (SIC == 0)
-                            SIC = TotalFlightTime;
-                        break;
-                }
-            }
         }
         #endregion
 

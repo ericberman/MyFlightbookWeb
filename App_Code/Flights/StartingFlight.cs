@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Web;
-using System.Text;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -19,7 +15,7 @@ namespace MyFlightbook.StartingFlight
     /// Summary description for StartingTotals
     /// </summary>
     [Serializable]
-    public class StartingFlight : LogbookEntry
+    public class StartingFlight : LogbookEntryBase
     {
         /// <summary>
         /// The representative aircraft for this starting flight.
