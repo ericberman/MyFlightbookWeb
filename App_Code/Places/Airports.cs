@@ -507,10 +507,21 @@ namespace MyFlightbook.Airports
     }
 
     /// <summary>
+    /// Represents a named point in space.
+    /// </summary>
+    public interface IFix
+    {
+        string Code { get; }
+        LatLong LatLong { get; }
+
+        double DistanceFromFix(IFix f);
+    }
+
+    /// <summary>
     /// Represents an airport as a latitude/longitude, airport code, and name
     /// </summary>
     [Serializable]
-    public class airport : IComparable
+    public class airport : IComparable, IFix
     {
         #region properties
         /// <summary>
@@ -748,11 +759,16 @@ namespace MyFlightbook.Airports
         /// </summary>
         /// <param name="ap">The airport to which it is being compared</param>
         /// <returns>Distance, in nautical miles</returns>
-        public double DistanceFromAirport(airport ap)
+        public double DistanceFromAirport(IFix ap)
         {
-            if (ap == null)
-                throw new ArgumentNullException("ap");
-            return this.LatLong.DistanceFrom(ap.LatLong);
+            return DistanceFromFix(ap);
+        }
+
+        public double DistanceFromFix(IFix f)
+        {
+            if (f == null)
+                throw new ArgumentNullException("f");
+            return this.LatLong.DistanceFrom(f.LatLong);
         }
 
         #region Route Parsing Utilities
@@ -2178,29 +2194,29 @@ namespace MyFlightbook.Airports
     {
         private class Stop
         {
-            public Stop(airport ap)
+            #region Constructors
+            public Stop(IFix f)
             {
-                Airport = ap;
+                Fix = f;
             }
+            #endregion
 
-
+            #region Properties
             public Stop Next { get; set; }
 
-            public airport Airport { get; set; }
-
+            public IFix Fix { get; set; }
+            #endregion
 
             public Stop Clone()
             {
-                return new Stop(Airport);
+                return new Stop(Fix);
             }
-
-
+            
             public static double Distance(Stop first, Stop other)
             {
-                return first.Airport.DistanceFromAirport(other.Airport);
+                return first.Fix.DistanceFromFix(other.Fix);
             }
-
-
+            
             //list of nodes, including this one, that we can get to
             public IEnumerable<Stop> CanGetTo()
             {
@@ -2212,23 +2228,20 @@ namespace MyFlightbook.Airports
                     if (current == this) break;
                 }
             }
-
-
+            
             public override bool Equals(object obj)
             {
-                return Airport.Code.CompareCurrentCultureIgnoreCase(((Stop)obj).Airport.Code) == 0;
+                return Fix.Code.CompareCurrentCultureIgnoreCase(((Stop)obj).Fix.Code) == 0;
             }
-
-
+            
             public override int GetHashCode()
             {
-                return Airport.GetHashCode();
+                return Fix.GetHashCode();
             }
-
-
+            
             public override string ToString()
             {
-                return Airport.FullName;
+                return Fix.ToString();
             }
         }
         
@@ -2239,7 +2252,6 @@ namespace MyFlightbook.Airports
                 Anchor = stops.First();
             }
 
-
             //the set of tours we can make with 2-opt out of this one
             public IEnumerable<Tour> GenerateMutations()
             {
@@ -2249,7 +2261,7 @@ namespace MyFlightbook.Airports
                     Stop current = stop.Next.Next;
                     while (current != Anchor)
                     {
-                        yield return CloneWithSwap(stop.Airport, current.Airport);
+                        yield return CloneWithSwap(stop.Fix, current.Fix);
                         current = current.Next;
                     }
                 }
@@ -2257,7 +2269,7 @@ namespace MyFlightbook.Airports
             
             public Stop Anchor { get; set; }
             
-            public Tour CloneWithSwap(airport firstairport, airport secondairport)
+            public Tour CloneWithSwap(IFix firstFix, IFix secondFix)
             {
                 Stop firstFrom = null, secondFrom = null;
                 var stops = UnconnectedClones();
@@ -2265,9 +2277,9 @@ namespace MyFlightbook.Airports
 
                 foreach (Stop stop in stops)
                 {
-                    if (stop.Airport == firstairport) firstFrom = stop;
+                    if (stop.Fix == firstFix) firstFrom = stop;
 
-                    if (stop.Airport == secondairport) secondFrom = stop;
+                    if (stop.Fix == secondFix) secondFrom = stop;
                 }
 
                 //the swap part
@@ -2317,21 +2329,21 @@ namespace MyFlightbook.Airports
                 return String.Format(CultureInfo.CurrentCulture, "Cost: {0}, Path:{1}", Cost(), path);
             }
 
-            public IEnumerable<airport> Path()
+            public IEnumerable<IFix> Path()
             {
-                return Cycle().Select(stop => stop.Airport);
+                return Cycle().Select(stop => stop.Fix);
             }
         }
 
-        public static IEnumerable<airport> ShortestPath(IEnumerable<airport> airports)
+        public static IEnumerable<IFix> ShortestPath(IEnumerable<IFix> rgFixes)
         {
-            if (airports == null)
+            if (rgFixes == null)
                 return new airport[0];
-            if (airports.Count() <= 2)
-                return airports;
+            if (rgFixes.Count() <= 2)
+                return rgFixes;
 
             var lstStops = new List<Stop>();
-            foreach (airport ap in airports)
+            foreach (airport ap in rgFixes)
                 lstStops.Add(new Stop(ap));
 
             lstStops.NearestNeighbors().Connect(true);

@@ -213,7 +213,7 @@ public partial class MapRoute : System.Web.UI.Page
         List<airport> lst = new List<airport>(AirportList.ListsFromRoutes(txtAirports.Text).Result[0].UniqueAirports);
         if (lst.Count == 0)
             return;
-        IEnumerable<airport> path = TravelingSalesman.ShortestPath(lst);
+        IEnumerable<IFix> path = TravelingSalesman.ShortestPath(lst);
         txtAirports.Text = String.Join(" ", path.Select(ap => ap.Code));
         btnMapEm_Click(sender, e);
     }
