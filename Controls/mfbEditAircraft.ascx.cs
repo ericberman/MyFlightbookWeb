@@ -507,15 +507,17 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         mvTailnumber.SetActiveView(fRealAircraft ? vwRealAircraft : vwSimTail);
 
         // Show glass option if this is not, by model, a glass cockpit AND if it's not anonymous
-        bool fRealRegistered = fRealAircraft && !m_ac.IsAnonymous;
+        bool fRealRegistered = fRealAircraft && !fIsAnonymous;
 
         // All avionics upgrade options are limited to real, registered aircraft.  Beyond that:
         // - Can upgrade to glass if the model is not already glass or TAA (i.e., = steam)
         // - Can upgrade to TAA if the model is not already TAA-only AND this is an airplane (TAA is airplane only).
         // - So we will hide the overall avionics upgrade panel if no upgrade is possible.
-        rbAvionicsGlass.Visible = fRealRegistered && mm.AvionicsTechnology == MakeModel.AvionicsTechnologyType.None;
-        pnlTAA.Visible = fRealRegistered && mm.AvionicsTechnology != MakeModel.AvionicsTechnologyType.TAA;
-        pnlGlassCockpit.Visible = rbAvionicsGlass.Visible || pnlTAA.Visible;
+        bool fAvionicsGlassvisible = fRealRegistered && mm.AvionicsTechnology == MakeModel.AvionicsTechnologyType.None;
+        bool fTAAVisible = fRealRegistered && mm.AvionicsTechnology != MakeModel.AvionicsTechnologyType.TAA;
+        rbAvionicsGlass.Visible = fAvionicsGlassvisible;
+        pnlTAA.Visible = fTAAVisible;
+        pnlGlassCockpit.Visible = fAvionicsGlassvisible|| fTAAVisible;
 
         // Sanity check
         if ((rbAvionicsGlass.Checked && !rbAvionicsGlass.Visible) || (rbAvionicsTAA.Checked && !rbAvionicsTAA.Visible))
