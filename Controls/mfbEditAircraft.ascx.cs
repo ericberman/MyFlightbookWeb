@@ -503,7 +503,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
         pnlReuseWarning.Visible = fIsNew;
         if (!fIsNew)
-            lblTailnumber.Text = m_ac.TailNumber;
+            lblTailnumber.Text = m_ac.IsAnonymous ? String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, m_ac.TailNumber, m_ac.DisplayTailnumber) : m_ac.TailNumber;
     }
 
     /// <summary>

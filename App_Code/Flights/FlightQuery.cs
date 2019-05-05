@@ -1,17 +1,17 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using MySql.Data.MySqlClient;
-using System.Reflection;
-using Newtonsoft.Json;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -768,7 +768,7 @@ namespace MyFlightbook
                     }
 
                     sbAircraftID.Append(AircraftList[i].AircraftID.ToString(CultureInfo.InvariantCulture));
-                    sbAircraftDesc.Append(AircraftList[i].TailNumber);
+                    sbAircraftDesc.Append(AircraftList[i].DisplayTailnumber);
                 }
                 sbAircraftID.Append(") ");
 
