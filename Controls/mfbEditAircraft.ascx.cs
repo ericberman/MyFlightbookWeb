@@ -87,8 +87,29 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
     protected AircraftInstanceTypes SelectedInstanceType
     {
-        get { return (AircraftInstanceTypes)Convert.ToInt32(cmbAircraftInstance.SelectedValue, CultureInfo.InvariantCulture); }
-        set { cmbAircraftInstance.SelectedValue = ((int)value).ToString(CultureInfo.InvariantCulture); }
+        get { return rbTrainingDevice.Checked ? (AircraftInstanceTypes)Convert.ToInt32(rblTrainingDevices.SelectedValue, CultureInfo.InvariantCulture) : AircraftInstanceTypes.RealAircraft; }
+        set
+        {
+            m_ac.InstanceType = value;
+            rbRealRegistered.Checked = rbRealAnonymous.Checked = rbTrainingDevice.Checked = false;
+            switch (value)
+            {
+                case AircraftInstanceTypes.RealAircraft:
+                    if (IsAnonymous)
+                        rbRealAnonymous.Checked = true;
+                    else
+                        rbRealRegistered.Checked = true;
+                    break;
+                case AircraftInstanceTypes.CertifiedATD:
+                case AircraftInstanceTypes.CertifiedIFRAndLandingsSimulator:
+                case AircraftInstanceTypes.CertifiedIFRSimulator:
+                case AircraftInstanceTypes.UncertifiedSimulator:
+                default:
+                    rbTrainingDevice.Checked = true;
+                    rblTrainingDevices.SelectedValue = ((int)value).ToString(CultureInfo.InvariantCulture);
+                    break;
+            }
+        }
     }
 
     /// <summary>
@@ -157,8 +178,11 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
         if (!IsPostBack)
         {
-            cmbAircraftInstance.DataSource = AircraftInstance.GetInstanceTypes();
-            cmbAircraftInstance.DataBind();
+            List<AircraftInstance> lst = new List<AircraftInstance>(AircraftInstance.GetInstanceTypes());
+            lst.RemoveAll(aic => aic.IsRealAircraft);
+            rblTrainingDevices.DataSource = lst;
+            rblTrainingDevices.DataBind();
+            rblTrainingDevices.SelectedIndex = 0;
 
             InitFormForAircraft();
         }
@@ -415,13 +439,12 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         // disable editing of sims and anonymous aircraft.
         bool fIsLocked = (!AdminMode && m_ac.IsLocked);
         bool fCanEdit = IsRealAircraft && !IsAnonymous && !fIsLocked;
-        rbAvionicsNone.Enabled = rbAvionicsGlass.Enabled = rbAvionicsTAA.Enabled = ckAnonymous.Enabled = fCanEdit;
-        pnlAnonymous.Visible = fIsNew;
+        rbAvionicsNone.Enabled = rbAvionicsGlass.Enabled = rbAvionicsTAA.Enabled = fCanEdit;
 
+        lblStep1.Visible = lblStep2.Visible = lblStep3.Visible = lblStep4.Visible = fIsNew;
 
         pnlLockedExplanation.Visible = m_ac.IsLocked;
         ckLocked.Visible = AdminMode && IsRealAircraft;
-        ckAnonymous.Checked = IsRealAircraft && IsAnonymous;
         ckLocked.Checked = m_ac.IsLocked;
 
         SelectedInstanceType = m_ac.InstanceType;
@@ -431,7 +454,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         List<LinkedString> lstAttrib = new List<LinkedString>();
         if (!fIsNew)
         {
-            lstAttrib.Add(new LinkedString(cmbAircraftInstance.SelectedItem.Text));
+            lstAttrib.Add(new LinkedString(rbTrainingDevice.Checked ? rblTrainingDevices.SelectedItem.Text : (rbRealRegistered.Checked ? lblRealRegistered.Text : lblAnonymous.Text)));
             lstAttrib.AddRange(StatsForUser);
         }
         SelectMake1.AircraftAttributes = lstAttrib;
@@ -493,16 +516,36 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         Boolean fRealAircraft = IsRealAircraft;
         CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(m_ac.TailNumber);
 
-        if (mm.AllowedTypes == AllowedAircraftTypes.SimulatorOnly)
-        {
-            fRealAircraft = false;
-            cc = CountryCodePrefix.SimCountry;
-        }
-
         Boolean fIsNew = m_ac.IsNew;
         Boolean fHasModelSpecified = (m_ac.ModelID > 0);
 
-        Boolean fIsAnonymous = ckAnonymous.Checked;
+        Boolean fIsAnonymous = rbRealAnonymous.Checked;
+
+        rbRealRegistered.Enabled = rbRealAnonymous.Enabled = true;
+        switch (mm.AllowedTypes)
+        {
+            case AllowedAircraftTypes.Any:
+                break;
+            case AllowedAircraftTypes.SimOrAnonymous:
+                if (fRealAircraft)
+                {
+                    fIsAnonymous = true;
+                    m_ac.TailNumber = CountryCodePrefix.AnonymousCountry.Prefix;   // so that the selected instance will do anonymous correctly
+                    SelectedInstanceType = AircraftInstanceTypes.RealAircraft;
+                }
+                rbRealRegistered.Enabled = false;
+                break;
+            case AllowedAircraftTypes.SimulatorOnly:
+                cc = CountryCodePrefix.SimCountry;
+                if (fRealAircraft)
+                {
+                    // migrate to an ATD.
+                    m_ac.InstanceType = SelectedInstanceType = AircraftInstanceTypes.CertifiedATD;
+                    fRealAircraft = false;
+                }
+                rbRealRegistered.Enabled = rbRealAnonymous.Enabled = false;
+                break;
+        }
 
         mvTailnumber.SetActiveView(fRealAircraft ? vwRealAircraft : vwSimTail);
 
@@ -523,17 +566,10 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         if ((rbAvionicsGlass.Checked && !rbAvionicsGlass.Visible) || (rbAvionicsTAA.Checked && !rbAvionicsTAA.Visible))
             AvionicsUpgrade = MakeModel.AvionicsTechnologyType.None;
 
-        ckAnonymous.Enabled = true;
-        if (mm.AllowedTypes == AllowedAircraftTypes.SimOrAnonymous && fRealAircraft)
-        {
-            fIsAnonymous = ckAnonymous.Checked = true;
-            ckAnonymous.Enabled = false;
-        }
-
         rowCountry.Visible = fRealAircraft && !fIsAnonymous;
         rowMaintenance.Visible = rowCountry.Visible && !fIsNew;
 
-        mfbATDFTD1.Visible = fIsNew && !fRealAircraft;
+        pnlTrainingDeviceTypes.Visible = fIsNew && !fRealAircraft;
 
         if (fRealAircraft)
         {
@@ -562,8 +598,6 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             vwSimTailDisplay.SetActiveView(fHasModelSpecified ? vwHasModel : vwNoModel);
 
             lblSimTail.Text = txtTail.Text = m_ac.TailNumber;
-
-            ckAnonymous.Checked = false;
         }
     }
     #endregion
@@ -713,22 +747,18 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
                 Response.Redirect("~/Member/EditAircraft.aspx?id=" + aircraftID.ToString(CultureInfo.InvariantCulture));
         }
     }
-
-    protected void ckAnonymous_CheckedChanged(object sender, EventArgs e)
-    {
-        if (String.IsNullOrEmpty(txtTail.Text) && !ckAnonymous.Checked && m_ac.IsNew)
-            SetUpCountryCode();
-        AdjustForAircraftType();
-    }
     #endregion
 
     #region Instance Type
-    protected void cmbAircraftInstance_SelectedIndexChanged(object sender, EventArgs e)
+    protected void  UpdateInstanceType(object sender, EventArgs e)
     {
+        if (String.IsNullOrEmpty(txtTail.Text) && !rbRealAnonymous.Checked && m_ac.IsNew)
+            SetUpCountryCode();
+
         m_ac.InstanceType = SelectedInstanceType;
+        pnlTrainingDeviceTypes.Visible = m_ac.InstanceType != AircraftInstanceTypes.RealAircraft;
         UpdateMask();
         AvionicsUpgrade = MakeModel.AvionicsTechnologyType.None;  // reset this since model changed.
-        ckAnonymous.Checked = false;    // reset this as well.
 
         AdjustForAircraftType();
     }

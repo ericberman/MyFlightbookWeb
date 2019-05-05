@@ -2,23 +2,39 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserControl
+public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserControl, INamingContainer
 {
+    protected class SelectMakeHeaderTemplate : Control, INamingContainer
+    {
+        public SelectMakeHeaderTemplate()
+        {
+        }
+    }
+
     public event EventHandler<MakeSelectedEventArgs> ModelChanged;
     public event EventHandler MajorChangeRequested;
 
     public enum MakeEditMode { Edit, EditWithConfirm, Locked }
 
     #region Properties
+    [TemplateContainer(typeof(SelectMakeHeaderTemplate)), PersistenceMode(PersistenceMode.InnerDefaultProperty), TemplateInstance(TemplateInstance.Single)]
+    public ITemplate Prompt { get; set; }
+
+    public PlaceHolder HeaderContainer
+    {
+        get { return plcPrompt; }
+    }
+
     private MakeEditMode _editMode = MakeEditMode.Edit;
 
     public MakeEditMode EditMode
@@ -58,7 +74,6 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
         get { return (IEnumerable<LinkedString>) ViewState[szKeyVSAircraftAttributes]; }
         set { ViewState[szKeyVSAircraftAttributes] = value; }
     }
-
 
     public int SelectedModelID
     {
@@ -123,6 +138,13 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
         // For efficiency of viewstate, we repopulate manufactures on each postback.
         cmbManufacturers.DataSource = Manufacturer.CachedManufacturers();
         cmbManufacturers.DataBind();
+    }
+
+    protected override void OnInit(EventArgs e)
+    {
+        if (Prompt != null)
+            Prompt.InstantiateIn(plcPrompt);
+        base.OnInit(e);
     }
 
     protected void Page_Load(object sender, EventArgs e)

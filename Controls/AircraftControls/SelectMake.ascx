@@ -19,9 +19,9 @@
                 $get("<%=txtFilter.ClientID%>").focus();
             }
         </script>
-        <table>
+        <table style="padding:0px;margin:0px;border: none; border-collapse: collapse; border-spacing: 0px;">
             <tr>
-                <td style="padding:0px"><h3><% =Resources.Aircraft.editAircraftMakeModelPrompt %></h3></td>
+                <td><asp:PlaceHolder ID="plcPrompt" runat="server"></asp:PlaceHolder></td>
                 <td> <asp:Image ID="imgSearch" ImageUrl="~/images/Search.png" runat="server" Height="20px" Width="20px" /></td>
                 <td>
                     <ajaxToolkit:CollapsiblePanelExtender ID="cpeFilter" Collapsed="true" runat="server" CollapseControlID="imgSearch" EnableViewState="false" 

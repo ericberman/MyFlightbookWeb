@@ -253,8 +253,14 @@
     <value>Information about Aircraft {0} on {1}</value>
     <comment>{0} is the tailnumber of the aircraft</comment>
   </data>
-  <data name="AnonymousAircraft" xml:space="preserve">
-    <value>Real aircraft, Anonymous (no tailnumber)</value>
+  <data name="AircraftInstanceRealRegistered" xml:space="preserve">
+    <value>Real aircraft, specific registered tail number</value>
+  </data>
+  <data name="AircraftInstanceRealAnonymous" xml:space="preserve">
+    <value>Real aircraft, Anonymous (no tail number)</value>
+  </data>
+  <data name="AircraftInstanceTrainingDevice" xml:space="preserve">
+    <value>Training device / Simulator</value>
   </data>
   <data name="AnonymousTailNote" xml:space="preserve">
     <value>This tailnumber is used internally; you do not need it unless you are importing flights for this aircraft</value>
@@ -379,7 +385,7 @@
     <value>Aircraft Maintenance and Inspections</value>
   </data>
   <data name="editAircraftMakeModelPrompt" xml:space="preserve">
-    <value>Model for this aircraft</value>
+    <value>Choose a Model</value>
   </data>
   <data name="editAircraftModelChange1" xml:space="preserve">
     <value>Aircraft on %APP_NAME% are shared between pilots, so any change you make here could impact other pilots.</value>
