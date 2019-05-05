@@ -1,13 +1,13 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -81,6 +81,20 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
     protected void Page_Load(object sender, EventArgs e)
     {
         TextBoxWatermarkExtender1.WatermarkText = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern + " HH:mm";
+        Page.ClientScript.RegisterClientScriptBlock(GetType(), "FillNow", String.Format(CultureInfo.InvariantCulture, @"
+        function setNowUTCWithOffset(wme) {{
+            var params = new Object();
+            params.tzOffset = -(new Date()).getTimezoneOffset();
+            var d = JSON.stringify(params);
+            $.ajax(
+            {{
+                url: '{0}',
+                type: ""POST"", data: d, dataType: ""json"", contentType: ""application/json"",
+                error: function(xhr, status, error) {{ }},
+                complete: function(response) {{ }},
+                success: function(response) {{ $find(wme).set_text(response.d); }}
+            }});
+        }}", ResolveClientUrl("~/Member/LogbookNew.aspx/NowInUTC")), true);
     }
 
     protected void CustomValidator1_ServerValidate(object source, ServerValidateEventArgs args)

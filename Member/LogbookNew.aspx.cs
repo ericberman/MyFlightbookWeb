@@ -10,7 +10,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2018 MyFlightbook LLC
+ * Copyright (c) 2017-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -69,6 +69,19 @@ public partial class Member_LogbookNew : System.Web.UI.Page
             val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0));
         });
         return val.ToString("0.0#", CultureInfo.CurrentCulture);
+    }
+
+    /// <summary>
+    /// Returns the current time formatted in UTC or specified time-zone
+    /// </summary>
+    /// <param name="tzOffset">Localtime offset, in minutes; 0 for true UTC</param>
+    /// <returns>Now in the specified locale, adjusted for the timezone.</returns>
+    [WebMethod(EnableSession = true)]
+    public static string NowInUTC(int tzOffset)
+    {
+        // For now, always return true UTC
+        tzOffset = 0;
+        return DateTime.UtcNow.AddMinutes(tzOffset).UTCDateFormatString();
     }
     #endregion
 
