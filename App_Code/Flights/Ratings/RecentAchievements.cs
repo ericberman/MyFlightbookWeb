@@ -292,6 +292,7 @@ namespace MyFlightbook.MilestoneProgress
             }
 
             int cUniqueAirports = 0;
+            HashSet<string> hsThisFlight = new HashSet<string>();
             foreach (airport ap in al.UniqueAirports)
             {
                 // Dedupe as we go based on latitude/longitude, ignoring non-ports.  
@@ -305,14 +306,17 @@ namespace MyFlightbook.MilestoneProgress
                         Airports.Add(ap.GeoHashKey);
                         cUniqueAirports++;
                     }
+                    hsThisFlight.Add(szHash);
                 }
             }
 
-            if (cUniqueAirports > MostAirportsFlightCount)
+            int cAirportsThisFlight = hsThisFlight.Count;
+            if (cAirportsThisFlight > MostAirportsFlightCount)
             {
-                MostAirportsFlightCount = cUniqueAirports;
+                MostAirportsFlightCount = cAirportsThisFlight;
+                miMostAirportsFlight.MatchingEventID = cfr.flightID;
                 miMostAirportsFlight.Progress = 1;
-                miMostAirportsFlight.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsAirportsOnFlight, cUniqueAirports, dtFlight.ToShortDateString());
+                miMostAirportsFlight.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsAirportsOnFlight, cAirportsThisFlight, dtFlight.ToShortDateString());
                 miMostAirportsFlight.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMax = dtFlight, DateMin = dtFlight };
             }
         }
