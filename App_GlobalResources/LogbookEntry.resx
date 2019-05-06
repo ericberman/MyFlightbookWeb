@@ -156,14 +156,17 @@
   <data name="errTooManyFSLandings" xml:space="preserve">
     <value>Cannot have more full stop landings than total landings.</value>
   </data>
-  <data name="FlightDistanceLong" xml:space="preserve">
-    <value>Flight distance: {0:#,#.0}nm, Route distance (Airport-to-Airport): {1:#,#.0}nm</value>
+  <data name="FlightDistanceLongestSegment" xml:space="preserve">
+    <value>● Longest Segment: {0:#,#.0}nm</value>
+  </data>
+  <data name="FlightDistanceFurthestFromDeparture" xml:space="preserve">
+    <value>● Furthest distance from departure: {0:#,#.0}nm</value>
   </data>
   <data name="FlightDistancePathOnly" xml:space="preserve">
-    <value>Path distance: {0:#,#.0}nm</value>
+    <value>● Path distance: {0:#,#.0}nm</value>
   </data>
   <data name="FlightDistanceRouteOnly" xml:space="preserve">
-    <value>Route distance (Airport-to-Airport): {0:#,#.0}nm</value>
+    <value>● Route distance: {0:#,#.0}nm</value>
   </data>
   <data name="PropertyNo" xml:space="preserve">
     <value>No</value>
@@ -859,7 +862,7 @@
     <value>[All]</value>
   </data>
   <data name="FlightAverageSpeed" xml:space="preserve">
-    <value>, Average Speed: {0:#,#.0}kts</value>
+    <value>● Average Speed: {0:#,#.0}kts</value>
   </data>
   <data name="errNightTakeoffPropertiesExceedNightTakeoffCount" xml:space="preserve">
     <value>Flight has {0} total night takeoff(s), but {1} night takeoffs at towered/untowered airports.</value>

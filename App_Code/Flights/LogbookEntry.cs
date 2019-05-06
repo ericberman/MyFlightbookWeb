@@ -1831,23 +1831,35 @@ namespace MyFlightbook
 
             MyFlightbook.Airports.AirportList al = new MyFlightbook.Airports.AirportList(Route);
             double dRoute = al.DistanceForRoute();
+            double dMaxSegment = al.MaxSegmentForRoute();
+            double dMaxDistanceFromStart = al.MaxDistanceFromStartingAirport();
             double dPath = PathDistance.HasValue ? PathDistance.Value : 0.0;
 
             double time = (FlightStart.HasValue() && FlightEnd.HasValue()) ? FlightEnd.Subtract(FlightStart).TotalHours : (double) TotalFlightTime;
 
-            string szAverageSpeed = string.Empty;
+            List<string> lst = new List<string>();
 
             if (dRoute + dPath > 0)
             {
                 if (time > 0)
-                    szAverageSpeed = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightAverageSpeed, Math.Max(dPath, dRoute) / time);
+                    lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightAverageSpeed, Math.Max(dPath, dRoute) / time));
 
-                if (dPath > 0 && dRoute > 0)
-                    return String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceLong, dPath, dRoute) + szAverageSpeed;
-                else if (dPath > 0)
-                    return String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistancePathOnly, dPath) + szAverageSpeed;
-                else
-                    return String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceRouteOnly, dRoute) + szAverageSpeed;
+                if (dPath > 0)
+                    lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistancePathOnly, dPath));
+
+                if (dRoute > 0)
+                {
+                    lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceRouteOnly, dRoute));
+
+                    if (al.GetNormalizedAirports().Count() > 2)
+                    {
+                        lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceLongestSegment, dMaxSegment));
+                        if (dMaxSegment != dMaxDistanceFromStart)
+                            lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceFurthestFromDeparture, dMaxDistanceFromStart));
+                    }
+                }
+
+                return String.Join(Resources.LocalizedText.LocalizedSpace, lst);
             }
             return string.Empty;
         }

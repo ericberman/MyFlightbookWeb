@@ -76,7 +76,7 @@
     <div><asp:HyperLink ID="lnkZoomOut" runat="server" Visible="False" Text="<%$Resources:Airports, MapZoomOut %>"></asp:HyperLink>&nbsp;</div>
     <div style="margin-left:20px; width:80%; float:left; clear:left;">
         <uc1:mfbGoogleMapManager ID="MfbGoogleMapManager1" runat="server" AllowResize="false" Height="600px" />
-        <asp:Panel ID="pnlDistance" runat="server" Visible="false">
+        <asp:Panel ID="pnlDistance" runat="server" Visible="false" Width="100%" style="text-align:center;">
             <asp:Label ID="lblDistance" runat="server" Text=""></asp:Label>
         </asp:Panel>
         <uc4:mfbAirportServices ID="mfbAirportServices1" runat="server" ShowFBO="true" ShowHotels="true" ShowInfo="true" ShowMetar="true" ShowZoom="true" />
