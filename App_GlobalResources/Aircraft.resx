@@ -297,6 +297,9 @@
   <data name="optionRolePIC" xml:space="preserve">
     <value>If PIC is empty, set it equal to Total Time</value>
   </data>
+  <data name="optionRolePICName" xml:space="preserve">
+    <value>Add my name as PIC</value>
+  </data>
   <data name="optionRolePrompt" xml:space="preserve">
     <value>For every flight I add in this aircraft:</value>
   </data>

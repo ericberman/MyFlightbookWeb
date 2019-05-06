@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -57,6 +57,7 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
             Controls_popmenu popup = (Controls_popmenu)e.Row.FindControl("popmenu1");
             ((RadioButtonList)popup.FindControl("rblRole")).SelectedValue = ac.RoleForPilot.ToString();
             ((CheckBox)popup.FindControl("ckShowInFavorites")).Checked = !ac.HideFromSelection;
+            ((CheckBox)popup.FindControl("ckAddNameAsPIC")).Checked = ac.CopyPICNameWithCrossfill;
 
             ((Label)popup.FindControl("lblOptionHeader")).Text = String.Format(CultureInfo.CurrentCulture, Resources.Aircraft.optionHeader, ac.DisplayTailnumber);
 
@@ -158,5 +159,16 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
         ua.FAddAircraftForUser(ac);
         if (FavoriteChanged != null)
             FavoriteChanged(this, e);
+    }
+
+    protected void ckAddNameAsPIC_CheckedChanged(object sender, EventArgs e)
+    {
+        CheckBox ck = (CheckBox)sender;
+        Aircraft ac = RowFromControl(ck);
+        ac.CopyPICNameWithCrossfill = ck.Checked;
+        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+        ua.FAddAircraftForUser(ac);
+        if (AircraftPrefChanged != null)
+            AircraftPrefChanged(this, e);
     }
 }

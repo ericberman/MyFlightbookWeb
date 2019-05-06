@@ -1219,6 +1219,16 @@ namespace MyFlightbook
                             SIC = TotalFlightTime;
                         break;
                 }
+
+                if (ac.CopyPICNameWithCrossfill)
+                {
+                    List<CustomFlightProperty> lst = new List<CustomFlightProperty>(CustomProperties);
+                    if (lst.FirstOrDefault(cfp => cfp.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropNameOfPIC) == null)
+                    {
+                        lst.Add(new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropNameOfPIC)) { TextValue = Profile.GetUser(User).UserFullName });
+                        CustomProperties = lst.ToArray();
+                    }
+                }
             }
         }
 

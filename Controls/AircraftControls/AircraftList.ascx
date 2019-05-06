@@ -70,6 +70,7 @@
                             <asp:ListItem Text="<%$ Resources:Aircraft, optionRoleSIC %>" Value="SIC"></asp:ListItem>
                             <asp:ListItem Text="<%$ Resources:Aircraft, optionRoleNone %>" Value="None"></asp:ListItem>
                         </asp:RadioButtonList>
+                        <asp:CheckBox ID="ckAddNameAsPIC" runat="server" AutoPostBack="true" Text="<%$ Resources:Aircraft, optionRolePICName %>" OnCheckedChanged="ckAddNameAsPIC_CheckedChanged" />
                     </MenuContent>
                 </uc2:popmenu>
                 <asp:HyperLink ID="lnkRegistration" Text="Registration" Visible="false" Target="_blank" runat="server"></asp:HyperLink>

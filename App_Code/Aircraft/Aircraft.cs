@@ -426,6 +426,7 @@ namespace MyFlightbook
         #region Flags
         private const UInt32 acMaskRole = 0x00000007;
         private const UInt32 acMaskSuppressFavorite = 0x00000008;
+        private const UInt32 acMaskPICCopyName = 0x00000010;
 
         public enum PilotRole { None = 0, PIC, SIC, CFI };
         #endregion
@@ -810,6 +811,15 @@ namespace MyFlightbook
         {
             get { return (PilotRole)(Flags & acMaskRole); }
             set { Flags = (Flags & ~acMaskRole) | (UInt32)value; }
+        }
+
+        /// <summary>
+        /// If true, then if PIC is autofilled, the name of PIC is also filled
+        /// </summary>
+        public bool CopyPICNameWithCrossfill
+        {
+            get { return (Flags & acMaskPICCopyName) != 0; }
+            set { Flags = (Flags & ~acMaskPICCopyName) | (value ? acMaskPICCopyName : 0); }
         }
 
         public DateTime RegistrationDue
