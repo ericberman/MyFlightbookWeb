@@ -248,4 +248,7 @@
   <data name="editModelPrompt" xml:space="preserve">
     <value>Edit this model</value>
   </data>
+  <data name="searchTipQuick" xml:space="preserve">
+    <value>Type a model to quickly find it</value>
+  </data>
 </root>

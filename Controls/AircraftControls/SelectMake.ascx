@@ -1,51 +1,39 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="SelectMake.ascx.cs" Inherits="Controls_AircraftControls_SelectMake" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+
 <asp:MultiView ID="mvModel" runat="server" ActiveViewIndex="0">
     <asp:View ID="vwEdit" runat="server">
         <script type="text/javascript">
             function ModelSelected(source, eventArgs) {
-                $find("cpeFilter")._doClose();
                 document.getElementById('<% = imgAutofillProgress.ClientID %>').style.display = 'inline-block';
                 document.getElementById('<% = hdnSelectedModel.ClientID %>').value = eventArgs._value;
                 document.getElementById('<% = lnkPopulateModel.ClientID %>').click();
             }
-
-            function pageLoad(sender, args) {
-                $find("cpeFilter").add_expandComplete(setFocusForSearch);
-            }
-
-            function setFocusForSearch() {
-                if(!$find("cpeFilter").get_collapsed())
-                $get("<%=txtFilter.ClientID%>").focus();
-            }
         </script>
-        <table style="padding:0px;margin:0px;border: none; border-collapse: collapse; border-spacing: 0px;">
-            <tr>
-                <td><asp:PlaceHolder ID="plcPrompt" runat="server"></asp:PlaceHolder></td>
-                <td> <asp:Image ID="imgSearch" ImageUrl="~/images/Search.png" runat="server" Height="20px" Width="20px" /></td>
-                <td>
-                    <ajaxToolkit:CollapsiblePanelExtender ID="cpeFilter" Collapsed="true" runat="server" CollapseControlID="imgSearch" EnableViewState="false" 
-                        TargetControlID="pnlFilterModels" ExpandControlID="imgSearch" ExpandDirection="Horizontal" TextLabelID="pnlSearchProps" BehaviorID="cpeFilter" />
-                    <asp:Panel ID="pnlFilterModels" runat="server" EnableViewState="false">
-                        <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:Makes, SearchTip %>" runat="server" TargetControlID="txtFilter" />
-                        <asp:TextBox ID="txtFilter" EnableViewState="false" runat="server" Width="320px" onfocusout="$find('cpeFilter')._doClose()"></asp:TextBox>
-                        <span style="display: none">
-                            <asp:LinkButton ID="lnkPopulateModel" runat="server" OnClick="lnkPopulateModel_Click" />
-                            <asp:HiddenField ID="hdnSelectedModel" runat="server" />
-                        </span>
-                    </asp:Panel>
-                    <asp:Image ID="imgAutofillProgress" style="display: none" runat="server" ImageUrl="~/images/ajax-loader-transparent-ball.gif" />
-                    <cc1:AutoCompleteExtender ID="txtTail_AutoCompleteExtender" runat="server"
-                        CompletionInterval="100" CompletionListCssClass="AutoExtender"
-                        CompletionListHighlightedItemCssClass="AutoExtenderHighlight"
-                        CompletionListItemCssClass="AutoExtenderList" DelimiterCharacters=""
-                        OnClientItemSelected="ModelSelected"
-                        Enabled="True" MinimumPrefixLength="2" ServiceMethod="SuggestFullModels"
-                        ServicePath="~/Member/EditAircraft.aspx" TargetControlID="txtFilter" CompletionSetCount="20">
-                    </cc1:AutoCompleteExtender>
-                </td>
-            </tr>
-        </table>
+        <div>
+            <asp:PlaceHolder ID="plcPrompt" runat="server"></asp:PlaceHolder>
+            <div style="border: 1px solid darkgray; border-radius: 14px; height: 24px; display: inline-block; vertical-align: middle; text-align:left; padding-left: 8px; padding-right:3px; ">
+                <asp:Image ID="Image1" runat="server" ImageUrl="~/images/Search.png" ImageAlign="AbsMiddle" Height="20px" />
+                <asp:TextBox ID="txtFilter" runat="server" Width="240px" Font-Size="8pt" BorderStyle="None" style="vertical-align:middle; margin-right: 2px;"></asp:TextBox>
+                <cc1:TextBoxWatermarkExtender
+                    ID="TextBoxWatermarkExtender1" runat="server" TargetControlID="txtFilter" EnableViewState="false"
+                    WatermarkText="<%$ Resources:Makes, searchTipQuick %>" WatermarkCssClass="watermark">
+                </cc1:TextBoxWatermarkExtender>
+            </div>
+            <span style="display: none">
+                <asp:LinkButton ID="lnkPopulateModel" runat="server" OnClick="lnkPopulateModel_Click" />
+                <asp:HiddenField ID="hdnSelectedModel" runat="server" />
+            </span>
+            <asp:Image ID="imgAutofillProgress" style="display: none" runat="server" ImageUrl="~/images/ajax-loader-transparent-ball.gif" />
+            <cc1:AutoCompleteExtender ID="modelAutoCompleteExtender" runat="server"
+                CompletionInterval="100" CompletionListCssClass="AutoExtender"
+                CompletionListHighlightedItemCssClass="AutoExtenderHighlight"
+                CompletionListItemCssClass="AutoExtenderList" DelimiterCharacters=""
+                OnClientItemSelected="ModelSelected"
+                Enabled="True" MinimumPrefixLength="2" ServiceMethod="SuggestFullModels"
+                ServicePath="~/Member/EditAircraft.aspx" TargetControlID="txtFilter" CompletionSetCount="20">
+            </cc1:AutoCompleteExtender>
+        </div>
          
         <div style="margin-bottom:4px">
             <asp:DropDownList ID="cmbManufacturers" runat="server"
