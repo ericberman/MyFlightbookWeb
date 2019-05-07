@@ -10,7 +10,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2018 MyFlightbook LLC
+ * Copyright (c) 2014-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -522,13 +522,13 @@ namespace MyFlightbook.Achievements
         /// Called before walking through the flights (perhaps to initialize visited airports, or aircraft for user, or such
         /// </summary>
         /// <param name="context">A dictionary that can be used to share/retrieve context, preventing duplicate computation</param>
-        public virtual void PreFlight(Dictionary<string, Object> context) { }
+        public virtual void PreFlight(IDictionary<string, Object> context) { }
 
         /// <summary>
         /// Called after walking through the flights (perhaps to do some final computations)
         /// </summary>
         /// <param name="context">A dictionary that can be used to share/retrieve context, preventing duplicate computation</param>
-        public virtual void PostFlight(Dictionary<string, Object> context) { }
+        public virtual void PostFlight(IDictionary<string, Object> context) { }
         #endregion
 
         #region Database
@@ -851,7 +851,7 @@ namespace MyFlightbook.Achievements
 
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context) { }
 
-        public override void PostFlight(Dictionary<string, object> context)
+        public override void PostFlight(IDictionary<string, object> context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -885,7 +885,7 @@ namespace MyFlightbook.Achievements
         
         public override string Name
         {
-            get { return String.Format(CultureInfo.CurrentCulture, ProgressTemplate, Levels[(int)Level - (int)AchievementLevel.Bronze], CultureInfo.CurrentCulture); }
+            get { return String.Format(CultureInfo.CurrentCulture, ProgressTemplate, Levels[(int)Level - (int)AchievementLevel.Bronze]); }
             set { base.Name = value; }
         }
 
@@ -1003,7 +1003,7 @@ namespace MyFlightbook.Achievements
         {
         }
 
-        public override void PostFlight(Dictionary<string, object> context)
+        public override void PostFlight(IDictionary<string, object> context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -1167,7 +1167,7 @@ namespace MyFlightbook.Achievements
 
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context) { }
 
-        public override void PostFlight(Dictionary<string, object> context)
+        public override void PostFlight(IDictionary<string, object> context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -1365,7 +1365,7 @@ namespace MyFlightbook.Achievements
 
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context) { }
 
-        public override void PostFlight(Dictionary<string, object> context)
+        public override void PostFlight(IDictionary<string, object> context)
         {
             VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
             DateTime dtEarned = DateTime.MinValue;
