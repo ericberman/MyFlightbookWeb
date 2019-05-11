@@ -20,6 +20,8 @@ namespace MyFlightbook.ImportFlights
     {
         #region Properties
         public string Route { get; set; }
+
+        public DateTime FlightDate { get; set; }
         public DateTime BlockOut { get; set; }
         public DateTime BlockIn { get; set; }
         public string FlightNumber { get; set; }
@@ -29,23 +31,14 @@ namespace MyFlightbook.ImportFlights
         public RosterBuster()
         {
             Route = FlightNumber = TimeZone = string.Empty;
-            BlockIn = BlockOut = DateTime.MinValue;
+            BlockIn = BlockOut = FlightDate = DateTime.MinValue;
         }
 
         public override LogbookEntry ToLogbookEntry()
         {
-            DateTime dtFlight = DateTime.MinValue;
-            if (BlockOut.HasValue())
-            {
-                TimeZoneInfo tz = String.IsNullOrEmpty(TimeZone) ? null : TimeZoneInfo.FindSystemTimeZoneById(TimeZone);
-                if (tz == null)
-                    dtFlight = BlockOut.Date;
-                else
-                    dtFlight = TimeZoneInfo.ConvertTimeFromUtc(BlockOut, tz);
-            }
             PendingFlight pf = new PendingFlight()
             {
-                Date = dtFlight,
+                Date = FlightDate,
                 Route = this.Route
             };
             pf.CustomProperties = PropertiesWithoutNullOrDefault(new CustomFlightProperty[]
@@ -131,14 +124,18 @@ namespace MyFlightbook.ImportFlights
                     int hEnd = Convert.ToInt32(gc["endZ"].Value.Substring(0, 2), CultureInfo.InvariantCulture);
                     int mEnd = Convert.ToInt32(gc["endZ"].Value.Substring(2, 2), CultureInfo.InvariantCulture);
 
-                    dtStart = new DateTime(dtStart.Year, dtStart.Month, dtStart.Day, hStart, mStart, 0, DateTimeKind.Utc);
-                    dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, hEnd, mEnd, 0, DateTimeKind.Utc);
+                    DateTime dtStartUtc = new DateTime(dtStart.Year, dtStart.Month, dtStart.Day, hStart, mStart, 0, DateTimeKind.Utc);
+                    DateTime dtEndUtc = new DateTime(dtStart.Year, dtStart.Month, dtStart.Day, hEnd, mEnd, 0, DateTimeKind.Utc);
+
+                    if (dtEndUtc.CompareTo(dtStartUtc) < 0)
+                        dtEndUtc = dtEndUtc.AddDays(1);
 
                     lstRb.Add(new RosterBuster()
                     {
+                        FlightDate = dtStart,
                         FlightNumber = gc["FlightNum"].Value,
-                        BlockOut = dtStart,
-                        BlockIn = dtEnd,
+                        BlockOut = dtStartUtc,
+                        BlockIn = dtEndUtc,
                         Route = gc["route"].Value,
                         TimeZone = gc["Timezone"].Value
                     });
