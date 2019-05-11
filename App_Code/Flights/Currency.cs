@@ -1736,14 +1736,17 @@ namespace MyFlightbook.FlightCurrency
 
         private void UpdateRest(DateTime dtDutyStart, DateTime dtDutyEnd)
         {
-            if (dtDutyStart.CompareTo(dtDutyStart) > 0)
+            if (dtDutyStart.CompareTo(dtDutyEnd) > 0)
                 return; // invalid duty period
 
+            // Are we in a rest period?
+            bool fInRest = DateTime.UtcNow.CompareTo(dtDutyEnd) > 0;
+
             // Compute the start of the current rest period from the end of the latest duty period
-            currentRestPeriodStart = dtDutyEnd.LaterDate(currentRestPeriodStart);
+            currentRestPeriodStart = (fInRest) ? dtDutyEnd.LaterDate(currentRestPeriodStart) : DateTime.UtcNow;
 
             // 117.25(b) - when was our last 30-hour rest period?
-            if (tsLongestRest11725b.CompareTo(TimeSpan.Zero) == 0)
+            if ((tsLongestRest11725b.TotalSeconds < 1) && fInRest)  // don't compare to timespan.zero because there could be a few fractions of a second.
                 tsLongestRest11725b = DateTime.UtcNow.Subtract(currentRestPeriodStart);
             else if (dtLastDutyStart.CompareTo(dtDutyEnd) > 0 && dtLastDutyStart.CompareTo(dt168HoursAgo) > 0)
             {
