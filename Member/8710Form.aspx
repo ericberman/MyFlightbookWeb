@@ -322,7 +322,7 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldSimIMC %>" meta:resourcekey="TemplateFieldResource26">
                                 <ItemTemplate>
-                                    <%# Eval("IMC").FormatDecimal(UseHHMM) %>
+                                    <%# Eval("SimIMC").FormatDecimal(UseHHMM) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
