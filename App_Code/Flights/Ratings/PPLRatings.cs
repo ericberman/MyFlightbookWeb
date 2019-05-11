@@ -7,7 +7,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2018 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -274,7 +274,10 @@ namespace MyFlightbook.MilestoneProgress
 
             // 61.109(a), (b), (c) - these can have FS/FTD time applied, up to SimLimit.
             miMinTime.AddTrainingEvent(cfr.fIsFTD ? Math.Max(cfr.Total, cfr.GroundSim) : cfr.Total, SimLimit, cfr.fIsFTD);
-            miMinTraining.AddTrainingEvent(cfr.fIsFTD ? Math.Min(cfr.GroundSim, cfr.Dual) : cfr.Dual, SimLimit, cfr.fIsFTD);
+
+            // per http://www.faa.gov/about/office_org/headquarters_offices/agc/practice_areas/regulations/interpretations/data/interps/2018/domingo-afx-1%20-%20(2018)%20legal%20interpretation.pdf, training must be in category and match on single vs. multi engine
+            if (fIsCorrectCatClass)
+                miMinTraining.AddTrainingEvent(cfr.fIsFTD ? Math.Min(cfr.GroundSim, cfr.Dual) : cfr.Dual, SimLimit, cfr.fIsFTD);
 
             // 61.109(ab)(3) - IMC.  This can also substitute up to simlimit
             if (fIsCorrectCatClass)
