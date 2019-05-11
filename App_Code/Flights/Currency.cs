@@ -1632,7 +1632,7 @@ namespace MyFlightbook.FlightCurrency
                 if (FPDutyStart != null && FPDutyEnd != null && FPDutyEnd.DateValue.CompareTo(FPDutyStart.DateValue) >= 0)
                 {
                     FlightDutyStart = FPDutyStart.DateValue;
-                    FlightDutyEnd = FPDutyEnd.DateValue;
+                    FlightDutyEnd = FPDutyEnd.DateValue.EarlierDate(DateTime.UtcNow);
                     Specification = DutySpecification.Both;
                     return;
                 }
