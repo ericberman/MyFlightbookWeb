@@ -2396,7 +2396,7 @@ namespace MyFlightbook
     /// </summary>
     public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp }
 
-    public enum OptionalColumnValueType { Decimal, Integer }
+    public enum OptionalColumnValueType { Decimal, Integer, Time }
 
     /// <summary>
     /// An additional print column that can be displayed.
@@ -2450,6 +2450,7 @@ namespace MyFlightbook
             switch (cpt.Type)
             {
                 case CFPPropertyType.cfpDecimal:
+                    ValueType = (cpt.IsBasicDecimal) ? OptionalColumnValueType.Decimal : OptionalColumnValueType.Time;
                     break;
                 case CFPPropertyType.cfpInteger:
                     ValueType = OptionalColumnValueType.Integer;
@@ -3442,7 +3443,16 @@ namespace MyFlightbook
             if (OptionalColumns == null || columnIndex < 0 || columnIndex >= OptionalColumns.Length)
                 return string.Empty;
 
-            return OptionalColumns[columnIndex].ValueType == OptionalColumnValueType.Integer ? ((int)value).FormatInt() : value.FormatDecimal(UseHHMM);
+            switch (OptionalColumns[columnIndex].ValueType)
+            {
+                case OptionalColumnValueType.Integer:
+                    return ((int)value).FormatInt();
+                case OptionalColumnValueType.Decimal:
+                    return value.FormatDecimal(false);
+                default:
+                case OptionalColumnValueType.Time:
+                    return value.FormatDecimal(UseHHMM);
+            }
         }
 
         public string OptionalColumnDisplayValue(int columnIndex)
