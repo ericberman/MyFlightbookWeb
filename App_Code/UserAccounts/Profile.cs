@@ -705,9 +705,9 @@ namespace MyFlightbook
     /// Intermediate class: ProfileBase, but with database and validation capabilities.
     /// </summary>
     [Serializable]
-    public class PersistedProfile : ProfileBase
+    public abstract class PersistedProfile : ProfileBase
     {
-        public PersistedProfile() : base()
+        protected PersistedProfile() : base()
         {
 
         }
