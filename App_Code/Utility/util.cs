@@ -342,8 +342,8 @@ namespace MyFlightbook
         {
             if (msg == null)
                 throw new ArgumentNullException("msg");
-            IEnumerable<Profile> lst = ProfileRoles.GetNonUsers();
-            foreach (Profile pf in lst)
+            IEnumerable<ProfileBase> lst = ProfileRoles.GetNonUsers();
+            foreach (ProfileBase pf in lst)
             {
                 if ((RoleMask & (uint)pf.Role) != 0)
                 {

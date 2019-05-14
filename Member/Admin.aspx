@@ -56,40 +56,6 @@
                     <p>No duplicate users found.</p>
                 </EmptyDataTemplate>
             </asp:GridView>
-            <br />
-            <uc4:Expando ID="ExpandoChangeUser" runat="server" HeaderCss="header">
-                <Header>
-                    Change username
-                </Header>
-                <Body>
-                    <asp:Panel ID="pnlChangeUser" DefaultButton="btnChangeName" runat="server">
-                        <table>
-                            <tr>
-                                <td>From:</td>
-                                <td>
-                                    <asp:TextBox ID="txtChangeUsernameFrom" ValidationGroup="vgChangeUser" runat="server"></asp:TextBox>
-                            
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>To:</td>
-                                <td><asp:TextBox ID="txtChangeUsernameTo" ValidationGroup="vgChangeUser" runat="server"></asp:TextBox></td>
-                        
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <asp:Button ID="btnChangeName" runat="server" ValidationGroup="vgChangeUser" Text="Change Username" OnClick="btnChangeName_Click" />
-                                    <div>
-                                        <asp:Label ID="lblChangeNameError" runat="server" Text="" CssClass="error" EnableViewState="false"></asp:Label>
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ValidationGroup="vgChangeUser" ControlToValidate="txtChangeUsernameFrom" ErrorMessage="Need a username" Display="Dynamic" CssClass="error"></asp:RequiredFieldValidator>
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ValidationGroup="vgChangeUser" ControlToValidate="txtChangeUsernameTo" ErrorMessage="Need a username" CssClass="error"></asp:RequiredFieldValidator>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </asp:Panel>
-                </Body>
-            </uc4:Expando>
         </asp:View>
         <asp:View ID="vwAircraft" runat="server">
             <h2>Aircraft</h2>

@@ -87,7 +87,7 @@ namespace MyFlightbook
         /// Returns all users on the site who have some sort of admin privileges.
         /// </summary>
         /// <returns>A list of profile objects</returns>
-        static public IEnumerable<Profile> GetNonUsers()
+        static public IEnumerable<ProfileBase> GetNonUsers()
         {
             List<Profile> lst = new List<Profile>();
             DBHelper dbh = new DBHelper("SELECT uir.Rolename AS Role, u.* FROM usersinroles uir INNER JOIN users u ON uir.username=u.username WHERE uir.ApplicationName='Logbook' AND uir.Rolename <> ''");
@@ -164,34 +164,17 @@ namespace MyFlightbook
     /// Encapsulates a user of the system.
     /// </summary>
     [Serializable]
-    public class Profile
+    public abstract class ProfileBase
     {
         #region creation/initialization
-        public Profile()
+        protected ProfileBase()
         {
-            this.Certificate = this.Email = this.FirstName = this.LastName = this.OriginalPKID = this.OrignalEmail = this.PKID =
+            this.Certificate = this.Email = this.FirstName = this.LastName = this.OriginalPKID = this.OriginalEmail = this.PKID =
                 this.SecurityQuestion = this.UserName = this.License = this.Address = string.Empty;
             Role = ProfileRoles.UserRole.None;
             BlacklistedProperties = new List<int>();
         }
-
-        [System.Obsolete("Consider using Profile.GetUser() for efficiency.  Re-uses existing object, no copy, no DB if it's already cached")]
-        public Profile(string szUser) : this()
-        {
-            if (!LoadUser(szUser))
-                UserName = string.Empty;
-        }
-
-        public Profile(MySqlDataReader dr) : this()
-        {
-            InitFromDataReader(dr);
-        }
         #endregion
-
-        public Boolean IsValid()
-        {
-            return (!String.IsNullOrEmpty(UserName));
-        }
 
         public override string ToString()
         {
@@ -503,35 +486,9 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// internal cache of BFR events; go easy on the database!
-        /// </summary>
-        private ProfileEvent[] BFREvents { get; set; }
-
-        /// <summary>
-        /// Returns a pseudo-event for the last BFR.
-        /// </summary>
-        public ProfileEvent LastBFREvent
-        {
-            get
-            {
-                if (m_LastBFR.CompareTo(DateTime.MinValue) == 0)
-                    return null;
-                else
-                {
-                    // BFR's used to be stored in the profile.  If so, we'll convert it to a pseudo flight property here,
-                    // and attempt to de-dupe it later.
-                    ProfileEvent pf = new ProfileEvent();
-                    pf.Date = m_LastBFR;
-                    pf.PropertyType.FormatString = Resources.Profile.BFRFromProfile;
-                    return pf;
-                }
-            }
-        }
-
-        /// <summary>
         /// Date of last BFR - DEPRECATED - DO NOT USE THIS 
         /// </summary>
-        public DateTime LastBFRInternal
+        protected DateTime LastBFRInternal
         {
             get { return m_LastBFR; }
             set { m_LastBFR = value; }
@@ -640,12 +597,12 @@ namespace MyFlightbook
         /// <summary>
         /// The original email address for the user, so that we can tell if it has changed.
         /// </summary>
-        private string OrignalEmail { get; set; }
+        protected string OriginalEmail { get; set; }
 
         /// <summary>
         /// The original PKID for the user, so that we can tell if it has changed.
         /// </summary>
-        private string OriginalPKID { get; set; }
+        protected string OriginalPKID { get; set; }
 
         /// <summary>
         /// The pilot certificate - used for CFIs.
@@ -725,8 +682,6 @@ namespace MyFlightbook
         /// </summary>
         public List<int> BlacklistedProperties { get; set; }
 
-        #region Achievements
-        private System.Object achievementLock = new Object();
         private Achievement.ComputeStatus m_AchievementStatus = Achievement.ComputeStatus.Never;
 
         /// <summary>
@@ -736,103 +691,6 @@ namespace MyFlightbook
         {
             get { return m_AchievementStatus; }
             set { m_AchievementStatus = value; }
-        }
-
-        /// <summary>
-        /// Sets the achievement status, saving to the DB if it has changed and if it is not "In Progress" (which by definition is a temporary state)
-        /// </summary>
-        /// <param name="stat"></param>
-        public void SetAchievementStatus(Achievement.ComputeStatus stat)
-        {
-            lock (achievementLock)
-            {
-                bool fChanged = (stat != m_AchievementStatus);
-                AchievementStatus = stat;
-                if (fChanged && stat != Achievement.ComputeStatus.InProgress)
-                    FCommit();
-            }
-        }
-
-        public static void InvalidateAllAchievements()
-        {
-            DBHelper dbh = new DBHelper("UPDATE USERS SET achievementstatus=2 WHERE achievementstatus=1");
-            dbh.DoNonQuery();
-
-            // update all of the cached profile objects
-            if (HttpContext.Current != null && HttpContext.Current.Cache != null)
-            {
-                Cache c = HttpContext.Current.Cache;
-                IDictionaryEnumerator en = c.GetEnumerator();
-                while (en.MoveNext())
-                {
-                    object o = c[en.Key.ToString()];
-                    if (o.GetType() == typeof(Profile))
-                        ((Profile)o).AchievementStatus = Achievement.ComputeStatus.NeedsComputing;
-                }
-
-                AirportListBadge.FlushCache();
-            }
-        }
-        #endregion
-
-        #endregion
-
-        #region BFR functions
-        /// <summary>
-        /// Same as BFREvents except that if BFREvents is null it hits the database first.
-        /// </summary>
-        private ProfileEvent[] CachedBFREvents()
-        {
-            if (BFREvents == null)
-                BFREvents = ProfileEvent.GetBFREvents(UserName, LastBFREvent);
-            return BFREvents;
-        }
-
-        /// <summary>
-        /// Last BFR Date (uses flight properties).
-        /// </summary>
-        public DateTime LastBFR()
-        {
-            ProfileEvent[] rgPfe = CachedBFREvents();
-
-            if (rgPfe.Length > 0)
-                return rgPfe[rgPfe.Length - 1].Date;
-            else
-                return DateTime.MinValue;
-        }
-
-        /// <summary>
-        /// Last BFR in a Robinson R22 (see SFAR 73)
-        /// </summary>
-        public DateTime LastBFRR22()
-        {
-            ProfileEvent[] rgPfe = CachedBFREvents();
-            for (int i = rgPfe.Length - 1; i >= 0; i--)
-                if (rgPfe[i].IsR22)
-                    return rgPfe[i].Date;
-            return DateTime.MinValue;
-        }
-
-        /// <summary>
-        /// Last BFR in a Robinson R44 (see SFAR 73)
-        /// </summary>
-        public DateTime LastBFRR44()
-        {
-            ProfileEvent[] rgPfe = CachedBFREvents();
-            for (int i = rgPfe.Length - 1; i >= 0; i--)
-                if (rgPfe[i].IsR44)
-                    return rgPfe[i].Date;
-            return DateTime.MinValue;
-        }
-
-        /// <summary>
-        /// Predicted date that next BFR is due
-        /// </summary>
-        /// <param name="bfrLast">Date of the last BFR</param>
-        /// <returns>Datetime representing the date of the next BFR, Datetime.minvalue for unknown</returns>
-        public DateTime NextBFR(DateTime bfrLast)
-        {
-            return bfrLast.AddCalendarMonths(24);
         }
         #endregion
 
@@ -845,7 +703,7 @@ namespace MyFlightbook
         /// <returns>A string containing the full name for the user (first/last name), if available; else szUser</returns>
         private string GetUserName(Boolean fFirst, Boolean fLast)
         {
-            return Profile.UserNameFromFields(Email, FirstName, LastName, fFirst, fLast);
+            return ProfileBase.UserNameFromFields(Email, FirstName, LastName, fFirst, fLast);
         }
 
         public static string UserNameFromFields(string szEmail, string szFirst, string szLast, bool fFirst, bool fLast)
@@ -867,75 +725,6 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Changes name and email, sending a notification if the email changes.
-        /// </summary>
-        /// <param name="szNewFirst">The new first name</param>
-        /// <param name="szNewLast">The new last name</param>
-        /// <param name="szNewEmail">The new email address</param>
-        /// <param name="szNewAddress">The new mailing address</param>
-        /// <exception cref="MyFlightbookException"></exception>
-        public void ChangeNameAndEmail(string szNewFirst, string szNewLast, string szNewEmail, string szNewAddress)
-        {
-            if (szNewEmail == null)
-                throw new ArgumentNullException("szNewEmail");
-            string szOriginalEmail = Email;
-            FirstName = szNewFirst;
-            LastName = szNewLast;
-            Email = szNewEmail;
-            Address = szNewAddress;
-
-            FCommit();
-
-            if (String.Compare(Email, szOriginalEmail, StringComparison.OrdinalIgnoreCase) != 0)
-            {
-                string szBody = String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.ChangeEmailConfirmation, szOriginalEmail, Email);
-                // Email has changed - send new email to both the old and the new address
-                util.NotifyUser(Resources.Profile.EmailChangedSubjectLine, szBody, new MailAddress(szOriginalEmail, UserFullName), false, false);
-                util.NotifyUser(Resources.Profile.EmailChangedSubjectLine, szBody, new MailAddress(Email, UserFullName), false, false);
-            }
-        }
-
-        /// <summary>
-        /// Predicted date that next medical is due
-        /// </summary>
-        /// <returns>Datetime representing the date of the next medical, datetime.minvalue for unknown.</returns>
-        public DateTime NextMedical
-        {
-            get
-            {
-                if (!LastMedical.HasValue() || MonthsToMedical == 0)
-                    return DateTime.MinValue;
-                else
-                    return UsesICAOMedical ? LastMedical.AddMonths(MonthsToMedical) : LastMedical.AddCalendarMonths(MonthsToMedical);
-            }
-        }
-
-        /// <summary>
-        /// Determines if the named user is eligible to sign flights
-        /// </summary>
-        /// <param name="szCFIUsername">The name of the potential signer</param>
-        /// <param name="szError">The error that results</param>
-        /// <returns>True if they can sign</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "0#")]
-        public bool CanSignFlights(out string szError)
-        {
-            szError = String.Empty;
-            if (String.IsNullOrEmpty(Certificate))
-            {
-                szError = Resources.SignOff.errSignNoCertificate;
-                return false;
-            }
-
-            if (CertificateExpiration.AddDays(1).CompareTo(DateTime.Now) < 0)
-            {
-                szError = Resources.SignOff.errSignExpiredCertificate;
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
         /// De-serializes an AuthorizationState from a JSON string, null if the string is null
         /// </summary>
         /// <param name="sz">The JSON string</param>
@@ -953,12 +742,13 @@ namespace MyFlightbook
             return JsonConvert.DeserializeObject<AuthorizationState>(sz);
         }
 
-        private void InitFromDataReader(MySqlDataReader dr)
+        #region Database and caching
+        protected void InitFromDataReader(MySqlDataReader dr)
         {
             try
             {
                 UserName = dr["Username"].ToString();
-                OrignalEmail = Email = dr["Email"].ToString();
+                OriginalEmail = Email = dr["Email"].ToString();
                 FirstName = dr["FirstName"].ToString();
                 LastName = dr["LastName"].ToString();
                 Address = util.ReadNullableField(dr, "Address", string.Empty).ToString();
@@ -1007,89 +797,26 @@ namespace MyFlightbook
             }
         }
 
-        private static string GetCacheKey(string szUser)
+        protected static string GetCacheKey(string szUser)
         {
             return "Profile" + szUser.ToUpper(CultureInfo.InvariantCulture);
-        }
-
-        /// <summary>
-        /// Retrieve a user from the cache - NO DATABASE HIT, ALWAYS RETURNS QUICKLY, CAN RETURN NULL
-        /// </summary>
-        /// <param name="name">username to fetch</param>
-        /// <returns>null if not current in cache, else Profile</returns>
-        public static Profile CachedProfileForUser(string name)
-        {
-            return (Profile)HttpRuntime.Cache[GetCacheKey(name)];
-        }
-
-        /// <summary>
-        /// Retrieve a user that could be cached.  CAN HIT THE DB, ALWAYS RETURNS A VALUE (BUT MAY NOT BE INITIALIZED)
-        /// </summary>
-        /// <param name="name">The name of the user to load</param>
-        /// <returns>A profile object from the cache, if possible</returns>
-        public static Profile GetUser(string name)
-        {
-#pragma warning disable 0618
-            return CachedProfileForUser(name) ?? new Profile(name);
-#pragma warning restore 0618
-        }
-
-        public Boolean LoadUser(string szUser)
-        {
-            Boolean fResult = false;
-
-            // don't hit the database for a query we know is going to return no results!
-            if (String.IsNullOrEmpty(szUser))
-                return fResult;
-
-            // try loading from the cache first, save a DB call
-            if (HttpRuntime.Cache[GetCacheKey(szUser)] != null)
-            {
-                Profile pfCached = (Profile)HttpRuntime.Cache[GetCacheKey(szUser)];
-                util.CopyObject(pfCached, this);
-                // restore private properties that are not copied by CopyObject
-                OriginalPKID = pfCached.OriginalPKID;
-                OrignalEmail = pfCached.OrignalEmail;
-                return true;
-            }
-
-            DBHelper dbh = new DBHelper("SELECT uir.Rolename AS Role, u.* FROM users u LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook') WHERE u.Username=?UserName LIMIT 1");
-            dbh.ReadRow(
-                (comm) => { comm.Parameters.AddWithValue("UserName", szUser); },
-                (dr) =>
-                {
-                    InitFromDataReader(dr);
-                    HttpRuntime.Cache[GetCacheKey(szUser)] = this; // update the cache with this object
-                    fResult = true;
-                }
-                    );
-
-            return fResult;
-        }
-
-        public static List<Profile> UsersWithSubscriptions(UInt32 subscriptionMask, DateTime dtMin)
-        {
-            string szQ = String.Format(CultureInfo.InvariantCulture, "SELECT uir.Rolename AS Role, u.* FROM users u LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook') WHERE (u.EmailSubscriptions & {0}) <> 0 AND (LastEmail IS NULL OR LastEmail <= '{1}')", subscriptionMask, dtMin.ToString("yyyy-MM-dd"));
-            DBHelper dbh = new DBHelper(szQ);
-            List<Profile> l = new List<Profile>();
-            dbh.ReadRows(
-                (comm) => { },
-                (dr) => { l.Add(new Profile(dr)); });
-            return l;
         }
 
         /// <summary>
         /// Checks whether the profile is in a valid state for saving
         /// </summary>
         /// <returns></returns>
-        public Boolean FIsValid()
+        public bool IsValid()
         {
+            if (String.IsNullOrWhiteSpace(UserName))
+                return false;
+
             // Must have a PKID, must not have changed from loading
             if (PKID.Length == 0 || String.Compare(PKID, OriginalPKID, StringComparison.Ordinal) != 0)
                 return false;
 
             // Changing email address is fine IF you're not stepping on another user.
-            if (String.Compare(Email, OrignalEmail, StringComparison.OrdinalIgnoreCase) != 0)
+            if (String.Compare(Email, OriginalEmail, StringComparison.OrdinalIgnoreCase) != 0)
             {
                 if (Membership.GetUserNameByEmail(Email).Length > 0) // i.e., there exists a user with this email address already
                     return false;
@@ -1102,7 +829,7 @@ namespace MyFlightbook
         {
             string szQ = "";
 
-            if (!FIsValid())
+            if (!IsValid())
                 return false;
 
             szQ = @"UPDATE users SET Email=?Email, FirstName=?FirstName, LastName=?LastName, Address=?address, 
@@ -1162,6 +889,193 @@ namespace MyFlightbook
 
             return (szErr.Length == 0);
         }
+        #endregion
+    }
+
+    public class Profile : ProfileBase
+    {
+        #region Creation
+        public Profile() : base() { }
+
+        public Profile(MySqlDataReader dr) : base()
+        {
+            InitFromDataReader(dr);
+        }
+        #endregion
+
+        #region Getting users
+        protected Boolean LoadUser(string szUser)
+        {
+            Boolean fResult = false;
+
+            // don't hit the database for a query we know is going to return no results!
+            if (String.IsNullOrEmpty(szUser))
+                return fResult;
+
+            // try loading from the cache first, save a DB call
+            if (HttpRuntime.Cache[GetCacheKey(szUser)] != null)
+            {
+                Profile pfCached = (Profile)HttpRuntime.Cache[GetCacheKey(szUser)];
+                util.CopyObject(pfCached, this);
+                // restore protected properties that are not copied by CopyObject
+                OriginalPKID = pfCached.OriginalPKID;
+                OriginalEmail = pfCached.OriginalEmail;
+                return true;
+            }
+
+            DBHelper dbh = new DBHelper("SELECT uir.Rolename AS Role, u.* FROM users u LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook') WHERE u.Username=?UserName LIMIT 1");
+            dbh.ReadRow(
+                (comm) => { comm.Parameters.AddWithValue("UserName", szUser); },
+                (dr) =>
+                {
+                    InitFromDataReader(dr);
+                    HttpRuntime.Cache[GetCacheKey(szUser)] = this; // update the cache with this object
+                    fResult = true;
+                }
+                    );
+
+            return fResult;
+        }
+
+        /// <summary>
+        /// Retrieve a user from the cache - NO DATABASE HIT, ALWAYS RETURNS QUICKLY, CAN RETURN NULL
+        /// </summary>
+        /// <param name="name">username to fetch</param>
+        /// <returns>null if not current in cache, else Profile</returns>
+        public static Profile CachedProfileForUser(string name)
+        {
+            return (Profile)HttpRuntime.Cache[GetCacheKey(name)];
+        }
+
+        /// <summary>
+        /// Retrieve a user that could be cached.  CAN HIT THE DB, ALWAYS RETURNS A VALUE (BUT MAY NOT BE INITIALIZED)
+        /// </summary>
+        /// <param name="name">The name of the user to load</param>
+        /// <param name="fForceNew">True to bypass the cache</param>
+        /// <returns>A profile object from the cache, if possible</returns>
+        public static Profile GetUser(string name, bool fBypassCache = false)
+        {
+            Profile pf = fBypassCache ? null : CachedProfileForUser(name);
+            if (pf == null)
+            {
+                pf = new Profile();
+                if (!pf.LoadUser(name))
+                    pf.UserName = string.Empty;
+            }
+            return pf;
+        }
+        #endregion
+
+        public static IEnumerable<Profile> UsersWithSubscriptions(UInt32 subscriptionMask, DateTime dtMin)
+        {
+            string szQ = String.Format(CultureInfo.InvariantCulture, "SELECT uir.Rolename AS Role, u.* FROM users u LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook') WHERE (u.EmailSubscriptions & {0}) <> 0 AND (LastEmail IS NULL OR LastEmail <= '{1}')", subscriptionMask, dtMin.ToString("yyyy-MM-dd"));
+            DBHelper dbh = new DBHelper(szQ);
+            List<Profile> l = new List<Profile>();
+            dbh.ReadRows(
+                (comm) => { },
+                (dr) => { l.Add(new Profile(dr)); });
+            return l;
+        }
+
+        #region BFR and Medical functions
+        /// <summary>
+        /// Returns a pseudo-event for the last BFR.
+        /// </summary>
+        public ProfileEvent LastBFREvent
+        {
+            get
+            {
+                if (LastBFRInternal.CompareTo(DateTime.MinValue) == 0)
+                    return null;
+                else
+                {
+                    // BFR's used to be stored in the profile.  If so, we'll convert it to a pseudo flight property here,
+                    // and attempt to de-dupe it later.
+                    ProfileEvent pf = new ProfileEvent();
+                    pf.Date = LastBFRInternal;
+                    pf.PropertyType.FormatString = Resources.Profile.BFRFromProfile;
+                    return pf;
+                }
+            }
+        }
+
+        /// <summary>
+        /// internal cache of BFR events; go easy on the database!
+        /// </summary>
+        private ProfileEvent[] BFREvents { get; set; }
+
+        /// <summary>
+        /// Same as BFREvents except that if BFREvents is null it hits the database first.
+        /// </summary>
+        private ProfileEvent[] CachedBFREvents()
+        {
+            if (BFREvents == null)
+                BFREvents = ProfileEvent.GetBFREvents(UserName, LastBFREvent);
+            return BFREvents;
+        }
+
+        /// <summary>
+        /// Last BFR Date (uses flight properties).
+        /// </summary>
+        public DateTime LastBFR()
+        {
+            ProfileEvent[] rgPfe = CachedBFREvents();
+
+            if (rgPfe.Length > 0)
+                return rgPfe[rgPfe.Length - 1].Date;
+            else
+                return DateTime.MinValue;
+        }
+
+        /// <summary>
+        /// Last BFR in a Robinson R22 (see SFAR 73)
+        /// </summary>
+        public DateTime LastBFRR22()
+        {
+            ProfileEvent[] rgPfe = CachedBFREvents();
+            for (int i = rgPfe.Length - 1; i >= 0; i--)
+                if (rgPfe[i].IsR22)
+                    return rgPfe[i].Date;
+            return DateTime.MinValue;
+        }
+
+        /// <summary>
+        /// Last BFR in a Robinson R44 (see SFAR 73)
+        /// </summary>
+        public DateTime LastBFRR44()
+        {
+            ProfileEvent[] rgPfe = CachedBFREvents();
+            for (int i = rgPfe.Length - 1; i >= 0; i--)
+                if (rgPfe[i].IsR44)
+                    return rgPfe[i].Date;
+            return DateTime.MinValue;
+        }
+
+        /// <summary>
+        /// Predicted date that next BFR is due
+        /// </summary>
+        /// <param name="bfrLast">Date of the last BFR</param>
+        /// <returns>Datetime representing the date of the next BFR, Datetime.minvalue for unknown</returns>
+        public DateTime NextBFR(DateTime bfrLast)
+        {
+            return bfrLast.AddCalendarMonths(24);
+        }
+
+        /// <summary>
+        /// Predicted date that next medical is due
+        /// </summary>
+        /// <returns>Datetime representing the date of the next medical, datetime.minvalue for unknown.</returns>
+        public DateTime NextMedical
+        {
+            get
+            {
+                if (!LastMedical.HasValue() || MonthsToMedical == 0)
+                    return DateTime.MinValue;
+                else
+                    return UsesICAOMedical ? LastMedical.AddMonths(MonthsToMedical) : LastMedical.AddCalendarMonths(MonthsToMedical);
+            }
+        }
+        #endregion
 
         #region Profile-based currency items (i.e., not related to flying - things like medical and flight reviews)
         private CurrencyStatusItem StatusForDate(DateTime dt, string szLabel, CurrencyStatusItem.CurrencyGroups rt)
@@ -1269,6 +1183,101 @@ namespace MyFlightbook
             return rgCS;
         }
         #endregion
+
+        #region Basic Adminastrative Functions (stuff that doesn't require admin privileges)
+        /// <summary>
+        /// Changes name and email, sending a notification if the email changes.
+        /// </summary>
+        /// <param name="szNewFirst">The new first name</param>
+        /// <param name="szNewLast">The new last name</param>
+        /// <param name="szNewEmail">The new email address</param>
+        /// <param name="szNewAddress">The new mailing address</param>
+        /// <exception cref="MyFlightbookException"></exception>
+        public void ChangeNameAndEmail(string szNewFirst, string szNewLast, string szNewEmail, string szNewAddress)
+        {
+            if (szNewEmail == null)
+                throw new ArgumentNullException("szNewEmail");
+            string szOriginalEmail = Email;
+            FirstName = szNewFirst;
+            LastName = szNewLast;
+            Email = szNewEmail;
+            Address = szNewAddress;
+
+            FCommit();
+
+            if (String.Compare(Email, szOriginalEmail, StringComparison.OrdinalIgnoreCase) != 0)
+            {
+                string szBody = String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.ChangeEmailConfirmation, szOriginalEmail, Email);
+                // Email has changed - send new email to both the old and the new address
+                util.NotifyUser(Resources.Profile.EmailChangedSubjectLine, szBody, new MailAddress(szOriginalEmail, UserFullName), false, false);
+                util.NotifyUser(Resources.Profile.EmailChangedSubjectLine, szBody, new MailAddress(Email, UserFullName), false, false);
+            }
+        }
+        #endregion
+
+        #region Achievements
+        private System.Object achievementLock = new Object();
+        /// <summary>
+        /// Sets the achievement status, saving to the DB if it has changed and if it is not "In Progress" (which by definition is a temporary state)
+        /// </summary>
+        /// <param name="stat"></param>
+        public void SetAchievementStatus(Achievement.ComputeStatus stat)
+        {
+            lock (achievementLock)
+            {
+                bool fChanged = (stat != AchievementStatus);
+                AchievementStatus = stat;
+                if (fChanged && stat != Achievement.ComputeStatus.InProgress)
+                    FCommit();
+            }
+        }
+
+        public static void InvalidateAllAchievements()
+        {
+            DBHelper dbh = new DBHelper("UPDATE USERS SET achievementstatus=2 WHERE achievementstatus=1");
+            dbh.DoNonQuery();
+
+            // update all of the cached profile objects
+            if (HttpContext.Current != null && HttpContext.Current.Cache != null)
+            {
+                Cache c = HttpContext.Current.Cache;
+                IDictionaryEnumerator en = c.GetEnumerator();
+                while (en.MoveNext())
+                {
+                    object o = c[en.Key.ToString()];
+                    if (o.GetType() == typeof(Profile))
+                        ((Profile)o).AchievementStatus = Achievement.ComputeStatus.NeedsComputing;
+                }
+
+                AirportListBadge.FlushCache();
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// Determines if the named user is eligible to sign flights
+        /// </summary>
+        /// <param name="szCFIUsername">The name of the potential signer</param>
+        /// <param name="szError">The error that results</param>
+        /// <returns>True if they can sign</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "0#")]
+        public bool CanSignFlights(out string szError)
+        {
+            szError = String.Empty;
+            if (String.IsNullOrEmpty(Certificate))
+            {
+                szError = Resources.SignOff.errSignNoCertificate;
+                return false;
+            }
+
+            if (CertificateExpiration.AddDays(1).CompareTo(DateTime.Now) < 0)
+            {
+                szError = Resources.SignOff.errSignExpiredCertificate;
+                return false;
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// Return a URL to this user's public flights.

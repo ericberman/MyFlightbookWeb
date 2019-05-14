@@ -10,7 +10,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
-using System.Threading;
 using System.Web;
 using System.Web.Security;
 using System.Web.Services;
@@ -1104,11 +1103,10 @@ namespace MyFlightbook
                     if (pf.CanSupport || pf.CanManageData)
                     {
                         // see if the emulated user actually exists
-                        pf = new Profile();
-                        if (pf.LoadUser(szEmulate))
-                            szUser = szEmulate;
-                        else
+                        pf = Profile.GetUser(szEmulate);
+                        if(!pf.IsValid())
                             throw new MyFlightbookException("No such user: " + szEmulate);
+                        szUser = szEmulate;
                     }
                     else
                         throw new UnauthorizedAccessException();

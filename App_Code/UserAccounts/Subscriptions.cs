@@ -190,7 +190,7 @@ namespace MyFlightbook.Subscriptions
         private void SendNightlyEmails()
         {
             // get the list of people who have a subscription OTHER than simple monthly
-            List<Profile> lstUsersToSend = Profile.UsersWithSubscriptions(~EmailSubscription.FlagForType(SubscriptionType.MonthlyTotals), DateTime.Now.AddDays(-7));
+            List<Profile> lstUsersToSend = new List<Profile>(Profile.UsersWithSubscriptions(~EmailSubscription.FlagForType(SubscriptionType.MonthlyTotals), DateTime.Now.AddDays(-7)));
 
             if (!String.IsNullOrEmpty(UserRestriction))
                 lstUsersToSend.RemoveAll(pf => pf.UserName.CompareOrdinalIgnoreCase(UserRestriction) != 0);
@@ -207,7 +207,7 @@ namespace MyFlightbook.Subscriptions
             // Now do the monthly/annual emails
             if (DateTime.Now.Day == 1)
             {
-                lstUsersToSend = Profile.UsersWithSubscriptions(EmailSubscription.FlagForType(SubscriptionType.MonthlyTotals), DateTime.Now.AddDays(1));
+                lstUsersToSend = new List<Profile>(Profile.UsersWithSubscriptions(EmailSubscription.FlagForType(SubscriptionType.MonthlyTotals), DateTime.Now.AddDays(1)));
 
                 // We don't update the last-email sent on this because this email is asynchronous - i.e., not dependent on any other mail that was sent.
                 foreach (Profile pf in lstUsersToSend)

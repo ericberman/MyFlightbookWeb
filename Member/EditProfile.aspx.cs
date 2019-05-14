@@ -461,15 +461,13 @@ public partial class Member_EditProfile : System.Web.UI.Page
     {
         if (args == null)
             throw new ArgumentNullException("args");
-#pragma warning disable 0618
-        Profile pf = new Profile(User.Identity.Name);
-#pragma warning restore 0618
+        Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
         args.IsValid = true;
         if (String.Compare(txtEmail.Text, pf.Email, StringComparison.OrdinalIgnoreCase) != 0)
         {
             // see if it's available
             pf.Email = txtEmail.Text;
-            args.IsValid = pf.FIsValid();
+            args.IsValid = pf.IsValid();
         }
     }
     #endregion
