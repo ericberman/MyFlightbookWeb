@@ -161,7 +161,7 @@ namespace MyFlightbook
     }
 
     /// <summary>
-    /// Encapsulates a user of the system.
+    /// Encapsulates a user of the system.  This is the base class.
     /// </summary>
     [Serializable]
     public abstract class ProfileBase
@@ -173,6 +173,8 @@ namespace MyFlightbook
                 this.SecurityQuestion = this.UserName = this.License = this.Address = string.Empty;
             Role = ProfileRoles.UserRole.None;
             BlacklistedProperties = new List<int>();
+            LastBFRInternal = LastMedical = CertificateExpiration = EnglishProficiencyExpiration = LastEmailDate = DateTime.MinValue;
+
         }
         #endregion
 
@@ -219,12 +221,6 @@ namespace MyFlightbook
         #endregion
 
         #region Properties
-        private DateTime m_LastBFR = DateTime.MinValue;
-        private DateTime m_LastMedical = DateTime.MinValue;
-        private DateTime m_dtCertificateExpiration = DateTime.MinValue;
-        private DateTime m_dtEnglishProficiencyExpiration = DateTime.MinValue;
-        private DateTime m_dtLastEmail = DateTime.MinValue;
-
         /// <summary>
         /// Should hobbs/engine/flight times be expanded by default?
         /// </summary>
@@ -464,11 +460,7 @@ namespace MyFlightbook
         /// <summary>
         /// Date that the most recent subscribed email was sent to this user
         /// </summary>
-        public DateTime LastEmailDate
-        {
-            get { return m_dtLastEmail; }
-            set { m_dtLastEmail = value; }
-        }
+        public DateTime LastEmailDate { get; set; }
 
         /// <summary>
         /// Email to which this user is subscribed.
@@ -488,20 +480,12 @@ namespace MyFlightbook
         /// <summary>
         /// Date of last BFR - DEPRECATED - DO NOT USE THIS 
         /// </summary>
-        protected DateTime LastBFRInternal
-        {
-            get { return m_LastBFR; }
-            set { m_LastBFR = value; }
-        }
+        protected DateTime LastBFRInternal { get; set; }
 
         /// <summary>
         /// Date of last medical
         /// </summary>
-        public DateTime LastMedical
-        {
-            get { return m_LastMedical; }
-            set { m_LastMedical = value; }
-        }
+        public DateTime LastMedical { get; set; }
 
         /// <summary>
         /// First name
@@ -612,11 +596,7 @@ namespace MyFlightbook
         /// <summary>
         /// Date that the certificate expires
         /// </summary>
-        public DateTime CertificateExpiration
-        {
-            get { return m_dtCertificateExpiration; }
-            set { m_dtCertificateExpiration = value; }
-        }
+        public DateTime CertificateExpiration { get; set; }
 
         public string LicenseDisplay
         {
@@ -631,11 +611,7 @@ namespace MyFlightbook
         /// <summary>
         /// Date that the English proficiency expires.
         /// </summary>
-        public DateTime EnglishProficiencyExpiration
-        {
-            get { return m_dtEnglishProficiencyExpiration; }
-            set { m_dtEnglishProficiencyExpiration = value; }
-        }
+        public DateTime EnglishProficiencyExpiration { get; set; }
 
         /// <summary>
         /// Gets just the first name for the logged in user, logged in user name if none
@@ -723,6 +699,18 @@ namespace MyFlightbook
                 return szEmail;
             }
         }
+    }
+
+    /// <summary>
+    /// Intermediate class: ProfileBase, but with database and validation capabilities.
+    /// </summary>
+    [Serializable]
+    public class PersistedProfile : ProfileBase
+    {
+        public PersistedProfile() : base()
+        {
+
+        }
 
         /// <summary>
         /// De-serializes an AuthorizationState from a JSON string, null if the string is null
@@ -763,7 +751,7 @@ namespace MyFlightbook
 
                 CloudAhoyToken = AuthStateFromString((string)util.ReadNullableField(dr, "CloudAhoyAccessToken", null));
 
-                m_LastBFR = Convert.ToDateTime(util.ReadNullableField(dr, "LastBFR", DateTime.MinValue), CultureInfo.InvariantCulture);
+                LastBFRInternal = Convert.ToDateTime(util.ReadNullableField(dr, "LastBFR", DateTime.MinValue), CultureInfo.InvariantCulture);
                 LastMedical = Convert.ToDateTime(util.ReadNullableField(dr, "LastMedical", DateTime.MinValue), CultureInfo.InvariantCulture);
                 EnglishProficiencyExpiration = Convert.ToDateTime(util.ReadNullableField(dr, "EnglishProficiencyExpiration", DateTime.MinValue), CultureInfo.InvariantCulture);
                 MonthsToMedical = Convert.ToInt32(dr["MonthsToMedical"], CultureInfo.InvariantCulture);
@@ -854,7 +842,7 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("defcloud", (int)DefaultCloudStorage);
                     comm.Parameters.AddWithValue("overwriteCloud", OverwriteCloudBackup ? 1 : 0);
                     comm.Parameters.AddWithValue("cloudAhoy", CloudAhoyToken == null ? null : JsonConvert.SerializeObject(CloudAhoyToken));
-                    comm.Parameters.AddWithValue("LastBFR", m_LastBFR);
+                    comm.Parameters.AddWithValue("LastBFR", LastBFRInternal);
                     comm.Parameters.AddWithValue("LastMedical", LastMedical);
                     comm.Parameters.AddWithValue("MonthsToMedical", MonthsToMedical);
                     comm.Parameters.AddWithValue("IsInstructor", IsInstructor);
@@ -892,7 +880,8 @@ namespace MyFlightbook
         #endregion
     }
 
-    public class Profile : ProfileBase
+        [Serializable]
+    public class Profile : PersistedProfile
     {
         #region Creation
         public Profile() : base() { }
@@ -1184,7 +1173,7 @@ namespace MyFlightbook
         }
         #endregion
 
-        #region Basic Adminastrative Functions (stuff that doesn't require admin privileges)
+        #region Basic Administrative Functions (stuff that doesn't require admin privileges)
         /// <summary>
         /// Changes name and email, sending a notification if the email changes.
         /// </summary>
