@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -85,7 +85,17 @@ public partial class makes : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+
             ActiveQuery = new ModelQuery() { SortMode = ModelQuery.ModelSortMode.ModelName, SortDir = ModelQuery.ModelSortDirection.Ascending, Limit = PageSize, Skip = 0, IncludeSampleImages = true };
+            string szQuery = util.GetStringParam(Request, "q");
+            if (!String.IsNullOrEmpty(szQuery))
+            {
+                string szJSon = Convert.FromBase64String(szQuery).Uncompress();
+                ActiveQuery = JsonConvert.DeserializeObject<ModelQuery>(szJSon, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate });
+                QueryToForm(ActiveQuery);
+                UpdateFilter();
+            }
+
             UpdateSortHeaders(ActiveQuery.SortMode);
         }
 
@@ -93,9 +103,20 @@ public partial class makes : System.Web.UI.Page
         this.Title = (string)GetLocalResourceObject("PageResource2.Title");
     }
 
-    protected void UpdateFilter() 
+    protected void QueryToForm(ModelQuery mq)
     {
-        ModelQuery mq = ActiveQuery;
+        mfbSearchbox.SearchText = mq.FullText;
+        txtModel.Text = mq.Model;
+        txtModelName.Text = mq.ModelName;
+        txtTypeName.Text = mq.TypeName;
+        txtManufacturer.Text = mq.ManufacturerName;
+        txtCatClass.Text = mq.CatClass;
+
+        mvSearchForm.SetActiveView(mq.Model.Length + mq.ModelName.Length + mq.TypeName.Length + mq.ManufacturerName.Length + mq.CatClass.Length > 0 ? vwAdvancedSearch : vwSimpleSearch);
+    }
+
+    protected ModelQuery QueryFromForm(ModelQuery mq)
+    {
         mq.Skip = 0;
         mq.FullText = mfbSearchbox.SearchText;
         mq.Model = txtModel.Text;
@@ -103,7 +124,12 @@ public partial class makes : System.Web.UI.Page
         mq.TypeName = txtTypeName.Text;
         mq.ManufacturerName = txtManufacturer.Text;
         mq.CatClass = txtCatClass.Text;
-        ActiveQuery = mq;
+        return mq;
+    }
+
+    protected void UpdateFilter() 
+    {
+        ModelQuery mq = ActiveQuery = QueryFromForm(ActiveQuery);
 
         tblHeaderRow.Visible = true;
         gvMakes.DataSource = MakeModel.MatchingMakes(mq);
@@ -112,8 +138,9 @@ public partial class makes : System.Web.UI.Page
 
     protected void FilterTextChanged(object sender, System.EventArgs e)
     {
-        gvMakes.PageIndex = 0;
-        UpdateFilter();
+        string szJSon = JsonConvert.SerializeObject(QueryFromForm(ActiveQuery), new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
+        string szQ = Convert.ToBase64String(szJSon.Compress());
+        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}?q={3}", Request.Url.Scheme, Request.Url.Host, Request.Url.AbsolutePath, HttpUtility.UrlEncode(szQ)));
     }
 
     protected void MakesRowDataBound(object sender, GridViewRowEventArgs e)
