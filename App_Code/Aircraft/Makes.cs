@@ -1,4 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -904,7 +906,10 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
     [Serializable]
     public class ModelQuery
     {
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum ModelSortMode { ModelName, CatClass, Manufacturer };
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum ModelSortDirection { Ascending, Descending };
 
         static Regex rNormalizeModel = new Regex("[- ]+", RegexOptions.Compiled);
@@ -918,36 +923,43 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         /// <summary>
         /// Text to find anywhere in the search string
         /// </summary>
+        [System.ComponentModel.DefaultValue("")]
         public string FullText { get; set; }
 
         /// <summary>
         /// Text to find in the manufacturer name
         /// </summary>
+        [System.ComponentModel.DefaultValue("")]
         public string ManufacturerName { get; set; }
 
         /// <summary>
         /// Manufacturer ID (i.e., deterministic)
         /// </summary>
+        [System.ComponentModel.DefaultValue(-1)]
         public int ManufacturerID { get; set; }
 
         /// <summary>
         /// Text to find in the model (e.g., "C-172")
         /// </summary>
+        [System.ComponentModel.DefaultValue("")]
         public string Model { get; set; }
 
         /// <summary>
         /// Text to find in the model marketing name (e.g., "Skyhawk")
         /// </summary>
+        [System.ComponentModel.DefaultValue("")]
         public string ModelName { get; set; }
 
         /// <summary>
         /// Text to find in the category/class
         /// </summary>
+        [System.ComponentModel.DefaultValue("")]
         public string CatClass { get; set; }
 
         /// <summary>
         /// Text to find in the type name.
         /// </summary>
+        [System.ComponentModel.DefaultValue("")]
         public string TypeName { get; set; }
 
         /// <summary>
@@ -968,11 +980,13 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         /// <summary>
         /// On which field should the results be sorted?
         /// </summary>
+        [System.ComponentModel.DefaultValue(ModelSortMode.ModelName)]
         public ModelSortMode SortMode { get; set; }
 
         /// <summary>
         /// Should the sort be ascending or descending?
         /// </summary>
+        [System.ComponentModel.DefaultValue(ModelSortDirection.Ascending)]
         public ModelSortDirection SortDir { get; set; }
 
         /// <summary>
