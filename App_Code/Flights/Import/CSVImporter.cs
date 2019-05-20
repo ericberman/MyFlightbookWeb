@@ -83,10 +83,10 @@ namespace MyFlightbook.ImportFlights
          * So, for example, the comments field has "Comments" as the highest priority column; if that is not found, then "Remarks" will be used next, and so forth.
         */
         private static string[] colFlightID = { "Flight ID" };
-        private static string[] colDate = { "Date", "FLT_DATE" };
-        private static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM" };
+        private static string[] colDate = { "Date", "FLT_DATE", "Date Flown" };
+        private static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT" };
         private static string[] colAircraftID = { "Aircraft ID" };
-        private static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Flt Time", "Block", "HRS" };
+        private static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Flt Time", "Block", "HRS", "TIME FLOWN" };
         private static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE" };
         private static string[] colHold = { "Hold", "Holds", "Holding" };
         private static string[] colLandings = { "Landings", "LAND_STD" };
@@ -114,8 +114,9 @@ namespace MyFlightbook.ImportFlights
         private static string[] colHobbsEnd = { "Hobbs End" };
         private static string[] colPublic = { "Public" };
         private static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL", "ACFT_MDS" };
-        private static string[] colFlightConditions = { "FS_ID" };  // For CAFRS - specifies flight conditions
-        private static string[] colPIlotRole = { "DS_ID" };    // For CAFRS - specifies role of pilot ("Duty Position")
+        private static string[] colFlightConditions = { "FS_ID", "CONDITION" };  // For CAFRS - specifies flight conditions
+        private static string[] colPilotRole = { "DS_ID", "DUTY" };    // For CAFRS - specifies role of pilot ("Duty Position")
+        private static string[] colPilotMission = { "MISSION", "MI_ID"};  // For CAFRS - specifies the mission for the pilot
 
         /// <summary>
         /// Common aliases for property names
@@ -298,22 +299,51 @@ namespace MyFlightbook.ImportFlights
                 lstProps.Add(cfp);
             }
 
+            /// <summary>
+            /// Adjusts tail number based on containing "(FS)" or "(BS)" (for Front Seat/Back Seat), adding front-seat/back-seat time as appropriate
+            /// </summary>
+            /// <param name="szTail">Assumed already upper case</param>
+            /// <returns></returns>
+            private string CAFRSAdjustTail(LogbookEntry le, string szTail, List<CustomFlightProperty> lstProps)
+            {
+                if (String.IsNullOrEmpty(szTail) || le == null || lstProps == null)
+                    return szTail;
+
+                if (szTail.Contains("(FS)"))
+                {
+                    AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropFrontSeatTime, lstProps);
+                    return szTail.Replace("(FS)", string.Empty);
+                }
+                if (szTail.Contains("(BS)"))
+                {
+                    AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropBackSeatTime, lstProps);
+                    return szTail.Replace("(BS)", string.Empty);
+                }
+
+                return szTail;
+            }
+
             private void SetCAFRSFlightCondition(LogbookEntry le, string szFlightConditions, List<CustomFlightProperty> lstProps)
             {
                 if (String.IsNullOrEmpty(szFlightConditions) || le == null || le.TotalFlightTime == 0)
                     return;
 
-                switch (szFlightConditions.ToUpperInvariant())
+                szFlightConditions = szFlightConditions.ToUpperInvariant().Trim();
+
+                switch (szFlightConditions)
                 {
                     default:
                     case "D":   // day - no action
                         break;
                     case "NG":  // Night vision goggles
+                    case "NS":  // Night System - FLIR
                     case "N":   // night unaided
                         if (le.Nighttime == 0)
                             le.Nighttime = le.TotalFlightTime;
                         if (szFlightConditions.CompareCurrentCultureIgnoreCase("NG") == 0)
                             AddCrossFilledPropertyWithID(le, (int) CustomPropertyType.KnownProperties.IDPropNVGoggleTime, lstProps);
+                        else if (szFlightConditions.CompareCurrentCultureIgnoreCase("NS") == 0)
+                            AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropNVFLIRTime, lstProps);
                         break;
                     case "W":   // "Weather" (imc)
                         if (le.IMC == 0)
@@ -322,6 +352,35 @@ namespace MyFlightbook.ImportFlights
                     case "H":   // "Hood"
                         if (le.SimulatedIFR == 0)
                             le.SimulatedIFR = le.TotalFlightTime;
+                        break;
+                }
+            }
+
+            private void SetCAFRSMissionRole(LogbookEntry le, string szMission, List<CustomFlightProperty> lstProps)
+            {
+                if (String.IsNullOrEmpty(szMission) || le == null || le.TotalFlightTime == 0)
+                    return;
+
+                szMission = szMission.ToUpperInvariant().Trim();
+
+                switch (szMission)
+                {
+                    default:
+                        break;
+                    case "C":   // combat
+                        AddCrossFilledPropertyWithID(le, (int) CustomPropertyType.KnownProperties.IDPropCombatTime, lstProps);
+                        break;
+                    case "D":   // imminent danger
+                        AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropImminentDanger, lstProps);
+                        break;
+                    case "F":   // test flight
+                        AddCrossFilledPropertyWithID(le, (int) CustomPropertyType.KnownProperties.IDPropTestPilotTime, lstProps);
+                        break;
+                    case "S":   // Service
+                        AddCrossFilledPropertyWithID(le, (int) CustomPropertyType.KnownProperties.IDPropMissionCrewTime, lstProps);
+                        break;
+                    case "T":   // training - map to dual
+                        le.Dual = le.TotalFlightTime;
                         break;
                 }
             }
@@ -342,14 +401,17 @@ namespace MyFlightbook.ImportFlights
                             le.PIC = le.TotalFlightTime;
                         break;
                     case "CP":  // Co-pilot
-                        AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropCoPilotTime, lstProps);
+                        AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropMilitaryCoPilottime, lstProps);
                         break;
                     case "IP":  // Instructor Pilot
                         if (le.CFI == 0)
                             le.CFI = le.TotalFlightTime;
                         break;
                     case "IE":  // Instrument evaluator
-                        AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropInstrumentExaminor, lstProps);
+                        AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropInstrumentExaminer, lstProps);
+                        break;
+                    case "MP":  // Maintenance Pilot evaluator
+                        AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropMaintTestPilot, lstProps);
                         break;
                     default:
                         break;
@@ -483,6 +545,7 @@ namespace MyFlightbook.ImportFlights
                 // CAFRS support - read pilot role and flight conditions IF not already filled in above.
                 SetCAFRSFlightCondition(le, GetMappedString(m_cm.iColFlightConditions), lstCustPropsForFlight);
                 SetCAFRSPilotRole(le, GetMappedString(m_cm.iColPilotRole), lstCustPropsForFlight);
+                SetCAFRSMissionRole(le, GetMappedString(m_cm.iColMission), lstCustPropsForFlight);
 
                 // we now have, from above, a set of custom properties to import.
                 // BUT...if this is an existing flight, then some of those flights may already
@@ -497,10 +560,8 @@ namespace MyFlightbook.ImportFlights
                     m_cm.OrphanedPropsByFlightID[le.FlightID] = lstExisting;
                 }
 
-                le.CustomProperties = lstCustPropsForFlight.ToArray();
-
                 // check that we know about the aircraft or, if not, if it's in the system then add it for the user.
-                string szTail = Aircraft.NormalizeTail(le.TailNumDisplay = m_rgszRow[m_cm.iColTail].Trim().ToUpperInvariant());
+                string szTail = Aircraft.NormalizeTail(le.TailNumDisplay = CAFRSAdjustTail(le, m_rgszRow[m_cm.iColTail].Trim().ToUpperInvariant(), lstCustPropsForFlight));
 
                 // See if the aircraft exists
                 Aircraft ac = null;
@@ -586,6 +647,7 @@ namespace MyFlightbook.ImportFlights
                 le.ModelDisplay = ac.ModelDescription;  // for display
                 le.CatClassOverride = GetMappedInt(m_cm.iColCatClassOverride);
                 le.CatClassDisplay = (le.CatClassOverride == 0) ? ac.CategoryClassDisplay : CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)le.CatClassOverride).CatClass;
+                le.CustomProperties = lstCustPropsForFlight.ToArray();
 
                 if (!le.IsValid())
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportFlightIsInvalid, le.ErrorString));
@@ -682,6 +744,8 @@ namespace MyFlightbook.ImportFlights
             public int iColTo { get; set; }
             public int iColFlightConditions { get; set; }
             public int iColPilotRole { get; set; }
+
+            public int iColMission { get; set; }
             public int iColPublic { get; set; }
             #endregion
 
@@ -805,7 +869,8 @@ namespace MyFlightbook.ImportFlights
                 iColFrom = ColumnIndex(colFrom);
                 iColTo = ColumnIndex(colTo);
                 iColFlightConditions = ColumnIndex(colFlightConditions);
-                iColPilotRole = ColumnIndex(colPIlotRole);
+                iColPilotRole = ColumnIndex(colPilotRole);
+                iColMission = ColumnIndex(colPilotMission);
 
                 // Now, see which custom properties are present
                 CustomPropertyType[] rgCpt = CustomPropertyType.GetCustomPropertyTypes();

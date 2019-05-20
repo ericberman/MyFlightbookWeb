@@ -66,7 +66,7 @@ namespace MyFlightbook
             IDPropTakeoffAny = 93,              // Not flagged as a known property
             IDPropTachStart = 95,
             IDPropTachEnd = 96,
-            IDPropInstrumentExaminor = 107,
+            IDPropInstrumentExaminer = 107,
             IDPropMilitaryCoPilottime = 110,
             IDPropHoistOperations = 118,
             IDPropPassengerNames = 120,         // Not flagged as a known property
@@ -81,6 +81,7 @@ namespace MyFlightbook
             IDPropCheckrideNewCatClassType = 161,
             IDPropFlightReview = 164,           // Not flagged as a known property
             IDPropStudentName = 166,            // Not flagged as a known property - just used for copying to instructor's flight.
+            IDPropCombatTime = 172,
             IDPropCheckrideCFI = 176,
             IDPropCheckrideCFII = 177,
             IDPropSafetyPilotName = 178,        // Not flagged as a known property
@@ -100,13 +101,17 @@ namespace MyFlightbook
             IDPropCheckrideMEI = 225,
             IDPropMotorgliderSelfLaunch = 227,
             IDPropCAP5Checkride = 232,
+            IDPropMissionCrewTime = 235,
             IDPropLandingToweredNight = 244,
             IDPropLandingTowered = 245,
+            IDPropMaintTestPilot = 249,
+            IDPropImminentDanger = 250,
             IDPropFlightEngineerTime = 257,
             IDPropCAP91Checkride = 258,
             IDPropNameOfExaminer = 260,         // Not flagged as a known property
             IDPropApproachName = 267,
             IDPropPICUS = 279,
+            IDPropTestPilotTime = 282,
             IDPropInstructorOnBoard = 288,
             IDPropPassengerCount = 316,         // Not flagged as a known property
             IDPropMaximumAltitude = 321,
