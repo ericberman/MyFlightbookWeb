@@ -443,10 +443,10 @@ f1.SIC = f2.SIC AND
 f1.totalFlightTime = f2.totalFlightTime AND
 f1.hobbsStart = f2.hobbsStart AND
 f1.hobbsEnd = f2.hobbsEnd AND
-f1.dtEngineStart = f2.dtEngineStart AND
-f1.dtEngineEnd = f2.dtEngineEnd AND
-f1.dtFlightStart = f2.dtFlightStart AND
-f1.dtFlightEnd = f2.dtFlightEnd)) ";
+f1.dtEngineStart <=> f2.dtEngineStart AND
+f1.dtEngineEnd <=> f2.dtEngineEnd AND
+f1.dtFlightStart <=> f2.dtFlightStart AND
+f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     }
     #endregion
 
