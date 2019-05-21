@@ -1,12 +1,13 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Web;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2016 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -64,12 +65,20 @@ namespace MyFlightbook
             FLoad("WHERE idmanufacturer=?idMan", new MySqlParameter("idMan", id));
         }
 
+        static Regex rGeneric = new Regex("VARIOUS|UNKNOWN|MISC|MISCELLANEOUS", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        const string szGeneric = "Generic";
+
         /// <summary>
         /// Create a new manufacturer object, initialize by name
         /// </summary>
         /// <param name="szName">The name of the manufacturer</param>
         public Manufacturer(string szName) : this()
         {
+            // Issue #295
+            // check for variations on generic manufacturers; if so, map it to Generic.
+            if (rGeneric.IsMatch(szName))
+                szName = szGeneric;
+
             ManufacturerName = szName;
 
             try

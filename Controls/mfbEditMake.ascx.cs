@@ -363,8 +363,8 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
                 Manufacturer m = new Manufacturer(szNew);
                 if (m.IsNew)
                     m.FCommit();
-                RepopulateManufacturerDropdown(szNew);
-                SelectIfPresent(szNew);
+                RepopulateManufacturerDropdown(m.ManufacturerName);
+                SelectIfPresent(m.ManufacturerName);
             }
         }
 
