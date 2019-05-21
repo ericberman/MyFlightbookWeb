@@ -216,7 +216,7 @@ namespace MyFlightbook.CloudStorage
         /// <returns>The ID of the resulting object (if found)</returns>
         protected string FileQuery(string szFileName, string szParent)
         {
-            return String.Format(System.Globalization.CultureInfo.InvariantCulture, "name%3D'{0}'+and+'{1}'+in+parents", szFileName, szParent);
+            return String.Format(System.Globalization.CultureInfo.InvariantCulture, "name%3D'{0}'+and+'{1}'+in+parents+and+trashed%3Dfalse", szFileName, szParent);
         }
 
         /// <summary>
@@ -299,6 +299,8 @@ namespace MyFlightbook.CloudStorage
             if (!CheckAccessToken())
                 throw new MyFlightbookException("Google drive: access token missing or expired");
 
+            bool fIsCSV = szMimeType.CompareCurrentCultureIgnoreCase("text/csv") == 0;
+
             ms.Seek(0, SeekOrigin.Begin);   // write out the whole stream.  UploadAsync appears to pick up from the current location, which is the end-of-file after writing to a ZIP.
 
             string szResult = string.Empty;
@@ -308,8 +310,6 @@ namespace MyFlightbook.CloudStorage
             {
                 httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
 
-                string idExisting = null;
-
                 if (String.IsNullOrEmpty(RootFolderID))
                 {
                     RootFolderID = await IDForFolder(RootPath);
@@ -317,17 +317,22 @@ namespace MyFlightbook.CloudStorage
                         RootFolderID = await CreateFolder(Branding.CurrentBrand.AppName);
                 }
 
-                // update the existing file if it is present.
-                // if (!String.IsNullOrEmpty(RootFolderID))
-                //    idExisting = await IDForFile(szFileName, RootFolderID);
+                // CSV loses its extension when uploaded because we map it to a google spreadsheet.  So if it's CSV AND we are patching an existing file, drop the extension so that we ov
+                // update the existing file if it is present.  If CSV, strip the extension
+                string szFileNameToCheck = fIsCSV ? Path.GetFileNameWithoutExtension(szFileName) : szFileName;
+                string idExisting = null;
+                if (!String.IsNullOrEmpty(RootFolderID))
+                    idExisting = await IDForFile(szFileNameToCheck, RootFolderID);
+
+                // If we got a hit, use that filename for the udpate
+                if (!String.IsNullOrEmpty(idExisting))
+                    szFileName = szFileNameToCheck;
 
                 // Create the metadata.  Name is most important, but we can also specify mimeType for CSV to import into GoogleDocs
                 Dictionary<string, object> dictMeta = new Dictionary<string, object>() { { "name", szFileName } };
-                if (szMimeType.CompareCurrentCultureIgnoreCase("text/csv") == 0)
+                if (fIsCSV)
                     dictMeta["mimeType"] = "application/vnd.google-apps.spreadsheet";   // get it to show up in google drive sheets.
-                if (!String.IsNullOrEmpty(idExisting))
-                    dictMeta["id"] = idExisting;
-                if (!String.IsNullOrEmpty(RootFolderID))
+                if (String.IsNullOrEmpty(idExisting) && !String.IsNullOrEmpty(RootFolderID))
                     dictMeta["parents"] = new List<string>() { RootFolderID };
 
                 // Create the form.  The form itself needs the authtoken header
