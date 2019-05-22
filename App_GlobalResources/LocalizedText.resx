@@ -1509,4 +1509,7 @@
   <data name="PilotsLabel" xml:space="preserve">
     <value>Pilots: </value>
   </data>
+  <data name="GoogleDriveOutOfSpace" xml:space="preserve">
+    <value>Quota for storage on Google Drive has been exceeded.</value>
+  </data>
 </root>
