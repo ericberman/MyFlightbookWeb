@@ -17,7 +17,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2018 MyFlightbook LLC
+ * Copyright (c) 2017-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -267,7 +267,14 @@ public partial class Member_FlightDetail : System.Web.UI.Page
                 // Bind details - this will bind everything else.
                 fmvLE.DataSource = new LogbookEntryDisplay[] { led };
                 fmvLE.DataBind();
-                fmvAircraft.DataSource = new Aircraft[] { new UserAircraft(led.User).GetUserAircraftByID(led.AircraftID) };
+                // Seing weird null reference errors now and then binding to private notes.
+                Aircraft ac = new UserAircraft(led.User).GetUserAircraftByID(led.AircraftID);
+                if (ac.PrivateNotes == null)
+                {
+                    ac.PrivateNotes = string.Empty;
+                    util.NotifyAdminEvent("null private notes in FlightDetails.aspx", String.Format(CultureInfo.CurrentCulture, "User: {0}, Aircraft: {1}", led.User, led.AircraftID), ProfileRoles.maskSiteAdminOnly);
+                }
+                fmvAircraft.DataSource = new Aircraft[] { ac };
                 fmvAircraft.DataBind();
 
 
