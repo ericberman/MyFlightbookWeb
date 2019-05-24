@@ -119,6 +119,8 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
         public string url { get; set; }
         public string userRole { get; set; }
 
+        public string thumbnailUrl { get; set; }
+
         private Dictionary<CustomPropertyType.KnownProperties, CustomFlightProperty> DictProps { get; set; }
 
         public string UserName { get; set; }
@@ -251,13 +253,21 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
 
             DictProps.Clear();
 
+            List<string> lstText = new List<string>();
+            if (!String.IsNullOrEmpty(remarks))
+                lstText.Add(remarks);
+            if (!String.IsNullOrEmpty(url))
+                lstText.Add(String.Format(CultureInfo.CurrentCulture, "({0})", url));
+            if (!String.IsNullOrEmpty(thumbnailUrl))
+                lstText.Add(thumbnailUrl);
+
             PendingFlight le = new PendingFlight()
             {
                 FlightID = LogbookEntry.idFlightNew,
                 TailNumDisplay = aircraft.registration,
                 ModelDisplay = aircraft.model,
                 Route = sb.ToString().Trim(),
-                Comment = (String.IsNullOrEmpty(url) ? remarks : String.Format(CultureInfo.CurrentCulture, "{0} ({1})", remarks, url)).Trim(),
+                Comment = String.Join(" ", lstText),
                 TotalFlightTime = duration / 3600.0M,
                 EngineStart = dtStart,
                 EngineEnd = dtStart.AddSeconds(duration),

@@ -312,6 +312,18 @@
   <data name="imgUpdateKeyResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="imgViewFlightsResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgViewFlightsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgViewPendingResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgViewPendingResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblAnonHintResource1.Text" xml:space="preserve">
     <value>You can use "SIM" for a training device.  (You'll still have to identify the certification level and model to be used.)</value>
   </data>
@@ -457,6 +469,12 @@
     <value>Description of spreadsheet columns</value>
   </data>
   <data name="lnkImportTableResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkPendingResource1.Text" xml:space="preserve">
+    <value>Review pending flights</value>
+  </data>
+  <data name="lnkPendingResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lnkViewAircraftResource1.Text" xml:space="preserve">
@@ -632,6 +650,42 @@
     <value>All flight/engine times must be UTC for night computation to work.</value>
   </data>
   <data name="locAutofill1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnImportCloudAhoyResource1.Text" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="btnImportCloudAhoyResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCAFromResource1.Text" xml:space="preserve">
+    <value>Start Date:</value>
+  </data>
+  <data name="lblCAFromResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCAToResource1.Text" xml:space="preserve">
+    <value>End Date:</value>
+  </data>
+  <data name="lblCAToResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCloudAhoyPromptDatesResource1.Text" xml:space="preserve">
+    <value>Import CloudAhoy flights between:</value>
+  </data>
+  <data name="lblCloudAhoyPromptDatesResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblOptionalEndResource1.Text" xml:space="preserve">
+    <value>(Optional)</value>
+  </data>
+  <data name="lblOptionalEndResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblOptionalStartResource1.Text" xml:space="preserve">
+    <value>(Optional)</value>
+  </data>
+  <data name="lblOptionalStartResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
 </root>

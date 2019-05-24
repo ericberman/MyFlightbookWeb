@@ -1,11 +1,16 @@
 ﻿using DotNetOpenAuth.OAuth2;
+using HtmlAgilityPack;
 using MyFlightbook.ImportFlights.CloudAhoy;
 using Newtonsoft.Json;
 using System;
-using System.Globalization;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Globalization;
+using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 /******************************************************
  * 
@@ -40,17 +45,49 @@ namespace MyFlightbook.OAuth.CloudAhoy
             AuthState = authstate;
         }
 
+        private string TextFromHTML(string sz)
+        {
+            if (sz == null || !sz.Contains("<"))
+                return sz;
+
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(sz);
+            StringBuilder sb = new StringBuilder();
+            foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//text()"))
+                sb.Append(node.InnerText);
+
+            return sb.ToString();
+        }
+
         /// <summary>
         /// Retrieves flights from cloudahoy
         /// </summary>
         /// <param name="szUserName">User for whome the flights are being retrieved</param>
+        /// <param name="dtEnd">End date for date range</param>
+        /// <param name="dtStart">Start date for date range</param>
         /// <exception cref="HttpRequestException"></exception>
         /// <returns></returns>
-        public async Task<IEnumerable<CloudAhoyFlight>> GetFlights(string szUserName)
+        public async Task<IEnumerable<CloudAhoyFlight>> GetFlights(string szUserName, DateTime? dtStart, DateTime? dtEnd)
         {
             HttpResponseMessage response = null;
 
+            if (dtStart.HasValue && dtEnd.HasValue && dtEnd.Value.CompareTo(dtStart.Value) <= 0)
+                throw new MyFlightbookValidationException("Invalid date range");
+
             string szResult = string.Empty;
+
+            UriBuilder builder = new UriBuilder(FlightsEndpoint);
+            NameValueCollection nvc = HttpUtility.ParseQueryString(builder.Query);
+
+            DateTime dtUnix = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+
+            if (dtStart.HasValue)
+                nvc["start"] = (new DateTime(dtStart.Value.Year, dtStart.Value.Month, dtStart.Value.Day, 0, 0, 0, DateTimeKind.Utc)).Subtract(dtUnix).TotalSeconds.ToString(CultureInfo.InvariantCulture);
+            if (dtEnd.HasValue)
+
+                nvc["end"] = (new DateTime(dtEnd.Value.Year, dtEnd.Value.Month, dtEnd.Value.Year, 23, 59, 59, DateTimeKind.Utc)).Subtract(dtUnix).TotalSeconds.ToString(CultureInfo.InvariantCulture);
+
+            List<CloudAhoyFlight> lstResult = new List<CloudAhoyFlight>();
 
             using (HttpClient httpClient = new HttpClient())
             {
@@ -58,18 +95,36 @@ namespace MyFlightbook.OAuth.CloudAhoy
 
                 try
                 {
-                    response = await httpClient.GetAsync(FlightsEndpoint);
-                    szResult = response.Content.ReadAsStringAsync().Result;
-                    response.EnsureSuccessStatusCode();
-                    CloudAhoyFlight[] rgFlights = JsonConvert.DeserializeObject<CloudAhoyFlight[]>(szResult, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
-                    if (szUserName != null)
-                        foreach (CloudAhoyFlight caf in rgFlights)
-                            caf.UserName = szUserName;
-                    return rgFlights;
+                    for (int iPage = 1; iPage < 20; iPage++)
+                    {
+                        nvc["page"] = iPage.ToString(CultureInfo.InvariantCulture);
+
+                        builder.Query = nvc.ToString();
+
+                        response = await httpClient.GetAsync(builder.ToString());
+
+                        IEnumerable<string> values = null;
+                        bool fHasMore = false;
+                        if (response.Headers.TryGetValues("ca-has-more", out values))
+                            fHasMore = Convert.ToBoolean(values.First(), CultureInfo.InvariantCulture);
+
+                        szResult = response.Content.ReadAsStringAsync().Result;
+                        response.EnsureSuccessStatusCode();
+                        CloudAhoyFlight[] rgFlights = JsonConvert.DeserializeObject<CloudAhoyFlight[]>(szResult, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
+                        if (szUserName != null)
+                            foreach (CloudAhoyFlight caf in rgFlights)
+                                caf.UserName = szUserName;
+
+                        lstResult.AddRange(rgFlights);
+
+                        if (!fHasMore)
+                            break;  // don't go infnite loop!
+                    }
+                    return lstResult;
                 }
                 catch (HttpRequestException)
                 {
-                    throw new MyFlightbookException(response.ReasonPhrase + " " + szResult);
+                    throw new MyFlightbookException(response.ReasonPhrase + " " + TextFromHTML(szResult));
                 }
             }
         }

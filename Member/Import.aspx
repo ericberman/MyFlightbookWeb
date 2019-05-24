@@ -3,7 +3,7 @@
 <%@ Register src="../Controls/mfbImportAircraft.ascx" tagname="mfbImportAircraft" tagprefix="uc1" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
-
+<%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc1" TagName="mfbTypeInDate" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Localize ID="locHeader" runat="server" Text="Importing Data" meta:resourcekey="locHeaderResource1" 
             ></asp:Localize>
@@ -33,10 +33,52 @@
                         <tr>
                             <td><asp:Image ID="imgCloudAhoy" runat="server" ImageUrl="~/images/CloudAhoyTrans.png" AlternateText="CloudAhoy" ToolTip="CloudAhoy" /></td>
                             <td><p><asp:Label ID="lblCloudAhoyPrompt" runat="server" Font-Size="Larger" Font-Bold="true" Text="Flown with CloudAhoy lately?" meta:resourcekey="lblCloudAhoyPromptResource1"></asp:Label></p>
-                                <p><asp:LinkButton ID="lnkImportCloudAhoy" runat="server" Font-Bold="true" Text="Import recent flights from CloudAhoy" meta:resourcekey="lnkImportCloudAhoyResource1" OnClick="lnkImportCloudAhoy_Click" /></p>
+                                <p><asp:LinkButton ID="lnkImportCloudAhoy" runat="server" Font-Bold="true" Text="Import recent flights from CloudAhoy" meta:resourcekey="lnkImportCloudAhoyResource1" /></p>
                             </td>
                         </tr>
                     </table>
+                </asp:Panel>
+                <ajaxToolkit:ModalPopupExtender ID="popupCloudAhoy" runat="server" BehaviorID="mpeCloudAhoy" BackgroundCssClass="modalBackground" TargetControlID="lnkImportCloudAhoy" PopupControlID="pnlModalCloudAhoy"></ajaxToolkit:ModalPopupExtender>
+    <script type="text/javascript">
+        function hideEditor() {
+            document.getElementById('<% =pnlModalCloudAhoy.ClientID %>').style.display = 'none';
+            $find("mpeCloudAhoy").hide();
+        }
+
+        /* Handle escape to dismiss */
+        function pageLoad(sender, args) {
+            if (!args.get_isPartialLoad()) {
+                $addHandler(document, "keydown", onKeyDown);
+            }
+        }
+
+        function onKeyDown(e) {
+            if (e && e.keyCode == Sys.UI.Key.esc)
+                hideEditor();
+        }
+    </script>
+                <asp:Panel ID="pnlModalCloudAhoy" runat="server" DefaultButton="btnImportCloudAhoy" style="display:none" CssClass="modalpopup">
+                    <asp:Label ID="lblCloudAhoyPromptDates" runat="server" Font-Bold="true" Text="Import CloudAhoy flights between:" meta:resourcekey="lblCloudAhoyPromptDatesResource1"></asp:Label>
+                    <table>
+                        <tr style="vertical-align:top">
+                            <td>
+                                <asp:Label ID="lblCAFrom" runat="server" Text="Start Date:" meta:resourcekey="lblCAFromResource1"></asp:Label><br />
+                                <asp:Label ID="lblOptionalStart" runat="server" Text="(Optional)" CssClass="fineprint" meta:resourcekey="lblOptionalStartResource1"></asp:Label>
+                            </td>
+                            <td><uc1:mfbTypeInDate runat="server" ID="mfbCloudAhoyStartDate" DefaultType="None" /></td>
+                        </tr>
+                        <tr style="vertical-align:top">
+                            <td>
+                                <asp:Label ID="lblCATo" runat="server" Text="End Date:" meta:resourcekey="lblCAToResource1"></asp:Label><br />
+                                <asp:Label ID="lblOptionalEnd" runat="server" Text="(Optional)" CssClass="fineprint" meta:resourcekey="lblOptionalEndResource1"></asp:Label>
+                            </td>
+                            <td><uc1:mfbTypeInDate runat="server" ID="mfbCloudAhoyEndDate" DefaultType="None" /></td>
+                        </tr>
+                    </table>
+                    <div><asp:Label ID="lblCloudAhoyErr" runat="server" EnableViewState="false" CssClass="error"></asp:Label></div>
+                    <div style="text-align:center">
+                        <asp:Button ID="btnImportCloudAhoy" runat="server" Font-Bold="true" Text="Import" OnClick="btnImportCloudAhoy_Click" meta:resourcekey="btnImportCloudAhoyResource1" /> <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" OnClientClick="javascript:hideEditor();return false;" />
+                    </div>
                 </asp:Panel>
                 <p>
                     <asp:Label ID="lblNewDirectImport" runat="server" Text="<%$ Resources:LocalizedText, HeaderDownloadIsNew %>" Font-Bold="true" meta:resourcekey="lblNewDirectImportResource1"></asp:Label>
@@ -169,13 +211,13 @@
         </ul>
         <p>
             <asp:HyperLink ID="lnkDone" runat="server" NavigateUrl="~/Member/LogbookNew.aspx">
-                <asp:Image ID="imgViewFlights" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" />&nbsp;
-                <asp:Label ID="lblViewFlights" runat="server" Text="View my flights" meta:resourceky="lblViewFlightsResource1"></asp:Label>
+                <asp:Image ID="imgViewFlights" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" meta:resourcekey="imgViewFlightsResource1" />&nbsp;
+                <asp:Label ID="lblViewFlights" runat="server" Text="View my flights" meta:resourcekey="lblViewFlightsResource1"></asp:Label>
             </asp:HyperLink></p>
         <p>
-            <asp:HyperLink ID="lnkPending" runat="server" NavigateUrl="~/Member/ReviewPendingFlights.aspx" Visible="false">
-                <asp:Image ID="imgViewPending" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" />&nbsp;
-                <asp:Label ID="lblViewPending" runat="server" Text="Review pending flights" meta:resourceky="lblViewPendingResource1"></asp:Label>
+            <asp:HyperLink ID="lnkPending" runat="server" NavigateUrl="~/Member/ReviewPendingFlights.aspx" Visible="false" meta:resourcekey="lnkPendingResource1">
+                <asp:Image ID="imgViewPending" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" meta:resourcekey="imgViewPendingResource1" />&nbsp;
+                <asp:Label ID="lblViewPending" runat="server" Text="Review pending flights" meta:resourcekey="lblViewPendingResource1"></asp:Label>
             </asp:HyperLink></p>
     </asp:Panel>
     <br /><br />
