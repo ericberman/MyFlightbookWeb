@@ -988,4 +988,7 @@ Proceed with import?</value>
   <data name="ReviewPendingFlightsDeleteConfirm" xml:space="preserve">
     <value>This cannot be undone - are you sure you want to delete all of your pending flights?</value>
   </data>
+  <data name="SendToCloudAhoy" xml:space="preserve">
+    <value>Send to CloudAhoy</value>
+  </data>
 </root>

@@ -1,4 +1,5 @@
 ﻿using DotNetOpenAuth.OAuth2;
+using System.IO;
 using HtmlAgilityPack;
 using MyFlightbook.ImportFlights.CloudAhoy;
 using Newtonsoft.Json;
@@ -21,6 +22,29 @@ using System.Web;
 
 namespace MyFlightbook.OAuth.CloudAhoy
 {
+    [Serializable]
+    internal class CloudAhoyPostFileMetaData
+    {
+        public string importerVersion { get; set; }
+        public string tail { get; set; }
+        public string remarks { get; set; }
+
+        public CloudAhoyPostFileMetaData()
+        {
+            importerVersion = "1.0";
+            tail = remarks = string.Empty;
+        }
+
+        public CloudAhoyPostFileMetaData(LogbookEntryBase le) : this()
+        {
+            if (le == null)
+                throw new ArgumentNullException("le");
+
+            tail = le.TailNumDisplay;
+            remarks = le.Comment;
+        }
+    }
+
     /// <summary>
     /// CloudAhow class
     /// </summary>
@@ -35,7 +59,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
             "CloudAhoySecret",
             String.Format(CultureInfo.InvariantCulture, "https://{0}/integration/v1/auth", fUseSandbox ? cloudAhoyDebugHost : cloudAhoyLiveHost),
             String.Format(CultureInfo.InvariantCulture, "https://{0}/integration/v1/token", fUseSandbox ? cloudAhoyDebugHost : cloudAhoyLiveHost),
-            new string[] { "flights:read" })
+            new string[] { "flights:read" /*,  "flights:import" */ })
         {
             FlightsEndpoint = String.Format(CultureInfo.InvariantCulture, "https://{0}/integration/v1/flights", fUseSandbox ? cloudAhoyDebugHost : cloudAhoyLiveHost);
         }
@@ -58,6 +82,52 @@ namespace MyFlightbook.OAuth.CloudAhoy
 
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Pushes GPX to CloudAhoy
+        /// </summary>
+        /// <param name="szGPX">The GPX in string form</param>
+        /// <param name="le">The parent flight (for metadata)</param>
+        public async void PutGPX(string szGPX, LogbookEntryBase le)
+        {
+            if (szGPX == null)
+                throw new ArgumentNullException("szGPX");
+            if (le == null)
+                throw new ArgumentNullException("le");
+
+            HttpResponseMessage response = null;
+
+            using (MultipartFormDataContent form = new MultipartFormDataContent())
+            {
+                StringContent scMeta = new StringContent(JsonConvert.SerializeObject(new CloudAhoyPostFileMetaData(le)));
+                scMeta.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                form.Add(scMeta, "METADATA");
+
+                StringContent scGPX = new StringContent(szGPX);
+                scGPX.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/gpx+xml");
+                form.Add(scGPX, "IMPORT");
+
+                string szResult = string.Empty;
+
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
+
+                    try
+                    {
+                        response = await httpClient.PostAsync(FlightsEndpoint, form);
+
+                        szResult = response.Content.ReadAsStringAsync().Result;
+                        response.EnsureSuccessStatusCode();
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        throw new MyFlightbookException(ex.Message + " " + response.ReasonPhrase + " " + TextFromHTML(szResult));
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Retrieves flights from cloudahoy

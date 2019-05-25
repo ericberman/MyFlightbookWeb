@@ -1,4 +1,5 @@
 ﻿using MyFlightbook;
+using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.Airports;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
@@ -6,6 +7,7 @@ using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Weather.ADDS;
 using Newtonsoft.Json;
+using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -115,7 +117,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         }
     }
 
-    private string szKeyVSRestriction = "viewstateRestrictionKey";
+    private const string szKeyVSRestriction = "viewstateRestrictionKey";
     protected FlightQuery Restriction
     {
         get { return (FlightQuery)ViewState[szKeyVSRestriction]; }
@@ -264,6 +266,9 @@ public partial class Member_FlightDetail : System.Web.UI.Page
                 UpdateChart();
                 UpdateRestriction();
 
+                if (Viewer.CloudAhoyToken == null || Viewer.CloudAhoyToken.AccessToken == null || true)   // Import not implemented yet at cloudahoy...
+                    lnkSendCloudAhoy.Visible = false;
+
                 // Bind details - this will bind everything else.
                 fmvLE.DataSource = new LogbookEntryDisplay[] { led };
                 fmvLE.DataBind();
@@ -276,8 +281,6 @@ public partial class Member_FlightDetail : System.Web.UI.Page
                 }
                 fmvAircraft.DataSource = new Aircraft[] { ac };
                 fmvAircraft.DataBind();
-
-
 
                 if (String.IsNullOrEmpty(CurrentFlight.FlightData) && dtRequested != DetailsTab.Aircraft && dtRequested != DetailsTab.Flight)
                     AccordionCtrl.SelectedIndex = (int)DetailsTab.Flight;
@@ -514,6 +517,33 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             Response.AddHeader("Content-Disposition", String.Format(CultureInfo.CurrentCulture, "attachment;filename=FlightData{0}.{1}", m_fd.FlightID, dst.DefaultExtension));
             writeData();
             Response.End();
+        }
+    }
+
+    protected void lnkSendCloudAhoy_Click(object sender, EventArgs e)
+    {
+        m_fd.AltitudeUnits = (FlightData.AltitudeUnitTypes)Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture);
+        m_fd.SpeedUnits = (FlightData.SpeedUnitTypes)Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture);
+        m_fd.FlightID = CurrentFlightID;
+
+        CloudAhoyClient client = new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)) { AuthState = Viewer.CloudAhoyToken };
+
+        MemoryStream ms = null;
+        StreamReader sr = null;
+        try
+        {
+            ms = new MemoryStream();
+            m_fd.WriteGPXData(ms);
+            sr = new StreamReader(ms);
+            ms = null;  // CA2022
+            client.PutGPX(sr.ReadToEnd(), CurrentFlight);
+        }
+        finally
+        {
+            if (ms != null)
+                ms.Dispose();
+            if (sr != null)
+                sr.Dispose();
         }
     }
 

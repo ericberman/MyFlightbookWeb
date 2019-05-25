@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="FlightDetail.aspx.cs" Inherits="Member_FlightDetail" culture="auto" meta:resourcekey="PageResource1" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="FlightDetail.aspx.cs" Inherits="Member_FlightDetail" culture="auto" meta:resourcekey="PageResource1" Async="true" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Reference Control="~/Controls/mfbLogbookSidebar.ascx" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
@@ -73,7 +73,8 @@
         function showUnitConvert(sender) {
             var r1 = document.getElementById("rowUnitConvert1");
             var r2 = document.getElementById("rowUnitConvert2");
-            r1.style.visibility = r2.style.visibility = (sender.value == "Original") ? "hidden" : "visible";
+            var r3 = document.getElementById("<% = lblCloudAhoy.ClientID %>");
+            r1.style.visibility = r2.style.visibility = r3.style.visibility = (sender.value == "Original") ? "hidden" : "visible";
         }
     </script>
     <uc4:mfbAccordionProxyExtender runat="server" ID="mfbAccordionProxyExtender" AccordionControlID="AccordionCtrl" HeaderProxyIDs="apcFlight,apcAircraft,apcChart,apcRaw,apcDownload" />
@@ -286,6 +287,12 @@
                                     <asp:ListItem Enabled="False" Value="KML" Text="KML (Google Earth)" meta:resourcekey="ListItemResource3"></asp:ListItem>
                                     <asp:ListItem Enabled="False" Value="GPX" Text="GPX" meta:resourcekey="ListItemResource4"></asp:ListItem>
                                 </asp:DropDownList>
+                                <asp:Label ID="lblCloudAhoy" runat="server" style="visibility:hidden;">
+                                    <asp:LinkButton ID="lnkSendCloudAhoy" runat="server" OnClick="lnkSendCloudAhoy_Click">
+                                        <asp:Image ID="imgClopudAhoy" style="padding-right: 10px" ImageUrl="~/images/cloudahoy-sm.png" AlternateText="<%$ Resources:LogbookEntry, SendToCloudAhoy %>" ToolTip="<%$ Resources:LogbookEntry, SendToCloudAhoy %>" runat="server" />
+                                        <asp:Label ID="lblSendCloudAhoy" runat="server" Text="<%$ Resources:LogbookEntry, SendToCloudAhoy %>"></asp:Label>
+                                    </asp:LinkButton>
+                                </asp:Label>
                             </td>
                         </tr>
                         <tr id="rowUnitConvert1" style="visibility:hidden;">
@@ -312,9 +319,13 @@
                                 </asp:DropDownList>
                             </td>
                         </tr>
-                        <tr><td>&nbsp;</td><td></td></tr>
-                        <tr><td></td><td><asp:Button ID="btnDownload" runat="server" CausesValidation="False" OnClick="btnDownload_Click"
-                        Text="Download" meta:resourcekey="btnDownloadResource1" /></td></tr>
+                        <tr ><td>&nbsp;</td><td></td></tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <asp:Button ID="btnDownload" runat="server" CausesValidation="False" OnClick="btnDownload_Click" Text="Download" meta:resourcekey="btnDownloadResource1" />
+                            </td>
+                        </tr>
                     </table>
                 </Content>
             </ajaxToolkit:AccordionPane>

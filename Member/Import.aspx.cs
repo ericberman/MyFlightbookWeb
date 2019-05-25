@@ -101,7 +101,7 @@ public partial class Member_Import : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            pnlCloudAhoy.Visible = pf.CloudAhoyToken != null;
+            pnlCloudAhoy.Visible = pf.CloudAhoyToken != null && pf.CloudAhoyToken.AccessToken != null;
             List<FAQItem> lst = new List<FAQItem>(FAQItem.CachedFAQItems);
             FAQItem fi = lst.Find(f => f.idFAQ == 44);
             if (fi != null)
