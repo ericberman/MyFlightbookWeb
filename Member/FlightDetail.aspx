@@ -16,6 +16,8 @@
 <%@ Register Src="~/Controls/METAR.ascx" TagPrefix="uc1" TagName="METAR" %>
 <%@ Register Src="~/Controls/mfbEditableImage.ascx" TagPrefix="uc1" TagName="mfbEditableImage" %>
 <%@ Register Src="~/Controls/mfbVideoEntry.ascx" TagPrefix="uc1" TagName="mfbVideoEntry" %>
+<%@ Register Src="~/Controls/mfbBadgeSet.ascx" TagPrefix="uc1" TagName="mfbBadgeSet" %>
+
 
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
@@ -169,6 +171,12 @@
                                 <uc1:mfbImageList ID="mfbilFlight" runat="server" Columns="2" MapLinkType="ZoomOnLocalMap" CanEdit="false" MaxImage="-1" ImageClass="Flight" IncludeDocs="false" />
                             </div>
                             <div><uc1:mfbVideoEntry runat="server" ID="mfbVideoEntry1" CanAddVideos="false" /></div>
+                            <div>
+                                <asp:Repeater ID="rptBadges" runat="server">
+                                    <ItemTemplate>
+                                        <uc1:mfbBadgeSet runat="server" ID="mfbBadgeSet" BadgeSet='<%# Container.DataItem %>' /></div>
+                                    </ItemTemplate>
+                                </asp:Repeater>
                             <input id="btnEdit" type="button" value="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>" runat="server"
                                 visible='<%# ((String) Eval("User")).CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0 %>'
                                 style="float: right" 

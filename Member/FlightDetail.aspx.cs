@@ -1,17 +1,18 @@
 ﻿using MyFlightbook;
-using MyFlightbook.OAuth.CloudAhoy;
+using MyFlightbook.Achievements;
 using MyFlightbook.Airports;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
+using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Weather.ADDS;
 using Newtonsoft.Json;
-using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.UI;
@@ -81,7 +82,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         set { ViewState[KeyCacheFlight] = value; }
     }
 
-    private FlightData m_fd = new FlightData();
+    private readonly FlightData m_fd = new FlightData();
     protected FlightData DataForFlight
     {
         get { return m_fd; }
@@ -653,6 +654,14 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         aptSvc.SetAirports(RoutesList.MasterList.GetNormalizedAirports());
 
         ((Controls_mfbSignature)fv.FindControl("mfbSignature")).Flight = le;
+
+        List<Badge> badges = new List<Badge>(Viewer.CachedBadges);
+        if (badges != null)
+        {
+            Repeater rptBadges = (Repeater)fv.FindControl("rptBadges");
+            rptBadges.DataSource = BadgeSet.BadgeSetsFromBadges(badges.FindAll(b => b.IDFlightEarned == le.FlightID));
+            rptBadges.DataBind();
+        }
     }
 
     protected void fmvAircraft_DataBound(object sender, EventArgs e)

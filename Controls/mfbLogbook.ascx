@@ -57,17 +57,21 @@
                     <HeaderStyle CssClass="headerBase headerSortDesc" HorizontalAlign="Left" />
                     <ItemTemplate>
                         <div class="noprint" style="float:right">
-                            &nbsp;&nbsp;
+                            <asp:Repeater ID="rptBadges" runat="server">
+                                <ItemTemplate>
+                                    <asp:Image runat="server" ImageAlign="AbsMiddle" ImageUrl="~/images/Badge-sm.png" ToolTip='<%# Eval("Name") %>' AlternateText='<%# Eval("Name") %>'></asp:Image>
+                                </ItemTemplate>
+                            </asp:Repeater>
                             <asp:Panel ID="pnlImagesHover" runat="server" Visible="false" style="display:inline-block;">
                                 <asp:HyperLink ID="lnkViewPublic" NavigateUrl='<%# PublicPath(Eval("FlightID")) %>' runat="server">
                                     <asp:Image ID="imgCamera" ImageUrl="~/Images/camera.png" runat="server" Visible="<%# !ShowImagesInline %>"
-                                        ToolTip="<%$ Resources:LogbookEntry, LogbookFlightHasPicturesTooltip %>"
+                                        ToolTip="<%$ Resources:LogbookEntry, LogbookFlightHasPicturesTooltip %>" ImageAlign="AbsMiddle"
                                         AlternateText="<%$ Resources:LogbookEntry, LogbookFlightHasPicturesTooltip %>" />
                                     <cc1:HoverMenuExtender ID="hoverMenuImages" TargetControlID="imgCamera" Enabled="<%# !ShowImagesInline %>" PopupControlID="pnlFlightImages" OffsetX="20" OffsetY="-100" runat="server"></cc1:HoverMenuExtender>
                                 </asp:HyperLink>
                             </asp:Panel>
                             <asp:HyperLink ID="lnkViewflightData" runat="server" Visible='<%# Convert.ToBoolean(Eval("HasFlightData")) %>' NavigateUrl='<%# AnalyzePath(Eval("FlightID")) %>'>
-                                <asp:Image ID="imgViewFlightData" ImageUrl="~/images/Clip.png" AlternateText="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" ToolTip="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" runat="server" /></asp:HyperLink>
+                                <asp:Image ID="imgViewFlightData" ImageUrl="~/images/Clip.png" ImageAlign="AbsMiddle" AlternateText="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" ToolTip="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" runat="server" /></asp:HyperLink>
                         </div>
                         <div>
                             <asp:HyperLink ID="lnkEditFlight" Font-Bold="true" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger" NavigateUrl='<%# DetailsPath(Eval("FlightID")) %>'></asp:HyperLink>

@@ -1,4 +1,5 @@
 using MyFlightbook;
+using MyFlightbook.Achievements;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -26,7 +27,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     private Boolean m_fMiniMode = false;
     private MyFlightbook.Profile m_pfPilot = null;
     private MyFlightbook.Profile m_pfUser = null;
-    private Dictionary<int, string> m_dictAircraftHoverIDs = new Dictionary<int,string>();
+    private readonly Dictionary<int, string> m_dictAircraftHoverIDs = new Dictionary<int,string>();
 
     #region Properties
     public event EventHandler<LogbookEventArgs> ItemDeleted = null; 
@@ -58,7 +59,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         set { ViewState["vsSI"] = value ? value.ToString() : string.Empty; }
     }
 
-    private string keyVSUser = "logbookUser";
+    private const string keyVSUser = "logbookUser";
     /// <summary>
     /// Specifies the user for whom we are displaying results.
     /// </summary>
@@ -279,6 +280,35 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
             return lst;
         }
     }
+
+    private Dictionary<int, List<Badge>> m_cachedBadges = null;
+
+    protected Dictionary<int, List<Badge>> CachedBadgesByFlight {
+        get
+        {
+            if (m_cachedBadges != null)
+                return m_cachedBadges;
+
+            // Set up cache of badges.
+            m_cachedBadges = new Dictionary<int, List<Badge>>();
+
+            IEnumerable<Badge> cachedBadges = Pilot.CachedBadges;
+            if (cachedBadges != null)
+            {
+                foreach (Badge b in cachedBadges)
+                {
+                    if (b.IDFlightEarned == LogbookEntry.idFlightNone)
+                        continue;
+                    List<Badge> lst = null;
+                    if (m_cachedBadges.TryGetValue(b.IDFlightEarned, out lst))
+                        lst.Add(b);
+                    else
+                        m_cachedBadges[b.IDFlightEarned] = new List<Badge>() { b };
+                }
+            }
+            return m_cachedBadges;
+        }
+    }
     #endregion
 
     #region Display Options
@@ -361,13 +391,13 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     {
         gvFlightLogs.PageSize = util.GetIntParam(Request, "pageSize", 25);   // will set gvflightlogs.pagesize
 
+        bool f;
         HttpCookie cookie = Request.Cookies[szCookieCompact];
-        bool f = false;
-        if (cookie != null)
-            f |= bool.TryParse(cookie.Value, out m_isCompact);
+        if (cookie != null && bool.TryParse(cookie.Value, out f))
+            m_isCompact = f;
         cookie = Request.Cookies[szCookieImages];
-        if (cookie != null)
-            f |= bool.TryParse(cookie.Value, out m_showImagesInline);
+        if (cookie != null && bool.TryParse(cookie.Value, out f))
+            m_showImagesInline = f;
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -603,6 +633,20 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
                 ScriptManager.GetCurrent(Page).RegisterPostBackControl(lbDelete);
             ((AjaxControlToolkit.ConfirmButtonExtender)popup.FindControl("ConfirmButtonExtender1")).TargetControlID = szDelID;
 
+            if (Pilot != null && Pilot.AchievementStatus == MyFlightbook.Achievements.Achievement.ComputeStatus.UpToDate)
+            {
+                Repeater rptBadges = (Repeater)e.Row.FindControl("rptBadges");
+                if (CachedBadgesByFlight.ContainsKey(le.FlightID))
+                {
+                    IEnumerable<Badge> badges = CachedBadgesByFlight[le.FlightID];
+                    if (badges != null)
+                    {
+                        rptBadges.DataSource = badges;
+                        rptBadges.DataBind();
+                    }
+                }
+            }
+
             // Bind to images.
             Controls_mfbImageList mfbIl = (Controls_mfbImageList)e.Row.FindControl("mfbilFlights");
             if (!SuppressImages)
@@ -740,9 +784,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     /// <param name="e"></param>
     protected void btnSetPage_Click(object sender, EventArgs e)
     {
-        TextBox decPageNum = null;
-
-        decPageNum = (TextBox)gvFlightLogs.BottomPagerRow.FindControl("decPage");
+        TextBox decPageNum = (TextBox)gvFlightLogs.BottomPagerRow.FindControl("decPage");
 
         try
         {

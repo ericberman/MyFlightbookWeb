@@ -980,8 +980,7 @@ namespace MyFlightbook
                 {
                     // BFR's used to be stored in the profile.  If so, we'll convert it to a pseudo flight property here,
                     // and attempt to de-dupe it later.
-                    ProfileEvent pf = new ProfileEvent();
-                    pf.Date = LastBFRInternal;
+                    ProfileEvent pf = new ProfileEvent() { Date = LastBFRInternal };
                     pf.PropertyType.FormatString = Resources.Profile.BFRFromProfile;
                     return pf;
                 }
@@ -1205,7 +1204,28 @@ namespace MyFlightbook
         #endregion
 
         #region Achievements
-        private System.Object achievementLock = new Object();
+
+        private IEnumerable<Badge> m_cachedBadges = null;
+
+        /// <summary>
+        /// Returns the most recently computed badges for the user, if valid, else null.
+        /// </summary>
+        public IEnumerable<Badge> CachedBadges
+        {
+            get
+            {
+                if (AchievementStatus == Achievement.ComputeStatus.UpToDate)
+                {
+                    if (m_cachedBadges == null)
+                        m_cachedBadges = new Achievement(UserName).BadgesForUser();
+                }
+                else
+                    m_cachedBadges = null;
+                return m_cachedBadges;
+            }
+        }
+
+        private readonly Object achievementLock = new Object();
         /// <summary>
         /// Sets the achievement status, saving to the DB if it has changed and if it is not "In Progress" (which by definition is a temporary state)
         /// </summary>
@@ -1215,6 +1235,8 @@ namespace MyFlightbook
             lock (achievementLock)
             {
                 bool fChanged = (stat != AchievementStatus);
+                if (fChanged)
+                    m_cachedBadges = null;
                 AchievementStatus = stat;
                 if (fChanged && stat != Achievement.ComputeStatus.InProgress)
                     FCommit();
@@ -1425,10 +1447,9 @@ namespace MyFlightbook
             DBHelperCommandArgs dba = new DBHelperCommandArgs("SELECT COUNT(*) AS NumUsers FROM users WHERE username=?uname");
             dba.AddWithValue("uname", mu.UserName);
             dba.AddWithValue("pkid", mu.ProviderUserKey);
-            DBHelper dbh = new DBHelper(dba);
 
             // Remove the user's aircraft
-            dbh.CommandText = "DELETE FROM useraircraft WHERE username=?uname";
+            DBHelper dbh = new DBHelper(dba) { CommandText = "DELETE FROM useraircraft WHERE username=?uname" };
             dbh.DoNonQuery();
 
             // Remove from student records
@@ -1682,7 +1703,7 @@ namespace MyFlightbook
 
             MySqlMembershipProvider mmp = new MySqlMembershipProvider();
             NameValueCollection nvc = new NameValueCollection();
-            MembershipCreateStatus result = new MembershipCreateStatus();
+            MembershipCreateStatus result;
 
             // Validate - this will throw a UserEntityException if there is an issue.
             ValidateEmailAndUser(szEmail, szUser);

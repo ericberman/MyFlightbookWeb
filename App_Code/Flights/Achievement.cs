@@ -952,7 +952,7 @@ namespace MyFlightbook.Achievements
     /// </summary>
     public class MultiLevelBadgeNumberModels : MultiLevelCountBadgeBase
     {
-        HashSet<string> hsModelsFlown = new HashSet<string>();
+        readonly private HashSet<string> hsModelsFlown = new HashSet<string>();
 
         public MultiLevelBadgeNumberModels()
             : base(BadgeID.NumberOfModels, Resources.Achievements.nameNumberModels, 25, 50, 100, 200)
@@ -976,7 +976,7 @@ namespace MyFlightbook.Achievements
     /// </summary>
     public class MultiLevelBadgeNumberAircraft : MultiLevelCountBadgeBase
     {
-        HashSet<int> lstAircraftFlown = new HashSet<int>();
+        readonly private HashSet<int> lstAircraftFlown = new HashSet<int>();
 
         public MultiLevelBadgeNumberAircraft()
             : base(BadgeID.NumberOfAircraft, Resources.Achievements.nameNumberAircraft, 20, 50, 100, 200)
