@@ -82,47 +82,47 @@ namespace MyFlightbook.ImportFlights
          * The following are the column headers for known columns for import.  Each is an array of headers, in prioritized order.  
          * So, for example, the comments field has "Comments" as the highest priority column; if that is not found, then "Remarks" will be used next, and so forth.
         */
-        private static string[] colFlightID = { "Flight ID" };
-        private static string[] colDate = { "Date", "FLT_DATE", "Date Flown" };
-        private static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT" };
-        private static string[] colAircraftID = { "Aircraft ID" };
-        private static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Flt Time", "Block", "HRS", "TIME FLOWN" };
-        private static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE" };
-        private static string[] colHold = { "Hold", "Holds", "Holding" };
-        private static string[] colLandings = { "Landings", "LAND_STD" };
-        private static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings", "LANDINGS NIGHT" };
-        private static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings", "LANDINGS DAY" };
-        private static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY" };
-        private static string[] colNight = { "Night", "flight_night" };
-        private static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT" };
-        private static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst" };
-        private static string[] colGroundSim = { "Ground Simulator", "flight_simulator", "Sim/FTD", "SIMULATOR" };
-        private static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd", "Dual" };
-        private static string[] colCFI = { "CFI", "flight_dualGiven", "DualGiven", "Dual Given" };
-        private static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND" };
-        private static string[] colPIC = { "PIC", "flight_pic", "PILOT IN COMMAND" };
-        private static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT", "LOC_INTM" };
-        private static string[] colFrom = { "From", "flight_from", "Departure", "Origin", "LOC_FROM" };
-        private static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "LOC_TO" };
-        private static string[] colComment = { "Comments", "Remarks" };
-        private static string[] colCatClassOverride = { "Alternate Cat/Class", "Cat/Class Override", "CatClassOverride" };
-        private static string[] colEngineStart = { "Engine Start", "Depart" };
-        private static string[] colEngineEnd = { "Engine End", "Arrive" };
-        private static string[] colFlightStart = { "Flight Start", "FLT_BEGIN" };
-        private static string[] colFlightEnd = { "Flight End", "FLT_END" };
-        private static string[] colHobbsStart = { "Hobbs Start" };
-        private static string[] colHobbsEnd = { "Hobbs End" };
-        private static string[] colPublic = { "Public" };
-        private static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL", "ACFT_MDS" };
-        private static string[] colFlightConditions = { "FS_ID", "CONDITION" };  // For CAFRS - specifies flight conditions
-        private static string[] colPilotRole = { "DS_ID", "DUTY" };    // For CAFRS - specifies role of pilot ("Duty Position")
-        private static string[] colPilotMission = { "MISSION", "MI_ID"};  // For CAFRS - specifies the mission for the pilot
+        private readonly static string[] colFlightID = { "Flight ID" };
+        private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown" };
+        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT" };
+        private readonly static string[] colAircraftID = { "Aircraft ID" };
+        private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Flt Time", "Block", "HRS", "TIME FLOWN" };
+        private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE" };
+        private readonly static string[] colHold = { "Hold", "Holds", "Holding" };
+        private readonly static string[] colLandings = { "Landings", "LAND_STD" };
+        private readonly static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings", "LANDINGS NIGHT" };
+        private readonly static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings", "LANDINGS DAY" };
+        private readonly static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY" };
+        private readonly static string[] colNight = { "Night", "flight_night" };
+        private readonly static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT" };
+        private readonly static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst" };
+        private readonly static string[] colGroundSim = { "Ground Simulator", "flight_simulator", "Sim/FTD", "SIMULATOR" };
+        private readonly static string[] colDual = { "Dual Received", "flight_dualReceived", "Dualreceived", "Dual Recd", "Dual" };
+        private readonly static string[] colCFI = { "CFI", "flight_dualGiven", "DualGiven", "Dual Given" };
+        private readonly static string[] colSIC = { "SIC", "flight_sic", "SECOND IN COMMAND" };
+        private readonly static string[] colPIC = { "PIC", "flight_pic", "PILOT IN COMMAND" };
+        private readonly static string[] colRoute = { "Route", "flight_route", "Via", "ROUTE OF FLIGHT", "LOC_INTM" };
+        private readonly static string[] colFrom = { "From", "flight_from", "Departure", "Origin", "LOC_FROM" };
+        private readonly static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "LOC_TO" };
+        private readonly static string[] colComment = { "Comments", "Remarks" };
+        private readonly static string[] colCatClassOverride = { "Alternate Cat/Class", "Cat/Class Override", "CatClassOverride" };
+        private readonly static string[] colEngineStart = { "Engine Start", "Depart" };
+        private readonly static string[] colEngineEnd = { "Engine End", "Arrive" };
+        private readonly static string[] colFlightStart = { "Flight Start", "FLT_BEGIN" };
+        private readonly static string[] colFlightEnd = { "Flight End", "FLT_END" };
+        private readonly static string[] colHobbsStart = { "Hobbs Start" };
+        private readonly static string[] colHobbsEnd = { "Hobbs End" };
+        private readonly static string[] colPublic = { "Public" };
+        private readonly static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL", "ACFT_MDS" };
+        private readonly static string[] colFlightConditions = { "FS_ID", "CONDITION" };  // For CAFRS - specifies flight conditions
+        private readonly static string[] colPilotRole = { "DS_ID", "DUTY" };    // For CAFRS - specifies role of pilot ("Duty Position")
+        private readonly static string[] colPilotMission = { "MISSION", "MI_ID"};  // For CAFRS - specifies the mission for the pilot
 
         /// <summary>
         /// Common aliases for property names
         /// TODO: THIS CURRENTLY IS NOT LOCALIZABLE; SHOULD ADD THE LOCALIZED NAME OF THE PROPERTY TO THE LIST!
         /// </summary>
-        private static Dictionary<string, string[]> PropNameAliases = new Dictionary<string, string[]>()
+        private readonly static Dictionary<string, string[]> PropNameAliases = new Dictionary<string, string[]>()
         {
             { "Solo Time", new string[] {"Solo Time", "flight_solo", "Solo"}},
             { "Name of PIC", new string[] {"Name of PIC", "flight_selectedCrewPIC", "PIC/P1 Crew", "Captain"}},
@@ -270,8 +270,8 @@ namespace MyFlightbook.ImportFlights
 
         private class RowReader
         {
-            private ImportContext m_cm;
-            private Dictionary<string, List<Aircraft>> dictFoundAircraft = new Dictionary<string, List<Aircraft>>();
+            private readonly ImportContext m_cm;
+            private readonly Dictionary<string, List<Aircraft>> dictFoundAircraft = new Dictionary<string, List<Aircraft>>();
             private string[] m_rgszRow;
 
             public RowReader(ImportContext columnmapper)
@@ -419,7 +419,7 @@ namespace MyFlightbook.ImportFlights
             }
             #endregion
 
-            public LogbookEntry FlightFromRow(LogbookEntry le, string[] rgszRow)
+            public LogbookEntry FlightFromRow(LogbookEntry le, string[] rgszRow, AutoFillOptions afo)
             {
                 if (rgszRow == null)
                     throw new ArgumentNullException("rgszRow");
@@ -443,11 +443,17 @@ namespace MyFlightbook.ImportFlights
                     le.FLoadFromDB(LogbookEntry.idFlightNew, m_cm.User);
 
                 if (m_cm.iColTail >= m_rgszRow.Length)
+                {
+                    le.LastError = LogbookEntryBase.ErrorCode.InvalidAircraft;
                     throw new MyFlightbookException(Resources.LogbookEntry.errImportNoTail);
+                }
                 if (m_cm.iColTotal >= m_rgszRow.Length)
                     throw new MyFlightbookException(Resources.LogbookEntry.errImportNoTotal);
                 if (m_cm.iColDate >= m_rgszRow.Length)
+                {
+                    le.LastError = LogbookEntryBase.ErrorCode.InvalidDate;
                     throw new MyFlightbookException(Resources.LogbookEntry.errImportNoDate);
+                }
 
                 // see if an aircraft ID is present; if so, AND if it matches the specified aircraft, we'll use that
                 // (Provides disambiguation if you have two versions of the same aircraft in the account.)
@@ -463,13 +469,17 @@ namespace MyFlightbook.ImportFlights
                     }
                     catch
                     {
+                        le.LastError = LogbookEntryBase.ErrorCode.InvalidDate;
                         throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportCannotReadDate, m_rgszRow[m_cm.iColDate]));
                     }
                 }
 
                 le.TotalFlightTime = GetMappedDecimal(m_cm.iColTotal);
                 if (le.TotalFlightTime < 0.0M)
+                {
+                    le.LastError = LogbookEntryBase.ErrorCode.NegativeTime;
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportCannotReadTotalTime, le.TotalFlightTime));
+                }
 
                 // Get the other fields, if present.
                 le.Approaches = GetMappedInt(m_cm.iColApproaches);
@@ -563,11 +573,20 @@ namespace MyFlightbook.ImportFlights
                 // check that we know about the aircraft or, if not, if it's in the system then add it for the user.
                 string szTail = Aircraft.NormalizeTail(le.TailNumDisplay = CAFRSAdjustTail(le, m_rgszRow[m_cm.iColTail].Trim().ToUpperInvariant(), lstCustPropsForFlight));
 
+                le.CustomProperties = lstCustPropsForFlight.ToArray();
+
+                // Do any autofill here
+                if (afo != null && le.CrossCountry == 0.0M && le.Nighttime == 0.0M)
+                {
+                    using (FlightData fd = new FlightData())
+                        fd.AutoFill(le, afo);
+                }
+
                 // See if the aircraft exists
                 Aircraft ac = null;
 
-                if (String.IsNullOrEmpty(szTail.Trim()))
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportUnknownAircraft, szTail));
+                if (String.IsNullOrWhiteSpace(szTail.Trim()))
+                    szTail = CountryCodePrefix.szAnonPrefix;
 
                 if (m_cm.AircraftForUser.ContainsKey(szTail))
                 {
@@ -636,7 +655,10 @@ namespace MyFlightbook.ImportFlights
                             m_cm.AircraftToImport.AddMatchCandidate(szTail, szModel, false);
 
                         if (!fFoundAnonOrSim)
+                        {
+                            le.LastError = LogbookEntryBase.ErrorCode.InvalidAircraft;
                             throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportUnknownAircraft, szTail));
+                        }
                     }
                 }
 
@@ -647,7 +669,6 @@ namespace MyFlightbook.ImportFlights
                 le.ModelDisplay = ac.ModelDescription;  // for display
                 le.CatClassOverride = GetMappedInt(m_cm.iColCatClassOverride);
                 le.CatClassDisplay = (le.CatClassOverride == 0) ? ac.CategoryClassDisplay : CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)le.CatClassOverride).CatClass;
-                le.CustomProperties = lstCustPropsForFlight.ToArray();
 
                 if (!le.IsValid())
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportFlightIsInvalid, le.ErrorString));
@@ -668,8 +689,6 @@ namespace MyFlightbook.ImportFlights
 
             private DateTime GetMappedUTCDate(int iCol, DateTime? dtNakedTime = null)
             {
-                DateTime d = DateTime.MinValue;
-
                 if (iCol < 0)
                     return DateTime.MinValue;
 
@@ -698,7 +717,7 @@ namespace MyFlightbook.ImportFlights
 
                 string sz = m_rgszRow[iCol].ToUpperInvariant().Trim();
 
-                Int32 i = 0;
+                Int32 i;
                 if (Int32.TryParse(sz, NumberStyles.Any, CultureInfo.CurrentCulture, out i))
                     return i;
 
@@ -750,7 +769,7 @@ namespace MyFlightbook.ImportFlights
             #endregion
 
             #region public properties
-            private Dictionary<string, Aircraft> _dictAircraft;
+            private readonly Dictionary<string, Aircraft> _dictAircraft;
             public Dictionary<string, Aircraft> AircraftForUser
             {
                 get { return _dictAircraft; }
@@ -767,7 +786,7 @@ namespace MyFlightbook.ImportFlights
             public List<ImportColumn> CustomPropertiesToImport { get; set; }
             #endregion
 
-            private Hashtable m_htHeader = new Hashtable();
+            private readonly Hashtable m_htHeader = new Hashtable();
 
             /// <summary>
             /// Find the index of a column, given a prioritized array of column headers.
@@ -959,13 +978,7 @@ namespace MyFlightbook.ImportFlights
 
                         try
                         {
-                            le = rr.FlightFromRow(le, rgszRow);
-
-                            if (afo != null && le.CrossCountry == 0.0M && le.Nighttime == 0.0M)
-                            {
-                                using (FlightData fd = new FlightData())
-                                    fd.AutoFill(le, afo);
-                            }
+                            le = rr.FlightFromRow(le, rgszRow, afo);
                             if (rowOK != null)
                                 rowOK(le, iRow);
                         }

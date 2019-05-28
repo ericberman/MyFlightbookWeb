@@ -197,7 +197,7 @@ namespace MyFlightbook
         public ErrorCode LastError
         {
             get { return m_lastErr; }
-            protected set { m_lastErr = value; }
+            set { m_lastErr = value; }
         }
 
         /// <summary>
@@ -636,7 +636,7 @@ namespace MyFlightbook
         /// <returns>The encrypted signature.</returns>
         public string ComputeSignatureHash()
         {
-            string szSigHash = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}{3}", CFIUsername != null ? CFIUsername : (CFIEmail != null ? CFIEmail : ""), CFICertificate, CFIExpiration.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), CFISignatureDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+            string szSigHash = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}{3}", CFIUsername ?? (CFIEmail ?? ""), CFICertificate, CFIExpiration.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), CFISignatureDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             string szSig = (new UserEncryptor(User)).Encrypt(szSigHash);
             return szSig.Substring(0, Math.Min(255, szSig.Length));
         }
@@ -768,7 +768,7 @@ namespace MyFlightbook
             Profile pfCFI = Profile.GetUser(szCFIUsername);
 
             // Validate that the named user can sign this flight.
-            string szErr = String.Empty;
+            string szErr;
             if (!CanSignThisFlight(szCFIUsername, out szErr))
                 throw new MyFlightbookException(szErr);
 
@@ -816,12 +816,14 @@ namespace MyFlightbook
                 },
                 (dr) =>
                 {
-                    LogbookEntry le = new LogbookEntry();
-                    le.FlightID = Convert.ToInt32(dr["idFlight"]);
-                    le.Date = Convert.ToDateTime(dr["Date"], CultureInfo.InvariantCulture);
-                    le.Comment = dr["Comments"].ToString();
-                    le.Route = dr["Route"].ToString();
-                    le.User = pfStudent.UserName;
+                    LogbookEntry le = new LogbookEntry()
+                    {
+                        FlightID = Convert.ToInt32(dr["idFlight"]),
+                        Date = Convert.ToDateTime(dr["Date"], CultureInfo.InvariantCulture),
+                        Comment = dr["Comments"].ToString(),
+                        Route = dr["Route"].ToString(),
+                        User = pfStudent.UserName
+                    };
                     lstFlightsToSign.Add(le);
                 });
             return lstFlightsToSign;
@@ -1681,8 +1683,7 @@ namespace MyFlightbook
         /// <returns>An array of logbook entries</returns>
         public static LogbookEntry[] GetPublicFlightsForUser(string szUser, int offset, int limit)
         {
-            FlightQuery fq = new FlightQuery(szUser);
-            fq.IsPublic = true;
+            FlightQuery fq = new FlightQuery(szUser) { IsPublic = true };
             DBHelper dbh = new DBHelper(QueryCommand(fq, offset, limit));
 
             List<LogbookEntry> lstFlights = new List<LogbookEntry>();
@@ -1742,8 +1743,7 @@ namespace MyFlightbook
             User = szUserName;    // in case we don't actually load anything, we should at least set this so that subsequent saves do the right thing.
             if (idRow > 0)
             {
-                FlightQuery fq = new FlightQuery(string.Empty);
-                fq.CustomRestriction = String.Format(" (flights.idflight={0}) ", idRow);
+                FlightQuery fq = new FlightQuery(string.Empty) { CustomRestriction = String.Format(" (flights.idflight={0}) ", idRow) };
                 DBHelper dbh = new DBHelper(QueryCommand(fq, 0, 1, false, lto));
 
                 bool fRowFound = false;
@@ -1843,7 +1843,7 @@ namespace MyFlightbook
             double dRoute = al.DistanceForRoute();
             double dMaxSegment = al.MaxSegmentForRoute();
             double dMaxDistanceFromStart = al.MaxDistanceFromStartingAirport();
-            double dPath = PathDistance.HasValue ? PathDistance.Value : 0.0;
+            double dPath = PathDistance ?? 0.0;
 
             double time = (FlightStart.HasValue() && FlightEnd.HasValue()) ? FlightEnd.Subtract(FlightStart).TotalHours : (double) TotalFlightTime;
 
@@ -2054,8 +2054,6 @@ namespace MyFlightbook
         {
             get
             {
-                string szURL = string.Empty;
-
                 string sz1 = Route.Trim();
                 string sz2 = Comment.Trim();
                 return (sz1.Length > 0 && sz2.Length > 0) ? sz1 + Resources.LocalizedText.ColonConnector + sz2 : sz1 + sz2;
@@ -2074,7 +2072,6 @@ namespace MyFlightbook
 
         public MFBImageInfo SocialMediaImage(string szHost = null)
         {
-            string szImageURL = string.Empty;
             PopulateImages();
             if (FlightImages.Length > 0)
                 return FlightImages[0].ImageType == MFBImageInfo.ImageFileType.JPEG ? FlightImages[0] : FlightImages[0];    // use video thumbnail if it's for a video, since we can't use the video link itself.
@@ -2102,13 +2099,13 @@ namespace MyFlightbook
         public override string SendFlightLink
         {
             get { return SendFlightUri().ToString(); }
-            set { string sz = value; } // to enable serialization
+            set { } // to enable serialization
         }
 
         public override string SocialMediaLink
         {
             get { return CanPost ? SocialMediaItemUri().AbsoluteUri : string.Empty; }
-            set { string sz = value; } // to enable serialization
+            set { } // to enable serialization
         }
         #endregion
         #endregion IPostable
@@ -3523,7 +3520,7 @@ namespace MyFlightbook
                 case HistogramSelector.FlightDays:
                     {
                         const string FlightDaysContextKey = "hgFlightDays";
-                        HashSet<DateTime> hs = null;
+                        HashSet<DateTime> hs;
                         if (context.ContainsKey(FlightDaysContextKey))
                             hs = (HashSet<DateTime>)context[FlightDaysContextKey];
                         else
@@ -3623,7 +3620,7 @@ namespace MyFlightbook
         #endregion
 
         #region Creation and parsing
-        private static Regex regApproach = new Regex("\\b(?<count>\\d{1,2})[-.:/ ]?(?<desc>[-a-zA-Z/]{3,}?(?:-[abcxyzABCXYZ])?)[-.:/ ]?(?:RWY)?(?<rwy>[0-3]?\\d[LRC]?)[-.:/ @](?<airport>[a-zA-Z0-9]{3,4})\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regApproach = new Regex("\\b(?<count>\\d{1,2})[-.:/ ]?(?<desc>[-a-zA-Z/]{3,}?(?:-[abcxyzABCXYZ])?)[-.:/ ]?(?:RWY)?(?<rwy>[0-3]?\\d[LRC]?)[-.:/ @](?<airport>[a-zA-Z0-9]{3,4})\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public static IEnumerable<ApproachDescription> ExtractApproaches(string szSource)
         {

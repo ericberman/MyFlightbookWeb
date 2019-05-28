@@ -222,7 +222,7 @@ namespace MyFlightbook.ImportFlights
 
     public abstract class ExternalFormatImporter
     {
-        private static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new MccPilotImporter(), new CrewTracImporter(), new RosterBusterImporter(), new CrewLog() };
+        private readonly static ExternalFormatImporter[] rgFormatters = { new LogTenProImporter(), new ForeFlightImporter(), new eLogSiteImporter(), new MccPilotImporter(), new CrewTracImporter(), new RosterBusterImporter(), new CrewLog() };
 
         /// <summary>
         /// Initializes an enumerable of the external format from a datatable.
@@ -256,6 +256,11 @@ namespace MyFlightbook.ImportFlights
         /// Returns the name of the file format being repsresneted.
         /// </summary>
         public abstract string Name { get;  }
+
+        /// <summary>
+        /// Indicates that errors for this format should be ignored - flights should only go into pending.  Useful if the format is for scheduled flights, or if it omits aircraft
+        /// </summary>
+        public virtual bool IsPendingOnly { get { return false; } }
 
         /// <summary>
         /// Gets the best importer for the specified data

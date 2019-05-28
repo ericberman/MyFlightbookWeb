@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -129,8 +129,8 @@ namespace MyFlightbook.ImportFlights
 
         public override string Name { get { return "CrewTrac"; } }
 
-        private static Regex regCrewTrac = new Regex("(?<flightnum>\\d{1,4})\\s+(?<date>[0-9/-]{8,10})\\s+(?<from>[a-zA-Z0-9]{3,4})\\s+(?<to>[a-zA-Z0-9]{3,4})\\s+(?<block>\\d{1,2}:\\d{2})\\s+(?<tail>[0-9a-zA-Z]+)\\s+(?<model>[a-zA-Z0-9]+)\\s+(?<landings>\\d*)\\s+(?<employees>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
-        private static Regex regCrewMember = new Regex("((?<pos>(?:CA|FO))\\s+\\d*\\s+(?<empname>[^\\t]+))+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private readonly static Regex regCrewTrac = new Regex("(?<flightnum>\\d{1,4})\\s+(?<date>[0-9/-]{8,10})\\s+(?<from>[a-zA-Z0-9]{3,4})\\s+(?<to>[a-zA-Z0-9]{3,4})\\s+(?<block>\\d{1,2}:\\d{2})\\s+(?<tail>[0-9a-zA-Z]+)\\s+(?<model>[a-zA-Z0-9]+)\\s+(?<landings>\\d*)\\s+(?<employees>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        private readonly static Regex regCrewMember = new Regex("((?<pos>(?:CA|FO))\\s+\\d*\\s+(?<empname>[^\\t]+))+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public override bool CanParse(byte[] rgb)
         {

@@ -24,6 +24,7 @@ public partial class Member_Import : System.Web.UI.Page
     protected bool UseHHMM { get; set;}
     private const string szKeyVSCSVImporter = "viewStateKeyCSVImporter";
     private const string szKeyVSCSVData = "viewStateCSVData";
+    private const string szKeyVSPendingOnly = "viewstatePendingOnly";
 
     #region WizardStyling
     // Thanks to http://weblogs.asp.net/grantbarrington/archive/2009/08/11/styling-the-asp-net-wizard-control-to-have-the-steps-across-the-top.aspx for how to do this.
@@ -52,6 +53,12 @@ public partial class Member_Import : System.Web.UI.Page
             return "wizStepInProgress";
     }
     #endregion
+
+    protected bool IsPendingOnly
+    {
+        get { return ViewState[szKeyVSPendingOnly] != null; }
+        set { ViewState[szKeyVSPendingOnly] = (value ? value.ToString(CultureInfo.InvariantCulture) : null); }
+    }
 
     /// <summary>
     /// The CSVImporter that is in progress
@@ -83,7 +90,7 @@ public partial class Member_Import : System.Web.UI.Page
         }
     }
 
-    private Dictionary<int, string> m_errorContext = new Dictionary<int,string>();
+    private readonly Dictionary<int, string> m_errorContext = new Dictionary<int,string>();
     private Dictionary<int, string> ErrorContext
     {
         get { return m_errorContext; }
@@ -156,7 +163,13 @@ public partial class Member_Import : System.Web.UI.Page
             int iRow = e.Item.ItemIndex + 1;
 
             if (ErrorContext.ContainsKey(iRow))
+            {
                 ((Label)e.Item.FindControl("lblRawRow")).Text = ErrorContext[iRow];
+                e.Item.FindControl("rowError").Visible = true;
+                ((System.Web.UI.HtmlControls.HtmlTableRow)e.Item.FindControl("rowFlight")).Attributes["class"] = "error";
+            }
+            else
+                e.Item.FindControl("imgNewOrUpdate").Visible = false;
         }
 
         if (!le.IsNewFlight && CurrentImporter != null && CurrentImporter.OriginalFlightsToModify.ContainsKey(le.FlightID))
@@ -182,6 +195,11 @@ public partial class Member_Import : System.Web.UI.Page
     {
         if (le == null)
             throw new ArgumentNullException("le");
+
+        if (IsPendingOnly && le.LastError != LogbookEntryBase.ErrorCode.None)   // ignore errors if the importer is only pending flights and the error is a logbook validation error (no tail, future date, night, etc.)
+            return;
+
+        // if we're here, we are *either* not pending only *or* we didn't have a logbookentry validation error (e.g., could be malformed row)
         ErrorContext[iRow] = szContext; // save the context for data bind
         AddTextRow(plcErrorList, String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportRowHasError, iRow, le.ErrorString), "error");
     }
@@ -236,7 +254,10 @@ public partial class Member_Import : System.Web.UI.Page
         // Validate the file
         ExternalFormatImporter efi = ExternalFormatImporter.GetImporter(rgb);
         if (efi != null)
+        {
             rgb = efi.PreProcess(rgb);
+            IsPendingOnly = efi.IsPendingOnly;
+        }
 
         MemoryStream ms = new MemoryStream(rgb);
         try
@@ -307,7 +328,8 @@ public partial class Member_Import : System.Web.UI.Page
         {
             if (csvimporter.HasErrors)
             {
-                lblError.Text = String.Format(CultureInfo.InvariantCulture, "<p>{0}</p><p>{1}</p>", Resources.LogbookEntry.ImportPreviewNotSuccessful, lblError.Text);
+                if (!IsPendingOnly)
+                    lblError.Text = String.Format(CultureInfo.InvariantCulture, "<p>{0}</p><p>{1}</p>", Resources.LogbookEntry.ImportPreviewNotSuccessful, lblError.Text);
 
                 List<AircraftImportMatchRow> missing = new List<AircraftImportMatchRow>(csvimporter.MissingAircraft);
                 if (missing.Count > 0)

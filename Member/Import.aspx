@@ -258,13 +258,13 @@
                             </thead>
                             <asp:Repeater ID="rptPreview" OnItemDataBound="rptPreview_ItemDataBound" runat="server">
                                 <ItemTemplate>
-                                    <tr runat="server" id="rowError" visible='<%# !String.IsNullOrEmpty((string) Eval("ErrorString")) %>' valign="top">
+                                    <tr runat="server" id="rowError" visible='false' valign="top">
                                         <td colspan="15" runat="server">
                                             <div><asp:Label ID="lblFlightErr" CssClass="error" runat="server" Text='<%# Eval("ErrorString") %>'></asp:Label></div>
                                             <div><asp:Label ID="lblRawRow" CssClass="error" runat="server"></asp:Label></div>
                                         </td>
                                     </tr>
-                                    <tr runat="server" id="rowFlight" style="vertical-align:top; text-align:center; border: 1px solid gray" class='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? string.Empty : "error" %>'>
+                                    <tr runat="server" id="rowFlight" style="vertical-align:top; text-align:center; border: 1px solid gray">
                                         <td style="text-align:left" runat="server">
                                             <div>
                                                 <asp:Image ID="imgNewOrUpdate" runat="server" ImageUrl='<%# String.IsNullOrEmpty((string) Eval("ErrorString")) ? (Convert.ToBoolean(Eval("IsNewFlight")) ? "~/images/add.png" : "~/images/update.png") : "~/images/circleslash.png" %>' 

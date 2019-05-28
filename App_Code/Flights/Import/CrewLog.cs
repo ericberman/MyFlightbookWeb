@@ -65,7 +65,7 @@ namespace MyFlightbook.ImportFlights
 
         public override LogbookEntry ToLogbookEntry()
         {
-            DateTime dt = DateTime.MinValue;
+            DateTime dt;
             DateTime blockOut = DateTime.MinValue;
             DateTime blockIn = DateTime.MinValue;
             Regex rTime = new Regex("(?<hour>\\d{2}):(?<min>\\d{2})", RegexOptions.Compiled);
@@ -80,6 +80,8 @@ namespace MyFlightbook.ImportFlights
                 if (mc.Count == 1)
                     blockIn = dt.AddMinutes(Convert.ToInt32(mc[0].Groups["hour"].Value, CultureInfo.InvariantCulture) * 60 + Convert.ToInt32(mc[0].Groups["min"].Value, CultureInfo.InvariantCulture));
             }
+            else
+                dt = DateTime.MinValue;
 
             LogbookEntry le = new LogbookEntry()
             {
@@ -168,17 +170,15 @@ namespace MyFlightbook.ImportFlights
         public override byte[] PreProcess(byte[] rgb)
         {
             MemoryStream ms = null;
-            CSVReader reader = null;
-            DataTable dt = null;
 
             try
             {
                 ms = new MemoryStream(rgb);
-                using (reader = new CSVReader(ms))
+                using (CSVReader reader = new CSVReader(ms))
                 {
                     ms = null;  // for CA2202
 
-                    using (dt = new DataTable())
+                    using (DataTable dt = new DataTable())
                     {
                         dt.Locale = CultureInfo.CurrentCulture;
                         string[] rgRow;
@@ -220,9 +220,9 @@ namespace MyFlightbook.ImportFlights
                                         dt.Columns.Add(new DataColumn(szHeader, typeof(string)));
                             }
                         }
-                    }
 
-                    return Encoding.UTF8.GetBytes(CsvWriter.WriteToString(dt, true, true));
+                        return Encoding.UTF8.GetBytes(CsvWriter.WriteToString(dt, true, true));
+                    }
                 }
             }
             finally
