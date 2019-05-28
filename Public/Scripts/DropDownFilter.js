@@ -17,14 +17,21 @@ function CacheItems(ddl) {
     }
 }
 
+function containsAll(target, words) {
+    for (var i = 0; i < words.length; i++)
+        if (target.indexOf(words[i]) === -1)
+            return false;
+    return true;
+}
+
 function FilterItems(src, idDDL, idLBL, txtLbl) {
-    var value = src.value.toUpperCase();
+    var words = src.value.toUpperCase().split(" ");
     var ddl = document.getElementById(idDDL);
     var lbl = document.getElementById(idLBL);
     ddl.options.length = 0;
 
     for (var i = 0; i < ddlText.length; i++) {
-        if (i === 0 || ddlText[i].toUpperCase().indexOf(value) !== -1) {
+        if (i === 0 || containsAll(ddlText[i].toUpperCase(), words)) {
             var opt = document.createElement("option");
             opt.text = ddlText[i];
             opt.value = ddlValue[i];

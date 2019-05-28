@@ -142,7 +142,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
     protected void Page_Load(object sender, EventArgs e)
     {
         RecreateControls(); // set them up for postback or initial
-        Page.ClientScript.RegisterClientScriptInclude("filterDropdown", ResolveClientUrl("~/Public/Scripts/DropDownFilter.js"));
+        Page.ClientScript.RegisterClientScriptInclude("filterDropdown", ResolveClientUrl("~/Public/Scripts/DropDownFilter.js?v=2"));
         txtFilter.Attributes["onkeyup"] = String.Format(CultureInfo.InvariantCulture, "FilterItems(this, '{0}', '{1}', '{2}')", cmbPropsToAdd.ClientID, lblFilterMessage.ClientID, Resources.LogbookEntry.PropertiesFound);
     }
 

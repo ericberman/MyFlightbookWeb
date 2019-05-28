@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditPropSet.ascx.cs" Inherits="Controls_mfbEditPropSet" %>
 <%@ Register src="mfbEditProp.ascx" tagname="mfbEditProp" tagprefix="uc1" %>
-        <script type="text/javascript" language="javascript">
+        <script type="text/javascript">
             function pageLoad(sender, args) {
                 $find("<%=cpeText.ClientID%>").add_expandComplete(setFocusForSearch);
             }
