@@ -655,7 +655,8 @@ public partial class Member_FlightDetail : System.Web.UI.Page
 
         ((Controls_mfbSignature)fv.FindControl("mfbSignature")).Flight = le;
 
-        List<Badge> badges = new List<Badge>(Viewer.CachedBadges);
+        IEnumerable<Badge> cached = Viewer.CachedBadges;
+        List<Badge> badges = (cached == null ? null : new List<Badge>(cached));
         if (badges != null)
         {
             Repeater rptBadges = (Repeater)fv.FindControl("rptBadges");
