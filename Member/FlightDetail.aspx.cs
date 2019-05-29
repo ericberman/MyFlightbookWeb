@@ -267,8 +267,24 @@ public partial class Member_FlightDetail : System.Web.UI.Page
                 UpdateChart();
                 UpdateRestriction();
 
-                if (Viewer.CloudAhoyToken == null || Viewer.CloudAhoyToken.AccessToken == null || true)   // Import not implemented yet at cloudahoy...
+                if (Viewer.CloudAhoyToken == null || Viewer.CloudAhoyToken.AccessToken == null)
                     lnkSendCloudAhoy.Visible = false;
+
+                lblOriginalFormat.Text = DataSourceType.DataSourceTypeFromFileType(led.Telemetry.TelemetryType).DisplayName;
+
+                // allow selection of units if units are not implicitly known.
+                switch (led.Telemetry.TelemetryType)
+                {
+                    case DataSourceType.FileType.GPX:
+                    case DataSourceType.FileType.KML:
+                    case DataSourceType.FileType.NMEA:
+                    case DataSourceType.FileType.IGC:
+                        cmbAltUnits.Enabled = cmbSpeedUnits.Enabled = false;
+                        break;
+                    default:
+                        cmbAltUnits.Enabled = cmbSpeedUnits.Enabled = true;
+                        break;
+                }
 
                 // Bind details - this will bind everything else.
                 fmvLE.DataSource = new LogbookEntryDisplay[] { led };
@@ -312,6 +328,11 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             m_fd.Data = TelemetryData;
             UpdateChart();
         }
+
+        cmbAltUnits.SelectedValue = ((int) m_fd.AltitudeUnits).ToString(CultureInfo.InvariantCulture);
+        cmbSpeedUnits.SelectedValue = ((int)m_fd.SpeedUnits).ToString(CultureInfo.InvariantCulture);
+        if (!m_fd.HasDateTime)
+            lnkSendCloudAhoy.Visible = false;
 
         // Set up any maps.
         mfbGoogleMapManager1.Map.Airports = RoutesList.Result;
@@ -521,7 +542,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         }
     }
 
-    protected void lnkSendCloudAhoy_Click(object sender, EventArgs e)
+    protected async void lnkSendCloudAhoy_Click(object sender, EventArgs e)
     {
         m_fd.AltitudeUnits = (FlightData.AltitudeUnitTypes)Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture);
         m_fd.SpeedUnits = (FlightData.SpeedUnitTypes)Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture);
@@ -530,21 +551,32 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         CloudAhoyClient client = new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)) { AuthState = Viewer.CloudAhoyToken };
 
         MemoryStream ms = null;
-        StreamReader sr = null;
         try
         {
-            ms = new MemoryStream();
-            m_fd.WriteGPXData(ms);
-            sr = new StreamReader(ms);
-            ms = null;  // CA2022
-            client.PutGPX(sr.ReadToEnd(), CurrentFlight);
+            switch (CurrentFlight.Telemetry.TelemetryType)
+            {
+                default:
+                    ms = new MemoryStream();
+                    m_fd.WriteGPXData(ms);
+                    break;
+                case DataSourceType.FileType.GPX:
+                case DataSourceType.FileType.KML:
+                    ms = new MemoryStream(Encoding.UTF8.GetBytes(CurrentFlight.Telemetry.RawData));
+                    break;
+            }
+
+            ms.Seek(0, SeekOrigin.Begin);
+            await client.PutStream(ms, CurrentFlight);
+            pnlCloudAhoySuccess.Visible = true;
+        }
+        catch (MyFlightbookException ex)
+        {
+            lblCloudAhoyErr.Text = ex.Message;
         }
         finally
         {
             if (ms != null)
                 ms.Dispose();
-            if (sr != null)
-                sr.Dispose();
         }
     }
 

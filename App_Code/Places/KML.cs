@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.Geography;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -9,12 +11,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
-using MyFlightbook.Airports;
-using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2016 MyFlightbook LLC
+ * Copyright (c) 2010-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -63,10 +63,12 @@ namespace MyFlightbook.Telemetry
         public KMLWriter(Stream outputStream)
         {
             ms = outputStream;
-            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
-            xmlWriterSettings.Encoding = new UTF8Encoding(false);
-            xmlWriterSettings.ConformanceLevel = ConformanceLevel.Document;
-            xmlWriterSettings.Indent = true;
+            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings()
+            {
+                Encoding = new UTF8Encoding(false),
+                ConformanceLevel = ConformanceLevel.Document,
+                Indent = true
+            };
             kml = XmlWriter.Create(ms, xmlWriterSettings);
         }
 
@@ -409,10 +411,10 @@ namespace MyFlightbook.Telemetry
                 {
                     k = new KMLElements(XDocument.Load(new StreamReader(stream)));
 
-                    if (k.ele != null || k.eleArray != null)
-                        fResult = ParseKMLv1(k);
-                    else if (k.ele22 != null)
+                    if (k.ele22 != null)
                         fResult = ParseKMLv2(k);
+                    else if (k.ele != null || k.eleArray != null)
+                        fResult = ParseKMLv1(k);
                     else
                         throw new MyFlightbookException(Resources.FlightData.errNoKMLTrack);
                 }

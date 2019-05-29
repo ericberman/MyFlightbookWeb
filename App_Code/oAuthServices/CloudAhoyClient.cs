@@ -59,7 +59,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
             "CloudAhoySecret",
             String.Format(CultureInfo.InvariantCulture, "https://{0}/integration/v1/auth", fUseSandbox ? cloudAhoyDebugHost : cloudAhoyLiveHost),
             String.Format(CultureInfo.InvariantCulture, "https://{0}/integration/v1/token", fUseSandbox ? cloudAhoyDebugHost : cloudAhoyLiveHost),
-            new string[] { "flights:read" /*,  "flights:import" */ })
+            new string[] { "flights:read",  "flights:import" })
         {
             FlightsEndpoint = String.Format(CultureInfo.InvariantCulture, "https://{0}/integration/v1/flights", fUseSandbox ? cloudAhoyDebugHost : cloudAhoyLiveHost);
         }
@@ -78,20 +78,20 @@ namespace MyFlightbook.OAuth.CloudAhoy
             doc.LoadHtml(sz);
             StringBuilder sb = new StringBuilder();
             foreach (HtmlNode node in doc.DocumentNode.SelectNodes("//text()"))
-                sb.Append(node.InnerText);
+                sb.Append(node.InnerText.Trim() + " ");
 
-            return sb.ToString();
+            return sb.ToString().Trim();
         }
 
         /// <summary>
-        /// Pushes GPX to CloudAhoy
+        /// Pushes flight data to CloudAhoy
         /// </summary>
-        /// <param name="szGPX">The GPX in string form</param>
+        /// <param name="s">The KML or GPX stream</param>
         /// <param name="le">The parent flight (for metadata)</param>
-        public async void PutGPX(string szGPX, LogbookEntryBase le)
+        public async Task<bool> PutStream(Stream s, LogbookEntryBase le)
         {
-            if (szGPX == null)
-                throw new ArgumentNullException("szGPX");
+            if (s == null)
+                throw new ArgumentNullException("s");
             if (le == null)
                 throw new ArgumentNullException("le");
 
@@ -99,13 +99,8 @@ namespace MyFlightbook.OAuth.CloudAhoy
 
             using (MultipartFormDataContent form = new MultipartFormDataContent())
             {
-                StringContent scMeta = new StringContent(JsonConvert.SerializeObject(new CloudAhoyPostFileMetaData(le)));
-                scMeta.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                form.Add(scMeta, "METADATA");
-
-                StringContent scGPX = new StringContent(szGPX);
-                scGPX.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/gpx+xml");
-                form.Add(scGPX, "IMPORT");
+                form.Add(new StringContent(JsonConvert.SerializeObject(new CloudAhoyPostFileMetaData(le))), "METADATA");
+                form.Add(new StreamContent(s), "IMPORT", "data.gpx");
 
                 string szResult = string.Empty;
 
@@ -122,10 +117,11 @@ namespace MyFlightbook.OAuth.CloudAhoy
                     }
                     catch (HttpRequestException ex)
                     {
-                        throw new MyFlightbookException(ex.Message + " " + response.ReasonPhrase + " " + TextFromHTML(szResult));
+                        throw new MyFlightbookException(ex.Message + " " + response.ReasonPhrase + " " + TextFromHTML(szResult), ex);
                     }
                 }
             }
+            return true;
         }
 
 

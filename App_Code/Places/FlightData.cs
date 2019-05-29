@@ -96,9 +96,9 @@ namespace MyFlightbook.Telemetry
         }
         #endregion
 
-        private static Regex regStripUnits = new Regex("-?\\d*(\\.\\d*)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
-        private static Regex regNakedTime = new Regex("(\\d{1,2}):(\\d{1,2})(?::(\\d{1,2}))?", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-        private static Regex regUTCOffset = new Regex("(-)?(\\d{1,2}):(\\d{1,2})", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private readonly static Regex regStripUnits = new Regex("-?\\d*(\\.\\d*)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+        private readonly static Regex regNakedTime = new Regex("(\\d{1,2}):(\\d{1,2})(?::(\\d{1,2}))?", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private readonly static Regex regUTCOffset = new Regex("(-)?(\\d{1,2}):(\\d{1,2})", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private int ParseToInt(string szNumber)
         {
@@ -129,7 +129,7 @@ namespace MyFlightbook.Telemetry
         private object ParseUnixTimeStamp(string szValue)
         {
             // UnixTimeStamp, at least in ForeFlight, is # of ms since Jan 1 1970.
-            Int64 i = 0;
+            Int64 i;
             if (Int64.TryParse(szValue, out i))
                 return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(i / 1000);
             else
@@ -302,7 +302,7 @@ namespace MyFlightbook.Telemetry
         public const int DefaultLandingSpeedKts = 55;
         public const double FullStopSpeed = 5.0;
 
-        private static int[] _rgSpeeds = { 20, 40, 55, 70, 85, 100 };
+        private readonly static int[] _rgSpeeds = { 20, 40, 55, 70, 85, 100 };
         private const int DefaultSpeedIndex = 3;
         private const int SpeedBreakPoint = 50;
         private const int LandingSpeedDifferentialLow = 10;
@@ -343,17 +343,17 @@ namespace MyFlightbook.Telemetry
                     includeHeliports = false;
                 IncludeHeliports = includeHeliports;
 
-                bool estimateNight = true;
+                bool estimateNight;
                 if (cookies[keyCookieEstimateNight] == null || !bool.TryParse(cookies[keyCookieEstimateNight].Value, out estimateNight))
                     estimateNight = true;
                 AutoSynthesizePath = estimateNight;
 
-                AutoFillOptions.NightCritera nightCritera = AutoFillOptions.NightCritera.EndOfCivilTwilight;
+                AutoFillOptions.NightCritera nightCritera;
                 if (cookies[keyCookieNightDef] == null || !Enum.TryParse<AutoFillOptions.NightCritera>(cookies[keyCookieNightDef].Value, out nightCritera))
                     nightCritera = AutoFillOptions.NightCritera.EndOfCivilTwilight;
                 Night = nightCritera;
 
-                AutoFillOptions.NightLandingCriteria nightLandingCriteria = AutoFillOptions.NightLandingCriteria.SunsetPlus60;
+                AutoFillOptions.NightLandingCriteria nightLandingCriteria;
                 if (cookies[keyCookieNightLandingDef] == null || !Enum.TryParse<AutoFillOptions.NightLandingCriteria>(cookies[keyCookieNightLandingDef].Value, out nightLandingCriteria))
                     nightLandingCriteria = AutoFillOptions.NightLandingCriteria.SunsetPlus60;
                 NightLanding = nightLandingCriteria;
@@ -544,15 +544,35 @@ namespace MyFlightbook.Telemetry
         public string DefaultExtension { get; set; }
         public string Mimetype { get; set; }
 
-        public DataSourceType()
+        public string DisplayName
         {
+            get
+            {
+                switch (Type)
+                {
+                    case FileType.CSV:
+                        return Resources.FlightData.dataTypeCSV;
+                    case FileType.GPX:
+                        return Resources.FlightData.dataTypeGPX;
+                    case FileType.KML:
+                        return Resources.FlightData.dataTypeKML;
+                    case FileType.NMEA:
+                        return Resources.FlightData.dataTypeNMEA;
+                    case FileType.IGC:
+                        return Resources.FlightData.dataTypeIGC;
+                    case FileType.Airbly:
+                        return Resources.FlightData.dataTypeAirbly;
+                    default:
+                        return null;
+                }
+            }
         }
 
         public DataSourceType(FileType ft, string szExt, string szMimeType)
         {
-            this.Type = ft;
-            this.DefaultExtension = szExt;
-            this.Mimetype = szMimeType;
+            Type = ft;
+            DefaultExtension = szExt;
+            Mimetype = szMimeType;
         }
 
         /// <summary>
@@ -582,7 +602,7 @@ namespace MyFlightbook.Telemetry
             }
         }
 
-        private static DataSourceType[] KnownTypes = {
+        private readonly static DataSourceType[] KnownTypes = {
             new DataSourceType(FileType.CSV, "CSV", "text/csv"),
             new DataSourceType(FileType.GPX, "GPX", "application/gpx+xml"),
             new DataSourceType(FileType.KML, "KML", "application/vnd.google-earth.kml+xml"),
@@ -1096,12 +1116,14 @@ namespace MyFlightbook.Telemetry
                             timestamp = DateTime.SpecifyKind(timestamp.AddMinutes(Convert.ToInt32(dr[KnownColumnNames.UTCOffSet], CultureInfo.InvariantCulture)), DateTimeKind.Utc);
                         else if (fHasTimeKind)
                         {
-                            DateTimeKind kind = DateTimeKind.Unspecified;
+                            DateTimeKind kind;
                             if (!Enum.TryParse<DateTimeKind>(dr[KnownColumnNames.TIMEKIND].ToString(), out kind))
                             {
-                                int intKind = 0;
+                                int intKind;
                                 if (int.TryParse(dr[KnownColumnNames.TIMEKIND].ToString(), out intKind))
                                     kind = (DateTimeKind)intKind;
+                                else
+                                    kind = DateTimeKind.Unspecified;
                             }
                             if (kind != DateTimeKind.Unspecified)
                                 timestamp = DateTime.SpecifyKind(timestamp, kind);
@@ -1212,12 +1234,13 @@ namespace MyFlightbook.Telemetry
                 bool fHasAlt = hasAlt || HasAltitude;
                 bool fHasTime = hasTime || HasDateTime;
                 bool fHasSpeed = hasSpeed || HasSpeed;
-                string szResult = string.Empty;
 
-                XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
-                xmlWriterSettings.Encoding = new UTF8Encoding(false);
-                xmlWriterSettings.ConformanceLevel = ConformanceLevel.Document;
-                xmlWriterSettings.Indent = true;
+                XmlWriterSettings xmlWriterSettings = new XmlWriterSettings()
+                {
+                    Encoding = new UTF8Encoding(false),
+                    ConformanceLevel = ConformanceLevel.Document,
+                    Indent = true
+                };
 
                 using (XmlWriter gpx = XmlWriter.Create(s, xmlWriterSettings))
                 {
@@ -1721,7 +1744,7 @@ namespace MyFlightbook.Telemetry
             CachedDistance = (o is DBNull) ? (double?) null : Convert.ToDouble(o, CultureInfo.InvariantCulture);
             string szPath = dr["flightpath"].ToString();
             if (!string.IsNullOrEmpty(szPath))
-                GoogleData = new GoogleEncodedPath() { EncodedPath = szPath, Distance = CachedDistance.HasValue ? CachedDistance.Value : 0 };
+                GoogleData = new GoogleEncodedPath() { EncodedPath = szPath, Distance = CachedDistance ?? 0 };
         }
         #endregion
 
@@ -1913,7 +1936,7 @@ namespace MyFlightbook.Telemetry
             if (!CachedDistance.HasValue && HasPath)
                 InitFromTelemetry();
 
-            return CachedDistance.HasValue ? CachedDistance.Value : 0;
+            return CachedDistance ?? 0;
         }
 
         /// <summary>

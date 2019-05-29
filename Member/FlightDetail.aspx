@@ -71,13 +71,6 @@
             var gm = getMfbMap();
             gm.oms.addMarker(gm.addEventMarker(p, s));
         }
-
-        function showUnitConvert(sender) {
-            var r1 = document.getElementById("rowUnitConvert1");
-            var r2 = document.getElementById("rowUnitConvert2");
-            var r3 = document.getElementById("<% = lblCloudAhoy.ClientID %>");
-            r1.style.visibility = r2.style.visibility = r3.style.visibility = (sender.value == "Original") ? "hidden" : "visible";
-        }
     </script>
     <uc4:mfbAccordionProxyExtender runat="server" ID="mfbAccordionProxyExtender" AccordionControlID="AccordionCtrl" HeaderProxyIDs="apcFlight,apcAircraft,apcChart,apcRaw,apcDownload" />
     <asp:Panel ID="pnlAccordionMenuContainer" CssClass="accordionMenuContainer" runat="server" meta:resourcekey="pnlAccordionMenuContainerResource1">
@@ -284,26 +277,26 @@
                 <Content>
                     <table style="margin-left:auto; margin-right:auto;">
                         <tr>
+                            <td><asp:Label ID="lblOriginalFormatPrompt" runat="server" Text="<%$ Resources:FlightData, FlightDataOriginalFormat %>"></asp:Label></td>
+                            <td>
+                                <asp:Label ID="lblOriginalFormat" runat="server"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>
                                 <asp:Localize ID="locDownloadPrompt" runat="server"
                                                             Text="Download this data as:" meta:resourcekey="locDownloadPromptResource1"></asp:Localize>
                             </td>
                             <td>
-                                <asp:DropDownList ID="cmbFormat" runat="server" meta:resourcekey="cmbFormatResource1" onchange="javascript:showUnitConvert(this);">
+                                <asp:DropDownList ID="cmbFormat" runat="server" meta:resourcekey="cmbFormatResource1">
                                     <asp:ListItem Selected="True" Value="Original" Text="Original Format" meta:resourcekey="ListItemResource1"></asp:ListItem>
                                     <asp:ListItem Value="CSV" Text="Text (CSV / Spreadsheet)" meta:resourcekey="ListItemResource2"></asp:ListItem>
                                     <asp:ListItem Enabled="False" Value="KML" Text="KML (Google Earth)" meta:resourcekey="ListItemResource3"></asp:ListItem>
                                     <asp:ListItem Enabled="False" Value="GPX" Text="GPX" meta:resourcekey="ListItemResource4"></asp:ListItem>
                                 </asp:DropDownList>
-                                <asp:Label ID="lblCloudAhoy" runat="server" style="visibility:hidden;">
-                                    <asp:LinkButton ID="lnkSendCloudAhoy" runat="server" OnClick="lnkSendCloudAhoy_Click">
-                                        <asp:Image ID="imgClopudAhoy" style="padding-right: 10px" ImageUrl="~/images/cloudahoy-sm.png" AlternateText="<%$ Resources:LogbookEntry, SendToCloudAhoy %>" ToolTip="<%$ Resources:LogbookEntry, SendToCloudAhoy %>" runat="server" />
-                                        <asp:Label ID="lblSendCloudAhoy" runat="server" Text="<%$ Resources:LogbookEntry, SendToCloudAhoy %>"></asp:Label>
-                                    </asp:LinkButton>
-                                </asp:Label>
                             </td>
                         </tr>
-                        <tr id="rowUnitConvert1" style="visibility:hidden;">
+                        <tr>
                             <td>
                                 <asp:Localize ID="locSpeedUnitsPrompt" runat="server" Text="Speed in original data is:" meta:resourcekey="locSpeedUnitsPromptResource1"></asp:Localize>
                             </td>
@@ -316,7 +309,7 @@
                                 </asp:DropDownList>
                             </td>
                         </tr>
-                        <tr id="rowUnitConvert2" style="visibility:hidden;">
+                        <tr>
                             <td>
                                 <asp:Localize ID="locAltUnitsPrompt" runat="server" Text="Altitude in original data is:" meta:resourcekey="locAltUnitsPromptResource1"></asp:Localize>
                             </td>
@@ -331,7 +324,22 @@
                         <tr>
                             <td></td>
                             <td>
-                                <asp:Button ID="btnDownload" runat="server" CausesValidation="False" OnClick="btnDownload_Click" Text="Download" meta:resourcekey="btnDownloadResource1" />
+                                <div>
+                                    <asp:Button ID="btnDownload" runat="server" CausesValidation="False" OnClick="btnDownload_Click" Text="Download" meta:resourcekey="btnDownloadResource1" />
+                                    &nbsp;&nbsp;&nbsp;
+                                    <asp:LinkButton ID="lnkSendCloudAhoy" runat="server" OnClick="lnkSendCloudAhoy_Click">
+                                        <asp:Image ID="imgClopudAhoy" style="padding-right: 10px" ImageUrl="~/images/cloudahoy-sm.png" AlternateText="<%$ Resources:LogbookEntry, SendToCloudAhoy %>" ToolTip="<%$ Resources:LogbookEntry, SendToCloudAhoy %>" runat="server" />
+                                        <asp:Label ID="lblSendCloudAhoy" runat="server" Text="<%$ Resources:LogbookEntry, SendToCloudAhoy %>"></asp:Label>
+                                    </asp:LinkButton>
+                                </div>
+                                <div><asp:Label ID="lblCloudAhoyErr" runat="server" CssClass="error" EnableViewState="false"></asp:Label></div>
+                                <asp:Panel ID="pnlCloudAhoySuccess" runat="server" EnableViewState="false" Visible="false">
+                                    <asp:Label ID="lblSendCloudAhoySuccess" runat="server" Text="<%$ Resources:LogbookEntry, SendToCloudAhoySuccess %>" CssClass="success"></asp:Label>
+                                    <asp:HyperLink ID="lnkViewOnCloudAhoy" runat="server" NavigateUrl="https://www.cloudahoy.com/flights" Target="_blank">
+                                        <asp:Label ID="lblViewOnCloudAhoy" runat="server" Text="<%$ Resources:LogbookEntry, SendToCloudAhoyView %>"></asp:Label>
+                                        <asp:Image ID="imgViewOnCloudAhoy" runat="server" ImageURL="~/images/rightarrow.png" />
+                                    </asp:HyperLink>
+                                </asp:Panel>
                             </td>
                         </tr>
                     </table>

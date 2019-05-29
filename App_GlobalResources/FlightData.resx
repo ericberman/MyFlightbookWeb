@@ -228,4 +228,28 @@
   <data name="ImportErrMultiMatchNoLocation" xml:space="preserve">
     <value>Can't match to a flight: multiple flights found, but telemetry has no location by which to match</value>
   </data>
+  <data name="dataTypeAirbly" xml:space="preserve">
+    <value>Airbly File</value>
+  </data>
+  <data name="dataTypeCSV" xml:space="preserve">
+    <value>CSV File (Units unspecified)</value>
+  </data>
+  <data name="dataTypeGPX" xml:space="preserve">
+    <value>GPX File</value>
+  </data>
+  <data name="dataTypeIGC" xml:space="preserve">
+    <value>IGC File</value>
+  </data>
+  <data name="dataTypeKML" xml:space="preserve">
+    <value>KML File</value>
+  </data>
+  <data name="dataTypeNMEA" xml:space="preserve">
+    <value>NMEA File</value>
+  </data>
+  <data name="dataTypeUnknown" xml:space="preserve">
+    <value>(Unknown)</value>
+  </data>
+  <data name="FlightDataOriginalFormat" xml:space="preserve">
+    <value>Data was stored as:</value>
+  </data>
 </root>

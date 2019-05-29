@@ -991,4 +991,10 @@ Proceed with import?</value>
   <data name="SendToCloudAhoy" xml:space="preserve">
     <value>Send to CloudAhoy</value>
   </data>
+  <data name="SendToCloudAhoySuccess" xml:space="preserve">
+    <value>Flight sent to CloudAhoy</value>
+  </data>
+  <data name="SendToCloudAhoyView" xml:space="preserve">
+    <value>View on CloudAhoy</value>
+  </data>
 </root>
