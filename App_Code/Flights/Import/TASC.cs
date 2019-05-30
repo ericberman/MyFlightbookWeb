@@ -43,6 +43,12 @@ namespace MyFlightbook.ImportFlights
                 TotalFlightTime = Math.Max((decimal) blockIn.Subtract(blockOut).TotalHours, 0)
             };
 
+            if (position.CompareCurrentCultureIgnoreCase("CA") == 0)
+                pf.PIC = pf.TotalFlightTime;
+
+            if (position.CompareCurrentCultureIgnoreCase("FO") == 0)
+                pf.SIC = pf.TotalFlightTime;
+
             pf.CustomProperties = PropertiesWithoutNullOrDefault(new CustomFlightProperty[]
             {
                 PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, flightNumber),
