@@ -289,13 +289,9 @@ public partial class Member_FlightDetail : System.Web.UI.Page
                 // Bind details - this will bind everything else.
                 fmvLE.DataSource = new LogbookEntryDisplay[] { led };
                 fmvLE.DataBind();
-                // Seing weird null reference errors now and then binding to private notes.
-                Aircraft ac = new UserAircraft(led.User).GetUserAircraftByID(led.AircraftID);
-                if (ac.PrivateNotes == null)
-                {
-                    ac.PrivateNotes = string.Empty;
-                    util.NotifyAdminEvent("null private notes in FlightDetails.aspx", String.Format(CultureInfo.CurrentCulture, "User: {0}, Aircraft: {1}", led.User, led.AircraftID), ProfileRoles.maskSiteAdminOnly);
-                }
+
+                // shouldn't happen but sometimes does: GetUserAircraftByID returns null.  Not quite sure why.
+                Aircraft ac = (new UserAircraft(led.User).GetUserAircraftByID(led.AircraftID)) ?? new Aircraft(led.AircraftID);
                 fmvAircraft.DataSource = new Aircraft[] { ac };
                 fmvAircraft.DataBind();
 
