@@ -8,6 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
+/******************************************************
+ * 
+ * Copyright (c) 2019 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
 namespace MyFlightbook.ImportFlights
 {
     /// <summary>
