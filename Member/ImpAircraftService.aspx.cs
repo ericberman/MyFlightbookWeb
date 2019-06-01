@@ -46,10 +46,22 @@ public partial class Member_ImpAircraftService : System.Web.UI.Page
 
         Aircraft ac = new Aircraft() { TailNumber = szTail, ModelID = idModel, InstanceTypeID = instanceType };
 
+        // Issue #296: allow sims to come through without a sim prefix; we can fix it at AddNewAircraft time.
+        AircraftInstance aic = Array.Find(AircraftInstance.GetInstanceTypes(), it => it.InstanceTypeInt == instanceType);
+        string szSpecifiedTail = szTail;
+        bool fIsNamedSim = !aic.IsRealAircraft && !szTail.ToUpper(CultureInfo.CurrentCulture).StartsWith(CountryCodePrefix.SimCountry.Prefix.ToUpper(CultureInfo.CurrentCulture));
+        if (fIsNamedSim)
+            ac.TailNumber = CountryCodePrefix.SimCountry.Prefix;
+
         if (ac.FixTailAndValidate())
             ac.CommitForUser(szCurrentUser);
+     
+        UserAircraft ua = new UserAircraft(szCurrentUser);
+        if (fIsNamedSim)
+            ac.PrivateNotes = String.Format(CultureInfo.InvariantCulture, "{0} #ALT{1}#", ac.PrivateNotes ?? string.Empty, szSpecifiedTail);
 
-        new UserAircraft(szCurrentUser).FAddAircraftForUser(ac);
+        ua.FAddAircraftForUser(ac);
+        ua.InvalidateCache();
     }
 
     [WebMethod(EnableSession = true)]
@@ -61,7 +73,13 @@ public partial class Member_ImpAircraftService : System.Web.UI.Page
         if (string.IsNullOrEmpty(szTail))
             throw new ArgumentException("Empty tail in ValidateAircraft");
 
+        // Issue #296: allow sims to come through without a sim prefix; we can fix it at AddNewAircraft time.
+        AircraftInstance aic = Array.Find(AircraftInstance.GetInstanceTypes(), it => it.InstanceTypeInt == instanceType);
+        if (!aic.IsRealAircraft && !szTail.ToUpper(CultureInfo.CurrentCulture).StartsWith(CountryCodePrefix.SimCountry.Prefix.ToUpper(CultureInfo.CurrentCulture)))
+            szTail = CountryCodePrefix.SimCountry.Prefix;
+
         Aircraft ac = new Aircraft() { TailNumber = szTail, ModelID = idModel, InstanceTypeID = instanceType };
+
         ac.FixTailAndValidate();
         return ac.ErrorString;
     }
