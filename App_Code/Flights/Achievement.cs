@@ -226,6 +226,7 @@ namespace MyFlightbook.Achievements
         }
     }
 
+    [Serializable]
     /// <summary>
     /// Abstract class for a badge that is awarded for meeting an achievement
     /// </summary>
