@@ -10,7 +10,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2018 MyFlightbook LLC
+ * Copyright (c) 2010-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -494,7 +494,7 @@ namespace MyFlightbook.Instruction
             RequestingUser = rgParams[1];
             TargetUser = rgParams[2];
             ClubToJoin = null;
-            int id = 0;
+            int id;
             if (rgParams.Length > 2 && (Requestedrole == RoleType.RoleInviteJoinClub || Requestedrole == RoleType.RoleRequestJoinClub)
                 && Int32.TryParse(rgParams[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out id))
                 ClubToJoin = Club.ClubWithID(id); 
@@ -844,7 +844,12 @@ namespace MyFlightbook.Instruction
             DBHelper dbh = new DBHelper("UPDATE students SET CanViewStudent=?canView WHERE StudentName=?user AND CFIName=?instructor");
             dbh.DoNonQuery((comm) =>
                 {
-                    comm.Parameters.AddWithValue("canView", instructorstudent.CanViewLogbook);
+                    // Sanity check - can't add to logbook if you can't view it.
+                    if (!instructorstudent.CanViewLogbook)
+                        instructorstudent.CanAddLogbook = false;
+
+                    uint perms = ((uint)(instructorstudent.CanViewLogbook ? InstructorStudent.PermissionMask.ViewLogbook : 0) | (uint) (instructorstudent.CanAddLogbook ? InstructorStudent.PermissionMask.AddLogbook : 0));
+                    comm.Parameters.AddWithValue("canView", perms);
                     comm.Parameters.AddWithValue("user", this.User);
                     comm.Parameters.AddWithValue("instructor", instructorstudent.UserName);
                 });

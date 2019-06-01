@@ -22,7 +22,7 @@
                      Text="Your Endorsements" meta:resourcekey="locEndorsementsPromptResource1"></asp:Localize>
             </h2>
             <uc6:mfbEndorsementList ID="mfbEndorsementList1" runat="server" />
-            <p><asp:HyperLink ID="lnkAddEndorsement" runat="server" Text="Add an endorsement..." NavigateUrl="~/Member/AddEndorsement.aspx"></asp:HyperLink></p>
+            <p><asp:HyperLink ID="lnkAddEndorsement" runat="server" Text="Add an endorsement..." NavigateUrl="~/Member/AddEndorsement.aspx" meta:resourcekey="lnkAddEndorsementResource1"></asp:HyperLink></p>
             <div class="noprint">
                 <h2>
                     <asp:Localize ID="locScannedEndorsementsHeader" runat="server" 
@@ -35,7 +35,7 @@
                         Text="You can scan your paper logbook endorsements and upload them here so that you always have access to them." meta:resourcekey="locScannedEndorsementDescResource1"></asp:Localize>
                 </p>
                 <div>
-                    <asp:Label ID="lblNote" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, Note %>"></asp:Label> <asp:Label ID="lblPreviousEndorsements" runat="server" Text="<%$ Resources:SignOff, EditEndorsementDisclaimer %>"></asp:Label>
+                    <asp:Label ID="lblNote" runat="server" Font-Bold="True" Text="<%$ Resources:LocalizedText, Note %>" meta:resourcekey="lblNoteResource1"></asp:Label> <asp:Label ID="lblPreviousEndorsements" runat="server" Text="<%$ Resources:SignOff, EditEndorsementDisclaimer %>" meta:resourcekey="lblPreviousEndorsementsResource1"></asp:Label>
                 </div>
                 <uc7:mfbMultiFileUpload ID="mfbMultiFileUpload1" Class="Endorsement" OnUploadComplete="mfbMultiFileUpload1_OnUploadComplete"
                         runat="server" Mode="Legacy" RefreshOnUpload="true" IncludeDocs="true" />
@@ -80,7 +80,7 @@
                     ></asp:Localize></h2>
             <asp:GridView ID="gvStudents" GridLines="None" runat="server" 
                 AutoGenerateColumns="False" ShowHeader="False"
-                    OnRowCommand="gvStudents_Delete" EnableViewState="False"  
+                    OnRowCommand="gvStudents_Delete" EnableViewState="False" CellPadding="3"
                 onrowdatabound="gvStudents_RowDataBound" meta:resourcekey="gvStudentsResource1" >
                     <Columns>
                         <asp:TemplateField meta:resourcekey="TemplateFieldResource2" ><ItemTemplate><asp:ImageButton ID="imgDelete" ImageUrl="~/images/x.gif" CausesValidation="False"
@@ -89,12 +89,11 @@
                                     CommandArgument='<%# Bind("username") %>' runat="server" meta:resourcekey="imgDeleteResource1" 
                                      /><cc1:ConfirmButtonExtender ID="cbeDeleteStudent" runat="server" TargetControlID="imgDelete"
                                     ConfirmOnFormSubmit="True" 
-                                    ConfirmText="<%$ Resources:Profile, EditProfileDeleteStudentConfirmation %>"></cc1:ConfirmButtonExtender></ItemTemplate>
+                                    ConfirmText="<%$ Resources:Profile, EditProfileDeleteStudentConfirmation %>" BehaviorID="cbeDeleteStudent"></cc1:ConfirmButtonExtender></ItemTemplate>
                             <ItemStyle VerticalAlign="Top" />
                         </asp:TemplateField>
-                        <asp:BoundField DataField="UserFullName" ShowHeader="False" meta:resourcekey="BoundFieldResource1"
-                             >
-                        <ItemStyle VerticalAlign="Top" />
+                        <asp:BoundField DataField="UserFullName" ShowHeader="False" meta:resourcekey="BoundFieldResource1">
+                            <ItemStyle VerticalAlign="Top" Font-Bold="True" />
                         </asp:BoundField>
                         <asp:TemplateField meta:resourcekey="TemplateFieldResource3" ><ItemTemplate>&nbsp;&nbsp;&nbsp;</ItemTemplate></asp:TemplateField>
                         <asp:HyperLinkField DataNavigateUrlFormatString="~/Member/EndorseStudent.aspx/{0}" 
@@ -196,24 +195,34 @@
             <h2><asp:Localize ID="locInstructorsPrompt" runat="server" Text="Your Instructors" meta:resourcekey="locInstructorsPromptResource1" 
                     ></asp:Localize></h2>
             <asp:GridView ID="gvInstructors" GridLines="None" runat="server" 
-                AutoGenerateColumns="False" EnableViewState="False" ShowHeader="False"
-                    OnRowCommand="gvInstructors_Delete" 
-                 
-                onrowdatabound="gvInstructors_RowDataBound" meta:resourcekey="gvInstructorsResource1">
+                AutoGenerateColumns="False" EnableViewState="False" ShowHeader="False" CellPadding="3"
+                    OnRowCommand="gvInstructors_Delete" meta:resourcekey="gvInstructorsResource1">
                     <Columns>
-                        <asp:TemplateField meta:resourcekey="TemplateFieldResource9" ><ItemTemplate><asp:ImageButton ID="imgDelete" ImageUrl="~/images/x.gif" CausesValidation="False"
-                                    AlternateText="Delete this instructor" 
+                        <asp:TemplateField meta:resourcekey="TemplateFieldResource9">
+                            <ItemTemplate>
+                                <asp:ImageButton ID="imgDelete" ImageUrl="~/images/x.gif" CausesValidation="False"
+                                    AlternateText="Delete this instructor"
                                     ToolTip="<%$ Resources:Profile, EditProfileDeleteCFITooltip %>" CommandName="_Delete"
-                                    CommandArgument='<%# Bind("username") %>' runat="server" meta:resourcekey="imgDeleteResource2" 
-                                     /><cc1:ConfirmButtonExtender ID="cbeDeleteInstructor" runat="server" TargetControlID="imgDelete"
-                                    ConfirmOnFormSubmit="True" 
-                                    ConfirmText="<%$ Resources:Profile, EditProfileDeleteCFIConfirmation %>"></cc1:ConfirmButtonExtender></ItemTemplate></asp:TemplateField>
-                        <asp:BoundField DataField="UserFullName" ShowHeader="False" meta:resourcekey="BoundFieldResource2" 
-                             />
-                        <asp:TemplateField meta:resourcekey="TemplateFieldResource10" ><ItemTemplate><asp:CheckBox ID="ckCanViewLogbook" runat="server" 
-                                    Text="Allow to view my logbook" AutoPostBack="True" 
-                                    oncheckedchanged="ckCanViewLogbook_CheckedChanged" meta:resourcekey="ckCanViewLogbookResource1" 
-                                    ></asp:CheckBox></ItemTemplate></asp:TemplateField>
+                                    CommandArgument='<%# Bind("username") %>' runat="server" meta:resourcekey="imgDeleteResource2" /><cc1:ConfirmButtonExtender ID="cbeDeleteInstructor" runat="server" TargetControlID="imgDelete"
+                                        ConfirmOnFormSubmit="True"
+                                        ConfirmText="<%$ Resources:Profile, EditProfileDeleteCFIConfirmation %>" BehaviorID="cbeDeleteInstructor"></cc1:ConfirmButtonExtender>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:BoundField DataField="UserFullName" ShowHeader="False" meta:resourcekey="BoundFieldResource2" >
+                        <ItemStyle Font-Bold="True" />
+                        </asp:BoundField>
+                        <asp:TemplateField meta:resourcekey="TemplateFieldResource10">
+                            <ItemTemplate>
+                                <asp:CheckBox ID="ckCanViewLogbook" runat="server"
+                                    Text="Can view my logbook" AutoPostBack="True" Checked="<%# ((InstructorStudent)Container.DataItem).CanViewLogbook %>"
+                                    OnCheckedChanged="ckCanViewLogbook_CheckedChanged" meta:resourcekey="ckCanViewLogbookResource1"></asp:CheckBox>
+                                <asp:CheckBox ID="ckCanAddLogbook" runat="server"
+                                    Enabled="<%# ((InstructorStudent)Container.DataItem).CanViewLogbook %>"
+                                    Checked="<%# ((InstructorStudent)Container.DataItem).CanAddLogbook %>"
+                                    Text="Can add flights to my logbook" AutoPostBack="True"
+                                    OnCheckedChanged="ckCanAddLogbook_CheckedChanged" meta:resourcekey="ckCanAddLogbookResource1"></asp:CheckBox>
+                            </ItemTemplate>
+                        </asp:TemplateField>
                     </Columns>
                     <EmptyDataTemplate>
                         <asp:Label ID="lblNoInstructors" runat="server" Text="You have no instructors." meta:resourcekey="lblNoInstructorsResource1" 

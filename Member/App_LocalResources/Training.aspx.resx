@@ -153,8 +153,14 @@
   <data name="btnUploadImagesResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="ckCanAddLogbookResource1.Text" xml:space="preserve">
+    <value>Can add flights to my logbook</value>
+  </data>
+  <data name="ckCanAddLogbookResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="ckCanViewLogbookResource1.Text" xml:space="preserve">
-    <value>Allow to view my logbook</value>
+    <value>Can view my logbook</value>
   </data>
   <data name="ckCanViewLogbookResource1.ToolTip" xml:space="preserve">
     <value />
@@ -259,6 +265,18 @@
     <value>You have no students.</value>
   </data>
   <data name="lblNoStudentsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNoteResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPreviousEndorsementsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lnkAddEndorsementResource1.Text" xml:space="preserve">
+    <value>Add an endorsement...</value>
+  </data>
+  <data name="lnkAddEndorsementResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lnkAddOfflineEndorsementResource1.Text" xml:space="preserve">
@@ -415,6 +433,15 @@
     <value />
   </data>
   <data name="TemplateFieldResource10.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource11.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource11.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource11.HeaderText" xml:space="preserve">
     <value />
   </data>
   <data name="TemplateFieldResource2.AccessibleHeaderText" xml:space="preserve">

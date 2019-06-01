@@ -3545,14 +3545,24 @@ namespace MyFlightbook
     {
         public int FlightID { get; set; }
 
-        public LogbookEventArgs(int idFlight) : base()
-        {
-            FlightID = idFlight;
-        }
+        public LogbookEntry Flight {get; set;}
 
         public LogbookEventArgs() : base()
         {
             FlightID = LogbookEntry.idFlightNone;
+            Flight = null;
+        }
+
+        public LogbookEventArgs(int idFlight) : this()
+        {
+            FlightID = idFlight;
+        }
+
+        public LogbookEventArgs(LogbookEntry le) : this()
+        {
+            Flight = le;
+            if (le != null)
+                FlightID = le.FlightID;
         }
     }
 

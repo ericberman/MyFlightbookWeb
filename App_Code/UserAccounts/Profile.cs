@@ -1808,12 +1808,18 @@ namespace MyFlightbook
     {
         public bool CanViewLogbook { get; set; }
 
+        public bool CanAddLogbook { get; set; }
+
+        public enum PermissionMask { None = 0x0000, ViewLogbook = 0x0001, AddLogbook = 0x0002 }
+
         public InstructorStudent(MySqlDataReader dr)
             : base(dr)
         {
             if (dr == null)
                 throw new ArgumentNullException("dr");
-            CanViewLogbook = Convert.ToBoolean(dr["CanViewStudent"], CultureInfo.InvariantCulture);
+            uint perms = Convert.ToUInt32(dr["CanViewStudent"], CultureInfo.InvariantCulture);
+            CanViewLogbook = (perms & (uint) PermissionMask.ViewLogbook) != 0;
+            CanAddLogbook = (perms & (uint)PermissionMask.AddLogbook) != 0;
         }
     }
 }

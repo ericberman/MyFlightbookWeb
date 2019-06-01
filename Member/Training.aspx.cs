@@ -1,16 +1,16 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Instruction;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Instruction;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2017 MyFlightbook LLC
+ * Copyright (c) 2010-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -175,18 +175,6 @@ public partial class Member_Training : System.Web.UI.Page
         }
     }
 
-    protected void gvInstructors_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException("e");
-        // set the checkbox to set the permission to view the logbook
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            CheckBox ckCanView = (CheckBox)e.Row.FindControl("ckCanViewLogbook");
-            ckCanView.Checked = ((InstructorStudent)e.Row.DataItem).CanViewLogbook;
-        }
-    }
-
     protected void gvStudents_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
@@ -262,8 +250,7 @@ public partial class Member_Training : System.Web.UI.Page
 
     protected void ClearSignature(int idFlight)
     {
-        LogbookEntry le = new LogbookEntry();
-        le.FlightID = idFlight;
+        LogbookEntry le = new LogbookEntry() { FlightID = idFlight };
         le.ClearPendingSignature();
         RefreshStudentsAndInstructors();
     }
@@ -298,10 +285,30 @@ public partial class Member_Training : System.Web.UI.Page
 
         if (iRow >= 0 && iRow < m_sm.Instructors.Count())
         {
-            m_sm.Instructors.ElementAt(iRow).CanViewLogbook = ck.Checked;
-            m_sm.SetCFIPermissions(m_sm.Instructors.ElementAt(iRow));
+            InstructorStudent instructorStudent = m_sm.Instructors.ElementAt(iRow);
+            instructorStudent.CanViewLogbook = ck.Checked;
+            if (!ck.Checked)
+                instructorStudent.CanAddLogbook = false;
+            m_sm.SetCFIPermissions(instructorStudent);
         }
+        gvInstructors.DataSource = m_sm.Instructors;
+        gvInstructors.DataBind();
+    }
+
+    protected void ckCanAddLogbook_CheckedChanged(object sender, EventArgs e)
+    {
+        CheckBox ck = (CheckBox)sender;
+        GridViewRow gvr = (GridViewRow)ck.NamingContainer;
+        int iRow = gvr.RowIndex;
+
+        if (iRow >= 0 && iRow < m_sm.Instructors.Count())
+        {
+            InstructorStudent instructorStudent = m_sm.Instructors.ElementAt(iRow);
+            instructorStudent.CanAddLogbook = ck.Checked;
+            m_sm.SetCFIPermissions(instructorStudent);
+        }
+        gvInstructors.DataSource = m_sm.Instructors;
+        gvInstructors.DataBind();
     }
     #endregion
-
 }

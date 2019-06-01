@@ -52,10 +52,31 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         set { cmbCatClasses.SelectedValue = value.ToString(CultureInfo.InvariantCulture); }
     }
 
+    /// <summary>
+    /// Show a cancel button?
+    /// </summary>
     public bool CanCancel
     {
         get { return btnCancel.Visible; }
         set { btnCancel.Visible = value; }
+    }
+
+    /// <summary>
+    /// Show a "Save Pending" button?
+    /// </summary>
+    public bool CanSavePending
+    {
+        get { return btnAddPending.Visible; }
+        set { btnAddPending.Visible = value; }
+    }
+
+    /// <summary>
+    /// Show an Add/Update button?
+    /// </summary>
+    public bool CanSaveNonPending
+    {
+        get { return btnAddFlight.Visible; }
+        set { btnAddFlight.Visible = value; }
     }
 
     #region internal settings - NOT PERSISTED
@@ -71,12 +92,12 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         }
         set { m_CurrentUser = value; }
     }
-
     #endregion
     #endregion
 
-    public event System.EventHandler FlightUpdated;
-    public event System.EventHandler FlightEditCanceled;
+    public event EventHandler<LogbookEventArgs> FlightWillBeSaved;
+    public event EventHandler<LogbookEventArgs> FlightUpdated;
+    public event EventHandler FlightEditCanceled;
 
     /// <summary>
     /// Initialize the edit form for a new flight (blank fields) or for editing of an existing flight
@@ -217,7 +238,8 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         if (!IsPostBack)
         {
             InitBasicControls();
-            btnAddPending.Visible = util.GetIntParam(Request, "pend", 0) != 0;
+            if (util.GetIntParam(Request, "pend", 0) != 0)
+                CanSavePending = true;
         }
         else
             ProcessImages(FlightID);
@@ -531,6 +553,9 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
         LogbookEntry le = InitLogbookEntryFromForm();
 
+        if (FlightWillBeSaved != null)
+            FlightWillBeSaved(this, new LogbookEventArgs(le));
+
         if (le.IsValid())
         {
             // if a new flight and hobbs > 0, save it for the next flight
@@ -577,10 +602,11 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         Request.Cookies.Add(new HttpCookie(keyCookieExpandFSLandings, Convert.ToBoolean(cpeLandingDetails.ClientState, CultureInfo.InvariantCulture) ? string.Empty : "y"));
 
         Page.Validate(szValGroupEdit);
-        if (CommitChanges() >= 0)
+        int idResult = CommitChanges();
+        if (idResult >= 0)
         {
             if (FlightUpdated != null)
-                FlightUpdated(sender, e);
+                FlightUpdated(sender, new LogbookEventArgs(idResult));
         }
     }
 
@@ -595,7 +621,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         // No need - by definition - to handle errors.
         le.Commit();
         if (FlightUpdated != null)
-            FlightUpdated(sender, e);
+            FlightUpdated(sender, new LogbookEventArgs(le));
     }
 
     protected void lnkAddAircraft_Click(object sender, EventArgs e)

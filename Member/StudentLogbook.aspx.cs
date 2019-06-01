@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -51,6 +51,11 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
 
                     if (!String.IsNullOrEmpty(hdnStudent.Value))
                         UpdateForUser(hdnStudent.Value);
+
+                    if (student.CanAddLogbook)
+                        mfbEditFlight.SetUpNewOrEdit(LogbookEntry.idFlightNew);
+                    else
+                        apcNewFlight.Visible = false;
                 }
             }
 
@@ -116,5 +121,30 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
 
         mfbChartTotals.Visible = true;
         mfbChartTotals.Refresh(mfbLogbook1.Data);
+    }
+
+    protected void mfbEditFlight_FlightWillBeSaved(object sender, LogbookEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        LogbookEntry le = e.Flight;
+        if (le == null)
+            throw new MyFlightbookValidationException("No flight to save!");
+
+        // Fix up the flight for the user
+        le.User = hdnStudent.Value;
+
+        // ensure that the aircraft is in their profile
+        UserAircraft ua = new UserAircraft(le.User);
+        if (ua.GetUserAircraftByID(le.AircraftID) == null)
+            ua.FAddAircraftForUser(new Aircraft(le.AircraftID));
+    }
+
+    protected void mfbEditFlight_FlightUpdated(object sender, LogbookEventArgs e)
+    {
+        mfbEditFlight.SetUpNewOrEdit(LogbookEntry.idFlightNew);
+        AccordionCtrl.SelectedIndex = -1;
+        mfbLogbook1.RefreshData();
     }
 }
