@@ -16,10 +16,10 @@ using System.Web.UI.WebControls;
 public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 {
     private LogbookEntry m_le = null;
-    private string szKeyVSIDFlight = "keyVSEntryToSign";
-    private string szKeyVSIDStudent = "keyVSStudentName";
-    private string szKeyCFIUserName = "keyVSCFIUserName";
-    private string szKeyCookieCopy = "cookieCopy";
+    private const string szKeyVSIDFlight = "keyVSEntryToSign";
+    private const string szKeyVSIDStudent = "keyVSStudentName";
+    private const string szKeyCFIUserName = "keyVSCFIUserName";
+    private const string szKeyCookieCopy = "cookieCopy";
 
     public event EventHandler Cancel = null;
     public event EventHandler SigningFinished = null;
@@ -69,7 +69,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     break;
                 case SignMode.Authenticated:
                     // Show the static fields and hide the editable ones.
-                    string szError = String.Empty;
+                    string szError;
                     bool fValidCFIInfo = (CFIProfile == null) ? false : CFIProfile.CanSignFlights(out szError);
 
                     lblCFIDate.Visible = fValidCFIInfo;
@@ -235,7 +235,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
             if (Request.Cookies[szKeyCookieCopy] != null)
             {
-                bool copyFlight = false;
+                bool copyFlight;
                 if (Boolean.TryParse(Request.Cookies[szKeyCookieCopy].Value, out copyFlight))
                     ckCopyFlight.Checked = copyFlight;
             }
@@ -265,7 +265,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         le.Comment = String.IsNullOrEmpty(le.Comment) ? SigningComments : String.Format(CultureInfo.CurrentCulture, Resources.SignOff.StudentNameTemplate, le.Comment, SigningComments);
         le.User = CFIProfile.UserName;  // Swap username, of course, but do so AFTER adjusting the comment above (where we had the user's name)
         le.PIC = le.CFI = Flight.Dual;  // Assume you were PIC for the time you were giving instruction.
-        le.Dual = 0.0M;
+        le.Dual = le.SimulatedIFR = 0.0M;
 
         // Swap ground instruction given/ground-instruction received
         CustomFlightProperty cfpGIReceived = lstProps.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
