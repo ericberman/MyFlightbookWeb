@@ -54,14 +54,18 @@ public partial class Member_ImpAircraftService : System.Web.UI.Page
             ac.TailNumber = CountryCodePrefix.SimCountry.Prefix;
 
         if (ac.FixTailAndValidate())
+        {
             ac.CommitForUser(szCurrentUser);
-     
-        UserAircraft ua = new UserAircraft(szCurrentUser);
-        if (fIsNamedSim)
-            ac.PrivateNotes = String.Format(CultureInfo.InvariantCulture, "{0} #ALT{1}#", ac.PrivateNotes ?? string.Empty, szSpecifiedTail);
 
-        ua.FAddAircraftForUser(ac);
-        ua.InvalidateCache();
+            UserAircraft ua = new UserAircraft(szCurrentUser);
+            if (fIsNamedSim)
+                ac.PrivateNotes = String.Format(CultureInfo.InvariantCulture, "{0} #ALT{1}#", ac.PrivateNotes ?? string.Empty, szSpecifiedTail);
+
+            ua.FAddAircraftForUser(ac);
+            ua.InvalidateCache();
+        }
+        else
+            throw new MyFlightbookValidationException(ac.ErrorString);
     }
 
     [WebMethod(EnableSession = true)]
