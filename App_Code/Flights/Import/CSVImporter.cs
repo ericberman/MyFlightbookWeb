@@ -106,10 +106,10 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colTo = { "To", "flight_to", "Arrival", "Dest", "Destination", "LOC_TO" };
         private readonly static string[] colComment = { "Comments", "Remarks" };
         private readonly static string[] colCatClassOverride = { "Alternate Cat/Class", "Cat/Class Override", "CatClassOverride" };
-        private readonly static string[] colEngineStart = { "Engine Start", "Depart" };
-        private readonly static string[] colEngineEnd = { "Engine End", "Arrive" };
-        private readonly static string[] colFlightStart = { "Flight Start", "FLT_BEGIN" };
-        private readonly static string[] colFlightEnd = { "Flight End", "FLT_END" };
+        private readonly static string[] colEngineStart = { "Engine Start", "Depart", "Time Out" };
+        private readonly static string[] colEngineEnd = { "Engine End", "Arrive", "Time In" };
+        private readonly static string[] colFlightStart = { "Flight Start", "FLT_BEGIN", "Time Off" };
+        private readonly static string[] colFlightEnd = { "Flight End", "FLT_END", "Time On" };
         private readonly static string[] colHobbsStart = { "Hobbs Start", "Hobbs Out" };
         private readonly static string[] colHobbsEnd = { "Hobbs End", "Hobbs In" };
         private readonly static string[] colPublic = { "Public" };
