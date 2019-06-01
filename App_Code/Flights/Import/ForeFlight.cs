@@ -30,8 +30,8 @@ namespace MyFlightbook.ImportFlights
     /// </summary>
     public class ForeFlight : ExternalFormat
     {
-        private static Regex rLatLon = new Regex("(\\d{0,2}[.,]\\d*)\\D{0,2}°?([NS])/(\\d{0,3}[.,]\\d*)\\D{0,2}°?([EW])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static Regex regApproach = new Regex("\\b(?<count>\\d{1,2});(?<desc>[-a-zA-Z/]{3,}?(?: \\(GPS\\))?(?:-[abcxyzABCXYZ])?)[; ](?:RWY)?(?<rwy>[0-3]?\\d[LRC]?)(?:/[^;]*)?[ ;](?<airport>[a-zA-Z0-9]{3,4})[ ;]?(?<remark>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private readonly static Regex rLatLon = new Regex("(\\d{0,2}[.,]\\d*)\\D{0,2}°?([NS])/(\\d{0,3}[.,]\\d*)\\D{0,2}°?([EW])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private readonly static Regex regApproach = new Regex("\\b(?<count>\\d{1,2});(?<desc>[-a-zA-Z/]{3,}?(?: \\(GPS\\))?(?:-[abcxyzABCXYZ])?)[; ](?:RWY)?(?<rwy>[0-3]?\\d[LRC]?)(?:/[^;]*)?[ ;](?<airport>[a-zA-Z0-9]{3,4})[ ;]?(?<remark>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         #region Properties
         public DateTime Date { get; set; }
@@ -247,7 +247,8 @@ namespace MyFlightbook.ImportFlights
 
     public class ForeFlightImporter : ExternalFormatImporter
     {
-        private Dictionary<string, ForeFlightAircraftDescriptor> dictAircraft = new Dictionary<string, ForeFlightAircraftDescriptor>();
+        private readonly static Regex rDataTypes = new Regex("^(Text|hhmm|Decimal|Boolean)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private readonly Dictionary<string, ForeFlightAircraftDescriptor> dictAircraft = new Dictionary<string, ForeFlightAircraftDescriptor>();
 
         public override string Name { get { return "ForeFlight"; } }
 
@@ -277,15 +278,22 @@ namespace MyFlightbook.ImportFlights
             int iColModel = -1;
 
             // Find the start of the aircraft table
-            string[] rgRow = null;
-            while ((rgRow = reader.GetCSVLine()) != null)
+            string[] rgHeaders;
+            while ((rgHeaders = reader.GetCSVLine()) != null)
             {
-                if (rgRow != null && rgRow.Length > 0 && rgRow[0].CompareCurrentCultureIgnoreCase("Aircraft Table") == 0)
+                if (rgHeaders != null && rgHeaders.Length > 0 && rgHeaders[0].CompareCurrentCultureIgnoreCase("Aircraft Table") == 0)
                     break;
             }
 
-            string[] rgHeaders = reader.GetCSVLine();
-            int cColumnHeader = int.MaxValue;
+            // Now find the next line that isn't generic data types
+            // Look for "Text", "hhmm", "Decimal", "Boolean" - if any of these, skip ahead.
+            while ((rgHeaders = reader.GetCSVLine()) != null)
+            {
+                if (Array.Find(rgHeaders, sz => rDataTypes.IsMatch(sz)) == null)
+                    break;
+            }
+
+            int cColumnHeader;
             if (rgHeaders != null)
             {
                 cColumnHeader = rgHeaders.Length;
@@ -299,6 +307,8 @@ namespace MyFlightbook.ImportFlights
                         iColModel = i;
                 }
             }
+
+            string[] rgRow;
 
             while ((rgRow = reader.GetCSVLine()) != null)
             {
@@ -336,14 +346,22 @@ namespace MyFlightbook.ImportFlights
 
                     string[] rgRow = null;
 
+                    string[] rgHeaders;
                     // Now find the start of the flight table and stop - the regular CSVAnalyzer can pick up from here, and our aircraft table is now set up.
-                    while ((rgRow = reader.GetCSVLine()) != null)
+                    while ((rgHeaders = reader.GetCSVLine()) != null)
                     {
-                        if (rgRow != null && rgRow.Length > 0 && rgRow[0].CompareCurrentCultureIgnoreCase("Flights Table") == 0)
+                        if (rgHeaders != null && rgHeaders.Length > 0 && rgHeaders[0].CompareCurrentCultureIgnoreCase("Flights Table") == 0)
                             break;
                     }
 
-                    string[] rgHeaders = reader.GetCSVLine();
+
+                    // Now find the next line that isn't generic data types
+                    // Look for "Text", "hhmm", "Decimal", "Boolean" - if any of these, skip ahead.
+                    while ((rgHeaders = reader.GetCSVLine()) != null)
+                    {
+                        if (Array.Find(rgHeaders, sz => rDataTypes.IsMatch(sz)) == null)
+                            break;
+                    }
 
                     if (rgHeaders != null)
                     {
@@ -352,7 +370,16 @@ namespace MyFlightbook.ImportFlights
                         {
                             dt.Locale = CultureInfo.CurrentCulture;
                             foreach (string header in rgHeaders)
-                                dt.Columns.Add(new DataColumn(header.Trim(), typeof(string)));
+                            {
+                                try
+                                {
+                                    dt.Columns.Add(new DataColumn(header.Trim(), typeof(string)));
+                                }
+                                catch (DuplicateNameException)
+                                {
+                                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportDuplicateColumn, header));
+                                }
+                            }
 
                             while ((rgRow = reader.GetCSVLine()) != null)
                             {
