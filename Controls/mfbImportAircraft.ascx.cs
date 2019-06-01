@@ -70,7 +70,6 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             AircraftImportMatchRow mr = (AircraftImportMatchRow)e.Row.DataItem;
-            GridView gv = (GridView)sender;
             GridViewRow gvr = e.Row;
 
             // Column 0: Aircraft tail.  Link to registration, if necessary

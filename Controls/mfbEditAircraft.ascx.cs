@@ -319,7 +319,6 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
             if (szPrefix.Length > 0) // Should be!
             {
-                szTail = szTail.Substring(szPrefix.Length);
                 cmbCountryCode.SelectedValue = (ccp.IsSim) ? CountryCodePrefix.DefaultCountryCodeForLocale(szDefLocale).HyphenatedPrefix : szPrefix;
                 UpdateMask();
             }
@@ -487,7 +486,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         else
             SelectMake1.EditMode = Controls_AircraftControls_SelectMake.MakeEditMode.Locked;
 
-        mfbDateOfGlassUpgrade.Date = m_ac.GlassUpgradeDate.HasValue ? m_ac.GlassUpgradeDate.Value : DateTime.MinValue;
+        mfbDateOfGlassUpgrade.Date = m_ac.GlassUpgradeDate ?? DateTime.MinValue;
         pnlGlassUpgradeDate.Visible = !rbAvionicsNone.Checked;
 
         AdjustForAircraftType();
@@ -742,7 +741,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     {
         if (!String.IsNullOrEmpty(txtTail.Text))
         {
-            int aircraftID = Aircraft.idAircraftUnknown;
+            int aircraftID;
             if (int.TryParse(hdnSelectedAircraftID.Value, out aircraftID))
                 Response.Redirect("~/Member/EditAircraft.aspx?id=" + aircraftID.ToString(CultureInfo.InvariantCulture));
         }

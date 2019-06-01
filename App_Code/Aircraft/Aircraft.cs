@@ -1050,7 +1050,7 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("idmodel", ModelID);
                     comm.Parameters.AddWithValue("InstanceType", InstanceTypeID);
                     comm.Parameters.AddWithValue("HasGlass", IsGlass);
-                    comm.Parameters.AddWithValue("glassUpgradeDate", GlassUpgradeDate.HasValue ? GlassUpgradeDate.Value : (DateTime?)null);
+                    comm.Parameters.AddWithValue("glassUpgradeDate", GlassUpgradeDate ?? (DateTime?)null);
                     comm.Parameters.AddWithValue("IsTaa", IsTAA);
                     comm.Parameters.AddWithValue("version", Version);
 
@@ -1756,8 +1756,8 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         /// <returns>A log entry if there is a change to record</returns>
         private MaintenanceLog LogIfChanged(object o1, object o2, string szMessage, string szComment, string szUser)
         {
-            string sz1, sz2;
-            Boolean fDelete = false;
+            string szNew;
+            Boolean fDelete;
 
             if (o1 is Decimal && o2 is Decimal)
             {
@@ -1766,8 +1766,8 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
 
                 if (d1 == d2)
                     return null;
-                sz1 = d1.ToString("0.0", CultureInfo.CurrentCulture);
-                sz2 = d2.ToString("0.0", CultureInfo.CurrentCulture);
+
+                szNew = d2.ToString("0.0", CultureInfo.CurrentCulture);
 
                 fDelete = (d2 == 0.0M);
             }
@@ -1775,10 +1775,10 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             {
                 DateTime dt1 = (DateTime)o1;
                 DateTime dt2 = (DateTime)o2;
-                sz1 = dt1.ToShortDateString();
-                sz2 = dt2.ToShortDateString();
+                string szOld = dt1.ToShortDateString();
+                szNew = dt2.ToShortDateString();
 
-                if (String.Compare(sz1, sz2, StringComparison.CurrentCultureIgnoreCase) == 0)
+                if (String.Compare(szOld, szNew, StringComparison.CurrentCultureIgnoreCase) == 0)
                     return null;
 
                 fDelete = (dt2.CompareTo(DateTime.MinValue) == 0 || dt2.Year < 1000);
@@ -1786,12 +1786,14 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             else
                 throw new MyFlightbookException("Objects are not compatible type");
 
-            MaintenanceLog ml = new MaintenanceLog();
-            ml.AircraftID = AircraftID;
-            ml.ChangeDate = DateTime.Now;
-            ml.Description = fDelete ? Resources.Aircraft.MaintenanceDelete + szMessage : Resources.Aircraft.MaintenanceUpdate + szMessage + " (" + sz2 + ")";
-            ml.Comment = szComment;
-            ml.User = szUser;
+            MaintenanceLog ml = new MaintenanceLog()
+            {
+                AircraftID = AircraftID,
+                ChangeDate = DateTime.Now,
+                Description = fDelete ? Resources.Aircraft.MaintenanceDelete + szMessage : Resources.Aircraft.MaintenanceUpdate + szMessage + " (" + szNew + ")",
+                Comment = szComment,
+                User = szUser
+            };
             return ml;
         }
 
@@ -1910,7 +1912,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         }
         #endregion
 
-        private static Regex rNormalChars = new Regex("[^a-zA-Z0-9#]", RegexOptions.Compiled);
+        private readonly static Regex rNormalChars = new Regex("[^a-zA-Z0-9#]", RegexOptions.Compiled);
 
         /// <summary>
         /// Removes all of the dashes/hyphens from a tailnumber, except optionally the one separating the country code from the rest of the registration
@@ -1971,9 +1973,9 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
 
             // no aircraft matching this model/instance type was found
             // Try creating one based on the model name
-            Aircraft ac = null;
+            Aircraft ac;
             int i = 0;
-            string szTail = "";
+            string szTail;
 
             do
             {
@@ -2009,8 +2011,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                 return rgac;
             else
             {
-                rgac = new Collection<Aircraft>();
-                rgac.Add(SuggestTail(idmodel, instancetype));
+                rgac = new Collection<Aircraft>() { SuggestTail(idmodel, instancetype) };
                 return rgac;
             }
         }
@@ -2147,7 +2148,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
     public class AircraftImportMatchRow : IComparable
     {
         public enum MatchState { MatchedExisting, UnMatched, MatchedInProfile, JustAdded }
-        static private Regex rNormalize = new Regex("[^a-zA-Z0-9#]*", RegexOptions.Compiled);
+        static readonly private Regex rNormalize = new Regex("[^a-zA-Z0-9#]*", RegexOptions.Compiled);
 
         #region Comparable
         public int CompareTo(object obj)
@@ -2340,10 +2341,12 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                         Aircraft ac = new Aircraft(idAircraft);
                         if (ac.AircraftID != Aircraft.idAircraftUnknown && ac.ModelID != idTargetModel)
                         {
-                            AircraftAdminModelMapping amm = new AircraftAdminModelMapping();
-                            amm.aircraft = ac;
-                            amm.currentModel = MakeModel.GetModel(ac.ModelID);
-                            amm.targetModel = MakeModel.GetModel(idTargetModel);
+                            AircraftAdminModelMapping amm = new AircraftAdminModelMapping()
+                            {
+                                aircraft = ac,
+                                currentModel = MakeModel.GetModel(ac.ModelID),
+                                targetModel = MakeModel.GetModel(idTargetModel)
+                            };
                             lstMappings.Add(amm);
                         }
                     }
@@ -2365,7 +2368,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
     public class AircraftImportParseContext
     {
         #region Properties
-        private List<AircraftImportMatchRow> _matchResults = new List<AircraftImportMatchRow>();
+        private readonly List<AircraftImportMatchRow> _matchResults = new List<AircraftImportMatchRow>();
 
         /// <summary>
         /// The AircraftImportMatchRow results from the import
@@ -2375,7 +2378,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             get { return new Collection<AircraftImportMatchRow>(_matchResults); }
         }
 
-        private List<string> _tailsFound = new List<string>();
+        private readonly List<string> _tailsFound = new List<string>();
 
         /// <summary>
         /// The tails that were found (to avoid duplicates)
@@ -2437,8 +2440,8 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         }
         #endregion
 
-        static private Regex rNormalize = new Regex("[^a-zA-Z0-9]*", RegexOptions.Compiled);
-        private AircraftInstance[] m_rgAircraftInstances = null;
+        static readonly private Regex rNormalize = new Regex("[^a-zA-Z0-9]*", RegexOptions.Compiled);
+        private readonly AircraftInstance[] m_rgAircraftInstances = null;
         #endregion
 
         #region Initialization/constructors
@@ -2654,10 +2657,12 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                 }
 
                 // No match, make a best guess based on the provided model information
-                mr.BestMatchAircraft = new Aircraft();
-                mr.BestMatchAircraft.TailNumber = mr.TailNumber;
-                mr.BestMatchAircraft.ModelID = MakeModel.UnknownModel;
-                mr.BestMatchAircraft.InstanceTypeDescription = m_rgAircraftInstances[0].DisplayName;
+                mr.BestMatchAircraft = new Aircraft()
+                {
+                    TailNumber = mr.TailNumber,
+                    ModelID = MakeModel.UnknownModel,
+                    InstanceTypeDescription = m_rgAircraftInstances[0].DisplayName
+                };
             }
 
             // Now delete the ones that had multiple versions and add the individual versions
