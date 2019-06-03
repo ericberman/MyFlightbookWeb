@@ -397,6 +397,8 @@ public partial class Member_EditProfile : System.Web.UI.Page
         // sidebar doesn't store it's state, so just set the currenttab each time.
         tabID sidebarTab = SetUpSidebar();
 
+        Page.ClientScript.RegisterClientScriptInclude("ListDrag", ResolveClientUrl("~/Public/Scripts/listdrag.js?v=4"));
+
         if (!IsPostBack)
         {
             // Set pilot info validation group

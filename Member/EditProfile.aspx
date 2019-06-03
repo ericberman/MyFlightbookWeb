@@ -317,41 +317,13 @@
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
-                                <script type="text/javascript">
-                                    var longTouchTimer = null;
-
-                                    function allowDrop(ev) {
-                                        ev.preventDefault();
-                                    }
-
-                                    function drag(ev, id) {
-                                        ev.dataTransfer.setData("Text", id.toString());
-                                    }
-
-                                    function blackList(id) {
-                                        document.getElementById('<% = txtPropID.ClientID %>').value = id;;
-                                        document.getElementById('<% = btnBlackList.ClientID %>').click();
-                                    }
-
-                                    function whiteList(id) {
-                                        document.getElementById('<% = txtPropID.ClientID %>').value = id;
-                                        document.getElementById('<% = btnWhiteList.ClientID %>').click();
-                                    }
-
-                                    function blackListDrop(ev) {
-                                        ev.preventDefault();
-                                        blackList(ev.dataTransfer.getData("Text"));
-                                    }
-
-                                    function whiteListDrop(ev) {
-                                        ev.preventDefault();
-                                        whiteList(ev.dataTransfer.getData("Text"));
-                                    }
-                                </script>
                                 <p><asp:Localize ID="lblPropertyDesc" runat="server" Text="Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default." meta:resourcekey="lblPropertyDescResource1"></asp:Localize></p>
                                 <p><asp:Localize ID="locInstructions" runat="server" Text="Drag and drop between the two lists below if using a mouse; if using touch, press-and-hold to move an item between lists." meta:resourcekey="locInstructionsResource1"></asp:Localize></p>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel1">
                                     <ContentTemplate>
+                                        <script type="text/javascript">
+                                            var listDrop = new listDragger('<% =txtPropID.ClientID %>', '<% =btnWhiteList.ClientID %>', '<% =btnBlackList.ClientID %>');
+                                        </script>
                                         <div style="display:none">
                                             <asp:TextBox ID="txtPropID" runat="server" EnableViewState="False" meta:resourcekey="txtPropIDResource1"></asp:TextBox>
                                             <asp:Button ID="btnBlackList" runat="server" OnClick="btnBlackList_Click" meta:resourcekey="btnBlackListResource1" />
@@ -359,34 +331,34 @@
                                         </div>
                                         <table>
                                             <tr>
-                                                <td><asp:Localize ID="locPrevUsed" runat="server" Text="Show these..." meta:resourcekey="locPrevUsedResource1"></asp:Localize></td>
-                                                <td><asp:Localize ID="locBlackListed" runat="server" Text="...but not these" meta:resourcekey="locBlackListedResource1"></asp:Localize></td>
+                                                <td style="width:50%"><asp:Localize ID="locPrevUsed" runat="server" Text="Show these..." meta:resourcekey="locPrevUsedResource1"></asp:Localize></td>
+                                                <td style="width:50%"><asp:Localize ID="locBlackListed" runat="server" Text="...but not these" meta:resourcekey="locBlackListedResource1"></asp:Localize></td>
                                             </tr>
                                             <tr>
-                                                <td>
-                                                    <div id="divPropsToShow" ondrop="whiteListDrop(event)" ondragover="allowDrop(event)" class="dragTarget">
+                                                <td style="width:50%">
+                                                    <div id="divPropsToShow" ondrop="javascript:listDrop.leftListDrop(event)" ondragover="javascript:listDrop.allowDrop(event)" class="dragTarget">
                                                         <asp:Repeater ID="rptUsedProps" runat="server">
                                                             <ItemTemplate>
-                                                                <div draggable="true" id="cpt<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="drag(event, <%# Eval("PropTypeID") %>)" >
+                                                                <div draggable="true" id="cpt<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="javascript:listDrop.drag(event, <%# Eval("PropTypeID") %>)" >
                                                                     <%# Eval("Title") %>
                                                                     <script type="text/javascript">
-                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchstart", function () { longTouchTimer = setTimeout(function () { blackList(<%# Eval("PropTypeID") %>); }, 1000); });
-                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchend", function () { clearTimeout(longTouchTimer); });
+                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchstart", function () { listDrop.startLeftTouch('<%# Eval("PropTypeID") %>'); });
+                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchend", function () { listDrop.resetTouch(); });
                                                                     </script>
                                                                 </div>
                                                             </ItemTemplate>
                                                         </asp:Repeater>
                                                     </div>
                                                 </td>
-                                                <td>
-                                                    <div id="divPropsToBlacklist" ondrop="blackListDrop(event)" ondragover="allowDrop(event)" class="dragTarget">
+                                                <td style="width:50%">
+                                                    <div id="divPropsToBlacklist" ondrop="javascript:listDrop.rightListDrop(event)" ondragover="javascript:listDrop.allowDrop(event)" class="dragTarget">
                                                         <asp:Repeater ID="rptBlackList" runat="server">
                                                             <ItemTemplate>
-                                                                <div draggable="true" id="cpt<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="drag(event, <%# Eval("PropTypeID") %>)">
+                                                                <div draggable="true" id="cpt<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="javascript:listDrop.drag(event, <%# Eval("PropTypeID") %>)">
                                                                     <%# Eval("Title") %>
                                                                     <script type="text/javascript">
-                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchstart", function () { longTouchTimer = setTimeout(function () { whiteList(<%# Eval("PropTypeID") %>); }, 1000); });
-                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchend", function () { clearTimeout(longTouchTimer); });
+                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchstart", function () { listDrop.startRightTouch('<%# Eval("PropTypeID") %>'); });
+                                                                        document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchend", function () { listDrop.resetTouch(); });
                                                                     </script>
                                                                 </div>
                                                             </ItemTemplate>
