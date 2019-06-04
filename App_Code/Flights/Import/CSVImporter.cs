@@ -141,6 +141,8 @@ namespace MyFlightbook.ImportFlights
             {"Tachometer End", new string[] {"Tachometer End", "Tach In"}},
             {"Tachometer Start", new string[] {"Tachometer Start", "Tach Out"}},
             {"Flight Number", new string[] {"Flight Number", "Flight" } },
+            {"Block Out Time", new string[] {"Block Out Time", "Block Out", "Off Block"} },
+            {"Block In Time", new string[] {"Block In Time", "Block In", "On Block"} },
             {"Flight Attendant Name(s)", new string[] { "Flight Attendant Name(s)", "Flight Attendant" } },
             {"Number of Passengers", new string[] {"Number of Passengers", "PAX" } },
             {"Student Name", new string[] {"Student Name", "Student"}}
