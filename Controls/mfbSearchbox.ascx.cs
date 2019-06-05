@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 20018 MyFlightbook LLC
+ * Copyright (c) 2018-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,6 +22,12 @@ public partial class Controls_mfbSearchbox : System.Web.UI.UserControl
         get { return TextBoxWatermarkExtender1.WatermarkText; }
         set { TextBoxWatermarkExtender1.WatermarkText = value; }
     }
+
+    /// <summary>
+    /// The underlying textbox
+    /// </summary>
+    public TextBox TextBoxControl { get { return txtSearch; } }
+
     #endregion
 
     public event EventHandler<EventArgs> SearchClicked = null;
