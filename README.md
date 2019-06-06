@@ -3,8 +3,10 @@ The website and service for MyFlightbook.  This provides the back-end for the mo
 
  ## Getting Started
  ### Setting up the website
- * Run on any Windows machine with ASP.NET 4.5 or later.  Make sure IIS has ASP turned on under "application development features"
-  Create 4 folders under "Images": "Aircraft", "BasicMed", "Endorsements", "Flights", and "Telemetry".  Set permissions on them so that Network Service has full control (so that the website can write thumbnails to these folders).
+ * Run on any Windows machine with ASP.NET 4.5 or later.
+ *Make sure IIS has ASP turned on under "application development features"
+ * Create 5 folders under "Images": "Aircraft", "BasicMed", "Endorsements", "Flights", and "Telemetry".  Set permissions on them so that Network Service has full control (so that the website can write thumbnails to these folders).  
+ NOTE: Visual studio debugging can get very slow if these contain a lot of files/folders, so it's a good idea to mark them as hidden in the file system (top level only is sufficient).
 * Set up the virtual directory for "logbook" pointing to your working directory, convert it to an application.  Use ASP.NET 4.5 or later as your application pool.  A lot of items point to /logbook, so the root should be the parent folder
 and the application should be called "logbook" and point to the /logbook branch.
 * Set up a certificate to enable https.
