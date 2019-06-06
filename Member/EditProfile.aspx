@@ -583,7 +583,7 @@
                             </asp:Panel>
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane ID="acpCloudAhoy" runat="server" Visible="false" meta:resourcekey="acpCloudAhoyResource1">
+                    <cc1:AccordionPane ID="acpCloudAhoy" runat="server" meta:resourcekey="acpCloudAhoyResource1">
                         <Header>
                             <asp:Localize ID="locCloudAhoy" runat="server" Text="CloudAhoy" meta:resourcekey="locCloudAhoyResource1" />
                         </Header>

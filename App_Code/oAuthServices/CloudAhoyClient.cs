@@ -50,8 +50,8 @@ namespace MyFlightbook.OAuth.CloudAhoy
     /// </summary>
     public class CloudAhoyClient : OAuthClientBase
     {
-        private const string cloudAhoyDebugHost = "sandbox.cloudahoy.com";
-        private const string cloudAhoyLiveHost = "cloudahoy.com";
+        private const string cloudAhoyDebugHost = "www.cloudahoy.com";
+        private const string cloudAhoyLiveHost = "www.cloudahoy.com";
 
         private string FlightsEndpoint { get; set; }
 
