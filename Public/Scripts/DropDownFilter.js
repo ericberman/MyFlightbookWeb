@@ -41,3 +41,23 @@ function FilterItems(src, idDDL, idLBL, txtLbl) {
 
     lbl.innerHTML = ddl.options.length - 1 + txtLbl;
 }
+
+function FilterProps(src, idLst, idLbl, txtLbl) {
+    var words = src.value.toUpperCase().split(" ");
+    var ddl = document.getElementById(idLst);
+    var lbl = document.getElementById(idLbl);
+
+    var props = document.getElementById(idLst).children;
+    var cFound = 0;
+    for (var i = 0; i < props.length; i++) {
+        var prop = props[i];
+        if (containsAll(prop.innerText.toUpperCase(), words)) {
+            cFound++;
+            prop.style["display"] = "block";
+        }
+        else
+            prop.style["display"] =  "none";
+    }
+
+    lbl.innerHTML = cFound + txtLbl;
+}

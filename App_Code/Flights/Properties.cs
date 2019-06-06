@@ -118,6 +118,7 @@ namespace MyFlightbook
             IDPropFlightDutyTimeStart = 332,
             IDPropFlightDutyTimeEnd = 333,
             IDPropCrew3 = 347,
+            IDPropSimRegistration = 354,
             IDPropNVGoggleOperations = 355,
             IDPropTakeoffTowered = 357,
             IDPropTakeoffToweredNight = 358,
@@ -137,6 +138,7 @@ namespace MyFlightbook
             IDPropInstrumentInstructionTime = 542,
             IDPropCoPilotTime = 546,
             IDPropAdditionalCrew = 558,
+            IDPropAircraftRegistration = 559,
             IDPropPilotMonitoring = 560,
             IDPropMonitoredDayLandings = 562,
             IDPropMonitoredNightLandings = 563,
@@ -984,7 +986,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             if (String.IsNullOrEmpty(szJSON))
                 return new CustomFlightProperty[0];
 
-            JArray tuples = null;
+            JArray tuples;
             try
             {
                 tuples = (JArray)JsonConvert.DeserializeObject(szJSON);

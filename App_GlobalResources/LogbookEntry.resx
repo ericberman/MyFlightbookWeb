@@ -997,4 +997,127 @@ Proceed with import?</value>
   <data name="SendToCloudAhoyView" xml:space="preserve">
     <value>View on CloudAhoy</value>
   </data>
+  <data name="errTemplateNoName" xml:space="preserve">
+    <value>Template requires a name</value>
+  </data>
+  <data name="errTemplateNoProperties" xml:space="preserve">
+    <value>Template is empty - need to have at least one property.</value>
+  </data>
+  <data name="TemplateAvailableProperties" xml:space="preserve">
+    <value>Available properties</value>
+  </data>
+  <data name="TemplateCategoryPrompt" xml:space="preserve">
+    <value>Category for template</value>
+  </data>
+  <data name="TemplateClickToCreate" xml:space="preserve">
+    <value>Click to create a new template</value>
+  </data>
+  <data name="TemplateCreate" xml:space="preserve">
+    <value>Save Template</value>
+  </data>
+  <data name="TemplateDeleteConfirm" xml:space="preserve">
+    <value>Are you sure you want to delete this template?  This cannot be undone.</value>
+  </data>
+  <data name="TemplateDeleteTip" xml:space="preserve">
+    <value>Delete this template</value>
+  </data>
+  <data name="TemplateDescription" xml:space="preserve">
+    <value>Templates are a collection of properties that are appropriate for a given scenario such as flights in a particular aircraft or for a different mission.  They provide a quick and convenient way for you to customize flight entry to be appropriate for the kind of flying that you do. </value>
+  </data>
+  <data name="TemplateDescription2" xml:space="preserve">
+    <value>You can create your own templates, or pull from a library of templates created by the %APP_NAME% community.  And if you create a template that you think would be broadly useful, please share it!</value>
+  </data>
+  <data name="TemplateDescriptionPrompt" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="TemplateDuplicateSharedName" xml:space="preserve">
+    <value>A shared template with the name "{0}" already exists; please share this with a different name.</value>
+  </data>
+  <data name="TemplateEditTip" xml:space="preserve">
+    <value>Edit this template</value>
+  </data>
+  <data name="TemplateFindPropertiesWatermark" xml:space="preserve">
+    <value>Find properties</value>
+  </data>
+  <data name="templateGroupAuto" xml:space="preserve">
+    <value>Automatic</value>
+  </data>
+  <data name="templateGroupCheckrides" xml:space="preserve">
+    <value>Checkrides</value>
+  </data>
+  <data name="templateGroupMissions" xml:space="preserve">
+    <value>Missions</value>
+  </data>
+  <data name="templateGroupTraining" xml:space="preserve">
+    <value>Training</value>
+  </data>
+  <data name="TemplateHeader" xml:space="preserve">
+    <value>Flight Templates</value>
+  </data>
+  <data name="TemplateIncludedProperties" xml:space="preserve">
+    <value>Properties included in this template</value>
+  </data>
+  <data name="TemplateMakeOwn" xml:space="preserve">
+    <value>Add to My Templates</value>
+  </data>
+  <data name="TemplateMRU" xml:space="preserve">
+    <value>Previously Used</value>
+  </data>
+  <data name="TemplateMRUDescription" xml:space="preserve">
+    <value>Automatically shows properties you've used on previous flights.  You can remove ones you no longer need.</value>
+  </data>
+  <data name="TemplateNamePrompt" xml:space="preserve">
+    <value>Name for template</value>
+  </data>
+  <data name="TemplateNameWatermark" xml:space="preserve">
+    <value>Name for the template</value>
+  </data>
+  <data name="TemplateNoneAvailable" xml:space="preserve">
+    <value>You have no templates in your account</value>
+  </data>
+  <data name="TemplatePropertiesPrompt" xml:space="preserve">
+    <value>Drag/drop from the list of available properties (on the left) into this list</value>
+  </data>
+  <data name="TemplateShare" xml:space="preserve">
+    <value>Shared</value>
+  </data>
+  <data name="TemplateBrowseAddPublic" xml:space="preserve">
+    <value>Add to my templates</value>
+  </data>
+  <data name="TemplateBrowseAddPublicOverwrite" xml:space="preserve">
+    <value>You already have a template named "{0}".  Do you want to overwrite it?</value>
+  </data>
+  <data name="TemplateBrowseHeaderDescription" xml:space="preserve">
+    <value>The templates below have been created by fellow pilots on %APP_NAME%.  You can copy any that you like to your account for personal use.</value>
+  </data>
+  <data name="TemplateBrowseHeaderDescription2" xml:space="preserve">
+    <value>If you have a template that you find useful and could be useful for others, please consider sharing it with the community!</value>
+  </data>
+  <data name="TemplateBrowseTemplatesheader" xml:space="preserve">
+    <value>Browse Templates</value>
+  </data>
+  <data name="TemplateConsumed" xml:space="preserve">
+    <value>Template added to your account</value>
+  </data>
+  <data name="TemplateYours" xml:space="preserve">
+    <value>(Already in your account)</value>
+  </data>
+  <data name="TemplateActionOr" xml:space="preserve">
+    <value> - OR - </value>
+  </data>
+  <data name="TemplateBrowseTemplates" xml:space="preserve">
+    <value>Browse available templates</value>
+  </data>
+  <data name="TemplateAnonymousBasic" xml:space="preserve">
+    <value>Anonymous Aircraft (Basic)</value>
+  </data>
+  <data name="TemplateAnonymousBasicDesc" xml:space="preserve">
+    <value>Contains properties useful for flights in anonymous aircraft</value>
+  </data>
+  <data name="TemplateSimBasic" xml:space="preserve">
+    <value>Simulator / Training Device (Basic)</value>
+  </data>
+  <data name="TemplateSimBasicDesc" xml:space="preserve">
+    <value>Contains properties useful for any sort of simulator flight</value>
+  </data>
 </root>

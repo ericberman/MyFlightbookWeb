@@ -711,7 +711,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
         rptUsedProps.DataSource = Array.FindAll(CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.Name, fForceDB), cpt => cpt.IsFavorite);
         rptUsedProps.DataBind();
         List<CustomPropertyType> lstBlacklist = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(m_pf.BlacklistedProperties));
-        lstBlacklist.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
+        lstBlacklist.Sort((cpt1, cpt2) => { return cpt1.SortKey.CompareCurrentCultureIgnoreCase(cpt2.SortKey); });
         rptBlackList.DataSource = lstBlacklist;
         rptBlackList.DataBind();
     }
