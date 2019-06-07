@@ -1120,4 +1120,7 @@ Proceed with import?</value>
   <data name="TemplateSimBasicDesc" xml:space="preserve">
     <value>Contains properties useful for any sort of simulator flight</value>
   </data>
+  <data name="templateGroupRole" xml:space="preserve">
+    <value>Role</value>
+  </data>
 </root>

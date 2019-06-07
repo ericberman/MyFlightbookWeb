@@ -10,7 +10,7 @@
     <Columns>
         <asp:TemplateField>
             <ItemTemplate>
-                <div><asp:Label ID="lblGroupName" Font-Size="Larger" Font-Bold="true" runat="server" Text='<%# Eval("GroupName") %>'></asp:Label></div>
+                <div><asp:Label ID="lblGroupName" Font-Bold="true" runat="server" Text='<%# Eval("GroupName") %>'></asp:Label></div>
                 <asp:GridView ID="gvTemplates" runat="server" CellPadding="3" Width="100%" DataSource='<%# Eval("Templates") %>' GridLines="None" ShowFooter="false" ShowHeader="false" AutoGenerateColumns="false" OnRowCommand="gvTemplates_RowCommand">
                     <Columns>
                         <asp:TemplateField ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="25px">

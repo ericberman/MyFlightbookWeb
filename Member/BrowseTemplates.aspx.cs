@@ -76,11 +76,10 @@ public partial class Member_BrowseTemplates : System.Web.UI.Page
             int id = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
             UserPropertyTemplate pt = new UserPropertyTemplate(id);
             PropertyTemplate ptMatch = MatchingOwnedTemplate(pt);
-            pt.CopyPublicTemplate(User.Identity.Name);
+            PersistablePropertyTemplate pptNew = pt.CopyPublicTemplate(User.Identity.Name);
             if (ptMatch != null)
-                pt.ID = ptMatch.ID;
-            pt.Commit();
-            Refresh();
+                pptNew.ID = ptMatch.ID;
+            pptNew.Commit();
             AddedTemplates.Add(id);
             Refresh();
         }

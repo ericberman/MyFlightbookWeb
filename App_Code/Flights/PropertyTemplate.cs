@@ -1,10 +1,10 @@
 ﻿using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Xml.Serialization;
+using System.Linq;
+using System.Web;
 
 /******************************************************
  * 
@@ -15,7 +15,7 @@ using System.Xml.Serialization;
 
 namespace MyFlightbook.Templates
 {
-    public enum PropertyTemplateGroup { Automatic, Training, Checkrides, Missions }
+    public enum PropertyTemplateGroup { Automatic, Training, Checkrides, Missions, Roles }
 
     /// <summary>
     /// PropertyTemplate - basic functionality, base class for other templates
@@ -116,6 +116,8 @@ namespace MyFlightbook.Templates
                     return Resources.LogbookEntry.templateGroupMissions;
                 case PropertyTemplateGroup.Training:
                     return Resources.LogbookEntry.templateGroupTraining;
+                case PropertyTemplateGroup.Roles:
+                    return Resources.LogbookEntry.templateGroupRole;
                 default:
                     return string.Empty;
             }
@@ -126,8 +128,26 @@ namespace MyFlightbook.Templates
         {
             return String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Name, NameForGroup(Group));
         }
+
+        /// <summary>
+        /// Returns a pseudo propertytemplate that reflects a merge of the provided templates.
+        /// </summary>
+        /// <param name="lstIn"></param>
+        /// <returns></returns>
+        public static PropertyTemplate MergedTemplate(IEnumerable<PropertyTemplate> lstIn)
+        {
+            if (lstIn == null)
+                return null;
+
+            PropertyTemplate pt = new UserPropertyTemplate();
+            foreach (PropertyTemplate ptIn in lstIn)
+                pt.m_propertyTypes.UnionWith(ptIn.m_propertyTypes);
+
+            return pt;
+        }
     }
 
+    #region Built-in automatic templates
     /// <summary>
     /// Built-in property template for MRU functionality (previously used properties)
     /// </summary>
@@ -177,13 +197,13 @@ namespace MyFlightbook.Templates
             m_propertyTypes = new HashSet<int>() { (int)CustomPropertyType.KnownProperties.IDPropAircraftRegistration };
         }
     }
-
+    #endregion
 
     /// <summary>
     /// Property template class that can be saved/deleted/read from the database
     /// </summary>
     [Serializable]
-    public class PersistablePropertyTemplate : PropertyTemplate
+    public abstract class PersistablePropertyTemplate : PropertyTemplate
     {
         #region Properties
         public override bool IsMutable { get { return true; } }
@@ -207,6 +227,11 @@ namespace MyFlightbook.Templates
         #endregion
 
         #region Database
+        /// <summary>
+        /// Called to invalidate any cached entries, if caching is done by a subclass
+        /// </summary>
+        protected virtual void InvalidateCache() { }
+
         protected void InitFromDataReader(MySqlDataReader dr)
         {
             ID = Convert.ToInt32(dr["id"], CultureInfo.InvariantCulture);
@@ -255,25 +280,7 @@ namespace MyFlightbook.Templates
                 comm.Parameters.AddWithValue("props", JsonConvert.SerializeObject(m_propertyTypes));
                 comm.Parameters.AddWithValue("public", IsPublic);
             });
-        }
-
-        /// <summary>
-        /// Copies a public template for the user.  DOES NOT COMMIT!
-        /// MODIFIES THIS OBJECT
-        /// </summary>
-        /// <param name="szUser"></param>
-        public void CopyPublicTemplate(string szUser)
-        {
-            if (String.IsNullOrWhiteSpace(szUser))
-                throw new MyFlightbookValidationException("Trying to consume for empty user");
-            if (String.IsNullOrWhiteSpace(OriginalOwner))
-                throw new MyFlightbookValidationException("Consumed templates need an original owner");
-            if (!IsPublic)
-                throw new MyFlightbookValidationException("Can't consume a non-published template");
-            OriginalOwner = Owner;
-            Owner = szUser;
-            ID = idTemplateNew;
-            IsPublic = false;
+            InvalidateCache();
         }
 
         public void Delete()
@@ -283,6 +290,7 @@ namespace MyFlightbook.Templates
             {
                 comm.Parameters.AddWithValue("id", ID);
             });
+            InvalidateCache();
         }
         #endregion
     }
@@ -301,35 +309,72 @@ namespace MyFlightbook.Templates
         public UserPropertyTemplate(int id) : base(id) { }
         #endregion
 
-        /// <summary>
-        /// Returns a pseudo propertytemplate that reflects a merge of the provided templates.
-        /// </summary>
-        /// <param name="lstIn"></param>
-        /// <returns></returns>
-        public static PropertyTemplate MergedTemplate(IEnumerable<PropertyTemplate> lstIn)
+        #region Caching
+        private static string CacheKeyForUser(string szOwner)
         {
-            if (lstIn == null)
+            return String.Format(CultureInfo.InvariantCulture, "cachedPropTemplate{0}", szOwner);
+        }
+
+        protected override void InvalidateCache()
+        {
+            if (HttpContext.Current != null && HttpContext.Current.Cache != null)
+                HttpContext.Current.Cache.Remove(CacheKeyForUser(Owner));
+        }
+
+        private static List<PropertyTemplate> CachedTemplatesForUser(string szUser)
+        {
+            if (HttpContext.Current == null || HttpContext.Current.Cache == null)
                 return null;
 
-            UserPropertyTemplate pt = new UserPropertyTemplate();
-            foreach (UserPropertyTemplate ptIn in lstIn)
-                pt.m_propertyTypes.UnionWith(ptIn.m_propertyTypes);
+            return (List<PropertyTemplate>) HttpContext.Current.Cache[CacheKeyForUser(szUser)];
+        }
+        #endregion
 
-            return pt;
+        /// <summary>
+        /// Creates a copy of a public template for the user.
+        /// </summary>
+        /// <param name="szUser"></param>
+        public PersistablePropertyTemplate CopyPublicTemplate(string szUser)
+        {
+            if (String.IsNullOrWhiteSpace(szUser))
+                throw new MyFlightbookValidationException("Trying to consume for empty user");
+            if (String.IsNullOrWhiteSpace(OriginalOwner))
+                throw new MyFlightbookValidationException("Consumed templates need an original owner");
+            if (!IsPublic)
+                throw new MyFlightbookValidationException("Can't consume a non-published template");
+            UserPropertyTemplate upt = new UserPropertyTemplate();
+            // Initialize from this
+            JsonConvert.PopulateObject(JsonConvert.SerializeObject(this), upt);
+            upt.OriginalOwner = Owner;
+            upt.Owner = szUser;
+            upt.ID = idTemplateNew;
+            upt.IsPublic = false;
+            return upt;
         }
 
         #region Database
         /// <summary>
-        /// Returns the property templates for the specified user
+        /// Returns the property templates for the specified user.  Cached for performance
         /// </summary>
         /// <param name="szUser"></param>
         /// <returns></returns>
         public static IEnumerable<PropertyTemplate> TemplatesForUser(string szUser)
         {
-            List<PropertyTemplate> lst = new List<PropertyTemplate>() { new MRUPropertyTemplate(szUser), new SimPropertyTemplate(), new AnonymousPropertyTeamplate() };
-            DBHelper dbh = new DBHelper("SELECT * FROM propertytemplate WHERE owner=?user");
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
-            (dr) => { lst.Add(new UserPropertyTemplate(dr)); });
+            List<PropertyTemplate> lst = CachedTemplatesForUser(szUser);
+
+            if (lst == null)
+            {
+                lst = new List<PropertyTemplate>();
+                DBHelper dbh = new DBHelper("SELECT * FROM propertytemplate WHERE owner=?user");
+                dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
+                (dr) => { lst.Add(new UserPropertyTemplate(dr)); });
+                if (HttpContext.Current != null && HttpContext.Current.Cache != null)
+                    HttpContext.Current.Cache[CacheKeyForUser(szUser)] = lst;
+            }
+
+            // Add in the automatic properties as well.
+            // We do this fresh every time, since MRUPropertyTemplate could have changed (due to blacklisting), but is itself cached.
+            lst.AddRange(new PropertyTemplate[] { new MRUPropertyTemplate(szUser), new SimPropertyTemplate(), new AnonymousPropertyTeamplate() });
             return lst;
         }
 

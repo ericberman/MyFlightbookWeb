@@ -1,6 +1,7 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Templates;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -73,7 +74,9 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         txtDescription.Text = pt.Description;
         cmbCategories.SelectedValue = pt.Group.ToString();
 
-        gvPropertyTemplates.DataSource = TemplateCollection.GroupTemplates(UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name));
+        List<TemplateCollection> rgtc = new List<TemplateCollection>(TemplateCollection.GroupTemplates(UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name)));
+        rgtc.RemoveAll(tc => tc.Group == PropertyTemplateGroup.Automatic);
+        gvPropertyTemplates.DataSource = rgtc;
         gvPropertyTemplates.DataBind();
     }
 
