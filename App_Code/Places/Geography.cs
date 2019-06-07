@@ -173,7 +173,7 @@ namespace MyFlightbook.Geography
         }
         #endregion
 
-        private static Regex regPosition = new Regex("([NnSs]) ?(\\d{1,2}) (\\d{0,2}(?:.\\d*)?) ([EeWw]) ?(\\d{1,3}) (\\d{0,2}(?:.\\d*)?)", RegexOptions.Compiled);
+        private readonly static Regex regPosition = new Regex("([NnSs]) ?(\\d{1,2}) (\\d{0,2}(?:.\\d*)?) ([EeWw]) ?(\\d{1,3}) (\\d{0,2}(?:.\\d*)?)", RegexOptions.Compiled);
         /// <summary>
         /// Creates a LatLong from a position string in the flight data format N 46 34.345 W 122 43.34
         /// </summary>
@@ -646,10 +646,26 @@ namespace MyFlightbook.Geography
             if (minutes > 48 * 60 || minutes <= 0)  // don't do paths more than 48 hours, or negative times.
                 return lst;
 
+            // Add a few stopped fields at the end to make it clear that there's a full-stop.  Separate them by a few seconds each.
+            Position[] rgPadding = new Position[]
+            {
+                new Position(llEnd, 0, dtEnd.AddSeconds(3), 0),
+                new Position(llEnd, 0, dtEnd.AddSeconds(6), 0),
+                new Position(llEnd, 0, dtEnd.AddSeconds(9), 0)
+            };
+
             // We need to derive an average speed.  But no need to compute - just assume constant speed.
             double distance = llStart.DistanceFrom(llEnd);
-            if (distance < 1.0) // don't compute path for distance < 1nm
+            if (distance < 1.0) // don't compute path for distance < 1nm - just do endpoints and a high speed so we register a takeoff - probably pattern work.
+            {
+                lst.AddRange(new Position[]
+                {
+                    new Position(llStart, 0, dtStart, 150),
+                    new Position(llEnd, 0, dtEnd, 150)
+                });
+                lst.AddRange(rgPadding);
                 return lst;
+            }
 
             double speed = ConversionFactors.MetersPerSecondPerKnot * (distance / ts.TotalHours);
 
@@ -673,10 +689,7 @@ namespace MyFlightbook.Geography
                 lst.Add(p);
             }
 
-            // Add a few stopped fields at the end to make it clear that there's a full-stop.  Separate them by a few seconds each.
-            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(3), 0));
-            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(6), 0));
-            lst.Add(new Position(llEnd, 0, dtEnd.AddSeconds(9), 0));
+            lst.AddRange(rgPadding);
 
             return lst;
         }
@@ -1117,7 +1130,7 @@ namespace MyFlightbook.Geography
     #region Concrete and Known GeoRegions
     public class GeoRegion : GeoRegionBase
     {
-        private string m_name;
+        private readonly string m_name;
 
         public override string Name { get { return m_name; } }
 
