@@ -17,14 +17,16 @@ namespace MyFlightbook.Templates
 {
     public enum PropertyTemplateGroup { Automatic, Training, Checkrides, Missions, Roles }
 
+    public enum KnownTemplateIDs { None = 0, ID_NEW = -1, ID_MRU = -2, ID_SIM = -3, ID_ANON = -4 }
+
+
     /// <summary>
     /// PropertyTemplate - basic functionality, base class for other templates
     /// </summary>
     [Serializable]
-    public abstract class PropertyTemplate
+    public abstract class PropertyTemplate : IComparable
     {
         protected HashSet<int> m_propertyTypes = new HashSet<int>();
-        protected const int idTemplateNew = -1;
 
         #region Properties
         public int ID { get; set; }
@@ -97,7 +99,7 @@ namespace MyFlightbook.Templates
         #region constructors
         public PropertyTemplate()
         {
-            ID = idTemplateNew;
+            ID = (int) KnownTemplateIDs.ID_NEW;
             Name = Description = Owner = OriginalOwner = string.Empty;
             Group = PropertyTemplateGroup.Training;
         }
@@ -145,6 +147,11 @@ namespace MyFlightbook.Templates
 
             return pt;
         }
+
+        public int CompareTo(object obj)
+        {
+            return Name.CompareCurrentCultureIgnoreCase(((PropertyTemplate)obj).Name);
+        }
     }
 
     #region Built-in automatic templates
@@ -158,6 +165,7 @@ namespace MyFlightbook.Templates
 
         public MRUPropertyTemplate() : base()
         {
+            ID = (int) KnownTemplateIDs.ID_MRU;
             Group = PropertyTemplateGroup.Automatic;
             Name = Resources.LogbookEntry.TemplateMRU;
             Description = Resources.LogbookEntry.TemplateMRUDescription;
@@ -179,6 +187,7 @@ namespace MyFlightbook.Templates
     {
         public SimPropertyTemplate() : base()
         {
+            ID = (int)KnownTemplateIDs.ID_SIM;
             Group = PropertyTemplateGroup.Automatic;
             Name = Resources.LogbookEntry.TemplateSimBasic;
             Description = Resources.LogbookEntry.TemplateSimBasicDesc;
@@ -187,10 +196,11 @@ namespace MyFlightbook.Templates
     }
 
     [Serializable]
-    public class AnonymousPropertyTeamplate : PropertyTemplate
+    public class AnonymousPropertyTemplate : PropertyTemplate
     {
-        public AnonymousPropertyTeamplate() : base()
+        public AnonymousPropertyTemplate() : base()
         {
+            ID = (int)KnownTemplateIDs.ID_ANON;
             Group = PropertyTemplateGroup.Automatic;
             Name = Resources.LogbookEntry.TemplateAnonymousBasic;
             Description = Resources.LogbookEntry.TemplateAnonymousBasicDesc;
@@ -266,8 +276,8 @@ namespace MyFlightbook.Templates
 
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture,
                 "{0} propertytemplate SET name=?name, description=?description, owner=?owner, originalowner=?originalowner, templategroup=?group, properties=?props, public=?public {1}",
-                ID == idTemplateNew ? "INSERT INTO" : "UPDATE",
-                ID == idTemplateNew ? string.Empty : String.Format(CultureInfo.InvariantCulture, "WHERE id=?id")));
+                ID == (int)KnownTemplateIDs.ID_NEW ? "INSERT INTO" : "UPDATE",
+                ID == (int)KnownTemplateIDs.ID_NEW ? string.Empty : String.Format(CultureInfo.InvariantCulture, "WHERE id=?id")));
 
             dbh.DoNonQuery((comm) =>
             {
@@ -347,7 +357,7 @@ namespace MyFlightbook.Templates
             JsonConvert.PopulateObject(JsonConvert.SerializeObject(this), upt);
             upt.OriginalOwner = Owner;
             upt.Owner = szUser;
-            upt.ID = idTemplateNew;
+            upt.ID = (int)KnownTemplateIDs.ID_NEW;
             upt.IsPublic = false;
             return upt;
         }
@@ -373,9 +383,11 @@ namespace MyFlightbook.Templates
             }
 
             // Add in the automatic properties as well.
+            // But do it in a NEW list so as not to affect what's in the cache
             // We do this fresh every time, since MRUPropertyTemplate could have changed (due to blacklisting), but is itself cached.
-            lst.AddRange(new PropertyTemplate[] { new MRUPropertyTemplate(szUser), new SimPropertyTemplate(), new AnonymousPropertyTeamplate() });
-            return lst;
+            List<PropertyTemplate> lstResult = new List<PropertyTemplate>(lst);
+            lstResult.AddRange(new PropertyTemplate[] { new MRUPropertyTemplate(szUser), new SimPropertyTemplate(), new AnonymousPropertyTemplate() });
+            return lstResult;
         }
 
         /// <summary>
@@ -393,7 +405,7 @@ namespace MyFlightbook.Templates
         #endregion
     }
 
-    public class TemplateCollection
+    public class TemplateCollection : IComparable
     {
         #region Properties
         public PropertyTemplateGroup Group { get; set; }
@@ -424,19 +436,39 @@ namespace MyFlightbook.Templates
 
             List<TemplateCollection> lstOut = new List<TemplateCollection>();
             foreach (PropertyTemplateGroup ptg in d.Keys)
+            {
+                // sort all but automatic - those are in a pre-defined order.
+                if (ptg != PropertyTemplateGroup.Automatic)
+                    d[ptg].Sort();
                 lstOut.Add(new TemplateCollection(ptg, d[ptg]));
+            }
+            lstOut.Sort();
 
             return lstOut;
+        }
+
+        public int CompareTo(object obj)
+        {
+            return Group.CompareTo(((TemplateCollection)obj).Group);
         }
     }
 
     public class PropertyTemplateEventArgs : EventArgs
     {
-        public PropertyTemplate propertyTemplate { get; set; }
+        public PropertyTemplate Template { get; set; }
+
+        public int TemplateID { get; set; }
 
         public PropertyTemplateEventArgs(PropertyTemplate pt) : base()
         {
-            propertyTemplate = pt;
+            Template = pt;
+            TemplateID = pt.ID;
+        }
+
+        public PropertyTemplateEventArgs(int id) : base()
+        {
+            Template = null;
+            TemplateID = id;
         }
     }
 }

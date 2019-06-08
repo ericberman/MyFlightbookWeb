@@ -40,7 +40,7 @@
                     meta:resourcekey="lnkAddAircraftResource1"></asp:LinkButton>
             </div>
             <div class="itemdata">
-                <asp:DropDownList ID="cmbAircraft" runat="server" TabIndex="2" Width="200px" 
+                <asp:DropDownList ID="cmbAircraft" runat="server" TabIndex="2" Width="200px" AutoPostBack="true" OnSelectedIndexChanged="cmbAircraft_SelectedIndexChanged" 
                     meta:resourcekey="cmbAircraftResource1">
                 </asp:DropDownList>
                 <script type="text/javascript">

@@ -2,6 +2,7 @@ using MyFlightbook;
 using MyFlightbook.Image;
 using MyFlightbook.Payments;
 using MyFlightbook.Telemetry;
+using MyFlightbook.Templates;
 using System;
 using System.Collections;
 using System.Globalization;
@@ -436,7 +437,12 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             catch (ArgumentOutOfRangeException) { cmbAircraft.SelectedIndex = 0; }
         }
         else
+        {
             cmbAircraft.SelectedIndex = 0;
+            int idAircraft;
+            if (Int32.TryParse(cmbAircraft.SelectedValue, out idAircraft))
+                le.AircraftID = idAircraft;
+        }
 
         intApproaches.IntValue = le.Approaches;
         intLandings.IntValue = le.Landings;
@@ -469,6 +475,8 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             mfbFlightInfo1.Telemetry = le.FlightData;
         AltCatClass = le.CatClassOverride;
 
+        SetTemplatesForAircraft(le.AircraftID);
+
         if (util.GetIntParam(Request, "oldProps", 0) != 0)
         {
             mvPropEdit.SetActiveView(vwLegacyProps);
@@ -478,9 +486,31 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         else
             mfbEditPropSet1.SetFlightProperties(le.CustomProperties);
 
-        MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
+        Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
         divCFI.Visible = pf.IsInstructor;
         divSIC.Visible = pf.TracksSecondInCommandTime;
+    }
+
+    protected void SetTemplatesForAircraft(int idAircraft)
+    {
+        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+        Aircraft ac = ua.GetUserAircraftByID(idAircraft);
+        if (ac != null)
+        {
+            mfbEditPropSet1.RemoveTemplate((int)KnownTemplateIDs.ID_ANON);
+            mfbEditPropSet1.RemoveTemplate((int)KnownTemplateIDs.ID_SIM);
+
+            // Expand for tailwheel
+            if (ac.IsTailwheel)
+                cpeLandingDetails.ClientState = "false";
+            if (ac.InstanceType == AircraftInstanceTypes.RealAircraft)
+            {
+                if (ac.IsAnonymous)
+                    mfbEditPropSet1.AddTemplate(new AnonymousPropertyTemplate());
+            }
+            else
+                mfbEditPropSet1.AddTemplate(new SimPropertyTemplate());
+        }
     }
 
     /// <summary>
@@ -684,5 +714,10 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         Response.Redirect(Request.Url.OriginalString);
     }
     #endregion
+
+    protected void cmbAircraft_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        InitFormFromLogbookEntry(InitLogbookEntryFromForm());
+    }
 }
 

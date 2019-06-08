@@ -1,6 +1,10 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditPropSet.ascx.cs" Inherits="Controls_mfbEditPropSet" %>
 <%@ Register src="mfbEditProp.ascx" tagname="mfbEditProp" tagprefix="uc1" %>
-        <script type="text/javascript">
+<%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
+<%@ Register Src="~/Controls/mfbSelectTemplates.ascx" TagPrefix="uc1" TagName="mfbSelectTemplates" %>
+
+
+<script type="text/javascript">
             function pageLoad(sender, args) {
                 $find("<%=cpeText.ClientID%>").add_expandComplete(setFocusForSearch);
             }
@@ -37,6 +41,13 @@
                                     DataValueField="PropTypeID" DataTextField="Title" OnSelectedIndexChanged="cmbPropsToAdd_SelectedIndexChanged" >
                                     <asp:ListItem Enabled="true" Value="" Text="<%$ Resources:LogbookEntry, propSelectAdditionalProperty %>"></asp:ListItem>
                                 </asp:DropDownList>
+                            </td>
+                            <td>
+                                <uc1:popmenu runat="server" ID="popmenu">
+                                    <MenuContent>
+                                        <uc1:mfbSelectTemplates runat="server" ID="mfbSelectTemplates" OnTemplateSelected="mfbSelectTemplates_TemplateSelected" OnTemplateUnselected="mfbSelectTemplates_TemplateUnselected" OnTemplatesReady="mfbSelectTemplates_TemplatesReady" />
+                                    </MenuContent>
+                                </uc1:popmenu>
                             <td>
                         </tr>
                     </table>

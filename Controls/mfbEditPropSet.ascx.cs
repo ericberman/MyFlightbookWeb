@@ -1,4 +1,5 @@
 ﻿using MyFlightbook;
+using MyFlightbook.Templates;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,6 +18,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
 {
     private const string vsActiveProps = "vsActiveProps";
     private const string vsPropVals = "vsPropVals";
+    private const string vsPropTemplates = "vsPropTemplates";
 
     #region properties
     private List<CustomFlightProperty> m_cfpActive = null;
@@ -61,6 +63,20 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         }
     }
 
+    protected HashSet<PropertyTemplate> ActiveTemplates
+    {
+        get
+        {
+            if (ViewState[vsPropTemplates] == null)
+            {
+                HashSet<PropertyTemplate> hs = new HashSet<PropertyTemplate>() { Page.User.Identity.IsAuthenticated ? new MRUPropertyTemplate(Page.User.Identity.Name) : new MRUPropertyTemplate() };
+                mfbSelectTemplates.AddTemplates(hs);
+                ViewState[vsPropTemplates] = hs;
+            }
+            return (HashSet<PropertyTemplate>)ViewState[vsPropTemplates];
+        }
+    }
+
     /// <summary>
     /// The properties that we want to ensure we have.  E.g., from a flight.
     /// </summary>
@@ -86,6 +102,20 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
             }
             return m_propertiesFromPropSet;
         }
+    }
+
+    public void AddTemplate(PropertyTemplate pt)
+    {
+        ActiveTemplates.Add(pt);
+        mfbSelectTemplates.AddTemplate(pt.ID);
+        RefreshList(null, true);
+    }
+
+    public void RemoveTemplate(int id)
+    {
+        ActiveTemplates.RemoveWhere(pt => pt.ID == id);
+        mfbSelectTemplates.RemoveTemplate(id);
+        RefreshList(null, true);
     }
 
     public void SetFlightProperties(IEnumerable<CustomFlightProperty> rgcfp)
@@ -146,22 +176,33 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         txtFilter.Attributes["onkeyup"] = String.Format(CultureInfo.InvariantCulture, "FilterItems(this, '{0}', '{1}', '{2}')", cmbPropsToAdd.ClientID, lblFilterMessage.ClientID, Resources.LogbookEntry.PropertiesFound);
     }
 
-    protected void SegregateProperties()
+    protected void SegregateProperties(bool fStripDefault = false)
     {
         List<CustomPropertyType> lstRemainingProps = new List<CustomPropertyType>();
 
         ActiveProperties.Clear();
         ActivePropTypes.Clear();
 
+        PropertyTemplate ptMerged = PropertyTemplate.MergedTemplate(ActiveTemplates);
+
         // this is cached so we can do it on every call, postback or not
         CustomPropertyType[] rgCptAll = CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.IsAuthenticated ? Page.User.Identity.Name : string.Empty);
 
         foreach (CustomPropertyType cpt in rgCptAll)
         {
+            // see if this either has a value or is in one of the active templates.
+            // if it doesn't have a value but is in a template, give it a value.
             CustomFlightProperty fp = Properties.Find(cfp => cfp.PropTypeID == cpt.PropTypeID);
-            if (fp == null && cpt.IsFavorite)
-                fp = new CustomFlightProperty(cpt);
+
+            // To be included, it must be EITHER
+            // a) in the merged set of templates OR
+            // b) in the set of properties with a non-default value (fp != null && !fp.IsDefaultValue) OR
+            // c) in the set of properties with a default value (fp != null && (!fStripDefault && fp.IsDefaultValue)
+            bool fInclude = ptMerged.ContainsProperty(cpt.PropTypeID) || (fp != null && (!fStripDefault || !fp.IsDefaultValue));
             if (fp == null)
+                fp = new CustomFlightProperty(cpt);
+
+            if (!fInclude)
                 lstRemainingProps.Add(cpt);
             else
             {
@@ -182,7 +223,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
 
     private string IDForPropType(CustomPropertyType cpt)
     {
-        return String.Format(System.Globalization.CultureInfo.InvariantCulture, "editProp{0}", cpt.PropTypeID);
+        return String.Format(CultureInfo.InvariantCulture, "editProp{0}", cpt.PropTypeID);
     }
 
     private void InsertEditProp(CustomFlightProperty cfp)
@@ -232,6 +273,18 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
             InsertEditProp(fp);
     }
 
+    protected void RefreshList(CustomFlightProperty cfp = null, bool fStripDefaults = false)
+    {
+        Properties = PropertiesFromPropSet;             // Pick up any changes from the existing child controls, to preserve across postback
+        if (cfp != null)
+            Properties.Add(cfp);
+        SegregateProperties(fStripDefaults);                          // add the new property to the list
+        PopulateControls();                             // And re-populate.
+        txtFilter.Text = string.Empty;
+        cpeText.Collapsed = true;
+        cpeText.ClientState = "true";
+    }
+
     protected void cmbPropsToAdd_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (String.IsNullOrEmpty(cmbPropsToAdd.SelectedValue))
@@ -243,12 +296,34 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         if (cpt == null)
             throw new MyFlightbookException(String.Format("Custom property type with id {0} not found!", idPropType));
 
-        Properties = PropertiesFromPropSet;             // Pick up any changes from the existing child controls, to preserve across postback
-        Properties.Add(new CustomFlightProperty(cpt));
-        SegregateProperties();                          // add the new property to the list
-        PopulateControls();                             // And re-populate.
-        txtFilter.Text = string.Empty;
-        cpeText.Collapsed = true;
-        cpeText.ClientState = "true";
+        RefreshList(new CustomFlightProperty(cpt));
     }
+
+    protected void mfbSelectTemplates_TemplateSelected(object sender, PropertyTemplateEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+        if (e.Template == null)
+            throw new ArgumentException("Null Template in PropertyTemplateEventArgs");
+
+        AddTemplate(e.Template);
+    }
+
+    protected void mfbSelectTemplates_TemplateUnselected(object sender, PropertyTemplateEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+        RemoveTemplate(e.TemplateID);
+    }
+
+    protected void mfbSelectTemplates_TemplatesReady(object sender, EventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        // Hide the pop menu if only automatic templates are available
+        if (mfbSelectTemplates.GroupedTemplates.Count() == 1 && mfbSelectTemplates.GroupedTemplates.ElementAt(0).Group == PropertyTemplateGroup.Automatic)
+            popmenu.Visible = false;
+    }
+    
 }

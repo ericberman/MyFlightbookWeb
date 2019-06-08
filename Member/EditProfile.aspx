@@ -14,6 +14,8 @@
 <%@ Register Src="~/Controls/mfbSubscriptionManager.ascx" TagPrefix="uc1" TagName="mfbSubscriptionManager" %>
 <%@ Register Src="~/Controls/mfbCustomCurrencyList.ascx" TagPrefix="uc1" TagName="mfbCustomCurrencyList" %>
 <%@ Register Src="~/Controls/mfbBasicMedManager.ascx" TagPrefix="uc1" TagName="mfbBasicMedManager" %>
+<%@ Register Src="~/Controls/mfbEditPropTemplate.ascx" TagPrefix="uc1" TagName="mfbEditPropTemplate" %>
+
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -370,6 +372,7 @@
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
+                            <uc1:mfbEditPropTemplate runat="server" ID="mfbEditPropTemplate" Visible="false" />
                         </Content>
                     </cc1:AccordionPane>
                     <cc1:AccordionPane ID="acpCurrency" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpCurrencyResource1">

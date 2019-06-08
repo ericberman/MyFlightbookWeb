@@ -222,8 +222,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
         rblDateEntryPreferences.SelectedIndex = (m_pf.UsesUTCDateOfFlight ? 1 : 0);
         foreach (CurrencyExpiration.Expiration exp in Enum.GetValues(typeof(CurrencyExpiration.Expiration)))
         {
-            ListItem li = new ListItem(CurrencyExpiration.ExpirationLabel(exp), exp.ToString());
-            li.Selected = m_pf.CurrencyExpiration == exp;
+            ListItem li = new ListItem(CurrencyExpiration.ExpirationLabel(exp), exp.ToString()) { Selected = m_pf.CurrencyExpiration == exp };
             cmbExpiredCurrency.Items.Add(li);
         }
     }
@@ -398,6 +397,8 @@ public partial class Member_EditProfile : System.Web.UI.Page
         tabID sidebarTab = SetUpSidebar();
 
         Page.ClientScript.RegisterClientScriptInclude("ListDrag", ResolveClientUrl("~/Public/Scripts/listdrag.js?v=4"));
+
+        mfbEditPropTemplate.Visible = util.GetIntParam(Request, "templates", 0) != 0;
 
         if (!IsPostBack)
         {
