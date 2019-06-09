@@ -15,7 +15,7 @@ using System.Web;
 
 namespace MyFlightbook.Templates
 {
-    public enum PropertyTemplateGroup { Automatic, Training, Checkrides, Missions, Roles }
+    public enum PropertyTemplateGroup { Automatic, Training, Checkrides, Missions, Roles, Lessons }
 
     public enum KnownTemplateIDs { None = 0, ID_NEW = -1, ID_MRU = -2, ID_SIM = -3, ID_ANON = -4 }
 
@@ -64,6 +64,11 @@ namespace MyFlightbook.Templates
         /// Is this available for all users?
         /// </summary>
         public bool IsPublic { get; set; }
+
+        /// <summary>
+        /// Should this be used by default for this user?  (Not mutually exclusive except with MRU)
+        /// </summary>
+        public bool IsDefault { get; set; }
 
         /// <summary>
         /// Can this be modified in the database, or is it "Built in"?
@@ -120,6 +125,8 @@ namespace MyFlightbook.Templates
                     return Resources.LogbookEntry.templateGroupTraining;
                 case PropertyTemplateGroup.Roles:
                     return Resources.LogbookEntry.templateGroupRole;
+                case PropertyTemplateGroup.Lessons:
+                    return Resources.LogbookEntry.templateGroupLessons;
                 default:
                     return string.Empty;
             }
@@ -251,6 +258,7 @@ namespace MyFlightbook.Templates
             OriginalOwner = (string)dr["originalowner"];
             Group = (PropertyTemplateGroup)Convert.ToUInt32(dr["templategroup"], CultureInfo.InvariantCulture);
             IsPublic = Convert.ToBoolean(dr["public"], CultureInfo.InvariantCulture);
+            IsDefault = Convert.ToBoolean(dr["isdefault"], CultureInfo.InvariantCulture);
             m_propertyTypes = new HashSet<int>(JsonConvert.DeserializeObject<int[]>((string)dr["properties"]));
         }
 
@@ -275,7 +283,7 @@ namespace MyFlightbook.Templates
             Validate();
 
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture,
-                "{0} propertytemplate SET name=?name, description=?description, owner=?owner, originalowner=?originalowner, templategroup=?group, properties=?props, public=?public {1}",
+                "{0} propertytemplate SET name=?name, description=?description, owner=?owner, originalowner=?originalowner, templategroup=?group, properties=?props, public=?public, isdefault=?def {1}",
                 ID == (int)KnownTemplateIDs.ID_NEW ? "INSERT INTO" : "UPDATE",
                 ID == (int)KnownTemplateIDs.ID_NEW ? string.Empty : String.Format(CultureInfo.InvariantCulture, "WHERE id=?id")));
 
@@ -289,6 +297,7 @@ namespace MyFlightbook.Templates
                 comm.Parameters.AddWithValue("group", (int)Group);
                 comm.Parameters.AddWithValue("props", JsonConvert.SerializeObject(m_propertyTypes));
                 comm.Parameters.AddWithValue("public", IsPublic);
+                comm.Parameters.AddWithValue("def", IsDefault);
             });
             InvalidateCache();
         }

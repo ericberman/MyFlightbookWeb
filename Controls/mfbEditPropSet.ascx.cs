@@ -69,7 +69,18 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         {
             if (ViewState[vsPropTemplates] == null)
             {
-                HashSet<PropertyTemplate> hs = new HashSet<PropertyTemplate>() { Page.User.Identity.IsAuthenticated ? new MRUPropertyTemplate(Page.User.Identity.Name) : new MRUPropertyTemplate() };
+                // Initialize the hashset with any default property templates; if none found, use the MRU template
+                HashSet<PropertyTemplate> hs = new HashSet<PropertyTemplate>();
+                if (Page.User.Identity.IsAuthenticated)
+                {
+                    IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name);
+                    foreach (PropertyTemplate pt in rgpt)
+                        if (pt.IsDefault)
+                            hs.Add(pt);
+
+                    if (hs.Count == 0)
+                        hs.Add(new MRUPropertyTemplate(Page.User.Identity.Name));
+                }
                 mfbSelectTemplates.AddTemplates(hs);
                 ViewState[vsPropTemplates] = hs;
             }

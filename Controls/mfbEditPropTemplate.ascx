@@ -5,63 +5,73 @@
 <h3><asp:Localize ID="locTemplateHeader" runat="server" Text="<%$ Resources:LogbookEntry, TemplateHeader %>"></asp:Localize></h3>
 <p><asp:Localize ID="locTemplateDescription1" runat="server"></asp:Localize></p>
 <p><asp:Localize ID="locTemplateDescription2" runat="server"></asp:Localize></p>
-<p><asp:HyperLink ID="lnkBrowseTemplates" runat="server" NavigateUrl="~/Member/BrowseTemplates.aspx" Text="<%$ Resources:LogbookEntry, TemplateBrowseTemplates %>"></asp:HyperLink></p>
-<asp:GridView ID="gvPropertyTemplates" runat="server" GridLines="None" CellPadding="3" ShowFooter="false" ShowHeader="false" AutoGenerateColumns="false">
-    <Columns>
-        <asp:TemplateField>
-            <ItemTemplate>
-                <div><asp:Label ID="lblGroupName" Font-Bold="true" runat="server" Text='<%# Eval("GroupName") %>'></asp:Label></div>
-                <asp:GridView ID="gvTemplates" runat="server" CellPadding="3" Width="100%" DataSource='<%# Eval("Templates") %>' GridLines="None" ShowFooter="false" ShowHeader="false" AutoGenerateColumns="false" OnRowCommand="gvTemplates_RowCommand">
-                    <Columns>
-                        <asp:TemplateField ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="25px">
-                            <ItemTemplate>
-                                <asp:ImageButton ID="imgbtnEdit" runat="server" Visible='<%# Eval("IsMutable") %>'
-                                    AlternateText="<%$ Resources:LogbookEntry, TemplateEditTip %>" CommandArgument='<%# Eval("ID") %>'
-                                    CommandName="_edit" ImageUrl="~/images/pencilsm.png"
-                                    ToolTip="<%$ Resources:LogbookEntry, TemplateEditTip %>" />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField ItemStyle-VerticalAlign="Top">
-                            <ItemTemplate>
-                                <div>
-                                    <span style="font-weight:bold"><%#: Eval("Name") %></span>
-                                    <span><%# ((string) Eval("Description")).Linkify(true) %></span>
-                                </div>
-                                <div class="fineprint" style="font-style:italic"><%# String.Join(" ● ", (IEnumerable<string>) Eval("PropertyNames")) %></div>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Right">
-                            <ItemTemplate>
-                                <asp:HiddenField ID="hdnID" runat="server" Value='<%# Eval("ID") %>' />
-                                <asp:CheckBox ID="ckIsPublic" Visible='<%# Eval("IsMutable") %>' runat="server" Checked='<%# Eval("IsPublic") %>' AutoPostBack="true" OnCheckedChanged="ckIsPublic_CheckedChanged" Text="<%$ Resources:LogbookEntry, TemplateShare %>" />
-                                <div><asp:Label ID="lblPublicErr" runat="server" CssClass="error" EnableViewState="false"></asp:Label></div>
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                        <asp:TemplateField ItemStyle-VerticalAlign="Top" ItemStyle-Width="30px" ItemStyle-HorizontalAlign="Center">
-                            <ItemTemplate>
-                                <asp:ImageButton ID="imgDelete" runat="server"  Visible='<%# Eval("IsMutable") %>'
-                                    AlternateText="<%$ Resources:LogbookEntry, TemplateDeleteTip %>" CommandArgument='<%# Eval("ID") %>'
-                                    CommandName="_Delete" ImageUrl="~/images/x.gif"
-                                    ToolTip="<%$ Resources:LogbookEntry, TemplateDeleteTip %>" />
-                                <ajaxToolkit:ConfirmButtonExtender ID="confirmDeleteDeadline" runat="server"
-                                    ConfirmOnFormSubmit="True"
-                                    ConfirmText="<%$ Resources:LogbookEntry, TemplateDeleteConfirm %>"
-                                    TargetControlID="imgDelete" />
-                            </ItemTemplate>
-                        </asp:TemplateField>
-                    </Columns>
-                </asp:GridView>
-            </ItemTemplate>
-        </asp:TemplateField>
-    </Columns>
-    <EmptyDataTemplate>
+<p><asp:HyperLink ID="lnkBrowseTemplates" runat="server" NavigateUrl="~/Member/BrowseTemplates.aspx" Font-Bold="true" Text="<%$ Resources:LogbookEntry, TemplateBrowseTemplates %>"></asp:HyperLink></p>
+<asp:MultiView ID="mvOwnedTemplates" runat="server">
+    <asp:View ID="vwTemplates" runat="server">
+        <table>
+            <tr style="vertical-align:bottom">
+                <td></td>
+                <td></td>
+                <td style="padding: 3px; text-align:center">
+                    <asp:Label ID="LocIsPublic" runat="server" Font-Bold="true" Text="<%$ Resources:LogbookEntry, TemplateShare %>"></asp:Label>&nbsp;&nbsp;</td>
+                <td style="padding: 3px; text-align:center">
+                    <asp:Label ID="locDefault" runat="server" Font-Bold="true" Text="<%$ Resources:LogbookEntry, TemplateDefaultHeader %>"></asp:Label></td>
+                <td></td>
+            </tr>
+            <asp:Repeater ID="rptTemplateGroups" runat="server">
+                <ItemTemplate>
+                    <tr>
+                        <td colspan="5" style="padding: 3px;"><asp:Label ID="lblGroupName" Font-Bold="true" Font-Size="Smaller" runat="server" Text='<%# Eval("GroupName") %>'></asp:Label></td>
+                    </tr>
+                    <asp:Repeater ID="rptTemplates" runat="server" DataSource='<%# Eval("Templates") %>'>
+                        <ItemTemplate>
+                            <tr>
+                                <td style="padding: 3px;">
+                                    <asp:ImageButton ID="imgbtnEdit" runat="server" Visible='<%# Eval("IsMutable") %>'
+                                        AlternateText="<%$ Resources:LogbookEntry, TemplateEditTip %>"
+                                        ImageUrl="~/images/pencilsm.png" OnClick="imgbtnEdit_Click"
+                                        ToolTip="<%$ Resources:LogbookEntry, TemplateEditTip %>" />
+                                </td>
+                                <td style="padding: 3px;">
+                                    <div>
+                                        <span style="font-weight:bold"><%#: Eval("Name") %></span>
+                                        <span><%# ((string) Eval("Description")).Linkify(true) %></span>
+                                    </div>
+                                    <div class="fineprint" style="font-style:italic"><%# String.Join(" ● ", (IEnumerable<string>) Eval("PropertyNames")) %></div>
+                                    <div><asp:Label ID="lblPublicErr" runat="server" CssClass="error" EnableViewState="false"></asp:Label></div>
+                                </td>
+                                <td style="padding: 3px; text-align:center;">
+                                    <asp:HiddenField ID="hdnID" runat="server" Value='<%# Eval("ID") %>' />
+                                    <asp:CheckBox ID="ckIsPublic" Visible='<%# Eval("IsMutable") %>' runat="server" Checked='<%# Eval("IsPublic") %>' AutoPostBack="true" OnCheckedChanged="ckIsPublic_CheckedChanged" ToolTip="<%$ Resources:LogbookEntry, TemplateShare %>" />
+                                </td>
+                                <td style="padding: 3px; text-align:center;">
+                                    <asp:CheckBox ID="ckDefault" Visible='<%# Eval("IsMutable") %>' runat="server" Checked='<%# Eval("IsDefault") %>' AutoPostBack="true" OnCheckedChanged="ckDefault_CheckedChanged" ToolTip="<%$ Resources:LogbookEntry, TemplateDefaultTooltip %>" />
+                                </td>
+                                <td style="padding: 3px;">
+                                    <asp:ImageButton ID="imgDelete" runat="server"  Visible='<%# Eval("IsMutable") %>'
+                                        AlternateText="<%$ Resources:LogbookEntry, TemplateDeleteTip %>"
+                                        ImageUrl="~/images/x.gif" OnClick="imgDelete_Click"
+                                        ToolTip="<%$ Resources:LogbookEntry, TemplateDeleteTip %>" />
+                                    <ajaxToolkit:ConfirmButtonExtender ID="confirmDeleteDeadline" runat="server"
+                                        ConfirmOnFormSubmit="True"
+                                        ConfirmText="<%$ Resources:LogbookEntry, TemplateDeleteConfirm %>"
+                                        TargetControlID="imgDelete" />
+                                </td>
+                            </tr>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </ItemTemplate>
+            </asp:Repeater>
+        </table>
+    </asp:View>
+    <asp:View ID="vwNoTemplates" runat="server">
         <ul>
             <li>
                 <asp:Label ID="lblNoTemplates" runat="server" Font-Italic="true" Text="<%$ Resources:LogbookEntry, TemplateNoneAvailable %>"></asp:Label>
             </li>
         </ul>
-    </EmptyDataTemplate>
-</asp:GridView>
+    </asp:View>
+</asp:MultiView>
 <p><asp:Label ID="lblAddTemplate" Font-Bold="true" runat="server"></asp:Label></p>
 <ajaxToolkit:CollapsiblePanelExtender ID="cpeNewTemplate" BehaviorID="cpeNewTemplate" runat="server" Collapsed="True" CollapsedSize="0" 
     CollapsedText="<%$ Resources:LogbookEntry, TemplateClickToCreate %>" ExpandControlID="lblAddTemplate" CollapseControlID="lblAddTemplate" ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>" TargetControlID="pnlNewTemplate" TextLabelID="lblAddTemplate" />

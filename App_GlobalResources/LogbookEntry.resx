@@ -1121,6 +1121,15 @@ Proceed with import?</value>
     <value>Contains properties useful for any sort of simulator flight</value>
   </data>
   <data name="templateGroupRole" xml:space="preserve">
-    <value>Role</value>
+    <value>Roles</value>
+  </data>
+  <data name="TemplateDefaultTooltip" xml:space="preserve">
+    <value>Use this template by default</value>
+  </data>
+  <data name="templateGroupLessons" xml:space="preserve">
+    <value>Lesson Plans</value>
+  </data>
+  <data name="TemplateDefaultHeader" xml:space="preserve">
+    <value>Use by&lt;br /&gt;default</value>
   </data>
 </root>

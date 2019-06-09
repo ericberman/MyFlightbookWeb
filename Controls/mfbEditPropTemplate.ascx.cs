@@ -76,8 +76,10 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
 
         List<TemplateCollection> rgtc = new List<TemplateCollection>(TemplateCollection.GroupTemplates(UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name)));
         rgtc.RemoveAll(tc => tc.Group == PropertyTemplateGroup.Automatic);
-        gvPropertyTemplates.DataSource = rgtc;
-        gvPropertyTemplates.DataBind();
+        rptTemplateGroups.DataSource = rgtc;
+        rptTemplateGroups.DataBind();
+
+        mvOwnedTemplates.SetActiveView(rgtc.Count == 0 ? vwNoTemplates : vwTemplates);
     }
 
     protected void btnAddToTemplate_Click(object sender, EventArgs e)
@@ -141,25 +143,13 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         }
     }
 
-    protected void gvTemplates_RowCommand(object sender, GridViewCommandEventArgs e)
+    protected UserPropertyTemplate Target(Control c)
     {
-        if (e == null)
-            throw new ArgumentNullException("e");
-
-        UserPropertyTemplate pt = new UserPropertyTemplate(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
-
-        if (e.CommandName.CompareCurrentCultureIgnoreCase("_Delete") == 0)
-        {
-            pt.Delete();
-            ToForm();
-        }
-        else if (e.CommandName.CompareCurrentCultureIgnoreCase("_edit") == 0)
-        {
-            ActiveTemplate = pt;
-            ToForm();
-            cpeNewTemplate.Collapsed = false;
-            cpeNewTemplate.ClientState = "false";
-        }
+        if (c == null)
+            throw new ArgumentNullException("c");
+        HiddenField h = (HiddenField)c.NamingContainer.FindControl("hdnID");
+        UserPropertyTemplate pt = new UserPropertyTemplate(Convert.ToInt32(h.Value, CultureInfo.InvariantCulture));
+        return pt;
     }
 
     protected void ckIsPublic_CheckedChanged(object sender, EventArgs e)
@@ -167,17 +157,16 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         if (sender == null)
             throw new ArgumentNullException("sender");
 
+
         CheckBox ck = (CheckBox)sender;
-        GridViewRow gvr = ck.NamingContainer as GridViewRow;
-        HiddenField h = (HiddenField)gvr.FindControl("hdnID");
-        UserPropertyTemplate pt = new UserPropertyTemplate(Convert.ToInt32(h.Value, CultureInfo.InvariantCulture));
+        UserPropertyTemplate pt = Target(ck);
 
         if (ck.Checked)
         {
             List<PropertyTemplate> lst = new List<PropertyTemplate>(UserPropertyTemplate.PublicTemplates());
             if (lst.Find(ptPublic => ptPublic.Name.CompareCurrentCultureIgnoreCase(pt.Name) == 0 && ptPublic.Owner.CompareCurrentCultureIgnoreCase(pt.Owner) != 0) != null)
             {
-                ((Label) gvr.FindControl("lblPublicErr")).Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateDuplicateSharedName, pt.Name);
+                ((Label) ck.NamingContainer.FindControl("lblPublicErr")).Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateDuplicateSharedName, pt.Name);
                 ck.Checked = false;
                 return;
             }
@@ -186,6 +175,30 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         pt.IsPublic = ck.Checked;
         pt.Commit();
     }
+
+    protected void imgbtnEdit_Click(object sender, ImageClickEventArgs e)
+    {
+        ActiveTemplate = Target(sender as Control);
+        ToForm();
+        cpeNewTemplate.Collapsed = false;
+        cpeNewTemplate.ClientState = "false";
+    }
+
+    protected void imgDelete_Click(object sender, ImageClickEventArgs e)
+    {
+        Target(sender as Control).Delete();
+        ToForm();
+    }
+
+    protected void ckDefault_CheckedChanged(object sender, EventArgs e)
+    {
+        CheckBox ck = sender as CheckBox;
+        UserPropertyTemplate pt = Target(ck);
+        pt.IsDefault = ck.Checked;
+        pt.Commit();
+        ToForm();
+    }
+
 
     protected bool MatchesFilter(string text)
     {
