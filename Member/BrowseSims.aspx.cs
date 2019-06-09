@@ -1,12 +1,13 @@
 ﻿using MyFlightbook;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2018 MyFlightbook LLC
+ * Copyright (c) 2011-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -47,6 +48,8 @@ public partial class Member_BrowseSims : System.Web.UI.Page
         set { m_acLastSelected = value; }
     }
 
+    protected HashSet<int> KnownSimsForUser { get; set; }
+
     protected Collection<Aircraft> SimList
     {
         get
@@ -74,6 +77,15 @@ public partial class Member_BrowseSims : System.Web.UI.Page
     {
         SimType = (AircraftInstanceTypes)(Convert.ToInt32(cmbSimType.SelectedValue, System.Globalization.CultureInfo.InvariantCulture));
         MakeModelID = Convert.ToInt32(cmbModels.SelectedValue, System.Globalization.CultureInfo.InvariantCulture);
+
+        KnownSimsForUser = new HashSet<int>();
+        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+        Array.ForEach(ua.GetAircraftForUser(), (ac) =>
+        {
+            if (ac.InstanceType != AircraftInstanceTypes.RealAircraft)
+                KnownSimsForUser.Add(ac.AircraftID);
+        });
+
         UpdateGrid();
     }
 
@@ -107,8 +119,7 @@ public partial class Member_BrowseSims : System.Web.UI.Page
             Button btnAdd = (Button)e.Row.FindControl("btnAddThisAircraft");
             Label lblAlreadyPresent = (Label)e.Row.FindControl("lblAlreadyPresent");
 
-            UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
-            Boolean fAlreadyKnown = ua.CheckAircraftForUser(ac);
+            Boolean fAlreadyKnown = KnownSimsForUser.Contains(ac.AircraftID);
             lblAlreadyPresent.Visible = fAlreadyKnown;
             btnAdd.Visible = !fAlreadyKnown;
             e.Row.Font.Bold = fAlreadyKnown;
