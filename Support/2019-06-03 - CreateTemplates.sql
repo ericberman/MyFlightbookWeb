@@ -10,4 +10,8 @@
   PRIMARY KEY (`id`),
   KEY `templateowner_idx` (`owner`),
   CONSTRAINT `templateowner` FOREIGN KEY (`owner`) REFERENCES `users` (`Username`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='Contains a named list of properties that are a template for a given kind of flight';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Contains a named list of properties that are a template for a given kind of flight';
+
+ALTER TABLE `logbook`.`propertytemplate` 
+ADD COLUMN `isdefault` TINYINT(1) NOT NULL COMMENT 'Indicates if this template should be used by default when others are not specified' AFTER `public`;
+
