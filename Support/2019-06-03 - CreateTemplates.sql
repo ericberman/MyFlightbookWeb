@@ -17,3 +17,9 @@ ADD COLUMN `isdefault` TINYINT(1) NOT NULL COMMENT 'Indicates if this template s
 
 ALTER TABLE `logbook`.`useraircraft` 
 ADD COLUMN `TemplateIDs` TEXT NULL COMMENT 'JSONified array of ID\'s of templates to use for the aircraft' AFTER `DefaultImage`;
+
+ALTER TABLE `logbook`.`useraircraft` 
+DROP COLUMN `id`,
+DROP PRIMARY KEY,
+ADD PRIMARY KEY USING BTREE (`userName`, `idAircraft`);
+;

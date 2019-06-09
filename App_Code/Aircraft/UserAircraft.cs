@@ -193,9 +193,7 @@ namespace MyFlightbook
         /// <returns>True for success</returns>
         public void FAddAircraftForUser(Aircraft ac)
         {
-            DBHelper dbh = new DBHelper((CheckAircraftForUser(ac)) ?
-                "UPDATE useraircraft SET Flags=?acFlags, PrivateNotes=?userNotes, DefaultImage=?defImg, TemplateIDs=?templates WHERE userName=?username AND idAircraft=?AircraftID" :
-                "INSERT INTO useraircraft SET userName = ?username, idAircraft = ?AircraftID, Flags=?acflags, PrivateNotes=?userNotes, DefaultImage=?defImg, TemplateIDs=?templates");
+            DBHelper dbh = new DBHelper("REPLACE INTO useraircraft SET Flags=?acFlags, PrivateNotes=?userNotes, DefaultImage=?defImg, TemplateIDs=?templates, userName=?username, idAircraft=?AircraftID");
             dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("username", User);
@@ -331,30 +329,6 @@ namespace MyFlightbook
             // (b) no harm from keeping it - if somebody re-uses the tailnumber, it will re-use the existing flight.
 
             return GetAircraftForUser();
-        }
-
-        /// <summary>
-        /// Admin function - occassionally we get duplicates in the table.  No biggie, but clean them up anyhow.
-        /// </summary>
-        public static int CleanUpDupes()
-        {
-            List<string> lstDupeIds = new List<string>();
-            DBHelper dbh = new DBHelper("SELECT username, idaircraft, GROUP_CONCAT(id SEPARATOR ',') AS idList, COUNT(idaircraft) AS numInstance FROM useraircraft GROUP BY username, idaircraft HAVING numInstance > 1");
-            dbh.ReadRows((comm) => { },
-                (dr) =>
-                {
-                    string[] rgIds = (dr["idList"].ToString()).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    // Add all but the 1st element to the list of id's to delete
-                    for (int i = 1; i < rgIds.Length; i++)
-                        lstDupeIds.Add(rgIds[i]);
-                });
-            int cDupes = lstDupeIds.Count;
-            if (cDupes > 0)
-            {
-                dbh.CommandText = String.Format(CultureInfo.InvariantCulture, "DELETE FROM useraircraft WHERE id IN ({0})", String.Join(",", lstDupeIds.ToArray()));
-                dbh.DoNonQuery();
-            }
-            return cDupes;
         }
     }
 }

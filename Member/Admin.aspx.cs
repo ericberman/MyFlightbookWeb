@@ -196,8 +196,7 @@ public partial class Member_Admin : System.Web.UI.Page
             while (idr.Read())
             {
                 string szIdAircraft = idr["idaircraft"].ToString();
-                Aircraft ac = new Aircraft(Convert.ToInt32(szIdAircraft, CultureInfo.InvariantCulture));
-                ac.ModelID = idModelToMergeInto;
+                Aircraft ac = new Aircraft(Convert.ToInt32(szIdAircraft, CultureInfo.InvariantCulture)) { ModelID = idModelToMergeInto };
                 ac.Commit();
                 sbAudit.Append(String.Format(CultureInfo.CurrentCulture, "Updated aircraft {0} to model {1}<br />", szIdAircraft, idModelToMergeInto));
             }
@@ -478,13 +477,7 @@ public partial class Member_Admin : System.Web.UI.Page
         gvPseudoGeneric.DataBind();
     }
 
-    protected void btnDeleteDupeUA_Click(object sender, EventArgs e)
-    {
-        int cDupes = UserAircraft.CleanUpDupes();
-        lblAircraftStatus.Text = cDupes == 0 ? Resources.Admin.NoDupesFound : String.Format(CultureInfo.CurrentCulture, Resources.Admin.DupesFound, cDupes);
-    }
-
-    static Regex regexPseudoSim = new Regex("N[a-zA-Z-]+([0-9].*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    static readonly Regex regexPseudoSim = new Regex("N[a-zA-Z-]+([0-9].*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     protected void gvPseudoGeneric_RowDataBound(object sender, GridViewRowEventArgs e)
     {

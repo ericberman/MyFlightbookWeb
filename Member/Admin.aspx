@@ -98,11 +98,6 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <asp:Button ID="btnDeleteDupeUA" runat="server" Width="100%" OnClick="btnDeleteDupeUA_Click" Text="Delete Dupe User Aircraft" /></td>
-                                <td>Delete any aircraft that are in a user's account multiple times</td>
-                            </tr>
-                            <tr>
-                                <td>
                                     <asp:Button ID="btnManageCountryCodes" runat="server" Width="100%" OnClick="btnManageCountryCodes_Click" Text="Country Codes" /></td>
                                 <td>Country codes
                                 </td>
