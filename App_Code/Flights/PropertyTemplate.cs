@@ -357,8 +357,6 @@ namespace MyFlightbook.Templates
         {
             if (String.IsNullOrWhiteSpace(szUser))
                 throw new MyFlightbookValidationException("Trying to consume for empty user");
-            if (String.IsNullOrWhiteSpace(OriginalOwner))
-                throw new MyFlightbookValidationException("Consumed templates need an original owner");
             if (!IsPublic)
                 throw new MyFlightbookValidationException("Can't consume a non-published template");
             UserPropertyTemplate upt = new UserPropertyTemplate();
@@ -376,8 +374,9 @@ namespace MyFlightbook.Templates
         /// Returns the property templates for the specified user.  Cached for performance
         /// </summary>
         /// <param name="szUser"></param>
+        /// <param name="fIncludeAutomatic">True if automatic templates shoudl be included</param>
         /// <returns></returns>
-        public static IEnumerable<PropertyTemplate> TemplatesForUser(string szUser)
+        public static IEnumerable<PropertyTemplate> TemplatesForUser(string szUser, bool fIncludeAutomatic = true)
         {
             List<PropertyTemplate> lst = CachedTemplatesForUser(szUser);
 
@@ -395,7 +394,8 @@ namespace MyFlightbook.Templates
             // But do it in a NEW list so as not to affect what's in the cache
             // We do this fresh every time, since MRUPropertyTemplate could have changed (due to blacklisting), but is itself cached.
             List<PropertyTemplate> lstResult = new List<PropertyTemplate>(lst);
-            lstResult.AddRange(new PropertyTemplate[] { new MRUPropertyTemplate(szUser), new SimPropertyTemplate(), new AnonymousPropertyTemplate() });
+            if (fIncludeAutomatic)
+                lstResult.AddRange(new PropertyTemplate[] { new MRUPropertyTemplate(szUser), new SimPropertyTemplate(), new AnonymousPropertyTemplate() });
             return lstResult;
         }
 
@@ -471,7 +471,7 @@ namespace MyFlightbook.Templates
         public PropertyTemplateEventArgs(PropertyTemplate pt) : base()
         {
             Template = pt;
-            TemplateID = pt.ID;
+            TemplateID = pt == null ? (int) KnownTemplateIDs.ID_NEW : pt.ID;
         }
 
         public PropertyTemplateEventArgs(int id) : base()

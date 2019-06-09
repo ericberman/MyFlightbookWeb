@@ -1129,6 +1129,9 @@ Proceed with import?</value>
   <data name="templateGroupLessons" xml:space="preserve">
     <value>Lesson Plans</value>
   </data>
+  <data name="TemplateAircraftHeader" xml:space="preserve">
+    <value>Templates for this aircraft:</value>
+  </data>
   <data name="TemplateDefaultHeader" xml:space="preserve">
     <value>Use by&lt;br /&gt;default</value>
   </data>

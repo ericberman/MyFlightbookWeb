@@ -41,12 +41,21 @@ public partial class Controls_mfbSelectTemplates : System.Web.UI.UserControl
     public IEnumerable<TemplateCollection> GroupedTemplates { get; set; }
 
     protected IEnumerable<PropertyTemplate> UserTemplates { get; set; }
+
+    private bool m_includeAutoTemplates = true;
+    /// <summary>
+    /// If true (default), automatic templates are included for selection
+    /// </summary>
+    public bool IncludeAutomaticTemplates
+    {
+        get { return m_includeAutoTemplates; }
+        set { m_includeAutoTemplates = value; }
+    }
     #endregion
 
     public void AddTemplate(int id)
     {
         ActiveTemplates.Add(id);
-        Refresh();
     }
 
     public void AddTemplates(IEnumerable<PropertyTemplate> rgpt)
@@ -55,32 +64,33 @@ public partial class Controls_mfbSelectTemplates : System.Web.UI.UserControl
             return;
         foreach (PropertyTemplate pt in rgpt)
             ActiveTemplates.Add(pt.ID);
-        Refresh();
     }
 
     public void RemoveTemplate(int id)
     {
         ActiveTemplates.Remove(id);
-        Refresh();
+    }
+
+    public void RemoveAllTemplates()
+    {
+        ActiveTemplates.Clear();
     }
 
     public void Refresh()
     {
-        rptTemplates.DataSource = GroupedTemplates;
-        rptTemplates.DataBind();
+        rptGroups.DataSource = GroupedTemplates;
+        rptGroups.DataBind();
     }
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        UserTemplates = UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name);
+        UserTemplates = UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name, IncludeAutomaticTemplates);
         GroupedTemplates = TemplateCollection.GroupTemplates(UserTemplates);
 
-        if (!IsPostBack)
-        {
-            Refresh();
-            if (TemplatesReady != null)
-                TemplatesReady(this, new EventArgs());
-        }
+        // No viewstate - refresh every time.
+        Refresh();
+        if (TemplatesReady != null)
+            TemplatesReady(this, new EventArgs());
     }
 
     protected void ckActive_CheckedChanged(object sender, EventArgs e)

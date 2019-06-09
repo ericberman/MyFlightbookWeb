@@ -845,6 +845,11 @@ namespace MyFlightbook
         public string PrivateNotes { get; set; }
 
         /// <summary>
+        /// The ID's of any property templates that should be used by default for flights in this aircraft
+        /// </summary>
+        public HashSet<int> DefaultTemplates { get; private set; }
+
+        /// <summary>
         /// Is this an anonymous aircraft?
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
@@ -905,6 +910,7 @@ namespace MyFlightbook
             ErrorString = ModelCommonName = ModelDescription = InstanceTypeDescription = string.Empty;
             MaintenanceChanges = new List<MaintenanceLog>();
             m_mr = new MaintenanceRecord();
+            DefaultTemplates = new HashSet<int>();
         }
 
         internal protected Aircraft(MySqlDataReader dr) : this()
@@ -918,7 +924,7 @@ namespace MyFlightbook
         /// <param name="id"></param>
         public Aircraft(int id) : this()
         {
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", " WHERE aircraft.idAircraft=?idAircraft") + " LIMIT 1");
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", " WHERE aircraft.idAircraft=?idAircraft") + " LIMIT 1");
             dbh.ReadRow(
                 (comm) => { comm.Parameters.AddWithValue("idAircraft", id); },
                 (dr) => { InitFromDataReader(dr); });
@@ -974,6 +980,10 @@ namespace MyFlightbook
             PublicNotes = Convert.ToString(dr["PublicNotes"], CultureInfo.InvariantCulture) ?? string.Empty;
             PrivateNotes = Convert.ToString(dr["UserNotes"], CultureInfo.InvariantCulture) ?? string.Empty;
             DefaultImage = Convert.ToString(dr["DefaultImage"], CultureInfo.InvariantCulture) ?? string.Empty;
+            int[] rgTemplateIDs = JsonConvert.DeserializeObject<int[]>(util.ReadNullableString(dr, "TemplateIDs"));
+            if (rgTemplateIDs != null)
+                foreach (int i in rgTemplateIDs)
+                    DefaultTemplates.Add(i);
         }
 
         /// <summary>
@@ -994,7 +1004,7 @@ namespace MyFlightbook
         public static IEnumerable<Aircraft> AircraftFromIDs(IEnumerable<int> ids)
         {
             string szIDs = String.Join(",", ids);
-            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", String.Format(CultureInfo.InvariantCulture, " WHERE aircraft.idAircraft in ({0})", szIDs)));
+            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture, " WHERE aircraft.idAircraft in ({0})", szIDs)));
             List<Aircraft> lst = new List<Aircraft>();
             new DBHelper(dba).ReadRows(
                 (comm) => { },
@@ -1020,7 +1030,7 @@ namespace MyFlightbook
                 maxCount = 10;
 
             szPrefix = Regex.Replace(szPrefix, "[^a-zA-Z0-9]", string.Empty) + "%";
-            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", " WHERE REPLACE(aircraft.TailNumber, '-', '') LIKE ?prefix") + String.Format(CultureInfo.InvariantCulture, " LIMIT {0}", maxCount));
+            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", " WHERE REPLACE(aircraft.TailNumber, '-', '') LIKE ?prefix") + String.Format(CultureInfo.InvariantCulture, " LIMIT {0}", maxCount));
             new DBHelper(dba).ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("prefix", szPrefix); },
                 (dr) => { lst.Add(new Aircraft(dr)); }
@@ -1285,7 +1295,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                 (int) AircraftInstanceTypes.RealAircraft,
                 szNaked);
 
-            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", szQInvalid);
+            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", szQInvalid);
 
             DBHelper dbh = new DBHelper(szQ);
             dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new Aircraft(dr)); });
@@ -1838,7 +1848,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         /// </summary>
         private static string AircraftByTailQuery
         {
-            get { return String.Format(CultureInfo.InvariantCulture,ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "WHERE REPLACE(UPPER(tailnumber), '-', '')=?tailNum"); }
+            get { return String.Format(CultureInfo.InvariantCulture,ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", "WHERE REPLACE(UPPER(tailnumber), '-', '')=?tailNum"); }
         }
 
         /// <summary>
@@ -1849,7 +1859,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         /// <returns>The list of matching tailnumbers</returns>
         public static List<Aircraft> AircraftByTailListQuery(IEnumerable<string> lstTails)
         {
-            string szQ = String.Format(CultureInfo.InvariantCulture,ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", String.Format(CultureInfo.InvariantCulture,"WHERE REPLACE(UPPER(tailnumber), '-', '') IN ('{0}')", String.Join("', '", lstTails)));
+            string szQ = String.Format(CultureInfo.InvariantCulture,ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture,"WHERE REPLACE(UPPER(tailnumber), '-', '') IN ('{0}')", String.Join("', '", lstTails)));
 
             List<Aircraft> lst = new List<Aircraft>();
 

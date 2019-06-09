@@ -1,5 +1,7 @@
 ﻿using MyFlightbook;
+using MyFlightbook.Templates;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web.UI;
@@ -55,7 +57,21 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
 
             // Show aircraft capabilities too.
             Controls_popmenu popup = (Controls_popmenu)e.Row.FindControl("popmenu1");
-            ((RadioButtonList)popup.FindControl("rblRole")).SelectedValue = ac.RoleForPilot.ToString();
+            switch (ac.RoleForPilot)
+            {
+                case Aircraft.PilotRole.None:
+                    ((RadioButton)popup.FindControl("rbRoleNone")).Checked = true;
+                    break;
+                case Aircraft.PilotRole.CFI:
+                    ((RadioButton)popup.FindControl("rbRoleCFI")).Checked = true;
+                    break;
+                case Aircraft.PilotRole.SIC:
+                    ((RadioButton)popup.FindControl("rbRoleSIC")).Checked = true;
+                    break;
+                case Aircraft.PilotRole.PIC:
+                    ((RadioButton)popup.FindControl("rbRolePIC")).Checked = true;
+                    break;
+            }
             ((CheckBox)popup.FindControl("ckShowInFavorites")).Checked = !ac.HideFromSelection;
             ((CheckBox)popup.FindControl("ckAddNameAsPIC")).Checked = ac.CopyPICNameWithCrossfill;
 
@@ -81,6 +97,12 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
                 rpt.DataSource = lst;
                 rpt.DataBind();
             }
+
+            Controls_mfbSelectTemplates selectTemplates = (Controls_mfbSelectTemplates)popup.FindControl("mfbSelectTemplates");
+            foreach (int i in ac.DefaultTemplates)
+                selectTemplates.AddTemplate(i);
+
+            selectTemplates.Refresh();
 
             if (IsAdminMode)
             {
@@ -139,15 +161,34 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
         return null;
     }
 
-    protected void rblRole_SelectedIndexChanged(object sender, EventArgs e)
+    protected void SelectRole(Control sender, Aircraft.PilotRole role)
     {
-        RadioButtonList rbl = (RadioButtonList)sender;
-        Aircraft ac = RowFromControl(rbl);
-        ac.RoleForPilot = (Aircraft.PilotRole)Enum.Parse(typeof(Aircraft.PilotRole), rbl.SelectedValue);
+        Aircraft ac = RowFromControl(sender);
+        ac.RoleForPilot = role;
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         ua.FAddAircraftForUser(ac);
         if (AircraftPrefChanged != null)
-            AircraftPrefChanged(this, e);
+            AircraftPrefChanged(this, new EventArgs());
+    }
+
+    protected void rbRoleCFI_CheckedChanged(object sender, EventArgs e)
+    {
+        SelectRole((Control) sender, Aircraft.PilotRole.CFI);
+    }
+
+    protected void rbRolePIC_CheckedChanged(object sender, EventArgs e)
+    {
+        SelectRole((Control)sender, Aircraft.PilotRole.PIC);
+    }
+
+    protected void rbRoleSIC_CheckedChanged(object sender, EventArgs e)
+    {
+        SelectRole((Control)sender, Aircraft.PilotRole.SIC);
+    }
+
+    protected void rbRoleNone_CheckedChanged(object sender, EventArgs e)
+    {
+        SelectRole((Control)sender, Aircraft.PilotRole.None);
     }
 
     protected void ckShowInFavorites_CheckedChanged(object sender, EventArgs e)
@@ -163,9 +204,48 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
 
     protected void ckAddNameAsPIC_CheckedChanged(object sender, EventArgs e)
     {
+        if (sender == null)
+            throw new ArgumentNullException("sender");
         CheckBox ck = (CheckBox)sender;
         Aircraft ac = RowFromControl(ck);
         ac.CopyPICNameWithCrossfill = ck.Checked;
+        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+        ua.FAddAircraftForUser(ac);
+        if (AircraftPrefChanged != null)
+            AircraftPrefChanged(this, e);
+    }
+
+    protected void mfbSelectTemplates_TemplatesReady(object sender, EventArgs e)
+    {
+        if (sender == null)
+            throw new ArgumentNullException("sender");
+
+        Controls_mfbSelectTemplates selectTemplates = sender as Controls_mfbSelectTemplates;
+        // Hide the pop menu if only automatic templates are available
+        if (selectTemplates.GroupedTemplates.Count() == 1 && selectTemplates.GroupedTemplates.ElementAt(0).Group == PropertyTemplateGroup.Automatic)
+            mfbSelectTemplates.Visible = false;
+    }
+
+    protected void mfbSelectTemplates_TemplateSelected(object sender, PropertyTemplateEventArgs e)
+    {
+        if (sender == null)
+            throw new ArgumentNullException("sender");
+
+        Aircraft ac = RowFromControl(sender as Control);
+        ac.DefaultTemplates.Add(e.TemplateID);
+        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+        ua.FAddAircraftForUser(ac);
+        if (AircraftPrefChanged != null)
+            AircraftPrefChanged(this, e);
+    }
+
+    protected void mfbSelectTemplates_TemplateUnselected(object sender, PropertyTemplateEventArgs e)
+    {
+        if (sender == null)
+            throw new ArgumentNullException("sender");
+
+        Aircraft ac = RowFromControl(sender as Control);
+        ac.DefaultTemplates.Remove(e.TemplateID);
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         ua.FAddAircraftForUser(ac);
         if (AircraftPrefChanged != null)

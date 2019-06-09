@@ -8,7 +8,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -350,7 +350,7 @@ namespace MyFlightbook
             string szRestrict = @"INNER JOIN useraircraft ON aircraft.idAircraft = useraircraft.idAircraft 
 INNER JOIN maintenancelog ON maintenancelog.user = useraircraft.userName AND maintenancelog.idaircraft = aircraft.idaircraft
 WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
-            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), "useraircraft.flags", "''", "''", szRestrict);
+            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), "useraircraft.flags", "''", "''", "''", szRestrict);
             ArrayList alar = new ArrayList();
 
             DBHelper dbh = new DBHelper(szQ);

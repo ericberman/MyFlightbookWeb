@@ -1,8 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbSelectTemplates.ascx.cs" Inherits="Controls_mfbSelectTemplates" %>
-<asp:Repeater ID="rptTemplates" runat="server">
+<asp:Repeater ID="rptGroups" runat="server" EnableViewState="false">
     <ItemTemplate>
         <div><asp:Label ID="lblGroupName" Font-Bold="true" Font-Size="Smaller" runat="server" Text='<%# Eval("GroupName") %>'></asp:Label></div>
-        <asp:Repeater ID="Repeater1" runat="server" DataSource='<%# Eval("Templates") %>' >
+        <asp:Repeater ID="rptTemplates" runat="server" DataSource='<%# Eval("Templates") %>' >
             <ItemTemplate>
                 <div>
                     <asp:HiddenField ID="hdnID" runat="server" Value='<%# Eval("ID") %>' />

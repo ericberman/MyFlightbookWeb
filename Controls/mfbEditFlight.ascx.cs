@@ -5,6 +5,7 @@ using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web;
@@ -497,6 +498,29 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         Aircraft ac = ua.GetUserAircraftByID(idAircraft);
         if (ac != null)
         {
+            mfbEditPropSet1.RemoveAllTemplates();
+            IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name, false);
+
+            HashSet<PropertyTemplate> defaultTemplates = new HashSet<PropertyTemplate>();
+            foreach (PropertyTemplate pt in rgpt)
+                if (pt.IsDefault)
+                    defaultTemplates.Add(pt);
+            HashSet<PropertyTemplate> aircraftTemplates = new HashSet<PropertyTemplate>();
+            foreach (int id in ac.DefaultTemplates)
+            {
+                PropertyTemplate pt = rgpt.FirstOrDefault(pt1 => pt1.ID == id);
+                if (pt != null)
+                    aircraftTemplates.Add(pt);
+            }
+
+            // if the aircraft has valid templates specified, use those
+            if (aircraftTemplates.Count > 0)
+                mfbEditPropSet1.AddTemplates(aircraftTemplates);
+            else if (defaultTemplates.Count > 0)
+                mfbEditPropSet1.AddTemplates(defaultTemplates);
+            else
+                mfbEditPropSet1.AddTemplate(new MRUPropertyTemplate(Page.User.Identity.Name));
+
             mfbEditPropSet1.RemoveTemplate((int)KnownTemplateIDs.ID_ANON);
             mfbEditPropSet1.RemoveTemplate((int)KnownTemplateIDs.ID_SIM);
 
@@ -510,6 +534,8 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             }
             else
                 mfbEditPropSet1.AddTemplate(new SimPropertyTemplate());
+
+            mfbEditPropSet1.Refresh();
         }
     }
 

@@ -1,14 +1,15 @@
-﻿using System;
+﻿using MyFlightbook.FlightCurrency;
+using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.Web;
-using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -20,7 +21,7 @@ namespace MyFlightbook
     /// </summary>
     public class UserAircraft
     {
-        private System.Web.SessionState.HttpSessionState m_session = null;
+        private readonly System.Web.SessionState.HttpSessionState m_session = null;
 
         public string User { get; set; }
 
@@ -71,6 +72,7 @@ namespace MyFlightbook
             string szFlags = "0";
             string szPrivateNotes = "''";
             string szDefaultImage = "''";
+            string szTemplates = "''";
 
             switch (restriction)
             {
@@ -85,13 +87,14 @@ namespace MyFlightbook
                     szFlags = "useraircraft.flags";
                     szPrivateNotes = "useraircraft.PrivateNotes";
                     szDefaultImage = "DefaultImage";
+                    szTemplates = "useraircraft.TemplateIDs";
                     break;
                 case AircraftRestriction.AllMakeModel:
                     szRestrict = " WHERE aircraft.idModel = ?idModel ";
                     break;
             }
 
-            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), szFlags, szDefaultImage, szPrivateNotes, szRestrict);
+            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), szFlags, szDefaultImage, szPrivateNotes, szTemplates, szRestrict);
             ArrayList alAircraft = new ArrayList();
 
             DBHelper dbh = new DBHelper(szQ);
@@ -191,8 +194,8 @@ namespace MyFlightbook
         public void FAddAircraftForUser(Aircraft ac)
         {
             DBHelper dbh = new DBHelper((CheckAircraftForUser(ac)) ?
-                "UPDATE useraircraft SET Flags=?acFlags, PrivateNotes=?userNotes, DefaultImage=?defImg WHERE userName=?username AND idAircraft=?AircraftID" :
-                "INSERT INTO useraircraft SET userName = ?username, idAircraft = ?AircraftID, Flags=?acflags, PrivateNotes=?userNotes, DefaultImage=?defImg");
+                "UPDATE useraircraft SET Flags=?acFlags, PrivateNotes=?userNotes, DefaultImage=?defImg, TemplateIDs=?templates WHERE userName=?username AND idAircraft=?AircraftID" :
+                "INSERT INTO useraircraft SET userName = ?username, idAircraft = ?AircraftID, Flags=?acflags, PrivateNotes=?userNotes, DefaultImage=?defImg, TemplateIDs=?templates");
             dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("username", User);
@@ -200,6 +203,7 @@ namespace MyFlightbook
                 comm.Parameters.AddWithValue("acflags", ac.FlagsValue);
                 comm.Parameters.AddWithValue("userNotes", String.IsNullOrEmpty(ac.PrivateNotes) ? null : ac.PrivateNotes.LimitTo(4094));
                 comm.Parameters.AddWithValue("defImg", String.IsNullOrEmpty(ac.DefaultImage) ? null : ac.DefaultImage.LimitTo(255));
+                comm.Parameters.AddWithValue("templates", ac.DefaultTemplates.Count == 0 ? null : JsonConvert.SerializeObject(ac.DefaultTemplates));
             });
             if (dbh.LastError.Length == 0)
                 InvalidateCache();

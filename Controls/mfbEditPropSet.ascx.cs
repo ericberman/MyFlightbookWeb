@@ -117,16 +117,32 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
 
     public void AddTemplate(PropertyTemplate pt)
     {
+        if (pt == null)
+            throw new ArgumentNullException("pt");
+
         ActiveTemplates.Add(pt);
         mfbSelectTemplates.AddTemplate(pt.ID);
-        RefreshList(null, true);
+    }
+
+    public void AddTemplates(IEnumerable<PropertyTemplate> rgpt)
+    {
+        if (rgpt == null)
+            throw new ArgumentNullException("rgpt");
+        foreach (PropertyTemplate pt in rgpt)
+            ActiveTemplates.Add(pt);
+        mfbSelectTemplates.AddTemplates(rgpt);
     }
 
     public void RemoveTemplate(int id)
     {
         ActiveTemplates.RemoveWhere(pt => pt.ID == id);
         mfbSelectTemplates.RemoveTemplate(id);
-        RefreshList(null, true);
+    }
+
+    public void RemoveAllTemplates()
+    {
+        ActiveTemplates.Clear();
+        mfbSelectTemplates.RemoveAllTemplates();
     }
 
     public void SetFlightProperties(IEnumerable<CustomFlightProperty> rgcfp)
@@ -294,6 +310,15 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         txtFilter.Text = string.Empty;
         cpeText.Collapsed = true;
         cpeText.ClientState = "true";
+        mfbSelectTemplates.Refresh();
+    }
+
+    /// <summary>
+    /// Refreshes the propset, stripping default values.
+    /// </summary>
+    public void Refresh()
+    {
+        RefreshList(null, true);
     }
 
     protected void cmbPropsToAdd_SelectedIndexChanged(object sender, EventArgs e)

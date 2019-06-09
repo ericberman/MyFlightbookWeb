@@ -37,7 +37,7 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         if (!IsPostBack)
         {
             if (ActiveTemplate == null)
-                ActiveTemplate = new UserPropertyTemplate() { Owner = Page.User.Identity.Name, OriginalOwner = Page.User.Identity.Name };
+                ActiveTemplate = new UserPropertyTemplate() { Owner = Page.User.Identity.Name, OriginalOwner = string.Empty };
 
             PropertyTemplateGroup[] rgGroups = (PropertyTemplateGroup[]) Enum.GetValues(typeof(PropertyTemplateGroup));
 
@@ -186,7 +186,25 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
 
     protected void imgDelete_Click(object sender, ImageClickEventArgs e)
     {
-        Target(sender as Control).Delete();
+        if (sender == null)
+            throw new ArgumentNullException("sender");
+
+        PersistablePropertyTemplate pt = Target(sender as Control);
+
+        // Remove this from any aircraft templates that it may be associated with
+        UserAircraft ua = new UserAircraft(pt.Owner);
+        IEnumerable<Aircraft> rgac = ua.GetAircraftForUser();
+        foreach (Aircraft ac in rgac)
+        {
+            if (ac.DefaultTemplates.Contains(pt.ID))
+            {
+                ac.DefaultTemplates.Remove(pt.ID);
+                ua.FAddAircraftForUser(ac);
+            }
+        }
+
+        pt.Delete();
+
         ToForm();
     }
 

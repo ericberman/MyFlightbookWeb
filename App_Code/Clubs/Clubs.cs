@@ -1,16 +1,16 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.Schedule;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Web;
-using MyFlightbook.Airports;
-using MyFlightbook.Schedule;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2018 MyFlightbook LLC
+ * Copyright (c) 2014-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -23,7 +23,6 @@ namespace MyFlightbook.Clubs
     [Serializable]
     public class Club
     {
-        private const UInt32 policyFlagNone = 0x00000000;
         private const UInt32 policyFlagRestrictApptEditing = 0x00000001;
         private const UInt32 policyFlagPrivateClub = 0x00000002;
         private const UInt32 policyFlagPrefixOwnerName = 0x00000004;
@@ -1131,7 +1130,7 @@ namespace MyFlightbook.Clubs
 
         public static List<ClubAircraft> AircraftForClub(int idclub)
         {
-            DBHelper dbh = new DBHelper(String.Format(ConfigurationManager.AppSettings["AircraftForUserCore"], "ca.idclub, ca.description, ca.highWaterMark, 0", "''", "''", " INNER JOIN clubaircraft ca ON aircraft.idaircraft=ca.idaircraft WHERE ca.idclub=?clubid "));
+            DBHelper dbh = new DBHelper(String.Format(ConfigurationManager.AppSettings["AircraftForUserCore"], "ca.idclub, ca.description, ca.highWaterMark, 0", "''", "''", "''", " INNER JOIN clubaircraft ca ON aircraft.idaircraft=ca.idaircraft WHERE ca.idclub=?clubid "));
             List<ClubAircraft> lst = new List<ClubAircraft>();
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("clubid", idclub); },
                 (dr) => { lst.Add(new ClubAircraft(dr)); });
