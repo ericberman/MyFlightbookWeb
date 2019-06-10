@@ -156,9 +156,8 @@ namespace MyFlightbook
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [ServiceContract]
     [System.Web.Script.Services.ScriptService]
-    public class MFBWebService : System.Web.Services.WebService
+    public class MFBWebService : WebService
     {
-
         private const long SecondsPerDay = (24 * 3600);
         private const long TicksPerSecond = (1000 * 10000);
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web;
+using System.Xml.Serialization;
 
 /******************************************************
  * 
@@ -23,7 +24,7 @@ namespace MyFlightbook.Templates
     /// PropertyTemplate - basic functionality, base class for other templates
     /// </summary>
     [Serializable]
-    public abstract class PropertyTemplate : IComparable
+    public class PropertyTemplate : IComparable
     {
         protected HashSet<int> m_propertyTypes = new HashSet<int>();
 
@@ -45,9 +46,19 @@ namespace MyFlightbook.Templates
         public PropertyTemplateGroup Group { get; set; }
 
         /// <summary>
-        /// The set of properties for this template
+        /// The set of properties for this template; unused except for serialization
         /// </summary>
-        public IEnumerable<int> PropertyTypes { get { return m_propertyTypes; } }
+        public int[] PropertyTypes
+        {
+            get { return m_propertyTypes.ToArray(); }
+            set
+            {
+                m_propertyTypes.Clear();
+                if (value != null)
+                    foreach (int i in value)
+                        m_propertyTypes.Add(i);
+            }
+        }
 
         /// <summary>
         /// Is this available for all users?
@@ -96,6 +107,20 @@ namespace MyFlightbook.Templates
             ID = (int) KnownTemplateIDs.ID_NEW;
             Name = Description = string.Empty;
             Group = PropertyTemplateGroup.Training;
+        }
+
+        public PropertyTemplate(PropertyTemplate ptSrc) : this()
+        {
+            if (ptSrc != null)
+            {
+                ID = ptSrc.ID;
+                Name = ptSrc.Name;
+                Description = ptSrc.Description;
+                Group = ptSrc.Group;
+                PropertyTypes = ptSrc.PropertyTypes;
+                IsPublic = ptSrc.IsPublic;
+                IsDefault = ptSrc.IsPublic;
+            }
         }
         #endregion
 
@@ -473,8 +498,8 @@ namespace MyFlightbook.Templates
     public class TemplatePropTypeBundle
     {
         #region Properties
-        public IEnumerable<CustomPropertyType> UserProperties { get; set; }
-        public IEnumerable<PropertyTemplate> UserTemplates { get; set; }
+        public CustomPropertyType[] UserProperties { get; set; }
+        public PropertyTemplate[] UserTemplates { get; set; }
         #endregion
 
         #region Constructors
@@ -487,7 +512,12 @@ namespace MyFlightbook.Templates
         public TemplatePropTypeBundle(string szUser) : this()
         {
             UserProperties = CustomPropertyType.GetCustomPropertyTypes(szUser);
-            UserTemplates = UserPropertyTemplate.TemplatesForUser(szUser, true);
+            // For serialization to work with propertytemplates, the objects need to actually be propertytemplates, not subclasses.
+            List<PropertyTemplate> lst = new List<PropertyTemplate>();
+            IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(szUser, true);
+            foreach (PropertyTemplate pt in rgpt)
+                lst.Add(new PropertyTemplate(pt));
+            UserTemplates = lst.ToArray();
         }
         #endregion
     }
