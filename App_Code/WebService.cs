@@ -3,6 +3,7 @@ using MyFlightbook.FlightCurrency;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
+using MyFlightbook.Templates;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -338,10 +339,12 @@ namespace MyFlightbook
                 // fix up hyphenation
                 szTail = Aircraft.NormalizeTail(szTail, CountryCodePrefix.BestMatchCountryCode(szTail));
 
-            Aircraft ac = new Aircraft();
-            ac.TailNumber = szTail;
-            ac.InstanceTypeID = idInstanceType;
-            ac.ModelID = idModel;
+            Aircraft ac = new Aircraft()
+            {
+                TailNumber = szTail,
+                InstanceTypeID = idInstanceType,
+                ModelID = idModel
+            };
             ac.Commit(szUser); // this will check for dupes and will add 
             EventRecorder.WriteEvent(EventRecorder.MFBEventID.CreateAircraft, szUser, String.Format(CultureInfo.InvariantCulture, "Create Aircraft - {0}", szTail));
 
@@ -546,9 +549,11 @@ namespace MyFlightbook
 
             SetCultureForRequest();
 
-            FlightQuery fq = new FlightQuery(szUser);
-            fq.DateRange = FlightQuery.DateRanges.Custom;
-            fq.DateMin = dtMin;
+            FlightQuery fq = new FlightQuery(szUser)
+            {
+                DateRange = FlightQuery.DateRanges.Custom,
+                DateMin = dtMin
+            };
             UserTotals ut = new UserTotals(szUser, fq, true);
             ut.DataBind();
             return ut.Totals.ToArray();
@@ -614,8 +619,12 @@ namespace MyFlightbook
                 { },
                 (dr) =>
                 {
-                    LogbookEntry le = new LogbookEntry(dr, fq.UserName); // Note: this has no telemetry
-                    le.FlightData = null; // don't even bother sending this field down the wire.
+                    LogbookEntry le = new LogbookEntry(dr, fq.UserName)
+                    {
+                        // Note: this has no telemetry
+                        // don't even bother sending this field down the wire.
+                        FlightData = null
+                    }; 
 
                     le.PopulateImages();
                     lstLe.Add(le);
@@ -701,7 +710,7 @@ namespace MyFlightbook
         }
 
         #region Flight Commit preparation/after-commit tasks
-        private static System.Object idempotencyLock = new System.Object();
+        private readonly static System.Object idempotencyLock = new System.Object();
 
         /// <summary>
         /// Validates a flight for submission and does any appropriate cleanup.  Throws MyFlightbookException on any validation failure
@@ -789,7 +798,7 @@ namespace MyFlightbook
             if (szAuthUserToken == null)
                 throw new ArgumentNullException("szAuthUserToken");
             if (po != null)
-                po = null;  // avoid warning about unused po
+                po.ToString();  // avoid warning about unused po
 
             string szUser = GetEncryptedUser(szAuthUserToken);
 
@@ -805,9 +814,12 @@ namespace MyFlightbook
                 {
                     // Idempotency check: if this is a new flight, see if this is the same as any existing flight
                     // If so, return that flight.
-                    FlightQuery fq = new FlightQuery(szUser);
-                    fq.DateRange = FlightQuery.DateRanges.Custom;
-                    fq.DateMax = fq.DateMin = le.Date;
+                    FlightQuery fq = new FlightQuery(szUser)
+                    {
+                        DateRange = FlightQuery.DateRanges.Custom,
+                        DateMax = le.Date,
+                        DateMin = le.Date
+                    };
 
                     LogbookEntry[] rgleDupes = FlightsWithQuery(fq, 0, -1);
                     if (rgleDupes != null && rgleDupes.Length > 0)
@@ -911,6 +923,13 @@ namespace MyFlightbook
         {
             string szUser = GetEncryptedUser(szAuthUserToken);
             return CustomPropertyType.GetCustomPropertyTypes(szUser);
+        }
+
+        [WebMethod]
+        public TemplatePropTypeBundle PropertiesAndTemplatesForUser(string szAuthUserToken)
+        {
+            string szUser = GetEncryptedUser(szAuthUserToken);
+            return new TemplatePropTypeBundle(szUser);
         }
 
         /// <summary>
@@ -1119,7 +1138,7 @@ namespace MyFlightbook
             return null;
         }
 
-        private static System.Object lockObject = new System.Object();
+        private readonly static System.Object lockObject = new System.Object();
 
         /// <summary>
         /// Create a new user
