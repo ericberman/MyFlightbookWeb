@@ -48,16 +48,10 @@ namespace MyFlightbook.Templates
         /// <summary>
         /// The set of properties for this template; unused except for serialization
         /// </summary>
-        public int[] PropertyTypes
+        public HashSet<int> PropertyTypes
         {
-            get { return m_propertyTypes.ToArray(); }
-            set
-            {
-                m_propertyTypes.Clear();
-                if (value != null)
-                    foreach (int i in value)
-                        m_propertyTypes.Add(i);
-            }
+            get { return m_propertyTypes; }
+            private set { m_propertyTypes = value; }
         }
 
         /// <summary>
