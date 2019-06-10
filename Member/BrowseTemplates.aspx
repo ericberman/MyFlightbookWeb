@@ -22,10 +22,10 @@
                                     <asp:TemplateField ItemStyle-VerticalAlign="Top">
                                         <ItemTemplate>
                                             <div>
-                                                <span style="font-weight:bold"><%#: Eval("Name") %></span>
+                                                <span style="font-weight:bold; font-size: larger"><%#: Eval("Name") %></span>
                                                 <span><%# ((string) Eval("Description")).Linkify(true) %></span>
                                             </div>
-                                            <div class="fineprint" style="font-style:italic"><%# String.Join(" ● ", (IEnumerable<string>) Eval("PropertyNames")) %></div>
+                                            <div class="fineprint" style="font-style:italic; color: #555555; margin-left: 2em"><%# String.Join(" ● ", (IEnumerable<string>) Eval("PropertyNames")) %></div>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField ItemStyle-VerticalAlign="Top" ItemStyle-HorizontalAlign="Right">

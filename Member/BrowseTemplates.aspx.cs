@@ -92,7 +92,7 @@ public partial class Member_BrowseTemplates : System.Web.UI.Page
 
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            PropertyTemplate pt = (PropertyTemplate)e.Row.DataItem;
+            UserPropertyTemplate pt = (UserPropertyTemplate)e.Row.DataItem;
 
             bool fOwned = pt.Owner.CompareCurrentCultureIgnoreCase(User.Identity.Name) == 0;
 

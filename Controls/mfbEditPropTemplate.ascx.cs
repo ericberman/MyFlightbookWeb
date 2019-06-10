@@ -163,7 +163,7 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
 
         if (ck.Checked)
         {
-            List<PropertyTemplate> lst = new List<PropertyTemplate>(UserPropertyTemplate.PublicTemplates());
+            List<UserPropertyTemplate> lst = new List<UserPropertyTemplate>(UserPropertyTemplate.PublicTemplates());
             if (lst.Find(ptPublic => ptPublic.Name.CompareCurrentCultureIgnoreCase(pt.Name) == 0 && ptPublic.Owner.CompareCurrentCultureIgnoreCase(pt.Owner) != 0) != null)
             {
                 ((Label) ck.NamingContainer.FindControl("lblPublicErr")).Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateDuplicateSharedName, pt.Name);

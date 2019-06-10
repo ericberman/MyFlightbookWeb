@@ -19,7 +19,6 @@ namespace MyFlightbook.Templates
 
     public enum KnownTemplateIDs { None = 0, ID_NEW = -1, ID_MRU = -2, ID_SIM = -3, ID_ANON = -4 }
 
-
     /// <summary>
     /// PropertyTemplate - basic functionality, base class for other templates
     /// </summary>
@@ -39,16 +38,6 @@ namespace MyFlightbook.Templates
         /// Description of what this template does
         /// </summary>
         public string Description { get; set; }
-
-        /// <summary>
-        /// Owner of the template - empty if public
-        /// </summary>
-        public string Owner { get; set; }
-
-        /// <summary>
-        /// Original creator of the template (for public templates)
-        /// </summary>
-        public string OriginalOwner { get; set; }
 
         /// <summary>
         /// what group does this propertytemplate fall under?
@@ -105,7 +94,7 @@ namespace MyFlightbook.Templates
         public PropertyTemplate()
         {
             ID = (int) KnownTemplateIDs.ID_NEW;
-            Name = Description = Owner = OriginalOwner = string.Empty;
+            Name = Description = string.Empty;
             Group = PropertyTemplateGroup.Training;
         }
         #endregion
@@ -180,7 +169,6 @@ namespace MyFlightbook.Templates
 
         public MRUPropertyTemplate(string szuser) : this()
         {
-            Owner = OriginalOwner = szuser;
             m_propertyTypes.Clear();
             CustomPropertyType[] rgTypes = CustomPropertyType.GetCustomPropertyTypes(szuser);
             foreach (CustomPropertyType cpt in rgTypes)
@@ -223,11 +211,24 @@ namespace MyFlightbook.Templates
     public abstract class PersistablePropertyTemplate : PropertyTemplate
     {
         #region Properties
+        /// <summary>
+        /// Owner of the template - empty if public
+        /// </summary>
+        public string Owner { get; set; }
+
+        /// <summary>
+        /// Original creator of the template (for public templates)
+        /// </summary>
+        public string OriginalOwner { get; set; }
+
         public override bool IsMutable { get { return true; } }
         #endregion
 
         #region Constructors
-        protected PersistablePropertyTemplate() : base() { }
+        protected PersistablePropertyTemplate() : base()
+        {
+            Owner = OriginalOwner = string.Empty;
+        }
 
         protected PersistablePropertyTemplate(MySqlDataReader dr) : this()
         {
@@ -403,9 +404,9 @@ namespace MyFlightbook.Templates
         /// Returns all public property templates
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<PropertyTemplate> PublicTemplates()
+        public static IEnumerable<UserPropertyTemplate> PublicTemplates()
         {
-            List<PropertyTemplate> lst = new List<PropertyTemplate>();
+            List<UserPropertyTemplate> lst = new List<UserPropertyTemplate>();
             DBHelper dbh = new DBHelper("SELECT * FROM propertytemplate WHERE public <> 0");
             dbh.ReadRows((comm) => { },
             (dr) => { lst.Add(new UserPropertyTemplate(dr)); });
@@ -460,6 +461,29 @@ namespace MyFlightbook.Templates
         {
             return Group.CompareTo(((TemplateCollection)obj).Group);
         }
+    }
+
+    [Serializable]
+    public class TemplatePropTypeBundle
+    {
+        #region Properties
+        public IEnumerable<CustomPropertyType> UserProperties { get; set; }
+        public IEnumerable<PropertyTemplate> UserTemplates { get; set; }
+        #endregion
+
+        #region Constructors
+        public TemplatePropTypeBundle()
+        {
+            UserProperties = new CustomPropertyType[0];
+            UserTemplates = new PropertyTemplate[0];
+        }
+
+        public TemplatePropTypeBundle(string szUser) : this()
+        {
+            UserProperties = CustomPropertyType.GetCustomPropertyTypes(szUser);
+            UserTemplates = UserPropertyTemplate.TemplatesForUser(szUser, true);
+        }
+        #endregion
     }
 
     public class PropertyTemplateEventArgs : EventArgs

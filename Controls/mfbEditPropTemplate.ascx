@@ -34,10 +34,10 @@
                                 </td>
                                 <td style="padding: 3px;">
                                     <div>
-                                        <span style="font-weight:bold"><%#: Eval("Name") %></span>
+                                        <span style="font-weight:bold; font-size:larger"><%#: Eval("Name") %></span>
                                         <span><%# ((string) Eval("Description")).Linkify(true) %></span>
                                     </div>
-                                    <div class="fineprint" style="font-style:italic"><%# String.Join(" ● ", (IEnumerable<string>) Eval("PropertyNames")) %></div>
+                                    <div class="fineprint" style="font-style:italic; color: #555555; margin-left: 2em"><%# String.Join(" ● ", (IEnumerable<string>) Eval("PropertyNames")) %></div>
                                     <div><asp:Label ID="lblPublicErr" runat="server" CssClass="error" EnableViewState="false"></asp:Label></div>
                                 </td>
                                 <td style="padding: 3px; text-align:center;">
@@ -93,14 +93,14 @@
                 <tr>
                     <td><asp:Label ID="lblNamePrompt" runat="server" Text="<%$ Resources:LogbookEntry, TemplateNamePrompt %>"></asp:Label></td>
                     <td colspan="2">
-                        <asp:TextBox ID="txtTemplateName" runat="server"></asp:TextBox>
+                        <asp:TextBox ID="txtTemplateName" runat="server" Width="100%"></asp:TextBox>
                         <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" TargetControlID="txtTemplateName" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LogbookEntry, TemplateNameWatermark %>" runat="server" />
                         <asp:RequiredFieldValidator ID="reqTemplateName" ValidationGroup="vgPropTemplate" runat="server" ErrorMessage="<%$ Resources:LogbookEntry, errTemplateNoName %>" ControlToValidate="txtTemplateName" CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
                     </td>
                 </tr>
                 <tr>
                     <td><asp:Label ID="lblDescPrompt" runat="server" Text="<%$ Resources:LogbookEntry, TemplateDescriptionPrompt %>"></asp:Label></td>
-                    <td colspan="2"><asp:TextBox ID="txtDescription" runat="server" TextMode="MultiLine" Rows="3"></asp:TextBox></td>
+                    <td colspan="2"><asp:TextBox ID="txtDescription" runat="server" Width="100%" TextMode="MultiLine" Rows="3"></asp:TextBox></td>
                 </tr>
                 <tr>
                     <td><asp:Label ID="lblCategoryPrompt" runat="server" Text="<%$ Resources:LogbookEntry, TemplateCategoryPrompt %>"></asp:Label></td>
