@@ -459,13 +459,7 @@ namespace MyFlightbook.Templates
 
         public int CompareTo(object obj)
         {
-            TemplateCollection tc = obj as TemplateCollection;
-
-            // Automatic is always first - so if either this or the other is automatic, sort by ordinal value; otherwise, sort by name
-            if (Group == PropertyTemplateGroup.Automatic || tc.Group == PropertyTemplateGroup.Automatic)
-                return ((int)Group).CompareTo((int)tc.Group);
-            else
-                return PropertyTemplate.NameForGroup(Group).CompareCurrentCultureIgnoreCase(PropertyTemplate.NameForGroup(tc.Group));
+            return Group.CompareTo(((TemplateCollection)obj).Group);
         }
     }
 
