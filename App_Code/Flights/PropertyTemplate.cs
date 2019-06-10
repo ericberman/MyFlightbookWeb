@@ -46,6 +46,15 @@ namespace MyFlightbook.Templates
         public PropertyTemplateGroup Group { get; set; }
 
         /// <summary>
+        /// Display name for the group, for serialization.
+        /// </summary>
+        public string GroupDisplayName
+        {
+            get { return PropertyTemplate.NameForGroup(Group); }
+            set { /* Just for serialization */}
+        }
+
+        /// <summary>
         /// The set of properties for this template; unused except for serialization
         /// </summary>
         public HashSet<int> PropertyTypes
