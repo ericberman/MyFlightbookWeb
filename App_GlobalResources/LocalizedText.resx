@@ -194,17 +194,14 @@
             type being simulated (e.g., Cessna 172 or Boeing 757) and identify it as being a 
             simulator/FTD/ATD/etc.&amp;nbsp; The prefix &amp;quot;SIM&amp;quot; will be used for the 
             tailnumber of such aircraft, so you won&amp;#39;t have a tailnumber conflict with a real 
-            aircraft.&amp;nbsp; A tailnumber that doesn&amp;#39;t conflict 
-            with other existing simulator aircraft, or with another simulator that is not of 
-            the same certification level will also be proposed.&lt;/p&gt;
+            aircraft.
         &lt;p&gt;For example, if you have time in a Boeing 757 simulator, create an aircraft that 
             is a Boeing 757, identify it as being an FTD or ATD, and it will be given
             a tailnumber like &amp;quot;SIMB757.&amp;quot; Depending on the certification level, 
             approaches/landings/etc. in the SIMB757 would then count towards currency in a 
             Boeing 757.&lt;/p&gt;
        &lt;p&gt;When you record a flight in the sim, record the device's serial number or registration either in the comments for the flight, or, if you prefer, using the "Simulator/Training Device Identifier" property.&lt;/p&gt;
-        &lt;p&gt;You can quickly select from a list of existing simulators (and their 
-            certification levels) in the system &lt;a target="_blank" href="%APP_ROOT%/Member/BrowseSims.aspx" style="font-weight:bold"&gt;here&lt;/a&gt;.&lt;/p&gt;</value>
+    </value>
   </data>
   <data name="ATDFTDNoticeHead" xml:space="preserve">
     <value>Please read: Simulators/FTDs/ATDs</value>
