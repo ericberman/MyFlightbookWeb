@@ -708,11 +708,12 @@ namespace MyFlightbook.Achievements
         }
     }
 
-#region Concrete Badge Classes
+    #region Concrete Badge Classes
     #region Training Badges
     /// <summary>
     /// First flight is a training flight
     /// </summary>
+    [Serializable]
     public class TrainingBadgeBegan : Badge
     {
         bool fSeen1stFlight = false;
@@ -742,6 +743,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// Badge for first solo
     /// </summary>
+    [Serializable]
     public class TrainingBadgeFirstSolo : Badge
     {
         public TrainingBadgeFirstSolo() : base(BadgeID.FirstSolo, Resources.Achievements.nameFirstSolo)
@@ -767,6 +769,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// Badge for first night landing
     /// </summary>
+    [Serializable]
     public class TrainingBadgeFirstNightLanding : Badge
     {
         bool fSeenFirstLanding = false;
@@ -793,6 +796,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// Badge for first Cross-country flight
     /// </summary>
+    [Serializable]
     public class TrainingBadgeFirstXC : Badge
     {
         bool fSeen1stXC = false;
@@ -819,6 +823,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// Badge for first solo cross-country flight
     /// </summary>
+    [Serializable]
     public class TrainingBadgeFirstSoloXC : Badge
     {
         bool fSeen1stXC = false;
@@ -844,6 +849,7 @@ namespace MyFlightbook.Achievements
     #endregion
 
     #region Miscelaneous badges
+    [Serializable]
     public class FlightOfThePenguin : Badge
     {
         public FlightOfThePenguin() : base(BadgeID.Antarctica, Resources.Achievements.nameAntarctica) { }
@@ -878,6 +884,7 @@ namespace MyFlightbook.Achievements
     #endregion
 
     #region Multi-level badges based on integer counts
+    [Serializable]
     public abstract class MultiLevelCountBadgeBase : Badge
     {
         protected int[] Levels {get; set;}
@@ -935,6 +942,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// Multi-level badge for number of flights.
     /// </summary>
+    [Serializable]
     public class MultiLevelBadgeNumberFlights : MultiLevelCountBadgeBase
     {
         public MultiLevelBadgeNumberFlights()
@@ -951,6 +959,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// Multi-level badge for flying a given number of models of aircraft
     /// </summary>
+    [Serializable]
     public class MultiLevelBadgeNumberModels : MultiLevelCountBadgeBase
     {
         readonly private HashSet<string> hsModelsFlown = new HashSet<string>();
@@ -975,6 +984,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// Multi-level badge for flying a given number of distinct aircraft
     /// </summary>
+    [Serializable]
     public class MultiLevelBadgeNumberAircraft : MultiLevelCountBadgeBase
     {
         readonly private HashSet<int> lstAircraftFlown = new HashSet<int>();
@@ -997,6 +1007,7 @@ namespace MyFlightbook.Achievements
     }
 
     /// Multi-level badge for number of airports visited
+    [Serializable]
     public class MultiLevelBadgeNumberAirports : MultiLevelCountBadgeBase
     {
         public MultiLevelBadgeNumberAirports()
@@ -1029,6 +1040,7 @@ namespace MyFlightbook.Achievements
     }
 
     /// Multi-level badge for total time
+    [Serializable]
     public class MultiLevelBadgeTotalTime : MultiLevelCountBadgeBase
     {
         public MultiLevelBadgeTotalTime()
@@ -1045,6 +1057,7 @@ namespace MyFlightbook.Achievements
     }
 
     /// Multi-level badge for PIC time
+    [Serializable]
     public class MultiLevelBadgePICTime : MultiLevelCountBadgeBase
     {
         public MultiLevelBadgePICTime()
@@ -1061,6 +1074,7 @@ namespace MyFlightbook.Achievements
     }
 
     /// Multi-level badge for total time
+    [Serializable]
     public class MultiLevelBadgeSICTime : MultiLevelCountBadgeBase
     {
         public MultiLevelBadgeSICTime()
@@ -1077,6 +1091,7 @@ namespace MyFlightbook.Achievements
     }
 
     /// Multi-level badge for total time
+    [Serializable]
     public class MultiLevelBadgeCFITime : MultiLevelCountBadgeBase
     {
         public MultiLevelBadgeCFITime()
@@ -1093,6 +1108,7 @@ namespace MyFlightbook.Achievements
     }
 
     /// Multi-level badge for IMC time
+    [Serializable]
     public class MultiLevelBadgeIMCTime : MultiLevelCountBadgeBase
     {
         public override string BadgeImageOverlay
@@ -1114,6 +1130,7 @@ namespace MyFlightbook.Achievements
     }
 
     /// Multi-level badge for Night time
+    [Serializable]
     public class MultiLevelBadgeNightTime : MultiLevelCountBadgeBase
     {
         public override string BadgeImageOverlay
@@ -1135,6 +1152,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// Multi-level badge for landings
     /// </summary>
+    [Serializable]
     public class MultiLevelBadgeLandings : MultiLevelCountBadgeBase
     {
         public MultiLevelBadgeLandings() : base(BadgeID.NumberOfLandings, Resources.Achievements.nameNumberLandings, 500, 1000, 2500, 5000) { }
@@ -1150,6 +1168,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// Multi-level badge for approaches
     /// </summary>
+    [Serializable]
     public class MultiLevelBadgeApproaches : MultiLevelCountBadgeBase
     {
         public MultiLevelBadgeApproaches() : base(BadgeID.NumberOfApproaches, Resources.Achievements.nameNumberApproaches, 100, 250, 500, 1000) { }
@@ -1162,6 +1181,7 @@ namespace MyFlightbook.Achievements
         }
     }
 
+    [Serializable]
     public class MultiLevelBadgeContinents : MultiLevelCountBadgeBase
     {
         public MultiLevelBadgeContinents() : base(BadgeID.NumberOfContinents, Resources.Achievements.nameContinents, 2, 3, 4, 6) { }
@@ -1200,6 +1220,7 @@ namespace MyFlightbook.Achievements
         }
     }
 
+    [Serializable]
     public class MultiLevelBadgeFlyingStreak : MultiLevelCountBadgeBase
     {
         int daysInARow = 0;
@@ -1291,6 +1312,7 @@ namespace MyFlightbook.Achievements
         }
     }
 
+    [Serializable]
     public class AirportListBadge : MultiLevelCountBadgeBase
     {
         protected AirportListBadgeData m_badgeData { get; set; }
