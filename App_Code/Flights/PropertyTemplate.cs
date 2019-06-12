@@ -122,7 +122,7 @@ namespace MyFlightbook.Templates
                 Group = ptSrc.Group;
                 PropertyTypes = ptSrc.PropertyTypes;
                 IsPublic = ptSrc.IsPublic;
-                IsDefault = ptSrc.IsPublic;
+                IsDefault = ptSrc.IsDefault;
             }
         }
         #endregion
