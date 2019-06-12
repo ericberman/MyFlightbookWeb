@@ -1597,6 +1597,21 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             dbh.CommandText = "UPDATE scheduledEvents se SET se.resourceid=?idAircraftNew WHERE se.resourceid=?idAircraftOld";
             dbh.DoNonQuery();
 
+            // User aircraft might already have the target, which can lead to a duplicate primary key error.
+            // So first find everybody that has both in their account; for them, we'll just delete the old (since it's redundant).
+            List<string> lstUsersWithBoth = new List<string>();
+            dbh.CommandText = "SELECT ua1.username FROM useraircraft ua1 INNER JOIN useraircraft ua2 ON ua1.username = ua2.username WHERE ua1.idaircraft=?idAircraftOld AND ua2.idaircraft=?idAircraftNew";
+            dbh.ReadRows((comm) => { }, (dr) => { lstUsersWithBoth.Add((string)dr["username"]); });
+            foreach (string szUser in lstUsersWithBoth)
+            {
+                DBHelper dbhDelete = new DBHelper("DELETE FROM useraircraft WHERE username=?user AND idAircraft=?idAircraftOld");
+                dbhDelete.DoNonQuery((comm) =>
+                {
+                    comm.Parameters.AddWithValue("user", szUser);
+                    comm.Parameters.AddWithValue("idAircraftOld", ac.AircraftID);
+                });
+            }
+            // should now be safe to map the remaining ones.
             dbh.CommandText = "UPDATE useraircraft ua SET ua.idAircraft=?idAircraftNew WHERE ua.idAircraft=?idAircraftOld";
             dbh.DoNonQuery();
 
