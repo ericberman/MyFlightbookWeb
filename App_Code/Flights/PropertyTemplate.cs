@@ -43,7 +43,17 @@ namespace MyFlightbook.Templates
         /// <summary>
         /// what group does this propertytemplate fall under?
         /// </summary>
+        [XmlIgnore]
         public PropertyTemplateGroup Group { get; set; }
+
+        /// <summary>
+        /// For serialization - allow groups as integers
+        /// </summary>
+        public int GroupAsInt
+        {
+            get { return (int)Group; }
+            set { Group = (PropertyTemplateGroup)value; }
+        }
 
         /// <summary>
         /// Display name for the group, for serialization.
