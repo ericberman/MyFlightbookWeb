@@ -64,11 +64,6 @@ namespace MyFlightbook.Templates
         }
 
         /// <summary>
-        /// Is this available for all users?
-        /// </summary>
-        public bool IsPublic { get; set; }
-
-        /// <summary>
         /// Should this be used by default for this user?  (Not mutually exclusive except with MRU)
         /// </summary>
         public bool IsDefault { get; set; }
@@ -121,7 +116,6 @@ namespace MyFlightbook.Templates
                 Description = ptSrc.Description;
                 Group = ptSrc.Group;
                 PropertyTypes = ptSrc.PropertyTypes;
-                IsPublic = ptSrc.IsPublic;
                 IsDefault = ptSrc.IsDefault;
             }
         }
@@ -262,6 +256,11 @@ namespace MyFlightbook.Templates
         {
             InitFromDataReader(dr);
         }
+
+        /// <summary>
+        /// Is this available for all users?
+        /// </summary>
+        public bool IsPublic { get; set; }
 
         protected PersistablePropertyTemplate(int id) : this()
         {
