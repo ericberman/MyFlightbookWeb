@@ -140,6 +140,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// A checkride - earns a license for a single privilege
     /// </summary>
+    [Serializable]
     public class Checkride : IComparable
     {
         #region Properties
