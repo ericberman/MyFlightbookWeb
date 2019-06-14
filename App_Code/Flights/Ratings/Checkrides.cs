@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -71,7 +71,7 @@ namespace MyFlightbook.Achievements
     /// </summary>
     public class PilotLicense : IComparable
     {
-        private List<string> m_privs;
+        private readonly List<string> m_privs;
 
         #region Properties
         /// <summary>
@@ -218,20 +218,20 @@ namespace MyFlightbook.Achievements
     {
         #region state as we describe ratings
         // level-based: a higher one replaces a lower one
-        private Dictionary<string, Checkride> dictSport = new Dictionary<string, Checkride>();
-        private Dictionary<string, Checkride> dictRecreational = new Dictionary<string, Checkride>();
-        private Dictionary<string, Checkride> dictPrivate = new Dictionary<string, Checkride>();
-        private Dictionary<string, Checkride> dictCommercial = new Dictionary<string, Checkride>();
-        private Dictionary<string, Checkride> dictATP = new Dictionary<string, Checkride>();
+        private readonly Dictionary<string, Checkride> dictSport = new Dictionary<string, Checkride>();
+        private readonly Dictionary<string, Checkride> dictRecreational = new Dictionary<string, Checkride>();
+        private readonly Dictionary<string, Checkride> dictPrivate = new Dictionary<string, Checkride>();
+        private readonly Dictionary<string, Checkride> dictCommercial = new Dictionary<string, Checkride>();
+        private readonly Dictionary<string, Checkride> dictATP = new Dictionary<string, Checkride>();
         private RatingLevel currentLevel = RatingLevel.None;
 
         // Not level based
-        private Dictionary<string, Checkride> dictInstrument = new Dictionary<string, Checkride>();
-        private Dictionary<string, Checkride> dictCFI = new Dictionary<string, Checkride>();
-        private Dictionary<string, Checkride> dictMEI = new Dictionary<string, Checkride>();
-        private Dictionary<string, Checkride> dictCFII = new Dictionary<string, Checkride>();
+        private readonly Dictionary<string, Checkride> dictInstrument = new Dictionary<string, Checkride>();
+        private readonly Dictionary<string, Checkride> dictCFI = new Dictionary<string, Checkride>();
+        private readonly Dictionary<string, Checkride> dictMEI = new Dictionary<string, Checkride>();
+        private readonly Dictionary<string, Checkride> dictCFII = new Dictionary<string, Checkride>();
 
-        private Dictionary<string, Checkride> dictNight = new Dictionary<string, Checkride>();
+        private readonly Dictionary<string, Checkride> dictNight = new Dictionary<string, Checkride>();
         #endregion
 
         #region Properties
@@ -557,9 +557,10 @@ namespace MyFlightbook.Achievements
         }
     }
 
+    [Serializable]
     public class CheckrideBadge : Badge
     {
-        private Checkride m_cr;
+        private readonly Checkride m_cr;
 
         public override void Commit()
         {
