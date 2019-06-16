@@ -386,6 +386,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
                 catch (ArgumentOutOfRangeException) { }
             }
 
+            int idAircraftOrigin = le.AircraftID;
             try
             {
                 le.AircraftID = Convert.ToInt32(cmbAircraft.SelectedValue, CultureInfo.InvariantCulture); // initialize the aircraft so that the landings auto-expands based on tailwheel 
@@ -394,6 +395,9 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             {
                 le.AircraftID = Aircraft.idAircraftUnknown;
             }
+
+            if (idAircraftOrigin != le.AircraftID)
+                SetTemplatesForAircraft(le.AircraftID);
             cpeFlightDetails.Collapsed = !CurrentUser.DisplayTimesByDefault;
         }
         else
@@ -501,10 +505,6 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             mfbEditPropSet1.RemoveAllTemplates();
             IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name, false);
 
-            HashSet<PropertyTemplate> defaultTemplates = new HashSet<PropertyTemplate>();
-            foreach (PropertyTemplate pt in rgpt)
-                if (pt.IsDefault)
-                    defaultTemplates.Add(pt);
             HashSet<PropertyTemplate> aircraftTemplates = new HashSet<PropertyTemplate>();
             foreach (int id in ac.DefaultTemplates)
             {
@@ -513,6 +513,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
                     aircraftTemplates.Add(pt);
             }
 
+            HashSet<PropertyTemplate> defaultTemplates = new HashSet<PropertyTemplate>(UserPropertyTemplate.DefaultTemplatesForUser(Page.User.Identity.Name));
             // if the aircraft has valid templates specified, use those
             if (aircraftTemplates.Count > 0)
                 mfbEditPropSet1.AddTemplates(aircraftTemplates);

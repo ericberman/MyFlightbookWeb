@@ -433,8 +433,20 @@ namespace MyFlightbook.Templates
             // We do this fresh every time, since MRUPropertyTemplate could have changed (due to blacklisting), but is itself cached.
             List<PropertyTemplate> lstResult = new List<PropertyTemplate>(lst);
             if (fIncludeAutomatic)
-                lstResult.AddRange(new PropertyTemplate[] { new MRUPropertyTemplate(szUser), new SimPropertyTemplate(), new AnonymousPropertyTemplate() });
+                lstResult.AddRange(AutomaticTemplatesForUser(szUser));
             return lstResult;
+        }
+
+        public static IEnumerable<PropertyTemplate> DefaultTemplatesForUser(string szUser)
+        {
+            List<PropertyTemplate> lst = new List<PropertyTemplate>(TemplatesForUser(szUser, false));
+            lst.RemoveAll(pt => !pt.IsDefault);
+            return lst;
+        }
+
+        public static IEnumerable<PropertyTemplate> AutomaticTemplatesForUser(string szUser)
+        {
+            return new PropertyTemplate[] { new MRUPropertyTemplate(szUser), new SimPropertyTemplate(), new AnonymousPropertyTemplate() };
         }
 
         /// <summary>

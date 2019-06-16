@@ -343,6 +343,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
             throw new ArgumentException("Null Template in PropertyTemplateEventArgs");
 
         AddTemplate(e.Template);
+        Refresh();
     }
 
     protected void mfbSelectTemplates_TemplateUnselected(object sender, PropertyTemplateEventArgs e)
@@ -350,6 +351,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         if (e == null)
             throw new ArgumentNullException("e");
         RemoveTemplate(e.TemplateID);
+        Refresh();
     }
 
     protected void mfbSelectTemplates_TemplatesReady(object sender, EventArgs e)
