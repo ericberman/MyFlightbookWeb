@@ -1043,7 +1043,7 @@ Proceed with import?</value>
     <value>Automatic</value>
   </data>
   <data name="templateGroupCheckrides" xml:space="preserve">
-    <value>Checkrides</value>
+    <value>Checkrides and Reviews</value>
   </data>
   <data name="templateGroupMissions" xml:space="preserve">
     <value>Missions</value>
