@@ -329,7 +329,7 @@ public partial class Member_LogbookNew : System.Web.UI.Page
         if (Request[szParamIDFlight] != null || SocialNetworkAuthorization.RedirectList.Count > 0)
             Response.Redirect(SocialNetworkAuthorization.PopRedirect(Master.IsMobileSession() ? SocialNetworkAuthorization.DefaultRedirPageMini : SocialNetworkAuthorization.DefaultRedirPage));
         else
-            Response.Redirect("~/Member/LogbookNew.aspx", true);
+            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", util.GetStringParam(Request, "ft").CompareCurrentCultureIgnoreCase("Add") == 0 ? "?ft=Add" : string.Empty), true);
     }
 
     protected void mfbEditFlight1_FlightEditCanceled(object sender, EventArgs e)
