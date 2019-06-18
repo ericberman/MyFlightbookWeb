@@ -17,6 +17,12 @@
 <%@ Register Src="~/Controls/mfbEditableImage.ascx" TagPrefix="uc1" TagName="mfbEditableImage" %>
 <%@ Register Src="~/Controls/mfbVideoEntry.ascx" TagPrefix="uc1" TagName="mfbVideoEntry" %>
 <%@ Register Src="~/Controls/mfbBadgeSet.ascx" TagPrefix="uc1" TagName="mfbBadgeSet" %>
+<%@ Register Src="~/Controls/mfbFlightContextMenu.ascx" TagPrefix="uc1" TagName="mfbFlightContextMenu" %>
+<%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
+<%@ Register Src="~/Controls/mfbSendFlight.ascx" TagPrefix="uc1" TagName="mfbSendFlight" %>
+
+
+
 
 
 
@@ -80,11 +86,26 @@
         <uc3:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:Tabs, AnalysisRaw %>" ID="apcRaw" LazyLoad="true" OnControlClicked="apcRaw_ControlClicked" />
         <uc3:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:Tabs, AnalysisDownload %>" ID="apcDownload" />
     </asp:Panel>
+    <uc1:mfbSendFlight runat="server" ID="mfbSendFlight" />
     <ajaxToolkit:Accordion ID="AccordionCtrl" RequireOpenedPane="False" SelectedIndex="0" runat="server"
         HeaderCssClass="accordionMenuHeader" HeaderSelectedCssClass="accordionMenuHeaderSelected" ContentCssClass="accordionMenuContent" TransitionDuration="250" meta:resourcekey="AccordionCtrlResource1">
         <Panes>
             <ajaxToolkit:AccordionPane runat="server" ID="acpFlight" meta:resourcekey="acpFlightResource1">
                 <Content>
+                    <div style="float:right">
+                        <uc1:popmenu runat="server" ID="popmenu" Visible='<%# ((String) Eval("User")).CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0 %>'>
+                            <MenuContent>
+                                <div style="text-align:left">
+                                    <uc1:mfbFlightContextMenu runat="server" ID="mfbFlightContextMenu"
+                                        EditTargetFormatString="~/Member/LogbookNew.aspx/{0}"
+                                        SignTargetFormatString="~/Member/RequestSigs.aspx?id={0}"
+                                        OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" 
+                                        OnSendFlight="mfbFlightContextMenu_SendFlight"
+                                        />
+                                </div>
+                            </MenuContent>
+                        </uc1:popmenu>
+                    </div>
                     <asp:FormView ID="fmvLE" runat="server" OnDataBound="fmvLE_DataBound" Width="100%" meta:resourcekey="fmvLEResource1">
                         <ItemTemplate>
                             <p>
@@ -108,7 +129,7 @@
                                 <h3><%# Eval("Route").ToString().ToUpper() %></h3>
                                 <uc5:mfbAirportServices runat="server" ID="mfbAirportServices1" ShowZoom="true" ShowInfo="true" ShowMetar="true" />
                                 <p><%# ((LogbookEntryDisplay) Container.DataItem).GetPathDistanceDescription(DataForFlight.ComputePathDistance()) %></p>
-                                <asp:Panel ID="pnlMetars" runat="server" Visible='<%# util.GetIntParam(Request, "metar", 0) != 0 %>'>
+                                <asp:Panel ID="pnlMetars" runat="server">
                                     <asp:Button ID="btnMetars" runat="server" Text="<%$ Resources:Weather, GetMETARSPrompt %>" OnClick="btnMetars_Click" />
                                     <uc1:METAR runat="server" ID="METARDisplay" />
                                 </asp:Panel>
@@ -170,10 +191,6 @@
                                         <uc1:mfbBadgeSet runat="server" ID="mfbBadgeSet" BadgeSet='<%# Container.DataItem %>' /></div>
                                     </ItemTemplate>
                                 </asp:Repeater>
-                            <input id="btnEdit" type="button" value="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>" runat="server"
-                                visible='<%# ((String) Eval("User")).CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0 %>'
-                                style="float: right" 
-                                onclick='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:window.location.href=\"{0}\"", ResolveClientUrl(String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}", Eval("FlightID")))) %>' />
                         </ItemTemplate>
                     </asp:FormView>
                 </Content>

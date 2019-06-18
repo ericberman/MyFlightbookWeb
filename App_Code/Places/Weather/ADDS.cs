@@ -8,7 +8,7 @@ using MyFlightbook.Airports;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,9 +29,9 @@ namespace MyFlightbook.Weather.ADDS
             {
                 if (String.IsNullOrEmpty(observation_time))
                     return null;
-                DateTime dt = DateTime.Now;
+                DateTime dt;
                 if (DateTime.TryParse(observation_time, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal, out dt))
-                    return dt;
+                    return dt.ToUniversalTime();
                 return null;
             }
         }
@@ -89,7 +89,7 @@ namespace MyFlightbook.Weather.ADDS
         {
             get
             {
-                return TimeStamp.HasValue ? TimeStamp.Value.ToShortDateString() + Resources.LocalizedText.LocalizedSpace + TimeStamp.Value.ToShortTimeString() : string.Empty;
+                return TimeStamp.HasValue ? TimeStamp.Value.UTCDateFormatString() + " (Zulu)" : string.Empty;
             }
         }
 

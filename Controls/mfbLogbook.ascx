@@ -287,8 +287,7 @@
                     <ItemTemplate>
                         <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights %>" OffsetX="-160">
                             <MenuContent>
-                                <uc1:mfbFlightContextMenu runat="server" ID="mfbFlightContextMenu" OnCloneFlight="mfbFlightContextMenu_CloneFlight" OnReverseFlight="mfbFlightContextMenu_ReverseFlight"
-                                    OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" OnEditFlight="mfbFlightContextMenu_EditFlight" OnSendFlight="mfbFlightContextMenu_SendFlight" OnSignFlight="mfbFlightContextMenu_SignFlight" />
+                                <uc1:mfbFlightContextMenu runat="server" ID="mfbFlightContextMenu" SignTargetFormatString="~/Member/RequestSigs.aspx?id={0}" OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" OnSendFlight="mfbFlightContextMenu_SendFlight" />
                             </MenuContent>
                         </uc7:popmenu>
                     </ItemTemplate>

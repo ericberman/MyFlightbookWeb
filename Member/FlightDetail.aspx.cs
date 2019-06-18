@@ -325,6 +325,8 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             UpdateChart();
         }
 
+        mfbFlightContextMenu.Flight = CurrentFlight;
+
         cmbAltUnits.SelectedValue = ((int) m_fd.AltitudeUnits).ToString(CultureInfo.InvariantCulture);
         cmbSpeedUnits.SelectedValue = ((int)m_fd.SpeedUnits).ToString(CultureInfo.InvariantCulture);
         if (!m_fd.HasDateTime)
@@ -707,5 +709,22 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             throw new ArgumentNullException("e");
         Controls_METAR m = (Controls_METAR)fmvLE.FindControl("METARDisplay");
         m.METARs = new ADDSService().LatestMETARSForAirports(CurrentFlight.Route);
+    }
+
+    protected void mfbFlightContextMenu_DeleteFlight(object sender, LogbookEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        LogbookEntryDisplay.FDeleteEntry(e.FlightID, Page.User.Identity.Name);
+        Response.Redirect(TargetPage);
+    }
+
+    protected void mfbFlightContextMenu_SendFlight(object sender, LogbookEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        mfbSendFlight.SendFlight(e.FlightID);
     }
 }

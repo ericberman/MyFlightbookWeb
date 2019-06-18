@@ -65,8 +65,7 @@ public partial class MapRoute : System.Web.UI.Page
         this.Master.AddMeta("description", szDescription);
         this.Master.Title = szDescription;
 
-        LogbookEntry le = new LogbookEntry();
-        le.Route = txtAirports.Text;
+        LogbookEntry le = new LogbookEntry() { Route = txtAirports.Text };
         lblDistance.Text = le.GetPathDistanceDescription(null);
         pnlDistance.Visible = lblDistance.Text.Length > 0;
 

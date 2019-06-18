@@ -561,6 +561,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
 
             // Wire up the drop-menu.  We have to do this here because it is an iNamingContainer and can't access the gridviewrow
             Controls_mfbFlightContextMenu cm = (Controls_mfbFlightContextMenu)e.Row.FindControl("popmenu1").FindControl("mfbFlightContextMenu");
+            cm.EditTargetFormatString = EditPageUrlFormatString;
             cm.Flight = le;
 
             if (Pilot != null && Pilot.AchievementStatus == MyFlightbook.Achievements.Achievement.ComputeStatus.UpToDate)
@@ -763,22 +764,6 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     }
 
     #region Context menu operations
-    protected void mfbFlightContextMenu_CloneFlight(object sender, LogbookEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException("e");
-
-        Response.Redirect(EditPath(e.FlightID) + "?Clone=1");
-    }
-
-    protected void mfbFlightContextMenu_ReverseFlight(object sender, LogbookEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException("e");
-
-        Response.Redirect(EditPath(e.FlightID) + "?Clone=1&Reverse=1");
-    }
-
     protected void mfbFlightContextMenu_DeleteFlight(object sender, LogbookEventArgs e)
     {
         if (e == null)
@@ -792,30 +777,12 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
             ItemDeleted(this, new LogbookEventArgs(e.FlightID));
     }
 
-    protected void mfbFlightContextMenu_EditFlight(object sender, LogbookEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException("e");
-
-        if (e.FlightID == LogbookEntry.idFlightNew)
-            throw new MyFlightbookValidationException("Why is there an edit option for an empty flight?");
-        Response.Redirect(EditPath(e.FlightID));
-    }
-
     protected void mfbFlightContextMenu_SendFlight(object sender, LogbookEventArgs e)
     {
         if (e == null)
             throw new ArgumentNullException("e");
 
         mfbSendFlight.SendFlight(e.FlightID);
-    }
-
-    protected void mfbFlightContextMenu_SignFlight(object sender, LogbookEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException("e");
-
-        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/RequestSigs.aspx?id={0}", e.FlightID));
     }
     #endregion
 }
