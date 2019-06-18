@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -102,7 +101,6 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
 
     #region URL templates for clickable items.
     // backing variables for where to go when clicking date, paper clip, or menu items
-    private string m_szSendPageTarget = "~/Member/LogbookNew.aspx";
     private string m_szDetailsPageTemplate = "~/Member/FlightDetail.aspx/{0}";
     private string m_szEditPageTemplate = "~/member/LogbookNew.aspx/{0}";
     private string m_szAnalysisPageTemplate = "~/member/FlightDetail.aspx/{0}?tabID=Chart";
@@ -113,8 +111,8 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     /// </summary>
     public string SendPageTarget
     {
-        get { return m_szSendPageTarget; }
-        set { m_szSendPageTarget = value; }
+        get { return mfbSendFlight.SendPageTarget; }
+        set { mfbSendFlight.SendPageTarget = value; }
     }
 
     /// <summary>
@@ -500,57 +498,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     {
         return String.Format(CultureInfo.InvariantCulture, PublicPageUrlFormatString, idFlight);
     }
-
-    protected string ClonePath(object idFlight)
-    {
-        return EditPath(idFlight) + "?Clone=1";
-    }
-
-    protected string ReversePath(object idFlight)
-    {
-        return EditPath(idFlight) + "?Clone=1&Reverse=1";
-    }
     #endregion
-
-    protected void gvFlightLogs_RowCommand(Object sender, CommandEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException("e");
-
-        int idFlight;
-        if (!int.TryParse(e.CommandArgument.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out idFlight))
-            idFlight = LogbookEntry.idFlightNew;
-
-        if (String.Compare(e.CommandName, "_Delete", StringComparison.OrdinalIgnoreCase) == 0)
-        {
-            LogbookEntryDisplay.FDeleteEntry(idFlight, this.User);
-            FlushCache();
-            BindData(Data);
-            RefreshNumFlights();
-            if (ItemDeleted != null)
-                ItemDeleted(this, new LogbookEventArgs(idFlight));
-        }
-        else if (String.Compare(e.CommandName, "SendFlight", StringComparison.OrdinalIgnoreCase) == 0)
-        {
-            hdnFlightToSend.Value = (string)e.CommandArgument;
-            txtSendFlightEmail.Text = txtSendFlightMessage.Text = string.Empty;
-            modalPopupSendFlight.Show();
-        }
-        else if (String.Compare(e.CommandName, "CloneFlight", StringComparison.OrdinalIgnoreCase) == 0)
-        {
-            Response.Redirect(ClonePath(idFlight));
-        }
-        else if (String.Compare(e.CommandName, "ReverseFlight", StringComparison.OrdinalIgnoreCase) == 0)
-        {
-            Response.Redirect(ReversePath(idFlight));
-        }
-        else if (String.Compare(e.CommandName, "EditFlight", StringComparison.OrdinalIgnoreCase) == 0)
-        {
-            if (idFlight == LogbookEntry.idFlightNew)
-                throw new MyFlightbookValidationException("Why is there an edit option for an empty flight?");
-            Response.Redirect(EditPath(idFlight));
-        }
-    }
 
     protected void gvFlightLogs_Sorting(Object sender, GridViewSortEventArgs e)
     {
@@ -612,26 +560,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
             LogbookEntryDisplay le = (LogbookEntryDisplay) e.Row.DataItem;
 
             // Wire up the drop-menu.  We have to do this here because it is an iNamingContainer and can't access the gridviewrow
-            Controls_popmenu popup = (Controls_popmenu)e.Row.FindControl("popmenu1");
-            ((Controls_mfbMiniFacebook)popup.FindControl("mfbMiniFacebook")).FlightEntry = le;
-            ((Controls_mfbTweetThis)popup.FindControl("mfbTweetThis")).FlightToTweet = le;
-            ((LinkButton)popup.FindControl("lnkReverse")).CommandArgument = ((LinkButton)popup.FindControl("lnkClone")).CommandArgument = le.FlightID.ToString(CultureInfo.InvariantCulture);
-            ((LinkButton)popup.FindControl("lnkSendFlight")).CommandArgument = le.FlightID.ToString(CultureInfo.InvariantCulture);
-            ((HyperLink)popup.FindControl("lnkEditThisFlight")).NavigateUrl = EditPath(le.FlightID);
-            HyperLink h = (HyperLink)popup.FindControl("lnkRequestSignature");
-            h.Visible = le.CanRequestSig;
-            h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/RequestSigs.aspx?id={0}", le.FlightID);
-
-            // fix the ID of the delete button to prevent replay attacks
-            string szDelID = String.Format(CultureInfo.InvariantCulture, "lnkDel{0}", le.FlightID);
-            LinkButton lbDelete = (LinkButton)popup.FindControl("lnkDelete");
-            lbDelete.Visible = IsViewingOwnFlights;
-            lbDelete.CommandArgument = le.FlightID.ToString(CultureInfo.InvariantCulture);
-            lbDelete.ID = szDelID;
-            // If the host wants notifications of deletions, register full postback.
-            if (ItemDeleted != null)
-                ScriptManager.GetCurrent(Page).RegisterPostBackControl(lbDelete);
-            ((AjaxControlToolkit.ConfirmButtonExtender)popup.FindControl("ConfirmButtonExtender1")).TargetControlID = szDelID;
+            Controls_mfbFlightContextMenu cm = (Controls_mfbFlightContextMenu)e.Row.FindControl("popmenu1").FindControl("mfbFlightContextMenu");
+            cm.Flight = le;
 
             if (Pilot != null && Pilot.AchievementStatus == MyFlightbook.Achievements.Achievement.ComputeStatus.UpToDate)
             {
@@ -832,37 +762,60 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         catch (FormatException) { }
     }
 
-    protected void btnSendFlight_Click(object sender, EventArgs e)
+    #region Context menu operations
+    protected void mfbFlightContextMenu_CloneFlight(object sender, LogbookEventArgs e)
     {
-        Page.Validate("valSendFlight");
-        if (Page.IsValid)
-        {
-            LogbookEntry le = new LogbookEntry(Convert.ToInt32(hdnFlightToSend.Value, CultureInfo.InvariantCulture), Page.User.Identity.Name);
-            MyFlightbook.Profile pfSender = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
-            string szRecipient = txtSendFlightEmail.Text;
+        if (e == null)
+            throw new ArgumentNullException("e");
 
-            using (MailMessage msg = new MailMessage())
-            {
-                msg.Body = Branding.ReBrand(Resources.LogbookEntry.SendFlightBody.Replace("<% Sender %>", HttpUtility.HtmlEncode(pfSender.UserFullName))
-                    .Replace("<% Message %>", HttpUtility.HtmlEncode(txtSendFlightMessage.Text))
-                    .Replace("<% Date %>", le.Date.ToShortDateString())
-                    .Replace("<% Aircraft %>", HttpUtility.HtmlEncode(le.TailNumDisplay))
-                    .Replace("<% Route %>", HttpUtility.HtmlEncode(le.Route))
-                    .Replace("<% Comments %>", HttpUtility.HtmlEncode(le.Comment))
-                    .Replace("<% Time %>", le.TotalFlightTime.FormatDecimal(pfSender.UsesHHMM))
-                    .Replace("<% FlightLink %>", le.SendFlightUri(Branding.CurrentBrand.HostName, SendPageTarget).ToString()));
-
-                msg.Subject = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.SendFlightSubject, pfSender.UserFullName);
-                msg.From = new MailAddress(Branding.CurrentBrand.EmailAddress, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EmailSenderAddress, Branding.CurrentBrand.AppName, pfSender.UserFullName));
-                msg.ReplyToList.Add(new MailAddress(pfSender.Email));
-                msg.To.Add(new MailAddress(szRecipient));
-                msg.IsBodyHtml = true;
-                util.SendMessage(msg);
-            }
-
-            modalPopupSendFlight.Hide();
-        }
-        else
-            modalPopupSendFlight.Show();
+        Response.Redirect(EditPath(e.FlightID) + "?Clone=1");
     }
+
+    protected void mfbFlightContextMenu_ReverseFlight(object sender, LogbookEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        Response.Redirect(EditPath(e.FlightID) + "?Clone=1&Reverse=1");
+    }
+
+    protected void mfbFlightContextMenu_DeleteFlight(object sender, LogbookEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        LogbookEntryDisplay.FDeleteEntry(e.FlightID, this.User);
+        FlushCache();
+        BindData(Data);
+        RefreshNumFlights();
+        if (ItemDeleted != null)
+            ItemDeleted(this, new LogbookEventArgs(e.FlightID));
+    }
+
+    protected void mfbFlightContextMenu_EditFlight(object sender, LogbookEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        if (e.FlightID == LogbookEntry.idFlightNew)
+            throw new MyFlightbookValidationException("Why is there an edit option for an empty flight?");
+        Response.Redirect(EditPath(e.FlightID));
+    }
+
+    protected void mfbFlightContextMenu_SendFlight(object sender, LogbookEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        mfbSendFlight.SendFlight(e.FlightID);
+    }
+
+    protected void mfbFlightContextMenu_SignFlight(object sender, LogbookEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
+        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/RequestSigs.aspx?id={0}", e.FlightID));
+    }
+    #endregion
 }

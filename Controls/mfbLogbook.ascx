@@ -7,7 +7,8 @@
 <%@ Register src="popmenu.ascx" tagname="popmenu" tagprefix="uc7" %>
 <%@ Register src="mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc5" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
-
+<%@ Register Src="~/Controls/mfbFlightContextMenu.ascx" TagPrefix="uc1" TagName="mfbFlightContextMenu" %>
+<%@ Register Src="~/Controls/mfbSendFlight.ascx" TagPrefix="uc1" TagName="mfbSendFlight" %>
 <div class="printonly">
     <div>
         <asp:Label ID="lblLogbookHeader" runat="server" Text=""><% = Pilot.UserFullName %></asp:Label>
@@ -50,7 +51,7 @@
             OnRowDataBound="gvFlightLogs_RowDataBound" EnableViewState="false" 
             PagerSettings-Mode="NumericFirstLast"
             GridLines="None" OnDataBound="gvFlightLogs_DataBound" 
-            OnRowCommand="gvFlightLogs_RowCommand" OnSorting="gvFlightLogs_Sorting" 
+            OnSorting="gvFlightLogs_Sorting" 
             OnPageIndexChanging="gridView_PageIndexChanging">
             <Columns>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldFlight %>" SortExpression="Date">
@@ -286,46 +287,8 @@
                     <ItemTemplate>
                         <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights %>" OffsetX="-160">
                             <MenuContent>
-                                <div style="line-height: 26px;">
-                                    <asp:HyperLink ID="lnkEditThisFlight" runat="server">
-                                        <asp:Image ID="imgPencil" runat="server" style="padding-right: 4px;" ImageUrl="~/images/pencilsm.png" />
-                                        <asp:Label ID="lblEditFlight" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>"></asp:Label>
-                                    </asp:HyperLink>
-                                </div>
-                                <div style="line-height: 26px">
-                                    <asp:LinkButton ID="lnkDelete" CommandName="_Delete" runat="server">
-                                        <asp:Image ID="imgDelete" style="padding-right: 10px" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" runat="server" />
-                                        <asp:Label ID="lblDeleteThis" runat="server" Text="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>"></asp:Label>
-                                    </asp:LinkButton>
-                                    <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDelete" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:LogbookEntry, LogbookConfirmDelete %>">
-                                    </cc1:ConfirmButtonExtender>
-                                </div>
-                                <div style="line-height: 26px"><uc2:mfbMiniFacebook ID="mfbMiniFacebook" runat="server" /></div>
-                                <div style="line-height: 26px"><uc4:mfbTweetThis ID="mfbTweetThis" runat="server" /></div>
-                                <div style="line-height: 26px">
-                                    <asp:HyperLink ID="lnkRequestSignature" runat="server">
-                                        <asp:Image ID="imgSignature" runat="server" style="padding-right: 4px" ImageUrl="~/images/signaturesm.png" />
-                                        <asp:Label ID="lblRequestSignature" runat="server" Text="<%$ Resources:SignOff, RequestSignature %>"></asp:Label>
-                                    </asp:HyperLink>
-                                </div>
-                                <div style="line-height: 26px">
-                                    <asp:LinkButton ID="lnkClone" runat="server" CommandName="CloneFlight">
-                                        <asp:Image ID="imgClone" runat="server" style="padding-right:4px;" ImageUrl="~/images/copyflight.png" />
-                                        <asp:Label ID="lblClone" runat="server" Text="<%$ Resources:LogbookEntry, RepeatFlight %>"></asp:Label>
-                                    </asp:LinkButton>
-                                </div>
-                                <div style="line-height: 26px">
-                                    <asp:LinkButton ID="lnkReverse" runat="server" CommandName="ReverseFlight">
-                                        <asp:Image ID="imgReverse" runat="server" style="padding-right:4px;" ImageUrl="~/images/copyflightreverse.png" />
-                                        <asp:Label ID="lblReverse" runat="server" Text="<%$ Resources:LogbookEntry, RepeatReverseFlight %>"></asp:Label>
-                                    </asp:LinkButton>
-                                </div>
-                                <div style="line-height: 26px">
-                                    <asp:LinkButton ID="lnkSendFlight" runat="server" CommandName="SendFlight">
-                                        <asp:Image ID="imgSendFlight" style="padding-right:4px" ImageUrl="~/images/sendflight.png" runat="server" />
-                                        <asp:Label ID="lblSendFlight" runat="server" Text="<%$ Resources:LogbookEntry, SendFlight %>"></asp:Label>
-                                    </asp:LinkButton>
-                                </div>
+                                <uc1:mfbFlightContextMenu runat="server" ID="mfbFlightContextMenu" OnCloneFlight="mfbFlightContextMenu_CloneFlight" OnReverseFlight="mfbFlightContextMenu_ReverseFlight"
+                                    OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" OnEditFlight="mfbFlightContextMenu_EditFlight" OnSendFlight="mfbFlightContextMenu_SendFlight" OnSignFlight="mfbFlightContextMenu_SignFlight" />
                             </MenuContent>
                         </uc7:popmenu>
                     </ItemTemplate>
@@ -363,44 +326,7 @@
             </EmptyDataTemplate>
         </asp:GridView>
         </div>
-        <asp:Panel ID="pnlSendFlight" runat="server" Width="480px" DefaultButton="btnSendFlight" CssClass="modalpopup" style="display:none">
-            <asp:Localize ID="locSendPrompt" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightPrompt %>"></asp:Localize>
-            <asp:HiddenField ID="hdnFlightToSend" runat="server" />
-            <table>
-                <tr>
-                    <td>
-                        <asp:Localize ID="locEmailRecipient" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightEmailPrompt %>"></asp:Localize>
-                    </td>
-                    <td>
-                        <asp:TextBox ValidationGroup="valSendFlight" ID="txtSendFlightEmail" Text="" runat="server"></asp:TextBox>
-                        <asp:RequiredFieldValidator ValidationGroup="valSendFlight" ID="RequiredFieldValidator2" runat="server" CssClass="error" ErrorMessage="<%$ Resources:LocalizedText, ValidationEmailRequired %>" 
-                            ControlToValidate="txtSendFlightEmail" SetFocusOnError="True" Display="Dynamic"></asp:RequiredFieldValidator>
-                        <asp:RegularExpressionValidator ValidationGroup="valSendFlight" ID="RegularExpressionValidator2" runat="server" CssClass="error"
-                            ErrorMessage="<%$ Resources:LocalizedText, ValidationEmailFormat %>" 
-                            ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" 
-                            ControlToValidate="txtSendFlightEmail" SetFocusOnError="True" Display="Dynamic"></asp:RegularExpressionValidator>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="vertical-align:top">
-                        <asp:Localize ID="locSendFlightMessage" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightMessagePrompt %>"></asp:Localize>
-                    </td>
-                    <td>
-                        <asp:TextBox ValidationGroup="valSendFlight" ID="txtSendFlightMessage" TextMode="MultiLine" Rows="3" runat="server"></asp:TextBox>
-                    </td>
-                </tr>
-            </table>
-            <div style="text-align:center">
-                <asp:Button ValidationGroup="valSendFlight" ID="btnSendFlight" OnClick="btnSendFlight_Click" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightButton %>" /> <asp:Button ID="btnCancelSend" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightCancel %>" />
-            </div>
-        </asp:Panel>
-        <asp:HyperLink ID="lnkPopSendFlight" runat="server" style="display:none"></asp:HyperLink>
+        <uc1:mfbSendFlight runat="server" id="mfbSendFlight" />
         <uc1:mfbImageList ID="mfbilAircraft" runat="server" Columns="2" CanEdit="false" ImageClass="Aircraft" IncludeDocs="false" MaxImage="2" Visible="false" />
-        <cc1:ModalPopupExtender ID="modalPopupSendFlight" runat="server" 
-            PopupControlID="pnlSendFlight" TargetControlID="lnkPopSendFlight"
-            BackgroundCssClass="modalBackground"
-            CancelControlID="btnCancelSend" BehaviorID="modalPopupSendFlight"
-            Enabled="true">
-        </cc1:ModalPopupExtender>
     </ContentTemplate>
 </asp:UpdatePanel>
