@@ -398,8 +398,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
         Page.ClientScript.RegisterClientScriptInclude("ListDrag", ResolveClientUrl("~/Public/Scripts/listdrag.js?v=4"));
 
-        mfbEditPropTemplate.Visible = util.GetIntParam(Request, "templates", 0) != 0;
-
         if (!IsPostBack)
         {
             // Set pilot info validation group
