@@ -2,7 +2,7 @@
 <%@ Register Src="~/Controls/mfbTweetThis.ascx" TagPrefix="uc1" TagName="mfbTweetThis" %>
 <%@ Register Src="~/Controls/mfbMiniFacebook.ascx" TagPrefix="uc1" TagName="mfbMiniFacebook" %>
 <div style="line-height: 26px;">
-    <asp:HyperLink ID="lnkEditThisFlight" runat="server" OnClick="lnkEditThisFlight_Click">
+    <asp:HyperLink ID="lnkEditThisFlight" runat="server">
         <asp:Image ID="imgPencil" runat="server" style="padding-right: 4px;" ImageUrl="~/images/pencilsm.png" />
         <asp:Label ID="lblEditFlight" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightEditThisFlight %>"></asp:Label>
     </asp:HyperLink>
@@ -15,26 +15,26 @@
     <ajaxToolkit:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDelete" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:LogbookEntry, LogbookConfirmDelete %>">
     </ajaxToolkit:ConfirmButtonExtender>
 </div>
-<div style="line-height: 26px"><uc1:mfbMiniFacebook ID="mfbMiniFacebook" runat="server" /></div>
-<div style="line-height: 26px"><uc1:mfbTweetThis ID="mfbTweetThis" runat="server" /></div>
 <div style="line-height: 26px">
-    <asp:HyperLink ID="lnkRequestSignature" runat="server" OnClick="lnkRequestSignature_Click">
-        <asp:Image ID="imgSignature" runat="server" style="padding-right: 4px" ImageUrl="~/images/signaturesm.png" />
-        <asp:Label ID="lblRequestSignature" runat="server" Text="<%$ Resources:SignOff, RequestSignature %>"></asp:Label>
-    </asp:HyperLink>
-</div>
-<div style="line-height: 26px">
-    <asp:HyperLink ID="lnkClone" runat="server" OnClick="lnkClone_Click">
+    <asp:HyperLink ID="lnkClone" runat="server">
         <asp:Image ID="imgClone" runat="server" style="padding-right:4px;" ImageUrl="~/images/copyflight.png" />
         <asp:Label ID="lblClone" runat="server" Text="<%$ Resources:LogbookEntry, RepeatFlight %>"></asp:Label>
     </asp:HyperLink>
 </div>
 <div style="line-height: 26px">
-    <asp:HyperLink ID="lnkReverse" runat="server" OnClick="lnkReverse_Click">
+    <asp:HyperLink ID="lnkReverse" runat="server">
         <asp:Image ID="imgReverse" runat="server" style="padding-right:4px;" ImageUrl="~/images/copyflightreverse.png" />
         <asp:Label ID="lblReverse" runat="server" Text="<%$ Resources:LogbookEntry, RepeatReverseFlight %>"></asp:Label>
     </asp:HyperLink>
 </div>
+<div style="line-height: 26px">
+    <asp:HyperLink ID="lnkRequestSignature" runat="server">
+        <asp:Image ID="imgSignature" runat="server" style="padding-right: 4px" ImageUrl="~/images/signaturesm.png" />
+        <asp:Label ID="lblRequestSignature" runat="server" Text="<%$ Resources:SignOff, RequestSignature %>"></asp:Label>
+    </asp:HyperLink>
+</div>
+<div style="line-height: 26px"><uc1:mfbMiniFacebook ID="mfbMiniFacebook" runat="server" /></div>
+<div style="line-height: 26px"><uc1:mfbTweetThis ID="mfbTweetThis" runat="server" /></div>
 <div style="line-height: 26px">
     <asp:LinkButton ID="lnkSendFlight" runat="server" OnClick="lnkSendFlight_Click">
         <asp:Image ID="imgSendFlight" style="padding-right:4px" ImageUrl="~/images/sendflight.png" runat="server" />
