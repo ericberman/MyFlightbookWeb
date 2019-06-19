@@ -7,7 +7,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -71,12 +71,11 @@ public partial class Public_authredir : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        string szDest = "";
         string szDestErr = "~/Default.aspx";
 
         string szUser = util.GetStringParam(Request, "u");
         string szPass = util.GetStringParam(Request, "p");
-        szDest = util.GetStringParam(Request, "d");
+        string szDest = util.GetStringParam(Request, "d");
 
         if (!MFBWebService.CheckSecurity(Request) ||
             String.IsNullOrEmpty(szUser) || 
@@ -84,10 +83,36 @@ public partial class Public_authredir : System.Web.UI.Page
             String.IsNullOrEmpty(szDest))
             Response.Redirect(szDestErr);
 
+        // look for admin emulation in the form of 
+        string[] rgUsers = szUser.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+        string szEmulate = string.Empty;
+        if (rgUsers != null && rgUsers.Length == 2)
+        {
+            szEmulate = rgUsers[0];
+            szUser = rgUsers[1];
+        }
+
         szUser = Membership.GetUserNameByEmail(szUser);
 
         if (Membership.ValidateUser(szUser, szPass))
+        {
+            if (!String.IsNullOrEmpty(szEmulate))   // emulation requested - validate that the authenticated user is actually authorized!!!
+            {
+                Profile pf = MyFlightbook.Profile.GetUser(szUser);
+                if (pf.CanSupport || pf.CanManageData)
+                {
+                    // see if the emulated user actually exists
+                    pf = MyFlightbook.Profile.GetUser(szEmulate);
+                    if (!pf.IsValid())
+                        throw new MyFlightbookException("No such user: " + szEmulate);
+                    szUser = szEmulate;
+                }
+                else
+                    throw new UnauthorizedAccessException();
+            }
+
             FormsAuthentication.SetAuthCookie(szUser, false);
+        }
 
         List<string> lstParams = new List<string>();
 
