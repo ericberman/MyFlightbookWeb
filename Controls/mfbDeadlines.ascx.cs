@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2018 MyFlightbook LLC
+ * Copyright (c) 2017-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,7 +16,6 @@ using System.Web.UI.WebControls;
 public partial class Controls_mfbDeadlines : UserControl
 {
     private const string szDeadlinesKey = "viewstateKeyDeadlines";
-    private const string szAircraftKey = "viewstateKeyAircraft";
 
     public event EventHandler<DeadlineEventArgs> DeadlineUpdated = null;
     public event EventHandler<DeadlineEventArgs> DeadlineAdded = null;
@@ -60,7 +59,9 @@ public partial class Controls_mfbDeadlines : UserControl
         set
         {
             hdnCreateShared.Value = value.ToString(CultureInfo.InvariantCulture);
-            rowAircraft.Visible = !value;
+            pnlAircraftLabel.Visible = cmbDeadlineAircraft.Visible = !value;
+            if (value)
+                ckDeadlineUseHours.Visible = true;
         }
     }
     #endregion

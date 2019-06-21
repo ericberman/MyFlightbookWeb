@@ -80,14 +80,16 @@
                         <asp:TextBox ID="txtDeadlineName" runat="server" meta:resourcekey="txtDeadlineNameResource1"></asp:TextBox>
                     </td>
                 </tr>
-                <tr style="vertical-align:top" runat="server" id="rowAircraft">
+                <tr style="vertical-align:top">
                     <td runat="server">
-                        <asp:Label ID="lblDeadlineAircraft" runat="server" Text="Associated Aircraft:"></asp:Label>
-                        <div class="fineprint">
-                            <asp:Label ID="lblDeadlineAircraftOptional" runat="server" Text="(Optional)"></asp:Label>
-                        </div>
+                        <asp:Panel ID="pnlAircraftLabel" runat="server">
+                            <asp:Label ID="lblDeadlineAircraft" runat="server" Text="Associated Aircraft:"></asp:Label>
+                            <div class="fineprint">
+                                <asp:Label ID="lblDeadlineAircraftOptional" runat="server" Text="(Optional)"></asp:Label>
+                            </div>
+                        </asp:Panel>
                     </td>
-                    <td runat="server">
+                    <td>
                         <asp:DropDownList ID="cmbDeadlineAircraft" runat="server" AppendDataBoundItems="True" AutoPostBack="True" DataTextField="TailNumber" DataValueField="AircraftID" meta:resourcekey="cmbDeadlineAircraftResource1" OnSelectedIndexChanged="cmbDeadlineAircraft_SelectedIndexChanged">
                             <asp:ListItem Selected="True" Text="(None)" Value=""></asp:ListItem>
                         </asp:DropDownList>
