@@ -93,7 +93,7 @@
             <ajaxToolkit:AccordionPane runat="server" ID="acpFlight" meta:resourcekey="acpFlightResource1">
                 <Content>
                     <div style="float:right">
-                        <uc1:popmenu runat="server" ID="popmenu" Visible='<%# ((String) Eval("User")).CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0 %>'>
+                        <uc1:popmenu runat="server" ID="popmenu" Visible='<%# ((String) Eval("User")).CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0 %>' OffsetX="-160">
                             <MenuContent>
                                 <div style="text-align:left">
                                     <uc1:mfbFlightContextMenu runat="server" ID="mfbFlightContextMenu"
