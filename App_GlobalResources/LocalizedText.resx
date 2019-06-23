@@ -1049,7 +1049,7 @@
     <value>Subtotals</value>
   </data>
   <data name="ResultsFiltered" xml:space="preserve">
-    <value>Only flights matching this criteria are shown:</value>
+    <value>Only flights matching these criteria are shown:</value>
   </data>
   <data name="PrintViewIncludeNoTotals" xml:space="preserve">
     <value>No Subtotals</value>

@@ -206,7 +206,7 @@
     <value>Dual time</value>
   </data>
   <data name="FlightFeatureFSLanding" xml:space="preserve">
-    <value>Full-stop landings</value>
+    <value>Full-stop day landings</value>
   </data>
   <data name="FlightFeatureFSNightLanding" xml:space="preserve">
     <value>Full-stop nighttime landings</value>
