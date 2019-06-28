@@ -113,7 +113,7 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colHobbsStart = { "Hobbs Start", "Hobbs Out" };
         private readonly static string[] colHobbsEnd = { "Hobbs End", "Hobbs In" };
         private readonly static string[] colPublic = { "Public" };
-        private readonly static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL", "ACFT_MDS" };
+        private readonly static string[] colModelName = { "Model", "Aircraft Type", "MakeModel", "MAKE & MODEL", "A/C Type", "AIRCRAFT MAKE & MODEL", "ACFT_MDS", "ACFT_MDS" };
         private readonly static string[] colFlightConditions = { "FS_ID", "CONDITION" };  // For CAFRS - specifies flight conditions
         private readonly static string[] colPilotRole = { "DS_ID", "DUTY" };    // For CAFRS - specifies role of pilot ("Duty Position")
         private readonly static string[] colPilotMission = { "MISSION", "MI_ID"};  // For CAFRS - specifies the mission for the pilot
