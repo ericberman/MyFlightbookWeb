@@ -3255,7 +3255,30 @@ namespace MyFlightbook
             if (string.IsNullOrEmpty(szSortExpr))
                 return lst;
 
-            lst.Sort((l1, l2) => { return (sd == SortDirection.Ascending ? 1 : -1) * ((IComparable)l1.GetType().GetProperty(szSortExpr).GetValue(l1)).CompareTo(((IComparable)l2.GetType().GetProperty(szSortExpr).GetValue(l2))); });
+            lst.Sort((l1, l2) =>
+            {
+                int dir = (sd == SortDirection.Ascending ? 1 : -1);
+                int comp = dir * ((IComparable)l1.GetType().GetProperty(szSortExpr).GetValue(l1)).CompareTo(((IComparable)l2.GetType().GetProperty(szSortExpr).GetValue(l2)));
+
+                if (comp == 0)  // subsort by date.
+                {
+                    // by date first
+                    comp = dir * l1.Date.CompareTo(l2.Date);
+
+                    if (comp == 0 && (l1.FlightStart.HasValue() || l2.FlightStart.HasValue()))
+                        comp = dir * l1.FlightStart.CompareTo(l2.FlightStart);
+
+                    if (comp == 0 && (l1.EngineStart.HasValue() || l2.EngineStart.HasValue()))
+                        comp = dir * l1.EngineStart.CompareTo(l2.EngineStart);
+
+                    if (comp == 0)
+                        comp = dir * l1.HobbsStart.CompareTo(l2.HobbsStart);
+
+                    if (comp == 0)
+                        comp = dir * l1.FlightID.CompareTo(l2.FlightID);
+                }
+                return comp;
+            });
             return lst;
         }
 
