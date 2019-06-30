@@ -2649,6 +2649,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             List<Aircraft> lstUserAircraft = new List<Aircraft>(new UserAircraft(szUser).GetAircraftForUser());
             List<Aircraft> lstAllAircraft = Aircraft.AircraftByTailListQuery(_tailsFound);
             lstAllAircraft.Sort((ac1, ac2) => { return String.Compare(ac1.TailNumber, ac2.TailNumber, StringComparison.OrdinalIgnoreCase) == 0 ? ac1.Version - ac2.Version : String.Compare(ac1.TailNumber, ac2.TailNumber, StringComparison.OrdinalIgnoreCase); });
+            Collection<MakeModel> makes = MakeModel.MatchingMakes();
 
             List<AircraftImportMatchRow> lstMatchesToDelete = new List<AircraftImportMatchRow>();
             List<AircraftImportMatchRow> lstMatchesToAdd = new List<AircraftImportMatchRow>();
@@ -2665,6 +2666,21 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                 {
                     SetModelMatch(mr, AircraftImportMatchRow.MatchState.MatchedInProfile);
                     continue;
+                }
+
+                // Special case naked "SIM"
+                if (mr.BestMatchAircraft == null && mr.TailNumber.CompareCurrentCultureIgnoreCase(CountryCodePrefix.szSimPrefix) == 0)
+                {
+                    // See if we have a sim in the user's profile that matches one of the models; if so, re-use that.
+                    mr.MatchingModels = MakeModel.MatchingMakes(makes, mr.NormalizedModelGiven);
+                    if (mr.MatchingModels.Count > 0)
+                    {
+                        if ((mr.BestMatchAircraft = lstUserAircraft.Find(ac => (mr.MatchingModels.FirstOrDefault(mm => mm.MakeModelID == ac.ModelID) != null))) != null)
+                        {
+                            SetModelMatch(mr, AircraftImportMatchRow.MatchState.MatchedInProfile);
+                            continue;
+                        }
+                    }
                 }
 
                 // If not in the profile, see if it is in the list of ALL aircraft
@@ -2703,7 +2719,6 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             _matchResults.Sort();
 
             // Finally, assign a reasonable model for each candidate
-            Collection<MakeModel> makes = MakeModel.MatchingMakes();
             foreach (AircraftImportMatchRow mr in _matchResults)
             {
                 if (mr.State != AircraftImportMatchRow.MatchState.UnMatched)

@@ -94,8 +94,6 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
     {
         wzImportAircraft.PreRender += new EventHandler(wzImportAircraft_PreRender);
 
-        Page.Session.Timeout = 60;
-
         this.Master.SelectedTab = tabID.actImportAircraft;
         this.Title = Master.Title = (string)GetLocalResourceObject("PageResource1.Title");
 
@@ -151,7 +149,7 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
     {
         bool fResult = true;
 
-        AircraftImportParseContext aipc = Matches = new AircraftImportParseContext();
+        AircraftImportParseContext aipc = null;
 
         try
         {
@@ -167,7 +165,8 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
         { 
             lblUploadErr.Text = ex.Message;
             fResult = false;
-            aipc.CleanUpBestMatchAircraft();
+            if (aipc != null)
+                aipc.CleanUpBestMatchAircraft();
         }
 
         UpdateGrid();
@@ -202,9 +201,10 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
 
     protected void ImportAllNew(object sender, EventArgs e)
     {
+        // Fix up any errors.
+        Matches.ProcessParseResultsForUser(Page.User.Identity.Name);
         if (Matches.AddAllNewAircraftForUser(Page.User.Identity.Name))
         {
-            Page.Session.Timeout = 20;  // restore a normal session timeout
             Response.Redirect("~/Member/Aircraft.aspx");
         }
         else
