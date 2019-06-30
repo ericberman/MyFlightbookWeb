@@ -12,7 +12,7 @@ function listDragger(idTxt, idBtnLeft, idBtnRight) {
     this.longTouchTimer = null;
     this.idTxt = idTxt;
     this.idBtnLeft = idBtnLeft;
-    this.idBtnRight = idBtnRight
+    this.idBtnRight = idBtnRight;
 
     this.allowDrop = function (ev) {
         ev.preventDefault();
