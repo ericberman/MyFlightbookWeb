@@ -5,7 +5,97 @@
 <h3><asp:Localize ID="locTemplateHeader" runat="server" Text="<%$ Resources:LogbookEntry, TemplateHeader %>"></asp:Localize></h3>
 <p><asp:Localize ID="locTemplateDescription1" runat="server"></asp:Localize></p>
 <p><asp:Localize ID="locTemplateDescription2" runat="server"></asp:Localize></p>
-<p><asp:HyperLink ID="lnkBrowseTemplates" runat="server" NavigateUrl="~/Member/BrowseTemplates.aspx" Font-Bold="true" Text="<%$ Resources:LogbookEntry, TemplateBrowseTemplates %>"></asp:HyperLink></p>
+<p>
+    <asp:HyperLink ID="lnkBrowseTemplates" runat="server" NavigateUrl="~/Member/BrowseTemplates.aspx" Font-Bold="true" Text="<%$ Resources:LogbookEntry, TemplateBrowseTemplates %>"></asp:HyperLink>
+    <asp:Localize ID="OrAdd" runat="server" Text="<%$ Resources:LocalizedText, ORSeparator %>"></asp:Localize>
+    <asp:Label ID="lblAddTemplate" Font-Bold="true" runat="server"></asp:Label>
+</p>
+<ajaxToolkit:CollapsiblePanelExtender ID="cpeNewTemplate" BehaviorID="cpeNewTemplate" runat="server" Collapsed="True" CollapsedSize="0" 
+    CollapsedText="<%$ Resources:LogbookEntry, TemplateClickToCreate %>" ExpandControlID="lblAddTemplate" CollapseControlID="lblAddTemplate" ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>" TargetControlID="pnlNewTemplate" TextLabelID="lblAddTemplate" />
+<asp:Panel ID="pnlNewTemplate" runat="server" DefaultButton="btnSaveTemplate" style="overflow:hidden">
+    <asp:UpdatePanel runat="server" ID="UpdatePanel2">
+        <Triggers>
+            <asp:PostBackTrigger ControlID="btnSaveTemplate" />
+        </Triggers>
+        <ContentTemplate>
+            <script type="text/javascript">
+                var lstDropTemplate = new listDragger('', '', '');
+            </script>
+            <div style="display:none">
+                <script type="text/javascript">
+                    const setAdded = new Set();
+                    const setRemoved = new Set();
+                </script>
+                <asp:HiddenField ID="hdnAvailableProps" runat="server" />
+                <asp:HiddenField ID="hdnUsedProps" runat="server" />
+            </div>
+            <table>
+                <tr>
+                    <td><asp:Label ID="lblNamePrompt" runat="server" Text="<%$ Resources:LogbookEntry, TemplateNamePrompt %>"></asp:Label></td>
+                    <td colspan="2">
+                        <asp:TextBox ID="txtTemplateName" runat="server" Width="100%"></asp:TextBox>
+                        <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" TargetControlID="txtTemplateName" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LogbookEntry, TemplateNameWatermark %>" runat="server" />
+                        <asp:RequiredFieldValidator ID="reqTemplateName" ValidationGroup="vgPropTemplate" runat="server" ErrorMessage="<%$ Resources:LogbookEntry, errTemplateNoName %>" ControlToValidate="txtTemplateName" CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
+                    </td>
+                </tr>
+                <tr>
+                    <td><asp:Label ID="lblDescPrompt" runat="server" Text="<%$ Resources:LogbookEntry, TemplateDescriptionPrompt %>"></asp:Label></td>
+                    <td colspan="2"><asp:TextBox ID="txtDescription" runat="server" Width="100%" TextMode="MultiLine" Rows="3"></asp:TextBox></td>
+                </tr>
+                <tr>
+                    <td><asp:Label ID="lblCategoryPrompt" runat="server" Text="<%$ Resources:LogbookEntry, TemplateCategoryPrompt %>"></asp:Label></td>
+                    <td colspan="2"><asp:DropDownList ID="cmbCategories" runat="server"></asp:DropDownList></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <div style="display:inline-block"><uc1:mfbSearchbox runat="server"   ID="searchProps" EnableViewState="false" Hint="<%$ Resources:LogbookEntry, TemplateFindPropertiesWatermark %>" OnSearchClicked="searchProps_SearchClicked" /></div>
+                    </td>
+                    <td><asp:Localize ID="locIncluded" runat="server" Text="<%$ Resources:LogbookEntry, TemplatePropertiesPrompt %>"></asp:Localize></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                         <div id="divAvailableProps" runat="server" ondragover="javascript:lstDropTemplate.allowDrop(event)" class="dragTarget">
+                            <asp:Repeater ID="rptAvailableProps" runat="server">
+                                <ItemTemplate>
+                                    <div draggable="true"
+                                        id='cptT<%# Eval("PropTypeID") %>'
+                                        class="draggableItem" style='<%# StyleForTitle((string) Eval("Title")) %>'
+                                        ontouchstart="javascript:function () { lstDropTemplate.startLeftTouch('<%# Eval("PropTypeID") %>'); }"
+                                        ontouchend="javascript:function () { lstDropTemplate.resetTouch(); }"
+                                        ondragstart="javascript:lstDropTemplate.drag(event, <%# Eval("PropTypeID") %>)" >
+                                        <%# Eval("Title") %>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
+                        </div>
+                    </td>
+                    <td>
+                        <div id="divCurrentProps" runat="server" ondragover="javascript:lstDropTemplate.allowDrop(event)" class="dragTarget">
+                            <asp:Repeater ID="rptTemplateProps" runat="server">
+                                <ItemTemplate>
+                                    <div draggable="true" id="cptT<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="javascript:lstDropTemplate.drag(event, <%# Eval("PropTypeID") %>)">
+                                        <%# Eval("Title") %>
+                                        <script type="text/javascript">
+                                            document.getElementById('cptT<%# Eval("PropTypeID") %>').addEventListener("touchstart", function () { lstDropTemplate.startRightTouch('<%# Eval("PropTypeID") %>'); });
+                                            document.getElementById('cptT<%# Eval("PropTypeID") %>').addEventListener("touchend", function () { lstDropTemplate.resetTouch(); });
+                                        </script>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><asp:Label ID="lblFilteredLabel" runat="server" CssClass="fineprint" EnableViewState="false"></asp:Label></td>
+                    <td><div><asp:Button runat="server" Text="<%$ Resources:LogbookEntry, TemplateCreate %>" ValidationGroup="vgPropTemplate" ID="btnSaveTemplate" OnClick="btnSaveTemplate_Click" /> <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false"></asp:Label></div></td>
+                </tr>
+            </table>
+        </ContentTemplate>
+    </asp:UpdatePanel>    
+</asp:Panel>
 <asp:MultiView ID="mvOwnedTemplates" runat="server">
     <asp:View ID="vwTemplates" runat="server">
         <table>
@@ -72,87 +162,3 @@
         </ul>
     </asp:View>
 </asp:MultiView>
-<p><asp:Label ID="lblAddTemplate" Font-Bold="true" runat="server"></asp:Label></p>
-<ajaxToolkit:CollapsiblePanelExtender ID="cpeNewTemplate" BehaviorID="cpeNewTemplate" runat="server" Collapsed="True" CollapsedSize="0" 
-    CollapsedText="<%$ Resources:LogbookEntry, TemplateClickToCreate %>" ExpandControlID="lblAddTemplate" CollapseControlID="lblAddTemplate" ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>" TargetControlID="pnlNewTemplate" TextLabelID="lblAddTemplate" />
-<asp:Panel ID="pnlNewTemplate" runat="server" DefaultButton="btnSaveTemplate" style="overflow:hidden">
-    <asp:UpdatePanel runat="server" ID="UpdatePanel2">
-        <Triggers>
-            <asp:PostBackTrigger ControlID="btnSaveTemplate" />
-        </Triggers>
-        <ContentTemplate>
-            <script type="text/javascript">
-                var lstDropTemplate = new listDragger('<% =txtPropID.ClientID %>', '<% =btnAddToTemplate.ClientID %>', '<% =btnRemoveFromTemplate.ClientID %>');
-            </script>
-            <div style="display:none">
-                <asp:TextBox ID="txtPropID" runat="server" EnableViewState="False"></asp:TextBox>
-                <asp:Button ID="btnAddToTemplate" runat="server" OnClick="btnAddToTemplate_Click" />
-                <asp:Button ID="btnRemoveFromTemplate" runat="server" OnClick="btnRemoveFromTemplate_Click" />
-            </div>
-            <table>
-                <tr>
-                    <td><asp:Label ID="lblNamePrompt" runat="server" Text="<%$ Resources:LogbookEntry, TemplateNamePrompt %>"></asp:Label></td>
-                    <td colspan="2">
-                        <asp:TextBox ID="txtTemplateName" runat="server" Width="100%"></asp:TextBox>
-                        <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" TargetControlID="txtTemplateName" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LogbookEntry, TemplateNameWatermark %>" runat="server" />
-                        <asp:RequiredFieldValidator ID="reqTemplateName" ValidationGroup="vgPropTemplate" runat="server" ErrorMessage="<%$ Resources:LogbookEntry, errTemplateNoName %>" ControlToValidate="txtTemplateName" CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
-                    </td>
-                </tr>
-                <tr>
-                    <td><asp:Label ID="lblDescPrompt" runat="server" Text="<%$ Resources:LogbookEntry, TemplateDescriptionPrompt %>"></asp:Label></td>
-                    <td colspan="2"><asp:TextBox ID="txtDescription" runat="server" Width="100%" TextMode="MultiLine" Rows="3"></asp:TextBox></td>
-                </tr>
-                <tr>
-                    <td><asp:Label ID="lblCategoryPrompt" runat="server" Text="<%$ Resources:LogbookEntry, TemplateCategoryPrompt %>"></asp:Label></td>
-                    <td colspan="2"><asp:DropDownList ID="cmbCategories" runat="server"></asp:DropDownList></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <div style="display:inline-block"><uc1:mfbSearchbox runat="server"   ID="searchProps" EnableViewState="false" Hint="<%$ Resources:LogbookEntry, TemplateFindPropertiesWatermark %>" OnSearchClicked="searchProps_SearchClicked" /></div>
-                    </td>
-                    <td><asp:Localize ID="locIncluded" runat="server" Text="<%$ Resources:LogbookEntry, TemplatePropertiesPrompt %>"></asp:Localize></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                         <div id="divAvailableProps" runat="server" ondrop="javascript:lstDropTemplate.rightListDrop(event)" ondragover="javascript:lstDropTemplate.allowDrop(event)" class="dragTarget">
-                            <asp:Repeater ID="rptAvailableProps" runat="server">
-                                <ItemTemplate>
-                                    <div draggable="true"
-                                        id='cpt<%# Eval("PropTypeID") %>'
-                                        class="draggableItem" style='<%# StyleForTitle((string) Eval("Title")) %>'
-                                        ontouchstart="javascript:function () { lstDropTemplate.startLeftTouch('<%# Eval("PropTypeID") %>'); }"
-                                        ontouchend="javascript:function () { lstDropTemplate.resetTouch(); }"
-                                        ondragstart="javascript:lstDropTemplate.drag(event, <%# Eval("PropTypeID") %>)" >
-                                        <%# Eval("Title") %>
-                                    </div>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                        </div>
-                    </td>
-                    <td>
-                        <div id="divCurrentProps" ondrop="javascript:lstDropTemplate.leftListDrop(event)" ondragover="javascript:lstDropTemplate.allowDrop(event)" class="dragTarget">
-                            <asp:Repeater ID="rptTemplateProps" runat="server">
-                                <ItemTemplate>
-                                    <div draggable="true" id="cpt<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="javascript:lstDropTemplate.drag(event, <%# Eval("PropTypeID") %>)">
-                                        <%# Eval("Title") %>
-                                        <script type="text/javascript">
-                                            document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchstart", function () { lstDropTemplate.startRightTouch('<%# Eval("PropTypeID") %>'); });
-                                            document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchend", function () { lstDropTemplate.resetTouch(); });
-                                        </script>
-                                    </div>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><asp:Label ID="lblFilteredLabel" runat="server" CssClass="fineprint" EnableViewState="false"></asp:Label></td>
-                    <td><div><asp:Button runat="server" Text="<%$ Resources:LogbookEntry, TemplateCreate %>" ValidationGroup="vgPropTemplate" ID="btnSaveTemplate" OnClick="btnSaveTemplate_Click" /> <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false"></asp:Label></div></td>
-                </tr>
-            </table>
-        </ContentTemplate>
-    </asp:UpdatePanel>    
-</asp:Panel>

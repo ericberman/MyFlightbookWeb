@@ -1,5 +1,6 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Templates;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -30,9 +31,11 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Page.ClientScript.RegisterClientScriptInclude("ListDrag", ResolveClientUrl("~/Public/Scripts/listdrag.js?v=4"));
+        Page.ClientScript.RegisterClientScriptInclude("ListDrag", ResolveClientUrl("~/Public/Scripts/listdrag.js?v=5"));
         Page.ClientScript.RegisterClientScriptInclude("filterDropdown", ResolveClientUrl("~/Public/Scripts/DropDownFilter.js?v=3"));
         searchProps.TextBoxControl.Attributes["onkeyup"] = String.Format(CultureInfo.InvariantCulture, "FilterProps(this, '{0}', '{1}', '{2}')", divAvailableProps.ClientID, lblFilteredLabel.ClientID, Resources.LogbookEntry.PropertiesFound);
+        divAvailableProps.Attributes["ondrop"] = String.Format(CultureInfo.InvariantCulture, "javascript:lstDropTemplate.moveProp(event, 'cptT', this, '{0}', '{1}')", hdnUsedProps.ClientID, hdnAvailableProps.ClientID);
+        divCurrentProps.Attributes["ondrop"] = String.Format(CultureInfo.InvariantCulture, "javascript:lstDropTemplate.moveProp(event, 'cptT', this, '{0}', '{1}')", hdnAvailableProps.ClientID, hdnUsedProps.ClientID);
 
         if (!IsPostBack)
         {
@@ -51,17 +54,33 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
             locTemplateDescription1.Text = Branding.ReBrand(Resources.LogbookEntry.TemplateDescription);
             locTemplateDescription2.Text = Branding.ReBrand(Resources.LogbookEntry.TemplateDescription2);
         }
+        else
+        {
+            ActiveTemplate.PropertyTypes.Clear();
+            int[] props = JsonConvert.DeserializeObject<int[]>(hdnUsedProps.Value);
+            foreach (int propid in props)
+                ActiveTemplate.PropertyTypes.Add(propid);
+            UpdateLists();
+        }
     }
 
     protected void UpdateLists()
     {
         UserPropertyTemplate pt = ActiveTemplate;
         List<CustomPropertyType> lstAll = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes());
-        rptTemplateProps.DataSource = lstAll.FindAll(cpt => pt.ContainsProperty(cpt));
+
+        List<CustomPropertyType> lstIncluded = lstAll.FindAll(cpt => pt.ContainsProperty(cpt));
+        IEnumerable<int> includedProps = lstIncluded.Select(cpt => cpt.PropTypeID);
+        rptTemplateProps.DataSource = lstIncluded;
         rptTemplateProps.DataBind();
+
         lstAll.RemoveAll(cpt => pt.ContainsProperty(cpt));
+        IEnumerable<int> availableProps = lstAll.Select(cpt => cpt.PropTypeID);
         rptAvailableProps.DataSource = lstAll;
         rptAvailableProps.DataBind();
+
+        hdnAvailableProps.Value = JsonConvert.SerializeObject(availableProps);
+        hdnUsedProps.Value = JsonConvert.SerializeObject(includedProps);
     }
 
     protected void ToForm()
@@ -80,40 +99,6 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         rptTemplateGroups.DataBind();
 
         mvOwnedTemplates.SetActiveView(rgtc.Count == 0 ? vwNoTemplates : vwTemplates);
-    }
-
-    protected void btnAddToTemplate_Click(object sender, EventArgs e)
-    {
-        if (!String.IsNullOrEmpty(txtPropID.Text) && !String.IsNullOrEmpty(txtPropID.Text.Trim()))
-        {
-            try
-            {
-                int idPropType = Convert.ToInt32(txtPropID.Text, CultureInfo.InvariantCulture);
-                ActiveTemplate.AddProperty(idPropType);
-                UpdateLists();
-            }
-            catch
-            {
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Error Parsing proptype '{0}' for edit template (add) in invariant culture.  Current culture is {1}.", txtPropID.Text, CultureInfo.CurrentCulture.DisplayName));
-            }
-        }
-    }
-
-    protected void btnRemoveFromTemplate_Click(object sender, EventArgs e)
-    {
-        if (!String.IsNullOrEmpty(txtPropID.Text) && !String.IsNullOrEmpty(txtPropID.Text.Trim()))
-        {
-            try
-            {
-                int idPropType = Convert.ToInt32(txtPropID.Text, CultureInfo.InvariantCulture);
-                ActiveTemplate.RemoveProperty(idPropType);
-                UpdateLists();
-            }
-            catch
-            {
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Error Parsing proptype '{0}' for edit template (remove) in invariant culture.  Current culture is {1}.", txtPropID.Text, CultureInfo.CurrentCulture.DisplayName));
-            }
-        }
     }
 
     protected void btnSaveTemplate_Click(object sender, EventArgs e)

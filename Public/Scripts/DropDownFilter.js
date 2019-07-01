@@ -44,7 +44,6 @@ function FilterItems(src, idDDL, idLBL, txtLbl) {
 
 function FilterProps(src, idLst, idLbl, txtLbl) {
     var words = src.value.toUpperCase().split(" ");
-    var ddl = document.getElementById(idLst);
     var lbl = document.getElementById(idLbl);
 
     var props = document.getElementById(idLst).children;
