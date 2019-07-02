@@ -1397,6 +1397,12 @@ table.dataDescription thead tr td
 .mfbDefault .ajax__fileupload_footer {
 }
 
+/* Pop-up hover menus */
+.hoverPopMenu {
+    background-color: #CCCCCC;
+    border-radius: 3px;
+}
+
 /* Tabs*/
 .mfbDefault.ajax__tab_xp .ajax__tab_header {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;

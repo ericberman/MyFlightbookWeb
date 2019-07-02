@@ -13,9 +13,9 @@
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
 
 <asp:Content id="Content2" contentplaceholderid="cpPageTitle" runat="Server">
-    <div id="FullPageTop" runat="server">
+    <span id="FullPageTop" runat="server">
         <asp:Label ID="lblHeader" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightHeader %>"></asp:Label>
-    </div>
+    </span>
 </asp:Content>
 <asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
     <asp:Panel ID="pnlDetails" runat="server">
@@ -38,7 +38,7 @@
                 <asp:LinkButton ID="lnkViewKML" runat="server" Visible="false" 
                     onclick="lnkViewKML_Click" Text="<%$ Resources:LogbookEntry, PublicFlightKMLDownload %>"></asp:LinkButton>
                 <div style="float:right; text-align:left;">
-                    <uc1:popmenu runat="server" ID="popmenu">
+                    <uc1:popmenu runat="server" ID="popmenu" OffsetX="-160">
                         <MenuContent>
                             <h3><% =Resources.Airports.mapShowOptions %></h3>
                             <div><asp:CheckBox ID="ckShowPath" runat="server" Checked="true" Text="<%$ Resources:Airports, mapShowPath %>" AutoPostBack="true" OnCheckedChanged="ckShowPath_CheckedChanged" /></div>

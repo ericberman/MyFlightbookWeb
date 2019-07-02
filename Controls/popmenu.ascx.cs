@@ -4,7 +4,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,14 +21,14 @@ public partial class Controls_popmenu : System.Web.UI.UserControl, INamingContai
 
     public int OffsetX
     {
-        get { return PopupControlExtender1.OffsetX; }
-        set { PopupControlExtender1.OffsetX = value; }
+        get { return HoverMenuExtender1.OffsetX; }
+        set { HoverMenuExtender1.OffsetX = value; }
     }
 
     public int OffsetY
     {
-        get { return PopupControlExtender1.OffsetY; }
-        set { PopupControlExtender1.OffsetY = value; }
+        get { return HoverMenuExtender1.OffsetY; }
+        set { HoverMenuExtender1.OffsetY = value; }
     }
 
     public PlaceHolder Container { get { return plcMenuContent; } }
