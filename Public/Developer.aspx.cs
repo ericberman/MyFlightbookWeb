@@ -63,7 +63,7 @@ public partial class Public_Developer : System.Web.UI.Page
             foreach (ListItem li in cklScopes.Items)
                 if (li.Selected)
                     lst.Add(li.Value);
-            string szScopes = String.Join(",", lst);
+            string szScopes = String.Join(" ", lst);
             MFBOauth2Client client = new MFBOauth2Client(txtClient.Text, txtSecret.Text, "https://" + txtCallback.Text, txtName.Text, szScopes, Page.User.Identity.Name);
             try
             {
