@@ -815,8 +815,8 @@ namespace MyFlightbook
 
                     sbAirports.Append(String.Format(CultureInfo.InvariantCulture, "(flights.Route LIKE ?{0})", szParam));
                     string szCode = lstAirports[i];
-                    bool fIsDepart = szCode.StartsWith(SearchFullStopAnchor);
-                    bool fIsArrival = szCode.EndsWith(SearchFullStopAnchor);
+                    bool fIsDepart = szCode.StartsWith(SearchFullStopAnchor, StringComparison.CurrentCultureIgnoreCase);
+                    bool fIsArrival = szCode.EndsWith(SearchFullStopAnchor, StringComparison.CurrentCultureIgnoreCase);
                     string szNormalAirport = Airports.airport.USPrefixConvenienceAlias(szCode.Replace(SearchFullStopAnchor, string.Empty));
                     string szParamValue = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", fIsDepart ? string.Empty : "%", szNormalAirport, fIsArrival ? string.Empty : "%");
                     AddParameter(szParam, szParamValue);
