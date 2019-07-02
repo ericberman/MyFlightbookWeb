@@ -160,6 +160,11 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
                 throw new MyFlightbookException(Resources.Aircraft.errImportEmptyFile);
 
             aipc.ProcessParseResultsForUser(Page.User.Identity.Name);
+
+            UpdateGrid();
+            lblCountMatchExisting.Text = aipc.MatchResults.Count(mr => mr.State == AircraftImportMatchRow.MatchState.MatchedExisting).ToString(CultureInfo.InvariantCulture);
+            lblCountMatchProfile.Text = aipc.MatchResults.Count(mr => mr.State == AircraftImportMatchRow.MatchState.MatchedInProfile || mr.State == AircraftImportMatchRow.MatchState.JustAdded).ToString(CultureInfo.InvariantCulture);
+            lblCountUnmatched.Text = aipc.MatchResults.Count(mr => mr.State == AircraftImportMatchRow.MatchState.UnMatched).ToString(CultureInfo.InvariantCulture);
         }
         catch (MyFlightbookException ex) 
         { 
@@ -169,10 +174,6 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
                 aipc.CleanUpBestMatchAircraft();
         }
 
-        UpdateGrid();
-        lblCountMatchExisting.Text = aipc.MatchResults.Count(mr => mr.State == AircraftImportMatchRow.MatchState.MatchedExisting).ToString(CultureInfo.InvariantCulture);
-        lblCountMatchProfile.Text = aipc.MatchResults.Count(mr => mr.State == AircraftImportMatchRow.MatchState.MatchedInProfile || mr.State == AircraftImportMatchRow.MatchState.JustAdded).ToString(CultureInfo.InvariantCulture);
-        lblCountUnmatched.Text = aipc.MatchResults.Count(mr => mr.State == AircraftImportMatchRow.MatchState.UnMatched).ToString(CultureInfo.InvariantCulture);
         return fResult;
     }
     #endregion
