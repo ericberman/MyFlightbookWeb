@@ -24,6 +24,8 @@ namespace MyFlightbook
     [Serializable]
     public class FlightQuery
     {
+        public const string SearchFullStopAnchor = "!";
+
         public enum DateRanges { AllTime, YTD, Tailing6Months, Trailing12Months, ThisMonth, PrevMonth, PrevYear, Trailing30, Trailing90, Custom };
         public enum FlightDistance { AllFlights, LocalOnly, NonLocalOnly };
         public enum AircraftInstanceRestriction { AllAircraft, RealOnly, TrainingOnly };
@@ -520,7 +522,6 @@ namespace MyFlightbook
         private List<MySqlParameter> m_rgParams = null;
 
         private DateTime dtStartOfYear { get { return new DateTime(DateTime.Now.Year, 1, 1); } }
-        private DateTime dt12Month { get { return DateTime.Now.AddYears(-1).AddDays(1); } }
 
         private const string szBreak = "\r\n";
 
@@ -535,7 +536,7 @@ namespace MyFlightbook
         [JsonIgnoreAttribute]
         public string RestrictClause
         {
-            get { return szRestrict == null ? string.Empty : szRestrict; }
+            get { return szRestrict ?? string.Empty; }
         }
 
         /// <summary>
@@ -544,7 +545,7 @@ namespace MyFlightbook
         [JsonIgnoreAttribute]
         public string HavingClause
         {
-            get { return szHaving == null ? string.Empty : szHaving; }
+            get { return szHaving ?? string.Empty; }
         }
 
         /// <summary>
@@ -813,7 +814,12 @@ namespace MyFlightbook
                     string szParam = "SearchAirport" + i.ToString(CultureInfo.InvariantCulture);
 
                     sbAirports.Append(String.Format(CultureInfo.InvariantCulture, "(flights.Route LIKE ?{0})", szParam));
-                    AddParameter(szParam, String.Format(CultureInfo.InvariantCulture, "%{0}%", Airports.airport.USPrefixConvenienceAlias(lstAirports[i])));
+                    string szCode = lstAirports[i];
+                    bool fIsDepart = szCode.StartsWith(SearchFullStopAnchor);
+                    bool fIsArrival = szCode.EndsWith(SearchFullStopAnchor);
+                    string szNormalAirport = Airports.airport.USPrefixConvenienceAlias(szCode.Replace(SearchFullStopAnchor, string.Empty));
+                    string szParamValue = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", fIsDepart ? string.Empty : "%", szNormalAirport, fIsArrival ? string.Empty : "%");
+                    AddParameter(szParam, szParamValue);
 
                     sbAirportDesc.Append(lstAirports[i] + Resources.LocalizedText.LocalizedSpace);
                 }
@@ -1116,7 +1122,6 @@ namespace MyFlightbook
             StringBuilder sbHaving = new StringBuilder();
             szHaving = szRestrict = string.Empty;
             m_rgParams = new List<MySqlParameter>(); // recreate this - it isn't serialized, could have become null.
-            string szParam = string.Empty;
 
             if (!String.IsNullOrEmpty(UserName))
             {

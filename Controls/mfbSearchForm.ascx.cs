@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -19,6 +20,10 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
     const string szKeyVSTypes = "Types";
     private FlightQuery m_fq = null;
     private string m_szUser = null;
+
+    public const string FullStopAirportAnchor = "!";
+
+    private readonly static Regex regAirports = new Regex(String.Format(CultureInfo.InvariantCulture, "{0}?{1}?[a-zA-Z0-9]+{0}?", FullStopAirportAnchor, airport.ForceNavaidPrefix), RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     #region properties
     /// <summary>
@@ -656,7 +661,15 @@ function setDates(isCustom)
 
         // Airports:
         if (txtAirports.Text.Length > 0)
-            m_fq.AirportList = AirportList.NormalizeAirportList(txtAirports.Text);
+        {
+            MatchCollection mc = regAirports.Matches(txtAirports.Text);
+            List<string> lst = new List<string>();
+            foreach (Match m in mc)
+                if (!String.IsNullOrEmpty(m.Value))
+                    lst.Add(m.Value);
+
+            m_fq.AirportList = lst.ToArray();
+        }
 
         m_fq.Distance = (FlightQuery.FlightDistance)Convert.ToInt32(rblFlightDistance.SelectedValue, CultureInfo.InvariantCulture);
 
@@ -712,7 +725,7 @@ function setDates(isCustom)
     {
         if (e == null)
             throw new ArgumentNullException("e");
-        int idRow = 0;
+        int idRow;
         if (!int.TryParse(e.CommandArgument.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out idRow))
             return;
 
