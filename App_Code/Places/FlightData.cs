@@ -1107,12 +1107,16 @@ namespace MyFlightbook.Telemetry
                     if (fHasAlt)
                         alt = Convert.ToDouble(dr[KnownColumnNames.ALT], CultureInfo.InvariantCulture);
 
-                    if (fHasTime)
+                    if (fIsUTC)
+                    {
+                        timestamp = (DateTime)dr[KnownColumnNames.UTCDateTime];
+                        if (timestamp.Kind != DateTimeKind.Utc)
+                            timestamp = DateTime.SpecifyKind(timestamp, DateTimeKind.Utc);
+                    }
+                    else if (fHasTime)
                     {
                         timestamp = dr[szDateCol].ToString().SafeParseDate(DateTime.MinValue);
-                        if (fIsUTC)
-                            timestamp = DateTime.SpecifyKind(timestamp, DateTimeKind.Utc);
-                        else if (fHasUTCOffset)
+                        if (fHasUTCOffset)
                             timestamp = DateTime.SpecifyKind(timestamp.AddMinutes(Convert.ToInt32(dr[KnownColumnNames.UTCOffSet], CultureInfo.InvariantCulture)), DateTimeKind.Utc);
                         else if (fHasTimeKind)
                         {

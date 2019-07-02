@@ -1,16 +1,16 @@
-﻿using System;
+﻿using JouniHeikniemi.Tools.Text;
+using MyFlightbook.Geography;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using JouniHeikniemi.Tools.Text;
-using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2016 MyFlightbook LLC
+ * Copyright (c) 2010-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -111,6 +111,8 @@ namespace MyFlightbook.Telemetry
             public bool fDeriveUTCDateTime { get; set; }
             public string szDateCol { get; set; }
 
+            public int derivedColumnCount { get; set; }
+
             private List<KnownColumn> _columnList = null;
             public List<KnownColumn> ColumnList
             {
@@ -163,11 +165,12 @@ namespace MyFlightbook.Telemetry
             pc.fDeriveDateTime = pc.fHasNakedTime && pc.fHasNakedDate && !ParsedData.HasDateTime;
             if (pc.fDeriveDateTime)
             {
-                KnownColumn kc = KnownColumn.GetKnownColumn(KnownColumnNames.DATE);
+                KnownColumn kc = KnownColumn.GetKnownColumn(KnownColumnNames.UTCDateTime);
                 pc.ColumnList.Add(kc);
                 DataColumn dc = new DataColumn(kc.Column, KnownColumn.ColumnDataType(kc.Type));
                 ParsedData.Columns.Add(dc);
                 dc.DateTimeMode = DataSetDateTime.Utc;
+                pc.derivedColumnCount++;
             }
 
             pc.fHasDateTime = ParsedData.HasDateTime;
@@ -179,6 +182,7 @@ namespace MyFlightbook.Telemetry
                 KnownColumn kc = KnownColumn.GetKnownColumn(KnownColumnNames.UTCDateTime);
                 pc.ColumnList.Add(kc);
                 ParsedData.Columns.Add(new DataColumn(kc.Column, KnownColumn.ColumnDataType(kc.Type)));
+                pc.derivedColumnCount++;
             }
 
             pc.fDeriveSpeed = (ParsedData.HasLatLongInfo && pc.fHasDateTime && !ParsedData.HasSpeed);
@@ -187,6 +191,7 @@ namespace MyFlightbook.Telemetry
                 KnownColumn kc = KnownColumn.GetKnownColumn(KnownColumnNames.DERIVEDSPEED);
                 pc.ColumnList.Add(kc);
                 ParsedData.Columns.Add(new DataColumn(kc.Column, KnownColumn.ColumnDataType(kc.Type)));
+                pc.derivedColumnCount++;
             }
 
             pc.szDateCol = ParsedData.DateColumn;
@@ -194,7 +199,7 @@ namespace MyFlightbook.Telemetry
 
         private DataRow ParseCSVRow(CSVParsingContext pc, string[] rgszRow, int iRow)
         {
-            int cColExpected = rgszRow.Length + (pc.fDeriveSpeed ? 1 : 0) + (pc.fDeriveDateTime ? 1 : 0) + (pc.fDeriveUTCDateTime ? 1 : 0);
+            int cColExpected = rgszRow.Length + pc.derivedColumnCount;
             if (cColExpected < ParsedData.Columns.Count)
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errNotEnoughColumns, iRow));
             if (cColExpected > ParsedData.Columns.Count)
@@ -210,7 +215,7 @@ namespace MyFlightbook.Telemetry
                 DateTime dtNakedDate = (DateTime)dr[KnownColumnNames.NakedDate];
                 DateTime dtNakedTime = (DateTime)dr[KnownColumnNames.NakedTime];
                 int tzOffset = (pc.fHasTimezone) ? (int)dr[ParsedData.TimeZoneHeader] : 0;
-                dr[KnownColumnNames.DATE] = DateTime.SpecifyKind(new DateTime(dtNakedDate.Year, dtNakedDate.Month, dtNakedDate.Day, dtNakedTime.Hour, dtNakedTime.Minute, dtNakedTime.Second, pc.fHasTimezone ? DateTimeKind.Unspecified : DateTimeKind.Utc).AddMinutes(tzOffset), DateTimeKind.Utc);
+                dr[KnownColumnNames.UTCDateTime] = DateTime.SpecifyKind(new DateTime(dtNakedDate.Year, dtNakedDate.Month, dtNakedDate.Day, dtNakedTime.Hour, dtNakedTime.Minute, dtNakedTime.Second, pc.fHasTimezone ? DateTimeKind.Unspecified : DateTimeKind.Utc).AddMinutes(tzOffset), DateTimeKind.Utc);
             }
 
             if (pc.fDeriveUTCDateTime)
