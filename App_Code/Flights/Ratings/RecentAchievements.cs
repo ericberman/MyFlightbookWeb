@@ -280,7 +280,7 @@ namespace MyFlightbook.MilestoneProgress
             DistinctICAO.Add(cfr.szFamily);
 
             // Furthest Flight & airport computations.
-            AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+            AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
 
             double distance = al.DistanceForRoute();
             if (distance > FurthestFlightDistance)

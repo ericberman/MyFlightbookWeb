@@ -131,7 +131,7 @@ namespace MyFlightbook.MilestoneProgress
 
             if (!miSoloLongXC.IsSatisfied && supervisedSolo > 0)
             {
-                al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
 
                 if (al.DistanceForRoute() >= (double)miSoloLongXC.Threshold && al.GetAirportList().Length >= 3 && (cfr.cFullStopLandings + cfr.cFullStopNightLandings) >= 2)
                     miSoloLongXC.MatchFlightEvent(cfr);
@@ -153,7 +153,7 @@ namespace MyFlightbook.MilestoneProgress
                 if (nightDual > 0)
                 {
                     if (al == null)
-                        al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                        al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
                     if (al.DistanceForRoute() > (double)JAALongNightXCDistanceAirplane)
                         miNightLongXC.MatchFlightEvent(cfr);
                 }
@@ -203,16 +203,7 @@ namespace MyFlightbook.MilestoneProgress
 
         public override Collection<MilestoneItem> Milestones
         {
-            get
-            {
-                Collection<MilestoneItem> l = new Collection<MilestoneItem>();
-                l.Add(miTotal);
-                l.Add(miDual);
-                l.Add(miSolo);
-                l.Add(miSoloXC);
-                l.Add(miSoloLongXC);
-                return l;
-            }
+            get { return new Collection<MilestoneItem>() { miTotal, miDual, miSolo, miSoloXC, miSoloLongXC }; }
         }
     }
     #endregion
@@ -303,7 +294,7 @@ namespace MyFlightbook.MilestoneProgress
 
                     if (cfr.cFullStopLandings >= 1 && !miMinSoloXCMinDist.IsSatisfied)
                     {
-                        AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                        AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
                         if (al.GetAirportList().Length > 1 && al.DistanceForRoute() >= MinSoloDistance)
                             miMinSoloXCMinDist.MatchFlightEvent(cfr);
                     }

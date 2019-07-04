@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.FlightCurrency;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using MyFlightbook.Airports;
-using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -90,7 +90,7 @@ namespace MyFlightbook.MilestoneProgress
             // 61.99(a)(1)
             if (cfr.cLandingsThisFlight >= 4 && cfr.Dual > 0)
             {
-                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
                 if (al.MaxDistanceForRoute() >= 25.0)
                     miXCFlight.AddEvent(cfr.Dual);
             }
@@ -112,13 +112,13 @@ namespace MyFlightbook.MilestoneProgress
         {
             get
             {
-                Collection<MilestoneItem> l = new Collection<MilestoneItem>();
-                l.Add(miMinTime);
-                l.Add(miMinInstruction);
-                l.Add(miXCFlight);
-                l.Add(miTestPrep);
-                l.Add(miMinSolo);
-                return l;
+                return new Collection<MilestoneItem>() {
+                miMinTime,
+                miMinInstruction,
+                miXCFlight,
+                miTestPrep,
+                miMinSolo,
+                };
             }
         }
     }

@@ -68,17 +68,17 @@ namespace MyFlightbook.MilestoneProgress
     {
         #region Thresholds and parameters
         private int _minTotalTime = 250;
-        private int _minPIC = 100;
+        private const int _minPIC = 100;
         private int _minPICInCategory = 50;
-        private int _minPICXC = 50;
-        private int _minPICXCInCategory = 10;
+        private const int _minPICXC = 50;
+        private const int _minPICXCInCategory = 10;
         private int _minSimIMC = 10;
-        private int _minSimIMCInCategory = 5;
-        private int _minPoweredTime = 100;
-        private int _minPoweredInCategory = 50;
-        private int _minSoloPIC = 10;
+        private const int _minSimIMCInCategory = 5;
+        private const int _minPoweredTime = 100;
+        private const int _minPoweredInCategory = 50;
+        private const int _minSoloPIC = 10;
         private int _minDistanceXCTraining = 100;
-        private int _minSubstDualForPIC = 10;
+        private const int _minSubstDualForPIC = 10;
 
         #region public accessors for thresholds and parameters
         protected int MinTotalTime
@@ -328,7 +328,7 @@ namespace MyFlightbook.MilestoneProgress
             {
                 miMinTrainingSimIMCCategory.AddEvent(Math.Min(cfr.Dual, cfr.IMCSim));
 
-                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
                 double distFromStart = al.MaxDistanceFromStartingAirport();
                 if (cfr.Dual > 0)
                 {
@@ -406,21 +406,22 @@ namespace MyFlightbook.MilestoneProgress
         {
             get
             {
-                Collection<MilestoneItem> l = new Collection<MilestoneItem>();
-                l.Add(miTotalTime);
-                l.Add(miMinPowered);
-                l.Add(miMinPoweredInCategory);
-                l.Add(miPICMin);
-                l.Add(miPICMinCategory);
-                l.Add(miPICMinXC);
-                l.Add(miPICMinXCCategory);
-                l.Add(miMinTraining);
-                l.Add(miMintrainingSimIMC);
-                l.Add(miMinTrainingSimIMCCategory);
-                l.Add(miMinTrainingComplex);
-                l.Add(miMinXCCategory);
-                l.Add(miMinXCCategoryNight);
-                l.Add(miMinTestPrep);
+                Collection<MilestoneItem> l = new Collection<MilestoneItem>() {
+                miTotalTime,
+                miMinPowered,
+                miMinPoweredInCategory,
+                miPICMin,
+                miPICMinCategory,
+                miPICMinXC,
+                miPICMinXCCategory,
+                miMinTraining,
+                miMintrainingSimIMC,
+                miMinTrainingSimIMCCategory,
+                miMinTrainingComplex,
+                miMinXCCategory,
+                miMinXCCategoryNight,
+                miMinTestPrep
+                };
 
                 bool fSoloMet = miMinSoloCategory.IsSatisfied && miMinSoloXC.IsSatisfied && miMinSoloNight.IsSatisfied && miMinSoloNightTO.IsSatisfied && miMinSoloNightLandings.IsSatisfied;
                 bool fSubSoloMet = miMinSoloSubCategory.IsSatisfied && miMinSoloSubXC.IsSatisfied && miMinSoloSubNight.IsSatisfied && miMinSoloSubNightTO.IsSatisfied && miMinSoloSubNightLandings.IsSatisfied;
@@ -633,13 +634,13 @@ namespace MyFlightbook.MilestoneProgress
     public abstract class Comm61129Balloon : MilestoneProgress
     {
         #region parameters and thresholds
-        private int _minHoursTotalInBalloons = 20;
-        private int _minFlightsInBalloons = 10;
-        private int _minFlightsAsPIC = 2;
-        private int _minFlightTrainingTime = 10;
-        private int _minFlightTrainingFlights = 10;
-        private int _minFlightDPIC = 2;
-        private int _minFlightHASolo = 2;
+        private const int _minHoursTotalInBalloons = 20;
+        private const int _minFlightsInBalloons = 10;
+        private const int _minFlightsAsPIC = 2;
+        private const int _minFlightTrainingTime = 10;
+        private const int _minFlightTrainingFlights = 10;
+        private const int _minFlightDPIC = 2;
+        private const int _minFlightHASolo = 2;
         private decimal _minTrainingFlightLength = 2;
         private decimal _minAscentHeight = 3000;
         private string _szFARBase = string.Empty;
@@ -822,22 +823,22 @@ namespace MyFlightbook.MilestoneProgress
         #region Thresholds and parameters
         private int _minTotalTraining = 55;
         private int _minInstrumentTraining = 10;
-        private int _minInstrumentTrainingInCatClass = 5;
-        private int _minComplexOrTurbineTraining = 10;
-        private decimal _minTimeXCDayFlight = 2;
+        private const int _minInstrumentTrainingInCatClass = 5;
+        private const int _minComplexOrTurbineTraining = 10;
+        private const decimal _minTimeXCDayFlight = 2;
         private double _minDistXCDayFlight = 100;
-        private decimal _minTimeXCNightFlight = 2;
+        private const decimal _minTimeXCNightFlight = 2;
         private double _minDistXCNightFlight = 100;
-        private decimal _minTestPrep = 3;
-        private double _minDaysTestPrep = 60;
+        private const decimal _minTestPrep = 3;
+        private const double _minDaysTestPrep = 60;
 
         // Solo thresholds
-        private int _minSoloInCatClass = 10;
+        private const int _minSoloInCatClass = 10;
         private int _minSoloXCDistance = 250;
         private int _minSoloXCDistanceHawaii = 150;
-        private int _minSoloNightHours = 5;
-        private int _minSoloNightTakeoffs = 10;
-        private int _minSoloNightLandings = 10;
+        private const int _minSoloNightHours = 5;
+        private const int _minSoloNightTakeoffs = 10;
+        private const int _minSoloNightLandings = 10;
 
         public int MinTotalTraining
         {
@@ -990,7 +991,7 @@ namespace MyFlightbook.MilestoneProgress
 
             miInstrumentTrainingInCatClass.AddEvent(IMCTraining);
 
-            AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+            AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
             double distFromStart = al.MaxDistanceFromStartingAirport();
             decimal DualXC = Math.Min(cfr.XC, cfr.Dual);
             if ((DualXC - cfr.Night) >= _minTimeXCDayFlight && distFromStart >= _minDistXCDayFlight)

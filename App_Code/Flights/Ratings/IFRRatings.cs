@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.FlightCurrency;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using MyFlightbook.Airports;
-using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -176,7 +176,7 @@ namespace MyFlightbook.MilestoneProgress
     [Serializable]
     public abstract class IFR141Base : IFR6165Base
     {
-        private MilestoneItem miIMCAircraftTime, miIMCFSTime, miIMCFTDTime, miIMCATDTime;
+        private readonly MilestoneItem miIMCAircraftTime, miIMCFSTime, miIMCFTDTime, miIMCATDTime;
 
         const decimal totalIMCTime = 35.0M;
         const decimal maxIMCFSTime = totalIMCTime * 0.5M;

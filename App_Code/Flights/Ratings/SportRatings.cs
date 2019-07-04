@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.FlightCurrency;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using MyFlightbook.Airports;
-using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -100,7 +100,7 @@ namespace MyFlightbook.MilestoneProgress
             miMinLandings.AddEvent(cFSLandings);
             if (soloTime > 0 && cFSLandings > 1)
             {
-                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
 
                 if (al.DistanceForRoute() > MinXCDistance && al.MaxSegmentForRoute() > 25)
                 {

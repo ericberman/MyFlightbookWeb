@@ -688,9 +688,9 @@ namespace MyFlightbook.Airports
         public const string ForceNavaidPrefix = "@";
         public const string USAirportPrefix = "K";
         private const string szRegAdHocFix = ForceNavaidPrefix + "\\b\\d{1,2}(?:[\\.,]\\d*)?[NS]\\d{1,3}(?:[\\.,]\\d*)?[EW]\\b";  // Must have a digit on the left side of the decimal
-        private static string szRegexAirports = String.Format(CultureInfo.InvariantCulture, "((?:{0})|(?:@?\\b[A-Z0-9]{{{1},{2}}}\\b))", szRegAdHocFix, Math.Min(airport.minNavaidCodeLength, airport.minAirportCodeLength), airport.maxCodeLength);
-        private static Regex regAdHocFix = new Regex(szRegAdHocFix, RegexOptions.Compiled);
-        private static Regex regAirport = new Regex(szRegexAirports, RegexOptions.Compiled);
+        private readonly static string szRegexAirports = String.Format(CultureInfo.InvariantCulture, "((?:{0})|(?:@?\\b[A-Z0-9]{{{1},{2}}}\\b))", szRegAdHocFix, Math.Min(airport.minNavaidCodeLength, airport.minAirportCodeLength), airport.maxCodeLength);
+        private readonly static Regex regAdHocFix = new Regex(szRegAdHocFix, RegexOptions.Compiled);
+        private readonly static Regex regAirport = new Regex(szRegexAirports, RegexOptions.Compiled);
 
         override public string ToString()
         {
@@ -1506,7 +1506,7 @@ namespace MyFlightbook.Airports
             {
                 string szKey = airport.ForceNavaidPrefix + ap.Code;
                 // see if a navaid is already there; store the new one only if it is higher priority (lower value) than what's already there.
-                airport ap2 = null;
+                airport ap2;
                 m_htAirportsByCode.TryGetValue(szKey, out ap2);
                 if (ap2 == null || (ap.Priority < ap2.Priority))
                     m_htAirportsByCode[szKey] = ap;
@@ -1518,17 +1518,20 @@ namespace MyFlightbook.Airports
         /// Returns a new AirportList that is a subset of the current ones, using airports out of the array of codes (from NormalizeAirportList)
         /// </summary>
         /// <param name="rgApCodeNormal">The array of airport codes (call NormalizeAirportList on a route to get this)</param>
+        /// <param name="fPortsOnly">Indicates whether we should ONLY include ports (vs navaids)</param>
         /// <returns>A new airportList object that is the intersection of the source object and the specified codes</returns>
-        private AirportList CloneSubset(string[] rgApCodeNormal)
+        private AirportList CloneSubset(string[] rgApCodeNormal, bool fPortsOnly = false)
         {
-            AirportList al = new AirportList();
-            al.m_rgAirports = new List<airport>();
-            al.m_rgszAirportsNormal = rgApCodeNormal;
+            AirportList al = new AirportList()
+            {
+                m_rgAirports = new List<airport>(),
+                m_rgszAirportsNormal = rgApCodeNormal
+            };
 
             foreach (string sz in al.m_rgszAirportsNormal)
             {
                 airport ap = GetAirportByCode(sz);
-                if (ap != null)
+                if (ap != null && (ap.IsPort || !fPortsOnly))
                 {
                     al.m_htAirportsByCode[sz] = ap;
                     al.m_rgAirports.Add(ap);
@@ -1541,10 +1544,11 @@ namespace MyFlightbook.Airports
         /// Returns a new AirportList that is a subset of the current ones, using airports out of the specified route
         /// </summary>
         /// <param name="szRoute">A string with the route</param>
+        /// <param name="fPortsOnly">Indicates whether we should ONLY include ports</param>
         /// <returns>A new airportList object that is the intersection of the source object and the specified codes</returns>
-        public AirportList CloneSubset(string szRoute)
+        public AirportList CloneSubset(string szRoute, bool fPortsOnly = false)
         {
-            return CloneSubset(NormalizeAirportList(szRoute));
+            return CloneSubset(NormalizeAirportList(szRoute), fPortsOnly);
         }
         #endregion
 
@@ -1558,13 +1562,12 @@ namespace MyFlightbook.Airports
         public static ListsFromRoutesResults ListsFromRoutes(IEnumerable<string> rgRoutes)
         {
             List<AirportList> lst = new List<AirportList>();
-            AirportList aplMaster = new AirportList(string.Empty);
 
             if (rgRoutes == null || rgRoutes.Count() == 0)
                 return new ListsFromRoutesResults(lst, new AirportList(string.Empty));
 
             // Create a single "worker" airportlist from which we will create the others.
-            aplMaster = new AirportList(String.Join(" ", rgRoutes.ToArray()));
+            AirportList aplMaster = new AirportList(String.Join(" ", rgRoutes.ToArray()));
 
             Dictionary<string, AirportList> dictRoutes = new Dictionary<string, AirportList>();
 
@@ -1609,7 +1612,7 @@ namespace MyFlightbook.Airports
         /// <returns>The matching airport, null if not found.</returns>
         private airport GetAirportByCode(string sz)
         {
-            airport ap = null;
+            airport ap;
             m_htAirportsByCode.TryGetValue(sz, out ap);
 
             // if this wasn't a forced navaid and the airport wasn't found, look to see if the navaid matched.
@@ -1908,8 +1911,7 @@ namespace MyFlightbook.Airports
         public MFBImageInfo[] GetImagesOnFlownSegments()
         {
             List<MFBImageInfo> lst = new List<MFBImageInfo>();
-            ImageList il = new ImageList();
-            il.Class = MFBImageInfo.ImageClass.Flight;
+            ImageList il = new ImageList() { Class = MFBImageInfo.ImageClass.Flight };
             foreach (FlownSegment fs in FlownSegments.Values)
             {
                 if (fs.HasMatch && fs.MatchingFlight.fIsPublic)
@@ -1986,9 +1988,7 @@ namespace MyFlightbook.Airports
 
                     dbh.ReadRow((comm) => { }, (dr) => { idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture); });
 
-                    FlownSegment fs = new FlownSegment();
-                    fs.Segment = szKey;
-                    fs.HasMatch = (idFlight != LogbookEntry.idFlightNone);
+                    FlownSegment fs = new FlownSegment() { Segment = szKey, HasMatch = (idFlight != LogbookEntry.idFlightNone) };
                     if (fs.HasMatch)
                         fs.MatchingFlight = new LogbookEntry(idFlight, lto: LogbookEntry.LoadTelemetryOption.None);
                     else
@@ -2015,7 +2015,7 @@ namespace MyFlightbook.Airports
     public class AirportQuizQuestion
     {
         private int m_CorrectAnswer = -1;
-        private airport[] m_Answers = null;
+        private readonly airport[] m_Answers = null;
 
         /// <summary>
         /// The index of the answer to the most recently asked question

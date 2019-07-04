@@ -185,36 +185,35 @@ namespace MyFlightbook.MilestoneProgress
         {
             get
             {
-                Collection<MilestoneItem> lst = new Collection<MilestoneItem>();
+                return new Collection<MilestoneItem>() { 
 
                 // 61.109(ab) - Base
-                lst.Add(miMinTime);
-                lst.Add(miMinTraining);
-                lst.Add(miMinSolo);
+                miMinTime,
+                miMinTraining,
+                miMinSolo,
 
                 // 61.109(ab)(1) - Dual XC
-                lst.Add(miMinDualXC);
+                miMinDualXC,
 
                 // 61.109(ab)(2) - Night
-                lst.Add(miMinNightTime);
-                lst.Add(miMinXCNight);
-                lst.Add(miMinNightTO);
-                lst.Add(miMinNightFSLandings);
+                miMinNightTime,
+                miMinXCNight,
+                miMinNightTO,
+                miMinNightFSLandings,
 
                 // 61.109(ab)(3) - IMC
-                lst.Add(miMinSimIMC);
+                miMinSimIMC,
 
                 // 61.109(ab)(4) - 3 hours of training in prior 2 calendar months
-                lst.Add(miMinTestPrep);
+                miMinTestPrep,
 
                 // 61.109(ab)(5) - solo and XC requirements
-                lst.Add(miMinSoloInType);
-                lst.Add(miMinXCSolo);
-                lst.Add(miMinXCDistance);
-                lst.Add(miMinSoloTakeoffsTowered);
-                lst.Add(miMinSoloLandingsTowered);
-
-                return lst;
+                miMinSoloInType,
+                miMinXCSolo,
+                miMinXCDistance,
+                miMinSoloTakeoffsTowered,
+                miMinSoloLandingsTowered
+                };
             }
         }
 
@@ -294,7 +293,7 @@ namespace MyFlightbook.MilestoneProgress
             if (fIsCorrectCatClass)
             {
                 // Get the matching airport list
-                al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
 
                 // 61.109(abc)(1)
                 miMinDualXC.AddEvent(Math.Min(cfr.Dual, cfr.XC));
@@ -328,7 +327,7 @@ namespace MyFlightbook.MilestoneProgress
                 miMinXCSolo.AddEvent(Math.Min(cfr.XC, soloTime));
 
                 if (al == null)
-                    al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                    al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
 
                 if (!miMinXCDistance.IsSatisfied && al.DistanceForRoute() >= MinXCSoloDistance && al.MaxSegmentForRoute() >= MinXCSoloSegment && (cfr.cFullStopLandings + cfr.cFullStopNightLandings) >= MinXCSoloFSLandings)
                     miMinXCDistance.MatchFlightEvent(cfr);
@@ -424,33 +423,32 @@ namespace MyFlightbook.MilestoneProgress
         {
             get
             {
-                Collection<MilestoneItem> lst = new Collection<MilestoneItem>();
+                return new Collection<MilestoneItem>() { 
 
                 // 61.109(c) - Base
-                lst.Add(miMinTime);
-                lst.Add(miMinTraining);
-                lst.Add(miMinSolo);
+                miMinTime,
+                miMinTraining,
+                miMinSolo,
 
                 // 61.109(c)(1) - Dual XC
-                lst.Add(miMinDualXC);
+                miMinDualXC,
 
                 // 61.109(c)(2) - Night
-                lst.Add(miMinNightTime);
-                lst.Add(miMinXCNight);
-                lst.Add(miMinNightTO);
-                lst.Add(miMinNightFSLandings);
+                miMinNightTime,
+                miMinXCNight,
+                miMinNightTO,
+                miMinNightFSLandings,
 
                 // 61.109(c)(3) - 3 hours of training in prior 2 calendar months
-                lst.Add(miMinTestPrep);
+                miMinTestPrep,
 
                 // 61.109(c)(4) - Solo & XC requirements
-                lst.Add(miMinSoloInType);
-                lst.Add(miMinXCSolo);
-                lst.Add(miMinXCDistance);
-                lst.Add(miMinSoloTakeoffsTowered);
-                lst.Add(miMinSoloLandingsTowered);
-
-                return lst;
+                miMinSoloInType,
+                miMinXCSolo,
+                miMinXCDistance,
+                miMinSoloTakeoffsTowered,
+                miMinSoloLandingsTowered
+                };
             }
         }
     }
@@ -476,32 +474,32 @@ namespace MyFlightbook.MilestoneProgress
         {
             get
             {
-                Collection<MilestoneItem> lst = new Collection<MilestoneItem>();
+                Collection<MilestoneItem> lst = new Collection<MilestoneItem>() { 
 
                 // 61.109(d) - Base
-                lst.Add(miMinTime);
-                lst.Add(miMinTraining);
-                lst.Add(miMinSolo);
+                miMinTime,
+                miMinTraining,
+                miMinSolo,
 
                 // 61.109(d)(1) - Dual XC
-                lst.Add(miMinDualXC);
+                miMinDualXC,
 
                 // 61.109(d)(2) - Night
-                lst.Add(miMinNightTime);
-                lst.Add(miMinXCNight);
-                lst.Add(miMinNightTO);
-                lst.Add(miMinNightFSLandings);
+                miMinNightTime,
+                miMinXCNight,
+                miMinNightTO,
+                miMinNightFSLandings,
 
                 // 61.109(d)(3) - 3 hours of training in prior 2 calendar months
-                lst.Add(miMinTestPrep);
+                miMinTestPrep,
 
                 // 61.109(d)(4) - Solo & XC requirements
-                lst.Add(miMinSoloInType);
-                lst.Add(miMinXCSolo);
-                lst.Add(miMinXCDistance);
-                lst.Add(miMinSoloTakeoffsTowered);
-                lst.Add(miMinSoloLandingsTowered);
-
+                miMinSoloInType,
+                miMinXCSolo,
+                miMinXCDistance,
+                miMinSoloTakeoffsTowered,
+                miMinSoloLandingsTowered,
+                };
                 return lst;
             }
         }
@@ -528,7 +526,7 @@ namespace MyFlightbook.MilestoneProgress
     [Serializable]
     public class PPL61109F : PPL61109Base
     {
-        private MilestoneItem miHoursInHeavierThanAir, miHoursInGlider1, miHoursInGlider2, miMinFlights1i, miMinSoloFlights, miMinSoloLandings;
+        private readonly MilestoneItem miHoursInHeavierThanAir, miHoursInGlider1, miHoursInGlider2, miMinFlights1i, miMinSoloFlights, miMinSoloLandings;
 
         public PPL61109F()
         {
@@ -627,7 +625,7 @@ namespace MyFlightbook.MilestoneProgress
     [Serializable]
     public class PPL61109G : PPL61109Base
     {
-        private MilestoneItem miMinNightXC, miMinPIC;
+        private readonly MilestoneItem miMinNightXC, miMinPIC;
 
         public PPL61109G()
         {
@@ -668,7 +666,7 @@ namespace MyFlightbook.MilestoneProgress
                 // Get the matching airport list
                 if (cfr.fNight)
                 {
-                    AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                    AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
                     if (!miMinXCNight.IsSatisfied && al.DistanceForRoute() >= 25.0)
                         miMinNightXC.MatchFlightEvent(cfr);
 
@@ -952,7 +950,7 @@ namespace MyFlightbook.MilestoneProgress
 
                 if (cfr.XC > 0)
                 {
-                    AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                    AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
                     xcDistance = al.DistanceForRoute();
                     xcLongestLeg = al.MaxSegmentForRoute();
                 }
@@ -1007,23 +1005,21 @@ namespace MyFlightbook.MilestoneProgress
         {
             get
             {
-                Collection<MilestoneItem> lst = new Collection<MilestoneItem>();
-
-                lst.Add(miTotalTime);
-                lst.Add(miDualTime);
-                lst.Add(miXCTraining);
-                lst.Add(miNightFlight);
-                lst.Add(miNightXC);
-                lst.Add(miNightTakeoffs);
-                lst.Add(miNightLandings);
-                lst.Add(miInstrumentManeuvers);
-                lst.Add(miTestPrep);
-                lst.Add(miSoloTime);
-                lst.Add(miSoloXC);
-                lst.Add(miSoloTakeoffs);
-                lst.Add(miSoloLandings);
-
-                return lst;
+                return new Collection<MilestoneItem>() {
+                miTotalTime,
+                miDualTime,
+                miXCTraining,
+                miNightFlight,
+                miNightXC,
+                miNightTakeoffs,
+                miNightLandings,
+                miInstrumentManeuvers,
+                miTestPrep,
+                miSoloTime,
+                miSoloXC,
+                miSoloTakeoffs,
+                miSoloLandings,
+                };
             }
         }
     }
@@ -1167,7 +1163,7 @@ namespace MyFlightbook.MilestoneProgress
 
             if (!miSoloLongXC.IsSatisfied && soloTime > 0)
             {
-                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
 
                 if (al.DistanceForRoute() >= (double)miSoloLongXC.Threshold && al.GetAirportList().Length >= 3 && (cfr.cFullStopLandings + cfr.cFullStopNightLandings) >= 2)
                     miSoloLongXC.MatchFlightEvent(cfr);
@@ -1465,7 +1461,7 @@ namespace MyFlightbook.MilestoneProgress
 
             if (!miSoloLongXC.IsSatisfied && soloTime > 0)
             {
-                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
 
                 if (al.MaxDistanceFromStartingAirport() > SoloLongXCDistanceFromStart && al.DistanceForRoute() >= (double)SoloLongXCDistance && al.GetAirportList().Length >= 3 && (cfr.cFullStopLandings + cfr.cFullStopNightLandings) >= 2)
                     miSoloLongXC.MatchFlightEvent(cfr);
@@ -1505,13 +1501,13 @@ namespace MyFlightbook.MilestoneProgress
     [Serializable]
     public abstract class SANightRating : MilestoneProgress
     {
-        MilestoneItem miInstrumentDual;
-        MilestoneItem miNightLandings;
-        MilestoneItem miNightTakeoffs;
-        MilestoneItem miNightDualXC;
+        protected MilestoneItem miInstrumentDual;
+        protected MilestoneItem miNightLandings;
+        protected MilestoneItem miNightTakeoffs;
+        protected MilestoneItem miNightDualXC;
 
-        private decimal MaxFTD = 5.0M;
-        private decimal nightXCDistance = 0;
+        private const decimal MaxFTD = 5.0M;
+        private readonly decimal nightXCDistance = 0;
 
         protected SANightRating(string szTitle, RatingType rt, decimal minNightXCDistance)
         {
@@ -1552,7 +1548,7 @@ namespace MyFlightbook.MilestoneProgress
 
             if (fIsMatch)
             {
-                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
 
                 if (al.DistanceForRoute() >= (double)nightXCDistance && al.GetAirportList().Length >= 3 && cfr.cFullStopNightLandings >= 2)
                     miNightDualXC.MatchFlightEvent(cfr);
