@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
-using System.Web;
 
 /******************************************************
  * 
@@ -21,31 +20,29 @@ namespace MyFlightbook
     /// </summary>
     public class UserAircraft
     {
-        private readonly System.Web.SessionState.HttpSessionState m_session = null;
-
         public string User { get; set; }
 
         public UserAircraft(string szUser)
         {
             User = szUser;
-            m_session = (HttpContext.Current == null) ? null : HttpContext.Current.Session;
         }
 
-        private string SessionCacheKey
-        {
-            get { return "uaKey" + User; }
-        }
+        private const string szCacheKey = "userAircraftKey";
 
         private Aircraft[] CachedAircraft
         {
-            get { return (m_session == null) ? null : (Aircraft[])m_session[SessionCacheKey]; }
-            set { if (m_session != null) m_session[SessionCacheKey] = value; }
+            get { return String.IsNullOrEmpty(User) ? null : (Aircraft[]) Profile.GetUser(User).CachedObject(szCacheKey); }
+            set
+            {
+                if (!String.IsNullOrEmpty(User))
+                    Profile.GetUser(User).AssociatedData[szCacheKey] = value;
+            }
         }
 
         public void InvalidateCache()
         {
-            if (m_session != null)
-                m_session.Remove(SessionCacheKey);
+            if (!String.IsNullOrEmpty(User))
+                Profile.GetUser(User).AssociatedData.Remove(szCacheKey);
         }
 
         public enum AircraftRestriction { UserAircraft, AllMakeModel, AllAircraft, AllSims };

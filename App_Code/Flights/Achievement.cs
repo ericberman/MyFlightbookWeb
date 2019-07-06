@@ -1348,8 +1348,7 @@ namespace MyFlightbook.Achievements
 
         public static void FlushCache()
         {
-            if (HttpContext.Current != null && HttpContext.Current.Cache != null)
-                HttpContext.Current.Cache.Remove(szCacheDataKey);
+            HttpRuntime.Cache.Remove(szCacheDataKey);
         }
 
         protected static List<AirportListBadgeData> BadgeData
@@ -1358,8 +1357,7 @@ namespace MyFlightbook.Achievements
             {
                 List<AirportListBadgeData> lst = null;
 
-                if (HttpContext.Current != null && HttpContext.Current.Cache != null)
-                    lst = (List<AirportListBadgeData>)HttpContext.Current.Cache[szCacheDataKey];
+                lst = (List<AirportListBadgeData>)HttpRuntime.Cache[szCacheDataKey];
 
                 if (lst == null)
                 {
@@ -1367,8 +1365,7 @@ namespace MyFlightbook.Achievements
                     DBHelper dbh = new DBHelper("SELECT * FROM airportlistachievement");
                     dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new AirportListBadgeData(dr)); });
 
-                    if (HttpContext.Current != null && HttpContext.Current.Cache != null)
-                        HttpContext.Current.Cache.Add(szCacheDataKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), System.Web.Caching.CacheItemPriority.Default, null);
+                    HttpRuntime.Cache.Add(szCacheDataKey, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), System.Web.Caching.CacheItemPriority.Default, null);
                 }
 
                 return lst;

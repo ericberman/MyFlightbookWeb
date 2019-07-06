@@ -1,15 +1,14 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Web;
+﻿using MyFlightbook.FlightCurrency;
 using MyFlightbook.Image;
 using MySql.Data.MySqlClient;
-using MyFlightbook.FlightCurrency;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -223,17 +222,12 @@ namespace MyFlightbook.Basicmed
         #endregion
 
         #region caching
-        private static string CacheKey(string szUser)
-        {
-            return "basicMedEvents" + szUser;
-        }
+        private const string szCacheKey = "basicMedEvents";
 
         private static void ClearCache(string szUser)
         {
-            if (String.IsNullOrEmpty(szUser))
-                return;
-            if (HttpRuntime.Cache != null)
-                HttpRuntime.Cache.Remove(CacheKey(szUser));
+            if (!String.IsNullOrEmpty(szUser))
+                Profile.GetUser(szUser).AssociatedData.Remove(szCacheKey);
         }
 
         private static void AddToCache(string szUser, IEnumerable<BasicMedEvent> lst)
@@ -241,15 +235,14 @@ namespace MyFlightbook.Basicmed
             if (String.IsNullOrEmpty(szUser) || lst == null)
                 return;
 
-            if (HttpRuntime.Cache != null)
-                HttpRuntime.Cache.Add(CacheKey(szUser), lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Low, null);
+            Profile.GetUser(szUser).AssociatedData[szCacheKey] = lst;
         }
 
         private static IEnumerable<BasicMedEvent> CachedEvents(string szUser)
         {
-            if (String.IsNullOrEmpty(szUser) || HttpRuntime.Cache == null)
+            if (String.IsNullOrEmpty(szUser))
                 return null;
-            return (IEnumerable<BasicMedEvent>)HttpRuntime.Cache[CacheKey(szUser)];
+            return (IEnumerable<BasicMedEvent>) Profile.GetUser(szUser).CachedObject(szCacheKey);
         }
         #endregion
 

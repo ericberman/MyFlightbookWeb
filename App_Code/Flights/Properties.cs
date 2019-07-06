@@ -549,42 +549,22 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             return sz;
         }
 
-        private static Cache AppCache
-        {
-            get { return HttpRuntime.Cache; }
-        }
-
-        private static System.Web.SessionState.HttpSessionState Session
-        {
-            get { return (HttpContext.Current != null && HttpContext.Current.Session != null) ? HttpContext.Current.Session : null; }
-        }
-
-        public static void FlushCache()
-        {
-            Cache appCache = AppCache;
-            if (appCache != null)
-            {
-                appCache.Remove(szAppCacheKey);
-                appCache.Remove(szAppCacheDictKey);
-            }
-        }
-
-        private static string SessionKey(string szUser)
-        {
-            return String.Format(CultureInfo.InvariantCulture, "{0}{1}", szAppCacheKey, szUser);
-        }
-
         public static void FlushUserCache(string szUser)
         {
-            if (Session != null)
-                Session.Remove(SessionKey(szUser));
+            Profile pf = Profile.GetUser(szUser);
+            pf.AssociatedData.Remove(szAppCacheKey);
+        }
+
+        public static void FlushGlobalCache()
+        {
+            HttpRuntime.Cache.Remove(szAppCacheKey);
         }
 
         private static Dictionary<int, CustomPropertyType> PropTypeDictionary
         {
             get
             {
-                Cache appcache = AppCache;
+                Cache appcache = HttpRuntime.Cache;
                 Dictionary<int, CustomPropertyType> d = (Dictionary<int, CustomPropertyType>)appcache[szAppCacheDictKey];
                 if (d == null)
                 {
@@ -651,23 +631,26 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
         public static CustomPropertyType[] GetCustomPropertyTypes(string szUser = null, bool fForceLoad = false)
         {
             List<CustomPropertyType> ar = new List<CustomPropertyType>();
-            System.Web.SessionState.HttpSessionState sess = Session;
-            Cache appcache = AppCache;
             string szSessKey = string.Empty;
 
             // if szUser is null or empty, we want to cache this in the application cache (shared across all users)
-            // otherwise, we store it in the session cache
+            // otherwise, we store it in the user's associated data cache
             // So first we check if is cached and return it if so.
             if (String.IsNullOrEmpty(szUser))
             {
-                if (appcache != null && appcache[szAppCacheKey] != null)
-                    return (CustomPropertyType[])appcache[szAppCacheKey];
+                CustomPropertyType[] rgProps = (CustomPropertyType[])HttpRuntime.Cache[szAppCacheKey];
+                if (rgProps != null)
+                    return rgProps;
             }
             else
             {
-                szSessKey = SessionKey(szUser);
-                if (!fForceLoad && sess != null && sess[szSessKey] != null)
-                    return (CustomPropertyType[])sess[szSessKey];
+                if (!fForceLoad)
+                {
+                    // Try to return props from the user profile.
+                    CustomPropertyType[] rgProps = (CustomPropertyType[])Profile.GetUser(szUser).CachedObject(szAppCacheKey);
+                    if (rgProps != null)
+                        return rgProps;
+                }
             }
 
             // CustomPropsForUserQuery will work with an empty szUser, but it is SLOW, so if no user is specified, use a faster query.
@@ -705,15 +688,9 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
 
             // cache it.
             if (String.IsNullOrEmpty(szUser))
-            {
-                if (appcache != null)
-                    appcache[szAppCacheKey] = rgcpt;
-            }
+                HttpRuntime.Cache[szAppCacheKey] = rgcpt;
             else
-            {
-                if (sess != null)
-                    sess[szSessKey] = rgcpt;
-            }
+                Profile.GetUser(szUser).AssociatedData[szAppCacheKey] = rgcpt;
 
             return rgcpt;
         }

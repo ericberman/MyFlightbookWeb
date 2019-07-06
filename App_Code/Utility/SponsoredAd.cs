@@ -1,10 +1,16 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
-using MySql.Data;
-using MySql.Data.MySqlClient;
-using System.Globalization;
+
+/******************************************************
+ * 
+ * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
 
 namespace MyFlightbook.SponsoredAd
 {
@@ -84,13 +90,13 @@ namespace MyFlightbook.SponsoredAd
         /// <returns></returns>
         public static IEnumerable<SponsoredAd> Campaigns()
         {
-            List<SponsoredAd> lst = (List<SponsoredAd>)HttpContext.Current.Cache[cacheKeySponsoredAds];
+            List<SponsoredAd> lst = (List<SponsoredAd>)HttpRuntime.Cache[cacheKeySponsoredAds];
             if (lst == null)
             {
                 lst = new List<SponsoredAd>();
                 DBHelper dbh = new DBHelper("SELECT * FROM sponsoredads ");
                 dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new SponsoredAd(dr)); });
-                HttpContext.Current.Cache.Add(cacheKeySponsoredAds, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+                HttpRuntime.Cache.Add(cacheKeySponsoredAds, lst, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 20, 0), System.Web.Caching.CacheItemPriority.Normal, null);
             }
             return lst;
         }

@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 
 /******************************************************
  * 
@@ -1190,21 +1189,6 @@ namespace MyFlightbook
         /// </summary>
         [JsonIgnore]
         public string QueryName { get; set; }
-
-        private static List<CannedQuery> CachedQueries
-        {
-            get
-            {
-                if (HttpContext.Current != null && HttpContext.Current.Session != null)
-                    return (List<CannedQuery>)HttpContext.Current.Session[szUserQueriesKey];
-                return null;
-            }
-            set
-            {
-                if (HttpContext.Current != null && HttpContext.Current.Session != null)
-                    HttpContext.Current.Session[szUserQueriesKey] = value;
-            }
-        }
         #endregion
 
         #region Constructors
@@ -1236,7 +1220,11 @@ namespace MyFlightbook
             if (szUser == null)
                 throw new ArgumentNullException("szUser");
 
-            List<CannedQuery> lst = CachedQueries;
+            if (String.IsNullOrWhiteSpace(szUser))
+                throw new ArgumentOutOfRangeException("szUser");
+
+            Profile pf = Profile.GetUser(szUser);
+            List<CannedQuery> lst = (List<CannedQuery>) pf.CachedObject(szUserQueriesKey);
             if (lst != null)
                 return lst;
             else
@@ -1251,25 +1239,13 @@ namespace MyFlightbook
                 cq.QueryName = (string)dr["name"];
                 lst.Add(cq);
             });
-            CachedQueries = lst;    // cache 'em!
+            pf.AssociatedData[szUserQueriesKey] = lst;    // cache 'em!
             return lst;
         }
 
-        private void RemoveFromCache()
+        private void FlushCachedQueries()
         {
-            List<CannedQuery> lst = CachedQueries;
-            if (lst != null)
-                lst.RemoveAll(cq => cq.QueryName.CompareCurrentCultureIgnoreCase(this.QueryName) == 0 && cq.UserName.CompareCurrentCultureIgnoreCase(this.UserName) == 0);
-        }
-
-        private void AddToCache()
-        {
-            List<CannedQuery> lst = CachedQueries;
-            if (lst != null)
-            {
-                lst.Add(this);
-                lst.Sort();
-            }
+            Profile.GetUser(UserName).AssociatedData.Remove(szUserQueriesKey);
         }
 
         /// <summary>
@@ -1289,8 +1265,7 @@ namespace MyFlightbook
             dba.AddWithValue("fqjson", ToJSONString());
             new DBHelper(dba).DoNonQuery();
 
-            RemoveFromCache();
-            AddToCache();
+            FlushCachedQueries();
         }
 
         public void Delete()
@@ -1299,7 +1274,7 @@ namespace MyFlightbook
             dba.AddWithValue("uname", UserName);
             dba.AddWithValue("qname", QueryName);
             new DBHelper(dba).DoNonQuery();
-            RemoveFromCache();
+            FlushCachedQueries();
         }
         #endregion
 

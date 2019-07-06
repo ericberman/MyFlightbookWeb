@@ -174,7 +174,7 @@ namespace MyFlightbook
             Role = ProfileRoles.UserRole.None;
             BlacklistedProperties = new List<int>();
             LastBFRInternal = LastMedical = CertificateExpiration = EnglishProficiencyExpiration = LastEmailDate = DateTime.MinValue;
-
+            AssociatedData = new Dictionary<string, object>();
         }
         #endregion
 
@@ -668,6 +668,11 @@ namespace MyFlightbook
             get { return m_AchievementStatus; }
             set { m_AchievementStatus = value; }
         }
+
+        /// <summary>
+        /// Convenience dictionary of associated data for other that want to piggy back on Profile caching.
+        /// </summary>
+        public IDictionary<string, object> AssociatedData { get; set; }
         #endregion
 
         /// <summary>
@@ -699,6 +704,19 @@ namespace MyFlightbook
                 return szEmail;
             }
         }
+
+        #region Associated data helpers
+        /// <summary>
+        /// Safe way to get a cached object (i.e., can return null)
+        /// </summary>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        public object CachedObject(string szKey)
+        {
+            object o;
+            return (AssociatedData.TryGetValue(szKey, out o)) ? o : null;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -880,7 +898,7 @@ namespace MyFlightbook
         #endregion
     }
 
-        [Serializable]
+    [Serializable]
     public class Profile : PersistedProfile
     {
         #region Creation
@@ -893,6 +911,18 @@ namespace MyFlightbook
         #endregion
 
         #region Getting users
+        private static void LoadUserFromDB(string szUser, Action<MySqlDataReader> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException("action");
+
+            DBHelper dbh = new DBHelper("SELECT uir.Rolename AS Role, u.* FROM users u LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook') WHERE u.Username=?UserName LIMIT 1");
+            dbh.ReadRow(
+                (comm) => { comm.Parameters.AddWithValue("UserName", szUser); },
+                (dr) => { action(dr); }
+            );
+        }
+
         protected Boolean LoadUser(string szUser)
         {
             Boolean fResult = false;
@@ -902,9 +932,9 @@ namespace MyFlightbook
                 return fResult;
 
             // try loading from the cache first, save a DB call
-            if (HttpRuntime.Cache[GetCacheKey(szUser)] != null)
+            Profile pfCached = CachedProfileForUser(szUser);
+            if (pfCached != null)
             {
-                Profile pfCached = (Profile)HttpRuntime.Cache[GetCacheKey(szUser)];
                 util.CopyObject(pfCached, this);
                 // restore protected properties that are not copied by CopyObject
                 OriginalPKID = pfCached.OriginalPKID;
@@ -912,16 +942,12 @@ namespace MyFlightbook
                 return true;
             }
 
-            DBHelper dbh = new DBHelper("SELECT uir.Rolename AS Role, u.* FROM users u LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook') WHERE u.Username=?UserName LIMIT 1");
-            dbh.ReadRow(
-                (comm) => { comm.Parameters.AddWithValue("UserName", szUser); },
-                (dr) =>
-                {
-                    InitFromDataReader(dr);
-                    HttpRuntime.Cache[GetCacheKey(szUser)] = this; // update the cache with this object
-                    fResult = true;
-                }
-                    );
+            LoadUserFromDB(szUser, (dr) =>
+            {
+                InitFromDataReader(dr);
+                HttpRuntime.Cache[GetCacheKey(szUser)] = this; // update the cache with this object
+                fResult = true;
+            });
 
             return fResult;
         }
@@ -931,9 +957,9 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="name">username to fetch</param>
         /// <returns>null if not current in cache, else Profile</returns>
-        public static Profile CachedProfileForUser(string name)
+        private static Profile CachedProfileForUser(string name)
         {
-            return (Profile)HttpRuntime.Cache[GetCacheKey(name)];
+            return HttpRuntime.Cache == null ? null : (Profile)HttpRuntime.Cache[GetCacheKey(name)];
         }
 
         /// <summary>
@@ -944,12 +970,14 @@ namespace MyFlightbook
         /// <returns>A profile object from the cache, if possible</returns>
         public static Profile GetUser(string name, bool fBypassCache = false)
         {
+            if (String.IsNullOrWhiteSpace(name))
+                return new Profile();
+
             Profile pf = fBypassCache ? null : CachedProfileForUser(name);
             if (pf == null)
             {
-                pf = new Profile();
-                if (!pf.LoadUser(name))
-                    pf.UserName = string.Empty;
+                LoadUserFromDB(name, (dr) => { pf = new Profile(dr); });
+                HttpRuntime.Cache[GetCacheKey(name)] = pf;
             }
             return pf;
         }
@@ -1249,9 +1277,9 @@ namespace MyFlightbook
             dbh.DoNonQuery();
 
             // update all of the cached profile objects
-            if (HttpContext.Current != null && HttpContext.Current.Cache != null)
+            if (HttpRuntime.Cache != null)
             {
-                Cache c = HttpContext.Current.Cache;
+                Cache c = HttpRuntime.Cache;
                 IDictionaryEnumerator en = c.GetEnumerator();
                 while (en.MoveNext())
                 {

@@ -1,9 +1,9 @@
-﻿using System;
-using MyFlightbook;
+﻿using MyFlightbook;
+using System;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,7 +21,6 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
     public TabList TabList
     {
         get { return XMLNav1.TabList; }
-        set { XMLNav1.TabList = value; }
     }
 
     protected void Page_Load(object sender, EventArgs e)

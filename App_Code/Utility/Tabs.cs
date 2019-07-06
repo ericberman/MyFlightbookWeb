@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Web;
 using System.Xml.Linq;
 
 /******************************************************
@@ -192,13 +191,8 @@ namespace MyFlightbook
         {
             if (!String.IsNullOrEmpty(szFile))
             {
-                if (HttpContext.Current != null && HttpContext.Current.Cache != null && HttpContext.Current.Cache[szFile] != null)
-                    Tabs = (List<TabItem>)HttpContext.Current.Cache[szFile];
-                else
-                {
-                    XDocument doc = XDocument.Load(System.Web.Hosting.HostingEnvironment.MapPath(szFile));
-                    Tabs = ReadTabs(doc.Elements("Items").Elements("Item"));
-                }
+                XDocument doc = XDocument.Load(System.Web.Hosting.HostingEnvironment.MapPath(szFile));
+                Tabs = ReadTabs(doc.Elements("Items").Elements("Item"));
             }
         }
 

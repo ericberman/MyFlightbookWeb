@@ -384,7 +384,7 @@ public partial class Member_Admin : System.Web.UI.Page
                 comm.Parameters.AddWithValue("Flags", Convert.ToInt32(lblFlags.Text, CultureInfo.InvariantCulture));
             });
 
-        CustomPropertyType.FlushCache();
+        CustomPropertyType.FlushGlobalCache();
         gvCustomProps.DataBind();
         txtCustomPropTitle.Text = txtCustomPropFormat.Text = "";
         cmbCustomPropType.SelectedIndex = 0;
@@ -395,7 +395,7 @@ public partial class Member_Admin : System.Web.UI.Page
 
     protected void CustPropsRowEdited(object sender, EventArgs e)
     {
-        CustomPropertyType.FlushCache();
+        CustomPropertyType.FlushGlobalCache();
     }
 
     protected void CheckBoxList1_SelectedIndexChanged(object sender, EventArgs e)
@@ -1291,9 +1291,8 @@ GROUP BY ac.idaircraft";
 
     protected void btnFlushCache_Click(object sender, EventArgs e)
     {
-        if (HttpContext.Current.Cache != null)
-            foreach (System.Collections.DictionaryEntry entry in HttpContext.Current.Cache)
-                HttpContext.Current.Cache.Remove((string)entry.Key);
+        foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
+            HttpRuntime.Cache.Remove((string)entry.Key);
     }
     #endregion
 }

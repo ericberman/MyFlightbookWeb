@@ -1,13 +1,14 @@
+using MyFlightbook;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.UI;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -31,16 +32,17 @@ public partial class XMLNav : System.Web.UI.UserControl
 
     public HoverStyle MenuStyle { get; set; }
 
-    private TabList m_tablist;
+    private string CacheKey { get { return "cachedTabList" + XmlSrc; } }
+
     public TabList TabList
     {
         get
         {
-            if (m_tablist == null)
-                m_tablist = new TabList(XmlSrc);
-            return m_tablist;
+            TabList t = (TabList) HttpRuntime.Cache[CacheKey];
+            if (t == null)
+                HttpRuntime.Cache[CacheKey] = t = new TabList(XmlSrc);
+            return t;
         }
-        set { m_tablist = value; }
     }
 
     public event EventHandler<TabBoundEventArgs> TabItemBound = null;

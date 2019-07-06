@@ -367,23 +367,24 @@ namespace MyFlightbook.Templates
         #endregion
 
         #region Caching
-        private static string CacheKeyForUser(string szOwner)
-        {
-            return String.Format(CultureInfo.InvariantCulture, "cachedPropTemplate{0}", szOwner);
-        }
+        private const string szCacheKey = "cachedPropTemplates";
 
         protected override void InvalidateCache()
         {
-            if (HttpContext.Current != null && HttpContext.Current.Cache != null)
-                HttpContext.Current.Cache.Remove(CacheKeyForUser(Owner));
+            if (String.IsNullOrWhiteSpace(Owner))
+                return;
+
+            Profile.GetUser(Owner).AssociatedData.Remove(szCacheKey);
         }
 
         private static List<PropertyTemplate> CachedTemplatesForUser(string szUser)
         {
-            if (HttpContext.Current == null || HttpContext.Current.Cache == null)
+            if (szUser == null)
+                throw new ArgumentNullException("szUser");
+            if (String.IsNullOrWhiteSpace(szUser))
                 return null;
 
-            return (List<PropertyTemplate>) HttpContext.Current.Cache[CacheKeyForUser(szUser)];
+            return (List<PropertyTemplate>) Profile.GetUser(szUser).CachedObject(szCacheKey);
         }
         #endregion
 
@@ -416,6 +417,9 @@ namespace MyFlightbook.Templates
         /// <returns></returns>
         public static IEnumerable<PropertyTemplate> TemplatesForUser(string szUser, bool fIncludeAutomatic = true)
         {
+            if (szUser == null)
+                throw new ArgumentNullException("szUser");
+
             List<PropertyTemplate> lst = CachedTemplatesForUser(szUser);
 
             if (lst == null)
@@ -424,8 +428,7 @@ namespace MyFlightbook.Templates
                 DBHelper dbh = new DBHelper("SELECT * FROM propertytemplate WHERE owner=?user");
                 dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
                 (dr) => { lst.Add(new UserPropertyTemplate(dr)); });
-                if (HttpContext.Current != null && HttpContext.Current.Cache != null)
-                    HttpContext.Current.Cache[CacheKeyForUser(szUser)] = lst;
+                Profile.GetUser(szUser).AssociatedData[szCacheKey] = lst;
             }
 
             // Add in the automatic properties as well.

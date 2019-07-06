@@ -33,7 +33,7 @@ public partial class Member_Schedule : System.Web.UI.Page
             throw new MyFlightbookException("Invalid club specification - no such club.");
 
         // Check that the user is a member of the specified club
-        if (!Club.ClubWithID(idClub).HasMember(HttpContext.Current.User.Identity.Name))
+        if (!c.HasMember(HttpContext.Current.User.Identity.Name))
             throw new MyFlightbookException("You must be a member of the club to make this call");
 
         if (level == PrivilegeLevel.ReadWrite && !c.CanWrite)

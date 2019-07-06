@@ -51,9 +51,7 @@ namespace MyFlightbook
                 (comm) => { },
                 (dr) =>
                 {
-                    SimpleMakeModel smm = new SimpleMakeModel();
-                    smm.Description = dr["MakeName"].ToString();
-                    smm.ModelID = Convert.ToInt32(dr["idmodel"], CultureInfo.InvariantCulture);
+                    SimpleMakeModel smm = new SimpleMakeModel() { Description = dr["MakeName"].ToString(), ModelID = Convert.ToInt32(dr["idmodel"], CultureInfo.InvariantCulture) };
                     al.Add(smm);
                 }))
                 throw new MyFlightbookException("Error in GetAllMakeModels: " + dbh.LastError);
@@ -102,8 +100,8 @@ namespace MyFlightbook
     {
         public const int UnknownModel = -1;
         private string szSampleAircraftIDs = "";
-        static Regex rNormalize = new Regex("[^a-zA-Z0-9 ]*", RegexOptions.Compiled);
-        static Regex rNormalizeNoSpace = new Regex("[^a-zA-Z0-9]*", RegexOptions.Compiled);
+        static readonly Regex rNormalize = new Regex("[^a-zA-Z0-9 ]*", RegexOptions.Compiled);
+        static readonly Regex rNormalizeNoSpace = new Regex("[^a-zA-Z0-9]*", RegexOptions.Compiled);
 
         /// <summary>
         /// For turbine aircraft, indicates the type of turbine
@@ -596,8 +594,8 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             if (MakeModelID == -1)
                 MakeModelID = dbh.LastInsertedRowId;
 
-            if (MakeModelID != -1 && HttpContext.Current != null && HttpContext.Current.Cache != null)
-                HttpContext.Current.Cache[CacheKey(this.MakeModelID)] = this;
+            if (MakeModelID != -1)
+                HttpRuntime.Cache[CacheKey(this.MakeModelID)] = this;
         }
 
         private void InitFromDataReader(MySqlDataReader dr)
@@ -630,11 +628,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             IsMultiEngineHelicopter = Convert.ToBoolean(dr["fMultiHelicopter"], CultureInfo.InvariantCulture);
             IsCertifiedSinglePilot = Convert.ToBoolean(dr["fCertifiedSinglePilot"], CultureInfo.InvariantCulture);
 
-            if (HttpContext.Current != null && HttpContext.Current.Cache != null)
-            {
-                System.Web.Caching.Cache c = HttpContext.Current.Cache;
-                c.Add(CacheKey(this.MakeModelID), this, null, DateTime.Now.AddHours(2), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Low, null);
-            }
+            HttpRuntime.Cache.Add(CacheKey(this.MakeModelID), this, null, DateTime.Now.AddHours(2), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Low, null);
         }
 
         #region Find/enumerate Models
@@ -773,10 +767,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
 
         private static MakeModel CachedModel(int id)
         {
-            if (HttpContext.Current != null && HttpContext.Current.Cache != null)
-                return (MakeModel)HttpContext.Current.Cache[CacheKey(id)];
-
-            return null;
+            return (MakeModel)HttpRuntime.Cache[CacheKey(id)];
         }
 
         /// <summary>
@@ -912,7 +903,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         [JsonConverter(typeof(StringEnumConverter))]
         public enum ModelSortDirection { Ascending, Descending };
 
-        static Regex rNormalizeModel = new Regex("[- ]+", RegexOptions.Compiled);
+        static readonly Regex rNormalizeModel = new Regex("[- ]+", RegexOptions.Compiled);
 
         /// <summary>
         /// Prefix to use for modelname to force to Family.

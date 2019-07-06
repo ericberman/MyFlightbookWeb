@@ -525,8 +525,7 @@ namespace MyFlightbook.Clubs
             string szKey = CacheKeyForID(id);
             if (!fNoCache)
             {
-                if (HttpContext.Current != null && HttpContext.Current.Cache != null && HttpContext.Current.Cache[szKey] != null)
-                    c = (Club)HttpContext.Current.Cache[szKey];
+                c = (Club)HttpRuntime.Cache[szKey];
                 if (c != null)
                     return c;
             }
@@ -548,13 +547,9 @@ namespace MyFlightbook.Clubs
         private static void CacheClub(Club c, int idClub)
         {
             string szKey = CacheKeyForID(idClub);
-            if (HttpContext.Current != null && HttpContext.Current.Cache != null)
-            {
-                if (HttpContext.Current.Cache[szKey] != null)
-                    HttpContext.Current.Cache.Remove(szKey);
-                if (c != null)
-                    HttpContext.Current.Cache.Add(c.CacheKey, c, null, DateTime.Now.AddMinutes(30), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Default, null);
-            }
+            HttpRuntime.Cache.Remove(szKey);
+            if (c != null)
+                HttpRuntime.Cache.Add(c.CacheKey, c, null, DateTime.Now.AddMinutes(30), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Default, null);
         }
 
         /// <summary>
