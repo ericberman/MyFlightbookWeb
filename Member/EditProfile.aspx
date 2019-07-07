@@ -489,7 +489,7 @@
                                     meta:resourcekey="lnkMyFlightsResource1"></asp:HyperLink></p>
                                 <p>
                                 <asp:Localize ID="locShareAllFlightsDisclaimer" runat="server" 
-                                    Text="This will ONLY show flights that you have designated to be shared." 
+                                    Text="This will ONLY show flights for which you have allowed details to be visible." 
                                     meta:resourcekey="locShareAllFlightsDisclaimerResource1"></asp:Localize></p>
                             </div>
                             <div class="prefSectionRow">

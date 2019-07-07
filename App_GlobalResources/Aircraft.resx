@@ -319,7 +319,7 @@
     <value>Any notes you put here will be shared among all pilots who fly this aircraft.  This is a great place to describe STC'd modifications, maintenance notes, panel upgrades, notes about aircraft quirks, etc.</value>
   </data>
   <data name="locPublicNotesTab" xml:space="preserve">
-    <value>Shared Notes</value>
+    <value>Public Notes</value>
   </data>
   <data name="ImportHeaderBestMatchModel" xml:space="preserve">
     <value>Best Matching Model</value>

@@ -311,7 +311,7 @@
                     <asp:Label ID="Label26" style="vertical-align:middle" 
                         AssociatedControlID="ckPublic" runat="server" 
                         CssClass="itemlabel" EnableViewState="False"
-                        Text="Share details such as route, comments, and pictures with others"
+                        Text="Allow others to view details of this flight"
                         meta:resourcekey="Label26Resource1">
                     </asp:Label>
                     <uc1:mfbTooltip runat="server" ID="mfbTooltip">

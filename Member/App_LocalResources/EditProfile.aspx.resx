@@ -1195,7 +1195,7 @@
     <value>Retype Email</value>
   </data>
   <data name="locShareAllFlightsDisclaimerResource1.Text" xml:space="preserve">
-    <value>This will ONLY show flights that you have designated to be shared.</value>
+    <value>This will ONLY show flights for which you have allowed details to be visible.</value>
   </data>
   <data name="locShareAllFlightsPromptResource1.Text" xml:space="preserve">
     <value>Share your public flights with this link:</value>

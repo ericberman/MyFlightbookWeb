@@ -274,7 +274,7 @@
     <value />
   </data>
   <data name="Label26Resource1.Text" xml:space="preserve">
-    <value>Share details such as route, comments, and pictures with others</value>
+    <value>Allow others to view details of this flight</value>
   </data>
   <data name="Label26Resource1.ToolTip" xml:space="preserve">
     <value />
