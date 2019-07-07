@@ -882,7 +882,7 @@
                         meta:resourcekey="BoundFieldResource7" >
                         <ItemStyle Font-Bold="True" />
                         </asp:BoundField>
-                    <asp:BoundField DataField="Amount" DataFormatString="{0:C}" 
+                    <asp:BoundField DataField="Amount" DataFormatString="US${0}" 
                         meta:resourcekey="BoundFieldResource8" />
                         <asp:BoundField DataField="Notes" meta:resourcekey="BoundFieldResource9" />
                 </Columns>
