@@ -135,6 +135,7 @@ namespace MyFlightbook
             IDPropPilotFlyingTime = 529,        // Not flagged as a known property
             IDPropPilotMonitoringTime = 530,
             IDPropReliefPilotTime = 535,
+            IDProp135297IPC = 537,
             IDPropInstrumentInstructionTime = 542,
             IDPropCoPilotTime = 546,
             IDPropAdditionalCrew = 558,
