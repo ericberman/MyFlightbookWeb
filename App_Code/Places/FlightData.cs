@@ -675,6 +675,9 @@ namespace MyFlightbook.Telemetry
             {
                 if (Columns != null)
                 {
+                    // Prefer a UTC datetime if present
+                    if (Columns[KnownColumnNames.UTCDateTime] != null)
+                        return KnownColumnNames.UTCDateTime;
                     if (Columns[KnownColumnNames.DATE] != null)
                         return KnownColumnNames.DATE;
                     if (Columns[KnownColumnNames.TIME] != null)

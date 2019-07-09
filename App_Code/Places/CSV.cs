@@ -176,6 +176,8 @@ namespace MyFlightbook.Telemetry
             pc.fHasDateTime = ParsedData.HasDateTime;
             pc.fHasTimezone = ParsedData.HasTimezone;
 
+            pc.szDateCol = ParsedData.DateColumn;   // Set this before deriving a UTCDateTime so that when we derive UTCDateTime, we don't try to read from it.
+
             if (pc.fHasDateTime && pc.fHasTimezone && !ParsedData.HasUTCDateTime)    // add a UTC time as well
             {
                 pc.fDeriveUTCDateTime = true;
@@ -193,8 +195,6 @@ namespace MyFlightbook.Telemetry
                 ParsedData.Columns.Add(new DataColumn(kc.Column, KnownColumn.ColumnDataType(kc.Type)));
                 pc.derivedColumnCount++;
             }
-
-            pc.szDateCol = ParsedData.DateColumn;
         }
 
         private DataRow ParseCSVRow(CSVParsingContext pc, string[] rgszRow, int iRow)
@@ -220,7 +220,7 @@ namespace MyFlightbook.Telemetry
 
             if (pc.fDeriveUTCDateTime)
             {
-                DateTime dt = (DateTime)dr[ParsedData.DateColumn];
+                DateTime dt = (DateTime)dr[pc.szDateCol];
                 dr[KnownColumnNames.UTCDateTime] = DateTime.SpecifyKind(dt.AddMinutes((int)dr[ParsedData.TimeZoneHeader]), DateTimeKind.Utc);
             }
 
