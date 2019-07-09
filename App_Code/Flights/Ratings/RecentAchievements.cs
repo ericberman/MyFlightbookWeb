@@ -137,6 +137,16 @@ namespace MyFlightbook.MilestoneProgress
         #endregion
         #endregion
 
+        #region Flight Counts
+        public int FlightCountOnDate(DateTime dt)
+        {
+            int cFlights;
+            return FlightDates.TryGetValue(dt.YMDString(), out cFlights) ? cFlights : 0;
+        }
+
+        public int FlownDaysInPeriod { get { return FlightDates.Count; } }
+        #endregion
+
         /// <summary>
         /// Creates a new recentachievements
         /// </summary>

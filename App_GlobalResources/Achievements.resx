@@ -369,4 +369,10 @@
   <data name="RecentStatsTitle" xml:space="preserve">
     <value>Flying stats for {0:d} to {1:d}</value>
   </data>
+  <data name="RecentAchievementsCalendarHeader" xml:space="preserve">
+    <value># of flights per day</value>
+  </data>
+  <data name="RecentAchievementsViewCalendar" xml:space="preserve">
+    <value>View a calendar of your flying</value>
+  </data>
 </root>

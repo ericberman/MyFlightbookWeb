@@ -53,4 +53,11 @@ public partial class Member_Achievements : System.Web.UI.Page
         ForceRefresh();
         RefreshPage();
     }
+
+    protected void lnkShowCalendar_Click(object sender, EventArgs e)
+    {
+        mfbRecentAchievements.ShowCalendar = true;
+        lnkShowCalendar.Visible = false;
+        RefreshPage();
+    }
 }

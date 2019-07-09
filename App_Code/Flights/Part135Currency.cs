@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2016 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -40,7 +40,7 @@ namespace MyFlightbook.FlightCurrency
         {
             cfr.ForEachEvent((pfe) =>
             {
-                if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135293Competency || pfe.PropTypeID == (int) CustomPropertyType.KnownProperties.IDProp135297IPC)
+                if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135293Competency || pfe.PropertyType.IsIPC)
                     AddRecentFlightEvents(cfr.dtFlight, 1);
             });
         }
@@ -58,7 +58,7 @@ namespace MyFlightbook.FlightCurrency
         {
             cfr.ForEachEvent((pfe) =>
             {
-                if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135297IPC)
+                if (pfe.PropertyType.IsIPC)
                     AddRecentFlightEvents(cfr.dtFlight, 1);
             });
         }

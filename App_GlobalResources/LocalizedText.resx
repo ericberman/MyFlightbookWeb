@@ -1509,4 +1509,8 @@
   <data name="GoogleDriveOutOfSpace" xml:space="preserve">
     <value>Quota for storage on Google Drive has been exceeded.</value>
   </data>
+  <data name="NonBreakingSpace" xml:space="preserve">
+    <value>&amp;nbsp;</value>
+    <comment>DO NOT LOCALIZE</comment>
+  </data>
 </root>

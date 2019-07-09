@@ -10,7 +10,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2018 MyFlightbook LLC
+ * Copyright (c) 2012-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -24,8 +24,7 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
         if (String.Compare(Request.UserHostAddress, szIPThis, StringComparison.CurrentCultureIgnoreCase) == 0)
         {
             // request came from this machine - make a request to ourselves and send it out in email
-            EmailSubscriptionManager em = new EmailSubscriptionManager();
-            em.ActiveBrand = Branding.CurrentBrand;
+            EmailSubscriptionManager em = new EmailSubscriptionManager() { ActiveBrand = Branding.CurrentBrand };
             if (util.GetIntParam(Request, "dbg", 0) != 0)
                 em.UserRestriction = Page.User.Identity.Name;
             string szTasksToRun = util.GetStringParam(Request, "tasks");
@@ -113,12 +112,10 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
 
                         mfbTotalSummary.Username = mfbTotalSummaryYTD.Username = pf.UserName;
 
-                        FlightQuery fqPriorMonth = new FlightQuery(pf.UserName);
-                        fqPriorMonth.DateRange = FlightQuery.DateRanges.PrevMonth;
+                        FlightQuery fqPriorMonth = new FlightQuery(pf.UserName) { DateRange = FlightQuery.DateRanges.PrevMonth };
                         mfbTotalSummary.CustomRestriction = fqPriorMonth;
 
-                        FlightQuery fqYTD = new FlightQuery(pf.UserName);
-                        fqYTD.DateRange = fAnnual ? FlightQuery.DateRanges.PrevYear : FlightQuery.DateRanges.YTD;
+                        FlightQuery fqYTD = new FlightQuery(pf.UserName) { DateRange = fAnnual ? FlightQuery.DateRanges.PrevYear : FlightQuery.DateRanges.YTD };
                         mfbTotalSummaryYTD.CustomRestriction = fqYTD;
 
                         if (fAnnual)

@@ -19,6 +19,7 @@
         </asp:View>
     </asp:MultiView>
     <uc1:mfbRecentAchievements runat="server" ID="mfbRecentAchievements" />
+    <asp:LinkButton ID="lnkShowCalendar" runat="server" Text="<%$ Resources:Achievements, RecentAchievementsViewCalendar %>" OnClick="lnkShowCalendar_Click"></asp:LinkButton>
     <asp:Label ID="lblErr" CssClass="error" runat="server" EnableViewState="false" Text=""></asp:Label>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cpMain" Runat="Server">

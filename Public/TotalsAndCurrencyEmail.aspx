@@ -39,7 +39,7 @@
     <asp:Panel ID="pnlYTD" runat="server" Visible="false" EnableViewState="false">
         <h2><asp:Label ID="lblYTD" runat="server" Text=""></asp:Label></h2>
         <uc2:mfbTotalSummary ID="mfbTotalSummaryYTD" runat="server" EnableViewState="false" />
-        <uc1:mfbRecentAchievements runat="server" ID="mfbRecentAchievements" />
+        <uc1:mfbRecentAchievements runat="server" ID="mfbRecentAchievements" ShowCalendar="true" />
     </asp:Panel>
     <div>
         <asp:Label ID="lblErr" runat="server" Text="You are not authorized to view this." CssClass="error" Visible="false" EnableViewState="false"></asp:Label>

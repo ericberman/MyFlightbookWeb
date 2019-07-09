@@ -26,4 +26,58 @@
             <div><uc1:mfbBadgeSet runat="server" ID="mfbBadgeSet" BadgeSet='<%# Container.DataItem %>' /></div>
         </ItemTemplate>
     </asp:Repeater>
+    <style type="text/css">
+        .monthContainer {
+            display: inline-block;
+            margin: 3px;
+            vertical-align:top;
+        }
+
+        .monthHeader {
+            text-align:center;
+            background-color: darkgray;
+            font-weight:bold;
+            font-size: 9pt;
+        }
+
+        .adjacentDay {
+            color: gray;
+            background-color:lightgray;
+            height: 30px;
+            width: 30px;
+        }
+
+        .includedDay {
+            background-color:white;
+            color: black;
+            height: 30px;
+            width: 30px;
+        }
+
+        .dayOfMonth {
+            font-size: 7pt;
+            font-weight:normal;
+            vertical-align:top;
+        }
+
+        .dateContent {
+            display:block;
+            font-size: 8pt;
+            font-weight:bold;
+            text-align:center;
+            vertical-align:middle;
+            width: 16px;
+            height: 16px;
+            border-radius: 8px;
+        }
+
+        .dateContent:hover {
+            color: blue;
+        }
+
+        .dateContent:link, .dateContent:visited {
+            color:black;
+        }
+    </style>
+    <asp:PlaceHolder ID="plcFlyingCalendar" runat="server" Visible="false"></asp:PlaceHolder>
 </asp:Panel>
