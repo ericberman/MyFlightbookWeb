@@ -136,17 +136,37 @@
         </h2>
         <p><%=Resources.LocalizedText.WelcomeThanks %></p>
         <p><%=Resources.LocalizedText.WelcomeNextSteps %></p>
-        <ul>
-            <li><asp:HyperLink ID="lnkAddAircraft" NavigateUrl="~/Member/Aircraft.aspx" runat="server" Text="<%$ Resources:LocalizedText, WelcomeEnterAircraft %>"></asp:HyperLink></li>
-            <li><% =Resources.LocalizedText.WelcomeEnterFlights %><br />
-                <% =Resources.LocalizedText.ORSeparator %>
-            </li>
-            <li><asp:HyperLink ID="lnkImportWelcome" NavigateUrl="~/Member/Import.aspx" runat="server" 
+        <table style="border-spacing: 10px;">
+            <tr>
+                <td>
+                    <asp:Image ID="imgLogbook" runat="server" ImageUrl="~/Public/tabimages/logbookTab.png" Width="24" AlternateText="<%$ Resources:LocalizedText, WelcomeEnterFlights %>"  />
+                </td>
+                <td><% =Resources.LocalizedText.WelcomeEnterFlights %><br />
+                <% =Resources.LocalizedText.ORSeparator %></td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Image ID="imgAircraft" runat="server" ImageUrl="~/Public/tabimages/AircraftTab.png" Width="24" AlternateText="<%$ Resources:LocalizedText, WelcomeEnterAircraft %>" />
+                </td>
+                <td><asp:HyperLink ID="lnkAddAircraft" NavigateUrl="~/Member/Aircraft.aspx" runat="server" Text="<%$ Resources:LocalizedText, WelcomeEnterAircraft %>"></asp:HyperLink><br />
+                <% =Resources.LocalizedText.ORSeparator %></td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Image ID="imgImport2" runat="server" ImageUrl="~/images/import.png" AlternateText="<%$ Resources:LocalizedText, WelcomeImportFlights %>"  />
+                </td>
+                <td><asp:HyperLink ID="lnkImportWelcome" NavigateUrl="~/Member/Import.aspx" runat="server" 
                     Text="<%$ Resources:LocalizedText, WelcomeImportFlights %>"></asp:HyperLink><br />
-                <% =Resources.LocalizedText.ORSeparator %>
-            </li>
-            <li><asp:HyperLink ID="lnkSetStartingTotals" runat="server" Text="<%$ Resources:LocalizedText, WelcomeSetStartingTotals %>" NavigateUrl="~/Member/StartingTotals.aspx"></asp:HyperLink></li>
-        </ul>
+                <% =Resources.LocalizedText.ORSeparator %></td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Image ID="imgStartingTotals2" runat="server" ImageUrl="~/images/startingtotals.png" AlternateText="<%$ Resources:LocalizedText, WelcomeSetStartingTotals %>" />
+                </td>
+                <td><asp:HyperLink ID="lnkSetStartingTotals" runat="server" Text="<%$ Resources:LocalizedText, WelcomeSetStartingTotals %>" NavigateUrl="~/Member/StartingTotals.aspx"></asp:HyperLink></td>
+            </tr>
+        </table>
+
         <div style="text-align:center">
         <asp:Button ID="btnClose" runat="server" Text="<%$ Resources:LocalizedText, Close %>" /></div>
     </asp:Panel>
