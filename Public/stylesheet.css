@@ -1362,6 +1362,10 @@ table.dataDescription thead tr td
     display: block;
 }
 
+.noselect:focus {
+    outline: none !important;
+}
+
 /* Ajax styling */
 /* Ajax file upload */
 .mfbDefault .ajax__fileupload {
