@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -40,7 +40,7 @@ namespace MyFlightbook.FlightCurrency
         {
             cfr.ForEachEvent((pfe) =>
             {
-                if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135293Competency || pfe.PropertyType.IsIPC)
+                if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135293Competency || pfe.PropTypeID == (int) CustomPropertyType.KnownProperties.IDProp135297IPC)
                     AddRecentFlightEvents(cfr.dtFlight, 1);
             });
         }
@@ -58,7 +58,7 @@ namespace MyFlightbook.FlightCurrency
         {
             cfr.ForEachEvent((pfe) =>
             {
-                if (pfe.PropertyType.IsIPC)
+                if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135297IPC)
                     AddRecentFlightEvents(cfr.dtFlight, 1);
             });
         }
@@ -77,7 +77,7 @@ namespace MyFlightbook.FlightCurrency
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
 
-            if (cfr.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDProp135299FlightCheck))
+            if (cfr.fIsRealAircraft && cfr.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDProp135299FlightCheck))
                 AddRecentFlightEvents(cfr.dtFlight, 1);
         }
     }
