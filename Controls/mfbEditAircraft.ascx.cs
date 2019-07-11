@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -743,7 +744,16 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         {
             int aircraftID;
             if (int.TryParse(hdnSelectedAircraftID.Value, out aircraftID))
-                Response.Redirect("~/Member/EditAircraft.aspx?id=" + aircraftID.ToString(CultureInfo.InvariantCulture));
+            {
+                StringBuilder sb = new StringBuilder("~/Member/EditAircraft.aspx?id=" + aircraftID.ToString(CultureInfo.InvariantCulture));
+                foreach (var key in Request.QueryString.AllKeys)
+                {
+                    if (key.CompareCurrentCultureIgnoreCase("id") == 0)
+                        continue;
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "&{0}={1}", key, System.Web.HttpUtility.UrlEncode(Request.QueryString[key]));
+                }
+                Response.Redirect(sb.ToString());
+            }
         }
     }
     #endregion
