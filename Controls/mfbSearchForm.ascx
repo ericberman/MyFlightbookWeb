@@ -137,12 +137,12 @@
                             </td>
                             <td>
                                 <asp:CheckBox ID="ckPublic" runat="server" 
-                                    Text="Flight data is shared" 
+                                    Text="Visible to others" 
                                     meta:resourcekey="ckPublicResource1" />
                             </td>
                             <td>
                                 <asp:CheckBox ID="ckIsSigned" runat="server" 
-                                    Text="Flight is signed" meta:resourcekey="ckIsSignedResource1" />
+                                    Text="Instructor signature" meta:resourcekey="ckIsSignedResource1" />
                             </td>
                         </tr>
                         <tr>

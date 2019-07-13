@@ -1079,7 +1079,7 @@ Proceed with import?</value>
     <value>Drag/drop from the list of available properties (on the left) into this list</value>
   </data>
   <data name="TemplateShare" xml:space="preserve">
-    <value>Shared</value>
+    <value>Available to others</value>
   </data>
   <data name="TemplateBrowseAddPublic" xml:space="preserve">
     <value>Add to my templates</value>

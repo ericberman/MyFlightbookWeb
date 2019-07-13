@@ -196,7 +196,7 @@
     <value />
   </data>
   <data name="ckIsSignedResource1.Text" xml:space="preserve">
-    <value>Flight is signed</value>
+    <value>Instructor signature</value>
   </data>
   <data name="ckIsSignedResource1.ToolTip" xml:space="preserve">
     <value />
@@ -250,7 +250,7 @@
     <value />
   </data>
   <data name="ckPublicResource1.Text" xml:space="preserve">
-    <value>Flight data is shared</value>
+    <value>Visible to others</value>
   </data>
   <data name="ckPublicResource1.ToolTip" xml:space="preserve">
     <value />

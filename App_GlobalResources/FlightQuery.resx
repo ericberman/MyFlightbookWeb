@@ -227,7 +227,7 @@
     <value>PIC time</value>
   </data>
   <data name="FlightFeaturePublic" xml:space="preserve">
-    <value>Shared</value>
+    <value>Visible to others</value>
   </data>
   <data name="FlightFeatureSIC" xml:space="preserve">
     <value>SICtime</value>
@@ -320,7 +320,7 @@
     <value>You have no saved queries</value>
   </data>
   <data name="FlightFeatureHasImages" xml:space="preserve">
-    <value>Has images or videos</value>
+    <value>Images or videos</value>
   </data>
   <data name="ContainsTypeNone" xml:space="preserve">
     <value>(none)</value>
