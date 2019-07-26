@@ -151,16 +151,16 @@ namespace MyFlightbook.MilestoneProgress
                                                         0),
                                                      25));
 
-                Collection<MilestoneItem> l = new Collection<MilestoneItem>();
-                l.Add(miTotal);
-                l.Add(miMinXCTime);
-                l.Add(miMinNightTime);
-                l.Add(miMinTimeInClass);
-                l.Add(miMinInstrumentTime);
-                l.Add(miMinPIC);
-                l.Add(miMinPICXC);
-                l.Add(miMinPICNight);
-                return l;
+                return new Collection<MilestoneItem>() {
+                miTotal,
+                miMinXCTime,
+                miMinNightTime,
+                miMinTimeInClass,
+                miMinInstrumentTime,
+                miMinPIC,
+                miMinPICXC,
+                miMinPICNight
+                };
             }
         }
     }
@@ -384,17 +384,17 @@ namespace MyFlightbook.MilestoneProgress
         {
             get
             {
-                Collection<MilestoneItem> l = new Collection<MilestoneItem>();
-                l.Add(miTotal);
-                l.Add(miMinXCTime);
-                l.Add(miMinNightTime);
-                l.Add(miMinNightHelicopter);
-                l.Add(miMinHeli);
-                l.Add(miMinHeliPIC);
-                l.Add(miMinInstrumentTime);
-                l.Add(miMinHeliIMC);
-                l.Add(miMinHeliPICIMC);
-                return l;
+                return new Collection<MilestoneItem>() {
+                miTotal,
+                miMinXCTime,
+                miMinNightTime,
+                miMinNightHelicopter,
+                miMinHeli,
+                miMinHeliPIC,
+                miMinInstrumentTime,
+                miMinHeliIMC,
+                miMinHeliPICIMC
+                };
             }
         }
     }
@@ -466,15 +466,15 @@ namespace MyFlightbook.MilestoneProgress
         {
             get
             {
-                Collection<MilestoneItem> l = new Collection<MilestoneItem>();
-                l.Add(miTotal);
-                l.Add(miMinXCTime);
-                l.Add(miMinNightTime);
-                l.Add(miMinPLPIC);
-                l.Add(miMinPLPICXC);
-                l.Add(miMinPLPICNight);
-                l.Add(miMinInstrument);
-                return l;
+                return new Collection<MilestoneItem>() {
+                miTotal,
+                miMinXCTime,
+                miMinNightTime,
+                miMinPLPIC,
+                miMinPLPICXC,
+                miMinPLPICNight,
+                miMinInstrument
+                };
             }
         }
     }
@@ -559,7 +559,7 @@ namespace MyFlightbook.MilestoneProgress
 
             miTotal.AddEvent(cfr.Total);
 
-            decimal CoPilot = cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryCoPilottime) + cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropCoPilotTime);
+            decimal CoPilot = cfr.SIC + cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryCoPilottime) + cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropCoPilotTime);
 
             miNight.AddEvent(Math.Min(CoPilot + cfr.PIC, cfr.Night));
 
