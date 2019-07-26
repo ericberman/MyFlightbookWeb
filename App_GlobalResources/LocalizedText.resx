@@ -739,7 +739,7 @@
     <value>See your flying trends by:</value>
   </data>
   <data name="NumberOfFlights" xml:space="preserve">
-    <value>{0} flights</value>
+    <value>{0:#,##0} flights</value>
     <comment># of flights in a result set</comment>
   </data>
   <data name="ChartRunningTotal" xml:space="preserve">
