@@ -81,6 +81,8 @@ public partial class Member_LogbookNew : System.Web.UI.Page
     {
         // For now, always return true UTC
         tzOffset = 0;
+        if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.UserLanguages != null && HttpContext.Current.Request.UserLanguages.Length > 0)
+            util.SetCulture(HttpContext.Current.Request.UserLanguages[0]);
         return DateTime.UtcNow.AddMinutes(tzOffset).UTCDateFormatString();
     }
     #endregion
