@@ -316,7 +316,7 @@
     <value>Note: </value>
   </data>
   <data name="NoteInstrumentTime" xml:space="preserve">
-    <value>15 of these hours must have been with an authorized instructor holding an instrument rating; %APP_NAME% does not validate this.  61.65(h) and 61.65(i) allow simulators/FTDs/ATDs to contribute towards this as well, but subject to conditions; %APP_NAME% does NOT include these training devices here.</value>
+    <value>61.65(h) and 61.65(i) allow simulators/FTDs/ATDs to contribute towards this as well, but subject to conditions that cannot easily be determined; %APP_NAME% applies up to the lower limits specified (20 hours for FTDs, 10 for ATDs); you may be able to apply more.</value>
   </data>
   <data name="NoteInstrumentXC" xml:space="preserve">
     <value>%APP_NAME% assumes that the flight is conducted under instrument rules if it contains simulated or actual IMC time.  %APP_NAME% does not validate that different kinds of approaches were performed, nor that they were performed at each airport, nor that the flight was along airways.</value>
@@ -1398,5 +1398,11 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   </data>
   <data name="CAATPXC" xml:space="preserve">
     <value>{0} hours of cross-country time in {1}</value>
+  </data>
+  <data name="MinInstrumentTraining" xml:space="preserve">
+    <value>15 hours of instrument training from an authorized instructor (CFII)</value>
+  </data>
+  <data name="MinInstrumentTrainingNote" xml:space="preserve">
+    <value>Any dual with IMC or Simulated IMC contributes to this, but %APP_NAME% cannot distinguish simulated instrument during VFR training from instruction received towards an instrument rating, so this may OVERSTATE your progress.</value>
   </data>
 </root>

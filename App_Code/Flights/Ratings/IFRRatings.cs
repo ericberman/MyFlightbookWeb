@@ -39,11 +39,23 @@ namespace MyFlightbook.MilestoneProgress
     [Serializable]
     public abstract class IFR6165Base : MilestoneProgress
     {
-        protected MilestoneItem miMinXCTime { get; set; }
-        protected MilestoneItem miMinTimeInCategory { get; set; }
-        protected MilestoneItem miMinIMCTime { get; set; }
-        protected MilestoneItem miMinIMCTestPrep { get; set; }
+        private MilestoneItem miMinXCTime { get; set; }
+        private MilestoneItem miMinTimeInCategory { get; set; }
+        private MilestoneItem miMinIMCTime { get; set; }
+        private MilestoneItem miMinIMCTestPrep { get; set; }
         protected MilestoneItem miIMCXC { get; set; }
+
+        private MilestoneItem miInstrumentTraining { get; set; }
+
+        // Per 61.57(h), can count 20 or 30 hours of FTD time, and per 61.57(i) can count 10 or 20 hours of ATD time
+        // We use the smaller amount in both cases because we can't tell if it's performed under part 142 (for 61.57(h)) 
+        // nor can we distinguish a BATD from an AATD (for 61.57(i)).
+        // These limits seem additive, though (can do both FTD and ATD), and since AddTrainingEvent can only accomodate
+        // one limited, we have to manually do the FTD limit here.
+        private const int MaxFTDTime = 20;
+        private const int MaxATDTime = 10;
+
+        private decimal FTDTimeRemaining { get; set; }
 
         private int _MinXCDistance = 250;
 
@@ -64,6 +76,8 @@ namespace MyFlightbook.MilestoneProgress
             Title = szTitle;
             BaseFAR = szBaseFAR;
             RatingSought = ratingSought;
+
+            FTDTimeRemaining = MaxFTDTime;
 
             string szAircraftCategory;
             string szBrand = Branding.CurrentBrand.AppName;
@@ -90,6 +104,9 @@ namespace MyFlightbook.MilestoneProgress
             // 61.65(def)(2) - total instrument time
             miMinIMCTime = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentTime, ResolvedFAR("(2)"), Branding.ReBrand(Resources.MilestoneProgress.NoteInstrumentTime), MilestoneItem.MilestoneType.Time, 40.0M);
 
+            // 61.65(def)(2) - Instrument training
+            miInstrumentTraining = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentTraining, ResolvedFAR("(2)"), Branding.ReBrand(Resources.MilestoneProgress.MinInstrumentTrainingNote), MilestoneItem.MilestoneType.Time, 15.0M);
+
             // 61.65(def)(2)(i) - recent test prep
             miMinIMCTestPrep = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinInstrumentTestPrep, szAircraftCategory), ResolvedFAR("(2)(i)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Time, 3.0M);
 
@@ -103,13 +120,24 @@ namespace MyFlightbook.MilestoneProgress
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            // we are not counting training device time.
+
+            decimal IMCTime = cfr.IMC + cfr.IMCSim;
+
+            if (cfr.fIsFTD)
+            {
+                decimal FTDTimeToApply = Math.Min(IMCTime, FTDTimeRemaining);
+                miMinIMCTime.AddEvent(FTDTimeToApply);
+                FTDTimeRemaining -= FTDTimeToApply;
+            }
+            else if (cfr.fIsATD)
+                miMinIMCTime.AddTrainingEvent(IMCTime, MaxATDTime, true);
+
+            // Everything past this point only applies to real aircraft
             if (!cfr.fIsRealAircraft)
                 return;
 
             bool IsInMatchingCategory = CatClassMatchesRatingSought(cfr.idCatClassOverride);
             decimal XCPICTime = Math.Min(cfr.PIC, cfr.XC);
-            decimal IMCTime = cfr.IMC + cfr.IMCSim;
             decimal IMCXCTime = Math.Min(IMCTime, cfr.XC);
 
             // 61.65(def)(1) - Look for cross-country time as PIC
@@ -120,11 +148,14 @@ namespace MyFlightbook.MilestoneProgress
             // 61.65(def)(2) - IMC time (total)
             miMinIMCTime.AddEvent(IMCTime);
 
+            decimal instTrainingTime = Math.Min(cfr.Dual, IMCTime);
+            miInstrumentTraining.AddEvent(instTrainingTime);
+
             // 61.65(def)(2)(i) - recent test prep
             if (IsInMatchingCategory)
             {
                 if (DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0)
-                    miMinIMCTestPrep.AddEvent(Math.Min(cfr.Dual, IMCTime));
+                    miMinIMCTestPrep.AddEvent(instTrainingTime);
 
                 if (cfr.cApproaches >= 3 && IMCXCTime > 0.0M)
                 {
@@ -141,7 +172,7 @@ namespace MyFlightbook.MilestoneProgress
 
         public override Collection<MilestoneItem> Milestones
         {
-            get { return new Collection<MilestoneItem>() { miMinXCTime, miMinTimeInCategory, miMinIMCTime, miMinIMCTestPrep, miIMCXC }; }
+            get { return new Collection<MilestoneItem>() { miMinXCTime, miMinTimeInCategory, miMinIMCTime, miInstrumentTraining, miMinIMCTestPrep, miIMCXC }; }
         }
     }
 
