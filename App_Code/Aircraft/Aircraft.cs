@@ -1144,8 +1144,8 @@ namespace MyFlightbook
                 return true;
             }
 
-            // Check for a minor edit: defined as same non-empty ICAO and same category class
-            if (!String.IsNullOrEmpty(mmNew.FamilyName) && mmNew.FamilyName.CompareCurrentCulture(mmOld.FamilyName) == 0 && mmNew.CategoryClassID == mmOld.CategoryClassID)
+            // Check for a minor edit: defined as same non-empty ICAO, type, and category class
+            if (!String.IsNullOrEmpty(mmNew.FamilyName) && mmNew.FamilyName.CompareCurrentCulture(mmOld.FamilyName) == 0 && mmNew.CategoryClassID == mmOld.CategoryClassID && mmNew.TypeName.CompareCurrentCultureIgnoreCase(mmOld.TypeName) == 0)
                 return false;   // any admin notification will be done outside of this
 
             // If we are here, this is not a minor change - go ahead and clone and notify the admin.
