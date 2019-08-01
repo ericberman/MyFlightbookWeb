@@ -645,4 +645,7 @@ Sender Email: {1}</value>
   <data name="ReportHeaderOilAdded" xml:space="preserve">
     <value>Oil Added</value>
   </data>
+  <data name="ReportHeaderFuelCost" xml:space="preserve">
+    <value>Fuel Cost</value>
+  </data>
 </root>
