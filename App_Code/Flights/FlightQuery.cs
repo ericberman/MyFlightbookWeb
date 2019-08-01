@@ -222,6 +222,11 @@ namespace MyFlightbook
             }
             set
             {
+                if (value == null)
+                {
+                    AircraftList = new Aircraft[0];
+                    return;
+                }
                 List<Aircraft> lst = new List<Aircraft>();
                 if (String.IsNullOrEmpty(UserName)) // no user - hit the database
                     AircraftList = Aircraft.AircraftFromIDs(value).ToArray();

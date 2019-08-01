@@ -1003,9 +1003,11 @@ namespace MyFlightbook
 
         public static IEnumerable<Aircraft> AircraftFromIDs(IEnumerable<int> ids)
         {
+            List<Aircraft> lst = new List<Aircraft>();
+            if (ids == null)
+                return lst;
             string szIDs = String.Join(",", ids);
             DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture, " WHERE aircraft.idAircraft in ({0})", szIDs)));
-            List<Aircraft> lst = new List<Aircraft>();
             new DBHelper(dba).ReadRows(
                 (comm) => { },
                 (dr) => { lst.Add(new Aircraft(dr)); }
