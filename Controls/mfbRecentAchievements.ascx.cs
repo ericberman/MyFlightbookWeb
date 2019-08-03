@@ -160,7 +160,7 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
 
         lblTitle.Visible = cAchievements > 0;
         pnlStatsAndAchievements.Visible = (lstBadges != null && lstBadges.Count > 0) || (c != null && c.Count() > 0);
-        if (plcFlyingCalendar.Visible && ShowCalendar)
+        if (ShowCalendar)
             RefreshCalendar(ra);
     }
 
