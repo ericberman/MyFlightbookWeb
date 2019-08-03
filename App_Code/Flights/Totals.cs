@@ -8,7 +8,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -183,9 +183,9 @@ namespace MyFlightbook.FlightCurrency
 
     public class UserTotals
     {
-        private List<TotalsItem> alTotals = new List<TotalsItem>();
+        private readonly List<TotalsItem> alTotals = new List<TotalsItem>();
 
-        ModelFeatureTotal[] rgModelFeatureTotals = {new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.Complex, Resources.Totals.Complex, " fcomplex <> 0 "),
+        private readonly ModelFeatureTotal[] rgModelFeatureTotals = {new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.Complex, Resources.Totals.Complex, " fcomplex <> 0 "),
                                                             new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.Retract, Resources.Totals.Retract, " fRetract <> 0 "),
                                                             new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.HighPerf, Resources.Totals.HighPerf, String.Format(CultureInfo.InvariantCulture, " (fHighPerf <> 0 OR (date < '{0}' AND f200HP <> 0))", MakeModel.Date200hpHighPerformanceCutoverDate)),
                                                             new ModelFeatureTotal(ModelFeatureTotal.FeatureTotalType.Tailwheel, Resources.Totals.Tailwheel, " fTailwheel <> 0 AND CatClassOverride <> 3 AND CatClassOverride <> 4 "), /* don't count sea time as tailwheel */
@@ -350,8 +350,8 @@ namespace MyFlightbook.FlightCurrency
 
                 if (PIC == TotalTime)
                 {
-                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PICTotal, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total) });
                     ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SIC, SIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.PIC) });
+                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PICTotal, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total) });
                 }
                 else if (SIC == TotalTime)
                 {
@@ -360,8 +360,8 @@ namespace MyFlightbook.FlightCurrency
                 }
                 else
                 {
-                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PIC, PIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.PIC) });
                     ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SIC, SIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.SIC) });
+                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PIC, PIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.PIC) });
                     ut.AddToList(new TotalsItem(Name, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total) });
                 }
             }

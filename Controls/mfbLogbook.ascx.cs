@@ -372,7 +372,8 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
 
     public void RefreshNumFlights()
     {
-        lblNumFlights.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.NumberOfFlights, CachedData.Count());
+        IEnumerable<LogbookEntryDisplay> flights = CachedData;  // should always be non-null, but...
+        lblNumFlights.Text = flights == null ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.NumberOfFlights, flights.Count());
     }
 
     /// <summary>
