@@ -1405,4 +1405,16 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="MinInstrumentTrainingNote" xml:space="preserve">
     <value>Any dual with IMC or Simulated IMC contributes to this, but %APP_NAME% cannot distinguish simulated instrument during VFR training from instruction received towards an instrument rating, so this may OVERSTATE your progress.</value>
   </data>
+  <data name="CommGyroplaneNightLandings" xml:space="preserve">
+    <value>10 night training landings to full stop in a gyroplane</value>
+  </data>
+  <data name="CommGyroplaneNightTakeoffs" xml:space="preserve">
+    <value>10 night training takeoffs in a gyroplane</value>
+  </data>
+  <data name="CommGyroplaneNightTraining" xml:space="preserve">
+    <value>2 hours of night training in a gyroplane</value>
+  </data>
+  <data name="Title61129DGyroplane" xml:space="preserve">
+    <value>FAR 61.129(d) - Gyroplane</value>
+  </data>
 </root>

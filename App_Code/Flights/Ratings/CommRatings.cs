@@ -29,6 +29,7 @@ namespace MyFlightbook.MilestoneProgress
                 new Comm61129AMEL(),
                 new Comm61129AMES(),
                 new Comm61129Helicopter(),
+                new Comm61129Gyroplane(),
                 new Comm61129Glider(),
                 new Comm61129HotAirBalloon(),
                 new Comm61129GasBalloon(),
@@ -71,11 +72,11 @@ namespace MyFlightbook.MilestoneProgress
         private const int _minPIC = 100;
         private int _minPICInCategory = 50;
         private const int _minPICXC = 50;
-        private const int _minPICXCInCategory = 10;
+        private int _minPICXCInCategory = 10;
         private int _minSimIMC = 10;
-        private const int _minSimIMCInCategory = 5;
+        private decimal _minSimIMCInCategory = 5;
         private const int _minPoweredTime = 100;
-        private const int _minPoweredInCategory = 50;
+        private int _minPoweredInCategory = 50;
         private const int _minSoloPIC = 10;
         private int _minDistanceXCTraining = 100;
         private const int _minSubstDualForPIC = 10;
@@ -104,6 +105,31 @@ namespace MyFlightbook.MilestoneProgress
             get { return _minDistanceXCTraining; }
             set { _minDistanceXCTraining = value; }
         }
+
+        protected int MinPoweredInCategory
+        {
+            get { return _minPoweredInCategory; }
+            set { _minPoweredInCategory = value; }
+        }
+
+        protected int MinPICXCInCategory
+        {
+            get { return _minPICXCInCategory; }
+            set { _minPICXCInCategory = value; }
+        }
+
+        protected decimal MinSimIMCInCategory
+        {
+            get { return _minSimIMCInCategory; }
+            set { _minSimIMCInCategory = value; }
+        }
+
+        /// <summary>
+        /// By default, no sim is allowed towards total time, but can be for gyroplanes
+        /// </summary>
+        protected int AllowedOverallSimTime { get; set; }
+
+        protected bool IFRTrainingCanBeInSim { get; set; }
         #endregion
         #endregion
 
@@ -134,7 +160,6 @@ namespace MyFlightbook.MilestoneProgress
         protected MilestoneItem miDualAsPIC { get; set; }
         protected MilestoneItem miDualAsPICXC { get; set; }
         protected bool AllowTAAForComplex { get; set; }
-
 
         protected Comm61129Base() {
             GeneralDisclaimer = Branding.ReBrand(Resources.MilestoneProgress.CommGeneralDisclaimer);
@@ -217,18 +242,29 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            CategoryClass cc = CategoryClass.CategoryClassFromID(cfr.idCatClassOverride);
+            bool fCatClassMatches = CatClassMatchesRatingSought(cc.IdCatClass);
+
             if (!cfr.fIsRealAircraft)
+            {
+                if (cfr.fIsCertifiedIFR)
+                {
+                    if (cfr.fIsFTD || cfr.fIsFullMotion)
+                        miMinPoweredInCategory.AddTrainingEvent(cfr.Total, AllowedOverallSimTime, true);
+                    // Helicopters and gyroplanes allow IFR training in a sim.
+                    if (IFRTrainingCanBeInSim && fCatClassMatches)
+                        miMintrainingSimIMC.AddEvent(Math.Min(cfr.Dual, cfr.IMCSim));
+                }
                 return;
+            }
 
             // 61.129(a/b)
             miTotalTime.AddEvent(cfr.Total);
 
             // 61.129(a/b)(1)
-            CategoryClass cc = CategoryClass.CategoryClassFromID(cfr.idCatClassOverride);
             if (CategoryClass.IsPowered(cc.IdCatClass))
                 miMinPowered.AddEvent(cfr.Total);
 
-            bool fCatClassMatches = CatClassMatchesRatingSought(cc.IdCatClass);
             bool fIsInCategory = fCatClassMatches || (IsAirplaneRating && CategoryClass.IsAirplane(cc.IdCatClass));
             if (fIsInCategory)
                 miMinPoweredInCategory.AddEvent(cfr.Total);
@@ -506,7 +542,9 @@ namespace MyFlightbook.MilestoneProgress
         {
             MinTotalTime = 150;
             MinPICInCategory = 35;
+            MinSimIMCInCategory = 5;
             MinSimIMC = 5;
+            IFRTrainingCanBeInSim = true;
             MinDistanceXCTraining = 50;
             Init("61.129(c)", Resources.MilestoneProgress.Title61129C, RatingType.CommercialHelicopter, Resources.MilestoneProgress.ratingHelicopter, Resources.MilestoneProgress.ratingHelicopter);
 
@@ -525,6 +563,74 @@ namespace MyFlightbook.MilestoneProgress
                 Collection<MilestoneItem> l = base.Milestones;
                 l.Remove(miMinTrainingComplex);
                 l.Remove(miPICMinXC);
+                l.Remove(miMintrainingSimIMC);
+                return l;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Commercial Gyroplane
+    /// </summary>
+    [Serializable]
+    public class Comm61129Gyroplane : Comm61129Base
+    {
+        private readonly MilestoneItem miNightTrainingTime, miNightTrainingLandings, miNightTrainingTakeoffs;
+
+        public Comm61129Gyroplane()
+        {
+            MinTotalTime = 150;
+            MinPoweredInCategory = 25;
+            MinPICInCategory = 10;
+            MinPICXCInCategory = 3;
+            MinSimIMCInCategory = 2.5M;
+            IFRTrainingCanBeInSim = true;
+            AllowedOverallSimTime = 5;
+            MinDistanceXCTraining = 50;
+            Init("61.129(d)", Resources.MilestoneProgress.Title61129DGyroplane, RatingType.CommercialGyroplane, Resources.MilestoneProgress.ratingGyroplane, Resources.MilestoneProgress.ratingGyroplane);
+
+            // fix up some FAR references:
+            miMinXCCategory.FARRef = ResolvedFAR("(3)(ii)");
+            miMinXCCategoryNight.FARRef = ResolvedFAR("(3)(iii)");
+            miMinTestPrep.FARRef = ResolvedFAR("(3)(iv)");
+            miMinSoloXC.Title = miMinSoloSubXC.Title = Resources.MilestoneProgress.CommSoloXCHelicopter;
+
+            miNightTrainingTime = new MilestoneItem(Resources.MilestoneProgress.CommGyroplaneNightTraining, ResolvedFAR("(3)(iii)"), string.Empty, MilestoneItem.MilestoneType.Time, 2.0M);
+            miNightTrainingTakeoffs = new MilestoneItem(Resources.MilestoneProgress.CommGyroplaneNightTakeoffs, ResolvedFAR("(3)(iii)"), string.Empty, MilestoneItem.MilestoneType.Count, 10);
+            miNightTrainingLandings = new MilestoneItem(Resources.MilestoneProgress.CommGyroplaneNightLandings, ResolvedFAR("(3)(iii)"), string.Empty, MilestoneItem.MilestoneType.Count, 10);
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException("cfr");
+
+            base.ExamineFlight(cfr);
+
+            if (!cfr.fIsRealAircraft || cfr.Dual == 0.0M || !CatClassMatchesRatingSought(CategoryClass.CategoryClassFromID(cfr.idCatClassOverride).IdCatClass))
+                return;
+
+            miNightTrainingTime.AddEvent(Math.Min(cfr.Dual, cfr.Night));
+            miNightTrainingTakeoffs.AddEvent(cfr.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff));
+            miNightTrainingLandings.AddEvent(cfr.cFullStopNightLandings);
+        }
+
+        public override Collection<MilestoneItem> Milestones
+        {
+            get
+            {
+                // everything for airplanes applies to helicopters EXCEPT complex and the broad cross-country time requirement
+                Collection<MilestoneItem> l = base.Milestones;
+                l.Remove(miMinTrainingComplex);
+                l.Remove(miPICMinXC);
+                l.Remove(miMintrainingSimIMC);
+                l.Remove(miMinXCCategoryNight);
+
+                // Insert the night training milestones after the cross-country milestone
+                int i = l.IndexOf(miMinXCCategory);
+                l.Insert(++i, miNightTrainingTime);
+                l.Insert(++i, miNightTrainingTakeoffs);
+                l.Insert(++i, miNightTrainingLandings);
                 return l;
             }
         }

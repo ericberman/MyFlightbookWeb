@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2018 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -263,6 +263,7 @@ namespace MyFlightbook.MilestoneProgress
         CommercialAMEL,
         CommercialAMES,
         CommercialHelicopter,
+        CommercialGyroplane,
         CommercialBalloonHot,
         CommercialBalloonGas,
         Commercial141AirplaneSingleEngineLand,
@@ -410,6 +411,7 @@ namespace MyFlightbook.MilestoneProgress
                     return ccid == CategoryClass.CatClassID.PoweredLift;
                 case RatingType.PPLPart141Gyroplane:
                 case RatingType.PPLGyroplane:
+                case RatingType.CommercialGyroplane:
                     return ccid == CategoryClass.CatClassID.Gyroplane;
                 case RatingType.PPLPoweredLift:
                     return ccid == CategoryClass.CatClassID.PoweredLift;
