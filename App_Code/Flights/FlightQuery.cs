@@ -17,6 +17,39 @@ using System.Text.RegularExpressions;
 
 namespace MyFlightbook
 {
+    public enum GroupConjunction { Any, All, None }
+
+    public static class FlightQueryConjunction
+    {
+        public static string ToSQLConjunction(this GroupConjunction conjunction)
+        {
+            switch (conjunction)
+            {
+                case GroupConjunction.All:
+                    return " AND ";
+                case GroupConjunction.Any:
+                    return " OR ";
+                case GroupConjunction.None:
+                    return " AND NOT ";
+            }
+            throw new NotImplementedException("Unhandled conjunction: " + conjunction.ToString());
+        }
+
+        public static string ToDisplayString(this GroupConjunction conjunction)
+        {
+            switch (conjunction)
+            {
+                case GroupConjunction.All:
+                    return Resources.FlightQuery.ConjunctionAll;
+                case GroupConjunction.Any:
+                    return Resources.FlightQuery.ConjunctionAny;
+                case GroupConjunction.None:
+                    return Resources.FlightQuery.ConjunctionNone;
+            }
+            throw new NotImplementedException("Unhandled conjunction: " + conjunction.ToString());
+        }
+    }
+
     /// <summary>
     /// Manages complex structured queries for matching flights.
     /// </summary>
@@ -52,6 +85,11 @@ namespace MyFlightbook
         public CustomPropertyType[] PropertyTypes { get; set; }
 
         /// <summary>
+        /// Properties to search - AND?  OR? NOT?  Default is OR ("ANY")
+        /// </summary>
+        public GroupConjunction PropertiesConjunction { get; set; }
+
+        /// <summary>
         /// The user for whom flights are being found
         /// </summary>
         public string UserName { get; set; }
@@ -67,6 +105,11 @@ namespace MyFlightbook
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnoreAttribute]
         public string CustomRestriction { get; set; }
+
+        /// <summary>
+        /// Flight Characteristics - AND?  OR?  NOT?  Default is AND ("ALL")
+        /// </summary>
+        public GroupConjunction FlightCharacteristicsConjunction { get; set; }
 
         /// <summary>
         /// Matching flights have nighttime landings
@@ -184,15 +227,6 @@ namespace MyFlightbook
         public bool NeedsUserAircraft
         {
             get { return !String.IsNullOrEmpty(GeneralText); }
-        }
-
-        /// <summary>
-        /// True if we need to join with images.
-        /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
-        public bool NeedsImages
-        {
-            get { return HasImages; }
         }
 
         /// <summary>
@@ -615,6 +649,9 @@ namespace MyFlightbook
             CatClasses = new CategoryClass[0];
             PropertyTypes = new CustomPropertyType[0];
 
+            FlightCharacteristicsConjunction = GroupConjunction.All;
+            PropertiesConjunction = GroupConjunction.Any;
+
             EngineType = EngineTypeRestriction.AllEngines;
             AircraftInstanceTypes = AircraftInstanceRestriction.AllAircraft;
         }
@@ -634,12 +671,15 @@ namespace MyFlightbook
         /// <param name="sb">The stringbuilder to add to</param>
         /// <param name="szClause">The clause to add</param>
         /// <param name="f">True to add it, false to do nothing</param>
-        private void AddClause(StringBuilder sb, string szClause, Boolean f = true)
+        /// <param name="conjunction">Conjunction to use (default to "ALL" (AND))</param>
+        private void AddClause(StringBuilder sb, string szClause, Boolean f = true, GroupConjunction conjunction = GroupConjunction.All)
         {
             if (f && !String.IsNullOrEmpty(szClause))
             {
                 if (sb.Length > 0)
-                    sb.Append(" AND ");
+                    sb.Append(conjunction.ToSQLConjunction());
+                else if (conjunction == GroupConjunction.None)  // if "None" and first element, need to add the initial "not".
+                    sb.Append("NOT ");
 
                 sb.Append(szClause);
             }
@@ -1016,28 +1056,33 @@ namespace MyFlightbook
                 Filters.Add(new QueryFilterItem(Resources.FlightQuery.AircraftFeatureType, sbType.ToString(), "HasAircraftFeatures"));
         }
 
-        private void UpdateFlightCharacteristics(StringBuilder sbQuery)
+        private void UpdateFlightCharacteristics(StringBuilder sbQ)
         {
-            AddClause(sbQuery, "(flights.cNightLandings > 0)", HasNightLandings);
-            AddClause(sbQuery, "(flights.cFullStopLandings > 0)", HasFullStopLandings);
-            AddClause(sbQuery, "(flights.cLandings > 0)", HasLandings);
-            AddClause(sbQuery, "(flights.cInstrumentApproaches > 0)", HasApproaches);
-            AddClause(sbQuery, "(flights.fHold <> 0)", HasHolds);
-            AddClause(sbQuery, "(flights.crosscountry > 0.0)", HasXC);
-            AddClause(sbQuery, "(flights.simulatedInstrument > 0.0)", HasSimIMCTime);
-            AddClause(sbQuery, "(flights.groundSim > 0.0)", HasGroundSim);
-            AddClause(sbQuery, "(flights.IMC > 0.0)", HasIMC);
-            AddClause(sbQuery, "((flights.IMC + flights.simulatedInstrument) > 0.0)", HasAnyInstrument);
-            AddClause(sbQuery, "(flights.night > 0.0)", HasNight);
-            AddClause(sbQuery, "(flights.dualReceived > 0.0)", HasDual);
-            AddClause(sbQuery, "(flights.cfi > 0.0)", HasCFI);
-            AddClause(sbQuery, "(flights.SIC > 0.0)", HasSIC);
-            AddClause(sbQuery, "(flights.PIC > 0.0)", HasPIC);
-            AddClause(sbQuery, "(flights.totalFlightTime > 0.0)", HasTotalTime);
-            AddClause(sbQuery, "(flights.fPublic <> 0)", IsPublic);
-            AddClause(sbQuery, "(flights.signaturestate <> 0)", IsSigned);
-            AddClause(sbQuery, "(Coalesce(flights.Telemetry, ft.idflight) IS NOT NULL)", HasTelemetry);
-            // Images are a simple matter of doing an inner join.
+            StringBuilder sbQuery = new StringBuilder();
+
+            AddClause(sbQuery, "(flights.cNightLandings > 0)", HasNightLandings, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.cFullStopLandings > 0)", HasFullStopLandings, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.cLandings > 0)", HasLandings, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.cInstrumentApproaches > 0)", HasApproaches, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.fHold <> 0)", HasHolds, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.crosscountry > 0.0)", HasXC, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.simulatedInstrument > 0.0)", HasSimIMCTime, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.groundSim > 0.0)", HasGroundSim, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.IMC > 0.0)", HasIMC, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "((flights.IMC + flights.simulatedInstrument) > 0.0)", HasAnyInstrument, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.night > 0.0)", HasNight, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.dualReceived > 0.0)", HasDual, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.cfi > 0.0)", HasCFI, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.SIC > 0.0)", HasSIC, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.PIC > 0.0)", HasPIC, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.totalFlightTime > 0.0)", HasTotalTime, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.fPublic <> 0)", IsPublic, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.signaturestate <> 0)", IsSigned, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(Coalesce(flights.Telemetry, ft.idflight) IS NOT NULL)", HasTelemetry, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(flights.idflight IN (SELECT f.idflight FROM flights f INNER JOIN images img ON (img.virtpathid=0 AND img.Imagekey=f.idflight) WHERE f.username=?uname AND img.imagekey IS NOT NULL))", HasImages, FlightCharacteristicsConjunction);
+
+            if (sbQuery.Length > 0)
+                AddClause(sbQ, String.Format(CultureInfo.InvariantCulture, "({0}) ", sbQuery.ToString()));
 
             StringBuilder sbFlight = new StringBuilder();
 
@@ -1063,33 +1108,40 @@ namespace MyFlightbook
             AppendIfChecked(sbFlight, HasImages, Resources.FlightQuery.FlightFeatureHasImages);
 
             if (sbFlight.Length > 0)
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.FlightCharacteristics, sbFlight.ToString(), "HasFlightFeatures"));
+                Filters.Add(new QueryFilterItem(String.Format(CultureInfo.CurrentCulture, Resources.FlightQuery.FlightCharacteristics, FlightCharacteristicsConjunction.ToDisplayString()), sbFlight.ToString(), "HasFlightFeatures"));
         }
-        
+
         private void UpdateFlightProperties(StringBuilder sbQuery)
         {
             if (PropertyTypes != null && PropertyTypes.Length > 0)
             {
-                StringBuilder sbCPT = new StringBuilder();
-                StringBuilder sbDescCPT = new StringBuilder();
+                List<string> lstCPT = new List<string>();
+                List<string> lstCPTDesc = new List<string>();
 
-                for (int i = 0; i < PropertyTypes.Length; i++)
+                foreach (CustomPropertyType cpt in PropertyTypes)
                 {
-                    if (i > 0)
-                    {
-                        sbCPT.Append(", ");
-                        sbDescCPT.Append(", ");
-                    }
-
-                    sbCPT.Append(PropertyTypes[i].PropTypeID);
-                    sbDescCPT.Append(PropertyTypes[i].Title + Resources.LocalizedText.LocalizedSpace);
+                    lstCPT.Add(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture));
+                    lstCPTDesc.Add(cpt.Title);
                 }
 
-                AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " flights.idflight IN (SELECT fp.idflight FROM flightproperties fp INNER JOIN flights f ON fp.idflight=f.idflight WHERE f.username=?uName AND fp.idproptype IN ({0}))", sbCPT.ToString()));
+                switch (PropertiesConjunction)
+                {
+                    case GroupConjunction.All:
+                        foreach (CustomPropertyType cpt in PropertyTypes)
+                            AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " flights.idflight IN (SELECT fp.idflight FROM flightproperties fp INNER JOIN flights f ON fp.idflight=f.idflight WHERE f.username=?uName AND fp.idproptype={0})", cpt.PropTypeID));
+                        break;
+                    case GroupConjunction.Any:
+                        AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " flights.idflight IN (SELECT fp.idflight FROM flightproperties fp INNER JOIN flights f ON fp.idflight=f.idflight WHERE f.username=?uName AND fp.idproptype IN ({0}))", String.Join(", ", lstCPT)));
+                        break;
+                    case GroupConjunction.None:
+                        AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, " flights.idflight NOT IN (SELECT fp.idflight FROM flightproperties fp INNER JOIN flights f ON fp.idflight=f.idflight WHERE f.username=?uName AND fp.idproptype IN ({0}))", String.Join(", ", lstCPT)));
+                        break;
+                    default:
+                        throw new NotImplementedException("Unkown properties conjunction: " + PropertiesConjunction.ToString());
+                }
 
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.FlightHasProperties, sbDescCPT.ToString().Trim(), "PropertyTypes"));
+                Filters.Add(new QueryFilterItem(String.Format(CultureInfo.CurrentCulture, Resources.FlightQuery.FlightHasProperties, PropertiesConjunction.ToDisplayString()), String.Join(Resources.LocalizedText.LocalizedSpace, lstCPTDesc), "PropertyTypes"));
             }
-
         }
 
         private void UpdateCatClass(StringBuilder sbQuery)
@@ -1175,6 +1227,12 @@ namespace MyFlightbook
             // DateRange needs, as a side effect, to clear any specified dates.  Otherwise "IsDefault" won't work.
             if (qfi.PropertyName.CompareOrdinal("DateRange") == 0)
                 DateMin = DateMax = DateTime.MinValue;
+
+            // Likewise, clearing flight characteristics or properties needs to reset those conjunctions or else IsDefault won't work
+            if (qfi.PropertyName.CompareOrdinal("PropertyTypes") == 0)
+                PropertiesConjunction = fqBlank.PropertiesConjunction;
+            if (qfi.PropertyName.CompareOrdinal("HasFlightFeatures") == 0)
+                FlightCharacteristicsConjunction = fqBlank.FlightCharacteristicsConjunction;
 
             return this;
         }

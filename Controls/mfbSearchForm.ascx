@@ -22,32 +22,32 @@
                     <table>
                         <tr style="vertical-align: top">
                             <td>
-                                <asp:RadioButton GroupName="DateRange" ID="rbAllTime" Text="All Time" onclick="javascript:setDates(false);"
+                                <asp:RadioButton GroupName="DateRange" ID="rbAllTime" Text="All Time"
                                     runat="server" meta:resourcekey="rbAllTimeResource1" /><br />
-                                <asp:RadioButton GroupName="DateRange" ID="rbYTD" Text="Year-to-Date" onclick="javascript:setDates(false);"
+                                <asp:RadioButton GroupName="DateRange" ID="rbYTD" Text="Year-to-Date"
                                     runat="server" meta:resourcekey="rbYTDResource1" /><br />
-                                <asp:RadioButton GroupName="DateRange" ID="rbPrevYear" Text="Previous Year" onclick="javascript:setDates(false);"
+                                <asp:RadioButton GroupName="DateRange" ID="rbPrevYear" Text="Previous Year"
                                     runat="server" meta:resourcekey="rbPrevYearResource1" /><br />
-                                <asp:RadioButton GroupName="DateRange" ID="rbThisMonth" Text="This Month" onclick="javascript:setDates(false);"
+                                <asp:RadioButton GroupName="DateRange" ID="rbThisMonth" Text="This Month"
                                     runat="server" meta:resourcekey="rbThisMonthResource1" /><br />
-                                <asp:RadioButton GroupName="DateRange" ID="rbPrevMonth" Text="Previous Month" onclick="javascript:setDates(false);"
+                                <asp:RadioButton GroupName="DateRange" ID="rbPrevMonth" Text="Previous Month"
                                     runat="server" meta:resourcekey="rbPrevMonthResource1" /><br />
                             </td>
                             <td>
-                                <asp:RadioButton GroupName="DateRange" ID="rbTrailing30" Text="Trailing 30 days" onclick="javascript:setDates(false);"
+                                <asp:RadioButton GroupName="DateRange" ID="rbTrailing30" Text="Trailing 30 days"
                                     runat="server" meta:resourcekey="rbTrailing30Resource1" /><br />
-                                <asp:RadioButton GroupName="DateRange" ID="rbTrailing90" Text="Trailing 90 days" onclick="javascript:setDates(false);"
+                                <asp:RadioButton GroupName="DateRange" ID="rbTrailing90" Text="Trailing 90 days"
                                     runat="server" meta:resourcekey="rbTrailing90Resource1" /><br />
-                                <asp:RadioButton GroupName="DateRange" ID="rbTrailing6Months" Text="Trailing 6 Months" onclick="javascript:setDates(false);"
+                                <asp:RadioButton GroupName="DateRange" ID="rbTrailing6Months" Text="Trailing 6 Months"
                                     runat="server" meta:resourcekey="rbTrailing6MonthsResource1" /><br />
-                                <asp:RadioButton GroupName="DateRange" ID="rbTrailing12" onclick="javascript:setDates(false);" 
+                                <asp:RadioButton GroupName="DateRange" ID="rbTrailing12" 
                                     Text="Trailing 12 months" runat="server" 
                                     meta:resourcekey="rbTrailing12Resource1" /><br />
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <asp:RadioButton GroupName="DateRange" ID="rbCustom" Text="From: " onclick="javascript:setDates(true);"
+                                <asp:RadioButton GroupName="DateRange" ID="rbCustom" Text="From: "
                                     runat="server" meta:resourcekey="rbCustomResource1" /><uc4:mfbTypeInDate ID="mfbTIDateFrom" DefaultType="None" runat="server" />&nbsp;<asp:Label ID="lblDateTo" runat="server" Text="To:" meta:resourcekey="lblDateToResource1"></asp:Label> <uc4:mfbTypeInDate ID="mfbTIDateTo" runat="server" DefaultType="None" />
                             </td>
                         </tr>
@@ -72,6 +72,15 @@
                         meta:resourcekey="lblFlightCharsResource1"></asp:Label>:</p>
                 <asp:Panel ID="pnlFlightCharacteristics" runat="server" style="overflow:hidden" 
                     meta:resourcekey="pnlFlightCharacteristicsResource1">
+                    <asp:Panel ID="pnlFlightCharsConjunction" runat="server">
+                        <asp:Localize ID="locConjPromptFC1" runat="server" Text="<%$ Resources:FlightQuery, ConjunctionPrompt1 %>"></asp:Localize>
+                        <asp:DropDownList ID="cmbFlightCharsConjunction" runat="server">
+                            <asp:ListItem Selected="True" Text="<%$ Resources:FlightQuery, ConjunctionAll %>" Value="All"></asp:ListItem>
+                            <asp:ListItem Text="<%$ Resources:FlightQuery, ConjunctionAny %>" Value="Any"></asp:ListItem>
+                            <asp:ListItem Text="<%$ Resources:FlightQuery, ConjunctionNone %>" Value="None"></asp:ListItem>
+                        </asp:DropDownList>
+                        <asp:Localize ID="locConjPromptFC2" runat="server" Text="<%$ Resources:FlightQuery, ConjunctionPrompt2 %>"></asp:Localize>
+                    </asp:Panel>
                     <table>
                         <tr>
                             <td>
@@ -324,6 +333,16 @@
                         meta:resourcekey="lblCustomPropsLabelResource1"></asp:Label>:</p>
                 <asp:Panel ID="pnlCustomProps" runat="server" style="overflow:hidden" 
                     meta:resourcekey="pnlCustomPropsResource1">
+                    <asp:Panel ID="pnlPropsConjunction" runat="server">
+                        <asp:Localize ID="locConjPromptProps1" runat="server" Text="<%$ Resources:FlightQuery, ConjunctionPrompt1 %>"></asp:Localize>
+                        <asp:DropDownList ID="cmbPropertiesConjunction" runat="server">
+                            <asp:ListItem Text="<%$ Resources:FlightQuery, ConjunctionAll %>" Value="All"></asp:ListItem>
+                            <asp:ListItem Selected="True" Text="<%$ Resources:FlightQuery, ConjunctionAny %>" Value="Any"></asp:ListItem>
+                            <asp:ListItem Text="<%$ Resources:FlightQuery, ConjunctionNone %>" Value="None"></asp:ListItem>
+                        </asp:DropDownList>
+                        <asp:Localize ID="locConjPromptProps2" runat="server" Text="<%$ Resources:FlightQuery, ConjunctionPrompt2 %>"></asp:Localize>
+                    </asp:Panel>
+
                     <asp:CheckBoxList ID="cklCustomProps" DataValueField="PropTypeID" 
                         DataTextField="Title" runat="server" RepeatColumns="4" 
                         RepeatDirection="Horizontal" meta:resourcekey="cklCustomPropsResource1">

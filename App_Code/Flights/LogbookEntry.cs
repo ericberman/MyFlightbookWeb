@@ -1036,8 +1036,6 @@ namespace MyFlightbook
             StringBuilder sbAdditionalJoins = new StringBuilder();
             if (fq.NeedsUserAircraft)
                 sbAdditionalJoins.Append(" INNER JOIN useraircraft ON (flights.username=useraircraft.username AND flights.idaircraft = useraircraft.idaircraft) ");
-            if (fq.NeedsImages)
-                sbAdditionalJoins.Append(" INNER JOIN images img ON (img.VirtPathID=0 AND img.imagekey=flights.idflight) ");
 
             comm.QueryString = String.Format(CultureInfo.InvariantCulture, szTemplate,
                 sbAdditionalColumns.ToString(),                                                             // FlightData column and/or extra search columns

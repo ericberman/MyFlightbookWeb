@@ -104,6 +104,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
             ckXC.Checked = ckSimIMC.Checked = ckIMC.Checked = ckNight.Checked =
             ckDual.Checked = ckCFI.Checked = ckSIC.Checked = ckPIC.Checked = 
             ckPublic.Checked = ckIsSigned.Checked = ckHasTelemetry.Checked = ckHasImages.Checked = false;
+        cmbFlightCharsConjunction.SelectedValue = GroupConjunction.All.ToString();
 
         rbEngineAny.Checked = true;
         rbEngineJet.Checked = rbEnginePiston.Checked = rbEngineTurbine.Checked = rbEngineTurboprop.Checked = false;
@@ -117,6 +118,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         // Clear the flight properties
         foreach (ListItem li in cklCustomProps.Items)
             li.Selected = false;
+        cmbPropertiesConjunction.SelectedValue = GroupConjunction.Any.ToString();
 
         // reset any cached types
         ViewState[szKeyVSTypes] = new string[0];
@@ -206,6 +208,8 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         cpeFlightCharacteristics.Collapsed = !(ckFSLanding.Checked || ckNight.Checked || ckApproaches.Checked || ckHolds.Checked || ckHasTelemetry.Checked || ckHasImages.Checked ||
             ckXC.Checked || ckSimIMC.Checked || ckIMC.Checked || ckNight.Checked || ckPublic.Checked ||
             ckDual.Checked || ckCFI.Checked || ckSIC.Checked || ckPIC.Checked || ckIsSigned.Checked);
+
+        cmbFlightCharsConjunction.SelectedValue = m_fq.FlightCharacteristicsConjunction.ToString();
     }
 
     private void AircraftToForm()
@@ -291,6 +295,8 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         foreach (ListItem li in cklCustomProps.Items)
             if (li.Selected = lst.Exists(cpt => cpt.PropTypeID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)))
                 cpeCustomProps.Collapsed = false;
+
+        cmbPropertiesConjunction.SelectedValue = m_fq.PropertiesConjunction.ToString();
     }
     #endregion
 
@@ -366,6 +372,8 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
             SetUpForUser();
             UpdateSavedQueries();
 
+            pnlFlightCharsConjunction.Visible = pnlPropsConjunction.Visible = (util.GetIntParam(Request, "conj", 0) != 0);
+
             mfbTIDateFrom.TextControl.Attributes["onfocus"] = mfbTIDateTo.TextControl.Attributes["onfocus"] = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').checked = true;", rbCustom.ClientID);
         }
 
@@ -405,10 +413,8 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         cklCatClass.DataBind();
 
         CustomPropertyType[] rgCpt = CustomPropertyType.GetCustomPropertyTypes(Username);
-        List<CustomPropertyType> al = new List<CustomPropertyType>();
-        foreach (CustomPropertyType cpt in rgCpt)
-            if (cpt.IsFavorite)
-                al.Add(cpt);
+        List<CustomPropertyType> al = new List<CustomPropertyType>(rgCpt);
+        al.RemoveAll(cpt => !cpt.IsFavorite);
 
         if (al.Count == 0)
             pnlCustomProps.Visible = CustomPropsHeader.Visible = false;
@@ -445,6 +451,13 @@ function setDates(isCustom)
                 mfbTIDateTo.ClientBoxID);
 
         Page.ClientScript.RegisterClientScriptBlock(GetType(), "setDates", szDates, true);
+
+        rbAllTime.Attributes["onclick"] = rbYTD.Attributes["onclick"] = rbPrevYear.Attributes["onclick"] =
+            rbThisMonth.Attributes["onclick"] = rbPrevMonth.Attributes["onclick"] = rbTrailing30.Attributes["onclick"] =
+            rbTrailing90.Attributes["onclick"] = rbTrailing6Months.Attributes["onclick"] = rbTrailing12.Attributes["onclick"] =
+            "javascript:setDates(false);";
+
+        rbCustom.Attributes["onclick"] = "javascript:setDates(true);";
     }
 
     #region update query from form
@@ -608,6 +621,7 @@ function setDates(isCustom)
         m_fq.IsSigned = ckIsSigned.Checked;
         m_fq.HasTelemetry = ckHasTelemetry.Checked;
         m_fq.HasImages = ckHasImages.Checked;
+        m_fq.FlightCharacteristicsConjunction = (GroupConjunction)Enum.Parse(typeof(GroupConjunction), cmbFlightCharsConjunction.SelectedValue);
     }
 
     /// <summary>
@@ -645,6 +659,7 @@ function setDates(isCustom)
                     lstCpt.Add(Array.Find<CustomPropertyType>(rgcptAll, cpt => cpt.PropTypeID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)));
 
             m_fq.PropertyTypes = lstCpt.ToArray();
+            m_fq.PropertiesConjunction = (GroupConjunction)Enum.Parse(typeof(GroupConjunction), cmbPropertiesConjunction.SelectedValue);
         }
     }
     #endregion

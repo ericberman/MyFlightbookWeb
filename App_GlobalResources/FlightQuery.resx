@@ -190,7 +190,7 @@
     <value>Year to date</value>
   </data>
   <data name="FlightCharacteristics" xml:space="preserve">
-    <value>Flight characteristics</value>
+    <value>Flight has characteristics ({0})</value>
     <comment>Has all of the flight features.</comment>
   </data>
   <data name="FlightFeatureaHolds" xml:space="preserve">
@@ -239,7 +239,7 @@
     <value>Cross-country time</value>
   </data>
   <data name="FlightHasProperties" xml:space="preserve">
-    <value>Flight has any of these properties</value>
+    <value>Flight has these properties ({0})</value>
   </data>
   <data name="FlightRangeLocal" xml:space="preserve">
     <value>Local flights only</value>
@@ -327,5 +327,20 @@
   </data>
   <data name="AircraftFeatureTAA" xml:space="preserve">
     <value>Technically Advanced Aircraft (TAA)</value>
+  </data>
+  <data name="ConjunctionAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="ConjunctionAny" xml:space="preserve">
+    <value>Any</value>
+  </data>
+  <data name="ConjunctionNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="ConjunctionPrompt1" xml:space="preserve">
+    <value>Flights contain </value>
+  </data>
+  <data name="ConjunctionPrompt2" xml:space="preserve">
+    <value>of the following:</value>
   </data>
 </root>
