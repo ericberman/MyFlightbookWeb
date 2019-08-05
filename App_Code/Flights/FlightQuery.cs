@@ -1140,7 +1140,7 @@ namespace MyFlightbook
                         throw new NotImplementedException("Unkown properties conjunction: " + PropertiesConjunction.ToString());
                 }
 
-                Filters.Add(new QueryFilterItem(String.Format(CultureInfo.CurrentCulture, Resources.FlightQuery.FlightHasProperties, PropertiesConjunction.ToDisplayString()), String.Join(Resources.LocalizedText.LocalizedSpace, lstCPTDesc), "PropertyTypes"));
+                Filters.Add(new QueryFilterItem(String.Format(CultureInfo.CurrentCulture, Resources.FlightQuery.FlightHasProperties, PropertiesConjunction.ToDisplayString()), String.Join(", ", lstCPTDesc), "PropertyTypes"));
             }
         }
 
