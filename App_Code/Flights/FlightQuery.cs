@@ -1067,17 +1067,17 @@ namespace MyFlightbook
             AddClause(sbQuery, "(flights.fHold <> 0)", HasHolds, FlightCharacteristicsConjunction);
             AddClause(sbQuery, "(flights.crosscountry > 0.0)", HasXC, FlightCharacteristicsConjunction);
             AddClause(sbQuery, "(flights.simulatedInstrument > 0.0)", HasSimIMCTime, FlightCharacteristicsConjunction);
-            AddClause(sbQuery, "(flights.groundSim > 0.0)", HasGroundSim, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(COALESCE(flights.groundSim, 0) > 0.0)", HasGroundSim, FlightCharacteristicsConjunction);
             AddClause(sbQuery, "(flights.IMC > 0.0)", HasIMC, FlightCharacteristicsConjunction);
             AddClause(sbQuery, "((flights.IMC + flights.simulatedInstrument) > 0.0)", HasAnyInstrument, FlightCharacteristicsConjunction);
             AddClause(sbQuery, "(flights.night > 0.0)", HasNight, FlightCharacteristicsConjunction);
             AddClause(sbQuery, "(flights.dualReceived > 0.0)", HasDual, FlightCharacteristicsConjunction);
-            AddClause(sbQuery, "(flights.cfi > 0.0)", HasCFI, FlightCharacteristicsConjunction);
-            AddClause(sbQuery, "(flights.SIC > 0.0)", HasSIC, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(COALESCE(flights.cfi, 0) > 0.0)", HasCFI, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(COALESCE(flights.SIC, 0) > 0.0)", HasSIC, FlightCharacteristicsConjunction);
             AddClause(sbQuery, "(flights.PIC > 0.0)", HasPIC, FlightCharacteristicsConjunction);
             AddClause(sbQuery, "(flights.totalFlightTime > 0.0)", HasTotalTime, FlightCharacteristicsConjunction);
             AddClause(sbQuery, "(flights.fPublic <> 0)", IsPublic, FlightCharacteristicsConjunction);
-            AddClause(sbQuery, "(flights.signaturestate <> 0)", IsSigned, FlightCharacteristicsConjunction);
+            AddClause(sbQuery, "(COALESCE(flights.signaturestate, 0) <> 0)", IsSigned, FlightCharacteristicsConjunction);
             AddClause(sbQuery, "(Coalesce(flights.Telemetry, ft.idflight) IS NOT NULL)", HasTelemetry, FlightCharacteristicsConjunction);
             AddClause(sbQuery, "(flights.idflight IN (SELECT f.idflight FROM flights f INNER JOIN images img ON (img.virtpathid=0 AND img.Imagekey=f.idflight) WHERE f.username=?uname AND img.imagekey IS NOT NULL))", HasImages, FlightCharacteristicsConjunction);
 
