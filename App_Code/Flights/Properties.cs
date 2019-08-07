@@ -558,7 +558,11 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
 
         public static void FlushGlobalCache()
         {
-            HttpRuntime.Cache.Remove(szAppCacheKey);
+            if (HttpRuntime.Cache != null)
+            {
+                HttpRuntime.Cache.Remove(szAppCacheKey);
+                HttpRuntime.Cache.Remove(szAppCacheDictKey);
+            }
         }
 
         private static Dictionary<int, CustomPropertyType> PropTypeDictionary
