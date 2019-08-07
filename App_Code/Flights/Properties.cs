@@ -982,6 +982,8 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "tuples == null for string {0}, idFlight {1}", szJSON ?? "(null)", idFlight));
 
             CustomFlightProperty[] result = new CustomFlightProperty[tuples.Count];
+            if (result == null)
+                throw new MyFlightbookException("Unable to allocate flight properties from tuple count");
 
             int i = 0;
             foreach (JArray tuple in tuples)
@@ -992,7 +994,10 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                 int idProp = (int)tuple[0];
                 int idPropType = (int)tuple[1];
                 string value = (string)tuple[2];
+
                 CustomPropertyType cpt = CustomPropertyType.GetCustomPropertyType(idPropType);
+                if (cpt == null)
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unable to find custom property type with idproptype {0}", idPropType));
 
                 CustomFlightProperty cfp = new CustomFlightProperty(cpt) { PropID = idProp, FlightID = idFlight };
 
