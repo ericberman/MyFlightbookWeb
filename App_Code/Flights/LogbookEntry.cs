@@ -2371,7 +2371,7 @@ namespace MyFlightbook
             {
                 // add a landing if there is total time and no other landings detected.
                 if (Landings == 0)
-                    Landings = 1;
+                    Landings = Math.Max(1, FullStopLandings + NightLandings);
 
                 // if only one landing is specified, and the flight-end time is known, and it is night, add a night landing.
                 if (rgap.Length == 2 && Landings == 1 && NightLandings == 0 && FlightEnd.HasValue())
