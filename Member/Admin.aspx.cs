@@ -385,6 +385,7 @@ public partial class Member_Admin : System.Web.UI.Page
             });
 
         CustomPropertyType.FlushGlobalCache();
+        FlushCache();
         gvCustomProps.DataBind();
         txtCustomPropTitle.Text = txtCustomPropFormat.Text = "";
         cmbCustomPropType.SelectedIndex = 0;
@@ -1289,10 +1290,15 @@ GROUP BY ac.idaircraft";
         gvDupeProps.DataBind();
     }
 
-    protected void btnFlushCache_Click(object sender, EventArgs e)
+    protected void FlushCache()
     {
         foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
             HttpRuntime.Cache.Remove((string)entry.Key);
+    }
+
+    protected void btnFlushCache_Click(object sender, EventArgs e)
+    {
+        FlushCache();
     }
     #endregion
 }
