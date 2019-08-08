@@ -648,4 +648,31 @@ Sender Email: {1}</value>
   <data name="ReportHeaderFuelCost" xml:space="preserve">
     <value>Fuel Cost</value>
   </data>
+  <data name="ReportHeaderInsurance" xml:space="preserve">
+    <value>Insurance Report</value>
+  </data>
+  <data name="ReportheaderInsuranceComplexTime" xml:space="preserve">
+    <value>Complex Time</value>
+  </data>
+  <data name="ReportHeaderInsuranceFlightsInPeriod" xml:space="preserve">
+    <value># of flights in period</value>
+  </data>
+  <data name="ReportheaderInsuranceHighPerformance" xml:space="preserve">
+    <value>High Performance Time</value>
+  </data>
+  <data name="ReportHeaderInsuranceLastFlightInClubPlane" xml:space="preserve">
+    <value>Most recent flight in club aircraft</value>
+  </data>
+  <data name="ReportHeaderInsurancePilotStatus" xml:space="preserve">
+    <value>Pilot Status</value>
+  </data>
+  <data name="ReportheaderInsuranceTimeInClubAircraft" xml:space="preserve">
+    <value>Time in club aircraft</value>
+  </data>
+  <data name="ReportHeaderInsuranceTotalTime" xml:space="preserve">
+    <value>Total Time</value>
+  </data>
+  <data name="ReportInsuranceMonths" xml:space="preserve">
+    <value># of months back to find flights in club aircraft:</value>
+  </data>
 </root>

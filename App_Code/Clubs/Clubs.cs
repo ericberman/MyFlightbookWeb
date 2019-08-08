@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.Airports;
+using MyFlightbook.FlightCurrency;
 using MyFlightbook.Schedule;
 using MySql.Data.MySqlClient;
 using System;
@@ -1182,5 +1183,157 @@ GROUP BY idaircraft");
         {
             EventClub = c;
         }
+    }
+
+    public class ClubInsuranceReportItem
+    {
+        #region Properties
+        /// <summary>
+        /// # of flights in the specified month interval
+        /// </summary>
+        public int FlightsInInterval { get; set; }
+
+        /// <summary>
+        /// Most recent flight by the user in a club aircraft
+        /// </summary>
+        public DateTime? MostRecentFlight { get; set; }
+
+        /// <summary>
+        /// Total time for the user - across all aircraft
+        /// </summary>
+        public decimal TotalTime { get; set; }
+
+        /// <summary>
+        /// Complex time for the user - across all aircraft
+        /// </summary>
+        public decimal ComplexTime { get; set; }
+
+        /// <summary>
+        /// High-performance time for the user - across all aircraft
+        /// </summary>
+        public decimal HighPerformanceTime { get; set; }
+
+        /// <summary>
+        /// The user
+        /// </summary>
+        public Profile User { get; set; }
+
+        /// <summary>
+        /// Total by club aircraft, striped by display tail number
+        /// </summary>
+        public IDictionary<string, decimal> TotalsByClubAircraft { get; private set; }
+
+        /// <summary>
+        /// Last flight reviews (including R22/R44 reviews), stryped by label
+        /// </summary>
+        public IEnumerable<CurrencyStatusItem> PilotStatusItems { get; private set; }
+        #endregion
+
+        #region Constructors
+        public ClubInsuranceReportItem()
+        {
+            TotalsByClubAircraft = new Dictionary<string, decimal>();
+            PilotStatusItems = new List<CurrencyStatusItem>();
+        }
+
+        public ClubInsuranceReportItem(Profile user) : this()
+        {
+            User = user;
+            PilotStatusItems = user.WarningsForUser();
+        }
+        #endregion
+
+        /// <summary>
+        /// Generates an insurance report for the specified club
+        /// </summary>
+        /// <param name="idClub">The ID of the club</param>
+        /// <param name="monthInterval"># of months back to look for flights</param>
+        /// <returns></returns>
+        public static IEnumerable<ClubInsuranceReportItem> ReportForClub(int idClub, int monthInterval = 6)
+        {
+            Dictionary<string, ClubInsuranceReportItem> d = new Dictionary<string, ClubInsuranceReportItem>();
+            Club c = Club.ClubWithID(idClub);
+
+            // Create one reportitem per member, adding in status items
+            foreach (ClubMember cm in c.Members)
+                d[cm.UserName] = new ClubInsuranceReportItem(cm);
+
+            // Get the overall totals for each user
+            string szQOverview = @"SELECT 
+    cm.username,
+    SUM(IF(ca.idaircraft IS NOT NULL AND f.date >= ?minDate, 1, 0)) AS flightsInClubAircraft,
+    MAX(IF(ca.idaircraft IS NOT NULL, f.date, NULL)) AS latestflight,
+    SUM(ROUND(f.TotalFlightTime * 60) / 60) AS totaltime,
+    SUM(IF(m.fComplex, ROUND(f.TotalFlightTime * 60) / 60, 0)) AS complextime,
+    SUM(IF(m.fHighPerf <> 0 OR (f.date < '1997-08-04' AND m.f200HP <> 0), ROUND(f.TotalFlightTime * 60) / 60, 0)) AS HPTime
+FROM
+    clubmembers cm
+        INNER JOIN
+    users u ON u.username = cm.username
+        INNER JOIN
+    clubs c ON c.idclub = cm.idclub
+        LEFT JOIN
+    flights f ON f.username = cm.username
+        INNER JOIN
+    aircraft ac ON f.idaircraft = ac.idaircraft
+        INNER JOIN
+    models m ON ac.idmodel = m.idmodel
+        LEFT JOIN
+    clubaircraft ca ON ca.idaircraft = f.idaircraft
+        AND ca.idclub = c.idclub
+WHERE
+    c.idClub = ?clubid
+GROUP BY cm.username
+ORDER BY username ASC";
+
+            DBHelper dbh = new DBHelper(szQOverview);
+            dbh.ReadRows((comm) =>
+            {
+                comm.Parameters.AddWithValue("clubid", idClub);
+                comm.Parameters.AddWithValue("minDate", DateTime.Now.AddMonths(-monthInterval));
+            },
+                (dr) =>
+                {
+                    ClubInsuranceReportItem ciri = d[(string)dr["username"]];
+                    if (util.ReadNullableField(dr, "latestflight", null) != null)
+                        ciri.MostRecentFlight = Convert.ToDateTime(dr["latestflight"], CultureInfo.InvariantCulture);
+                    ciri.FlightsInInterval = Convert.ToInt32(dr["flightsInClubAircraft"], CultureInfo.InvariantCulture);
+                    ciri.TotalTime = Convert.ToDecimal(dr["totaltime"], CultureInfo.InvariantCulture);
+                    ciri.ComplexTime = Convert.ToDecimal(dr["complextime"], CultureInfo.InvariantCulture);
+                    ciri.HighPerformanceTime = Convert.ToDecimal(dr["HPTime"], CultureInfo.InvariantCulture);
+                });
+
+            List<Aircraft> lstAc = new List<Aircraft>(c.MemberAircraft);
+
+            dbh.CommandText = String.Format(CultureInfo.InvariantCulture, @"SELECT
+  cm.username,
+  ca.idaircraft,
+  sum(round(f.totalflighttime * 60) / 60) as TimeInAircraft
+FROM clubmembers cm 
+INNER JOIN users u ON u.username=cm.username
+INNER JOIN clubs c ON c.idclub=cm.idclub
+INNER join flights f ON f.username = cm.username
+inner JOIN clubaircraft ca ON ca.idaircraft=f.idaircraft and ca.idclub=c.idclub
+WHERE
+c.idClub = ?clubid and ca.idaircraft is not null
+GROUP BY cm.username, ca.idaircraft
+ORDER BY username asc;");
+            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("clubid", idClub); },
+                (dr) => {
+                    ClubInsuranceReportItem ciri = d[(string)dr["username"]];
+                    int idAircraft = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture);
+                    decimal timeInAircraft = Convert.ToDecimal(dr["TimeInAircraft"], CultureInfo.InvariantCulture);
+                    Aircraft ac = lstAc.FirstOrDefault(ac2 => ac2.AircraftID == idAircraft);
+                    if (ac == null)
+                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown aircraft {0} for club {1} in club report", idAircraft, idClub));
+                    ciri.TotalsByClubAircraft[ac.DisplayTailnumber] = timeInAircraft;
+                });
+
+            List<ClubInsuranceReportItem> lst = new List<ClubInsuranceReportItem>(d.Values);
+            lst.Sort((c1, c2) => { return c1.User.UserFullName.CompareCurrentCultureIgnoreCase(c2.User.UserFullName); });
+
+            return lst;
+        }
+
     }
 }

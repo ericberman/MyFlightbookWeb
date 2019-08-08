@@ -1,6 +1,7 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Airports;
 using MyFlightbook.Clubs;
+using MyFlightbook.FlightCurrency;
 using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;
 using System;
@@ -128,10 +129,12 @@ public partial class Member_ClubManage : System.Web.UI.Page
 
     protected void btnAddAircraft_Click(object sender, EventArgs e)
     {
-        ClubAircraft ca = new ClubAircraft();
-        ca.AircraftID = Convert.ToInt32(cmbAircraftToAdd.SelectedValue, CultureInfo.InvariantCulture);
-        ca.ClubDescription = txtDescription.FixedHtml;
-        ca.ClubID = CurrentClub.ID;
+        ClubAircraft ca = new ClubAircraft()
+        {
+            AircraftID = Convert.ToInt32(cmbAircraftToAdd.SelectedValue, CultureInfo.InvariantCulture),
+            ClubDescription = txtDescription.FixedHtml,
+            ClubID = CurrentClub.ID
+        };
         if (!ca.FSaveToClub())
             lblManageAircraftError.Text = ca.LastError;
         else
@@ -345,10 +348,12 @@ public partial class Member_ClubManage : System.Web.UI.Page
     #region Reporting
     protected string FullName(string szFirst, string szLast, string szEmail)
     {
-        Profile pf = new Profile();
-        pf.FirstName = szFirst;
-        pf.LastName = szLast;
-        pf.Email = szEmail;
+        Profile pf = new Profile()
+        {
+            FirstName = szFirst,
+            LastName = szLast,
+            Email = szEmail
+        };
         return pf.UserFullName;
     }
 
@@ -446,7 +451,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
                 lstIds.Add(Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture));
         }
 
-        string szErr = string.Empty;
+        string szErr;
         VisitedAirport.AllFlightsAsKML(new FlightQuery(), Response.OutputStream, out szErr, lstIds);
         if (String.IsNullOrEmpty(szErr))
             lblErr.Text = szErr;
@@ -472,4 +477,42 @@ public partial class Member_ClubManage : System.Web.UI.Page
         Response.End();
     }
     #endregion
+
+    protected string CSSForItem(CurrencyState cs)
+    {
+        switch (cs)
+        {
+            case CurrencyState.GettingClose:
+                return "currencynearlydue";
+            case CurrencyState.NotCurrent:
+                return "currencyexpired";
+            case CurrencyState.OK:
+                return "currencyok";
+            case CurrencyState.NoDate:
+                return "currencynodate";
+        }
+        return string.Empty;
+    }
+
+    protected void btnInsuranceReport_Click(object sender, EventArgs e)
+    {
+        gvInsuranceReport.DataSource = ClubInsuranceReportItem.ReportForClub(CurrentClub.ID, Convert.ToInt32(cmbMonthsInsurance.SelectedValue, CultureInfo.InvariantCulture));
+        gvInsuranceReport.DataBind();
+    }
+
+    protected void gvInsuranceReport_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            ClubInsuranceReportItem ciri = (ClubInsuranceReportItem)e.Row.DataItem;
+            GridView gvTimeInAircraft = (GridView) e.Row.FindControl("gvAircraftTime");
+            gvTimeInAircraft.DataSource = ciri.TotalsByClubAircraft;
+            gvTimeInAircraft.DataBind();
+            Repeater rptPilotStatus = (Repeater)e.Row.FindControl("rptPilotStatus");
+            rptPilotStatus.DataSource = ciri.PilotStatusItems;
+            rptPilotStatus.DataBind();
+        }
+    }
 }
