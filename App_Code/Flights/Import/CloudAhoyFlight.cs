@@ -187,14 +187,28 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
             }
         }
 
-        private void PopulateManeuvers(LogbookEntry le)
+        protected string MarkdownLink(string szLabel, string szurl)
+        {
+            bool fHasLabel = !String.IsNullOrEmpty(szLabel);
+            bool fHasLink = !String.IsNullOrEmpty(szurl);
+
+            if (fHasLabel && fHasLink)
+                return String.Format(CultureInfo.CurrentCulture, "[{0}]({1})", szLabel, szurl);
+            if (fHasLabel)
+                return szLabel;
+            if (fHasLink)
+                return szurl;
+            return string.Empty;
+        }
+
+        private void PopulateManeuvers(LogbookEntry le, List<string> lst)
         {
             if (maneuvers == null)
                 return;
 
             foreach (CloudAhoyManeuverDescriptor md in maneuvers)
             {
-                CloudAhoyManeuvers maneuver = CloudAhoyManeuvers.unknown;
+                CloudAhoyManeuvers maneuver;
                 if (Enum.TryParse<CloudAhoyManeuvers>(md.code, out maneuver))
                 {
                     switch (maneuver)
@@ -236,6 +250,8 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
                         default:
                             break;
                     }
+
+                    lst.Add(MarkdownLink(md.label, md.url));
                 }
             }
         }
@@ -253,13 +269,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
 
             DictProps.Clear();
 
-            List<string> lstText = new List<string>();
-            if (!String.IsNullOrEmpty(remarks))
-                lstText.Add(remarks);
-            if (!String.IsNullOrEmpty(url))
-                lstText.Add(String.Format(CultureInfo.CurrentCulture, "({0})", url));
-            if (!String.IsNullOrEmpty(thumbnailUrl))
-                lstText.Add(thumbnailUrl);
+            List<string> lstText = new List<string>() { MarkdownLink(remarks, url) };
 
             PendingFlight le = new PendingFlight()
             {
@@ -267,7 +277,6 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
                 TailNumDisplay = aircraft.registration,
                 ModelDisplay = aircraft.model,
                 Route = sb.ToString().Trim(),
-                Comment = String.Join(" ", lstText),
                 TotalFlightTime = duration / 3600.0M,
                 EngineStart = dtStart,
                 EngineEnd = dtStart.AddSeconds(duration),
@@ -275,7 +284,9 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
             };
 
             PopulateCrewInfo(le);
-            PopulateManeuvers(le);
+            PopulateManeuvers(le, lstText);
+
+            le.Comment = String.Join(" ", lstText);
 
             le.CustomProperties = PropertiesWithoutNullOrDefault(DictProps.Values).ToArray();
 
