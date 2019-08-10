@@ -375,4 +375,7 @@
   <data name="RecentAchievementsViewCalendar" xml:space="preserve">
     <value>View a calendar of your flying</value>
   </data>
+  <data name="nameNumberCatClass" xml:space="preserve">
+    <value>Flown {0} distinct category/classes of aircraft!</value>
+  </data>
 </root>

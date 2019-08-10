@@ -289,6 +289,7 @@ namespace MyFlightbook.Achievements
             NumberOfApproaches,
             NumberOfContinents,
             FlyingStreak,
+            NumberOfCatClasses,
 
             Antarctica = BadgeCategory.Miscellaneous,
 
@@ -672,6 +673,7 @@ namespace MyFlightbook.Achievements
                     new MultiLevelBadgeLandings(),
                     new MultiLevelBadgeApproaches(),
                     new MultiLevelBadgeNumberModels(),
+                    new MultiLevelBadgeNumberCategoryClass(),
                     new MultiLevelBadgeNumberAircraft(),
                     new MultiLevelBadgeNumberAirports(),
                     new MultiLevelBadgeContinents(),
@@ -848,7 +850,7 @@ namespace MyFlightbook.Achievements
     }
     #endregion
 
-    #region Miscelaneous badges
+    #region Miscellaneous badges
     [Serializable]
     public class FlightOfThePenguin : Badge
     {
@@ -977,6 +979,26 @@ namespace MyFlightbook.Achievements
             {
                 AddToCount(1, cfr);
                 hsModelsFlown.Add(cfr.szFamily);
+            }
+        }
+    }
+
+    [Serializable]
+    public class MultiLevelBadgeNumberCategoryClass : MultiLevelCountBadgeBase
+    {
+        readonly private HashSet<CategoryClass.CatClassID> hsCatClassesFlown = new HashSet<CategoryClass.CatClassID>();
+
+        public MultiLevelBadgeNumberCategoryClass() : base(BadgeID.NumberOfCatClasses, Resources.Achievements.nameNumberCatClass, 4, 5, 6, 7) { }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, Object> context)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException("cfr");
+
+            if (!hsCatClassesFlown.Contains(cfr.idCatClassOverride) && cfr.Total > 0 && cfr.fIsRealAircraft)
+            {
+                AddToCount(1, cfr);
+                hsCatClassesFlown.Add(cfr.idCatClassOverride);
             }
         }
     }
