@@ -327,7 +327,7 @@
                     </div>
                 </asp:Panel>
                 <p class="header" runat="server" id="CustomPropsHeader"><asp:Localize ID="locProps" 
-                        runat="server" Text="Flight had one of these properties:" 
+                        runat="server" Text="Flight had these properties:" 
                         meta:resourcekey="locPropsResource1"></asp:Localize> 
                     <asp:Label ID="lblCustomPropsLabel" runat="server" 
                         meta:resourcekey="lblCustomPropsLabelResource1"></asp:Label>:</p>
