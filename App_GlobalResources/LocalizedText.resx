@@ -321,7 +321,7 @@
     <value>Update Aircraft</value>
   </data>
   <data name="EditAircraftUserStats" xml:space="preserve">
-    <value>This aircraft is used by {0} user(s) in {1} flight(s).</value>
+    <value>This aircraft is used by {0:#,##0} user(s) in {1:#,##0} flight(s).</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
