@@ -398,6 +398,8 @@ namespace MyFlightbook.ImportFlights
                         if (le.SIC == 0)
                             le.SIC = le.TotalFlightTime;
                         break;
+                    case "UT":
+                    case "SP":
                     case "PC":  // PIC
                         if (le.PIC == 0)
                             le.PIC = le.TotalFlightTime;
@@ -408,12 +410,18 @@ namespace MyFlightbook.ImportFlights
                     case "IP":  // Instructor Pilot
                         if (le.CFI == 0)
                             le.CFI = le.TotalFlightTime;
+                        if (le.PIC == 0)
+                            le.PIC = le.TotalFlightTime;
                         break;
                     case "IE":  // Instrument evaluator
                         AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropInstrumentExaminer, lstProps);
+                        if (le.PIC == 0)
+                            le.PIC = le.TotalFlightTime;
                         break;
                     case "MP":  // Maintenance Pilot evaluator
                         AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropMaintTestPilot, lstProps);
+                        if (le.PIC == 0)
+                            le.PIC = le.TotalFlightTime;
                         break;
                     default:
                         break;
