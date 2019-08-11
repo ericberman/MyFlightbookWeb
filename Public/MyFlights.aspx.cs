@@ -13,15 +13,13 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2018 MyFlightbook LLC
+ * Copyright (c) 2011-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Public_MyFlights : System.Web.UI.Page
 {
-    private const int DefaultPageSize = 15;
-
     #region Infinite Scroll support
     public static LogbookEntry[] GetFlights(string szUser, int skip, int pageSize)
     {
@@ -111,10 +109,15 @@ public partial class Public_MyFlights : System.Web.UI.Page
             }
             else
             {
-                Profile pf = MyFlightbook.Profile.GetUser(UserName);
-                if (pf.UserFullName.Length > 0)
-                    lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightPageHeader, pf.UserFullName);
-                rgle = LogbookEntry.GetPublicFlightsForUser(UserName, 0, PageSize);
+                try
+                {
+                    // below can throw argument null exception if it's an invalid username
+                    Profile pf = MyFlightbook.Profile.GetUser(UserName);
+                    if (pf.UserFullName.Length > 0)
+                        lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightPageHeader, pf.UserFullName);
+                    rgle = LogbookEntry.GetPublicFlightsForUser(UserName, 0, PageSize);
+                }
+                catch (ArgumentNullException) { }
             }
 
             gvMyFlights.DataSource = rgle;
