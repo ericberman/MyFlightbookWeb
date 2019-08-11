@@ -387,6 +387,24 @@ namespace MyFlightbook.ImportFlights
                 }
             }
 
+            private void CrossFillPIC(LogbookEntryBase le)
+            {
+                if (le.PIC == 0)
+                    le.PIC = le.TotalFlightTime;
+            }
+
+            private void CrossFillSIC(LogbookEntryBase le)
+            {
+                if (le.SIC == 0)
+                    le.SIC = le.TotalFlightTime;
+            }
+
+            private void CrossFillCFI(LogbookEntryBase le)
+            {
+                if (le.CFI == 0)
+                    le.CFI = le.TotalFlightTime;
+            }
+
             private void SetCAFRSPilotRole(LogbookEntry le, string szPilotRole, List<CustomFlightProperty> lstProps)
             {
                 if (String.IsNullOrEmpty(szPilotRole) || le == null || le.TotalFlightTime == 0)
@@ -395,33 +413,29 @@ namespace MyFlightbook.ImportFlights
                 switch (szPilotRole.ToUpperInvariant())
                 {
                     case "PI":  // Second in command
-                        if (le.SIC == 0)
-                            le.SIC = le.TotalFlightTime;
+                        CrossFillSIC(le);
                         break;
-                    case "UT":
-                    case "SP":
+                    case "XP":  // Experimental Test Pilot
+                    case "UT":  // Unit Trainer
                     case "PC":  // PIC
-                        if (le.PIC == 0)
-                            le.PIC = le.TotalFlightTime;
+                        CrossFillPIC(le);
                         break;
                     case "CP":  // Co-pilot
                         AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropMilitaryCoPilottime, lstProps);
                         break;
+                    case "SP":  // Standardization Pilot
                     case "IP":  // Instructor Pilot
-                        if (le.CFI == 0)
-                            le.CFI = le.TotalFlightTime;
-                        if (le.PIC == 0)
-                            le.PIC = le.TotalFlightTime;
+                        CrossFillCFI(le);
+                        CrossFillPIC(le);
                         break;
                     case "IE":  // Instrument evaluator
                         AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropInstrumentExaminer, lstProps);
-                        if (le.PIC == 0)
-                            le.PIC = le.TotalFlightTime;
+                        CrossFillCFI(le);
+                        CrossFillPIC(le);
                         break;
                     case "MP":  // Maintenance Pilot evaluator
                         AddCrossFilledPropertyWithID(le, (int)CustomPropertyType.KnownProperties.IDPropMaintTestPilot, lstProps);
-                        if (le.PIC == 0)
-                            le.PIC = le.TotalFlightTime;
+                        CrossFillPIC(le);
                         break;
                     default:
                         break;
