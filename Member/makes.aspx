@@ -51,8 +51,7 @@
                             <span class="fineprint"><asp:Localize ID="locModelNameExample" Text='(e.g., "Skyhawk")' runat="server" meta:resourcekey="locModelNameExampleResource1"></asp:Localize></span>
                         </td>
                         <td>
-                            <asp:TextBox ID="txtModelName" runat="server" meta:resourcekey="txtModelNameResource1"></asp:TextBox>
-                            <div class="fineprint"><% = Resources.Makes.searchICAOTip %></div>
+                            <asp:TextBox ID="txtModelName" runat="server" meta:resourcekey="txtModelNameResource1"></asp:TextBox> <uc2:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:Makes, searchICAOTip %>" />
                         </td>
                     </tr>
                     <tr>

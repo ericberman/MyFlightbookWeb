@@ -338,7 +338,7 @@
     <value>None</value>
   </data>
   <data name="ConjunctionPrompt1" xml:space="preserve">
-    <value>Flight contains </value>
+    <value>Flight has </value>
   </data>
   <data name="ConjunctionPrompt2" xml:space="preserve">
     <value>of the following:</value>

@@ -13,9 +13,9 @@
     <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
-    <p><asp:Localize ID="locEditAirportsDesc" runat="server" Text="Don't see a local private strip? That's probably because we compile
+    <p><asp:Localize ID="locEditAirportsDesc" runat="server" Text="Missing a local airport that you love? That's probably because we compile
         our data from a variety of public (and free!) sources, but these are not exhaustive.
-        You can add your own below." meta:resourcekey="locEditAirportsDescResource2"></asp:Localize>
+        You can help keep the dataset complete by adding your own below." meta:resourcekey="locEditAirportsDescResource2"></asp:Localize>
     </p>
         <table width="100%">
             <tr>
@@ -242,9 +242,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
     <asp:Panel ID="pnlMyAirports" runat="server" Width="100%" 
         meta:resourcekey="pnlMyAirportsResource2">
-        <p><asp:Localize ID="locYourAirportsHeader" runat="server" Text="Airports you have created are shown below.
-            To edit an airport or navaid, simply recreate it, re-using the facility
-            code." meta:resourceKey="locYourAirportsHeaderResource2"></asp:Localize></p>
+        <p><asp:Localize ID="locYourAirportsHeader" runat="server" Text="Airports or navaids you have created are shown below. To edit an airport or navaid you have created, simply recreate it, re-using the facility code." meta:resourceKey="locYourAirportsHeaderResource2"></asp:Localize></p>
         <asp:GridView ID="gvMyAirports" EnableViewState="False" CellSpacing="5" CellPadding="5"
             runat="server" AutoGenerateColumns="False" GridLines="None"
             OnRowCommand="gvMyAirports_RowCommand" 

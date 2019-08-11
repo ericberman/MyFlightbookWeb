@@ -376,31 +376,31 @@
     <value>2</value>
   </data>
   <data name="locAircraftCharacteristicsResource1.Text" xml:space="preserve">
-    <value>Flight aircraft had these aircraft characteristics</value>
+    <value>Flight aircraft has these aircraft characteristics</value>
   </data>
   <data name="locAircraftResource1.Text" xml:space="preserve">
-    <value>Flight was in one of these aircraft:</value>
+    <value>Flight is in one of these aircraft:</value>
   </data>
   <data name="locAirportsResource1.Text" xml:space="preserve">
-    <value>Flight visited any of these airports</value>
+    <value>Flight visits any of these airports</value>
   </data>
   <data name="locCatClassResource1.Text" xml:space="preserve">
-    <value>Flight was in these categories/classes:</value>
+    <value>Flight is in these categories/classes:</value>
   </data>
   <data name="locDatesResource1.Text" xml:space="preserve">
     <value>Flight Dates</value>
   </data>
   <data name="locFlightCharacteristicsResource1.Text" xml:space="preserve">
-    <value>Flight had the following characteristics:</value>
+    <value>Flight has the following characteristics:</value>
   </data>
   <data name="locFreeformTextResource1.Text" xml:space="preserve">
     <value>Text of flight entry contains</value>
   </data>
   <data name="locMakesResource1.Text" xml:space="preserve">
-    <value>Flight was in one of these Makes/Models:</value>
+    <value>Flight is in one of these Makes/Models:</value>
   </data>
   <data name="locPropsResource1.Text" xml:space="preserve">
-    <value>Flight had one of these properties:</value>
+    <value>Flight has these properties:</value>
   </data>
   <data name="pnlAircraftTypeResource1.GroupingText" xml:space="preserve">
     <value />

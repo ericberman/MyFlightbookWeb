@@ -190,9 +190,9 @@
     <value />
   </data>
   <data name="locEditAirportsDescResource2.Text" xml:space="preserve">
-    <value>Don't see a local private strip? That's probably because we compile
+    <value>Missing a local airport that you love? That's probably because we compile
         our data from a variety of public (and free!) sources, but these are not exhaustive.
-        You can add your own below.</value>
+        You can help keep the dataset complete by adding your own below.</value>
   </data>
   <data name="locEditAirportsHeaderResource2.Text" xml:space="preserve">
     <value>Edit Airports and NavAids</value>
@@ -210,9 +210,7 @@
     <value>Type:</value>
   </data>
   <data name="locYourAirportsHeaderResource2.Text" xml:space="preserve">
-    <value>Airports you have created are shown below.
-            To edit an airport or navaid, simply recreate it, re-using the facility
-            code.</value>
+    <value>Airports or navaids you have created are shown below. To edit an airport or navaid you have created, simply recreate it, re-using the facility code.</value>
   </data>
   <data name="PageResource2.Title" xml:space="preserve">
     <value>Edit Airports and Navigation Aids</value>
