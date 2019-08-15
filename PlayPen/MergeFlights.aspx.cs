@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -53,8 +53,7 @@ public partial class PlayPen_MergeFlights : System.Web.UI.Page
 
     protected void RefreshFlightsList()
     {
-        List<LogbookEntryDisplay> lstFlights = new List<LogbookEntryDisplay>();
-        lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", SortDirection.Descending, false, false);
+        List<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(new FlightQuery(User.Identity.Name)), User.Identity.Name, "Date", SortDirection.Descending, false, false);
 
         rptSelectedFlights.DataSource = lstFlights;
         rptSelectedFlights.DataBind();
@@ -84,8 +83,7 @@ public partial class PlayPen_MergeFlights : System.Web.UI.Page
         get
         {
             IList<string> lstIds = SelectedFlightIDs;
-            FlightQuery fq = new FlightQuery(User.Identity.Name);
-            fq.CustomRestriction = String.Format(CultureInfo.InvariantCulture, " (flights.idFlight IN ({0})) ", String.Join(", ", lstIds));
+            FlightQuery fq = new FlightQuery(User.Identity.Name) { CustomRestriction = String.Format(CultureInfo.InvariantCulture, " (flights.idFlight IN ({0})) ", String.Join(", ", lstIds)) };
             return fq;
         }
     }
@@ -134,11 +132,11 @@ public partial class PlayPen_MergeFlights : System.Web.UI.Page
 
         // Need to use LogbookEntry, not LogbookEntryDisplay, since you can't commit LogbookEntryDisplay
         // Also need to do ascending so 1st element is target.
-        DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(Query, -1, -1, true, LogbookEntry.LoadTelemetryOption.MetadataOrDB));
+        DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(Query, -1, -1, true, LogbookEntry.LoadTelemetryOption.LoadAll));
         dbh.ReadRows((comm) => { },
             (dr) =>
             {
-                LogbookEntry le = new LogbookEntry(dr, Query.UserName); // Note: this has no telemetry
+                LogbookEntry le = new LogbookEntry(dr, Query.UserName, LogbookEntryBase.LoadTelemetryOption.LoadAll); // Note: this has no telemetry
                 le.PopulateImages();
                 lst.Add(le);
             });
