@@ -302,13 +302,15 @@ namespace MyFlightbook.MilestoneProgress
             decimal PIC = Math.Max(cfr.PIC, soloTime);
             decimal PICXC = Math.Min(PIC, cfr.XC);
 
-            // We can add up to 10 hours each of dual and dual XC towards this time, but only if not also logged as PIC. (Avoid double counting)
-            // See http://www.faa.gov/about/office_org/headquarters_offices/agc/pol_adjudication/agc200/interpretations/data/interps/2014/kuhn%20-%20%282014%29%20legal%20interpretation.pdf
-            // for why this is not the same as dual.
             decimal PICSubstRemaining = Math.Max(miDualAsPIC.Threshold - miDualAsPIC.Progress, 0);
             decimal PICSubstXCRemaining = Math.Max(miDualAsPICXC.Threshold - miDualAsPICXC.Progress, 0);
             decimal PICSubst = Math.Min(PICSubstRemaining, substituteSolo);   // add in any duties-of-PIC time with instructor on-board 
             decimal PICSubstXC = Math.Min(PICSubstXCRemaining, Math.Min(substituteSolo, cfr.XC));
+
+            // Reduce actual PIC time by substitute PIC time, to avoid double counting
+            PIC = Math.Max(0, PIC - PICSubst);
+            PICXC = Math.Max(0, PICXC - PICSubstXC);
+
             miDualAsPIC.AddEvent(PICSubst);
             miDualAsPICXC.AddEvent(PICSubstXC);
 
