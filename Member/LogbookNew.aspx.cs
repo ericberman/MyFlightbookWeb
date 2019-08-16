@@ -33,7 +33,7 @@ public partial class Member_LogbookNew : System.Web.UI.Page
             throw new MyFlightbookException("You must be authenticated to make this call");
 
         decimal val = 0.0M;
-        DBHelper dbh = new DBHelper(@"SELECT  MAX(hobbsEnd) AS highWater FROM flights WHERE username = ?user AND idaircraft = ?id");
+        DBHelper dbh = new DBHelper(@"SELECT  MAX(f.hobbsEnd) AS highWater FROM (SELECT hobbsEnd FROM flights WHERE username = ?user AND idaircraft = ?id ORDER BY flights.date DESC LIMIT 10) f");
         dbh.ReadRow((comm) =>
         {
             comm.Parameters.AddWithValue("user", HttpContext.Current.User.Identity.Name);
@@ -58,7 +58,9 @@ public partial class Member_LogbookNew : System.Web.UI.Page
             throw new MyFlightbookException("You must be authenticated to make this call");
 
         decimal val = 0.0M;
-        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT MAX(decvalue) AS highWater FROM flightproperties fp INNER JOIN flights f ON fp.idflight = f.idflight WHERE f.username = ?user AND f.idaircraft = ?id AND fp.idproptype = {0}", (int) CustomPropertyType.KnownProperties.IDPropTachEnd));
+        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT MAX(tach.decvalue) AS highWater FROM
+(SELECT decvalue FROM flightproperties fp INNER JOIN flights f ON fp.idflight = f.idflight WHERE f.username = ?user AND f.idaircraft = ?id AND fp.idproptype = {0}
+ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.IDPropTachEnd));
         dbh.ReadRow((comm) =>
         {
             comm.Parameters.AddWithValue("user", HttpContext.Current.User.Identity.Name);
@@ -188,7 +190,7 @@ public partial class Member_LogbookNew : System.Web.UI.Page
             }
 
             // Handle a requested tab - turning of lazy load as needed
-            FlightsTab ft = FlightsTab.None;
+            FlightsTab ft;
             string szReqTab = util.GetStringParam(Request, "ft");
             if (!String.IsNullOrEmpty(szReqTab))
             {
@@ -287,7 +289,7 @@ public partial class Member_LogbookNew : System.Web.UI.Page
         Refresh();
         AccordionCtrl.SelectedIndex = -1;
 
-        int idxLast = -1;
+        int idxLast;
         if (Int32.TryParse(hdnLastViewedPaneIndex.Value, out idxLast))
         {
             if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcTotals.ID))
