@@ -193,16 +193,16 @@
     <value>Progress Towards Ratings for {0}</value>
   </data>
   <data name="CommMinComplexAMEL" xml:space="preserve">
-    <value>10 hours of training in a complex multi-engine airplane</value>
+    <value>10 hours of training in a complex (or turbine, or TAA) multi-engine airplane</value>
   </data>
   <data name="CommMinComplexAMES" xml:space="preserve">
-    <value>10 hours of training in a multi-engine seaplane with flaps and a controllable pitch propeller.</value>
+    <value>10 hours of training in a multi-engine seaplane with flaps and a controllable pitch propeller (or turbine, or TAA).</value>
   </data>
   <data name="CommMinComplexASEL" xml:space="preserve">
-    <value>10 hours of training in a complex airplane</value>
+    <value>10 hours of training in a complex (or turbine, or TAA) airplane</value>
   </data>
   <data name="CommMinComplexASES" xml:space="preserve">
-    <value>10 hours of training in a single-engine seaplane with flaps and a controllable pitch propeller.</value>
+    <value>10 hours of training in a single-engine seaplane with flaps and a controllable pitch propeller (or turbine, or TAA).</value>
   </data>
   <data name="CommMinNightFlight" xml:space="preserve">
     <value>5 hours solo in night VFR conditions in {0}</value>
