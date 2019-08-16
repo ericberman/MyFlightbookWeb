@@ -1976,7 +1976,7 @@ namespace MyFlightbook.Telemetry
 
             using (FlightData fdTarget = new FlightData())
             {
-                fdTarget.ParseFlightData(String.IsNullOrEmpty(lst[i].RawData) ? lst[0].LoadData() : lst[0].RawData);
+                fdTarget.ParseFlightData(String.IsNullOrEmpty(lst[0].RawData) ? lst[0].LoadData() : lst[0].RawData);
                 lst.RemoveAt(0);
 
                 foreach (TelemetryReference tr in lst)
