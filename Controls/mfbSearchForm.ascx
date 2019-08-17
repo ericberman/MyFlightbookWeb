@@ -84,31 +84,16 @@
                     <table>
                         <tr>
                             <td>
-                                <asp:CheckBox ID="ckFSLanding" runat="server" Text="Full-stop Landings" 
+                                <asp:CheckBox ID="ckAnyLandings" runat="server" Text="Landings" />
+                            </td>
+                            <td>
+                                <asp:CheckBox ID="ckFSLanding" runat="server" Text="Full-stop Landings (Day)" 
                                     meta:resourcekey="ckFSLandingResource1" />
                             </td>
                             <td>
-                                <asp:CheckBox ID="ckXC" runat="server" Text="Cross-country time" 
-                                    meta:resourcekey="ckXCResource1" />
-                            </td>
-                            <td>
-                                <asp:CheckBox ID="ckDual" runat="server" Text="Dual time" 
-                                    meta:resourcekey="ckDualResource1" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
                                 <asp:CheckBox ID="ckNightLandings" runat="server" 
-                                    Text="Full-stop Night Landings" 
+                                    Text="Full-stop Landings (Night)" 
                                     meta:resourcekey="ckNightLandingsResource1" />
-                            </td>
-                            <td>
-                                <asp:CheckBox ID="ckSimIMC" runat="server" Text="Simulated IMC time" 
-                                    meta:resourcekey="ckSimIMCResource1" />
-                            </td>
-                            <td>
-                                <asp:CheckBox ID="ckCFI" runat="server" Text="CFI time" 
-                                    meta:resourcekey="ckCFIResource1" />
                             </td>
                         </tr>
                         <tr>
@@ -117,22 +102,48 @@
                                     meta:resourcekey="ckApproachesResource1" />
                             </td>
                             <td>
-                                <asp:CheckBox ID="ckIMC" runat="server" Text="Actual IMC time" 
-                                    meta:resourcekey="ckIMCResource1" />
-                            </td>
-                            <td>
-                                <asp:CheckBox ID="ckSIC" runat="server" Text="SIC time" 
-                                    meta:resourcekey="ckSICResource1" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
                                 <asp:CheckBox ID="ckHolds" runat="server" Text="Holding procedures" 
                                     meta:resourcekey="ckHoldsResource1" />
                             </td>
                             <td>
+                                <asp:CheckBox ID="ckXC" runat="server" Text="Cross-country time" 
+                                    meta:resourcekey="ckXCResource1" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <asp:CheckBox ID="ckIMC" runat="server" Text="Actual IMC time" 
+                                    meta:resourcekey="ckIMCResource1" />
+                            </td>
+                            <td>
+                                <asp:CheckBox ID="ckSimIMC" runat="server" Text="Simulated IMC time" 
+                                    meta:resourcekey="ckSimIMCResource1" />
+                            </td>
+                            <td>
+                                <asp:CheckBox ID="ckAnyInstrument" runat="server" Text="IMC OR Simulated Instr." />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <asp:CheckBox ID="ckGroundSim" runat="server" Text="Ground Sim" />
+                            </td>
+                            <td>
                                 <asp:CheckBox ID="ckNight" runat="server" Text="Night flight time" 
                                     meta:resourcekey="ckNightResource1" />
+                            </td>
+                            <td>
+                                <asp:CheckBox ID="ckDual" runat="server" Text="Dual time" 
+                                    meta:resourcekey="ckDualResource1" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <asp:CheckBox ID="ckCFI" runat="server" Text="CFI time" 
+                                    meta:resourcekey="ckCFIResource1" />
+                            </td>
+                            <td>
+                                <asp:CheckBox ID="ckSIC" runat="server" Text="SIC time" 
+                                    meta:resourcekey="ckSICResource1" />
                             </td>
                             <td>
                                 <asp:CheckBox ID="ckPIC" runat="server" Text="PIC time" 
@@ -141,8 +152,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <asp:CheckBox ID="ckHasTelemetry" runat="server" Text="Telemetry data" 
-                                    meta:resourcekey="ckHasTelemetryResource1" />
+                                <asp:CheckBox ID="ckTotal" runat="server" Text="Total Time" />
                             </td>
                             <td>
                                 <asp:CheckBox ID="ckPublic" runat="server" 
@@ -150,17 +160,20 @@
                                     meta:resourcekey="ckPublicResource1" />
                             </td>
                             <td>
-                                <asp:CheckBox ID="ckIsSigned" runat="server" 
-                                    Text="Instructor signature" meta:resourcekey="ckIsSignedResource1" />
+                                <asp:CheckBox ID="ckHasTelemetry" runat="server" Text="Telemetry data" 
+                                    meta:resourcekey="ckHasTelemetryResource1" />
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <asp:CheckBox ID="ckHasImages" runat="server" Text="<%$ Resources:FlightQuery, FlightFeatureHasImages %>" />
                             </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>
+                                <asp:CheckBox ID="ckIsSigned" runat="server" 
+                                    Text="Instructor signature" meta:resourcekey="ckIsSignedResource1" />
+                            </td>
+                            <td>
+                            </td>
                         </tr>
                     </table>
                 </asp:Panel>

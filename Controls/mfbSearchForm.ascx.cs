@@ -103,6 +103,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         ckFSLanding.Checked = ckNightLandings.Checked = ckApproaches.Checked = ckHolds.Checked =
             ckXC.Checked = ckSimIMC.Checked = ckIMC.Checked = ckNight.Checked =
             ckDual.Checked = ckCFI.Checked = ckSIC.Checked = ckPIC.Checked = 
+            ckAnyInstrument.Checked = ckAnyLandings.Checked = ckGroundSim.Checked = ckTotal.Checked =
             ckPublic.Checked = ckIsSigned.Checked = ckHasTelemetry.Checked = ckHasImages.Checked = false;
         cmbFlightCharsConjunction.SelectedValue = GroupConjunction.All.ToString();
 
@@ -188,6 +189,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
     {
         ckFSLanding.Checked = m_fq.HasFullStopLandings;
         ckNightLandings.Checked = m_fq.HasNightLandings;
+        ckAnyLandings.Checked = m_fq.HasLandings;
         ckApproaches.Checked = m_fq.HasApproaches;
         ckHolds.Checked = m_fq.HasHolds;
         ckHasTelemetry.Checked = m_fq.HasTelemetry;
@@ -196,17 +198,21 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         ckXC.Checked = m_fq.HasXC;
         ckSimIMC.Checked = m_fq.HasSimIMCTime;
         ckIMC.Checked = m_fq.HasIMC;
+        ckAnyInstrument.Checked = m_fq.HasAnyInstrument;
         ckNight.Checked = m_fq.HasNight;
         ckPublic.Checked = m_fq.IsPublic;
+        ckGroundSim.Checked = m_fq.HasGroundSim;
 
         ckDual.Checked = m_fq.HasDual;
         ckCFI.Checked = m_fq.HasCFI;
         ckSIC.Checked = m_fq.HasSIC;
         ckPIC.Checked = m_fq.HasPIC;
+        ckTotal.Checked = m_fq.HasTotalTime;
         ckIsSigned.Checked = m_fq.IsSigned;
 
         cpeFlightCharacteristics.Collapsed = !(ckFSLanding.Checked || ckNight.Checked || ckApproaches.Checked || ckHolds.Checked || ckHasTelemetry.Checked || ckHasImages.Checked ||
             ckXC.Checked || ckSimIMC.Checked || ckIMC.Checked || ckNight.Checked || ckPublic.Checked ||
+            ckAnyLandings.Checked || ckAnyInstrument.Checked || ckGroundSim.Checked || ckTotal.Checked ||
             ckDual.Checked || ckCFI.Checked || ckSIC.Checked || ckPIC.Checked || ckIsSigned.Checked);
 
         cmbFlightCharsConjunction.SelectedValue = m_fq.FlightCharacteristicsConjunction.ToString();
@@ -608,13 +614,16 @@ function setDates(isCustom)
         m_fq.HasCFI = ckCFI.Checked;
         m_fq.HasDual = ckDual.Checked;
         m_fq.HasFullStopLandings = ckFSLanding.Checked;
-        m_fq.HasGroundSim = false;
+        m_fq.HasGroundSim = ckGroundSim.Checked;
         m_fq.HasHolds = ckHolds.Checked;
         m_fq.HasIMC = ckIMC.Checked;
+        m_fq.HasAnyInstrument = ckAnyInstrument.Checked;
         m_fq.HasNight = ckNight.Checked;
         m_fq.HasNightLandings = ckNightLandings.Checked;
+        m_fq.HasLandings = ckAnyLandings.Checked;
         m_fq.HasPIC = ckPIC.Checked;
         m_fq.HasSIC = ckSIC.Checked;
+        m_fq.HasTotalTime = ckTotal.Checked;
         m_fq.HasSimIMCTime = ckSimIMC.Checked;
         m_fq.HasXC = ckXC.Checked;
         m_fq.IsPublic = ckPublic.Checked;
