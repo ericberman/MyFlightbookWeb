@@ -378,8 +378,6 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
             SetUpForUser();
             UpdateSavedQueries();
 
-            pnlFlightCharsConjunction.Visible = pnlPropsConjunction.Visible = (util.GetIntParam(Request, "conj", 0) != 0);
-
             mfbTIDateFrom.TextControl.Attributes["onfocus"] = mfbTIDateTo.TextControl.Attributes["onfocus"] = String.Format(CultureInfo.InvariantCulture, "javascript:document.getElementById('{0}').checked = true;", rbCustom.ClientID);
         }
 
