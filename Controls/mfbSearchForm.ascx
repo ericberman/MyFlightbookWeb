@@ -54,7 +54,7 @@
                     </table>
                 </asp:Panel>
                 <p class="header" runat="server" id="TextHeader"><asp:Localize ID="locFreeformText" 
-                        runat="server" Text="Text of flight entry contains" 
+                        runat="server" Text="Text of flight contains" 
                         meta:resourcekey="locFreeformTextResource1"></asp:Localize> 
                     <asp:Label ID="lblTextLabel" runat="server" 
                         meta:resourcekey="lblTextLabelResource1"></asp:Label>:
@@ -225,7 +225,7 @@
                 </asp:Panel>
                 <p class="header" runat="server" id="MakesHeader">
                     <asp:Localize ID="locMakes"
-                        runat="server" Text="Flight was in one of these Makes/Models:"
+                        runat="server" Text="Flight was in one of these models:"
                         meta:resourcekey="locMakesResource1"></asp:Localize>
                     <asp:Label ID="lblMakesLabel" runat="server"
                         meta:resourcekey="lblMakesLabelResource1"></asp:Label>
@@ -245,14 +245,14 @@
                                 </tr>
                             </table>
                             <div>
-                                <asp:Label ID="Label1" runat="server" meta:resourcekey="Label1Resource1" Text="Make/Model contains:"></asp:Label>
+                                <asp:Label ID="Label1" runat="server" meta:resourcekey="Label1Resource1" Text="Model contains:"></asp:Label>
                                 <asp:TextBox ID="txtModelNameText" runat="server" meta:resourcekey="txtModelNameTextResource1"></asp:TextBox>
                             </div>
                         </ContentTemplate>
                     </asp:UpdatePanel>
                 </asp:Panel>
                 <p class="header" runat="server" id="CatClassHeader"><asp:Localize ID="locCatClass" 
-                        runat="server" Text="Flight was in these categories/classes:" 
+                        runat="server" Text="Flight was in one of these categories/classes:" 
                         meta:resourcekey="locCatClassResource1"></asp:Localize> 
                     <asp:Label ID="lblCatClass" runat="server" 
                         meta:resourcekey="lblCatClassResource1"></asp:Label>:</p>
@@ -274,7 +274,7 @@
                 </asp:Panel>
                 <p class="header" runat="server" id="AircraftCharsHeader">
                     <asp:Localize ID="locAircraftCharacteristics" runat="server" 
-                        Text="Flight aircraft had these aircraft characteristics" 
+                        Text="Flight aircraft had these characteristics" 
                         meta:resourcekey="locAircraftCharacteristicsResource1"></asp:Localize> 
                     <asp:Label ID="lblAircraftCharsLabel" runat="server" 
                         meta:resourcekey="lblAircraftCharsLabelResource1"></asp:Label>:</p>

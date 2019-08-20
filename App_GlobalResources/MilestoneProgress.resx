@@ -1268,7 +1268,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} flights in past 12 months in {1}</value>
   </data>
   <data name="DPEInstrument" xml:space="preserve">
-    <value>{0} hours of instrument flight (actual or simulated)</value>
+    <value>{0} PIC hours of instrument flight (actual or simulated)</value>
   </data>
   <data name="DPEInstrumentInstruction" xml:space="preserve">
     <value>{0} hours of instrument instruction</value>
