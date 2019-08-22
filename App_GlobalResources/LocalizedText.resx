@@ -851,7 +851,7 @@
     <value>Please supply a URL reference to a video.</value>
   </data>
   <data name="videoErrUnsupportedFormat" xml:space="preserve">
-    <value>Video source is not surpported</value>
+    <value>Video source is not supported</value>
   </data>
   <data name="videoErrURLNotParseable" xml:space="preserve">
     <value>YouTube URL format is not recognized.</value>
