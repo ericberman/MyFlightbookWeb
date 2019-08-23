@@ -1,15 +1,15 @@
+using MyFlightbook;
+using MyFlightbook.Image;
 using System;
 using System.Globalization;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Text;
-using MyFlightbook;
-using MyFlightbook.Image;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2018 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -108,6 +108,11 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
         {
             litVideoOpenTag.Text = String.Format(CultureInfo.InvariantCulture, "<video width=\"320\" height=\"240\" controls><source src=\"{0}\"  type=\"video/mp4\">", mfbii.ResolveFullImage());
             litVideoCloseTag.Text = "</video>";
+            pnlStatic.Style["max-width"] = "320px";
+        }
+        else if (mfbii.WidthThumbnail > 0)
+        {
+            pnlStatic.Style["max-width"] = img.Width.ToString();
         }
 
         if (mfbii.Location != null)
@@ -131,14 +136,13 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        StringBuilder sbEditComment = new StringBuilder();
+        string szEditComment = @"
+function EditComment(idStatic, idEdit) {
+    document.getElementById(idStatic).style.display = 'none';
+    document.getElementById(idEdit).style.display = 'block';
+}";
 
-        sbEditComment.Append("function EditComment(idStatic, idEdit)\r\n{\r\n");
-        sbEditComment.Append("document.getElementById(idStatic).style.display = 'none';\r\n");
-        sbEditComment.Append("document.getElementById(idEdit).style.display = 'block';\r\n");
-        sbEditComment.Append("}\r\n");
-
-        Page.ClientScript.RegisterClientScriptBlock(GetType(), "EditComment", sbEditComment.ToString(),true);
+        Page.ClientScript.RegisterClientScriptBlock(GetType(), "EditComment", szEditComment, true);
 
         pnlEdit.Visible = CanEdit;  // don't bother with any of the editing panel if you can't edit...
 
