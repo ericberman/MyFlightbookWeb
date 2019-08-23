@@ -600,7 +600,7 @@ WHERE
         public void PopulateImages()
         {
             ImageList il = new ImageList(MFBImageInfo.ImageClass.Aircraft, AircraftID.ToString(CultureInfo.InvariantCulture));
-            il.Refresh(szDefault: DefaultImage);
+            il.Refresh(true, DefaultImage);
             rgImages = il.ImageArray;
         }
         #endregion

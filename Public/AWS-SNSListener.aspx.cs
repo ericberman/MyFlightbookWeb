@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.IO;
-using Newtonsoft;
-using Newtonsoft.Json;
-using AWSNotifications;
-using System.Globalization;
-using MyFlightbook;
+﻿using AWSNotifications;
 using MyFlightbook.Image;
+using Newtonsoft.Json;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Net;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -132,8 +125,7 @@ public partial class Public_AWS_SNSListener : System.Web.UI.Page
 
     protected void btnTestNotify_Click(object sender, EventArgs e)
     {
-        SNSNotification sns = new SNSNotification();
-        sns.Message = txtTestJSONData.Text;
+        SNSNotification sns = new SNSNotification() { Message = txtTestJSONData.Text };
         SendTestPost(JsonConvert.SerializeObject(sns), "Notification");
     }
 }

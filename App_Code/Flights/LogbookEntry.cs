@@ -1313,7 +1313,7 @@ namespace MyFlightbook
             try
             {
                 ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, id.ToString());
-                il.Refresh();
+                il.Refresh(true);
                 foreach (MFBImageInfo mfbii in il.ImageArray)
                     mfbii.DeleteImage();
 

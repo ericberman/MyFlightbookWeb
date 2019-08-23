@@ -216,7 +216,7 @@
         <% =Resources.Aircraft.editAircraftSharedImagesNote %>
     </asp:Panel>
     <uc3:mfbMultiFileUpload ID="mfbMFUAircraftImages" Mode="Ajax" IncludeDocs="false" Class="Aircraft" RefreshOnUpload="true" runat="server" />
-    <uc1:mfbImageList ID="mfbIl" runat="server" CanEdit="true" Columns="4" ImageClass="Aircraft" OnMakeDefault="mfbIl_MakeDefault"
+    <uc1:mfbImageList ID="mfbIl" runat="server" CanEdit="true" Columns="4" ImageClass="Aircraft" OnMakeDefault="mfbIl_MakeDefault" IncludeDocs="true"
         MaxImage="-1" />
 
     <div runat="server" id="rowNotes" style="margin-top: 5px">

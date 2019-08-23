@@ -284,7 +284,7 @@
         <div>
             <uc5:mfbMultiFileUpload ID="mfbMFUFlightImages" Mode="Ajax" Class="Flight" IncludeDocs="false" RefreshOnUpload="true" runat="server"  />
             <br />
-            <uc2:mfbImageList ID="mfbFlightImages" ImageClass="Flight"
+            <uc2:mfbImageList ID="mfbFlightImages" ImageClass="Flight" IncludeDocs="true"
                 runat="server" AltText="Images from flight" CanEdit="true" Columns="4" 
                 MaxImage="-1" />
         </div>

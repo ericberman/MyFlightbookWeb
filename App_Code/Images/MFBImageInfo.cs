@@ -25,7 +25,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -87,9 +87,9 @@ namespace MyFlightbook.Image
         public const int MaxImgHeight = 1600;
         public const int MaxImgWidth = 1600;
 
-        private System.Object lockObject = new System.Object();
-        private static System.Object videoLockObject = new System.Object();
-        private static System.Object idempotencyLock = new System.Object();
+        private readonly System.Object lockObject = new System.Object();
+        private readonly static System.Object videoLockObject = new System.Object();
+        private readonly static System.Object idempotencyLock = new System.Object();
 
         #region Properties
         /// <summary>
@@ -213,11 +213,10 @@ namespace MyFlightbook.Image
                     default:
                     case ImageFileType.JPEG:
                     case ImageFileType.S3VideoMP4:
-                        return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/public/ViewPic.aspx?r={0}&k={1}&t={2}", HttpUtility.UrlEncode(Class.ToString()), HttpUtility.UrlEncode(Key), HttpUtility.UrlEncode(ThumbnailFile)));
                     case ImageFileType.S3PDF:
-                        return PathFullImageS3;
+                        return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/public/ViewPic.aspx?r={0}&k={1}&t={2}", HttpUtility.UrlEncode(Class.ToString()), HttpUtility.UrlEncode(Key), HttpUtility.UrlEncode(ThumbnailFile)));
                     case ImageFileType.PDF:
-                        return PathThumbnail;
+                        return VirtualPathUtility.ToAbsolute(PathThumbnail);
                 }
             }
             set { }
@@ -586,8 +585,7 @@ namespace MyFlightbook.Image
             Info inf = null;
             try
             {
-                inf = new Info(szFile);
-                inf.ImageDescription = Comment;
+                inf = new Info(szFile) { ImageDescription = Comment };
 
                 if (Location != null && Location.IsValid)
                 {
@@ -1227,6 +1225,10 @@ namespace MyFlightbook.Image
             ThumbnailFile = szThumbnail;
             if (szThumbnail.StartsWith(ThumbnailPrefixVideo, StringComparison.OrdinalIgnoreCase))
                 ImageType = ImageFileType.S3VideoMP4;
+            else if (Path.GetExtension(szThumbnail).CompareCurrentCultureIgnoreCase(FileExtensions.PDF) == 0)
+                ImageType = ImageFileType.PDF;
+            else if (Path.GetExtension(szThumbnail).CompareCurrentCultureIgnoreCase(FileExtensions.S3PDF) == 0)
+                ImageType = ImageFileType.S3PDF;
         }
 
         public MFBImageInfo(ImageClass ic, string szKey, HttpPostedFile myFile, string szComment, LatLong ll) : this(ic, szKey)
@@ -1728,7 +1730,7 @@ namespace MyFlightbook.Image
     {
         private const string ContentTypeJPEG = "image/jpeg";
         private const string ContentTypePDF = "application/pdf";
-        private object lockObject = new object();
+        private readonly object lockObject = new object();
 
         #region Constructors
         public AWSS3ImageManager() { }
@@ -1792,9 +1794,11 @@ namespace MyFlightbook.Image
         {
             try
             {
-                DeleteObjectRequest dor = new DeleteObjectRequest();
-                dor.BucketName = AWSConfiguration.CurrentS3Bucket;
-                dor.Key = mfbii.S3Key;
+                DeleteObjectRequest dor = new DeleteObjectRequest()
+                {
+                    BucketName = AWSConfiguration.CurrentS3Bucket,
+                    Key = mfbii.S3Key
+                };
 
                 new Thread(new ThreadStart(() =>
                 {
@@ -1911,14 +1915,16 @@ namespace MyFlightbook.Image
         {
             try
             {
-                PutObjectRequest por = new PutObjectRequest();
-                por.BucketName = AWSConfiguration.CurrentS3Bucket;
-                por.ContentType = mfbii.ImageType == MFBImageInfo.ImageFileType.JPEG ? ContentTypeJPEG : ContentTypePDF;
-                por.AutoCloseStream = true;
-                por.InputStream = new FileStream(mfbii.PhysicalPathFull, FileMode.Open, FileAccess.Read);
-                por.Key = mfbii.S3Key;
-                por.CannedACL = S3CannedACL.PublicRead;
-                por.StorageClass = S3StorageClass.Standard; // vs. reduced
+                PutObjectRequest por = new PutObjectRequest()
+                {
+                    BucketName = AWSConfiguration.CurrentS3Bucket,
+                    ContentType = mfbii.ImageType == MFBImageInfo.ImageFileType.JPEG ? ContentTypeJPEG : ContentTypePDF,
+                    AutoCloseStream = true,
+                    InputStream = new FileStream(mfbii.PhysicalPathFull, FileMode.Open, FileAccess.Read),
+                    Key = mfbii.S3Key,
+                    CannedACL = S3CannedACL.PublicRead,
+                    StorageClass = S3StorageClass.Standard // vs. reduced
+                };
 
                 if (fSynchronous)
                     MoveByRequest(por, mfbii);
