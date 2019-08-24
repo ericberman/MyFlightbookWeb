@@ -290,6 +290,7 @@ namespace MyFlightbook.Achievements
             NumberOfContinents,
             FlyingStreak,
             NumberOfCatClasses,
+            NumberOfNVHours,
 
             Antarctica = BadgeCategory.Miscellaneous,
 
@@ -683,7 +684,8 @@ namespace MyFlightbook.Achievements
                     new MultiLevelBadgeSICTime(),
                     new MultiLevelBadgeCFITime(),
                     new MultiLevelBadgeIMCTime(),
-                    new MultiLevelBadgeNightTime()
+                    new MultiLevelBadgeNightTime(),
+                    new MultiLevelBadgeNightVision()
                 };
 
             List<Badge> lst = new List<Badge>(rgAchievements);
@@ -1168,6 +1170,20 @@ namespace MyFlightbook.Achievements
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
             AddToCount(cfr.Night, cfr);
+        }
+    }
+
+    [Serializable]
+    public class MultiLevelBadgeNightVision : MultiLevelCountBadgeBase
+    {
+        public MultiLevelBadgeNightVision() : base(BadgeID.NumberOfNVHours, Resources.Achievements.nameNumberNVHours, 100, 500, 1000, 2000) { }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException("cfr");
+
+            AddToCount(cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropNVFLIRTime) + cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropNVGoggleTime), cfr);
         }
     }
 

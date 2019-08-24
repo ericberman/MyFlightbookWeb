@@ -378,4 +378,7 @@
   <data name="nameNumberCatClass" xml:space="preserve">
     <value>Flown {0} distinct category/classes of aircraft!</value>
   </data>
+  <data name="nameNumberNVHours" xml:space="preserve">
+    <value>{0:#,###} NV (Goggles or FLIR) hours logged!</value>
+  </data>
 </root>
