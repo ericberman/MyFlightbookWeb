@@ -248,7 +248,12 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         mfbChartTotals1.SourceData = mfbLogbook1.Data;  // do this every time.
     }
 
-    protected bool IsNewFlight { get; set; }
+    private const string szVSNewFlight = "viewStateNewFlight";
+    protected bool IsNewFlight
+    {
+        get { return ViewState[szVSNewFlight] == null ? false : (bool)ViewState[szVSNewFlight]; }
+        set { ViewState[szVSNewFlight] = value; }
+    }
 
     protected void SetUpForFlight(int idFlight)
     {
