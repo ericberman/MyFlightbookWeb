@@ -831,6 +831,15 @@ namespace MyFlightbook
             return true;
         }
 
+        protected static void CacheProfile(PersistedProfile pf)
+        {
+            if (pf == null || String.IsNullOrEmpty(pf.UserName))
+                return;
+
+            // Cache this for 30 minutes
+            HttpRuntime.Cache.Add(GetCacheKey(pf.UserName), pf, null, DateTime.Now.AddMinutes(30), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+        }
+
         public Boolean FCommit()
         {
             string szQ = "";
@@ -883,7 +892,7 @@ namespace MyFlightbook
             {
                 szErr = "";
                 // save the updated object into the cache
-                HttpRuntime.Cache[GetCacheKey(this.UserName)] = this;
+                CacheProfile(this);
             }
             else
             {
@@ -945,7 +954,7 @@ namespace MyFlightbook
             LoadUserFromDB(szUser, (dr) =>
             {
                 InitFromDataReader(dr);
-                HttpRuntime.Cache[GetCacheKey(szUser)] = this; // update the cache with this object
+                CacheProfile(this);
                 fResult = true;
             });
 
@@ -977,7 +986,7 @@ namespace MyFlightbook
             if (pf == null)
             {
                 LoadUserFromDB(name, (dr) => { pf = new Profile(dr); });
-                HttpRuntime.Cache[GetCacheKey(name)] = pf;
+                CacheProfile(pf);
             }
             return pf;
         }
