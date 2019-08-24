@@ -67,8 +67,9 @@ public partial class Controls_mfbFlightContextMenu : UserControl
 
                 string szEdit = String.Format(CultureInfo.InvariantCulture, EditTargetFormatString, value.FlightID);
                 lnkEditThisFlight.NavigateUrl = szEdit;
-                lnkClone.NavigateUrl = szEdit + "?Clone=1";
-                lnkReverse.NavigateUrl = szEdit + "?Clone=1&Reverse=1";
+                string szJoin = szEdit.Contains("?") ? "&" : "?";
+                lnkClone.NavigateUrl = szEdit + szJoin + "Clone=1";
+                lnkReverse.NavigateUrl = szEdit + szJoin + "Clone=1&Reverse=1";
                 lnkRequestSignature.NavigateUrl = String.Format(CultureInfo.InvariantCulture, SignTargetFormatString, value.FlightID);
             }
         }

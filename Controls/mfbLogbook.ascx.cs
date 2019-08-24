@@ -190,6 +190,30 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         set { ViewState[szKeylastSortDir + ID] = value; }
     }
 
+    /// <summary>
+    /// Parameters to add to edit link to preserve context on return.
+    /// </summary>
+    protected string EditContextParams
+    {
+        get
+        {
+            List<string> lstParams = new List<string>();
+            if (!Restriction.IsDefault)
+                lstParams.Add(String.Format(CultureInfo.InvariantCulture, "fq={0}", HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString())));
+            if (HasPrevSort)
+            {
+                if (!String.IsNullOrEmpty(LastSortExpr))
+                    lstParams.Add(String.Format(CultureInfo.InvariantCulture, "se={0}", HttpUtility.UrlEncode(LastSortExpr.ToString())));
+                if (LastSortDir != SortDirection.Descending || !String.IsNullOrEmpty(LastSortExpr))
+                    lstParams.Add(String.Format(CultureInfo.InvariantCulture, "so={0}", LastSortDir.ToString()));
+            }
+            if (gvFlightLogs.PageIndex != 0)
+                lstParams.Add(String.Format(CultureInfo.InvariantCulture, "pg={0}", gvFlightLogs.PageIndex));
+
+            return String.Join("&", lstParams);
+        }
+    }
+
     protected MyFlightbook.Profile Pilot
     {
         get { return m_pfPilot ?? (m_pfPilot = MyFlightbook.Profile.GetUser(this.User)); }
@@ -381,6 +405,11 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     /// </summary>
     public void RefreshData()
     {
+        // Reset any cached paging/sorting
+        LastSortDir = SortDirection.Descending;
+        LastSortExpr = string.Empty;
+        gvFlightLogs.PageIndex = 0;
+
         FlushCache();
         BindData(Data);
         RefreshNumFlights();
@@ -433,6 +462,20 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
             ckIncludeImages.Checked = m_showImagesInline;
             rblShowInPages.Checked = gvFlightLogs.AllowPaging;
             rblShowAll.Checked = !rblShowInPages.Checked;
+
+            // Refresh state from params.  
+            // fq is handled at the host level.
+            string szLastSort = util.GetStringParam(Request, "so");
+            SortDirection sortDirection;
+            if (!String.IsNullOrEmpty(szLastSort) && Enum.TryParse<SortDirection>(szLastSort, true, out sortDirection))
+                LastSortDir = sortDirection;
+            string szSortExpr = util.GetStringParam(Request, "se");
+            if (!String.IsNullOrEmpty(szSortExpr))
+                LastSortExpr = szSortExpr;
+            gvFlightLogs.PageIndex = util.GetIntParam(Request, "pg", gvFlightLogs.PageIndex);
+
+            if (!String.IsNullOrEmpty(LastSortExpr) || gvFlightLogs.PageIndex > 0)
+                SortGridview(gvFlightLogs, Data as List<LogbookEntryDisplay>);
         }
 
         if (!HasBeenBound)
@@ -490,16 +533,23 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         return String.Format(CultureInfo.InvariantCulture, AnalysisPageUrlFormatString, idFlight);
     }
 
-    protected string EditPath(object idFlight)
-    {
-        return String.Format(CultureInfo.InvariantCulture, EditPageUrlFormatString, idFlight);
-    }
-
     protected string PublicPath(object idFlight)
     {
         return String.Format(CultureInfo.InvariantCulture, PublicPageUrlFormatString, idFlight);
     }
     #endregion
+
+    protected void SortGridview(GridView gv, List<LogbookEntryDisplay> lst)
+    {
+        if (!String.IsNullOrEmpty(LastSortExpr))
+        {
+            foreach (DataControlField dcf in gv.Columns)
+                dcf.HeaderStyle.CssClass = "headerBase" + ((dcf.SortExpression.CompareCurrentCultureIgnoreCase(LastSortExpr) == 0) ? (LastSortDir == SortDirection.Ascending ? " headerSortAsc" : " headerSortDesc") : string.Empty);
+        }
+
+        LogbookEntryDisplay.SortLogbook(lst, LastSortExpr, LastSortDir);
+        BindData(lst);
+    }
 
     protected void gvFlightLogs_Sorting(Object sender, GridViewSortEventArgs e)
     {
@@ -519,19 +569,13 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
                 SortDirection PrevSortDir = LastSortDir;
 
                 if (PrevSortExpr == e.SortExpression)
-                {
                     e.SortDirection = (PrevSortDir == SortDirection.Ascending) ? SortDirection.Descending : SortDirection.Ascending;
-                }
             }
 
             LastSortExpr = e.SortExpression;
             LastSortDir = e.SortDirection;
 
-            foreach (DataControlField dcf in gv.Columns)
-                dcf.HeaderStyle.CssClass = "headerBase" + ((dcf.SortExpression.CompareCurrentCultureIgnoreCase(e.SortExpression) == 0) ? (e.SortDirection == SortDirection.Ascending ? " headerSortAsc" : " headerSortDesc") : string.Empty);
-
-            LogbookEntryDisplay.SortLogbook(lst, LastSortExpr, LastSortDir);
-            BindData();
+            SortGridview(gv, lst);
         }
     }
 
@@ -562,7 +606,10 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
 
             // Wire up the drop-menu.  We have to do this here because it is an iNamingContainer and can't access the gridviewrow
             Controls_mfbFlightContextMenu cm = (Controls_mfbFlightContextMenu)e.Row.FindControl("popmenu1").FindControl("mfbFlightContextMenu");
-            cm.EditTargetFormatString = EditPageUrlFormatString;
+
+            string szEditContext = EditContextParams;
+
+            cm.EditTargetFormatString = (EditPageUrlFormatString == null) ? string.Empty : (EditPageUrlFormatString + (String.IsNullOrEmpty(szEditContext) ? string.Empty : (EditPageUrlFormatString.Contains("?") ? "&" : "?" + szEditContext)));
             cm.Flight = le;
 
             if (Pilot != null && Pilot.AchievementStatus == MyFlightbook.Achievements.Achievement.ComputeStatus.UpToDate)

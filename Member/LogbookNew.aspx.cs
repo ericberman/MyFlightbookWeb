@@ -248,12 +248,14 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         mfbChartTotals1.SourceData = mfbLogbook1.Data;  // do this every time.
     }
 
+    protected bool IsNewFlight { get; set; }
+
     protected void SetUpForFlight(int idFlight)
     {
-        bool fIsNew = (idFlight == LogbookEntry.idFlightNew);
+        IsNewFlight = (idFlight == LogbookEntry.idFlightNew);
         mfbEditFlight1.SetUpNewOrEdit(idFlight);
-        mfbEditFlight1.CanCancel = !fIsNew;
-        pnlAccordionMenuContainer.Visible = mfbLogbook1.Visible = fIsNew;
+        mfbEditFlight1.CanCancel = !IsNewFlight;
+        pnlAccordionMenuContainer.Visible = mfbLogbook1.Visible = pnlFilter.Visible = IsNewFlight;
     }
 
     protected void ResolvePrintLink()
@@ -275,7 +277,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         if (mfbTotalSummary1.Visible)
             mfbTotalSummary1.CustomRestriction = Restriction;
         ResolvePrintLink();
-        pnlFilter.Visible = !fRestrictionIsDefault;
+        pnlFilter.Visible = !fRestrictionIsDefault && IsNewFlight;
         mfbQueryDescriptor1.DataSource = fRestrictionIsDefault ? null : Restriction;
         apcFilter.LabelControl.Font.Bold = !fRestrictionIsDefault;
         apcFilter.IsEnhanced = !fRestrictionIsDefault;
@@ -333,13 +335,13 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         if (Request[szParamIDFlight] != null || SocialNetworkAuthorization.RedirectList.Count > 0)
             Response.Redirect(SocialNetworkAuthorization.PopRedirect(Master.IsMobileSession() ? SocialNetworkAuthorization.DefaultRedirPageMini : SocialNetworkAuthorization.DefaultRedirPage));
         else
-            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", util.GetStringParam(Request, "ft").CompareCurrentCultureIgnoreCase("Add") == 0 ? "?ft=Add" : string.Empty), true);
+            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", Request.Url.Query), true);
     }
 
     protected void mfbEditFlight1_FlightEditCanceled(object sender, EventArgs e)
     {
         // Redirect back to eliminate the ID of the flight in the URL.
-        Response.Redirect("~/Member/Logbooknew.aspx", true);
+        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", Request.Url.Query), true);
     }
 
     protected void PrintOptions1_OptionsChanged(object sender, PrintingOptionsEventArgs e)
