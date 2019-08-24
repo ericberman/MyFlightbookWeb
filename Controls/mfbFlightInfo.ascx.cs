@@ -114,6 +114,7 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
             }
             ckIncludeHeliports.Checked = afo.IncludeHeliports;
             ckEstimateNight.Checked = afo.AutoSynthesizePath;
+            ckRoundNearest10th.Checked = afo.RoundToTenth;
             rblNightCriteria.SelectedValue = afo.Night.ToString();
             rblNightLandingCriteria.SelectedValue = afo.NightLanding.ToString();
         }
@@ -208,6 +209,7 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
                 AutoSynthesizePath = ckEstimateNight.Checked,
                 Night = (AutoFillOptions.NightCritera) Enum.Parse(typeof(AutoFillOptions.NightCritera), rblNightCriteria.SelectedValue, true),
                 NightLanding = (AutoFillOptions.NightLandingCriteria)Enum.Parse(typeof(AutoFillOptions.NightLandingCriteria), rblNightLandingCriteria.SelectedValue, true),
+                RoundToTenth = ckRoundNearest10th.Checked,
                 IgnoreErrors = true
             };
 

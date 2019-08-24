@@ -166,6 +166,12 @@
                                                 </div>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td><asp:CheckBox ID="ckRoundNearest10th" runat="server" /></td>
+                                            <td>
+                                                <asp:Label ID="lblRoundNearest10th" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionRound10th %>" AssociatedControlID="ckRoundNearest10th"></asp:Label>
+                                            </td>
+                                        </tr>
                                     </table>
                                 </div>
                                 <div style="float:left; padding:3px; margin-left: 3px; border-left: 1px solid black">

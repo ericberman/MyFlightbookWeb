@@ -1366,7 +1366,7 @@
     <value>Request is for scopes that the service is not authorized to have.</value>
   </data>
   <data name="AutofillOptionEstimateNight" xml:space="preserve">
-    <value>Estimate Night Flight</value>
+    <value>Estimate Night</value>
   </data>
   <data name="AutofillOptionIncludeHeliports" xml:space="preserve">
     <value>Include Heliports</value>
@@ -1512,5 +1512,8 @@
   <data name="NonBreakingSpace" xml:space="preserve">
     <value>&amp;nbsp;</value>
     <comment>DO NOT LOCALIZE</comment>
+  </data>
+  <data name="AutofillOptionRound10th" xml:space="preserve">
+    <value>Use nearest 10th/hour</value>
   </data>
 </root>

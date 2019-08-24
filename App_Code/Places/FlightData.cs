@@ -313,6 +313,7 @@ namespace MyFlightbook.Telemetry
         private const string keyCookieEstimateNight = "autoFillEstimateNight";
         private const string keyCookieNightDef = "autoFillNightDefinition";
         private const string keyCookieNightLandingDef = "autoFillNightLandingDef";
+        private const string keyCookieRoundToTenth = "autoFillRound10th";
 
         #region Constructors
         public AutoFillOptions()
@@ -348,6 +349,11 @@ namespace MyFlightbook.Telemetry
                     estimateNight = true;
                 AutoSynthesizePath = estimateNight;
 
+                bool roundTo10th;
+                if (cookies[keyCookieRoundToTenth] == null || !bool.TryParse(cookies[keyCookieRoundToTenth].Value, out roundTo10th))
+                    roundTo10th = false;
+                RoundToTenth = roundTo10th;
+
                 AutoFillOptions.NightCritera nightCritera;
                 if (cookies[keyCookieNightDef] == null || !Enum.TryParse<AutoFillOptions.NightCritera>(cookies[keyCookieNightDef].Value, out nightCritera))
                     nightCritera = AutoFillOptions.NightCritera.EndOfCivilTwilight;
@@ -371,6 +377,7 @@ namespace MyFlightbook.Telemetry
             cookies[keyCookieEstimateNight].Value = AutoSynthesizePath.ToString(CultureInfo.InvariantCulture);
             cookies[keyCookieNightDef].Value = Night.ToString();
             cookies[keyCookieNightLandingDef].Value = NightLanding.ToString();
+            cookies[keyCookieRoundToTenth].Value = RoundToTenth.ToString();
 
             cookies[keyCookieSpeed].Expires =
                 cookies[keyCookieHeliport].Expires =
@@ -459,6 +466,11 @@ namespace MyFlightbook.Telemetry
         /// True by default.
         /// </summary>
         public bool AutoSynthesizePath { get; set; }
+
+        /// <summary>
+        /// Indicates whether auto-fill times should be rounded to the nearest 10th of an hour
+        /// </summary>
+        public bool RoundToTenth { get; set; }
         #endregion
 
         #region testing for night, night landings
@@ -1543,12 +1555,12 @@ namespace MyFlightbook.Telemetry
             /// <summary>
             /// Fills in the remaining fields that you can't fill in until you've seen all samples (or at least for which it is redundant to do so!)
             /// </summary>
-            public void FinalizeFlight()
+            public void FinalizeFlight(AutoFillOptions opt)
             {
                 string szNewRoute = RouteSoFar.ToString().Trim();
                 if (!String.IsNullOrEmpty(szNewRoute))
                     ActiveFlight.Route = szNewRoute;
-                ActiveFlight.Nighttime = Convert.ToDecimal(Math.Round(TotalNight, 2));
+                ActiveFlight.Nighttime = Convert.ToDecimal(Math.Round(TotalNight, opt.RoundToTenth ? 1 : 2));
             }
         }
 
@@ -1649,14 +1661,14 @@ namespace MyFlightbook.Telemetry
                         dr[KnownColumnNames.SPEED] = dSaved;
                 }
 
-                afc.FinalizeFlight();
+                afc.FinalizeFlight(opt);
             }
 
             // Auto hobbs and auto totals.
             le.AutoTotals(opt);
             le.AutoHobbs(opt);
 
-            le.TotalFlightTime = Math.Round(le.TotalFlightTime, 2);
+            le.TotalFlightTime = Math.Round(le.TotalFlightTime, opt.RoundToTenth ? 1 : 2);
 
             le.AutoFillFinish(opt);
 
