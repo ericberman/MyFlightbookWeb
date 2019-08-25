@@ -114,6 +114,15 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
         }
     }
 
+    protected void EditPendingFlightInList(PendingFlight pendingFlight, List<PendingFlight> lst)
+    {
+        mvPendingFlights.SetActiveView(vwEdit);
+        mfbEditFlight.SetPendingFlight(pendingFlight);
+        int index = lst.IndexOf(pendingFlight);
+        mfbEditFlight.SetNextFlight(index > 0 ? index - 1 : LogbookEntry.idFlightNone);
+        mfbEditFlight.SetPrevFlight(index < lst.Count - 1 ? index : LogbookEntry.idFlightNone); // since save will ultimately remove this from the list.
+    }
+
     protected void gvPendingFlights_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         if (e == null)
@@ -141,10 +150,7 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
             gvPendingFlights.DataBind();
         }
         else if (String.Compare(e.CommandName, "_Edit", StringComparison.OrdinalIgnoreCase) == 0)
-        {
-            mvPendingFlights.SetActiveView(vwEdit);
-            mfbEditFlight.SetPendingFlight(pendingFlight);
-        }
+            EditPendingFlightInList(pendingFlight, lst);
     }
 
     protected void mfbEditFlight_FlightEditCanceled(object sender, EventArgs e)
@@ -152,10 +158,16 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
         mvPendingFlights.SetActiveView(vwList);
     }
 
-    protected void mfbEditFlight_FlightUpdated(object sender, EventArgs e)
+    protected void mfbEditFlight_FlightUpdated(object sender, LogbookEventArgs e)
     {
         Refresh();
         mvPendingFlights.SetActiveView(vwList);
+        if (e.IDNextFlight >= 0)
+        {
+            List<PendingFlight> lst = new List<PendingFlight>(Flights);
+            PendingFlight pf = lst[e.IDNextFlight];
+            EditPendingFlightInList(pf, lst);
+        }
     }
 
     protected void lnkDeleteAll_Click(object sender, EventArgs e)

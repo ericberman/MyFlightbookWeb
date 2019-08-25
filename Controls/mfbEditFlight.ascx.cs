@@ -214,6 +214,9 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         SetUpNewOrEdit(pendingFlight.FlightID);
         hdnPendingID.Value = pendingFlight.PendingID;
         InitFormFromLogbookEntry(pendingFlight);
+        // Change next/previous wording to match the fact that pending flights, kinda by definition, can't be updated.
+        lnkUpdateNext.Text = Resources.LocalizedText.EditFlightAddFlightNext;
+        lnkUpdatePrev.Text = Resources.LocalizedText.EditFlightAddFlightPrev;
     }
 
     private void AutoExpandLandings(LogbookEntry le)
@@ -653,7 +656,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         return idResult;
     }
 
-    protected void btnAddFlight_Click(object sender, EventArgs e)
+    protected void CommitFlight(object sender, int nextFlightToEdit)
     {
         // Save the state of the full-stop landings expansion
         Request.Cookies.Add(new HttpCookie(keyCookieExpandFSLandings, Convert.ToBoolean(cpeLandingDetails.ClientState, CultureInfo.InvariantCulture) ? string.Empty : "y"));
@@ -663,8 +666,58 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         if (idResult >= 0)
         {
             if (FlightUpdated != null)
-                FlightUpdated(sender, new LogbookEventArgs(idResult));
+                FlightUpdated(sender, new LogbookEventArgs(idResult, nextFlightToEdit));
         }
+    }
+
+    protected void btnAddFlight_Click(object sender, EventArgs e)
+    {
+        CommitFlight(sender, LogbookEntry.idFlightNone);
+    }
+
+
+    protected void lnkUpdateNext_Click(object sender, EventArgs e)
+    {
+        CommitFlight(sender, Convert.ToInt32(hdnNextID.Value, CultureInfo.InvariantCulture));
+    }
+
+    protected void lnkUpdatePrev_Click(object sender, EventArgs e)
+    {
+        CommitFlight(sender, Convert.ToInt32(hdnPrevID.Value, CultureInfo.InvariantCulture));
+    }
+
+    public void SetNextFlight(int idFlight)
+    {
+        if (idFlight == LogbookEntry.idFlightNone)
+        {
+            divUpdateNext.Visible = false;
+            hdnNextID.Value = string.Empty;
+        }
+        else
+        {
+            popmenuCommitAndNavigate.Visible = true;    // so that the next line can work
+            divUpdateNext.Visible = true;
+            hdnNextID.Value = idFlight.ToString(CultureInfo.InvariantCulture);
+        }
+
+        popmenuCommitAndNavigate.Visible = divUpdateNext.Visible || divUpdatePrev.Visible;
+    }
+
+    public void SetPrevFlight(int idFlight)
+    {
+        if (idFlight == LogbookEntry.idFlightNone)
+        {
+            divUpdatePrev.Visible = false;
+            hdnPrevID.Value = string.Empty;
+        }
+        else
+        {
+            popmenuCommitAndNavigate.Visible = true;    // so that the next line can work.
+            divUpdatePrev.Visible = true;
+            hdnPrevID.Value = idFlight.ToString(CultureInfo.InvariantCulture);
+        }
+
+        popmenuCommitAndNavigate.Visible = divUpdateNext.Visible || divUpdatePrev.Visible;
     }
 
     protected void btnAddPending_Click(object sender, EventArgs e)
@@ -746,5 +799,6 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
     {
         InitFormFromLogbookEntry(InitLogbookEntryFromForm());
     }
+
 }
 

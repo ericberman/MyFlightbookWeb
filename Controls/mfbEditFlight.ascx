@@ -11,7 +11,7 @@
 <%@ Register src="mfbFlightProperties.ascx" tagname="mfbFlightProperties" tagprefix="uc10" %>
 <%@ Register src="mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc14" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
-
+<%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
 <asp:Panel ID="pnlContainer" runat="server" DefaultButton="btnAddFlight" 
     meta:resourcekey="pnlContainerResource1">
     <asp:Panel ID="pnlFlightInfo" runat="server" CssClass="flightinfoblock" 
@@ -333,6 +333,16 @@
             <asp:Button ID="btnAddFlight" runat="server" Text="Add Flight" 
                 OnClick="btnAddFlight_Click" TabIndex="31" 
                 meta:resourcekey="btnAddFlightResource1"/>
+            <uc1:popmenu runat="server" ID="popmenuCommitAndNavigate" Visible="false">
+                <MenuContent>
+                    <div style="text-align:left">
+                        <div runat="server" id="divUpdateNext" visible="false" style="margin: 3px;"><asp:Label ID="LocNext" runat="server" Font-Names="Arial" Font-Size="Larger" Text="<%$ ResourceS:LogbookEntry, NextFlight %>" />&nbsp;<asp:LinkButton ID="lnkUpdateNext" runat="server" Text="<%$ Resources:LocalizedText, EditFlightUpdateFlightNext %>" OnClick="lnkUpdateNext_Click"></asp:LinkButton></div>
+                        <div runat="server" id="divUpdatePrev" visible="false" style="margin: 3px;"><asp:Label ID="LocPrev" runat="server" Font-Names="Arial" Font-Size="Larger" Text="<%$ ResourceS:LogbookEntry, PreviousFlight %>" />&nbsp;<asp:LinkButton ID="lnkUpdatePrev" runat="server" Text="<%$ Resources:LocalizedText, EditFlightUpdateFlightPrev %>" OnClick="lnkUpdatePrev_Click"></asp:LinkButton></div>
+                    </div>
+                </MenuContent>
+            </uc1:popmenu>
+            <asp:HiddenField ID="hdnNextID" runat="server" />
+            <asp:HiddenField ID="hdnPrevID" runat="server" />
         </div>
         <div><asp:Label ID="lblError" runat="server" CssClass="error" 
             EnableViewState="False" meta:resourcekey="lblErrorResource1"></asp:Label>

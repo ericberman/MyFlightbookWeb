@@ -214,6 +214,28 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         }
     }
 
+    /// <summary>
+    /// Finds the ID's of the flights immediately adjacent to the specified flight ID in the list (given its current sort order and restriction)
+    /// </summary>
+    /// <param name="idFlight">The ID of the flight whose neighbors are being sought</param>
+    /// <param name="idPrev">The ID (if any) of the previous flight in the list</param>
+    /// <param name="idNext">The ID (if any) of the next flight in the list.</param>
+    public void GetNeighbors(int idFlight, out int idPrev, out int idNext)
+    {
+        idPrev = idNext = LogbookEntry.idFlightNone;
+
+        List<LogbookEntryDisplay> lst = Data as List<LogbookEntryDisplay>;
+        if (lst == null)
+            return;
+
+        int index = lst.FindIndex(led => led.FlightID == idFlight);
+
+        if (index > 0)
+            idNext = lst[index - 1].FlightID;
+        if (index < lst.Count - 1)
+            idPrev = lst[index + 1].FlightID;
+    }
+
     protected MyFlightbook.Profile Pilot
     {
         get { return m_pfPilot ?? (m_pfPilot = MyFlightbook.Profile.GetUser(this.User)); }

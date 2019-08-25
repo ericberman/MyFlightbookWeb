@@ -248,16 +248,22 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         mfbChartTotals1.SourceData = mfbLogbook1.Data;  // do this every time.
     }
 
-    private const string szVSNewFlight = "viewStateNewFlight";
+    private const string szVSFlightID = "vsFlightID";
+
+    protected int FlightID
+    {
+        get { return ViewState[szVSFlightID] == null ? LogbookEntry.idFlightNone : (int)ViewState[szVSFlightID]; }
+        set { ViewState[szVSFlightID] = value; }
+    }
+
     protected bool IsNewFlight
     {
-        get { return ViewState[szVSNewFlight] == null ? false : (bool)ViewState[szVSNewFlight]; }
-        set { ViewState[szVSNewFlight] = value; }
+        get { return FlightID == LogbookEntry.idFlightNew; }
     }
 
     protected void SetUpForFlight(int idFlight)
     {
-        IsNewFlight = (idFlight == LogbookEntry.idFlightNew);
+        FlightID = idFlight;
         mfbEditFlight1.SetUpNewOrEdit(idFlight);
         mfbEditFlight1.CanCancel = !IsNewFlight;
         pnlAccordionMenuContainer.Visible = mfbLogbook1.Visible = pnlFilter.Visible = IsNewFlight;
@@ -286,6 +292,14 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         mfbQueryDescriptor1.DataSource = fRestrictionIsDefault ? null : Restriction;
         apcFilter.LabelControl.Font.Bold = !fRestrictionIsDefault;
         apcFilter.IsEnhanced = !fRestrictionIsDefault;
+
+        if (!IsNewFlight)
+        {
+            int prevFlightID, nextFlightID;
+            mfbLogbook1.GetNeighbors(FlightID, out prevFlightID, out nextFlightID);
+            mfbEditFlight1.SetPrevFlight(prevFlightID);
+            mfbEditFlight1.SetNextFlight(nextFlightID);
+        }
 
         mfbQueryDescriptor1.DataBind();
     }
@@ -332,13 +346,18 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         UpdateQuery();
     }
 
-    protected void mfbEditFlight1_FlightUpdated(object sender, EventArgs e)
+    protected void mfbEditFlight1_FlightUpdated(object sender, LogbookEventArgs e)
     {
+        if (e == null)
+            throw new ArgumentNullException("e");
+
         // if we had been editing a flight do a redirect so we have a clean URL
         // OR if there are pending redirects, do them.
         // Otherwise, just clean the page.
         if (Request[szParamIDFlight] != null || SocialNetworkAuthorization.RedirectList.Count > 0)
             Response.Redirect(SocialNetworkAuthorization.PopRedirect(Master.IsMobileSession() ? SocialNetworkAuthorization.DefaultRedirPageMini : SocialNetworkAuthorization.DefaultRedirPage));
+        else if (e.IDNextFlight != LogbookEntry.idFlightNone)
+            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}{1}", e.IDNextFlight, Request.Url.Query), true);
         else
             Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", Request.Url.Query), true);
     }

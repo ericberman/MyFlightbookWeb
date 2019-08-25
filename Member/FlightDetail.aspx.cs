@@ -325,6 +325,8 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             UpdateChart();
         }
 
+        if (Restriction != null && !Restriction.IsDefault)
+            mfbFlightContextMenu.EditTargetFormatString = mfbFlightContextMenu.EditTargetFormatString + "?fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString());
         mfbFlightContextMenu.Flight = CurrentFlight;
 
         cmbAltUnits.SelectedValue = ((int) m_fd.AltitudeUnits).ToString(CultureInfo.InvariantCulture);

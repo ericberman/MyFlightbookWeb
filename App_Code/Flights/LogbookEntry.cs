@@ -3568,15 +3568,21 @@ namespace MyFlightbook
 
         public LogbookEntry Flight {get; set;}
 
+        /// <summary>
+        /// If there is a flight to which we should navigate, this includes it.
+        /// </summary>
+        public int IDNextFlight { get; set; }
+
         public LogbookEventArgs() : base()
         {
-            FlightID = LogbookEntry.idFlightNone;
+            FlightID = IDNextFlight = LogbookEntry.idFlightNone;
             Flight = null;
         }
 
-        public LogbookEventArgs(int idFlight) : this()
+        public LogbookEventArgs(int idFlight, int idNextFlight = LogbookEntry.idFlightNone) : this()
         {
             FlightID = idFlight;
+            IDNextFlight = idNextFlight;
         }
 
         public LogbookEventArgs(LogbookEntry le) : this()

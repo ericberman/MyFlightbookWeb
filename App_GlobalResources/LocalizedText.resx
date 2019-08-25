@@ -1516,4 +1516,16 @@
   <data name="AutofillOptionRound10th" xml:space="preserve">
     <value>Use nearest 10th/hour</value>
   </data>
+  <data name="EditFlightAddFlightNext" xml:space="preserve">
+    <value>Add and Review Next</value>
+  </data>
+  <data name="EditFlightAddFlightPrev" xml:space="preserve">
+    <value>Add and Review Previous</value>
+  </data>
+  <data name="EditFlightUpdateFlightNext" xml:space="preserve">
+    <value>Update and Edit Next</value>
+  </data>
+  <data name="EditFlightUpdateFlightPrev" xml:space="preserve">
+    <value>Update and Edit Previous</value>
+  </data>
 </root>
