@@ -5,4 +5,5 @@
     <asp:PlaceHolder ID="plcMenuContent" runat="server"></asp:PlaceHolder>
 </asp:Panel>
 <asp:dropshadowextender ID="DropShadowExtender1" runat="server" TargetControlID="pnlMenuContent" Opacity=".5"></asp:dropshadowextender>
-<asp:HoverMenuExtender ID="HoverMenuExtender1" HoverCssClass="hoverPopMenu" runat="server" TargetControlID="imgPop" PopupControlID="pnlMenuContent" PopupPosition="Bottom"></asp:HoverMenuExtender>
+<asp:HoverMenuExtender ID="hme" HoverCssClass="hoverPopMenu" runat="server" TargetControlID="imgPop" PopupControlID="pnlMenuContent" PopupPosition="Bottom"></asp:HoverMenuExtender>
+<% =SafariHackScript %>

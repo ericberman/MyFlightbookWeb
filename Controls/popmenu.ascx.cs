@@ -21,17 +21,29 @@ public partial class Controls_popmenu : System.Web.UI.UserControl, INamingContai
 
     public int OffsetX
     {
-        get { return HoverMenuExtender1.OffsetX; }
-        set { HoverMenuExtender1.OffsetX = value; }
+        get { return hme.OffsetX; }
+        set { hme.OffsetX = value; }
     }
 
     public int OffsetY
     {
-        get { return HoverMenuExtender1.OffsetY; }
-        set { HoverMenuExtender1.OffsetY = value; }
+        get { return hme.OffsetY; }
+        set { hme.OffsetY = value; }
     }
 
     public PlaceHolder Container { get { return plcMenuContent; } }
+
+    protected string SafariHackScript
+    {
+        get
+        {
+            // Issue #362: if you navigate away on Safari with a pop-up still visible, then it remains (permanently) visible upon hitting the back button.
+            // So, we hide it on page unload.
+            if (Request.UserAgent.ToUpperInvariant().Contains("SAFARI"))
+                return String.Format(System.Globalization.CultureInfo.InvariantCulture, "<script type=\"text/javascript\">window.addEventListener('beforeunload', function (e) {{ document.getElementById('{0}').style.display = 'none'; e.returnValue = '';}});</script>", pnlMenuContent.ClientID);
+            return string.Empty;
+        }
+    }
 
     protected override void OnInit(EventArgs e)
     {
