@@ -215,7 +215,7 @@
         <asp:Label ID="locImageNote" runat="server" Text="<%$ Resources:LocalizedText, Note %>" Font-Bold="True"></asp:Label>
         <% =Resources.Aircraft.editAircraftSharedImagesNote %>
     </asp:Panel>
-    <uc3:mfbMultiFileUpload ID="mfbMFUAircraftImages" Mode="Ajax" IncludeDocs="false" Class="Aircraft" RefreshOnUpload="true" runat="server" />
+    <uc3:mfbMultiFileUpload ID="mfbMFUAircraftImages" Mode="Ajax" IncludeDocs="true" Class="Aircraft" RefreshOnUpload="true" runat="server" />
     <uc1:mfbImageList ID="mfbIl" runat="server" CanEdit="true" Columns="4" ImageClass="Aircraft" OnMakeDefault="mfbIl_MakeDefault" IncludeDocs="true"
         MaxImage="-1" />
 

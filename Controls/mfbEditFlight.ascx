@@ -282,7 +282,7 @@
                 Text="" meta:resourcekey="lblPixForFlightResource1"></asp:Label>
         </div>
         <div>
-            <uc5:mfbMultiFileUpload ID="mfbMFUFlightImages" Mode="Ajax" Class="Flight" IncludeDocs="false" RefreshOnUpload="true" runat="server"  />
+            <uc5:mfbMultiFileUpload ID="mfbMFUFlightImages" Mode="Ajax" Class="Flight" IncludeDocs="true" RefreshOnUpload="true" runat="server"  />
             <br />
             <uc2:mfbImageList ID="mfbFlightImages" ImageClass="Flight" IncludeDocs="true"
                 runat="server" AltText="Images from flight" CanEdit="true" Columns="4" 
