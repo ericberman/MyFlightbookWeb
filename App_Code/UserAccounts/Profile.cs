@@ -1518,6 +1518,10 @@ namespace MyFlightbook
             dbh.CommandText = "DELETE FROM wsevents WHERE user=?uname";
             dbh.DoNonQuery();
 
+            // If they're an instructor, remove their username from the 
+            dbh.CommandText = "UPDATE endorsements SET cfi='' WHERE CFI=?uname";
+            dbh.DoNonQuery();
+
             // And delete their endorsements - flight images should have already been deleted before this method was called
             dbh.CommandText = "DELETE FROM endorsements WHERE StudentType=0 AND Student=?uname";
             dbh.DoNonQuery();
