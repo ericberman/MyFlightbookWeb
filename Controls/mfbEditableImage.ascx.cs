@@ -159,7 +159,8 @@ function EditComment(idStatic, idEdit) {
 
         lnkAnnotate.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:EditComment('{0}', '{1}');", pnlStatic.ClientID, pnlEdit.ClientID);
 
-        divActions.Visible = lnkAnnotate.Visible || lnkDelete.Visible || lnkMakeDefault.Visible || lnkZoom.Visible;
+        if (mfbii != null)
+            divActions.Visible = lnkAnnotate.Visible || lnkDelete.Visible || lnkMakeDefault.Visible || lnkZoom.Visible;
     }
 
     /// <summary>
