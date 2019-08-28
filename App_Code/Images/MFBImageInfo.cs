@@ -549,7 +549,7 @@ namespace MyFlightbook.Image
 
         #region IComparable
         /// <summary>
-        /// Sorts MFBImageInfo objects.  Puts images after all other documents, subsorts by filename (== timestamp for images)
+        /// Sorts MFBImageInfo objects.  Puts images before all other documents, subsorts by filename (== timestamp for images)
         /// </summary>
         /// <param name="o">Object being compared to.</param>
         /// <returns></returns>
@@ -557,12 +557,10 @@ namespace MyFlightbook.Image
         {
             MFBImageInfo mfbii = (MFBImageInfo)obj;
 
-            if (this.ImageType == ImageFileType.JPEG && mfbii.ImageType != ImageFileType.JPEG)
-                return 1;
-            else if (this.ImageType != ImageFileType.JPEG && mfbii.ImageType == ImageFileType.JPEG)
-                return -1;
-            else
+            if (this.ImageType == mfbii.ImageType)
                 return this.FullImageFile.CompareOrdinalIgnoreCase(mfbii.FullImageFile);
+            else
+                return this.ImageType == ImageFileType.JPEG ? -1 : 1;
         }
         #endregion
 
