@@ -1211,7 +1211,8 @@ namespace MyFlightbook.Telemetry
         {
             if (s == null)
                 throw new ArgumentNullException("s");
-            CsvWriter.WriteToStream(new StreamWriter(s, Encoding.UTF8), Data, true, true);
+            using (StreamWriter sw = new StreamWriter(s, Encoding.UTF8))
+                CsvWriter.WriteToStream(sw, Data, true, true);
         }
 
         /// <summary>
@@ -1588,7 +1589,8 @@ namespace MyFlightbook.Telemetry
                             SpeedUnits = SpeedUnitTypes.MetersPerSecond;    // SynthesizePath uses meters/s.
                             WriteGPXData(ms, rgPos, true, false, true);
                             ms.Seek(0, SeekOrigin.Begin);
-                            result = new StreamReader(ms).ReadToEnd();
+                            using (StreamReader sr = new StreamReader(ms))
+                                result = sr.ReadToEnd();
                         }
                     }
                 }

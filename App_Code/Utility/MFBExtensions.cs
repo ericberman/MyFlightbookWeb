@@ -205,6 +205,8 @@ namespace MyFlightbook
             return defVal;
         }
 
+        static readonly Regex rZuluDateLocalWithOffset = new Regex("(?<sign>[-+])(?<hours>\\d{2})(?<minutes>\\d{2})$", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+
         /// <summary>
         /// Parse the specified string, assigning it UTC if it is in 8601 format
         /// </summary>
@@ -214,7 +216,12 @@ namespace MyFlightbook
         {
             if (String.IsNullOrEmpty(sz))
                 return DateTime.MinValue;
-            return (sz.EndsWith("Z", StringComparison.OrdinalIgnoreCase)) ? DateTime.Parse(sz, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind) : DateTime.Parse(sz, CultureInfo.CurrentCulture);
+            else if (sz.EndsWith("Z", StringComparison.OrdinalIgnoreCase))
+                return DateTime.Parse(sz, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            else if (rZuluDateLocalWithOffset.IsMatch(sz))
+                return DateTime.Parse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal);
+            else
+                return DateTime.Parse(sz, CultureInfo.CurrentCulture);
         }
 
         /// <summary>
@@ -228,21 +235,20 @@ namespace MyFlightbook
             if (sz == null)
                 throw new ArgumentNullException("sz");
 
-            DateTime d = DateTime.MinValue;
-
             // if it appears to be only a naked time and a date for the naked time is provided, use that date.
             if (dtNakedTime != null && sz.Length <= 5 && System.Text.RegularExpressions.Regex.IsMatch(sz, "^\\d{0,2}:\\d{2}$", System.Text.RegularExpressions.RegexOptions.Compiled))
             {
                 string[] rgszHM = sz.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                 if (rgszHM.Length == 2)
                 {
-                    int hour = 0;
-                    int minute = 0;
+                    int hour;
+                    int minute;
                     if (int.TryParse(rgszHM[0], out hour) && int.TryParse(rgszHM[1], out minute))
                         sz = String.Format(CultureInfo.InvariantCulture, "{0}T{1}:{2}Z", dtNakedTime.Value.YMDString(), hour.ToString("00", CultureInfo.InvariantCulture), minute.ToString("00", CultureInfo.InvariantCulture));
                 }
             }
 
+            DateTime d;
             if (DateTime.TryParse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal, out d))
                 return d;
 
@@ -284,7 +290,7 @@ namespace MyFlightbook
             {
                 if (sz[0] == 'Y' || sz[0] == 'T' || sz[0] == '1')
                     return true;
-                Boolean f = false;
+                Boolean f;
                 if (Boolean.TryParse(sz, out f))
                     return f;
                 return false;

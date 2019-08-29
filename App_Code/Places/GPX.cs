@@ -9,7 +9,7 @@ using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2017 MyFlightbook LLC
+ * Copyright (c) 2010-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -95,8 +95,6 @@ namespace MyFlightbook.Telemetry
         private XElement SpeedElement(XElement coord, GPXPathRoot root)
         {
             XElement xSpeed = coord.Descendants(root.xnamespace + "speed").FirstOrDefault();
-
-            xSpeed = coord.Descendants(root.xnamespace + "speed").FirstOrDefault();
             if (xSpeed != null)
                 return xSpeed;
 
