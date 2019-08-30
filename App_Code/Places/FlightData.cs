@@ -1584,13 +1584,23 @@ namespace MyFlightbook.Telemetry
 
                         IEnumerable<Position> rgPos = Position.SynthesizePath(ll1, dtStart, ll2, dtEnd);
 
-                        using (MemoryStream ms = new MemoryStream())
+                        MemoryStream ms = null;
+                        try
                         {
+                            ms = new MemoryStream();
                             SpeedUnits = SpeedUnitTypes.MetersPerSecond;    // SynthesizePath uses meters/s.
                             WriteGPXData(ms, rgPos, true, false, true);
                             ms.Seek(0, SeekOrigin.Begin);
                             using (StreamReader sr = new StreamReader(ms))
+                            {
+                                ms = null;
                                 result = sr.ReadToEnd();
+                            }
+                        }
+                        finally
+                        {
+                            if (ms != null)
+                                ms.Dispose();
                         }
                     }
                 }
