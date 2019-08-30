@@ -223,8 +223,10 @@ namespace MyFlightbook.MilestoneProgress
         PPLPart141Helicopter,
         PPLPart141Gyroplane,
         PPLPart141Glider,
-        PPLJARAirplane,
-        PPLJARHelicopter,
+        PPLEASAAirplane,
+        PPLEASAHelicopter,
+        PPLEASANightAirplane,
+        PPLEASANightHelicopter,
         CAPPLAirplaneLand,
         CAPPLAirplaneSea,
         CANightAirplane,
@@ -397,15 +399,19 @@ namespace MyFlightbook.MilestoneProgress
                 case RatingType.SAPPLNightHelicopter:
                 case RatingType.CAPPLHelicopter:
                 case RatingType.CANightHelicopter:
-                case RatingType.PPLJARHelicopter:
+                case RatingType.PPLEASAHelicopter:
                     return ccid == CategoryClass.CatClassID.Helicopter;
+                case RatingType.PPLEASANightAirplane:
+                    return CategoryClass.IsAirplane(ccid);
+                case RatingType.PPLEASANightHelicopter:
+                    return (ccid == CategoryClass.CatClassID.Helicopter || ccid == CategoryClass.CatClassID.Gyroplane);
                 case RatingType.InstrumentAirplane:
                 case RatingType.SAPPLAirplane:
                 case RatingType.SAPPLNightAirplane:
                 case RatingType.CAPPLAirplaneLand:
                 case RatingType.CAPPLAirplaneSea:
                 case RatingType.CANightAirplane:
-                case RatingType.PPLJARAirplane:
+                case RatingType.PPLEASAAirplane:
                     return CategoryClass.IsAirplane(ccid);
                 case RatingType.InstrumentPoweredLift:
                     return ccid == CategoryClass.CatClassID.PoweredLift;

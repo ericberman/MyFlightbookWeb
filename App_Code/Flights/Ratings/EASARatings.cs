@@ -31,7 +31,7 @@ namespace MyFlightbook.MilestoneProgress
 
     #region EASA (JAA/JAR) Licensing - see http://www.jaa.nl/publications/section1.html for documents, specifically JAR-FCL 1 (aeroplane) and JAR-FCL 2 (Helicopter); now see https://www.easa.europa.eu/system/files/dfu/Part-FCL.pdf; now see http://skyrise.aero/wp-content/uploads/2016/07/Licensing-requirements-quick-reference-rev5-01-07-2015_publication_V04.pdf
     [Serializable]
-    public abstract class JAAPrivatePilot : MilestoneProgress
+    public abstract class EASAPrivatePilot : MilestoneProgress
     {
         protected MilestoneItem miTotal { get; set; }
         protected MilestoneItem miDual { get; set; }
@@ -39,12 +39,6 @@ namespace MyFlightbook.MilestoneProgress
         protected MilestoneItem miSolo { get; set; }
         protected MilestoneItem miSoloXC { get; set; }
         protected MilestoneItem miSoloLongXC { get; set; }
-        protected MilestoneItem miNightTime { get; set; }
-        protected MilestoneItem miNightDual { get; set; }
-        protected MilestoneItem miNightXC { get; set; }
-        protected MilestoneItem miNightLongXC { get; set; }
-        protected MilestoneItem miNightSoloTakeoffs { get; set; }
-        protected MilestoneItem miNightSoloLandings { get; set; }
 
         private const decimal JAATotalTime = 45;
         private const decimal JAASimSub = 5;
@@ -54,14 +48,8 @@ namespace MyFlightbook.MilestoneProgress
         private const decimal JAASoloXC = 5;
         protected const decimal JAALongXCDistanceAirplane = 150;
         protected const decimal JAALongXCDistanceHelicopter = 100;
-        protected const decimal JAALongNightXCDistanceAirplane = 27;
-        private const decimal JAANightTime = 5;
-        private const decimal JAANightDual = 3;
-        private const decimal JAANightXC = 1;
-        private const decimal JAANightSoloTakeoffs = 5;
-        private const decimal JAANightSoloLandings = 5;
 
-        protected JAAPrivatePilot(string szBaseFAR, string szTitle, RatingType rt, string szExperienceSection, string szTrainingSection, string szNightTrainingSection, decimal XCDistance)
+        protected EASAPrivatePilot(string szBaseFAR, string szTitle, RatingType rt, string szExperienceSection, string szTrainingSection, decimal XCDistance)
         {
             Title = szTitle;
             BaseFAR = szBaseFAR;
@@ -69,7 +57,6 @@ namespace MyFlightbook.MilestoneProgress
 
             string szExperience = ResolvedFAR(szExperienceSection);
             string szTraining = ResolvedFAR(szTrainingSection);
-            string szNightTraining = ResolvedFAR(szNightTrainingSection);
 
             miTotal = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLMinTime, JAATotalTime), szExperience, Branding.ReBrand(Resources.MilestoneProgress.JARPPLMinTimeNote), MilestoneItem.MilestoneType.Time, JAATotalTime);
             miDual = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLMinDual, JAADual), szTraining, string.Empty, MilestoneItem.MilestoneType.Time, JAADual);
@@ -77,12 +64,6 @@ namespace MyFlightbook.MilestoneProgress
             miSolo = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLMinSolo, JAASolo), szTraining, string.Empty, MilestoneItem.MilestoneType.Time, JAASolo);
             miSoloXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLMinSoloXC, JAASoloXC), szTraining, string.Empty, MilestoneItem.MilestoneType.Time, JAASoloXC);
             miSoloLongXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLMinSoloLongXC, XCDistance), szTraining, string.Empty, MilestoneItem.MilestoneType.AchieveOnce, XCDistance);
-            miNightTime = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNight, JAANightTime), szNightTraining, Resources.MilestoneProgress.JARPPLNightDisclaimer, MilestoneItem.MilestoneType.Time, JAANightTime);
-            miNightDual = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightDual, JAANightDual), szNightTraining, Resources.MilestoneProgress.JARPPLNightDisclaimer, MilestoneItem.MilestoneType.Time, JAANightDual);
-            miNightXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightDualXC, JAANightXC), szNightTraining, Resources.MilestoneProgress.JARPPLNightDisclaimer, MilestoneItem.MilestoneType.Time, JAANightXC);
-            miNightLongXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLMinDualNightLongXC, JAALongNightXCDistanceAirplane), szNightTraining, Resources.MilestoneProgress.JARPPLNightDisclaimer, MilestoneItem.MilestoneType.AchieveOnce, 1.0M);
-            miNightSoloTakeoffs = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightSoloTakeoffs, JAANightSoloTakeoffs), szNightTraining, Resources.MilestoneProgress.JARPPLNightDisclaimer, MilestoneItem.MilestoneType.Count, JAANightSoloTakeoffs);
-            miNightSoloLandings = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightSoloLandings, JAANightSoloLandings), szNightTraining, Resources.MilestoneProgress.JARPPLNightDisclaimer, MilestoneItem.MilestoneType.Count, JAANightSoloLandings);
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
@@ -107,7 +88,6 @@ namespace MyFlightbook.MilestoneProgress
             decimal instructorOnBoardTime = 0.0M;
             bool fInstructorOnBoard = false;
             decimal dutiesOfPICTime = 0.0M;
-            int nightTakeoffs = 0;
             cfr.ForEachEvent(pf =>
             {
                 if (pf.PropertyType.IsSolo)
@@ -116,8 +96,6 @@ namespace MyFlightbook.MilestoneProgress
                     fInstructorOnBoard = true;    // instructor-on-board time only counts if you are acting as PIC
                 if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutiesOfPIC && !pf.IsDefaultValue)
                     dutiesOfPICTime += pf.DecValue;
-                if (pf.PropertyType.IsNightTakeOff)
-                    nightTakeoffs += pf.IntValue;
             });
 
             if (fInstructorOnBoard)
@@ -136,6 +114,47 @@ namespace MyFlightbook.MilestoneProgress
                 if (al.DistanceForRoute() >= (double)miSoloLongXC.Threshold && al.GetAirportList().Length >= 3 && (cfr.cFullStopLandings + cfr.cFullStopNightLandings) >= 2)
                     miSoloLongXC.MatchFlightEvent(cfr);
             }
+        }
+    }
+
+    [Serializable]
+    public class EASAPPLNightBase : MilestoneProgress
+    {
+        protected MilestoneItem miNightTime { get; set; }
+        protected MilestoneItem miNightDual { get; set; }
+        protected MilestoneItem miNightXC { get; set; }
+        protected MilestoneItem miNightLongXC { get; set; }
+        protected MilestoneItem miNightSoloTakeoffs { get; set; }
+        protected MilestoneItem miNightSoloLandings { get; set; }
+
+        protected const decimal JAALongNightXCDistanceAirplane = 27;
+        private const decimal JAANightTime = 5;
+        private const decimal JAANightDual = 3;
+        private const decimal JAANightXC = 1;
+        private const decimal JAANightSoloTakeoffs = 5;
+        private const decimal JAANightSoloLandings = 5;
+
+        public EASAPPLNightBase(string szTitle, RatingType rt) : base()
+        {
+            Title = szTitle;
+            RatingSought = rt;
+            string szNightTraining = ResolvedFAR("FCL.810(a)");
+
+            miNightTime = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNight, JAANightTime), szNightTraining, string.Empty, MilestoneItem.MilestoneType.Time, JAANightTime);
+            miNightDual = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightDual, JAANightDual), szNightTraining, string.Empty, MilestoneItem.MilestoneType.Time, JAANightDual);
+            miNightXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightDualXC, JAANightXC), szNightTraining, string.Empty, MilestoneItem.MilestoneType.Time, JAANightXC);
+            miNightLongXC = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLMinDualNightLongXC, JAALongNightXCDistanceAirplane), szNightTraining, string.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1.0M);
+            miNightSoloTakeoffs = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightSoloTakeoffs, JAANightSoloTakeoffs), szNightTraining, string.Empty, MilestoneItem.MilestoneType.Count, JAANightSoloTakeoffs);
+            miNightSoloLandings = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.JARPPLNightSoloLandings, JAANightSoloLandings), szNightTraining, string.Empty, MilestoneItem.MilestoneType.Count, JAANightSoloLandings);
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            bool fIsMatch = CatClassMatchesRatingSought(cfr.idCatClassOverride);
+            bool fIsSim = cfr.fIsCertifiedIFR && !cfr.fIsRealAircraft;
+
+            if (!fIsMatch || !cfr.fIsCertifiedIFR)
+                return;
 
             // Night - optional
             if (cfr.Night > 0)
@@ -144,6 +163,10 @@ namespace MyFlightbook.MilestoneProgress
                 decimal nightDual = Math.Min(cfr.Night, cfr.Dual);
                 miNightDual.AddEvent(nightDual);
                 miNightXC.AddEvent(Math.Min(nightDual, cfr.XC));
+
+                decimal soloTime = cfr.TotalTimeForPredicate(cfp => cfp.PropertyType.IsSolo);
+                decimal nightTakeoffs = cfr.TotalCountForPredicate(cfp => cfp.PropertyType.IsNightTakeOff);
+
                 if (soloTime > 0)
                 {
                     miNightSoloTakeoffs.AddEvent(nightTakeoffs);
@@ -152,6 +175,8 @@ namespace MyFlightbook.MilestoneProgress
 
                 if (nightDual > 0)
                 {
+                    AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
+
                     if (al == null)
                         al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
                     if (al.DistanceForRoute() > (double)JAALongNightXCDistanceAirplane)
@@ -159,14 +184,36 @@ namespace MyFlightbook.MilestoneProgress
                 }
             }
         }
-    }
 
-    #region Concrete JAA Classes
+        public override Collection<MilestoneItem> Milestones
+        {
+            get
+            {
+                return new Collection<MilestoneItem>() {
+                miNightTime,
+                miNightDual,
+                miNightXC,
+                miNightLongXC,
+                miNightSoloTakeoffs,
+                miNightSoloLandings
+                };
+            }
+        }
+    }
+    #region Concrete EASA Night Ratings
     [Serializable]
-    public class JAAPPLAirplane : JAAPrivatePilot
+    public class EASAPPLNightAirplane : EASAPPLNightBase
     {
-        public JAAPPLAirplane()
-            : base("EASA PPL(A) - ", Resources.MilestoneProgress.TitleJARAirplanePPL, RatingType.PPLJARAirplane, "FCL.210.A(a)", "FCL.210.A(a)", "FCL.810(a)", JAALongXCDistanceAirplane)
+        public EASAPPLNightAirplane() : base(Resources.MilestoneProgress.TitleEASAPPLNightAirplane, RatingType.PPLEASANightAirplane) { }
+    }
+    #endregion
+
+    #region Concrete EASA Classes
+    [Serializable]
+    public class EASAPPLAirplane : EASAPrivatePilot
+    {
+        public EASAPPLAirplane()
+            : base("EASA PPL(A) - ", Resources.MilestoneProgress.TitleEASAAirplanePPL, RatingType.PPLEASAAirplane, "FCL.210.A(a)", "FCL.210.A(a)", JAALongXCDistanceAirplane)
         {
         }
 
@@ -179,13 +226,7 @@ namespace MyFlightbook.MilestoneProgress
                 miDual,
                 miSolo,
                 miSoloXC,
-                miSoloLongXC,
-                miNightTime,
-                miNightDual,
-                miNightXC,
-                miNightLongXC,
-                miNightSoloTakeoffs,
-                miNightSoloLandings
+                miSoloLongXC
                 };
                 return l;
             }
@@ -193,10 +234,10 @@ namespace MyFlightbook.MilestoneProgress
     }
 
     [Serializable]
-    public class JAAPPLHelicopter : JAAPrivatePilot
+    public class EASAPPLHelicopter : EASAPrivatePilot
     {
-        public JAAPPLHelicopter()
-            : base("EASA PPL(H) - ", Resources.MilestoneProgress.TitleJARHelicopterPPL, RatingType.PPLJARHelicopter, "FCL.210.H(a)", "FCL.210.H(a)", string.Empty, JAALongXCDistanceHelicopter)
+        public EASAPPLHelicopter()
+            : base("EASA PPL(H) - ", Resources.MilestoneProgress.TitleEASAHelicopterPPL, RatingType.PPLEASAHelicopter, "FCL.210.H(a)", "FCL.210.H(a)", JAALongXCDistanceHelicopter)
         {
             GeneralDisclaimer = Branding.ReBrand(Resources.MilestoneProgress.JARPPLHelicopterDisclaimer);
         }
@@ -209,7 +250,7 @@ namespace MyFlightbook.MilestoneProgress
     #endregion
     #endregion
 
-    #region EASA Ratings
+    #region EASA LAPL Ratings
     // Summary of all EASA ratings are at https://www.eurocockpit.be/sites/default/files/licensing_requirements_-_quick_reference-rev2-may-2015_publication.pdf.
     // Note that this overlaps with the JAA licensing above too.
     // https://www.easa.europa.eu/system/files/dfu/Part-FCL.pdf has more details.

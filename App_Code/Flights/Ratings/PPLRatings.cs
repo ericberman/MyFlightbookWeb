@@ -37,8 +37,9 @@ namespace MyFlightbook.MilestoneProgress
                     new Part141AirplaneMultiEngine(),
                     new Part141Helicopter(),
                     new Part141Gyroplane(),
-                    new JAAPPLAirplane(),
-                    new JAAPPLHelicopter(),
+                    new EASAPPLAirplane(),
+                    new EASAPPLHelicopter(),
+                    new EASAPPLNightAirplane(),
                     };
 
             lst.AddRange(CAPrivatePilot.AvailableRatings);
