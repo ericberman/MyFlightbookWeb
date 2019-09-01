@@ -1,131 +1,160 @@
 <p>
     %APP_NAME% computes currency according to United States FAA rules (FAR <a href="https://www.law.cornell.edu/cfr/text/14/61.57"
-        target="_blank">61.57</a>
+                                                                              target="_blank">61.57</a>
     in particular). Meeting
     <a href="https://www.law.cornell.edu/cfr/text/14/61.57"
-        target="_blank">61.57</a> can be subject to some interpretation. This page describes
-    how %APP_NAME% computes currency and expiration dates.  <b>Being current, however, does not mean that you are legal.</b>&nbsp; 
-        For example, if you do not have the right certification, or a flight review, if 
-        you do not have the right medical, if you have alcohol in your system, or if you 
-        are still a student, then you may be current but you are not legal.&nbsp; </p>
+       target="_blank">61.57</a> can be subject to some interpretation. This page describes
+    how %APP_NAME% computes currency and expiration dates.  <b>Being current, however, does not mean that you are legal.</b>&nbsp;
+    For example, if you do not have the right certification, or a flight review, if
+    you do not have the right medical, if you have alcohol in your system, or if you
+    are still a student, then you may be current but you are not legal.&nbsp;
+</p>
 <p style="font-weight:bold">Ultimately, you and only you can determine if you are legal to fly a given flight, regardless of what %APP_NAME% reports.&nbsp; You are responsible for this determination.</p>
 <h2 id="trainingdevices">Training Devices (Simulators, FTDs, and ATDs)</h2>
-<ul>
-    <li><a href="https://www.law.cornell.edu/cfr/text/14/61.57"
-        target="_blank">61.57</a> was updated in October 2009 to enable <b>flight training devices</b>
-        (&quot;FTD&quot;) and <b>aviation training devices</b> (&quot;ATD&quot;), in addition to <strong>flight simulators </strong>(&quot;FS&quot;) for instrument
-        currency.&nbsp; %APP_NAME% now supports these, but relies on you to identify the
-        level of the simulator/training-device, and to use it in accordance with the regulations
-        to.&nbsp; Rather than get mired in all of the details of certification levels and protocols, %APP_NAME% simply asks you to identify how it should treat flights in a training device.&nbsp; %APP_NAME% simplifies this to 4 basic levels:
-        <ul>
-            <li><strong>Uncertified</strong> - think Microsoft Flight Simulator.&nbsp; Log what you like - the landings, approaches, holds will not count towards currency.</li>
-            <li><strong>Simulator/FTD</strong> - Certified for Approaches.&nbsp; This is a basic FTD or similar: if you log any landings, they will not count for passenger-carrying currency, but if you log approaches/holds, they will count for instrument currency, and will be treated as a FS/FTD.</li>
-            <li><strong>Simulator/FFS</strong> - Certified for Approaches and landings.&nbsp; Think full-motion simulator: if you record a landing in this, it will count for passenger carrying currency.</li>
-            <li><strong>ATD</strong> - Approaches/holds will count, but landings will not.&nbsp; This is also used for computing instrument currency in 61.57(c)(3) and 61.57(c)(4).</li>
-        </ul>
-        If you are entering a flight performed in a training device, make sure that you have specified the correct level above in the aircraft definition that you use.&nbsp; In other words, if you log a landing, approach or hold in a training device that you identify as being allowed for such, %APP_NAME% will count it towards currency, so don&#39;t log it if it is not appropriately certified or if you didn&#39;t do it under the required procedure.
-    </li>
-</ul>
+<p>
+    <a href="https://www.law.cornell.edu/cfr/text/14/61.57"
+       target="_blank">61.57</a> was updated in October 2009 to enable <b>flight training devices</b>
+    (&quot;FTD&quot;) and <b>aviation training devices</b> (&quot;ATD&quot;), in addition to <strong>flight simulators </strong>(&quot;FS&quot;) for instrument
+    currency.&nbsp; %APP_NAME% now supports these, but relies on you to identify the
+    level of the simulator/training-device, and to use it in accordance with the regulations
+    to.&nbsp; Rather than get mired in all of the details of certification levels and protocols, %APP_NAME% simply asks you to identify how it should treat flights in a training device.&nbsp; %APP_NAME% simplifies this to 4 basic levels:
+    <ul>
+        <li><strong>Uncertified</strong> - think Microsoft Flight Simulator.&nbsp; Log what you like - the landings, approaches, holds will not count towards currency.</li>
+        <li><strong>Simulator/FTD</strong> - Certified for Approaches.&nbsp; This is a basic FTD or similar: if you log any landings, they will not count for passenger-carrying currency, but if you log approaches/holds, they will count for instrument currency, and will be treated as a FS/FTD.</li>
+        <li><strong>Simulator/FFS</strong> - Certified for Approaches and landings.&nbsp; Think full-motion simulator: if you record a landing in this, it will count for passenger carrying currency.</li>
+        <li><strong>ATD</strong> - Approaches/holds will count, but landings will not.&nbsp; This is also used for computing instrument currency in 61.57(c)(3) and 61.57(c)(4).</li>
+    </ul>
+    If you are entering a flight performed in a training device, make sure that you have specified the correct level above in the aircraft definition that you use.&nbsp; In other words, if you log a landing, approach or hold in a training device that you identify as being allowed for such, %APP_NAME% will count it towards currency, so don&#39;t log it if it is not appropriately certified or if you didn&#39;t do it under the required procedure.
+</p>
 <h2 id="instrument">Instrument Currency</h2>
 <ul>
-    <li>Instrument currency requires approaches, holds, and &quot;intercepting and tracking
+    <li>
+        Instrument currency requires approaches, holds, and &quot;intercepting and tracking
         courses through the use of navigation systems.&quot;&nbsp; Since such intercepting
-        and tracking is often not explicitly logged, and because conducting approaches inevitably involve such procedures, %APP_NAME% assumes that if you log an approach, you must have performed intercepting and tracking procedures.</li>
-    <li>Instrument currency calculations use a calendar month window. Some people may interpret
+        and tracking is often not explicitly logged, and because conducting approaches inevitably involve such procedures, %APP_NAME% assumes that if you log an approach, you must have performed intercepting and tracking procedures.
+    </li>
+    <li>
+        Instrument currency calculations use a calendar month window. Some people may interpret
         part 61.57 more conservatively than this and use a day-for-day sliding window when
         determining a 6-month window.&nbsp; See <a href="https://rgl.faa.gov/Regulatory_and_Guidance_Library%5CrgNPRM.nsf/0/3A4B11D9C94CC9CA8625727D0052C43A?OpenDocument"
-            target="_blank">here</a> for an FAA document supporting the looser "calendar
+                                                   target="_blank">here</a> for an FAA document supporting the looser "calendar
         month" interpretation.&nbsp; They key point of a &quot;calendar
         month&quot; is that if it is August 27, you can look back as far as Feb 1 for your
         required holds/approaches/tracking procedures. Your local FAA representative may
-        or may not subscribe to this view.</li>
-    <li>While the instrument currency computations do check to see if you have an Instrument
-		Proficiciency Check (IPC), it does NOT enforce this.  For example, if you were instrument 
-		current as of  Jan 1, 2008 and did not keep current beyond that point and you then did your required
-		approaches/hold/etc in July of 2010, %APP_NAME% will report that you are current as of
-		July 2010, even though you do NOT have the intervening IPC that is technically required.
-		%APP_NAME% will, however, warn you that the required IPC was not found.  The system is 
-		assuming that you simply failed to record the IPC.  It is a good idea, though, to record it;
-		in the future, this requirement may change from a simple warning to a requirement for currency.</li>
-    <li>The FAA does requires that you perform "Holding Procedures and Tasks" (plural), but as far as I can tell never quite defines what constitutes a distinct "procedure" or "task" (singular).
+        or may not subscribe to this view.
+    </li>
+    <li>
+        While the instrument currency computations do check to see if you have an Instrument
+        Proficiciency Check (IPC), it does NOT enforce this.  For example, if you were instrument
+        current as of  Jan 1, 2008 and did not keep current beyond that point and you then did your required
+        approaches/hold/etc in July of 2010, %APP_NAME% will report that you are current as of
+        July 2010, even though you do NOT have the intervening IPC that is technically required.
+        %APP_NAME% will, however, warn you that the required IPC was not found.  The system is
+        assuming that you simply failed to record the IPC.  It is a good idea, though, to record it;
+        in the future, this requirement may change from a simple warning to a requirement for currency.
+    </li>
+    <li>
+        The FAA does requires that you perform "Holding Procedures and Tasks" (plural), but as far as I can tell never quite defines what constitutes a distinct "procedure" or "task" (singular).
         Some people interpret this to mean multiple holds: i.e., if you enter a hold, do a few turns, and then exit, that would be a single hold, and thus you'd need to do this two or more times.
-        Other people treat the entry, the timing of the legs, making adjustments for wind, and the exit as distinct tasks or procedures, so having a single instance of entering/completing a hold 
-        means you have executed holding procedures and tasks (plural) necessary to do so, and thus is sufficient to meet the requirement.  %APP_NAME% does not take a position on which definition is correct, 
+        Other people treat the entry, the timing of the legs, making adjustments for wind, and the exit as distinct tasks or procedures, so having a single instance of entering/completing a hold
+        means you have executed holding procedures and tasks (plural) necessary to do so, and thus is sufficient to meet the requirement.  %APP_NAME% does not take a position on which definition is correct,
         but simply relies on you, the pilot, to indicate when you think you have met the rule.
     </li>
 </ul>
 <h2 id="nightcurrency">Night Currency</h2>
+<p>
+    When computing night-time currency, %APP_NAME% only requires night-time full-stop landings.  FAR <a href="https://www.law.cornell.edu/cfr/text/14/61.57"
+                                                                                                        target="_blank">61.57</a>, however, requires 3 takeoffs as well. You can enter these (via &quot;Additional Flight Properties&quot;).  If both the required landings and takeoffs are found, %APP_NAME% will
+    report your currency as expiring at the earlier of when the landings or takeoffs expire.  But if the required landings are found and the required takeoffs are NOT found, then %APP_NAME% will still report
+    you as being current with an expiration date that ignores the takeoffs; it will, however, give you a warning that all of the required takeoffs were not found.&nbsp; It&#39;s a good idea to log them,
+    though, so that you can show that you have them if there is ever a question.
+</p>
+<p>
+    %APP_NAME% now supports 61.57(e) as an alternative to 61.57(b) for qualifying pilots of turbine-powered airplanes.  This regulation only applies to type-rated airplanes requiring more than
+    one pilot; if you fly a turbine-powered type-rated airplane that is certified for single-pilot operations, please ensure that the model correctly reflects single-pilot certification to prevent
+    61.57(e) from being erroneously applied to it.
+</p>
+<h2 id="EASA">EASA</h2>
+<p>
+    You can turn on EASA/LAPL currency rules in preferences.  The main difference from FAA rules is night currency.  If you use EASA rules, then one night takeoff and one night landing (full stop or touch-and-go) are
+    sufficient to be current per FCL.060.  Note, however, that the language of FCL.060 around night currency requirements does say "...or holds an IR", without qualifying that the IR is current or even in the
+    same category/class as the regular passenger currency.  As a result, %APP_NAME% will suppress reporting of night currency if it sees any evidence that you hold an IR, such as an instrument checkride or an IPC, since night
+    currency in that scenario is redundant with passenger currency.
+</p>
+<p>
+    EASA rules also require various ratings to be revalidated.  At the moment, this is not implemented internally, but you can use a custom Deadline to track ratings that require revalidation.  Note that an instrument
+    rating is one that requires revalidation (as opposed to recent flight experience); %APP_NAME% reports any FAA instrument currency by default; this is not suppressed when using EASA/LAPL currency
+</p>
+<p>If you have a Light Aircraft Pilot License (LAPL-A or LAPL-H), you can now track your currency in %APP_NAME%.  Turn on the option for LAPL currency in Preferences.  Note that if you fall out of currency, you must either have a proficiency check or make up the required time and landings either with dual instruction or "solo under supervision".  To record these:</p>
 <ul>
-    <li>When computing night-time currency, %APP_NAME% only requires night-time full-stop landings.  FAR <a href="https://www.law.cornell.edu/cfr/text/14/61.57"
-        target="_blank">61.57</a>, however, requires 3 takeoffs as well. You can enter these (via &quot;Additional Flight Properties&quot;).  If both the required landings and takeoffs are found, %APP_NAME% will
-        report your currency as expiring at the earlier of when the landings or takeoffs expire.  But if the required landings are found and the required takeoffs are NOT found, then %APP_NAME% will still report
-        you as being current with an expiration date that ignores the takeoffs; it will, however, give you a warning that all of the required takeoffs were not found.&nbsp; It&#39;s a good idea to log them, 
-        though, so that you can show that you have them if there is ever a question.</li>
-    <li>%APP_NAME% now supports 61.57(e) as an alternative to 61.57(b) for qualifying pilots of turbine-powered airplanes.  This regulation only applies to type-rated airplanes requiring more than
-        one pilot; if you fly a turbine-powered type-rated airplane that is certified for single-pilot operations, please ensure that the model correctly reflects single-pilot certification to prevent
-        61.57(e) from being erroneously applied to it.
-    </li>
+    <li>Use the "PIC Proficiency Check (FAR 61.58)" property to indicate the proficiency check</li>
+    <li>Log either Dual time (i.e., instruction received) OR use the "Duties of PIC (DPIC)" property to indicate the amount of time under supervised solo and the "Instructor on Board" property to indicate that this time was under the supervision of an instructor.</li>
 </ul>
+<h2 id="SFAR73">SFAR 73</h2>
+<p>
+    <a href="https://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFAR.nsf/0/C039C8820E83B2F4862578940053960F?OpenDocument&Highlight=sfar%2073" target="_blank">SFAR 73</a>
+    requires two things for Robinson R-22 and R-44 helicopters:
+    <ol>
+        <li>
+            You must have had a flight review an an R-22/R-44 in order to be current in an R-22/R-44 (respectively).  This uses a 12 month or a 24 month window, depending on
+            how much helicopter and R22/R44 time you have.
+        </li>
+        <li>Your flight recency experience per 61.57 must have been in an R-22/R-44 (respectively)</li>
+    </ol>
+    %APP_NAME% now supports SFAR 73.  Note that the 2nd requirement, pertaining to 61.57, is essentially identical to the requirement for type-rated aircraft, at least as far
+    as 61.57 recency is concerned.  Namely, the recent flight experience must be in the same make/model, not just
+    category/class.  As such, the R-22/R-44 models in the system have been assigned pseudo-"types" of R22 and R44 (respectively), which segregates
+    currency in these aircraft from other helicopters, as if they were type rated.  Yes, I know they're not.  But the requirements from SFAR 73
+    essentially treats them as if they did require a type rating.  However, while 61.57(c) (IFR currency) does not distinguish by type within a category of aircraft,
+    SFAR 73 essentially requires it.  As a result, a flight in an R22 or R44 will contribute to Rotocraft IFR currency (and normal Helicopter passenger-carrying
+    currency), as well as to R22 or R44 currency, but a flight in a non-R22/R44 helicopter will NOT contribute to R22 or R44 currency.<br />
+</p>
+<h2 id="FAR117">FAR 117</h2>
+<p>
+    %APP_NAME% computes flight duty periods and rest periods as per FAR 117 (you can turn this option off or on in preferences).  This FAR is complicated, and %APP_NAME% can only tell you how much rest you've had and
+    how much flight duty time you've had.  But it cannot tell you whether you can accept a given assignment.</p>
+<ul>
+    <li>
+        %APP_NAME% uses the "Flight Duty Start" and "Flight Duty End" properties on a flight to determine the start/end of a flight duty period; if either property is missing, or
+        if the end time is prior to the start time, then the entire 24-hour date of flight (UTC) is assumed to be the flight-duty period.  Note that this will obviously over-estimate duty time and under-estimate rest time
+    </li>
+    <li>FAR 117 currency will be displayed if there is at least one flight that records a proper Flight Duty Start/End time.</li>
+    <li>Any time between the end of flight duty for one flight and the start of flight duty for another flight is treated as a rest period.</li>
+    <li>There are conditions imposed by FAR 117 on assignments you can accept or amount of rest that is required that depend on information that is generally not logged in a logbook.  You need to decide for yourself if you are in compliance.</li>
+</ul>
+<p>More information about FAR 117 support can be found <a href="https://myflightbookblog.blogspot.com/2018/07/part-117-support.html" target="_blank">in the blog</a>.</p>
 <h2 id="misc">Miscellaneous</h2>
 <ul>
-    <li>%APP_NAME% now computes glider currency per 61.57(c)(6).&nbsp; However, it does
+    <li>
+        %APP_NAME% now computes glider currency per 61.57(c)(6).&nbsp; However, it does
         not segregate each of the required maneuvers.&nbsp; If you add time to indicate
         instrument time while doing required maneuvers in part (i) or (ii) of this section,
         %APP_NAME% assumes you have done ALL of the required maneuvers.&nbsp; Don&#39;t
-        log it until you have done ALL of the required maneuvers.</li>
-    <li>As of Nov 15, 2013, the FAA <a href="https://www.gpo.gov/fdsys/pkg/FR-2013-09-16/pdf/2013-22485.pdf" target="_blank">changed its rule</a> and allowed CFI/CFII checkrides to 
-	satisfy the flight review requirement of 61.56.  As such, %APP_NAME% now treats these checkrides as a flight review.</li>
-	<li><a href="https://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFAR.nsf/0/C039C8820E83B2F4862578940053960F?OpenDocument&Highlight=sfar%2073" target="_blank">SFAR 73</a>
-		requires two things for Robinson R-22 and R-44 helicopters:
-			<ol>
-				<li>You must have had a flight review an an R-22/R-44 in order to be current in an R-22/R-44 (respectively).  This uses a 12 month or a 24 month window, depending on 
-                how much helicopter and R22/R44 time you have.</li>
-				<li>Your flight recency experience per 61.57 must have been in an R-22/R-44 (respectively)</li>
-			</ol>
-		%APP_NAME% now supports SFAR 73.  Note that the 2nd requirement, pertaining to 61.57, is essentially identical to the requirement for type-rated aircraft, at least as far
-		as 61.57 recency is concerned.  Namely, the recent flight experience must be in the same make/model, not just 
-		category/class.  As such, the R-22/R-44 models in the system have been assigned pseudo-"types" of R22 and R44 (respectively), which segregates
-		currency in these aircraft from other helicopters, as if they were type rated.  Yes, I know they're not.  But the requirements from SFAR 73
-		essentially treats them as if they did require a type rating.  However, while 61.57(c) (IFR currency) does not distinguish by type within a category of aircraft,
-		SFAR 73 essentially requires it.  As a result, a flight in an R22 or R44 will contribute to Rotocraft IFR currency (and normal Helicopter passenger-carrying
-		currency), as well as to R22 or R44 currency, but a flight in a non-R22/R44 helicopter will NOT contribute to R22 or R44 currency.<br />
-	</li>
-	<li>
-		%APP_NAME% now computes flight duty periods and rest periods as per FAR 117 (you can turn this option off or on in preferences).  This FAR is complicated, and %APP_NAME% can only tell you how much rest you've had and
-		how much flight duty time you've had.  But it cannot tell you whether you can accept a given assignment.
-		<ul>
-		<li>%APP_NAME% uses the "Flight Duty Start" and "Flight Duty End" properties on a flight to determine the start/end of a flight duty period; if either property is missing, or
-		if the end time is prior to the start time, then the entire 24-hour date of flight (UTC) is assumed to be the flight-duty period.  Note that this will obviously over-estimate duty time and under-estimate rest time</li>
-		<li>FAR 117 currency will be displayed if there is at least one flight that records a proper Flight Duty Start/End time.</li>
-		<li>Any time between the end of flight duty for one flight and the start of flight duty for another flight is treated as a rest period.</li>
-		<li>There are conditions imposed by FAR 117 on assignments you can accept or amount of rest that is required that depend on information that is generally not logged in a logbook.  You need to decide for yourself if you are in compliance.</li>
-		</ul>
-	</li>
-	<li>
-		%APP_NAME% can compute Night Goggle Vision per 61.57(f).  A few things to note about the implementation:
-			<ul>
-				<li>Currency is computed separately for helicopters/powered lifts and for all other kinds of aircraft.</li>
-				<li>A "Night Vision Goggle Operation" (NVGO) is considered to be a set of EACH of the tasks in 61.57(f)(1)(i)-(iv).  So doing 3 NVGOs is considered to be the same as doing 3 of each of these tasks (as required in the wording).</li>
-				<li>Passenger-carrying currency is distinguished from non-passenger-carrying currency as necessary.</li>
-			</ul>
-	</li>
+        log it until you have done ALL of the required maneuvers.
+    </li>
     <li>
-        %APP_NAME% now supports Canadian currency rules per <a href="https://laws-lois.justice.gc.ca/eng/regulations/SOR-96-433/FullText.html#s-401.05" target="_blank">401.05</a>.  However, this is ONLY looking at recent flight experience and IPC's/Flight Reviews.  
-        Specifically, this means that it is not checking to see if you have completed a recurrent training program, or that the IPC covered the specific topics described in the regulation, or that the instructor for a review had the requisite credentials, etc.  
+        As of Nov 15, 2013, the FAA <a href="https://www.gpo.gov/fdsys/pkg/FR-2013-09-16/pdf/2013-22485.pdf" target="_blank">changed its rule</a> and allowed CFI/CFII checkrides to
+        satisfy the flight review requirement of 61.56.  As such, %APP_NAME% now treats these checkrides as a flight review.
+    </li>
+    <li>
+        %APP_NAME% can compute Night Goggle Vision per 61.57(f).  A few things to note about the implementation:
+        <ul>
+            <li>Currency is computed separately for helicopters/powered lifts and for all other kinds of aircraft.</li>
+            <li>A "Night Vision Goggle Operation" (NVGO) is considered to be a set of EACH of the tasks in 61.57(f)(1)(i)-(iv).  So doing 3 NVGOs is considered to be the same as doing 3 of each of these tasks (as required in the wording).</li>
+            <li>Passenger-carrying currency is distinguished from non-passenger-carrying currency as necessary.</li>
+        </ul>
+    </li>
+    <li>
+        %APP_NAME% now supports Canadian currency rules per <a href="https://laws-lois.justice.gc.ca/eng/regulations/SOR-96-433/FullText.html#s-401.05" target="_blank">401.05</a>.  However, this is ONLY looking at recent flight experience and IPC's/Flight Reviews.
+        Specifically, this means that it is not checking to see if you have completed a recurrent training program, or that the IPC covered the specific topics described in the regulation, or that the instructor for a review had the requisite credentials, etc.
         It is also not supporting the exception cases described for balloons or gliders at this time.
     </li>
-    <li>%APP_NAME% now supports part 135.293, 297, and 299.  You can attach properties to indicate that the requisite activities have been performed; it is up to you to ensure that they have been performed as required by the regulations.  Note, however, that at this time, a slightly simplified approach to computing some of this is taken.  Specifically:
+    <li>
+        %APP_NAME% now supports part 135.293, 297, and 299.  You can attach properties to indicate that the requisite activities have been performed; it is up to you to ensure that they have been performed as required by the regulations.  Note, however, that at this time, a slightly simplified approach to computing some of this is taken.  Specifically:
         <ul>
             <li><a href="https://www.law.cornell.edu/cfr/text/14/135.293" target="_blank">135.293(b)</a> has a slightly different definition of "in-type" from part 61 based currency; %APP_NAME% uses the part 61 definition (i.e., segregating by category/class and, if needed, type).</li>
             <li><a href="https://www.law.cornell.edu/cfr/text/14/135.297" target="_blank">135.297(b)</a> discusses requirements to perform a given approach; this is NOT computed for you.</li>
             <li>135.297(d)/(e)/(f) also describe the kind of aircraft in which the IPC must be performed, and the mix-and-match that is allowed. For simplicity, though, this is also computed per category/class/(type) as above.</li>
-        </ul>
-    </li>
-    <li>
-        If you have a Light Aircraft Pilot License (LAPL-A or LAPL-H), you can now track your currency in %APP_NAME%.  Turn on the option for LAPL currency in Preferences.  Note that if you fall out of currency, you must either have a proficiency check or make up the required time and landings either with dual instruction or "solo under supervision".  To record these:
-        <ul>
-            <li>Use the "PIC Proficiency Check (FAR 61.58)" property to indicate the proficiency check</li>
-            <li>Log either Dual time (i.e., instruction received) OR use the "Duties of PIC (DPIC)" property to indicate the amount of time under supervised solo and the "Instructor on Board" property to indicate that this time was under the supervision of an instructor.</li>
         </ul>
     </li>
 </ul>
