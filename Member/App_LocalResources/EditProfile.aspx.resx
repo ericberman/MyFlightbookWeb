@@ -334,7 +334,7 @@
     <value />
   </data>
   <data name="ckLAPLCurrencyResource1.Text" xml:space="preserve">
-    <value>Use EASA LAPL currency rules</value>
+    <value>Use EASA/LAPL currency rules</value>
   </data>
   <data name="ckLAPLCurrencyResource1.ToolTip" xml:space="preserve">
     <value />

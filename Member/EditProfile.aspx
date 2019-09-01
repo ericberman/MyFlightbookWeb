@@ -410,7 +410,7 @@
                                 </asp:Panel>
                                 <div><asp:CheckBox ID="ckCanadianCurrency" runat="server" meta:resourcekey="ckCanadianCurrencyResource1" Text="Use Canadian currency rules" /></div>
                                 <div>
-                                    <asp:CheckBox ID="ckLAPLCurrency" runat="server" Text="Use EASA LAPL currency rules" meta:resourcekey="ckLAPLCurrencyResource1" />
+                                    <asp:CheckBox ID="ckLAPLCurrency" runat="server" Text="Use EASA/LAPL currency rules" meta:resourcekey="ckLAPLCurrencyResource1" />
                                     <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes2" meta:resourcekey="lnkCurrencyNotesResource1" runat="server" Text="(See notes on currency computations for details)" Target="_blank" NavigateUrl="~/Public/CurrencyDisclaimer.aspx#instrument"></asp:HyperLink></span>
                                 </div>
                                 <div>

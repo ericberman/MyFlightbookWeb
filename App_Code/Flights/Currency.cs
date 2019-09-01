@@ -632,6 +632,7 @@ namespace MyFlightbook.FlightCurrency
             Dictionary<string, ArmyMDSCurrency> dictArmyCurrency = new Dictionary<string, ArmyMDSCurrency>();     // Flight currency per AR 95-1
             Dictionary<string, CurrencyExaminer> dictIFRCurrency = new Dictionary<string, CurrencyExaminer>();      // IFR currency per 61.57(c)(1) or 61.57(c)(2) (Real airplane or certified flight simulator
             Dictionary<string, FlightCurrency> dictPICProficiencyChecks = new Dictionary<string, FlightCurrency>();     // PIC Proficiency checks
+            bool fHasIR = false;    // for EASA currency, don't bother reporting night currency if user holds an instrument rating (defined as having seen an IPC/instrument checkride.
 
             GliderIFRCurrency gliderIFR = new GliderIFRCurrency(); // IFR currency in a glider.
 
@@ -671,6 +672,9 @@ namespace MyFlightbook.FlightCurrency
                     totalTime += cfr.Total;
                     picTime += cfr.PIC;
 
+                    if (cfr.FindEvent(cfp => cfp.PropertyType.IsIPC) != null)
+                        fHasIR = true;
+
                     // do any custom currencies first because we may short-circuit everything else if this is unmanned
                     foreach (CustomCurrency cc in rgCustomCurrency)
                         cc.ExamineFlight(cfr);
@@ -708,7 +712,7 @@ namespace MyFlightbook.FlightCurrency
                             if (!dictFlightCurrency.ContainsKey(szCatClass))
                             {
                                 string szName = String.Format("{0} - {1}", szCatClass, Resources.Currency.Passengers);
-                                dictFlightCurrency.Add(szCatClass, pf.UseCanadianCurrencyRules ? new PassengerCurrencyCanada(szName) : new PassengerCurrency(szName));
+                                dictFlightCurrency.Add(szCatClass, pf.UseCanadianCurrencyRules ? (ICurrencyExaminer) new PassengerCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName) : (ICurrencyExaminer) new PassengerCurrency(szName)));
                             }
 
                             dictFlightCurrency[szCatClass].ExamineFlight(cfr);
@@ -729,7 +733,7 @@ namespace MyFlightbook.FlightCurrency
                             if (!dictFlightCurrency.ContainsKey(szNightKey))
                             {
                                 string szName = String.Format("{0} - {1}", szCatClass, Resources.Currency.Night);
-                                dictFlightCurrency.Add(szNightKey, pf.UseCanadianCurrencyRules ? new NightCurrencyCanada(szName) : new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty));
+                                dictFlightCurrency.Add(szNightKey, pf.UseCanadianCurrencyRules ? (ICurrencyExaminer) new NightCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer) new EASAPPLNightPassengerCurrency(szName) : (ICurrencyExaminer) new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty)));
                             }
 
                             dictFlightCurrency[szNightKey].ExamineFlight(cfr);
@@ -909,6 +913,14 @@ namespace MyFlightbook.FlightCurrency
 
             if (dbh.LastError.Length > 0)
                 throw new MyFlightbookException("Exception computing currency: " + dbh.LastError);
+
+            if (pf.UsesLAPLCurrency && fHasIR)  // remove night currency reporting if you have an instrument rating
+            {
+                List<string> keys = new List<string>(dictFlightCurrency.Keys);
+                foreach (string szKey in keys)
+                    if (dictFlightCurrency[szKey] is EASAPPLNightPassengerCurrency)
+                        dictFlightCurrency.Remove(szKey);
+            }
 
             // Now build the currencystatusitem list.
             // First regular FAA currency, in sorted order

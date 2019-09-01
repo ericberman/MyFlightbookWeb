@@ -645,11 +645,11 @@
     <value>{0:F2} of 1400 flight hours</value>
   </data>
   <data name="LAPLA" xml:space="preserve">
-    <value>LAPL(A)</value>
+    <value>LAPL(A) - FCL.140.A</value>
     <comment>Light Aircraft Pilot License (Airplane)</comment>
   </data>
   <data name="LAPLH" xml:space="preserve">
-    <value>LAPL(H)</value>
+    <value>LAPL(H) - FCL.140.H</value>
     <comment>Light Aircraft Pilot License (Helicopter)</comment>
   </data>
   <data name="LAPLProficiencyCheckRequired" xml:space="preserve">
@@ -898,5 +898,26 @@
   </data>
   <data name="CustomCurrencyEventGliderTows" xml:space="preserve">
     <value>Glider Tows</value>
+  </data>
+  <data name="EASAMultiEngineAirplane" xml:space="preserve">
+    <value>Airplane (Multi-Engine)</value>
+  </data>
+  <data name="EASAPPLValidation" xml:space="preserve">
+    <value>EASA FCL.740A</value>
+  </data>
+  <data name="EASASingleEngineAirplanePiston" xml:space="preserve">
+    <value>Airplane (Single-Engine, Piston)</value>
+  </data>
+  <data name="EASASingleEngineAirplaneTurbine" xml:space="preserve">
+    <value>Airplane (Single-Engine, Turbine)</value>
+  </data>
+  <data name="IFREASA" xml:space="preserve">
+    <value>IFR (EASA FCL.625)</value>
+  </data>
+  <data name="PassengersEASA" xml:space="preserve">
+    <value>(EASA FCL.060)</value>
+  </data>
+  <data name="PassengersEASANight" xml:space="preserve">
+    <value>(EASA FCL.060)</value>
   </data>
 </root>

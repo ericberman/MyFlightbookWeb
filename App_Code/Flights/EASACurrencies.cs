@@ -1,14 +1,119 @@
 ﻿using System;
+using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 namespace MyFlightbook.FlightCurrency
 {
+    #region EASA PPL
+    /// <summary>
+    /// Passenger currency (FCL.060) in EASA is basically the same as US, but for Balloons.  So this is just a static class to get the right passenger currency (if any).
+    /// </summary>
+    public static class EASAPPLPassengerCurrency
+    {
+        public static FlightCurrency CurrencyForCatClass(CategoryClass.CatClassID ccid, string szName)
+        {
+            switch (ccid)
+            {
+                case CategoryClass.CatClassID.GasBalloon:
+                case CategoryClass.CatClassID.HotAirBalloon:
+                // TODO: implement EASA balloon FCL.060
+                default:
+                    return new PassengerCurrency(szName);
+                case CategoryClass.CatClassID.Airship:
+                case CategoryClass.CatClassID.AMEL:
+                case CategoryClass.CatClassID.AMES:
+                case CategoryClass.CatClassID.ASEL:
+                case CategoryClass.CatClassID.ASES:
+                case CategoryClass.CatClassID.Glider:
+                case CategoryClass.CatClassID.Helicopter:
+                case CategoryClass.CatClassID.PoweredLift:
+                    return new PassengerCurrency(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, szName, Resources.Currency.PassengersEASA));
+            }
+        }
+    }
+
+    /// <summary>
+    /// FCL.060 for night flight currency
+    /// Night currency is different from the US: only one landing, landings don't have to be to a full-stop, and if you are instrument current, you're good to go.
+    /// </summary>
+    public class EASAPPLNightPassengerCurrency : FlightCurrency
+    {
+        protected FlightCurrency fcNightLanding = new FlightCurrency(1, 90, false, string.Empty);
+        protected FlightCurrency fcNightTakeoff = new FlightCurrency(1, 90, false, string.Empty);
+
+        public EASAPPLNightPassengerCurrency(string szName) : base()
+        {
+            DisplayName = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, szName, Resources.Currency.PassengersEASANight);
+        }
+
+        /// <summary>
+        /// FCL.060(b)(2) says that you can be current either from experience, or simply if you "hold" an IR; it doesn't say your IR has to be current.
+        /// Net currency - either current from experience, or if you have an instrument rating then we pretenc you've never been current (i.e., don't show anything), since currency is unnecessary.
+        /// </summary>
+        protected FlightCurrency NetCurrency
+        {
+            get { return fcNightLanding.AND(fcNightTakeoff); }
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException("cfr");
+
+            // Must be real aircraft or FFS
+            if (!cfr.fIsCertifiedLanding)
+                return;
+
+            int cNightTakeoffs = cfr.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff);
+            int cNightLandings = cfr.cFullStopNightLandings + cfr.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
+
+            if (cNightTakeoffs > 0)
+                fcNightTakeoff.AddRecentFlightEvents(cfr.dtFlight, cNightTakeoffs);
+            if (cNightLandings > 0)
+                fcNightLanding.AddRecentFlightEvents(cfr.dtFlight, cNightLandings);
+        }
+
+        public override string DiscrepancyString
+        {
+            get
+            {
+                if (!fcNightLanding.IsCurrent())
+                    return String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, fcNightLanding.Discrepancy, (fcNightLanding.Discrepancy > 1) ? Resources.Totals.Landings : Resources.Totals.Landing);
+                else if (!fcNightTakeoff.IsCurrent())
+                    return String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplateNight, fcNightTakeoff.Discrepancy, (fcNightTakeoff.Discrepancy > 1) ? Resources.Currency.Takeoffs : Resources.Currency.Takeoff);
+                return string.Empty;
+            }
+        }
+
+        public override string StatusDisplay
+        {
+            get { return NetCurrency.StatusDisplay; }
+        }
+
+        public override DateTime ExpirationDate
+        {
+            get { return NetCurrency.ExpirationDate; }
+        }
+
+        public override CurrencyState CurrentState
+        {
+            get { return NetCurrency.CurrentState; }
+        }
+
+        public override bool HasBeenCurrent
+        {
+            get { return NetCurrency.HasBeenCurrent; }
+        }
+    }
+    #endregion  // EASA PPL Currencies
+
+    #region LAPL Currency
     /// <summary>
     /// Abstract base class for LAPL currencies.  See https://www.caa.co.uk/General-aviation/Pilot-licences/EASA-requirements/LAPL/LAPL-(A)-requirements/ for details 
     /// </summary>
@@ -159,7 +264,7 @@ namespace MyFlightbook.FlightCurrency
     }
 
     /// <summary>
-    /// LAPL Airplane (see https://www.caa.co.uk/General-aviation/Pilot-licences/EASA-requirements/LAPL/LAPL-(H)-requirements/) - 6 landings and 6 hours PIC in 12 months and an hour of instruction
+    /// LAPL Hellicopter (see https://www.caa.co.uk/General-aviation/Pilot-licences/EASA-requirements/LAPL/LAPL-(H)-requirements/) - 6 landings and 6 hours PIC in 12 months and an hour of instruction
     /// </summary>
     public class LAPLHCurrency : LAPLBase
     {
@@ -172,4 +277,5 @@ namespace MyFlightbook.FlightCurrency
             return (cfr.fIsRealAircraft && cfr.idCatClassOverride == CategoryClass.CatClassID.Helicopter);
         }
     }
+    #endregion
 }
