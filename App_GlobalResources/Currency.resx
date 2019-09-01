@@ -899,6 +899,18 @@
   <data name="CustomCurrencyEventGliderTows" xml:space="preserve">
     <value>Glider Tows</value>
   </data>
+  <data name="CustomCurrencyEventFlightReview" xml:space="preserve">
+    <value>Flight Review (or equivalent)</value>
+  </data>
+  <data name="CustomCurrencyEventIPC" xml:space="preserve">
+    <value>IPC (or equivalent)</value>
+  </data>
+  <data name="CustomCurrencyEventNightLandingAny" xml:space="preserve">
+    <value>Night Landing (Full-stop or touch-and-go)</value>
+  </data>
+  <data name="CustomCurrencyEventNightLandingsAny" xml:space="preserve">
+    <value>Night Landings (Full-stop or touch-and-go)</value>
+  </data>
   <data name="EASAMultiEngineAirplane" xml:space="preserve">
     <value>Airplane (Multi-Engine)</value>
   </data>

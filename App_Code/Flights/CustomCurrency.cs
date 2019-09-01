@@ -235,7 +235,10 @@ namespace MyFlightbook.FlightCurrency
                         { CustomCurrency.CustomCurrencyEventType.CAP91Checkride, new string[] { Resources.Currency.CustomCurrencyEventCap91Checkride, Resources.Currency.CustomCurrencyEventCap91Checkrides } },
                         { CustomCurrency.CustomCurrencyEventType.FMSApproaches, new string[] { Resources.Currency.CustomCurrencyEventFMSApproach, Resources.Currency.CustomCurrencyEventFMSApproaches } },
                         { CustomCurrency.CustomCurrencyEventType.NightTouchAndGo, new string[] {Resources.Currency.CustomCurrencyEventNightTouchAndGo, Resources.Currency.CustomCurrencyEventNightTouchAndGos} },
-                        { CustomCurrency.CustomCurrencyEventType.GliderTow, new string[] {Resources.Currency.CustomCurrencyEventGliderTow, Resources.Currency.CustomCurrencyEventGliderTows } }
+                        { CustomCurrency.CustomCurrencyEventType.GliderTow, new string[] {Resources.Currency.CustomCurrencyEventGliderTow, Resources.Currency.CustomCurrencyEventGliderTows } },
+                        { CustomCurrency.CustomCurrencyEventType.IPC, new string[] {Resources.Currency.CustomCurrencyEventIPC, Resources.Currency.CustomCurrencyEventIPC } },
+                        { CustomCurrency.CustomCurrencyEventType.FlightReview, new string[] {Resources.Currency.CustomCurrencyEventFlightReview, Resources.Currency.CustomCurrencyEventFlightReview } },
+                        { CustomCurrency.CustomCurrencyEventType.NightLandingAny, new string[] {Resources.Currency.CustomCurrencyEventNightLandingAny, Resources.Currency.CustomCurrencyEventNightLandingsAny } }
                     };
             }
 
@@ -276,6 +279,7 @@ namespace MyFlightbook.FlightCurrency
                 case CustomCurrency.CustomCurrencyEventType.UASRecovery:
                 case CustomCurrency.CustomCurrencyEventType.NightLandings:
                 case CustomCurrency.CustomCurrencyEventType.NightTouchAndGo:
+                case CustomCurrency.CustomCurrencyEventType.NightLandingAny:
                 case CustomCurrency.CustomCurrencyEventType.NightTakeoffs:
                 case CustomCurrency.CustomCurrencyEventType.PICLandings:
                 case CustomCurrency.CustomCurrencyEventType.PICNightLandings:
@@ -285,6 +289,8 @@ namespace MyFlightbook.FlightCurrency
                 case CustomCurrency.CustomCurrencyEventType.CAP91Checkride:
                 case CustomCurrency.CustomCurrencyEventType.FMSApproaches:
                 case CustomCurrency.CustomCurrencyEventType.GliderTow:
+                case CustomCurrency.CustomCurrencyEventType.IPC:
+                case CustomCurrency.CustomCurrencyEventType.FlightReview:
                     return true;
                 case CustomCurrency.CustomCurrencyEventType.TotalHours:
                 case CustomCurrency.CustomCurrencyEventType.Hours:
@@ -342,7 +348,10 @@ namespace MyFlightbook.FlightCurrency
             FMSApproaches = 24,
             HoursDual = 25,
             NightTouchAndGo = 26,
-            GliderTow = 27
+            GliderTow = 27,
+            IPC = 28,
+            FlightReview = 29,
+            NightLandingAny = 30
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1, Properties = 2 };
@@ -880,6 +889,16 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     case CustomCurrencyEventType.HoursDual:
                         fq.HasDual = true;
                         break;
+                    case CustomCurrencyEventType.FlightReview:
+                        fq.PropertyTypes = lstprops.FindAll(cpt => cpt.IsBFR).ToArray();
+                        break;
+                    case CustomCurrencyEventType.IPC:
+                        fq.PropertyTypes = lstprops.FindAll(cpt => cpt.IsIPC).ToArray();
+                        break;
+                    case CustomCurrencyEventType.NightLandingAny:
+                        fq.HasNight = true;
+                        fq.HasLandings = true;
+                        break;
                     default:
                         throw new MyFlightbookException("Unknown event type: " + EventType.ToString() + " in ToQuery()");
                 }
@@ -1052,6 +1071,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 case CustomCurrencyEventType.NightLandings:
                     AddRecentFlightEvents(cfr.dtFlight, cfr.cFullStopNightLandings);
                     break;
+                case CustomCurrencyEventType.NightLandingAny:
+                    AddRecentFlightEvents(cfr.dtFlight, cfr.cFullStopNightLandings + cfr.TotalCountForPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo));
+                    break;
                 case CustomCurrencyEventType.NightTakeoffs:
                     cfr.ForEachEvent((pfe) =>
                     {
@@ -1100,6 +1122,14 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 case CustomCurrencyEventType.GliderTow:
                     if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropGliderTow)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
+                    break;
+                case CustomCurrencyEventType.FlightReview:
+                    if ((cfp = cfr.FindEvent(fp => fp.PropertyType.IsBFR)) != null)
+                        AddRecentFlightEvents(cfr.dtFlight, 1);
+                    break;
+                case CustomCurrencyEventType.IPC:
+                    if ((cfp = cfr.FindEvent(fp => fp.PropertyType.IsIPC)) != null)
+                        AddRecentFlightEvents(cfr.dtFlight, 1);
                     break;
             }
         }
