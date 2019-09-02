@@ -215,8 +215,9 @@ namespace MyFlightbook.MilestoneProgress
         const decimal maxIMCATDTime = totalIMCTime * 0.25M;
         const decimal maxIMCTrainingDeviceTime = totalIMCTime * 0.5M;
 
-        protected IFR141Base(string szTitle, string szBaseFAR, RatingType ratingSought)
+        protected IFR141Base(string szTitle, string szBaseFAR, RatingType ratingSought, int minXCDistance = 250)
         {
+            MinXCDistance = minXCDistance;
             Init(szTitle, szBaseFAR, ratingSought);
 
             miIMCAircraftTime = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentTime141, ResolvedFAR("(a)(1)"), Resources.MilestoneProgress.Note141InstrumentReducedHours, MilestoneItem.MilestoneType.Time, totalIMCTime);
@@ -276,7 +277,7 @@ namespace MyFlightbook.MilestoneProgress
     [Serializable]
     public class IFR141CHelicopter : IFR141Base
     {
-        public IFR141CHelicopter() : base(Resources.MilestoneProgress.Title141IFRHelicopter, "Part 141, Appendix (C)(4)", RatingType.InstrumentHelicopter)
+        public IFR141CHelicopter() : base(Resources.MilestoneProgress.Title141IFRHelicopter, "Part 141, Appendix (C)(4)", RatingType.InstrumentHelicopter, 100)
         {
             miIMCXC.FARRef = ResolvedFAR("(c)(2)");
         }
