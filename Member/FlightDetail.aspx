@@ -321,6 +321,7 @@
                                 <asp:DropDownList ID="cmbSpeedUnits" runat="server" meta:resourcekey="cmbSpeedUnitsResource1">
                                     <asp:ListItem Selected="True" Value="0" Text="Knots" meta:resourcekey="ListItemResource5"></asp:ListItem>
                                     <asp:ListItem Value="1" Text="Miles/Hour" meta:resourcekey="ListItemResource6"></asp:ListItem>
+                                    <asp:ListItem Value="4" Text="Km/Hour" meta:resourcekey="ListItemResource21"></asp:ListItem>
                                     <asp:ListItem Value="2" Text="Meters/Second" meta:resourcekey="ListItemResource7"></asp:ListItem>
                                     <asp:ListItem Value="3" Text="Feet/Second" meta:resourcekey="ListItemResource8"></asp:ListItem>
                                 </asp:DropDownList>

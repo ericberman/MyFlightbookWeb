@@ -435,6 +435,12 @@
   <data name="ListItemResource20.Value" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="ListItemResource21.Text1" xml:space="preserve">
+    <value>Km/Hour</value>
+  </data>
+  <data name="ListItemResource21.Value1" xml:space="preserve">
+    <value>4</value>
+  </data>
   <data name="ListItemResource3.Text" xml:space="preserve">
     <value>KML (Google Earth)</value>
   </data>
