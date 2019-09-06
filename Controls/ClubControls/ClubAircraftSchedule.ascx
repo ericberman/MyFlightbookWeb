@@ -13,6 +13,7 @@
                     <br />
                 </asp:Panel>
                 <div><%# Eval("ClubDescription") %></div>
+                <div><%# Eval("PublicNotes") %></div>
             </ResourceTemplate>
         </uc1:mfbResourceSchedule>
     </ItemTemplate>
