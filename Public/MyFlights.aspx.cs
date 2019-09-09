@@ -117,7 +117,7 @@ public partial class Public_MyFlights : System.Web.UI.Page
                         lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightPageHeader, pf.UserFullName);
                     rgle = LogbookEntry.GetPublicFlightsForUser(UserName, 0, PageSize);
                 }
-                catch (ArgumentNullException) { }
+                catch (NullReferenceException) { }
             }
 
             gvMyFlights.DataSource = rgle;
