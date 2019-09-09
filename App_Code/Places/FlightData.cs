@@ -1570,8 +1570,10 @@ namespace MyFlightbook.Telemetry
             string result = string.Empty;
             if (le != null && String.IsNullOrEmpty(le.FlightData))
             {
-                DateTime dtStart = le.FlightStart.HasValue() ? le.FlightStart : (le.EngineStart.HasValue() ? le.EngineStart : DateTime.MinValue);
-                DateTime dtEnd = le.FlightEnd.HasValue() ? le.FlightEnd : (le.EngineEnd.HasValue() ? le.EngineEnd : DateTime.MinValue);
+                CustomFlightProperty cfpBlockOut = Array.Find(le.CustomProperties, cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut);
+                CustomFlightProperty cfpBlockIn = Array.Find(le.CustomProperties, cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn);
+                DateTime dtStart = le.FlightStart.HasValue() ? le.FlightStart : (le.EngineStart.HasValue() ? le.EngineStart : (cfpBlockOut != null && cfpBlockOut.DateValue.HasValue() ? cfpBlockOut.DateValue : DateTime.MinValue));
+                DateTime dtEnd = le.FlightEnd.HasValue() ? le.FlightEnd : (le.EngineEnd.HasValue() ? le.EngineEnd : (cfpBlockIn != null && cfpBlockIn.DateValue.HasValue() ? cfpBlockIn.DateValue : DateTime.MinValue));
 
                 if (dtStart.HasValue() && dtEnd.HasValue())
                 {
