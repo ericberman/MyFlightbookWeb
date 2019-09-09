@@ -28,7 +28,7 @@ namespace MyFlightbook.Printing
         void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true);
     }
 
-    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, NZ, Glider}
+    public enum PrintLayoutType { Native, Portrait, EASA, USA, Canada, SACAA, CASA, NZ, Glider}
 
     #region Printing Layout implementations
     public abstract class PrintLayout
@@ -79,6 +79,8 @@ namespace MyFlightbook.Printing
                     return new PrintLayoutNZ() { CurrentUser = pf };
                 case PrintLayoutType.Glider:
                     return new PrintLayoutGlider() { CurrentUser = pf };
+                case PrintLayoutType.CASA:
+                    return new PrintLayoutCASA() { CurrentUser = pf };
                 default:
                     throw new ArgumentOutOfRangeException("plt");
             }
@@ -186,6 +188,23 @@ namespace MyFlightbook.Printing
         public override bool SupportsOptionalColumns { get { return false; } }
 
         public override string CSSPath { get { return "~/Public/CSS/printEASA.css"; } }
+    }
+
+    public class PrintLayoutCASA : PrintLayout
+    {
+        public override int RowHeight(LogbookEntryDisplay le)
+        {
+            if (le == null)
+                throw new ArgumentNullException("le");
+            // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
+            return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
+        }
+
+        public override bool SupportsImages { get { return true; } }
+
+        public override bool SupportsOptionalColumns { get { return true; } }
+
+        public override string CSSPath { get { return "~/Public/CSS/printCASA.css"; } }
     }
 
     public class PrintLayoutSACAA : PrintLayout

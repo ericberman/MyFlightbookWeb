@@ -16,6 +16,8 @@
 <%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutPortrait.ascx" TagPrefix="uc1" TagName="layoutPortrait" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutCanada.ascx" TagPrefix="uc1" TagName="layoutCanada" %>
+<%@ Register Src="~/Controls/PrintingLayouts/layoutCASA.ascx" TagPrefix="uc1" TagName="layoutCASA" %>
+
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblUserName" runat="server" ></asp:Label>
@@ -182,6 +184,9 @@
             </asp:View>
             <asp:View ID="vwSACAA" runat="server">
                 <uc1:LayoutSACAA runat="server" ID="LayoutSACAA" />
+            </asp:View>
+            <asp:View ID="vwCASA" runat="server">
+                <uc1:layoutCASA runat="server" ID="layoutCASA" />
             </asp:View>
             <asp:View ID="vwNZ" runat="server">
                 <uc1:layoutNZ runat="server" ID="layoutNZ" />

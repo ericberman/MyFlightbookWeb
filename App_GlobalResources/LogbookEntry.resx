@@ -660,6 +660,15 @@
   <data name="PrintHeaderType" xml:space="preserve">
     <value>Aircraft Type</value>
   </data>
+  <data name="PrintHeaderTypeShort" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PrintHeaderFlightDetails" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="PrintHeaderInstrumentShort" xml:space="preserve">
+    <value>Instrument</value>
+  </data>
   <data name="PrintFormatEASA" xml:space="preserve">
     <value>EASA FCL.050</value>
   </data>
@@ -1137,5 +1146,8 @@ Proceed with import?</value>
   </data>
   <data name="FlightDistanceFurthestPoints" xml:space="preserve">
     <value>● Furthest points from each other: {0} and {1} ({2:#,#.0}nm)</value>
+  </data>
+  <data name="PrintFormatCASA" xml:space="preserve">
+    <value>CASA (E.g., Australia)</value>
   </data>
 </root>
