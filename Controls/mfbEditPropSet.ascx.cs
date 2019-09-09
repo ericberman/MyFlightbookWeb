@@ -308,8 +308,6 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         SegregateProperties(fStripDefaults);                          // add the new property to the list
         PopulateControls();                             // And re-populate.
         txtFilter.Text = string.Empty;
-        cpeText.Collapsed = true;
-        cpeText.ClientState = "true";
         mfbSelectTemplates.Refresh();
     }
 

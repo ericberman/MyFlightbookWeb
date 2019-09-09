@@ -2,20 +2,22 @@
 <%@ Register src="mfbEditProp.ascx" tagname="mfbEditProp" tagprefix="uc1" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
 <%@ Register Src="~/Controls/mfbSelectTemplates.ascx" TagPrefix="uc1" TagName="mfbSelectTemplates" %>
-
-
 <script type="text/javascript">
-            function pageLoad(sender, args) {
-                $find("<%=cpeText.ClientID%>").add_expandComplete(setFocusForSearch);
-            }
+    function toggleSearchBox() {
+        var txtFilter = document.getElementById("<% =txtFilter.ClientID %>");
+        if (txtFilter.style.display == "none") {
+            txtFilter.style.visibility = "visible";
+            txtFilter.style.display = "inline";
+            txtFilter.focus();
+        }
+        else {
+            txtFilter.style.display = "none";
+            txtFilter.style.visibility = "hidden";
+        }
+    }
 
-            function setFocusForSearch() {
-                if (!$find("<%=cpeText.ClientID%>").get_collapsed())
-                    $get("<%=txtFilter.ClientID%>").focus();
-            }
-
-            addLoadEvent(function () { CacheItems(document.getElementById("<% =cmbPropsToAdd.ClientID %>")); });
-        </script>
+    addLoadEvent(function () { CacheItems(document.getElementById("<% =cmbPropsToAdd.ClientID %>")); });
+</script>
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
             <Triggers>
                 <asp:AsyncPostBackTrigger ControlID="cmbPropsToAdd" EventName="SelectedIndexChanged" />
@@ -26,13 +28,11 @@
                     <table>
                         <tr style="vertical-align:top">
                             <td>
-                                <asp:Image ID="imgSearch" ImageUrl="~/images/Search.png" runat="server" />
+                                <asp:Image ID="imgSearch" ImageUrl="~/images/Search.png" runat="server" onclick="javascript:toggleSearchBox();" />
                             </td>
                             <td>
-                                <ajaxToolkit:CollapsiblePanelExtender ID="cpeText" Collapsed="true" runat="server" CollapseControlID="imgSearch" TargetControlID="pnlSearchProps" ExpandControlID="imgSearch" ExpandDirection="Horizontal" TextLabelID="pnlSearchProps" />
                                 <asp:Panel ID="pnlSearchProps" runat="server" EnableViewState="false">
-                                    <ajaxToolkit:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" WatermarkCssClass="watermark" WatermarkText="<%$ Resources:LogbookEntry, PropertyWatermark %>" runat="server" TargetControlID="txtFilter" />
-                                    <asp:TextBox ID="txtFilter" EnableViewState="false" runat="server" Width="100px"></asp:TextBox>
+                                    <asp:TextBox ID="txtFilter" EnableViewState="false" runat="server" Width="100px" style="display:none; visibility:hidden;"></asp:TextBox>
                                     <div><asp:Label ID="lblFilterMessage" CssClass="fineprint" runat="server" EnableViewState="false"></asp:Label></div>
                                 </asp:Panel>
                             </td>
