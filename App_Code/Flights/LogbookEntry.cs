@@ -1864,6 +1864,37 @@ namespace MyFlightbook
                         lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceLongestSegment, dMaxSegment));
                         if (dMaxSegment != dMaxDistanceFromStart)
                             lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceFurthestFromDeparture, dMaxDistanceFromStart));
+
+                        // Find the farthest airports from one another.
+                        Dictionary<string, airport> dictGroupedAirports = new Dictionary<string, airport>();
+                        // Group ports (no navaids, ad-hoc fixes, etc.) geographically
+                        foreach (airport ap in al.UniqueAirports)
+                            if (ap.IsPort)
+                                dictGroupedAirports[String.Format(CultureInfo.InvariantCulture, "{0:#.#00}{1:#.#00}", ap.LatLong.Latitude, ap.LatLong.Longitude)] = ap;
+
+                        List<airport> uniques = new List<airport>(dictGroupedAirports.Values);
+                        if (uniques.Count > 2)
+                        {
+                            airport ap1 = null, ap2 = null;
+                            double maxDist = 0;
+
+                            for (int i = 0; i < uniques.Count; i++)
+                            {
+                                for (int j = i + 1; j < uniques.Count; j++)
+                                {
+                                    double dist = uniques[i].DistanceFromAirport(uniques[j]);
+                                    if (dist > maxDist)
+                                    {
+                                        maxDist = dist;
+                                        ap1 = uniques[i];
+                                        ap2 = uniques[j];
+                                    }
+                                }
+                            }
+
+                            if (ap1 != null && ap2 != null && maxDist > 0)
+                                lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceFurthestPoints, ap1.Code, ap2.Code, maxDist));
+                        }
                     }
                 }
 

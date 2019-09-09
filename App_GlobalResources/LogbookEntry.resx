@@ -1135,4 +1135,7 @@ Proceed with import?</value>
   <data name="TemplateDefaultHeader" xml:space="preserve">
     <value>Use by&lt;br /&gt;default</value>
   </data>
+  <data name="FlightDistanceFurthestPoints" xml:space="preserve">
+    <value>● Furthest points from each other: {0} and {1} ({2:#,#.0}nm)</value>
+  </data>
 </root>
