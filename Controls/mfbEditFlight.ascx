@@ -48,11 +48,13 @@
                         return document.getElementById('<% =cmbAircraft.ClientID %>').value;
                     }
                 </script>
-                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
+                <div>
+                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
                     ControlToValidate="cmbAircraft" Display="Dynamic"
                     CssClass="error" 
                     ErrorMessage='Please select an aircraft, or click "Add" to add a new one' 
                     meta:resourcekey="RequiredFieldValidator2Resource1"></asp:RequiredFieldValidator>
+                </div>
                 <div>
                     <asp:Label ID="lblShowCatClass" runat="server" CssClass="fineprint" 
                     meta:resourcekey="lblShowCatClassResource1"></asp:Label>
