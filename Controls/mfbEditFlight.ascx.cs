@@ -446,10 +446,13 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         }
         else
         {
-            cmbAircraft.SelectedIndex = 0;
-            int idAircraft;
-            if (Int32.TryParse(cmbAircraft.SelectedValue, out idAircraft))
-                le.AircraftID = idAircraft;
+            if (cmbAircraft.Items.Count > 0)
+            {
+                cmbAircraft.SelectedIndex = 0;
+                int idAircraft;
+                if (Int32.TryParse(cmbAircraft.SelectedValue, out idAircraft))
+                    le.AircraftID = idAircraft;
+            }
         }
 
         intApproaches.IntValue = le.Approaches;
