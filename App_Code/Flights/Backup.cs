@@ -16,7 +16,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -83,7 +83,12 @@ namespace MyFlightbook
                     // Add the image to the zip
                     string imgPath = System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail);
                     if (File.Exists(imgPath))
-                        zip.AddFile(imgPath, szThumbFolderFlights);
+                    {
+                        // No need to add an S3PDF to the zip file; it's just a placeholder file on the disk, and it can 
+                        // potentially have a duplicate name with another PDF as well.
+                        if (mfbii.ImageType != MFBImageInfo.ImageFileType.S3PDF)
+                            zip.AddFile(imgPath, szThumbFolderFlights);
+                    }
                     else
                         mfbii.DeleteFromDB();   // clean up an orphan.
                 }
@@ -112,116 +117,119 @@ namespace MyFlightbook
             using (ZipFile zip = new ZipFile())
             {
                 StringWriter sw = new StringWriter();
-                HtmlTextWriter tw = new HtmlTextWriter(sw);
-
-                tw.RenderBeginTag(HtmlTextWriterTag.Html);
-                tw.RenderBeginTag(HtmlTextWriterTag.Head);
-                tw.AddAttribute("href", Branding.ReBrand("http://%APP_URL%%APP_ROOT%/public/stylesheet.css", activeBrand));
-                tw.AddAttribute("rel", "stylesheet");
-                tw.AddAttribute("type", "text/css");
-                tw.RenderBeginTag(HtmlTextWriterTag.Link);
-                tw.RenderEndTag();   // Link
-                tw.RenderBeginTag(HtmlTextWriterTag.Title);
-                tw.Write(HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ImagesBackupTitle, User.UserFullName)));
-                tw.RenderEndTag();   // Head
-                tw.RenderBeginTag(HtmlTextWriterTag.Body);
-
-                // Write out profile images
-                tw.RenderBeginTag(HtmlTextWriterTag.H1);
-                tw.Write(HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ImagesBackupEndorsementsHeader, User.UserFullName)));
-                tw.RenderEndTag();  // h1
-
-                ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, User.UserName);
-                il.Refresh(true);
-                foreach (MFBImageInfo mfbii in il.ImageArray)
+                using (HtmlTextWriter tw = new HtmlTextWriter(sw))
                 {
-                    zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szThumbFolderEndorsements);
-                    mfbii.ToHtml(tw, szThumbFolderEndorsements);
-                    mfbii.UnCache();
-                }
+                    tw.RenderBeginTag(HtmlTextWriterTag.Html);
+                    tw.RenderBeginTag(HtmlTextWriterTag.Head);
+                    tw.AddAttribute("href", Branding.ReBrand("http://%APP_URL%%APP_ROOT%/public/stylesheet.css", activeBrand));
+                    tw.AddAttribute("rel", "stylesheet");
+                    tw.AddAttribute("type", "text/css");
+                    tw.RenderBeginTag(HtmlTextWriterTag.Link);
+                    tw.RenderEndTag();   // Link
+                    tw.RenderBeginTag(HtmlTextWriterTag.Title);
+                    tw.Write(HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ImagesBackupTitle, User.UserFullName)));
+                    tw.RenderEndTag();   // Head
+                    tw.RenderBeginTag(HtmlTextWriterTag.Body);
 
-                // Write out any digital endorsements too
-                IEnumerable<Endorsement> rgEndorsements = Endorsement.EndorsementsForUser(User.UserName, null);
-                if (rgEndorsements.Count() > 0)
-                {
-                    Page p = new FormlessPage();
-                    p.Controls.Add(new HtmlForm());
-                    IEndorsementListUpdate el = (IEndorsementListUpdate)p.LoadControl("~/Controls/mfbEndorsement.ascx");
-                    foreach (Endorsement en in rgEndorsements)
+                    // Write out profile images
+                    tw.RenderBeginTag(HtmlTextWriterTag.H1);
+                    tw.Write(HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ImagesBackupEndorsementsHeader, User.UserFullName)));
+                    tw.RenderEndTag();  // h1
+
+                    ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, User.UserName);
+                    il.Refresh(true);
+                    foreach (MFBImageInfo mfbii in il.ImageArray)
                     {
-                        el.SetEndorsement(en);
-                        try { ((UserControl)el).RenderControl(tw); }
-                        catch { }  // don't write bogus or incomplete HTML
-                    }
-                }
-
-                // And any BasicMed stuff
-                IEnumerable<BasicMedEvent> lstBMed = BasicMedEvent.EventsForUser(User.UserName);
-                foreach (BasicMedEvent bme in lstBMed)
-                {
-                    string szZipFolder = String.Format(CultureInfo.InvariantCulture, "{0}-{1}", bme.ImageKey, szThumbFolderBasicMed);
-                    ImageList ilBasicMed = new ImageList(MFBImageInfo.ImageClass.BasicMed, bme.ImageKey);
-                    ilBasicMed.Refresh(true);
-                    foreach (MFBImageInfo mfbii in ilBasicMed.ImageArray)
-                    {
-                        zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szZipFolder);
-                        mfbii.ToHtml(tw, szZipFolder);
+                        zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szThumbFolderEndorsements);
+                        mfbii.ToHtml(tw, szThumbFolderEndorsements);
                         mfbii.UnCache();
                     }
-                }
 
-                // Write out flight images
-                tw.RenderBeginTag(HtmlTextWriterTag.H1);
-                tw.Write(HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ImagesBackupFlightsHeader, User.UserFullName)));
-                tw.RenderEndTag();  // H1
+                    // Write out any digital endorsements too
+                    IEnumerable<Endorsement> rgEndorsements = Endorsement.EndorsementsForUser(User.UserName, null);
+                    if (rgEndorsements.Count() > 0)
+                    {
+                        using (Page p = new FormlessPage())
+                        {
+                            p.Controls.Add(new HtmlForm());
+                            IEndorsementListUpdate el = (IEndorsementListUpdate)p.LoadControl("~/Controls/mfbEndorsement.ascx");
+                            foreach (Endorsement en in rgEndorsements)
+                            {
+                                el.SetEndorsement(en);
+                                try { ((UserControl)el).RenderControl(tw); }
+                                catch { }  // don't write bogus or incomplete HTML
+                            }
+                        }
+                    }
 
-                // We'll get images from the DB rather than slamming the disk
-                // this is a bit of a hack, but limits our queries
-                const string szQ = @"SELECT f.idflight, img.*
+                    // And any BasicMed stuff
+                    IEnumerable<BasicMedEvent> lstBMed = BasicMedEvent.EventsForUser(User.UserName);
+                    foreach (BasicMedEvent bme in lstBMed)
+                    {
+                        string szZipFolder = String.Format(CultureInfo.InvariantCulture, "{0}-{1}", bme.ImageKey, szThumbFolderBasicMed);
+                        ImageList ilBasicMed = new ImageList(MFBImageInfo.ImageClass.BasicMed, bme.ImageKey);
+                        ilBasicMed.Refresh(true);
+                        foreach (MFBImageInfo mfbii in ilBasicMed.ImageArray)
+                        {
+                            zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szZipFolder);
+                            mfbii.ToHtml(tw, szZipFolder);
+                            mfbii.UnCache();
+                        }
+                    }
+
+                    // Write out flight images
+                    tw.RenderBeginTag(HtmlTextWriterTag.H1);
+                    tw.Write(HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ImagesBackupFlightsHeader, User.UserFullName)));
+                    tw.RenderEndTag();  // H1
+
+                    // We'll get images from the DB rather than slamming the disk
+                    // this is a bit of a hack, but limits our queries
+                    const string szQ = @"SELECT f.idflight, img.*
             FROM Images img INNER JOIN flights f ON f.idflight=img.ImageKey
             WHERE f.username=?user AND img.VirtPathID=0
             ORDER BY f.Date desc, f.idFlight desc";
-                DBHelper dbhImages = new DBHelper(szQ);
-                Dictionary<int, List<MFBImageInfo>> dImages = new Dictionary<int, List<MFBImageInfo>>();
-                dbhImages.ReadRows((comm) => { comm.Parameters.AddWithValue("user", User.UserName); },
-                    (dr) =>
-                    {
-                        int idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture);
-                        List<MFBImageInfo> lstMFBii;
-                        if (dImages.ContainsKey(idFlight))
-                            lstMFBii = dImages[idFlight];
-                        else
-                            dImages[idFlight] = lstMFBii = new List<MFBImageInfo>();
-                        lstMFBii.Add(MFBImageInfo.ImageFromDBRow(dr));
-                    });
-
-                // Get all of the user's flights, including telemetry
-                const int PageSize = 200;   // get 200 flights at a time.
-                int offset = 0;
-                int iRow = 0;
-                bool fCouldBeMore = true;
-
-                while (fCouldBeMore)
-                {
-                    FlightQuery fq = new FlightQuery(User.UserName);
-                    DBHelper dbhFlights = new DBHelper(LogbookEntry.QueryCommand(fq, offset, PageSize, true, LogbookEntry.LoadTelemetryOption.LoadAll));
-                    dbhFlights.ReadRows((comm) => { },
+                    DBHelper dbhImages = new DBHelper(szQ);
+                    Dictionary<int, List<MFBImageInfo>> dImages = new Dictionary<int, List<MFBImageInfo>>();
+                    dbhImages.ReadRows((comm) => { comm.Parameters.AddWithValue("user", User.UserName); },
                         (dr) =>
                         {
-                            LogbookEntry le = new LogbookEntry(dr, User.UserName, LogbookEntry.LoadTelemetryOption.LoadAll);
-                            le.FlightImages = (dImages.ContainsKey(le.FlightID)) ? dImages[le.FlightID].ToArray() : new MFBImageInfo[0];
+                            int idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture);
+                            List<MFBImageInfo> lstMFBii;
+                            if (dImages.ContainsKey(idFlight))
+                                lstMFBii = dImages[idFlight];
+                            else
+                                dImages[idFlight] = lstMFBii = new List<MFBImageInfo>();
+                            lstMFBii.Add(MFBImageInfo.ImageFromDBRow(dr));
+                        });
+
+                    // Get all of the user's flights, including telemetry
+                    const int PageSize = 200;   // get 200 flights at a time.
+                    int offset = 0;
+                    int iRow = 0;
+                    bool fCouldBeMore = true;
+
+                    while (fCouldBeMore)
+                    {
+                        FlightQuery fq = new FlightQuery(User.UserName);
+                        DBHelper dbhFlights = new DBHelper(LogbookEntry.QueryCommand(fq, offset, PageSize, true, LogbookEntry.LoadTelemetryOption.LoadAll));
+                        dbhFlights.ReadRows((comm) => { },
+                            (dr) =>
+                            {
+                                LogbookEntry le = new LogbookEntry(dr, User.UserName, LogbookEntry.LoadTelemetryOption.LoadAll);
+                                le.FlightImages = (dImages.ContainsKey(le.FlightID)) ? dImages[le.FlightID].ToArray() : new MFBImageInfo[0];
 
                             // skip any flights here that don't have images, videos, or telemetry
                             if (le.FlightImages.Length > 0 || le.Videos.Count() > 0 || le.HasFlightData)
-                                WriteFlightInfo(tw, zip, le);
-                            iRow++;
-                        });
-                    if (fCouldBeMore = (iRow == offset + PageSize))
-                        offset += PageSize;
-                }
+                                    WriteFlightInfo(tw, zip, le);
+                                iRow++;
+                            });
+                        if (fCouldBeMore = (iRow == offset + PageSize))
+                            offset += PageSize;
+                    }
 
-                tw.RenderEndTag();  // Body
-                tw.RenderEndTag();  // Html
+                    tw.RenderEndTag();  // Body
+                    tw.RenderEndTag();  // Html
+                }
 
                 zip.AddEntry(Branding.ReBrand(String.Format(CultureInfo.InvariantCulture, "{0}.htm", Resources.LocalizedText.ImagesBackupFilename), activeBrand), sw.ToString());
                 zip.Save(ms);
