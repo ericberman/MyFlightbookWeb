@@ -10,7 +10,7 @@
         <thead>
             <tr class="bordered">
                 <th class="headerSmall" style="width:10ch" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderDate %></th>
-                <th class="headerSmall" style="width:3cm" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderModel %></th>
+                <th class="headerSmall" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderModel %></th>
                 <th class="headerSmall" style="width:1.2cm" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderAircraft %></th>
                 <th class="headerBig" colspan="2"><% =Resources.LogbookEntry.PrintHeaderRoute %></th>
                 <th class="headerBig" rowspan="2"><%=Resources.LogbookEntry.PrintHeaderRemarks %></th>
