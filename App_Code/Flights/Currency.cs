@@ -642,7 +642,7 @@ namespace MyFlightbook.FlightCurrency
             // PIC Proficiency check in ANY aircraft
             FlightCurrency fcPICPCInAny = new FlightCurrency(1, 12, true, "61.58(a) - PIC Check in ANY type-rated aircraft");
 
-            bool fIncludeFAR117 = pf.UsesFAR117DutyTime; 
+            bool fIncludeFAR117 = pf.UsesFAR117DutyTime;
 
             bool fUses61217 = pf.UsesFAR61217Currency;
             FAR61217Currency fc61217 = new FAR61217Currency();
@@ -650,7 +650,7 @@ namespace MyFlightbook.FlightCurrency
             // Get any customcurrency objects for the user
             IEnumerable<CustomCurrency> rgCustomCurrency = CustomCurrency.CustomCurrenciesForUser(szUser);
 
-            FAR117Currency fcFAR117 = new FAR117Currency(pf.UsesFAR117DutyTimeAllFlights);
+            FAR117Currency fcFAR117 = new FAR117Currency(pf.UsesFAR117DutyTimeAllFlights, pf.UsesHHMM);
             FAR195ACurrency fcFAR195 = new FAR195ACurrency(pf.UsesHHMM);
             UASCurrency fcUAS = new UASCurrency();
 
@@ -712,7 +712,7 @@ namespace MyFlightbook.FlightCurrency
                             if (!dictFlightCurrency.ContainsKey(szCatClass))
                             {
                                 string szName = String.Format("{0} - {1}", szCatClass, Resources.Currency.Passengers);
-                                dictFlightCurrency.Add(szCatClass, pf.UseCanadianCurrencyRules ? (ICurrencyExaminer) new PassengerCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName) : (ICurrencyExaminer) new PassengerCurrency(szName)));
+                                dictFlightCurrency.Add(szCatClass, pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new PassengerCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName) : (ICurrencyExaminer)new PassengerCurrency(szName)));
                             }
 
                             dictFlightCurrency[szCatClass].ExamineFlight(cfr);
@@ -733,7 +733,7 @@ namespace MyFlightbook.FlightCurrency
                             if (!dictFlightCurrency.ContainsKey(szNightKey))
                             {
                                 string szName = String.Format("{0} - {1}", szCatClass, Resources.Currency.Night);
-                                dictFlightCurrency.Add(szNightKey, pf.UseCanadianCurrencyRules ? (ICurrencyExaminer) new NightCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer) new EASAPPLNightPassengerCurrency(szName) : (ICurrencyExaminer) new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty)));
+                                dictFlightCurrency.Add(szNightKey, pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new NightCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)new EASAPPLNightPassengerCurrency(szName) : (ICurrencyExaminer)new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty)));
                             }
 
                             dictFlightCurrency[szNightKey].ExamineFlight(cfr);
@@ -808,7 +808,7 @@ namespace MyFlightbook.FlightCurrency
                             dictFlightCurrency.Add(szKey265a3, new Part135_265a3());
                         dictFlightCurrency[szKey265a3].ExamineFlight(cfr);
                     }
-                    
+
                     // Army 95-1 currency
                     if (cfr.szArmyMDS.Length > 0 && cfr.Total > 0)
                     {
@@ -1482,7 +1482,7 @@ namespace MyFlightbook.FlightCurrency
             base.ExamineFlight(cfr);
 
             // we need to subtract out monitored landings, or ignore all if you were monitoring for the whole flight
-            int cMonitoredLandings = cfr.TotalCountForPredicate(p => p.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropMonitoredDayLandings || p.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
+            int cMonitoredLandings = cfr.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredDayLandings || p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
             if (!cfr.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
                 AddRecentFlightEvents(cfr.dtFlight, Math.Max(cfr.cLandingsThisFlight - cMonitoredLandings, 0));
         }
@@ -1554,10 +1554,12 @@ namespace MyFlightbook.FlightCurrency
     /// </summary>
     public class FAR117Currency : FlightCurrency
     {
+        protected bool UseHHMM { get; set; }
+
         /// <summary>
         /// Which duty time attributes were specified on a flight?
         /// </summary>
-        protected enum DutySpecification { None, Both, Start, End};
+        protected enum DutySpecification { None, Both, Start, End };
 
         /// <summary>
         /// Represents an effective duty period, which can be explicit (specified by duty periods) or inferred (just the 24-hour period)
@@ -1733,13 +1735,14 @@ namespace MyFlightbook.FlightCurrency
                    typeID == (int)CustomPropertyType.KnownProperties.IDPropDutyStart;
         }
 
-        public FAR117Currency(bool includeAllFlights = true)
+        public FAR117Currency(bool includeAllFlights = true, bool fUseHHMM = false)
         {
             dtLastDutyStart = currentRestPeriodStart = DateTime.MinValue;
             hoursFlightTime11723b1 = hoursFlightTime11723b2 = 0;
             tsLongestRest11725b = tsDutyTime11723c1 = tsDutyTime11723c2 = TimeSpan.Zero;
             fIncludeAllFlights = includeAllFlights;
             m_edpCurrent = null;
+            UseHHMM = fUseHHMM;
 
             dt168HoursAgo = DateTime.UtcNow.AddHours(-168);
             dt672HoursAgo = DateTime.UtcNow.AddHours(-672);
@@ -1870,35 +1873,35 @@ namespace MyFlightbook.FlightCurrency
                 if (HasSeenProperDutyPeriod)
                 {
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723b1,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursFlightTime11723b1),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursFlightTime11723b1.FormatDecimal(UseHHMM)),
                         (hoursFlightTime11723b1 > 100) ? CurrencyState.NotCurrent : ((hoursFlightTime11723b1 > 80) ? CurrencyState.GettingClose : CurrencyState.OK),
-                        (hoursFlightTime11723b1 > 100) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, hoursFlightTime11723b1 - 100) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, 100 - hoursFlightTime11723b1)));
+                        (hoursFlightTime11723b1 > 100) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (hoursFlightTime11723b1 - 100).FormatDecimal(UseHHMM)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (100 - hoursFlightTime11723b1).FormatDecimal(UseHHMM))));
 
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723b2,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursFlightTime11723b2),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursFlightTime11723b2.FormatDecimal(UseHHMM)),
                         (hoursFlightTime11723b2 > 1000) ? CurrencyState.NotCurrent : ((hoursFlightTime11723b2 > 900) ? CurrencyState.GettingClose : CurrencyState.OK),
-                        (hoursFlightTime11723b2 > 1000) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, hoursFlightTime11723b2 - 1000) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, 1000 - hoursFlightTime11723b2)));
+                        (hoursFlightTime11723b2 > 1000) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (hoursFlightTime11723b2 - 1000).FormatDecimal(UseHHMM)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (1000 - hoursFlightTime11723b2).FormatDecimal(UseHHMM))));
 
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723c1,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, tsDutyTime11723c1.TotalHours),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, tsDutyTime11723c1.TotalHours.FormatDecimal(UseHHMM)),
                         (tsDutyTime11723c1.TotalHours > 60) ? CurrencyState.NotCurrent : ((tsDutyTime11723c1.TotalHours > 50) ? CurrencyState.GettingClose : CurrencyState.OK),
-                        (tsDutyTime11723c1.TotalHours > 60) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, tsDutyTime11723c1.TotalHours - 60) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, 60 - tsDutyTime11723c1.TotalHours)));
+                        (tsDutyTime11723c1.TotalHours > 60) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (tsDutyTime11723c1.TotalHours - 60).FormatDecimal(UseHHMM)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (60 - tsDutyTime11723c1.TotalHours).FormatDecimal(UseHHMM))));
 
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723c2,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, tsDutyTime11723c2.TotalHours),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, tsDutyTime11723c2.TotalHours.FormatDecimal(UseHHMM)),
                         (tsDutyTime11723c2.TotalHours > 190) ? CurrencyState.NotCurrent : ((tsDutyTime11723c2.TotalHours > 150) ? CurrencyState.GettingClose : CurrencyState.OK),
-                        (tsDutyTime11723c2.TotalHours > 190) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, tsDutyTime11723c2.TotalHours - 190) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, 190 - tsDutyTime11723c2.TotalHours)));
+                        (tsDutyTime11723c2.TotalHours > 190) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (tsDutyTime11723c2.TotalHours - 190).FormatDecimal(UseHHMM)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (190 - tsDutyTime11723c2.TotalHours).FormatDecimal(UseHHMM))));
 
                     // 25b - need a 30-hour rest period within the prior 168 hours
                     double hoursLongestRest = Math.Min(tsLongestRest11725b.TotalHours, 168.0);
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11725b,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursLongestRest),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursLongestRest.FormatDecimal(UseHHMM)),
                         (hoursLongestRest > 56) ? CurrencyState.OK : ((hoursLongestRest > 30) ? CurrencyState.GettingClose : CurrencyState.NotCurrent),
                         string.Empty));
 
                     // Finally, report on current rest period
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR117CurrentRest,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, DateTime.UtcNow.Subtract(currentRestPeriodStart).TotalHours),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, DateTime.UtcNow.Subtract(currentRestPeriodStart).TotalHours.FormatDecimal(UseHHMM)),
                         CurrencyState.OK, string.Empty));
                 }
                 return lst;
@@ -1915,8 +1918,6 @@ namespace MyFlightbook.FlightCurrency
         private double totalInstruction = 0.0;
         private const double MaxInstruction = 8.0;
         private const double CloseToMaxInstruction = 5.0;
-
-        public bool UseHHMM { get; set; }
 
         public FAR195ACurrency(bool fUseHHMM = false)
         {

@@ -427,13 +427,13 @@
     <value>FAR 117: Current rest period</value>
   </data>
   <data name="FAR117HoursAvailable" xml:space="preserve">
-    <value>({0:0.0} more hours available)</value>
+    <value>({0} more hours available)</value>
   </data>
   <data name="FAR117HoursOver" xml:space="preserve">
-    <value>(Over by {0:0.0} hours)</value>
+    <value>(Over by {0} hours)</value>
   </data>
   <data name="FAR117HoursTemplate" xml:space="preserve">
-    <value>{0:0.0} hours</value>
+    <value>{0} hours</value>
   </data>
   <data name="CustomCurrencyEventNightLanding" xml:space="preserve">
     <value>night landing (full stop)</value>
