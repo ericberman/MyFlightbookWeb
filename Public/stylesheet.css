@@ -48,7 +48,6 @@
 BODY, body {
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 9pt;
-    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 0px;
@@ -1509,6 +1508,10 @@ h3.numberedStep {
     }
     .logbookRow:nth-last-child(2), .logbookAlternateRow:nth-last-child(2) {
         border-bottom: none;
+    }
+
+    body, body {
+        max-width: 1400px;
     }
 }
 
