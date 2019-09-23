@@ -45,7 +45,8 @@ public partial class Controls_mfbImpersonate : System.Web.UI.UserControl
         const string szQ = @"SELECT Users.*, IF(Username like ?fullName, 1, 0) AS Bias, CONCAT_WS(' ', email, username, firstname, lastname) AS SearchString 
                             FROM Users 
                             HAVING {0}
-                            ORDER BY bias DESC, length(Username) ASC";
+                            ORDER BY bias DESC, length(Username) ASC 
+                            LIMIT 200";
         sqlUsers.SelectParameters.Add("fullName", String.Format(CultureInfo.InvariantCulture, "%{0}%", txtImpersonate.Text));
         sqlUsers.SelectCommand = String.Format(CultureInfo.InvariantCulture, szQ, sb.ToString());
         sqlUsers.SelectCommandType = SqlDataSourceCommandType.Text;
