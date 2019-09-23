@@ -1100,7 +1100,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>1 solo cross-country flight of at least 27nm or 1 dual cross-country flight of at least 55nm</value>
   </data>
   <data name="ATPTotalTimeSubstitutionNote" xml:space="preserve">
-    <value>Per 61.159(c), SIC time and some Flight Engineer Time can contribute towards this.  %APP_NAME% assumes that the conditions for doing so have been met.</value>
+    <value>Per 61.159(c), SIC time and some Flight Engineer Time can contribute towards this; and per 61.159(a)(6) up to 100hrs of FTD/FFS time can also contribute.  %APP_NAME% assumes that the conditions for doing so have been met.</value>
   </data>
   <data name="MinInstrumentTime141" xml:space="preserve">
     <value>35 Hours of actual or simulated instrument time</value>

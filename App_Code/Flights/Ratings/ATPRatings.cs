@@ -65,6 +65,7 @@ namespace MyFlightbook.MilestoneProgress
         const decimal ATPMinIFR = 75;
         const decimal ATPMinTimeInClass = 50;
         const decimal ATPMinTimeInClassFullSimulator = 25;
+        const decimal ATPMinTotalFullSimulator = 100;
         const decimal ATPMinPIC = 250;
         const decimal ATPMinPICXC = 100;
         const decimal ATPMinPICNight = 25;
@@ -110,6 +111,9 @@ namespace MyFlightbook.MilestoneProgress
                 if (fIsAirplane && (cfr.fIsRealAircraft || fIsFullSim))
                     miMinTimeInClass.AddTrainingEvent(cfr.Total, ATPMinTimeInClassFullSimulator, fIsFullSim);
             }
+
+            if (!cfr.fIsRealAircraft && fIsIFRSim)
+                miTotal.AddTrainingEvent(Math.Max(cfr.Total, cfr.GroundSim), ATPMinTotalFullSimulator, true);
 
             // Above are the only things to which we will alow training devices.
             if (!cfr.fIsRealAircraft)
