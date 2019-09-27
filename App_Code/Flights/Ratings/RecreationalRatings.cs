@@ -60,14 +60,14 @@ namespace MyFlightbook.MilestoneProgress
             // 61.99(a) - 15 hours of dual
             miMinInstruction = new MilestoneItem(Resources.MilestoneProgress.RecreationalMinTraining, ResolvedFAR("(a)"), String.Empty, MilestoneItem.MilestoneType.Time, 15.0M);
 
-            // 61.99(a)(1) - 2 hours of flight training in 25nm flights with at least 4 landings
-            miXCFlight = new MilestoneItem(Resources.MilestoneProgress.RecreationalMinXC, ResolvedFAR("(a)(1)"), Resources.MilestoneProgress.RecreationalMinXCNote, MilestoneItem.MilestoneType.Time, 3.0M);
+            // 61.99(a)(1)(i) - 2 hours of flight training in 25nm flights with at least 4 landings
+            miXCFlight = new MilestoneItem(Resources.MilestoneProgress.RecreationalMinXC, ResolvedFAR("(a)(1)(i)"), Resources.MilestoneProgress.RecreationalMinXCNote, MilestoneItem.MilestoneType.Time, 2.0M);
 
-            // 61.99(a)(2) - 3 hours of flight training within preceding 2 months.
-            miTestPrep = new MilestoneItem(Resources.MilestoneProgress.RecreationTestPrep, ResolvedFAR("(a)(2)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Time, 3.0M);
+            // 61.99(a)(1)(ii) - 3 hours of flight training within preceding 2 months.
+            miTestPrep = new MilestoneItem(Resources.MilestoneProgress.RecreationTestPrep, ResolvedFAR("(a)(1)(ii)"), Branding.ReBrand(Resources.MilestoneProgress.NoteTestPrep), MilestoneItem.MilestoneType.Time, 3.0M);
 
-            // 61.99(b) - 3 hours of solo time
-            miMinSolo = new MilestoneItem(Resources.MilestoneProgress.RecreationalMinSolo, ResolvedFAR("(b)"), Resources.MilestoneProgress.NoteSoloTime, MilestoneItem.MilestoneType.Time, 3.0M);
+            // 61.99(a)(2) - 3 hours of solo time
+            miMinSolo = new MilestoneItem(Resources.MilestoneProgress.RecreationalMinSolo, ResolvedFAR("(a)(2)"), Resources.MilestoneProgress.NoteSoloTime, MilestoneItem.MilestoneType.Time, 3.0M);
         }
 
         protected RP6199Base()
