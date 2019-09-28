@@ -268,7 +268,7 @@ namespace MyFlightbook
                             if (c.GetType() == typeof(Label))
                                 szCell = ((Label)c).Text;
                         }
-                        szCell = HttpUtility.HtmlDecode(szCell).Trim().Replace("\r", "").Replace("\n", " ").Replace('\uFFFD', ' ');
+                        szCell = HttpUtility.HtmlDecode(szCell).Trim().Replace('\uFFFD', ' ');
 
                         dr[j] = szCell;
                     }
