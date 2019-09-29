@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,7 +44,7 @@ namespace MyFlightbook.FlightCurrency
     /// </summary>
     public class PassengerCurrencyCanada : PassengerCurrency
     {
-        private FlightExperienceCanada fcCanada;
+        private readonly FlightExperienceCanada fcCanada;
 
         public PassengerCurrencyCanada(string szName)
             : base(szName)
@@ -80,7 +80,7 @@ namespace MyFlightbook.FlightCurrency
         const int RequiredLandingsCanada = 5;
         const int RequiredTakeoffsCanada = 5;
         const int TimeSpanCanada = 6;
-        private FlightExperienceCanada fcCanada;
+        private readonly FlightExperienceCanada fcCanada;
 
         public NightCurrencyCanada(string szName)
             : base(szName)
@@ -95,6 +95,8 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             base.ExamineFlight(cfr);
+            // Add in night touch-and-go landings too, since they also count.
+            AddRecentFlightEvents(cfr.dtFlight, cfr.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo));
             fcCanada.ExamineFlight(cfr);
         }
 
@@ -114,11 +116,11 @@ namespace MyFlightbook.FlightCurrency
     /// </summary>
     public class InstrumentCurrencyCanada : CurrencyExaminer
     {
-        FlightCurrency fc401_05_3_a = new FlightCurrency(1.0M, 12, true, "IPC or new rating");
-        FlightCurrency fc401_05_3_bTime = new FlightCurrency(6.0M, 6, true, "6 Hours of IFR time");
-        FlightCurrency fc401_05_3_bApproaches = new FlightCurrency(6.0M, 6, true, "6 approaches");
-        FlightCurrency fc401_05_3_cTime = new FlightCurrency(6.0M, 6, true, "6 Hours of IFR time in a real aircraft");
-        FlightCurrency fc401_05_3_cApproaches = new FlightCurrency(6.0M, 6, true, "6 approaches in a real aircraft");
+        readonly FlightCurrency fc401_05_3_a = new FlightCurrency(1.0M, 12, true, "IPC or new rating");
+        readonly FlightCurrency fc401_05_3_bTime = new FlightCurrency(6.0M, 6, true, "6 Hours of IFR time");
+        readonly FlightCurrency fc401_05_3_bApproaches = new FlightCurrency(6.0M, 6, true, "6 approaches");
+        readonly FlightCurrency fc401_05_3_cTime = new FlightCurrency(6.0M, 6, true, "6 Hours of IFR time in a real aircraft");
+        readonly FlightCurrency fc401_05_3_cApproaches = new FlightCurrency(6.0M, 6, true, "6 approaches in a real aircraft");
 
         private Boolean m_fCacheValid = false;
         private CurrencyState m_csCurrent = CurrencyState.NotCurrent;
