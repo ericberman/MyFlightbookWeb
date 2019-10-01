@@ -1150,4 +1150,10 @@ Proceed with import?</value>
   <data name="PrintFormatCASA" xml:space="preserve">
     <value>CASA (E.g., Australia)</value>
   </data>
+  <data name="LogbookFlightsPerPage" xml:space="preserve">
+    <value>Flights Per Page:</value>
+  </data>
+  <data name="LogbookFlightsPerPagePrompt" xml:space="preserve">
+    <value>Set page size</value>
+  </data>
 </root>

@@ -9,6 +9,7 @@
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
 <%@ Register Src="~/Controls/mfbFlightContextMenu.ascx" TagPrefix="uc1" TagName="mfbFlightContextMenu" %>
 <%@ Register Src="~/Controls/mfbSendFlight.ascx" TagPrefix="uc1" TagName="mfbSendFlight" %>
+<%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
 <div class="printonly">
     <div>
         <asp:Label ID="lblLogbookHeader" runat="server" Text=""><% = Pilot.UserFullName %></asp:Label>
@@ -27,16 +28,32 @@
                         <span class="noprint">
                             <uc7:popmenu ID="popmenuHeader" runat="server">
                                 <MenuContent>
-                                    <div><asp:RadioButton ID="rblShowInPages" runat="server" AutoPostBack="true" OnCheckedChanged="lnkShowInPages_Click" Text="<%$ Resources:LogbookEntry, LogbookShowInPages %>" GroupName="rblPagingGroup" /></div>
+                                    <div>
+                                        <asp:RadioButton ID="rblShowInPages" runat="server" AutoPostBack="true" OnCheckedChanged="lnkShowInPages_Click" Text="<%$ Resources:LogbookEntry, LogbookShowInPages %>" GroupName="rblPagingGroup" />
+                                        <asp:HyperLink ID="lnkSetFlightsPerPage" NavigateUrl="#" Text="<%$ Resources:LogbookEntry, LogbookFlightsPerPagePrompt %>" runat="server"></asp:HyperLink>
+                                    </div>
                                     <div><asp:RadioButton ID="rblShowAll" runat="server" AutoPostBack="true" OnCheckedChanged="lnkShowAll_Click" CausesValidation="false" Text="<%$ Resources:LogbookEntry, LogbookShowAll %>" GroupName="rblPagingGroup" /></div>
                                     <div><asp:CheckBox ID="ckCompactView" runat="server" Text="<%$ Resources:LogbookEntry, LogbookCompactView %>" CausesValidation="false" AutoPostBack="true" OnCheckedChanged="ckCompactView_CheckedChanged" /></div>
                                     <div><asp:CheckBox ID="ckIncludeImages" runat="server" Text="<%$ Resources:LogbookEntry, LogbookIncludeImages %>" CausesValidation="false" AutoPostBack="true" OnCheckedChanged="ckIncludeImages_CheckedChanged" /></div>
+                                    <cc1:ModalPopupExtender ID="mpeSetFlightsPerPage" runat="server" TargetControlID="lnkSetFlightsPerPage"
+                                        PopupControlID="pnlFlightsPerPage" BackgroundCssClass="modalBackground" 
+                                        CancelControlID="btnSetPageSizeCancel" >
+                                    </cc1:ModalPopupExtender>
                                 </MenuContent>
                             </uc7:popmenu>
                         </span>
                     </td>
                 </tr>
             </table>
+        </asp:Panel>
+        <asp:Panel ID="pnlFlightsPerPage" style="display:none" runat="server" CssClass="modalpopup" DefaultButton="btnSetPageSize">
+            <div style="text-align: center">
+                <asp:Label ID="lblFlightsPerPage" runat="server" Text="<%$ Resources:LogbookEntry, LogbookFlightsPerPage %>"></asp:Label>
+                <uc1:mfbDecimalEdit runat="server" ID="decPageSize" Width="2em" EditingMode="Integer" />
+            </div>
+            <div style="margin-top: 5px; text-align:center">
+                <asp:Button ID="btnSetPageSize" runat="server" Text="<%$ Resources:LocalizedText, OK %>" OnClick="btnSetPageSize_Click" />&nbsp;&nbsp;
+                <asp:Button ID="btnSetPageSizeCancel" runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" /></div>
         </asp:Panel>
         <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="UpdatePanel1">
             <ProgressTemplate>

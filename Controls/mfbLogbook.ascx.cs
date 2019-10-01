@@ -358,6 +358,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     #region Display Options
     const string szCookieCompact = "mfbLogbookDisplayCompact";
     const string szCookieImages = "mfbLogbookDisplayImages";
+    const string szCookiesFlightsPerPage = "mfbLogbookDisplayFlightsPerPage";
 
     private bool m_isCompact = false;
     private bool m_showImagesInline = false;
@@ -368,7 +369,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         set
         {
             m_isCompact = value;
-            Response.Cookies[szCookieCompact].Value = value.ToString();
+            Response.Cookies[szCookieCompact].Value = value.ToString(CultureInfo.InvariantCulture);
             Response.Cookies[szCookieCompact].Expires = DateTime.Now.AddYears(20);
         }
     }
@@ -379,8 +380,19 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         set
         {
             m_showImagesInline = value;
-            Response.Cookies[szCookieImages].Value = value.ToString();
+            Response.Cookies[szCookieImages].Value = value.ToString(CultureInfo.InvariantCulture);
             Response.Cookies[szCookieImages].Expires = DateTime.Now.AddYears(20);
+        }
+    }
+
+    protected int FlightsPerPage
+    {
+        get { return gvFlightLogs.PageSize; }
+        set
+        {
+            gvFlightLogs.PageSize = value;
+            Response.Cookies[szCookiesFlightsPerPage].Value = value.ToString(CultureInfo.InvariantCulture);
+            Response.Cookies[szCookiesFlightsPerPage].Expires = DateTime.Now.AddYears(20);
         }
     }
     #endregion
@@ -439,10 +451,21 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
 
     protected void Page_Init(object sender, EventArgs e)
     {
-        gvFlightLogs.PageSize = util.GetIntParam(Request, "pageSize", 25);   // will set gvflightlogs.pagesize
+        // Page Size: 
+        // - If cookie is not present, use 25
+        // - If cookie is present, use its value
+        // - Still can be overridden by "pageSize" URL parameter
+        int cFlights;
+        HttpCookie cookie = Request.Cookies[szCookiesFlightsPerPage];
+        if (cookie != null && int.TryParse(cookie.Value, out cFlights) && cFlights > 0)
+            gvFlightLogs.PageSize = cFlights;
+        else
+            cFlights = 25;
+
+        gvFlightLogs.PageSize = util.GetIntParam(Request, "pageSize", cFlights);
 
         bool f;
-        HttpCookie cookie = Request.Cookies[szCookieCompact];
+        cookie = Request.Cookies[szCookieCompact];
         if (cookie != null && bool.TryParse(cookie.Value, out f))
             m_isCompact = f;
         cookie = Request.Cookies[szCookieImages];
@@ -484,6 +507,8 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
             ckIncludeImages.Checked = m_showImagesInline;
             rblShowInPages.Checked = gvFlightLogs.AllowPaging;
             rblShowAll.Checked = !rblShowInPages.Checked;
+
+            decPageSize.IntValue = gvFlightLogs.PageSize;
 
             // Refresh state from params.  
             // fq is handled at the host level.
@@ -770,7 +795,16 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         ViewState[szKeyAllowsPaging] = AllowPaging = false;
         BindData();
     }
-    
+
+    protected void btnSetPageSize_Click(object sender, EventArgs e)
+    {
+        if (decPageSize.IntValue <= 0 || decPageSize.IntValue > 100)
+            return;
+
+        FlightsPerPage = decPageSize.IntValue;
+        BindData();
+    }
+
     protected void lnkShowInPages_Click(object sender, EventArgs e)
     {
         ViewState[szKeyAllowsPaging] = AllowPaging = true;
