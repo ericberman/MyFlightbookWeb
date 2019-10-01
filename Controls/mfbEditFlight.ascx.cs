@@ -756,7 +756,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
     {
         if (args == null)
             throw new ArgumentNullException("args");
-        if (DateTime.Compare(mfbDate.Date, DateTime.Now.AddDays(3)) > 0)
+        if (DateTime.Compare(mfbDate.Date, DateTime.Now.AddDays(2)) > 0)
             args.IsValid = false;
     }
 
