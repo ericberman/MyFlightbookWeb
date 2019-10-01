@@ -84,9 +84,9 @@ namespace MyFlightbook.ImportFlights
         */
         private readonly static string[] colFlightID = { "Flight ID" };
         private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown" };
-        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID" };
+        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Reg" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
-        private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN" };
+        private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime" };
         private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE" };
         private readonly static string[] colHold = { "Hold", "Holds", "Holding", "Holding Patterns" };
         private readonly static string[] colLandings = { "Landings", "LAND_STD" };
