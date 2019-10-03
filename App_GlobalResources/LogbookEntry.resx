@@ -1151,7 +1151,7 @@ Proceed with import?</value>
     <value>CASA (E.g., Australia)</value>
   </data>
   <data name="LogbookFlightsPerPage" xml:space="preserve">
-    <value>Flights Per Page:</value>
+    <value>Flights Per Page (1-99):</value>
   </data>
   <data name="LogbookFlightsPerPagePrompt" xml:space="preserve">
     <value>Set page size</value>

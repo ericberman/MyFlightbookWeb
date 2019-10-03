@@ -509,6 +509,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
             rblShowAll.Checked = !rblShowInPages.Checked;
 
             decPageSize.IntValue = gvFlightLogs.PageSize;
+            decPageSize.EditBox.MaxLength = 2;
 
             // Refresh state from params.  
             // fq is handled at the host level.
