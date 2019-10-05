@@ -76,16 +76,16 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
     /// <summary>
     /// Returns the current time formatted in UTC or specified time-zone
     /// </summary>
-    /// <param name="tzOffset">Localtime offset, in minutes; 0 for true UTC</param>
+    /// <param name="_tzOffset">Localtime offset, in minutes; 0 for true UTC</param>
     /// <returns>Now in the specified locale, adjusted for the timezone.</returns>
     [WebMethod(EnableSession = true)]
-    public static string NowInUTC(int tzOffset)
+    public static string NowInUTC(int _tzOffset)
     {
         // For now, always return true UTC
-        tzOffset = 0;
+        _tzOffset = 0;
         if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.UserLanguages != null && HttpContext.Current.Request.UserLanguages.Length > 0)
             util.SetCulture(HttpContext.Current.Request.UserLanguages[0]);
-        return DateTime.UtcNow.AddMinutes(tzOffset).UTCDateFormatString();
+        return DateTime.UtcNow.AddMinutes(_tzOffset).UTCDateFormatString();
     }
     #endregion
 
@@ -108,6 +108,8 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
     }
 
     private const string szParamIDFlight = "idFlight";
+
+    private const string szCookieDefaultTotalsMode = "cookieDefaultTotalsMode";
 
     public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }
 
@@ -188,6 +190,14 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
                 Response.Cookies[MFBConstants.keyNewUser].Expires = DateTime.Now.AddDays(-1);
                 ModalPopupExtender1.Show();
             }
+
+            bool fGrouped = false;
+            if (Request.Cookies[szCookieDefaultTotalsMode] != null && bool.TryParse(Request.Cookies[szCookieDefaultTotalsMode].Value, out fGrouped))
+            {
+
+            }
+            mfbTotalSummary1.IsGrouped = fGrouped;
+            rblTotalsMode.SelectedValue = fGrouped.ToString(CultureInfo.InvariantCulture);
 
             // Handle a requested tab - turning of lazy load as needed
             FlightsTab ft;
@@ -371,6 +381,20 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
     protected void PrintOptions1_OptionsChanged(object sender, PrintingOptionsEventArgs e)
     {
         ResolvePrintLink();
+    }
+
+    protected void rblTotalsMode_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (sender == null)
+            throw new ArgumentNullException("sender");
+
+        bool fGrouped;
+        if (bool.TryParse(rblTotalsMode.SelectedValue, out fGrouped))
+        {
+            Response.Cookies[szCookieDefaultTotalsMode].Value = fGrouped.ToString(CultureInfo.InvariantCulture);
+            Response.Cookies[szCookieDefaultTotalsMode].Expires = DateTime.Now.AddYears(20);
+            mfbTotalSummary1.IsGrouped = fGrouped;
+        }
     }
 
     #region lazy loading of tab content

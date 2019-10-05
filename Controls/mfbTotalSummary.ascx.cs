@@ -1,13 +1,14 @@
 ﻿using MyFlightbook;
 using MyFlightbook.FlightCurrency;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -31,18 +32,36 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
         get { return m_LinkTotalsToQuery; }
         set { m_LinkTotalsToQuery = value; }
     }
+
+    public bool IsGrouped
+    {
+        get { return mvTotals.GetActiveView() == vwGrouped; }
+        set { mvTotals.SetActiveView(value ? vwGrouped : vwFlat); }
+    }
     #endregion
 
     protected void Page_Init(object sender, EventArgs e)
     {
         if (Page.User.Identity.IsAuthenticated)
+        {
+            Username = Page.User.Identity.Name;
             UseHHMM = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UsesHHMM;
-    }
-    
-    protected void Page_Load(object sender, EventArgs e)
-    {
+        }
     }
 
+    protected void Bind()
+    {
+        UserTotals ut = new UserTotals(Username, m_fq, true);
+        ut.DataBind();
+
+        IEnumerable<TotalsItemCollection> tic = TotalsItemCollection.AsGroups(ut.Totals);
+        rptGroups.DataSource = tic;
+        rptGroups.DataBind();
+        lblNoTotals.Visible = tic.Count() == 0;
+        gvTotals.DataSource = ut.Totals;
+        gvTotals.DataBind();
+    }
+    
     public FlightQuery CustomRestriction
     {
         get { return m_fq; }
@@ -58,12 +77,7 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
             FlightQuery fqOld = m_fq;
             m_fq = value;
             if (m_fq == null || !m_fq.IsSameAs(fqOld))
-            {
-                UserTotals ut = new UserTotals(Username, m_fq, true);
-                ut.DataBind();
-                gvTotals.DataSource = ut.Totals;
-                gvTotals.DataBind();
-            }
+                Bind();
         }
     }
 
@@ -75,8 +89,7 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
             if (String.IsNullOrEmpty(Username))
                 Username = Page.User.Identity.Name;
 
-            FlightQuery fq = new FlightQuery(Username);
-            fq.DateRange = value;
+            FlightQuery fq = new FlightQuery(Username) { DateRange = value };
             CustomRestriction = fq;
         }
     }

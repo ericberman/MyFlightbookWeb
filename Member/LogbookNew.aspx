@@ -10,6 +10,8 @@
 <%@ Register src="../Controls/mfbAccordionProxyExtender.ascx" tagname="mfbAccordionProxyExtender" tagprefix="uc8" %>
 <%@ Register src="../Controls/mfbAccordionProxyControl.ascx" tagname="mfbAccordionProxyControl" tagprefix="uc9" %>
 <%@ Register src="../Controls/PrintOptions.ascx" tagname="PrintOptions" tagprefix="uc11" %>
+<%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <asp:Label ID="lblUserName" runat="server"></asp:Label>
 </asp:Content>
@@ -49,6 +51,16 @@
             </ajaxToolkit:AccordionPane>
             <ajaxToolkit:AccordionPane ID="acpTotals" runat="server">
                 <Content>
+                    <div style="float:right;">
+                        <uc1:popmenu runat="server" ID="popmenu">
+                            <MenuContent>
+                                <asp:RadioButtonList ID="rblTotalsMode" runat="server" OnSelectedIndexChanged="rblTotalsMode_SelectedIndexChanged" AutoPostBack="true">
+                                    <asp:ListItem Text="<%$ Resources:Totals, TotalsModeFlat %>" Value="False" Selected="True"></asp:ListItem>
+                                    <asp:ListItem Text="<%$ Resources:Totals, TotalsModeGrouped %>" Value="True"></asp:ListItem>
+                                </asp:RadioButtonList>
+                            </MenuContent>
+                        </uc1:popmenu>
+                    </div>
                     <uc4:mfbTotalSummary ID="mfbTotalSummary1" runat="server" Visible="false" />
                 </Content>
             </ajaxToolkit:AccordionPane>

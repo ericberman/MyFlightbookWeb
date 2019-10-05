@@ -239,4 +239,31 @@
     <value>:00</value>
     <comment>Text (not shown) to align integers with times in hh:mm format.</comment>
   </data>
+  <data name="TotalGroupCapabilities" xml:space="preserve">
+    <value>Times by aircraft features</value>
+  </data>
+  <data name="TotalGroupCoreFields" xml:space="preserve">
+    <value>Standard Logbook Times</value>
+  </data>
+  <data name="TotalGroupProperties" xml:space="preserve">
+    <value>Other Totals</value>
+  </data>
+  <data name="TotalGroupCategoryClass" xml:space="preserve">
+    <value>Totals by Category/Classs</value>
+  </data>
+  <data name="TotalGroupICAO" xml:space="preserve">
+    <value>Totals by ICAO code</value>
+  </data>
+  <data name="TotalGroupModel" xml:space="preserve">
+    <value>Totals by Model</value>
+  </data>
+  <data name="TotalGroupTotal" xml:space="preserve">
+    <value>Overall Total Flight Time</value>
+  </data>
+  <data name="TotalsModeFlat" xml:space="preserve">
+    <value>Show as flat list</value>
+  </data>
+  <data name="TotalsModeGrouped" xml:space="preserve">
+    <value>Show grouped</value>
+  </data>
 </root>

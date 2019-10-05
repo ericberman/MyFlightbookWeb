@@ -15,6 +15,7 @@ using System.Globalization;
 
 namespace MyFlightbook.FlightCurrency
 {
+    public enum TotalsGroup { None, CategoryClass, ICAO, Model, Capabilities, CoreFields, Properties, Total }
     public class TotalsItem : IComparable
     {
         /// <summary>
@@ -35,6 +36,7 @@ namespace MyFlightbook.FlightCurrency
         public TotalsItem()
         {
             SubDescription = Description = String.Empty;
+            Group = TotalsGroup.None;
             Value = 0.0M;
             NumericType = NumType.Time; // decimals are time by default
         }
@@ -154,6 +156,8 @@ namespace MyFlightbook.FlightCurrency
         /// The query that should find the contributing flights for this.
         /// </summary>
         public FlightQuery Query { get; set; }
+
+        public TotalsGroup Group { get; set; }
         #endregion
 
         /// <summary>
@@ -180,6 +184,73 @@ namespace MyFlightbook.FlightCurrency
     }
 
     public enum TotalsGrouping { CatClass, Model, Family }
+
+    public class TotalsItemCollection : IComparable
+    {
+        #region Properties
+        public IEnumerable<TotalsItem> Items { get; set; }
+
+        public TotalsGroup Group { get; set; }
+
+        public string GroupName
+        {
+            get
+            {
+                switch (Group)
+                {
+                    default:
+                    case TotalsGroup.None:
+                        return string.Empty;
+                    case TotalsGroup.CategoryClass:
+                        return Resources.Totals.TotalGroupCategoryClass;
+                    case TotalsGroup.Capabilities:
+                        return Resources.Totals.TotalGroupCapabilities;
+                    case TotalsGroup.CoreFields:
+                        return Resources.Totals.TotalGroupCoreFields;
+                    case TotalsGroup.ICAO:
+                        return Resources.Totals.TotalGroupICAO;
+                    case TotalsGroup.Model:
+                        return Resources.Totals.TotalGroupModel;
+                    case TotalsGroup.Properties:
+                        return Resources.Totals.TotalGroupProperties;
+                    case TotalsGroup.Total:
+                        return Resources.Totals.TotalGroupTotal;
+                }
+            }
+        }
+        #endregion
+
+        public TotalsItemCollection(TotalsGroup group)
+        {
+            Group = group;
+            Items = new List<TotalsItem>();
+        }
+
+        public void AddTotalsItem(TotalsItem ti)
+        {
+            ((List<TotalsItem>)Items).Add(ti);
+        }
+
+        public static IEnumerable<TotalsItemCollection> AsGroups(IEnumerable<TotalsItem> lst)
+        {
+            Dictionary<TotalsGroup, TotalsItemCollection> d = new Dictionary<TotalsGroup, TotalsItemCollection>();
+            foreach (TotalsItem ti in lst)
+            {
+                if (!d.ContainsKey(ti.Group))
+                    d[ti.Group] = new TotalsItemCollection(ti.Group);
+                d[ti.Group].AddTotalsItem(ti);
+            }
+
+            List<TotalsItemCollection> lstOut = new List<TotalsItemCollection>(d.Values);
+            lstOut.Sort();
+            return lstOut;
+        }
+
+        public int CompareTo(object obj)
+        {
+            return this.Group.CompareTo(((TotalsItemCollection)obj).Group);
+        }
+    }
 
     public class UserTotals
     {
@@ -350,19 +421,19 @@ namespace MyFlightbook.FlightCurrency
 
                 if (PIC == TotalTime)
                 {
-                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SIC, SIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.PIC) });
-                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PICTotal, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total) });
+                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SIC, SIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.PIC), Group = TotalsGroup.Capabilities });
+                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PICTotal, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total), Group = TotalsGroup.Capabilities });
                 }
                 else if (SIC == TotalTime)
                 {
-                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SICTotal, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total) });
-                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PIC, PIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.SIC) });
+                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SICTotal, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total), Group = TotalsGroup.Capabilities });
+                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PIC, PIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.SIC), Group = TotalsGroup.Capabilities });
                 }
                 else
                 {
-                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SIC, SIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.SIC) });
-                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PIC, PIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.PIC) });
-                    ut.AddToList(new TotalsItem(Name, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total) });
+                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SIC, SIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.SIC), Group = TotalsGroup.Capabilities });
+                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PIC, PIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.PIC), Group = TotalsGroup.Capabilities });
+                    ut.AddToList(new TotalsItem(Name, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total), Group = TotalsGroup.Capabilities });
                 }
             }
         }
@@ -509,23 +580,27 @@ namespace MyFlightbook.FlightCurrency
                         // don't link to a query for type-totals, since there's no clean query for that.  But if this is a clean catclass (e.g., "AMEL") it should match and we can query it.
                         fq = new FlightQuery(Restriction);
                         string szTitle = string.Empty;
+                        TotalsGroup group = TotalsGroup.None;
                         switch (pf.TotalsGroupingMode)
                         {
                             case TotalsGrouping.CatClass:
                                 AddCatClassToQuery(fq, cct.CatClass, szTypeName);
                                 szTitle = szCatClassDisplay;
+                                group = TotalsGroup.CategoryClass;
                                 break;
                             case TotalsGrouping.Model:
                                 AddModelToQuery(fq, idModel);
                                 szTitle = szModelDisplay;
+                                group = TotalsGroup.Model;
                                 break;
                             case TotalsGrouping.Family:
                                 fq.ModelName = szFamilyDisplay;
                                 szTitle = szFamilyDisplay;
+                                group = TotalsGroup.ICAO;
                                 break;
                         }
 
-                        AddToList(new TotalsItem(szTitle, decTotal, szDesc) { Query = fq });
+                        AddToList(new TotalsItem(szTitle, decTotal, szDesc) { Query = fq, Group = group });
                     }
                 }
             }
@@ -552,7 +627,7 @@ namespace MyFlightbook.FlightCurrency
                         }
                     }
 
-                    AddToList(new TotalsItem(cct.DisplayName, cct.Total, SubDescFromLandings(cct.TotalLandings, cct.TotalFSDayLandings, cct.TotalFSNightLandings, cct.TotalApproaches), pf.TotalsGroupingMode == TotalsGrouping.CatClass ? TotalsItem.SortMode.CatClass : TotalsItem.SortMode.Model) { Query = fq });
+                    AddToList(new TotalsItem(cct.DisplayName, cct.Total, SubDescFromLandings(cct.TotalLandings, cct.TotalFSDayLandings, cct.TotalFSNightLandings, cct.TotalApproaches), pf.TotalsGroupingMode == TotalsGrouping.CatClass ? TotalsItem.SortMode.CatClass : TotalsItem.SortMode.Model) { Query = fq, Group = TotalsGroup.CategoryClass });
                 }
             }
         }
@@ -579,16 +654,16 @@ namespace MyFlightbook.FlightCurrency
                         {
                             case CFPPropertyType.cfpDecimal:
                                 if (cpt.IsBasicDecimal)
-                                    AddToList(new TotalsItem(cpt.Title, Convert.ToDecimal(dr["decTotal"], CultureInfo.InvariantCulture), TotalsItem.NumType.Decimal) { Query = fq });
+                                    AddToList(new TotalsItem(cpt.Title, Convert.ToDecimal(dr["decTotal"], CultureInfo.InvariantCulture), TotalsItem.NumType.Decimal) { Query = fq, Group = TotalsGroup.Properties });
                                 else
-                                    AddToList(new TotalsItem(cpt.Title, Convert.ToDecimal(dr["timeTotal"], CultureInfo.InvariantCulture), TotalsItem.NumType.Time) { Query = fq });
+                                    AddToList(new TotalsItem(cpt.Title, Convert.ToDecimal(dr["timeTotal"], CultureInfo.InvariantCulture), TotalsItem.NumType.Time) { Query = fq, Group = TotalsGroup.Properties });
                                 break;
                             case CFPPropertyType.cfpCurrency:
-                                AddToList(new TotalsItem(cpt.Title, Convert.ToDecimal(dr["decTotal"], CultureInfo.InvariantCulture), TotalsItem.NumType.Currency) { Query = fq });
+                                AddToList(new TotalsItem(cpt.Title, Convert.ToDecimal(dr["decTotal"], CultureInfo.InvariantCulture), TotalsItem.NumType.Currency) { Query = fq, Group = TotalsGroup.Properties });
                                 break;
                             default:
                             case CFPPropertyType.cfpInteger:
-                                AddToList(new TotalsItem(cpt.Title, Convert.ToInt32(dr["intTotal"], CultureInfo.InvariantCulture)) { Query = fq });
+                                AddToList(new TotalsItem(cpt.Title, Convert.ToInt32(dr["intTotal"], CultureInfo.InvariantCulture)) { Query = fq, Group = TotalsGroup.Properties });
                                 break;
                         }
                     }
@@ -641,20 +716,20 @@ namespace MyFlightbook.FlightCurrency
                     {
                         if (pf.DisplayTimesByDefault)
                         {
-                            AddToList(new TotalsItem(Resources.Totals.FlightTime, Convert.ToDecimal(util.ReadNullableField(dr, "TotalFlightTime", 0.0M), CultureInfo.InvariantCulture)));
-                            AddToList(new TotalsItem(Resources.Totals.EngineTime, Convert.ToDecimal(util.ReadNullableField(dr, "TotalEngineTime", 0.0M), CultureInfo.InvariantCulture)));
-                            AddToList(new TotalsItem(Resources.Totals.Hobbs, Convert.ToDecimal(util.ReadNullableField(dr, "TotalHobbs", 0.0M), CultureInfo.InvariantCulture)));
+                            AddToList(new TotalsItem(Resources.Totals.FlightTime, Convert.ToDecimal(util.ReadNullableField(dr, "TotalFlightTime", 0.0M), CultureInfo.InvariantCulture)) { Group = TotalsGroup.CoreFields });
+                            AddToList(new TotalsItem(Resources.Totals.EngineTime, Convert.ToDecimal(util.ReadNullableField(dr, "TotalEngineTime", 0.0M), CultureInfo.InvariantCulture)) { Group = TotalsGroup.CoreFields });
+                            AddToList(new TotalsItem(Resources.Totals.Hobbs, Convert.ToDecimal(util.ReadNullableField(dr, "TotalHobbs", 0.0M), CultureInfo.InvariantCulture)) { Group = TotalsGroup.CoreFields });
                         }
 
-                        AddToList(new TotalsItem(Resources.Totals.CrossCountry, Convert.ToDecimal(util.ReadNullableField(dr, "XCountry", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasXC = true } });
-                        AddToList(new TotalsItem(Resources.Totals.Night, Convert.ToDecimal(util.ReadNullableField(dr, "Night", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasNight = true } });
-                        AddToList(new TotalsItem(Resources.Totals.IMC, Convert.ToDecimal(util.ReadNullableField(dr, "IMC", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasIMC = true } });
-                        AddToList(new TotalsItem(Resources.Totals.SimIMC, Convert.ToDecimal(util.ReadNullableField(dr, "SimulatedInstrument", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasSimIMCTime = true } });
-                        AddToList(new TotalsItem(Resources.Totals.Ground, Convert.ToDecimal(util.ReadNullableField(dr, "GroundSim", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasGroundSim = true } });
-                        AddToList(new TotalsItem(Resources.Totals.Dual, Convert.ToDecimal(util.ReadNullableField(dr, "Dualtime", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasDual = true } });
-                        AddToList(new TotalsItem(Resources.Totals.CFI, Convert.ToDecimal(util.ReadNullableField(dr, "cfi", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasCFI = true } });
-                        AddToList(new TotalsItem(Resources.Totals.SIC, Convert.ToDecimal(util.ReadNullableField(dr, "SIC", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasSIC = true } });
-                        AddToList(new TotalsItem(Resources.Totals.PIC, Convert.ToDecimal(util.ReadNullableField(dr, "PIC", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasPIC = true } });
+                        AddToList(new TotalsItem(Resources.Totals.CrossCountry, Convert.ToDecimal(util.ReadNullableField(dr, "XCountry", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasXC = true }, Group = TotalsGroup.CoreFields });
+                        AddToList(new TotalsItem(Resources.Totals.Night, Convert.ToDecimal(util.ReadNullableField(dr, "Night", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasNight = true }, Group = TotalsGroup.CoreFields });
+                        AddToList(new TotalsItem(Resources.Totals.IMC, Convert.ToDecimal(util.ReadNullableField(dr, "IMC", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasIMC = true }, Group = TotalsGroup.CoreFields });
+                        AddToList(new TotalsItem(Resources.Totals.SimIMC, Convert.ToDecimal(util.ReadNullableField(dr, "SimulatedInstrument", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasSimIMCTime = true }, Group = TotalsGroup.CoreFields });
+                        AddToList(new TotalsItem(Resources.Totals.Ground, Convert.ToDecimal(util.ReadNullableField(dr, "GroundSim", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasGroundSim = true }, Group = TotalsGroup.CoreFields });
+                        AddToList(new TotalsItem(Resources.Totals.Dual, Convert.ToDecimal(util.ReadNullableField(dr, "Dualtime", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasDual = true }, Group = TotalsGroup.CoreFields });
+                        AddToList(new TotalsItem(Resources.Totals.CFI, Convert.ToDecimal(util.ReadNullableField(dr, "cfi", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasCFI = true }, Group = TotalsGroup.CoreFields });
+                        AddToList(new TotalsItem(Resources.Totals.SIC, Convert.ToDecimal(util.ReadNullableField(dr, "SIC", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasSIC = true }, Group = TotalsGroup.CoreFields });
+                        AddToList(new TotalsItem(Resources.Totals.PIC, Convert.ToDecimal(util.ReadNullableField(dr, "PIC", 0.0M), CultureInfo.InvariantCulture)) { Query = new FlightQuery(Restriction) { HasPIC = true }, Group = TotalsGroup.CoreFields });
 
                         Int32 cLandings = Convert.ToInt32(util.ReadNullableField(dr, "cLandings", 0), CultureInfo.InvariantCulture);
                         Int32 cApproaches = Convert.ToInt32(util.ReadNullableField(dr, "cApproaches", 0), CultureInfo.InvariantCulture);
@@ -663,7 +738,7 @@ namespace MyFlightbook.FlightCurrency
 
                         string szDesc = fIncludeSubtotals ? SubDescFromLandings(cLandings, cFSDayLandings, cFSNightLandings, cApproaches) : string.Empty;
 
-                        AddToList(new TotalsItem(Resources.Totals.TotalTime, Convert.ToDecimal(util.ReadNullableField(dr, "Total", 0.0M), CultureInfo.InvariantCulture), szDesc) { Query = Restriction.IsDefault ? null : new FlightQuery(Restriction) });
+                        AddToList(new TotalsItem(Resources.Totals.TotalTime, Convert.ToDecimal(util.ReadNullableField(dr, "Total", 0.0M), CultureInfo.InvariantCulture), szDesc) { Query = Restriction.IsDefault ? null : new FlightQuery(Restriction), Group = TotalsGroup.Total });
                     }
                 }
             }
