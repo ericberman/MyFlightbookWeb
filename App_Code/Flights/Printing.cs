@@ -462,7 +462,7 @@ namespace MyFlightbook.Printing
     /// </summary>
     public class LogbookPrintedPageSubtotalsCollection
     {
-        private List<LogbookEntryDisplay> m_list;
+        private readonly List<LogbookEntryDisplay> m_list;
 
         #region properties
         /// <summary>
@@ -596,7 +596,7 @@ namespace MyFlightbook.Printing
 
             List<LogbookPrintedPage> lstOut = new List<LogbookPrintedPage>();
 
-            Dictionary<string, LogbookEntryDisplay> dictPageTotals = null, dictPreviousTotals = new Dictionary<string, LogbookEntryDisplay>(), dictRunningTotals = new Dictionary<string, LogbookEntryDisplay>();
+            Dictionary<string, LogbookEntryDisplay> dictPageTotals = null, dictPreviousTotals, dictRunningTotals = new Dictionary<string, LogbookEntryDisplay>();
             List<LogbookEntryDisplay> lstFlightsThisPage = null;
             LogbookPrintedPage currentPage = null;
 

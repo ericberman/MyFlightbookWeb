@@ -186,7 +186,6 @@ public partial class Member_PrintView : System.Web.UI.Page
 
             // Remove from the total property set all explicitly excluded properties...
             lstProps.RemoveAll(cfp => lstPropsToExclude.Contains(cfp.PropTypeID));
-            led.CustomProperties = lstProps.ToArray();  
 
             // ...and then additionally exclude from the display any that's in its own column to avoid redundancy.
             lstProps.RemoveAll(cfp => lstPropsInOwnColumns.Contains(cfp.PropTypeID));
