@@ -194,6 +194,8 @@ public partial class Member_PrintView : System.Web.UI.Page
             if (printingOptions.IncludeImages)
                 led.PopulateImages(true);
 
+            if (!printingOptions.IncludeSignatures)
+                led.CFISignatureState = LogbookEntryBase.SignatureState.None;
             led.RowHeight = pl.RowHeight(led);
         }
 

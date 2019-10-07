@@ -303,6 +303,11 @@ namespace MyFlightbook.Printing
         public bool IncludeImages { get; set; }
 
         /// <summary>
+        /// Include signatures when printing?
+        /// </summary>
+        public bool IncludeSignatures { get; set; }
+
+        /// <summary>
         /// Layout to use
         /// </summary>
         public PrintLayoutType Layout { get; set; }
@@ -358,6 +363,7 @@ namespace MyFlightbook.Printing
             FlightsPerPage = 15;    // default
             IncludeImages = false;
             IncludePullForwardTotals = true;
+            IncludeSignatures = true;
             DisplayMode = ModelDisplayMode.Full;
             Layout = PrintLayoutType.Native;
             ExcludedPropertyIDs = new int[0];

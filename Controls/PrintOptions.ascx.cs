@@ -38,6 +38,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
 
             m_options.FlightsPerPage = Convert.ToInt32(cmbFlightsPerPage.SelectedValue, CultureInfo.InvariantCulture);
             m_options.IncludeImages = ckIncludeImages.Checked;
+            m_options.IncludeSignatures = ckIncludeSignatures.Checked;
             m_options.Layout = (PrintLayoutType) Enum.Parse(typeof(PrintLayoutType), cmbLayout.SelectedValue);
             m_options.PropertySeparator = (PrintingOptions.PropertySeparatorType)Enum.Parse(typeof(PrintingOptions.PropertySeparatorType), rblPropertySeparator.SelectedValue);
 
@@ -65,6 +66,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             m_options = value;
             cmbFlightsPerPage.SelectedValue = m_options.FlightsPerPage.ToString(CultureInfo.InvariantCulture);
             ckIncludeImages.Checked = m_options.IncludeImages;
+            ckIncludeSignatures.Checked = m_options.IncludeSignatures;
             cmbLayout.SelectedValue = m_options.Layout.ToString();
             rblPropertySeparator.SelectedValue = m_options.PropertySeparator.ToString();
 
@@ -205,6 +207,11 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
     }
     
     protected void ckIncludeImages_CheckedChanged(object sender, EventArgs e)
+    {
+        NotifyDelegate();
+    }
+
+    protected void ckIncludeSignatures_CheckedChanged(object sender, EventArgs e)
     {
         NotifyDelegate();
     }

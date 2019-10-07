@@ -1528,4 +1528,7 @@
   <data name="EditFlightUpdateFlightPrev" xml:space="preserve">
     <value>Update and Edit Previous</value>
   </data>
+  <data name="PrintViewIncludeSignatures" xml:space="preserve">
+    <value>Include Signatures</value>
+  </data>
 </root>
