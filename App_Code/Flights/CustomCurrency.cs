@@ -363,7 +363,9 @@ namespace MyFlightbook.FlightCurrency
 
         private const int ID_UNKNOWN = -1;
 
-        string m_szTailNumbers, m_szModelNames, m_szCatClass, m_szPropertyNames;
+        readonly string m_szTailNumbers, m_szModelNames;
+        string m_szCatClass;
+        readonly string m_szPropertyNames;
 
         #region Initialization
         public CustomCurrency()
@@ -540,7 +542,7 @@ namespace MyFlightbook.FlightCurrency
         {
             get
             {
-                CurrencyState cs = CurrencyState.OK;
+                CurrencyState cs;
 
                 if (TimespanType.IsAligned())
                 {
@@ -757,10 +759,11 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         {
             get
             {
-                FlightQuery fq = new FlightQuery(this.UserName);
-
-                fq.DateRange = FlightQuery.DateRanges.Custom;
-                fq.DateMax = DateTime.Now.AddDays(1);
+                FlightQuery fq = new FlightQuery(this.UserName)
+                {
+                    DateRange = FlightQuery.DateRanges.Custom,
+                    DateMax = DateTime.Now.AddDays(1)
+                };
                 switch (TimespanType)
                 {
                     case CustomCurrencyTimespanType.CalendarMonths:
@@ -803,6 +806,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
 
                 CustomPropertyType.KnownProperties prop = CustomPropertyType.KnownProperties.IDPropInvalid;
                 List<CustomPropertyType> lstprops = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes());
+                fq.PropertiesConjunction = GroupConjunction.All;
                 switch (EventType)
                 {
                     case CustomCurrencyEventType.BackseatHours:
