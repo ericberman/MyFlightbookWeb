@@ -23,7 +23,7 @@
                 <th class="headerSmall" rowspan="2" runat="server" id="optcolumnHeader2" style="width:1cm" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 1, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# OptionalColumn.OptionalColumnName(OptionalColumns, 1) %></div></th>
                 <th class="headerSmall" rowspan="2" runat="server" id="optcolumnHeader3" style="width:1cm" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 2, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# OptionalColumn.OptionalColumnName(OptionalColumns, 2) %></div></th>
                 <th class="headerSmall" rowspan="2" runat="server" id="optcolumnHeader4" style="width:1cm" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 3, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# OptionalColumn.OptionalColumnName(OptionalColumns, 3) %></div></th>
-                <th class="headerBig" colspan="5"><%=Resources.LogbookEntry.PrintHeaderPilotFunction2 %></th>
+                <th class="headerBig" colspan="<% = 3 + (CurrentUser.TracksSecondInCommandTime ? 1 : 0) + (CurrentUser.IsInstructor ? 1 : 0) %>"><%=Resources.LogbookEntry.PrintHeaderPilotFunction2 %></th>
                 <th class="headerSmall" rowspan="2" style="width:1cm"><%=Resources.LogbookEntry.PrintHeaderTotalTime %></th>
             </tr>
             <tr class="bordered">
@@ -42,9 +42,9 @@
                 <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderIMC %></th>
                 <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderSimInstrument %></th>
                 <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderCrossCountry %></th>
-                <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.FieldCFI %></th>
+                <th class="headerSmall" style="width:1cm" runat="server" visible="<%# CurrentUser.IsInstructor %>"><% =Resources.LogbookEntry.FieldCFI %></th>
                 <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
-                <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.FieldSIC %></th>
+                <th class="headerSmall" style="width:1cm" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
                 <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
             </tr>
         </thead>
@@ -81,9 +81,9 @@
                     <td runat="server" id="tdoptColumn3" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 2, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(2) %></div></td>
                     <td runat="server" id="tdoptColumn4" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 3, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(3) %></div></td>
                     <td><%# Eval("CrossCountry").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                    <td><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                    <td runat="server" visible="<%# CurrentUser.IsInstructor %>"><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                    <td><%# Eval("SIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                    <td runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><%# Eval("SIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                 </tr>
@@ -111,9 +111,9 @@
                             <td runat="server" id="tdoptColumnTotal3" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 2, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(2, CurrentUser.UsesHHMM) %></div></td>
                             <td runat="server" id="tdoptColumnTotal4" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 3, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(3, CurrentUser.UsesHHMM) %></div></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).CrossCountry.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td runat="server" visible="<%# CurrentUser.IsInstructor %>"><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).Dual.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).SIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><%# ((LogbookEntryDisplay) Container.DataItem).SIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).PIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <%# (Container.ItemIndex != 0) ? "</tr>" : string.Empty %>

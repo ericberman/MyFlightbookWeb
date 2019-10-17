@@ -25,8 +25,8 @@
                 <th><div><%=Resources.LogbookEntry.FieldIMC %></div></th>
                 <th><div><%=Resources.LogbookEntry.FieldGroundSim %></div></th>
                 <th><div><%=Resources.LogbookEntry.FieldDual %></div></th>
-                <th><div><%=Resources.LogbookEntry.FieldCFI %></div></th>
-                <th><div><%=Resources.LogbookEntry.FieldSIC %></div></th>
+                <th runat="server" visible="<%# CurrentUser.IsInstructor %>"><div><%=Resources.LogbookEntry.FieldCFI %></div></th>
+                <th runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><div><%=Resources.LogbookEntry.FieldSIC %></div></th>
                 <th><div><%=Resources.LogbookEntry.FieldPIC %></div></th>
                 <th><div><%=Resources.LogbookEntry.FieldTotal %></div></th>
             </thead>
@@ -73,8 +73,8 @@
                         <td class="numericColumn"><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td class="numericColumn"><%# Eval("GroundSim").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td class="numericColumn"><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM)%></td>
-                        <td class="numericColumn"><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM)%></td>
-                        <td class="numericColumn"><%# Eval("SIC").FormatDecimal(CurrentUser.UsesHHMM)%></td>
+                        <td class="numericColumn" runat="server" visible="<%# CurrentUser.IsInstructor %>"><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM)%></td>
+                        <td class="numericColumn" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><%# Eval("SIC").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td class="numericColumn"><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td class="numericColumn"><%# Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                     </tr>
@@ -102,8 +102,8 @@
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).IMC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).GroundSim.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).Dual.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td><%# ((LogbookEntryDisplay) Container.DataItem).SIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td runat="server" visible="<%# CurrentUser.IsInstructor %>"><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><%# ((LogbookEntryDisplay) Container.DataItem).SIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).PIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <%# (Container.ItemIndex != 0) ? "</tr>" : string.Empty %>

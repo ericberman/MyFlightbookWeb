@@ -21,6 +21,7 @@
                 <th class="headerBig" colspan="4" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderInstrumentTime %></th>
                 <th class="headerBig" colspan="4" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderCrossCountry %></th>
                 <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3" runat="server" id="headerCFI" visible="<%# CurrentUser.IsInstructor %>"><% =Resources.LogbookEntry.FieldCFI %></th>
+                <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3" runat="server" id="headerSIC" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
                 <th class="headerBig" colspan="2" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderTakeoffsLandings %></th>
                 <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn1" Visible="<%# ShowOptionalColumn(0) %>"><div><%# OptionalColumnName(0) %></div></th>
                 <th class="headerBig" rowspan="3" style="width:1cm" runat="server" id="optColumn2" Visible="<%# ShowOptionalColumn(1) %>"><div><%# OptionalColumnName(1) %></div></th>
@@ -106,6 +107,7 @@
                         <td><%# Math.Min(((decimal)Eval("Dual")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td style="border-right: 2px solid black;"><%# Math.Min(((decimal)Eval("PIC")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td runat="server" visible='<%# CurrentUser.IsInstructor %>' style="border-right: 2px solid black;"><%# ((decimal)Eval("CFI")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td runat="server" visible='<%# CurrentUser.TracksSecondInCommandTime %>' style="border-right: 2px solid black;"><%# ((decimal)Eval("SIC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                         <td class="centered"><%# Eval("DayTakeoffs") %>&nbsp;/&nbsp;<%# Math.Max((int) Eval("Landings") - (int) Eval("NightLandings") - (int) Eval("NightTouchAndGoLandings"), 0) %></td>
                         <td class="centered" style="border-right: 2px solid black;"><%# Eval("NightTakeoffs") %>&nbsp;/&nbsp;<%# (int) Eval("NightLandings") + (int) Eval("NightTouchAndGoLandings") %></td>
@@ -146,7 +148,8 @@
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).XCNightDualTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).XCNightPICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
-                                <td runat="server" style="border-right: 2px solid black;" id="nightCFISubtotal" visible='<%# CurrentUser.IsInstructor %>'><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td runat="server" style="border-right: 2px solid black;" id="CFISubtotal" visible='<%# CurrentUser.IsInstructor %>'><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td runat="server" style="border-right: 2px solid black;" id="SICSubtotal" visible='<%# CurrentUser.TracksSecondInCommandTime %>'><%# ((LogbookEntryDisplay) Container.DataItem).SIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                                 <td class="centered"><%# (int) Eval("DayTakeoffTotal") %>&nbsp;/&nbsp;<%# (int) Eval("LandingsTotal") - (int) Eval("NightLandings") - (int) Eval("NightTouchAndGoLandings") %></td>
                                 <td class="centered" style="border-right: 2px solid black;"><%# (int) Eval("NightTakeoffTotal") %>&nbsp;/&nbsp;<%# (int) Eval("NightLandings") + (int) Eval("NightTouchAndGoLandings") %></td>

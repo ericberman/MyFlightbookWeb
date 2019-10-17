@@ -8,7 +8,7 @@
 <asp:Repeater ID="rptPages" runat="server" OnItemDataBound="rptPages_ItemDataBound" EnableViewState="false">
     <ItemTemplate>
         <uc1:pageHeader runat="server" ID="pageHeader" UserName="<%# CurrentUser.UserName %>" />
-        <table class="pageTable">
+        <table class="pageTable" style="width:100%">
             <thead class="printheader bordered">
                 <tr>
                     <td colspan="<% =Math.Min(OptionalColumns.Count(), 4) + 10 %>"></td>
@@ -26,8 +26,8 @@
                     <th class="rowHeader" runat="server" id="optColumn4" Visible="<%# ShowOptionalColumn(3) %>"><div><%# OptionalColumnName(3) %></div></th>
                     <th class="rowHeader"><div><%=Resources.LogbookEntry.FieldTotal %></div></th>
                     <th class="rowHeader"><div><%=Resources.LogbookEntry.FieldPIC %></div></th>
-                    <th class="rowHeader"><div><%=Resources.LogbookEntry.FieldSIC %></div></th>
-                    <th class="rowHeader"><div><%=Resources.LogbookEntry.FieldCFI %></div></th>
+                    <th class="rowHeader" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><div><%=Resources.LogbookEntry.FieldSIC %></div></th>
+                    <th class="rowHeader" runat="server" visible="<%# CurrentUser.IsInstructor %>"><div><%=Resources.LogbookEntry.FieldCFI %></div></th>
                     <th class="rowHeader"><div><%=Resources.LogbookEntry.FieldDual %></div></th>
                     <th class="rowHeader"><div><%=Resources.LogbookEntry.FieldGroundSim %></div></th>
 
@@ -54,8 +54,8 @@
                         <td class="numericColumn" runat="server" id="tdoptColumn4" visible="<%# ShowOptionalColumn(3) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(3) %></div></td>
                         <td class="numericColumn"><%# Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td class="numericColumn"><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM)%></td>
-                        <td class="numericColumn"><%# Eval("SIC").FormatDecimal(CurrentUser.UsesHHMM)%></td>
-                        <td class="numericColumn"><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM)%></td>
+                        <td class="numericColumn" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><%# Eval("SIC").FormatDecimal(CurrentUser.UsesHHMM)%></td>
+                        <td class="numericColumn" runat="server" visible="<%# CurrentUser.IsInstructor %>"><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td class="numericColumn"><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td class="numericColumn"><%# Eval("GroundSim").FormatDecimal(CurrentUser.UsesHHMM)%></td>
 
@@ -116,8 +116,8 @@
                                 <td runat="server" id="tdoptColumnTotal4" visible="<%# ShowOptionalColumn(3) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnTotalDisplayValue(3, CurrentUser.UsesHHMM) %></div></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).PIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td><%# ((LogbookEntryDisplay) Container.DataItem).SIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><%# ((LogbookEntryDisplay) Container.DataItem).SIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td runat="server" visible="<%# CurrentUser.IsInstructor %>"><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).Dual.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).GroundSim.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
@@ -128,6 +128,7 @@
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).IMC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).SimulatedIFR.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.ToString(System.Globalization.CultureInfo.CurrentCulture) %></td>
+                                <td style="border:none"></td>
                                 <%# (Container.ItemIndex != 0) ? "</tr>" : string.Empty %>
                             </ItemTemplate>
                         </asp:Repeater>

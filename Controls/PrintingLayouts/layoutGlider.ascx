@@ -21,7 +21,7 @@
                 <th class="headerSmall" rowspan="2" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderGliderLandings %></th>
 
                 <th class="headerBig" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderGroundTrainingReceived %></th>
-                <th class="headerSmall" colspan="5"><% =Resources.LogbookEntry.PrintHeaderPilotFunction2 %></th>
+                <th class="headerSmall" colspan="<% =4 + (CurrentUser.IsInstructor ? 1 : 0) %>"><% =Resources.LogbookEntry.PrintHeaderPilotFunction2 %></th>
                 <th class="headerBig" rowspan="2"><%=Resources.LogbookEntry.PrintHeaderRemarks %></th>
             </tr>
             <tr class="bordered">
@@ -35,7 +35,7 @@
                 <th class="headerSmall"><% =Resources.LogbookEntry.FieldDual %></th>
                 <th class="headerSmall"><% =Resources.LogbookEntry.PrintHeaderSolo %></th>
                 <th class="headerSmall"><% =Resources.LogbookEntry.FieldPIC %></th>
-                <th class="headerSmall"><% =Resources.LogbookEntry.FieldCFI %></th>
+                <th class="headerSmall" runat="server" visible="<%# CurrentUser.IsInstructor %>"><% =Resources.LogbookEntry.FieldCFI %></th>
                 <th class="headerSmall"><% =Resources.LogbookEntry.FieldTotal %></th>
             </tr>
         </thead>
@@ -60,7 +60,7 @@
                     <td><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("SoloTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                    <td><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                    <td runat="server" visible="<%# CurrentUser.IsInstructor %>"><%# Eval("CFI").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("TotalFlightTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td>
                         <div style="clear:left; white-space:pre-line;" dir="auto"><%# Eval("RedactedCommentWithReplacedApproaches") %></div>
@@ -87,7 +87,7 @@
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).Dual.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).SoloTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).PIC.FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                            <td><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                            <td runat="server" visible="<%# CurrentUser.IsInstructor %>"><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td><%# ((LogbookEntryDisplay) Container.DataItem).TotalFlightTime.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                             <td></td>
                             <%# (Container.ItemIndex != 0) ? "</tr>" : string.Empty %>
