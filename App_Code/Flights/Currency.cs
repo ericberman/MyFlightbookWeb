@@ -1777,6 +1777,8 @@ namespace MyFlightbook.FlightCurrency
 
             DateTime flightStart, flightEnd;
 
+            decimal totalMinutesTime = Math.Round(cfr.Total * 60.0M) / 60.0M;
+
             if (cfr.dtEngineStart.HasValue() && cfr.dtEngineEnd.HasValue())
             {
                 flightStart = cfr.dtEngineStart;
@@ -1794,15 +1796,15 @@ namespace MyFlightbook.FlightCurrency
                 flightEnd = new DateTime(cfr.dtFlight.Year, cfr.dtFlight.Month, cfr.dtFlight.Day, 23, 59, 0, DateTimeKind.Utc);
                 if (dtDutyEnd.HasValue())
                     flightEnd = flightEnd.EarlierDate(dtDutyEnd);
-                flightStart = flightEnd.AddHours(-(double)cfr.Total);
+                flightStart = flightEnd.AddHours((double) -totalMinutesTime);
             }
 
             // 117.23(b)(1) - 100 hours of flight time in 672 consecutive
             if (flightEnd.CompareTo(dt672HoursAgo) > 0)
-                hoursFlightTime11723b1 += Math.Max((cfr.Total - Math.Max((decimal)dt672HoursAgo.Subtract(flightStart).TotalHours, 0.0M)), 0.0M);
+                hoursFlightTime11723b1 += Math.Max((totalMinutesTime - Math.Max((decimal) dt672HoursAgo.Subtract(flightStart).TotalHours, 0.0M)), 0.0M);
             // 117.23(b)(2) - 1000 hours in 365 consecutive days.  This is NOT hour-for-hour, so can simply compare dates.
             if (flightEnd.CompareTo(dt365DaysAgo) > 0)
-                hoursFlightTime11723b2 += cfr.Total;
+                hoursFlightTime11723b2 += totalMinutesTime;
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
