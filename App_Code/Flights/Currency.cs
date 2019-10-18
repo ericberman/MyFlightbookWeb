@@ -136,7 +136,7 @@ namespace MyFlightbook.FlightCurrency
         {
             get
             {
-                string szResult = string.Empty;
+                string szResult;
                 switch (CurrencyGroup)
                 {
                     default:
@@ -288,13 +288,13 @@ namespace MyFlightbook.FlightCurrency
         public DateTime dtFlightStart { get; set; }
         public DateTime dtFlightEnd { get; set; }
 
-        private static DateTime s_Aug2018Cutover = new DateTime(2018, 8, 27);
-        private static DateTime s_Nov2018Cutover = new DateTime(2018, 11, 26);
+        private readonly static DateTime s_Aug2018Cutover = new DateTime(2018, 8, 27);
+        private readonly static DateTime s_Nov2018Cutover = new DateTime(2018, 11, 26);
 
         public static DateTime Aug2018Cutover { get { return s_Aug2018Cutover; } }
         public static DateTime Nov2018Cutover { get { return s_Nov2018Cutover; } }
 
-        private List<CustomFlightProperty> m_lstPfe;    // backing list for FlightEvents
+        private readonly List<CustomFlightProperty> m_lstPfe;    // backing list for FlightEvents
 
         /// <summary>
         /// Set of flightproperties (could include profile events, though these are rare now) for the flight.  Will not be null.
@@ -856,8 +856,7 @@ namespace MyFlightbook.FlightCurrency
                         // we handle this for regular currency by treating these as type-rated aircraft.
                         // But for instrument we need to do the same thing as above with type-rated: IFR events in an R22/R44 contribute to BOTH R22/R44 currency AND Helicopter currency,
                         // but IFR events in a helicopter do NOT contribute to R22/R44 IFR currency.
-                        List<string> lstIFRCategories = new List<string>();
-                        lstIFRCategories.Add(cfr.szCategory);
+                        List<string> lstIFRCategories = new List<string>() { cfr.szCategory };
 
                         /*
                          * Per discussion with Kersten Brändle <kersten.braendle@hotmail.com>, it appears that SFAR restriction doesn't apply to instrument, for two reasons:
@@ -1059,7 +1058,7 @@ namespace MyFlightbook.FlightCurrency
     /// </summary>
     public class FlightCurrency : CurrencyExaminer
     {
-        Queue<CurrencyEvent> m_eventQueue;          // queue of events within the time period window.
+        readonly Queue<CurrencyEvent> m_eventQueue; // queue of events within the time period window.
         List<CurrencyPeriod> m_lstValidCurrencies;  // expiration dates that were computed as we went along.
         DateTime m_dtEarliest;                      // Datetime of the earliest date that events can matter for whether or not you are current NOW
         Decimal m_Discrepancy;                      // # of events (or hours) short of currency we are to become current NOW
@@ -1185,8 +1184,8 @@ namespace MyFlightbook.FlightCurrency
             int i1 = 0;
             int i2 = 0;
 
-            bool f1Active = false;
-            bool f2Active = false;
+            bool f1Active;
+            bool f2Active;
 
             CurrencyPeriod cp = null;
 
@@ -1216,8 +1215,7 @@ namespace MyFlightbook.FlightCurrency
                     ((option == MergeOption.AND && f1Active && f2Active) ||
                      (option == MergeOption.OR && (f1Active || f2Active))))
                 {
-                    cp = new CurrencyPeriod();
-                    cp.EndDate = dt;
+                    cp = new CurrencyPeriod() { EndDate = dt };
                 }
                 // Otherwise, if we have a currencyperiod in progress and have stopped meeting the condition, close off the currencyperiod
                 // add it to the list and reset cp.
@@ -1243,8 +1241,7 @@ namespace MyFlightbook.FlightCurrency
         {
             if (fc == null)
                 throw new ArgumentNullException("fc");
-            FlightCurrency fcNew = new FlightCurrency(NumEvents, ExpirationSpan, IsCalendarMonth, DisplayName);
-            fcNew.m_lstValidCurrencies = MergeLists(m_lstValidCurrencies, fc.m_lstValidCurrencies, MergeOption.AND);
+            FlightCurrency fcNew = new FlightCurrency(NumEvents, ExpirationSpan, IsCalendarMonth, DisplayName) { m_lstValidCurrencies = MergeLists(m_lstValidCurrencies, fc.m_lstValidCurrencies, MergeOption.AND) };
             return fcNew;
         }
 
@@ -1257,8 +1254,7 @@ namespace MyFlightbook.FlightCurrency
         {
             if (fc == null)
                 throw new ArgumentNullException("fc");
-            FlightCurrency fcNew = new FlightCurrency(NumEvents, ExpirationSpan, IsCalendarMonth, DisplayName);
-            fcNew.m_lstValidCurrencies = MergeLists(m_lstValidCurrencies, fc.m_lstValidCurrencies, MergeOption.OR);
+            FlightCurrency fcNew = new FlightCurrency(NumEvents, ExpirationSpan, IsCalendarMonth, DisplayName) { m_lstValidCurrencies = MergeLists(m_lstValidCurrencies, fc.m_lstValidCurrencies, MergeOption.OR) };
             return fcNew;
         }
         #endregion
@@ -1715,12 +1711,12 @@ namespace MyFlightbook.FlightCurrency
         private TimeSpan tsDutyTime11723c2;
         private DateTime dtLastDutyStart;
         private bool HasSeenProperDutyPeriod;
-        private bool fIncludeAllFlights;
+        private readonly bool fIncludeAllFlights;
 
         // Useful dates we don't want to continuously recompute
-        private DateTime dt168HoursAgo;
-        private DateTime dt672HoursAgo;
-        private DateTime dt365DaysAgo;
+        private readonly DateTime dt168HoursAgo;
+        private readonly DateTime dt672HoursAgo;
+        private readonly DateTime dt365DaysAgo;
         #endregion
 
         public static bool IsFAR117Property(CustomFlightProperty pfe)
@@ -1916,7 +1912,7 @@ namespace MyFlightbook.FlightCurrency
     /// </summary>
     public class FAR195ACurrency : FAR117Currency
     {
-        private DateTime dt24HoursAgo = DateTime.UtcNow.AddHours(-24);
+        private readonly DateTime dt24HoursAgo = DateTime.UtcNow.AddHours(-24);
         private double totalInstruction = 0.0;
         private const double MaxInstruction = 8.0;
         private const double CloseToMaxInstruction = 5.0;
@@ -2038,8 +2034,8 @@ namespace MyFlightbook.FlightCurrency
     /// </summary>
     public class SFAR73Currency
     {
-        private int R22Duration;
-        private int R44Duration;
+        private readonly int R22Duration;
+        private readonly int R44Duration;
 
         public DateTime NextR22FlightReview(DateTime lastR22Review)
         {
@@ -2108,20 +2104,19 @@ namespace MyFlightbook.FlightCurrency
         const int MinRecentTimeInType = 15;                // 61.57(e)(4)(i)(C) and (ii)(C) - 15 hours in type in the preceding 90 days
         const int MinRecencyInType = 90;
         const int MinLandings6157eAirplane = 3;
-        const int MinTakeoffs6157eAirplane = 3;
         const int Duration6157eAirplane = 6;
         const int MinLandings6157eSim = 6;
         const int MinTakeoffs6157eSim = 6;
         const int Duration6157eSim = 12;
 
         // 61.57(e) sub-currencies
-        private FlightCurrency m_fc6157ei = new FlightCurrency(MinLandings6157eAirplane, Duration6157eAirplane, true, "Landings per 61.57(e)(4)(i)");
-        private FlightCurrency m_fc6157eiTakeoffs = new FlightCurrency(MinLandings6157eAirplane, Duration6157eAirplane, true, "Takeoffs per 61.57(e)(4)(i)");
-        private FlightCurrency m_fc6157eii = new FlightCurrency(MinLandings6157eSim, Duration6157eSim, true, "Landings per 61.57(e)(4)(ii)");
-        private FlightCurrency m_fc6157eiiTakeoffs = new FlightCurrency(MinTakeoffs6157eSim, 12, true, "Takeoffs per 61.57(e)(4)(ii)");
-        private FlightCurrency m_fc6157eTotalTime = new FlightCurrency(MinTime6157e, 12, true, "Total time");
-        private FlightCurrency m_fc6157TimeInType = new FlightCurrency(MinRecentTimeInType, MinRecencyInType, false, "Recent time in type");
-        private PassengerCurrency m_fc6157Passenger = new PassengerCurrency("61.57(e)(4)(i)(B)"); // 61.57(e)(4)(i)(B) and (ii)(B) - regular passenger currency must have been met too
+        private readonly FlightCurrency m_fc6157ei = new FlightCurrency(MinLandings6157eAirplane, Duration6157eAirplane, true, "Landings per 61.57(e)(4)(i)");
+        private readonly FlightCurrency m_fc6157eiTakeoffs = new FlightCurrency(MinLandings6157eAirplane, Duration6157eAirplane, true, "Takeoffs per 61.57(e)(4)(i)");
+        private readonly FlightCurrency m_fc6157eii = new FlightCurrency(MinLandings6157eSim, Duration6157eSim, true, "Landings per 61.57(e)(4)(ii)");
+        private readonly FlightCurrency m_fc6157eiiTakeoffs = new FlightCurrency(MinTakeoffs6157eSim, 12, true, "Takeoffs per 61.57(e)(4)(ii)");
+        private readonly FlightCurrency m_fc6157eTotalTime = new FlightCurrency(MinTime6157e, 12, true, "Total time");
+        private readonly FlightCurrency m_fc6157TimeInType = new FlightCurrency(MinRecentTimeInType, MinRecencyInType, false, "Recent time in type");
+        private readonly PassengerCurrency m_fc6157Passenger = new PassengerCurrency("61.57(e)(4)(i)(B)"); // 61.57(e)(4)(i)(B) and (ii)(B) - regular passenger currency must have been met too
 
         public string TypeDesignator { get; set; }
 
@@ -2322,19 +2317,19 @@ namespace MyFlightbook.FlightCurrency
     public class InstrumentCurrency : CurrencyExaminer
     {
         // 61.57(c)(1)
-        FlightCurrency fcIFRHold = new FlightCurrency(1, 6, true, "IFR - Holds");
-        FlightCurrency fcIFRApproach = new FlightCurrency(6, 6, true, "IFR - Approaches");
+        readonly FlightCurrency fcIFRHold = new FlightCurrency(1, 6, true, "IFR - Holds");
+        readonly FlightCurrency fcIFRApproach = new FlightCurrency(6, 6, true, "IFR - Approaches");
 
         // 61.57(c)(2) (OLD - expires Nov 26, 2018)
-        FlightCurrency fcFTDHold = new FlightCurrency(1, 6, true, "IFR - Holds (FTD)");
-        FlightCurrency fcFTDApproach = new FlightCurrency(6, 6, true, "IFR - Approaches (FTD)");
+        readonly FlightCurrency fcFTDHold = new FlightCurrency(1, 6, true, "IFR - Holds (FTD)");
+        readonly FlightCurrency fcFTDApproach = new FlightCurrency(6, 6, true, "IFR - Approaches (FTD)");
 
         // 61.57(c)(3) (OLD - expires Nov 26, 2018)
-        FlightCurrency fcATDHold = new FlightCurrency(1, 2, true, "IFR - Holds (ATD)");
-        FlightCurrency fcATDApproach = new FlightCurrency(6, 2, true, "IFR - Approaches (ATD)");
-        FlightCurrency fcUnusualAttitudesAsc = new FlightCurrency(2, 2, true, "Unusual Attitudes Recoveries, Ascending");
-        FlightCurrency fcUnusualAttitudesDesc = new FlightCurrency(2, 2, true, "Unusual Attitude Recoveries (Descending, Vne)");
-        FlightCurrency fcInstrumentHours = new FlightCurrency(3, 2, true, "Hours of instrument time");
+        readonly FlightCurrency fcATDHold = new FlightCurrency(1, 2, true, "IFR - Holds (ATD)");
+        readonly FlightCurrency fcATDApproach = new FlightCurrency(6, 2, true, "IFR - Approaches (ATD)");
+        readonly FlightCurrency fcUnusualAttitudesAsc = new FlightCurrency(2, 2, true, "Unusual Attitudes Recoveries, Ascending");
+        readonly FlightCurrency fcUnusualAttitudesDesc = new FlightCurrency(2, 2, true, "Unusual Attitude Recoveries (Descending, Vne)");
+        readonly FlightCurrency fcInstrumentHours = new FlightCurrency(3, 2, true, "Hours of instrument time");
 
         /*
          * 61.57 says (as of 4/8/13):
@@ -2367,24 +2362,24 @@ namespace MyFlightbook.FlightCurrency
          * 
          * Update: 6/1/2013: I'm lossening this a bit more, so the hold can be in a real airplane OR ATD OR FS/FTD.
          * 
-         * Update: 7/6/208 - pending changes to regs make all of this moot.
+         * Update: 7/6/2018 - pending changes to regs make all of this moot.
         */
 
         // 61.57(c)(4) - STRICT all data above is captured except we need a 6-month ATDHold/Approach as well
-        FlightCurrency fcATDHold6Month = new FlightCurrency(1, 6, true, "IFR - Holds (ATD, 6-month)");
-        FlightCurrency fcATDAppch6Month = new FlightCurrency(6, 6, true, "IFR - Approaches (ATD, 6-month)");
-        FlightCurrency fcFTDApproach6Month = new FlightCurrency(1, 6, true, "IFR - FS/FTD Approach");
-        FlightCurrency fcAirplaneApproach6Month = new FlightCurrency(1, 6, true, "IFR - at least one approach in 6 months in airplane");
+        readonly FlightCurrency fcATDHold6Month = new FlightCurrency(1, 6, true, "IFR - Holds (ATD, 6-month)");
+        readonly FlightCurrency fcATDAppch6Month = new FlightCurrency(6, 6, true, "IFR - Approaches (ATD, 6-month)");
+        readonly FlightCurrency fcFTDApproach6Month = new FlightCurrency(1, 6, true, "IFR - FS/FTD Approach");
+        readonly FlightCurrency fcAirplaneApproach6Month = new FlightCurrency(1, 6, true, "IFR - at least one approach in 6 months in airplane");
 
         // 61.57(c)(4) - LOOSE Interpretation  OBSOLETE AS OF Nov 26, 2018
-        FlightCurrency fcComboApproach6Month = new FlightCurrency(6, 6, true, "IFR - 6 Approaches (Real AND (FS/FTD OR ATD))");
+        readonly FlightCurrency fcComboApproach6Month = new FlightCurrency(6, 6, true, "IFR - 6 Approaches (Real AND (FS/FTD OR ATD))");
 
         // 61.57(c)(5) - seems redundant with (c)(2).  OBSOLETE
 
         // 61.57(d) - IPC (Instrument checkride counts here too)
-        FlightCurrency fcIPCOrCheckride = new FlightCurrency(1, 6, true, "IPC or Instrument Checkride");
+        readonly FlightCurrency fcIPCOrCheckride = new FlightCurrency(1, 6, true, "IPC or Instrument Checkride");
 
-        private Boolean m_fUseLoose6157c4 = false;
+        readonly private Boolean m_fUseLoose6157c4 = false;
         private Boolean m_fCacheValid = false;
         private CurrencyState m_csCurrent = CurrencyState.NotCurrent;
         private DateTime m_dtExpiration = DateTime.MinValue;
@@ -2749,12 +2744,12 @@ namespace MyFlightbook.FlightCurrency
     /// </summary>
     public class NVCurrency : IFlightExaminer
     {
-        NVCurrencyItem fcNVPassengers;
-        NVCurrencyItem fcNVNoPassengers;
-        NVCurrencyItem fcNVIPC;
+        readonly NVCurrencyItem fcNVPassengers;
+        readonly NVCurrencyItem fcNVNoPassengers;
+        readonly NVCurrencyItem fcNVIPC;
         List<FlightCurrency> m_lstCurrencies;
-        CategoryClass.CatClassID m_ccid;
-        string szNVGeneric;
+        readonly CategoryClass.CatClassID m_ccid;
+        readonly string szNVGeneric;
 
         public static bool IsHelicopterOrPoweredLift(CategoryClass.CatClassID ccid)
         {
@@ -2801,8 +2796,7 @@ namespace MyFlightbook.FlightCurrency
 
         private void AddProficiencyRequired(DateTime dtExpired)
         {
-            NVCurrencyItem nvci = new NVCurrencyItem(1, 0, szNVGeneric, 0);
-            nvci.NeedsProficiencyCheck = true;
+            NVCurrencyItem nvci = new NVCurrencyItem(1, 0, szNVGeneric, 0) { NeedsProficiencyCheck = true };
             nvci.AddRecentFlightEvents(dtExpired, 1);
             m_lstCurrencies.Add(nvci);
         }
@@ -2846,11 +2840,11 @@ namespace MyFlightbook.FlightCurrency
 
     public class GliderIFRCurrency : CurrencyExaminer
     {
-        FlightCurrency fcGliderIFRTime = new FlightCurrency(1.0M, 6, true, "Instrument time in Glider or single-engine airplane with view limiting device");
-        FlightCurrency fcGliderIFRTimePassengers = new FlightCurrency(2.0M, 6, true, "Instrument time in a glider.");
-        FlightCurrency fcGliderInstrumentManeuvers = new FlightCurrency(2.0M, 6, true, "Instrument Maneuvers per 61.57(c)(6)(i) => (c)(3)(i)");
-        FlightCurrency fcGliderInstrumentPassengers = new FlightCurrency(1, 6, true, "Instrument Maneuvers required for passengers, per 61.57(c)(6)(ii) => (c)(3)(ii)");
-        FlightCurrency fcGliderIPC = new FlightCurrency(1, 6, true, "Glider IPC");
+        readonly FlightCurrency fcGliderIFRTime = new FlightCurrency(1.0M, 6, true, "Instrument time in Glider or single-engine airplane with view limiting device");
+        readonly FlightCurrency fcGliderIFRTimePassengers = new FlightCurrency(2.0M, 6, true, "Instrument time in a glider.");
+        readonly FlightCurrency fcGliderInstrumentManeuvers = new FlightCurrency(2.0M, 6, true, "Instrument Maneuvers per 61.57(c)(6)(i) => (c)(3)(i)");
+        readonly FlightCurrency fcGliderInstrumentPassengers = new FlightCurrency(1, 6, true, "Instrument Maneuvers required for passengers, per 61.57(c)(6)(ii) => (c)(3)(ii)");
+        readonly FlightCurrency fcGliderIPC = new FlightCurrency(1, 6, true, "Glider IPC");
 
         private Boolean m_fCacheValid = false;
 
@@ -2930,13 +2924,12 @@ namespace MyFlightbook.FlightCurrency
             if (m_fCacheValid)
                 return;
 
-            m_szDiscrepancy = "";
+            m_szDiscrepancy = string.Empty;
             m_csCurrent = CurrencyState.NotCurrent;
             m_dtExpiration = DateTime.MinValue;
 
-            DateTime dtExpirationSolo = DateTime.MinValue;
-            DateTime dtExpirationPassengers = DateTime.MinValue;
-            DateTime dtExpirationIPC = DateTime.MinValue;
+            DateTime dtExpirationSolo;
+            DateTime dtExpirationPassengers;
 
             CurrencyState cs6157c6iA = fcGliderIFRTime.CurrentState;
             CurrencyState cs6157c6iB = fcGliderInstrumentManeuvers.CurrentState;
