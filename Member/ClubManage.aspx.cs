@@ -129,6 +129,9 @@ public partial class Member_ClubManage : System.Web.UI.Page
 
     protected void btnAddAircraft_Click(object sender, EventArgs e)
     {
+        if (String.IsNullOrEmpty(cmbAircraftToAdd.SelectedValue))
+            return;
+
         ClubAircraft ca = new ClubAircraft()
         {
             AircraftID = Convert.ToInt32(cmbAircraftToAdd.SelectedValue, CultureInfo.InvariantCulture),
