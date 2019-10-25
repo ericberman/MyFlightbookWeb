@@ -1,13 +1,14 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Instruction;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -24,10 +25,7 @@ public partial class Member_AddEndorsement : System.Web.UI.Page
             Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
             mfbEditEndorsement1.StudentType = Endorsement.StudentTypes.External;
             mfbEditEndorsement1.TargetUser =  pf;
-            cmbTemplates.DataSource = EndorsementType.LoadTemplates();
-            cmbTemplates.DataValueField = "id";
-            cmbTemplates.DataTextField = "FullTitle";
-            cmbTemplates.DataBind();
+            RefreshTemplateList();
             hdnLastTemplate.Value = cmbTemplates.SelectedValue;
 
             lblDisclaimerResponse.Text = Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement1);
@@ -54,10 +52,36 @@ public partial class Member_AddEndorsement : System.Web.UI.Page
         mfbEditEndorsement1.EndorsementID = Convert.ToInt32(hdnLastTemplate.Value, CultureInfo.InvariantCulture);
     }
 
-    protected void cmbTemplates_SelectedIndexChanged(object sender, EventArgs e)
+    protected void RefreshTemplateList()
+    {
+        List<EndorsementType> lst = new List<EndorsementType>(EndorsementType.LoadTemplates(mfbSearchTemplates.SearchText));
+        if (lst.Count == 0) // if nothing found, use the custom template
+            lst.Add(EndorsementType.GetEndorsementByID(1));
+
+        cmbTemplates.DataSource = lst;
+        cmbTemplates.DataValueField = "id";
+        cmbTemplates.DataTextField = "FullTitle";
+        cmbTemplates.DataBind();
+
+        int currentEndorsementID = mfbEditEndorsement1.EndorsementID;
+        if (lst.Find(et => et.ID == currentEndorsementID) == null)  // restricted list doesn't have active template - select the first one.
+        {
+            cmbTemplates.SelectedIndex = 0;
+            UpdateTemplate();
+        }
+        else if (currentEndorsementID.ToString(CultureInfo.InvariantCulture) != cmbTemplates.SelectedValue)
+            UpdateTemplate();
+    }
+
+    protected void UpdateTemplate()
     {
         mfbEditEndorsement1.EndorsementID = Convert.ToInt32(cmbTemplates.SelectedValue, CultureInfo.InvariantCulture);
         hdnLastTemplate.Value = cmbTemplates.SelectedValue;
+    }
+
+    protected void cmbTemplates_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UpdateTemplate();
     }
 
     protected void ChooseInstructor()
@@ -107,5 +131,10 @@ public partial class Member_AddEndorsement : System.Web.UI.Page
         {
             lblErr.Text = ex.Message;
         }
+    }
+
+    protected void mfbSearchbox_SearchClicked(object sender, EventArgs e)
+    {
+        RefreshTemplateList();
     }
 }

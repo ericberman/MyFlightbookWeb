@@ -2,6 +2,8 @@
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/mfbEditEndorsement.ascx" TagPrefix="uc1" TagName="mfbEditEndorsement" %>
+<%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc1" TagName="mfbSearchbox" %>
+
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -32,11 +34,16 @@
         </asp:View>
         <asp:View ID="vwEndorse" runat="server">
             <h3><%=Resources.SignOff.EndorsementPickTemplate %></h3>
+            <div style="display:inline-block; vertical-align:middle;">
+                <uc1:mfbSearchbox runat="server" ID="mfbSearchTemplates" Hint="<%$ Resources:SignOff, EndorsementsSearchPrompt %>" OnSearchClicked="mfbSearchbox_SearchClicked" />
+            </div>
+            <div style="display:inline-block; vertical-align:middle;">
+            <asp:DropDownList style="border: 1px solid black"
+                ID="cmbTemplates" runat="server" AutoPostBack="True" 
+                onselectedindexchanged="cmbTemplates_SelectedIndexChanged">
+            </asp:DropDownList>
+            </div>
             <p>
-                <asp:DropDownList style="border: 1px solid black"
-                    ID="cmbTemplates" runat="server" AutoPostBack="True" 
-                    onselectedindexchanged="cmbTemplates_SelectedIndexChanged">
-                </asp:DropDownList><br />
                 <asp:Localize ID="locRequestEndorsement" runat="server" Text="<%$ Resources:Profile, EndorsementRequestPrompt %>"></asp:Localize>
                 <asp:HyperLink ID="lnkContactUs" NavigateUrl="~/Public/ContactMe.aspx" runat="server" Text="<%$ Resources:Profile, EndorsementRequest %>"></asp:HyperLink>
                 <asp:HiddenField ID="hdnLastTemplate" runat="server" />

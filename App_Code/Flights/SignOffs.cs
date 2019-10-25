@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Web;
 
 /******************************************************
@@ -400,12 +401,39 @@ namespace MyFlightbook.Instruction
                 });
         }
 
-        public static IEnumerable<EndorsementType> LoadTemplates()
+        public static IEnumerable<EndorsementType> LoadTemplates(string szSearch = null)
         {
-            DBHelper dbh = new DBHelper("SELECT * FROM endorsementtemplates ORDER BY FARRef");
+            string szRestriction = string.Empty;
+            List<MySqlParameter> lstParams = new List<MySqlParameter>();
+
+            string[] rgTerms = (szSearch == null) ? new string[0] : Regex.Split(szSearch, "\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+            if (rgTerms != null && rgTerms.Length > 0)
+            {
+                List<string> lstWhere = new List<string>();
+                int i = 1;
+                foreach (string szTerm in rgTerms)
+                {
+                    if (!string.IsNullOrEmpty(szTerm))
+                    {
+                        MySqlParameter param = new MySqlParameter(String.Format(CultureInfo.InvariantCulture, "param{0}", i++), String.Format(CultureInfo.InvariantCulture, "%{0}%", szTerm));
+                        lstParams.Add(param);
+                        lstWhere.Add(String.Format(CultureInfo.InvariantCulture, " (CONCAT(Title, ' ', FarRef, ' ', Text) LIKE ?{0}) ", param.ParameterName));
+                    }
+                }
+
+                if (lstWhere.Count > 0)
+                    szRestriction = String.Format(CultureInfo.InvariantCulture, " WHERE {0} ", string.Join(" AND ", lstWhere));
+            }
+
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT * FROM endorsementtemplates {0} ORDER BY FARRef", szRestriction));
             List<EndorsementType> lst = new List<EndorsementType>();
 
-            if (!dbh.ReadRows((comm) => { },
+            if (!dbh.ReadRows((comm) =>
+            {
+                foreach (MySqlParameter p in lstParams)
+                    comm.Parameters.Add(p);
+            },
                 (dr) => { lst.Add(new EndorsementType(dr)); }))
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture,"Unable to load templates:", dbh.LastError));
 
