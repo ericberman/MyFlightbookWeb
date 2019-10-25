@@ -19,7 +19,7 @@
                 <th class="headerBig" colspan="3" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
                 <th class="headerBig" colspan="3" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
                 <th class="headerBig" colspan="4" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderInstrumentTime %></th>
-                <th class="headerBig" colspan="4" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderCrossCountry %></th>
+                <th class="headerBig" runat="server" id="headerXC" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 6 : 4 %>" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderCrossCountry %></th>
                 <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3" runat="server" id="headerCFI" visible="<%# CurrentUser.IsInstructor %>"><% =Resources.LogbookEntry.FieldCFI %></th>
                 <th class="headerBig" style="width:1cm; border-right: 2px solid black;" rowspan="3" runat="server" id="headerSIC" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
                 <th class="headerBig" colspan="2" rowspan="2" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderTakeoffsLandings %></th>
@@ -37,8 +37,8 @@
                 <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><% =Resources.LogbookEntry.FieldSimIMC %></th>
                 <th class="headerSmall oddRow" style="width:1cm" rowspan="2"><% =Resources.LogbookEntry.FieldGroundSim %></th>
                 <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;" rowspan="2"><%=Resources.LogbookEntry.PrintHeaderApproaches %></th>
-                <th class="headerSmall oddRow" colspan="2"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
-                <th class="headerSmall oddRow" style="border-right: 2px solid black;"  colspan="2"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
+                <th class="headerSmall oddRow" style="border-right: 2px solid black;" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 3 :2 %>"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
+                <th class="headerSmall oddRow" style="border-right: 2px solid black;" colspan="<%# CurrentUser.TracksSecondInCommandTime ? 3 : 2 %>"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
             </tr>
             <tr class="bordered">
                 <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderFrom %></th>
@@ -53,8 +53,10 @@
                 <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black;"><% =Resources.LogbookEntry.FieldSIC %></th>
 
                 <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
+                <th class="headerSmall oddRow" style="width:1cm;" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
                 <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
                 <th class="headerSmall oddRow" style="width:1cm"><% =Resources.LogbookEntry.FieldDual %></th>
+                <th class="headerSmall oddRow" style="width:1cm;" runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><% =Resources.LogbookEntry.FieldSIC %></th>
                 <th class="headerSmall oddRow" style="width:1cm; border-right: 2px solid black"><% =Resources.LogbookEntry.PrintHeaderPIC2 %></th>
                 <th class="headerSmall oddRow"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
                 <th class="headerSmall oddRow" style="border-right: 2px solid black;"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
@@ -103,8 +105,10 @@
                         <td style="border-right: 2px solid black;"><%# ((int) Eval("Approaches")).FormatInt() %></td>
 
                         <td><%# Math.Min((decimal)Eval("Dual"), (decimal) Eval("DayXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><%# Math.Min((decimal)Eval("SIC"), (decimal) Eval("DayXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td style="border-right: 2px solid black;"><%# Math.Min((decimal)Eval("PIC"), (decimal) Eval("DayXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td><%# Math.Min(((decimal)Eval("Dual")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                        <td runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><%# Math.Min(((decimal)Eval("SIC")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td style="border-right: 2px solid black;"><%# Math.Min(((decimal)Eval("PIC")), (decimal)Eval("NightXC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td runat="server" visible='<%# CurrentUser.IsInstructor %>' style="border-right: 2px solid black;"><%# ((decimal)Eval("CFI")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                         <td runat="server" visible='<%# CurrentUser.TracksSecondInCommandTime %>' style="border-right: 2px solid black;"><%# ((decimal)Eval("SIC")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
@@ -144,8 +148,10 @@
                                 <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).Approaches.FormatInt() %></td>
 
                                 <td><%# Math.Max((((LogbookEntryDisplay) Container.DataItem).XCDualTotal - ((LogbookEntryDisplay) Container.DataItem).XCNightDualTotal), 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
-                                <td><%# Math.Max((((LogbookEntryDisplay) Container.DataItem).XCPICTotal - ((LogbookEntryDisplay) Container.DataItem).XCNightPICTotal), 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><%# Math.Max((((LogbookEntryDisplay) Container.DataItem).XCSICTotal - ((LogbookEntryDisplay) Container.DataItem).XCNightSICTotal), 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td style="border-right: 2px solid black;"><%# Math.Max((((LogbookEntryDisplay) Container.DataItem).XCPICTotal - ((LogbookEntryDisplay) Container.DataItem).XCNightPICTotal), 0).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td><%# ((LogbookEntryDisplay) Container.DataItem).XCNightDualTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                                <td runat="server" visible="<%# CurrentUser.TracksSecondInCommandTime %>"><%# ((LogbookEntryDisplay) Container.DataItem).XCNightSICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
                                 <td style="border-right: 2px solid black;"><%# ((LogbookEntryDisplay) Container.DataItem).XCNightPICTotal.FormatDecimal(CurrentUser.UsesHHMM) %></td>
 
                                 <td runat="server" style="border-right: 2px solid black;" id="CFISubtotal" visible='<%# CurrentUser.IsInstructor %>'><%# ((LogbookEntryDisplay) Container.DataItem).CFI.FormatDecimal(CurrentUser.UsesHHMM) %></td>

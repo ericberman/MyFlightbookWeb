@@ -2871,8 +2871,12 @@ namespace MyFlightbook
         public decimal NightSICTotal { get; set; }
         public decimal XCDualTotal { get; set; }
         public decimal XCPICTotal { get; set; }
+
+        public decimal XCSICTotal { get; set; }
         public decimal XCNightDualTotal { get; set; }
         public decimal XCNightPICTotal { get; set; }
+
+        public decimal XCNightSICTotal { get; set; }
         public int DayTakeoffTotal { get; set; }
         public int NightTakeoffTotal { get; set; }
         public decimal InstrumentAircraftTotal { get; set; }
@@ -3332,7 +3336,9 @@ namespace MyFlightbook
             XCDualTotal = XCDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.Dual) : led.XCDualTotal);
             XCNightDualTotal = XCNightDualTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.Dual)) : led.XCNightDualTotal);
             XCPICTotal = XCPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.PIC) : led.XCPICTotal);
+            XCSICTotal = XCSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.CrossCountry, le.SIC) : led.XCSICTotal);
             XCNightPICTotal = XCNightPICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.PIC)) : led.XCNightPICTotal);
+            XCNightSICTotal = XCNightSICTotal.AddMinutes(led == null || led.RowType == LogbookRowType.Flight ? Math.Min(le.Nighttime, Math.Min(le.CrossCountry, le.SIC)) : led.XCNightSICTotal);
         }
 
         public override void AddFrom(LogbookEntry le)
