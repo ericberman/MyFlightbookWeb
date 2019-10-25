@@ -892,12 +892,23 @@ namespace MyFlightbook
                 {
                     using (FlightData fd = new FlightData())
                     {
-                        using (MemoryStream ms = new MemoryStream())
+                        MemoryStream ms = new MemoryStream();
+
+                        try
                         {
                             if (fd.ParseFlightData(le.FlightData) && fd.HasLatLongInfo)
                                 fd.WriteGPXData(ms);
                             ms.Seek(0, SeekOrigin.Begin);
-                            szResult = new StreamReader(ms).ReadToEnd();
+                            using (StreamReader sr = new StreamReader(ms))
+                            {
+                                ms = null;  // for CA2202
+                                szResult = sr.ReadToEnd();
+                            }
+                        }
+                        finally
+                        {
+                            if (ms != null)
+                                ms.Dispose();
                         }
                     }
                 }
