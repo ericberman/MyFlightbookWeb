@@ -1,6 +1,7 @@
 using MyFlightbook;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -51,7 +52,7 @@ public partial class XMLNav : System.Web.UI.UserControl
     private ProfileRoles.UserRole m_userRole;
     private HtmlTextWriter m_tw;
 
-    void WriteTabs(IEnumerable<TabItem> lst)
+    void WriteTabs(IEnumerable<TabItem> lst, int level = 0)
     {
         foreach (TabItem ti in lst)
         {
@@ -76,7 +77,16 @@ public partial class XMLNav : System.Web.UI.UserControl
                 m_tw.AddAttribute(HtmlTextWriterAttribute.Class, "current");
             m_tw.RenderBeginTag(HtmlTextWriterTag.Li);
 
-            m_tw.AddAttribute(HtmlTextWriterAttribute.Href, ResolveUrl(ti.Link));
+            // Issue #392:
+            // Hack for Android touch devices: since there's no hover on a touch device, you have to tap it.
+            // On iOS, the first tap is the "hover" and a 2nd tap is the actual click.
+            // But on Android, the first tap does both, which makes selecting from a menu hard.
+            // So an android, we'll set the top-level menu URL to "#" and have it return false in on-click to prevent a navigation.
+            bool fAndroidHack = (level == 0 && Request.UserAgent.ToUpper(CultureInfo.CurrentCulture).Contains("ANDROID"));
+
+            if (fAndroidHack)
+                m_tw.AddAttribute(HtmlTextWriterAttribute.Onclick, "return false;");
+            m_tw.AddAttribute(HtmlTextWriterAttribute.Href, fAndroidHack ? "#" : ResolveUrl(ti.Link));
             m_tw.AddAttribute(HtmlTextWriterAttribute.Id, "tabID" + ti.ID.ToString());
             m_tw.AddAttribute(HtmlTextWriterAttribute.Class, "topTab");
             m_tw.RenderBeginTag(HtmlTextWriterTag.A);
@@ -86,7 +96,7 @@ public partial class XMLNav : System.Web.UI.UserControl
             if (this.MenuStyle == HoverStyle.HoverPop && ti.Children != null && ti.Children.Count() > 0 && !fHideChildren)
             {
                 m_tw.RenderBeginTag(HtmlTextWriterTag.Ul);
-                WriteTabs(ti.Children);
+                WriteTabs(ti.Children, level + 1);
                 m_tw.RenderEndTag();    // ul tag.
             }
 
