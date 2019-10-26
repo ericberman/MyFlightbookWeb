@@ -46,6 +46,8 @@ public partial class XMLNav : System.Web.UI.UserControl
         }
     }
 
+    protected bool NeedsAndroidHack { get; set; }
+
     public event EventHandler<TabBoundEventArgs> TabItemBound = null;
     #endregion
 
@@ -54,6 +56,13 @@ public partial class XMLNav : System.Web.UI.UserControl
 
     void WriteTabs(IEnumerable<TabItem> lst, int level = 0)
     {
+        // Issue #392:
+        // Hack for Android touch devices: since there's no hover on a touch device, you have to tap it.
+        // On iOS, the first tap is the "hover" and a 2nd tap is the actual click.
+        // But on Android, the first tap does both, which makes selecting from a menu hard.
+        // So an android, we'll set the top-level menu URL to "#" and have it return false in on-click to prevent a navigation.
+        bool fAndroidHack = (level == 0 && NeedsAndroidHack);
+
         foreach (TabItem ti in lst)
         {
             if (String.IsNullOrEmpty(ti.Text))
@@ -76,13 +85,6 @@ public partial class XMLNav : System.Web.UI.UserControl
             if (ti.ID == SelectedItem)
                 m_tw.AddAttribute(HtmlTextWriterAttribute.Class, "current");
             m_tw.RenderBeginTag(HtmlTextWriterTag.Li);
-
-            // Issue #392:
-            // Hack for Android touch devices: since there's no hover on a touch device, you have to tap it.
-            // On iOS, the first tap is the "hover" and a 2nd tap is the actual click.
-            // But on Android, the first tap does both, which makes selecting from a menu hard.
-            // So an android, we'll set the top-level menu URL to "#" and have it return false in on-click to prevent a navigation.
-            bool fAndroidHack = (level == 0 && Request.UserAgent.ToUpper(CultureInfo.CurrentCulture).Contains("ANDROID"));
 
             if (fAndroidHack)
                 m_tw.AddAttribute(HtmlTextWriterAttribute.Onclick, "return false;");
@@ -107,6 +109,8 @@ public partial class XMLNav : System.Web.UI.UserControl
     void Page_Load(Object sender, EventArgs e)
     {
         m_userRole = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).Role;
+
+        NeedsAndroidHack = (Request != null && Request.UserAgent != null && Request.UserAgent.ToUpper(CultureInfo.CurrentCulture).Contains("ANDROID"));
 
         using (StringWriter sw = new StringWriter(System.Globalization.CultureInfo.CurrentCulture))
         {
