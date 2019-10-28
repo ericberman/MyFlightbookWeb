@@ -16,6 +16,34 @@ using System.Globalization;
 namespace MyFlightbook.FlightCurrency
 {
     public enum TotalsGroup { None, CategoryClass, ICAO, Model, Capabilities, CoreFields, Properties, Total }
+
+    public static class TotalsGroupUtility
+    {
+        public static string NameForGroup(this TotalsGroup group)
+        {
+            switch (group)
+            {
+                default:
+                case TotalsGroup.None:
+                    return string.Empty;
+                case TotalsGroup.CategoryClass:
+                    return Resources.Totals.TotalGroupCategoryClass;
+                case TotalsGroup.Capabilities:
+                    return Resources.Totals.TotalGroupCapabilities;
+                case TotalsGroup.CoreFields:
+                    return Resources.Totals.TotalGroupCoreFields;
+                case TotalsGroup.ICAO:
+                    return Resources.Totals.TotalGroupICAO;
+                case TotalsGroup.Model:
+                    return Resources.Totals.TotalGroupModel;
+                case TotalsGroup.Properties:
+                    return Resources.Totals.TotalGroupProperties;
+                case TotalsGroup.Total:
+                    return Resources.Totals.TotalGroupTotal;
+            }
+        }
+    }
+
     public class TotalsItem : IComparable
     {
         /// <summary>
@@ -158,6 +186,12 @@ namespace MyFlightbook.FlightCurrency
         public FlightQuery Query { get; set; }
 
         public TotalsGroup Group { get; set; }
+
+        public string GroupName
+        {
+            get { return Group.NameForGroup(); }
+            set { throw new NotImplementedException(); /* this is only present to enable serialization */ } 
+        }
         #endregion
 
         /// <summary>
@@ -194,29 +228,7 @@ namespace MyFlightbook.FlightCurrency
 
         public string GroupName
         {
-            get
-            {
-                switch (Group)
-                {
-                    default:
-                    case TotalsGroup.None:
-                        return string.Empty;
-                    case TotalsGroup.CategoryClass:
-                        return Resources.Totals.TotalGroupCategoryClass;
-                    case TotalsGroup.Capabilities:
-                        return Resources.Totals.TotalGroupCapabilities;
-                    case TotalsGroup.CoreFields:
-                        return Resources.Totals.TotalGroupCoreFields;
-                    case TotalsGroup.ICAO:
-                        return Resources.Totals.TotalGroupICAO;
-                    case TotalsGroup.Model:
-                        return Resources.Totals.TotalGroupModel;
-                    case TotalsGroup.Properties:
-                        return Resources.Totals.TotalGroupProperties;
-                    case TotalsGroup.Total:
-                        return Resources.Totals.TotalGroupTotal;
-                }
-            }
+            get { return Group.NameForGroup(); }
         }
         #endregion
 
