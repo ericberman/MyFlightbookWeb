@@ -199,7 +199,7 @@ namespace MyFlightbook.MilestoneProgress
     {
         protected const decimal minXCReduced = 200;
 
-        protected ATPRestrictedBase(string title, CategoryClass.CatClassID ccid, string szBaseFAR, decimal minTime, decimal minXCTime) : base(title, ccid, minTime, minXCTime)
+        protected ATPRestrictedBase(string title, CategoryClass.CatClassID ccid, string szBaseFAR, decimal minTime, decimal minXCTime) : base(title, ccid, minTime, minXCTime, fCanCreditSICAndFlightEngineer: true)
         {
             miTotal.FARRef = szBaseFAR;
             miMinXCTime.Note = Resources.MilestoneProgress.ATPMinXCTimeNoteRestricted;
