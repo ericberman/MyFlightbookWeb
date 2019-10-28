@@ -166,7 +166,7 @@ namespace MyFlightbook.Telemetry
                         break;
                     case KnownColumnTypes.ctDateTime:
                     case KnownColumnTypes.ctNakedDate:
-                        o = Convert.ToDateTime(szValue, CultureInfo.CurrentCulture);
+                        o = szValue.ParseUTCDate();
                         break;
                     case KnownColumnTypes.ctNakedUTCDate:
                         o = DateTime.SpecifyKind(Convert.ToDateTime(szValue, CultureInfo.CurrentCulture), DateTimeKind.Utc);

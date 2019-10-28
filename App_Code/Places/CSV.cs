@@ -167,7 +167,7 @@ namespace MyFlightbook.Telemetry
             {
                 KnownColumn kc = KnownColumn.GetKnownColumn(KnownColumnNames.UTCDateTime);
                 pc.ColumnList.Add(kc);
-                DataColumn dc = new DataColumn(kc.Column, KnownColumn.ColumnDataType(kc.Type));
+                DataColumn dc = new DataColumn(kc.Column, KnownColumn.ColumnDataType(kc.Type)) { DateTimeMode = DataSetDateTime.Utc };
                 ParsedData.Columns.Add(dc);
                 dc.DateTimeMode = DataSetDateTime.Utc;
                 pc.derivedColumnCount++;
@@ -183,7 +183,7 @@ namespace MyFlightbook.Telemetry
                 pc.fDeriveUTCDateTime = true;
                 KnownColumn kc = KnownColumn.GetKnownColumn(KnownColumnNames.UTCDateTime);
                 pc.ColumnList.Add(kc);
-                ParsedData.Columns.Add(new DataColumn(kc.Column, KnownColumn.ColumnDataType(kc.Type)));
+                ParsedData.Columns.Add(new DataColumn(kc.Column, KnownColumn.ColumnDataType(kc.Type)) { DateTimeMode = DataSetDateTime.Utc });
                 pc.derivedColumnCount++;
             }
 
