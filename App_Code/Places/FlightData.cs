@@ -47,6 +47,7 @@ namespace MyFlightbook.Telemetry
         public const string UTCDateTime = "UTC DateTime";
         public const string PITCH = "Pitch";
         public const string ROLL = "Roll";
+        public const string HOBBS = "Hobbs";
     }
 
     public class KnownColumn
@@ -1659,8 +1660,16 @@ namespace MyFlightbook.Telemetry
                 decimal factorToKts = (decimal) (SpeedFactor / Geography.ConversionFactors.MetersPerSecondPerKnot);
                 bool fConvertNativeSpeed = HasSpeed && afc.SpeedColumn.CompareOrdinal(KnownColumnNames.SPEED) == 0;
 
+                bool fCheckHobbs = le.HobbsStart == 0 && m_dt.Columns.Contains(KnownColumnNames.HOBBS);
+
                 foreach (DataRow dr in m_dt.DefaultView.Table.Rows)
                 {
+                    if (fCheckHobbs)
+                    {
+                        decimal newHobbs = Convert.ToDecimal(dr[KnownColumnNames.HOBBS], CultureInfo.CurrentCulture);
+                        le.HobbsStart = (le.HobbsStart == 0) ? newHobbs : Math.Min(newHobbs, le.HobbsStart);
+                        le.HobbsEnd = Math.Max(le.HobbsEnd, newHobbs);
+                    }
                     decimal dSaved = 0.0M;
                     // convert to kts for processing
                     if (fConvertNativeSpeed)
