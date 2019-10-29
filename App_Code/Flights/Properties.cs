@@ -182,6 +182,8 @@ namespace MyFlightbook
             public const UInt32 cfpFlagsUASLaunch = 0x00400000;
             public const UInt32 cfpFlagsUASRecovery = 0x00800000;
             public const UInt32 cfpFlagKnownProperty = 0x01000000; // Generic "known property" to pull in for currency, ratings progress.
+            public const UInt32 cfpFlagNoAutoComplete = 0x02000000; // no autocomplete for this property
+            public const UInt32 cfpFlagAllCaps = 0x04000000;    // convert any value for this property to all caps.
         };
 
         private const string szAppCacheKey = "keyCustomPropertyTypes";
@@ -422,6 +424,18 @@ namespace MyFlightbook
         {
             get { return Type == CFPPropertyType.cfpDecimal && ((Flags & CFPPropertyFlag.cfpFlagBasicDecimal) != CFPPropertyFlag.cfpFlagNone); }
         }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public Boolean IsNoAutocomplete
+        {
+            get { return Type == CFPPropertyType.cfpString && ((Flags & CFPPropertyFlag.cfpFlagNoAutoComplete) != CFPPropertyFlag.cfpFlagNone); }
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public Boolean IsAllCaps
+        {
+            get { return Type == CFPPropertyType.cfpString && ((Flags & CFPPropertyFlag.cfpFlagAllCaps) != CFPPropertyFlag.cfpFlagNone); }
+        }
         #endregion
         #endregion
         /// <summary>
@@ -538,8 +552,10 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             if (t == CFPPropertyType.cfpDecimal && (cfp & CFPPropertyFlag.cfpFlagBasicDecimal) != 0) sb.Append("Decimal, but not a time;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagsUASLaunch, "UAS Launch;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagsUASRecovery, "UAS Recovery;");
-            AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagKnownProperty, "Known Property");
-            AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagGliderGroundLaunch, "Glider GroundLaunch");
+            AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagKnownProperty, "Known Property;");
+            AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagGliderGroundLaunch, "Glider GroundLaunch;");
+            AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagNoAutoComplete, "No autocomplete;");
+            AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagAllCaps, "All Caps;");
 
             string sz = sb.ToString();
 
@@ -1022,9 +1038,10 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                         cfp.IntValue = Convert.ToInt32(value, CultureInfo.InvariantCulture);
                         break;
                     case CFPPropertyType.cfpString:
-                        cfp.TextValue = value;
+                        cfp.TextValue = (cpt.IsAllCaps) ? value.ToUpper() : value;
                         break;
                 }
+
                 result[i++] = cfp;
             }
 
@@ -1053,7 +1070,10 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             if (IsDefaultValue)
                 return true;
 
-            DBHelper dbh = new DBHelper("");
+            if (m_cpt.Type == CFPPropertyType.cfpString && m_cpt.IsAllCaps)
+                TextValue = TextValue.ToUpper();
+
+            DBHelper dbh = new DBHelper(string.Empty);
             dbh.DoNonQuery(
                 (comm) =>
                 {
@@ -1207,7 +1227,7 @@ ORDER BY f.Date Desc");
 FROM Flightproperties fp
 INNER JOIN CustomPropertyTypes cp ON fp.idProptype=cp.idProptype
 INNER JOIN Flights f ON fp.idFlight=f.idflight
-WHERE cp.Type=5 AND f.username=?user
+WHERE cp.Type=5 AND ((cp.flags & 0x02000000) = 0) AND f.username=?user
 GROUP BY fp.idPropType;";
 
             DBHelper dbh = new DBHelper(szQ);

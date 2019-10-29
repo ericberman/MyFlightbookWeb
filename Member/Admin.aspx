@@ -582,6 +582,8 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                                 <asp:ListItem Text="UAS Launch" Value="4194304"></asp:ListItem>
                                 <asp:ListItem Text="UAS Recovery" Value="8388608"></asp:ListItem>
                                 <asp:ListItem Text="Known property" Value="16777216"></asp:ListItem>
+                                <asp:ListItem Text="No autocomplete" Value="33554432"></asp:ListItem>
+                                <asp:ListItem Text="Convert to Caps" Value="67108864"></asp:ListItem>
                             </asp:CheckBoxList>
                         </td>
                     </tr>
