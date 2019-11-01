@@ -1151,7 +1151,7 @@ GROUP BY ac.idaircraft";
                 YearlyPayments lastYear = lst[i - 1];
                 YearlyPayments thisYear = lst[i];
 
-                for (int j = 0; j < 11; j++)
+                for (int j = 0; j < 12; j++)
                 {
                     PeriodPaymentStat lastYearMonth = lastYear.MonthlyPayments[j];
                     PeriodPaymentStat thisYearMonth = thisYear.MonthlyPayments[j];
