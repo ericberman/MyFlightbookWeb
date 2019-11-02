@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -70,12 +70,12 @@ namespace MyFlightbook.Encryptors
     /// </summary>
     public abstract class MFBEncryptor
     {
-        private string m_szPass = string.Empty;
+        readonly private string m_szPass = string.Empty;
 
         /// <summary>
         /// key to use for legacy support if the current key doesn't work
         /// </summary>
-        private string m_szPassFallback = string.Empty;
+        readonly private string m_szPassFallback = string.Empty;
 
         /// <summary>
         /// Creates an encryptor using the specified pass keys

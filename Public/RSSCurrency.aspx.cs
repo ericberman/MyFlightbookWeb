@@ -8,7 +8,7 @@ using MyFlightbook.Encryptors;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -38,7 +38,7 @@ public partial class Public_RSSCurrency : System.Web.UI.Page
         IsTotals = (util.GetIntParam(Request, "t", 0) != 0);
         mvData.SetActiveView(IsTotals ? vwTotals : vwCurrency);
 
-        string szDescription = "";
+        string szDescription;
         if (szUser.Length > 0)
         {
             StringBuilder sb = new StringBuilder();
@@ -68,19 +68,21 @@ public partial class Public_RSSCurrency : System.Web.UI.Page
             szDescription = Resources.Currency.RSSNoUser;
         }
 
-        XmlTextWriter xmltw = new XmlTextWriter(Response.OutputStream, System.Text.Encoding.UTF8);
-        Profile pf = MyFlightbook.Profile.GetUser(szUser);
+        using (XmlTextWriter xmltw = new XmlTextWriter(Response.OutputStream, System.Text.Encoding.UTF8))
+        {
+            Profile pf = MyFlightbook.Profile.GetUser(szUser);
 
-        szDescription += "\r\n<!-- " + szDebug + "-->";
+            szDescription += "\r\n<!-- " + szDebug + "-->";
 
-        if (!String.IsNullOrEmpty(Request.QueryString["Google"]))
-            WrapGoogleRSS(xmltw, pf.UserFullName, szDescription);
-        else
-            WrapGenericRSS(xmltw, pf.UserFullName, szDescription);
+            if (!String.IsNullOrEmpty(Request.QueryString["Google"]))
+                WrapGoogleRSS(xmltw, pf.UserFullName, szDescription);
+            else
+                WrapGenericRSS(xmltw, pf.UserFullName, szDescription);
 
-        Response.ContentEncoding = System.Text.Encoding.UTF8;
-        Response.ContentType = "text/xml";
-        xmltw.Flush();
+            Response.ContentEncoding = System.Text.Encoding.UTF8;
+            Response.ContentType = "text/xml";
+            xmltw.Flush();
+        }
         Response.End();
     }
 
