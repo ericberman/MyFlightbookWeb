@@ -1400,7 +1400,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>15 hours of instrument training from an authorized instructor (CFII)</value>
   </data>
   <data name="MinInstrumentTrainingNote" xml:space="preserve">
-    <value>Any dual with IMC or Simulated IMC contributes to this, but %APP_NAME% cannot distinguish simulated instrument during VFR training from instruction received towards an instrument rating, so this may OVERSTATE your progress.</value>
+    <value>Any dual with IMC or Simulated IMC contributes to this, but %APP_NAME% cannot determine what rating your instructor held, so this may OVERSTATE your progress.</value>
   </data>
   <data name="CommGyroplaneNightLandings" xml:space="preserve">
     <value>10 night training landings to full stop in a gyroplane</value>
