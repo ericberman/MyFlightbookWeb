@@ -675,4 +675,7 @@ Sender Email: {1}</value>
   <data name="ReportInsuranceMonths" xml:space="preserve">
     <value># of months back to find flights in club aircraft:</value>
   </data>
+  <data name="ReportHeaderNotes" xml:space="preserve">
+    <value>Public Notes</value>
+  </data>
 </root>

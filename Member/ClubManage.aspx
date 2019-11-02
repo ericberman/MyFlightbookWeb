@@ -384,6 +384,11 @@ ORDER BY f.DATE ASC
                                     <asp:Label ID="lblDeadlines" runat="server" Text='<%# MyFlightbook.FlightCurrency.DeadlineCurrency.CoalescedDeadlinesForAircraft(null, (int) Eval("AircraftID")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
+                            <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderNotes %>">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblNotes" runat="server" Text='<%# Eval("PublicNotes") %>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
                         </Columns>
                         <EmptyDataTemplate>
                             <p><% =Resources.Club.ReportNoData %></p>
