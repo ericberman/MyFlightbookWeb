@@ -3198,7 +3198,7 @@ namespace MyFlightbook
         /// </summary>
         public string RedactedCommentWithReplacedApproaches
         {
-            get { return ApproachDescription.ReplaceApproaches(RedactedComment.Linkify()); }
+            get { return ApproachDescription.ReplaceApproaches(RedactedComment.Linkify()).Trim(); }
         }
 
         public IEnumerable<string> PropertiesWithReplacedApproaches
