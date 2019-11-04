@@ -193,7 +193,7 @@
                     </table>
                 </asp:Panel>
                 <asp:Panel ID="pnlReport" runat="server" ScrollBars="Auto">
-                    <asp:GridView ID="gvClubReports" AutoGenerateColumns="false" ShowFooter="false" CellPadding="4" GridLines="None" runat="server">
+                    <asp:GridView ID="gvClubReports" AutoGenerateColumns="false" AlternatingRowStyle-CssClass="logbookAlternateRow" ShowFooter="false" CellPadding="4" GridLines="None" runat="server">
                         <Columns>
                             <asp:BoundField DataField="Date" DataFormatString="{0:d}" HeaderText="<%$ Resources:Club, ReportHeaderDate %>" />
                             <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderMonth %>">
@@ -238,6 +238,7 @@
                             </asp:TemplateField>
                             <asp:BoundField DataField="Total Engine" HeaderText="<%$ Resources:Club, ReportHeaderTotalEngine %>" DataFormatString="{0:0.0#}" />
                             <asp:BoundField DataField="Oil Added" HeaderText="<%$ Resources:Club, ReportHeaderOilAdded %>" DataFormatString="{0:0.0#}" />
+                            <asp:BoundField DataField="Oil Level" HeaderText="<%$ Resources:Club, ReportHeaderOilLevel %>" DataFormatString="{0:0.0#}" />
                             <asp:BoundField DataField="Fuel Added" HeaderText="<%$ Resources:Club, ReportHeaderFuelAdded %>" DataFormatString="{0:0.0#}" />
                             <asp:BoundField DataField="Fuel Cost" HeaderText="<%$ Resources:Club, ReportHeaderFuelCost %>" DataFormatString="{0:C}" />
                         </Columns>
@@ -259,7 +260,8 @@
                     fp2.decValue - fp.decValue AS 'Total Tach',
                     fp3.decValue AS 'Oil Added',
                     fp4.decValue AS 'Fuel Added',
-                    fp5.decValue AS 'Fuel Cost'
+                    fp5.decValue AS 'Fuel Cost',
+                    fp6.decValue AS 'Oil Level'
 FROM flights f 
 INNER JOIN clubmembers cm ON f.username = cm.username
 INNER JOIN users u ON u.username=cm.username
@@ -271,6 +273,7 @@ LEFT JOIN flightproperties fp2 on (fp2.idflight=f.idflight AND fp2.idproptype=96
 LEFT JOIN flightproperties fp3 on (fp3.idflight=f.idflight AND fp3.idproptype=365)
 LEFT JOIN flightproperties fp4 on (fp4.idflight=f.idflight AND fp4.idproptype=94)
 LEFT JOIN flightproperties fp5 on (fp5.idflight=f.idflight AND fp5.idproptype=159)
+LEFT JOIN flightproperties fp6 on (fp6.idflight=f.idflight AND fp6.idproptype=650)
 WHERE
 c.idClub = ?idClub AND
 f.date &gt;= GREATEST(?startDate, cm.joindate, c.creationDate) AND
@@ -284,107 +287,107 @@ ORDER BY f.DATE ASC
                     <asp:Button ID="btnDownloadMaintenance" runat="server" Text="<%$ Resources:Club, ReportDownload %>" Visible="false" OnClick="btnDownloadMaintenance_Click" />
                 </div>
                 <asp:Panel ID="pnlMaintenanceReport" runat="server" ScrollBars="Auto" >
-                    <asp:GridView ID="gvMaintenance" AutoGenerateColumns="false" ShowFooter="false" CellPadding="4" GridLines="None" runat="server">
+                    <asp:GridView ID="gvMaintenance" AutoGenerateColumns="false" ShowFooter="false" CellPadding="4" GridLines="None" AlternatingRowStyle-CssClass="logbookAlternateRow" runat="server">
                         <Columns>
-                            <asp:BoundField DataField="DisplayTailnumber" ItemStyle-Font-Bold="true" HeaderText="<%$ Resources:Aircraft, AircraftHeader %>" />
-                            <asp:TemplateField HeaderText="<%$ Resources:Club, ClubAircraftTime %>">
+                            <asp:BoundField DataField="DisplayTailnumber" ItemStyle-Font-Bold="true" HeaderText="<%$ Resources:Aircraft, AircraftHeader %>" ItemStyle-VerticalAlign="Top" />
+                            <asp:TemplateField HeaderText="<%$ Resources:Club, ClubAircraftTime %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblLastAnnual" runat="server" Text='<%# ValueString (Eval("HighWater")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAnnual %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAnnual %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblLastAnnual" runat="server" Text='<%# ValueString (Eval("LastAnnual")) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAnnualDue %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAnnualDue %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblAnnualDue" runat="server" CssClass='<%# CSSForDate((DateTime) Eval("Maintenance.NextAnnual")) %>' Text='<%# ValueString (Eval("Maintenance.NextAnnual")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceTransponder %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceTransponder %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblLastXponder" runat="server" Text='<%# ValueString (Eval("LastTransponder")) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceTransponderDue %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceTransponderDue %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblXPonderDue" runat="server" CssClass='<%# CSSForDate((DateTime) Eval("Maintenance.NextTransponder")) %>' Text='<%# ValueString (Eval("Maintenance.NextTransponder")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenancePitotStatic %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenancePitotStatic %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblLastPitot" runat="server" Text='<%# ValueString (Eval("LastStatic")) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenancePitotStaticDue %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenancePitotStaticDue %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblPitotDue" runat="server" CssClass='<%# CSSForDate((DateTime) Eval("Maintenance.NextStatic")) %>' Text='<%# ValueString (Eval("Maintenance.NextStatic")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAltimeter %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAltimeter %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblLastAltimeter" runat="server" Text='<%# ValueString (Eval("LastAltimeter")) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAltimeterDue %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceAltimeterDue %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblAltimeterDue" runat="server" CssClass='<%# CSSForDate((DateTime) Eval("Maintenance.NextAltimeter")) %>' Text='<%# ValueString (Eval("Maintenance.NextAltimeter")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceELT %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceELT %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblLastELT" runat="server" Text='<%# ValueString (Eval("LastELT")) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceELTDue %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceELTDue %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblELTDue" runat="server" CssClass='<%# CSSForDate((DateTime) Eval("Maintenance.NextELT")) %>' Text='<%# ValueString (Eval("Maintenance.NextELT")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceVOR %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceVOR %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblLastVOR" runat="server" Text='<%# ValueString (Eval("LastVOR")) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceVORDue %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceVORDue %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblVORDue" runat="server" CssClass='<%# CSSForDate((DateTime) Eval("Maintenance.NextVOR")) %>' Text='<%# ValueString (Eval("Maintenance.NextVOR")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, Maintenance100 %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, Maintenance100 %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblLast100" runat="server" Text='<%# ValueString (Eval("Last100")) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, Maintenance100Due %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, Maintenance100Due %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblNext100" runat="server" CssClass='<%# CSSForValue((decimal) Eval("HighWater"), (decimal) Eval("Maintenance.Next100"), 10) %>' Text='<%# ValueString (Eval("Maintenance.Next100")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOil %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOil %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblLastOil" runat="server" Text='<%# ValueString (Eval("LastOilChange")) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue25 %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue25 %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblOil25" runat="server" CssClass='<%# CSSForValue((decimal) Eval("HighWater"), (decimal) Eval("LastOilChange"), 5, 25) %>' Text='<%# ValueString (Eval("LastOilChange"), 25) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue50 %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue50 %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblOil50" runat="server" CssClass='<%# CSSForValue((decimal) Eval("HighWater"), (decimal) Eval("LastOilChange"), 10, 50) %>' Text='<%# ValueString (Eval("LastOilChange"), 50) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue100 %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceOilDue100 %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblOil100" runat="server" CssClass='<%# CSSForValue((decimal) Eval("HighWater"), (decimal) Eval("LastOilChange"), 15, 100) %>' Text='<%# ValueString (Eval("LastOilChange"), 100) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceEngine %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceEngine %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblLastEngine" runat="server" Text='<%# ValueString (Eval("LastNewEngine")) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceRegistration %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Aircraft, MaintenanceRegistration %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblRegistration" runat="server" CssClass='<%# CSSForDate((DateTime) Eval("RegistrationDue")) %>' Text='<%# ValueString (Eval("RegistrationDue")) %>' /></ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Currency, deadlinesHeaderDeadlines %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Currency, deadlinesHeaderDeadlines %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblDeadlines" runat="server" Text='<%# MyFlightbook.FlightCurrency.DeadlineCurrency.CoalescedDeadlinesForAircraft(null, (int) Eval("AircraftID")) %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderNotes %>">
+                            <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderNotes %>" ItemStyle-VerticalAlign="Top">
                                 <ItemTemplate>
                                     <asp:Label ID="lblNotes" runat="server" Text='<%# Eval("PublicNotes") %>'></asp:Label>
                                 </ItemTemplate>
@@ -413,7 +416,7 @@ ORDER BY f.DATE ASC
                 <div>
                     <asp:Button ID="btnInsuranceReport" runat="server" Text="<%$ Resources:Club, ReportUpdate %>" OnClick="btnInsuranceReport_Click" />
                 </div>
-                <asp:GridView ID="gvInsuranceReport" runat="server" AutoGenerateColumns="false" AlternatingRowStyle-BackColor="#EEEEEE" ShowFooter="false" CellPadding="4" GridLines="None" OnRowDataBound="gvInsuranceReport_RowDataBound">
+                <asp:GridView ID="gvInsuranceReport" runat="server" AutoGenerateColumns="false" AlternatingRowStyle-CssClass="logbookAlternateRow" ShowFooter="false" CellPadding="4" GridLines="None" OnRowDataBound="gvInsuranceReport_RowDataBound">
                     <Columns>
                         <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderPilotName %>" ItemStyle-VerticalAlign="Top" >
                             <ItemTemplate>

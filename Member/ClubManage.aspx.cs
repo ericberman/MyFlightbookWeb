@@ -463,6 +463,8 @@ public partial class Member_ClubManage : System.Web.UI.Page
 
     protected void btnUpdateMaintenance_Click(object sender, EventArgs e)
     {
+        // flush the cache to pick up any aircraft changes
+        CurrentClub = Club.ClubWithID(CurrentClub.ID, true);
         gvMaintenance.DataSource = CurrentClub.MemberAircraft;
         gvMaintenance.DataBind();
         btnDownloadMaintenance.Visible = true;

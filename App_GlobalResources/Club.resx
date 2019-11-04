@@ -678,4 +678,7 @@ Sender Email: {1}</value>
   <data name="ReportHeaderNotes" xml:space="preserve">
     <value>Public Notes</value>
   </data>
+  <data name="ReportHeaderOilLevel" xml:space="preserve">
+    <value>Oil Level</value>
+  </data>
 </root>
