@@ -1038,7 +1038,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                         cfp.IntValue = Convert.ToInt32(value, CultureInfo.InvariantCulture);
                         break;
                     case CFPPropertyType.cfpString:
-                        cfp.TextValue = (cpt.IsAllCaps) ? value.ToUpper() : value;
+                        cfp.TextValue = (cpt.IsAllCaps) ? value.ToUpper(CultureInfo.CurrentCulture) : value;
                         break;
                 }
 
@@ -1071,7 +1071,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                 return true;
 
             if (m_cpt.Type == CFPPropertyType.cfpString && m_cpt.IsAllCaps)
-                TextValue = TextValue.ToUpper();
+                TextValue = TextValue.ToUpper(CultureInfo.CurrentCulture);
 
             DBHelper dbh = new DBHelper(string.Empty);
             dbh.DoNonQuery(
