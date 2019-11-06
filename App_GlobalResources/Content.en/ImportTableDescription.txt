@@ -149,8 +149,7 @@
                 Engine End</td>
             <td valign="top" >
                 Engine start/end times, respectively 
-                (separate columns), in UTC format.&nbsp; E.g., the current time in Seattle would be expressed as
-                %DATE_TIME%
+                (separate columns), in UTC.&nbsp;  This is the date in your local format followed by 24-hour formatted time. E.g., the current UTC time is %DATE_TIME%
             </td>
         </tr>
         <tr>
@@ -159,7 +158,7 @@
                 Flight End</td>
             <td valign="top" >
                 Flight start/end times, respectively 
-                (separate columns), in UTC format.&nbsp; E.g., the current time in Seattle would be expressed as %DATE_TIME%
+                (separate columns), in UTC.&nbsp; This is the date in your local format followed by 24-hour formatted time. E.g., the current UTC time is %DATE_TIME%
             </td>
         </tr>
         <tr>

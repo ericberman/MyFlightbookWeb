@@ -1572,4 +1572,16 @@
   <data name="locPilotHeaderResource1.Text" xml:space="preserve">
     <value>Pilot Information</value>
   </data>
+  <data name="lblPrefTimeZoneExplanationResource1.Text" xml:space="preserve">
+    <value>Use this if you prefer to enter times in your local timezone; all times will be converted to and displayed as UTC</value>
+  </data>
+  <data name="lblPrefTimeZoneExplanationResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPrefTimeZoneResource1.Text" xml:space="preserve">
+    <value>Preferred time zone:</value>
+  </data>
+  <data name="lblPrefTimeZoneResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -99,7 +99,14 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
         get { return mfbEngineStart.DefaultDate; }
         set { mfbEngineEnd.DefaultDate = mfbEngineStart.DefaultDate = mfbFlightEnd.DefaultDate = mfbFlightStart.DefaultDate = value; }
     }
+
+    protected TimeZoneInfo UserTimeZone { get; set; }
     #endregion
+
+    protected void Page_Init(object sender, EventArgs e)
+    {
+        UserTimeZone = Page.User.Identity.IsAuthenticated ? MyFlightbook.Profile.GetUser(Page.User.Identity.Name).PreferredTimeZone : TimeZoneInfo.Utc;
+    }
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -117,6 +124,13 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
             ckRoundNearest10th.Checked = afo.RoundToTenth;
             rblNightCriteria.SelectedValue = afo.Night.ToString();
             rblNightLandingCriteria.SelectedValue = afo.NightLanding.ToString();
+
+            lblEngine.Text = Resources.LogbookEntry.FieldEngineUTC.IndicateUTCOrCustomTimeZone(UserTimeZone);
+            lblFlight.Text = Resources.LogbookEntry.FieldFlightUTC.IndicateUTCOrCustomTimeZone(UserTimeZone);
+            if (UserTimeZone.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0)
+                lblEngine.ToolTip = lblFlight.ToolTip = string.Empty;
+            else
+                lblEngine.ToolTip = lblFlight.ToolTip = UserTimeZone.DisplayName;
         }
     }
 
@@ -132,16 +146,27 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
                 {
                     using (ZipFile z = ZipFile.Read(mfbUploadFlightData.PostedFile.InputStream))
                     {
+                        MemoryStream ms = null;
+
                         foreach (ZipEntry ze in z.Entries)
                         {
-                            using (MemoryStream ms = new MemoryStream())
+                            try
                             {
+                                ms = new MemoryStream();
                                 ze.Extract(ms);
-                                StreamReader sr = new StreamReader(ms);
                                 ms.Seek(0, SeekOrigin.Begin);
-                                ViewState[keyFlightData] = sz = sr.ReadToEnd();
-                                return sz;
+                                using (StreamReader sr = new StreamReader(ms))
+                                {
+                                    ms = null; //for CA2202
+                                    ViewState[keyFlightData] = sz = sr.ReadToEnd();
+                                }
                             }
+                            finally
+                            {
+                                if (ms != null)
+                                    ms.Dispose();
+                            }
+                            return sz;
                         }
                     }
                 }

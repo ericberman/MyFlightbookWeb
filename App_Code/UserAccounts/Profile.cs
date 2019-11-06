@@ -670,6 +670,28 @@ namespace MyFlightbook
         }
 
         /// <summary>
+        /// What time zone do they prefer for date/time?  CAN BE NULL!
+        /// </summary>
+        public string PreferredTimeZoneID { get; set; }
+
+        public TimeZoneInfo PreferredTimeZone
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(PreferredTimeZoneID))
+                    return TimeZoneInfo.Utc;
+                try
+                {
+                    return TimeZoneInfo.FindSystemTimeZoneById(PreferredTimeZoneID) ?? TimeZoneInfo.Utc;
+                }
+                catch
+                {
+                    return TimeZoneInfo.Utc;
+                }
+            }
+        }
+
+        /// <summary>
         /// Convenience dictionary of associated data for other that want to piggy back on Profile caching.
         /// </summary>
         public IDictionary<string, object> AssociatedData { get; set; }
@@ -794,6 +816,8 @@ namespace MyFlightbook
                 if (Enum.TryParse<ProfileRoles.UserRole>(util.ReadNullableField(dr, "Role", ProfileRoles.UserRole.None.ToString()).ToString(), out r))
                     Role = r;
 
+                PreferredTimeZoneID = (string) util.ReadNullableField(dr, "timezone", null);
+
                 string szBlacklist = util.ReadNullableString(dr, "PropertyBlackList");
                 BlacklistedProperties = new List<int>(szBlacklist.ToInts());
             }
@@ -850,7 +874,7 @@ namespace MyFlightbook
             szQ = @"UPDATE users SET Email=?Email, FirstName=?FirstName, LastName=?LastName, Address=?address, 
             DropboxAccessToken=?dropboxAccesstoken, OnedriveAccessToken=?onedrive, GoogleDriveAccessToken=?gdrive, ICloudAccessToken=?icloud, DefaultCloudDriveID=?defcloud, OverwriteDropbox=?overwriteCloud, CloudAhoyAccessToken=?cloudAhoy,
             LastBFR = ?LastBFR, LastMedical=?LastMedical, MonthsToMedical=?MonthsToMedical, IsInstructor=?IsInstructor, UsesSIC=?UsesSIC, UsesHHMM=?UsesHHMM, UsesUTCDates=?useUTCDates, License=?license, CertificateNumber=?cert, CFIExpiration=?cfiExp, 
-            CurrencyFlags=?currencyFlags, ShowTimes=?showTimes, EnglishProficiencyExpiration=?engProfExpiration, EmailSubscriptions=?subscriptions, LastEmail=?lastemail, AchievementStatus=?achievementstatus, PropertyBlackList=?blacklist
+            CurrencyFlags=?currencyFlags, ShowTimes=?showTimes, EnglishProficiencyExpiration=?engProfExpiration, EmailSubscriptions=?subscriptions, LastEmail=?lastemail, AchievementStatus=?achievementstatus, PropertyBlackList=?blacklist, timezone=?prefTimeZone
             WHERE PKID = ?PKID";
 
             string szErr = "";
@@ -887,6 +911,7 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("lastemail", LastEmailDate);
                     comm.Parameters.AddWithValue("achievementstatus", (int)AchievementStatus);
                     comm.Parameters.AddWithValue("blacklist", String.Join(",", BlacklistedProperties));
+                    comm.Parameters.AddWithValue("prefTimeZone", String.IsNullOrEmpty(PreferredTimeZoneID) || PreferredTimeZoneID.CompareCurrentCultureIgnoreCase("UTC") == 0 ? null : PreferredTimeZoneID);
                 });
             if (dbh.LastError.Length == 0)
             {

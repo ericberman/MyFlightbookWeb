@@ -225,7 +225,7 @@ namespace MyFlightbook
                 throw new ArgumentNullException("brand");
             string szNew = szTemplate.Replace("%APP_NAME%", brand.AppName).
                 Replace("%SHORT_DATE%", System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern).
-                Replace("%DATE_TIME%", DateTime.Now.UTCDateFormatString()).
+                Replace("%DATE_TIME%", DateTime.UtcNow.UTCDateFormatString()).
                 Replace("%APP_URL%", brand.HostName).
                 Replace("%APP_LOGO%", VirtualPathUtility.ToAbsolute(brand.LogoURL)).
                 Replace("%APP_ROOT%", brand.Root);

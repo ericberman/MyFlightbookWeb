@@ -534,6 +534,17 @@ namespace MyFlightbook
         }
         #endregion
 
+        /// <summary>
+        /// Replaces instances of "UTC" with "Custom Time Zone" if you have a non-UTC time specified.
+        /// </summary>
+        /// <param name="szLabel"></param>
+        /// <param name="tz"></param>
+        /// <returns></returns>
+        public static string IndicateUTCOrCustomTimeZone(this string szLabel, TimeZoneInfo tz)
+        {
+            return (tz == null || tz.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0) ? szLabel : szLabel.Replace("UTC", Resources.LocalizedText.CustomTimeZone);
+        }
+
         #region Decimal Extensions
         static public string ToHHMM(this decimal d)
         {

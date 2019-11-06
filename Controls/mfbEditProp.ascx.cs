@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2018 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -120,8 +120,10 @@ public partial class Controls_mfbEditProp : System.Web.UI.UserControl
     {
         CustomFlightProperty fp = m_fp;
 
-        lblPropName.Text = fp.PropertyType.Title;
-        mfbTooltip.Visible = !String.IsNullOrEmpty(mfbTooltip.BodyContent = fp.PropertyType.Description);
+        TimeZoneInfo tz = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).PreferredTimeZone;
+        lblPropName.Text = (fp.PropertyType.Type == CFPPropertyType.cfpDateTime) ? fp.PropertyType.Title.IndicateUTCOrCustomTimeZone(tz) : fp.PropertyType.Title;
+        lblPropName.ToolTip = (fp.PropertyType.Type == CFPPropertyType.cfpDateTime && tz.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) != 0) ? tz.DisplayName : string.Empty;
+        mfbTooltip.Visible = !String.IsNullOrEmpty(mfbTooltip.BodyContent = fp.PropertyType.Type == CFPPropertyType.cfpDateTime ? fp.PropertyType.Description.Replace("(UTC)", tz.DisplayName) : fp.PropertyType.Description);
         switch (fp.PropertyType.Type)
         {
             case CFPPropertyType.cfpBoolean:

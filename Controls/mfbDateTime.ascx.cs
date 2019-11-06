@@ -26,6 +26,8 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
         set { txtDateTime.TabIndex = value; }
     }
 
+    protected TimeZoneInfo DefaultTimeZone { get; set; }
+
     private const string szKeyVSDefaultDate = "VSDefaultDateTimedate";
 
     /// <summary>
@@ -47,7 +49,7 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
         }
     }
 
-    private static Regex rTimeOnly = new Regex("^\\w*\\d\\d?\\:\\d\\d\\w*$", RegexOptions.Compiled);
+    private readonly static Regex rTimeOnly = new Regex("^\\w*\\d\\d?\\:\\d\\d\\w*$", RegexOptions.Compiled);
     public DateTime DateAndTime
     {
         get {
@@ -60,14 +62,14 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
             }
             if (!dt.HasValue())
                 txtDateTime.Text = string.Empty;
-            return dt;
+            return dt.HasValue() ? TimeZoneInfo.ConvertTimeToUtc(dt, DefaultTimeZone) : DateTime.MinValue;
         }
         set 
         {
             if (null == value || value.CompareTo(DateTime.MinValue) == 0)
                 txtDateTime.Text = "";
             else
-                txtDateTime.Text = value.UTCDateFormatString(); 
+                txtDateTime.Text = TimeZoneInfo.ConvertTimeFromUtc(value, DefaultTimeZone).UTCDateFormatString(); 
         }
     }
     #endregion
@@ -78,13 +80,17 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
         return DateTime.TryParse(txtDateTime.Text, CultureInfo.CurrentCulture, DateTimeStyles.AssumeUniversal, out dt);
     }
 
+    protected void Page_Init(object sender, EventArgs e)
+    {
+        DefaultTimeZone = (Page.User.Identity.IsAuthenticated) ? MyFlightbook.Profile.GetUser(Page.User.Identity.Name).PreferredTimeZone : TimeZoneInfo.Utc;
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         TextBoxWatermarkExtender1.WatermarkText = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern + " HH:mm";
         Page.ClientScript.RegisterClientScriptBlock(GetType(), "FillNow", String.Format(CultureInfo.InvariantCulture, @"
         function setNowUTCWithOffset(wme) {{
             var params = new Object();
-            params.tzOffset = -(new Date()).getTimezoneOffset();
             var d = JSON.stringify(params);
             $.ajax(
             {{

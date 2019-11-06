@@ -220,6 +220,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
         rblCurrencyPref.SelectedIndex = (m_pf.UsesPerModelCurrency ? 1 : 0);
         rblTimeEntryPreference.SelectedIndex = (m_pf.UsesHHMM ? 1 : 0);
         rblDateEntryPreferences.SelectedIndex = (m_pf.UsesUTCDateOfFlight ? 1 : 0);
+        prefTimeZone.SelectedTimeZone = m_pf.PreferredTimeZone;
         foreach (CurrencyExpiration.Expiration exp in Enum.GetValues(typeof(CurrencyExpiration.Expiration)))
         {
             ListItem li = new ListItem(CurrencyExpiration.ExpirationLabel(exp), exp.ToString()) { Selected = m_pf.CurrencyExpiration == exp };
@@ -587,6 +588,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
         m_pf.IsInstructor = ckTrackCFITime.Checked;
         m_pf.UsesHHMM = (rblTimeEntryPreference.SelectedIndex > 0);
         m_pf.UsesUTCDateOfFlight = (rblDateEntryPreferences.SelectedIndex > 0);
+        m_pf.PreferredTimeZoneID = prefTimeZone.SelectedTimeZoneId;
 
         try
         {

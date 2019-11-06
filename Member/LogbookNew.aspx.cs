@@ -76,16 +76,17 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
     /// <summary>
     /// Returns the current time formatted in UTC or specified time-zone
     /// </summary>
-    /// <param name="_tzOffset">Localtime offset, in minutes; 0 for true UTC</param>
     /// <returns>Now in the specified locale, adjusted for the timezone.</returns>
     [WebMethod(EnableSession = true)]
-    public static string NowInUTC(int _tzOffset)
+    public static string NowInUTC()
     {
         // For now, always return true UTC
-        _tzOffset = 0;
         if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.UserLanguages != null && HttpContext.Current.Request.UserLanguages.Length > 0)
             util.SetCulture(HttpContext.Current.Request.UserLanguages[0]);
-        return DateTime.UtcNow.AddMinutes(_tzOffset).UTCDateFormatString();
+        if (HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            throw new MyFlightbookException("You must be authenticated to make this call");
+
+        return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, MyFlightbook.Profile.GetUser(HttpContext.Current.User.Identity.Name).PreferredTimeZone).UTCDateFormatString();
     }
     #endregion
 

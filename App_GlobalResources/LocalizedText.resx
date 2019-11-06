@@ -1531,4 +1531,7 @@
   <data name="PrintViewIncludeSignatures" xml:space="preserve">
     <value>Include Signatures</value>
   </data>
+  <data name="CustomTimeZone" xml:space="preserve">
+    <value>Custom TZ</value>
+  </data>
 </root>
