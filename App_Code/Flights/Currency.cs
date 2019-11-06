@@ -1721,11 +1721,10 @@ namespace MyFlightbook.FlightCurrency
         private TimeSpan tsLongestRest11725b;
         private decimal hoursFlightTime11723b1;
         private decimal hoursFlightTime11723b2;
-        private TimeSpan tsDutyTime11723c1;
-        private TimeSpan tsDutyTime11723c2;
         private DateTime dtLastDutyStart;
         private bool HasSeenProperDutyPeriod;
         private readonly bool fIncludeAllFlights;
+        private readonly List<CurrencyPeriod> lstDutyPeriods = new List<CurrencyPeriod>();
 
         // Useful dates we don't want to continuously recompute
         private readonly DateTime dt168HoursAgo;
@@ -1749,7 +1748,7 @@ namespace MyFlightbook.FlightCurrency
         {
             dtLastDutyStart = currentRestPeriodStart = DateTime.MinValue;
             hoursFlightTime11723b1 = hoursFlightTime11723b2 = 0;
-            tsLongestRest11725b = tsDutyTime11723c1 = tsDutyTime11723c2 = TimeSpan.Zero;
+            tsLongestRest11725b = TimeSpan.Zero;
             fIncludeAllFlights = includeAllFlights;
             IsMostRecentFlight = true;  // we haven't examined any flights yet.
             m_edpCurrent = null;
@@ -1866,12 +1865,10 @@ namespace MyFlightbook.FlightCurrency
             if (!fIncludeAllFlights && m_edpCurrent != null)
                 return;
 
-            // 117.23(c)(1) - 60 hours of flight duty time in 168 consecutive hours
-            if (dtDutyEnd.CompareTo(dt168HoursAgo) > 0)
-                tsDutyTime11723c1 = tsDutyTime11723c1.Add(dtDutyEnd.Subtract(dt168HoursAgo.LaterDate(dtDutyStart)));
-            // 117.23(c)(2) - 190 hours in the prior 672 hours
-            if (dtDutyEnd.CompareTo(dt672HoursAgo) > 0)
-                tsDutyTime11723c2 = tsDutyTime11723c2.Add(dtDutyEnd.Subtract(dt672HoursAgo.LaterDate(dtDutyStart)));
+            // merge this period with other currency periods.
+            CurrencyPeriod cp = new CurrencyPeriod(dtDutyStart, dtDutyEnd);
+            if (lstDutyPeriods.Count == 0 || !lstDutyPeriods[lstDutyPeriods.Count - 1].MergeWith(cp))
+                lstDutyPeriods.Add(cp);
 
             // Do a rest computation, using the earlier of dutystart/FDP start and later of duty end/FDP end
             UpdateRest(edp.AdditionalDutyStart.HasValue ? dtDutyStart.EarlierDate(edp.AdditionalDutyStart.Value) : dtDutyStart,
@@ -1886,6 +1883,19 @@ namespace MyFlightbook.FlightCurrency
 
                 if (HasSeenProperDutyPeriod)
                 {
+                    // merge up all of the time spans
+                    TimeSpan tsDutyTime11723c1 = TimeSpan.Zero, tsDutyTime11723c2 = TimeSpan.Zero;
+
+                    foreach (CurrencyPeriod cp in lstDutyPeriods)
+                    {
+                        // 117.23(c)(1) - 60 hours of flight duty time in 168 consecutive hours
+                        if (cp.EndDate.CompareTo(dt168HoursAgo) > 0)
+                            tsDutyTime11723c1 = tsDutyTime11723c1.Add(cp.EndDate.Subtract(dt168HoursAgo.LaterDate(cp.StartDate)));
+                        // 117.23(c)(2) - 190 hours in the prior 672 hours
+                        if (cp.EndDate.CompareTo(dt672HoursAgo) > 0)
+                            tsDutyTime11723c2 = tsDutyTime11723c2.Add(cp.EndDate.Subtract(dt672HoursAgo.LaterDate(cp.StartDate)));
+                    }
+
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723b1,
                         String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursFlightTime11723b1.FormatDecimal(UseHHMM)),
                         (hoursFlightTime11723b1 > 100) ? CurrencyState.NotCurrent : ((hoursFlightTime11723b1 > 80) ? CurrencyState.GettingClose : CurrencyState.OK),
