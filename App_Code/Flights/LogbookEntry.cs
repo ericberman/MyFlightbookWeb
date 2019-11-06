@@ -2420,7 +2420,7 @@ namespace MyFlightbook
     /// <summary>
     /// Specifies the kind of additional columns that can be displayed for printing.
     /// </summary>
-    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp }
+    public enum OptionalColumnType { None, Complex, Retract, Tailwheel, HighPerf, TAA, Turbine, Jet, TurboProp, ATD, FTD, FFS, ASEL, ASES, AMEL, AMES, Helicopter, Glider, CustomProp }
 
     public enum OptionalColumnValueType { Decimal, Integer, Time }
 
@@ -2503,6 +2503,8 @@ namespace MyFlightbook
                     return Resources.Makes.IsTailwheel;
                 case OptionalColumnType.HighPerf:
                     return Resources.Makes.IsHighPerf;
+                case OptionalColumnType.TAA:
+                    return Resources.Makes.IsTAA;
                 case OptionalColumnType.Turbine:
                     return Resources.Makes.IsTurbine;
                 case OptionalColumnType.Jet:
@@ -3451,6 +3453,17 @@ namespace MyFlightbook
                     {
                         MakeModel m = MakeModel.GetModel(ModelID);
                         return OptionalColumnTotalIfCondition(m.PerformanceType == MakeModel.HighPerfType.HighPerf || (m.PerformanceType == MakeModel.HighPerfType.Is200HP && Date.CompareTo(Convert.ToDateTime(MakeModel.Date200hpHighPerformanceCutoverDate, CultureInfo.InvariantCulture)) < 0));
+                    }
+                case OptionalColumnType.TAA:
+                    {
+                        bool fIsTAA = MakeModel.GetModel(ModelID).AvionicsTechnology == MakeModel.AvionicsTechnologyType.TAA;
+                        if (!fIsTAA)
+                        {
+                            UserAircraft ua = new UserAircraft(User);
+                            Aircraft ac = ua.GetUserAircraftByID(AircraftID);
+                            fIsTAA = ac.AvionicsTechnologyUpgrade == MakeModel.AvionicsTechnologyType.TAA && Date.CompareTo(ac.GlassUpgradeDate) > 0;
+                        }
+                        return OptionalColumnTotalIfCondition(fIsTAA);
                     }
                 case OptionalColumnType.Jet:
                     return OptionalColumnTotalIfCondition(MakeModel.GetModel(ModelID).EngineType == MakeModel.TurbineLevel.Jet);

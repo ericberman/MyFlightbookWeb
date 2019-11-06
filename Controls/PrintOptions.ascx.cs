@@ -162,6 +162,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
                 new ListItem(Resources.Makes.IsRetract, OptionalColumnType.Retract.ToString()),
                 new ListItem(Resources.Makes.IsTailwheel, OptionalColumnType.Tailwheel.ToString()),
                 new ListItem(Resources.Makes.IsHighPerf, OptionalColumnType.HighPerf.ToString()),
+                new ListItem(Resources.Makes.IsTAA, OptionalColumnType.TAA.ToString()),
                 new ListItem(Resources.Makes.IsTurboprop, OptionalColumnType.TurboProp.ToString()),
                 new ListItem(Resources.Makes.IsTurbine, OptionalColumnType.Turbine.ToString()),
                 new ListItem(Resources.Makes.IsJet, OptionalColumnType.Jet.ToString()),
