@@ -3190,7 +3190,7 @@ namespace MyFlightbook
         /// </summary>
         public string CommentWithReplacedApproaches
         {
-            get { return ApproachDescription.ReplaceApproaches(Comment.Linkify()); }
+            get { return ApproachDescription.ReplaceApproaches(Comment.Linkify()).Trim(); }
         }
 
         /// <summary>
