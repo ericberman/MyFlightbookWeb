@@ -1552,6 +1552,8 @@ namespace MyFlightbook.FlightCurrency
     {
         protected bool UseHHMM { get; set; }
 
+        protected bool IsMostRecentFlight { get; set; }
+
         /// <summary>
         /// Which duty time attributes were specified on a flight?
         /// </summary>
@@ -1619,7 +1621,8 @@ namespace MyFlightbook.FlightCurrency
             /// If not, Duty is computed as the date of flight (in UTC!) from 00:00 to 23:59.
             /// </summary>
             /// <param name="cfr">The flight to examine</param>
-            public EffectiveDutyPeriod(ExaminerFlightRow cfr) : this()
+            /// <param name="fInferDutyEnd">True if we should infer the duty end to be "Now".  E.g., if this is the most recent flight in the logbook and it only has a start time</param>
+            public EffectiveDutyPeriod(ExaminerFlightRow cfr, bool fInferDutyEnd = false) : this()
             {
                 if (cfr == null)
                     throw new ArgumentNullException("cfr");
@@ -1649,7 +1652,18 @@ namespace MyFlightbook.FlightCurrency
                 else if (FPDutyEnd != null && FPDutyStart == null)
                     Specification = DutySpecification.End;
                 else if (FPDutyEnd == null && FPDutyStart != null)
+                {
                     Specification = DutySpecification.Start;
+
+                    // Issue #406: if we have an open duty start on the user's most recent flight, then infer a duty end of right now.
+                    // Otherwise, we can fall through (below) and block off the whole day.
+                    if (fInferDutyEnd)
+                    {
+                        FlightDutyStart = FPDutyStart.DateValue;
+                        FlightDutyEnd = DateTime.UtcNow.AddSeconds(-20);  // Subtract a few seconds to close off the duty period but without looking like we're currently in a rest period.
+                        return;
+                    }
+                }
 
                 // OK, we didn't have both duty properties, or they weren't consistent (e.g., start later than end)
                 // Just block off the whole day for the duty, since we can't be certain when it began/end
@@ -1737,6 +1751,7 @@ namespace MyFlightbook.FlightCurrency
             hoursFlightTime11723b1 = hoursFlightTime11723b2 = 0;
             tsLongestRest11725b = tsDutyTime11723c1 = tsDutyTime11723c2 = TimeSpan.Zero;
             fIncludeAllFlights = includeAllFlights;
+            IsMostRecentFlight = true;  // we haven't examined any flights yet.
             m_edpCurrent = null;
             UseHHMM = fUseHHMM;
 
@@ -1808,7 +1823,8 @@ namespace MyFlightbook.FlightCurrency
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
 
-            EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr);
+            EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr, IsMostRecentFlight);
+            IsMostRecentFlight = false; // no more inferring duty end!
             HasSeenProperDutyPeriod = HasSeenProperDutyPeriod || edp.Specification != DutySpecification.None;
 
             DateTime dtDutyStart = edp.FlightDutyStart;
