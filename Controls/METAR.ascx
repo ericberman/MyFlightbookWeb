@@ -50,4 +50,7 @@
         <asp:BoundField DataField="AltitudeHgDisplay" HeaderText="<%$ Resources:Weather, headerAltimeter %>" ItemStyle-VerticalAlign="Top" />
         <asp:BoundField DataField="wx_string" ItemStyle-VerticalAlign="Top" />
     </Columns>
+    <EmptyDataTemplate>
+        <p><asp:Label ID="lblNoWeather" runat="server" Text="<%$ Resources:Weather, NoMetarsFound %>"></asp:Label></p>
+    </EmptyDataTemplate>
 </asp:GridView>

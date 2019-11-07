@@ -297,4 +297,7 @@
   <data name="wind_speed_nolabel" xml:space="preserve">
     <value>{0}kt</value>
   </data>
+  <data name="NoMetarsFound" xml:space="preserve">
+    <value>(No weather available)</value>
+  </data>
 </root>
