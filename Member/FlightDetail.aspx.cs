@@ -191,7 +191,11 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             apcChart.Visible = apcDownload.Visible = apcRaw.Visible = false;
 
         lblFlightDate.Text = led.Date.ToShortDateString();
-        lblFlightDesc.Text = (led.TailNumDisplay ?? string.Empty) + (String.IsNullOrEmpty(led.Route) ? string.Empty : Resources.LocalizedText.LocalizedSpace + led.Route) + (String.IsNullOrEmpty(led.Comment) ? string.Empty : Resources.LocalizedText.LocalizedSpaceWithDash + led.Comment.Linkify());
+        lblFlightAircraft.Text = led.TailNumDisplay ?? string.Empty;
+        lblCatClass.Text = String.Format(CultureInfo.CurrentCulture, "({0})", led.CatClassDisplay);
+        lblCatClass.CssClass = led.IsOverridden ? "ExceptionData" : string.Empty;
+        litDesc.Text = led.CommentWithReplacedApproaches;
+        lblRoute.Text = led.Route.ToUpper(CultureInfo.CurrentCulture);
 
         Page.Title = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDetailsTitle, led.Date);
 
@@ -286,10 +290,6 @@ public partial class Member_FlightDetail : System.Web.UI.Page
                         break;
                 }
 
-                // Bind details - this will bind everything else.
-                fmvLE.DataSource = new LogbookEntryDisplay[] { led };
-                fmvLE.DataBind();
-
                 // shouldn't happen but sometimes does: GetUserAircraftByID returns null.  Not quite sure why.
                 Aircraft ac = (new UserAircraft(led.User).GetUserAircraftByID(led.AircraftID)) ?? new Aircraft(led.AircraftID);
                 fmvAircraft.DataSource = new Aircraft[] { ac };
@@ -354,6 +354,13 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             pnlMapControls.Visible = false;
         }
         lnkZoomToFit.NavigateUrl = mfbGoogleMapManager1.ZoomToFitScript;
+
+        if (!IsPostBack)
+        {
+            // Bind details - this will bind everything else.
+            fmvLE.DataSource = new LogbookEntryDisplay[] { CurrentFlight };
+            fmvLE.DataBind();
+        }
     }
 
     #region chart management
@@ -683,6 +690,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
 
         Controls_mfbAirportServices aptSvc = (Controls_mfbAirportServices)fv.FindControl("mfbAirportServices1");
         aptSvc.GoogleMapID = mfbGoogleMapManager1.MapID;
+        aptSvc.AddZoomLink = (mfbGoogleMapManager1.Mode == MyFlightbook.Mapping.GMap_Mode.Dynamic);
         aptSvc.SetAirports(RoutesList.MasterList.GetNormalizedAirports());
 
         ((Controls_mfbSignature)fv.FindControl("mfbSignature")).Flight = le;

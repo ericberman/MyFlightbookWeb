@@ -10,7 +10,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -53,9 +53,10 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
     {
         double distance = 0.0;
         bool fHasPath = le.Telemetry != null && le.Telemetry.HasPath;
+        ListsFromRoutesResults result = null;
         if (le.Route.Length > 0 || fHasPath) // show a map.
         {
-            ListsFromRoutesResults result = AirportList.ListsFromRoutes(le.Route);
+            result = AirportList.ListsFromRoutes(le.Route);
             MfbGoogleMap1.Map.Airports = result.Result;
             MfbGoogleMap1.Map.ShowRoute = ckShowRoute.Checked;
             MfbGoogleMap1.Map.AutofillOnPanZoom = (result.Result.Count() == 0);
@@ -70,10 +71,6 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
                 distance = le.Telemetry.Distance();
                 lnkViewKML.Visible = true;
             }
-
-            mfbAirportServices1.GoogleMapID = MfbGoogleMap1.MapID;
-
-            mfbAirportServices1.SetAirports(result.MasterList.GetNormalizedAirports());
 
             string szURL = Request.Url.PathAndQuery;
             lnkShowMapOnly.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", szURL, szURL.Contains("?") ? "&" : "?", "show=map");
@@ -94,6 +91,13 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
             MfbGoogleMap1.Mode = MyFlightbook.Mapping.GMap_Mode.Static;
             popmenu.Visible = false;
             lnkZoomOut.Visible = mfbAirportServices1.Visible = false;
+        }
+
+        if (result != null)
+        {
+            mfbAirportServices1.GoogleMapID = MfbGoogleMap1.MapID;
+            mfbAirportServices1.AddZoomLink = (MfbGoogleMap1.Mode == MyFlightbook.Mapping.GMap_Mode.Dynamic);
+            mfbAirportServices1.SetAirports(result.MasterList.GetNormalizedAirports());
         }
 
         lblDistance.Text = le.GetPathDistanceDescription(distance);

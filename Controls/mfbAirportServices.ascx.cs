@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -23,6 +23,8 @@ public partial class Controls_mfbAirportServices : System.Web.UI.UserControl
     public bool ShowFBO { get; set; }
     public bool ShowHotels { get; set; }
     public bool ShowMetar { get; set; }
+
+    public bool AddZoomLink { get; set; }
 
     /// <summary>
     /// The airports to display
@@ -74,6 +76,9 @@ public partial class Controls_mfbAirportServices : System.Web.UI.UserControl
             HyperLink lnkZoom = (HyperLink)e.Row.FindControl("lnkZoom");
             Image imgAirport = (Image)e.Row.FindControl("imgAirport");
             airport ap = (airport)e.Row.DataItem;
+
+            ((MultiView)e.Row.FindControl("mvAirportName")).ActiveViewIndex = AddZoomLink ? 0 : 1;
+
             imgAirport.Attributes["onclick"] = lnkZoom.NavigateUrl = ZoomLink(ap);
 
             HyperLink lnkHotels = (HyperLink)e.Row.FindControl("lnkHotels");

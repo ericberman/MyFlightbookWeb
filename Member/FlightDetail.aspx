@@ -21,15 +21,9 @@
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
 <%@ Register Src="~/Controls/mfbSendFlight.ascx" TagPrefix="uc1" TagName="mfbSendFlight" %>
 
-
-
-
-
-
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Localize ID="locPageHeader" runat="server" Text="<%$ Resources:LogbookEntry, FlightDetailsHeader %>"></asp:Localize>
 </asp:Content>
-
 <asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" runat="Server">
     <div>
         <asp:MultiView ID="mvReturn" runat="server" ActiveViewIndex="0">
@@ -52,18 +46,24 @@
         <asp:HiddenField ID="hdnPrevID" runat="server" />
         <table style="width:100%">
             <tr style="vertical-align:middle">
-                <td><asp:LinkButton ID="lnkPreviousFlight" runat="server" Font-Names="Arial" Text="<%$ Resources:LogbookEntry, PreviousFlight %>" Font-Size="Larger" OnClick="lnkPreviousFlight_Click" meta:resourcekey="lnkPreviousFlightResource1"></asp:LinkButton></td>
+                <td><asp:LinkButton ID="lnkPreviousFlight" runat="server" Font-Names="Arial" Text="<%$ Resources:LogbookEntry, PreviousFlight %>" Font-Size="20pt" OnClick="lnkPreviousFlight_Click" meta:resourcekey="lnkPreviousFlightResource1"></asp:LinkButton></td>
                 <td>            
                     <p>
-                        <asp:Label ID="lblFlightDate" Font-Bold="True" runat="server" meta:resourcekey="lblFlightDateResource1"></asp:Label>
-                        <asp:Label ID="lblFlightDesc" style="white-space:pre-line" runat="server" meta:resourcekey="lblFlightDescResource1"></asp:Label>
+                        <asp:Label ID="lblFlightDate" Font-Bold="True" Font-Size="Larger" runat="server" meta:resourcekey="lblFlightDateResource1"></asp:Label>
+                        <asp:Label ID="lblFlightAircraft" runat="server" meta:resourcekey="lblFlightAircraftResource1"></asp:Label>
+                        <asp:Label ID="lblCatClass" runat="server" meta:resourcekey="lblCatClassResource1"></asp:Label>
+                        <asp:Label ID="lblRoute" Font-Bold="true" runat="server"></asp:Label>
+                        <span style="white-space:pre-line" runat="server" dir="auto"><asp:Literal ID="litDesc" runat="server"></asp:Literal></span>
                     </p>
+                    <div style="text-align:left">
+                        <uc1:mfbTooltip ID="mfbTTCatClass" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookAltCatClassTooltip %>" HoverControl="lblCatClass" />
+                    </div>
                     <asp:Panel ID="pnlFilter" runat="server" Visible="false" >
                         <div style="display:inline-block;"><%=Resources.LocalizedText.ResultsFiltered %></div>
                             <uc1:mfbQueryDescriptor ID="mfbQueryDescriptor1" runat="server" OnQueryUpdated="mfbQueryDescriptor1_QueryUpdated" />
                     </asp:Panel>
                 </td>
-                <td><asp:LinkButton ID="lnkNextFlight" runat="server" Font-Names="Arial" Text="<%$ Resources:LogbookEntry, NextFlight %>" Font-Size="Larger" OnClick="lnkNextFlight_Click" meta:resourcekey="lnkNextFlightResource1"></asp:LinkButton></td>
+                <td><asp:LinkButton ID="lnkNextFlight" runat="server" Font-Names="Arial" Text="<%$ Resources:LogbookEntry, NextFlight %>" Font-Size="20pt" OnClick="lnkNextFlight_Click" meta:resourcekey="lnkNextFlightResource1"></asp:LinkButton></td>
             </tr>
         </table>
         <div>
@@ -85,6 +85,18 @@
         <uc3:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:Tabs, AnalysisChart %>" ID="apcChart" />
         <uc3:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:Tabs, AnalysisRaw %>" ID="apcRaw" LazyLoad="true" OnControlClicked="apcRaw_ControlClicked" />
         <uc3:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:Tabs, AnalysisDownload %>" ID="apcDownload" />
+        <uc1:popmenu runat="server" ID="popmenu" Visible='<%# ((String) Eval("User")).CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0 %>' OffsetX="-160">
+            <MenuContent>
+                <div style="text-align:left">
+                    <uc1:mfbFlightContextMenu runat="server" ID="mfbFlightContextMenu"
+                        EditTargetFormatString="~/Member/LogbookNew.aspx/{0}"
+                        SignTargetFormatString="~/Member/RequestSigs.aspx?id={0}"
+                        OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" 
+                        OnSendFlight="mfbFlightContextMenu_SendFlight"
+                        />
+                </div>
+            </MenuContent>
+        </uc1:popmenu>
     </asp:Panel>
     <uc1:mfbSendFlight runat="server" ID="mfbSendFlight" />
     <ajaxToolkit:Accordion ID="AccordionCtrl" RequireOpenedPane="False" SelectedIndex="0" runat="server"
@@ -92,48 +104,8 @@
         <Panes>
             <ajaxToolkit:AccordionPane runat="server" ID="acpFlight" meta:resourcekey="acpFlightResource1">
                 <Content>
-                    <div style="float:right">
-                        <uc1:popmenu runat="server" ID="popmenu" Visible='<%# ((String) Eval("User")).CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0 %>' OffsetX="-160">
-                            <MenuContent>
-                                <div style="text-align:left">
-                                    <uc1:mfbFlightContextMenu runat="server" ID="mfbFlightContextMenu"
-                                        EditTargetFormatString="~/Member/LogbookNew.aspx/{0}"
-                                        SignTargetFormatString="~/Member/RequestSigs.aspx?id={0}"
-                                        OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" 
-                                        OnSendFlight="mfbFlightContextMenu_SendFlight"
-                                        />
-                                </div>
-                            </MenuContent>
-                        </uc1:popmenu>
-                    </div>
                     <asp:FormView ID="fmvLE" runat="server" OnDataBound="fmvLE_DataBound" Width="100%" meta:resourcekey="fmvLEResource1">
                         <ItemTemplate>
-                            <p>
-                                <span style="font-size:larger; font-weight: bold;">
-                                <%# ((DateTime) Eval("Date")).ToShortDateString() %> - 
-                                <%# Eval("TailNumDisplay") %>
-                                <asp:MultiView ID="mvCatClass" runat="server" ActiveViewIndex='<%# Convert.ToBoolean(Eval("IsOverridden")) ? 1 : 0 %>'>
-                                    <asp:View ID="vwDefaultCatClass" runat="server">
-                                        (<%# Eval("CatClassDisplay") %>)
-                                    </asp:View>
-                                    <asp:View ID="vwOverriddenCatClass" runat="server">
-                                        (<asp:Label ID="lblCatClass" runat="server" Text='<%# Eval("CatClassDisplay") %>' CssClass="ExceptionData" meta:resourcekey="lblCatClassResource1"></asp:Label>)
-                                    </asp:View>
-                                </asp:MultiView>
-                                </span>
-                                <span style="white-space:pre-line;"><%# Eval("CommentWithReplacedApproaches") %>&nbsp;</span></p>
-                            <div>
-                                <uc1:mfbTooltip ID="mfbTTCatClass" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookAltCatClassTooltip %>" HoverControl="lblCatClass" />
-                            </div>
-                            <asp:Panel ID="pnlRoute" runat="server" Visible="<%# RoutesList.MasterList.GetNormalizedAirports().Length > 0 %>" CssClass="detailsSection" meta:resourcekey="pnlRouteResource1">
-                                <h3><%# Eval("Route").ToString().ToUpper() %></h3>
-                                <uc5:mfbAirportServices runat="server" ID="mfbAirportServices1" ShowZoom="true" ShowInfo="true" ShowMetar="true" />
-                                <p><%# ((LogbookEntryDisplay) Container.DataItem).GetPathDistanceDescription(DataForFlight.ComputePathDistance()) %></p>
-                                <asp:Panel ID="pnlMetars" runat="server">
-                                    <asp:Button ID="btnMetars" runat="server" Text="<%$ Resources:Weather, GetMETARSPrompt %>" OnClick="btnMetars_Click" />
-                                    <uc1:METAR runat="server" ID="METARDisplay" />
-                                </asp:Panel>
-                            </asp:Panel>
                             <div class="detailsSection">
                                 <table cellpadding="3px;">
                                     <tr>
@@ -173,7 +145,11 @@
                                         <td><%# Eval("TotalFlightTime").FormatDecimal(Viewer.UsesHHMM)%></td>
                                     </tr>
                                 </table>
-                                <div style="white-space:pre-line"><%#: Eval("CustPropertyDisplay").ToString() %></div>
+                                <asp:Repeater ID="rptProps" runat="server" DataSource='<%# Eval("PropertiesWithReplacedApproaches") %>'>
+                                    <ItemTemplate>
+                                        <div><%# Container.DataItem %></div>
+                                    </ItemTemplate>
+                                </asp:Repeater>
                                 <div><%# Eval("EngineTimeDisplay") %></div>
                                 <div><%# Eval("FlightTimeDisplay") %></div>
                                 <div><%# Eval("HobbsDisplay") %></div>
@@ -181,16 +157,24 @@
                             <asp:Panel ID="pnlSignature" CssClass="detailsSection" runat="server" Visible='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.None %>' meta:resourcekey="pnlSignatureResource1">
                                 <uc1:mfbSignature runat="server" ID="mfbSignature" />
                             </asp:Panel>
+                            <asp:Panel ID="pnlRoute" runat="server" Visible="<%# RoutesList.MasterList.GetNormalizedAirports().Length > 0 %>" CssClass="detailsSection" meta:resourcekey="pnlRouteResource1">
+                                <h3><%# Eval("Route").ToString().ToUpper() %></h3>
+                                <uc5:mfbAirportServices runat="server" ID="mfbAirportServices1" ShowZoom="true" ShowInfo="true" ShowMetar="true" />
+                                <p><%# ((LogbookEntryDisplay) Container.DataItem).GetPathDistanceDescription(DataForFlight.ComputePathDistance()) %></p>
+                                <asp:Panel ID="pnlMetars" runat="server">
+                                    <asp:Button ID="btnMetars" runat="server" Text="<%$ Resources:Weather, GetMETARSPrompt %>" OnClick="btnMetars_Click" />
+                                    <uc1:METAR runat="server" ID="METARDisplay" />
+                                </asp:Panel>
+                            </asp:Panel>
                             <div style="text-align:center">
                                 <uc1:mfbImageList ID="mfbilFlight" runat="server" Columns="2" MapLinkType="ZoomOnLocalMap" CanEdit="false" MaxImage="-1" ImageClass="Flight" IncludeDocs="false" />
                             </div>
                             <div><uc1:mfbVideoEntry runat="server" ID="mfbVideoEntry1" CanAddVideos="false" /></div>
-                            <div>
-                                <asp:Repeater ID="rptBadges" runat="server">
-                                    <ItemTemplate>
-                                        <uc1:mfbBadgeSet runat="server" ID="mfbBadgeSet" BadgeSet='<%# Container.DataItem %>' /></div>
-                                    </ItemTemplate>
-                                </asp:Repeater>
+                            <asp:Repeater ID="rptBadges" runat="server">
+                                <ItemTemplate>
+                                    <div><uc1:mfbBadgeSet runat="server" ID="mfbBadgeSet" BadgeSet='<%# Container.DataItem %>' /></div>
+                                </ItemTemplate>
+                            </asp:Repeater>
                         </ItemTemplate>
                     </asp:FormView>
                 </Content>

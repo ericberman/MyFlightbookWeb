@@ -6,9 +6,16 @@
         <asp:TemplateField>
             <ItemTemplate>
                 <asp:Image ID="imgAirport" runat="server" ImageUrl='<%# ((MyFlightbook.Airports.airport) Container.DataItem).IsPort ? "~/images/airport.png" : "~/images/tower.png" %>' />&nbsp;&nbsp;
-                <asp:HyperLink ID="lnkZoom" runat="server">
-                    <%# Eval("FullName") %>
-                </asp:HyperLink>
+                <asp:MultiView ID="mvAirportName" runat="server">
+                    <asp:View ID="vwDynamic" runat="server">
+                        <asp:HyperLink ID="lnkZoom" runat="server">
+                            <%# Eval("FullName") %>
+                        </asp:HyperLink>
+                    </asp:View>
+                    <asp:View ID="vwStatic" runat="server">
+                        <%# Eval("FullName") %>
+                    </asp:View>
+                </asp:MultiView>
             </ItemTemplate>
         </asp:TemplateField>
         <asp:HyperLinkField Text="<%$ Resources:LocalizedText, AirportServiceAirportInformation %>" DataNavigateUrlFormatString="https://acukwik.com/Airport-Info/{0}" DataNavigateUrlFields="Code" />

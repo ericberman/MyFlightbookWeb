@@ -285,6 +285,12 @@
   <data name="lblErrResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblFlightAircraftResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFlightAircraftResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblFlightDateResource1.Text" xml:space="preserve">
     <value />
   </data>

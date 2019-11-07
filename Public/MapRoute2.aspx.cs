@@ -71,14 +71,14 @@ public partial class MapRoute : System.Web.UI.Page
 
         ScriptManager.GetCurrent(Page).RegisterAsyncPostBackControl(btnMapEm);
 
+        MfbGoogleMapManager1.Mode = (util.GetIntParam(Request, "sm", 0) != 0) ? GMap_Mode.Static : GMap_Mode.Dynamic;
+        mfbAirportServices1.AddZoomLink = (MfbGoogleMapManager1.Mode == GMap_Mode.Dynamic);
         if (viewHist && CurrentVisitedRoute != null)
             ViewHistorical();
         else
             MapAirports(txtAirports.Text);
 
         MfbGoogleMapManager1.Visible = !String.IsNullOrWhiteSpace(txtAirports.Text);    // cut down on pointless mapping.
-
-        MfbGoogleMapManager1.Mode = (util.GetIntParam(Request, "sm", 0) != 0) ? GMap_Mode.Static : GMap_Mode.Dynamic;
     }
 
     protected void btnMapEm_Click(object sender, EventArgs e)
@@ -100,6 +100,7 @@ public partial class MapRoute : System.Web.UI.Page
     {
         ListsFromRoutesResults result = AirportList.ListsFromRoutes(szAirports);
         SetAirportsInMap(result.Result);
+
         // and add the table to the page underneath the map
         mfbAirportServices1.SetAirports(result.MasterList.GetNormalizedAirports());
 
