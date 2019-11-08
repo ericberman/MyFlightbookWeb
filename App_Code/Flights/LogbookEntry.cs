@@ -411,7 +411,7 @@ namespace MyFlightbook
         /// <summary>
         /// Computes the hash for a flight so that we can tell if it is modified in a meaningful way.
         /// ONLY VALID IF PROPERTIES HAVE BEEN LOADED FOR A FLIGHT
-        /// Limited to 1024 characters.  It is also encrypted.  The underlying data is not really much of a hash - it's a pretty direct serialization, so most changes should be caught.
+        /// Limited to 2048 characters.  It is also encrypted.  The underlying data is not really much of a hash - it's a pretty direct serialization, so most changes should be caught.
         /// </summary>
         /// <returns>The hash</returns>
         public string ComputeFlightHash()
@@ -441,7 +441,7 @@ namespace MyFlightbook
                 Dual, CFI, SIC, PIC, TotalFlightTime, sbPropHash.ToString(), CatClassOverride, Comment);
 
             string szSig = (new UserEncryptor(User)).Encrypt(szHash);
-            return szSig.Substring(0, Math.Min(1024, szSig.Length));
+            return szSig.Substring(0, Math.Min(2048, szSig.Length));
         }
 
         public static LogbookEntry LogbookEntryFromHash(string szHash)
