@@ -1229,6 +1229,8 @@ GROUP BY ac.idaircraft";
     protected void UpdateInvalidSigs()
     {
         List<LogbookEntry> lst = new List<LogbookEntry>();
+        List<LogbookEntry> lstAutoFix = new List<LogbookEntry>();
+
         List<int> lstIDs = new List<int>();
         DBHelper dbh = new DBHelper("SELECT idFlight FROM Flights WHERE signatureState<>0 ORDER BY Username ASC, Date DESC");
         dbh.CommandArgs.Timeout = 300;  // up to 300 seconds.
@@ -1241,13 +1243,22 @@ GROUP BY ac.idaircraft";
                 LogbookEntry le = new LogbookEntry();
                 le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true);
                 if (le.AdminSignatureSanityCheckState != LogbookEntry.SignatureSanityCheckState.OK)
-                    lst.Add(le);
+                {
+                    // see if we can auto-fix these.  Auto-fixed = decrypted hash matches case insenstive and trimmed.
+                    if (le.DecryptedCurrentHash.Trim().CompareCurrentCultureIgnoreCase(le.DecryptedFlightHash.Trim()) == 0)
+                    {
+                        lstAutoFix.Add(le);
+                        le.AdminSignatureSanityFix(true);
+                    }
+                    else
+                        lst.Add(le);
+                }
             });
 
         gvInvalidSignatures.DataSource = ViewState["InvalidSigs"] = lst;
         gvInvalidSignatures.DataBind();
 
-        lblSigResults.Text = String.Format("Found {0} signed flights, {1} appear to have problems", cTotalSigned, lst.Count);
+        lblSigResults.Text = String.Format("Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", cTotalSigned, lst.Count, lstAutoFix.Count);
     }
 
     protected void btnFixInvalidSigState_Click(object sender, EventArgs e)

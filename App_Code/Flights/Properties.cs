@@ -799,7 +799,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                     case CFPPropertyType.cfpInteger:
                         return IntValue.ToString(CultureInfo.CurrentCulture);
                     case CFPPropertyType.cfpString:
-                        return TextValue;
+                        return (this.PropertyType.IsAllCaps) ? TextValue.ToUpper(CultureInfo.CurrentCulture) : TextValue;
                     default:
                         return string.Empty;
                 }
@@ -829,7 +829,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                     case CFPPropertyType.cfpInteger:
                         return IntValue.ToString(CultureInfo.InvariantCulture);
                     case CFPPropertyType.cfpString:
-                        return TextValue;
+                        return (this.PropertyType.IsAllCaps) ? TextValue.ToUpperInvariant() : TextValue;
                     default:
                         return string.Empty;
                 }
