@@ -62,7 +62,7 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
             }
             if (!dt.HasValue())
                 txtDateTime.Text = string.Empty;
-            return dt.HasValue() ? TimeZoneInfo.ConvertTimeToUtc(dt, DefaultTimeZone) : DateTime.MinValue;
+            return dt.HasValue() ? (dt.Kind == DateTimeKind.Utc ? dt : TimeZoneInfo.ConvertTimeToUtc(dt, DefaultTimeZone)) : DateTime.MinValue;
         }
         set 
         {
