@@ -5,8 +5,8 @@
 <%@ Register src="Controls/mfbLogbookSidebar.ascx" tagname="mfbLogbookSidebar" tagprefix="uc3" %>
 <%@ Register src="Controls/GoogleAnalytics.ascx" tagname="GoogleAnalytics" tagprefix="uc4" %>
 <%@ Register src="Controls/SponsoredAd.ascx" tagname="SponsoredAd" tagprefix="uc5" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:fb="http://ogp.me/ns/fb#">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta name="verify-v1" content="7D/8Uvt4SqfWiyxmBjdh6ee4Kmr8ckec9yCd8wGU9n0=" />
     <meta name="apple-itunes-app" content="app-id=349983064" />
@@ -24,7 +24,7 @@
 </head>
 <body id="masterbody" runat="server">
 <div id="fb-root"></div>
-<script type="text/javascript">
+<script>
 
     function addLoadEvent(func) {
         var oldonload = window.onload;
