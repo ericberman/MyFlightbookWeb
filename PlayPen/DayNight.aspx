@@ -65,7 +65,7 @@
     <asp:Table runat="server" ID="tblDayNight" EnableViewState="false">
     </asp:Table>
 
-    <script type="text/javascript"> 
+    <script> 
 //<![CDATA[
         function clickForAirport(point) {
             if (point != null) {
@@ -82,7 +82,7 @@
 //]]>
     </script>
     <asp:Panel ID="pnlDropPin" runat="server" Visible="false">
-        <script type="text/javascript">
+        <script>
             $(document).ready(function () {
                 dropPin(nll(<% =Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture) %>, <% =Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture) %>), 'selected point');
                 document.getElementById('<% =lblSunRise.ClientID %>').innerText = new Date('<% =SunRiseUTC.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture) %>').toLocaleTimeString();

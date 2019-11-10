@@ -17,7 +17,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
     <asp:HiddenField ID="hdnLastViewedPaneIndex" runat="server" />
-    <script type="text/javascript">
+    <script>
         function onAccordionPaneShown(idx) {
             if (idx != 1)
                 document.getElementById("<% =hdnLastViewedPaneIndex.ClientID %>").value = idx;
@@ -91,7 +91,7 @@
                     <table style="border-spacing: 10px;">
                         <tr>
                             <td style="text-align:center;">
-                                <asp:Image ID="imgDownload" ImageUrl="~/images/download.png" runat="server" />
+                                <asp:Image ID="imgDownload" ImageUrl="~/images/download.png" AlternateText="<%$ Resources:Tabs, LogbookDownload %>" runat="server" />
                             </td>
                             <td>
                                 <asp:HyperLink ID="lnkDownload" Font-Bold="true" runat="server" NavigateUrl="~/Member/Download.aspx?lm=Accordion" Text="<%$ Resources:Tabs, LogbookDownload %>"></asp:HyperLink>
@@ -102,7 +102,7 @@
                         </tr>
                         <tr>
                             <td style="text-align:center;">
-                                <asp:Image ID="imgImport" ImageUrl="~/images/import.png" runat="server" />
+                                <asp:Image ID="imgImport" ImageUrl="~/images/import.png" runat="server" AlternateText="<%$ Resources:Tabs, LogbookImport %>" />
                             </td>
                             <td>
                                 <asp:HyperLink ID="lnkImport" Font-Bold="true" runat="server" NavigateUrl="~/Member/Import.aspx?lm=Accordion" Text="<%$ Resources:Tabs, LogbookImport %>"></asp:HyperLink>
@@ -113,7 +113,7 @@
                         </tr>
                         <tr>
                             <td style="text-align:center;">
-                                <asp:Image ID="imgStartingTotals" ImageUrl="~/images/startingtotals.png" runat="server" />
+                                <asp:Image ID="imgStartingTotals" ImageUrl="~/images/startingtotals.png" AlternateText="<%$ Resources:LocalizedText, StartingTotalsLink %>" runat="server" />
                             </td>
                             <td>
                                 <asp:HyperLink ID="lnkStartingTotals" Font-Bold="true" NavigateUrl="~/Member/StartingTotals.aspx?lm=Accordion" runat="server" Text="<%$ Resources:LocalizedText, StartingTotalsLink %>"></asp:HyperLink>
@@ -124,7 +124,7 @@
                         </tr>
                         <tr>
                             <td style="text-align:center;">
-                                <asp:Image ID="imgPendingFlights" ImageUrl="~/images/pendingflights.png" runat="server" />
+                                <asp:Image ID="imgPendingFlights" ImageUrl="~/images/pendingflights.png" AlternateText="<%$ Resources:LocalizedText, PendingFlightsLink %>" runat="server" />
                             </td>
                             <td>
                                 <asp:HyperLink ID="lnkPendingFlights" Font-Bold="true" NavigateUrl="~/Member/ReviewPendingFlights.aspx" runat="server" Text="<%$ Resources:LocalizedText, PendingFlightsLink %>"></asp:HyperLink>

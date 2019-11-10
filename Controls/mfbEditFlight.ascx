@@ -43,7 +43,7 @@
                 <asp:DropDownList ID="cmbAircraft" runat="server" TabIndex="2" Width="200px" AutoPostBack="true" OnSelectedIndexChanged="cmbAircraft_SelectedIndexChanged" 
                     meta:resourcekey="cmbAircraftResource1">
                 </asp:DropDownList>
-                <script type="text/javascript">
+                <script>
                     function currentlySelectedAircraft() {
                         return document.getElementById('<% =cmbAircraft.ClientID %>').value;
                     }
@@ -316,12 +316,12 @@
                         Text="Allow others to view details of this flight"
                         meta:resourcekey="Label26Resource1">
                     </asp:Label>
-                    <uc1:mfbTooltip runat="server" ID="mfbTooltip">
-                        <TooltipBody>
-                            <asp:Literal ID="litSharingDesc" runat="server" Text="<%$ Resources:LocalizedText, sharingdescription %>"></asp:Literal>
-                        </TooltipBody>
-                    </uc1:mfbTooltip>
                 </asp:Label>
+                <uc1:mfbTooltip runat="server" ID="mfbTooltip">
+                    <TooltipBody>
+                        <asp:Literal ID="litSharingDesc" runat="server" Text="<%$ Resources:LocalizedText, sharingdescription %>"></asp:Literal>
+                    </TooltipBody>
+                </uc1:mfbTooltip>
             </span>
         </p>
     </asp:Panel>

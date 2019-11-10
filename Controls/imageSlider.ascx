@@ -19,7 +19,7 @@
             </ItemTemplate>
         </asp:Repeater>
     </ul>
-    <script type="text/javascript">
+    <script>
         $(document).ready(function () {
             $('<% = "#" + SliderClientID %>').bxSlider({
                 adaptiveHeight: true,

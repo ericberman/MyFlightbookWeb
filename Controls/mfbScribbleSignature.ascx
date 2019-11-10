@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbScribbleSignature.ascx.cs" Inherits="Controls_mfbScribbleSignature" %>
-<script type="text/javascript">
+<script>
     function loaded() {
         var signature = new ns.SignatureControl({ imgDataControlId : "<% = hdnSigData.ClientID %>" });
         signature.init();

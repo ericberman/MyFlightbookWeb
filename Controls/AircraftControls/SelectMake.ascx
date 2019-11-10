@@ -3,7 +3,7 @@
 
 <asp:MultiView ID="mvModel" runat="server" ActiveViewIndex="0">
     <asp:View ID="vwEdit" runat="server">
-        <script type="text/javascript">
+        <script>
             function ModelSelected(source, eventArgs) {
                 document.getElementById('<% = imgAutofillProgress.ClientID %>').style.display = 'inline-block';
                 document.getElementById('<% = hdnSelectedModel.ClientID %>').value = eventArgs._value;

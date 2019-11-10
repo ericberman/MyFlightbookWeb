@@ -5,7 +5,7 @@ using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2016 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,10 +17,6 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
     private const string WaterMarkInteger = "0";
     private const string WaterMarkDecimal = "0.0";
     private const string WaterMarkCurrency = "0.00";
-    private const string WaterMarkHHMM = "hh:mm";
-
-    private const string FilterDecimal = "0123456789";
-    private const string FilterHHMM = "0123456789:";
 
     private const string regDecimalTemplate = "([0-9])*([{0}]([0-9])*)?";
     private const string regInteger = "([0-9])*";
@@ -55,7 +51,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
     /// </summary>
     public string CrossFillSourceClientID { get; set; }
 
-    private System.Text.RegularExpressions.Regex regexIOSSafariHack = new System.Text.RegularExpressions.Regex("(ipad|iphone)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    private readonly System.Text.RegularExpressions.Regex regexIOSSafariHack = new System.Text.RegularExpressions.Regex("(ipad|iphone)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
     private bool IsIOSSafari { get { return Request != null && Request.UserAgent != null && regexIOSSafariHack.IsMatch(Request.UserAgent); } }
 
@@ -76,8 +72,16 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
                 case EditMode.Currency:
                 case EditMode.Decimal:
                     {
-                        txtDecimal.TextMode = Request.IsMobileDeviceOrTablet() ? TextBoxMode.Number : TextBoxMode.SingleLine;
-                        txtDecimal.Attributes["step"] = "any";
+                        if (Request.IsMobileDeviceOrTablet())
+                        {
+                            txtDecimal.TextMode = TextBoxMode.Number;
+                            txtDecimal.Attributes["step"] = "0.1";
+                        }
+                        else
+                        {
+                            txtDecimal.TextMode = TextBoxMode.SingleLine;
+                            txtDecimal.Attributes.Remove("step");
+                        }
                         string szDecChar = System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator;
                         txtDecimal_TextBoxWatermarkExtender.WatermarkText = ((value == EditMode.Currency) ? WaterMarkCurrency : WaterMarkDecimal).Replace(".", szDecChar);
                         FilteredTextBoxExtender.FilterType = AjaxControlToolkit.FilterTypes.Custom;
@@ -106,8 +110,16 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
                     break;
 
                 case EditMode.Integer:
-                    txtDecimal.TextMode = Request.IsMobileDeviceOrTablet() ? TextBoxMode.Number : TextBoxMode.SingleLine;
-                    txtDecimal.Attributes["step"] = "1";
+                    if (Request.IsMobileDeviceOrTablet())
+                    {
+                        txtDecimal.TextMode = TextBoxMode.Number;
+                        txtDecimal.Attributes["step"] = "1";
+                    }
+                    else
+                    {
+                        txtDecimal.TextMode = TextBoxMode.SingleLine;
+                        txtDecimal.Attributes.Remove("step");
+                    }
                     txtDecimal_TextBoxWatermarkExtender.WatermarkText = WaterMarkInteger;
                     FilteredTextBoxExtender.FilterType = AjaxControlToolkit.FilterTypes.Numbers;
 
@@ -166,7 +178,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
                 // I.e., if you're in Italy, and type in "3,14", the resulting text is "3.14", but I parse that in Italian culture!!
                 if (m_EditMode != EditMode.Integer && System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator.CompareOrdinal(".") != 0 && IsIOSSafari)
                 {
-                    Decimal d = 0.0M;
+                    Decimal d;
                     if (Decimal.TryParse(txtDecimal.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                         return d;
                     return 0.0M;

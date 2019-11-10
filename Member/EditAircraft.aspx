@@ -10,10 +10,10 @@
     <asp:Label ID="lblTail" runat="server" Text=""></asp:Label> <asp:Label ID="lblAdminMode" runat="server" Text=" - ADMIN MODE" Visible="false"></asp:Label>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js") %>'></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/mfbcalendar.js?v=3") %>'></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js") %>'></script>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/mfbcalendar.js?v=3") %>'></script>
     <div class="noprint">
         <uc1:mfbEditAircraft id="MfbEditAircraft1" runat="server" OnAircraftUpdated="AircraftUpdated"></uc1:mfbEditAircraft>
     </div>

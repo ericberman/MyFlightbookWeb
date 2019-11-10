@@ -48,7 +48,7 @@
         <uc2:mfbGoogleAdSense ID="mfbGoogleAdSense2" runat="server" LayoutStyle="adStyleVertical" />
     </div>
     <div style="width:100%; clear:both; float:none;">&nbsp;</div>
-        <script type="text/javascript"> 
+        <script> 
 //<![CDATA[
             function clickAndZoom(lat, lon) {
                 var point = new google.maps.LatLng(lat, lon);

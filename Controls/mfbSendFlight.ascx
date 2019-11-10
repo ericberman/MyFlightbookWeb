@@ -66,7 +66,7 @@
     Enabled="true">
 </ajaxToolkit:ModalPopupExtender>
 
-<script type="text/javascript">
+<script>
 /* Handle escape to dismiss */
 function pageLoad(sender, args) {
     if (!args.get_isPartialLoad()) {

@@ -8,8 +8,8 @@
     <asp:Label ID="lblHeader" runat="server" Text="<%$ Resources:Club, LabelManageClubs %>"></asp:Label>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <h2><% =Branding.ReBrand(Resources.Club.ClubDescHeader) %></h2>
     <div class="clubDetailsRight" style="background-color:#DDECFF">
         <p><asp:Label ID="lblTrialStatus" runat="server"></asp:Label></p>
@@ -49,7 +49,7 @@
         <uc2:mfbGoogleMapManager ID="mfbGoogleMapManager2" ShowRoute="false" AllowResize="false" runat="server" />
         <asp:Panel ID="pnlDynamicClubDetails" runat="server">
         </asp:Panel>
-        <script type="text/javascript">
+        <script>
             function displayClubDetails(id) {
                 var params = new Object();
                 params.idClub = id;

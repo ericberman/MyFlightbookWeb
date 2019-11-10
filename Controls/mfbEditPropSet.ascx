@@ -2,7 +2,7 @@
 <%@ Register src="mfbEditProp.ascx" tagname="mfbEditProp" tagprefix="uc1" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
 <%@ Register Src="~/Controls/mfbSelectTemplates.ascx" TagPrefix="uc1" TagName="mfbSelectTemplates" %>
-<script type="text/javascript">
+<script>
     function toggleSearchBox() {
         var txtFilter = document.getElementById("<% =txtFilter.ClientID %>");
         if (txtFilter.style.display == "none") {

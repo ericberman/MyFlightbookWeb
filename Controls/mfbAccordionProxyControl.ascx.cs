@@ -3,7 +3,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016 MyFlightbook LLC
+ * Copyright (c) 2016-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,18 +17,6 @@ public partial class Controls_mfbAccordionProxyControl : System.Web.UI.UserContr
     {
         get { return lblLabel.Text; }
         set { lblLabel.Text = value; }
-    }
-
-    public string IconPath
-    {
-        get { return imgIcon.ImageUrl; }
-        set { imgIcon.ImageUrl = value; imgIcon.Visible = !string.IsNullOrEmpty(value); }
-    }
-
-    public string StateIndicatorPath
-    {
-        get { return imgState.ImageUrl; }
-        set { imgState.ImageUrl = value; imgState.Visible = !string.IsNullOrEmpty(value); }
     }
 
     public bool IsEnhanced
@@ -52,19 +40,9 @@ public partial class Controls_mfbAccordionProxyControl : System.Web.UI.UserContr
 
     public string PostbackID { get { return btnPostback.UniqueID; } }
 
-    public Image Icon 
-    { 
-        get { return imgIcon; }
-    }
-
     public Label LabelControl
     {
         get { return lblLabel; }
-    }
-
-    public Image StateIndicator
-    {
-        get { return imgState; }
     }
 
     public Panel Container

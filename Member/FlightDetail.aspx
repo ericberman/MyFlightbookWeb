@@ -72,7 +72,7 @@
     <div>
         <asp:Label ID="lblPageErr" runat="server" CssClass="error" EnableViewState="False" meta:resourcekey="lblPageErrResource1"></asp:Label></div>
     <uc3:mfbAccordionProxyControl ID="mfbAccordionProxyControl1" runat="server" />
-    <script type="text/javascript">
+    <script>
         function dropPin(p, s) {
             var gm = getMfbMap();
             gm.oms.addMarker(gm.addEventMarker(p, s));

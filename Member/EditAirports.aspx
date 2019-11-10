@@ -9,8 +9,8 @@
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><asp:Literal ID="locEditAirportsHeader" runat="server" 
             Text="Edit Airports and NavAids" 
             meta:resourcekey="locEditAirportsHeaderResource2"></asp:Literal>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <p><asp:Localize ID="locEditAirportsDesc" runat="server" Text="Missing a local airport that you love? That's probably because we compile
@@ -295,7 +295,7 @@
         </asp:GridView>
     </asp:Panel>
 
-    <script type="text/javascript"> 
+    <script> 
 //<![CDATA[
         function centerToText ()
         {

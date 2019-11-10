@@ -329,7 +329,7 @@
     BackgroundCssClass="modalBackground"
     CancelControlID="btnCancelDupe" OnCancelScript="getFlickerSolved();" DynamicServicePath="" BehaviorID="ctl00_modalPopupDupes">
 </cc1:ModalPopupExtender>
-<script type="text/javascript" language="javascript">
+<script language="javascript">
 // <![CDATA[  
 // These functions from http://www.aspdotnetcodes.com/ModalPopup_Postback.aspx
 var clientid;

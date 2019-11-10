@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GoogleChart.ascx.cs" Inherits="Controls_GoogleChart" %>
 <asp:Panel ID="pnlChart" runat="server">
 </asp:Panel>
-<script type="text/javascript">
+<script>
       var chart<%=ID %>;
       var data<%=ID %>;
       function drawChart<%=ID %>() {

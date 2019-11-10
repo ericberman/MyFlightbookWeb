@@ -13,7 +13,7 @@
     <div>
         <uc1:TimeZone runat="server" ID="TimeZone1" AutoPostBack="true" />
     </div>
-    <script type="text/javascript">
+    <script>
         function refreshStatus(sender, e) {
             window.location = "<% = Request.Url.AbsoluteUri %>";
          }

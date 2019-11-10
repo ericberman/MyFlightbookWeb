@@ -19,7 +19,7 @@
         </div>
     </asp:View>
     <asp:View ID="vwQuestions" runat="server">
-        <p><asp:Label ID="lblQuestionProgress" runat="server" Text=""></asp:Label></p><script type="text/javascript">
+        <p><asp:Label ID="lblQuestionProgress" runat="server" Text=""></asp:Label></p><script>
 // <![CDATA[  
 var t = 30;
 setTimeout("TickTock()", 1000);

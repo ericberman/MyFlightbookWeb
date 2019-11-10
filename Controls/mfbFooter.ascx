@@ -30,7 +30,7 @@
                 <li><asp:HyperLink ID="lnkPDA" NavigateUrl="~/DefaultMini.aspx" runat="server" 
                 Text="Mobile Access" meta:resourcekey="lnkPDAResource1"></asp:HyperLink></li>
             </ul>
-            <div style="margin-top:3px; margin-bottom:6px;" ID="divSSLSeal" runat="server"><span id="siteseal"><script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=MbSEyzG679EfYseNolHmMeTjb9SSTum9qZBBZbXTqqb8vBPbEJNZtpY0EX4b"></script></span></div>        </div>
+            <div style="margin-top:3px; margin-bottom:6px;" ID="divSSLSeal" runat="server"><span id="siteseal"><script async src="https://seal.godaddy.com/getSeal?sealID=MbSEyzG679EfYseNolHmMeTjb9SSTum9qZBBZbXTqqb8vBPbEJNZtpY0EX4b"></script></span></div>        </div>
         <div class="footerItem">
             <ul>
                 <li id="cellFacebook" runat="server">

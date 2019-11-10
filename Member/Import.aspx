@@ -39,7 +39,7 @@
                     </table>
                 </asp:Panel>
                 <ajaxToolkit:ModalPopupExtender ID="popupCloudAhoy" runat="server" BehaviorID="mpeCloudAhoy" BackgroundCssClass="modalBackground" TargetControlID="lnkImportCloudAhoy" PopupControlID="pnlModalCloudAhoy"></ajaxToolkit:ModalPopupExtender>
-    <script type="text/javascript">
+    <script>
         function hideEditor() {
             document.getElementById('<% =pnlModalCloudAhoy.ClientID %>').style.display = 'none';
             $find("mpeCloudAhoy").hide();

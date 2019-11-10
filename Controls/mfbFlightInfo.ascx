@@ -199,7 +199,7 @@
     <asp:HiddenField ID="hdnFlightID" Value="-1" runat="server" />
     <uc1:mfbTimeZone ID="mfbTimeZone1" runat="server" />
 </asp:Panel>
-<script type="text/javascript">
+<script>
     addLoadEvent(function () {
         document.getElementById('<% =imgHighWater.ClientID %>').style.display = (currentlySelectedAircraft) ? "inline-block" : "none";
     });

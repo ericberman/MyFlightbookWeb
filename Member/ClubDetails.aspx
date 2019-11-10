@@ -17,10 +17,10 @@
     <asp:Label ID="lblClubHeader" runat="server" Text=""></asp:Label>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpTopForm" Runat="Server">
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js") %>'></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/mfbcalendar.js?v=3") %>'></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js") %>'></script>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/mfbcalendar.js?v=3") %>'></script>
     <p><asp:HyperLink ID="lnkViewAll" runat="server" NavigateUrl="~/Public/Clubs.aspx?noredir=1" Text="<%$ Resources:Club, LabelViewAllClubs %>"></asp:HyperLink></p>
     <asp:MultiView ID="mvPromoStatus" runat="server">
         <asp:View ID="vwPromotional" runat="server">
@@ -58,7 +58,7 @@
             </asp:Panel>
             <asp:ModalPopupExtender ID="mpuGuestContact" runat="server" BackgroundCssClass="modalBackground" CancelControlID="btnCancel" PopupControlID="pnlContact" BehaviorID="mpuGuestContact" TargetControlID="lnkSendMessage"></asp:ModalPopupExtender>
             <p><asp:Label ID="lblMessageStatus" runat="server" CssClass="success" Text="<%$ Resources:Club, StatusMessageSent %>" EnableViewState="false" Visible="false"></asp:Label></p>
-            <script type="text/javascript">
+            <script>
                         /* Handle escape to dismiss */
                         function pageLoad(sender, args) {
                             if (!args.get_isPartialLoad()) {
@@ -86,7 +86,7 @@
     <asp:MultiView ID="mvMain" runat="server">
         <asp:View ID="vwSchedules" runat="server">
             <uc3:mfbEditAppt ID="mfbEditAppt1" runat="server" />
-            <script type="text/javascript">
+            <script>
                 var clubCalendars = [];
                 var clubNavControl;
 

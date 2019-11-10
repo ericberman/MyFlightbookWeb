@@ -10,9 +10,9 @@
             Text="Aircraft Models" meta:resourcekey="locMakesHeaderResource1"></asp:Localize>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/endless-scroll.js") %>'></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/endless-scroll.js") %>'></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <div style="float:right; margin: 5px; padding:5px; max-width: 200px; border: 1px solid black">
         <asp:Localize ID="locPageTop" runat="server" Text="Don&#39;t see the make/model of aircraft that you fly?" 
             meta:resourcekey="locPageTopResource1"></asp:Localize>
@@ -122,7 +122,7 @@
             </Columns>
         </asp:GridView>
     </div>
-    <script type="text/javascript">
+    <script>
         var params = new Object();
         params.szRestrict = $('#<% =hdnQueryJSON.ClientID %>').val();
         params.skip = "<%=PageSize %>";

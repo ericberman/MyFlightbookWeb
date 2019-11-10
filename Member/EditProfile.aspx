@@ -18,8 +18,8 @@
 <%@ Register Src="~/Controls/ClubControls/TimeZone.ascx" TagPrefix="uc1" TagName="TimeZone" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <asp:Label ID="lblName" runat="server" meta:resourcekey="lblNameResource1"></asp:Label>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
@@ -326,7 +326,7 @@
                                 <p><asp:Localize ID="locInstructions" runat="server" Text="Drag and drop between the two lists below if using a mouse; if using touch, press-and-hold to move an item between lists." meta:resourcekey="locInstructionsResource1"></asp:Localize></p>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel1">
                                     <ContentTemplate>
-                                        <script type="text/javascript">
+                                        <script>
                                             var listDrop = new listDragger('<% =txtPropID.ClientID %>', '<% =btnWhiteList.ClientID %>', '<% =btnBlackList.ClientID %>');
                                         </script>
                                         <div style="display:none">
@@ -346,7 +346,7 @@
                                                             <ItemTemplate>
                                                                 <div draggable="true" id="cpt<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="javascript:listDrop.drag(event, <%# Eval("PropTypeID") %>)" >
                                                                     <%# Eval("Title") %>
-                                                                    <script type="text/javascript">
+                                                                    <script>
                                                                         document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchstart", function () { listDrop.startLeftTouch('<%# Eval("PropTypeID") %>'); });
                                                                         document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchend", function () { listDrop.resetTouch(); });
                                                                     </script>
@@ -361,7 +361,7 @@
                                                             <ItemTemplate>
                                                                 <div draggable="true" id="cpt<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="javascript:listDrop.drag(event, <%# Eval("PropTypeID") %>)">
                                                                     <%# Eval("Title") %>
-                                                                    <script type="text/javascript">
+                                                                    <script>
                                                                         document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchstart", function () { listDrop.startRightTouch('<%# Eval("PropTypeID") %>'); });
                                                                         document.getElementById('cpt<%# Eval("PropTypeID") %>').addEventListener("touchend", function () { listDrop.resetTouch(); });
                                                                     </script>

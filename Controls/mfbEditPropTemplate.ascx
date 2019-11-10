@@ -18,11 +18,11 @@
             <asp:PostBackTrigger ControlID="btnSaveTemplate" />
         </Triggers>
         <ContentTemplate>
-            <script type="text/javascript">
+            <script>
                 var lstDropTemplate = new listDragger('', '', '');
             </script>
             <div style="display:none">
-                <script type="text/javascript">
+                <script>
                     const setAdded = new Set();
                     const setRemoved = new Set();
                 </script>
@@ -77,7 +77,7 @@
                                 <ItemTemplate>
                                     <div draggable="true" id="cptT<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="javascript:lstDropTemplate.drag(event, <%# Eval("PropTypeID") %>)">
                                         <%# Eval("Title") %>
-                                        <script type="text/javascript">
+                                        <script>
                                             document.getElementById('cptT<%# Eval("PropTypeID") %>').addEventListener("touchstart", function () { lstDropTemplate.startRightTouch('<%# Eval("PropTypeID") %>'); });
                                             document.getElementById('cptT<%# Eval("PropTypeID") %>').addEventListener("touchend", function () { lstDropTemplate.resetTouch(); });
                                         </script>

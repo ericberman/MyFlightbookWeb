@@ -81,7 +81,7 @@
             <asp:View ID="vwRealAircraft" runat="server">
                 <asp:MultiView ID="mvRealAircraft" runat="server" ActiveViewIndex="0">
                     <asp:View ID="vwRegularTail" runat="server">
-                        <script type="text/javascript">
+                        <script>
                             function AircraftSelected(source, eventArgs) {
                                 document.getElementById('<% = imgAutofillProgress.ClientID %>').style.display = 'inline-block';
                                 document.getElementById('<% = hdnSelectedAircraftID.ClientID %>').value = eventArgs._value;

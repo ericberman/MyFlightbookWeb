@@ -33,7 +33,7 @@
 </asp:Panel>
 <div style="display: none">
     <asp:Button ID="btnDummy" runat="server" Text="" />
-    <script type="text/javascript">
+    <script>
         function setApptDate(dt, idDate, idHour) {
             var d = new Date(dt.getYear(), dt.getMonth(), dt.getDay(), 0, 0, 0, 0);
             $find(idDate).set_selectedDate(d);
