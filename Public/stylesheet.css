@@ -1472,6 +1472,62 @@ h3.numberedStep {
     vertical-align: middle;
 }
 
+/* Gridview styles */
+.gvhDefault {
+    text-align: left;
+    vertical-align: bottom;
+}
+
+.gvhCentered, .gvcCentered {
+    text-align:center;
+}
+
+.gvhLeft, .gvcLeft {
+    text-align: left;
+}
+
+.gvhRight, gvcRight {
+    text-align: right;
+}
+
+.gvhBold {
+    font-weight: bold;
+}
+
+.gvAcImage {
+    text-align: center;
+    width: 160px;
+    vertical-align: middle;
+}
+
+.gvAcItem {
+    vertical-align:top;
+}
+
+.gvAcInactive {
+    vertical-align:top;
+    width: 20px;
+}
+
+.gvContext {
+    vertical-align:top;
+    width: 20px;
+}
+
+.gvDelete {
+    vertical-align:top;
+    width: 13px;
+}
+
+.largeBold {
+    font-weight:bold;
+    font-size:larger;
+}
+
+.imgMiddle {
+    vertical-align:middle;
+}
+
 /* Printing */
 @media print {
     h1 {

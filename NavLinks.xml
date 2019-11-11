@@ -27,7 +27,7 @@
       <Item>
         <Text>LogbookTotals</Text>
         <Link>~/Member/LogbookNew.aspx?ft=Totals</Link>
-        <ID>lbtFindFlights</ID>
+        <ID>lbtTotals</ID>
         <Roles></Roles>
       </Item>
       <Item>

@@ -33,6 +33,7 @@ namespace MyFlightbook
         // logbook tabs
         lbtAddNew = 100,
         lbtFindFlights,
+        lbtTotals,
         lbtCurrency,
         lbtTrends,
         lbt8710,

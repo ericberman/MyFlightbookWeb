@@ -592,7 +592,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         if (!String.IsNullOrEmpty(LastSortExpr))
         {
             foreach (DataControlField dcf in gv.Columns)
-                dcf.HeaderStyle.CssClass = "headerBase" + ((dcf.SortExpression.CompareCurrentCultureIgnoreCase(LastSortExpr) == 0) ? (LastSortDir == SortDirection.Ascending ? " headerSortAsc" : " headerSortDesc") : string.Empty);
+                dcf.HeaderStyle.CssClass = "headerBase" + ((dcf.SortExpression.CompareCurrentCultureIgnoreCase(LastSortExpr) == 0) ? (LastSortDir == SortDirection.Ascending ? " headerSortAsc" : " headerSortDesc") : string.Empty) + (dcf.SortExpression.CompareCurrentCultureIgnoreCase("Date") == 0 ? " gvhLeft" : " gvhCentered");
         }
 
         LogbookEntryDisplay.SortLogbook(lst, LastSortExpr, LastSortDir);

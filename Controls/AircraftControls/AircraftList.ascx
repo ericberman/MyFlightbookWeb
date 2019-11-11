@@ -11,14 +11,14 @@
     HeaderStyle-HorizontalAlign="left" CellSpacing="5" CellPadding="5">
     <Columns>
         <asp:TemplateField>
-            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" Width="160px" />
+            <ItemStyle CssClass="gvAcImage" />
             <ItemTemplate>
                 <uc3:mfbHoverImageList ID="mfbHoverThumb" runat="server" ImageListKey='<%# Eval("AircraftID") %>' ImageListDefaultImage='<%# Eval("DefaultImage") %>' ImageListAltText='<%#: Eval("TailNumber") %>' MaxWidth="150px" 
                     SuppressRefresh="<%# IsAdminMode %>" ImageListDefaultLink='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}{1}", Eval("AircraftID"), IsAdminMode ? "&a=1" : string.Empty) %>' Visible="<%# !IsAdminMode %>" ImageClass="Aircraft" CssClass='<%# ((bool) Eval("HideFromSelection")) ? "inactiveRow" : "activeRow" %>' />
             </ItemTemplate>
         </asp:TemplateField>
         <asp:TemplateField>
-            <ItemStyle VerticalAlign="Top" />
+            <ItemStyle CssClass="gvAcItem" />
             <ItemTemplate>
                 <asp:Panel ID="pnlAircraftID" runat="server">
                     <div>
@@ -56,7 +56,7 @@
             <ItemTemplate>
                 <asp:Image ID="imgInactivve" runat="server" Visible='<%# Eval("HideFromSelection") %>' ImageUrl="~/images/circleslash.png" AlternateText="<%$ Resources:Aircraft, InactiveAircraftNote %>" ToolTip="<%$ Resources:Aircraft, InactiveAircraftNote %>" />
             </ItemTemplate>
-            <ItemStyle VerticalAlign="Top" Width="20px" />
+            <ItemStyle CssClass="gvAcInactive" />
         </asp:TemplateField>
         <asp:TemplateField>
             <ItemTemplate>
@@ -95,7 +95,7 @@
                 </uc2:popmenu>
                 <asp:HyperLink ID="lnkRegistration" Text="Registration" Visible="false" Target="_blank" runat="server"></asp:HyperLink>
             </ItemTemplate>
-            <ItemStyle VerticalAlign="Top" Width="21px" />
+            <ItemStyle CssClass="gvContext" />
         </asp:TemplateField>
         <asp:TemplateField HeaderText="">
             <ItemTemplate>
@@ -103,7 +103,7 @@
                 <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="imgDelete" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:LocalizedText, MyAircraftConfirmDeleteAircraft %>">
                 </cc1:ConfirmButtonExtender>
             </ItemTemplate>
-            <ItemStyle VerticalAlign="Top" Width="13px" />
+            <ItemStyle CssClass="gvDelete" />
         </asp:TemplateField>        
     </Columns>
     <EmptyDataTemplate>

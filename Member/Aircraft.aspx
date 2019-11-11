@@ -28,15 +28,13 @@
             <% =Resources.Aircraft.ImportPrompt %>
             <asp:HyperLink ID="lnkImportAircraft" runat="server" Text="<%$ Resources:Aircraft, ImportTitle %>" NavigateUrl="~/Member/ImpAircraft.aspx"></asp:HyperLink>
         </p>
-        <p>
-            <asp:Panel ID="pnlDownload" runat="server">
-                <asp:LinkButton ID="lnkDownloadCSV" runat="server" OnClick="lnkDownloadCSV_Click">
-                    <asp:Image ID="imgDownloadCSV" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
-                    <asp:Image ID="imgCSVIcon" ImageAlign="Middle" runat="server" ImageUrl="~/images/csvicon_med.png" style="padding-right: 5px;" />
-                    <asp:Localize ID="locDownloadCSV" runat="server" Text="<%$ Resources:Aircraft, DownloadCSV %>"></asp:Localize>
-                </asp:LinkButton>
-            </asp:Panel>
-        </p>
+        <asp:Panel ID="pnlDownload" runat="server">
+            <asp:LinkButton ID="lnkDownloadCSV" runat="server" OnClick="lnkDownloadCSV_Click">
+                <asp:Image ID="imgDownloadCSV" ImageUrl="~/images/download.png" runat="server" style="padding-right: 5px; vertical-align:middle;" />
+                <asp:Image ID="imgCSVIcon" runat="server" ImageUrl="~/images/csvicon_med.png" style="padding-right: 5px; vertical-align: middle" />
+                <asp:Localize ID="locDownloadCSV" runat="server" Text="<%$ Resources:Aircraft, DownloadCSV %>"></asp:Localize>
+            </asp:LinkButton>
+        </asp:Panel>
     </div>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>

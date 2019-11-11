@@ -72,12 +72,12 @@
             OnPageIndexChanging="gridView_PageIndexChanging">
             <Columns>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldFlight %>" SortExpression="Date">
-                    <HeaderStyle CssClass="headerBase headerSortDesc" HorizontalAlign="Left" />
+                    <HeaderStyle CssClass="headerBase headerSortDesc gvhLeft" />
                     <ItemTemplate>
                         <div class="noprint" style="float:right">
                             <asp:Repeater ID="rptBadges" runat="server">
                                 <ItemTemplate>
-                                    <asp:Image runat="server" ImageAlign="AbsMiddle" ImageUrl="~/images/Badge-sm.png" ToolTip='<%# Eval("Name") %>' AlternateText='<%# Eval("Name") %>'></asp:Image>
+                                    <asp:Image runat="server" CssClass="imgMiddle" ImageUrl="~/images/Badge-sm.png" ToolTip='<%# Eval("Name") %>' AlternateText='<%# Eval("Name") %>'></asp:Image>
                                 </ItemTemplate>
                             </asp:Repeater>
                             <asp:Panel ID="pnlImagesHover" runat="server" Visible="false" style="display:inline-block;">
@@ -89,7 +89,7 @@
                                 </asp:HyperLink>
                             </asp:Panel>
                             <asp:HyperLink ID="lnkViewflightData" runat="server" Visible='<%# Convert.ToBoolean(Eval("HasFlightData")) %>' NavigateUrl='<%# AnalyzePath(Eval("FlightID")) %>'>
-                                <asp:Image ID="imgViewFlightData" ImageUrl="~/images/Clip.png" ImageAlign="AbsMiddle" AlternateText="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" ToolTip="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" runat="server" /></asp:HyperLink>
+                                <asp:Image ID="imgViewFlightData" ImageUrl="~/images/Clip.png" CssClass="imgMiddle" AlternateText="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" ToolTip="<%$ Resources:LogbookEntry, LogbookFlightHasTelemetry %>" runat="server" /></asp:HyperLink>
                         </div>
                         <div>
                             <asp:HyperLink ID="lnkEditFlight" Font-Bold="true" runat="server" Text='<%# ((DateTime) Eval("Date")).ToShortDateString() %>' Font-Size="Larger" NavigateUrl='<%# DetailsPath(Eval("FlightID")) %>'></asp:HyperLink>
@@ -122,7 +122,7 @@
                                         <tr>
                                             <td style="vertical-align:middle">
                                                 <asp:HyperLink ID="lnkImageSig" runat="server" NavigateUrl='<%# ((bool) Eval("HasDigitizedSig")) ? String.Format("~/Public/ViewSig.aspx?id={0}", Eval("FlightID")) : string.Empty %>'>
-                                                    <asp:Image ID="imgSigState" ToolTip='<%# Eval("SignatureStateDescription") %>' AlternateText='<%# Eval("SignatureStateDescription") %>' ImageUrl='<%# ((bool) Eval("HasValidSig")) ? "~/Images/sigok.png" : "~/Images/siginvalid.png" %>' ImageAlign="Middle" runat="server" />
+                                                    <asp:Image ID="imgSigState" ToolTip='<%# Eval("SignatureStateDescription") %>' AlternateText='<%# Eval("SignatureStateDescription") %>' ImageUrl='<%# ((bool) Eval("HasValidSig")) ? "~/Images/sigok.png" : "~/Images/siginvalid.png" %>' CssClass="imgMiddle" runat="server" />
                                                 </asp:HyperLink>
                                                 <cc1:HoverMenuExtender ID="HoverMenuExtender1" TargetControlID="imgSigState" PopupControlID="pnlSigState" OffsetX="10" OffsetY="10" runat="server"></cc1:HoverMenuExtender>
                                                 <asp:Panel ID="pnlSigState" runat="server" CssClass="hintPopup" Visible='<%# Convert.ToBoolean(Eval("HasDigitizedSig")) %>'>
@@ -163,8 +163,8 @@
                     <FooterStyle CssClass="printonly" />
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldTail %>" SortExpression="TailNumDisplay">
-                    <ItemStyle HorizontalAlign="Center" />
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
+                    <ItemStyle CssClass="gvcCentered" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
                     <ItemTemplate>
                         <asp:HyperLink ID="lnkTail" NavigateUrl='<%# String.Format("~/Member/EditAircraft.aspx?id={0}", Eval("AircraftID")) %>' runat="server">
                             <asp:Label ID="lblTail" runat="server" Text='<%# Eval("TailNumDisplay") %>'></asp:Label>
@@ -186,8 +186,8 @@
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldCatClassType %>" SortExpression="CatClassDisplay">
-                    <ItemStyle HorizontalAlign="Center" />
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
+                    <ItemStyle CssClass="gvcCentered" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
                     <ItemTemplate>
                         <asp:MultiView ID="mvCatClass" runat="server" ActiveViewIndex='<%# Convert.ToBoolean(Eval("IsOverridden")) ? 1 : 0 %>'>
                             <asp:View ID="vwDefaultCatClass" runat="server">
@@ -203,15 +203,15 @@
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldApproaches %>" SortExpression="Approaches">
-                    <ItemStyle HorizontalAlign="Center" />
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
+                    <ItemStyle CssClass="gvcCentered" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
                     <ItemTemplate>
                         <%# Eval("Approaches").FormatInt() %>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldHold %>" SortExpression="fHoldingProcedures">
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle Font-Bold="true" Font-Size="Larger" HorizontalAlign="Center" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcCentered largeBold" />
                     <ItemTemplate>
                         <%# Eval("fHoldingProcedures").FormatBoolean() %>
                     </ItemTemplate>
@@ -223,78 +223,78 @@
                             <uc5:mfbTooltip ID="mfbTooltip1" runat="server" BodyContent="<%$ Resources:LogbookEntry, LogbookLandingKey %>" />
                         </span>
                     </HeaderTemplate>
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="Center" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcCentered" />
                     <ItemTemplate>
                         <%# Eval("LandingDisplay") %>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldXCountry %>" SortExpression="CrossCountry">
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="Right" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcRight" />
                     <ItemTemplate>
                         <%# Eval("CrossCountry").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldNight %>" SortExpression="Nighttime">
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="Right" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcRight" />
                     <ItemTemplate>
                         <%# Eval("Nighttime").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldSimIMC %>" SortExpression="SimulatedIFR">
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="Right" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcRight" />
                     <ItemTemplate>
                         <%# Eval("SimulatedIFR").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldIMC %>" SortExpression="IMC">
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="Right" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcRight" />
                     <ItemTemplate>
                         <%# Eval("IMC").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldGroundSim %>" SortExpression="GroundSim">
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="Right" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcRight" />
                     <ItemTemplate>
                         <%# Eval("GroundSim").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldDual %>" SortExpression="Dual">
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="Right" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcRight" />
                     <ItemTemplate>
                         <%# Eval("Dual").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldCFI %>" SortExpression="CFI">
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="Right" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcRight" />
                     <ItemTemplate>
                         <%# Eval("CFI").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldSIC %>" SortExpression="SIC">
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="Right" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcRight" />
                     <ItemTemplate>
                         <%# Eval("SIC").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>            
                  <asp:TemplateField  HeaderText="<%$ Resources:LogbookEntry, FieldPIC %>" SortExpression="PIC">
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="Right" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcRight" />
                     <ItemTemplate>
                         <%# Eval("PIC").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldTotal %>" SortExpression="TotalFlightTime">
-                    <HeaderStyle CssClass="headerBase" HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="Right" />
+                    <HeaderStyle CssClass="headerBase gvhCentered" />
+                    <ItemStyle CssClass="gvcRight" />
                     <ItemTemplate>
                         <%# Eval("TotalFlightTime").FormatDecimal(Viewer.UsesHHMM)%>
                     </ItemTemplate>
@@ -320,7 +320,7 @@
                 </asp:TemplateField>
             </Columns>
             <PagerSettings Mode="NextPreviousFirstLast" Position="Bottom" />
-            <PagerStyle HorizontalAlign="Center" />
+            <PagerStyle CssClass="gvhCentered" />
             <AlternatingRowStyle CssClass="logbookAlternateRow" />
             <RowStyle CssClass="logbookRow" />
             <PagerTemplate>
@@ -336,7 +336,7 @@
                     <asp:LinkButton ID="lnkLast" CommandArgument="Last" CommandName="Page"  runat="server" Text=">>" CausesValidation="false" ></asp:LinkButton>
                 </asp:Panel>
             </PagerTemplate>
-            <HeaderStyle HorizontalAlign="Left" VerticalAlign="Bottom" />
+            <HeaderStyle CssClass="gvhDefault" />
             <EmptyDataTemplate>
                 <p><%=Resources.LogbookEntry.EmptyLogbook %></p>
             </EmptyDataTemplate>
