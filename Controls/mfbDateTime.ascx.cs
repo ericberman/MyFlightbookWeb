@@ -61,8 +61,23 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
                 dt = new DateTime(dtDef.Year, dtDef.Month, dtDef.Day, dt.Hour, dt.Minute, 0, dtDef.Kind);
             }
             if (!dt.HasValue())
+            {
                 txtDateTime.Text = string.Empty;
-            return dt.HasValue() ? (dt.Kind == DateTimeKind.Utc ? dt : TimeZoneInfo.ConvertTimeToUtc(dt, DefaultTimeZone)) : DateTime.MinValue;
+                return DateTime.MinValue;
+            }
+            else
+            {
+                switch (dt.Kind)
+                {
+                    default:
+                    case DateTimeKind.Unspecified:
+                        return TimeZoneInfo.ConvertTimeToUtc(dt, DefaultTimeZone);
+                    case DateTimeKind.Utc:
+                        return dt;
+                    case DateTimeKind.Local:
+                        return TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(dt, DateTimeKind.Unspecified), DefaultTimeZone);
+                }
+            }
         }
         set 
         {
