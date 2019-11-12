@@ -66,7 +66,7 @@
                         <td class="numericColumn"><%# Eval("IMC").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td class="numericColumn"><%# Eval("SimulatedIFR").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td class="numericColumn"><%# Eval("Approaches").FormatInt() %></td>
-                        <td class="numericColumn"><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
+                        <td class="numericColumn"><asp:Image ID="imgHolding" runat="server" ImageUrl="~/images/checkmark.png" style="height:10pt; width: 10pt;" GenerateEmptyAlternateText="true" Visible='<%# (bool) Eval("fHoldingProcedures") %>' /></td>
                     </tr>
                     <tr class="bordered">
                         <td colspan="<% =ColumnCount %>">

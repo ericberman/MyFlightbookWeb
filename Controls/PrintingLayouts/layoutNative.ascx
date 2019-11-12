@@ -65,7 +65,7 @@
                         <td class="numericColumn" runat="server" id="tdoptColumn3" visible="<%# ShowOptionalColumn(2) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(2) %></div></td>
                         <td class="numericColumn" runat="server" id="tdoptColumn4" visible="<%# ShowOptionalColumn(3) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(3) %></div></td>
                         <td class="numericColumn"><%# Eval("Approaches").FormatInt() %></td>
-                        <td class="numericColumn"><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
+                        <td class="numericColumn"><asp:Image ID="imgHolding" runat="server" ImageUrl="~/images/checkmark.png" style="height:10pt; width: 10pt;" GenerateEmptyAlternateText="true" Visible='<%# (bool) Eval("fHoldingProcedures") %>' /></td>
                         <td class="numericColumn"><%# Eval("LandingDisplay") %></td>
                         <td class="numericColumn"><%# Eval("CrossCountry").FormatDecimal(CurrentUser.UsesHHMM)%></td>
                         <td class="numericColumn"><%# Eval("Nighttime").FormatDecimal(CurrentUser.UsesHHMM)%></td>
