@@ -266,17 +266,15 @@
                 ID="lblExpandCollapse" runat="server" 
                 meta:resourcekey="lblExpandCollapseResource1"></asp:Label>
         </div>
-        <div>
-            <asp:Panel ID="pnlFlightDetails" runat="server" Height="0px" 
-                style="overflow:hidden;" meta:resourcekey="pnlFlightDetailsResource1">
-                <uc4:mfbFlightInfo ID="mfbFlightInfo1" runat="server" OnAutoFill="AutoFill" InitialTabIndex="21" />
-            </asp:Panel>
-            <cc1:CollapsiblePanelExtender ID="cpeFlightDetails" runat="server" 
-                TargetControlID="pnlFlightDetails" CollapsedSize="0" ExpandControlID="FlightDetailsHeader"
-             CollapseControlID="FlightDetailsHeader" Collapsed="True" 
-                CollapsedText="<%$ Resources:LocalizedText, ClickToShow %>" ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>" 
-                TextLabelID="lblExpandCollapse" Enabled="True"></cc1:CollapsiblePanelExtender>
-        </div>
+        <asp:Panel ID="pnlFlightDetails" runat="server" Height="0px" 
+            style="overflow:hidden;" meta:resourcekey="pnlFlightDetailsResource1">
+            <uc4:mfbFlightInfo ID="mfbFlightInfo1" runat="server" OnAutoFill="AutoFill" InitialTabIndex="21" />
+        </asp:Panel>
+        <cc1:CollapsiblePanelExtender ID="cpeFlightDetails" runat="server" 
+            TargetControlID="pnlFlightDetails" CollapsedSize="0" ExpandControlID="FlightDetailsHeader"
+            CollapseControlID="FlightDetailsHeader" Collapsed="True" 
+            CollapsedText="<%$ Resources:LocalizedText, ClickToShow %>" ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>" 
+            TextLabelID="lblExpandCollapse" Enabled="True"></cc1:CollapsiblePanelExtender>
     </asp:Panel>
     <asp:Panel ID="pnlPictures" runat="server" CssClass="fullblock" 
         meta:resourcekey="pnlPicturesResource1">

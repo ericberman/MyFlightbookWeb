@@ -1,16 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Globalization;
-using System.Web;
-using System.Web.UI.WebControls;
-using System.Text;
 using MyFlightbook;
 using MyFlightbook.Image;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Web;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -159,7 +159,7 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
         if (coll == null || coll.Count == 0)
             return string.Empty;
 
-        StringBuilder sb = new StringBuilder("<table><tr valign=\"top\">");
+        StringBuilder sb = new StringBuilder("<table><tr style=\"vertical-align: top\">");
 
         int iImage = 0, iColumn = 0, iRow = 0;
         while (iImage < coll.Count)
@@ -168,11 +168,12 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
             {
                 sb.Append(String.Format(CultureInfo.InvariantCulture, "<td style=\"text-align:center;\"><img src=\"" + coll[iImage].URLThumbnail + "\" />{0}</td>", coll[iImage].Comment.Length > 0 ? "<br />" + HttpUtility.HtmlEncode(coll[iImage].Comment) : string.Empty));
 
-                if (++iColumn == Columns)
+                // Start a new row, but only if there are more images.
+                if (++iColumn == Columns && iImage < coll.Count - 1)
                 {
                     iRow++;
                     iColumn = 0;
-                    sb.Append("</tr><tr valign=\"top\">");
+                    sb.Append("</tr><tr style=\"vertical-align: top\">");
                 }
             }
             iImage++;

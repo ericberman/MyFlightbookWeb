@@ -63,10 +63,8 @@
                 </asp:ContentPlaceHolder>        
             </asp:Panel>
         </asp:Panel>
-        <div>
-            <asp:contentplaceholder id="cpMain" runat="server">
-            </asp:contentplaceholder>
-        </div>
+        <asp:contentplaceholder id="cpMain" runat="server">
+        </asp:contentplaceholder>
         <uc1:mfbFooter ID="MfbFooter" runat="server" />
         <asp:Panel ID="pnlCookies" runat="server" style="padding: 4px; margin-left:auto; margin-right: auto; margin-bottom:2px; border: 1px solid black; border-radius: 3px; background-color:#eeeeee;">
             <% =Resources.LocalizedText.CookieNotice %>

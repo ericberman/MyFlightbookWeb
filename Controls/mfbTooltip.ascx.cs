@@ -4,7 +4,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 ************************************************/
@@ -19,6 +19,18 @@ public partial class Controls_mfbTooltip : System.Web.UI.UserControl
     {
         get { return litPop.Text; }
         set { litPop.Text = value; }
+    }
+
+    public string TipCss
+    {
+        get { return lblTip.CssClass; }
+        set { lblTip.CssClass = value; }
+    }
+
+    public string TipStyle
+    {
+        get { return lblTip.Attributes["style"]; }
+        set { lblTip.Attributes["style"] = value; }
     }
 
     /// <summary>
