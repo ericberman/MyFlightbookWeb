@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2013-2016 MyFlightbook LLC
+ * Copyright (c) 2013-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,5 +33,15 @@ public partial class Controls_fbComment : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        string szComment = String.Format(System.Globalization.CultureInfo.InvariantCulture, @"    (function (d, s, id) {{
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = ""//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.9&appId={0}"";
+        fjs.parentNode.insertBefore(js, fjs);
+    }}
+    (document, 'script', 'facebook-jssdk'));", MyFlightbook.LocalConfig.SettingForKey("facebookAppId"));
+
+        Page.ClientScript.RegisterClientScriptBlock(GetType(), "fbComment", szComment, true);
     }
 }

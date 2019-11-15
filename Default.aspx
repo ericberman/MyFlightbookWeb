@@ -38,7 +38,7 @@
                 </div>
             </td>
             <td>
-                <div style="min-width:250px; margin:5px;"><uc6:mfbFacebookFan ID="mfbFacebookFan1" runat="server" ShowStream="true" /></div>
+                <div style="min-width:250px; margin:5px;"><uc6:mfbFacebookFan ID="mfbFacebookFan1" runat="server" /></div>
             </td>
         </tr>
     </table>

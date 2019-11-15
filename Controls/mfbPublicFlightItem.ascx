@@ -1,7 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbPublicFlightItem.ascx.cs" Inherits="Controls_mfbPublicFlightItem" %>
-<%@ Register src="fbComment.ascx" tagname="fbComment" tagprefix="uc1" %>
 <%@ Register src="mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc3" %>
-<tr valign="top">
+<tr style="vertical-align:top">
     <td>
         <asp:Label ID="lblDate" Font-Bold="true" runat="server" Text=""></asp:Label> - 
         <asp:Label Font-Bold="true" ID="lblTail" runat="server" CssClass="hintTrigger"></asp:Label> <asp:Label ID="lblDetails" runat="server" Text=""></asp:Label>
@@ -12,7 +11,7 @@
     </td>
     <td>
         <asp:HyperLink ID="lnkFlight" runat="server"><asp:Label ID="lblroute" runat="server"></asp:Label></asp:HyperLink><br />
-        <span style="white-space:pre-line;"><asp:Label ID="lblComments" runat="server"></asp:Label></span>
+        <asp:Label ID="lblComments" runat="server" style="white-space:pre-line;"></asp:Label>
         <uc3:mfbImageList ID="mfbIlFlight" runat="server" />
     </td>
 </tr>

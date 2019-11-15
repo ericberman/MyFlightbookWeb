@@ -2,7 +2,6 @@
     CodeFile="MyFlights.aspx.cs" Inherits="Public_MyFlights" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>
-<%@ Register src="../Controls/fbComment.ascx" tagname="fbComment" tagprefix="uc3" %>
 <%@ Register src="../Controls/mfbPublicFlightItem.ascx" tagname="mfbPublicFlightItem" tagprefix="uc4" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
     <asp:Label ID="lblHeader" runat="server" Text=""></asp:Label>
