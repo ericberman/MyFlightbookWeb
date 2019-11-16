@@ -2413,6 +2413,31 @@ namespace MyFlightbook
                         NightLandings = 1;
                 }
             }
+
+            // Issue #411: check for ground instruction given or received.
+            if ((Dual > 0 && CFI == 0) || (CFI > 0 && Dual == 0)) // no point if we can't tell whether it's given or received...
+            {
+                CustomFlightProperty cfpLessonStart = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropLessonStart);
+                CustomFlightProperty cfpLessonEnd = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropLessonEnd);
+
+                int idTargetID = (Dual > 0) ? (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived : (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven;
+                CustomFlightProperty cfpTarget = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == idTargetID);
+
+                if (cfpTarget == null && cfpLessonStart != null && cfpLessonEnd != null && cfpLessonEnd.DateValue.CompareTo(cfpLessonStart.DateValue) > 0)
+                {
+                    TimeSpan tsGroundTraining = cfpLessonEnd.DateValue.Subtract(cfpLessonStart.DateValue);
+
+                    // Pull out any flight or engine time, whichever is greater.
+                    TimeSpan tsEngine = (EngineEnd.HasValue() && EngineStart.HasValue()) ? EngineEnd.Subtract(EngineStart) : TimeSpan.MinValue;
+                    TimeSpan tsFlight = (FlightEnd.HasValue() && FlightStart.HasValue()) ? FlightEnd.Subtract(FlightStart) : TimeSpan.MinValue;
+                    tsGroundTraining = tsGroundTraining.Subtract(tsEngine.CompareTo(tsFlight) > 0 ? tsEngine : tsFlight);
+
+                    cfpTarget = new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType(idTargetID)) { DecValue = (decimal)tsGroundTraining.TotalHours };
+
+                    List<CustomFlightProperty> lst = new List<CustomFlightProperty>(CustomProperties) { cfpTarget };
+                    CustomProperties = lst.ToArray();
+                }
+            }
         }
         #endregion
     }

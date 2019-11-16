@@ -148,7 +148,9 @@ namespace MyFlightbook
             IDPropAdditionalFlightRemarks = 607, // Not flagged as a known property
             IDPropDutyStart = 608,
             IDPropDutyEnd = 609,
-            IDPropNightRating = 623
+            IDPropNightRating = 623,
+            IDPropLessonStart = 668,
+            IDPropLessonEnd = 669
         }
 
         internal static class CFPPropertyFlag
