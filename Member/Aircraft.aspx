@@ -40,7 +40,7 @@
         <ContentTemplate>
             <asp:HiddenField ID="hdnStatsFetched" runat="server" />
             <div style="max-width:800px">
-                <asp:GridView ID="gvAircraftToDownload" runat="server" AutoGenerateColumns="false" EnableViewState="false">
+                <asp:GridView ID="gvAircraftToDownload" runat="server" AutoGenerateColumns="false" Visible="false" EnableViewState="false">
                     <Columns>
                         <asp:BoundField HeaderText="Aircraft ID" DataField="AircraftID" />
                         <asp:BoundField HeaderText="Tail Number" DataField="TailNumber" />

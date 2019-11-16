@@ -217,7 +217,7 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
         MFBImageInfo mfbii = (MFBImageInfo)e.Item.DataItem;
         if (String.IsNullOrEmpty(mfbii.ThumbnailFile))
             throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Invalid Image - empty thumbnail file: {0}", mfbii.ToString()));
-        c.ID = mfbii.FullImageFile;
+        c.ID = "img" + e.Item.ItemIndex.ToString(CultureInfo.InvariantCulture);
     }
 
     protected void mfbEI_ImageMadeDefault(object sender, MFBImageInfoEvent e)

@@ -25,7 +25,7 @@
                         <asp:HyperLink ID="lnkEditAircraft" Font-Size="Larger" Font-Bold="true" runat="server" NavigateUrl='<%#  String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}{1}", Eval("AircraftID"), IsAdminMode ? "&a=1" : string.Empty) %>'><%# Eval("DisplayTailNumber") %></asp:HyperLink>
                         - <%#: Eval("ModelDescription")%> - <%# Eval("ModelCommonName")%> (<%# Eval("CategoryClassDisplay") %>)
                     </div>
-                    <div><%#: Eval("InstanceTypeDescription")%></div>
+                    <asp:Panel ID="pnlInst" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("InstanceTypeDescription")) %>'><%#: Eval("InstanceTypeDescription")%></asp:Panel>
                 </asp:Panel>
                 <asp:Panel ID="pnlAircraftDetails" runat="server" CssClass='<%# ((bool) Eval("HideFromSelection")) ? "inactiveRow" : "activeRow" %>'>
                     <div style="white-space:pre"><%# Eval("PublicNotes").ToString().Linkify() %></div>
@@ -49,7 +49,7 @@
                         </ul>
                     </asp:Panel>
                 </asp:Panel>
-                <div><asp:Label ID="lblAircraftErr" runat="server" CssClass="error" EnableViewState="false" Text="" Visible="false"></asp:Label></div>
+                <asp:Label ID="lblAircraftErr" runat="server" CssClass="error" EnableViewState="false" Text="" Visible="false"></asp:Label>
             </ItemTemplate>
         </asp:TemplateField>
         <asp:TemplateField>
