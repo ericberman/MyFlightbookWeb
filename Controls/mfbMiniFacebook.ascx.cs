@@ -1,12 +1,12 @@
-﻿using System;
-using System.Web;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.SocialMedia;
+using System;
+using System.Web;
 using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2016 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -97,12 +97,11 @@ public partial class Controls_mfbMiniFacebook : System.Web.UI.UserControl
     {
         get
         {
-            string szURL = string.Empty;
             if (FlightEntry != null)
             {
                 string szFlightURL = FlightEntry.SocialMediaItemUri(Request.Url.Host).ToString();
 
-                szURL = String.Format(System.Globalization.CultureInfo.InvariantCulture, szFBTemplate,
+                string szURL = String.Format(System.Globalization.CultureInfo.InvariantCulture, szFBTemplate,
                     MFBFacebook.FACEBOOK_API_KEY,
                     HttpUtility.UrlEncode(szFlightURL),
                     HttpUtility.UrlEncode(FlightEntry.Comment.Length > 0 ? FlightEntry.Comment : (FlightEntry.Route.Length > 0 ? FlightEntry.Route : Resources.LocalizedText.MiniFacebookViewFlight)),
