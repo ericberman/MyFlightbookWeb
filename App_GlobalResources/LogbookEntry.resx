@@ -1156,4 +1156,16 @@ Proceed with import?</value>
   <data name="LogbookFlightsPerPagePrompt" xml:space="preserve">
     <value>Set page size</value>
   </data>
+  <data name="LogbookConfirmDeleteFlights" xml:space="preserve">
+    <value>Are you sure you want to delete the selected flights?  This action cannot be undone!</value>
+  </data>
+  <data name="LogbookDeleteMultipleTooltip" xml:space="preserve">
+    <value>Delete selected flights</value>
+  </data>
+  <data name="LogbookSelectAll" xml:space="preserve">
+    <value>Quickly checks/unchecks all of the flights on this page; does not affect selection of flights on other pages.</value>
+  </data>
+  <data name="LogbookSelectFlights" xml:space="preserve">
+    <value>Select Flights</value>
+  </data>
 </root>

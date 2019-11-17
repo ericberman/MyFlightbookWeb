@@ -437,4 +437,7 @@
   <data name="EndorsementsSearchPrompt" xml:space="preserve">
     <value>Find Endorsements</value>
   </data>
+  <data name="RequestSignatures" xml:space="preserve">
+    <value>Request signatures</value>
+  </data>
 </root>

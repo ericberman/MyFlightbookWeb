@@ -28,20 +28,19 @@
                         Text="Select the flight(s) that you want to have signed." 
                         meta:resourcekey="lblSelectFlightPromptResource1"></asp:Label></h3>
                 <asp:Panel ID="pnlFlights" ScrollBars="Auto" Height="200" runat="server">
-                    <table cellpadding="4">
+                    <table>
                         <asp:Repeater ID="rptSelectedFlights" runat="server" >
                             <ItemTemplate>
                                 <tr style="vertical-align:top">
-                                    <td>
+                                    <td style="padding: 4px">
                                         <asp:CheckBox ID="ckFlight" runat="server" />
                                         <asp:HiddenField ID="hdnFlightID" runat="server" Value='<%# Eval("FlightID") %>' />
                                     </td>
-                                    <td>
-                                        <div style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></div>
-                                        <div><%# Eval("TailNumDisplay") %></div>
-                                    </td>
-                                    <td>
-                                        <div><span style="font-style:italic"><%# Eval("Route") %></span> <%# Eval("Comment") %></div>
+                                    <td style="padding: 4px">
+                                        <span style="font-weight:bold; font-size: larger"><%# ((DateTime) Eval("Date")).ToShortDateString() %></span>
+                                        <span style="font-weight:bold;"><%#: Eval("TailNumDisplay") %></span>
+                                        <span style="font-style:italic;" runat="server" visible='<%# !String.IsNullOrEmpty((string) Eval("Route")) %>'><%#: Eval("Route") %></span>
+                                        <span runat="server" visible='<%# !String.IsNullOrEmpty((string) Eval("Comment")) %>'><%#: Eval("Comment") %></span>
                                     </td>
                                 </tr>
                             </ItemTemplate>
@@ -94,33 +93,27 @@
                     Text="When you finish, the following request will be sent:" 
                     meta:resourcekey="lblStatusResource1"></asp:Label>
                 <table>
-                    <tr valign="top">
+                    <tr style="vertical-align:top;">
                         <td><asp:Label ID="lblInstructorPrompt" runat="server" 
                                 Text="<%$ Resources:SignOff, EditEndorsementInstructorPrompt %>" 
                                 Font-Bold="true" meta:resourcekey="lblInstructorPromptResource1"></asp:Label></td>
                         <td><asp:Label ID="lblInstructorNameSummary" runat="server" Text="" 
                                 meta:resourcekey="lblInstructorNameSummaryResource1"></asp:Label></td>
                     </tr>
-                    <tr valign="top">
+                    <tr style="vertical-align:top;">
                         <td><asp:Label ID="lblFlightsToSign" runat="server" Text="Flights to sign:" 
                                 Font-Bold="true" meta:resourcekey="lblFlightsToSignResource1"></asp:Label></td>
                         <td>
-                            <table cellpadding="0" cellspacing="4">
-                                <asp:Repeater ID="gvFlightsToSign" runat="server" >
-                                    <ItemTemplate>
-                                        <tr style="vertical-align:top; padding-bottom: 5px;">
-                                            <td>
-                                                <div style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></div>
-                                                <div><%# Eval("TailNumDisplay") %></div>
-                                            </td>
-                                            <td>
-                                                <div><span style="font-style:italic"><%# Eval("Route") %></span> <%# Eval("Comment") %></div>
-                                            <div><asp:Label ID="lblExistingSigWillBeRemoved" runat="server" CssClass="error" Text="<%$ Resources:SignOff, RequestSignatureReSign %>" Visible='<%# (LogbookEntry.SignatureState) Eval("CFISignatureState") == LogbookEntry.SignatureState.Invalid %>' meta:resourcekey="lblExistingSigWillBeRemovedResource1"></asp:Label></div>
-                                            </td>
-                                        </tr>
-                                    </ItemTemplate>
-                                </asp:Repeater>
-                            </table>
+                            <asp:Repeater ID="gvFlightsToSign" runat="server" >
+                                <ItemTemplate>
+                                    <div>
+                                        <span style="font-weight:bold; font-size: larger"><%# ((DateTime) Eval("Date")).ToShortDateString() %></span>
+                                        <span style="font-weight:bold;"><%#: Eval("TailNumDisplay") %></span>
+                                        <span style="font-style:italic" runat="server" visible='<%# !String.IsNullOrEmpty((string) Eval("Route")) %>'><%#: Eval("Route") %></span>
+                                        <span runat="server" visible='<%# !String.IsNullOrEmpty((string) Eval("Comment")) %>'><%#: Eval("Comment") %></span>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
                         </td>
                     </tr>
                 </table>

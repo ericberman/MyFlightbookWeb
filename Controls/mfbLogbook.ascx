@@ -19,6 +19,18 @@
 </div>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
+        <asp:HiddenField ID="hdnSelectedItems" runat="server" />
+        <script>
+            function toggleSelectedFlight(id) {
+                var hdnSelect = document.getElementById('<% =hdnSelectedItems.ClientID %>');
+                var rgIds = new Set(hdnSelect.value.split(','));
+                if (rgIds.has(id))
+                    rgIds.delete(id);
+                else
+                    rgIds.add(id);
+                hdnSelect.value = Array.from(rgIds).join();
+            }
+        </script>
         <asp:Panel ID="pnlHeader" runat="server">
             <table>
                 <tr>
@@ -37,6 +49,23 @@
                                     PopupControlID="pnlFlightsPerPage" BackgroundCssClass="modalBackground" 
                                     CancelControlID="btnSetPageSizeCancel" >
                                 </cc1:ModalPopupExtender>
+                                <div><asp:CheckBox ID="ckSelectFlights" runat="server" Text="<%$ Resources:LogbookEntry, LogbookSelectFlights %>" AutoPostBack="true" OnCheckedChanged="ckSelectFlights_CheckedChanged" CausesValidation="false" /></div>
+                                <div runat="server" id="divMulti" visible="false">
+                                    <div runat="server" visible='<%# IsInSelectMode %>'>
+                                        <asp:LinkButton ID="lnkDeleteFlights" OnClick="lnkDeleteFlights_Click" runat="server">
+                                            <asp:Image ID="imgDelete" style="padding-right: 10px" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>" runat="server" />
+                                            <asp:Label ID="lblDelMulti" runat="server" Text="<%$ Resources:LogbookEntry, LogbookDeleteMultipleTooltip %>"></asp:Label>
+                                        </asp:LinkButton>
+                                        <ajaxToolkit:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDeleteFlights" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:LogbookEntry, LogbookConfirmDeleteFlights %>">
+                                        </ajaxToolkit:ConfirmButtonExtender>
+                                    </div>
+                                    <div runat="server" visible='<%# IsInSelectMode %>'>
+                                        <asp:LinkButton ID="lnkReqSigs" runat="server" OnClick="lnkReqSigs_Click">
+                                            <asp:Image ID="imgSignature" runat="server" style="padding-right: 4px" ImageUrl="~/images/signaturesm.png" AlternateText="<%$ Resources:SignOff, RequestSignatures %>" />
+                                            <asp:Label ID="lblRequestSignature" runat="server" Text="<%$ Resources:SignOff, RequestSignatures %>"></asp:Label>
+                                        </asp:LinkButton>
+                                    </div>
+                                </div>
                             </MenuContent>
                         </uc7:popmenu>
                     </td>
@@ -294,12 +323,16 @@
                 <asp:TemplateField>
                     <ItemStyle CssClass="noprint" />
                     <ItemTemplate>
-                        <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights %>" OffsetX="-180" OffsetY="-20">
+                        <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights && !IsInSelectMode %>" OffsetX="-180" OffsetY="-20">
                             <MenuContent>
                                 <uc1:mfbFlightContextMenu runat="server" ID="mfbFlightContextMenu" SignTargetFormatString="~/Member/RequestSigs.aspx?id={0}" OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" OnSendFlight="mfbFlightContextMenu_SendFlight" />
                             </MenuContent>
                         </uc7:popmenu>
+                        <asp:CheckBox ID="ckSelected" runat="server" Visible="<%# IsViewingOwnFlights && IsInSelectMode %>" Checked='<%# IsViewingOwnFlights && IsInSelectMode && SelectedItems.Contains((int) Eval("FlightID")) %>' />
                     </ItemTemplate>
+                    <HeaderTemplate>
+                        <asp:CheckBox ID="ckSelectAll" runat="server" Visible="<%# IsViewingOwnFlights && IsInSelectMode %>" OnCheckedChanged="ckSelectAll_CheckedChanged" AutoPostBack="true" Checked="<%# AllSelected %>" ToolTip="<%$ ResourceS:LogbookEntry, LogbookSelectAll %>" />
+                    </HeaderTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField >
                     <ItemTemplate>

@@ -53,7 +53,7 @@ public partial class Controls_popmenu : System.Web.UI.UserControl, INamingContai
         base.OnInit(e);
     }
 
-    protected class MenuContentTemplate : Control, INamingContainer
+    public class MenuContentTemplate : Control, INamingContainer
     {
         public MenuContentTemplate()
         {

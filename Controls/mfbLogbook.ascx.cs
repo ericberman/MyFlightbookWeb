@@ -158,6 +158,41 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     /// parameter string to append to the URL for edit/target/analysis
     /// </summary>
     public string DetailsParam { get; set; }
+
+    protected bool IsInSelectMode
+    {
+        get { return ckSelectFlights.Checked; }
+        set { divMulti.Visible = ckSelectFlights.Checked = value; }
+    }
+
+    private const string szVSSelectAllState = "szvsSelectALL";
+
+    protected bool AllSelected
+    {
+        get { return (bool)(ViewState[szVSSelectAllState] ?? false); }
+        set { ViewState[szVSSelectAllState] = value; }
+    }
+
+    protected IEnumerable<int> SelectedItems
+    {
+        get
+        {
+            List<int> lst = new List<int>();
+            if (!String.IsNullOrWhiteSpace(hdnSelectedItems.Value))
+            {
+                string[] rgIDs = hdnSelectedItems.Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string sz in rgIDs)
+                    lst.Add(Convert.ToInt32(sz, CultureInfo.InvariantCulture));
+            }
+            return lst;
+        }
+        set
+        {
+            hdnSelectedItems.Value = (value == null) ? string.Empty : String.Join(",", value);
+        }
+    }
+
+    protected HashSet<int> BoundItems { get; set; }
     #endregion
 
     #region Protected/Private Properties
@@ -424,6 +459,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
             gvFlightLogs.DataSource = lst;
 
         AircraftForUser = new List<Aircraft>(new UserAircraft(User).GetAircraftForUser());
+        BoundItems = new HashSet<int>();
         gvFlightLogs.DataBind();
         HasBeenBound = true;
     }
@@ -674,6 +710,12 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
                 }
             }
 
+            if (IsInSelectMode && IsViewingOwnFlights)
+            {
+                ((CheckBox)e.Row.FindControl("ckSelected")).Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:toggleSelectedFlight('{0}');", le.FlightID);
+                BoundItems.Add(le.FlightID);
+            }
+
             // Bind to images.
             Controls_mfbImageList mfbIl = (Controls_mfbImageList)e.Row.FindControl("mfbilFlights");
             if (!SuppressImages)
@@ -811,6 +853,42 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         ViewState[szKeyAllowsPaging] = AllowPaging = true;
         BindData();
     }
+
+    protected void ckSelectFlights_CheckedChanged(object sender, EventArgs e)
+    {
+        divMulti.Visible = ckSelectFlights.Checked;
+        SelectedItems = null;  // reset any selection
+        BindData();
+    }
+
+    protected void lnkDeleteFlights_Click(object sender, EventArgs e)
+    {
+        foreach (int idFlight in SelectedItems)
+            DeleteFlight(idFlight);
+
+        IsInSelectMode = false;
+        if (SelectedItems.Count() == 0)
+            BindData();
+        SelectedItems = null;
+    }
+
+    protected void lnkReqSigs_Click(object sender, EventArgs e)
+    {
+        IsInSelectMode = false;
+        Response.Redirect(String.Format(CultureInfo.InvariantCulture, mfbFlightContextMenu.SignTargetFormatString, String.Join(",", SelectedItems)));
+    }
+
+    protected void ckSelectAll_CheckedChanged(object sender, EventArgs e)
+    {
+        CheckBox ck = sender as CheckBox;
+        AllSelected = ck.Checked;
+        if (BoundItems == null)
+            return;
+
+        HashSet<int> hs = new HashSet<int>(SelectedItems);
+        SelectedItems = (ck.Checked) ? hs.Union(BoundItems) : hs.Except(BoundItems);
+        BindData();
+    }
     #endregion
 
     /// <summary>
@@ -869,17 +947,22 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     }
 
     #region Context menu operations
+    protected void DeleteFlight(int id)
+    {
+        LogbookEntryDisplay.FDeleteEntry(id, this.User);
+        FlushCache();
+        BindData(Data);
+        RefreshNumFlights();
+        if (ItemDeleted != null)
+            ItemDeleted(this, new LogbookEventArgs(id));
+    }
+
     protected void mfbFlightContextMenu_DeleteFlight(object sender, LogbookEventArgs e)
     {
         if (e == null)
             throw new ArgumentNullException("e");
 
-        LogbookEntryDisplay.FDeleteEntry(e.FlightID, this.User);
-        FlushCache();
-        BindData(Data);
-        RefreshNumFlights();
-        if (ItemDeleted != null)
-            ItemDeleted(this, new LogbookEventArgs(e.FlightID));
+        DeleteFlight(e.FlightID);
     }
 
     protected void mfbFlightContextMenu_SendFlight(object sender, LogbookEventArgs e)

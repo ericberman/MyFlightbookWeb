@@ -1,15 +1,15 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Instruction;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Mail;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Instruction;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -26,7 +26,7 @@ public partial class Member_RequestSigs : System.Web.UI.Page
 
             this.Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.TitleTraining, Branding.CurrentBrand.AppName);
 
-            RefreshFlightsList(util.GetIntParam(Request, "id", LogbookEntry.idFlightNew));
+            RefreshFlightsList(util.GetStringParam(Request, "id").Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
             SetUpInstructorList();
             lblSignatureDisclaimer.Text = Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer);
         }
@@ -60,16 +60,26 @@ public partial class Member_RequestSigs : System.Web.UI.Page
     }
     #endregion
 
-    protected void RefreshFlightsList(int idFlight)
+    protected void RefreshFlightsList(string[] rgFlightIds)
     {
+        HashSet<int> lstIds = new HashSet<int>();
+        foreach (string sz in rgFlightIds)
+        {
+            int idFlight;
+            if (int.TryParse(sz, NumberStyles.Integer, CultureInfo.InvariantCulture, out idFlight))
+                lstIds.Add(idFlight);
+        }
+
+        bool fPreSelected = false;  // true if the flights should be pre-selected (i.e., passed in)
+
         List<LogbookEntryDisplay> lstFlights = new List<LogbookEntryDisplay>();
 
-
-        if (idFlight != LogbookEntry.idFlightNew)
+        foreach (int idFlight in lstIds)
         {
             LogbookEntryDisplay le = new LogbookEntryDisplay(idFlight, User.Identity.Name);
             if (!le.IsNewFlight && le.CanRequestSig)   // it loaded (is owned by the user) and signable
                 lstFlights.Add(le);
+            fPreSelected = (lstFlights.Count > 0);
         }
         if (lstFlights.Count == 0)
         {
@@ -80,9 +90,10 @@ public partial class Member_RequestSigs : System.Web.UI.Page
         rptSelectedFlights.DataSource = lstFlights;
         rptSelectedFlights.DataBind();
 
-        // if only one flight, check it by default.
-        if (lstFlights.Count == 1)
-            ((CheckBox)rptSelectedFlights.Items[0].FindControl("ckFlight")).Checked = true;
+        // Select the items that were passed in.
+        if (fPreSelected)
+            foreach (RepeaterItem ri in rptSelectedFlights.Items)
+                ((CheckBox)ri.FindControl("ckFlight")).Checked = true;
     }
 
     protected void SetUpInstructorList()
@@ -123,8 +134,7 @@ public partial class Member_RequestSigs : System.Web.UI.Page
         get
         {
             IList<string> lstIds = SelectedFlightIDs;
-            FlightQuery fq = new FlightQuery(User.Identity.Name);
-            fq.CustomRestriction = String.Format(" (flights.idFlight IN ({0})) ", String.Join(", ", lstIds));
+            FlightQuery fq = new FlightQuery(User.Identity.Name) { CustomRestriction = String.Format(" (flights.idFlight IN ({0})) ", String.Join(", ", lstIds)) };
             DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq));
             List<LogbookEntry> lstFlights = new List<LogbookEntry>();
             dbh.ReadRows(
