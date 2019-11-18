@@ -17,13 +17,13 @@
         our data from a variety of public (and free!) sources, but these are not exhaustive.
         You can help keep the dataset complete by adding your own below." meta:resourcekey="locEditAirportsDescResource2"></asp:Localize>
     </p>
-        <table width="100%">
+        <table style="width: 100%">
             <tr>
-                <td valign="top">
+                <td style="vertical-align: top">
                     <asp:Panel ID="pnlEdit" runat="server" DefaultButton="btnAdd" 
                         meta:resourcekey="pnlEditResource2">
-                        <table width="200px">
-                            <tr valign="top">
+                        <table style="width:200px">
+                            <tr style="vertical-align: top">
                                 <td>
                                     <asp:Label ID="lblCodePrompt" runat="server" Text="Code:" 
                                         meta:resourceKey="lblCodePromptResource2"></asp:Label>
@@ -48,7 +48,7 @@
                                         meta:resourceKey="RegularExpressionValidator1Resource2"></asp:RegularExpressionValidator>
                                 </td>
                             </tr>
-                            <tr valign="top">
+                            <tr style="vertical-align: top">
                                 <td>
                                     <asp:Localize ID="locNamePrompt" runat="server" Text="Name:" 
                                         meta:resourceKey="locNamePromptResource2"></asp:Localize>
@@ -66,7 +66,7 @@
                                     </cc1:TextBoxWatermarkExtender>
                                 </td>
                             </tr>
-                            <tr valign="top">
+                            <tr style="vertical-align: top">
                                 <td>
                                     <asp:Localize ID="locType" runat="server" Text="Type:" 
                                         meta:resourceKey="locTypeResource2"></asp:Localize>
@@ -81,7 +81,7 @@
                                     </asp:SqlDataSource>
                                 </td>
                             </tr>
-                            <tr valign="top">
+                            <tr style="vertical-align: top">
                                 <td>
                                     <asp:Localize ID="locLatitude" runat="server" Text="Latitude:" 
                                         meta:resourceKey="locLatitudeResource2"></asp:Localize>
@@ -101,7 +101,7 @@
                                         meta:resourceKey="RegularExpressionValidatorLatResource2"></asp:RegularExpressionValidator>
                                 </td>
                             </tr>
-                            <tr valign="top">
+                            <tr style="vertical-align: top">
                                 <td>
                                     <asp:Localize ID="locLongitude" runat="server" Text="Longitude:" 
                                         meta:resourceKey="locLongitudeResource2"></asp:Localize>
@@ -153,7 +153,7 @@
                         </p>
                     </asp:Panel>
                 </td>
-                <td valign="top" width="90%">
+                <td  style="vertical-align: top; width: 90%">
                     <div style="margin-left: 20px; margin-right:10px;">
                         <uc1:mfbGoogleMapManager ID="MfbGoogleMapManager1" runat="server" AllowResize="false" Height="400px"
                             Width="100%" />
@@ -169,23 +169,21 @@
                 ID="ckShowAllUserAirports" runat="server" 
                 Text="Continue to show all user airports (off for performance)" />
         </p>
-        <div>
-            <table>
-                <tr>
-                    <td>
-                        <asp:FileUpload ValidationGroup="importAirports" ID="fileUploadAirportList" runat="server" />
-                        <asp:Button ValidationGroup="importAirports" ID="btnImport" runat="server" Text="Import" OnClick="btnImport_Click" />
-                    </td>
-                    <td>
-                        <asp:UpdateProgress ID="UpdateProgress1" AssociatedUpdatePanelID="updAddAirports" runat="server">            
-                            <ProgressTemplate>
-                                <asp:Image ID="imgProgress" ImageUrl="~/images/ajax-loader.gif" runat="server" />
-                            </ProgressTemplate>
-                        </asp:UpdateProgress>
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <table>
+            <tr>
+                <td>
+                    <asp:FileUpload ID="fileUploadAirportList" runat="server" />
+                    <asp:Button ValidationGroup="importAirports" ID="btnImport" runat="server" Text="Import" OnClick="btnImport_Click" />
+                </td>
+                <td>
+                    <asp:UpdateProgress ID="UpdateProgress1" AssociatedUpdatePanelID="updAddAirports" runat="server">            
+                        <ProgressTemplate>
+                            <asp:Image ID="imgProgress" ImageUrl="~/images/ajax-loader.gif" runat="server" />
+                        </ProgressTemplate>
+                    </asp:UpdateProgress>
+                </td>
+            </tr>
+        </table>
         <p><asp:Label ID="lblUploadErr" runat="server" Text="" EnableViewState="false" CssClass="error"></asp:Label></p>
         <asp:Panel ID="pnlImportResults" runat="server" ScrollBars="Auto" Height="400px" Width="100%" Visible="false">
             <asp:UpdatePanel runat="server" ID="updAddAirports">
@@ -236,6 +234,53 @@
                     </asp:GridView>
                 </ContentTemplate>
             </asp:UpdatePanel>
+        </asp:Panel>
+
+        <p><asp:Label ID="lblAdminReviewDupeAirports" runat="server" Text="Review likely duplicate airports"></asp:Label> <asp:Button ID="btnRefreshDupes" runat="server" Text="Refresh (slow)" OnClick="btnRefreshDupes_Click" /></p>
+        <asp:Panel ID="pnlDupeAirports" runat="server" ScrollBars="Auto" Height="400px" Width="100%" Visible="false"> 
+            <asp:GridView ID="gvDupes" runat="server" AutoGenerateColumns="false" OnRowCommand="gvDupes_RowCommand">
+                <Columns>
+                    <asp:TemplateField HeaderText="Airport 1">
+                        <ItemTemplate>
+                            <asp:ImageButton ID="imgDeleteDupe1" ImageUrl="~/images/x.gif" CausesValidation="False"
+                                AlternateText="Delete this airport" ToolTip="Delete this airport" CommandName="_DeleteDupe"
+                                CommandArgument='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},{1},{2}", Eval("id1"), Eval("user1"), Eval("type1")) %>' runat="server" />
+                            <asp:HyperLink ID="lnkID1" runat="server" Font-Bold="true" Text='<%# Eval("id1") %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:clickAndZoom(new google.maps.LatLng({0}, {1}));", Eval("lat1"), Eval("lon1")) %>'></asp:HyperLink>
+                            <asp:Label ID="lblName1" runat="server" Text='<%# Eval("facname1") %>'></asp:Label>
+                            <asp:Label ID="lblUser1" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("user1")) %>' Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("user1")) %>'></asp:Label>
+                            <asp:Label ID="lblPreferred1" runat="server" Font-Bold="true" Visible='<%# ((int) Eval("pref1")) != 0 %>' Text="PREFERRED"></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Airport 2">
+                        <ItemTemplate>
+                            <asp:ImageButton ID="imgDeleteDupe2" ImageUrl="~/images/x.gif" CausesValidation="False"
+                                AlternateText="Delete this airport" ToolTip="Delete this airport" CommandName="_DeleteDupe"
+                                CommandArgument='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},{1},{2}", Eval("id2"), Eval("user2"), Eval("type2")) %>' runat="server" />
+                            <asp:HyperLink ID="lnkID2" runat="server" Font-Bold="true" Text='<%# Eval("id2") %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:clickAndZoom(new google.maps.LatLng({0}, {1}));", Eval("lat2"), Eval("lon2")) %>'></asp:HyperLink>
+                            <asp:Label ID="lblName2" runat="server" Text='<%# Eval("facname2") %>'></asp:Label>
+                            <asp:Label ID="lblUser2" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("user2")) %>' Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("user2")) %>'></asp:Label>
+                            <asp:Label ID="lblPreferred2" runat="server" Font-Bold="true" Visible='<%# ((int) Eval("pref2")) != 0 %>' Text="PREFERRED"></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+                <EmptyDataTemplate>
+                    <p>(No potential dupes)</p>
+                </EmptyDataTemplate>
+            </asp:GridView>
+            <asp:SqlDataSource ID="sqlDSUserDupes" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
+                OnSelecting="sqlDSUserDupes_Selecting"
+                ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" SelectCommand="SELECT 
+    ap1.sourceusername AS 'user1', ap1.AirportID AS 'id1', ap1.facilityname AS 'facname1', ap1.latitude AS 'lat1', ap1.longitude AS 'lon1', ap1.Preferred AS 'pref1', ap1.Type AS type1, ap2.sourceusername AS 'user2', ap2.AirportID AS 'id2', ap2.facilityname AS 'facname2', ap2.latitude AS 'lat2', ap2.longitude AS 'lon2', ap2.Preferred AS 'pref2', ap2.Type as type2
+FROM
+    airports ap1
+        LEFT JOIN
+    airports ap2 ON ap1.AirportID &lt;&gt; ap2.airportid
+        AND ROUND(ap1.latitude, 2) = ROUND(ap2.latitude, 2)
+        AND ROUND(ap1.longitude, 2) = ROUND(ap2.longitude, 2)
+WHERE
+    ap1.sourceusername &lt;&gt; ''
+        AND ap2.latitude IS NOT NULL;">
+            </asp:SqlDataSource>
         </asp:Panel>
     </asp:Panel>
 </asp:Content>
@@ -291,7 +336,7 @@
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
-            <HeaderStyle HorizontalAlign="Left" />
+            <HeaderStyle CssClass="gvhLeft" />
         </asp:GridView>
     </asp:Panel>
 

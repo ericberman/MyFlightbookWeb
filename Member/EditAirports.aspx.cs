@@ -1,4 +1,9 @@
-﻿using System;
+﻿using JouniHeikniemi.Tools.Text;
+using MyFlightbook;
+using MyFlightbook.Airports;
+using MyFlightbook.Geography;
+using MyFlightbook.Mapping;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -6,15 +11,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using JouniHeikniemi.Tools.Text;
-using MyFlightbook;
-using MyFlightbook.Airports;
-using MyFlightbook.Geography;
-using MyFlightbook.Mapping;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2016 MyFlightbook LLC
+ * Copyright (c) 2010-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -323,12 +323,14 @@ public partial class Member_EditAirports : System.Web.UI.Page
 
             while ((rgCols = csvReader.GetCSVLine()) != null)
             {
-                airportImportCandidate aic = new airportImportCandidate();
-                aic.FAA = GetCol(rgCols, ic.iColFAA).Replace("-", "");
-                aic.IATA = GetCol(rgCols, ic.iColIATA).Replace("-", "");
-                aic.ICAO = GetCol(rgCols, ic.iColICAO).Replace("-", "");
-                aic.Name = GetCol(rgCols, ic.iColName);
-                aic.FacilityTypeCode = GetCol(rgCols, ic.iColType);
+                airportImportCandidate aic = new airportImportCandidate()
+                {
+                    FAA = GetCol(rgCols, ic.iColFAA).Replace("-", ""),
+                    IATA = GetCol(rgCols, ic.iColIATA).Replace("-", ""),
+                    ICAO = GetCol(rgCols, ic.iColICAO).Replace("-", ""),
+                    Name = GetCol(rgCols, ic.iColName),
+                    FacilityTypeCode = GetCol(rgCols, ic.iColType)
+                };
                 if (String.IsNullOrEmpty(aic.FacilityTypeCode))
                     aic.FacilityTypeCode = "A";     // default to airport
                 aic.Name = GetCol(rgCols, ic.iColName);
@@ -544,6 +546,48 @@ public partial class Member_EditAirports : System.Web.UI.Page
         UpdateCandidateStatus(ImportedAirportCandidates);
         gvImportResults.DataSource = ImportedAirportCandidates;
         gvImportResults.DataBind();
+    }
+    #endregion
+
+    #region ADMIN - dupe management
+    protected void btnRefreshDupes_Click(object sender, EventArgs e)
+    {
+        gvDupes.DataSourceID = sqlDSUserDupes.ID;
+        gvDupes.DataBind();
+        pnlDupeAirports.Visible = true;
+    }
+    protected void gvDupes_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException("e");
+        if (e.CommandName.CompareCurrentCultureIgnoreCase("_DeleteDupe") == 0 && e.CommandArgument != null)
+        {
+            string[] rgTuple = ((string)e.CommandArgument).Split(new char[] { ',' });
+            if (rgTuple != null && rgTuple.Length == 3)
+            {
+                airport ap = new airport { Code = rgTuple[0], UserName = rgTuple[1], FacilityTypeCode = rgTuple[2], Name="(temp)" };
+                if (ap.FDelete(true))
+                {
+                    Cache.Remove(CacheKeyUserAirports);
+                    RefreshMyAirports();
+                    Control c = e.CommandSource as Control;
+                    if (c != null)
+                    {
+                        c.Visible = false;
+                        c.NamingContainer.Visible = false;
+                    }
+                }
+                else
+                    lblUploadErr.Text = ap.ErrorText;
+            }
+
+        }
+    }
+
+    protected void sqlDSUserDupes_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
+    {
+        if (e != null)
+            e.Command.CommandTimeout = 300; // give up to 5 minutes - this can be slow.
     }
     #endregion
 }
