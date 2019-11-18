@@ -2,14 +2,13 @@ using MyFlightbook;
 using MyFlightbook.Image;
 using System;
 using System.Globalization;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -49,7 +48,7 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
     public bool CanDelete
     {
         get { return lnkDelete.Visible; }
-        set { lnkDelete.Visible = value; }
+        set { divDel.Visible = lnkDelete.Visible = value; }
     }
 
     /// <summary>
@@ -58,7 +57,7 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
     public bool CanEdit
     {
         get { return lnkAnnotate.Visible; }
-        set { lnkAnnotate.Visible = value; }
+        set { divAnnot.Visible = lnkAnnotate.Visible = value; }
     }
 
     /// <summary>
@@ -67,7 +66,7 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
     public bool CanMakeDefault
     {
         get { return lnkMakeDefault.Visible; }
-        set { lnkMakeDefault.Visible = value; }
+        set { divDefault.Visible = lnkMakeDefault.Visible = value; }
     }
 
     private bool _isDefault;
@@ -122,11 +121,11 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
                 case GeoLinkType.None:
                     break;
                 case GeoLinkType.ZoomOnLocalMap:
-                    lnkZoom.Visible = true;
+                    divZoom.Visible = lnkZoom.Visible = true;
                     lnkZoom.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:getGMap().setCenter(new google.maps.LatLng({0}, {1}));getGMap().setZoom(12);", mfbii.Location.Latitude, mfbii.Location.Longitude);
                     break;
                 case GeoLinkType.ZoomOnGoogleMaps:
-                    lnkZoom.Visible = true;
+                    divZoom.Visible = lnkZoom.Visible = true;
                     lnkZoom.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://maps.google.com?q={0},{1}", mfbii.Location.LatitudeString, mfbii.Location.LongitudeString);
                     lnkZoom.Target = "_blank";
                     break;

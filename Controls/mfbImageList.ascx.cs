@@ -201,6 +201,7 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
 
         rptImg.DataSource = lst;
         rptImg.DataBind();
+        pnlImgs.Visible = lst.Count > 0;
         return lst.Count();
     }
 
