@@ -9,6 +9,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -21,6 +23,43 @@ using System.Web.UI.WebControls;
 
 public partial class Member_EditAirports : System.Web.UI.Page
 {
+    #region Webservices
+    /// <summary>
+    /// Returns the high-watermark starting hobbs for the specified aircraft.
+    /// </summary>
+    /// <returns>0 if unknown.</returns>
+    [WebMethod(EnableSession = true)]
+    public static void DeleteDupeUserAirport(string idDelete, string idMap, string szUser, string szType)
+    {
+        if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+            throw new UnauthorizedAccessException("You must be authenticated to make this call");
+
+        Profile pf = MyFlightbook.Profile.GetUser(HttpContext.Current.User.Identity.Name);
+        if (!pf.CanManageData)
+            throw new UnauthorizedAccessException("You must be an admin to make this call");
+
+        airport apToDelete = new airport(idDelete, "(None)", 0, 0, szType, string.Empty, 0, szUser);
+
+        if (apToDelete.FDelete(true))
+        {
+            if (!String.IsNullOrEmpty(szUser))
+            {
+                DBHelper dbh = new DBHelper("UPDATE flights SET route=REPLACE(route, ?idDelete, ?idMap) WHERE username=?user AND route LIKE CONCAT('%', ?idDelete, '%')");
+                if (!dbh.DoNonQuery((comm) =>
+                {
+                    comm.Parameters.AddWithValue("idDelete", idDelete);
+                    comm.Parameters.AddWithValue("idMap", idMap);
+                    comm.Parameters.AddWithValue("user", szUser);
+                }))
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error mapping from {0} to {1} in flights for user {2}: {3}", idDelete, idMap, szUser, dbh.LastError));
+            }
+        }
+        else
+            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error deleting airport {0}: {1}", apToDelete.Code, apToDelete.ErrorText));
+    }
+    #endregion
+
+
     private airport[] m_rgAirportsForUser = null;
 
     protected void Page_Load(object sender, EventArgs e)
@@ -183,6 +222,18 @@ public partial class Member_EditAirports : System.Web.UI.Page
 
         if (ap.FCommit(fAdmin, fAdmin))
         {
+            // Check to see if this looks like a duplicate - if so, submit it for review
+            List<airport> lstDupes = new List<airport>(airport.AirportsNearPosition(ap.LatLong.Latitude, ap.LatLong.Longitude, 20, ap.FacilityTypeCode.CompareCurrentCultureIgnoreCase("H") == 0));
+            lstDupes.RemoveAll(a => !a.IsPort || a.Code.CompareCurrentCultureIgnoreCase(ap.Code) == 0 || a.DistanceFromPosition > 3);
+            if (lstDupes.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat(CultureInfo.CurrentCulture, "User: {0}, Airport: {1} ({2}) {3} {4}\r\n\r\nCould match:\r\n", ap.UserName, ap.Code, ap.FacilityTypeCode, ap.Name, ap.LatLong.ToDegMinSecString());
+                foreach (airport a in lstDupes)
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0} - ({1}) {2} {3}\r\n", a.Code, a.FacilityTypeCode, a.Name, a.LatLong.ToDegMinSecString());
+                util.NotifyAdminEvent("New airport created - needs review", sb.ToString(), ProfileRoles.maskCanManageData);
+            }
+
             initForm();
             Cache.Remove(CacheKeyUserAirports);
 
@@ -555,39 +606,17 @@ public partial class Member_EditAirports : System.Web.UI.Page
         gvDupes.DataSourceID = sqlDSUserDupes.ID;
         gvDupes.DataBind();
         pnlDupeAirports.Visible = true;
+        pnlMyAirports.Visible = false;
     }
-    protected void gvDupes_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException("e");
-        if (e.CommandName.CompareCurrentCultureIgnoreCase("_DeleteDupe") == 0 && e.CommandArgument != null)
-        {
-            string[] rgTuple = ((string)e.CommandArgument).Split(new char[] { ',' });
-            if (rgTuple != null && rgTuple.Length == 3)
-            {
-                airport ap = new airport { Code = rgTuple[0], UserName = rgTuple[1], FacilityTypeCode = rgTuple[2], Name="(temp)" };
-                if (ap.FDelete(true))
-                {
-                    Cache.Remove(CacheKeyUserAirports);
-                    RefreshMyAirports();
-                    Control c = e.CommandSource as Control;
-                    if (c != null)
-                    {
-                        c.Visible = false;
-                        c.NamingContainer.Visible = false;
-                    }
-                }
-                else
-                    lblUploadErr.Text = ap.ErrorText;
-            }
-
-        }
+    protected string DeleteDupeScript(string user, string codeDelete, string codeMap, string type)
+    { 
+        return String.Format(CultureInfo.InvariantCulture, "deleteDupeUserAirport('{0}', '{1}', '{2}', '{3}', this); return false;", user, codeDelete, codeMap, type);
     }
 
     protected void sqlDSUserDupes_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
     {
         if (e != null)
-            e.Command.CommandTimeout = 300; // give up to 5 minutes - this can be slow.
+            e.Command.CommandTimeout = 600; // give up to 10 minutes - this can be slow.
     }
     #endregion
 }

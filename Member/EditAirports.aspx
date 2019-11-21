@@ -235,18 +235,46 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
         </asp:Panel>
+        <script>
+            function deleteDupeUserAirport(user, codeDelete, codeMap, type, sender) {
+                var params = new Object();
+                params.idDelete = codeDelete;
+                params.idMap = codeMap;
+                params.szUser = user;
+                params.szType = type;
+                var d = JSON.stringify(params);
+                $.ajax(
+                    {
+                        url: '<% =ResolveUrl("~/Member/EditAirports.aspx/DeleteDupeUserAirport") %>',
+                        type: "POST", data: d, dataType: "json", contentType: "application/json",
+                        error: function (xhr, status, error) {
+                            window.alert(xhr.responseJSON.Message);
+                        },
+                        complete: function (response) { },
+                        success: function (response) { sender.parentElement.parentElement.style.display = 'none'; }
+                    });
+            }
+        </script>
+        <asp:UpdateProgress ID="UpdateProgress2" runat="server" AssociatedUpdatePanelID="updpDupes">
+            <ProgressTemplate>
+                <asp:Image ID="imgUserDupes" ImageUrl="~/images/ajax-loader.gif" runat="server" />
+            </ProgressTemplate>
+        </asp:UpdateProgress>
         <asp:UpdatePanel ID="updpDupes" runat="server">
             <ContentTemplate>
-            <p><asp:Label ID="lblAdminReviewDupeAirports" runat="server" Text="Review likely duplicate airports"></asp:Label> <asp:Button ID="btnRefreshDupes" runat="server" Text="Refresh (slow)" OnClick="btnRefreshDupes_Click" /></p>
+            <p><asp:Label ID="lblAdminReviewDupeAirports" runat="server" Text="Review likely duplicate airports"></asp:Label> <asp:Button ID="btnRefreshDupes" runat="server" Text="Refresh (slow)" OnClick="btnRefreshDupes_Click" />
+            </p>
             <asp:Panel ID="pnlDupeAirports" runat="server" ScrollBars="Auto" Height="400px" Width="100%" Visible="false"> 
-                <asp:GridView ID="gvDupes" runat="server" AutoGenerateColumns="false" OnRowCommand="gvDupes_RowCommand">
+                <asp:GridView ID="gvDupes" runat="server" AutoGenerateColumns="false">
                     <Columns>
                         <asp:TemplateField HeaderText="Airport 1">
                             <ItemTemplate>
-                                <asp:ImageButton ID="imgDeleteDupe1" ImageUrl="~/images/x.gif" CausesValidation="False"
-                                    AlternateText="Delete this airport" ToolTip="Delete this airport" CommandName="_DeleteDupe"
+                                <asp:ImageButton ID="imgDeleteDupe1" ImageUrl="~/images/x.gif" CausesValidation="False" 
+                                    AlternateText="Delete this airport" ToolTip="Delete this airport"
+                                    OnClientClick='<%# DeleteDupeScript((string)Eval("user1"), (string)Eval("id1"), (string)Eval("id2"), (string)Eval("type1")) %>'
                                     CommandArgument='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},{1},{2}", Eval("id1"), Eval("user1"), Eval("type1")) %>' runat="server" />
                                 <asp:HyperLink ID="lnkID1" runat="server" Font-Bold="true" Text='<%# Eval("id1") %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:clickAndZoom(new google.maps.LatLng({0}, {1}));", Eval("lat1"), Eval("lon1")) %>'></asp:HyperLink>
+                                <asp:Label ID="lblType1" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("type1")) %>'></asp:Label>
                                 <asp:Label ID="lblName1" runat="server" Text='<%# Eval("facname1") %>'></asp:Label>
                                 <asp:Label ID="lblUser1" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("user1")) %>' Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("user1")) %>'></asp:Label>
                                 <asp:Label ID="lblPreferred1" runat="server" Font-Bold="true" Visible='<%# ((int) Eval("pref1")) != 0 %>' Text="PREFERRED"></asp:Label>
@@ -255,9 +283,11 @@
                         <asp:TemplateField HeaderText="Airport 2">
                             <ItemTemplate>
                                 <asp:ImageButton ID="imgDeleteDupe2" ImageUrl="~/images/x.gif" CausesValidation="False"
-                                    AlternateText="Delete this airport" ToolTip="Delete this airport" CommandName="_DeleteDupe"
-                                    CommandArgument='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},{1},{2}", Eval("id2"), Eval("user2"), Eval("type2")) %>' runat="server" />
+                                    AlternateText="Delete this airport" ToolTip="Delete this airport"
+                                    OnClientClick='<%# DeleteDupeScript((string)Eval("user2"), (string)Eval("id2"), (string)Eval("id1"), (string)Eval("type2")) %>'
+                                    runat="server" />
                                 <asp:HyperLink ID="lnkID2" runat="server" Font-Bold="true" Text='<%# Eval("id2") %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:clickAndZoom(new google.maps.LatLng({0}, {1}));", Eval("lat2"), Eval("lon2")) %>'></asp:HyperLink>
+                                <asp:Label ID="lblType2" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("type2")) %>'></asp:Label>
                                 <asp:Label ID="lblName2" runat="server" Text='<%# Eval("facname2") %>'></asp:Label>
                                 <asp:Label ID="lblUser2" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("user2")) %>' Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("user2")) %>'></asp:Label>
                                 <asp:Label ID="lblPreferred2" runat="server" Font-Bold="true" Visible='<%# ((int) Eval("pref2")) != 0 %>' Text="PREFERRED"></asp:Label>
@@ -274,13 +304,14 @@
         ap1.sourceusername AS 'user1', ap1.AirportID AS 'id1', ap1.facilityname AS 'facname1', ap1.latitude AS 'lat1', ap1.longitude AS 'lon1', ap1.Preferred AS 'pref1', ap1.Type AS type1, ap2.sourceusername AS 'user2', ap2.AirportID AS 'id2', ap2.facilityname AS 'facname2', ap2.latitude AS 'lat2', ap2.longitude AS 'lon2', ap2.Preferred AS 'pref2', ap2.Type as type2
     FROM
         airports ap1
-            LEFT JOIN
-        airports ap2 ON ap1.AirportID &lt;&gt; ap2.airportid
+            INNER JOIN
+        airports ap2 ON ap1.AirportID &lt;&gt; ap2.airportid AND ap1.type = ap2.type
             AND ROUND(ap1.latitude, 2) = ROUND(ap2.latitude, 2)
             AND ROUND(ap1.longitude, 2) = ROUND(ap2.longitude, 2)
     WHERE
-        ap1.sourceusername &lt;&gt; ''
-            AND ap2.latitude IS NOT NULL;">
+        ap1.sourceusername &lt;&gt; '' AND ap1.type IN ('A', 'H', 'S')
+    ORDER BY
+        ap1.type ASC, ap1.AirportID ASC;">
                 </asp:SqlDataSource>
             </asp:Panel>
             </ContentTemplate>
