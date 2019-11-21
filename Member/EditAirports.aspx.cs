@@ -85,12 +85,15 @@ public partial class Member_EditAirports : System.Web.UI.Page
         }
 
         if (IsAdmin)
+        {
             Master.Page.Header.Controls.Add(new LiteralControl(@"<style>
 .sidebarRight
 {
     width: 1200px;
 }
 </style>"));
+            ScriptManager.GetCurrent(this).AsyncPostBackTimeout = 1500;  // use a long timeout
+        }
 
         util.SetValidationGroup(pnlEdit, "EditAirport");
 
