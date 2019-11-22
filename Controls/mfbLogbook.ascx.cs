@@ -232,20 +232,27 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     {
         get
         {
-            List<string> lstParams = new List<string>();
+            System.Collections.Specialized.NameValueCollection dictParams = new System.Collections.Specialized.NameValueCollection();
             if (!Restriction.IsDefault)
-                lstParams.Add(String.Format(CultureInfo.InvariantCulture, "fq={0}", HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString())));
+                dictParams["fq"] = Restriction.ToBase64CompressedJSONString();
             if (HasPrevSort)
             {
                 if (!String.IsNullOrEmpty(LastSortExpr))
-                    lstParams.Add(String.Format(CultureInfo.InvariantCulture, "se={0}", HttpUtility.UrlEncode(LastSortExpr.ToString())));
+                    dictParams["se"] = LastSortExpr;
                 if (LastSortDir != SortDirection.Descending || !String.IsNullOrEmpty(LastSortExpr))
-                    lstParams.Add(String.Format(CultureInfo.InvariantCulture, "so={0}", LastSortDir.ToString()));
+                    dictParams["so"] = LastSortDir.ToString();
             }
             if (gvFlightLogs.PageIndex != 0)
-                lstParams.Add(String.Format(CultureInfo.InvariantCulture, "pg={0}", gvFlightLogs.PageIndex));
+                dictParams["pg"] = gvFlightLogs.PageIndex.ToString();
+            foreach (string szKey in Request.QueryString.Keys)
+                dictParams[szKey] = Request.QueryString[szKey];
 
-            return String.Join("&", lstParams);
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+            foreach (string szkey in dictParams)
+                sb.AppendFormat(CultureInfo.InvariantCulture, "{0}{1}={2}", sb.Length == 0 ? string.Empty : "&", szkey, HttpUtility.UrlEncode(dictParams[szkey]));
+
+            return sb.ToString();
         }
     }
 
