@@ -3165,10 +3165,13 @@ namespace MyFlightbook
         {
             get
             {
+                CustomFlightProperty cfpBlockOut;
                 if (FlightStart.HasValue())
                     return FlightStart;
                 else if (EngineStart.HasValue())
                     return EngineStart;
+                else if ((cfpBlockOut = Array.Find<CustomFlightProperty>(CustomProperties, cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut)) != null)
+                    return cfpBlockOut.DateValue;
                 else
                     return DateTime.MinValue;
             }
@@ -3181,10 +3184,13 @@ namespace MyFlightbook
         {
             get
             {
+                CustomFlightProperty cfpBlockIn;
                 if (FlightEnd.HasValue())
                     return FlightEnd;
                 else if (EngineEnd.HasValue())
                     return EngineEnd;
+                else if ((cfpBlockIn = Array.Find<CustomFlightProperty>(CustomProperties, cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn)) != null)
+                    return cfpBlockIn.DateValue;
                 else
                     return DateTime.MinValue;
             }
