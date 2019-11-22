@@ -122,7 +122,7 @@
     <asp:Panel ID="pnlAutoFill" runat="server" CssClass="flightinfoitem">
         <table>
             <tr class="itemlabel">
-                <td>
+                <td style="max-width: 600px">
                     <asp:Label ID="lblAutoFill" Font-Bold="True" runat="server" Text="<%$ Resources:LogbookEntry, AutoFillPrompt %>"></asp:Label><br />
                     <asp:Label ID="lblAutoFillDesc" runat="server" Text="<%$ Resources:LogbookEntry, AutoFillDescription %>"></asp:Label>
                 </td>
