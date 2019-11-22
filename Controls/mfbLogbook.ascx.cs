@@ -233,6 +233,10 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         get
         {
             System.Collections.Specialized.NameValueCollection dictParams = new System.Collections.Specialized.NameValueCollection();
+            // Add the existing keys first - since we may overwrite them below!
+            foreach (string szKey in Request.QueryString.Keys)
+                dictParams[szKey] = Request.QueryString[szKey];
+
             if (!Restriction.IsDefault)
                 dictParams["fq"] = Restriction.ToBase64CompressedJSONString();
             if (HasPrevSort)
@@ -244,8 +248,6 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
             }
             if (gvFlightLogs.PageIndex != 0)
                 dictParams["pg"] = gvFlightLogs.PageIndex.ToString();
-            foreach (string szKey in Request.QueryString.Keys)
-                dictParams[szKey] = Request.QueryString[szKey];
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
