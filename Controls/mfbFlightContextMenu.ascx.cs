@@ -64,6 +64,7 @@ public partial class Controls_mfbFlightContextMenu : UserControl
                 // fix the ID of the delete button to prevent replay attacks
                 string szDelID = String.Format(CultureInfo.InvariantCulture, "lnkDel{0}", value.FlightID);
                 ConfirmButtonExtender1.TargetControlID = lnkDelete.ID = szDelID;
+                ConfirmButtonExtender1.ConfirmText = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.LogbookConfirmDelete, "\n\n", m_le.ToShortString());
 
                 string szEdit = String.Format(CultureInfo.InvariantCulture, EditTargetFormatString, value.FlightID);
                 lnkEditThisFlight.NavigateUrl = szEdit;

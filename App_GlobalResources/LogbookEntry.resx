@@ -265,7 +265,8 @@
     <value>I certify that the entries in this log are true: _____________________________</value>
   </data>
   <data name="LogbookConfirmDelete" xml:space="preserve">
-    <value>Are you sure you want to delete this flight?  This action cannot be undone!</value>
+    <value>Are you sure you want to delete this flight?  This action cannot be undone!{0}{1}</value>
+    <comment>{0} is newlines, {1} is the short string of the flight.</comment>
   </data>
   <data name="LogbookDeleteTooltip" xml:space="preserve">
     <value>Delete this flight</value>

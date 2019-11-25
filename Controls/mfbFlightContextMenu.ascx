@@ -12,7 +12,7 @@
         <asp:Image ID="imgDelete" style="padding-right: 10px" ImageUrl="~/images/x.gif" AlternateText="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" ToolTip="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>" runat="server" />
         <asp:Label ID="lblDeleteThis" runat="server" Text="<%$ Resources:LogbookEntry, LogbookDeleteTooltip %>"></asp:Label>
     </asp:LinkButton>
-    <ajaxToolkit:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDelete" ConfirmOnFormSubmit="True" ConfirmText="<%$ Resources:LogbookEntry, LogbookConfirmDelete %>">
+    <ajaxToolkit:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="lnkDelete" ConfirmOnFormSubmit="True">
     </ajaxToolkit:ConfirmButtonExtender>
 </div>
 <div style="line-height: 26px">

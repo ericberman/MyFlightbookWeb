@@ -2072,6 +2072,15 @@ namespace MyFlightbook
         {
             return String.Format(CultureInfo.CurrentCulture, "{0:d}: {1}{2} {3}", this.Date, String.IsNullOrEmpty(this.TailNumDisplay) ? String.Empty : String.Format(CultureInfo.CurrentCulture, "({0}) ", this.TailNumDisplay), this.Comment, this.Route);
         }
+
+        /// <summary>
+        /// Displays just date, tail, and route (no comments)
+        /// </summary>
+        /// <returns>A string with just date, tail, and route.</returns>
+        public string ToShortString()
+        {
+            return String.Format(CultureInfo.CurrentCulture, "{0:d}: {1}{2}", this.Date, String.IsNullOrEmpty(this.TailNumDisplay) ? String.Empty : String.Format(CultureInfo.CurrentCulture, "({0}) ", this.TailNumDisplay), this.Route);
+        }
     }
 
     [Serializable]
