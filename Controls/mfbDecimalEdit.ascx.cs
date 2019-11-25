@@ -75,7 +75,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
                         if (Request.IsMobileDeviceOrTablet())
                         {
                             txtDecimal.TextMode = TextBoxMode.Number;
-                            txtDecimal.Attributes["step"] = "0.1";
+                            txtDecimal.Attributes["step"] = "0.01";
                         }
                         else
                         {
