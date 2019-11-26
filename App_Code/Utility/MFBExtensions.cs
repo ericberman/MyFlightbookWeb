@@ -645,12 +645,13 @@ namespace MyFlightbook
         /// Formats a decimal object into a 0.0 object or an empty string
         /// </summary>
         /// <param name="o">The object</param>
+        /// <param name="fIncludeZero">True to return an "0" for zero values.</param>
         /// <returns></returns>
-        public static string FormatDecimal(this object o, bool fUseHHMM)
+        public static string FormatDecimal(this object o, bool fUseHHMM, bool fIncludeZero = false)
         {
             if (o == null || o == System.DBNull.Value) return string.Empty;
             Decimal d = Convert.ToDecimal(o, CultureInfo.CurrentCulture);
-            return d == 0.0M ? string.Empty : (fUseHHMM ? d.ToHHMM() : d.ToString("#,#0.0#", CultureInfo.CurrentCulture));
+            return (d == 0.0M && !fIncludeZero) ? string.Empty : (fUseHHMM ? d.ToHHMM() : d.ToString("#,#0.0#", CultureInfo.CurrentCulture));
         }
 
         /// <summary>

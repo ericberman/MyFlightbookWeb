@@ -1817,35 +1817,35 @@ namespace MyFlightbook.FlightCurrency
                     }
 
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723b1,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursFlightTime11723b1.FormatDecimal(UseHHMM)),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursFlightTime11723b1.FormatDecimal(UseHHMM, true)),
                         (hoursFlightTime11723b1 > 100) ? CurrencyState.NotCurrent : ((hoursFlightTime11723b1 > 80) ? CurrencyState.GettingClose : CurrencyState.OK),
-                        (hoursFlightTime11723b1 > 100) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (hoursFlightTime11723b1 - 100).FormatDecimal(UseHHMM)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (100 - hoursFlightTime11723b1).FormatDecimal(UseHHMM))));
+                        (hoursFlightTime11723b1 > 100) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (hoursFlightTime11723b1 - 100).FormatDecimal(UseHHMM, true)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (100 - hoursFlightTime11723b1).FormatDecimal(UseHHMM, true))));
 
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723b2,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursFlightTime11723b2.FormatDecimal(UseHHMM)),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursFlightTime11723b2.FormatDecimal(UseHHMM, true)),
                         (hoursFlightTime11723b2 > 1000) ? CurrencyState.NotCurrent : ((hoursFlightTime11723b2 > 900) ? CurrencyState.GettingClose : CurrencyState.OK),
-                        (hoursFlightTime11723b2 > 1000) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (hoursFlightTime11723b2 - 1000).FormatDecimal(UseHHMM)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (1000 - hoursFlightTime11723b2).FormatDecimal(UseHHMM))));
+                        (hoursFlightTime11723b2 > 1000) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (hoursFlightTime11723b2 - 1000).FormatDecimal(UseHHMM, true)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (1000 - hoursFlightTime11723b2).FormatDecimal(UseHHMM, true))));
 
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723c1,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, tsDutyTime11723c1.TotalHours.FormatDecimal(UseHHMM)),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, tsDutyTime11723c1.TotalHours.FormatDecimal(UseHHMM, true)),
                         (tsDutyTime11723c1.TotalHours > 60) ? CurrencyState.NotCurrent : ((tsDutyTime11723c1.TotalHours > 50) ? CurrencyState.GettingClose : CurrencyState.OK),
                         (tsDutyTime11723c1.TotalHours > 60) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (tsDutyTime11723c1.TotalHours - 60).FormatDecimal(UseHHMM)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (60 - tsDutyTime11723c1.TotalHours).FormatDecimal(UseHHMM))));
 
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723c2,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, tsDutyTime11723c2.TotalHours.FormatDecimal(UseHHMM)),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, tsDutyTime11723c2.TotalHours.FormatDecimal(UseHHMM, true)),
                         (tsDutyTime11723c2.TotalHours > 190) ? CurrencyState.NotCurrent : ((tsDutyTime11723c2.TotalHours > 150) ? CurrencyState.GettingClose : CurrencyState.OK),
-                        (tsDutyTime11723c2.TotalHours > 190) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (tsDutyTime11723c2.TotalHours - 190).FormatDecimal(UseHHMM)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (190 - tsDutyTime11723c2.TotalHours).FormatDecimal(UseHHMM))));
+                        (tsDutyTime11723c2.TotalHours > 190) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (tsDutyTime11723c2.TotalHours - 190).FormatDecimal(UseHHMM, true)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (190 - tsDutyTime11723c2.TotalHours).FormatDecimal(UseHHMM, true))));
 
                     // 25b - need a 30-hour rest period within the prior 168 hours
                     double hoursLongestRest = Math.Min(tsLongestRest11725b.TotalHours, 168.0);
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11725b,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursLongestRest.FormatDecimal(UseHHMM)),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursLongestRest.FormatDecimal(UseHHMM, true)),
                         (hoursLongestRest > 56) ? CurrencyState.OK : ((hoursLongestRest > 30) ? CurrencyState.GettingClose : CurrencyState.NotCurrent),
                         string.Empty));
 
                     // Finally, report on current rest period
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR117CurrentRest,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, DateTime.UtcNow.Subtract(currentRestPeriodStart).TotalHours.FormatDecimal(UseHHMM)),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, DateTime.UtcNow.Subtract(currentRestPeriodStart).TotalHours.FormatDecimal(UseHHMM, true)),
                         CurrencyState.OK, string.Empty));
                 }
                 return lst;
