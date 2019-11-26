@@ -950,12 +950,12 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 return false;
             if (PropertyRestriction != null && PropertyRestriction.Count() > 0)
             {
-                if (cfr.FlightEvents.Count() == 0)  // short circuit, plus empty set can be superset of other sets.
+                if (cfr.FlightProps.Count() == 0)  // short circuit, plus empty set can be superset of other sets.
                     return false;
 
                 HashSet<int> hsProps = new HashSet<int>(PropertyRestriction);
                 HashSet<int> hsFlight = new HashSet<int>();
-                foreach (CustomFlightProperty cfp in cfr.FlightEvents)
+                foreach (CustomFlightProperty cfp in cfr.FlightProps)
                     hsFlight.Add(cfp.PropTypeID);
 
                 if (!hsFlight.IsSupersetOf(hsProps))
@@ -969,7 +969,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     fFound = true;
                 if (!fFound)
                 {
-                    foreach (CustomFlightProperty cfp in cfr.FlightEvents)
+                    foreach (CustomFlightProperty cfp in cfr.FlightProps)
                         if (cfp.PropertyType.Type == CFPPropertyType.cfpString && cfp.TextValue.ToUpper().Contains(szUpper))
                         {
                             fFound = true;
@@ -1021,15 +1021,15 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     AddRecentFlightEvents(cfr.dtFlight, cfr.GroundSim);
                     break;
                 case CustomCurrencyEventType.FrontSeatHours:
-                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFrontSeatTime)) != null)
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFrontSeatTime)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue);
                     break;
                 case CustomCurrencyEventType.BackseatHours:
-                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropBackSeatTime)) != null)
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropBackSeatTime)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue);
                     break;
                 case CustomCurrencyEventType.HoistOperations:
-                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropHoistOperations)) != null)
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropHoistOperations)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
                     break;
                 case CustomCurrencyEventType.Landings:
@@ -1052,21 +1052,21 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     AddRecentFlightEvents(cfr.dtFlight, cfr.Dual);
                     break;
                 case CustomCurrencyEventType.BaseCheck:
-                    cfr.ForEachEvent((pfe) =>
+                    cfr.FlightProps.ForEachEvent((pfe) =>
                     {
                         if (pfe.PropertyType.IsBaseCheck)
                             AddRecentFlightEvents(cfr.dtFlight, pfe.BoolValue ? 1 : 0);
                     });
                     break;
                 case CustomCurrencyEventType.UASLaunch:
-                    cfr.ForEachEvent((pfe) =>
+                    cfr.FlightProps.ForEachEvent((pfe) =>
                     {
                         if (pfe.PropertyType.IsUASLaunch)
                             AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
                     });
                     break;
                 case CustomCurrencyEventType.UASRecovery:
-                    cfr.ForEachEvent((pfe) =>
+                    cfr.FlightProps.ForEachEvent((pfe) =>
                     {
                         if (pfe.PropertyType.IsUASRecovery)
                             AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
@@ -1076,63 +1076,63 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     AddRecentFlightEvents(cfr.dtFlight, cfr.cFullStopNightLandings);
                     break;
                 case CustomCurrencyEventType.NightLandingAny:
-                    AddRecentFlightEvents(cfr.dtFlight, cfr.cFullStopNightLandings + cfr.TotalCountForPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo));
+                    AddRecentFlightEvents(cfr.dtFlight, cfr.cFullStopNightLandings + cfr.FlightProps.TotalCountForPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo));
                     break;
                 case CustomCurrencyEventType.NightTakeoffs:
-                    cfr.ForEachEvent((pfe) =>
+                    cfr.FlightProps.ForEachEvent((pfe) =>
                     {
                         if (pfe.PropertyType.IsNightTakeOff)
                             AddRecentFlightEvents(cfr.dtFlight, pfe.IntValue);
                     });
                     break;
                 case CustomCurrencyEventType.NightTouchAndGo:
-                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo)) != null)
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
                     break;
                 case CustomCurrencyEventType.NightFlight:
                     AddRecentFlightEvents(cfr.dtFlight, cfr.Night);
                     break;
                 case CustomCurrencyEventType.NVHours:
-                    cfr.ForEachEvent((pfe) =>
+                    cfr.FlightProps.ForEachEvent((pfe) =>
                     {
                         if (pfe.PropertyType.IsNightVisionTime)
                             AddRecentFlightEvents(cfr.dtFlight, pfe.DecValue);
                     });
                     break;
                 case CustomCurrencyEventType.NVGoggles:
-                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVGoggleTime)) != null)
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVGoggleTime)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue);
                     break;
                 case CustomCurrencyEventType.NVFLIR:
-                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVFLIRTime)) != null)
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropNVFLIRTime)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.DecValue);
                     break;
                 case CustomCurrencyEventType.LandingsHighAltitude:
-                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropHighAltitudeLandings)) != null)
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropHighAltitudeLandings)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
                     break;
                 case CustomCurrencyEventType.CAP5Checkride:
-                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropCAP5Checkride)) != null)
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropCAP5Checkride)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.BoolValue ? 1 : 0);
                     break;
                 case CustomCurrencyEventType.CAP91Checkride:
-                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropCAP91Checkride)) != null)
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropCAP91Checkride)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.BoolValue ? 1 : 0);
                     break;
                 case CustomCurrencyEventType.FMSApproaches:
-                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFMSApproaches)) != null)
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFMSApproaches)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
                     break;
                 case CustomCurrencyEventType.GliderTow:
-                    if ((cfp = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropGliderTow)) != null)
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropGliderTow)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
                     break;
                 case CustomCurrencyEventType.FlightReview:
-                    if ((cfp = cfr.FindEvent(fp => fp.PropertyType.IsBFR)) != null)
+                    if ((cfp = cfr.FlightProps.FindEvent(fp => fp.PropertyType.IsBFR)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, 1);
                     break;
                 case CustomCurrencyEventType.IPC:
-                    if ((cfp = cfr.FindEvent(fp => fp.PropertyType.IsIPC)) != null)
+                    if ((cfp = cfr.FlightProps.FindEvent(fp => fp.PropertyType.IsIPC)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, 1);
                     break;
             }

@@ -31,7 +31,7 @@ namespace MyFlightbook.FlightCurrency
             // Alternative to having PIC experience is having a flight review in the prior year
             if (cfr.dtFlight.CompareTo(DateTime.Now.AddYears(-1)) > 0)
             {
-                cfr.ForEachEvent((pe) =>
+                cfr.FlightProps.ForEachEvent((pe) =>
                 {
                     if (pe.PropertyType.IsBFR)
                         fHasFlightReview = true;
@@ -96,7 +96,7 @@ namespace MyFlightbook.FlightCurrency
         {
             base.ExamineFlight(cfr);
             // Add in night touch-and-go landings too, since they also count.
-            AddRecentFlightEvents(cfr.dtFlight, cfr.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo));
+            AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo));
             fcCanada.ExamineFlight(cfr);
         }
 
@@ -136,7 +136,7 @@ namespace MyFlightbook.FlightCurrency
             m_fCacheValid = false;
 
             // 401.05(3)(a) - IPC or equivalent
-            cfr.ForEachEvent((pfe) =>
+            cfr.FlightProps.ForEachEvent((pfe) =>
             {
                 // add any IPC or IPC equivalents
                 if (pfe.PropertyType.IsIPC)

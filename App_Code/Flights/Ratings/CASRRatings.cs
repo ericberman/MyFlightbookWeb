@@ -108,7 +108,7 @@ namespace MyFlightbook.MilestoneProgress
             if (IsMatchingCategory(cfr.idCatClassOverride) && cfr.fIsRealAircraft)
             {
                 decimal soloTime = 0.0M;
-                cfr.ForEachEvent(pf =>
+                cfr.FlightProps.ForEachEvent(pf =>
                 {
                     if (pf.PropertyType.IsSolo)
                         soloTime += pf.DecValue;

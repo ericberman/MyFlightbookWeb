@@ -117,8 +117,8 @@ namespace MyFlightbook.MilestoneProgress
             if (cfr.fIsComplex)
                 miPICComplexTime.AddEvent(cfr.PIC);
 
-            decimal cfiiTime = cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropCFIITime);
-            decimal instInstruction = cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropInstrumentInstructionTime);
+            decimal cfiiTime = cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropCFIITime);
+            decimal instInstruction = cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropInstrumentInstructionTime);
             decimal instrumentInstruction = Math.Max(cfiiTime, instInstruction);
             miCFIITime.AddEvent(instrumentInstruction);
 

@@ -70,8 +70,8 @@ namespace MyFlightbook.FlightCurrency
             if (!cfr.fIsCertifiedLanding)
                 return;
 
-            int cNightTakeoffs = cfr.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff);
-            int cNightLandings = cfr.cFullStopNightLandings + cfr.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
+            int cNightTakeoffs = cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff);
+            int cNightLandings = cfr.cFullStopNightLandings + cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
 
             if (cNightTakeoffs > 0)
                 fcNightTakeoff.AddRecentFlightEvents(cfr.dtFlight, cNightTakeoffs);
@@ -201,7 +201,7 @@ namespace MyFlightbook.FlightCurrency
             bool fHasProficiencyCheck = false;
             decimal dPIC = 0.0M;
             bool fInstructorOnBoard = false;
-            cfr.ForEachEvent((cfp) =>
+            cfr.FlightProps.ForEachEvent((cfp) =>
             {
                 if (cfp.PropertyType.IsPICProficiencyCheck6158)
                     fHasProficiencyCheck = true;

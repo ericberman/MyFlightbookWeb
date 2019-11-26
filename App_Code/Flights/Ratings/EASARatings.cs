@@ -88,7 +88,7 @@ namespace MyFlightbook.MilestoneProgress
             decimal instructorOnBoardTime = 0.0M;
             bool fInstructorOnBoard = false;
             decimal dutiesOfPICTime = 0.0M;
-            cfr.ForEachEvent(pf =>
+            cfr.FlightProps.ForEachEvent(pf =>
             {
                 if (pf.PropertyType.IsSolo)
                     soloTime += pf.DecValue;
@@ -164,8 +164,8 @@ namespace MyFlightbook.MilestoneProgress
                 miNightDual.AddEvent(nightDual);
                 miNightXC.AddEvent(Math.Min(nightDual, cfr.XC));
 
-                decimal soloTime = cfr.TotalTimeForPredicate(cfp => cfp.PropertyType.IsSolo);
-                decimal nightTakeoffs = cfr.TotalCountForPredicate(cfp => cfp.PropertyType.IsNightTakeOff);
+                decimal soloTime = cfr.FlightProps.TotalTimeForPredicate(cfp => cfp.PropertyType.IsSolo);
+                decimal nightTakeoffs = cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropertyType.IsNightTakeOff);
 
                 if (soloTime > 0)
                 {
@@ -315,7 +315,7 @@ namespace MyFlightbook.MilestoneProgress
                 decimal soloTime = 0.0M;
                 bool fInstructorOnBoard = false;
                 decimal dutiesOfPICTime = 0.0M;
-                cfr.ForEachEvent(pf => {
+                cfr.FlightProps.ForEachEvent(pf => {
                     if (pf.PropertyType.IsSolo)
                         soloTime += pf.DecValue;
 
@@ -474,7 +474,7 @@ namespace MyFlightbook.MilestoneProgress
             bool fInstructorOnBoard = false;
             decimal dutiesOfPICTime = 0.0M;
 
-            cfr.ForEachEvent(pf =>
+            cfr.FlightProps.ForEachEvent(pf =>
             {
                 if (pf.PropertyType.IsSolo)
                     soloTime += pf.DecValue;

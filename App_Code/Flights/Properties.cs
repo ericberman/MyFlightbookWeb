@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
@@ -1456,5 +1457,141 @@ ORDER BY f.Date Desc";
         {
             return DisplayString;
         }
+    }
+
+    public class ReadOnlyPropertyCollection : IEnumerable<CustomFlightProperty>
+    {
+        #region Properties
+        protected Dictionary<int, CustomFlightProperty> m_dictProps;
+
+        public CustomFlightProperty[] AsArray()
+        {
+            return m_dictProps.Values.ToArray();
+        }
+        #endregion
+
+        #region Constructors
+        public ReadOnlyPropertyCollection()
+        {
+            m_dictProps = new Dictionary<int, CustomFlightProperty>();
+        }
+
+        /// <summary>
+        /// Creates a property collection initialized from the specified properties.  Null and default values are ignored, the last of any duplicate will survive.
+        /// </summary>
+        /// <param name="rgcfp"></param>
+        public ReadOnlyPropertyCollection(IEnumerable<CustomFlightProperty> rgcfp) : this()
+        {
+            foreach (CustomFlightProperty cfp in rgcfp)
+                if (cfp != null && !cfp.IsDefaultValue)
+                    m_dictProps[cfp.PropTypeID] = cfp;
+        }
+        #endregion
+
+        #region IEnumerable
+        public IEnumerator<CustomFlightProperty> GetEnumerator()
+        {
+            return m_dictProps.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return m_dictProps.Values.GetEnumerator();
+        }
+        #endregion
+
+        #region Helper Utilities
+        /// <summary>
+        /// Convenience to iterate over the events
+        /// </summary>
+        /// <param name="a"></param>
+        public void ForEachEvent(Action<CustomFlightProperty> a)
+        {
+            foreach (CustomFlightProperty cfp in m_dictProps.Values)
+                a(cfp);
+        }
+
+        /// <summary>
+        /// Find an event with the specified propertytype
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public CustomFlightProperty GetEventWithTypeID(CustomPropertyType.KnownProperties id)
+        {
+            CustomFlightProperty cfp;
+            return m_dictProps.TryGetValue((int)id, out cfp) ? cfp : null;
+        }
+
+        public CustomFlightProperty GetEventWithTypeIDOrNew(CustomPropertyType.KnownProperties id)
+        {
+            return GetEventWithTypeID(id) ?? new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int)id));
+        }
+
+        /// <summary>
+        /// Check if a given property exists for this flight
+        /// </summary>
+        /// <param name="id">The property type ID</param>
+        /// <returns>True if it exists.</returns>
+        public bool PropertyExistsWithID(CustomPropertyType.KnownProperties id)
+        {
+            return m_dictProps.ContainsKey((int)id);
+        }
+
+        /// <summary>
+        /// Returns the first (if any) event that matches the specified predicate
+        /// </summary>
+        /// <param name="p">The predicate</param>
+        /// <returns>First matching hit, or null</returns>
+        public CustomFlightProperty FindEvent(Predicate<CustomFlightProperty> p)
+        {
+            foreach (CustomFlightProperty cfp in m_dictProps.Values)
+                if (p(cfp))
+                    return cfp;
+            return null;
+        }
+
+        /// <summary>
+        /// Get the time for a given property (e.g., solo time), 0 if not present
+        /// </summary>
+        /// <param name="id">The known property</param>
+        /// <returns>The time, 0 if not present</returns>
+        public decimal TimeForProperty(CustomPropertyType.KnownProperties id)
+        {
+            CustomFlightProperty cfp = GetEventWithTypeID(id);
+            return cfp == null ? 0.0M : cfp.DecValue;
+        }
+
+        /// <summary>
+        /// Returns the sum of decimal values for properties matching the specified predicate
+        /// </summary>
+        /// <param name="p">The predicate</param>
+        /// <returns>The sum of decvalues.</returns>
+        public decimal TotalTimeForPredicate(Predicate<CustomFlightProperty> p)
+        {
+            if (p == null)
+                throw new ArgumentNullException("p");
+            decimal d = 0.0M;
+            foreach (CustomFlightProperty cfp in m_dictProps.Values)
+                if (p(cfp))
+                    d += cfp.DecValue;
+            return d;
+        }
+
+        /// <summary>
+        /// Returns the sum of integer values for properties matching the specified predicate
+        /// </summary>
+        /// <param name="p">The predicate</param>
+        /// <returns>The sum of decvalues.</returns>
+        public int TotalCountForPredicate(Predicate<CustomFlightProperty> p)
+        {
+            if (p == null)
+                throw new ArgumentNullException("p");
+            int i = 0;
+            foreach (CustomFlightProperty cfp in m_dictProps.Values)
+                if (p(cfp))
+                    i += cfp.IntValue;
+            return i;
+        }
+        #endregion
     }
 }

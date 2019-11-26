@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -23,7 +23,7 @@ namespace MyFlightbook.FlightCurrency
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            if (cfr.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDProp135293Knowledge))
+            if (cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDProp135293Knowledge))
                 AddRecentFlightEvents(cfr.dtFlight, 1);
         }
     }
@@ -38,7 +38,7 @@ namespace MyFlightbook.FlightCurrency
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
-            cfr.ForEachEvent((pfe) =>
+            cfr.FlightProps.ForEachEvent((pfe) =>
             {
                 if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135293Competency || pfe.PropTypeID == (int) CustomPropertyType.KnownProperties.IDProp135297IPC)
                     AddRecentFlightEvents(cfr.dtFlight, 1);
@@ -56,7 +56,7 @@ namespace MyFlightbook.FlightCurrency
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
-            cfr.ForEachEvent((pfe) =>
+            cfr.FlightProps.ForEachEvent((pfe) =>
             {
                 if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135297IPC)
                     AddRecentFlightEvents(cfr.dtFlight, 1);
@@ -77,7 +77,7 @@ namespace MyFlightbook.FlightCurrency
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
 
-            if (cfr.fIsRealAircraft && cfr.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDProp135299FlightCheck))
+            if (cfr.fIsRealAircraft && cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDProp135299FlightCheck))
                 AddRecentFlightEvents(cfr.dtFlight, 1);
         }
     }

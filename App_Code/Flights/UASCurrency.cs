@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2016-2017 MyFlightbook LLC
+ * Copyright (c) 2016-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -40,7 +40,7 @@ namespace MyFlightbook.FlightCurrency
 
         public void ExamineFlight(ExaminerFlightRow cfr)
         {
-            cfr.ForEachEvent((cfp) =>
+            cfr.FlightProps.ForEachEvent((cfp) =>
             {
                 if (cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropUASKnowledgeTest10773)
                     KnowledgeTest.AddRecentFlightEvents(cfr.dtFlight, 1);

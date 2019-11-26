@@ -294,92 +294,12 @@ namespace MyFlightbook.FlightCurrency
         public static DateTime Aug2018Cutover { get { return s_Aug2018Cutover; } }
         public static DateTime Nov2018Cutover { get { return s_Nov2018Cutover; } }
 
-        private readonly List<CustomFlightProperty> m_lstPfe;    // backing list for FlightEvents
+        private readonly ReadOnlyPropertyCollection m_flightprops;    // backing list for FlightEvents
 
         /// <summary>
         /// Set of flightproperties (could include profile events, though these are rare now) for the flight.  Will not be null.
         /// </summary>
-        public IEnumerable<CustomFlightProperty> FlightEvents { get { return m_lstPfe; } }
-        #endregion
-
-        #region Helper utilities for FlightEvents
-        /// <summary>
-        /// Convenience to iterate over the events
-        /// </summary>
-        /// <param name="a"></param>
-        public void ForEachEvent(Action<CustomFlightProperty> a)
-        {
-            m_lstPfe.ForEach(a);
-        }
-
-        /// <summary>
-        /// Find an event with the specified propertytype
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public CustomFlightProperty GetEventWithTypeID(CustomPropertyType.KnownProperties id)
-        {
-            return m_lstPfe.Find(pfe => pfe.PropTypeID == (int)id);
-        }
-
-        /// <summary>
-        /// Check if a given property exists for this flight
-        /// </summary>
-        /// <param name="id">The property type ID</param>
-        /// <returns>True if it exists.</returns>
-        public bool PropertyExistsWithID(CustomPropertyType.KnownProperties id)
-        {
-            return m_lstPfe.Exists(pfe => pfe.PropTypeID == (int)id);
-        }
-
-        /// <summary>
-        /// Returns the first (if any) event that matches the specified predicate
-        /// </summary>
-        /// <param name="p">The predicate</param>
-        /// <returns>First matching hit, or null</returns>
-        public CustomFlightProperty FindEvent(Predicate<CustomFlightProperty> p)
-        {
-            return m_lstPfe.Find(p);
-        }
-
-        /// <summary>
-        /// Get the time for a given property (e.g., solo time), 0 if not present
-        /// </summary>
-        /// <param name="id">The known property</param>
-        /// <returns>The time, 0 if not present</returns>
-        public decimal TimeForProperty(CustomPropertyType.KnownProperties id)
-        {
-            CustomFlightProperty cfp = GetEventWithTypeID(id);
-            return cfp == null ? 0.0M : cfp.DecValue;
-        }
-
-        /// <summary>
-        /// Returns the sum of decimal values for properties matching the specified predicate
-        /// </summary>
-        /// <param name="p">The predicate</param>
-        /// <returns>The sum of decvalues.</returns>
-        public decimal TotalTimeForPredicate(Predicate<CustomFlightProperty> p)
-        {
-            if (p == null)
-                throw new ArgumentNullException("p");
-            decimal d = 0.0M;
-            m_lstPfe.ForEach((cfp) => { if (p(cfp)) d += cfp.DecValue; });
-            return d;
-        }
-
-        /// <summary>
-        /// Returns the sum of integer values for properties matching the specified predicate
-        /// </summary>
-        /// <param name="p">The predicate</param>
-        /// <returns>The sum of decvalues.</returns>
-        public int TotalCountForPredicate(Predicate<CustomFlightProperty> p)
-        {
-            if (p == null)
-                throw new ArgumentNullException("p");
-            int i = 0;
-            m_lstPfe.ForEach((cfp) => { if (p(cfp)) i += cfp.IntValue; });
-            return i;
-        }
+        public ReadOnlyPropertyCollection FlightProps { get { return m_flightprops; } }
         #endregion
 
         public ExaminerFlightRow(MySqlDataReader dr)
@@ -440,7 +360,7 @@ namespace MyFlightbook.FlightCurrency
             dtFlightStart = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtFlightStart", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
             dtFlightEnd = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtFlightEnd", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
 
-            m_lstPfe = new List<CustomFlightProperty>(CustomFlightProperty.PropertiesFromJSONTuples((string)util.ReadNullableField(dr, "CustomPropsJSON", string.Empty), flightID));
+            m_flightprops = new ReadOnlyPropertyCollection(CustomFlightProperty.PropertiesFromJSONTuples((string)util.ReadNullableField(dr, "CustomPropsJSON", string.Empty), flightID));
         }
     }
 
@@ -672,7 +592,7 @@ namespace MyFlightbook.FlightCurrency
                     totalTime += cfr.Total;
                     picTime += cfr.PIC;
 
-                    if (cfr.FindEvent(cfp => cfp.PropertyType.IsIPC) != null)
+                    if (cfr.FlightProps.FindEvent(cfp => cfp.PropertyType.IsIPC) != null)
                         fHasIR = true;
 
                     // do any custom currencies first because we may short-circuit everything else if this is unmanned
@@ -826,7 +746,7 @@ namespace MyFlightbook.FlightCurrency
 
                         decimal nvTime = 0.0M;
                         bool fIsNVProficiencyCheck = false;
-                        cfr.ForEachEvent((pfe) =>
+                        cfr.FlightProps.ForEachEvent((pfe) =>
                         {
                             if (pfe.PropertyType.IsNightVisionAnything && pfe.PropertyType.Type == CFPPropertyType.cfpDecimal)
                                 nvTime += pfe.DecValue;
@@ -886,7 +806,7 @@ namespace MyFlightbook.FlightCurrency
                     if (!String.IsNullOrEmpty(cfr.szType))
                     {
                         bool fHasPICCheck = false;
-                        cfr.ForEachEvent(pe => { if (pe.PropertyType.IsPICProficiencyCheck6158) fHasPICCheck = true; });
+                        cfr.FlightProps.ForEachEvent(pe => { if (pe.PropertyType.IsPICProficiencyCheck6158) fHasPICCheck = true; });
                         if (fHasPICCheck)
                         {
                             if (!dictPICProficiencyChecks.ContainsKey(cfr.szType))
@@ -1478,8 +1398,8 @@ namespace MyFlightbook.FlightCurrency
             base.ExamineFlight(cfr);
 
             // we need to subtract out monitored landings, or ignore all if you were monitoring for the whole flight
-            int cMonitoredLandings = cfr.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredDayLandings || p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
-            if (!cfr.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
+            int cMonitoredLandings = cfr.FlightProps.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredDayLandings || p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
+            if (!cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
                 AddRecentFlightEvents(cfr.dtFlight, Math.Max(cfr.cLandingsThisFlight - cMonitoredLandings, 0));
         }
     }
@@ -1504,8 +1424,8 @@ namespace MyFlightbook.FlightCurrency
             base.ExamineFlight(cfr);
 
             // we need to subtract out monitored landings, or ignore all if you were monitoring for the whole flight
-            int cMonitoredLandings = cfr.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredDayLandings || p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
-            if (!cfr.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
+            int cMonitoredLandings = cfr.FlightProps.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredDayLandings || p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
+            if (!cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
                 AddRecentFlightEvents(cfr.dtFlight, Math.Max(cfr.cFullStopLandings + cfr.cFullStopNightLandings - cMonitoredLandings, 0));
         }
     }
@@ -1627,10 +1547,10 @@ namespace MyFlightbook.FlightCurrency
                 if (cfr == null)
                     throw new ArgumentNullException("cfr");
 
-                CustomFlightProperty pfeFlightDutyStart = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart);
-                CustomFlightProperty pfeFlightDutyEnd = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd);
-                CustomFlightProperty pfeAdditionalDutyStart = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyStart);
-                CustomFlightProperty pfeAdditionalDutyEnd = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyEnd);
+                CustomFlightProperty pfeFlightDutyStart = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart);
+                CustomFlightProperty pfeFlightDutyEnd = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd);
+                CustomFlightProperty pfeAdditionalDutyStart = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyStart);
+                CustomFlightProperty pfeAdditionalDutyEnd = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyEnd);
 
                 if (pfeFlightDutyStart != null)
                     FPDutyStart = pfeFlightDutyStart;
@@ -2022,7 +1942,7 @@ namespace MyFlightbook.FlightCurrency
 
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            if (cfr.CFI > 0 || cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven) > 0)
+            if (cfr.CFI > 0 || cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven) > 0)
                 LastInstruction = cfr.dtFlight;
         }
 
@@ -2317,11 +2237,11 @@ namespace MyFlightbook.FlightCurrency
             if (nco == NightCurrencyOptions.FAR6157eAirplane)
                 m_fc6157TimeInType.AddRecentFlightEvents(cfr.dtFlight, cfr.Total);
 
-            if (!cfr.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
+            if (!cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
             {
                 // we need to subtract out monitored landings, or ignore all if you were monitoring for the whole flight
-                int cMonitoredLandings = cfr.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
-                int cMonitoredTakeoffs = cfr.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightTakeoffs);
+                int cMonitoredLandings = cfr.FlightProps.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
+                int cMonitoredTakeoffs = cfr.FlightProps.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightTakeoffs);
 
                 // 61.57(e)(4)(i/ii)(B) - passenger currency in this type
                 m_fc6157Passenger.ExamineFlight(cfr);
@@ -2331,7 +2251,7 @@ namespace MyFlightbook.FlightCurrency
                     AddNighttimeLandingEvent(cfr.dtFlight, Math.Max(cfr.cFullStopNightLandings - cMonitoredLandings, 0), nco);
 
                 // Night-time take-offs are also technically required for night currency
-                cfr.ForEachEvent((pfe) =>
+                cfr.FlightProps.ForEachEvent((pfe) =>
                 {
                     if (pfe.PropertyType.IsNightTakeOff)
                         AddNighttimeTakeOffEvent(cfr.dtFlight, Math.Max(pfe.IntValue - cMonitoredTakeoffs, 0), nco);
@@ -2669,7 +2589,7 @@ namespace MyFlightbook.FlightCurrency
             if (fSeenCheckride)
                 return;
 
-            cfr.ForEachEvent((pfe) =>
+            cfr.FlightProps.ForEachEvent((pfe) =>
             {
                 // add any IPC or IPC equivalents
                 if (pfe.PropertyType.IsIPC)
@@ -2691,7 +2611,7 @@ namespace MyFlightbook.FlightCurrency
             else if (cfr.fIsATD)
             {
                 // Add any IFR-relevant flight events for 61.57(c)(3)
-                cfr.ForEachEvent((pfe) =>
+                cfr.FlightProps.ForEachEvent((pfe) =>
                 {
                     // Add unusal attitudes performed in an ATD
                     if (pfe.PropertyType.IsUnusualAttitudeAscending)
@@ -2796,10 +2716,10 @@ namespace MyFlightbook.FlightCurrency
 
         public void ExamineFlight(ExaminerFlightRow cfr)
         {
-            if (cfr.FlightEvents == null)
+            if (cfr.FlightProps == null)
                 return;
 
-            cfr.ForEachEvent((pe) =>
+            cfr.FlightProps.ForEachEvent((pe) =>
             {
                 if (pe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNVGoggleOperations)
                 {
@@ -3166,7 +3086,7 @@ namespace MyFlightbook.FlightCurrency
                         AddIFRTimePassengers(cfr.dtFlight, cfr.IMC + cfr.IMCSim);
                 }
 
-                cfr.ForEachEvent((pfe) =>
+                cfr.FlightProps.ForEachEvent((pfe) =>
                 {
                     // 61.57(c)(6)(i)(B) => (c)(3)(i)(B)
                     if (pfe.PropertyType.IsGliderInstrumentManeuvers)

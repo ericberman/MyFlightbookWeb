@@ -760,7 +760,7 @@ namespace MyFlightbook.Achievements
                 throw new ArgumentNullException("cfr");
             if (Level == AchievementLevel.None)
             {
-                if (cfr.FindEvent(pf => (pf.PropertyType.IsSolo && pf.DecValue > 0)) != null)
+                if (cfr.FlightProps.FindEvent(pf => (pf.PropertyType.IsSolo && pf.DecValue > 0)) != null)
                 {
                     Level = AchievementLevel.Achieved;
                     DateEarned = cfr.dtFlight;
@@ -841,7 +841,7 @@ namespace MyFlightbook.Achievements
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
-            if (!fSeen1stXC && cfr.XC > 0 && cfr.FindEvent(pf => (pf.PropertyType.IsSolo && pf.DecValue > 0)) != null)
+            if (!fSeen1stXC && cfr.XC > 0 && cfr.FlightProps.FindEvent(pf => (pf.PropertyType.IsSolo && pf.DecValue > 0)) != null)
             {
                 fSeen1stXC = true;
                 Level = AchievementLevel.Achieved;
@@ -1183,7 +1183,7 @@ namespace MyFlightbook.Achievements
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
 
-            AddToCount(cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropNVFLIRTime) + cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropNVGoggleTime), cfr);
+            AddToCount(cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropNVFLIRTime) + cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropNVGoggleTime), cfr);
         }
     }
 

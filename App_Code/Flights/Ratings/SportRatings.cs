@@ -92,7 +92,7 @@ namespace MyFlightbook.MilestoneProgress
 
             miMinInstruction.AddEvent(cfr.Dual);
             decimal soloTime = 0.0M;
-            cfr.ForEachEvent(pf => { if (pf.PropertyType.IsSolo) { soloTime += pf.DecValue; } });
+            cfr.FlightProps.ForEachEvent(pf => { if (pf.PropertyType.IsSolo) { soloTime += pf.DecValue; } });
             miMinSolo.AddEvent(soloTime);
 
             int cFSLandings = cfr.cFullStopLandings + cfr.cFullStopNightLandings;
@@ -209,7 +209,7 @@ namespace MyFlightbook.MilestoneProgress
             }
 
             decimal soloTime = 0.0M;
-            cfr.ForEachEvent(pf => { if (pf.PropertyType.IsSolo) { soloTime += pf.DecValue; } });
+            cfr.FlightProps.ForEachEvent(pf => { if (pf.PropertyType.IsSolo) { soloTime += pf.DecValue; } });
             if (soloTime > 0)
             {
                 miMinSolo.AddEvent(soloTime);

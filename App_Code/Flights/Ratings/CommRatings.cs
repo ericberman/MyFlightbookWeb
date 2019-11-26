@@ -279,7 +279,7 @@ namespace MyFlightbook.MilestoneProgress
             int nightTakeoffs = 0;
             if (fCatClassMatches)
             {
-                cfr.ForEachEvent(pf =>
+                cfr.FlightProps.ForEachEvent(pf =>
                 {
                     if (pf.PropertyType.IsSolo)
                         soloTime += pf.DecValue;
@@ -613,7 +613,7 @@ namespace MyFlightbook.MilestoneProgress
                 return;
 
             miNightTrainingTime.AddEvent(Math.Min(cfr.Dual, cfr.Night));
-            miNightTrainingTakeoffs.AddEvent(cfr.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff));
+            miNightTrainingTakeoffs.AddEvent(cfr.FlightProps.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff));
             miNightTrainingLandings.AddEvent(cfr.cFullStopNightLandings);
         }
 
@@ -707,7 +707,7 @@ namespace MyFlightbook.MilestoneProgress
                     miTestPrep.AddEvent(cLandings);
             }
 
-            decimal soloTime = cfr.TotalTimeForPredicate(cfp => cfp.PropertyType.IsSolo);
+            decimal soloTime = cfr.FlightProps.TotalTimeForPredicate(cfp => cfp.PropertyType.IsSolo);
             if (soloTime > 0)
             {
                 miSoloFlightTime.AddEvent(soloTime);
@@ -840,7 +840,7 @@ namespace MyFlightbook.MilestoneProgress
             decimal maxAscent = 0.0M;
 
             // see if DPIC
-            cfr.ForEachEvent((pe) =>
+            cfr.FlightProps.ForEachEvent((pe) =>
             {
                 if (pe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutiesOfPIC)
                     dpic += pe.DecValue;
@@ -1116,7 +1116,7 @@ namespace MyFlightbook.MilestoneProgress
             bool fInstructorOnBoard = false;
             decimal dutiesOfPICTime = 0.0M;
             int nightTakeoffs = 0;
-            cfr.ForEachEvent(pf =>
+            cfr.FlightProps.ForEachEvent(pf =>
             {
                 if (pf.PropertyType.IsSolo)
                     soloTime += pf.DecValue;

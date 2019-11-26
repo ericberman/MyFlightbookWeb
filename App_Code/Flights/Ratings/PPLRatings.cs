@@ -268,7 +268,7 @@ namespace MyFlightbook.MilestoneProgress
                 return;
 
             decimal soloTime = 0.0M;
-            cfr.ForEachEvent(pf => { if (pf.PropertyType.IsSolo) { soloTime += pf.DecValue; } });
+            cfr.FlightProps.ForEachEvent(pf => { if (pf.PropertyType.IsSolo) { soloTime += pf.DecValue; } });
 
             bool fIsCorrectCatClass = RatingFromCatClass(cfr.idCatClassOverride) == this.RatingSought;
 
@@ -307,7 +307,7 @@ namespace MyFlightbook.MilestoneProgress
                     if (!miMinXCNight.IsSatisfied && al.DistanceForRoute() >= MinNightXCDistance)
                         miMinXCNight.MatchFlightEvent(cfr);
 
-                    cfr.ForEachEvent(pf => { if (pf.PropertyType.IsNightTakeOff) { miMinNightTO.AddEvent(pf.IntValue); } });
+                    cfr.FlightProps.ForEachEvent(pf => { if (pf.PropertyType.IsNightTakeOff) { miMinNightTO.AddEvent(pf.IntValue); } });
                     miMinNightFSLandings.AddEvent(cfr.cFullStopNightLandings);
                 }
 
@@ -335,7 +335,7 @@ namespace MyFlightbook.MilestoneProgress
 
                 int cToweredTakeoffs = 0;
                 int cToweredLandings = 0;
-                cfr.ForEachEvent(pf =>
+                cfr.FlightProps.ForEachEvent(pf =>
                 {
                     if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropLandingTowered || pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropLandingToweredNight)
                         cToweredLandings += pf.IntValue;
@@ -580,7 +580,7 @@ namespace MyFlightbook.MilestoneProgress
                     miMinTestPrep.AddEvent(cFlights);
 
                 decimal soloTime = 0.0M;
-                cfr.ForEachEvent(pf => { if (pf.PropertyType.IsSolo) { soloTime += pf.DecValue; } });
+                cfr.FlightProps.ForEachEvent(pf => { if (pf.PropertyType.IsSolo) { soloTime += pf.DecValue; } });
 
                 if (soloTime > 0)
                 {
@@ -671,7 +671,7 @@ namespace MyFlightbook.MilestoneProgress
                     if (!miMinXCNight.IsSatisfied && al.DistanceForRoute() >= 25.0)
                         miMinNightXC.MatchFlightEvent(cfr);
 
-                    cfr.ForEachEvent(pf => { if (pf.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutiesOfPIC) { miMinPIC.AddEvent(Math.Max(cfr.PIC, pf.DecValue)); } });
+                    cfr.FlightProps.ForEachEvent(pf => { if (pf.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutiesOfPIC) { miMinPIC.AddEvent(Math.Max(cfr.PIC, pf.DecValue)); } });
                 }
             }
         }
@@ -739,9 +739,9 @@ namespace MyFlightbook.MilestoneProgress
                     if (DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0)
                         miTestPrep.AddEvent(1);
                 }
-                if (cfr.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDutiesOfPIC))
+                if (cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDutiesOfPIC))
                     miDPIC.AddEvent(1);
-                CustomFlightProperty pe1 = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropMaximumAltitude);
+                CustomFlightProperty pe1 = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropMaximumAltitude);
                 if (pe1 != null && pe1.IntValue >= AscentAltitude)
                     miAscent.AddEvent(1);
             }
@@ -787,10 +787,10 @@ namespace MyFlightbook.MilestoneProgress
                 if (cfr.Dual >= 1.0M && cfr.Total >= 1.0M && DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0)
                     miTestPrep.AddEvent(1);
 
-                CustomFlightProperty pe = cfr.FindEvent(p => p.PropertyType.IsSolo);
+                CustomFlightProperty pe = cfr.FlightProps.FindEvent(p => p.PropertyType.IsSolo);
                 if (pe != null)
                     miSolo.AddEvent(1);
-                pe = cfr.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropMaximumAltitude);
+                pe = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropMaximumAltitude);
                 if (pe != null && pe.IntValue >= AscentAltitude)
                     miAscent.AddEvent(1);
             }
@@ -923,7 +923,7 @@ namespace MyFlightbook.MilestoneProgress
             int nightTakeoffs = 0;
             if (fCatClassMatches)
             {
-                cfr.ForEachEvent(pf =>
+                cfr.FlightProps.ForEachEvent(pf =>
                 {
                     if (pf.PropertyType.IsSolo)
                         soloTime += pf.DecValue;
@@ -1153,7 +1153,7 @@ namespace MyFlightbook.MilestoneProgress
 
             // Get solo time
             decimal soloTime = 0.0M;
-            cfr.ForEachEvent(pf =>
+            cfr.FlightProps.ForEachEvent(pf =>
             {
                 if (pf.PropertyType.IsSolo)
                     soloTime += pf.DecValue;
@@ -1282,12 +1282,12 @@ namespace MyFlightbook.MilestoneProgress
             miNightDual.AddEvent(Math.Min(cfr.Dual, cfr.Night));
             miNightXC.AddEvent(Math.Min(cfr.Dual, Math.Min(cfr.Night, cfr.XC)));
 
-            decimal soloTime = Math.Min(cfr.Night, cfr.TotalTimeForPredicate(p => p.PropertyType.IsSolo));
+            decimal soloTime = Math.Min(cfr.Night, cfr.FlightProps.TotalTimeForPredicate(p => p.PropertyType.IsSolo));
             if (soloTime > 0)
             {
                 miNightSolo.AddEvent(soloTime);
                 int nightTakeoffs = 0;
-                cfr.ForEachEvent((cfp) => { if (cfp.PropertyType.IsNightTakeOff) nightTakeoffs += cfp.IntValue; });
+                cfr.FlightProps.ForEachEvent((cfp) => { if (cfp.PropertyType.IsNightTakeOff) nightTakeoffs += cfp.IntValue; });
                 miNightSoloTakeoffs.AddEvent(nightTakeoffs);
                 miNightSoloLandings.AddEvent(cfr.cFullStopNightLandings);
             }
@@ -1326,7 +1326,7 @@ namespace MyFlightbook.MilestoneProgress
 
             miTimeInClass.AddEvent(cfr.Total);
             miDualInClass.AddEvent(cfr.Dual);
-            decimal soloTime = cfr.TotalTimeForPredicate(p => p.PropertyType.IsSolo);
+            decimal soloTime = cfr.FlightProps.TotalTimeForPredicate(p => p.PropertyType.IsSolo);
             if (soloTime > 0)
                 miSoloLandings.AddEvent(cfr.cLandingsThisFlight);
         }
@@ -1451,7 +1451,7 @@ namespace MyFlightbook.MilestoneProgress
 
             // Get solo time
             decimal soloTime = 0.0M;
-            cfr.ForEachEvent(pf =>
+            cfr.FlightProps.ForEachEvent(pf =>
             {
                 if (pf.PropertyType.IsSolo)
                     soloTime += pf.DecValue;
@@ -1542,7 +1542,7 @@ namespace MyFlightbook.MilestoneProgress
                 return;
 
             int cNightTakeoffs = 0;
-            cfr.ForEachEvent(cfp => { if (cfp.PropertyType.IsNightTakeOff) cNightTakeoffs += cfp.IntValue; });
+            cfr.FlightProps.ForEachEvent(cfp => { if (cfp.PropertyType.IsNightTakeOff) cNightTakeoffs += cfp.IntValue; });
 
             miNightTakeoffs.AddEvent(cNightTakeoffs);
             miNightLandings.AddEvent(cfr.cFullStopNightLandings);

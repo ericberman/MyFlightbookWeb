@@ -126,7 +126,7 @@ namespace MyFlightbook.MilestoneProgress
             if (CanCreditSICAndFlightEngineer)
             {
                 decimal flightEngineerTime = 0.0M;
-                cfr.ForEachEvent((pe) => { if (pe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropFlightEngineerTime) flightEngineerTime += pe.DecValue; });
+                cfr.FlightProps.ForEachEvent((pe) => { if (pe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropFlightEngineerTime) flightEngineerTime += pe.DecValue; });
 
                 if (flightEngineerTime > 0)
                     miTotal.AddTrainingEvent(flightEngineerTime / 3.0M, ATPMaxFlightEngineer, true);
@@ -139,7 +139,7 @@ namespace MyFlightbook.MilestoneProgress
                 miMinPIC.AddEvent(cfr.PIC);
                 miMinPICXC.AddEvent(Math.Min(cfr.PIC, cfr.XC));
                 miMinPICNight.AddEvent(Math.Min(cfr.PIC, cfr.Night));
-                cfr.ForEachEvent((pe) => { if (pe.PropertyType.IsNightTakeOff) miNightTO.AddEvent(pe.IntValue); });
+                cfr.FlightProps.ForEachEvent((pe) => { if (pe.PropertyType.IsNightTakeOff) miNightTO.AddEvent(pe.IntValue); });
                 miNightLanding.AddEvent(cfr.cFullStopNightLandings);
             }
         }
@@ -563,7 +563,7 @@ namespace MyFlightbook.MilestoneProgress
 
             miTotal.AddEvent(cfr.Total);
 
-            decimal CoPilot = cfr.SIC + cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryCoPilottime) + cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropCoPilotTime);
+            decimal CoPilot = cfr.SIC + cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropMilitaryCoPilottime) + cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropCoPilotTime);
 
             miNight.AddEvent(Math.Min(CoPilot + cfr.PIC, cfr.Night));
 
@@ -572,7 +572,7 @@ namespace MyFlightbook.MilestoneProgress
             // E.g., a 1.5 hour flight has 1.5 hours of PIC and 1.5 hours of PICUS.
             // To be conservative, we'll subtract off any PICUS from PIC; the remainder is PIC time we can use unlimited.
             // Thus we can compute total PIC time for a flight as PIC+PICUS - which will possibly undercount but never overcount.
-            decimal PICUS = cfr.TimeForProperty(CustomPropertyType.KnownProperties.IDPropPICUS);
+            decimal PICUS = cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropPICUS);
             decimal netPIC = Math.Max(cfr.PIC - PICUS, 0.0M);
 
             miXCPICAdditional.AddEvent(Math.Min(cfr.PIC, cfr.XC));

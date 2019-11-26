@@ -103,7 +103,7 @@ namespace MyFlightbook.MilestoneProgress
 
                 // 61.99(b)
                 decimal soloTime = 0.0M;
-                cfr.ForEachEvent(pf => { if (pf.PropertyType.IsSolo) { soloTime += pf.DecValue; } });
+                cfr.FlightProps.ForEachEvent(pf => { if (pf.PropertyType.IsSolo) { soloTime += pf.DecValue; } });
                 miMinSolo.AddEvent(soloTime);
             }
         }
