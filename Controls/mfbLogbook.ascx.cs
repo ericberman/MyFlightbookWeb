@@ -247,7 +247,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
                     dictParams["so"] = LastSortDir.ToString();
             }
             if (gvFlightLogs.PageIndex != 0)
-                dictParams["pg"] = gvFlightLogs.PageIndex.ToString();
+                dictParams["pg"] = gvFlightLogs.PageIndex.ToString(CultureInfo.InvariantCulture);
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
