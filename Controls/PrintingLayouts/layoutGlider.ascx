@@ -56,7 +56,7 @@
                     <td><%# Eval("SelfLaunches").FormatInt() %></td>
 
                     <td><%# Eval("Landings") %></td>
-                    <td><%# Eval("GroundInstructionTotal").FormatDecimal(CurrentUser.UsesHHMM) %></td>
+                    <td><%# Eval("GroundInstruction").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("Dual").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("SoloTime").FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# Eval("PIC").FormatDecimal(CurrentUser.UsesHHMM) %></td>
