@@ -1,3 +1,0 @@
-﻿ALTER TABLE `logbook`.`aircraftinstancetypes` 
-CHANGE COLUMN `Description` `Description` VARCHAR(90) NOT NULL DEFAULT '' COMMENT 'Human-readable name' ;
-UPDATE `logbook`.`aircraftinstancetypes` SET `Description`='Simulator/FFS - Can log landings & approaches ' WHERE `ID`='4';
