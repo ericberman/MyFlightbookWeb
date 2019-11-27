@@ -441,8 +441,17 @@ namespace MyFlightbook
                 Nighttime, SimulatedIFR, IMC, GroundSim,
                 Dual, CFI, SIC, PIC, TotalFlightTime, sbPropHash.ToString(), CatClassOverride, Comment);
 
-            string szSig = (new UserEncryptor(User)).Encrypt(szHash);
-            return szSig.Substring(0, Math.Min(2048, szSig.Length));
+            UserEncryptor ue = new UserEncryptor(User);
+            string szSig = ue.Encrypt(szHash);
+            // it won't decrypt if we go too long, so trim from the end (to remove long comments, if needed and recompute)
+            // We'll go 20 chars at a time.
+            while (szSig.Length > 2048 && szHash.Length > 20)
+            {
+                szHash = szHash.LimitTo(szHash.Length - 20);
+                szSig = ue.Encrypt(szHash);
+            }
+
+            return szSig;
         }
 
         public static LogbookEntry LogbookEntryFromHash(string szHash)
@@ -495,7 +504,7 @@ namespace MyFlightbook
                             GroupCollection gcProp = mProp[0].Groups;
                             if (gcProp.Count == 3)
                             {
-                                CustomPropertyType cpt = new CustomPropertyType(Convert.ToInt32(gcProp["PropID"].Value, CultureInfo.InvariantCulture));
+                                CustomPropertyType cpt = CustomPropertyType.GetCustomPropertyType(Convert.ToInt32(gcProp["PropID"].Value, CultureInfo.InvariantCulture));
                                 CustomFlightProperty cfp = new CustomFlightProperty(cpt) { FlightID = le.FlightID };
                                 cfp.InitFromString(gcProp["Value"].Value);
                                 lst.Add(cfp);

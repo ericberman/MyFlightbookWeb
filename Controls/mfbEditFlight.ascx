@@ -369,11 +369,11 @@
                 <td>Sanity check:</td>
                 <td><asp:Label ID="lblSigSanityCheck" runat="server" ></asp:Label></td>
             </tr>
-            <tr>
+            <tr style="vertical-align:top; background-color: #E8E8E8">
                 <td>Saved Hash:</td>
                 <td><asp:Label ID="lblSigSavedHash" runat="server" ></asp:Label></td>
             </tr>
-            <tr>
+            <tr style="vertical-align:top;">
                 <td>Current Hash:</td>
                 <td><asp:Label ID="lblSigCurrentHash" runat="server" ></asp:Label></td>
             </tr>
