@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 
 /******************************************************
@@ -90,7 +89,7 @@ namespace MyFlightbook.ImportFlights
             FlightNumber = AF_DEP = AF_ARR = AC_MODEL = AC_REG = PILOT1_ID = PILOT1_NAME = PILOT1_PHONE = PILOT1_EMAIL = PILOT2_ID = PILOT2_NAME = PILOT2_PHONE = PILOT2_EMAIL = PILOT3_ID = PILOT3_NAME = PILOT3_PHONE = PILOT3_EMAIL = PILOT4_ID = PILOT4_NAME = PILOT4_PHONE = PILOT4_EMAIL = LIFT = INSTRUCTION = REMARKS = APP_1 = APP_2 = APP_3 = DEICE = FUEL = FUELUSED = DELAY = FLIGHTLOG = TIME_AIR = RentCost = PilotPayCost = PerDiem = IS_PREVEXP = string.Empty;
         }
 
-        public MccPilot(DataRow dr, IEnumerable<CustomPropertyType> rgcpt = null) : base(dr, rgcpt) { }
+        public MccPilot(DataRow dr) : base(dr) { }
 
         private string FormattedPilotInfo(string name, string phone, string email, string ID)
         {
@@ -152,23 +151,23 @@ namespace MyFlightbook.ImportFlights
                 FlightEnd = DateOrEmpty(TIME_LDG)
             };
 
-            le.CustomProperties = PropertiesWithoutNullOrDefault(new CustomFlightProperty[]
+            le.CustomProperties.SetItems(new CustomFlightProperty[]
             {
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCrew1, FormattedPilotInfo(PILOT1_NAME, PILOT1_PHONE, PILOT1_EMAIL, PILOT1_ID)),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCrew2, FormattedPilotInfo(PILOT2_NAME, PILOT2_PHONE, PILOT2_EMAIL, PILOT2_ID)),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCrew3, FormattedPilotInfo(PILOT3_NAME, PILOT3_PHONE, PILOT3_EMAIL, PILOT3_ID)),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAdditionalCrew, FormattedPilotInfo(PILOT4_NAME, PILOT4_PHONE, PILOT4_EMAIL, PILOT4_ID)),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, TIME_DEP, true),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, TIME_ARR, true),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, FlightNumber),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPICUS, FromMinutes(TIME_PICUS)),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropReliefPilotTime, FromMinutes(TIME_RELIEF)),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIFRTime, FromMinutes(TIME_IFR)),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPilotFlyingTime, FromMinutes(PF ? TIME_TOTAL : 0)),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, TO_NIGHT),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerCount, PAX),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropApproachName, String.Join(" ", rgApproaches).Trim())
-            }).ToArray<CustomFlightProperty>();
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCrew1, FormattedPilotInfo(PILOT1_NAME, PILOT1_PHONE, PILOT1_EMAIL, PILOT1_ID)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCrew2, FormattedPilotInfo(PILOT2_NAME, PILOT2_PHONE, PILOT2_EMAIL, PILOT2_ID)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCrew3, FormattedPilotInfo(PILOT3_NAME, PILOT3_PHONE, PILOT3_EMAIL, PILOT3_ID)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAdditionalCrew, FormattedPilotInfo(PILOT4_NAME, PILOT4_PHONE, PILOT4_EMAIL, PILOT4_ID)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, TIME_DEP, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, TIME_ARR, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, FlightNumber),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPICUS, FromMinutes(TIME_PICUS)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropReliefPilotTime, FromMinutes(TIME_RELIEF)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIFRTime, FromMinutes(TIME_IFR)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPilotFlyingTime, FromMinutes(PF ? TIME_TOTAL : 0)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, TO_NIGHT),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerCount, PAX),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropApproachName, String.Join(" ", rgApproaches).Trim())
+            });
 
             return le;
         }
@@ -192,14 +191,13 @@ namespace MyFlightbook.ImportFlights
         {
             if (dt == null)
                 throw new ArgumentNullException("dt");
-            IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes();
             using (DataTable dtDst = new DataTable())
             {
                 dtDst.Locale = dt.Locale;
                 CSVImporter.InitializeDataTable(dtDst);
                 foreach (DataRow dr in dt.Rows)
                 {
-                    MccPilot mcc = new MccPilot(dr, rgcpt);
+                    MccPilot mcc = new MccPilot(dr);
                     CSVImporter.WriteEntryToDataTable(mcc.ToLogbookEntry(), dtDst);
                 }
                 return CsvWriter.WriteToString(dtDst, true, true);

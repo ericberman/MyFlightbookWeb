@@ -280,7 +280,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
             lstProps.Remove(cfpGIReceived);
             lstProps.Add(cfpGIGiven);
         }
-        le.CustomProperties = lstProps.ToArray();
+        le.CustomProperties.SetItems(lstProps);
 
         // Add this aircraft to the user's profile if needed
         UserAircraft ua = new UserAircraft(CFIProfile.UserName);

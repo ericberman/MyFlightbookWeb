@@ -1,13 +1,14 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2016 MyFlightbook LLC
+ * Copyright (c) 2010-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,20 +18,20 @@ using MyFlightbook;
 /// </summary>
 public partial class Controls_mfbFlightProperties : System.Web.UI.UserControl
 {
-    private ArrayList arCfp;
+    private List<CustomFlightProperty> arCfp;
     private CustomPropertyType[] rgCPT;
 
     const string szVSKeyCFP = "CustomFlightPropertyList";
 
-    private ArrayList FlightProperties
+    private List<CustomFlightProperty> FlightProperties
     {
         get { return arCfp; }
         set { ViewState[szVSKeyCFP] = arCfp = value; gvProperties.DataSource = arCfp; gvProperties.DataBind(); }
     }
 
-    public void SetFlightProperties(CustomFlightProperty[] rgCfp)
+    public void SetFlightProperties(IEnumerable<CustomFlightProperty> rgCfp)
     {
-        FlightProperties = new ArrayList(rgCfp);
+        FlightProperties = new List<CustomFlightProperty>(rgCfp);
     }
 
     /// <summary>
@@ -142,14 +143,14 @@ public partial class Controls_mfbFlightProperties : System.Web.UI.UserControl
             }
 
             if (FlightProperties == null)
-                FlightProperties = new ArrayList();
+                FlightProperties = new List<CustomFlightProperty>();
 
             InitNewProperty();
         }
         else
         {
             if (ViewState[szVSKeyCFP] != null)
-                FlightProperties = (ArrayList)ViewState[szVSKeyCFP];
+                FlightProperties = (List<CustomFlightProperty>)ViewState[szVSKeyCFP];
         }
 
         ShowCorrectEntryForPropertyType();

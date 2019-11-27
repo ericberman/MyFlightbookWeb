@@ -113,11 +113,11 @@ namespace MyFlightbook.ImportFlights
             CrewTracEmployee PIC = Captain;
             CrewTracEmployee SIC = FirstOfficer;
 
-            le.CustomProperties = PropertiesWithoutNullOrDefault(new CustomFlightProperty[] {
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, FlightNumber),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfPIC, PIC == null ? string.Empty : PIC.Name),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfSIC, SIC == null ? string.Empty : SIC.Name)
-                }).ToArray();
+            le.CustomProperties.SetItems(new CustomFlightProperty[] {
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, FlightNumber),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfPIC, PIC == null ? string.Empty : PIC.Name),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfSIC, SIC == null ? string.Empty : SIC.Name)
+                });
 
             return le;
         }

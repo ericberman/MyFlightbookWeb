@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Text;
@@ -10,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2018 MyFlightbook LLC
+ * Copyright (c) 2012-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -121,11 +122,13 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
                                 foreach (DataRow dr in dsProps.Tables[0].Rows)
                                 {
                                     htProps[dr.ItemArray[0]] = cColumns++;
-                                    BoundField bf = new BoundField();
-                                    bf.HeaderText = dr.ItemArray[0].ToString();
-                                    bf.HtmlEncode = false;
-                                    bf.DataField = "";
-                                    bf.DataFormatString = "";
+                                    BoundField bf = new BoundField()
+                                    {
+                                        HeaderText = dr.ItemArray[0].ToString(),
+                                        HtmlEncode = false,
+                                        DataField = "",
+                                        DataFormatString = ""
+                                    };
                                     gvFlightLogs.Columns.Add(bf);
                                 }
                             }
@@ -214,7 +217,7 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             int idFlight = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "idflight"), CultureInfo.InvariantCulture);
-            CustomFlightProperty[] rgProps = CustomFlightProperty.PropertiesFromJSONTuples((string) DataBinder.Eval(e.Row.DataItem, "CustomPropsJSON"), idFlight);
+            IEnumerable<CustomFlightProperty> rgProps = CustomFlightProperty.PropertiesFromJSONTuples((string) DataBinder.Eval(e.Row.DataItem, "CustomPropsJSON"), idFlight);
             string szProperties = CustomFlightProperty.PropListDisplay(rgProps, false, "; ");
 
             if (szProperties.Length > 0)

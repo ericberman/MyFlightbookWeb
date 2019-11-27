@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -26,12 +25,9 @@ namespace MyFlightbook.ImportFlights
         /// Create the entry from a datarow
         /// </summary>
         /// <param name="dr">A row in a data table</param>
-        /// <param name="lstProps">An optional list of known property types</param>
-        protected ExternalFormat(DataRow dr, IEnumerable<CustomPropertyType> lstProps = null) : this() {
+        protected ExternalFormat(DataRow dr) : this() {
             if (dr == null)
                 return;
-
-            PropTypes = lstProps;
 
             Type targetType = GetType();
             CultureInfo ci = dr.Table.Locale;
@@ -109,60 +105,6 @@ namespace MyFlightbook.ImportFlights
         public abstract LogbookEntry ToLogbookEntry();
 
         #region Utility functions
-        #region Property management
-        private IEnumerable<CustomPropertyType> m_proptypes = null;
-
-        /// <summary>
-        /// List of available property types (convenience - avoids multiple calls to get them.
-        /// </summary>
-        private IEnumerable<CustomPropertyType> PropTypes
-        {
-            get
-            {
-                if (m_proptypes == null)
-                    m_proptypes = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes());
-                return m_proptypes;
-            }
-            set { m_proptypes = value == null ? null : new List<CustomPropertyType>(value); }
-        }
-
-        protected CustomFlightProperty PropertyWithValue(CustomPropertyType.KnownProperties id, string value)
-        {
-            if (String.IsNullOrEmpty(value))
-                return null;
-
-            CustomFlightProperty cfp = new CustomFlightProperty(PropTypes.FirstOrDefault(cpt => cpt.PropTypeID == (int) id));
-            cfp.InitFromString(value);
-            return (cfp.IsDefaultValue) ? null : cfp;
-        }
-
-        protected CustomFlightProperty PropertyWithValue(CustomPropertyType.KnownProperties id, int value)
-        {
-            return (value == 0) ? null : PropertyWithValue(id, value.ToString(CultureInfo.CurrentCulture));
-        }
-
-        protected CustomFlightProperty PropertyWithValue(CustomPropertyType.KnownProperties id, decimal value)
-        {
-            return (value == 0) ? null : PropertyWithValue(id, value.ToString(CultureInfo.CurrentCulture));
-        }
-
-        protected CustomFlightProperty PropertyWithValue(CustomPropertyType.KnownProperties id, bool value)
-        {
-            return (value) ? PropertyWithValue(id, value.ToString(CultureInfo.CurrentCulture)) : null;
-        }
-
-        protected CustomFlightProperty PropertyWithValue(CustomPropertyType.KnownProperties id, DateTime value, bool fUTC)
-        {
-            return (value.HasValue()) ? PropertyWithValue(id, fUTC ? value.FormatDateZulu() : value.ToString(CultureInfo.CurrentCulture)) : null;
-        }
-
-        protected IEnumerable<CustomFlightProperty> PropertiesWithoutNullOrDefault(IEnumerable<CustomFlightProperty> src)
-        {
-            List<CustomFlightProperty> lstIn = new List<CustomFlightProperty>(src);
-            lstIn.RemoveAll(cfp => (cfp == null || cfp.IsDefaultValue));
-            return lstIn;
-        }
-        #endregion
 
         #region String merging
         /// <summary>

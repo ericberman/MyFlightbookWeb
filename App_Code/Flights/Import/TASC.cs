@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -56,12 +55,12 @@ namespace MyFlightbook.ImportFlights
             if (position.CompareCurrentCultureIgnoreCase("FO") == 0)
                 pf.SIC = pf.TotalFlightTime;
 
-            pf.CustomProperties = PropertiesWithoutNullOrDefault(new CustomFlightProperty[]
+            pf.CustomProperties.SetItems(new CustomFlightProperty[]
             {
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, flightNumber),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, blockOut, true),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, blockIn, true)
-            }).ToArray();
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, flightNumber),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, blockOut, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, blockIn, true)
+            });
 
             return pf;
         }

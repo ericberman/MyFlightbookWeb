@@ -424,8 +424,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             le.EngineEnd.HasValue() ||
             le.FlightStart.HasValue() ||
             le.FlightEnd.HasValue() ||
-            le.HasFlightData ||
-            le.CustomProperties.GetLength(0) > 0);
+            le.HasFlightData);
 
         AutoExpandLandings(le);
     }
@@ -586,7 +585,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         le.FlightEnd = mfbFlightInfo1.FlightEnd;
         le.CatClassOverride = AltCatClass;
 
-        le.CustomProperties = mfbEditPropSet1.DistilledList.ToArray();
+        le.CustomProperties.SetItems(mfbEditPropSet1.DistilledList);
 
         le.Videos = mfbVideoEntry1.Videos.ToArray();
 

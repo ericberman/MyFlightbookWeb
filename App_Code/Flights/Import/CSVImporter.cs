@@ -295,9 +295,9 @@ namespace MyFlightbook.ImportFlights
                 if (lstProps.FirstOrDefault(prop => prop.PropTypeID == idPropType) != null)
                     return;
 
-                CustomFlightProperty cfp = ((le.CustomProperties == null) ? null : le.CustomProperties.FirstOrDefault(cfpExisting => cfpExisting.PropTypeID == idPropType)) ?? new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType(idPropType));
+                CustomFlightProperty cfp = le.CustomProperties.GetEventWithTypeIDOrNew(idPropType);
                 if (cfp.DecValue == 0)  // might not be the case if we are re-using a property
-                cfp.DecValue = le.TotalFlightTime;
+                    cfp.DecValue = le.TotalFlightTime;
                 lstProps.Add(cfp);
             }
 
@@ -556,7 +556,7 @@ namespace MyFlightbook.ImportFlights
                         try
                         {
                             // Re-use the existing property if possible.
-                            CustomFlightProperty cfp = (le.CustomProperties == null) ? null : le.CustomProperties.FirstOrDefault(cfpExisting => cfpExisting.PropTypeID == ic.m_cpt.PropTypeID) ?? new CustomFlightProperty(ic.m_cpt);
+                            CustomFlightProperty cfp = le.CustomProperties.GetEventWithTypeIDOrNew(ic.m_cpt.PropTypeID);
 
                             cfp.InitFromString(szVal, le.Date);
                             if (!cfp.IsDefaultValue)
@@ -597,7 +597,7 @@ namespace MyFlightbook.ImportFlights
                 // check that we know about the aircraft or, if not, if it's in the system then add it for the user.
                 string szTail = Aircraft.NormalizeTail(le.TailNumDisplay = CAFRSAdjustTail(le, m_rgszRow[m_cm.iColTail].Trim().ToUpperInvariant(), lstCustPropsForFlight));
 
-                le.CustomProperties = lstCustPropsForFlight.ToArray();
+                le.CustomProperties.SetItems(lstCustPropsForFlight);
 
                 // Do any autofill here
                 if (afo != null && le.CrossCountry == 0.0M && le.Nighttime == 0.0M)

@@ -1463,23 +1463,9 @@ namespace MyFlightbook.Telemetry
                             if (fIsNight)
                             {
                                 // see if the night take-off property is already present
-                                CustomFlightProperty cfpNightTO = null;
-                                foreach (CustomFlightProperty cfp in ActiveFlight.CustomProperties)
-                                    if (cfp.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropNightTakeoff)
-                                    {
-                                        cfpNightTO = cfp;
-                                        break;
-                                    }
-
-                                if (cfpNightTO == null) // not found - add it in
-                                {
-                                    ArrayList alProps = new ArrayList(ActiveFlight.CustomProperties);
-                                    cfpNightTO = new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropNightTakeoff));
-                                    alProps.Add(cfpNightTO);
-                                    ActiveFlight.CustomProperties = (CustomFlightProperty[])alProps.ToArray(typeof(CustomFlightProperty));
-                                }
-
+                                CustomFlightProperty cfpNightTO = ActiveFlight.CustomProperties.GetEventWithTypeIDOrNew(CustomPropertyType.KnownProperties.IDPropNightTakeoff);
                                 cfpNightTO.IntValue++;
+                                ActiveFlight.CustomProperties.Add(cfpNightTO);
                             }
                         }
                         break;
@@ -1571,8 +1557,8 @@ namespace MyFlightbook.Telemetry
             string result = string.Empty;
             if (le != null && String.IsNullOrEmpty(le.FlightData))
             {
-                CustomFlightProperty cfpBlockOut = Array.Find(le.CustomProperties, cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut);
-                CustomFlightProperty cfpBlockIn = Array.Find(le.CustomProperties, cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn);
+                CustomFlightProperty cfpBlockOut = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockOut);
+                CustomFlightProperty cfpBlockIn = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn);
                 DateTime dtStart = le.FlightStart.HasValue() ? le.FlightStart : (le.EngineStart.HasValue() ? le.EngineStart : (cfpBlockOut != null && cfpBlockOut.DateValue.HasValue() ? cfpBlockOut.DateValue : DateTime.MinValue));
                 DateTime dtEnd = le.FlightEnd.HasValue() ? le.FlightEnd : (le.EngineEnd.HasValue() ? le.EngineEnd : (cfpBlockIn != null && cfpBlockIn.DateValue.HasValue() ? cfpBlockIn.DateValue : DateTime.MinValue));
 
@@ -1641,10 +1627,7 @@ namespace MyFlightbook.Telemetry
                 le.Nighttime = 0;
                 if (!fSyntheticPath)
                     le.FlightStart = le.FlightEnd = DateTime.MinValue;
-                if (le.CustomProperties != null)
-                    foreach (CustomFlightProperty cfp in le.CustomProperties)
-                        if (cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff)
-                            cfp.IntValue = 0;
+                le.CustomProperties.RemoveItem(CustomPropertyType.KnownProperties.IDPropNightTakeoff);
 
                 AutoFillContext afc = new AutoFillContext(opt, le) {
                     DateColumn = Data.DateColumn, 

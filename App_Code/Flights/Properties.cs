@@ -897,6 +897,9 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         {
             get
             {
+                if (PropertyType.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropInvalid)
+                    m_cpt = CustomPropertyType.GetCustomPropertyType(PropTypeID);
+
                 switch (PropertyType.Type)
                 {
                     case CFPPropertyType.cfpBoolean:
@@ -982,7 +985,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         /// <param name="szJSON">The JSON to parse</param>
         /// <param name="idFlight">The flight for which this is associated</param>
         /// <returns>An array of fully-formed customflightproperties</returns>
-        public static CustomFlightProperty[] PropertiesFromJSONTuples(string szJSON, int idFlight)
+        public static IEnumerable<CustomFlightProperty> PropertiesFromJSONTuples(string szJSON, int idFlight)
         {
             if (String.IsNullOrEmpty(szJSON))
                 return new CustomFlightProperty[0];
@@ -1050,6 +1053,38 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
 
             return result;
         }
+
+        #region Creating specific nullable properties for knownproperties
+        public static CustomFlightProperty PropertyWithValue(CustomPropertyType.KnownProperties id, string value)
+        {
+            if (String.IsNullOrEmpty(value))
+                return null;
+
+            CustomFlightProperty cfp = new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int) id));
+            cfp.InitFromString(value);
+            return (cfp.IsDefaultValue) ? null : cfp;
+        }
+
+        public static CustomFlightProperty PropertyWithValue(CustomPropertyType.KnownProperties id, int value)
+        {
+            return (value == 0) ? null : PropertyWithValue(id, value.ToString(CultureInfo.CurrentCulture));
+        }
+
+        public static CustomFlightProperty PropertyWithValue(CustomPropertyType.KnownProperties id, decimal value)
+        {
+            return (value == 0) ? null : PropertyWithValue(id, value.ToString(CultureInfo.CurrentCulture));
+        }
+
+        public static CustomFlightProperty PropertyWithValue(CustomPropertyType.KnownProperties id, bool value)
+        {
+            return (value) ? PropertyWithValue(id, value.ToString(CultureInfo.CurrentCulture)) : null;
+        }
+
+        public static CustomFlightProperty PropertyWithValue(CustomPropertyType.KnownProperties id, DateTime value, bool fUTC)
+        {
+            return (value.HasValue()) ? PropertyWithValue(id, fUTC ? value.FormatDateZulu() : value.ToString(CultureInfo.CurrentCulture)) : null;
+        }
+        #endregion
         #endregion
 
         #region Database
@@ -1175,11 +1210,11 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         /// </summary>
         /// <param name="rgPropsExisting">The array of existing properties for the flight</param>
         /// <param name="rgPropsNew">The array of new properties</param>
-        public static void FixUpDuplicateProperties(CustomFlightProperty[] rgPropsExisting, CustomFlightProperty[] rgPropsNew)
+        public static void FixUpDuplicateProperties(IEnumerable<CustomFlightProperty> rgPropsExisting, IEnumerable<CustomFlightProperty> rgPropsNew)
         {
             if (rgPropsExisting == null || rgPropsNew == null)
                 return;
-            if (rgPropsExisting.Length == 0 || rgPropsNew.Length == 0)
+            if (rgPropsExisting.Count() == 0 || rgPropsNew.Count() == 0)
                 return;
 
             foreach (CustomFlightProperty cfpNew in rgPropsNew)
@@ -1459,19 +1494,20 @@ ORDER BY f.Date Desc";
         }
     }
 
-    public class ReadOnlyPropertyCollection : IEnumerable<CustomFlightProperty>
+    [Serializable]
+    public class CustomPropertyCollection : IEnumerable<CustomFlightProperty>
     {
         #region Properties
         protected Dictionary<int, CustomFlightProperty> m_dictProps;
 
-        public CustomFlightProperty[] AsArray()
+        public int Count
         {
-            return m_dictProps.Values.ToArray();
+            get { return m_dictProps.Count; }
         }
         #endregion
 
         #region Constructors
-        public ReadOnlyPropertyCollection()
+        public CustomPropertyCollection()
         {
             m_dictProps = new Dictionary<int, CustomFlightProperty>();
         }
@@ -1480,7 +1516,7 @@ ORDER BY f.Date Desc";
         /// Creates a property collection initialized from the specified properties.  Null and default values are ignored, the last of any duplicate will survive.
         /// </summary>
         /// <param name="rgcfp"></param>
-        public ReadOnlyPropertyCollection(IEnumerable<CustomFlightProperty> rgcfp) : this()
+        public CustomPropertyCollection(IEnumerable<CustomFlightProperty> rgcfp) : this()
         {
             foreach (CustomFlightProperty cfp in rgcfp)
                 if (cfp != null && !cfp.IsDefaultValue)
@@ -1518,13 +1554,23 @@ ORDER BY f.Date Desc";
         /// <returns></returns>
         public CustomFlightProperty GetEventWithTypeID(CustomPropertyType.KnownProperties id)
         {
+            return GetEventWithTypeID((int)id);
+        }
+
+        public CustomFlightProperty GetEventWithTypeID(int id)
+        {
             CustomFlightProperty cfp;
-            return m_dictProps.TryGetValue((int)id, out cfp) ? cfp : null;
+            return m_dictProps.TryGetValue(id, out cfp) ? cfp : null;
         }
 
         public CustomFlightProperty GetEventWithTypeIDOrNew(CustomPropertyType.KnownProperties id)
         {
-            return GetEventWithTypeID(id) ?? new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int)id));
+            return GetEventWithTypeIDOrNew((int) id);
+        }
+
+        public CustomFlightProperty GetEventWithTypeIDOrNew(int id)
+        {
+            return GetEventWithTypeID(id) ?? new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType(id));
         }
 
         /// <summary>
@@ -1591,6 +1637,105 @@ ORDER BY f.Date Desc";
                 if (p(cfp))
                     i += cfp.IntValue;
             return i;
+        }
+
+        /// <summary>
+        /// Safely return the string value for a string property
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public string StringValueForProperty(CustomPropertyType.KnownProperties id)
+        {
+            CustomFlightProperty cfp = GetEventWithTypeID(id);
+            return (cfp == null) ? string.Empty : cfp.TextValue;
+        }
+
+        /// <summary>
+        /// Safely return the Integer value for a count property
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public int IntValueForProperty(CustomPropertyType.KnownProperties id)
+        {
+            CustomFlightProperty cfp = GetEventWithTypeID(id);
+            return (cfp == null) ? 0 : cfp.IntValue;
+        }
+
+        /// <summary>
+        /// Safely return the decimal value for a decimalproperty
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public decimal DecimalValueForProperty(CustomPropertyType.KnownProperties id)
+        {
+            CustomFlightProperty cfp = GetEventWithTypeID(id);
+            return (cfp == null) ? 0.0M : cfp.DecValue;
+        }
+        #endregion
+
+        #region Adding/removing items
+        /// <summary>
+        /// Adds the specified item, replacing it if it already exists.  If null, it will be ignored.  If default value, it will be removed.
+        /// </summary>
+        /// <param name="cfp"></param>
+        public void Add(CustomFlightProperty cfp)
+        {
+            if (cfp == null)
+                return;
+            m_dictProps[cfp.PropTypeID] = cfp;
+            if (cfp.IsDefaultValue)
+                m_dictProps.Remove(cfp.PropTypeID);
+        }
+
+        /// <summary>
+        /// Adds the specified fliht properties.  Default properties are stripped.
+        /// </summary>
+        /// <param name="rgcfp"></param>
+        public void AddItems(IEnumerable<CustomFlightProperty> rgcfp)
+        {
+            if (rgcfp == null)
+                throw new ArgumentNullException("rgcfp");
+            foreach (CustomFlightProperty cfp in rgcfp)
+                Add(cfp);
+        }
+
+        /// <summary>
+        /// Removes all items from the collection
+        /// </summary>
+        public void Clear()
+        {
+            m_dictProps.Clear();
+        }
+
+        /// <summary>
+        /// Replaces the flight properties with the specified items. Default items will be skipped.
+        /// </summary>
+        /// <param name="rgcfp"></param>
+        public void SetItems(IEnumerable<CustomFlightProperty> rgcfp)
+        {
+            if (rgcfp == null)
+                throw new ArgumentNullException("rgcfp");
+            Clear();
+            AddItems(rgcfp);
+        }
+
+        /// <summary>
+        /// Removes the specified known property, if present.
+        /// </summary>
+        /// <param name="id"></param>
+        public void RemoveItem(CustomPropertyType.KnownProperties id)
+        {
+            RemoveItem((int)id);
+        }
+
+        /// <summary>
+        /// Removes the specified known property, if present.
+        /// </summary>
+        /// <param name="id"></param>
+        public void RemoveItem(int id)
+        {
+            if (m_dictProps.ContainsKey(id))
+                m_dictProps.Remove(id);
         }
         #endregion
     }

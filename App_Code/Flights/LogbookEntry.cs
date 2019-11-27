@@ -297,7 +297,7 @@ namespace MyFlightbook
         /// <summary>
         /// Custom properties for the entry.  
         /// </summary>
-        public CustomFlightProperty[] CustomProperties { get; set; }
+        public CustomPropertyCollection CustomProperties { get; set; }
 
         /// <summary>
         /// Images associated with the flight.  For efficiency, this MUST BE EXPLICITLY POPULATED AND SET.
@@ -420,11 +420,12 @@ namespace MyFlightbook
                 throw new MyFlightbookException("Can't sign the flight without a username specified");
 
             // Sort the properties by propertytypeID so that there is a deterministic hash (i.e., not affected by order of properties.)
-            Array.Sort(CustomProperties, (cfp1, cfp2) => { return cfp1.PropTypeID - cfp2.PropTypeID; });
+            List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(CustomProperties);
+            lstProps.Sort((cfp1, cfp2) => { return cfp1.PropTypeID - cfp2.PropTypeID; });
 
             StringBuilder sbPropHash = new StringBuilder();
             CustomPropertyType[] rgcpt = null;
-            foreach (CustomFlightProperty cfp in CustomProperties)
+            foreach (CustomFlightProperty cfp in lstProps)
             {
                 if (cfp.PropertyType == null || cfp.PropertyType.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropInvalid)
                 {
@@ -501,7 +502,7 @@ namespace MyFlightbook
                             }
                         }
                     }
-                    le.CustomProperties = lst.ToArray();
+                    le.CustomProperties.SetItems(lst);
                 }
             }
 
@@ -950,7 +951,7 @@ namespace MyFlightbook
                 !HasEqualDates(le))
                 return false;
 
-            if (this.CustomProperties.Length != le.CustomProperties.Length)
+            if (this.CustomProperties.Count != le.CustomProperties.Count)
                 return false;
 
             foreach (CustomFlightProperty cfp1 in this.CustomProperties)
@@ -997,7 +998,7 @@ namespace MyFlightbook
                 cfpNew.PropID = CustomFlightProperty.idCustomFlightPropertyNew;
                 lstCFP.Add(cfpNew);
             }
-            le.CustomProperties = lstCFP.ToArray();
+            le.CustomProperties.SetItems(lstCFP);
             return le;
         }
 
@@ -1174,10 +1175,7 @@ namespace MyFlightbook
             if (cfpNightTakeoffs == null && cNightTakeoffs == 0 && cDescribedNightTakeoffs > 0)
             {
                 cNightTakeoffs = cDescribedNightTakeoffs;
-                List<CustomFlightProperty> lst = new List<CustomFlightProperty>(CustomProperties);
-                CustomFlightProperty cfpNightTO = new CustomFlightProperty(new CustomPropertyType(CustomPropertyType.KnownProperties.IDPropNightTakeoff)) { IntValue = cNightTakeoffs };
-                lst.Add(cfpNightTO);
-                CustomProperties = lst.ToArray();
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, cNightTakeoffs));
             }
 
             if (cNightTakeoffs < cDescribedNightTakeoffs)
@@ -1220,15 +1218,8 @@ namespace MyFlightbook
                         break;
                 }
 
-                if (ac.CopyPICNameWithCrossfill)
-                {
-                    List<CustomFlightProperty> lst = new List<CustomFlightProperty>(CustomProperties);
-                    if (lst.FirstOrDefault(cfp => cfp.PropTypeID == (int) CustomPropertyType.KnownProperties.IDPropNameOfPIC) == null)
-                    {
-                        lst.Add(new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropNameOfPIC)) { TextValue = Profile.GetUser(User).UserFullName });
-                        CustomProperties = lst.ToArray();
-                    }
-                }
+                if (ac.CopyPICNameWithCrossfill && !CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropNameOfPIC))
+                    CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfPIC, Profile.GetUser(User).UserFullName));
             }
         }
 
@@ -1554,7 +1545,7 @@ namespace MyFlightbook
             CatClassOverride = 0;
             CatClassDisplay = ModelDisplay = TailNumDisplay = String.Empty;
             CFISignatureState = SignatureState.None;
-            CustomProperties = new CustomFlightProperty[0];
+            CustomProperties = new CustomPropertyCollection();
             Videos = new VideoRef[0];
             Telemetry = new TelemetryReference();
         }
@@ -1643,7 +1634,7 @@ namespace MyFlightbook
                     TailNumDisplay = util.ReadNullableField(dr, "TailNumberdisplay", string.Empty).ToString();
 
                     // Load properties, if available.
-                    CustomProperties = CustomFlightProperty.PropertiesFromJSONTuples((string)util.ReadNullableField(dr, "CustomPropsJSON", string.Empty), FlightID);
+                    CustomProperties.SetItems(CustomFlightProperty.PropertiesFromJSONTuples((string)util.ReadNullableField(dr, "CustomPropsJSON", string.Empty), FlightID));
 
                     string szVids = dr["FlightVids"].ToString();
                     if (!String.IsNullOrEmpty(szVids))
@@ -2054,7 +2045,7 @@ namespace MyFlightbook
                     lstPaths.Add(le.Telemetry);
             }
 
-            CustomProperties = lstCfpThis.ToArray();
+            CustomProperties.SetItems(lstCfpThis);
             TelemetryReference tr = TelemetryReference.MergedTelemetry(lstPaths, FlightID);
             if (tr != null)
                 FlightData = tr.RawData;
@@ -2380,8 +2371,8 @@ namespace MyFlightbook
                     // else fall through and do block time.
                     case AutoFillOptions.AutoFillTotalOption.BlockTime:
                         {
-                            CustomFlightProperty cfpBlockOut = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut);
-                            CustomFlightProperty cfpBlockIn = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn);
+                            CustomFlightProperty cfpBlockOut = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockOut);
+                            CustomFlightProperty cfpBlockIn = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn);
 
                             if (cfpBlockIn != null && cfpBlockOut != null && !cfpBlockIn.IsDefaultValue && !cfpBlockOut.IsDefaultValue && cfpBlockIn.DateValue.CompareTo(cfpBlockOut.DateValue) > 0)
                                 TotalFlightTime = (decimal)cfpBlockIn.DateValue.Subtract(cfpBlockOut.DateValue).TotalHours;
@@ -2426,11 +2417,11 @@ namespace MyFlightbook
             // Issue #411: check for ground instruction given or received.
             if ((Dual > 0 && CFI == 0) || (CFI > 0 && Dual == 0)) // no point if we can't tell whether it's given or received...
             {
-                CustomFlightProperty cfpLessonStart = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropLessonStart);
-                CustomFlightProperty cfpLessonEnd = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropLessonEnd);
+                CustomFlightProperty cfpLessonStart = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropLessonStart);
+                CustomFlightProperty cfpLessonEnd = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropLessonEnd);
 
-                int idTargetID = (Dual > 0) ? (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived : (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven;
-                CustomFlightProperty cfpTarget = CustomProperties.FirstOrDefault(cfp => cfp.PropTypeID == idTargetID);
+                CustomPropertyType.KnownProperties idTargetID = (Dual > 0) ? CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived : CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven;
+                CustomFlightProperty cfpTarget = CustomProperties.GetEventWithTypeID(idTargetID);
 
                 if (cfpTarget == null && cfpLessonStart != null && cfpLessonEnd != null && cfpLessonEnd.DateValue.CompareTo(cfpLessonStart.DateValue) > 0)
                 {
@@ -2441,10 +2432,7 @@ namespace MyFlightbook
                     TimeSpan tsFlight = (FlightEnd.HasValue() && FlightStart.HasValue()) ? FlightEnd.Subtract(FlightStart) : TimeSpan.MinValue;
                     tsGroundTraining = tsGroundTraining.Subtract(tsEngine.CompareTo(tsFlight) > 0 ? tsEngine : tsFlight);
 
-                    cfpTarget = new CustomFlightProperty(CustomPropertyType.GetCustomPropertyType(idTargetID)) { DecValue = (decimal)tsGroundTraining.TotalHours };
-
-                    List<CustomFlightProperty> lst = new List<CustomFlightProperty>(CustomProperties) { cfpTarget };
-                    CustomProperties = lst.ToArray();
+                    CustomProperties.Add(CustomFlightProperty.PropertyWithValue(idTargetID, (decimal)tsGroundTraining.TotalHours));
                 }
             }
         }
@@ -2684,32 +2672,6 @@ namespace MyFlightbook
     {
         public enum LogbookRowType { Flight, PageTotal, PreviousTotal, Subtotal, RunningTotal }
 
-        #region CustomProperties
-        private string StringPropertyMatchingPredicate(Predicate<CustomFlightProperty> pred)
-        {
-            if (CustomProperties == null || CustomProperties.Length == 0)
-                return string.Empty;
-            CustomFlightProperty cfp = Array.Find<CustomFlightProperty>(CustomProperties, pred);
-            return (cfp == null) ? string.Empty : cfp.TextValue;
-        }
-
-        private int IntPropertyMatchingPredicate(Predicate<CustomFlightProperty> pred)
-        {
-            if (CustomProperties == null || CustomProperties.Length == 0)
-                return 0;
-            CustomFlightProperty cfp = Array.Find<CustomFlightProperty>(CustomProperties, pred);
-            return (cfp == null) ? 0 : cfp.IntValue;
-        }
-
-        private decimal DecPropertyMatchingPredicate(Predicate<CustomFlightProperty> pred)
-        {
-            if (CustomProperties == null || CustomProperties.Length == 0)
-                return 0.0M;
-            CustomFlightProperty cfp = Array.Find<CustomFlightProperty>(CustomProperties, pred);
-            return (cfp == null) ? 0.0M : cfp.DecValue;
-        }
-        #endregion
-
         #region properties
         /// <summary>
         /// Is the category/class overridden?
@@ -2766,7 +2728,7 @@ namespace MyFlightbook
         /// </summary>
         public string PICName
         {
-            get { return StringPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNameOfPIC); }
+            get { return CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropNameOfPIC); }
         }
 
         /// <summary>
@@ -2774,7 +2736,7 @@ namespace MyFlightbook
         /// </summary>
         public string SICName
         {
-            get { return StringPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNameOfSIC); }
+            get { return CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropNameOfSIC); }
         }
 
         /// <summary>
@@ -2782,34 +2744,34 @@ namespace MyFlightbook
         /// </summary>
         public string StudentName
         {
-            get { return StringPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropStudentName); }
+            get { return CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropStudentName); }
         }
 
         public decimal PICUSTime
         {
-            get { return DecPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropPICUS); }
+            get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropPICUS); }
         }
 
         public decimal SoloTime
         {
-            get { return DecPropertyMatchingPredicate(fp => fp.PropertyType.IsSolo); }
+            get { return CustomProperties.TotalTimeForPredicate(fp => fp.PropertyType.IsSolo); }
         }
 
         public decimal IFRTime
         {
-            get { return DecPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropIFRTime); }
+            get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropIFRTime); }
         }
 
         public int NightTakeoffs
         {
-            get { return IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff); }
+            get { return CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTakeoff); }
         }
 
         public int DayTakeoffs
         {
             get
             {
-                return Math.Max(IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffAny) - NightTakeoffs, 0);
+                return Math.Max(CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropTakeoffAny) - NightTakeoffs, 0);
             }
         }
 
@@ -2854,27 +2816,27 @@ namespace MyFlightbook
 
         public int SelfLaunches
         {
-            get { return IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMotorgliderSelfLaunch); }
+            get { return CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropMotorgliderSelfLaunch); }
         }
 
         public int AeroLaunches
         {
-            get { return IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGliderTowedLaunch); }
+            get { return CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropGliderTowedLaunch); }
         }
 
         public int MaxAltitude
         {
-            get { return IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMaximumAltitude || fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGliderMaxAltitude); }
+            get { return Math.Max(CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropMaximumAltitude), CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropGliderMaxAltitude)); }
         }
 
         public int ReleaseAltitude
         {
-            get { return IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGliderReleaseAltitude); }
+            get { return CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropGliderReleaseAltitude); }
         }
 
         public decimal GroundInstruction
         {
-            get { return DecPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived); }
+            get { return CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived); }
         }
         #endregion
 
@@ -2952,7 +2914,7 @@ namespace MyFlightbook
             get
             {
                 // NightTouchAndGoLandings is initialized if we have totals, but if it's zero, then we may need to look for the property
-                int cTouchAndGoes = NightTouchAndGoLandings > 0 ? NightTouchAndGoLandings : IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
+                int cTouchAndGoes = NightTouchAndGoLandings > 0 ? NightTouchAndGoLandings : CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
                 return Math.Min(cTouchAndGoes + NightLandings, Landings);
             }
         }
@@ -3179,7 +3141,7 @@ namespace MyFlightbook
                     return FlightStart;
                 else if (EngineStart.HasValue())
                     return EngineStart;
-                else if ((cfpBlockOut = Array.Find<CustomFlightProperty>(CustomProperties, cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockOut)) != null)
+                else if ((cfpBlockOut = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockOut)) != null)
                     return cfpBlockOut.DateValue;
                 else
                     return DateTime.MinValue;
@@ -3198,7 +3160,7 @@ namespace MyFlightbook
                     return FlightEnd;
                 else if (EngineEnd.HasValue())
                     return EngineEnd;
-                else if ((cfpBlockIn = Array.Find<CustomFlightProperty>(CustomProperties, cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDBlockIn)) != null)
+                else if ((cfpBlockIn = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn)) != null)
                     return cfpBlockIn.DateValue;
                 else
                     return DateTime.MinValue;
@@ -3398,7 +3360,7 @@ namespace MyFlightbook
                     SoloTotal = SoloTotal.AddMinutes(led.SoloTime);
                     GroundInstructionTotal = GroundInstruction.AddMinutes(led.GroundInstruction);
                     IFRTimeTotal = IFRTimeTotal.AddMinutes(led.IFRTime);
-                    NightTouchAndGoLandings += led.IntPropertyMatchingPredicate(fp => fp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
+                    NightTouchAndGoLandings += led.CustomProperties.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
 
                     SelfLaunchTotal += led.SelfLaunches;
                     AeroLaunchTotal += led.AeroLaunches;

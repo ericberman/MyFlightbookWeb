@@ -294,12 +294,12 @@ namespace MyFlightbook.FlightCurrency
         public static DateTime Aug2018Cutover { get { return s_Aug2018Cutover; } }
         public static DateTime Nov2018Cutover { get { return s_Nov2018Cutover; } }
 
-        private readonly ReadOnlyPropertyCollection m_flightprops;    // backing list for FlightEvents
+        private readonly CustomPropertyCollection m_flightprops;    // backing list for FlightEvents
 
         /// <summary>
         /// Set of flightproperties (could include profile events, though these are rare now) for the flight.  Will not be null.
         /// </summary>
-        public ReadOnlyPropertyCollection FlightProps { get { return m_flightprops; } }
+        public CustomPropertyCollection FlightProps { get { return m_flightprops; } }
         #endregion
 
         public ExaminerFlightRow(MySqlDataReader dr)
@@ -360,7 +360,7 @@ namespace MyFlightbook.FlightCurrency
             dtFlightStart = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtFlightStart", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
             dtFlightEnd = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtFlightEnd", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
 
-            m_flightprops = new ReadOnlyPropertyCollection(CustomFlightProperty.PropertiesFromJSONTuples((string)util.ReadNullableField(dr, "CustomPropsJSON", string.Empty), flightID));
+            m_flightprops = new CustomPropertyCollection(CustomFlightProperty.PropertiesFromJSONTuples((string)util.ReadNullableField(dr, "CustomPropsJSON", string.Empty), flightID));
         }
     }
 

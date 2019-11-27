@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -41,12 +40,12 @@ namespace MyFlightbook.ImportFlights
                 Date = FlightDate,
                 Route = this.Route
             };
-            pf.CustomProperties = PropertiesWithoutNullOrDefault(new CustomFlightProperty[]
+            pf.CustomProperties.SetItems(new CustomFlightProperty[]
             {
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, BlockOut, true),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, BlockIn, true),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, FlightNumber)
-            }).ToArray();
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockOut, BlockOut, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDBlockIn, BlockIn, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, FlightNumber)
+            });
 
             return pf;
         }

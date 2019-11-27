@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -84,7 +84,7 @@ namespace MyFlightbook.ImportFlights
 
         public eLogSite() : base() { }
 
-        public eLogSite(DataRow dr, IEnumerable<CustomPropertyType> rgcpt = null) : base(dr, rgcpt) { }
+        public eLogSite(DataRow dr) : base(dr) { }
 
         public override LogbookEntry ToLogbookEntry()
         {
@@ -114,13 +114,13 @@ namespace MyFlightbook.ImportFlights
                 HobbsEnd = hobbsin
             };
 
-            le.CustomProperties = PropertiesWithoutNullOrDefault(new CustomFlightProperty[]
+            le.CustomProperties.SetItems(new CustomFlightProperty[]
             {
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropScheduledDeparture, scheduleddeptime, true),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropScheduledArrival, arrivaltime, true),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, flt),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, Math.Round(solo / 60.0M, 2))
-            }).ToArray<CustomFlightProperty>();
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropScheduledDeparture, scheduleddeptime, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropScheduledArrival, arrivaltime, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, flt),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, Math.Round(solo / 60.0M, 2))
+            });
 
             return le;
         }
@@ -180,7 +180,6 @@ namespace MyFlightbook.ImportFlights
         {
             if (dt == null)
                 throw new ArgumentNullException("dt");
-            IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes();
             NormalizeColumnNames(dt);
             using (DataTable dtDst = new DataTable())
             {
@@ -188,7 +187,7 @@ namespace MyFlightbook.ImportFlights
                 CSVImporter.InitializeDataTable(dtDst);
                 foreach (DataRow dr in dt.Rows)
                 {
-                    eLogSite els = new eLogSite(dr, rgcpt);
+                    eLogSite els = new eLogSite(dr);
                     CSVImporter.WriteEntryToDataTable(els.ToLogbookEntry(), dtDst);
                 }
                 return CsvWriter.WriteToString(dtDst, true, true);

@@ -1,13 +1,12 @@
-﻿using System;
+﻿using JouniHeikniemi.Tools.Text;
 using MyFlightbook.CSV;
-using System.Globalization;
-using System.Text;
-using System.Text.RegularExpressions;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using System.Globalization;
 using System.IO;
-using JouniHeikniemi.Tools.Text;
+using System.Text;
+using System.Text.RegularExpressions;
 
 /******************************************************
  * 
@@ -93,7 +92,7 @@ namespace MyFlightbook.ImportFlights
         protected List<string> ExaminerNames { get; set; }
         #endregion
 
-        public ForeFlight(DataRow dr, IDictionary<string, ForeFlightAircraftDescriptor> dict, IEnumerable<CustomPropertyType> lstProps = null) : base(dr, lstProps)
+        public ForeFlight(DataRow dr, IDictionary<string, ForeFlightAircraftDescriptor> dict) : base(dr)
         {
             if (dict != null && !String.IsNullOrWhiteSpace(AircraftID) && dict.ContainsKey(AircraftID))
             {
@@ -221,26 +220,27 @@ namespace MyFlightbook.ImportFlights
                 fHoldingProcedures = (Holds > 0),
                 CFIName = InstructorName,
                 Comment = JoinStrings(new string[] { PilotComments, Text, sbApproaches.ToString().Trim(), Person1, Person2, Person3, Person4, Person5, Person6 }),
-
-                CustomProperties = PropertiesWithoutNullOrDefault(new CustomFlightProperty[]
-                    {
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, OnDuty, true),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, OffDuty, true),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, Solo),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, NightTakeoffs),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachStart, TachStart),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachEnd, TachEnd),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropInstructorName, InstructorName),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerNames, JoinStrings(PassengerNames)),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropStudentName, JoinStrings(StudentNames)),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfExaminer, JoinStrings(ExaminerNames)),
-						PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven, DualGiven > 0 ? GroundTraining : 0),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, DualReceived > 0 ? GroundTraining : 0),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, FlightReview),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIPC, IPC),
-                        PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCheckRide, Checkride)
-                    }).ToArray()
             };
+
+            le.CustomProperties.SetItems(new CustomFlightProperty[]
+            {
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, OnDuty, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, OffDuty, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, Solo),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, NightTakeoffs),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachStart, TachStart),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachEnd, TachEnd),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropInstructorName, InstructorName),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerNames, JoinStrings(PassengerNames)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropStudentName, JoinStrings(StudentNames)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfExaminer, JoinStrings(ExaminerNames)),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven, DualGiven > 0 ? GroundTraining : 0),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, DualReceived > 0 ? GroundTraining : 0),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, FlightReview),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIPC, IPC),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropCheckRide, Checkride)
+            });
+
             return le;
         }
     }
@@ -411,14 +411,13 @@ namespace MyFlightbook.ImportFlights
         {
             if (dt == null)
                 throw new ArgumentNullException("dt");
-            IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes();
             using (DataTable dtDst = new DataTable())
             {
                 dtDst.Locale = dt.Locale;
                 CSVImporter.InitializeDataTable(dtDst);
                 foreach (DataRow dr in dt.Rows)
                 {
-                    ForeFlight ltp = new ForeFlight(dr, dictAircraft, rgcpt);
+                    ForeFlight ltp = new ForeFlight(dr, dictAircraft);
                     CSVImporter.WriteEntryToDataTable(ltp.ToLogbookEntry(), dtDst);
                 }
                 return CsvWriter.WriteToString(dtDst, true, true);

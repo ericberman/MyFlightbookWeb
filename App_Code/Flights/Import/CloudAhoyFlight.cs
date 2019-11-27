@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 
 /******************************************************
@@ -171,7 +170,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
                                 le.Dual = le.TotalFlightTime;
                                 break;
                             case CloudAhoyRoles.SafetyPilot:
-                                DictProps[CustomPropertyType.KnownProperties.IDPropSafetyPilotTime] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSafetyPilotTime, le.TotalFlightTime);
+                                DictProps[CustomPropertyType.KnownProperties.IDPropSafetyPilotTime] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSafetyPilotTime, le.TotalFlightTime);
                                 break;
                             case CloudAhoyRoles.Copilot:
                                 le.SIC = le.TotalFlightTime;
@@ -182,7 +181,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
                     }
 
                     if (cd.solo != 0)
-                        DictProps[CustomPropertyType.KnownProperties.IDPropSolo] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, le.TotalFlightTime);
+                        DictProps[CustomPropertyType.KnownProperties.IDPropSolo] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, le.TotalFlightTime);
                 }
             }
         }
@@ -225,26 +224,26 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
                             le.Approaches++;
                             break;
                         case CloudAhoyManeuvers.slowFlight:
-                            DictProps[CustomPropertyType.KnownProperties.IDPropManeuverSlowFlight] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropManeuverSlowFlight, true);
+                            DictProps[CustomPropertyType.KnownProperties.IDPropManeuverSlowFlight] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropManeuverSlowFlight, true);
                             break;
                         case CloudAhoyManeuvers.chandelle:
-                            DictProps[CustomPropertyType.KnownProperties.IDPropManeuverChandelle] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropManeuverChandelle, true);
+                            DictProps[CustomPropertyType.KnownProperties.IDPropManeuverChandelle] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropManeuverChandelle, true);
                             break;
                         case CloudAhoyManeuvers.sTurns:
-                            DictProps[CustomPropertyType.KnownProperties.IDPropManeuverSTurns] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropManeuverSTurns, true);
+                            DictProps[CustomPropertyType.KnownProperties.IDPropManeuverSTurns] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropManeuverSTurns, true);
                             break;
                         case CloudAhoyManeuvers.stall:
-                            DictProps[CustomPropertyType.KnownProperties.IDPropPowerOffStall] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPowerOffStall, true);
+                            DictProps[CustomPropertyType.KnownProperties.IDPropPowerOffStall] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPowerOffStall, true);
                             break;
                         case CloudAhoyManeuvers.autoRotate:
-                            DictProps[CustomPropertyType.KnownProperties.IDPropAutoRotate] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAutoRotate, true);
+                            DictProps[CustomPropertyType.KnownProperties.IDPropAutoRotate] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropAutoRotate, true);
                             break;
                         case CloudAhoyManeuvers.hover:
-                            DictProps[CustomPropertyType.KnownProperties.IDPropHover] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropHover, true);
+                            DictProps[CustomPropertyType.KnownProperties.IDPropHover] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropHover, true);
                             break;
                         case CloudAhoyManeuvers.tow:
                             if (!DictProps.ContainsKey(CustomPropertyType.KnownProperties.IDPropGliderTow))
-                                DictProps[CustomPropertyType.KnownProperties.IDPropGliderTow] = PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGliderTow, 0);
+                                DictProps[CustomPropertyType.KnownProperties.IDPropGliderTow] = CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGliderTow, 0);
                             DictProps[CustomPropertyType.KnownProperties.IDPropGliderTow].IntValue++;
                             break;
                         default:
@@ -288,7 +287,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
 
             le.Comment = String.Join(" ", lstText);
 
-            le.CustomProperties = PropertiesWithoutNullOrDefault(DictProps.Values).ToArray();
+            le.CustomProperties.SetItems(DictProps.Values);
 
             if (!string.IsNullOrEmpty(flightId))
                 le.PendingID = flightId;

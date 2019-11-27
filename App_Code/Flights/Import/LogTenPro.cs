@@ -5,11 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -754,7 +753,7 @@ namespace MyFlightbook.ImportFlights
         public string flight_track { get; set; }
         #endregion
 
-        public LogTenPro(DataRow dr, IEnumerable<CustomPropertyType> rgcpt = null) : base(dr, rgcpt) {  }
+        public LogTenPro(DataRow dr) : base(dr) {  }
 
         public LogTenPro() : base() { }
 
@@ -773,67 +772,66 @@ namespace MyFlightbook.ImportFlights
             flight_onDutyTime = FixedUTCDateFromTime(flight_flightDate, flight_onDutyTime);
             flight_offDutyTime = FixedUTCDateFromTime(flight_flightDate, flight_offDutyTime, flight_onDutyTime);
 
-            LogbookEntry le = new LogbookEntry();
-
-            le.Date = flight_flightDate;
-            le.Route = JoinStrings(new string[] { flight_from, flight_route, flight_to });
-            le.TotalFlightTime = flight_totalTime;
-            le.PIC = flight_pic;
-            le.SIC = flight_sic;
-            le.Nighttime = flight_night;
-            le.CrossCountry = flight_crossCountry;
-            le.IMC = flight_actualInstrument;
-            le.SimulatedIFR = flight_simulatedInstrument;
-            le.Dual = flight_dualReceived;
-            le.CFI = flight_dualGiven;
-            le.GroundSim = flight_simulator;
-            le.Landings = flight_dayLandings + flight_nightLandings;
-            le.FullStopLandings = Math.Max(flight_fullStops - flight_nightLandings, 0);
-            le.NightLandings = flight_nightLandings;
-            le.fHoldingProcedures = flight_holds != 0;
-            le.Comment = JoinStrings(new string[] { flight_remarks,
+            LogbookEntry le = new LogbookEntry()
+            {
+                Date = flight_flightDate,
+                Route = JoinStrings(new string[] { flight_from, flight_route, flight_to }),
+                TotalFlightTime = flight_totalTime,
+                PIC = flight_pic,
+                SIC = flight_sic,
+                Nighttime = flight_night,
+                CrossCountry = flight_crossCountry,
+                IMC = flight_actualInstrument,
+                SimulatedIFR = flight_simulatedInstrument,
+                Dual = flight_dualReceived,
+                CFI = flight_dualGiven,
+                GroundSim = flight_simulator,
+                Landings = flight_dayLandings + flight_nightLandings,
+                FullStopLandings = Math.Max(flight_fullStops - flight_nightLandings, 0),
+                NightLandings = flight_nightLandings,
+                fHoldingProcedures = flight_holds != 0,
+                Comment = JoinStrings(new string[] { flight_remarks,
                 flight_selectedApproach1, flight_selectedApproach2, flight_selectedApproach3, flight_selectedApproach4, flight_selectedApproach5, flight_selectedApproach6, flight_selectedApproach7, flight_selectedApproach8, flight_selectedApproach9, flight_selectedApproach10,
-                flight_customNote1, flight_customNote2, flight_customNote3, flight_customNote4, flight_customNote5 });
-            le.TailNumDisplay = aircraft_aircraftID;
-            le.ModelDisplay = aircraftType_model;
+                flight_customNote1, flight_customNote2, flight_customNote3, flight_customNote4, flight_customNote5 }),
+                ModelDisplay = aircraftType_model,
 
-            if (String.IsNullOrEmpty(le.TailNumDisplay))
-                le.TailNumDisplay = (flight_simulator > 0) ? CountryCodePrefix.SimCountry.Prefix : CountryCodePrefix.AnonymousCountry.Prefix;
+                TailNumDisplay = (String.IsNullOrEmpty(aircraft_aircraftID) ? ((flight_simulator > 0) ? CountryCodePrefix.SimCountry.Prefix : CountryCodePrefix.AnonymousCountry.Prefix) : aircraft_aircraftID),
 
-            le.FlightStart = flight_takeoffTime;
-            le.FlightEnd = flight_landingTime;
-            le.EngineStart = flight_actualDepartureTime;
-            le.EngineEnd = flight_actualArrivalTime;
-            le.HobbsStart = flight_hobbsStart;
-            le.HobbsEnd = flight_hobbsStop;
+                FlightStart = flight_takeoffTime,
+                FlightEnd = flight_landingTime,
+                EngineStart = flight_actualDepartureTime,
+                EngineEnd = flight_actualArrivalTime,
+                HobbsStart = flight_hobbsStart,
+                HobbsEnd = flight_hobbsStop,
 
-            le.FlightData = flight_track;
+                FlightData = flight_track
+            };
 
-            // Add in known properties
-            le.CustomProperties = PropertiesWithoutNullOrDefault(new CustomFlightProperty[] {
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfPIC, flight_selectedCrewPIC),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfSIC, flight_selectedCrewSIC),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachStart, flight_tachStart),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachEnd, flight_tachStop),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, flight_solo),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNVGoggleTime, flight_nightVisionGoggle),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropWaterLandings, flight_waterLandings),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropWaterTakeoffs, flight_waterTakeoffs),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNVLandings, flight_nightVisionGoggleLandings),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, flight_onDutyTime, true),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, flight_offDutyTime, true),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, flight_nightTakeoffs),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropScheduledArrival, flight_scheduledArrivalTime, true),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropScheduledDeparture, flight_scheduledDepartureTime, true),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, flight_review),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIPC, flight_instrumentProficiencyCheck),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerNames, JoinStrings(new string[] { flight_selectedPax1, flight_selectedPax2, flight_selectedPax3, flight_selectedPax4, flight_selectedPax5, flight_selectedPax6, flight_selectedPax7, flight_selectedPax8, flight_selectedPax9, flight_selectedPax10 })),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, flight_flightNumber),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPilotFlyingTime, flight_pilotFlyingCapacity ? le.TotalFlightTime : 0),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropInstructorName, flight_selectedCrewInstructor),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, flight_ground),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerCount, flight_paxCount)
-            }).ToArray<CustomFlightProperty>();
+        // Add in known properties
+        le.CustomProperties.SetItems(new CustomFlightProperty[] {
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfPIC, flight_selectedCrewPIC),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfSIC, flight_selectedCrewSIC),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachStart, flight_tachStart),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTachEnd, flight_tachStop),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropSolo, flight_solo),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNVGoggleTime, flight_nightVisionGoggle),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropWaterLandings, flight_waterLandings),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropWaterTakeoffs, flight_waterTakeoffs),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNVLandings, flight_nightVisionGoggleLandings),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, flight_onDutyTime, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, flight_offDutyTime, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, flight_nightTakeoffs),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropScheduledArrival, flight_scheduledArrivalTime, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropScheduledDeparture, flight_scheduledDepartureTime, true),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightReview, flight_review),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropIPC, flight_instrumentProficiencyCheck),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerNames, JoinStrings(new string[] { flight_selectedPax1, flight_selectedPax2, flight_selectedPax3, flight_selectedPax4, flight_selectedPax5, flight_selectedPax6, flight_selectedPax7, flight_selectedPax8, flight_selectedPax9, flight_selectedPax10 })),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropFlightNumber, flight_flightNumber),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPilotFlyingTime, flight_pilotFlyingCapacity ? le.TotalFlightTime : 0),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropInstructorName, flight_selectedCrewInstructor),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived, flight_ground),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPassengerCount, flight_paxCount)
+            });
 
             return le;
         }
@@ -890,14 +888,13 @@ namespace MyFlightbook.ImportFlights
         {
             if (dt == null)
                 throw new ArgumentNullException("dt");
-            IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes();
             using (DataTable dtDst = new DataTable())
             {
                 dtDst.Locale = dt.Locale;
                 CSVImporter.InitializeDataTable(dtDst);
                 foreach(DataRow dr in dt.Rows)
                 {
-                    LogTenPro ltp = new LogTenPro(dr, rgcpt);
+                    LogTenPro ltp = new LogTenPro(dr);
                     CSVImporter.WriteEntryToDataTable(ltp.ToLogbookEntry(), dtDst);
                 }
                 return CsvWriter.WriteToString(dtDst, true, true);

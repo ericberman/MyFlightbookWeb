@@ -741,8 +741,8 @@ namespace MyFlightbook
                     throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
 
                 // In case this is being submitted without attached properties, copy over the properties that we just loaded
-                if (le.CustomProperties.Length == 0 && leExisting.CustomProperties.Length > 0)
-                    le.CustomProperties = leExisting.CustomProperties;
+                if (le.CustomProperties.Count == 0 && leExisting.CustomProperties.Count > 0)
+                    le.CustomProperties.SetItems(leExisting.CustomProperties);
                 else
                     CustomFlightProperty.FixUpDuplicateProperties(leExisting.CustomProperties, le.CustomProperties);
             }
@@ -825,7 +825,7 @@ namespace MyFlightbook
                     {
                         // Fix up property type - this isn't passed in consistently and breaks equality check!
                         if (le.CustomProperties == null)
-                            le.CustomProperties = new CustomFlightProperty[0];
+                            le.CustomProperties = new CustomPropertyCollection();
                         else
                         {
                             IEnumerable<CustomPropertyType> allProps = CustomPropertyType.GetCustomPropertyTypes();
@@ -956,7 +956,7 @@ namespace MyFlightbook
             {
                 LogbookEntry le = new LogbookEntry();
                 if (le.FLoadFromDB(idFlight, szUser))
-                    return le.CustomProperties;
+                    return le.CustomProperties.ToArray();
             }
             return null;
         }
@@ -982,17 +982,15 @@ namespace MyFlightbook
                 // we will only delete those properties in the flight which are in the array of property IDs.
                 if (le.FLoadFromDB(idFlight, szUser))
                 {
-                    System.Collections.Generic.List<CustomFlightProperty> lstCFP = new System.Collections.Generic.List<CustomFlightProperty>(le.CustomProperties);
-                    for (int i = le.CustomProperties.Length - 1; i >= 0; i--)
+                    foreach (int id in rgPropIds)
                     {
-                        for (int j = 0; j < rgPropIds.Length; j++)
-                            if (le.CustomProperties[i].PropID == rgPropIds[j])
-                            {
-                                lstCFP.Remove(le.CustomProperties[i]);
-                                le.CustomProperties[i].DeleteProperty();
-                            }
+                        CustomFlightProperty cfp = le.CustomProperties.FindEvent(c => c.PropID == id);
+                        if (cfp != null)
+                        {
+                            le.CustomProperties.RemoveItem(id);
+                            cfp.DeleteProperty();
+                        }
                     }
-                    le.CustomProperties = lstCFP.ToArray();
                 }
                 if (le.CFISignatureState != LogbookEntry.SignatureState.None)
                     le.FCommit(); // forces a refresh of the signature state
@@ -1009,9 +1007,7 @@ namespace MyFlightbook
         [WebMethod]
         public void DeletePropertyForFlight(string szAuthUserToken, int idFlight, int propId)
         {
-            int[] rgPropIds = new int[1];
-            rgPropIds[0] = propId;
-            DeletePropertiesForFlight(szAuthUserToken, idFlight, rgPropIds);
+            DeletePropertiesForFlight(szAuthUserToken, idFlight, new int[] { propId });
         }
 
         /// <summary>

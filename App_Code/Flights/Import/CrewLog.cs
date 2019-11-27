@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -59,7 +58,7 @@ namespace MyFlightbook.ImportFlights
         public int TRCK { get; set; }
         #endregion
 
-        public CrewLogFlight(DataRow dr, IEnumerable<CustomPropertyType> lstProps = null) : base(dr, lstProps)
+        public CrewLogFlight(DataRow dr) : base(dr)
         {
         }
 
@@ -112,13 +111,13 @@ namespace MyFlightbook.ImportFlights
             switch (REG)
             {
                 case "91":
-                    lst.Add(PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPart91, true));
+                    lst.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPart91, true));
                     break;
                 case "121":
-                    lst.Add(PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPart121, true));
+                    lst.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPart121, true));
                     break;
                 case "135":
-                    lst.Add(PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPart135, true));
+                    lst.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPart135, true));
                     break;
                 default:
                     break;
@@ -126,13 +125,13 @@ namespace MyFlightbook.ImportFlights
 
             lst.AddRange(new CustomFlightProperty[]
             {
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPilotFlyingTime, PF),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPilotMonitoringTime, PNF),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, NT),
-                PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTakeoffAny, DT)
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPilotFlyingTime, PF),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropPilotMonitoringTime, PNF),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, NT),
+                CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropTakeoffAny, DT)
             });
 
-            le.CustomProperties = le.CustomProperties = PropertiesWithoutNullOrDefault(lst).ToArray();
+            le.CustomProperties.SetItems(lst);
 
             return le;
         }
@@ -236,14 +235,13 @@ namespace MyFlightbook.ImportFlights
         {
             if (dt == null)
                 throw new ArgumentNullException("dt");
-            IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes();
             using (DataTable dtDst = new DataTable())
             {
                 dtDst.Locale = dt.Locale;
                 CSVImporter.InitializeDataTable(dtDst);
                 foreach (DataRow dr in dt.Rows)
                 {
-                    CrewLogFlight clf = new CrewLogFlight(dr, rgcpt);
+                    CrewLogFlight clf = new CrewLogFlight(dr);
                     CSVImporter.WriteEntryToDataTable(clf.ToLogbookEntry(), dtDst);
                 }
                 return CsvWriter.WriteToString(dtDst, true, true);
