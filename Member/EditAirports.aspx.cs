@@ -24,12 +24,7 @@ using System.Web.UI.WebControls;
 public partial class Member_EditAirports : System.Web.UI.Page
 {
     #region Webservices
-    /// <summary>
-    /// Returns the high-watermark starting hobbs for the specified aircraft.
-    /// </summary>
-    /// <returns>0 if unknown.</returns>
-    [WebMethod(EnableSession = true)]
-    public static void DeleteDupeUserAirport(string idDelete, string idMap, string szUser, string szType)
+    private static void CheckAdmin()
     {
         if (HttpContext.Current == null || HttpContext.Current.User == null || HttpContext.Current.User.Identity == null || !HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
             throw new UnauthorizedAccessException("You must be authenticated to make this call");
@@ -37,6 +32,16 @@ public partial class Member_EditAirports : System.Web.UI.Page
         Profile pf = MyFlightbook.Profile.GetUser(HttpContext.Current.User.Identity.Name);
         if (!pf.CanManageData)
             throw new UnauthorizedAccessException("You must be an admin to make this call");
+    }
+
+    /// <summary>
+    /// Deletes a user airport that matches a built-in airport
+    /// </summary>
+    /// <returns>0 if unknown.</returns>
+    [WebMethod(EnableSession = true)]
+    public static void DeleteDupeUserAirport(string idDelete, string idMap, string szUser, string szType)
+    {
+        CheckAdmin();
 
         airport apToDelete = new airport(idDelete, "(None)", 0, 0, szType, string.Empty, 0, szUser);
 
@@ -56,6 +61,55 @@ public partial class Member_EditAirports : System.Web.UI.Page
         }
         else
             throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error deleting airport {0}: {1}", apToDelete.Code, apToDelete.ErrorText));
+    }
+
+    /// <summary>
+    /// Sets the preferred flag for an airport
+    /// </summary>
+    [WebMethod(EnableSession = true)]
+    public static void SetPreferred(string szCode, string szType, bool fPreferred)
+    {
+        CheckAdmin();
+
+        AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType);
+        if (ap == null)
+            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
+
+        ap.SetPreferred(fPreferred);
+    }
+
+    /// <summary>
+    /// Makes a user-defined airport native (i.e., eliminates the source username; accepted as a "true" airport)
+    /// </summary>
+    [WebMethod(EnableSession = true)]
+    public static void MakeNative(string szCode, string szType)
+    {
+        CheckAdmin();
+
+        AdminAirport ap = AdminAirport.AirportWithCodeAndType(szCode, szType);
+        if (ap == null)
+            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found", szCode, szType));
+
+        ap.MakeNative();
+    }
+
+    /// <summary>
+    /// Copies the latitude/longitude from the source airport to the target airport.
+    /// </summary>
+    [WebMethod(EnableSession = true)]
+    public static void MergeWith(string szCodeTarget, string szTypeTarget, string szCodeSource)
+    {
+        CheckAdmin();
+
+        AdminAirport apTarget = AdminAirport.AirportWithCodeAndType(szCodeTarget, szTypeTarget);
+        if (apTarget == null)
+            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Target Airport {0} (type {1}) not found", szCodeTarget, szTypeTarget));
+
+        AdminAirport apSource = AdminAirport.AirportWithCodeAndType(szCodeSource, szTypeTarget);
+        if (apSource == null)
+            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Source Airport {0} (type {1}) not found", szCodeSource, szTypeTarget));
+
+        apTarget.MergeFrom(apSource);
     }
     #endregion
 
@@ -614,6 +668,21 @@ public partial class Member_EditAirports : System.Web.UI.Page
     protected string DeleteDupeScript(string user, string codeDelete, string codeMap, string type)
     { 
         return String.Format(CultureInfo.InvariantCulture, "deleteDupeUserAirport('{0}', '{1}', '{2}', '{3}', this); return false;", user, codeDelete, codeMap, type);
+    }
+
+    protected string SetPreferredScript(string szCode, string szType)
+    {
+        return String.Format(CultureInfo.InvariantCulture, "javascript:setPreferred('{0}', '{1}', this); return false;", szCode, szType);
+    }
+
+    protected string MakeNativeScript(string szCode, string szType)
+    {
+        return String.Format(CultureInfo.InvariantCulture, "javascript:makeNative('{0}', '{1}', this); return false; ", szCode, szType);
+    }
+
+    protected string MergeWithScript(string szCodeTarget, string szTypeTarget, string szCodeSrc)
+    {
+        return String.Format(CultureInfo.InvariantCulture, "javascript:mergeWith('{0}', '{1}', '{2}', this); return false;", szCodeTarget, szTypeTarget, szCodeSrc);
     }
 
     protected void sqlDSUserDupes_Selecting(object sender, SqlDataSourceSelectingEventArgs e)

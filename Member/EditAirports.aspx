@@ -254,6 +254,56 @@
                         success: function (response) { sender.parentElement.parentElement.style.display = 'none'; }
                     });
             }
+            function setPreferred(code, type, sender) {
+                var params = new Object();
+                params.szCode = code;
+                params.szType = type;
+                params.fPreferred = sender.checked;
+                var d = JSON.stringify(params);
+                $.ajax(
+                    {
+                        url: '<% =ResolveUrl("~/Member/EditAirports.aspx/SetPreferred") %>',
+                        type: "POST", data: d, dataType: "json", contentType: "application/json",
+                        error: function (xhr, status, error) {
+                            window.alert(xhr.responseJSON.Message);
+                        },
+                        complete: function (response) { },
+                        success: function (response) { sender.checked = params.fPreferred; }
+                    });
+            }
+            function makeNative(code, type, sender) {
+                var params = new Object();
+                params.szCode = code;
+                params.szType = type;
+                var d = JSON.stringify(params);
+                $.ajax(
+                    {
+                        url: '<% =ResolveUrl("~/Member/EditAirports.aspx/MakeNative") %>',
+                        type: "POST", data: d, dataType: "json", contentType: "application/json",
+                        error: function (xhr, status, error) {
+                            window.alert(xhr.responseJSON.Message);
+                        },
+                        complete: function (response) { },
+                        success: function (response) { sender.disabled = true; }
+                    });
+            }
+            function mergeWith(codeTarget, typeTarget, codeSource, sender) {
+                var params = new Object();
+                params.szCodeTarget = codeTarget;
+                params.szTypeTarget = typeTarget;
+                params.szCodeSource = codeSource;
+                var d = JSON.stringify(params);
+                $.ajax(
+                    {
+                        url: '<% =ResolveUrl("~/Member/EditAirports.aspx/MergeWith") %>',
+                        type: "POST", data: d, dataType: "json", contentType: "application/json",
+                        error: function (xhr, status, error) {
+                            window.alert(xhr.responseJSON.Message);
+                        },
+                        complete: function (response) { },
+                        success: function (response) { sender.disabled = true; }
+                    });
+            }
         </script>
         <asp:UpdateProgress ID="UpdateProgress2" runat="server" AssociatedUpdatePanelID="updpDupes">
             <ProgressTemplate>
@@ -272,12 +322,15 @@
                                 <asp:ImageButton ID="imgDeleteDupe1" ImageUrl="~/images/x.gif" CausesValidation="False" 
                                     AlternateText="Delete this airport" ToolTip="Delete this airport"
                                     OnClientClick='<%# DeleteDupeScript((string)Eval("user1"), (string)Eval("id1"), (string)Eval("id2"), (string)Eval("type1")) %>'
-                                    CommandArgument='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},{1},{2}", Eval("id1"), Eval("user1"), Eval("type1")) %>' runat="server" />
+                                    runat="server" />
                                 <asp:HyperLink ID="lnkID1" runat="server" Font-Bold="true" Text='<%# Eval("id1") %>' NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:clickAndZoom(new google.maps.LatLng({0}, {1}));", Eval("lat1"), Eval("lon1")) %>'></asp:HyperLink>
                                 <asp:Label ID="lblType1" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("type1")) %>'></asp:Label>
                                 <asp:Label ID="lblName1" runat="server" Text='<%# Eval("facname1") %>'></asp:Label>
                                 <asp:Label ID="lblUser1" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("user1")) %>' Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("user1")) %>'></asp:Label>
-                                <asp:Label ID="lblPreferred1" runat="server" Font-Bold="true" Visible='<%# ((int) Eval("pref1")) != 0 %>' Text="PREFERRED"></asp:Label>
+                                <br />&nbsp;&nbsp;&nbsp;
+                                <asp:Checkbox ID="lblPreferred1" runat="server" Checked='<%# ((int) Eval("pref1")) != 0 %>' Text="Preferred" onclick='<%# SetPreferredScript((string) Eval("id1"), (string) Eval("type1")) %>'></asp:Checkbox>
+                                <asp:Button ID="btnMerge" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "Merge from {0}", Eval("id2")) %>' OnClientClick='<%# MergeWithScript((string)Eval("id1"), (string)Eval("type1"), (string) Eval("id2")) %>' />
+                                <asp:Button ID="btnMakeNative" runat="server" Text="Make Native" OnClientClick='<%# MakeNativeScript((string)Eval("id1"), (string)Eval("type1")) %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Airport 2">
@@ -290,7 +343,9 @@
                                 <asp:Label ID="lblType2" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("type2")) %>'></asp:Label>
                                 <asp:Label ID="lblName2" runat="server" Text='<%# Eval("facname2") %>'></asp:Label>
                                 <asp:Label ID="lblUser2" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("user2")) %>' Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("user2")) %>'></asp:Label>
-                                <asp:Label ID="lblPreferred2" runat="server" Font-Bold="true" Visible='<%# ((int) Eval("pref2")) != 0 %>' Text="PREFERRED"></asp:Label>
+                                <br />&nbsp;&nbsp;&nbsp;
+                                <asp:Checkbox ID="lblPreferred2" runat="server" Checked='<%# ((int) Eval("pref2")) != 0 %>' Text="Preferred" onclick='<%# SetPreferredScript((string) Eval("id2"), (string) Eval("type2")) %>'></asp:Checkbox>
+                                <asp:Button ID="btnMerge" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "Merge from {0}", Eval("id1")) %>' OnClientClick='<%# MergeWithScript((string)Eval("id2"), (string)Eval("type2"), (string) Eval("id1")) %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>

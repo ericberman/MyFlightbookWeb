@@ -814,7 +814,7 @@ namespace MyFlightbook.Airports
         #endregion
 
         #region Finding/querying airports
-        private static string DefaultSelectStatement(string szDistComp)
+        protected static string DefaultSelectStatement(string szDistComp)
         {
             return String.Format(CultureInfo.InvariantCulture, "SELECT airports.*, navaidtypes.FriendlyName as FriendlyName, {0} AS dist FROM airports INNER JOIN navaidtypes ON (airports.Type = navaidtypes.code)", szDistComp);
         }
@@ -1226,6 +1226,82 @@ namespace MyFlightbook.Airports
             }
 
             return (ErrorText.Length == 0);
+        }
+    }
+
+    /// <summary>
+    /// Admin Functionality for airports
+    /// </summary>
+    [Serializable]
+    public class AdminAirport : airport
+    {
+        #region Properties
+        #endregion
+
+        #region constructors
+        public AdminAirport() : base() { }
+
+        public AdminAirport(MySqlDataReader dr) : base(dr) { }
+        #endregion
+
+        public static AdminAirport AirportWithCodeAndType(string szCode, string szType)
+        {
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "{0} WHERE airportID=?code AND type=?type", DefaultSelectStatement("0.0")));
+            AdminAirport result = null;
+            dbh.ReadRows((comm) =>
+            {
+                comm.Parameters.AddWithValue("code", szCode);
+                comm.Parameters.AddWithValue("type", szType);
+            },
+            (dr) => { result = new AdminAirport(dr); });
+            return result;
+        }
+
+        /// <summary>
+        /// Sets/unsets the preferred flag for this airport
+        /// </summary>
+        /// <param name="fPreferred"></param>
+        public void SetPreferred(bool fPreferred)
+        {
+            DBHelper dbh = new DBHelper("UPDATE airports SET Preferred = ?pref WHERE airportID=?Code && Type=?Type");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("pref", fPreferred ? 1 : 0);
+                comm.Parameters.AddWithValue("Code", this.Code);
+                comm.Parameters.AddWithValue("Type", this.FacilityTypeCode);
+            });
+            if (!String.IsNullOrEmpty(dbh.LastError))
+                throw new MyFlightbookException("Error Making preferred: " + dbh.LastError);
+        }
+
+        public void MakeNative()
+        {
+            if (String.IsNullOrEmpty(UserName))
+                throw new MyFlightbookException("Airport is already native");
+
+            DBHelper dbh = new DBHelper("UPDATE airports SET SourceUserName = '' WHERE airportID=?Code && Type=?Type");
+            dbh.DoNonQuery((comm) =>
+            {
+                comm.Parameters.AddWithValue("Code", this.Code);
+                comm.Parameters.AddWithValue("Type", this.FacilityTypeCode);
+            });
+            if (!String.IsNullOrEmpty(dbh.LastError))
+                throw new MyFlightbookException("Error Making Native: " + dbh.LastError);
+        }
+
+        /// <summary>
+        /// Merges the latitude/longitude from the specified airport
+        /// </summary>
+        /// <param name="apSource"></param>
+        /// <param name="MakeNative"></param>
+        public void MergeFrom(AdminAirport apSource)
+        {
+            if (apSource == null)
+                throw new ArgumentNullException("apSource");
+
+            LatLong = apSource.LatLong;
+            if (!FCommit(fAdmin:true))
+                throw new MyFlightbookException("Error merging airport: " + ErrorText);
         }
     }
 
