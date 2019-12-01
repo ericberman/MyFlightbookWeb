@@ -23,7 +23,6 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
 public partial class Member_Admin : System.Web.UI.Page
 {
     private const string szTemplateAircraftOfModelType = "SELECT * FROM aircraft WHERE idmodel={0}";

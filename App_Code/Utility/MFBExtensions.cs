@@ -334,20 +334,30 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public static byte[] Compress(this string str)
         {
             var bytes = Encoding.UTF8.GetBytes(str);
 
             using (var msi = new MemoryStream(bytes))
-            using (var mso = new MemoryStream())
             {
-                using (var gs = new System.IO.Compression.GZipStream(mso, System.IO.Compression.CompressionMode.Compress))
+                MemoryStream mso = null;
+                MemoryStream result = null;
+                try
                 {
-                    msi.CopyTo(gs);
-                }
+                    result = mso = new MemoryStream();
+                    using (var gs = new System.IO.Compression.GZipStream(mso, System.IO.Compression.CompressionMode.Compress, true))
+                    {
+                        mso = null; // CA2202
+                        msi.CopyTo(gs);
+                    }
 
-                return mso.ToArray();
+                    return result.ToArray();
+                }
+                finally
+                {
+                    if (mso != null)
+                        mso.Dispose();
+                }
             }
         }
 
@@ -356,15 +366,24 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public static string Uncompress(this byte[] bytes)
         {
-            using (var msi = new MemoryStream(bytes))
             using (var mso = new MemoryStream())
             {
-                using (var gs = new System.IO.Compression.GZipStream(msi, System.IO.Compression.CompressionMode.Decompress))
+                MemoryStream msi = null;
+                try
                 {
-                    gs.CopyTo(mso);
+                    msi = new MemoryStream(bytes);
+                    using (var gs = new System.IO.Compression.GZipStream(msi, System.IO.Compression.CompressionMode.Decompress, true))
+                    {
+                        msi = null;
+                        gs.CopyTo(mso);
+                    }
+                }
+                finally
+                {
+                    if (msi != null)
+                        msi.Dispose();
                 }
 
                 return Encoding.UTF8.GetString(mso.ToArray());

@@ -1,16 +1,14 @@
 using System;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-using System.Collections;
 
 namespace gma.Drawing.ImageInfo
 {
-	///<summary>This class is designed to transform from PropertyItem received by calling 
-	/// Image.GetPropertyItem() method. It transforms also the data that are stored in PropertyItem.Value byte array to ordinary .NET types.
-	///</summary>
-	public class PropertyTag
+    ///<summary>This class is designed to transform from PropertyItem received by calling 
+    /// Image.GetPropertyItem() method. It transforms also the data that are stored in PropertyItem.Value byte array to ordinary .NET types.
+    ///</summary>
+    public class PropertyTag
 	{
-		PropertyItem _prop;
+		readonly PropertyItem _prop;
 	
 		///<summary></summary>
 		/// <param name="aPropertyItem"></param>
@@ -20,7 +18,6 @@ namespace gma.Drawing.ImageInfo
 		}
 		
 		///<summary>Specifies the data type of the values stored in the value of that PropertyItem object. Note that this are not ordinary .NET types.</summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods")]
         public PropertyTagType Type 
 		{
 			get {return (PropertyTagType)_prop.Type;}
@@ -46,10 +43,9 @@ namespace gma.Drawing.ImageInfo
 			get{return getValue(_prop);}
 		}
 	
-		private static System.Text.ASCIIEncoding _encoding = new System.Text.ASCIIEncoding();
+		private readonly static System.Text.ASCIIEncoding _encoding = new System.Text.ASCIIEncoding();
 		///<summary>Transformes value of the PropertyItem.Value byte array to apropriate .NET Framework type.</summary>
 		/// <param name="aPropertyItem"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public static Object getValue(PropertyItem aPropertyItem)
 		{
 			if (aPropertyItem==null) return null;
@@ -82,7 +78,7 @@ namespace gma.Drawing.ImageInfo
 							uint uDenominator;
 							for (int i=0; i<_resultRational.Length; i++)
 							{
-								uNominator=1;
+								//uNominator=1;
 								uNominator 	 = BitConverter.ToUInt32(aPropertyItem.Value, i*(64 / 8)  );
 								uDenominator  = BitConverter.ToUInt32(aPropertyItem.Value, (i*(64 / 8)) + (32/8));
 

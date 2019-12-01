@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2018 MyFlightbook LLC
+ * Copyright (c) 2016-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  * 
  * Much of the code in this file came from DotNetOpenAuth.
@@ -484,13 +484,11 @@ namespace OAuthAuthorizationServer.Code
 
         public AccessTokenResult CreateAccessToken(IAccessTokenRequest accessTokenRequestMessage)
         {
-            var accessToken = new AuthorizationServerAccessToken();
-
             // Just for the sake of the sample, we use a short-lived token.  This can be useful to mitigate the security risks
             // of access tokens that are used over standard HTTP.
             // But this is just the lifetime of the access token.  The client can still renew it using their refresh token until
             // the authorization itself expires.
-            accessToken.Lifetime = TimeSpan.FromDays(14);
+            var accessToken = new AuthorizationServerAccessToken() { Lifetime = TimeSpan.FromDays(14) };
 
             // Also take into account the remaining life of the authorization and artificially shorten the access token's lifetime
             // to account for that if necessary.
@@ -701,9 +699,11 @@ namespace OAuthAuthorizationServer.Code
             // As we generate a new random key, we need to set the UseMachineKeyStore flag so that this doesn't
             // crash on IIS. For more information: 
             // http://social.msdn.microsoft.com/Forums/en-US/clr/thread/7ea48fd0-8d6b-43ed-b272-1a0249ae490f?prof=required
-            CspParameters cp = new CspParameters();
-            cp.Flags = CspProviderFlags.UseArchivableKey | CspProviderFlags.UseMachineKeyStore;
-            cp.KeyContainerName = ContainerName;
+            CspParameters cp = new CspParameters()
+            {
+                Flags = CspProviderFlags.UseArchivableKey | CspProviderFlags.UseMachineKeyStore,
+                KeyContainerName = ContainerName
+            };
             return cp;
         }
 

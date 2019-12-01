@@ -33,7 +33,6 @@ namespace MyFlightbook.Telemetry
         /// </summary>
         /// <param name="flightData"></param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         private string FixedFlightData(string flightData)
         {
             // Android:   LAT,LON,PALT,SPEED,HERROR,DATE,COMMENT\r\n
@@ -43,30 +42,40 @@ namespace MyFlightbook.Telemetry
                 return flightData;
 
             StringBuilder sbNew = new StringBuilder();
-            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(flightData)))
-            using (CSVReader csvr = new CSVReader(ms))
+            MemoryStream ms = null;
+            try
             {
-                string[] rgszHeader = csvr.GetCSVLine();
-                sbNew.AppendFormat(CultureInfo.InvariantCulture, "{0}\r\n", String.Join(",", rgszHeader));
-                string[] rgszRow = null;
-                while ((rgszRow = csvr.GetCSVLine()) != null)
+                ms = new MemoryStream(Encoding.UTF8.GetBytes(flightData));
+                using (CSVReader csvr = new CSVReader(ms))
                 {
-                    if (rgszRow.Length != 11)   // give up if not 10 elements - otherwise we could fuck things up or have an exception below
-                        return flightData;
-                    sbNew.AppendFormat(CultureInfo.InvariantCulture, "{0}.{1},{2}.{3},{4},{5}.{6},{7}.{8},\"{9}\",\"{10}\"\r\n",
-                        rgszRow[0], // Lat - integer
-                        rgszRow[1], // Lat - fraction
-                        rgszRow[2], // Lon, integer
-                        rgszRow[3], // Lon, fraction
-                        rgszRow[4], // PALT - is an integer
-                        rgszRow[5], // Speed - integer
-                        rgszRow[6], // Speed - fraction
-                        rgszRow[7], // HError - integer
-                        rgszRow[8], // Herror - Fraction
-                        rgszRow[9], // Date
-                        rgszRow[10] // Comment, if any
-                        );
+                    ms = null;  // for CA2202
+                    string[] rgszHeader = csvr.GetCSVLine();
+                    sbNew.AppendFormat(CultureInfo.InvariantCulture, "{0}\r\n", String.Join(",", rgszHeader));
+                    string[] rgszRow = null;
+                    while ((rgszRow = csvr.GetCSVLine()) != null)
+                    {
+                        if (rgszRow.Length != 11)   // give up if not 10 elements - otherwise we could fuck things up or have an exception below
+                            return flightData;
+                        sbNew.AppendFormat(CultureInfo.InvariantCulture, "{0}.{1},{2}.{3},{4},{5}.{6},{7}.{8},\"{9}\",\"{10}\"\r\n",
+                            rgszRow[0], // Lat - integer
+                            rgszRow[1], // Lat - fraction
+                            rgszRow[2], // Lon, integer
+                            rgszRow[3], // Lon, fraction
+                            rgszRow[4], // PALT - is an integer
+                            rgszRow[5], // Speed - integer
+                            rgszRow[6], // Speed - fraction
+                            rgszRow[7], // HError - integer
+                            rgszRow[8], // Herror - Fraction
+                            rgszRow[9], // Date
+                            rgszRow[10] // Comment, if any
+                            );
+                    }
                 }
+            }
+            finally
+            {
+                if (ms != null)
+                    ms.Dispose();
             }
 
             return sbNew.ToString();
@@ -238,7 +247,6 @@ namespace MyFlightbook.Telemetry
         /// </summary>
         /// <param name="flightData">The string of flight data</param>
         /// <returns>True for success</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public override bool Parse(string szData)
         {
             StringBuilder sbErr = new StringBuilder();
@@ -248,10 +256,13 @@ namespace MyFlightbook.Telemetry
 
             string flightData = FixedFlightData(szData);
 
-            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(flightData)))
+            MemoryStream ms = null;
+            try
             {
+                ms = new MemoryStream(Encoding.UTF8.GetBytes(flightData));
                 using (CSVReader csvr = new CSVReader(ms))
                 {
+                    ms = null;
                     try
                     {
                         string[] rgszHeader = null;
@@ -324,6 +335,11 @@ namespace MyFlightbook.Telemetry
                     {
                     }
                 }
+            }
+            finally
+            {
+                if (ms != null)
+                    ms.Dispose();
             }
 
             ErrorString = sbErr.ToString();

@@ -32,7 +32,6 @@ public partial class makes : System.Web.UI.Page
     }
 
     [WebMethod()]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
     public static string[] HtmlRowsForMakes(string szRestrict, int skip, int pageSize)
     {
         List<string> lst = new List<string>();
@@ -42,8 +41,8 @@ public partial class makes : System.Web.UI.Page
         using (Page p = new FormlessPage())
         {
             p.Controls.Add(new HtmlForm());
-            using (StringWriter sw = new StringWriter(CultureInfo.CurrentCulture))
-                HttpContext.Current.Server.Execute(p, sw, false);
+            using (StringWriter sw1 = new StringWriter(CultureInfo.CurrentCulture))
+                HttpContext.Current.Server.Execute(p, sw1, false);
 
             ModelQuery mq = JsonConvert.DeserializeObject<ModelQuery>(szRestrict);
             mq.Skip = skip;
@@ -60,9 +59,13 @@ public partial class makes : System.Web.UI.Page
                 tc.Controls.Add(mli);
                 // Now, write it out.
                 StringBuilder sb = new StringBuilder();
-                using (StringWriter sw = new StringWriter(sb, CultureInfo.CurrentCulture))
+                StringWriter sw = null;
+                try
+                {
+                    sw = new StringWriter(sb, CultureInfo.CurrentCulture);
                     using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
                     {
+                        sw = null;
                         try
                         {
                             mli.SortMode = mq.SortMode;
@@ -73,6 +76,12 @@ public partial class makes : System.Web.UI.Page
                         }
                         catch (ArgumentException) { } // don't write bogus or incomplete HTML
                     }
+                }
+                finally
+                {
+                    if (sw != null)
+                        sw.Dispose();
+                }
             }
         }
 

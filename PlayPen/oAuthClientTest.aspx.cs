@@ -69,18 +69,20 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
     protected void ToSession()
     {
-        PageState ps = new PageState();
+        PageState ps = new PageState()
+        {
 
-        ps.AuthURL = txtAuthURL.Text;
-        ps.TokenURL = txtTokenURL.Text;
-        ps.ResourceURL = txtResourceURL.Text;
-        ps.ClientID = txtClientID.Text;
-        ps.ClientSecret = txtClientSecret.Text;
-        ps.RedirectURL = txtRedirectURL.Text;
-        ps.Scope = txtScope.Text;
-        ps.State = txtState.Text;
-        ps.Authorization = lblAuthorization.Text;
-        ps.Token = lblToken.Text;
+            AuthURL = txtAuthURL.Text,
+            TokenURL = txtTokenURL.Text,
+            ResourceURL = txtResourceURL.Text,
+            ClientID = txtClientID.Text,
+            ClientSecret = txtClientSecret.Text,
+            RedirectURL = txtRedirectURL.Text,
+            Scope = txtScope.Text,
+            State = txtState.Text,
+            Authorization = lblAuthorization.Text,
+            Token = lblToken.Text
+        };
         CurrentPageState = ps;
     }
 
@@ -130,10 +132,12 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
     protected AuthorizationServerDescription Description()
     {
-        AuthorizationServerDescription desc = new AuthorizationServerDescription();
-        desc.AuthorizationEndpoint = new Uri(txtAuthURL.Text);
-        desc.ProtocolVersion = ProtocolVersion.V20;
-        desc.TokenEndpoint = new Uri(txtTokenURL.Text);
+        AuthorizationServerDescription desc = new AuthorizationServerDescription()
+        {
+            AuthorizationEndpoint = new Uri(txtAuthURL.Text),
+            ProtocolVersion = ProtocolVersion.V20,
+            TokenEndpoint = new Uri(txtTokenURL.Text)
+        };
         return desc;
     }
 
@@ -180,8 +184,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         try
         {
             ToSession();
-            WebServerClient consumer = new WebServerClient(Description(), CurrentPageState.ClientID, CurrentPageState.ClientSecret);
-            consumer.ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(CurrentPageState.ClientSecret);
+            WebServerClient consumer = new WebServerClient(Description(), CurrentPageState.ClientID, CurrentPageState.ClientSecret) { ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(CurrentPageState.ClientSecret) };
             IAuthorizationState grantedAccess = consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
 
             if (grantedAccess == null)
@@ -318,8 +321,6 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "FXCop is reporting a false positive for stringcontent below")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     protected void btnPostResource_Click(object sender, EventArgs e)
     {
         ToSession();
@@ -342,9 +343,11 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
             if (fuImage.HasFile)
             {
-                StreamContent sc = new StreamContent(fuImage.FileContent);
-                sc.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(fuImage.PostedFile.ContentType);
-                form.Add(sc, "imgPicture", fuImage.FileName);
+                using (StreamContent sc = new StreamContent(fuImage.FileContent))
+                {
+                    sc.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(fuImage.PostedFile.ContentType);
+                    form.Add(sc, "imgPicture", fuImage.FileName);
+                }
             }
 
             using (HttpClient httpClient = new HttpClient())
@@ -395,10 +398,10 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
     {
         get
         {
-            OAuthServiceID action = OAuthServiceID.currency;
+            OAuthServiceID action;
             if (Enum.TryParse(cmbResourceAction.SelectedValue, out action))
                 return action;
-            return action;
+            return OAuthServiceID.currency;
         }
     }
 

@@ -88,7 +88,6 @@ namespace MyFlightbook.Encryptors
             m_szPassFallback = szBackup;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         private string Decrypt(string TextToBeDecrypted, string szPass, bool fUseFallbackOnFail)
         {
             using (RijndaelManaged RijndaelCipher = new RijndaelManaged())
@@ -106,17 +105,24 @@ namespace MyFlightbook.Encryptors
                         //Creates a symmetric Rijndael decryptor object.
                         ICryptoTransform Decryptor = RijndaelCipher.CreateDecryptor(SecretKey.GetBytes(32), SecretKey.GetBytes(16));
 
-                        using (MemoryStream memoryStream = new MemoryStream(EncryptedData))
-                        {
+                        MemoryStream memoryStream = null;
+                        try {
+                            memoryStream = new MemoryStream(EncryptedData);
                             //Defines the cryptographics stream for decryption.THe stream contains decrpted data
                             using (CryptoStream cryptoStream = new CryptoStream(memoryStream, Decryptor, CryptoStreamMode.Read))
                             {
+                                memoryStream = null;
                                 byte[] PlainText = new byte[EncryptedData.Length];
                                 int DecryptedCount = cryptoStream.Read(PlainText, 0, PlainText.Length);
 
                                 //Converting to string
                                 DecryptedData = Encoding.Unicode.GetString(PlainText, 0, DecryptedCount);
                             }
+                        }
+                        finally
+                        {
+                            if (memoryStream != null)
+                                memoryStream.Dispose();
                         }
                     }
                 }
@@ -138,7 +144,6 @@ namespace MyFlightbook.Encryptors
             return Decrypt(TextToBeDecrypted, m_szPass, !String.IsNullOrEmpty(m_szPassFallback));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public string Encrypt(string TextToBeEncrypted)
         {
             using (RijndaelManaged RijndaelCipher = new RijndaelManaged())
@@ -151,17 +156,25 @@ namespace MyFlightbook.Encryptors
 
                     //Creates a symmetric encryptor object. 
                     ICryptoTransform Encryptor = RijndaelCipher.CreateEncryptor(SecretKey.GetBytes(32), SecretKey.GetBytes(16));
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
+                    MemoryStream memoryStream = null;
+                    MemoryStream result = null;
+                    try {
+                        result = memoryStream = new MemoryStream();
                         //Defines a stream that links data streams to cryptographic transformations
                         using (CryptoStream cryptoStream = new CryptoStream(memoryStream, Encryptor, CryptoStreamMode.Write))
                         {
+                            memoryStream = null;    // CA2202
                             cryptoStream.Write(PlainText, 0, PlainText.Length);
                             //Writes the final state and clears the buffer
                             cryptoStream.FlushFinalBlock();
-                            byte[] CipherBytes = memoryStream.ToArray();
+                            byte[] CipherBytes = result.ToArray();
                             EncryptedData = Convert.ToBase64String(CipherBytes);
                         }
+                    }
+                    finally
+                    {
+                        if (memoryStream != null)
+                            memoryStream.Dispose();
                     }
                     return EncryptedData;
                 }

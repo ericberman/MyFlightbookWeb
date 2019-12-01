@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2018 MyFlightbook LLC
+ * Copyright (c) 2014-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -24,7 +24,6 @@ public partial class Public_Clubs : System.Web.UI.Page
     public enum AuthState { Unauthenticated, Unauthorized, Authorized }
 
     [System.Web.Services.WebMethod(EnableSession=true)]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
     public static string PopulateClub(int idClub) 
     {
         StringBuilder sb = new StringBuilder();
@@ -36,8 +35,8 @@ public partial class Public_Clubs : System.Web.UI.Page
             using (Page p = new FormlessPage())
             {
                 p.Controls.Add(new HtmlForm());
-                using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))
-                    HttpContext.Current.Server.Execute(p, sw, false);
+                using (StringWriter sw1 = new StringWriter(CultureInfo.InvariantCulture))
+                    HttpContext.Current.Server.Execute(p, sw1, false);
 
                 HttpRequest r = HttpContext.Current.Request;
                 if (!r.IsLocal && !r.UrlReferrer.Host.EndsWith(Branding.CurrentBrand.HostName, StringComparison.OrdinalIgnoreCase))
@@ -53,9 +52,21 @@ public partial class Public_Clubs : System.Web.UI.Page
                 p.Form.Controls.Add(vc);
 
                 // Now, write it out.
-                using (StringWriter sw = new StringWriter(sb, CultureInfo.InvariantCulture))
-                using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
-                    vc.RenderControl(htmlTW);
+                StringWriter sw = null;
+                try
+                {
+                    sw = new StringWriter(sb, CultureInfo.InvariantCulture);
+                    using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
+                    {
+                        sw = null;
+                        vc.RenderControl(htmlTW);
+                    }
+                }
+                finally
+                {
+                    if (sw != null)
+                        sw.Dispose();
+                }
             }
         }
         catch (MyFlightbookException ex)
