@@ -329,7 +329,7 @@
                                 <asp:Label ID="lblUser1" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("user1")) %>' Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("user1")) %>'></asp:Label>
                                 <br />&nbsp;&nbsp;&nbsp;
                                 <asp:Checkbox ID="lblPreferred1" runat="server" Checked='<%# ((int) Eval("pref1")) != 0 %>' Text="Preferred" onclick='<%# SetPreferredScript((string) Eval("id1"), (string) Eval("type1")) %>'></asp:Checkbox>
-                                <asp:Button ID="btnMerge" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "Merge from {0}", Eval("id2")) %>' OnClientClick='<%# MergeWithScript((string)Eval("id1"), (string)Eval("type1"), (string) Eval("id2")) %>' />
+                                <asp:Button ID="btnMerge1" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "Merge from {0}", Eval("id2")) %>' OnClientClick='<%# MergeWithScript((string)Eval("id1"), (string)Eval("type1"), (string) Eval("id2")) %>' />
                                 <asp:Button ID="btnMakeNative" runat="server" Text="Make Native" OnClientClick='<%# MakeNativeScript((string)Eval("id1"), (string)Eval("type1")) %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
@@ -345,7 +345,7 @@
                                 <asp:Label ID="lblUser2" runat="server" Visible='<%# !String.IsNullOrEmpty((string) Eval("user2")) %>' Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "({0})", Eval("user2")) %>'></asp:Label>
                                 <br />&nbsp;&nbsp;&nbsp;
                                 <asp:Checkbox ID="lblPreferred2" runat="server" Checked='<%# ((int) Eval("pref2")) != 0 %>' Text="Preferred" onclick='<%# SetPreferredScript((string) Eval("id2"), (string) Eval("type2")) %>'></asp:Checkbox>
-                                <asp:Button ID="btnMerge" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "Merge from {0}", Eval("id1")) %>' OnClientClick='<%# MergeWithScript((string)Eval("id2"), (string)Eval("type2"), (string) Eval("id1")) %>' />
+                                <asp:Button ID="btnMerge2" runat="server" Text='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, "Merge from {0}", Eval("id1")) %>' OnClientClick='<%# MergeWithScript((string)Eval("id2"), (string)Eval("type2"), (string) Eval("id1")) %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
