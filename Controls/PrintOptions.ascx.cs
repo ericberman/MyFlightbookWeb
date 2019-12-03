@@ -68,6 +68,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             cmbFlightsPerPage.SelectedValue = m_options.FlightsPerPage.ToString(CultureInfo.InvariantCulture);
             ckIncludeImages.Checked = m_options.IncludeImages;
             ckIncludeSignatures.Checked = m_options.IncludeSignatures;
+            ckBreakAtMonth.Checked = m_options.BreakAtMonthBoundary;
             cmbLayout.SelectedValue = m_options.Layout.ToString();
             rblPropertySeparator.SelectedValue = m_options.PropertySeparator.ToString();
 
