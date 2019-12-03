@@ -1534,4 +1534,7 @@
   <data name="CustomTimeZone" xml:space="preserve">
     <value>Custom TZ</value>
   </data>
+  <data name="CopyToClipboard" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
 </root>
