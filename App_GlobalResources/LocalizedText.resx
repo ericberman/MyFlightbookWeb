@@ -1537,4 +1537,7 @@
   <data name="CopyToClipboard" xml:space="preserve">
     <value>Copy to clipboard</value>
   </data>
+  <data name="PrintViewBreakMonth" xml:space="preserve">
+    <value>Start each month on a new page</value>
+  </data>
 </root>

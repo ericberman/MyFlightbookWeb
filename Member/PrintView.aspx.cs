@@ -201,7 +201,7 @@ public partial class Member_PrintView : System.Web.UI.Page
 
         Master.PrintingCSS = pl.CSSPath.ToAbsoluteURL(Request).ToString();
 
-        pt.BindPages(LogbookPrintedPage.Paginate(lstFlights, printingOptions.FlightsPerPage, printingOptions.OptionalColumns, printingOptions.IncludePullForwardTotals), CurrentUser, printingOptions, !SuppressFooter);
+        pt.BindPages(LogbookPrintedPage.Paginate(lstFlights, printingOptions), CurrentUser, printingOptions, !SuppressFooter);
 
         pnlResults.Visible = true;
     }

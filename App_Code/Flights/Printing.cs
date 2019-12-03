@@ -308,6 +308,11 @@ namespace MyFlightbook.Printing
         public bool IncludeSignatures { get; set; }
 
         /// <summary>
+        /// Start a new page when encountering a month boundary (non-continuous only)
+        /// </summary>
+        public bool BreakAtMonthBoundary { get; set; }
+
+        /// <summary>
         /// Layout to use
         /// </summary>
         public PrintLayoutType Layout { get; set; }
@@ -364,6 +369,7 @@ namespace MyFlightbook.Printing
             IncludeImages = false;
             IncludePullForwardTotals = true;
             IncludeSignatures = true;
+            BreakAtMonthBoundary = false;
             DisplayMode = ModelDisplayMode.Full;
             Layout = PrintLayoutType.Native;
             ExcludedPropertyIDs = new int[0];
@@ -583,14 +589,14 @@ namespace MyFlightbook.Printing
         /// Inserts subtotals into an enumerable set of flights, returning an enumerable set of LogbookPrintedPages.
         /// </summary>
         /// <param name="lstIn">The input set of flights.  Should be ALL RowType=Flight and should have rowheight property set</param>
-        /// <param name="pageSize">Max # of flights per table to subtotal; flights with rowheight > 1 will take up more rows</param>
-        /// <param name="optionalColumns">Any optional columns to add</param>
-        /// <param name="pullForwardTotals">Whether or not to pull forward totals from the previous page</param>
+        /// <param name="po">Options that guide pagination</param>
         /// <returns>A new enumerable with per-page subtotals and (optional) running totals</returns>
-        public static IEnumerable<LogbookPrintedPage> Paginate(IEnumerable<LogbookEntryDisplay> lstIn, int pageSize, OptionalColumn[] optionalColumns, bool pullForwardTotals)
+        public static IEnumerable<LogbookPrintedPage> Paginate(IEnumerable<LogbookEntryDisplay> lstIn, PrintingOptions po)
         {
             if (lstIn == null)
                 throw new ArgumentNullException("lstIn");
+            if (po == null)
+                throw new ArgumentNullException("po");
             int cIn = lstIn.Count();
             if (cIn == 0)
                 return new LogbookPrintedPage[0];
@@ -610,10 +616,17 @@ namespace MyFlightbook.Printing
             int index = 0;
             int pageNum = 0;
 
+            DateTime? dtLastEntry = null;
+
             foreach (LogbookEntryDisplay led in lstIn)
             {
-                led.OptionalColumns = optionalColumns;
-                if ((pageSize > 0 && flightIndexOnPage >= pageSize) || currentPage == null)   // need to start a new page.
+                // force a page break if a new month is starting IF the option to do so has been set
+                if (po.FlightsPerPage > 0 && po.BreakAtMonthBoundary && dtLastEntry != null && dtLastEntry.HasValue && (led.Date.Month != dtLastEntry.Value.Month || led.Date.Year != dtLastEntry.Value.Year))
+                    flightIndexOnPage = po.FlightsPerPage;
+
+                dtLastEntry = led.Date;
+                led.OptionalColumns = po.OptionalColumns;
+                if ((po.FlightsPerPage > 0 && flightIndexOnPage >= po.FlightsPerPage) || currentPage == null)   // need to start a new page.
                 {
                     flightIndexOnPage = 0;  // reset
                     dictPageTotals = new Dictionary<string, LogbookEntryDisplay>();
@@ -646,14 +659,14 @@ namespace MyFlightbook.Printing
                 lstFlightsThisPage.Add(led);
 
                 // And add the flight to the page catclass totals and running catclass totals
-                if (pageSize > 0)
+                if (po.FlightsPerPage > 0)
                 {
                     if (!dictPageTotals.ContainsKey(szCatClassKey))
-                        dictPageTotals[szCatClassKey] = new LogbookEntryDisplay() { RowType = LogbookEntryDisplay.LogbookRowType.PageTotal, CatClassDisplay = szCatClassKey, OptionalColumns = optionalColumns };
+                        dictPageTotals[szCatClassKey] = new LogbookEntryDisplay() { RowType = LogbookEntryDisplay.LogbookRowType.PageTotal, CatClassDisplay = szCatClassKey, OptionalColumns = po.OptionalColumns };
                     dictPageTotals[szCatClassKey].AddFrom(led);
                 }
                 if (!dictRunningTotals.ContainsKey(szCatClassKey))
-                    dictRunningTotals[szCatClassKey] = new LogbookEntryDisplay() { RowType = LogbookEntryDisplay.LogbookRowType.RunningTotal, CatClassDisplay = szCatClassKey, OptionalColumns = optionalColumns };
+                    dictRunningTotals[szCatClassKey] = new LogbookEntryDisplay() { RowType = LogbookEntryDisplay.LogbookRowType.RunningTotal, CatClassDisplay = szCatClassKey, OptionalColumns = po.OptionalColumns };
                 dictRunningTotals[szCatClassKey].AddFrom(led);
             }
 
@@ -661,9 +674,9 @@ namespace MyFlightbook.Printing
             foreach (LogbookPrintedPage lpp in lstOut)
             {
                 // And add unstriped totals as needed
-                ConsolidateTotals(lpp.TotalsThisPage, LogbookEntryDisplay.LogbookRowType.PageTotal, optionalColumns);
-                ConsolidateTotals(lpp.TotalsPreviousPages, LogbookEntryDisplay.LogbookRowType.PreviousTotal, optionalColumns);
-                ConsolidateTotals(lpp.RunningTotals, LogbookEntryDisplay.LogbookRowType.RunningTotal, optionalColumns);
+                ConsolidateTotals(lpp.TotalsThisPage, LogbookEntryDisplay.LogbookRowType.PageTotal, po.OptionalColumns);
+                ConsolidateTotals(lpp.TotalsPreviousPages, LogbookEntryDisplay.LogbookRowType.PreviousTotal, po.OptionalColumns);
+                ConsolidateTotals(lpp.RunningTotals, LogbookEntryDisplay.LogbookRowType.RunningTotal, po.OptionalColumns);
 
                 lpp.TotalPages = pageNum;
                 int iTotal = 0;
@@ -676,7 +689,7 @@ namespace MyFlightbook.Printing
                 foreach (LogbookEntryDisplay lep in lpp.RunningTotals.Values)
                     lep.Index = iTotal++;
 
-                if (!pullForwardTotals)
+                if (!po.IncludePullForwardTotals)
                     lpp.TotalsPreviousPages.Clear();
             }
 

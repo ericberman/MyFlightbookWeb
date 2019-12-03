@@ -25,6 +25,7 @@
         <asp:ListItem Value="-1" Text="<%$ Resources:LocalizedText, PrintViewAsFit %>"></asp:ListItem>
     </asp:DropDownList>
     <div><asp:CheckBox ID="ckPullForwardTotals" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludePreviousPageTotals %>" Checked="true" AutoPostBack="true" OnCheckedChanged="ckPullForwardTotals_CheckedChanged" /></div>
+    <div><asp:CheckBox ID="ckBreakAtMonth" runat="server" Text="<%$ Resources:LocalizedText, PrintViewBreakMonth %>" AutoPostBack="true" OnCheckedChanged="ckBreakAtMonth_CheckedChanged" /></div>
 </asp:Panel>
 <asp:Panel ID="pnlModelDisplay" runat="server">
     <p><asp:Label ID="lblModelDisplay" runat="server" Font-Bold="true" Text="<%$ Resources:LocalizedText, PrintViewModelDisplay %>"></asp:Label></p>

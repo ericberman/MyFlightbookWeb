@@ -39,6 +39,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             m_options.FlightsPerPage = Convert.ToInt32(cmbFlightsPerPage.SelectedValue, CultureInfo.InvariantCulture);
             m_options.IncludeImages = ckIncludeImages.Checked;
             m_options.IncludeSignatures = ckIncludeSignatures.Checked;
+            m_options.BreakAtMonthBoundary = ckBreakAtMonth.Checked;
             m_options.Layout = (PrintLayoutType) Enum.Parse(typeof(PrintLayoutType), cmbLayout.SelectedValue);
             m_options.PropertySeparator = (PrintingOptions.PropertySeparatorType)Enum.Parse(typeof(PrintingOptions.PropertySeparatorType), rblPropertySeparator.SelectedValue);
 
@@ -219,7 +220,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
 
     protected void cmbFlightsPerPage_SelectedIndexChanged(object sender, EventArgs e)
     {
-        ckPullForwardTotals.Visible = cmbFlightsPerPage.SelectedIndex > 0;
+        ckBreakAtMonth.Visible = ckPullForwardTotals.Visible = cmbFlightsPerPage.SelectedIndex > 0;
         NotifyDelegate();
     }
 
@@ -273,5 +274,10 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
     {
         foreach (ListItem ck in cklProperties.Items)
             ck.Selected = ckCheckAll.Checked;
+    }
+
+    protected void ckBreakAtMonth_CheckedChanged(object sender, EventArgs e)
+    {
+        NotifyDelegate();
     }
 }
