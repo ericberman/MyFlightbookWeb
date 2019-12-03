@@ -1,7 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbRecentAchievements.ascx.cs" Inherits="Controls_mfbRecentAchievements" %>
 <%@ Register src="../Controls/mfbBadgeSet.ascx" tagname="mfbBadgeSet" tagprefix="uc1" %>
 <asp:Panel ID="pnlStatsAndAchievements" runat="server">
-    <h2><asp:Label ID="lblTitle" runat="server" /></h2>
     <div>
         <ul>
             <asp:Repeater ID="rptRecentAchievements" runat="server">
@@ -71,6 +70,10 @@
             border-radius: 8px;
         }
 
+        .dateContentValue {
+            background-color: #00ff00;
+        }
+
         .dateContent:hover {
             color: blue;
         }
@@ -79,5 +82,7 @@
             color:black;
         }
     </style>
-    <asp:PlaceHolder ID="plcFlyingCalendar" runat="server" Visible="false"></asp:PlaceHolder>
+    <asp:Panel ID="pnlCal" runat="server" Visible="false" >
+        <asp:PlaceHolder ID="plcFlyingCalendar" runat="server" EnableViewState="false"></asp:PlaceHolder>
+    </asp:Panel>
 </asp:Panel>

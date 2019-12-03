@@ -39,8 +39,50 @@ public partial class Member_Achievements : System.Web.UI.Page
             rptBadgeset.DataSource = BadgeSet.BadgeSetsFromBadges(lst);
             rptBadgeset.DataBind();
         }
-        mfbRecentAchievements.AutoDateRange = true;
-        mfbRecentAchievements.Refresh(Page.User.Identity.Name, DateTime.MaxValue, DateTime.MinValue, false);
+
+        FlightQuery.DateRanges dr;
+        DateTime dtMin, dtMax = DateTime.Now;
+        if (!Enum.TryParse<FlightQuery.DateRanges>(cmbAchievementDates.SelectedValue, out dr))
+            throw new MyFlightbookValidationException("Invalid date range: " + cmbAchievementDates.SelectedValue);
+        mfbRecentAchievements.AutoDateRange = false;
+
+        switch (dr)
+        {
+            default:
+            case FlightQuery.DateRanges.AllTime:
+                mfbRecentAchievements.AutoDateRange = true;
+                dtMin = DateTime.MaxValue;
+                dtMax = DateTime.MinValue;
+                break;
+            case FlightQuery.DateRanges.PrevMonth:
+                dtMax = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
+                dtMin = new DateTime(dtMax.Year, dtMax.Month, 1);
+                break;
+            case FlightQuery.DateRanges.PrevYear:
+                dtMin = new DateTime(DateTime.Now.Year - 1, 1, 1);
+                dtMax = new DateTime(DateTime.Now.Year - 1, 12, 31);
+                break;
+            case FlightQuery.DateRanges.Tailing6Months:
+                dtMin = DateTime.Now.AddMonths(-6);
+                break;
+            case FlightQuery.DateRanges.ThisMonth:
+                dtMin = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                break;
+            case FlightQuery.DateRanges.Trailing12Months:
+                dtMin = DateTime.Now.AddYears(-1);
+                break;
+            case FlightQuery.DateRanges.Trailing30:
+                dtMin = DateTime.Now.AddDays(-30);
+                break;
+            case FlightQuery.DateRanges.Trailing90:
+                dtMin = DateTime.Now.AddDays(-90);
+                break;
+            case FlightQuery.DateRanges.YTD:
+                dtMin = new DateTime(DateTime.Now.Year, 1, 1);
+                break;
+        }
+        lblNoStats.Visible = mfbRecentAchievements.Refresh(Page.User.Identity.Name, dtMin, dtMax, false) == 0;
+        lblRecentAchievementsTitle.Text = mfbRecentAchievements.Summary;
     }
 
     protected void ForceRefresh()
@@ -58,6 +100,11 @@ public partial class Member_Achievements : System.Web.UI.Page
     {
         mfbRecentAchievements.ShowCalendar = true;
         lnkShowCalendar.Visible = false;
+        RefreshPage();
+    }
+
+    protected void cmbAchievementDates_SelectedIndexChanged(object sender, EventArgs e)
+    {
         RefreshPage();
     }
 }

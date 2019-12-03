@@ -122,6 +122,9 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
                             mfbRecentAchievements.Refresh(szUser, new DateTime(DateTime.Now.Year - 1, 1, 1), new DateTime(DateTime.Now.Year - 1, 12, 31), true);
                         else
                             mfbRecentAchievements.Refresh(szUser, new DateTime(DateTime.Now.Year, 1, 1), DateTime.Now, true);
+
+                        lblRecentAchievementsTitle.Text = mfbRecentAchievements.Summary;
+                        lblRecentAchievementsTitle.Visible = mfbRecentAchievements.AchievementCount > 0;
                     }
                     else
                     {

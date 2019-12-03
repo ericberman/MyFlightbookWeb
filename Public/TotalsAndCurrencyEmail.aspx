@@ -39,6 +39,7 @@
     <asp:Panel ID="pnlYTD" runat="server" Visible="false" EnableViewState="false">
         <h2><asp:Label ID="lblYTD" runat="server" Text=""></asp:Label></h2>
         <uc2:mfbTotalSummary ID="mfbTotalSummaryYTD" runat="server" EnableViewState="false" />
+        <h2><asp:Label ID="lblRecentAchievementsTitle" runat="server"></asp:Label></h2>
         <uc1:mfbRecentAchievements runat="server" ID="mfbRecentAchievements" />
     </asp:Panel>
     <div>
