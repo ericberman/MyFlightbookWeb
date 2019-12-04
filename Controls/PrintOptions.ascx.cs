@@ -275,6 +275,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
     {
         foreach (ListItem ck in cklProperties.Items)
             ck.Selected = ckCheckAll.Checked;
+        NotifyDelegate();
     }
 
     protected void ckBreakAtMonth_CheckedChanged(object sender, EventArgs e)
