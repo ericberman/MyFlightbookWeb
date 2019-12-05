@@ -1535,6 +1535,9 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             if (ac.AircraftID == acMaster.AircraftID)
                 return;
 
+            if (ac.ModelID == acMaster.ModelID)
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Trying to merge two aircraft with identical models.  How did that happen?  Aircraft: {0} ({1}) and {2} ({3})", acMaster.TailNumber, acMaster.AircraftID, ac.TailNumber, ac.AircraftID));
+
             // merge the aircraft into the master.  This will merge maintenance and images.
             acMaster.MergeWith(ac, true);
 
