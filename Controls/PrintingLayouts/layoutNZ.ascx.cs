@@ -20,6 +20,8 @@ public partial class Controls_PrintingLayouts_layoutNZ : System.Web.UI.UserContr
 
     protected bool ShowFooter { get; set; }
 
+    protected PrintingOptions Options { get; set; }
+
     protected OptionalColumn[] OptionalColumns { get; set; }
 
     protected Boolean ShowOptionalColumn(int index)
@@ -42,6 +44,7 @@ public partial class Controls_PrintingLayouts_layoutNZ : System.Web.UI.UserContr
         ShowFooter = showFooter;
         IncludeImages = options.IncludeImages;
         CurrentUser = user;
+        Options = options;
         OptionalColumns = options.OptionalColumns;
         PropSeparator = options.PropertySeparatorText;
 
@@ -60,6 +63,7 @@ public partial class Controls_PrintingLayouts_layoutNZ : System.Web.UI.UserContr
         LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
 
         HashSet<int> hsRedundantProps = new HashSet<int>() { (int)CustomPropertyType.KnownProperties.IDPropStudentName, (int)CustomPropertyType.KnownProperties.IDPropNameOfPIC };
+        hsRedundantProps.UnionWith(Options.ExcludedPropertyIDs);
         foreach (LogbookEntryDisplay led in lep.Flights)
         {
             List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);

@@ -19,6 +19,8 @@ public partial class Controls_PrintingLayouts_LayoutSACAA : System.Web.UI.UserCo
 
     protected string PropSeparator { get; set; }
 
+    protected PrintingOptions Options { get; set; }
+
     #region IPrintingTemplate
     public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {
@@ -26,6 +28,7 @@ public partial class Controls_PrintingLayouts_LayoutSACAA : System.Web.UI.UserCo
             throw new ArgumentNullException("options");
         ShowFooter = showFooter;
         CurrentUser = user;
+        Options = options;
         PropSeparator = options.PropertySeparatorText;
         rptPages.DataSource = lst;
         rptPages.DataBind();
@@ -42,6 +45,7 @@ public partial class Controls_PrintingLayouts_LayoutSACAA : System.Web.UI.UserCo
         LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
 
         HashSet<int> hsRedundantProps = new HashSet<int>() { (int)CustomPropertyType.KnownProperties.IDPropNameOfPIC };
+        hsRedundantProps.UnionWith(Options.ExcludedPropertyIDs);
         foreach (LogbookEntryDisplay led in lep.Flights)
         {
             List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);

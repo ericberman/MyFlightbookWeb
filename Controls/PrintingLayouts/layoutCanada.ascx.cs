@@ -22,6 +22,8 @@ public partial class Controls_PrintingLayouts_layoutCanada : System.Web.UI.UserC
 
     protected OptionalColumn[] OptionalColumns { get; set; }
 
+    protected PrintingOptions Options { get; set; }
+
     protected Boolean ShowOptionalColumn(int index)
     {
         return OptionalColumns != null && index >= 0 && index < OptionalColumns.Length;
@@ -42,6 +44,7 @@ public partial class Controls_PrintingLayouts_layoutCanada : System.Web.UI.UserC
         ShowFooter = showFooter;
         IncludeImages = options.IncludeImages;
         CurrentUser = user;
+        Options = options;
         OptionalColumns = options.OptionalColumns;
         PropSeparator = options.PropertySeparatorText;
 
@@ -60,6 +63,7 @@ public partial class Controls_PrintingLayouts_layoutCanada : System.Web.UI.UserC
         LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
 
         HashSet<int> hsRedundantProps = new HashSet<int>() { (int)CustomPropertyType.KnownProperties.IDPropStudentName, (int)CustomPropertyType.KnownProperties.IDPropNameOfPIC, (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff };
+        hsRedundantProps.UnionWith(Options.ExcludedPropertyIDs);
         foreach (LogbookEntryDisplay led in lep.Flights)
         {
             List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
