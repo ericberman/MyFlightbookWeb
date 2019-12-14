@@ -1277,17 +1277,17 @@ GROUP BY fp.idPropType;";
             return d;
         }
 
-        private static void AddTotalElapsedTime(Dictionary<int, string> d, IEnumerable<CustomFlightProperty> rgprops, int propStart, int propEnd, string szFormat)
+        private static void AddTotalElapsedTime(Dictionary<int, string> d, IEnumerable<CustomFlightProperty> rgprops, int propStart, int propEnd, string szFormat, bool fUseHHMM)
         {
             CustomFlightProperty cfpStart = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == propStart);
             CustomFlightProperty cfpEnd = rgprops.FirstOrDefault(cfp => cfp.PropTypeID == propEnd);
 
             if (cfpStart != null && cfpEnd != null && cfpEnd.DateValue.CompareTo(cfpStart.DateValue) > 0)
-                d[propEnd] = String.Format(CultureInfo.CurrentCulture, szFormat, ((decimal)cfpEnd.DateValue.Subtract(cfpStart.DateValue).TotalHours).ToHHMM());
+                d[propEnd] = String.Format(CultureInfo.CurrentCulture, szFormat, ((decimal)cfpEnd.DateValue.Subtract(cfpStart.DateValue).TotalHours).FormatDecimal(fUseHHMM, true));
 
         }
 
-        private static Dictionary<int, string> ComputeTotals(IEnumerable<CustomFlightProperty> rgprops)
+        private static Dictionary<int, string> ComputeTotals(IEnumerable<CustomFlightProperty> rgprops, bool fUseHHMM)
         {
             Dictionary<int, string> d = new Dictionary<int, string>();
 
@@ -1297,9 +1297,9 @@ GROUP BY fp.idPropType;";
             if (cfpTachStart != null && cfpTachEnd != null && cfpTachEnd.DecValue - cfpTachStart.DecValue > 0)
                 d[(int)CustomPropertyType.KnownProperties.IDPropTachEnd] = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TotalTachTime, cfpTachEnd.DecValue - cfpTachStart.DecValue);
 
-            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, Resources.LogbookEntry.TotalDutyTime);
-            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropDutyStart, (int)CustomPropertyType.KnownProperties.IDPropDutyEnd, Resources.LogbookEntry.TotalDutyTime);
-            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDBlockOut, (int)CustomPropertyType.KnownProperties.IDBlockIn, Resources.LogbookEntry.TotalBlockTime);
+            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart, (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd, Resources.LogbookEntry.TotalDutyTime, fUseHHMM);
+            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDPropDutyStart, (int)CustomPropertyType.KnownProperties.IDPropDutyEnd, Resources.LogbookEntry.TotalDutyTime, fUseHHMM);
+            AddTotalElapsedTime(d, rgprops, (int)CustomPropertyType.KnownProperties.IDBlockOut, (int)CustomPropertyType.KnownProperties.IDBlockIn, Resources.LogbookEntry.TotalBlockTime, fUseHHMM);
 
             return d;
         }
@@ -1332,7 +1332,7 @@ GROUP BY fp.idPropType;";
             if (rgprops == null || rgprops.Count() == 0)
                 return lst;
 
-            Dictionary<int, string> d = ComputeTotals(rgprops);
+            Dictionary<int, string> d = ComputeTotals(rgprops, fUseHHMM);
             StringBuilder sb = new StringBuilder();
             foreach (CustomFlightProperty cfp in rgprops)
             {
