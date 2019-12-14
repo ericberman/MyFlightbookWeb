@@ -119,12 +119,12 @@ namespace MyFlightbook.Telemetry
             return i;
         }
 
-        private object ParseToNakedTime(string szValue, bool fUTC = false)
+        private DateTime ParseToNakedTime(string szValue, bool fUTC = false)
         {
             GroupCollection g = regNakedTime.Match(szValue).Groups;
             if (g.Count > 3)
                 return new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, Convert.ToInt32(g[1].Value, CultureInfo.InvariantCulture), Convert.ToInt32(g[2].Value, CultureInfo.InvariantCulture), String.IsNullOrEmpty(g[3].Value) ? 0 : Convert.ToInt32(g[3].Value, CultureInfo.InvariantCulture), fUTC ? DateTimeKind.Utc : DateTimeKind.Unspecified);
-            return null;
+            return DateTime.MinValue;
         }
 
         private object ParseUnixTimeStamp(string szValue)
@@ -188,8 +188,7 @@ namespace MyFlightbook.Telemetry
                         if (Type == KnownColumnTypes.ctTimeZoneOffset && String.Compare(ColumnHeaderName, KnownColumnNames.UTCOffSet, StringComparison.OrdinalIgnoreCase) == 0)  // UTC offset is opposite TZOffset and is in hh:mm format
                         {
                             GroupCollection g = regUTCOffset.Match(szValue).Groups;
-                            if (g.Count > 3)
-                                o = (String.IsNullOrEmpty(g[1].Value) ? -1 : 1) * (60 * Convert.ToInt32(g[2].Value, CultureInfo.InvariantCulture) + Convert.ToInt32(g[3].Value, CultureInfo.InvariantCulture)); // note that if there is NO leading minus sign, we need to add it, since we want minutes to add to adjust.
+                            o = (g.Count > 3) ? (String.IsNullOrEmpty(g[1].Value) ? -1 : 1) * (60 * Convert.ToInt32(g[2].Value, CultureInfo.InvariantCulture) + Convert.ToInt32(g[3].Value, CultureInfo.InvariantCulture)) : 0; // note that if there is NO leading minus sign, we need to add it, since we want minutes to add to adjust.
                         }
                         else
                         {
