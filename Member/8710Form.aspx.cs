@@ -32,11 +32,12 @@ public partial class Member_8710Form : System.Web.UI.Page
         this.Master.SelectedTab = tabID.lbt8710;
         Master.SuppressMobileViewport = true;
 
+        Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
+        UseHHMM = pf.UsesHHMM;
+
         if (!IsPostBack)
         {
-            Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
             lblUserName.Text = Master.Title = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText._8710FormForUserHeader, pf.UserFullName);
-            UseHHMM = pf.UsesHHMM;
             RefreshFormData();
             MfbLogbook1.Visible = !this.Master.IsMobileSession();
             Master.ShowSponsoredAd = false;
