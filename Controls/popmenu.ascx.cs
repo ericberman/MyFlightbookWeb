@@ -39,6 +39,9 @@ public partial class Controls_popmenu : System.Web.UI.UserControl, INamingContai
         {
             // Issue #362: if you navigate away on Safari with a pop-up still visible, then it remains (permanently) visible upon hitting the back button.
             // So, we hide it on page unload.
+            if (Request == null || Request.UserAgent == null)
+                return string.Empty;
+
             string ua = Request.UserAgent.ToUpperInvariant();
             if (ua.Contains("SAFARI") && !ua.Contains("CHROME"))
                 return String.Format(System.Globalization.CultureInfo.InvariantCulture, "<script type=\"text/javascript\">window.addEventListener('beforeunload', function (e) {{ document.getElementById('{0}').style.display = 'none'; e.returnValue = '';}});</script>", pnlMenuContent.ClientID);
