@@ -18,6 +18,7 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
     public enum TotalRecency { AllTime, TrailingYear, YearToDate};
     private FlightQuery m_fq;
     private bool m_LinkTotalsToQuery = true;
+    private const string szCookieDefaultTotalsMode = "cookieDefaultTotalsMode";
 
     #region properties
     public string Username { get; set; }
@@ -31,6 +32,22 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
     {
         get { return m_LinkTotalsToQuery; }
         set { m_LinkTotalsToQuery = value; }
+    }
+
+    public bool DefaultGroupMode
+    {
+        get
+        {
+            bool fGrouped;
+            if (Request.Cookies[szCookieDefaultTotalsMode] != null && bool.TryParse(Request.Cookies[szCookieDefaultTotalsMode].Value, out fGrouped))
+                return fGrouped;
+            return false;
+        }
+        set
+        {
+            Response.Cookies[szCookieDefaultTotalsMode].Value = value.ToString(CultureInfo.InvariantCulture);
+            Response.Cookies[szCookieDefaultTotalsMode].Expires = DateTime.Now.AddYears(20);
+        }
     }
 
     public bool IsGrouped
@@ -47,6 +64,7 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
             Username = Page.User.Identity.Name;
             UseHHMM = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UsesHHMM;
         }
+        IsGrouped = DefaultGroupMode;
     }
 
     protected void Bind()

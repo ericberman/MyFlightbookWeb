@@ -294,6 +294,10 @@ namespace MyFlightbook.Telemetry
 
                         while ((rgszRow = csvr.GetCSVLine()) != null)
                         {
+                            // Test for empty row
+                            if (String.Join(string.Empty, rgszRow).Trim().Length == 0)
+                                continue;
+
                             iRow++;
 
                             try

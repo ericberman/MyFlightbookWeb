@@ -110,8 +110,6 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
 
     private const string szParamIDFlight = "idFlight";
 
-    private const string szCookieDefaultTotalsMode = "cookieDefaultTotalsMode";
-
     public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }
 
     private const string keyVSRestriction = "vsCurrentRestriction";
@@ -192,13 +190,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
                 ModalPopupExtender1.Show();
             }
 
-            bool fGrouped = false;
-            if (Request.Cookies[szCookieDefaultTotalsMode] != null && bool.TryParse(Request.Cookies[szCookieDefaultTotalsMode].Value, out fGrouped))
-            {
-
-            }
-            mfbTotalSummary1.IsGrouped = fGrouped;
-            rblTotalsMode.SelectedValue = fGrouped.ToString(CultureInfo.InvariantCulture);
+            rblTotalsMode.SelectedValue = mfbTotalSummary1.DefaultGroupMode.ToString(CultureInfo.InvariantCulture);
 
             // Handle a requested tab - turning of lazy load as needed
             FlightsTab ft;
@@ -392,8 +384,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         bool fGrouped;
         if (bool.TryParse(rblTotalsMode.SelectedValue, out fGrouped))
         {
-            Response.Cookies[szCookieDefaultTotalsMode].Value = fGrouped.ToString(CultureInfo.InvariantCulture);
-            Response.Cookies[szCookieDefaultTotalsMode].Expires = DateTime.Now.AddYears(20);
+            mfbTotalSummary1.DefaultGroupMode = fGrouped;
             mfbTotalSummary1.IsGrouped = fGrouped;
         }
     }
