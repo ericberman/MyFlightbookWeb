@@ -36,6 +36,8 @@ and the application should be called "logbook" and point to the /logbook branch.
     <add assembly="System.Threading.Tasks, Version=1.5.11.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <add assembly="System.IO, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <add assembly="System.ComponentModel.Composition, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
+    <add assembly="System.Numerics.Vectors, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" />
+    <add assembly="System.Numerics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
   </assemblies>
 </compilation>
 ~~~~
@@ -121,5 +123,6 @@ This source code is provided under the GNU license, but it incorporates other co
  * [Todataurl-png.js](http://code.google.com/p/todataurl-png-js/) Converts a bitmap into a data URL which can be posted in a form. ("Other" open source license, but code is unmodified)
  * [DotNetZip](https://dotnetzip.codeplex.com/) – Microsoft Public License
  * [BxSlider](http://bxslider.com/) - Enables smooth slideshows of images. (MIT License); includes jquery.fitvids.js which is [WTFPL license](http://sam.zoy.org/wtfpl/)
- * Numerous binary libraries (via NuGet), including Ajax libraries, iCal libraries, Zip, AWS, DropBox, OneDrive, etc.
+ * [ImageMagick](https://github.com/dlemstra/Magick.NET) - Enables support for HEIC (Apache License)
+ * Numerous binary libraries (via NuGet), including Ajax libraries, iCal libraries, Zip, AWS, DropBox, OneDrive, etc.  Current packages
  
