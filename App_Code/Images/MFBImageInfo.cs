@@ -7,6 +7,7 @@ using gma.Drawing.ImageInfo;
 using MyFlightbook.Geography;
 using Newtonsoft.Json;
 using System;
+using ImageMagick;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
@@ -44,7 +45,7 @@ namespace MyFlightbook.Image
         public const string MP4 = ".mp4";
         public const string VidInProgress = ".vid";
         public const string RegExpVideoFileExtensions = "(avi|wmv|mp4|mov|m4v|m2p|mpeg|mpg|hdmov|flv|avchd|mpeg4|m2t|h264)$";
-        public const string RegExpImageFileExtensions = "(jpg|jpeg|jpe|gif|png)$";
+        public const string RegExpImageFileExtensions = "(jpg|jpeg|jpe|gif|png|heic)$";
     }
 
     /// <summary>
@@ -1386,6 +1387,77 @@ namespace MyFlightbook.Image
             return new Bitmap(img, Width, Height);
         }
 
+        /// <summary>
+        /// Returns an Image from the specified stream.  Does NOT take ownership of the stream, and the drawing object MUST be disposed!!!
+        /// This will convert HEIC to JPG format, but if it does so, it will put the result in a file; for some reason, System.Drawing.Image.FromStream
+        /// doesn't pick up EXIF data, but FromFile does.
+        /// </summary>
+        /// <param name="s">Input stream</param>
+        /// <param name="szTemp">The temp file created if the file had to be converted; must be deleted after image is disposed if not null</param>
+        /// <returns>A system.Drawing.Image object</returns>
+        public static System.Drawing.Image DrawingCompatibleImageFromStream(Stream s, out string szTemp)
+        {
+            if (s == null)
+                throw new ArgumentNullException("s");
+
+            szTemp = null;
+            try
+            {
+                return System.Drawing.Image.FromStream(s);
+            }
+            catch (ArgumentException)
+            {
+                szTemp = Path.GetTempFileName();
+                try
+                {
+                    using (MagickImage image = new MagickImage(s))
+                        image.Write(szTemp, MagickFormat.Jpg);
+
+                    return System.Drawing.Image.FromFile(szTemp);
+                }
+                catch (MagickException)
+                {
+                    return null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Variant of DrawingcompatibleImageBytesFromStream that does NOT handle conversion from HEIC, so UNSAFE to call (leaves temporary file turds) if conversion is needed
+        /// </summary>
+        /// <param name="s">The stream</param>
+        /// <returns>A system.drawing.image object</returns>
+        public static System.Drawing.Image DrawingCompatibleImageFromStream(Stream s)
+        {
+            string szTempFile;
+            System.Drawing.Image result = DrawingCompatibleImageFromStream(s, out szTempFile);
+            if (szTempFile != null || File.Exists(szTempFile))
+                throw new InvalidOperationException("DrawingCompatibleImageBytesFromStream called on an image that generated a temp file, but without the temp file being cleaned up.");
+            return result;
+        }
+
+        /// <summary>
+        /// Returns a byte array representing JPG using MagickImage - LOSES EXIF DATA and can be slow.
+        /// </summary>
+        /// <param name="s">The input stream</param>
+        /// <returns></returns>
+        public static byte[] ConvertStreamToJPG(Stream s)
+        {
+            if (s == null)
+                throw new ArgumentNullException("s");
+
+            byte[] result = null;
+            using (MagickImage image = new MagickImage(s))
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    image.Write(ms, MagickFormat.Jpg);
+                    result = ms.ToArray();
+                }
+            }
+            return result;
+        }
+
         private void InitWithFile(MFBPostedFile myFile, string szComment, LatLong ll)
         {
             if (myFile == null || myFile.ContentLength == 0 || String.IsNullOrEmpty(Key) || Class == ImageClass.Unknown || VirtualPath.Length <= 1)
@@ -1427,6 +1499,7 @@ namespace MyFlightbook.Image
                     break;
                 case ImageFileType.JPEG:
                     {
+                        string szTempFile = null;
                         try
                         {
                             // Create a file with a unique name - use current time for uniqueness
@@ -1435,17 +1508,17 @@ namespace MyFlightbook.Image
                             ThumbnailFile = MFBImageInfo.ThumbnailPrefix + szFileName;
 
                             // Resize the image if needed, and then create a thumbnail of it and write that too:
-                            using (System.Drawing.Image image = System.Drawing.Image.FromStream(myFile.InputStream))
+                            using (System.Drawing.Image image = DrawingCompatibleImageFromStream(myFile.InputStream, out szTempFile))
                             {
                                 // rotate the image, if necessary
                                 Info inf = InfoFromImage(image);
 
-                                // save the comment
-                                inf.ImageDescription = szComment;
-
                                 // update the location
                                 try
                                 {
+                                    // save the comment
+                                    inf.ImageDescription = szComment;
+
                                     if (ll == null) // no geotag is specified - initialize location from the underlying image.
                                     {
                                         if (inf.HasGeotag)
@@ -1511,6 +1584,12 @@ namespace MyFlightbook.Image
                         catch
                         {
                             // nothing to do here; fail silently.
+                        }
+                        finally
+                        {
+                            // clean up a temp file, if one was created; can only do this AFTER the image that used it has been disposed (above).
+                            if (!String.IsNullOrEmpty(szTempFile) && File.Exists(szTempFile))
+                                File.Delete(szTempFile);
                         }
                     }
                     break;
@@ -2339,7 +2418,7 @@ namespace MyFlightbook.Image
                 {
                     using (gor.ResponseStream)
                     {
-                        using (System.Drawing.Image image = System.Drawing.Image.FromStream(gor.ResponseStream))
+                        using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(gor.ResponseStream))
                         {
                             Info inf = MFBImageInfo.InfoFromImage(image);
 
@@ -2524,7 +2603,7 @@ namespace MyFlightbook.Image
         {
         }
 
-        public MFBPostedFile(HttpPostedFile pf)
+        public MFBPostedFile(HttpPostedFile pf) : this()
         {
             if (pf == null)
                 throw new ArgumentNullException("pf");
@@ -2535,7 +2614,7 @@ namespace MyFlightbook.Image
             PostedFile = pf;
         }
 
-        public MFBPostedFile(string szFile, string szContentType, int cBytes, byte[] rgBytes, string szID)
+        public MFBPostedFile(string szFile, string szContentType, int cBytes, byte[] rgBytes, string szID) : this()
         {
             FileName = szFile;
             ContentType = szContentType;
@@ -2575,6 +2654,32 @@ namespace MyFlightbook.Image
         private byte[] m_ThumbBytes = null;
 
         /// <summary>
+        /// Returns the bytes of the posted file, converted if needed from HEIC.
+        /// </summary>
+        public byte[] CompatibleContentData()
+        {
+            if (ContentData == null)
+                return null;
+
+            using (MemoryStream ms = new MemoryStream(ContentData))
+            {
+                // Check for HEIC
+                try
+                {
+                    using (System.Drawing.Image img = System.Drawing.Image.FromStream(ms))
+                    {
+                        // If we got here then the content is Drawing Compatible - i.e., not HEIC; just return contentdata
+                        return ContentData;
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    return MFBImageInfo.ConvertStreamToJPG(ms);
+                }
+            }
+        }
+        
+        /// <summary>
         /// The stream of the thumbnail file - computed once and cached in ThumbnailData
         /// </summary>
         public byte[] ThumbnailBytes()
@@ -2585,17 +2690,26 @@ namespace MyFlightbook.Image
             Stream s = InputStream;
             if (s != null)
             {
-                using (System.Drawing.Image image = System.Drawing.Image.FromStream(s))
+                string szTempFile = null;
+                try
                 {
-                    Info inf = MFBImageInfo.InfoFromImage(image);
-                    using (Bitmap bmp = MFBImageInfo.BitmapFromImage(inf.Image, MFBImageInfo.ThumbnailHeight, MFBImageInfo.ThumbnailWidth))
+                    using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(s, out szTempFile))
                     {
-                        using (MemoryStream sOut = new MemoryStream())
+                        Info inf = MFBImageInfo.InfoFromImage(image);
+                        using (Bitmap bmp = MFBImageInfo.BitmapFromImage(inf.Image, MFBImageInfo.ThumbnailHeight, MFBImageInfo.ThumbnailWidth))
                         {
-                            bmp.Save(sOut, ImageFormat.Jpeg);
-                            m_ThumbBytes = sOut.ToArray();
+                            using (MemoryStream sOut = new MemoryStream())
+                            {
+                                bmp.Save(sOut, ImageFormat.Jpeg);
+                                m_ThumbBytes = sOut.ToArray();
+                            }
                         }
                     }
+                }
+                finally
+                {
+                    if (!String.IsNullOrEmpty(szTempFile) && File.Exists(szTempFile))
+                        File.Delete(szTempFile);
                 }
             }
             return m_ThumbBytes;
@@ -2686,7 +2800,8 @@ namespace MyFlightbook.Image
                 {
                     using (Stream stDst = new MemoryStream())
                     {
-                        using (System.Drawing.Image image = System.Drawing.Image.FromStream(st))
+                        // This is a PNG, so no need to handle temp files/conversion.
+                        using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(st))
                         {
                             image.Save(stDst, System.Drawing.Imaging.ImageFormat.Png);
                             rgbSignature = new byte[stDst.Length];

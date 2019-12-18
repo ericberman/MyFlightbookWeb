@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Image;
+using System;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,7 +25,7 @@ public partial class Public_PendingImg : System.Web.UI.Page
         bool fShowFull = util.GetIntParam(Request, "full", 0) != 0;
 
         Response.ContentType = "image/jpeg";
-        Response.BinaryWrite(fShowFull ? mfbpb.PostedFile.ContentData : mfbpb.PostedFile.ThumbnailBytes());
+        Response.BinaryWrite(fShowFull ? mfbpb.PostedFile.CompatibleContentData() : mfbpb.PostedFile.ThumbnailBytes());
         Response.End();
     }
 }

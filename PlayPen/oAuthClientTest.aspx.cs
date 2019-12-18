@@ -341,14 +341,12 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                 sc.Headers.ContentDisposition = (new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") { Name = key });
             }
 
-            if (fuImage.HasFile)
-            {
-                using (StreamContent sc = new StreamContent(fuImage.FileContent))
+                if (fuImage.HasFile)
                 {
-                    sc.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(fuImage.PostedFile.ContentType);
+                    StreamContent sc = new StreamContent(fuImage.FileContent);
                     form.Add(sc, "imgPicture", fuImage.FileName);
+                    sc.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(fuImage.PostedFile.ContentType);
                 }
-            }
 
             using (HttpClient httpClient = new HttpClient())
             {
