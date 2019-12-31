@@ -854,7 +854,7 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
     <value>{0} hours of flight training in a {1}</value>
   </data>
   <data name="SportMinLandings" xml:space="preserve">
-    <value>10 takeoffs &amp; landings in a {0}</value>
+    <value>10 takeoffs &amp; landings in a {0}.  Landings must be full-stop for airplane rating)</value>
   </data>
   <data name="SportMinLandingsNote" xml:space="preserve">
     <value>Each solo flight with a landing is assumed to have a corresponding solo launch.  Think about it.</value>
