@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -119,7 +119,7 @@ public partial class Controls_mfbTypeInDate : System.Web.UI.UserControl
     {
         Boolean fResult = true;
 
-        DateTime dt = new DateTime();
+        DateTime dt;
         if (txtDate.Text.Length == 0)
             dt = DefaultDate;
         else

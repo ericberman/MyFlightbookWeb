@@ -131,6 +131,11 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     private void InitAccount(tabID sidebarTab)
     {
+        lblMemberSince.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberSince, m_pf.CreationDate);
+        lblLastLogin.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastLogon, m_pf.LastLogon);
+        lblLastActivity.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastActivity, m_pf.LastActivity);
+        itemLastActivity.Visible = m_pf.LastActivity.Date.CompareTo(m_pf.LastLogon.Date) != 0;
+        lblPasswordStatus.Text = m_pf.LastPasswordChange.CompareTo(m_pf.CreationDate) == 0 ? Resources.LocalizedText.MemberOriginalPassword : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastPassword, m_pf.LastPasswordChange);
         txtFirst.Text = m_pf.FirstName;
         txtLast.Text = m_pf.LastName;
         txtEmail2.Text = txtEmail.Text = m_pf.Email;
@@ -142,6 +147,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
     private void InitPilotInfo()
     {
         dateMedical.Date = m_pf.LastMedical;
+        dateMedical.TextControl.ValidationGroup = "valPilotInfo";
         cmbMonthsMedical.SelectedValue = m_pf.MonthsToMedical.ToString(CultureInfo.CurrentCulture);
         rblMedicalDurationType.SelectedIndex = m_pf.UsesICAOMedical ? 1 : 0;
         txtCertificate.Text = m_pf.Certificate;

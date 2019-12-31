@@ -28,6 +28,7 @@
             <h2>
                 <asp:Localize ID="locAccountHeader" runat="server" meta:resourcekey="locAccountHeaderResource1" Text="Account Settings"></asp:Localize>
             </h2>
+            <p><asp:Label ID="lblMemberSince" runat="server"></asp:Label></p>
             <cc1:Accordion ID="accordianAccount" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250" meta:resourcekey="accordianAccountResource1">
                 <Panes>
                     <cc1:AccordionPane runat="server" ID="acpName" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpNameResource1">
@@ -133,6 +134,11 @@
                             <asp:Localize ID="locHeadPass" runat="server" Text="<%$ Resources:Tabs, ProfilePassword %>" ></asp:Localize>
                         </Header>
                         <Content>
+                            <ul>
+                                <li><asp:Label ID="lblLastLogin" runat="server"></asp:Label></li>
+                                <li runat="server" id="itemLastActivity"><asp:Label ID="lblLastActivity" runat="server"></asp:Label></li>
+                                <li><asp:Label ID="lblPasswordStatus" runat="server"></asp:Label></li>
+                            </ul>
                             <asp:Panel ID="pnlPassword" runat="server" DefaultButton="btnUpdatePass" meta:resourceKey="pnlPasswordResource1">
                                 <table>
                                     <tr>
@@ -184,7 +190,7 @@
                         <Content>
                             <asp:Panel ID="pnlQandA" runat="server" DefaultButton="btnChangeQA" meta:resourceKey="pnlQandAResource1">
                                 <% =Resources.LocalizedText.AccountQuestionHint %>
-                                <table cellpadding="4">
+                                <table>
                                     <tr>
                                         <td>
                                             <asp:Localize ID="locPasswordPromptForQA" runat="server" meta:resourceKey="locPasswordPromptForQAResource1" Text="Password"></asp:Localize>
@@ -475,7 +481,7 @@
                         <Content>
                             <div class="prefSectionRow">
                                 <% =Resources.Currency.DeadlineDescription %>
-                                <uc1:mfbDeadlines ID="mfbDeadlines1" runat="server" ShowDescriptionInline="true" />
+                                <uc1:mfbDeadlines ID="mfbDeadlines1" runat="server" />
                             </div>
                         </Content>
                     </cc1:AccordionPane>
@@ -511,7 +517,7 @@
                             <div class="prefSectionRow">
                                 <p><asp:Localize ID="locAboutCloudStorage" runat="server" meta:resourcekey="locAboutCloudStorageResource1"></asp:Localize></p>
                                 <table>
-                                    <tr valign="top">
+                                    <tr style="vertical-align:top">
                                         <td style="width:180px">
                                             <!-- This comes from https://www.dropbox.com/developers/reference/branding, per their guidelines -->
                                             <asp:Image ID="DropboxLogo" 
@@ -535,7 +541,7 @@
                                             </asp:MultiView>
                                         </td>
                                     </tr>
-                                    <tr valign="top" runat="server" id="rowGDrive">
+                                    <tr style="vertical-align:top" runat="server" id="rowGDrive">
                                         <td style="width:180px">
                                             <!-- This comes from https://developers.google.com/drive/v2/web/branding, per their guidelines -->
                                             <asp:Image ID="GDriveLogo" 
@@ -555,7 +561,7 @@
                                             </asp:MultiView>
                                         </td>
                                     </tr>
-                                    <tr valign="top" runat="server" id="rowOneDrive">
+                                    <tr style="vertical-align:top" runat="server" id="rowOneDrive">
                                         <td style="width:180px">
                                             <!-- This comes from https://msdn.microsoft.com/en-us/onedrive/dn673556.aspx, per their guidelines -->
                                             <asp:Image ID="Image3" 
@@ -637,13 +643,13 @@
                         </Header>
                         <Content>
                             <asp:Panel ID="pnlMedical" runat="server" DefaultButton="btnUpdateMedical" meta:resourcekey="pnlMedicalResource1">
-                                <table cellpadding="3px">
+                                <table>
                                     <tr>
                                         <td>
                                             <asp:Localize ID="locLastMedicalPrompt" runat="server"
                                                 Text="Date of Last Medical" meta:resourcekey="locLastMedicalPromptResource1"></asp:Localize></td>
                                         <td>
-                                            <uc2:mfbTypeInDate ID="dateMedical" ValidationGroup="valPilotInfo" runat="server" DefaultType="None" />
+                                            <uc2:mfbTypeInDate ID="dateMedical" runat="server" DefaultType="None" />
                                         </td>
                                     </tr>
                                     <tr>

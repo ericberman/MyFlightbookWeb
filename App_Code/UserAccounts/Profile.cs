@@ -173,6 +173,7 @@ namespace MyFlightbook
                 this.SecurityQuestion = this.UserName = this.License = this.Address = string.Empty;
             Role = ProfileRoles.UserRole.None;
             BlacklistedProperties = new List<int>();
+            CreationDate = LastActivity = LastLogon = LastPasswordChange = 
             LastBFRInternal = LastMedical = CertificateExpiration = EnglishProficiencyExpiration = LastEmailDate = DateTime.MinValue;
             AssociatedData = new Dictionary<string, object>();
         }
@@ -434,9 +435,31 @@ namespace MyFlightbook
         /// </summary>
         public string PKID { get; set; }
 
+        #region account dates
         /// <summary>
-        /// Username for the user
+        /// Date account was created
         /// </summary>
+        public DateTime CreationDate { get; set; }
+
+        /// <summary>
+        /// Date of last web activity
+        /// </summary>
+        public DateTime LastActivity { get; set; }
+
+        /// <summary>
+        /// Date of last logon
+        /// </summary>
+        public DateTime LastLogon { get; set; }
+
+        /// <summary>
+        /// Date of last password change
+        /// </summary>
+        public DateTime LastPasswordChange { get; set; }
+        #endregion
+
+            /// <summary>
+            /// Username for the user
+            /// </summary>
         public string UserName { get; set; }
 
         /// <summary>
@@ -781,6 +804,10 @@ namespace MyFlightbook
                 LastName = dr["LastName"].ToString();
                 Address = util.ReadNullableField(dr, "Address", string.Empty).ToString();
                 OriginalPKID = PKID = dr["PKID"].ToString();
+                CreationDate = Convert.ToDateTime(dr["CreationDate"], CultureInfo.InvariantCulture);
+                LastLogon = Convert.ToDateTime(dr["LastLoginDate"], CultureInfo.InvariantCulture);
+                LastActivity = Convert.ToDateTime(dr["LastActivityDate"], CultureInfo.InvariantCulture);
+                LastPasswordChange = Convert.ToDateTime(dr["LastPasswordChangedDate"], CultureInfo.InvariantCulture);
 
                 DropboxAccessToken = (string)util.ReadNullableField(dr, "DropboxAccessToken", null);
                 GoogleDriveAccessToken = AuthStateFromString((string) util.ReadNullableField(dr, "GoogleDriveAccessToken", null));

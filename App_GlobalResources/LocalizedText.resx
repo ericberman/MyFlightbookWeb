@@ -1540,4 +1540,19 @@
   <data name="PrintViewBreakMonth" xml:space="preserve">
     <value>Start each month on a new page</value>
   </data>
+  <data name="MemberLastActivity" xml:space="preserve">
+    <value>Your last activity on the website was {0:d}</value>
+  </data>
+  <data name="MemberLastLogon" xml:space="preserve">
+    <value>Your last sign-in on the website was {0:d}</value>
+  </data>
+  <data name="MemberLastPassword" xml:space="preserve">
+    <value>You last changed your password on {0:d}</value>
+  </data>
+  <data name="MemberOriginalPassword" xml:space="preserve">
+    <value>You are still using your original password</value>
+  </data>
+  <data name="MemberSince" xml:space="preserve">
+    <value>You have been a member since {0:d}</value>
+  </data>
 </root>
