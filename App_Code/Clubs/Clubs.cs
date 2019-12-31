@@ -824,10 +824,22 @@ namespace MyFlightbook.Clubs
         #endregion
     }
 
+    /// <summary>
+    /// A member of a flying club.
+    /// </summary>
     [Serializable]
     public class ClubMember : Profile
     {
+        /// <summary>
+        /// The role of the member within the club - indicates level of privileges.  LIMITED TO LOWER 8 BITS of the "Role" field in database.  These are mutually exclusive.
+        /// </summary>
         public enum ClubMemberRole {Member, Admin, Owner}
+
+        private const UInt32 MaintenanceOfficerMask = 0x0100;
+        private const UInt32 TreasurerMask = 0x0200;
+        private const UInt32 InsuranceOfficerMask = 0x0400;
+
+        private const UInt32 RoleMask = 0xFF;
 
         #region properties
         /// <summary>
@@ -855,16 +867,29 @@ namespace MyFlightbook.Clubs
         {
             get
             {
+                List<string> lst = new List<string>();
                 switch (RoleInClub)
                 {
                     case ClubMemberRole.Admin:
-                        return Resources.Club.RoleManager;
+                        lst.Add(Resources.Club.RoleManager);
+                        break;
                     case ClubMemberRole.Owner:
-                        return Resources.Club.RoleOwner;
+                        lst.Add(Resources.Club.RoleOwner);
+                        break;
                     default:
                     case ClubMemberRole.Member:
-                        return Resources.Club.RoleMember;
+                        lst.Add(Resources.Club.RoleMember);
+                        break;
                 }
+
+                if (IsMaintanenceOfficer)
+                    lst.Add(Resources.Club.RoleMaintenanceOfficer);
+                if (IsTreasurer)
+                    lst.Add(Resources.Club.RoleTreasurer);
+                if (IsInsuranceOfficer)
+                    lst.Add(Resources.Club.RoleInsuranceOfficer);
+
+                return String.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator + Resources.LocalizedText.LocalizedSpace, lst);
             }
         }
 
@@ -877,6 +902,26 @@ namespace MyFlightbook.Clubs
         /// Last Error
         /// </summary>
         public string LastError { get; set; }
+
+        /// <summary>
+        /// Is this member a maintenance officer?
+        /// </summary>
+        public bool IsMaintanenceOfficer { get; set; }
+
+        /// <summary>
+        /// Is this member a treasurer?
+        /// </summary>
+        public bool IsTreasurer { get; set; }
+
+        /// <summary>
+        /// Is this member responsible for insurance?
+        /// </summary>
+        public bool IsInsuranceOfficer { get; set; }
+
+        protected UInt32 ConsolidatedRoleFlags
+        {
+            get { return ((UInt32)RoleInClub) | (IsMaintanenceOfficer ? MaintenanceOfficerMask : 0) | (IsTreasurer ? TreasurerMask : 0) | (IsInsuranceOfficer ? InsuranceOfficerMask : 0); }
+        }
         #endregion
 
         #region initialization
@@ -884,6 +929,7 @@ namespace MyFlightbook.Clubs
         {
             ClubID = Club.ClubIDNew;
             RoleInClub = ClubMemberRole.Member;
+            IsMaintanenceOfficer = IsTreasurer = IsInsuranceOfficer = false;
             LastError = string.Empty;
             JoinedDate = DateTime.MinValue;
         }
@@ -900,7 +946,11 @@ namespace MyFlightbook.Clubs
             if (dr == null)
                 throw new ArgumentNullException("dr");
             ClubID = Convert.ToInt32(dr["idclub"], CultureInfo.InvariantCulture);
-            RoleInClub = (ClubMemberRole)Convert.ToInt32(dr["role"], CultureInfo.InvariantCulture);
+            UInt32 roleFlags = Convert.ToUInt32(dr["role"], CultureInfo.InvariantCulture);
+            RoleInClub = (ClubMemberRole)(roleFlags & RoleMask);
+            IsMaintanenceOfficer = ((roleFlags & MaintenanceOfficerMask) != 0);
+            IsTreasurer = ((roleFlags & TreasurerMask) != 0);
+            IsInsuranceOfficer = ((roleFlags & InsuranceOfficerMask) != 0);
             JoinedDate = Convert.ToDateTime(dr["joindate"], CultureInfo.InvariantCulture);
             LastError = string.Empty;
         }
@@ -936,7 +986,7 @@ namespace MyFlightbook.Clubs
             {
                 comm.Parameters.AddWithValue("id", ClubID);
                 comm.Parameters.AddWithValue("user", UserName);
-                comm.Parameters.AddWithValue("role", (int)RoleInClub);
+                comm.Parameters.AddWithValue("role", (int)ConsolidatedRoleFlags);
             });
             if (!fResult)
                 LastError = dbh.LastError;
@@ -987,6 +1037,43 @@ namespace MyFlightbook.Clubs
             lst.RemoveAll(cm => cm.RoleInClub == ClubMemberRole.Member);
             return lst;
         }
+
+        /// <summary>
+        /// Gets the list of all maintenance officers for the club
+        /// </summary>
+        /// <param name="idclub">The club</param>
+        /// <returns>The list of relevant members</returns>
+        public static IEnumerable<ClubMember> MaintenanceOfficersForClub(int idclub)
+        {
+            List<ClubMember> lst = MembersForClub(idclub);
+            lst.RemoveAll(cm => !cm.IsMaintanenceOfficer);
+            return lst;
+        }
+
+        /// <summary>
+        /// Gets the list of all treasurers for the club
+        /// </summary>
+        /// <param name="idclub">The club</param>
+        /// <returns>The list of relevant members</returns>
+        public static IEnumerable<ClubMember> TreasurersForClub(int idclub)
+        {
+            List<ClubMember> lst = MembersForClub(idclub);
+            lst.RemoveAll(cm => !cm.IsTreasurer);
+            return lst;
+        }
+
+        /// <summary>
+        /// Gets the list of all insurance officers for the club
+        /// </summary>
+        /// <param name="idclub">The club</param>
+        /// <returns>The list of relevant members</returns>
+        public static IEnumerable<ClubMember> InsuranceOfficersForClub(int idclub)
+        {
+            List<ClubMember> lst = MembersForClub(idclub);
+            lst.RemoveAll(cm => !cm.IsInsuranceOfficer);
+            return lst;
+        }
+
 
         /// <summary>
         /// Is the user a member of the specified club?

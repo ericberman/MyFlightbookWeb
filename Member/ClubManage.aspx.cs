@@ -1,12 +1,9 @@
 ﻿using MyFlightbook;
-using MyFlightbook.Airports;
 using MyFlightbook.Clubs;
-using MyFlightbook.FlightCurrency;
 using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Web.UI;
@@ -221,14 +218,13 @@ public partial class Member_ClubManage : System.Web.UI.Page
     #region Member Management
     protected void gvMembers_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-        if (e != null && e.Row.RowType == DataControlRowType.DataRow)
+        if (e != null && e.Row.RowType == DataControlRowType.DataRow && (e.Row.RowState & DataControlRowState.Edit) == DataControlRowState.Edit)
         {
-            RadioButtonList rbl = (RadioButtonList)e.Row.FindControl("rblRole");
-            if (rbl != null)
-            {
-                ClubMember cm = (ClubMember)e.Row.DataItem;
-                rbl.SelectedValue = cm.RoleInClub.ToString();
-            }
+            ClubMember cm = (ClubMember)e.Row.DataItem;
+            ((RadioButtonList)e.Row.FindControl("rblRole")).SelectedValue = cm.RoleInClub.ToString();
+            ((CheckBox)e.Row.FindControl("ckMaintenanceOfficer")).Checked = cm.IsMaintanenceOfficer;
+            ((CheckBox)e.Row.FindControl("ckTreasurer")).Checked = cm.IsTreasurer;
+            ((CheckBox)e.Row.FindControl("ckInsuranceOfficer")).Checked = cm.IsInsuranceOfficer;
         }
     }
     protected void gvMembers_RowUpdating(object sender, GridViewUpdateEventArgs e)
@@ -238,31 +234,32 @@ public partial class Member_ClubManage : System.Web.UI.Page
         ClubMember cm = CurrentClub.Members.FirstOrDefault(pf => pf.UserName.CompareTo(e.Keys[0].ToString()) == 0);
         if (cm != null)
         {
-            RadioButtonList rbl = (RadioButtonList)gvMembers.Rows[e.RowIndex].FindControl("rblRole");
+            GridViewRow gvr = gvMembers.Rows[e.RowIndex];
+            RadioButtonList rbl = (RadioButtonList)gvr.FindControl("rblRole");
             ClubMember.ClubMemberRole requestedRole = (ClubMember.ClubMemberRole)Enum.Parse(typeof(ClubMember.ClubMemberRole), rbl.SelectedValue);
+            cm.IsMaintanenceOfficer = ((CheckBox)gvr.FindControl("ckMaintenanceOfficer")).Checked;
+            cm.IsTreasurer = ((CheckBox)gvr.FindControl("ckTreasurer")).Checked;
+            cm.IsInsuranceOfficer = ((CheckBox)gvr.FindControl("ckInsuranceOfficer")).Checked;
 
             bool fResult = true;
             try
             {
-                if (requestedRole != cm.RoleInClub) // check to see if anything changed
+                if (requestedRole == ClubMember.ClubMemberRole.Owner) // that's fine, but we need to un-make any other creators
                 {
-                    if (requestedRole == ClubMember.ClubMemberRole.Owner) // that's fine, but we need to un-make any other creators
+                    ClubMember cmOldOwner = CurrentClub.Members.FirstOrDefault(pf => pf.RoleInClub == ClubMember.ClubMemberRole.Owner);
+                    if (cmOldOwner != null) //should never happen!
                     {
-                        ClubMember cmOldOwner = CurrentClub.Members.FirstOrDefault(pf => pf.RoleInClub == ClubMember.ClubMemberRole.Owner);
-                        if (cmOldOwner != null) //should never happen!
-                        {
-                            cmOldOwner.RoleInClub = ClubMember.ClubMemberRole.Admin;
-                            if (!cmOldOwner.FCommitClubMembership())
-                                throw new MyFlightbookException(cmOldOwner.LastError);
-                        }
+                        cmOldOwner.RoleInClub = ClubMember.ClubMemberRole.Admin;
+                        if (!cmOldOwner.FCommitClubMembership())
+                            throw new MyFlightbookException(cmOldOwner.LastError);
                     }
-                    else if (cm.RoleInClub == ClubMember.ClubMemberRole.Owner)    // if we're not requesting creator role, but this person currently is creator, then we are demoting - that's a no-no
-                        throw new MyFlightbookException(Resources.Club.errCantDemoteOwner);
-
-                    cm.RoleInClub = requestedRole;
-                    if (!cm.FCommitClubMembership())
-                        throw new MyFlightbookException(cm.LastError);
                 }
+                else if (cm.RoleInClub == ClubMember.ClubMemberRole.Owner)    // if we're not requesting creator role, but this person currently is creator, then we are demoting - that's a no-no
+                    throw new MyFlightbookException(Resources.Club.errCantDemoteOwner);
+
+                cm.RoleInClub = requestedRole;
+                if (!cm.FCommitClubMembership())
+                    throw new MyFlightbookException(cm.LastError);
             }
             catch (MyFlightbookException ex)
             {
@@ -349,77 +346,9 @@ public partial class Member_ClubManage : System.Web.UI.Page
     #endregion
 
     #region Reporting
-    protected string FullName(string szFirst, string szLast, string szEmail)
-    {
-        Profile pf = new Profile()
-        {
-            FirstName = szFirst,
-            LastName = szLast,
-            Email = szEmail
-        };
-        return pf.UserFullName;
-    }
-
-    protected string ValueString(object o, decimal offSet = 0.0M)
-    {
-        if (o is DateTime)
-        {
-            DateTime dt = (DateTime)o;
-            if (dt != null && dt.HasValue())
-                return dt.ToShortDateString();
-        }
-        else if (o is decimal)
-        {
-            decimal d = (decimal)o;
-            if (d > 0)
-                return (d + offSet).ToString("#,##0.0#", CultureInfo.CurrentCulture);
-        }
-        return string.Empty;
-    }
-
-    protected string CSSForValue(decimal current, decimal due, int hoursWarning, int offSet = 0)
-    {
-        if (due > 0)
-            due += offSet;
-
-        if (current > due)
-            return "currencyexpired";
-        else if (current + hoursWarning > due)
-            return "currencynearlydue";
-        return "currencyok";
-    }
-
-    protected string CSSForDate(DateTime dt)
-    {
-        if (DateTime.Now.CompareTo(dt) > 0)
-            return "currencyexpired";
-        else if (DateTime.Now.AddDays(30).CompareTo(dt) > 0)
-            return "currencynearlydue";
-        return "currencyok";
-    }
-
-    protected string FormattedUTCDate(object o)
-    {
-        if (o == null)
-            return string.Empty;
-        if (o is DateTime)
-            return ((DateTime)o).UTCFormattedStringOrEmpty(false);
-        return string.Empty;
-    }
-
-    protected string MonthForDate(DateTime dt)
-    {
-        return String.Format(CultureInfo.InvariantCulture, "{0}-{1} ({2})", dt.Year, dt.Month.ToString("00", CultureInfo.InvariantCulture), dt.ToString("MMM", CultureInfo.CurrentCulture));
-    }
-
     protected void btnUpdate_Click(object sender, EventArgs e)
     {
-        sqlDSReports.SelectParameters.Clear();
-        sqlDSReports.SelectParameters.Add(new Parameter("idclub", System.Data.DbType.Int32, CurrentClub.ID.ToString(CultureInfo.InvariantCulture)));
-        sqlDSReports.SelectParameters.Add(new Parameter("startDate", System.Data.DbType.Date, dateStart.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
-        sqlDSReports.SelectParameters.Add(new Parameter("endDate", System.Data.DbType.Date, dateEnd.Date.HasValue() ? dateEnd.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
-        gvClubReports.DataSourceID = sqlDSReports.ID;
-        gvClubReports.DataBind();
+        FlyingReport.Refresh(CurrentClub.ID, dateStart.Date, dateEnd.Date);
         btnDownload.Visible = true;
     }
     protected void btnDownload_Click(object sender, EventArgs e)
@@ -430,7 +359,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
         string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, System.Text.RegularExpressions.Regex.Replace(CurrentClub.Name, "[^0-9a-zA-Z-]", string.Empty), DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
         string szDisposition = String.Format(CultureInfo.InvariantCulture, "inline;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty));
         Response.AddHeader("Content-Disposition", szDisposition);
-        Response.Write(gvClubReports.CSVFromData());
+        Response.Write(FlyingReport.CSVData);
         Response.End();
     }
 
@@ -441,32 +370,14 @@ public partial class Member_ClubManage : System.Web.UI.Page
         Response.ContentType = dst.Mimetype;
         Response.AddHeader("Content-Disposition", String.Format(CultureInfo.CurrentCulture, "attachment;filename={0}-AllFlights.{1}", Branding.CurrentBrand.AppName, dst.DefaultExtension));
 
-        // Get the flight IDs that contribute to the report
-        sqlDSReports.SelectParameters.Clear();
-        sqlDSReports.SelectParameters.Add(new Parameter("idclub", System.Data.DbType.Int32, CurrentClub.ID.ToString(CultureInfo.InvariantCulture)));
-        sqlDSReports.SelectParameters.Add(new Parameter("startDate", System.Data.DbType.Date, dateStart.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
-        sqlDSReports.SelectParameters.Add(new Parameter("endDate", System.Data.DbType.Date, dateEnd.Date.HasValue() ? dateEnd.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+        FlyingReport.WriteKMLToStream(Response.OutputStream, CurrentClub.ID, dateStart.Date, dateEnd.Date);
 
-        List<int> lstIds = new List<int>();
-        using (DataView dv = (DataView) sqlDSReports.Select(DataSourceSelectArguments.Empty))
-        {
-            foreach (DataRowView dr in dv)
-                lstIds.Add(Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture));
-        }
-
-        string szErr;
-        VisitedAirport.AllFlightsAsKML(new FlightQuery(), Response.OutputStream, out szErr, lstIds);
-        if (String.IsNullOrEmpty(szErr))
-            lblErr.Text = szErr;
         Response.End();
     }
 
     protected void btnUpdateMaintenance_Click(object sender, EventArgs e)
     {
-        // flush the cache to pick up any aircraft changes
-        CurrentClub = Club.ClubWithID(CurrentClub.ID, true);
-        gvMaintenance.DataSource = CurrentClub.MemberAircraft;
-        gvMaintenance.DataBind();
+        MaintenanceReport.Refresh(CurrentClub.ID);
         btnDownloadMaintenance.Visible = true;
     }
 
@@ -478,46 +389,13 @@ public partial class Member_ClubManage : System.Web.UI.Page
         string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-Maintenance-{2}", Branding.CurrentBrand.AppName, System.Text.RegularExpressions.Regex.Replace(CurrentClub.Name, "[^0-9a-zA-Z-]", string.Empty), DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
         string szDisposition = String.Format(CultureInfo.InvariantCulture, "inline;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", string.Empty));
         Response.AddHeader("Content-Disposition", szDisposition);
-        Response.Write(gvMaintenance.CSVFromData());
+        Response.Write(MaintenanceReport.CSVData);
         Response.End();
     }
     #endregion
 
-    protected string CSSForItem(CurrencyState cs)
-    {
-        switch (cs)
-        {
-            case CurrencyState.GettingClose:
-                return "currencynearlydue";
-            case CurrencyState.NotCurrent:
-                return "currencyexpired";
-            case CurrencyState.OK:
-                return "currencyok";
-            case CurrencyState.NoDate:
-                return "currencynodate";
-        }
-        return string.Empty;
-    }
-
     protected void btnInsuranceReport_Click(object sender, EventArgs e)
     {
-        gvInsuranceReport.DataSource = ClubInsuranceReportItem.ReportForClub(CurrentClub.ID, Convert.ToInt32(cmbMonthsInsurance.SelectedValue, CultureInfo.InvariantCulture));
-        gvInsuranceReport.DataBind();
-    }
-
-    protected void gvInsuranceReport_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException("e");
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            ClubInsuranceReportItem ciri = (ClubInsuranceReportItem)e.Row.DataItem;
-            GridView gvTimeInAircraft = (GridView) e.Row.FindControl("gvAircraftTime");
-            gvTimeInAircraft.DataSource = ciri.TotalsByClubAircraft;
-            gvTimeInAircraft.DataBind();
-            Repeater rptPilotStatus = (Repeater)e.Row.FindControl("rptPilotStatus");
-            rptPilotStatus.DataSource = ciri.PilotStatusItems;
-            rptPilotStatus.DataBind();
-        }
+        InsuranceReport.Refresh(CurrentClub.ID, Convert.ToInt32(cmbMonthsInsurance.SelectedValue, CultureInfo.InvariantCulture));
     }
 }

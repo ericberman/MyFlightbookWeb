@@ -266,7 +266,7 @@
     <value />
   </data>
   <data name="LabelMemberRole" xml:space="preserve">
-    <value>Role</value>
+    <value>Roles</value>
   </data>
   <data name="LabelMessagePrompt" xml:space="preserve">
     <value>Please type your message below.</value>
@@ -295,7 +295,7 @@ Sender Email: {1}</value>
     <comment>Information about the sender when a message is sent.</comment>
   </data>
   <data name="RoleManager" xml:space="preserve">
-    <value>Manager</value>
+    <value>Admin</value>
   </data>
   <data name="RoleMember" xml:space="preserve">
     <value>Member</value>
@@ -680,5 +680,17 @@ Sender Email: {1}</value>
   </data>
   <data name="ReportHeaderOilLevel" xml:space="preserve">
     <value>Oil Level</value>
+  </data>
+  <data name="ClubRolesDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\clubrolesdescription.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="RoleInsuranceOfficer" xml:space="preserve">
+    <value>Insurance Officer</value>
+  </data>
+  <data name="RoleMaintenanceOfficer" xml:space="preserve">
+    <value>Maintenance Officer</value>
+  </data>
+  <data name="RoleTreasurer" xml:space="preserve">
+    <value>Treasurer</value>
   </data>
 </root>
