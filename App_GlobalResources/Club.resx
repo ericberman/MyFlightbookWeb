@@ -681,6 +681,23 @@ Sender Email: {1}</value>
   <data name="ReportHeaderOilLevel" xml:space="preserve">
     <value>Oil Level</value>
   </data>
+  <data name="ClubReportEmailBodyTemplate" xml:space="preserve">
+    <value>Below is the {0} for the club "{1}" for {2}</value>
+    <comment>{0} is the kind of report, {1} is the name of the club, {2} is the period.</comment>
+  </data>
+  <data name="ClubReportEmailSubject" xml:space="preserve">
+    <value>{0} {1} for {2}</value>
+    <comment>e.g., "January 2020 Insurance Report for MyGreatClub</comment>
+  </data>
+  <data name="ClubReportFlying" xml:space="preserve">
+    <value>Flying Report</value>
+  </data>
+  <data name="ClubReportInsurance" xml:space="preserve">
+    <value>Insurance Report</value>
+  </data>
+  <data name="ClubReportMaintenance" xml:space="preserve">
+    <value>Maintenance Report</value>
+  </data>
   <data name="ClubRolesDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\clubrolesdescription.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

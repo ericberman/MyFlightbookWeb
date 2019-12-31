@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
-public partial class Controls_ClubControls_InsuranceReport : System.Web.UI.UserControl
+public partial class Controls_ClubControls_InsuranceReport : System.Web.UI.UserControl, IReportable
 {
     public string CSVData
     {
@@ -37,6 +37,11 @@ public partial class Controls_ClubControls_InsuranceReport : System.Web.UI.UserC
     {
         gvInsuranceReport.DataSource = ClubInsuranceReportItem.ReportForClub(ClubID, monthInterval);
         gvInsuranceReport.DataBind();
+    }
+
+    public void Refresh(int ClubID)
+    {
+        Refresh(ClubID, 1);
     }
 
     protected void Page_Load(object sender, EventArgs e)

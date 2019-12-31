@@ -6,7 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Text;
 using System.Web;
 
 /******************************************************
@@ -822,6 +825,113 @@ namespace MyFlightbook.Clubs
             return lst;
         }
         #endregion
+
+        #region Reporting
+        private static void SendReport(ClubMember cm, string szReportName, string szReportPrefix, string controlName)
+        {
+            if (controlName == null)
+                throw new ArgumentNullException("getBody");
+            if (cm == null)
+                throw new ArgumentNullException("cm");
+            using (MailMessage msg = new MailMessage())
+            {
+                Brand brand = Branding.CurrentBrand;
+                msg.From = new MailAddress(brand.EmailAddress, brand.AppName);
+                msg.To.Add(new MailAddress(cm.Email, cm.UserFullName));
+                msg.Subject = szReportName;
+                msg.IsBodyHtml = true;
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat(CultureInfo.InvariantCulture, @"
+<style type='text/css'>
+.currencyok
+{{
+    font-weight: normal;
+    color: Green;
+}}
+.currencynearlydue
+{{
+    font-weight: bold;
+    color: Blue;
+}}
+.currencyexpired
+{{
+    font-weight: bold;
+    color: Red;
+}}
+
+.currencynodate 
+{{
+    font-weight: bold;
+    color: black;
+}}
+</style>
+<p>{0}<p>", HttpUtility.HtmlEncode(szReportPrefix));
+                using (System.Web.UI.Page p = new FormlessPage())
+                {
+                    using (StringWriter sw1 = new StringWriter(CultureInfo.CurrentCulture))
+                        HttpContext.Current.Server.Execute(p, sw1, false);
+
+                    p.Controls.Add(new System.Web.UI.HtmlControls.HtmlForm());
+                    IReportable ifr = (IReportable)p.LoadControl(controlName);
+                    if (ifr == null)
+                        throw new MyFlightbookException("Invalid control: " + controlName);
+                    StringWriter sw = null;
+                    ifr.Refresh(cm.ClubID);
+                    try
+                    {
+                        sw = new StringWriter(sb, CultureInfo.InvariantCulture);
+                        using (System.Web.UI.HtmlTextWriter htmlTW = new System.Web.UI.HtmlTextWriter(sw))
+                        {
+                            sw = null;
+                            System.Web.UI.Control c = ifr as System.Web.UI.Control;
+                            c.RenderControl(htmlTW);
+                        }
+                    }
+                    finally
+                    {
+                        if (sw != null)
+                            sw.Dispose();
+                    }
+                }
+
+                msg.Body = sb.ToString();
+                util.SendMessage(msg);
+            }
+        }
+
+        public static void SendMonthlyClubReports()
+        {
+            DateTime startDate = new DateTime(DateTime.Now.AddDays(-1).Year, DateTime.Now.AddDays(-1).Month, 1);
+            DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+            string szDateMonth = startDate.ToString("MMM yyyy", CultureInfo.CurrentCulture);
+
+            foreach(ClubMember cm in ClubMember.AllClubOfficers())
+            {
+                Club club = Club.ClubWithID(cm.ClubID);
+                if (club == null)
+                    continue;
+
+                if (cm.IsTreasurer)
+                    SendReport(cm, 
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailSubject, szDateMonth, Resources.Club.ClubReportFlying, club.Name),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportFlying, club.Name, szDateMonth), 
+                        "~/Controls/ClubControls/FlyingReport.ascx");
+
+                if (cm.IsMaintanenceOfficer)
+                    SendReport(cm,
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailSubject, szDateMonth, Resources.Club.ClubReportMaintenance, club.Name),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportMaintenance, club.Name, szDateMonth),
+                        "~/Controls/ClubControls/MaintenanceReport.ascx");
+
+                if (cm.IsInsuranceOfficer)
+                    SendReport(cm,
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailSubject, szDateMonth, Resources.Club.ClubReportInsurance, club.Name),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportInsurance, club.Name, szDateMonth),
+                        "~/Controls/ClubControls/InsuranceReport.ascx");
+            }
+        }
+        #endregion
     }
 
     /// <summary>
@@ -1039,6 +1149,23 @@ namespace MyFlightbook.Clubs
         }
 
         /// <summary>
+        /// Returns a list of all club officers (insurance, maintenance, treasurer) across ALL clubs.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<ClubMember> AllClubOfficers()
+        {
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT cm.*, u.*
+                FROM clubmembers cm
+                INNER JOIN users u ON cm.username=u.username
+                LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook')
+                WHERE (cm.role & ~0x{0}) <> 0
+                ORDER BY u.Lastname ASC, u.FirstName ASC, u.Username ASC", RoleMask.ToString("x")));
+            List<ClubMember> lst = new List<ClubMember>();
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new ClubMember(dr)); });
+            return lst;
+        }
+
+        /// <summary>
         /// Gets the list of all maintenance officers for the club
         /// </summary>
         /// <param name="idclub">The club</param>
@@ -1073,7 +1200,6 @@ namespace MyFlightbook.Clubs
             lst.RemoveAll(cm => !cm.IsInsuranceOfficer);
             return lst;
         }
-
 
         /// <summary>
         /// Is the user a member of the specified club?
@@ -1421,6 +1547,10 @@ ORDER BY username asc;");
 
             return lst;
         }
+    }
 
+    public interface IReportable
+    {
+        void Refresh(int clubID);
     }
 }

@@ -1,12 +1,13 @@
 ﻿using MyFlightbook;
-using System;
-using System.Globalization;
-using System.Web.UI.WebControls;
-using System.IO;
 using MyFlightbook.Airports;
+using MyFlightbook.Clubs;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
+using System.IO;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -14,7 +15,7 @@ using System.Web.UI;
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
-public partial class Controls_ClubControls_FlyingReport : System.Web.UI.UserControl
+public partial class Controls_ClubControls_FlyingReport : System.Web.UI.UserControl, IReportable
 {
     #region Formatting Helpers
     protected string FullName(string szFirst, string szLast, string szEmail)
@@ -81,6 +82,11 @@ public partial class Controls_ClubControls_FlyingReport : System.Web.UI.UserCont
         SetParams(ClubID, dateStart, dateEnd);
         gvFlyingReport.DataSourceID = sqlDSReports.ID;
         gvFlyingReport.DataBind();
+    }
+
+    public void Refresh(int ClubID)
+    {
+        Refresh(ClubID, new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 1), DateTime.Now);
     }
 
     protected void Page_Load(object sender, EventArgs e)

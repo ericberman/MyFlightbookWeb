@@ -9,7 +9,7 @@ using System.Globalization;
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
-public partial class Controls_ClubControls_MaintenanceReport : System.Web.UI.UserControl
+public partial class Controls_ClubControls_MaintenanceReport : System.Web.UI.UserControl, IReportable
 {
 
     protected string ValueString(object o, decimal offSet = 0.0M)
