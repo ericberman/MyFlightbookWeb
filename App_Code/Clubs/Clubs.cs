@@ -869,9 +869,6 @@ namespace MyFlightbook.Clubs
 <p>{0}<p>", HttpUtility.HtmlEncode(szReportPrefix));
                 using (System.Web.UI.Page p = new FormlessPage())
                 {
-                    using (StringWriter sw1 = new StringWriter(CultureInfo.CurrentCulture))
-                        HttpContext.Current.Server.Execute(p, sw1, false);
-
                     p.Controls.Add(new System.Web.UI.HtmlControls.HtmlForm());
                     IReportable ifr = (IReportable)p.LoadControl(controlName);
                     if (ifr == null)
