@@ -805,9 +805,9 @@ namespace MyFlightbook
                 Address = util.ReadNullableField(dr, "Address", string.Empty).ToString();
                 OriginalPKID = PKID = dr["PKID"].ToString();
                 CreationDate = Convert.ToDateTime(dr["CreationDate"], CultureInfo.InvariantCulture);
-                LastLogon = Convert.ToDateTime(dr["LastLoginDate"], CultureInfo.InvariantCulture);
-                LastActivity = Convert.ToDateTime(dr["LastActivityDate"], CultureInfo.InvariantCulture);
-                LastPasswordChange = Convert.ToDateTime(dr["LastPasswordChangedDate"], CultureInfo.InvariantCulture);
+                LastLogon = Convert.ToDateTime(util.ReadNullableField(dr, "LastLoginDate", DateTime.MinValue), CultureInfo.InvariantCulture);
+                LastActivity = Convert.ToDateTime(util.ReadNullableField(dr, "LastActivityDate", DateTime.MinValue), CultureInfo.InvariantCulture);
+                LastPasswordChange = Convert.ToDateTime(util.ReadNullableField(dr, "LastPasswordChangedDate", DateTime.MinValue), CultureInfo.InvariantCulture);
 
                 DropboxAccessToken = (string)util.ReadNullableField(dr, "DropboxAccessToken", null);
                 GoogleDriveAccessToken = AuthStateFromString((string) util.ReadNullableField(dr, "GoogleDriveAccessToken", null));
