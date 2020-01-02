@@ -10,7 +10,7 @@
     <asp:Label ID="lblTail" runat="server" Text=""></asp:Label> <asp:Label ID="lblAdminMode" runat="server" Text=" - ADMIN MODE" Visible="false"></asp:Label>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
-    <script src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js") %>'></script>
+    <script src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js?v=20200102") %>'></script>
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
     <script src='<%= ResolveUrl("~/public/Scripts/mfbcalendar.js?v=3") %>'></script>

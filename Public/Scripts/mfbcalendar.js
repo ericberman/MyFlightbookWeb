@@ -18,6 +18,10 @@
             dp.viewType = base.displayMode === 'Week' ? "Week" : "days";
         }
         dp.init();
+        dp.update();
+        // Bug in latest 2018.2.232 version of code leaves the "loading..." label white but visible, causing weird display
+        if (typeof dp.loadingLabelVisible !== "undefined")
+            dp.loadingLabelVisible = false;
         return dp;
     };
 
