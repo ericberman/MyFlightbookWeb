@@ -227,6 +227,13 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             throw new ArgumentNullException("e");
 
         m_ac.DefaultImage = e.Image.ThumbnailFile;
+        UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
+        Aircraft acToUpdate = ua.GetUserAircraftByID(m_ac.AircraftID);
+        if (acToUpdate != null)
+        {
+            acToUpdate.DefaultImage = m_ac.DefaultImage;
+            ua.FAddAircraftForUser(acToUpdate);
+        }
         AddPicturesForAircraft();   // refresh.
     }
     #endregion
