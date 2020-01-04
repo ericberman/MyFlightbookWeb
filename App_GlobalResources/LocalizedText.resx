@@ -431,8 +431,7 @@
     <value>Sign Out</value>
   </data>
   <data name="LoginStatusWelcome" xml:space="preserve">
-    <value>Welcome, {0} | </value>
-    <comment>(The vertical bar is a separator - leave it there!)</comment>
+    <value>Welcome, {0}</value>
   </data>
   <data name="MiniFacebookAddToFacebook" xml:space="preserve">
     <value>Share on Facebook</value>
@@ -1554,5 +1553,14 @@
   </data>
   <data name="MemberSince" xml:space="preserve">
     <value>You have been a member since {0:d}</value>
+  </data>
+  <data name="MemberLastActivityShort" xml:space="preserve">
+    <value>Last activity {0:d}</value>
+  </data>
+  <data name="MemberLastLogonShort" xml:space="preserve">
+    <value>Last sign-in {0:d}</value>
+  </data>
+  <data name="MemberSinceShort" xml:space="preserve">
+    <value>Member since {0:d}</value>
   </data>
 </root>

@@ -130,6 +130,7 @@ h1 {
 #headerSearchBox, #headerLoginStatus
 {
     display: inline-block;
+    vertical-align: middle;
 }
 
 /* Sidebar for mobile */

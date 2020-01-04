@@ -1,9 +1,10 @@
 ﻿using MyFlightbook;
 using System;
+using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -50,16 +51,15 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
                     mvXSell.SetActiveView(vwW7Phone);
             }
 
+            mvLoginStatus.SetActiveView(Page.User.Identity.IsAuthenticated ? vwSignedIn : vwNotSignedIn);
             if (Page.User.Identity.IsAuthenticated)
             {
-                lblUser.Visible = true;
-                lblUser.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, lblUser.Text, MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFirstName);
-                lblCreateAccount.Visible = false;
-            }
-            else
-            {
-                lblUser.Visible = false;
-                lblCreateAccount.Visible = true;
+                Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
+                lblUser.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LoginStatusWelcome, pf.UserFirstName);
+                lblMemberSince.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberSinceShort, pf.CreationDate);
+                lblLastLogin.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastLogonShort, pf.LastLogon);
+                lblLastActivity.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastActivityShort, pf.LastActivity);
+                itemLastActivity.Visible = pf.LastActivity.Date.CompareTo(pf.LastLogon.Date) != 0;
             }
         }
     }

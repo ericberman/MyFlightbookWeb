@@ -8,7 +8,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -194,7 +194,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
             lnkAppleIcon.Href = ResolveUrl("~/images/apple-touch-icon.png");
             cssMain.Href = "~/Public/stylesheet.css".ToAbsoluteURL(Request).ToString() + "?v=17";    // to enable forced reload
             cssMobile.Visible = mfbHeader.IsMobile = MfbFooter.IsMobile = IsMobileSession();
-            cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css?v=7");
+            cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css?v=8");
             string szStyle = Branding.CurrentBrand.StyleSheet;
             if (szStyle.Length > 0)
             {

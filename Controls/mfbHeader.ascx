@@ -2,7 +2,7 @@
 <%@ Register Src="XMLNav.ascx" TagName="XMLNav" TagPrefix="uc2" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc2" TagName="mfbSearchbox" %>
-
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <div class="noprint">
     <asp:Panel runat="server" ID="FullHeader" style="width: 100%">
         <div id="headerBar">
@@ -14,10 +14,29 @@
                     <uc2:mfbSearchbox runat="server" ID="mfbSearchbox" OnSearchClicked="btnSearch_Click" Hint="<%$ Resources:LocalizedText, SearchBoxWatermark %>" />
                 </div>
                 <div id="headerLoginStatus">
-                    <asp:Label ID="lblUser" runat="server" Text="<%$ Resources:LocalizedText, LoginStatusWelcome %>" Visible="false"></asp:Label> 
-                    <asp:LoginStatus ID="LoginStatus1" runat="server" LogoutPageUrl="~/secure/login.aspx" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" />
-                    <asp:Label ID="lblCreateAccount" runat="server" Text=""> | 
-                    <asp:HyperLink ID="lnkCreateAccount" runat="server" NavigateUrl="~/Logon/newuser.aspx" Text="<%$ Resources:LocalizedText, LoginStatusCreateAccount %>"></asp:HyperLink></asp:Label>
+                    <asp:MultiView ID="mvLoginStatus" runat="server">
+                        <asp:View ID="vwSignedIn" runat="server">
+                            <asp:Panel runat="server" ID="pnlUser" style="padding: 2px; margin-top: 2px">
+                                <asp:Image ID="imgProfile" runat="server" style="width:12pt; height:12pt; vertical-align:middle" ImageUrl="~/Public/tabimages/ProfileTab.png" />&nbsp;
+                                <asp:Label ID="lblUser" runat="server" style="vertical-align:middle;"></asp:Label>  
+                            </asp:Panel>
+                            <asp:Panel ID="pnlMenuContent" runat="server" BackColor="#FAFAFA" BorderColor="Black" style="padding: 3px; display:none;" BorderWidth="1px">
+                                <div style="padding:4px; text-align:left;">
+                                    <div><asp:Label ID="lblMemberSince" runat="server"></asp:Label></div>
+                                    <div><asp:Label ID="lblLastLogin" runat="server"></asp:Label></div>
+                                    <div runat="server" id="itemLastActivity"><asp:Label ID="lblLastActivity" runat="server"></asp:Label></div>
+                                    <p style="text-align:center; width:100%"><asp:LoginStatus ID="LoginStatus2" runat="server" LogoutPageUrl="~/secure/login.aspx" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" /></p>
+                                </div>
+                            </asp:Panel>
+                            <asp:dropshadowextender ID="DropShadowExtender1" runat="server" TargetControlID="pnlMenuContent" Opacity=".5"></asp:dropshadowextender>
+                            <asp:HoverMenuExtender ID="hme" HoverCssClass="hoverPopMenu" runat="server" TargetControlID="pnlUser" PopupControlID="pnlMenuContent" PopupPosition="Bottom"></asp:HoverMenuExtender>
+                        </asp:View>
+                        <asp:View ID="vwNotSignedIn" runat="server">
+                            <asp:LoginStatus ID="LoginStatus1" runat="server" LogoutPageUrl="~/secure/login.aspx" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" />
+                            <asp:Label ID="lblCreateAccount" runat="server"> | 
+                            <asp:HyperLink ID="lnkCreateAccount" runat="server" NavigateUrl="~/Logon/newuser.aspx" Text="<%$ Resources:LocalizedText, LoginStatusCreateAccount %>"></asp:HyperLink></asp:Label>
+                        </asp:View>
+                    </asp:MultiView>
                 </div>
                 <asp:Panel ID="pnlDonate" runat="server">
                     <asp:HyperLink ID="lnkDonate" Font-Bold="true" runat="server" NavigateUrl="~/Member/EditProfile.aspx/pftDonate"></asp:HyperLink>
