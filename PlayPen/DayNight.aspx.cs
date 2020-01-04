@@ -1,14 +1,15 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Airports;
+using MyFlightbook.Geography;
+using MyFlightbook.Mapping;
+using MyFlightbook.Solar;
+using System;
 using System.Globalization;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Solar;
-using MyFlightbook.Mapping;
-using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2017 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -73,6 +74,19 @@ public partial class Public_DayNight : System.Web.UI.Page
 
                 tc.Text = String.Format(CultureInfo.CurrentCulture, "{0}, {1:F1}°", dt2.ToString("HH:mm", CultureInfo.InvariantCulture), sst.SolarAngle);
             }
+        }
+    }
+
+    protected void btnSearch_Click(object sender, EventArgs e)
+    {
+        AirportList al = new AirportList(txtAirport.Text);
+        airport[] rgAirports = al.GetAirportList();
+        if (rgAirports.Length == 0)
+            lblSearchResult.Text = "Not found";
+        else
+        {
+            txtLat.Text = rgAirports[0].LatLong.LatitudeString;
+            txtLon.Text = rgAirports[0].LatLong.LongitudeString;
         }
     }
 }

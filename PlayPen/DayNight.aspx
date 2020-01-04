@@ -46,6 +46,17 @@
         </tr>
         <tr>
             <td>
+                Airport:<br />
+                <span class="fineprint">(optional)</span>
+            </td>
+            <td>
+                <asp:TextBox ID="txtAirport" runat="server"></asp:TextBox>
+                <asp:Button ID="btnSearch" runat="server" CausesValidation="false" Text="Search" OnClick="btnSearch_Click" />
+                <asp:Label ID="lblSearchResult" runat="server" EnableViewState="false"></asp:Label>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 Date:
             </td>
             <td>
