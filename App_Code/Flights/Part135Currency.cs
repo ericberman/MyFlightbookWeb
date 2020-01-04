@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -112,6 +112,10 @@ namespace MyFlightbook.FlightCurrency
         {
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
+
+            // Only include potential commercial flying - so nothing flagged as part 91 or in a sim.
+            if (!cfr.fIsRealAircraft || cfr.FlightProps.FindEvent(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropPart91) != null)
+                return;
 
             if (cfr.dtFlight.CompareTo(PeriodStart) >= 0)
             {
