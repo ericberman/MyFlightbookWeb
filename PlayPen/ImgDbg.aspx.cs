@@ -6,7 +6,7 @@ using ImageMagick;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,6 +29,10 @@ public partial class Public_ImgDbg : System.Web.UI.Page
                 sb.AppendFormat(CultureInfo.InvariantCulture, "<hr /><br />File: {0}<br />", fu.PostedFile.FileName);
                 IMagickImage image = new MagickImage(fu.PostedFile.InputStream);
                 ExifProfile exif = image.GetExifProfile();
+
+                if (exif == null)
+                    continue;
+
                 // Write all values to the console
                 foreach (IExifValue value in exif.Values)
                 {

@@ -13,7 +13,7 @@ using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -99,11 +99,12 @@ public partial class Public_iCalConvert : System.Web.UI.Page
                         ev.Start = new iCalDateTime(dtStart, "Pacific Standard Time");
                         ev.End = new iCalDateTime(dtEnd, "Pacific Standard Time");
 
-                        Alarm a = new Alarm();
-                        a.Action = AlarmAction.Display;
-                        a.Description = ev.Summary;
-                        a.Trigger = new Trigger();
-                        a.Trigger.DateTime = ev.Start.AddMinutes(-30);
+                        Alarm a = new Alarm()
+                        {
+                            Action = AlarmAction.Display,
+                            Description = ev.Summary,
+                            Trigger = new Trigger() { DateTime = ev.Start.AddMinutes(-30) }
+                        };
                         ev.Alarms.Add(a);
 
                         ic.Method = "PUBLISH";
