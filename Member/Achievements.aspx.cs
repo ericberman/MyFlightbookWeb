@@ -128,7 +128,6 @@ public partial class Member_Achievements : System.Web.UI.Page
 
     protected void btnOK_Click(object sender, EventArgs e)
     {
-        pnlCustomDates.Visible = false;
         RefreshPage();
     }
 }
