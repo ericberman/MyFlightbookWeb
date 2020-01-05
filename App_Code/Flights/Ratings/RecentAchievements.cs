@@ -32,7 +32,7 @@ namespace MyFlightbook.MilestoneProgress
             get
             {
                 if (MatchingEventID > 0)    // links to a specific flight
-                    return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Public/ViewPublicFlight.aspx/{0}", MatchingEventID));
+                    return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}", MatchingEventID));
                 else if (Query != null)
                     return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, QueryLinkTemplate, HttpUtility.UrlEncode(Query.ToBase64CompressedJSONString())));
 
@@ -207,7 +207,7 @@ namespace MyFlightbook.MilestoneProgress
                 lstFlightDays.Sort();
                 foreach (string szKey in lstFlightDays)
                 {
-                    DateTime dt = Convert.ToDateTime(szKey).AddDays(-1);
+                    DateTime dt = Convert.ToDateTime(szKey, CultureInfo.InvariantCulture).AddDays(-1);
                     int cDaysNoFly = dt.Subtract(dtNoFlyStart).Days + 1;
                     if (cDaysNoFly > miLongestNoFlyStreak.Progress)  // biggest missing stretch so far...
                     {
@@ -215,7 +215,7 @@ namespace MyFlightbook.MilestoneProgress
                         miLongestNoFlyStreak.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsNoFlyingStreak, cDaysNoFly, dtNoFlyStart, dt);
                         miLongestNoFlyStreak.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = dtNoFlyStart, DateMax = dt };
                     }
-                    dtNoFlyStart = Convert.ToDateTime(szKey).AddDays(1);
+                    dtNoFlyStart = Convert.ToDateTime(szKey, CultureInfo.InvariantCulture).AddDays(1);
                 }
 
                 miFlightCount.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.nameNumberFlights, miFlightCount.Progress);
