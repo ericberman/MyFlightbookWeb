@@ -176,7 +176,7 @@ namespace MyFlightbook.MilestoneProgress
             DistinctICAO = new HashSet<string>();
             Airports = new HashSet<string>();
 
-            miFlightCount = new RecentAchievementMilestone(string.Empty, MilestoneItem.MilestoneType.Count, 1);
+            miFlightCount = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlightsLogged, MilestoneItem.MilestoneType.Count, 1);
             miLongestStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1);
             miLongestNoFlyStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsNoFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1);
             miFlyingDates = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlyingDayCountTitle, MilestoneItem.MilestoneType.Count, 1);
@@ -218,7 +218,7 @@ namespace MyFlightbook.MilestoneProgress
                     dtNoFlyStart = Convert.ToDateTime(szKey, CultureInfo.InvariantCulture).AddDays(1);
                 }
 
-                miFlightCount.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.nameNumberFlights, miFlightCount.Progress);
+                miFlightCount.MatchingEventText = ((int) miFlightCount.Progress).ToString(CultureInfo.CurrentCulture);
 
                 miFlyingDates.Progress = FlightDates.Count;
                 int DaysInPeriod = EndDate.Subtract(StartDate).Days + 1;

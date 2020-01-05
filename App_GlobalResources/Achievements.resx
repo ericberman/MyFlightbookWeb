@@ -402,4 +402,7 @@
   <data name="RecentAchievementsNoFlyingStreakTitle" xml:space="preserve">
     <value>Longest streak of consecutive NON-flying days:</value>
   </data>
+  <data name="RecentAchievementsFlightsLogged" xml:space="preserve">
+    <value>Flights logged: </value>
+  </data>
 </root>
