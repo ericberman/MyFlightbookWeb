@@ -124,7 +124,7 @@
     <value>Security answer is too long.</value>
   </data>
   <data name="errBadPasswordLength" xml:space="preserve">
-    <value>Password must be between 6 and 20 characters long.</value>
+    <value>Password must be between 8 and 48 characters long.</value>
   </data>
   <data name="errEmailInUse" xml:space="preserve">
     <value>'{0}' is already used for an account.</value>

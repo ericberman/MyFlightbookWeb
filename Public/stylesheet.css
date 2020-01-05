@@ -1471,6 +1471,34 @@ h3.numberedStep {
     vertical-align: middle;
 }
 
+/* Password Strength styles */
+.pwBorder {
+    border: 1px solid darkgray;
+    padding: 2pt;
+    border-radius: 3px;
+    width: 100px;
+    height: 4pt;
+    vertical-align: middle;
+}
+
+.pwWeak {
+    background-color: red;
+}
+
+.pwOK {
+    background-color: gold;
+}
+
+.pwGood {
+    background-color: lightgray;
+}
+
+.pwExcellent {
+    color: black;
+    font-weight: bold;
+    background-color: green;
+}
+
 /* Gridview styles */
 .gvhDefault {
     text-align: left;

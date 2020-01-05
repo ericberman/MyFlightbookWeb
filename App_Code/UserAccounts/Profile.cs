@@ -22,7 +22,7 @@ using System.Web.Security;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1734,12 +1734,12 @@ namespace MyFlightbook
         /// Checks the password - throws an exception if there is an issue with it.
         /// </summary>
         /// <param name="szPass"></param>
-        private static void ValidatePassword(string szPass)
+        public static void ValidatePassword(string szPass)
         {
             if (String.IsNullOrEmpty(szPass))
                 throw new UserEntityException(Resources.Profile.errNoPassword, MembershipCreateStatus.InvalidPassword);
 
-            if (szPass.Length < 6 || szPass.Length > 20)
+            if (szPass.Length < 8 || szPass.Length > 48)
                 throw new UserEntityException(Resources.Profile.errBadPasswordLength, MembershipCreateStatus.InvalidPassword);
         }
 

@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -487,10 +487,9 @@ public partial class Member_EditProfile : System.Web.UI.Page
         {
             if (CurrentPassword.Text.Length == 0 || !Membership.ValidateUser(User.Identity.Name, CurrentPassword.Text))
                 throw new MyFlightbookException(Resources.Profile.errBadPasswordToChange);
-            if (NewPassword.Text.Length < 6)
-                throw new MyFlightbookException(Resources.Profile.errBadPasswordLength);
             if (NewPassword.Text != ConfirmNewPassword.Text) // should never happen - validation should have caught this.
                 throw new MyFlightbookException(Resources.Profile.errPasswordsDontMatch);
+            UserEntity.ValidatePassword(NewPassword.Text);  // will throw an exception if length, etc. is wrong.
             if (!Membership.Provider.ChangePassword(Page.User.Identity.Name, CurrentPassword.Text, NewPassword.Text))
                 throw new MyFlightbookException(Resources.Profile.errChangePasswordFailed);
 
@@ -499,6 +498,13 @@ public partial class Member_EditProfile : System.Web.UI.Page
                 new System.Net.Mail.MailAddress(m_pf.Email, m_pf.UserFullName), false, false);
         }
         catch (MyFlightbookException ex)
+        {
+            lblPassChanged.Visible = true;
+            lblPassChanged.Text = ex.Message;
+            lblPassChanged.CssClass = "error";
+            return false;
+        }
+        catch (UserEntityException ex)
         {
             lblPassChanged.Visible = true;
             lblPassChanged.Text = ex.Message;

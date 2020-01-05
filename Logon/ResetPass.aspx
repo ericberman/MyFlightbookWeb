@@ -45,7 +45,8 @@
                     </td>
                     <td>
                         <asp:TextBox ID="txtNewPass" runat="server" TextMode="Password" ValidationGroup="valPassword" meta:resourcekey="txtNewPassResource1"></asp:TextBox>
-                        <ajaxToolkit:PasswordStrength ID="PasswordStrength" runat="server" BehaviorID="PasswordStrength" TargetControlID="txtNewPass" TextStrengthDescriptions="<%$ Resources:LocalizedText, PasswordStrengthStrings %>" />
+                        <ajaxToolkit:PasswordStrength ID="PasswordStrength2" runat="server" BehaviorID="PasswordStrength2" TargetControlID="txtNewPass" TextStrengthDescriptions="<%$ Resources:LocalizedText, PasswordStrengthStrings %>" StrengthIndicatorType="BarIndicator"
+                                                TextStrengthDescriptionStyles="pwWeak;pwOK;pwGood;pwExcellent" PreferredPasswordLength="10" BarBorderCssClass="pwBorder" />
                         &nbsp;<asp:RequiredFieldValidator ID="valPassRequired" runat="server" ControlToValidate="txtNewPass" CssClass="error" Display="Dynamic" ErrorMessage="Please provide a new password" ValidationGroup="valPassword" meta:resourcekey="valPassRequiredResource1"></asp:RequiredFieldValidator>
                     </td>
                 </tr>

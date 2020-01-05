@@ -109,10 +109,8 @@
                                     <td valign="middle">
                                         <asp:TextBox ID="Password" runat="server" TextMode="Password" 
                                             meta:resourcekey="PasswordResource1"></asp:TextBox> * 
-                                        <cc1:PasswordStrength ID="PasswordStrength1" runat="server" 
-                                            TargetControlID="Password" 
-                                            TextStrengthDescriptions="<%$ Resources:LocalizedText, PasswordStrengthStrings %>" BehaviorID="PasswordStrength1">
-                                        </cc1:PasswordStrength>
+                                        <cc1:PasswordStrength ID="PasswordStrength2" runat="server" BehaviorID="PasswordStrength2" TargetControlID="Password" TextStrengthDescriptions="<%$ Resources:LocalizedText, PasswordStrengthStrings %>" StrengthIndicatorType="BarIndicator"
+                                                TextStrengthDescriptionStyles="pwWeak;pwOK;pwGood;pwExcellent" PreferredPasswordLength="10" BarBorderCssClass="pwBorder" />
                                         <asp:RequiredFieldValidator ID="PasswordRequired" runat="server" ControlToValidate="Password"
                                             ErrorMessage="You must provide a password" Display="Dynamic"  CssClass="error"
                                             ToolTip="Password is required." ValidationGroup="CreateUserWizard1" 
