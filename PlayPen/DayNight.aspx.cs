@@ -82,7 +82,7 @@ public partial class Public_DayNight : System.Web.UI.Page
         AirportList al = new AirportList(txtAirport.Text);
         airport[] rgAirports = al.GetAirportList();
         if (rgAirports.Length == 0)
-            lblSearchResult.Text = "Not found";
+            lblSearchResult.Text = Resources.Airports.errNoAirportsFound;
         else
         {
             txtLat.Text = rgAirports[0].LatLong.LatitudeString;

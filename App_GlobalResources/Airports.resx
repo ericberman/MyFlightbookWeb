@@ -214,4 +214,7 @@
   <data name="mapShowRoute" xml:space="preserve">
     <value>Route of flight (airport-to-airport)</value>
   </data>
+  <data name="errNoAirportsFound" xml:space="preserve">
+    <value>No airports found</value>
+  </data>
 </root>
