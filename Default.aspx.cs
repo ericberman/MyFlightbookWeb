@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -72,7 +72,7 @@ public partial class Public_Home : System.Web.UI.Page
             };
             rptFeatures.DataSource = lst;
             rptFeatures.DataBind();
-            locRecentFlightsHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentFlightsHeader, Branding.CurrentBrand.AppName);
+            locRecentFlightsHeader.Text = Branding.ReBrand(Resources.LocalizedText.DefaultPageRecentFlightsHeader);
 
 
             if (User.Identity.IsAuthenticated)
@@ -87,6 +87,19 @@ public partial class Public_Home : System.Web.UI.Page
             }
 
             lblRecentFlightsStats.Text = fs.ToString();
+
+            locRecentStats.Text = Branding.ReBrand(Resources.LocalizedText.DefaultPageRecentStats);
+            List<string> lstStats = new List<string>()
+            {
+                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsFlights, fs.NumFlightsTotal),
+                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsAircraft, fs.NumAircraft),
+                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPagerecentStatsModels, fs.NumModels)
+            };
+            if (fs.ActiveSessions > 10)
+                lstStats.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageCurrentUsers, fs.ActiveSessions));
+
+            rptStats.DataSource = lstStats;
+            rptStats.DataBind();
         }
 
         // redirect to a mobile view if this is from a mobile device UNLESS cookies suggest to do otherwise.

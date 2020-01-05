@@ -35,6 +35,18 @@
                     <div style="max-width: 480px; margin-left:auto; margin-right:auto;">
                         <uc1:imageSlider runat="server" ID="imageSlider" />
                     </div>
+                    <p><asp:Localize ID="locRecentStats" runat="server"></asp:Localize></p>
+                    <div style="display:inline-block">
+                        <div style="text-align:left">
+                            <ul>
+                                <asp:Repeater ID="rptStats" runat="server">
+                                    <ItemTemplate>
+                                        <li><%# Container.DataItem %></li>
+                                    </ItemTemplate>                        
+                                </asp:Repeater>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </td>
             <td>

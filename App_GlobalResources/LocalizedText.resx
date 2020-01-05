@@ -701,7 +701,7 @@
     <value>Add a new flight</value>
   </data>
   <data name="DefaultPageRecentFlightsHeader" xml:space="preserve">
-    <value>Recent flights taken by members of the {0} community</value>
+    <value>Recent flights taken by members of the %APP_NAME% community</value>
     <comment>{0} is the name of the app.</comment>
   </data>
   <data name="DefaultPageWelcomeBack" xml:space="preserve">
@@ -1565,5 +1565,20 @@
   </data>
   <data name="CopiedToClipboard" xml:space="preserve">
     <value>Copied to clipboard</value>
+  </data>
+  <data name="DefaultPageCurrentUsers" xml:space="preserve">
+    <value>{0:#,##0} pilots online using the website right now!</value>
+  </data>
+  <data name="DefaultPageRecentStats" xml:space="preserve">
+    <value>%APP_NAME% currently has:</value>
+  </data>
+  <data name="DefaultPageRecentStatsAircraft" xml:space="preserve">
+    <value>{0:#,##0} aircraft</value>
+  </data>
+  <data name="DefaultPageRecentStatsFlights" xml:space="preserve">
+    <value>{0:#,##0} flights</value>
+  </data>
+  <data name="DefaultPagerecentStatsModels" xml:space="preserve">
+    <value>{0:#,##0} models of aircraft</value>
   </data>
 </root>

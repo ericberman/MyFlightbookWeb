@@ -3,10 +3,12 @@
 <script RunAt="server">
     /******************************************************
      * 
-     * Copyright (c) 2015 MyFlightbook LLC
+     * Copyright (c) 2015-2020 MyFlightbook LLC
      * Contact myflightbook-at-gmail.com for more information
      *
     *******************************************************/
+
+    private const string szKeySessionCount = "keyLiveSessions";
 
     protected void Application_Start(object sender, EventArgs e)
     {
@@ -14,6 +16,7 @@
         MyFlightbook.ShuntState.Init();
         ScriptManager.ScriptResourceMapping.AddDefinition("jquery", new ScriptResourceDefinition { Path = "https://code.jquery.com/jquery-1.10.1.min.js" });
         System.Web.UI.ValidationSettings.UnobtrusiveValidationMode = UnobtrusiveValidationMode.WebForms;
+        Application[szKeySessionCount] = 0;
     }
 
     protected void Application_End(object sender, EventArgs e)
@@ -57,7 +60,7 @@
     protected void Session_Start(object sender, EventArgs e)
     {
         // Code that runs when a new session is started
-
+        Application[szKeySessionCount] = ((int) Application[szKeySessionCount]) + 1;
     }
 
     protected void Session_End(object sender, EventArgs e)
@@ -66,7 +69,7 @@
         // Note: The Session_End event is raised only when the sessionstate mode
         // is set to InProc in the Web.config file. If session mode is set to StateServer 
         // or SQLServer, the event is not raised.
-
+        Application[szKeySessionCount] = Math.Max(((int)Application[szKeySessionCount]) - 1, 0);
     }
 
 </script>

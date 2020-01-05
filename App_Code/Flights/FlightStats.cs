@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
+using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,11 +23,15 @@ namespace MyFlightbook.FlightStats
         public int NumUsers { get; set; }
         public int NumDays { get; set; }
 
+        public int NumAircraft;
+        public int NumModels;
+        public int NumFlightsTotal;
+        public int ActiveSessions { get; set; }
+
         private List<LogbookEntry> m_lstFlights = new List<LogbookEntry>();
-        private List<AirportList> m_lstRoutes = new List<AirportList>();
+        private AirportList m_lstRoutes = new AirportList();
 
         public IEnumerable<LogbookEntry> RecentPublicFlights { get { return m_lstFlights; } }
-        public IEnumerable<AirportList> RecentRoutes { get { return m_lstRoutes; } }
 
         private const int MaxDays = 7;
 
@@ -82,7 +87,6 @@ WHERE f.Date > ?dateMin AND f.Date < ?dateMax AND f.fPublic <> 0
 ORDER BY f.date DESC, f.idflight DESC 
 LIMIT 200";
                 DBHelper dbh = new DBHelper(szQuery);
-                List<string> lstRoutes = new List<string>();
 
                 dbh.ReadRows(
                     (comm) =>
@@ -94,19 +98,7 @@ LIMIT 200";
                     {
                         LogbookEntry le = new LogbookEntry(dr, (string)dr["username"]);
                         fs.m_lstFlights.Add(le);
-                        lstRoutes.Add(le.Route);
                     });
-
-                dbh.CommandText = "SELECT f.Route FROM flights f WHERE f.Date > ?dateMin AND f.Date < ?dateMax ORDER BY f.Date DESC LIMIT 350";
-                dbh.CommandArgs.Parameters.Clear();
-                dbh.ReadRows((comm) =>
-                {
-                    comm.Parameters.AddWithValue("dateMin", DateTime.Now.AddDays(-MaxDays));
-                    comm.Parameters.AddWithValue("dateMax", DateTime.Now.AddDays(1));
-                },
-                             (dr) => { lstRoutes.Add((string)dr["Route"]); });
-
-                fs.m_lstRoutes = AirportList.ListsFromRoutes(lstRoutes).Result;
 
                 dbh.CommandText = "SELECT count(distinct(f.username)) AS numUsers, count(f.idflight) AS numFlights FROM flights f WHERE f.Date > ?dateMin AND f.Date < ?dateMax";
                 dbh.CommandArgs.Parameters.Clear();
@@ -121,6 +113,18 @@ LIMIT 200";
                         fs.NumFlights = Convert.ToInt32(dr["numFlights"]);
                         fs.NumUsers = Convert.ToInt32(dr["numUsers"]);
                     });
+
+                // Get a few more interesting stats
+                dbh.CommandText = @"SELECT (SELECT COUNT(*) FROM flights) AS numFlights, (SELECT COUNT(*) FROM aircraft WHERE instancetype=1) AS numaircraft, (SELECT COUNT(*) FROM models) AS nummodels";
+                dbh.ReadRow((comm) => { }, (dr) =>
+                {
+                    fs.NumFlightsTotal = Convert.ToInt32(dr["numFlights"], CultureInfo.InvariantCulture);
+                    fs.NumAircraft = Convert.ToInt32(dr["numAircraft"], CultureInfo.InvariantCulture);
+                    fs.NumModels = Convert.ToInt32(dr["numModels"], CultureInfo.InvariantCulture);
+                });
+
+                if (HttpContext.Current != null && HttpContext.Current.Application != null)
+                    fs.ActiveSessions = (int)HttpContext.Current.Application["keyLiveSessions"];
 
                 if (HttpRuntime.Cache != null)
                     HttpRuntime.Cache.Add(CacheKey(), fs, null, DateTime.Now.AddMinutes(30), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
