@@ -26,7 +26,6 @@ namespace MyFlightbook.FlightStats
         public int NumAircraft;
         public int NumModels;
         public int NumFlightsTotal;
-        public int ActiveSessions { get; set; }
 
         private readonly List<LogbookEntry> m_lstFlights = new List<LogbookEntry>();
 
@@ -121,9 +120,6 @@ LIMIT 200";
                     fs.NumAircraft = Convert.ToInt32(dr["numAircraft"], CultureInfo.InvariantCulture);
                     fs.NumModels = Convert.ToInt32(dr["numModels"], CultureInfo.InvariantCulture);
                 });
-
-                if (HttpContext.Current != null && HttpContext.Current.Application != null)
-                    fs.ActiveSessions = (int)HttpContext.Current.Application["keyLiveSessions"];
 
                 if (HttpRuntime.Cache != null)
                     HttpRuntime.Cache.Add(CacheKey(), fs, null, DateTime.Now.AddMinutes(30), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);

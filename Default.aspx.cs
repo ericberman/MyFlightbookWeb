@@ -95,8 +95,10 @@ public partial class Public_Home : System.Web.UI.Page
                 String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsAircraft, fs.NumAircraft),
                 String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPagerecentStatsModels, fs.NumModels)
             };
-            if (fs.ActiveSessions > 10)
-                lstStats.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageCurrentUsers, fs.ActiveSessions));
+
+            int activeSessions = (int)Application["keyLiveSessions"];
+            if (activeSessions > 10)
+                lstStats.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageCurrentUsers, activeSessions));
 
             rptStats.DataSource = lstStats;
             rptStats.DataBind();
