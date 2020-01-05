@@ -1563,4 +1563,7 @@
   <data name="MemberSinceShort" xml:space="preserve">
     <value>Member since {0:d}</value>
   </data>
+  <data name="CopiedToClipboard" xml:space="preserve">
+    <value>Copied to clipboard</value>
+  </data>
 </root>

@@ -7,7 +7,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2019 MyFlightbook LLC
+ * Copyright (c) 2014-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -80,6 +80,18 @@ public partial class Member_Achievements : System.Web.UI.Page
             case FlightQuery.DateRanges.YTD:
                 dtMin = new DateTime(DateTime.Now.Year, 1, 1);
                 break;
+            case FlightQuery.DateRanges.Custom:
+                dtMin = mfbTypeInDateFrom.Date;
+                dtMax = mfbTypeInDateTo.Date;
+                if (dtMax.CompareTo(dtMin) < 0)
+                {
+                    mfbRecentAchievements.AutoDateRange = true;
+                    dtMin = DateTime.MaxValue;
+                    dtMax = DateTime.MinValue;
+                    cmbAchievementDates.SelectedValue = FlightQuery.DateRanges.AllTime.ToString();
+                }
+                break;
+
         }
         lblNoStats.Visible = mfbRecentAchievements.Refresh(Page.User.Identity.Name, dtMin, dtMax, false) == 0;
         lblRecentAchievementsTitle.Text = mfbRecentAchievements.Summary;
@@ -105,6 +117,18 @@ public partial class Member_Achievements : System.Web.UI.Page
 
     protected void cmbAchievementDates_SelectedIndexChanged(object sender, EventArgs e)
     {
+        if (cmbAchievementDates.SelectedValue.CompareCurrentCultureIgnoreCase("Custom") == 0)
+            pnlCustomDates.Visible = true;
+        else
+        {
+            pnlCustomDates.Visible = false;
+            RefreshPage();
+        }
+    }
+
+    protected void btnOK_Click(object sender, EventArgs e)
+    {
+        pnlCustomDates.Visible = false;
         RefreshPage();
     }
 }
