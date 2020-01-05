@@ -114,6 +114,7 @@ LIMIT 200";
 
                 // Get a few more interesting stats
                 dbh.CommandText = @"SELECT (SELECT COUNT(*) FROM flights) AS numFlights, (SELECT COUNT(*) FROM aircraft WHERE instancetype=1) AS numaircraft, (SELECT COUNT(*) FROM models) AS nummodels";
+                dbh.CommandArgs.Timeout = 300;  // use a long timeout
                 dbh.ReadRow((comm) => { }, (dr) =>
                 {
                     fs.NumFlightsTotal = Convert.ToInt32(dr["numFlights"], CultureInfo.InvariantCulture);

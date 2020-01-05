@@ -35,7 +35,7 @@
                     <div style="max-width: 480px; margin-left:auto; margin-right:auto;">
                         <uc1:imageSlider runat="server" ID="imageSlider" />
                     </div>
-                    <p><asp:Localize ID="locRecentStats" runat="server"></asp:Localize></p>
+                    <h2><asp:Localize ID="locRecentStats" runat="server"></asp:Localize></h2>
                     <div style="display:inline-block">
                         <div style="text-align:left">
                             <ul>
