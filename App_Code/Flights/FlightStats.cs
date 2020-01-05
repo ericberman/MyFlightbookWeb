@@ -28,8 +28,7 @@ namespace MyFlightbook.FlightStats
         public int NumFlightsTotal;
         public int ActiveSessions { get; set; }
 
-        private List<LogbookEntry> m_lstFlights = new List<LogbookEntry>();
-        private AirportList m_lstRoutes = new AirportList();
+        private readonly List<LogbookEntry> m_lstFlights = new List<LogbookEntry>();
 
         public IEnumerable<LogbookEntry> RecentPublicFlights { get { return m_lstFlights; } }
 
