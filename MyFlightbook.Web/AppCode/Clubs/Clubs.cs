@@ -6,7 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Text;
 using System.Web;
 
 /******************************************************
@@ -36,7 +39,7 @@ namespace MyFlightbook.Clubs
 
         public enum DeleteNoficiationPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
         public enum AddModifyNotificationPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
-        public enum DoubleBookPolicy { None = 0x00, Admins=0x01, WholeClub = 0x02 }
+        public enum DoubleBookPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
 
         public const int TrialPeriod = 31;  // 30 days, with some buffer.
 
@@ -52,22 +55,22 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// ID for the club
         /// </summary>
-        public int ID {get; set;}
+        public int ID { get; set; }
 
         /// <summary>
         /// Is this a new club?
         /// </summary>
-        public bool IsNew { get { return ID == ClubIDNew;}}
+        public bool IsNew { get { return ID == ClubIDNew; } }
 
         /// <summary>
         /// Username of the user who created the club
         /// </summary>
-        public string Creator {get; set;}
+        public string Creator { get; set; }
 
         /// <summary>
         /// Date/time that the club was created
         /// </summary>
-        public DateTime CreationDate {get; set;}
+        public DateTime CreationDate { get; set; }
 
         /// <summary>
         /// Nullable date for when the club goes inactive.
@@ -115,7 +118,7 @@ namespace MyFlightbook.Clubs
         /// <returns></returns>
         public static bool StatusCanWrite(ClubStatus status)
         {
-            return StatusIsActive(status); 
+            return StatusIsActive(status);
         }
 
         /// <summary>
@@ -146,17 +149,17 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// Name of the club
         /// </summary>
-        public string Name {get; set;}
+        public string Name { get; set; }
 
         /// <summary>
         /// Description of the club
         /// </summary>
-        public string Description {get; set;}
+        public string Description { get; set; }
 
         /// <summary>
         /// URL for the club
         /// </summary>
-        public string URL {get; set;}
+        public string URL { get; set; }
 
         /// <summary>
         /// Returns a fixed URL (includes HTTP if needed)
@@ -172,17 +175,17 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// City where the club is located
         /// </summary>
-        public string City {get; set;}
+        public string City { get; set; }
 
         /// <summary>
         /// State or province
         /// </summary>
-        public string StateProvince {get; set;}
+        public string StateProvince { get; set; }
 
         /// <summary>
         /// Country
         /// </summary>
-        public string Country {get; set;}
+        public string Country { get; set; }
 
         /// <summary>
         /// Display string for location
@@ -215,12 +218,12 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// Contact phone number
         /// </summary>
-        public string ContactPhone {get; set;}
+        public string ContactPhone { get; set; }
 
         /// <summary>
         /// Home airport
         /// </summary>
-        public string HomeAirportCode {get; set;}
+        public string HomeAirportCode { get; set; }
 
         /// <summary>
         /// The club's home airport (can be null)
@@ -235,7 +238,7 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// Most recent error
         /// </summary>
-        public string LastError {get; set;}
+        public string LastError { get; set; }
 
         private List<ClubAircraft> m_clubAircraft = null;
         private List<ClubMember> m_clubMembers = null;
@@ -326,7 +329,7 @@ namespace MyFlightbook.Clubs
         /// </summary>
         public DeleteNoficiationPolicy DeleteNotifications
         {
-            get { return (DeleteNoficiationPolicy) ((Policy & policyMaskDeleteNotification) >> policyMaskDeleteShift); }
+            get { return (DeleteNoficiationPolicy)((Policy & policyMaskDeleteNotification) >> policyMaskDeleteShift); }
             set { Policy = (Policy & ~policyMaskDeleteNotification) | (((UInt32)value) << policyMaskDeleteShift); }
         }
 
@@ -365,8 +368,8 @@ namespace MyFlightbook.Clubs
         #region initialization
         public const int ClubIDNew = -1;
 
-	    public Club()
-	    {
+        public Club()
+        {
             ID = ClubIDNew;
             Creator = Name = Description = URL = City = StateProvince = Country = ContactPhone = HomeAirportCode = string.Empty;
             CreationDate = DateTime.MinValue;
@@ -450,22 +453,22 @@ namespace MyFlightbook.Clubs
                 DBHelper dbh = new DBHelper(String.Format(IsNew ? szQInsertT : szQUpdateT, szSetCore));
 
                 fResult = dbh.DoNonQuery((comm) =>
-                    {
-                        comm.Parameters.AddWithValue("szcreator", Creator);
-                        comm.Parameters.AddWithValue("name", Name.LimitTo(90));
-                        comm.Parameters.AddWithValue("description", Description.LimitTo(40000));
-                        comm.Parameters.AddWithValue("status", (int)Status);
-                        comm.Parameters.AddWithValue("url", URL.LimitTo(255));
-                        comm.Parameters.AddWithValue("city", City.LimitTo(45));
-                        comm.Parameters.AddWithValue("state", StateProvince.LimitTo(45));
-                        comm.Parameters.AddWithValue("country", Country.LimitTo(45));
-                        comm.Parameters.AddWithValue("contact", ContactPhone.LimitTo(45));
-                        comm.Parameters.AddWithValue("airport", HomeAirportCode.LimitTo(45).ToUpper());
-                        comm.Parameters.AddWithValue("idClub", ID);
-                        comm.Parameters.AddWithValue("tzID", TimeZone.Id);
-                        comm.Parameters.AddWithValue("tzOffset", (int) TimeZone.BaseUtcOffset.TotalMinutes);
-                        comm.Parameters.AddWithValue("pflag", Policy);
-                    });
+                {
+                    comm.Parameters.AddWithValue("szcreator", Creator);
+                    comm.Parameters.AddWithValue("name", Name.LimitTo(90));
+                    comm.Parameters.AddWithValue("description", Description.LimitTo(40000));
+                    comm.Parameters.AddWithValue("status", (int)Status);
+                    comm.Parameters.AddWithValue("url", URL.LimitTo(255));
+                    comm.Parameters.AddWithValue("city", City.LimitTo(45));
+                    comm.Parameters.AddWithValue("state", StateProvince.LimitTo(45));
+                    comm.Parameters.AddWithValue("country", Country.LimitTo(45));
+                    comm.Parameters.AddWithValue("contact", ContactPhone.LimitTo(45));
+                    comm.Parameters.AddWithValue("airport", HomeAirportCode.LimitTo(45).ToUpper());
+                    comm.Parameters.AddWithValue("idClub", ID);
+                    comm.Parameters.AddWithValue("tzID", TimeZone.Id);
+                    comm.Parameters.AddWithValue("tzOffset", (int)TimeZone.BaseUtcOffset.TotalMinutes);
+                    comm.Parameters.AddWithValue("pflag", Policy);
+                });
                 if (fResult)
                 {
                     if (fNew)
@@ -491,10 +494,10 @@ namespace MyFlightbook.Clubs
             Status = s;
             DBHelper dbh = new DBHelper("UPDATE clubs SET clubStatus=?status WHERE idclub=?idClub");
             dbh.DoNonQuery((comm) =>
-                {
-                    comm.Parameters.AddWithValue("status", (int)Status);
-                    comm.Parameters.AddWithValue("idClub", ID);
-                });
+            {
+                comm.Parameters.AddWithValue("status", (int)Status);
+                comm.Parameters.AddWithValue("idClub", ID);
+            });
             LastError = dbh.LastError;
         }
 
@@ -506,7 +509,7 @@ namespace MyFlightbook.Clubs
 
         private static string PrivateInactiveRestriction()
         {
-            return String.Format(CultureInfo.InvariantCulture, "(c.policyFlags & {0}) = 0 AND clubStatus NOT IN ({1}, {2})", policyFlagPrivateClub, (int) ClubStatus.Inactive, (int) ClubStatus.Expired);
+            return String.Format(CultureInfo.InvariantCulture, "(c.policyFlags & {0}) = 0 AND clubStatus NOT IN ({1}, {2})", policyFlagPrivateClub, (int)ClubStatus.Inactive, (int)ClubStatus.Expired);
         }
 
         private static string QueryStringWithRestriction(string szRestriction)
@@ -613,7 +616,7 @@ namespace MyFlightbook.Clubs
                 WHERE ca.idaircraft=?idaircraft {1}
                 GROUP BY c.idclub", szUser == null ? string.Empty : "INNER JOIN clubmembers cm ON ca.idclub=cm.idclub", szUser == null ? string.Empty : "AND cm.username=?user");
             DBHelper dbh = new DBHelper(szQ);
-            dbh.ReadRows((comm) => { 
+            dbh.ReadRows((comm) => {
                 comm.Parameters.AddWithValue("idaircraft", idaircraft);
                 comm.Parameters.AddWithValue("user", szUser);
             }, (dr) => { lst.Add(new Club(dr)); });
@@ -639,7 +642,7 @@ namespace MyFlightbook.Clubs
             string szQ = String.Format(CultureInfo.InvariantCulture, szQTemplate, fIncludePrivateAndInactive ? string.Empty : " AND " + PrivateInactiveRestriction());
             DBHelper dbh = new DBHelper(szQ);
             dbh.ReadRows(
-                (comm) => { comm.Parameters.AddWithValue("code", szCode); }, 
+                (comm) => { comm.Parameters.AddWithValue("code", szCode); },
                 (dr) => {
                     Club c = new Club(dr);
                     object o = dr["dist"];
@@ -807,27 +810,142 @@ namespace MyFlightbook.Clubs
         #region Upcoming Appointments
         public enum SummaryMode { Club, Aircraft, User }
 
-        public IEnumerable<ScheduledEvent> GetUpcomingEvents(int limit, string resource=null, string owner=null)
+        public IEnumerable<ScheduledEvent> GetUpcomingEvents(int limit, string resource = null, string owner = null)
         {
             List<ScheduledEvent> lst = ScheduledEvent.UpcomingAppointments(ID, TimeZone, limit, resource, owner);
 
             // Fix up the aircraft, owner names
             lst.ForEach((se) =>
-                {
-                    int idAircraft = 0;
-                    if (int.TryParse(se.ResourceID, out idAircraft))
-                        se.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID == idAircraft);
-                    se.OwnerProfile = Members.FirstOrDefault(cm => String.Compare(cm.UserName, se.OwningUser, StringComparison.Ordinal) == 0);
-                });
+            {
+                int idAircraft = 0;
+                if (int.TryParse(se.ResourceID, out idAircraft))
+                    se.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID == idAircraft);
+                se.OwnerProfile = Members.FirstOrDefault(cm => String.Compare(cm.UserName, se.OwningUser, StringComparison.Ordinal) == 0);
+            });
             return lst;
+        }
+        #endregion
+
+        #region Reporting
+        private static void SendReport(ClubMember cm, string szReportName, string szReportPrefix, string controlName)
+        {
+            if (controlName == null)
+                throw new ArgumentNullException("getBody");
+            if (cm == null)
+                throw new ArgumentNullException("cm");
+            using (MailMessage msg = new MailMessage())
+            {
+                Brand brand = Branding.CurrentBrand;
+                msg.From = new MailAddress(brand.EmailAddress, brand.AppName);
+                msg.To.Add(new MailAddress(cm.Email, cm.UserFullName));
+                msg.Subject = szReportName;
+                msg.IsBodyHtml = true;
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendFormat(CultureInfo.InvariantCulture, @"
+<style type='text/css'>
+.currencyok
+{{
+    font-weight: normal;
+    color: Green;
+}}
+.currencynearlydue
+{{
+    font-weight: bold;
+    color: Blue;
+}}
+.currencyexpired
+{{
+    font-weight: bold;
+    color: Red;
+}}
+.currencynodate 
+{{
+    font-weight: bold;
+    color: black;
+}}
+</style>
+<p>{0}<p>", HttpUtility.HtmlEncode(szReportPrefix));
+                using (System.Web.UI.Page p = new FormlessPage())
+                {
+                    p.Controls.Add(new System.Web.UI.HtmlControls.HtmlForm());
+                    IReportable ifr = (IReportable)p.LoadControl(controlName);
+                    if (ifr == null)
+                        throw new MyFlightbookException("Invalid control: " + controlName);
+                    StringWriter sw = null;
+                    ifr.Refresh(cm.ClubID);
+                    try
+                    {
+                        sw = new StringWriter(sb, CultureInfo.InvariantCulture);
+                        using (System.Web.UI.HtmlTextWriter htmlTW = new System.Web.UI.HtmlTextWriter(sw))
+                        {
+                            sw = null;
+                            System.Web.UI.Control c = ifr as System.Web.UI.Control;
+                            c.RenderControl(htmlTW);
+                        }
+                    }
+                    finally
+                    {
+                        if (sw != null)
+                            sw.Dispose();
+                    }
+                }
+
+                msg.Body = sb.ToString();
+                util.SendMessage(msg);
+            }
+        }
+
+        public static void SendMonthlyClubReports()
+        {
+            DateTime startDate = new DateTime(DateTime.Now.AddDays(-1).Year, DateTime.Now.AddDays(-1).Month, 1);
+            DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+            string szDateMonth = startDate.ToString("MMM yyyy", CultureInfo.CurrentCulture);
+
+            foreach (ClubMember cm in ClubMember.AllClubOfficers())
+            {
+                Club club = Club.ClubWithID(cm.ClubID);
+                if (club == null)
+                    continue;
+
+                if (cm.IsTreasurer)
+                    SendReport(cm,
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailSubject, szDateMonth, Resources.Club.ClubReportFlying, club.Name),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportFlying, club.Name, szDateMonth),
+                        "~/Controls/ClubControls/FlyingReport.ascx");
+
+                if (cm.IsMaintanenceOfficer)
+                    SendReport(cm,
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailSubject, szDateMonth, Resources.Club.ClubReportMaintenance, club.Name),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportMaintenance, club.Name, szDateMonth),
+                        "~/Controls/ClubControls/MaintenanceReport.ascx");
+
+                if (cm.IsInsuranceOfficer)
+                    SendReport(cm,
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailSubject, szDateMonth, Resources.Club.ClubReportInsurance, club.Name),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportInsurance, club.Name, szDateMonth),
+                        "~/Controls/ClubControls/InsuranceReport.ascx");
+            }
         }
         #endregion
     }
 
+    /// <summary>
+    /// A member of a flying club.
+    /// </summary>
     [Serializable]
     public class ClubMember : Profile
     {
-        public enum ClubMemberRole {Member, Admin, Owner}
+        /// <summary>
+        /// The role of the member within the club - indicates level of privileges.  LIMITED TO LOWER 8 BITS of the "Role" field in database.  These are mutually exclusive.
+        /// </summary>
+        public enum ClubMemberRole { Member, Admin, Owner }
+
+        private const UInt32 MaintenanceOfficerMask = 0x0100;
+        private const UInt32 TreasurerMask = 0x0200;
+        private const UInt32 InsuranceOfficerMask = 0x0400;
+
+        private const UInt32 RoleMask = 0xFF;
 
         #region properties
         /// <summary>
@@ -855,16 +973,29 @@ namespace MyFlightbook.Clubs
         {
             get
             {
+                List<string> lst = new List<string>();
                 switch (RoleInClub)
                 {
                     case ClubMemberRole.Admin:
-                        return Resources.Club.RoleManager;
+                        lst.Add(Resources.Club.RoleManager);
+                        break;
                     case ClubMemberRole.Owner:
-                        return Resources.Club.RoleOwner;
+                        lst.Add(Resources.Club.RoleOwner);
+                        break;
                     default:
                     case ClubMemberRole.Member:
-                        return Resources.Club.RoleMember;
+                        lst.Add(Resources.Club.RoleMember);
+                        break;
                 }
+
+                if (IsMaintanenceOfficer)
+                    lst.Add(Resources.Club.RoleMaintenanceOfficer);
+                if (IsTreasurer)
+                    lst.Add(Resources.Club.RoleTreasurer);
+                if (IsInsuranceOfficer)
+                    lst.Add(Resources.Club.RoleInsuranceOfficer);
+
+                return String.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator + Resources.LocalizedText.LocalizedSpace, lst);
             }
         }
 
@@ -877,6 +1008,26 @@ namespace MyFlightbook.Clubs
         /// Last Error
         /// </summary>
         public string LastError { get; set; }
+
+        /// <summary>
+        /// Is this member a maintenance officer?
+        /// </summary>
+        public bool IsMaintanenceOfficer { get; set; }
+
+        /// <summary>
+        /// Is this member a treasurer?
+        /// </summary>
+        public bool IsTreasurer { get; set; }
+
+        /// <summary>
+        /// Is this member responsible for insurance?
+        /// </summary>
+        public bool IsInsuranceOfficer { get; set; }
+
+        protected UInt32 ConsolidatedRoleFlags
+        {
+            get { return ((UInt32)RoleInClub) | (IsMaintanenceOfficer ? MaintenanceOfficerMask : 0) | (IsTreasurer ? TreasurerMask : 0) | (IsInsuranceOfficer ? InsuranceOfficerMask : 0); }
+        }
         #endregion
 
         #region initialization
@@ -884,6 +1035,7 @@ namespace MyFlightbook.Clubs
         {
             ClubID = Club.ClubIDNew;
             RoleInClub = ClubMemberRole.Member;
+            IsMaintanenceOfficer = IsTreasurer = IsInsuranceOfficer = false;
             LastError = string.Empty;
             JoinedDate = DateTime.MinValue;
         }
@@ -900,7 +1052,11 @@ namespace MyFlightbook.Clubs
             if (dr == null)
                 throw new ArgumentNullException("dr");
             ClubID = Convert.ToInt32(dr["idclub"], CultureInfo.InvariantCulture);
-            RoleInClub = (ClubMemberRole)Convert.ToInt32(dr["role"], CultureInfo.InvariantCulture);
+            UInt32 roleFlags = Convert.ToUInt32(dr["role"], CultureInfo.InvariantCulture);
+            RoleInClub = (ClubMemberRole)(roleFlags & RoleMask);
+            IsMaintanenceOfficer = ((roleFlags & MaintenanceOfficerMask) != 0);
+            IsTreasurer = ((roleFlags & TreasurerMask) != 0);
+            IsInsuranceOfficer = ((roleFlags & InsuranceOfficerMask) != 0);
             JoinedDate = Convert.ToDateTime(dr["joindate"], CultureInfo.InvariantCulture);
             LastError = string.Empty;
         }
@@ -929,14 +1085,14 @@ namespace MyFlightbook.Clubs
             ClubMember cmExisting = members.FirstOrDefault<ClubMember>(cm => cm.UserName.CompareCurrentCulture(UserName) == 0);
 
             // We don't use REPLACE INTO here because doing so loses the original joindate
-            DBHelper dbh = new DBHelper(cmExisting == null ? 
+            DBHelper dbh = new DBHelper(cmExisting == null ?
                 "INSERT INTO clubmembers SET idclub=?id, username=?user, role=?role, joindate=NOW()" :
                 "UPDATE clubmembers SET role=?role WHERE idclub=?id AND username=?user");
-            bool fResult = dbh.DoNonQuery((comm) => 
+            bool fResult = dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("id", ClubID);
                 comm.Parameters.AddWithValue("user", UserName);
-                comm.Parameters.AddWithValue("role", (int)RoleInClub);
+                comm.Parameters.AddWithValue("role", (int)ConsolidatedRoleFlags);
             });
             if (!fResult)
                 LastError = dbh.LastError;
@@ -985,6 +1141,59 @@ namespace MyFlightbook.Clubs
         {
             List<ClubMember> lst = MembersForClub(idclub);
             lst.RemoveAll(cm => cm.RoleInClub == ClubMemberRole.Member);
+            return lst;
+        }
+
+        /// <summary>
+        /// Returns a list of all club officers (insurance, maintenance, treasurer) across ALL clubs.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<ClubMember> AllClubOfficers()
+        {
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT cm.*, u.*
+                FROM clubmembers cm
+                INNER JOIN users u ON cm.username=u.username
+                LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook')
+                WHERE (cm.role & ~0x{0}) <> 0
+                ORDER BY u.Lastname ASC, u.FirstName ASC, u.Username ASC", RoleMask.ToString("x")));
+            List<ClubMember> lst = new List<ClubMember>();
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new ClubMember(dr)); });
+            return lst;
+        }
+
+        /// <summary>
+        /// Gets the list of all maintenance officers for the club
+        /// </summary>
+        /// <param name="idclub">The club</param>
+        /// <returns>The list of relevant members</returns>
+        public static IEnumerable<ClubMember> MaintenanceOfficersForClub(int idclub)
+        {
+            List<ClubMember> lst = MembersForClub(idclub);
+            lst.RemoveAll(cm => !cm.IsMaintanenceOfficer);
+            return lst;
+        }
+
+        /// <summary>
+        /// Gets the list of all treasurers for the club
+        /// </summary>
+        /// <param name="idclub">The club</param>
+        /// <returns>The list of relevant members</returns>
+        public static IEnumerable<ClubMember> TreasurersForClub(int idclub)
+        {
+            List<ClubMember> lst = MembersForClub(idclub);
+            lst.RemoveAll(cm => !cm.IsTreasurer);
+            return lst;
+        }
+
+        /// <summary>
+        /// Gets the list of all insurance officers for the club
+        /// </summary>
+        /// <param name="idclub">The club</param>
+        /// <returns>The list of relevant members</returns>
+        public static IEnumerable<ClubMember> InsuranceOfficersForClub(int idclub)
+        {
+            List<ClubMember> lst = MembersForClub(idclub);
+            lst.RemoveAll(cm => !cm.IsInsuranceOfficer);
             return lst;
         }
 
@@ -1042,7 +1251,7 @@ namespace MyFlightbook.Clubs
         /// NOT SET BY DEFAULT - call RefreshClubAircraftTimes
         /// </summary>
         public decimal HighestRecordedTach { get; set; }
-     
+
         /// <summary>
         /// The last error
         /// </summary>
@@ -1162,7 +1371,7 @@ GROUP BY idaircraft");
                     ClubAircraft ca = lst.First(ca2 => ca2.AircraftID == Convert.ToInt32(dr["idaircraft"]));
                     if (ca != null)
                     {
-                        ca.HighestRecordedHobbs = (Decimal) util.ReadNullableField(dr, "MaxHobbs", 0.0M);
+                        ca.HighestRecordedHobbs = (Decimal)util.ReadNullableField(dr, "MaxHobbs", 0.0M);
                         ca.HighestRecordedTach = (Decimal)util.ReadNullableField(dr, "MaxTach", 0.0M);
                     }
                 });
@@ -1334,6 +1543,10 @@ ORDER BY username asc;");
 
             return lst;
         }
+    }
 
+    public interface IReportable
+    {
+        void Refresh(int clubID);
     }
 }

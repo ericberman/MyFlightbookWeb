@@ -1818,11 +1818,11 @@ public partial class Member_Admin
     /// <remarks>
     /// Auto-generated property.
     /// </remarks>
-    public new MasterPage Master
+    public new MyFlightbook.Web.MasterPage Master
     {
         get
         {
-            return ((MasterPage)(base.Master));
+            return ((MyFlightbook.Web.MasterPage)(base.Master));
         }
     }
 }
