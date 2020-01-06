@@ -247,6 +247,15 @@ public partial class Controls_mfbLogbook
     protected global::Controls_mfbDecimalEdit decPageSize;
 
     /// <summary>
+    /// decPageSize control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbFlightContextMenu mfbFlightContextMenu;
+
+    /// <summary>
     /// btnSetPageSize control.
     /// </summary>
     /// <remarks>

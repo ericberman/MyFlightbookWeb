@@ -9,7 +9,7 @@
 
 
 
-public partial class _Default
+public partial class Member_MiniLogbook
 {
 
     /// <summary>

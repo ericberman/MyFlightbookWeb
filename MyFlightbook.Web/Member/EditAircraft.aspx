@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Trace="false" Inherits="EditMake" Title="" Codebehind="EditAircraft.aspx.cs" %>
+<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Trace="false" Inherits="EditAircraft" Title="" Codebehind="EditAircraft.aspx.cs" %>
 <%@ Register Src="../Controls/mfbEditAircraft.ascx" TagName="mfbEditAircraft" TagPrefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbLogbook.ascx" tagname="mfbLogbook" tagprefix="uc3" %>

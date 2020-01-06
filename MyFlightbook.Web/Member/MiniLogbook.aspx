@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="_Default" Title="Flying Logbook" culture="auto" meta:resourcekey="PageResource1" Codebehind="MiniLogbook.aspx.cs" %>
+<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Member_MiniLogbook" Title="Flying Logbook" culture="auto" meta:resourcekey="PageResource1" Codebehind="MiniLogbook.aspx.cs" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbEditFlight.ascx" tagname="mfbEditFlight" tagprefix="uc4" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">

@@ -13,7 +13,7 @@ using System.Web;
  *
 *******************************************************/
 
-public partial class Member_oAuthToken : System.Web.UI.Page
+public partial class OAuth_oAuthToken : System.Web.UI.Page
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Scope = "member", Target = "Member_oAuthToken.#Page_Load(System.Object,System.EventArgs)")]
     protected void Page_Load(object sender, EventArgs e)

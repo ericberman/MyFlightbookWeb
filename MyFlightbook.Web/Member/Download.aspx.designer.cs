@@ -9,7 +9,7 @@
 
 
 
-public partial class Member_FindFlights
+public partial class Member_Download
 {
 
     /// <summary>

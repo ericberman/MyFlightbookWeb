@@ -9,7 +9,7 @@
 
 
 
-public partial class makes
+public partial class Member_Aircraft
 {
 
     /// <summary>

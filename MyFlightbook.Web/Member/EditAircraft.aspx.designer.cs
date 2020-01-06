@@ -9,7 +9,7 @@
 
 
 
-public partial class EditMake
+public partial class EditAircraft
 {
 
     /// <summary>

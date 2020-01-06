@@ -202,20 +202,14 @@ namespace MyFlightbook
             Type t = typeof(Resources.Tabs);
             List<TabItem> lst = new List<TabItem>();
 
-            try
+            foreach (XElement item in items)
             {
-                foreach (XElement item in items)
-                {
-                    string szNameKey = item.Element("Text").Value.Trim();
-                    string szLocName = String.IsNullOrEmpty(szNameKey) ? String.Empty : (string)t.GetProperty(szNameKey).GetValue(t, null);
-                    TabItem ti = new TabItem(szLocName, item.Element("Link").Value, (tabID)Enum.Parse(typeof(tabID), item.Element("ID").Value), item.Element("Roles").Value);
-                    XElement subItems = item.Element("Items");
-                    ti.Children = (subItems == null) ? new List<TabItem>() : ReadTabs(subItems.Elements("Item"));
-                    lst.Add(ti);
-                }
-            } catch(Exception ex)
-            {
-
+                string szNameKey = item.Element("Text").Value.Trim();
+                string szLocName = String.IsNullOrEmpty(szNameKey) ? String.Empty : (string)t.GetProperty(szNameKey).GetValue(t, null);
+                TabItem ti = new TabItem(szLocName, item.Element("Link").Value, (tabID)Enum.Parse(typeof(tabID), item.Element("ID").Value), item.Element("Roles").Value);
+                XElement subItems = item.Element("Items");
+                ti.Children = (subItems == null) ? new List<TabItem>() : ReadTabs(subItems.Elements("Item"));
+                lst.Add(ti);
             }
 
             return lst;

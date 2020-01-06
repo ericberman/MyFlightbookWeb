@@ -9,7 +9,7 @@
 
 
 
-public partial class Member_oAuthToken
+public partial class OAuth_oAuthToken
 {
 
     /// <summary>

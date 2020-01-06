@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class makes : System.Web.UI.Page
+public partial class Member_Aircraft : System.Web.UI.Page
 {
     private int idModel = -1;
 

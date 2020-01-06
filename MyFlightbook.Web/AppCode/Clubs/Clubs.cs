@@ -39,7 +39,7 @@ namespace MyFlightbook.Clubs
 
         public enum DeleteNoficiationPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
         public enum AddModifyNotificationPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
-        public enum DoubleBookPolicy { None = 0x00, Admins = 0x01, WholeClub = 0x02 }
+        public enum DoubleBookPolicy { None = 0x00, Admins=0x01, WholeClub = 0x02 }
 
         public const int TrialPeriod = 31;  // 30 days, with some buffer.
 
@@ -55,22 +55,22 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// ID for the club
         /// </summary>
-        public int ID { get; set; }
+        public int ID {get; set;}
 
         /// <summary>
         /// Is this a new club?
         /// </summary>
-        public bool IsNew { get { return ID == ClubIDNew; } }
+        public bool IsNew { get { return ID == ClubIDNew;}}
 
         /// <summary>
         /// Username of the user who created the club
         /// </summary>
-        public string Creator { get; set; }
+        public string Creator {get; set;}
 
         /// <summary>
         /// Date/time that the club was created
         /// </summary>
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationDate {get; set;}
 
         /// <summary>
         /// Nullable date for when the club goes inactive.
@@ -118,7 +118,7 @@ namespace MyFlightbook.Clubs
         /// <returns></returns>
         public static bool StatusCanWrite(ClubStatus status)
         {
-            return StatusIsActive(status);
+            return StatusIsActive(status); 
         }
 
         /// <summary>
@@ -149,17 +149,17 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// Name of the club
         /// </summary>
-        public string Name { get; set; }
+        public string Name {get; set;}
 
         /// <summary>
         /// Description of the club
         /// </summary>
-        public string Description { get; set; }
+        public string Description {get; set;}
 
         /// <summary>
         /// URL for the club
         /// </summary>
-        public string URL { get; set; }
+        public string URL {get; set;}
 
         /// <summary>
         /// Returns a fixed URL (includes HTTP if needed)
@@ -175,17 +175,17 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// City where the club is located
         /// </summary>
-        public string City { get; set; }
+        public string City {get; set;}
 
         /// <summary>
         /// State or province
         /// </summary>
-        public string StateProvince { get; set; }
+        public string StateProvince {get; set;}
 
         /// <summary>
         /// Country
         /// </summary>
-        public string Country { get; set; }
+        public string Country {get; set;}
 
         /// <summary>
         /// Display string for location
@@ -218,12 +218,12 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// Contact phone number
         /// </summary>
-        public string ContactPhone { get; set; }
+        public string ContactPhone {get; set;}
 
         /// <summary>
         /// Home airport
         /// </summary>
-        public string HomeAirportCode { get; set; }
+        public string HomeAirportCode {get; set;}
 
         /// <summary>
         /// The club's home airport (can be null)
@@ -238,7 +238,7 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// Most recent error
         /// </summary>
-        public string LastError { get; set; }
+        public string LastError {get; set;}
 
         private List<ClubAircraft> m_clubAircraft = null;
         private List<ClubMember> m_clubMembers = null;
@@ -329,7 +329,7 @@ namespace MyFlightbook.Clubs
         /// </summary>
         public DeleteNoficiationPolicy DeleteNotifications
         {
-            get { return (DeleteNoficiationPolicy)((Policy & policyMaskDeleteNotification) >> policyMaskDeleteShift); }
+            get { return (DeleteNoficiationPolicy) ((Policy & policyMaskDeleteNotification) >> policyMaskDeleteShift); }
             set { Policy = (Policy & ~policyMaskDeleteNotification) | (((UInt32)value) << policyMaskDeleteShift); }
         }
 
@@ -368,8 +368,8 @@ namespace MyFlightbook.Clubs
         #region initialization
         public const int ClubIDNew = -1;
 
-        public Club()
-        {
+	    public Club()
+	    {
             ID = ClubIDNew;
             Creator = Name = Description = URL = City = StateProvince = Country = ContactPhone = HomeAirportCode = string.Empty;
             CreationDate = DateTime.MinValue;
@@ -453,22 +453,22 @@ namespace MyFlightbook.Clubs
                 DBHelper dbh = new DBHelper(String.Format(IsNew ? szQInsertT : szQUpdateT, szSetCore));
 
                 fResult = dbh.DoNonQuery((comm) =>
-                {
-                    comm.Parameters.AddWithValue("szcreator", Creator);
-                    comm.Parameters.AddWithValue("name", Name.LimitTo(90));
-                    comm.Parameters.AddWithValue("description", Description.LimitTo(40000));
-                    comm.Parameters.AddWithValue("status", (int)Status);
-                    comm.Parameters.AddWithValue("url", URL.LimitTo(255));
-                    comm.Parameters.AddWithValue("city", City.LimitTo(45));
-                    comm.Parameters.AddWithValue("state", StateProvince.LimitTo(45));
-                    comm.Parameters.AddWithValue("country", Country.LimitTo(45));
-                    comm.Parameters.AddWithValue("contact", ContactPhone.LimitTo(45));
-                    comm.Parameters.AddWithValue("airport", HomeAirportCode.LimitTo(45).ToUpper());
-                    comm.Parameters.AddWithValue("idClub", ID);
-                    comm.Parameters.AddWithValue("tzID", TimeZone.Id);
-                    comm.Parameters.AddWithValue("tzOffset", (int)TimeZone.BaseUtcOffset.TotalMinutes);
-                    comm.Parameters.AddWithValue("pflag", Policy);
-                });
+                    {
+                        comm.Parameters.AddWithValue("szcreator", Creator);
+                        comm.Parameters.AddWithValue("name", Name.LimitTo(90));
+                        comm.Parameters.AddWithValue("description", Description.LimitTo(40000));
+                        comm.Parameters.AddWithValue("status", (int)Status);
+                        comm.Parameters.AddWithValue("url", URL.LimitTo(255));
+                        comm.Parameters.AddWithValue("city", City.LimitTo(45));
+                        comm.Parameters.AddWithValue("state", StateProvince.LimitTo(45));
+                        comm.Parameters.AddWithValue("country", Country.LimitTo(45));
+                        comm.Parameters.AddWithValue("contact", ContactPhone.LimitTo(45));
+                        comm.Parameters.AddWithValue("airport", HomeAirportCode.LimitTo(45).ToUpper());
+                        comm.Parameters.AddWithValue("idClub", ID);
+                        comm.Parameters.AddWithValue("tzID", TimeZone.Id);
+                        comm.Parameters.AddWithValue("tzOffset", (int) TimeZone.BaseUtcOffset.TotalMinutes);
+                        comm.Parameters.AddWithValue("pflag", Policy);
+                    });
                 if (fResult)
                 {
                     if (fNew)
@@ -494,10 +494,10 @@ namespace MyFlightbook.Clubs
             Status = s;
             DBHelper dbh = new DBHelper("UPDATE clubs SET clubStatus=?status WHERE idclub=?idClub");
             dbh.DoNonQuery((comm) =>
-            {
-                comm.Parameters.AddWithValue("status", (int)Status);
-                comm.Parameters.AddWithValue("idClub", ID);
-            });
+                {
+                    comm.Parameters.AddWithValue("status", (int)Status);
+                    comm.Parameters.AddWithValue("idClub", ID);
+                });
             LastError = dbh.LastError;
         }
 
@@ -509,7 +509,7 @@ namespace MyFlightbook.Clubs
 
         private static string PrivateInactiveRestriction()
         {
-            return String.Format(CultureInfo.InvariantCulture, "(c.policyFlags & {0}) = 0 AND clubStatus NOT IN ({1}, {2})", policyFlagPrivateClub, (int)ClubStatus.Inactive, (int)ClubStatus.Expired);
+            return String.Format(CultureInfo.InvariantCulture, "(c.policyFlags & {0}) = 0 AND clubStatus NOT IN ({1}, {2})", policyFlagPrivateClub, (int) ClubStatus.Inactive, (int) ClubStatus.Expired);
         }
 
         private static string QueryStringWithRestriction(string szRestriction)
@@ -616,7 +616,7 @@ namespace MyFlightbook.Clubs
                 WHERE ca.idaircraft=?idaircraft {1}
                 GROUP BY c.idclub", szUser == null ? string.Empty : "INNER JOIN clubmembers cm ON ca.idclub=cm.idclub", szUser == null ? string.Empty : "AND cm.username=?user");
             DBHelper dbh = new DBHelper(szQ);
-            dbh.ReadRows((comm) => {
+            dbh.ReadRows((comm) => { 
                 comm.Parameters.AddWithValue("idaircraft", idaircraft);
                 comm.Parameters.AddWithValue("user", szUser);
             }, (dr) => { lst.Add(new Club(dr)); });
@@ -642,7 +642,7 @@ namespace MyFlightbook.Clubs
             string szQ = String.Format(CultureInfo.InvariantCulture, szQTemplate, fIncludePrivateAndInactive ? string.Empty : " AND " + PrivateInactiveRestriction());
             DBHelper dbh = new DBHelper(szQ);
             dbh.ReadRows(
-                (comm) => { comm.Parameters.AddWithValue("code", szCode); },
+                (comm) => { comm.Parameters.AddWithValue("code", szCode); }, 
                 (dr) => {
                     Club c = new Club(dr);
                     object o = dr["dist"];
@@ -810,18 +810,18 @@ namespace MyFlightbook.Clubs
         #region Upcoming Appointments
         public enum SummaryMode { Club, Aircraft, User }
 
-        public IEnumerable<ScheduledEvent> GetUpcomingEvents(int limit, string resource = null, string owner = null)
+        public IEnumerable<ScheduledEvent> GetUpcomingEvents(int limit, string resource=null, string owner=null)
         {
             List<ScheduledEvent> lst = ScheduledEvent.UpcomingAppointments(ID, TimeZone, limit, resource, owner);
 
             // Fix up the aircraft, owner names
             lst.ForEach((se) =>
-            {
-                int idAircraft = 0;
-                if (int.TryParse(se.ResourceID, out idAircraft))
-                    se.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID == idAircraft);
-                se.OwnerProfile = Members.FirstOrDefault(cm => String.Compare(cm.UserName, se.OwningUser, StringComparison.Ordinal) == 0);
-            });
+                {
+                    int idAircraft = 0;
+                    if (int.TryParse(se.ResourceID, out idAircraft))
+                        se.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID == idAircraft);
+                    se.OwnerProfile = Members.FirstOrDefault(cm => String.Compare(cm.UserName, se.OwningUser, StringComparison.Ordinal) == 0);
+                });
             return lst;
         }
         #endregion
@@ -859,6 +859,7 @@ namespace MyFlightbook.Clubs
     font-weight: bold;
     color: Red;
 }}
+
 .currencynodate 
 {{
     font-weight: bold;
@@ -902,16 +903,16 @@ namespace MyFlightbook.Clubs
             DateTime endDate = startDate.AddMonths(1).AddDays(-1);
             string szDateMonth = startDate.ToString("MMM yyyy", CultureInfo.CurrentCulture);
 
-            foreach (ClubMember cm in ClubMember.AllClubOfficers())
+            foreach(ClubMember cm in ClubMember.AllClubOfficers())
             {
                 Club club = Club.ClubWithID(cm.ClubID);
                 if (club == null)
                     continue;
 
                 if (cm.IsTreasurer)
-                    SendReport(cm,
+                    SendReport(cm, 
                         String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailSubject, szDateMonth, Resources.Club.ClubReportFlying, club.Name),
-                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportFlying, club.Name, szDateMonth),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Club.ClubReportEmailBodyTemplate, Resources.Club.ClubReportFlying, club.Name, szDateMonth), 
                         "~/Controls/ClubControls/FlyingReport.ascx");
 
                 if (cm.IsMaintanenceOfficer)
@@ -939,7 +940,7 @@ namespace MyFlightbook.Clubs
         /// <summary>
         /// The role of the member within the club - indicates level of privileges.  LIMITED TO LOWER 8 BITS of the "Role" field in database.  These are mutually exclusive.
         /// </summary>
-        public enum ClubMemberRole { Member, Admin, Owner }
+        public enum ClubMemberRole {Member, Admin, Owner}
 
         private const UInt32 MaintenanceOfficerMask = 0x0100;
         private const UInt32 TreasurerMask = 0x0200;
@@ -1085,10 +1086,10 @@ namespace MyFlightbook.Clubs
             ClubMember cmExisting = members.FirstOrDefault<ClubMember>(cm => cm.UserName.CompareCurrentCulture(UserName) == 0);
 
             // We don't use REPLACE INTO here because doing so loses the original joindate
-            DBHelper dbh = new DBHelper(cmExisting == null ?
+            DBHelper dbh = new DBHelper(cmExisting == null ? 
                 "INSERT INTO clubmembers SET idclub=?id, username=?user, role=?role, joindate=NOW()" :
                 "UPDATE clubmembers SET role=?role WHERE idclub=?id AND username=?user");
-            bool fResult = dbh.DoNonQuery((comm) =>
+            bool fResult = dbh.DoNonQuery((comm) => 
             {
                 comm.Parameters.AddWithValue("id", ClubID);
                 comm.Parameters.AddWithValue("user", UserName);
@@ -1251,7 +1252,7 @@ namespace MyFlightbook.Clubs
         /// NOT SET BY DEFAULT - call RefreshClubAircraftTimes
         /// </summary>
         public decimal HighestRecordedTach { get; set; }
-
+     
         /// <summary>
         /// The last error
         /// </summary>
@@ -1371,7 +1372,7 @@ GROUP BY idaircraft");
                     ClubAircraft ca = lst.First(ca2 => ca2.AircraftID == Convert.ToInt32(dr["idaircraft"]));
                     if (ca != null)
                     {
-                        ca.HighestRecordedHobbs = (Decimal)util.ReadNullableField(dr, "MaxHobbs", 0.0M);
+                        ca.HighestRecordedHobbs = (Decimal) util.ReadNullableField(dr, "MaxHobbs", 0.0M);
                         ca.HighestRecordedTach = (Decimal)util.ReadNullableField(dr, "MaxTach", 0.0M);
                     }
                 });

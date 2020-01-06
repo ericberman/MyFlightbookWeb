@@ -18,7 +18,7 @@ using System.Web.UI.HtmlControls;
  *
 *******************************************************/
 
-public partial class _Default : System.Web.UI.Page
+public partial class Member_MiniLogbook : System.Web.UI.Page
 {
     protected override void OnError(EventArgs e)
     {

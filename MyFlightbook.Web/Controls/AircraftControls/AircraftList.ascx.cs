@@ -161,9 +161,9 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
         return null;
     }
 
-    protected void SelectRole(Control sender, Aircraft.PilotRole role)
+    protected void SelectRole(Control sender, MyFlightbook.Aircraft.PilotRole role)
     {
-        Aircraft ac = RowFromControl(sender);
+        MyFlightbook.Aircraft ac = RowFromControl(sender);
         ac.RoleForPilot = role;
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         ua.FAddAircraftForUser(ac);

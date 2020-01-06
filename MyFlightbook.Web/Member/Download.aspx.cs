@@ -13,7 +13,7 @@ using System.Web.UI;
  *
 *******************************************************/
 
-public partial class Member_FindFlights : System.Web.UI.Page
+public partial class Member_Download : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

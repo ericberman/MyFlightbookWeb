@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class EditMake : System.Web.UI.Page
+public partial class EditAircraft : System.Web.UI.Page
 {
     #region webservices
     [System.Web.Services.WebMethod]
