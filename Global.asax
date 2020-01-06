@@ -14,7 +14,6 @@
         MyFlightbook.ShuntState.Init();
         ScriptManager.ScriptResourceMapping.AddDefinition("jquery", new ScriptResourceDefinition { Path = "https://code.jquery.com/jquery-1.10.1.min.js" });
         System.Web.UI.ValidationSettings.UnobtrusiveValidationMode = UnobtrusiveValidationMode.WebForms;
-        Application[szKeySessionCount] = 0;
     }
 
     protected void Application_End(object sender, EventArgs e)
