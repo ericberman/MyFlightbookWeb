@@ -96,10 +96,6 @@ public partial class Public_Home : System.Web.UI.Page
                 String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPagerecentStatsModels, fs.NumModels)
             };
 
-            int activeSessions = (int)Application["keyLiveSessions"];
-            if (activeSessions > 10)
-                lstStats.Add(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageCurrentUsers, activeSessions));
-
             rptStats.DataSource = lstStats;
             rptStats.DataBind();
         }
