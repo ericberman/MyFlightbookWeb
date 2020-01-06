@@ -1,5 +1,5 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbAirportIDGame.ascx.cs"
-    Inherits="Controls_mfbAirportIDGame" %>
+<%@ Control Language="C#" AutoEventWireup="true"
+    Inherits="Controls_mfbAirportIDGame" Codebehind="mfbAirportIDGame.ascx.cs" %>
 <%@ Register Src="mfbGoogleMapManager.ascx" TagName="mfbGoogleMap" TagPrefix="uc1" %>
 <p style="font-weight: bold; font-size: 14px;" runat="server" id="pRunningScore"
     visible="false">

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="MobileApps.aspx.cs" Inherits="Public_MobileApps" Culture="auto" meta:resourcekey="PageResource1" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_MobileApps" Culture="auto" meta:resourcekey="PageResource1" Codebehind="MobileApps.aspx.cs" %>
 
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="FlightDetail.aspx.cs" Inherits="Member_FlightDetail" culture="auto" meta:resourcekey="PageResource1" Async="true" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Member_FlightDetail" culture="auto" meta:resourcekey="PageResource1" Async="true" Codebehind="FlightDetail.aspx.cs" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Reference Control="~/Controls/mfbLogbookSidebar.ascx" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

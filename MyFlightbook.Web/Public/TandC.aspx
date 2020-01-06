@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="TandC.aspx.cs" Inherits="Public_TandC" Title="Terms and Conditions" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_TandC" Title="Terms and Conditions" Codebehind="TandC.aspx.cs" %>
 <%@ Register src="../Controls/mfbTandC.ascx" tagname="mfbTandC" tagprefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="contentHeader" ContentPlaceHolderID="cpPageTitle" runat="server">

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="iCalConvert.aspx.cs" MasterPageFile="~/MasterPage.master" Inherits="Public_iCalConvert" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="iCalConvert.aspx.cs" MasterPageFile="~/MasterPage.master" Inherits="Public_iCalConvert" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
 </asp:Content>

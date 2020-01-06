@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2020 MyFlightbook LLC
+ * Copyright (c) 2018-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -32,7 +32,7 @@ namespace MyFlightbook.MilestoneProgress
             get
             {
                 if (MatchingEventID > 0)    // links to a specific flight
-                    return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}", MatchingEventID));
+                    return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, "~/Public/ViewPublicFlight.aspx/{0}", MatchingEventID));
                 else if (Query != null)
                     return VirtualPathUtility.ToAbsolute(String.Format(CultureInfo.InvariantCulture, QueryLinkTemplate, HttpUtility.UrlEncode(Query.ToBase64CompressedJSONString())));
 
@@ -65,9 +65,7 @@ namespace MyFlightbook.MilestoneProgress
 
         // # of distinct dates with flights, flights per day
         protected Dictionary<string, int> FlightDates { get; set; }
-        protected Dictionary<string, int> FlightLandings { get; set; }
         protected int MaxFlightsPerDay { get; set; }
-        protected int MaxLandingsPerDay { get; set; }
 
         /// <summary>
         /// Total Number of flights
@@ -96,11 +94,6 @@ namespace MyFlightbook.MilestoneProgress
         protected RecentAchievementMilestone miLongestStreak { get; set; }
 
         /// <summary>
-        /// Longest streak of consecutive no-fly days
-        /// </summary>
-        protected RecentAchievementMilestone miLongestNoFlyStreak { get; set; }
-
-        /// <summary>
         /// Number of distinct days in period in which flights occured
         /// </summary>
         protected RecentAchievementMilestone miFlyingDates { get; set; }
@@ -111,11 +104,6 @@ namespace MyFlightbook.MilestoneProgress
         /// Most flights in a day
         /// </summary>
         protected RecentAchievementMilestone miMostFlightsInDay { get; set; }
-
-        /// <summary>
-        /// Most landings in a day
-        /// </summary>
-        protected RecentAchievementMilestone miMostLandingsInDay { get; set; }
 
         /// <summary>
         /// Longest Flight (total time)
@@ -170,18 +158,15 @@ namespace MyFlightbook.MilestoneProgress
             EndDate = dtEnd.Date;
 
             FlightDates = new Dictionary<string, int>();
-            FlightLandings = new Dictionary<string, int>();
             DistinctAircraft = new HashSet<int>();
             DistinctModels = new HashSet<int>();
             DistinctICAO = new HashSet<string>();
             Airports = new HashSet<string>();
 
-            miFlightCount = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlightsLogged, MilestoneItem.MilestoneType.Count, 1);
+            miFlightCount = new RecentAchievementMilestone(string.Empty, MilestoneItem.MilestoneType.Count, 1);
             miLongestStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1);
-            miLongestNoFlyStreak = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsNoFlyingStreakTitle, MilestoneItem.MilestoneType.Count, 1);
             miFlyingDates = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFlyingDayCountTitle, MilestoneItem.MilestoneType.Count, 1);
             miMostFlightsInDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostFlightsInDayTitle, MilestoneItem.MilestoneType.Count, 2);
-            miMostLandingsInDay = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementMostLandingsInDayTitle, MilestoneItem.MilestoneType.Count, 2);
             miLongestFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsLongestFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miFurthestFlight = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsFurthestFlightTitle, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miAircraft = new RecentAchievementMilestone(Resources.Achievements.RecentAchievementsDistinctAircraftTitle, MilestoneItem.MilestoneType.Count, 1);
@@ -200,25 +185,7 @@ namespace MyFlightbook.MilestoneProgress
                     miLongestStreak.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementFlyingStreak, (int)miLongestStreak.Progress, FirstFlyingDayOfStreak.Value, LastFlyingDayOfStreak.Value);
                     miLongestStreak.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = FirstFlyingDayOfStreak.Value, DateMax = LastFlyingDayOfStreak.Value };
                 }
-
-                // No fly streak is trickier - you need to measure the flights you didn't see!
-                DateTime dtNoFlyStart = StartDate;
-                List<string> lstFlightDays = new List<string>(FlightDates.Keys) { EndDate.AddDays(1).YMDString() };
-                lstFlightDays.Sort();
-                foreach (string szKey in lstFlightDays)
-                {
-                    DateTime dt = Convert.ToDateTime(szKey, CultureInfo.InvariantCulture).AddDays(-1);
-                    int cDaysNoFly = dt.Subtract(dtNoFlyStart).Days + 1;
-                    if (cDaysNoFly > miLongestNoFlyStreak.Progress)  // biggest missing stretch so far...
-                    {
-                        miLongestNoFlyStreak.Progress = cDaysNoFly;
-                        miLongestNoFlyStreak.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsNoFlyingStreak, cDaysNoFly, dtNoFlyStart, dt);
-                        miLongestNoFlyStreak.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = dtNoFlyStart, DateMax = dt };
-                    }
-                    dtNoFlyStart = Convert.ToDateTime(szKey, CultureInfo.InvariantCulture).AddDays(1);
-                }
-
-                miFlightCount.MatchingEventText = ((int) miFlightCount.Progress).ToString(CultureInfo.CurrentCulture);
+                miFlightCount.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.nameNumberFlights, miFlightCount.Progress);
 
                 miFlyingDates.Progress = FlightDates.Count;
                 int DaysInPeriod = EndDate.Subtract(StartDate).Days + 1;
@@ -240,9 +207,7 @@ namespace MyFlightbook.MilestoneProgress
                     miFlightCount,
                     miFlyingDates,
                     miLongestStreak,
-                    miLongestNoFlyStreak,
                     miMostFlightsInDay,
-                    miMostLandingsInDay,
                     miLongestFlight,
                     miFurthestFlight,
                     miAirports,
@@ -306,24 +271,10 @@ namespace MyFlightbook.MilestoneProgress
                 int cFlights = FlightDates[szDateKey];
                 MaxFlightsPerDay = cFlights;
                 miMostFlightsInDay.Progress = cFlights;
-                miMostFlightsInDay.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementMostFlightsInDay, cFlights, cfr.dtFlight);
+                miMostFlightsInDay.MatchingEventText = String.Format(CultureInfo.InvariantCulture, Resources.Achievements.RecentAchievementMostFlightsInDay, cFlights, cfr.dtFlight);
                 miMostFlightsInDay.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = cfr.dtFlight, DateMax = cfr.dtFlight };
             }
-
-            if (FlightLandings.ContainsKey(szDateKey))
-                FlightLandings[szDateKey] = FlightLandings[szDateKey] + cfr.cLandingsThisFlight;
-            else
-                FlightLandings[szDateKey] = cfr.cLandingsThisFlight;
-
-            if (FlightLandings[szDateKey] > MaxLandingsPerDay)
-            {
-                int cLandings = FlightLandings[szDateKey];
-                MaxLandingsPerDay = cLandings;
-                miMostLandingsInDay.Progress = cLandings;
-                miMostLandingsInDay.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementMostLandingsInDay, cLandings, cfr.dtFlight);
-                miMostLandingsInDay.Query = new FlightQuery(Username) { DateRange = FlightQuery.DateRanges.Custom, DateMin = cfr.dtFlight, DateMax = cfr.dtFlight };
-            }
-
+            
             // Longest flight
             if (cfr.Total > LongestFlightLength)
             {

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ChecklistItem.ascx.cs" Inherits="Controls_ChecklistControls_ChecklistItem" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_ChecklistControls_ChecklistItem" Codebehind="ChecklistItem.ascx.cs" %>
 <asp:Panel ID="pnlChecklistRow" runat="server">
     <asp:MultiView ID="mvItem" runat="server" ActiveViewIndex="-1">
         <asp:View ID="vwRepeater" runat="server">

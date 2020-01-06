@@ -1,1 +1,1 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbGooglePlus.ascx.cs" Inherits="Controls_mfbGooglePlus" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbGooglePlus.ascx.cs" Inherits="Controls_mfbGooglePlus" %>

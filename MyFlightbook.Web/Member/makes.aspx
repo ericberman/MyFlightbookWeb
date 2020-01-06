@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Title="Aircraft Makes and Models" CodeFile="makes.aspx.cs" Inherits="makes" culture="auto" meta:resourcekey="PageResource2" %>
+<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Title="Aircraft Makes and Models" Inherits="makes" culture="auto" meta:resourcekey="PageResource2" Codebehind="makes.aspx.cs" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbMakeListItem.ascx" tagname="mfbMakeListItem" tagprefix="uc2" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc2" TagName="mfbTooltip" %>

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Privacy.aspx.cs" Inherits="Public_Privacy" Title="" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_Privacy" Title="" Codebehind="Privacy.aspx.cs" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="ContentTitle" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblPrivacy" runat="server" Text=""></asp:Label>

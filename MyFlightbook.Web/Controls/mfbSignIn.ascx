@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbSignIn.ascx.cs" Inherits="Controls_mfbSignIn" %>
+<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbSignIn" Codebehind="mfbSignIn.ascx.cs" %>
 <asp:Panel ID="pnlSignIn" runat="server">
     <div style="display:inline-block; padding:5px; vertical-align:top">
         <asp:Login ID="ctlSignIn" runat="server" BorderPadding="4"

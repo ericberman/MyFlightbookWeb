@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="pageFooter.ascx.cs" Inherits="Controls_PrintingLayouts_pageFooter" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_PrintingLayouts_pageFooter" Codebehind="pageFooter.ascx.cs" %>
 <div>&nbsp;</div>
 <table style="width:100%">
     <tr>

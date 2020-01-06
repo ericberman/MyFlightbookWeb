@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbImageList.ascx.cs" Inherits="Controls_mfbImageList" %>
+<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbImageList" Codebehind="mfbImageList.ascx.cs" %>
 <%@ Reference Control="~/Controls/mfbEditableImage.ascx" %>
 <%@ Register Src="mfbEditableImage.ascx" TagName="mfbEditableImage" TagPrefix="uc1" %>
 <asp:Panel ID="pnlImgs" runat="server">

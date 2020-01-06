@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Unsubscribe" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Unsubscribe.aspx.cs" Inherits="Public_Unsubscribe" %>
+﻿<%@ Page Title="Unsubscribe" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_Unsubscribe" Codebehind="Unsubscribe.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <asp:Localize ID="Localize1" runat="server" Text="<%$ Resources:Profile, UnsubscribeHeader %>"></asp:Localize>

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="METAR.ascx.cs" Inherits="Controls_METAR" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_METAR" Codebehind="METAR.ascx.cs" %>
 <asp:GridView ID="gvMetar" runat="server" GridLines="None" AutoGenerateColumns="false" OnRowDataBound="gvMetar_RowDataBound" CellPadding="5" ShowFooter="false">
     <Columns>
         <asp:TemplateField>

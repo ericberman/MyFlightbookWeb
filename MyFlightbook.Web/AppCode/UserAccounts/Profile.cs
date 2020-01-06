@@ -22,7 +22,7 @@ using System.Web.Security;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2020 MyFlightbook LLC
+ * Copyright (c) 2009-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -173,7 +173,6 @@ namespace MyFlightbook
                 this.SecurityQuestion = this.UserName = this.License = this.Address = string.Empty;
             Role = ProfileRoles.UserRole.None;
             BlacklistedProperties = new List<int>();
-            CreationDate = LastActivity = LastLogon = LastPasswordChange = 
             LastBFRInternal = LastMedical = CertificateExpiration = EnglishProficiencyExpiration = LastEmailDate = DateTime.MinValue;
             AssociatedData = new Dictionary<string, object>();
         }
@@ -435,31 +434,9 @@ namespace MyFlightbook
         /// </summary>
         public string PKID { get; set; }
 
-        #region account dates
         /// <summary>
-        /// Date account was created
+        /// Username for the user
         /// </summary>
-        public DateTime CreationDate { get; set; }
-
-        /// <summary>
-        /// Date of last web activity
-        /// </summary>
-        public DateTime LastActivity { get; set; }
-
-        /// <summary>
-        /// Date of last logon
-        /// </summary>
-        public DateTime LastLogon { get; set; }
-
-        /// <summary>
-        /// Date of last password change
-        /// </summary>
-        public DateTime LastPasswordChange { get; set; }
-        #endregion
-
-            /// <summary>
-            /// Username for the user
-            /// </summary>
         public string UserName { get; set; }
 
         /// <summary>
@@ -804,10 +781,6 @@ namespace MyFlightbook
                 LastName = dr["LastName"].ToString();
                 Address = util.ReadNullableField(dr, "Address", string.Empty).ToString();
                 OriginalPKID = PKID = dr["PKID"].ToString();
-                CreationDate = Convert.ToDateTime(dr["CreationDate"], CultureInfo.InvariantCulture);
-                LastLogon = Convert.ToDateTime(util.ReadNullableField(dr, "LastLoginDate", DateTime.MinValue), CultureInfo.InvariantCulture);
-                LastActivity = Convert.ToDateTime(util.ReadNullableField(dr, "LastActivityDate", DateTime.MinValue), CultureInfo.InvariantCulture);
-                LastPasswordChange = Convert.ToDateTime(util.ReadNullableField(dr, "LastPasswordChangedDate", DateTime.MinValue), CultureInfo.InvariantCulture);
 
                 DropboxAccessToken = (string)util.ReadNullableField(dr, "DropboxAccessToken", null);
                 GoogleDriveAccessToken = AuthStateFromString((string) util.ReadNullableField(dr, "GoogleDriveAccessToken", null));
@@ -1734,12 +1707,12 @@ namespace MyFlightbook
         /// Checks the password - throws an exception if there is an issue with it.
         /// </summary>
         /// <param name="szPass"></param>
-        public static void ValidatePassword(string szPass)
+        private static void ValidatePassword(string szPass)
         {
             if (String.IsNullOrEmpty(szPass))
                 throw new UserEntityException(Resources.Profile.errNoPassword, MembershipCreateStatus.InvalidPassword);
 
-            if (szPass.Length < 8 || szPass.Length > 48)
+            if (szPass.Length < 6 || szPass.Length > 20)
                 throw new UserEntityException(Resources.Profile.errBadPasswordLength, MembershipCreateStatus.InvalidPassword);
         }
 

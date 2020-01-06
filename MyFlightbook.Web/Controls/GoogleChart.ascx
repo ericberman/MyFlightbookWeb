@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GoogleChart.ascx.cs" Inherits="Controls_GoogleChart" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_GoogleChart" Codebehind="GoogleChart.ascx.cs" %>
 <asp:Panel ID="pnlChart" runat="server">
 </asp:Panel>
 <script>

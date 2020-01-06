@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="IcalAppt.aspx.cs" Inherits="Member_IcalAppt" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="IcalAppt.aspx.cs" Inherits="Member_IcalAppt" %>
 
 <!DOCTYPE html>
 

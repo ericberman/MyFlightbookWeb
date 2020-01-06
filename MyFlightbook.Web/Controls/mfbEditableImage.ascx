@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditableImage.ascx.cs" Inherits="Controls_mfbEditableImage" %>
+<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbEditableImage" Codebehind="mfbEditableImage.ascx.cs" %>
 <div>
     <asp:Literal ID="litVideoOpenTag" runat="server"></asp:Literal>
     <asp:HyperLink ID="lnkFullPicture" runat="server" Target="_blank">

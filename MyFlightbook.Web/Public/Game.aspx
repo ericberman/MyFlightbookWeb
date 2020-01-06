@@ -1,5 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
-    CodeFile="Game.aspx.cs" Inherits="Game_Game" Title="" %>
+<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Game_Game" Title="" Codebehind="Game.aspx.cs" %>
 <%@ Register Src="../Controls/mfbAirportIDGame.ascx" TagName="mfbAirportIDGame" TagPrefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">

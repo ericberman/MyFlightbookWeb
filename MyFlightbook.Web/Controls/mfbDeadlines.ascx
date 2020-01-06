@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbDeadlines.ascx.cs" Inherits="Controls_mfbDeadlines" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbDeadlines" Codebehind="mfbDeadlines.ascx.cs" %>
 <%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc1" TagName="mfbTypeInDate" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

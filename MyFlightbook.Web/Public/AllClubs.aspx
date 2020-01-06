@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="AllClubs.aspx.cs" Inherits="Public_AllClubs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_AllClubs" Codebehind="AllClubs.aspx.cs" %>
 <%@ Register Src="~/Controls/ClubControls/ViewClub.ascx" tagname="ViewClub" tagprefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">

@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" CodeFile="ViewPublicFlight.aspx.cs" Inherits="Public_ViewPublicFlight" Title="" %>
+<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Inherits="Public_ViewPublicFlight" Title="" Codebehind="ViewPublicFlight.aspx.cs" %>
 <%@ Register Src="../Controls/mfbGoogleMapManager.ascx" TagName="mfbGoogleMap" TagPrefix="uc2" %>
 <%@ Register Src="../Controls/mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>

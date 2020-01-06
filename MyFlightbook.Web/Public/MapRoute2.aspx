@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" CodeFile="MapRoute2.aspx.cs" Inherits="MapRoute" Title="" %>
+<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Inherits="MapRoute" Title="" Codebehind="MapRoute2.aspx.cs" %>
 <%@ Register Src="../Controls/mfbGoogleMapManager.ascx" TagName="mfbGoogleMapManager"
     TagPrefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>

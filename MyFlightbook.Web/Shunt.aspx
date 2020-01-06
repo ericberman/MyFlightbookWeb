@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Shunt.aspx.cs" Inherits="Shunt" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="Shunt" Codebehind="Shunt.aspx.cs" %>
 
 <!DOCTYPE html>
 

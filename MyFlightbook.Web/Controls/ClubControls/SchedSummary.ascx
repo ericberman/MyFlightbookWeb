@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="SchedSummary.ascx.cs" Inherits="Controls_SchedSummary" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_SchedSummary" Codebehind="SchedSummary.ascx.cs" %>
 <asp:GridView ID="gvSchedSummary" CellPadding="4" ShowHeader="false" ShowFooter="false" runat="server" GridLines="None" AutoGenerateColumns="false">
     <Columns>
         <asp:TemplateField>

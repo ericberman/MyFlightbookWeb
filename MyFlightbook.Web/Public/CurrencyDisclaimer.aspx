@@ -1,5 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
-    CodeFile="CurrencyDisclaimer.aspx.cs" Inherits="Public_CurrencyDisclaimer" Title="Currency Computations" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_CurrencyDisclaimer" Title="Currency Computations" Codebehind="CurrencyDisclaimer.aspx.cs" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" runat="Server">
     <asp:Localize ID="locDisclaimerHeader" runat="server" Text="<%$ Resources:Currency, CurrencyImportantNotes %>"></asp:Localize>

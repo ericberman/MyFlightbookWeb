@@ -40,7 +40,7 @@ namespace MyFlightbook.FlightCurrency
         {
             cfr.FlightProps.ForEachEvent((pfe) =>
             {
-                if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135293Competency || pfe.PropTypeID == (int) CustomPropertyType.KnownProperties.IDProp135297IPC)
+                if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135293Competency || pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135297IPC)
                     AddRecentFlightEvents(cfr.dtFlight, 1);
             });
         }

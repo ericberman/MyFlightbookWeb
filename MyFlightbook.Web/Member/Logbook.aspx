@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Logbook.aspx.cs" MasterPageFile="~/MasterPage.master" Inherits="_Default" culture="auto" meta:resourcekey="PageResource1" %>
+<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Inherits="_Default" culture="auto" meta:resourcekey="PageResource1" Codebehind="Logbook.aspx.cs" %>
 <%@ Register Src="../Controls/mfbLogbook.ascx" TagName="mfbLogbook" TagPrefix="uc6" %>
 <%@ Register Src="../Controls/mfbEditFlight.ascx" TagName="mfbEditFlight" TagPrefix="uc4" %>
 <%@ Register Src="../Controls/mfbSimpleTotals.ascx" TagName="mfbSimpleTotals" TagPrefix="uc3" %>

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="layoutGlider.ascx.cs" Inherits="Controls_PrintingLayouts_layoutGlider" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_PrintingLayouts_layoutGlider" Codebehind="layoutGlider.ascx.cs" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageFooter.ascx" TagPrefix="uc1" TagName="pageFooter" %>
 <%@ Register Src="~/Controls/mfbSignature.ascx" TagPrefix="uc1" TagName="mfbSignature" %>

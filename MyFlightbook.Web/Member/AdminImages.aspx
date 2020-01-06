@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="AdminImages.aspx.cs" ValidateRequest="false" Inherits="Member_AdminImages" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" ValidateRequest="false" Inherits="Member_AdminImages" Codebehind="AdminImages.aspx.cs" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbEditableImage.ascx" tagname="mfbEditableImage" tagprefix="uc2" %>

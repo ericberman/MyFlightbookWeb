@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbFooter.ascx.cs" Inherits="Controls_mfbFooter" %>
+<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbFooter" Codebehind="mfbFooter.ascx.cs" %>
 <%@ Register Src="RSSCurrency.ascx" TagName="RSSCurrency" TagPrefix="uc1" %>
 <div class="footerContainer">
     <asp:Panel ID="pnlClassic" runat="server" Width="100%"

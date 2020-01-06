@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="Expando.ascx.cs" Inherits="Controls_Expando" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_Expando" Codebehind="Expando.ascx.cs" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <asp:CollapsiblePanelExtender ID="CollapsiblePanelExtender1" runat="server"
     ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>" CollapsedText ="<%$ Resources:LocalizedText, ClickToShow %>"

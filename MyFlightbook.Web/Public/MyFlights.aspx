@@ -1,5 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
-    CodeFile="MyFlights.aspx.cs" Inherits="Public_MyFlights" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_MyFlights" Codebehind="MyFlights.aspx.cs" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>
 <%@ Register src="../Controls/mfbPublicFlightItem.ascx" tagname="mfbPublicFlightItem" tagprefix="uc4" %>

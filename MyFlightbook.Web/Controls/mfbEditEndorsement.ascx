@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditEndorsement.ascx.cs" Inherits="Controls_mfbEditEndorsement" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbEditEndorsement" Codebehind="mfbEditEndorsement.ascx.cs" %>
 <%@ Register src="mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc1" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc2" TagName="mfbTypeInDate" %>

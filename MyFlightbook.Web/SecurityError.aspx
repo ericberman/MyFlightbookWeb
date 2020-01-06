@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="SecurityError.aspx.cs" Inherits="SecurityError" Title="Untitled Page" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="SecurityError" Title="Untitled Page" Codebehind="SecurityError.aspx.cs" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
 <h1>Content Blocked</h1>

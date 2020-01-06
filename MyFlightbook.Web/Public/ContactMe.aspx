@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="Contact Us" AutoEventWireup="true" CodeFile="ContactMe.aspx.cs" Inherits="Public_ContactMe" ValidateRequest="false" %>
+<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="Contact Us" AutoEventWireup="true" Inherits="Public_ContactMe" ValidateRequest="false" Codebehind="ContactMe.aspx.cs" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>

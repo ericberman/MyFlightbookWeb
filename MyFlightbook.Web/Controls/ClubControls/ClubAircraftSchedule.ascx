@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ClubAircraftSchedule.ascx.cs" Inherits="Controls_ClubControls_ClubAircraftSchedule" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_ClubControls_ClubAircraftSchedule" Codebehind="ClubAircraftSchedule.ascx.cs" %>
 <%@ Register src="../mfbResourceSchedule.ascx" tagname="mfbResourceSchedule" tagprefix="uc1" %>
 <asp:FormView ID="fvClubaircraft" runat="server" CssClass="mfbDefault">
     <ItemTemplate>

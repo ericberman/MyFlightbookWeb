@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="layoutCanada.ascx.cs" Inherits="Controls_PrintingLayouts_layoutCanada" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_PrintingLayouts_layoutCanada" Codebehind="layoutCanada.ascx.cs" %>
 <%@ Register Src="~/Controls/mfbImageList.ascx" TagPrefix="uc1" TagName="mfbImageList" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageFooter.ascx" TagPrefix="uc1" TagName="pageFooter" %>

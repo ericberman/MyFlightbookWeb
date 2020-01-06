@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="StartingTotals.aspx.cs" Inherits="Member_StartingTotals" culture="auto" meta:resourcekey="PageResource1" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Member_StartingTotals" culture="auto" meta:resourcekey="PageResource1" Codebehind="StartingTotals.aspx.cs" %>
 <%@ Reference Control="~/Controls/mfbDecimalEdit.ascx" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="imageSlider.ascx.cs" Inherits="Controls_imageSlider" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_imageSlider" Codebehind="imageSlider.ascx.cs" %>
 <asp:Panel ID="pnlSlider" runat="server" Visible="false">
     <ul id="<% =SliderClientID %>" class="bxslider">
         <asp:Repeater ID="rptImages" runat="server">

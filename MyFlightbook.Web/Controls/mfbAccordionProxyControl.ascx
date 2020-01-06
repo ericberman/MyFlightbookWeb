@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbAccordionProxyControl.ascx.cs" Inherits="Controls_mfbAccordionProxyControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbAccordionProxyControl" Codebehind="mfbAccordionProxyControl.ascx.cs" %>
 <asp:Panel ID="pnlContainer" runat="server">
     <asp:Label ID="lblLabel" runat="server" Text=""></asp:Label>
     <asp:HiddenField ID="hdnIsEnhanced" runat="server" />

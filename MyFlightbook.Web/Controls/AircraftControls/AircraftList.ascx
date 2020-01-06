@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="AircraftList.ascx.cs" Inherits="Controls_AircraftControls_AircraftList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_AircraftControls_AircraftList" Codebehind="AircraftList.ascx.cs" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="../mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>
 <%@ Register src="../popmenu.ascx" tagname="popmenu" tagprefix="uc2" %>

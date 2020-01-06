@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbBadgeSet.ascx.cs" Inherits="Controls_mfbBadgeSet" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbBadgeSet" Codebehind="mfbBadgeSet.ascx.cs" %>
 <asp:Panel ID="pnlBadges" runat="server">
     <h2><asp:Label ID="lblCategory" runat="server" Text=""></asp:Label></h2>
     <asp:Repeater ID="repeaterBadges" runat="server">

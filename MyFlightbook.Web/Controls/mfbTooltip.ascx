@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbTooltip.ascx.cs" Inherits="Controls_mfbTooltip" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbTooltip" Codebehind="mfbTooltip.ascx.cs" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Label ID="lblTip" runat="server" Text="[?]" CssClass="hint"></asp:Label>
 <cc1:HoverMenuExtender ID="hmeHover" runat="server" OffsetX="10" OffsetY="10" TargetControlID="lblTip" PopupControlID="pnlTip"></cc1:HoverMenuExtender>

@@ -475,9 +475,6 @@ namespace MyFlightbook.Subscriptions
             if (!String.IsNullOrEmpty(UserRestriction))
                 lstEg.RemoveAll(eg => eg.Username.CompareCurrentCultureIgnoreCase(UserRestriction) != 0);
             lstEg.ForEach((eg) => { eg.SendReminderIfNeeded(); });
-
-            if (DateTime.Now.Day == 1)
-                Clubs.Club.SendMonthlyClubReports();
         }
 
         /// <summary>

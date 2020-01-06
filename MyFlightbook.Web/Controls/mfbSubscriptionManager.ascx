@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbSubscriptionManager.ascx.cs" Inherits="Controls_mfbSubscriptionManager" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbSubscriptionManager" Codebehind="mfbSubscriptionManager.ascx.cs" %>
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
         <div class="prefSectionRow">

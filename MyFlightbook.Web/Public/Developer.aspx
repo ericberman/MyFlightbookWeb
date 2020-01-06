@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Developers" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Developer.aspx.cs" Inherits="Public_Developer" %>
+﻿<%@ Page Title="Developers" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_Developer" Codebehind="Developer.aspx.cs" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

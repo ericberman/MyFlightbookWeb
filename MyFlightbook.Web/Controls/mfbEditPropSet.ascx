@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditPropSet.ascx.cs" Inherits="Controls_mfbEditPropSet" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbEditPropSet" Codebehind="mfbEditPropSet.ascx.cs" %>
 <%@ Register src="mfbEditProp.ascx" tagname="mfbEditProp" tagprefix="uc1" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
 <%@ Register Src="~/Controls/mfbSelectTemplates.ascx" TagPrefix="uc1" TagName="mfbSelectTemplates" %>

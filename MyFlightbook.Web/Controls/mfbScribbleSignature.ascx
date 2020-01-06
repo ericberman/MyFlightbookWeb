@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbScribbleSignature.ascx.cs" Inherits="Controls_mfbScribbleSignature" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbScribbleSignature" Codebehind="mfbScribbleSignature.ascx.cs" %>
 <script>
     function loaded() {
         var signature = new ns.SignatureControl({ imgDataControlId : "<% = hdnSigData.ClientID %>" });
