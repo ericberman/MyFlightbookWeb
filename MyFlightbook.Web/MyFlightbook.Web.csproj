@@ -1061,18 +1061,21 @@
     </Compile>
     <Compile Include="Controls\ClubControls\FlyingReport.ascx.cs">
       <DependentUpon>FlyingReport.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\ClubControls\FlyingReport.ascx.designer.cs">
       <DependentUpon>FlyingReport.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\ClubControls\InsuranceReport.ascx.cs">
       <DependentUpon>InsuranceReport.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\ClubControls\InsuranceReport.ascx.designer.cs">
       <DependentUpon>InsuranceReport.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\ClubControls\MaintenanceReport.ascx.cs">
       <DependentUpon>MaintenanceReport.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controls\ClubControls\MaintenanceReport.ascx.designer.cs">
       <DependentUpon>MaintenanceReport.ascx</DependentUpon>
