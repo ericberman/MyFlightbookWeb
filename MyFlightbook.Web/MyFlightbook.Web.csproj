@@ -61,6 +61,12 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.8.3.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.3.1\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="DDay.Collections">
+      <HintPath>..\packages\DDay.iCal.2.0.0\DDay.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="DDay.iCal">
+      <HintPath>..\packages\DDay.iCal.2.0.0\DDay.iCal.dll</HintPath>
+    </Reference>
     <Reference Include="DotNetOpenAuth.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetOpenAuth.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.Core.dll</HintPath>
     </Reference>
@@ -135,12 +141,6 @@
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.11.17.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.17\lib\Net45\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="Ical.Net, Version=2.1.0.19502, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ical.Net.2.2.3\lib\net46\Ical.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="Ical.Net.Collections, Version=2.1.0.19501, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ical.Net.2.2.3\lib\net46\Ical.Net.Collections.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <HintPath>..\packages\Ionic.Zip.1.9.1.8\lib\Ionic.Zip.dll</HintPath>
@@ -275,6 +275,9 @@
     <Content Include="Controls\AircraftControls\SelectMake.ascx" />
     <Content Include="Controls\ChecklistControls\ChecklistItem.ascx" />
     <Content Include="Controls\ClubControls\ClubAircraftSchedule.ascx" />
+    <Content Include="Controls\ClubControls\FlyingReport.ascx" />
+    <Content Include="Controls\ClubControls\InsuranceReport.ascx" />
+    <Content Include="Controls\ClubControls\MaintenanceReport.ascx" />
     <Content Include="Controls\ClubControls\SchedSummary.ascx" />
     <Content Include="Controls\ClubControls\TimeZone.ascx" />
     <Content Include="Controls\ClubControls\ViewClub.ascx" />
@@ -1055,6 +1058,24 @@
     </Compile>
     <Compile Include="Controls\ClubControls\ClubAircraftSchedule.ascx.designer.cs">
       <DependentUpon>ClubAircraftSchedule.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\FlyingReport.ascx.cs">
+      <DependentUpon>FlyingReport.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\FlyingReport.ascx.designer.cs">
+      <DependentUpon>FlyingReport.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\InsuranceReport.ascx.cs">
+      <DependentUpon>InsuranceReport.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\InsuranceReport.ascx.designer.cs">
+      <DependentUpon>InsuranceReport.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\MaintenanceReport.ascx.cs">
+      <DependentUpon>MaintenanceReport.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\MaintenanceReport.ascx.designer.cs">
+      <DependentUpon>MaintenanceReport.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\ClubControls\SchedSummary.ascx.cs">
       <DependentUpon>SchedSummary.ascx</DependentUpon>
