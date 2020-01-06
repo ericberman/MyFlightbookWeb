@@ -1789,7 +1789,7 @@ namespace MyFlightbook.Image
         /// <returns>The S3 client</returns>
         public static IAmazonS3 S3Client()
         {
-           AWSConfigs.S3Config.UseSignatureVersion4 = true;
+            AWSConfigs.S3Config.UseSignatureVersion4 = true;
             return AWSClientFactory.CreateAmazonS3Client(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
         }
 

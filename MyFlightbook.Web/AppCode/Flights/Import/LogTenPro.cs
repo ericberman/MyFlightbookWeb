@@ -1,6 +1,5 @@
 ﻿using JouniHeikniemi.Tools.Text;
 using MyFlightbook.CSV;
-using MyFlightbook.Web;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
