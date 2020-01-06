@@ -145,7 +145,7 @@ public partial class Controls_mfbHeader
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::AjaxControlToolkit.dropshadowextender DropShadowExtender1;
+    protected global::AjaxControlToolkit.DropShadowExtender DropShadowExtender1;
 
     /// <summary>
     /// hme control.
