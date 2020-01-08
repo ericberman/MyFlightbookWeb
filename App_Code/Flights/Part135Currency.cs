@@ -113,8 +113,8 @@ namespace MyFlightbook.FlightCurrency
             if (cfr == null)
                 throw new ArgumentNullException("cfr");
 
-            // Only include potential commercial flying - so nothing flagged as part 91 or in a sim.
-            if (!cfr.fIsRealAircraft || cfr.FlightProps.FindEvent(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropPart91) != null)
+            // Only include potential commercial flying - so nothing in a sim.
+            if (!cfr.fIsRealAircraft)
                 return;
 
             if (cfr.dtFlight.CompareTo(PeriodStart) >= 0)
