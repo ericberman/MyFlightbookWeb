@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Public_Home" Title="" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Public_Home" Title="" %>
 <%@ Register Src="Controls/mfbCurrency.ascx" TagName="mfbCurrency" TagPrefix="uc3" %>
 <%@ Register Src="Controls/RSSCurrency.ascx" TagName="RSSCurrency" TagPrefix="uc2" %>
 <%@ Register Src="Controls/mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>
@@ -30,22 +30,18 @@
                             </div>
                         </ItemTemplate>
                     </asp:Repeater>
+                    <p>
+                        <asp:Label ID="locRecentStats" runat="server" Font-Bold="true"></asp:Label>
+                        <asp:Repeater ID="rptStats" runat="server">
+                            <ItemTemplate>
+                                ● <%# Container.DataItem %></li>
+                            </ItemTemplate>                        
+                        </asp:Repeater>
+                    </p>
                     <h2><asp:Localize ID="locRecentFlightsHeader" runat="server"></asp:Localize></h2>
                     <p><asp:Hyperlink ID="lblRecentFlightsStats" Font-Bold="true" runat="server" NavigateUrl="~/Public/MyFlights.aspx"></asp:Hyperlink></p>
                     <div style="max-width: 480px; margin-left:auto; margin-right:auto;">
                         <uc1:imageSlider runat="server" ID="imageSlider" />
-                    </div>
-                    <h2><asp:Localize ID="locRecentStats" runat="server"></asp:Localize></h2>
-                    <div style="display:inline-block">
-                        <div style="text-align:left">
-                            <ul>
-                                <asp:Repeater ID="rptStats" runat="server">
-                                    <ItemTemplate>
-                                        <li><%# Container.DataItem %></li>
-                                    </ItemTemplate>                        
-                                </asp:Repeater>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </td>
