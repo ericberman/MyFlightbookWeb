@@ -8,7 +8,7 @@ using MyFlightbook.Encryptors;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -34,6 +34,8 @@ public partial class Public_RSSCurrency : System.Web.UI.Page
             szUser = User.Identity.Name;
             szDebug += "Using cached credentials...";
         }
+
+        cssMain.Href = String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, System.Web.VirtualPathUtility.ToAbsolute("~/Public/stylesheet.css"));
 
         IsTotals = (util.GetIntParam(Request, "t", 0) != 0);
         mvData.SetActiveView(IsTotals ? vwTotals : vwCurrency);

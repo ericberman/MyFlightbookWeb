@@ -1,13 +1,13 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Encryptors;
+using System;
 using System.Globalization;
 using System.Web;
 using System.Web.UI;
-using MyFlightbook;
-using MyFlightbook.Encryptors;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2016 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,6 +18,8 @@ public partial class Public_StatsForMail : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
+            cssRef.Href = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public/Stylesheet.css?v=18"));
+            baseRef.Attributes["href"] = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}/", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public"));
             string szAuthKey = util.GetStringParam(Request, "k");
 
             // This page is public, so that it doesn't require any authentication, making it easy to set up a scheduled task.
@@ -35,7 +37,7 @@ public partial class Public_StatsForMail : System.Web.UI.Page
                     AdminAuthEncryptor enc = new AdminAuthEncryptor();
                     using (System.Net.WebClient wc = new System.Net.WebClient())
                     {
-                        byte[] rgdata = wc.DownloadData(String.Format(CultureInfo.InvariantCulture, "http://{0}/logbook/public/StatsForMail.aspx?k={1}", Request.Url.Host, HttpUtility.UrlEncode(enc.Encrypt(DateTime.Now.ToString("s", CultureInfo.InvariantCulture)))));
+                        byte[] rgdata = wc.DownloadData(String.Format(CultureInfo.InvariantCulture, "http://{0}{1}?k={2}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/StatsForMail.aspx"), HttpUtility.UrlEncode(enc.Encrypt(DateTime.Now.ToString("s", CultureInfo.InvariantCulture)))));
                         util.NotifyAdminEvent(String.Format(CultureInfo.CurrentCulture, "{0} site stats as of {1} {2}", Request.Url.Host, DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString()), System.Text.UTF8Encoding.UTF8.GetString(rgdata).Trim(), ProfileRoles.maskCanReport);
                         lblSuccess.Visible = true;
                     }
@@ -55,7 +57,7 @@ public partial class Public_StatsForMail : System.Web.UI.Page
                     throw new MyFlightbookException("Unauthorized attempt to view stats for mail");
 
                 // If we're here, then the auth was successfully sent - show the admin panel!
-                Page.Title = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Admin.SiteStatsTemplate, Request.Url.Host);
+                Page.Title = String.Format(CultureInfo.CurrentCulture, Resources.Admin.SiteStatsTemplate, Request.Url.Host);
                 adminStats1.Visible = true;
             }
         }

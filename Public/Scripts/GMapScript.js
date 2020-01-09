@@ -1,6 +1,6 @@
 ﻿/******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -93,7 +93,7 @@ var dictRestoreStyle = {};
 
 function toggleZoom(mapID) {
     var d = document.getElementById(mapID);
-    if (dictRestoreStyle[mapID]) {
+    if (!dictRestoreStyle[mapID]) {
         dictRestoreStyle[mapID] = d.style.cssText;
         d.style.position = "fixed";
         d.style.top = "0";
@@ -181,7 +181,7 @@ function MFBMap()
             zoomControl.appendChild(controlUI);
 
             var img = document.createElement('img');
-            img.src = "/logbook/images/mapzoom.png";
+            img.src = "https://myflightbook.com/logbook/images/mapzoom.png";
             controlUI.appendChild(img);
 
             var mapID = this.divContainer;

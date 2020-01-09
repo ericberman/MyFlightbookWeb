@@ -26,7 +26,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1655,7 +1655,7 @@ namespace MyFlightbook.Image
             tw.AddAttribute(HtmlTextWriterAttribute.Href, ResolveFullImage());
             tw.RenderBeginTag(HtmlTextWriterTag.A);
 
-            tw.AddAttribute(HtmlTextWriterAttribute.Src, (ImageType == MFBImageInfo.ImageFileType.PDF || ImageType == MFBImageInfo.ImageFileType.S3PDF) ? String.Format(CultureInfo.InvariantCulture, "http://{0}/logbook/images/pdficon_large.png", Branding.CurrentBrand.HostName) : szThumbFolder + ThumbnailFile);
+            tw.AddAttribute(HtmlTextWriterAttribute.Src, (ImageType == MFBImageInfo.ImageFileType.PDF || ImageType == MFBImageInfo.ImageFileType.S3PDF) ? String.Format(CultureInfo.InvariantCulture, "http://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/images/pdficon_large.png")) : szThumbFolder + ThumbnailFile);
             tw.RenderBeginTag(HtmlTextWriterTag.Img);
             tw.RenderEndTag();  // img
             tw.RenderEndTag();  // a

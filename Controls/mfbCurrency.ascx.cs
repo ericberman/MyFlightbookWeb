@@ -1,14 +1,14 @@
+using MyFlightbook;
+using MyFlightbook.FlightCurrency;
 using System;
+using System.Globalization;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Globalization;
-using MyFlightbook;
-using MyFlightbook.FlightCurrency;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -178,7 +178,7 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
                 lblDiscrepancy.Style["font-weight"] = "normal";
                 lblDiscrepancy.Style["font-size"] = "9px";
 
-                p.Style["font-family"] = lblStatus.Style["font-family"] = lblDiscrepancy.Style["font-family"] = "Arial";
+                p.Style["font-family"] = lblStatus.Style["font-family"] = lblDiscrepancy.Style["font-family"] = "open_sans, 'Lucida Sans Unicode', 'Lucida Sans', Arial, sans-serif";
             }
         }
     }
