@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -23,12 +23,10 @@ namespace MyFlightbook
         tabHome = 0,
         tabLogbook,
         tabAircraft,
-        tabMakes,
         tabMaps,
         tabTraining,
         tabProfile,
         tabAdmin,
-        tabFlightAnalysis,
 
         // logbook tabs
         lbtAddNew = 100,
@@ -44,13 +42,13 @@ namespace MyFlightbook
         lbtPending,
 
         // profile tabs
-        pftName = 200,
-        pftPass,
-        pftQA,
-        pftAccount,
+        pftAccount = 200,
         pftPrefs,
         pftPilotInfo,
         pftDonate,
+        pftName,
+        pftPass,
+        pftQA,
 
         // Instruction tabs
         instEndorsements = 250,
@@ -66,12 +64,6 @@ namespace MyFlightbook
         mptAddAirports,
         mptVisited,
         mptQuiz,
-        mptAllAirports,
-
-        // Analysis tabs - obsolete
-        flaChart = 400,
-        flaData,
-        flaDownload,
 
         // Aircraft tabs
         actMyAircraft = 500,
@@ -96,6 +88,140 @@ namespace MyFlightbook
         admTelemetry
     };
 
+    internal static class tabIDHelper
+    {
+        public static string Description(this tabID id)
+        {
+            switch (id)
+            {
+                default:
+                    throw new ArgumentOutOfRangeException("Unknown tab ID");
+                case tabID.tabUnknown:
+                    return string.Empty;
+                case tabID.tabHome:
+                    return Resources.Tabs.TabHome;
+                case tabID.tabLogbook:
+                    return Resources.Tabs.TabLogbook;
+                case tabID.tabAircraft:
+                    return Resources.Tabs.TabAircraft;
+                case tabID.tabMaps:
+                    return Resources.Tabs.TabAirports;
+                case tabID.tabTraining:
+                    return Resources.Tabs.TabInstruction;
+                case tabID.tabProfile:
+                    return Resources.Tabs.TabProfile;
+                case tabID.tabAdmin:
+                    return Resources.Tabs.TabAdmin;
+
+                //Logbook
+                case tabID.lbtAddNew:
+                    return Resources.Tabs.LogbookAdd;
+                case tabID.lbtFindFlights:
+                    return Resources.Tabs.LogbookFind;
+                case tabID.lbtTotals:
+                    return Resources.Tabs.LogbookTotals;
+                case tabID.lbtCurrency:
+                    return Resources.Tabs.LogbookCurrency;
+                case tabID.lbtTrends:
+                    return Resources.Tabs.LogbookAnalysis;
+                case tabID.lbt8710:
+                    return Resources.Tabs.Logbook8710;
+                case tabID.lbtDownload:
+                    return Resources.Tabs.LogbookDownload;
+                case tabID.lbtImport:
+                    return Resources.Tabs.LogbookImport;
+                case tabID.lbtStartingTotals:
+                    return Resources.Tabs.LogbookStartingTotals;
+                case tabID.lbtPrintView:
+                    return Resources.Tabs.LogbookPrintView;
+                case tabID.lbtPending:
+                    return Resources.Tabs.LogbookPending;
+
+                // Profile
+                case tabID.pftAccount:
+                    return Resources.Tabs.ProfileAccount;
+                case tabID.pftPrefs:
+                    return Resources.Tabs.ProfilePreferences;
+                case tabID.pftPilotInfo:
+                    return Resources.Tabs.ProfilePilotInformation;
+                case tabID.pftDonate:
+                    return Resources.Tabs.ProfileDonate;
+                case tabID.pftName:
+                    return Resources.Tabs.ProfileName;
+                case tabID.pftPass:
+                    return Resources.Tabs.ProfilePassword;
+                case tabID.pftQA:
+                    return Resources.Tabs.ProfileQA;
+
+                // Training
+                case tabID.instEndorsements:
+                    return Resources.Tabs.InstructionEndorsements;
+                case tabID.instSignFlights:
+                    return Resources.Tabs.InstructionSignedFlights;
+                case tabID.instStudents:
+                    return Resources.Tabs.InstructionStudents;
+                case tabID.instInstructors:
+                    return Resources.Tabs.InstructionInstructors;
+                case tabID.instProgressTowardsMilestones:
+                    return Resources.Tabs.InstructionProgress;
+                case tabID.instAchievements:
+                    return Resources.Tabs.InstructionAchievements;
+
+                // Map
+                case tabID.mptRoute:
+                    return Resources.Tabs.MapRoutes;
+                case tabID.mptFindAirport:
+                    return Resources.Tabs.MapFind;
+                case tabID.mptAddAirports:
+                    return Resources.Tabs.MapAdd;
+                case tabID.mptVisited:
+                    return Resources.Tabs.MapVisited;
+                case tabID.mptQuiz:
+                    return Resources.Tabs.MapQuiz;
+
+                // Aircraft
+                case tabID.actMyAircraft:
+                    return Resources.Tabs.MyAircraft;
+                case tabID.actImportAircraft:
+                    return Resources.Tabs.ImportAircraft;
+                case tabID.actMakes:
+                    return Resources.Tabs.TabMakes;
+                case tabID.actMyClubs:
+                    return Resources.Tabs.Clubs;
+
+                // Admin Tabs
+                case tabID.admUsers:
+                    return Resources.Tabs.AdminUsers;
+                case tabID.admModels:
+                    return Resources.Tabs.AdminModels;
+                case tabID.admProperties:
+                    return Resources.Tabs.AdminProperties;
+                case tabID.admStats:
+                    return Resources.Tabs.AdminStats;
+                case tabID.admManufacturers:
+                    return Resources.Tabs.AdminManufacturers;
+                case tabID.admImages:
+                    return Resources.Tabs.AdminImages;
+                case tabID.admAirports:
+                    return Resources.Tabs.AdminAirports;
+                case tabID.admEndorsements:
+                    return Resources.Tabs.AdminEndorsements;
+                case tabID.admFAQ:
+                    return Resources.Tabs.AdminFAQ;
+                case tabID.admAircraft:
+                    return Resources.Tabs.AdminAircraft;
+                case tabID.admDonations:
+                    return Resources.Tabs.AdminDonations;
+                case tabID.admAchievements:
+                    return Resources.Tabs.AdminAchievements;
+                case tabID.admMisc:
+                    return Resources.Tabs.AdminMisc;
+                case tabID.admTelemetry:
+                    return Resources.Tabs.AdminTelemetry;
+            }
+        }
+    }
+
     public class TabClickedEventArgs : EventArgs
     {
         public tabID TabID { get; set; }
@@ -114,7 +240,10 @@ namespace MyFlightbook
         /// <summary>
         /// The display text for the tab item
         /// </summary>
-        public string Text { get; set; }
+        public string Text
+        {
+            get { return ID.Description(); }
+        }
 
         /// <summary>
         /// The link for the tab
@@ -144,7 +273,7 @@ namespace MyFlightbook
         public TabItem()
         {
             Children = new List<TabItem>();
-            Text = Link = string.Empty;
+            Link = string.Empty;
             ID = tabID.tabUnknown;
             Roles = new List<ProfileRoles.UserRole>();
         }
@@ -152,13 +281,11 @@ namespace MyFlightbook
         /// <summary>
         /// Creates a new TabItem with specific parameters
         /// </summary>
-        /// <param name="szText">The display text</param>
         /// <param name="szLink">The link</param>
         /// <param name="tabID">The ID</param>
         /// <param name="szRoles">The roles, if any</param>
-        public TabItem(string szText, string szLink, tabID id, string szRoles) : this()
+        public TabItem(string szLink, tabID id, string szRoles) : this()
         {
-            Text = szText;
             Link = szLink;
             ID = id;
             if (!String.IsNullOrEmpty(szRoles))
@@ -199,14 +326,11 @@ namespace MyFlightbook
 
         private List<TabItem> ReadTabs(IEnumerable<XElement> items)
         {
-            Type t = typeof(Resources.Tabs);
             List<TabItem> lst = new List<TabItem>();
 
             foreach (XElement item in items)
             {
-                string szNameKey = item.Element("Text").Value.Trim();
-                string szLocName = String.IsNullOrEmpty(szNameKey) ? String.Empty : (string)t.GetProperty(szNameKey).GetValue(t, null);
-                TabItem ti = new TabItem(szLocName, item.Element("Link").Value, (tabID)Enum.Parse(typeof(tabID), item.Element("ID").Value), item.Element("Roles").Value);
+                TabItem ti = new TabItem(item.Element("Link").Value, (tabID)Enum.Parse(typeof(tabID), item.Element("ID").Value), item.Element("Roles").Value);
                 XElement subItems = item.Element("Items");
                 ti.Children = (subItems == null) ? new List<TabItem>() : ReadTabs(subItems.Elements("Item"));
                 lst.Add(ti);

@@ -1,73 +1,61 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Items>
   <Item>
-    <Text>TabHome</Text>
     <Link>~/Default.aspx</Link>
     <ID>tabHome</ID>
     <Roles></Roles>
   </Item>
   <Item>
-    <Text>TabLogbook</Text>
     <Link>~/Member/LogbookNew.aspx</Link>
     <ID>tabLogbook</ID>
     <Roles></Roles>
     <Items>
       <Item>
-        <Text>LogbookAdd</Text>
         <Link>~/Member/LogbookNew.aspx?ft=Add</Link>
         <ID>lbtAddNew</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>LogbookFind</Text>
         <Link>~/Member/LogbookNew.aspx?ft=Search</Link>
         <ID>lbtFindFlights</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>LogbookTotals</Text>
         <Link>~/Member/LogbookNew.aspx?ft=Totals</Link>
         <ID>lbtTotals</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>LogbookCurrency</Text>
         <Link>~/Member/LogbookNew.aspx?ft=Currency</Link>
         <ID>lbtCurrency</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>LogbookAnalysis</Text>
         <Link>~/Member/LogbookNew.aspx?ft=Analysis</Link>
         <ID>lbtTrends</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>LogbookDownload</Text>
         <Link>~/Member/Download.aspx</Link>
         <ID>lbtDownload</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>LogbookImport</Text>
         <Link>~/Member/Import.aspx</Link>
         <ID>lbtImport</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>LogbookStartingTotals</Text>
         <Link>~/Member/StartingTotals.aspx</Link>
         <ID>lbtStartingTotals</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>LogbookPrintView</Text>
         <Link>~/Member/LogbookNew.aspx?ft=Printing</Link>
         <ID>lbtPrintView</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>LogbookPending</Text>
         <Link>~/Member/ReviewPendingFlights.aspx</Link>
         <ID>lbtPending</ID>
         <Roles></Roles>
@@ -75,31 +63,26 @@
     </Items>
   </Item>
   <Item>
-    <Text>TabAircraft</Text>
     <Link>~/Member/Aircraft.aspx</Link>
     <ID>tabAircraft</ID>
     <Roles></Roles>
     <Items>
       <Item>
-        <Text>MyAircraft</Text>
         <Link>~/Member/Aircraft.aspx</Link>
         <ID>actMyAircraft</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>ImportAircraft</Text>
         <Link>~/Member/ImpAircraft.aspx</Link>
         <ID>actImportAircraft</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>TabMakes</Text>
         <Link>~/Public/AllMakes.aspx</Link>
         <ID>actMakes</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>Clubs</Text>
         <Link>~/Public/Clubs.aspx</Link>
         <ID>actMyClubs</ID>
         <Roles></Roles>
@@ -107,37 +90,31 @@
     </Items>
   </Item>
   <Item>
-    <Text>TabAirports</Text>
     <Link>~/Public/MapRoute2.aspx</Link>
     <ID>tabMaps</ID>
     <Roles></Roles>
     <Items>
       <Item>
-        <Text>MapRoutes</Text>
         <Link>~/Public/MapRoute2.aspx</Link>
         <ID>mptRoute</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>MapFind</Text>
         <Link>~/Public/FindAirport.aspx</Link>
         <ID>mptFindAirport</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>MapAdd</Text>
         <Link>~/Member/EditAirports.aspx</Link>
         <ID>mptAddAirports</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>MapVisited</Text>
         <Link>~/Member/Airports.aspx</Link>
         <ID>mptVisited</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>MapQuiz</Text>
         <Link>~/Public/Game.aspx</Link>
         <ID>mptQuiz</ID>
         <Roles></Roles>
@@ -145,49 +122,41 @@
     </Items>
   </Item>
   <Item>
-    <Text>TabInstruction</Text>
     <Link>~/Member/Training.aspx/instInstructors</Link>
     <ID>tabTraining</ID>
     <Roles></Roles>
     <Items>
       <Item>
-        <Text>InstructionInstructors</Text>
         <Link>~/Member/Training.aspx/instInstructors</Link>
         <ID>instInstructors</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>InstructionStudents</Text>
         <Link>~/Member/Training.aspx/instStudents</Link>
         <ID>instStudents</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>InstructionSignedFlights</Text>
         <Link>~/Member/Training.aspx/instSignFlights</Link>
         <ID>instSignFlights</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>InstructionEndorsements</Text>
         <Link>~/Member/Training.aspx/instEndorsements</Link>
         <ID>instEndorsements</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>InstructionProgress</Text>
         <Link>~/Member/Ratingprogress.aspx</Link>
         <ID>instProgressTowardsMilestones</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>Logbook8710</Text>
         <Link>~/Member/8710Form.aspx</Link>
         <ID>lbt8710</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>InstructionAchievements</Text>
         <Link>~/Member/Achievements.aspx</Link>
         <ID>instAchievements</ID>
         <Roles></Roles>
@@ -195,31 +164,26 @@
     </Items>
   </Item>
   <Item>
-    <Text>TabProfile</Text>
     <Link>~/Member/EditProfile.aspx</Link>
     <ID>tabProfile</ID>
     <Roles></Roles>
     <Items>
       <Item>
-        <Text>ProfileAccount</Text>
         <Link>~/Member/EditProfile.aspx/pftAccount</Link>
         <ID>pftAccount</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>ProfilePreferences</Text>
         <Link>~/Member/EditProfile.aspx/pftPrefs</Link>
         <ID>pftPrefs</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>ProfilePilotInformation</Text>
         <Link>~/Member/EditProfile.aspx/pftPilotInfo</Link>
         <ID>pftPilotInfo</ID>
         <Roles></Roles>
       </Item>
       <Item>
-        <Text>ProfileDonate</Text>
         <Link>~/Member/EditProfile.aspx/pftDonate</Link>
         <ID>pftDonate</ID>
         <Roles></Roles>
@@ -227,91 +191,76 @@
     </Items>
   </Item>
   <Item>
-    <Text>TabAdmin</Text>
     <Link>~/Member/Admin.aspx</Link>
     <ID>tabAdmin</ID>
     <Roles>Support,DataManager,SiteAdmin,Reporter,Accountant</Roles>
     <Items>
       <Item>
-        <Text>AdminUsers</Text>
         <Link>~/Member/Admin.aspx?t=admUsers</Link>
         <ID>admUsers</ID>
         <Roles>SiteAdmin,Support,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminModels</Text>
         <Link>~/Member/Admin.aspx?t=admModels</Link>
         <ID>admModels</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminManufacturers</Text>
         <Link>~/Member/Admin.aspx?t=admManufacturers</Link>
         <ID>admManufacturers</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminAircraft</Text>
         <Link>~/Member/Admin.aspx?t=admAircraft</Link>
         <ID>admAircraft</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminImages</Text>
         <Link>~/Member/Admin.aspx?t=admImages</Link>
         <ID>admImages</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminAirports</Text>
         <Link>~/Member/EditAirports.aspx?a=1</Link>
         <ID>admAirports</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminProperties</Text>
         <Link>~/Member/Admin.aspx?t=admProperties</Link>
         <ID>admProperties</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminEndorsements</Text>
         <Link>~/Member/Admin.aspx?t=admEndorsements</Link>
         <ID>admEndorsements</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminFAQ</Text>
         <Link>~/Member/FAQEdit.aspx</Link>
         <ID>admFAQ</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminAchievements</Text>
         <Link>~/Member/Admin.aspx?t=admAchievements</Link>
         <ID>admAchievements</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminDonations</Text>
         <Link>~/Member/Admin.aspx?t=admDonations</Link>
         <ID>admDonations</ID>
         <Roles>SiteAdmin,Accountant</Roles>
       </Item>
       <Item>
-        <Text>AdminTelemetry</Text>
         <Link>~/Member/AdminTelemetry.aspx</Link>
         <ID>admTelemetry</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminMisc</Text>
         <Link>~/Member/Admin.aspx?t=admMisc</Link>
         <ID>admMisc</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Text>AdminStats</Text>
         <Link>~/Member/Stats.aspx</Link>
         <ID>admStats</ID>
         <Roles>SiteAdmin,Reporter</Roles>
