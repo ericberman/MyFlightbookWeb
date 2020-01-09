@@ -1,0 +1,78 @@
+<%@ Master Language="C#" AutoEventWireup="true" Inherits="MyFlightbook.Web.MasterPage" Codebehind="MasterPage.master.cs" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<%@ Register Src="Controls/mfbFooter.ascx" TagName="mfbFooter" TagPrefix="uc1" %>
+<%@ Register src="Controls/mfbHeader.ascx" tagname="mfbHeader" tagprefix="uc2" %>
+<%@ Register src="Controls/mfbLogbookSidebar.ascx" tagname="mfbLogbookSidebar" tagprefix="uc3" %>
+<%@ Register src="Controls/GoogleAnalytics.ascx" tagname="GoogleAnalytics" tagprefix="uc4" %>
+<%@ Register src="Controls/SponsoredAd.ascx" tagname="SponsoredAd" tagprefix="uc5" %>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta name="verify-v1" content="7D/8Uvt4SqfWiyxmBjdh6ee4Kmr8ckec9yCd8wGU9n0=" />
+    <meta name="apple-itunes-app" content="app-id=349983064" />
+    <meta name="format-detection" content="telephone=no" runat="server" id="metaFormat" visible="false" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" runat="server" id="metaViewport" visible="false" />
+    <title></title>
+    <link rel="shortcut icon" href="/favicon.ico?v2" />
+    <link rel="icon" href="/favicon.ico?v2" /> 
+    <link href="apple-icon-goes-here" runat="server" id="lnkAppleIcon" rel="apple-touch-icon" />
+    <link href="mainstylgoeshere" runat="server" id="cssMain" rel="stylesheet" type="text/css" />
+    <link rel="Stylesheet" type="text/css" runat="server" id="cssNight" visible="false" href="~/Public/CSS/NightMode.css?v=4321se3553" />
+    <link href="brandedstylegoeshere" rel="Stylesheet" type="text/css" runat="server" id="cssBranded" visible="false" />
+    <link href="mobilestylegoeshere" rel="stylesheet" type="text/css" runat="server" id="cssMobile" visible="false" />
+    <link rel="Stylesheet" type="text/css" runat="server" id="cssPrinting" visible="false" />
+</head>
+<body id="masterbody" runat="server">
+    <script>
+        function addLoadEvent(func) {
+            var oldonload = window.onload;
+            if (typeof window.onload !== 'function') {
+                window.onload = func;
+            } else {
+                window.onload = function () {
+                    if (oldonload) {
+                        oldonload();
+                    }
+                    func();
+                }
+            }
+        }
+    </script>
+    <form id="form1" runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server">
+            <Services>
+                <asp:ServiceReference Path="~/Public/WebService.asmx" />
+            </Services>
+        </asp:ScriptManager>
+        <asp:Panel ID="pnlImpersonation" runat="server" BackColor="Beige" Width="100%" style="text-align:center" Visible="false">
+            User 
+            <asp:Label ID="lblAdmin" runat="server" Text=""></asp:Label> is impersonating user 
+            <asp:Label ID="lblImpersonated" runat="server" Text=""></asp:Label> 
+            <asp:Button ID="btnStopImpersonating" runat="server" Text="Stop" onclick="btnStopImpersonating_Click" />
+        </asp:Panel>    
+        <uc2:mfbHeader ID="mfbHeader" runat="server" />
+        <asp:Panel ID="pnlTitle" runat="server" CssClass="noprint centeredBody">
+            <h1><asp:ContentPlaceHolder ID="cpPageTitle" runat="server"></asp:ContentPlaceHolder></h1>
+        </asp:Panel>
+        <div style="float:right;">
+            <uc5:SponsoredAd ID="SponsoredAd1" runat="server" SponsoredAdID="1" Visible="false" />
+        </div>
+        <asp:Panel ID="pnlTopForm" runat="server" CssClass="topForm">
+            <asp:Panel ID="pnlSideBarRight" runat="server" CssClass="sidebarRight">
+                <asp:ContentPlaceHolder ID="cpTopForm" runat="server">
+                </asp:ContentPlaceHolder>        
+            </asp:Panel>
+        </asp:Panel>
+        <asp:contentplaceholder id="cpMain" runat="server">
+        </asp:contentplaceholder>
+        <uc1:mfbFooter ID="MfbFooter" runat="server" />
+        <asp:Panel ID="pnlCookies" runat="server" style="padding: 4px; margin-left:auto; margin-right: auto; margin-bottom:2px; border: 1px solid black; border-radius: 3px; background-color:#eeeeee;">
+            <% =Resources.LocalizedText.CookieNotice %>
+            <asp:Button ID="btnAcceptCookies" runat="server" Text="<%$ Resources:LocalizedText, CookieNoticeAccept %>" OnClick="btnAcceptCookies_Click" /> 
+            <asp:Button ID="lnkPrivacy" runat="server" OnClick="lnkPrivacy_Click" />
+        </asp:Panel>
+        <asp:AlwaysVisibleControlExtender runat="server" ID="avceCookies" TargetControlID="pnlCookies" HorizontalSide="Center" VerticalSide="Bottom" VerticalOffset="5" />
+        <uc4:GoogleAnalytics ID="GoogleAnalytics1" runat="server" />
+    </form>
+</body>
+</html>
