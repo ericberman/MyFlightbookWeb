@@ -233,6 +233,7 @@
     <Content Include="AppCode\oAuthServices\MS-PL LICENSE for DotNetOpenAuth.txt" />
     <Content Include="App_GlobalResources\Content.en\AccountQuestionHint.txt" />
     <Content Include="App_GlobalResources\Content.en\AccountQuestionSamplesList.txt" />
+    <Content Include="App_GlobalResources\Content.en\ClubRolesDescription.htm" />
     <Content Include="App_GlobalResources\Content.en\CurrencyDisclaimer.htm" />
     <Content Include="App_GlobalResources\Content.en\DeadlineDescription.htm" />
     <Content Include="App_GlobalResources\Content.en\Email\AccountLocked.txt" />
