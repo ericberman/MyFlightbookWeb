@@ -13,6 +13,36 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+#configuration files that should not be in source control
+connection.config
+debug.config
+email.config
+
+#Legacy bugs file - included personal details of people who report bugs or request features.
+Private/Bugs.txt
+MyFlightbook.ruleset
+
+#image directories
+[Ii]mages/[Aa]ircraft/
+[Ii]mages/[Bb]asicMed/
+[Ii]mages/[Ee]ndorsements/
+[Ii]mages/[Ff]lights
+[Ii]mages/[Tt]elemetry
+[Ii]mages/rcDesktop.bat
+[Ii]mages/rcMac.bat
+
+#legacy stuff from SVN, including other projects that are now separately up on github
+MFBAndroid/
+MFBIphone/
+W7Phone/
+WSDLtoObjC/
+.svn/
+[Aa]irport [Dd]ata/
+{*}/
+[Ss]upport/OldScripts/
+[Ss]upport/*.vbs
+[Ss]upport/Rootfiles
+
 # Mono auto generated files
 mono_crash.*
 
@@ -126,6 +156,9 @@ $tf/
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
+
+# JustCode is a .NET coding add-in
+.JustCode
 
 # TeamCity is a build add-in
 _TeamCity*
@@ -278,6 +311,9 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# Typescript v1 declaration files
+typings/
+
 # Visual Studio 6 build log
 *.plg
 
@@ -302,6 +338,10 @@ paket-files/
 # FAKE - F# Make
 .fake/
 
+# JetBrains Rider
+.idea/
+*.sln.iml
+
 # CodeRush personal settings
 .cr/personal
 
@@ -313,11 +353,11 @@ __pycache__/
 # tools/**
 # !tools/packages.config
 
-# Tabs Studio
-*.tss
-
 # Telerik's JustMock configuration file
 *.jmconfig
+
+# Tabs Studio
+*.tss
 
 # BizTalk build output
 *.btp.cs
