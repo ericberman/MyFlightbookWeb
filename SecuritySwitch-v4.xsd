@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema 
+	targetNamespace="http://SecuritySwitch-v4.xsd"
+	elementFormDefault="qualified"
+	xmlns="http://SecuritySwitch-v4.xsd"
+	xmlns:mstns="http://SecuritySwitch-v4.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="securitySwitch">
+		<xs:complexType>
+			<xs:all minOccurs="0">
+				<xs:element name="paths" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence minOccurs="1" maxOccurs="unbounded">
+							<xs:element name="add">
+								<xs:complexType>
+									<xs:attribute name="ignoreCase" type="DotNetBoolean" />
+									<xs:attribute name="matchType" type="PathMatchType" />
+									<xs:attribute name="path" type="xs:string" use="required" />
+									<xs:attribute name="security" type="RequestSecurity" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+
+			<xs:attribute name="baseInsecureUri" type="xs:anyURI" />
+			<xs:attribute name="baseSecureUri" type="xs:anyURI" />
+			<xs:attribute name="bypassSecurityWarning" type="DotNetBoolean" />
+			<xs:attribute name="enableHsts" type="DotNetBoolean" />
+			<xs:attribute name="hstsMaxAge" type="ExpirationAge" />
+			<xs:attribute name="ignoreAjaxRequests" type="DotNetBoolean" />
+			<xs:attribute name="ignoreImages" type="DotNetBoolean" />
+			<xs:attribute name="ignoreStyleSheets" type="DotNetBoolean" />
+			<xs:attribute name="ignoreSystemHandlers" type="DotNetBoolean" />
+			<xs:attribute name="mode" type="Mode" />
+			<xs:attribute name="offloadedSecurityHeaders" type="xs:string" />
+			<xs:attribute name="offloadedSecurityServerVariables" type="xs:string" />
+			<xs:attribute name="securityPort" type="PortNumber" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="DotNetBoolean">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="false" />
+			<xs:enumeration value="true" />
+			<xs:enumeration value="False" />
+			<xs:enumeration value="True" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Mode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="On" />
+			<xs:enumeration value="RemoteOnly" />
+			<xs:enumeration value="LocalOnly" />
+			<xs:enumeration value="Off" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PathMatchType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Exact" />
+			<xs:enumeration value="StartsWith" />
+			<xs:enumeration value="Regex" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RequestSecurity">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Secure" />
+			<xs:enumeration value="Insecure" />
+			<xs:enumeration value="Ignore" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PortNumber">
+		<xs:restriction base="xs:unsignedShort">
+			<xs:minInclusive value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ExpirationAge">
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="0" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

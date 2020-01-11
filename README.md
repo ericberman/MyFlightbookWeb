@@ -115,7 +115,7 @@ This source code is provided under the GNU license, but it incorporates other co
  * Celestial code (for computing day/night) is adapted from NOAA code at http://www.srrb.noaa.gov/highlights/sunrise/sunrise.html and http://www.srrb.noaa.gov/highlights/sunrise/calcdetails.html
  * [Membership and Role management](https://www.codeproject.com/Articles/12301/Membership-and-Role-providers-for-MySQL) Provides account management and role-based security for MySQL (free/unlicensed)
  * [wkHtmlTox](https://wkhtmltopdf.org/) Renders HTML to PDF documents. (LGPLv3, but I'm not redistributing any code so I *think* I don't need to include the license in the source code directly...)
- * [WebPageSecurity](https://www.codeproject.com/KB/aspnet/WebPageSecurity.aspx?fid=29017&df=90&mpp=25&noise=3&sort=Position&view=Quick&fr=126) Enables declaration of which pages must be HTTP or HTTPS (BSD license)
+ * [SecuritySwitch](https://www.nuget.org/packages/SecuritySwitch/4.4.0) Enables declaration of which pages must be HTTP or HTTPS (New BSD license)
  * [Endless Scroll](https://github.com/fredwu/jquery-endless-scroll) Enables "endless scroll" functionality in web browsers (MIT/GPL license)
  * [JQuery](http://jquery.org) Javascript support library for a bunch of other functionality (MIT License)
  * [OverlappingMarkerSpiderfier](https://github.com/jawj/OverlappingMarkerSpiderfier) Enables cleaner handling of overlapping markers on Google Maps - click on one of the overlapping markers, and they spread out like spider-legs, so you can click on the one you want. (MIT License)
