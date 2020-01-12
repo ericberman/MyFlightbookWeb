@@ -13,6 +13,24 @@ public partial class Public_TotalsAndCurrencyEmail
 {
 
     /// <summary>
+    /// cssRef control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.HtmlControls.HtmlLink cssRef;
+
+    /// <summary>
+    /// baseRef control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.HtmlControls.HtmlGenericControl baseRef;
+
+    /// <summary>
     /// form1 control.
     /// </summary>
     /// <remarks>
@@ -28,7 +46,7 @@ public partial class Public_TotalsAndCurrencyEmail
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.ScriptManager ToolkitScriptManager1;
+    protected global::AjaxControlToolkit.ScriptManager ToolkitScriptManager1;
 
     /// <summary>
     /// lblIntroHeader control.
