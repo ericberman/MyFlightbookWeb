@@ -9,12 +9,12 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class EditAircraft : System.Web.UI.Page
+public partial class Member_EditAircraft : System.Web.UI.Page
 {
     #region webservices
     [System.Web.Services.WebMethod]

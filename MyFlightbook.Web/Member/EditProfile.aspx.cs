@@ -354,8 +354,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
                     break;
             }
 
-            acpCloudAhoy.Visible = (acpTarget == acpCloudAhoy);
-
             for (int i = 0; i < accordianPrefs.Panes.Count; i++)
                 if (accordianPrefs.Panes[i] == acpTarget)
                 {

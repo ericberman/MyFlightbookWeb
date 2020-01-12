@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Inherits="Public_iCalConvert" Codebehind="iCalConvert.aspx.cs" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="iCalConvert.aspx.cs" MasterPageFile="~/MasterPage.master" Inherits="Public_iCalConvert" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
 </asp:Content>
@@ -8,8 +8,7 @@
     <asp:Panel ID="Panel1" runat="server" DefaultButton="btnUpload">
         <p>Gimme a CSV file:</p>
         <asp:FileUpload ID="FileUpload1" runat="server" />
-        <br />
-        <br />
+        <p>Columns: Subject, Start Date, Start Time, End Date, End Time, Location</p>
         Provide a title for the calendar:<br />
         <asp:TextBox ID="txtTitle" runat="server"></asp:TextBox>
         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ControlToValidate="txtTitle" runat="server" CssClass="error" Display="Dynamic" ErrorMessage="Provide a title"></asp:RequiredFieldValidator>

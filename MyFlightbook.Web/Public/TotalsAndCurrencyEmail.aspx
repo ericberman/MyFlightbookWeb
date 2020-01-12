@@ -8,8 +8,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-    <link href="https://myflightbook.com/Logbook/Public/stylesheet.css?v=10" rel="stylesheet" type="text/css" />
-    <base href="<% ="https://" + Branding.CurrentBrand.HostName %>" />
+    <link id="cssRef" runat="server" rel="stylesheet" type="text/css" />
+    <base id="baseRef" runat="server" />
 </head>
 <body>
     <form id="form1" runat="server" enableviewstate="false">

@@ -11,7 +11,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -96,11 +96,6 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         get { return String.IsNullOrEmpty(txtRedirectURL.Text) ? null : new Uri(txtRedirectURL.Text); }
     }
 
-    private string FixHost(string szCurrent)
-    {
-        return szCurrent.Replace("://" + MyFlightbook.Branding.CurrentBrand.HostName, "://" + Request.Url.Host);
-    }
-
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -113,11 +108,11 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             if (Request["access_token"] != null)
                 lblToken.Text = Request["access_token"].ToString();
 
-            txtAuthURL.Text = FixHost(txtAuthURL.Text);
-            txtRedirectURL.Text = FixHost(txtRedirectURL.Text);
-            txtResourceURL.Text = FixHost(txtResourceURL.Text);
-            txtTokenURL.Text = FixHost(txtTokenURL.Text);
-            txtImgUploadURL.Text = FixHost(txtImgUploadURL.Text);
+            txtAuthURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/member/oAuthAuthorize.aspx"));
+            txtRedirectURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/playpen/oAuthClientTest.aspx"));
+            txtResourceURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}/", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/OAuth/oAuthToken.aspx"));
+            txtTokenURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/OAuth/oAuthToken.aspx"));
+            txtImgUploadURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/UploadPicture.aspx")); ;
 
             List<KeyValuePair<string, string>> lst = new List<KeyValuePair<string,string>>();
             foreach (string szKey in Request.Params.Keys)

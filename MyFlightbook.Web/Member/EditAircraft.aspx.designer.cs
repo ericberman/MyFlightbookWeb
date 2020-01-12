@@ -9,7 +9,7 @@
 
 
 
-public partial class EditAircraft
+public partial class Member_EditAircraft
 {
 
     /// <summary>

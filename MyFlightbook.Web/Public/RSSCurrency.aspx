@@ -9,7 +9,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
     <title></title>
-    <link id="cssMain" href="https://myflightbook.com/logbook/Public/stylesheet.css" rel="stylesheet" type="text/css" /> 
+    <link id="cssMain" runat="server" rel="stylesheet" type="text/css" /> 
 </head>
 <body>
     <form id="form1" runat="server">

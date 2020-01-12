@@ -10,7 +10,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2019 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -47,6 +47,9 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
+            cssRef.Href = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public/Stylesheet.css?v=18"));
+            baseRef.Attributes["href"] = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}/", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public"));
+
             string szAuthKey = util.GetStringParam(Request, "k");
             string szUser = util.GetStringParam(Request, "u");
             string szParam = util.GetStringParam(Request, "p");
@@ -91,12 +94,12 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
                     lblThankyou.Text = Branding.ReBrand(Resources.LocalizedText.DonateThankYouTitle);
                     lblSolicitDonation.Text = Branding.ReBrand(Resources.LocalizedText.DonatePrompt);
                     lnkDonateNow.Text = Branding.ReBrand(Resources.LocalizedText.DonateSolicitation);
-                    lnkDonateNow.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}/logbook/Member/EditProfile.aspx/pftDonate", Branding.CurrentBrand.HostName);
+                    lnkDonateNow.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftDonate"));
                     mvDonations.SetActiveView(Payment.TotalPaidSinceDate(DateTime.Now.AddYears(-1), szUser) > 0 ? vwThankyou : vwPleaseGive);
 
                     // Fix up the unsubscribe link.
-                    lnkUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}/logbook/Member/EditProfile.aspx/{1}", Branding.CurrentBrand.HostName, tabID.pftPrefs.ToString());
-                    lnkQuickUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}/logbook/Public/Unsubscribe.aspx?u={1}", Branding.CurrentBrand.HostName, HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(szUser)));
+                    lnkUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}{1}/{2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx"), tabID.pftPrefs.ToString());
+                    lnkQuickUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public/Unsubscribe.aspx"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(szUser)));
 
                     // And set HHMM mode explicitly (since not otherwise going to be set in totals
                     mfbTotalSummary.UseHHMM = mfbTotalSummaryYTD.UseHHMM = pf.UsesHHMM;

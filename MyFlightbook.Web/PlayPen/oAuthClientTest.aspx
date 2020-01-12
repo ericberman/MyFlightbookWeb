@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_oAuthClientTest" Codebehind="oAuthClientTest.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" Codebehind="oAuthClientTest.aspx.cs" AutoEventWireup="true" Inherits="Public_oAuthClientTest" %>
 <%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
@@ -29,12 +29,12 @@
         </tr>
         <tr>
             <td>Authorization URL:</td>
-            <td><asp:TextBox ID="txtAuthURL" runat="server" Width="400px">https://myflightbook.com/logbook/member/oAuthAuthorize.aspx</asp:TextBox></td>
+            <td><asp:TextBox ID="txtAuthURL" runat="server" Width="400px"></asp:TextBox></td>
         </tr>
         <tr>
             <td>Redirect URL:</td>
             <td>
-                <asp:TextBox ID="txtRedirectURL" runat="server" Width="400px">https://myflightbook.com/logbook/playpen/oAuthClientTest.aspx</asp:TextBox>
+                <asp:TextBox ID="txtRedirectURL" runat="server" Width="400px"></asp:TextBox>
             </td>
         </tr>
         <tr>
@@ -57,7 +57,7 @@
         <tr>
             <td style="vertical-align:top">Token URL</td>
             <td>
-                <asp:TextBox ID="txtTokenURL" runat="server" Width="400px">https://myflightbook.com/logbook/OAuth/oAuthToken.aspx</asp:TextBox>
+                <asp:TextBox ID="txtTokenURL" runat="server" Width="400px"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="valReqToken" runat="server" ErrorMessage="A token endpoint (URL) is required" ControlToValidate="txtScope"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator>
                 <p><asp:Button ID="btnGetToken" runat="server" Text="Get Token" OnClick="btnGetToken_Click" /></p>
             </td>
@@ -73,7 +73,7 @@
             <td style="vertical-align:top"><div>Resource URL:</div>
                 <div class="fineprint">(minus verb, other data)</div></td>
             <td>
-                <div><asp:TextBox ID="txtResourceURL" runat="server" Width="400px">https://myflightbook.com/logbook/OAuth/oAuthToken.aspx/</asp:TextBox>
+                <div><asp:TextBox ID="txtResourceURL" runat="server" Width="400px"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="valReqResource" runat="server" ErrorMessage="The URL for resources is required." ControlToValidate="txtScope"  CssClass="error" Display="Dynamic"></asp:RequiredFieldValidator></div>
             </td>
         </tr>
@@ -229,7 +229,7 @@
                                 <tr>
                                     <td>Target page</td>
                                     <td>
-                                        <asp:TextBox ID="txtImgUploadURL" runat="server" Text="https://myflightbook.com/logbook/public/UploadPicture.aspx" Width="100%"></asp:TextBox></td>
+                                        <asp:TextBox ID="txtImgUploadURL" runat="server" Width="100%"></asp:TextBox></td>
                                 </tr>
                             </table>
                         </div>
@@ -261,12 +261,12 @@
         </uc1:Expando>
     </div>
     <div>
-        <table cellpadding="3">
-            <tr valign="top">
+        <table>
+            <tr style="vertical-align:top;">
                 <td>Authorization result:</td>
                 <td><asp:Label ID="lblAuthorization" runat="server" Text=""></asp:Label></td>
             </tr>
-            <tr valign="top">
+            <tr style="vertical-align:top;">
                 <td>Token result:</td>
                 <td><asp:Label ID="lblToken" runat="server" Text=""></asp:Label></td>
             </tr>

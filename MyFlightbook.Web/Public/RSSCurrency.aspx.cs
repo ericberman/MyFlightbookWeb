@@ -35,6 +35,8 @@ public partial class Public_RSSCurrency : System.Web.UI.Page
             szDebug += "Using cached credentials...";
         }
 
+        cssMain.Href = String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, System.Web.VirtualPathUtility.ToAbsolute("~/Public/stylesheet.css"));
+
         IsTotals = (util.GetIntParam(Request, "t", 0) != 0);
         mvData.SetActiveView(IsTotals ? vwTotals : vwCurrency);
 

@@ -2539,7 +2539,7 @@
     <Content Include="LICENSE" />
     <None Include="packages.config" />
     <Content Include="README.md" />
-    <None Include="Properties\PublishProfiles\mfbstaging.pubxml" />
+    <None Include="Properties\PublishProfiles\logbook.pubxml" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>
     </None>

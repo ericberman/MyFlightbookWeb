@@ -11,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -120,10 +120,12 @@ namespace MyFlightbook.SocialMedia
 
         private static AuthorizationServerDescription Description()
         {
-            AuthorizationServerDescription desc = new AuthorizationServerDescription();
-            desc.AuthorizationEndpoint = new Uri(oAuth2AuthorizeEndpoint);
-            desc.ProtocolVersion = ProtocolVersion.V20;
-            desc.TokenEndpoint = new Uri(oAuth2TokenEndpoint);
+            AuthorizationServerDescription desc = new AuthorizationServerDescription()
+            {
+                AuthorizationEndpoint = new Uri(oAuth2AuthorizeEndpoint),
+                ProtocolVersion = ProtocolVersion.V20,
+                TokenEndpoint = new Uri(oAuth2TokenEndpoint)
+            };
             return desc;
         }
 
@@ -140,10 +142,11 @@ namespace MyFlightbook.SocialMedia
         public static void Authorize()
         {
             HttpRequest Request = HttpContext.Current.Request;
-            Uri uriCallback = new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}/logbook/Member/EditProfile.aspx/pftPrefs?{2}=1",
+            Uri uriCallback = new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{3}/pftPrefs?{2}=1",
                 Request.IsLocal ? "http" : "https",
                 Request.Url.Host,
-                OAuthParam));
+                OAuthParam,
+                VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx")));
             Client().RequestUserAuthorization(null, uriCallback);
         }
 
@@ -196,8 +199,7 @@ namespace MyFlightbook.SocialMedia
         /// <returns>The granted access token</returns>
         public static IAuthorizationState ConvertToken(HttpRequest Request)
         {
-            WebServerClient consumer = new WebServerClient(Description(), MFBFacebook.FACEBOOK_API_KEY, MFBFacebook.FACEBOOK_SECRET);
-            consumer.ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(MFBFacebook.FACEBOOK_SECRET);
+            WebServerClient consumer = new WebServerClient(Description(), MFBFacebook.FACEBOOK_API_KEY, MFBFacebook.FACEBOOK_SECRET) { ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(MFBFacebook.FACEBOOK_SECRET) };
             IAuthorizationState grantedAccess = consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
 
             // Exchange for a longer lived token
@@ -444,7 +446,7 @@ namespace MyFlightbook.SocialMedia
         public static string PopRedirect(string szDefaultRedir)
         {
             ArrayList al = RedirectList;
-            string sz = string.Empty;
+            string sz;
             if (al.Count == 0)
                 sz = szDefaultRedir;
             else
