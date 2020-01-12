@@ -28,7 +28,7 @@ public partial class Public_ImgDbg : System.Web.UI.Page
             {
                 sb.AppendFormat(CultureInfo.InvariantCulture, "<hr /><br />File: {0}<br />", fu.PostedFile.FileName);
                 IMagickImage image = new MagickImage(fu.PostedFile.InputStream);
-                ExifProfile exif = image.GetExifProfile();
+                IExifProfile exif = image.GetExifProfile();
 
                 if (exif == null)
                     continue;
@@ -36,16 +36,37 @@ public partial class Public_ImgDbg : System.Web.UI.Page
                 // Write all values to the console
                 foreach (IExifValue value in exif.Values)
                 {
-                    if (value.IsArray && value.Value is Rational[])
+                    if (value.IsArray)
                     {
                         List<string> lst = new List<string>();
-                        foreach (Rational r in (Rational[]) value.Value)
-                            lst.Add(r.ToString());
+                        object o = value.GetValue();
+                        byte[] rgbyte = o as byte[];
+                        ushort[] rgshort = o as ushort[];
+                        Rational[] rgrational = o as Rational[];
+
+                        if (rgbyte != null)
+                        {
+                            foreach (byte b in rgbyte)
+                                lst.Add(b.ToString("X"));
+                        }
+                        else if (rgshort != null)
+                        {
+                            foreach (ushort u in rgshort)
+                                lst.Add(u.ToString());
+                        }
+                        else if (rgrational != null)
+                        {
+                            foreach (Rational r in rgrational)
+                                lst.Add(r.ToString());
+                        }
+                        else
+                            lst.Add(o.ToString());
+
                         sb.AppendFormat(CultureInfo.CurrentCulture, "{0}({1}): [{2}]<br />", value.Tag, value.DataType, String.Join(", ", lst));
 
                     }
                     else
-                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}({1}): {2}<br />", value.Tag, value.DataType, value.ToString());
+                        sb.AppendFormat(CultureInfo.CurrentCulture, "{0}({1}): {2}<br />", value.Tag, value.DataType, value.ToString());
                 }
             }
         }
