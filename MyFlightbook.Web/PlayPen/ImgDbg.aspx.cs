@@ -47,17 +47,17 @@ public partial class Public_ImgDbg : System.Web.UI.Page
                         if (rgbyte != null)
                         {
                             foreach (byte b in rgbyte)
-                                lst.Add(b.ToString("X"));
+                                lst.Add(b.ToString("X", CultureInfo.InvariantCulture));
                         }
                         else if (rgshort != null)
                         {
                             foreach (ushort u in rgshort)
-                                lst.Add(u.ToString());
+                                lst.Add(u.ToString(CultureInfo.InvariantCulture));
                         }
                         else if (rgrational != null)
                         {
                             foreach (Rational r in rgrational)
-                                lst.Add(r.ToString());
+                                lst.Add(r.ToString(CultureInfo.InvariantCulture));
                         }
                         else
                             lst.Add(o.ToString());
