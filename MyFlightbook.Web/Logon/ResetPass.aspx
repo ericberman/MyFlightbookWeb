@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="ResetPass" Title="MyFlightbook: Reset Password" culture="auto" meta:resourcekey="PageResource1" Codebehind="ResetPass.aspx.cs" %>
+<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="ResetPass.aspx.cs" Inherits="ResetPass" Title="MyFlightbook: Reset Password" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><asp:Label ID="lblResetPWMain" runat="server" Text="Reset Password" meta:resourcekey="lblResetPWMainResource1"></asp:Label></asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
@@ -46,7 +46,7 @@
                     <td>
                         <asp:TextBox ID="txtNewPass" runat="server" TextMode="Password" ValidationGroup="valPassword" meta:resourcekey="txtNewPassResource1"></asp:TextBox>
                         <ajaxToolkit:PasswordStrength ID="PasswordStrength2" runat="server" BehaviorID="PasswordStrength2" TargetControlID="txtNewPass" TextStrengthDescriptions="<%$ Resources:LocalizedText, PasswordStrengthStrings %>" StrengthIndicatorType="BarIndicator"
-                                                TextStrengthDescriptionStyles="pwWeak;pwOK;pwGood;pwExcellent" PreferredPasswordLength="10" BarBorderCssClass="pwBorder" />
+                                                StrengthStyles="pwWeak;pwOK;pwGood;pwExcellent" PreferredPasswordLength="10" BarBorderCssClass="pwBorder" />
                         &nbsp;<asp:RequiredFieldValidator ID="valPassRequired" runat="server" ControlToValidate="txtNewPass" CssClass="error" Display="Dynamic" ErrorMessage="Please provide a new password" ValidationGroup="valPassword" meta:resourcekey="valPassRequiredResource1"></asp:RequiredFieldValidator>
                     </td>
                 </tr>
@@ -71,5 +71,5 @@
     </asp:MultiView>
     <asp:Label ID="lblErr" EnableViewState="False" CssClass="error" runat="server" meta:resourcekey="lblErrResource1"></asp:Label>
     <div>&nbsp;</div>
-</asp:content>
+</asp:Content>
 

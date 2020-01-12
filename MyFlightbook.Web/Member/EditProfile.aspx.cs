@@ -660,7 +660,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     protected void lnkAuthorizeOneDrive_Click(object sender, EventArgs e)
     {
-        Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, "http://{0}/logbook/public/OneDriveRedir.aspx", Request.Url.Host));
+        Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, "http://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/OneDriveRedir.aspx")));
         new OneDrive().Authorize(uri);
     }
 
@@ -705,7 +705,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
     #region CloudAhoy
     protected void lnkAuthCloudAhoy_Click(object sender, EventArgs e)
     {
-        new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)).Authorize(new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}/logbook/public/CloudAhoyRedir.aspx", Request.Url.Host)));
+        new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)).Authorize(new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/CloudAhoyRedir.aspx"))));
     }
 
     protected void lnkDeAuthCloudAhoy_Click(object sender, EventArgs e)
