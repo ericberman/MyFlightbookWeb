@@ -110,7 +110,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
             txtAuthURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/member/oAuthAuthorize.aspx"));
             txtRedirectURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/playpen/oAuthClientTest.aspx"));
-            txtResourceURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/OAuth/oAuthToken.aspx"));
+            txtResourceURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}/", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/OAuth/oAuthToken.aspx"));
             txtTokenURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/OAuth/oAuthToken.aspx"));
             txtImgUploadURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/UploadPicture.aspx")); ;
 

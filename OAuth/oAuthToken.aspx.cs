@@ -8,12 +8,12 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Member_oAuthToken : System.Web.UI.Page
+public partial class OAuth_oAuthToken : System.Web.UI.Page
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Scope = "member", Target = "Member_oAuthToken.#Page_Load(System.Object,System.EventArgs)")]
     protected void Page_Load(object sender, EventArgs e)

@@ -8,12 +8,12 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Member_FindFlights : System.Web.UI.Page
+public partial class Member_Download : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
