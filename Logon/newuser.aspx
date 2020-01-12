@@ -27,7 +27,7 @@
                             meta:resourcekey="pnlStep1Resource1">
                             <table border="0">
                                 <tr>
-                                    <td align="left" colspan="3">
+                                    <td colspan="3">
                                         <h2><asp:Localize ID="locCreateAccountHeader" runat="server" 
                                                 Text="Create your account" meta:resourcekey="locCreateAccountHeaderResource1"></asp:Localize></h2>
                                         <h3>
@@ -36,17 +36,17 @@
                                 </tr>
                                 <tr>
                                     <td>&nbsp;&nbsp;&nbsp;</td>
-                                    <td valign="middle"><asp:Localize ID="locFirstName" runat="server" 
+                                    <td><asp:Localize ID="locFirstName" runat="server" 
                                             Text="First Name:" meta:resourcekey="locFirstNameResource1"></asp:Localize></td>
-                                    <td valign="middle"><asp:TextBox ID="txtFirst" runat="server" 
+                                    <td><asp:TextBox ID="txtFirst" runat="server" 
                                             meta:resourcekey="txtFirstResource1"></asp:TextBox>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;&nbsp;&nbsp;</td>
-                                    <td valign="middle"><asp:Localize ID="locLastName" runat="server" 
+                                    <td><asp:Localize ID="locLastName" runat="server" 
                                             Text="Last Name:" meta:resourcekey="locLastNameResource1"></asp:Localize></td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:TextBox ID="txtLast" runat="server" meta:resourcekey="txtLastResource1"></asp:TextBox>
                                     </td>
                                 </tr>
@@ -57,10 +57,10 @@
                                 </tr>                            
                                 <tr>
                                     <td>&nbsp;&nbsp;&nbsp;</td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:Label ID="EmailLabel" runat="server" AssociatedControlID="Email" 
                                             Text="E-mail:" meta:resourcekey="EmailLabelResource1"></asp:Label></td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:TextBox runat="server" ID="Email" TextMode="Email" 
                                             meta:resourcekey="EmailResource1" AutoCompleteType="Email" /> * 
                                         <asp:RequiredFieldValidator ID="EmailRequired" runat="server" ControlToValidate="Email"
@@ -76,10 +76,10 @@
                                 </tr>
                                 <tr>
                                     <td>&nbsp;&nbsp;&nbsp;</td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:Label ID="Label1" runat="server" AssociatedControlID="txtEmail2" 
                                             Text="Confirm E-mail:" meta:resourcekey="Label1Resource1"></asp:Label></td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:TextBox runat="server" ID="txtEmail2" TextMode="Email" 
                                             meta:resourcekey="txtEmail2Resource1" AutoCompleteType="Email" /> * 
                                             <asp:CompareValidator ID="valCompareEmail" runat="server"  CssClass="error"
@@ -95,22 +95,22 @@
                                 </tr>
                                 <tr runat="server" id="rowOldUsername" visible="False">
                                     <td runat="server">&nbsp;&nbsp;&nbsp;</td>
-                                    <td valign="middle" runat="server">
+                                    <td runat="server">
                                         <asp:Label ID="UserNameLabel" runat="server" AssociatedControlID="UserName" Text="User Name:"></asp:Label></td>
-                                    <td valign="middle" runat="server">
+                                    <td runat="server">
                                         <asp:TextBox ID="UserName" runat="server"></asp:TextBox>
                                     </td>
                                 </tr>
-                                <tr valign="bottom">
+                                <tr>
                                     <td>&nbsp;&nbsp;&nbsp;</td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password" 
                                             Text="Password:" meta:resourcekey="PasswordLabelResource1"></asp:Label></td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:TextBox ID="Password" runat="server" TextMode="Password" 
                                             meta:resourcekey="PasswordResource1"></asp:TextBox> * 
                                         <cc1:PasswordStrength ID="PasswordStrength2" runat="server" BehaviorID="PasswordStrength2" TargetControlID="Password" TextStrengthDescriptions="<%$ Resources:LocalizedText, PasswordStrengthStrings %>" StrengthIndicatorType="BarIndicator"
-                                                TextStrengthDescriptionStyles="pwWeak;pwOK;pwGood;pwExcellent" PreferredPasswordLength="10" BarBorderCssClass="pwBorder" />
+                                                StrengthStyles="pwWeak;pwOK;pwGood;pwExcellent" PreferredPasswordLength="10" BarBorderCssClass="pwBorder" />
                                         <asp:RequiredFieldValidator ID="PasswordRequired" runat="server" ControlToValidate="Password"
                                             ErrorMessage="You must provide a password" Display="Dynamic"  CssClass="error"
                                             ToolTip="Password is required." ValidationGroup="CreateUserWizard1" 
@@ -124,11 +124,11 @@
                                 </tr>
                                 <tr>
                                     <td>&nbsp;&nbsp;&nbsp;</td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:Label ID="ConfirmPasswordLabel" runat="server" 
                                             AssociatedControlID="ConfirmPassword" Text="Confirm Password:" 
                                             meta:resourcekey="ConfirmPasswordLabelResource1"></asp:Label></td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:TextBox ID="ConfirmPassword" runat="server" TextMode="Password" 
                                             meta:resourcekey="ConfirmPasswordResource1"></asp:TextBox> * 
                                         <asp:RequiredFieldValidator ID="ConfirmPasswordRequired" runat="server" ControlToValidate="ConfirmPassword"
@@ -144,26 +144,26 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" valign="middle">
+                                    <td colspan="3">
                                         <h3><asp:Localize ID="locSecurityQuestion" runat="server" Text="Security Question and Answer" meta:resourceKey="locSecurityQuestionResource1"></asp:Localize></h3>
                                         <% =Resources.LocalizedText.AccountQuestionHint %>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;&nbsp;&nbsp;</td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:Label ID="QuestionLabel" runat="server" AssociatedControlID="Question" 
                                             Text="Security Question:" meta:resourcekey="QuestionLabelResource1"></asp:Label></td>
-                                    <td valign="middle">
+                                    <td>
                                         <uc2:AccountQuestions ID="Question" runat="server" ValidationGroup="CreateUserWizard1" Required="true" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;&nbsp;&nbsp;</td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:Label ID="AnswerLabel" runat="server" AssociatedControlID="Answer" 
                                             Text="Security Answer:" meta:resourcekey="AnswerLabelResource1"></asp:Label></td>
-                                    <td valign="middle">
+                                    <td>
                                         <asp:TextBox ID="Answer" runat="server" meta:resourcekey="AnswerResource1"></asp:TextBox> * 
                                         <asp:RequiredFieldValidator ID="AnswerRequired" runat="server" ControlToValidate="Answer"
                                              CssClass="error"
@@ -208,9 +208,9 @@
                         </div>
                     </ContentTemplate>
                     <CustomNavigationTemplate>
-                        <table border="0" cellspacing="5" style="width:100%;height:100%;">
-                            <tr align="center">
-                                <td align="left">
+                        <table border="0" style="width:100%;height:100%;">
+                            <tr>
+                                <td>
                                     <asp:Button ID="StepNextButton" runat="server" CommandName="MoveNext" 
                                         Text="Create Account" ValidationGroup="CreateUserWizard1" 
                                         meta:resourcekey="StepNextButtonResource1" />
