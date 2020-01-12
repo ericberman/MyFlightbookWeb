@@ -181,7 +181,7 @@ function MFBMap()
             zoomControl.appendChild(controlUI);
 
             var img = document.createElement('img');
-            img.src = "/logbook/images/mapzoom.png";
+            img.src = "https://myflightbook.com/logbook/images/mapzoom.png";
             controlUI.appendChild(img);
 
             var mapID = this.divContainer;
