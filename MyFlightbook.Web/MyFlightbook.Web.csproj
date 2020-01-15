@@ -2518,9 +2518,9 @@
     <Content Include="OAuth\Web.config" />
     <Content Include="app.config" />
     <Content Include="appsettings.config" />
-    <Content Include="debug.config" />
-    <Content Include="email.config" />
-    <Content Include="connection.config" />
+    <Content Include="App_Data\debug.config" />
+    <Content Include="App_Data\email.config" />
+    <Content Include="App_Data\connection.config" />
     <Content Include="PlayPen\Web.config" />
     <Content Include="Private\MyFlightbook Admin Tools.pptx" />
     <Content Include="Private\Ribbons Source.pptx" />
@@ -2540,7 +2540,9 @@
     <Content Include="LICENSE" />
     <None Include="packages.config" />
     <Content Include="README.md" />
-    <None Include="Properties\PublishProfiles\logbook.pubxml" />
+    <None Include="Properties\PublishProfiles\Local-Again.pubxml" />
+    <None Include="Properties\PublishProfiles\PublishDebugToLocal.pubxml" />
+    <None Include="Properties\PublishProfiles\PublishToStaging.pubxml" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>
     </None>
