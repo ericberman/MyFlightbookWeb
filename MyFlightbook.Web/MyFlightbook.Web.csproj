@@ -232,6 +232,7 @@
     <Content Include=".gitignore" />
     <Content Include="AppCode\Clubs\DayPilotLICENSE.txt" />
     <Content Include="AppCode\oAuthServices\MS-PL LICENSE for DotNetOpenAuth.txt" />
+    <Content Include="App_Data\connection.config" />
     <Content Include="App_GlobalResources\Content.en\AccountQuestionHint.txt" />
     <Content Include="App_GlobalResources\Content.en\AccountQuestionSamplesList.txt" />
     <Content Include="App_GlobalResources\Content.en\ClubRolesDescription.htm" />
@@ -2520,7 +2521,6 @@
     <Content Include="appsettings.config" />
     <Content Include="App_Data\debug.config" />
     <Content Include="App_Data\email.config" />
-    <Content Include="App_Data\connection.config" />
     <Content Include="PlayPen\Web.config" />
     <Content Include="Private\MyFlightbook Admin Tools.pptx" />
     <Content Include="Private\Ribbons Source.pptx" />
@@ -2540,9 +2540,6 @@
     <Content Include="LICENSE" />
     <None Include="packages.config" />
     <Content Include="README.md" />
-    <None Include="Properties\PublishProfiles\Local-Again.pubxml" />
-    <None Include="Properties\PublishProfiles\PublishDebugToLocal.pubxml" />
-    <None Include="Properties\PublishProfiles\PublishToStaging.pubxml" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -2704,6 +2701,9 @@
   <ItemGroup>
     <Content Include="Public\App_LocalResources\FindAirport.aspx.resx" />
     <Content Include="Public\App_LocalResources\MobileApps.aspx.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
