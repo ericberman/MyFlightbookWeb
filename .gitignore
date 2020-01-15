@@ -22,6 +22,12 @@ email.config
 Private/Bugs.txt
 MyFlightbook.ruleset
 
+#batch/VBScript files that run on the server in a production environment.
+App_Data/NightlyEmail.vbs
+App_Data/NightlyStats.vbs
+App_Data/rcDesktop.bat
+App_Data/rcMac.bat
+
 #image directories
 [Ii]mages/[Aa]ircraft/
 [Ii]mages/[Bb]asicMed/
@@ -413,5 +419,3 @@ MigrationBackup/
 **/.idea/**/modules.xml. i d e a 
 **/.idea/*
 .idea/
- 
- 

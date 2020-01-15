@@ -1,4 +1,4 @@
-<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+<%@ Master Language="C#" AutoEventWireup="true" Inherits="MyFlightbook.Web.MasterPage" CodeFile="MasterPage.master.cs" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Src="Controls/mfbFooter.ascx" TagName="mfbFooter" TagPrefix="uc1" %>
 <%@ Register src="Controls/mfbHeader.ascx" tagname="mfbHeader" tagprefix="uc2" %>
