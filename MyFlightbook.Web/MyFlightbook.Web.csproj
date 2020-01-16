@@ -630,6 +630,7 @@
     <Content Include="OAuth\oAuthToken.aspx" />
     <Content Include="PlayPen\Checklist.aspx" />
     <Content Include="PlayPen\DayNight.aspx" />
+    <Content Include="PlayPen\Default.aspx" />
     <Content Include="PlayPen\iCalConvert.aspx" />
     <Content Include="PlayPen\ImgDbg.aspx" />
     <Content Include="PlayPen\MergeFlights.aspx" />
@@ -2180,6 +2181,13 @@
     </Compile>
     <Compile Include="PlayPen\DayNight.aspx.designer.cs">
       <DependentUpon>DayNight.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayPen\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlayPen\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlayPen\iCalConvert.aspx.cs">
       <DependentUpon>iCalConvert.aspx</DependentUpon>
