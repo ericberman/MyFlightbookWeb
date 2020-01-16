@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Sign an entry" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_SignEntry" Codebehind="SignEntry.aspx.cs" %>
+﻿<%@ Page Title="Sign an entry" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="SignEntry.aspx.cs" Inherits="Public_SignEntry" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbSignFlight.ascx" tagname="mfbSignFlight" tagprefix="uc3" %>

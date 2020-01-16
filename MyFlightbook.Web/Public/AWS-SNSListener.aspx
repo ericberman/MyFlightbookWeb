@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="Public_AWS_SNSListener" Codebehind="AWS-SNSListener.aspx.cs" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="AWS-SNSListener.aspx.cs" Inherits="Public_AWS_SNSListener" %>
 
 <!DOCTYPE html>
 

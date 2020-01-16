@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbSearchbox" Codebehind="mfbSearchbox.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbSearchbox.ascx.cs" Inherits="Controls_mfbSearchbox" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Panel ID="pnlSearch" runat="server" DefaultButton="btnSearch" style="padding-top:3px;">
     <div style="border: 1px solid darkgray; border-radius: 14px; height: 24px; display: table-cell; vertical-align: middle; text-align:left; padding-left: 8px; padding-right:3px; ">

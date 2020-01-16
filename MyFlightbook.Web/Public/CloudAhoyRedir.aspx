@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="Public_CloudAhoyRedir" Codebehind="CloudAhoyRedir.aspx.cs" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="CloudAhoyRedir.aspx.cs" Inherits="Public_CloudAhoyRedir" %>
 
 <!DOCTYPE html>
 

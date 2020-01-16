@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbImpersonate" Codebehind="mfbImpersonate.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbImpersonate.ascx.cs" Inherits="Controls_mfbImpersonate" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Panel ID="pnlImpersonate" runat="server" DefaultButton="btnFindUsers">
     Find User: <asp:TextBox ID="txtImpersonate" runat="server" ></asp:TextBox>

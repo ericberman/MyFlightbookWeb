@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="PlayPen_Checklist" Codebehind="Checklist.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="Checklist.aspx.cs" Inherits="PlayPen_Checklist" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="~/Controls/ChecklistControls/ChecklistItem.ascx" TagPrefix="uc1" TagName="ChecklistItem" %>
 

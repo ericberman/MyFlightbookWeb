@@ -1,5 +1,5 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true"
-    Inherits="Controls_mfbFlightInfo" Codebehind="mfbFlightInfo.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbFlightInfo.ascx.cs"
+    Inherits="Controls_mfbFlightInfo" %>
 <%@ Register Src="mfbDateTime.ascx" TagName="mfbDateTime" TagPrefix="uc2" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc3" %>

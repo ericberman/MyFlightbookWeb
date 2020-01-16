@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" Codebehind="oAuthClientTest.aspx.cs" AutoEventWireup="true" Inherits="Public_oAuthClientTest" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="oAuthClientTest.aspx.cs" Inherits="Public_oAuthClientTest" %>
 <%@ Register Src="~/Controls/mfbDecimalEdit.ascx" TagPrefix="uc1" TagName="mfbDecimalEdit" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">

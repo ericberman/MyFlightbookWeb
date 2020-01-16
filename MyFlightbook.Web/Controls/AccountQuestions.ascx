@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_AccountQuestions" Codebehind="AccountQuestions.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="AccountQuestions.ascx.cs" Inherits="Controls_AccountQuestions" %>
 <div>
     <ajaxToolkit:ComboBox ID="cmbQuestions" runat="server" DropDownStyle="DropDown" Width="400px" OnTextChanged="cmbQuestions_TextChanged">
     </ajaxToolkit:ComboBox>

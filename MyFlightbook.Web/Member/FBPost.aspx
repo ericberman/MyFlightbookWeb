@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Member_FBPost" Title="Post to Facebook" Codebehind="FBPost.aspx.cs" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="FBPost.aspx.cs" Inherits="Member_FBPost" Title="Post to Facebook" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbMiniFacebook.ascx" tagname="mfbMiniFacebook" tagprefix="uc1" %>
 

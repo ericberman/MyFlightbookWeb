@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbSignature" Codebehind="mfbSignature.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbSignature.ascx.cs" Inherits="Controls_mfbSignature" %>
 <asp:Repeater ID="rptSignature" runat="server">
     <ItemTemplate>
         <asp:Panel ID="pnlSignature" runat="server" CssClass="signatureBlock" Visible='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.None %>'>

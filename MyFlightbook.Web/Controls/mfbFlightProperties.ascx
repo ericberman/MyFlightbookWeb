@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbFlightProperties" Codebehind="mfbFlightProperties.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbFlightProperties.ascx.cs" Inherits="Controls_mfbFlightProperties" %>
 <%@ Register src="mfbDateTime.ascx" tagname="mfbDateTime" tagprefix="uc1" %>
 <%@ Register src="mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc2" %>
 <%@ Register src="mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc4" %>

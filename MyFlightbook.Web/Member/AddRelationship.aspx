@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Add Instructor/Student" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Member_AddRelationship" Codebehind="AddRelationship.aspx.cs" %>
+﻿<%@ Page Title="Add Instructor/Student" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="AddRelationship.aspx.cs" Inherits="Member_AddRelationship" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><asp:Localize ID="locConfirmHeader" Text="<%$ Resources:LocalizedText, AddRelationshipHeader %>" runat="server"></asp:Localize></asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">

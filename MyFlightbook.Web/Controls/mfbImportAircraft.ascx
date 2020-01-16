@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbImportAircraft" Codebehind="mfbImportAircraft.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbImportAircraft.ascx.cs" Inherits="Controls_mfbImportAircraft" %>
 <asp:GridView ID="gvAircraftCandidates" runat="server" AutoGenerateColumns="False"
     OnRowDataBound="gvAircraftCandidates_RowDataBound" OnRowCommand="gvAircraftCandidates_RowCommand" 
     GridLines="None" CellPadding="5" meta:resourcekey="gvAircraftCandidatesResource1">

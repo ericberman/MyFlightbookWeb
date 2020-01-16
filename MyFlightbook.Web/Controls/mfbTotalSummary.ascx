@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbTotalSummary" Codebehind="mfbTotalSummary.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbTotalSummary.ascx.cs" Inherits="Controls_mfbTotalSummary" %>
 <asp:MultiView ID="mvTotals" runat="server" ActiveViewIndex="0">
     <asp:View ID="vwFlat" runat="server">
         <asp:GridView ID="gvTotals" runat="server" AutoGenerateColumns="False" 

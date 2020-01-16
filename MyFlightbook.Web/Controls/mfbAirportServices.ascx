@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbAirportServices" Codebehind="mfbAirportServices.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbAirportServices.ascx.cs" Inherits="Controls_mfbAirportServices" %>
 <asp:GridView ID="gvAirports" runat="server" GridLines="None" 
     ShowHeader="False" EnableModelValidation="True" CellPadding="5" 
     onrowdatabound="RowDataBound" AutoGenerateColumns="False">

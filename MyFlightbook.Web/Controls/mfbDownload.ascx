@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbDownload" Codebehind="mfbDownload.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbDownload.ascx.cs" Inherits="Controls_mfbDownload" %>
 <asp:Panel ID="pnlDownloadPDF" Visible="false" runat="server">
     <p>
         <asp:Hyperlink ID="lnkDownloadPDF" runat="server" NavigateUrl="~/Member/Printview.aspx">

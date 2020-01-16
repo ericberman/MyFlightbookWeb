@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbDecimalEdit" Codebehind="mfbDecimalEdit.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbDecimalEdit.ascx.cs" Inherits="Controls_mfbDecimalEdit" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
 <asp:TextBox ID="txtDecimal" runat="server" TextMode="Number"></asp:TextBox>
 <asp:Image ID="imgXFill" ImageUrl="~/images/cross-fill.png" runat="server" Visible="false" ToolTip="<%$ Resources:LocalizedText, CrossfillPrompt %>"

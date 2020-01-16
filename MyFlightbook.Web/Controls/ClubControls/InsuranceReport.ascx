@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_ClubControls_InsuranceReport" Codebehind="InsuranceReport.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="InsuranceReport.ascx.cs" Inherits="Controls_ClubControls_InsuranceReport" %>
 <asp:GridView ID="gvInsuranceReport" runat="server" AutoGenerateColumns="false" AlternatingRowStyle-CssClass="logbookAlternateRow" ShowFooter="false" CellPadding="4" GridLines="None" OnRowDataBound="gvInsuranceReport_RowDataBound">
     <Columns>
         <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderPilotName %>" ItemStyle-VerticalAlign="Top" >

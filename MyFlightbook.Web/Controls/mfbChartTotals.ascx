@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbChartTotals" Codebehind="mfbChartTotals.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbChartTotals.ascx.cs" Inherits="Controls_mfbChartTotals" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="GoogleChart.ascx" tagname="GoogleChart" tagprefix="uc3" %>
 <asp:Panel ID="Panel1" runat="server" style="padding:5px;">

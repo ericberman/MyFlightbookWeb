@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_ClubControls_ViewClub" Codebehind="ViewClub.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="ViewClub.ascx.cs" Inherits="Controls_ClubControls_ViewClub" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register src="~/Controls/mfbGoogleMapManager.ascx" tagname="mfbGoogleMapManager" tagprefix="uc1" %>
 <%@ Register src="../mfbHtmlEdit.ascx" tagname="mfbHtmlEdit" tagprefix="uc2" %>

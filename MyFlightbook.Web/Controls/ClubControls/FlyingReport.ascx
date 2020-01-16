@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_ClubControls_FlyingReport" Codebehind="FlyingReport.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="FlyingReport.ascx.cs" Inherits="Controls_ClubControls_FlyingReport" %>
 <asp:SqlDataSource ID="sqlDSReports" runat="server" 
 ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
 ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_ImgDbg" Codebehind="ImgDbg.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="ImgDbg.aspx.cs" Inherits="Public_ImgDbg" %>
 <%@ Register src="../Controls/mfbMultiFileUpload.ascx" tagname="mfbMultiFileUpload" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbFileUpload.ascx" tagname="mfbFileUpload" tagprefix="uc2" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" Runat="Server">

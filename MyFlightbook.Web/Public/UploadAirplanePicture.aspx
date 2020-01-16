@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="Public_UploadAirplanePicture" Codebehind="UploadAirplanePicture.aspx.cs" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="UploadAirplanePicture.aspx.cs" Inherits="Public_UploadAirplanePicture" %>
 <%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc1" %>
 
     <form id="form1" runat="server" visible="false">

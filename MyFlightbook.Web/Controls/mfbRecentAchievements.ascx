@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbRecentAchievements" Codebehind="mfbRecentAchievements.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbRecentAchievements.ascx.cs" Inherits="Controls_mfbRecentAchievements" %>
 <%@ Register src="../Controls/mfbBadgeSet.ascx" tagname="mfbBadgeSet" tagprefix="uc1" %>
 <asp:Panel ID="pnlStatsAndAchievements" runat="server">
     <div>

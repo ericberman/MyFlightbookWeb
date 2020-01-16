@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbMultiFileUpload" Codebehind="mfbMultiFileUpload.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbMultiFileUpload.ascx.cs" Inherits="Controls_mfbMultiFileUpload" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Reference Control="~/Controls/mfbFileUpload.ascx" %>
 <%@ Register src="mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc2" %>

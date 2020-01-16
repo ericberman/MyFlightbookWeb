@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbVideoEntry" Codebehind="mfbVideoEntry.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbVideoEntry.ascx.cs" Inherits="Controls_mfbVideoEntry" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="mfbMultiFileUpload.ascx" tagname="mfbMultiFileUpload" tagprefix="uc1" %>
 <%@ Register src="mfbFileUpload.ascx" tagname="mfbFileUpload" tagprefix="uc2" %>
