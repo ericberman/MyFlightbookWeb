@@ -10,7 +10,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2019 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -349,6 +349,33 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         UpdateQuery();
     }
 
+    /// <summary>
+    /// Returns the querystring minus Clone or Reverse or other switches that we don't want to preserve for context (Issue #458)
+    /// </summary>
+    /// <returns></returns>
+    private string SanitizedQuery
+    {
+        get
+        {
+            System.Collections.Specialized.NameValueCollection dictParams = new System.Collections.Specialized.NameValueCollection();
+            foreach (string szKey in Request.QueryString.Keys)
+                dictParams[szKey] = Request.QueryString[szKey];
+
+            // Issue #458: clone and reverse are getting duplicated and the & is getting url encoded, so even edits look like clones
+            dictParams.Remove("Clone");
+            dictParams.Remove("Reverse");
+
+            if (dictParams.Count == 0)
+                return string.Empty;
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            foreach (string szkey in dictParams)
+                sb.AppendFormat(CultureInfo.InvariantCulture, "{0}{1}={2}", sb.Length == 0 ? "?" : "&", szkey, HttpUtility.UrlEncode(dictParams[szkey]));
+
+            return sb.ToString();
+        }
+    }
+
     protected void mfbEditFlight1_FlightUpdated(object sender, LogbookEventArgs e)
     {
         if (e == null)
@@ -360,15 +387,15 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         if (Request[szParamIDFlight] != null || SocialNetworkAuthorization.RedirectList.Count > 0)
             Response.Redirect(SocialNetworkAuthorization.PopRedirect(Master.IsMobileSession() ? SocialNetworkAuthorization.DefaultRedirPageMini : SocialNetworkAuthorization.DefaultRedirPage));
         else if (e.IDNextFlight != LogbookEntry.idFlightNone)
-            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}{1}", e.IDNextFlight, Request.Url.Query), true);
+            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}{1}", e.IDNextFlight, SanitizedQuery), true);
         else
-            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", Request.Url.Query), true);
+            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", SanitizedQuery), true);
     }
 
     protected void mfbEditFlight1_FlightEditCanceled(object sender, EventArgs e)
     {
         // Redirect back to eliminate the ID of the flight in the URL.
-        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", Request.Url.Query), true);
+        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", SanitizedQuery), true);
     }
 
     protected void PrintOptions1_OptionsChanged(object sender, PrintingOptionsEventArgs e)

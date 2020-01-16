@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -697,7 +697,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         }
         else
         {
-            popmenuCommitAndNavigate.Visible = true;    // so that the next line can work
+            popmenuCommitAndNavigate.Visible = !LogbookEntry.IsNewFlightID(FlightID);    // need to set master visibility so that the next line can work; issue #458 - suppress pop menu for clone/reverse (essentially new flights)
             divUpdateNext.Visible = true;
             hdnNextID.Value = idFlight.ToString(CultureInfo.InvariantCulture);
         }
@@ -714,7 +714,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         }
         else
         {
-            popmenuCommitAndNavigate.Visible = true;    // so that the next line can work.
+            popmenuCommitAndNavigate.Visible = !LogbookEntry.IsNewFlightID(FlightID);    // need to set master visibility so that the next line can work; issue #458 - suppress pop menu for clone/reverse (essentially new flights)
             divUpdatePrev.Visible = true;
             hdnPrevID.Value = idFlight.ToString(CultureInfo.InvariantCulture);
         }
