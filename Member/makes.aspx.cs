@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -149,7 +149,7 @@ public partial class makes : System.Web.UI.Page
     {
         string szJSon = JsonConvert.SerializeObject(QueryFromForm(ActiveQuery), new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
         string szQ = Convert.ToBase64String(szJSon.Compress());
-        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}?q={3}", Request.Url.Scheme, Request.Url.Host, Request.Url.AbsolutePath, HttpUtility.UrlEncode(szQ)));
+        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?q={1}", Request.Url.AbsolutePath.ToAbsoluteURL(Request), HttpUtility.UrlEncode(szQ)));
     }
 
     protected void MakesRowDataBound(object sender, GridViewRowEventArgs e)
