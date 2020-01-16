@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2019 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -236,6 +236,10 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
             // Add the existing keys first - since we may overwrite them below!
             foreach (string szKey in Request.QueryString.Keys)
                 dictParams[szKey] = Request.QueryString[szKey];
+
+            // Issue #458: clone and reverse are getting duplicated and the & is getting url encoded, so even edits look like clones
+            dictParams.Remove("Clone");
+            dictParams.Remove("Reverse");
 
             if (!Restriction.IsDefault)
                 dictParams["fq"] = Restriction.ToBase64CompressedJSONString();
