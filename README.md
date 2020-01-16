@@ -11,7 +11,7 @@ The website and service for MyFlightbook.  This provides the back-end for the mo
 and the application should be called "logbook" and point to the /logbook branch.
 * Set up a certificate to enable https.
 * Make sure that IIS is set up to serve .KML, .GPX, .PDF, .JPG, .DOCX, .APK (application/vnd.android.package-archive) etc.
- * Add debug.config so that you can turn debug mode on/off locally:
+ * Add debug.config in the App_Data folder so that you can turn debug mode on/off locally:
  ~~~~
  <?xml version="1.0"?>
 <!-- 
@@ -41,14 +41,14 @@ and the application should be called "logbook" and point to the /logbook branch.
   </assemblies>
 </compilation>
 ~~~~
- * Add email.config so that you can send email:
+ * Add email.config to App_Data so that you can send email:
 ~~~~
 <?xml version="1.0"?>
 <smtp deliveryMethod="Network" from="(your email address)">
     <network defaultCredentials="false" port="587" host="..." userName="..." password="..." />
 </smtp>
 ~~~~
- * Add connection.config so that you can talk to the database:
+ * Add connection.config to App_Data so that you can talk to the database:
  ~~~~
  <?xml version="1.0"?>
   <connectionStrings>
