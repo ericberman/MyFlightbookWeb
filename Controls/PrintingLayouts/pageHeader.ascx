@@ -3,7 +3,7 @@
     <tr>
         <td style="width:33%"><asp:Label ID="lblAddress" runat="server" style="white-space: pre-wrap"><%# CurrentUser.Address %></asp:Label></td>
         <td style="width:34%; text-align: center;" colspan="7">
-            <img style="max-width: 120px;" src="<% = ResolveUrl(Branding.CurrentBrand.LogoURL) %>" />
+            <img style="max-width: 120px;" src="<% = Branding.CurrentBrand.LogoURL.ToAbsoluteURL(Request) %>" />
         </td>
         <td style="width:33%; text-align:right;">
             <div><%# CurrentUser.UserFullName %></div>

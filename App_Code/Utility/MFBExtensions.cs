@@ -11,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -538,10 +538,10 @@ namespace MyFlightbook
         {
             if (Request == null)
                 throw new ArgumentNullException("Request");
-            return s.ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host);
+            return s.ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
         }
 
-        public static Uri ToAbsoluteURL(this string s, string scheme, string host)
+        public static Uri ToAbsoluteURL(this string s, string scheme, string host, int port = 80)
         {
             if (scheme == null)
                 throw new ArgumentNullException("scheme");
@@ -549,7 +549,7 @@ namespace MyFlightbook
                 throw new ArgumentNullException("host");
             if (String.IsNullOrEmpty(s))
                 return null;
-            return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}", scheme, host, VirtualPathUtility.ToAbsolute(s)));
+            return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", scheme, host, (port == 80 || port == 443) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ":{0}", port), VirtualPathUtility.ToAbsolute(s)));
         }
         #endregion
 

@@ -47,8 +47,8 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            cssRef.Href = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public/Stylesheet.css?v=18"));
-            baseRef.Attributes["href"] = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}/", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public"));
+            cssRef.Href = "~/Public/Stylesheet.css?v=18".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
+            baseRef.Attributes["href"] = "~/Public/".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
 
             string szAuthKey = util.GetStringParam(Request, "k");
             string szUser = util.GetStringParam(Request, "u");
