@@ -192,7 +192,7 @@ namespace MyFlightbook.Web
                 lnkPrivacy.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName);
 
                 lnkAppleIcon.Href = ResolveUrl("~/images/apple-touch-icon.png");
-                cssMain.Href = String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, ResolveUrl("~/Public/stylesheet.css?v=18"));    // to enable forced reload
+                cssMain.Href = "~/Public/stylesheet.css?v=18".ToAbsoluteURL(Request).ToString();    // to enable forced reload
                 cssMobile.Visible = mfbHeader.IsMobile = MfbFooter.IsMobile = IsMobileSession();
                 cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css?v=8");
                 string szStyle = Branding.CurrentBrand.StyleSheet;
