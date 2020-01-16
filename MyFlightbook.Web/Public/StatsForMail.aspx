@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="Public_StatsForMail" Codebehind="StatsForMail.aspx.cs" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="StatsForMail.aspx.cs" Inherits="Public_StatsForMail" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register src="../Controls/adminStats.ascx" tagname="adminStats" tagprefix="uc1" %>

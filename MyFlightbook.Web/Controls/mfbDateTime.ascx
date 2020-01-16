@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbDateTime" Codebehind="mfbDateTime.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbDateTime.ascx.cs" Inherits="Controls_mfbDateTime" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:TextBox ID="txtDateTime" runat="server"></asp:TextBox>
 <cc1:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" EnableViewState="false" TargetControlID="txtDateTime" WatermarkCssClass="watermark">

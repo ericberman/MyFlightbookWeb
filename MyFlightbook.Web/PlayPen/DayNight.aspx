@@ -1,4 +1,5 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_DayNight" Codebehind="DayNight.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
+    Codebehind="DayNight.aspx.cs" Inherits="Public_DayNight" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbGoogleMapManager.ascx" TagName="mfbGoogleMapManager"
     TagPrefix="uc1" %>

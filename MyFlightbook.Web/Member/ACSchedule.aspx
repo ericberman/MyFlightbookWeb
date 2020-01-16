@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Inherits="Member_ACSchedule" culture="auto" meta:resourcekey="PageResource1" Codebehind="ACSchedule.aspx.cs" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Codebehind="ACSchedule.aspx.cs" Inherits="Member_ACSchedule" culture="auto" meta:resourcekey="PageResource1" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>

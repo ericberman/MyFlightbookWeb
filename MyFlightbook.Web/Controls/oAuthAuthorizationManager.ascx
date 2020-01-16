@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_oAuthAuthorizationManager" Codebehind="oAuthAuthorizationManager.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="oAuthAuthorizationManager.ascx.cs" Inherits="Controls_oAuthAuthorizationManager" %>
 <p><asp:Localize ID="locOAuthHeader" Text="<%$ Resources:oAuth, oAuthedAppsListHeader %>" runat="server" ></asp:Localize></p>
 <asp:GridView ID="gvOAuthClients" DataKeyNames="ClientId" CellPadding="10" CellSpacing="10" OnRowDataBound="gvOAuthClients_RowDataBound" OnRowDeleting="gvOAuthClients_RowDeleting" AutoGenerateColumns="False" runat="server" GridLines="None" ShowHeader="False">
     <Columns>

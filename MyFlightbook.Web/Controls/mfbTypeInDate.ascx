@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbTypeInDate" Codebehind="mfbTypeInDate.ascx.cs" %>
+<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbTypeInDate.ascx.cs" Inherits="Controls_mfbTypeInDate" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:TextBox ID="txtDate" runat="server" TextMode="Date"></asp:TextBox>
 <cc1:CalendarExtender ID="CalendarExtender1" runat="server" EnableViewState="false" TargetControlID="txtDate" Format="d" >

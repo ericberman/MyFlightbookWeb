@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Member_Training" culture="auto" meta:resourcekey="PageResource1" Codebehind="Training.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="Training.aspx.cs" Inherits="Member_Training" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="../Controls/mfbTypeInDate.ascx" TagName="mfbTypeInDate" TagPrefix="uc2" %>

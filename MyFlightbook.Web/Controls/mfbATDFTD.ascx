@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbATDFTD" Codebehind="mfbATDFTD.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbATDFTD.ascx.cs" Inherits="Controls_mfbATDFTD" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
 <div class="callout">

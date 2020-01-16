@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbPublicFlightItem" Codebehind="mfbPublicFlightItem.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbPublicFlightItem.ascx.cs" Inherits="Controls_mfbPublicFlightItem" %>
 <%@ Register src="mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc3" %>
 <tr style="vertical-align:top">
     <td>

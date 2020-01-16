@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="Public_Clubs" Codebehind="Clubs.aspx.cs" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="Clubs.aspx.cs" Inherits="Public_Clubs" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Src="~/Controls/ClubControls/ViewClub.ascx" tagname="ViewClub" tagprefix="uc1" %>
 <%@ Register src="~/Controls/mfbGoogleMapManager.ascx" tagname="mfbGoogleMapManager" tagprefix="uc2" %>

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbSendFlight" Codebehind="mfbSendFlight.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbSendFlight.ascx.cs" Inherits="Controls_mfbSendFlight" %>
 <asp:Panel ID="pnlSendFlight" runat="server" Width="480px" DefaultButton="btnSendFlight" CssClass="modalpopup" style="display:none">
     <h2><asp:Label ID="lblSendPrompt" runat="server" Text="<%$ Resources:LogbookEntry, SendFlightPrompt %>"></asp:Label></h2>
     <asp:HiddenField ID="hdnFlightToSend" runat="server" />

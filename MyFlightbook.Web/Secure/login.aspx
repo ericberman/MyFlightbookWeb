@@ -1,4 +1,4 @@
-<%@ Page Language="C#" Title="" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Inherits="login" Codebehind="login.aspx.cs" %>
+<%@ Page Language="C#" Title="" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="login.aspx.cs" Inherits="login" %>
 <%@ Register Src="../Controls/mfbSignIn.ascx" TagName="mfbSignIn" TagPrefix="uc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="contentTitle" ContentPlaceHolderID="cpPageTitle" runat="server">

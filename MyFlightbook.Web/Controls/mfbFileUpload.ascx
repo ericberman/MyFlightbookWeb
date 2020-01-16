@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbFileUpload" Codebehind="mfbFileUpload.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbFileUpload.ascx.cs" Inherits="Controls_mfbFileUpload" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Panel ID="Panel1" runat="server">
     <div style="width:225px; display:inline-block;"><asp:FileUpload ID="FileUpload1" runat="server" /></div>

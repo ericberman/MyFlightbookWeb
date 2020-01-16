@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbFlightContextMenu" Codebehind="mfbFlightContextMenu.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbFlightContextMenu.ascx.cs" Inherits="Controls_mfbFlightContextMenu" %>
 <%@ Register Src="~/Controls/mfbTweetThis.ascx" TagPrefix="uc1" TagName="mfbTweetThis" %>
 <%@ Register Src="~/Controls/mfbMiniFacebook.ascx" TagPrefix="uc1" TagName="mfbMiniFacebook" %>
 <div style="line-height: 26px;">

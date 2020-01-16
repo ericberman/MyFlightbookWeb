@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbResourceSchedule" Codebehind="mfbResourceSchedule.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbResourceSchedule.ascx.cs" Inherits="Controls_mfbResourceSchedule" %>
 <div><asp:Label ID="lblResourceHeader" Font-Bold="true" runat="server" Text=""></asp:Label></div>
 <div class="calContainer">
     <div class="calPlaceholder" id="divResourceDetails" runat="server">

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="Public_PendingImg" Codebehind="PendingImg.aspx.cs" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="PendingImg.aspx.cs" Inherits="Public_PendingImg" %>
 
 <!DOCTYPE html>
 

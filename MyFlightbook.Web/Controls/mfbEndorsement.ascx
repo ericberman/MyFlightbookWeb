@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbEndorsement" Codebehind="mfbEndorsement.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEndorsement.ascx.cs" Inherits="Controls_mfbEndorsement" %>
 <asp:FormView ID="FormView1" runat="server">
     <ItemTemplate>
         <div style="padding: 5px">

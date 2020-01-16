@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Endorse Student" Language="C#" MasterPageFile="~/MasterPage.master"
-    AutoEventWireup="true" Inherits="Member_EndorseStudent" Codebehind="EndorseStudent.aspx.cs" %>
+    AutoEventWireup="true" Codebehind="EndorseStudent.aspx.cs" Inherits="Member_EndorseStudent" %>
 
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc1" %>

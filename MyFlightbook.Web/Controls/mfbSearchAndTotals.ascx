@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbSearchAndTotals" Codebehind="mfbSearchAndTotals.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbSearchAndTotals.ascx.cs" Inherits="Controls_mfbSearchAndTotals" %>
 <%@ Register src="mfbSimpleTotals.ascx" tagname="mfbSimpleTotals" tagprefix="uc1" %>
 <%@ Register src="mfbSearchForm.ascx" tagname="mfbSearchForm" tagprefix="uc2" %>
 <%@ Register src="mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc3" %>

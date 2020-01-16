@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="Member_ImpAircraftService" Codebehind="ImpAircraftService.aspx.cs" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="ImpAircraftService.aspx.cs" Inherits="Member_ImpAircraftService" %>
 
 <!DOCTYPE html>
 

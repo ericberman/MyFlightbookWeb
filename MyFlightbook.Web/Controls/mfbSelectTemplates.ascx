@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbSelectTemplates" Codebehind="mfbSelectTemplates.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbSelectTemplates.ascx.cs" Inherits="Controls_mfbSelectTemplates" %>
 <asp:Repeater ID="rptGroups" runat="server" EnableViewState="false">
     <ItemTemplate>
         <div><asp:Label ID="lblGroupName" Font-Bold="true" Font-Size="Smaller" runat="server" Text='<%# Eval("GroupName") %>'></asp:Label></div>

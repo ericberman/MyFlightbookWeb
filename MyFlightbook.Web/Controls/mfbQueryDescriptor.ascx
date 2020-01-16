@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="Controls_mfbQueryDescriptor" Codebehind="mfbQueryDescriptor.ascx.cs" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbQueryDescriptor.ascx.cs" Inherits="Controls_mfbQueryDescriptor" %>
 <%@ Register src="mfbQueryDescriptorItem.ascx" tagname="mfbQueryDescriptorItem" tagprefix="uc1" %>
 <asp:PlaceHolder ID="PlaceHolder1" runat="server"></asp:PlaceHolder>
 <asp:Repeater ID="rptItems" runat="server" Visible="false">
