@@ -15,7 +15,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -78,7 +78,7 @@ public partial class Member_PrintView : System.Web.UI.Page
 
         Master.SuppressTopNavPrint = true;
         string szPath = Request.Url.PathAndQuery.Substring(0, Request.Url.PathAndQuery.LastIndexOf("/", StringComparison.Ordinal) + 1);
-        string szURL = String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, szPath);
+        string szURL = szPath.ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host, Request.Url.Port).ToString();
         Master.Page.Header.Controls.Add(new LiteralControl(String.Format(CultureInfo.InvariantCulture, "<base href=\"{0}\" />", szURL)));
 
         if (!IsPostBack)
