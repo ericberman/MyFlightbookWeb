@@ -660,7 +660,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     protected void lnkAuthorizeOneDrive_Click(object sender, EventArgs e)
     {
-        Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, "http://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/OneDriveRedir.aspx")));
+        Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/OneDriveRedir.aspx")));
         new OneDrive().Authorize(uri);
     }
 
