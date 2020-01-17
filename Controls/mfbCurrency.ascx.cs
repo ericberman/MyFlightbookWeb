@@ -126,9 +126,8 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
         gvCurrency.DataSource = CurrencyStatusItem.GetCurrencyItemsForUser(String.IsNullOrEmpty(UserName) ? Page.User.Identity.Name : UserName);
         gvCurrency.DataBind();
 
-        // HACK - We do this here because Page_Load may not be called if this is for an RSS feed.
-        if (lnkDisclaimer.NavigateUrl.Contains("~"))
-            lnkDisclaimer.NavigateUrl = "http://" + MyFlightbook.Branding.CurrentBrand.HostName + VirtualPathUtility.ToAbsolute(lnkDisclaimer.NavigateUrl);
+        // HACK - We do this here because Page_Load may not be called if this is for an RSS feed, and it needs to be an absolute URL (including branded host name) for scenarios like that
+        lnkDisclaimer.NavigateUrl = "~/Public/CurrencyDisclaimer.aspx".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
     }
 
     protected void gvCurrency_RowDataBound(object sender, GridViewRowEventArgs e)

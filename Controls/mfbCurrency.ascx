@@ -1,6 +1,6 @@
 <%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbCurrency.ascx.cs" Inherits="Controls_mfbCurrency" %>
 <%@ Register Src="mfbSimpleTotals.ascx" TagName="mfbSimpleTotals" TagPrefix="uc2" %>
-<span style="font-size:9px;"><asp:HyperLink ID="lnkDisclaimer" runat="server" Target="_blank" Text="<%$ Resources:Currency, DisclaimerLink %>" NavigateUrl="~/Public/CurrencyDisclaimer.aspx"></asp:HyperLink></span>
+<span style="font-size:9px;"><asp:HyperLink ID="lnkDisclaimer" runat="server" Target="_blank" Text="<%$ Resources:Currency, DisclaimerLink %>"></asp:HyperLink></span>
 <asp:GridView ID="gvCurrency" CellPadding="2" CellSpacing="1" ShowHeader="false" runat="server" GridLines="None" AutoGenerateColumns="false" OnRowDataBound="gvCurrency_RowDataBound">
     <Columns>
         <asp:TemplateField ItemStyle-VerticalAlign="Top">
