@@ -46,7 +46,7 @@ public partial class Public_StatsForMail
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::AjaxControlToolkit.ScriptManager ToolkitScriptManager1;
+    protected global::System.Web.UI.ScriptManager ToolkitScriptManager1;
 
     /// <summary>
     /// adminStats1 control.
