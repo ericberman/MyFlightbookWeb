@@ -1,0 +1,1 @@
+﻿ALTER TABLE `logbook`.`users` ADD COLUMN `LastIPC` DATETIME AFTER `UsesSIC`;

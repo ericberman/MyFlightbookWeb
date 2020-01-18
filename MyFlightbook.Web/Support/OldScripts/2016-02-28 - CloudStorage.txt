@@ -1,0 +1,9 @@
+﻿ALTER TABLE `logbook`.`users` 
+ADD COLUMN `OnedriveAccessToken` TEXT NULL AFTER `OverwriteDropbox`,
+ADD COLUMN `ICloudAccessToken` TEXT NULL AFTER `OnedriveAccessToken`,
+ADD COLUMN `GoogleDriveAccessToken` TEXT NULL AFTER `ICloudAccessToken`,
+ADD COLUMN `DefaultCloudDriveID` INT NOT NULL DEFAULT 0 COMMENT 'Specifies which cloud drive to use if multiple are specified.' AFTER `GoogleDriveAccessToken`;
+INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('GoogleDriveAccessID', '');
+INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('GoogleDriveClientSecret', '');
+INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('OneDriveAccessID', '');
+INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('OneDriveClientSecret', '');

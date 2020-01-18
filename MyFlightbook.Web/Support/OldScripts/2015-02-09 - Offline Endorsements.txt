@@ -1,0 +1,1 @@
+﻿ALTER TABLE `logbook`.`endorsements` ADD COLUMN `StudentType` INT NULL DEFAULT 0 COMMENT 'Type of student. 0 = internal (student field ties to username of another user), 1 = external (human readable name, for CFI record keeping)'  AFTER `Student`

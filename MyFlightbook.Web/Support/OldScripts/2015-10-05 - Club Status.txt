@@ -1,0 +1,1 @@
+﻿ALTER TABLE `logbook`.`clubs` ADD COLUMN `clubStatus` INT NULL DEFAULT 0 COMMENT 'Status of this club.  0 = OK, 1 = probationary, 2 = inactive'  AFTER `creationDate` ;

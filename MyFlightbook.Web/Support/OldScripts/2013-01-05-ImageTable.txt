@@ -1,0 +1,97 @@
+﻿delimiter $$
+
+CREATE TABLE `images` (
+  `VirtPathID` int(11) NOT NULL DEFAULT '0' COMMENT '0 = Flights, 1 = Aircraft, 2 = Endorsements, 3+ = TBD',
+  `ImageKey` varchar(255) NOT NULL COMMENT 'Reference for the image (the ID for flights/aircraft, or username for endorsements)',
+  `ThumbFilename` varchar(255) NOT NULL COMMENT 'The filename for the THUMBNAIL.',
+  `imageType` int(11) NOT NULL DEFAULT '0' COMMENT 'Type of image (0=JPG, 1=PDF)',
+  `ThumbWidth` int(11) DEFAULT NULL,
+  `ThumbHeight` int(11) DEFAULT NULL,
+  `Comment` varchar(255) DEFAULT NULL COMMENT 'Image Comment',
+  `Latitude` double NOT NULL DEFAULT '0',
+  `Longitude` double NOT NULL DEFAULT '0',
+  `IsLocal` int(11) DEFAULT NULL COMMENT 'Is the full-file on this local machine or on S3?',
+  PRIMARY KEY (`VirtPathID`,`ImageKey`,`ThumbFilename`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Cache of images (thumbnails)'$$
+
+
+
+To actually use this:
+In Web.config modify the basic fligyht query:
+...
+    GROUP_CONCAT(DISTINCT CONCAT_WS('\t',imgF.ThumbFilename, imgF.imageType, imgF.Latitude, imgF.Longitude, imgF.IsLocal, imgF.ThumbWidth, imgF.ThumbHeight, imgF.Comment) separator '\r\n') AS FlightImages,
+...
+  LEFT JOIN custompropertytypes cpt ON fdc.idPropType=cpt.idPropType
+  LEFT JOIN images imgF ON imgF.VirtPathID = 0 AND CAST(flights.idflight AS Char)=imgF.ImageKey
+
+and:
+    <!-- Set "UseImageDB" to "yes" to use the DB to track images.-->
+    <add key="UseImageDB" value="yes" />
+
+
+In EditProfile.aspx.cs:
+                case tabID.instEndorsements:
+                    mfbImageList1.Key = User.Identity.Name;
+                    mfbImageList1.Refresh();
+
+                    mfbEndorsementList1.Student = Page.User.Identity.Name;
+                    mfbEndorsementList1.RefreshEndorsements();
+                    break;
+
+In mfbLogbook.ascx add this property:
+    /// <summary>
+    /// The IDs of the aircraft that are in the results.
+    /// </summary>
+    private Dictionary<int, List<MFBImageInfo>> AircraftImagesInResult 
+    { 
+        get
+        {
+            if (ViewState["AircraftImages"] != null)
+                return (Dictionary<int, List<MFBImageInfo>>) ViewState["AircraftImages"];
+            return null;
+        }
+        set
+        {
+            ViewState["AircraftImages"] = value;
+        }
+    }
+
+In RefreshData, add this code:
+        // Get the aircraft used in this result set.
+        int iColAircraft = dv.Table.Columns["idAircraft"].Ordinal;
+        List<int> lstAircraftIDs = new List<int>();
+        foreach (DataRow dr in dv.Table.Rows)
+        {
+            int idAircraft = Convert.ToInt32(dr[iColAircraft]);
+            if (!lstAircraftIDs.Contains(idAircraft))
+                lstAircraftIDs.Add(idAircraft);
+        }
+        AircraftImagesInResult = MFBImageInfo.FromDB(MFBImageInfo.ImageClass.Aircraft, lstAircraftIDs);
+
+And in RowDataBound, add this for the fligthpix:
+            // mfbIl.Images.Refresh();
+            string szSerializedFlightImages = DataBinder.Eval(e.Row.DataItem, "FlightImages").ToString();
+			mfbIl.Images.ImageArray = MFBImageInfo.Deserialize(MFBImageInfo.ImageClass.Flight, le.FlightID.ToString(), szSerializedFlightImages).ToArray();
+
+And later, this in place of existing aircraft pix:
+            // for efficiency, see if we've already done this tail number; re-use if already done
+            string szJscriptAircraft = string.Empty;
+            List<MFBImageInfo> lstAcImages = AircraftImagesInResult.ContainsKey(le.AircraftID) ? AircraftImagesInResult[le.AircraftID] : null;
+            if (m_htAircraftPixJScript[le.TailNumDisplay] == null)
+            {
+                if (lstAcImages != null && lstAcImages.Count > 0)
+                {
+                    mfbIl.ImageClass = MFBImageInfo.ImageClass.Aircraft;
+                    mfbIl.Key = le.AircraftID.ToString();
+                    mfbIl.MaxImage = -1;
+                    mfbIl.Columns = 2;
+                    mfbIl.Images.ImageArray = lstAcImages.ToArray();
+                    // mfbIl.Images.Refresh();
+                    szJscriptAircraft = "function() { return '<p style=\"text-align: center;\">" + le.ModelDisplay + "&nbsp;" + le.CatClassDisplay + "</p>" + mfbIl.SimpleHTML() + "';}";
+                    m_htAircraftPixJScript[le.TailNumDisplay] = szJscriptAircraft;
+                }
+            }
+            else
+                szJscriptAircraft = m_htAircraftPixJScript[le.TailNumDisplay].ToString();
+
+

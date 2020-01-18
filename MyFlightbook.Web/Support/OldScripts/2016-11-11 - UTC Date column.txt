@@ -1,0 +1,1 @@
+﻿INSERT INTO `logbook`.`flightdatacolumns` (`RawName`, `FriendlyName`, `TypeID`, `ColumnName`, `ColumnDescription`, `ColumnNotes`) VALUES ('UTC DateTime', 'Date/Time (UTC)', '5', 'UTC DateTime', 'Date and Time for the sample', 'Same as DATE except that UTC is assumed');

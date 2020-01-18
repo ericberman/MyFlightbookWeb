@@ -1,0 +1,9 @@
+﻿ALTER TABLE `logbook`.`users` 
+CHANGE COLUMN `License` `License` VARCHAR(45) NULL DEFAULT NULL COMMENT 'Pilot\'s license' ,
+CHANGE COLUMN `CertificateNumber` `CertificateNumber` VARCHAR(90) NULL DEFAULT NULL COMMENT 'Pilot certificate number (for instructors)' ,
+CHANGE COLUMN `PropertyBlackList` `PropertyBlackList` VARCHAR(255) NULL DEFAULT NULL COMMENT 'List of property ID\'s for properties to explicitly exclude from the Used list.' ;
+
+ALTER TABLE `logbook`.`users` 
+CHANGE COLUMN `Email` `Email` VARCHAR(100) NOT NULL DEFAULT '' ,
+CHANGE COLUMN `Comment` `Comment` VARCHAR(255) NULL DEFAULT NULL ,
+CHANGE COLUMN `Address` `Address` VARCHAR(255) NULL DEFAULT NULL COMMENT 'Pilot\'s mailing address' ;

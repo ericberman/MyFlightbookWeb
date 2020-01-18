@@ -1,0 +1,1 @@
+﻿ALTER TABLE `logbook`.`users` ADD COLUMN `EmailSubscriptions` INT UNSIGNED NULL DEFAULT 0 COMMENT 'Bitfield of various email notification subscriptions.'  AFTER `EnglishProficiencyExpiration` , ADD COLUMN `LastEmail` DATE NULL COMMENT 'Date of last subscribed email to this user'  AFTER `EmailSubscriptions` ;

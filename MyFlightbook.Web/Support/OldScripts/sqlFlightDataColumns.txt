@@ -1,0 +1,24 @@
+﻿CREATE TABLE `logbook`.`FlightDataColumns` (
+  `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `RawName` VARCHAR(45) NOT NULL DEFAULT '',
+  `FriendlyName` VARCHAR(45) NOT NULL DEFAULT '',
+  `TypeID` INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY(`id`)
+)
+ENGINE = InnoDB
+COMMENT = 'Known column names for uploaded flight data';
+
+Then do this:
+    load data local infile 'C:\\inetpub\\wwwroot\\logbook\\support\\FlightDataTypes.csv'
+    ignore
+    into table flightdatacolumns
+    fields optionally enclosed by '"' terminated by ','
+    lines terminated by '\r\n'
+    ignore 1 lines
+    
+    
+// Add POSITION for Garmin
+INSERT INTO flightdatacolumns SET RawName='POSITION', FriendlyName='Lat/Long Position in degrees/minutes', TypeID=6
+
+// Add computedspeed for flightdata
+insert into flightdatacolumns set id=36, RawName="ComputedSpeed", Friendlyname="Speed (computed, in kts)", typeID=1;

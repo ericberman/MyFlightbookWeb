@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`flights` 
+CHANGE COLUMN `FlightHash` `FlightHash` VARCHAR(2048) NULL DEFAULT NULL COMMENT 'Hash of the flight (for signatures)' ;

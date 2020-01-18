@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`clubaircraft` 
+ADD COLUMN `highWaterMark` DECIMAL NOT NULL DEFAULT 0 COMMENT 'Highest value for tach or hobbs seen for this aircraft' AFTER `description`;

@@ -1,0 +1,1 @@
+ALTER TABLE `logbook`.`flights` ADD COLUMN `cfi` DECIMAL(10,1) UNSIGNED COMMENT 'Instructor time' AFTER `dtFlightEnd`;

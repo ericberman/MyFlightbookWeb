@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`custompropertytypes` 
+ADD COLUMN `SortKey` VARCHAR(60) NOT NULL COMMENT 'If present, field on which to sort.' AFTER `Title`;

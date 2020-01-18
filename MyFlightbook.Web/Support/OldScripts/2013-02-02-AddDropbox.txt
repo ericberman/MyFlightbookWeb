@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`users` ADD COLUMN `DropboxAccesstoken` TEXT NULL DEFAULT NULL COMMENT 'Access token to be able to write to DropBox'  AFTER `FacebookAccessToken` ;
+

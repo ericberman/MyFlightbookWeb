@@ -1,0 +1,31 @@
+﻿CREATE  TABLE `logbook`.`nonce` (
+  `context` VARCHAR(255) NOT NULL ,
+  `nonce` VARCHAR(255) NOT NULL ,
+  `timestampUtc` DATETIME NOT NULL ,
+  PRIMARY KEY (`context`, `nonce`, `timestampUtc`) )
+COMMENT = 'A table of oAuth nonce\'s';
+
+delimiter $$
+
+delimiter $$
+
+CREATE TABLE `oauthclientauthorization` (
+  `AuthorizationId` int(11) NOT NULL AUTO_INCREMENT,
+  `CreatedOnUtc` datetime NOT NULL,
+  `ClientId` varchar(255) NOT NULL,
+  `UserId` varchar(255) NOT NULL,
+  `Scope` varchar(255) DEFAULT NULL,
+  `ExpirationDateUtc` datetime DEFAULT NULL,
+  PRIMARY KEY (`AuthorizationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='oAuth authorizations that have been issued.'$$
+
+delimiter $$
+
+CREATE TABLE `cryptokeys` (
+  `keyData` varchar(1024) DEFAULT NULL,
+  `ExpiresUtc` datetime DEFAULT NULL,
+  `bucket` varchar(255) NOT NULL DEFAULT '',
+  `handle` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`bucket`,`handle`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='A persistent store for rotating symmetric cryptographic keys'$$
+

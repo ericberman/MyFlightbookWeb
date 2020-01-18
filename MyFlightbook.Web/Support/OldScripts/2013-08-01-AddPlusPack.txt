@@ -1,0 +1,31 @@
+﻿delimiter $$
+
+CREATE TABLE `payments` (
+  `idPayments` int(11) NOT NULL AUTO_INCREMENT,
+  `Date` datetime NOT NULL COMMENT 'The timestamp of the transaction',
+  `Username` varchar(255) NOT NULL COMMENT 'Username',
+  `Amount` decimal(10,0) DEFAULT NULL COMMENT 'Amount of the transaction (+ for payment to MyFlightbook, - for refund)',
+  `TransactionType` int(11) DEFAULT NULL COMMENT 'Type of transaction (0 = payment, 1=refund)',
+  `Notes` varchar(255) DEFAULT NULL COMMENT 'Admin notes.',
+  `TransactionID` varchar(45) NOT NULL COMMENT 'The ID of the transaction (from paypal, etc.)',
+  `TransactionData` varchar(1024) NOT NULL COMMENT 'Any additional data about the transaction from the provider.',
+  PRIMARY KEY (`idPayments`),
+  KEY `Username` (`Username`),
+  KEY `TransactionID` (`TransactionID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Payments and refunds for users.'$$
+
+ALTER TABLE `logbook`.`payments` CHANGE COLUMN `Amount` `Amount` DECIMAL(10,2) NULL DEFAULT NULL COMMENT 'Amount of the transaction (+ for payment to MyFlightbook, - for refund)'  ;
+
+ALTER TABLE `logbook`.`payments` ADD COLUMN `Fee` DECIMAL(10,2) NULL DEFAULT 0 COMMENT 'Any fee applied to the transaction; must always be positive.'  AFTER `Amount`;
+
+CREATE  TABLE `logbook`.`earnedGratuities` (
+  `idGratuityType` INT NOT NULL COMMENT 'Identifier for which gratuity was earned' ,
+  `username` VARCHAR(255) NOT NULL COMMENT 'User who earned the gratuity' ,
+  `dateEarned` DATETIME NULL COMMENT 'Date the gratuity was earned' ,
+  `dateExpired` DATETIME NULL COMMENT 'Date the gratuity expires' ,
+  `remindersSent` INT NULL COMMENT 'Number of reminders sent so far' ,
+  `dateLastReminder` DATETIME NULL COMMENT 'Date that last reminder was sent' ,
+  PRIMARY KEY (`idGratuityType`, `username`) )
+COMMENT = 'Gratuities for customers that have made donations';
+
+ALTER TABLE `logbook`.`earnedgratuities` ADD INDEX `User` (`username` ASC) , ADD INDEX `GratuityType` (`idGratuityType` ASC) ;

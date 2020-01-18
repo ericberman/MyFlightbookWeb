@@ -1,0 +1,10 @@
+﻿ALTER TABLE `logbook`.`users` ADD COLUMN `LastBFR` DATETIME AFTER `TwitterAccessSecret`,
+ ADD COLUMN `LastMedical` DATETIME AFTER `LastBFR`,
+ ADD COLUMN `MonthsToMedical` INTEGER UNSIGNED NOT NULL DEFAULT 0 AFTER `LastMedical`,
+ ADD COLUMN `IsInstructor` BOOLEAN NOT NULL DEFAULT True AFTER `MonthsToMedical`,
+ ADD COLUMN `OwnsPlane` BOOLEAN NOT NULL DEFAULT True AFTER `IsInstructor`,
+ ADD COLUMN `UsesSIC` BOOLEAN NOT NULL DEFAULT False AFTER `OwnsPlane`;
+
+// Do this before synching code:
+ALTER TABLE `logbook`.`users` ADD COLUMN `ShowTimes` TINYINT(1) NULL DEFAULT 0  AFTER `OwnsPlane` ;// Then sync code, then do this:
+ALTER TABLE `logbook`.`users` DROP COLUMN `OwnsPlane` ;

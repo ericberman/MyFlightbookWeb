@@ -1,0 +1,17 @@
+﻿CREATE TABLE `logbook`.`flighttelemetry` (
+  `idFlight` INT UNSIGNED NOT NULL COMMENT 'The ID of the flight with which this telemetry is associated',
+  `distance` FLOAT NOT NULL COMMENT 'Cached distance (nm) of the flight path',
+  `flightpath` MEDIUMTEXT NULL COMMENT 'Cached flight path, compressed using the google encoding algorithm',
+  `telemetrytype` INT UNSIGNED NOT NULL COMMENT 'The type of the data (CSV, KML, etc.)',
+  PRIMARY KEY (`idFlight`),
+  CONSTRAINT `idflighttelemetry`
+    FOREIGN KEY (`idFlight`)
+    REFERENCES `logbook`.`flights` (`idFlight`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COMMENT = 'Contains references to flight telemetry for files.';
+
+ALTER TABLE `logbook`.`flighttelemetry` 
+CHANGE COLUMN `distance` `distance` FLOAT NULL COMMENT 'Cached distance (nm) of the flight path' ;

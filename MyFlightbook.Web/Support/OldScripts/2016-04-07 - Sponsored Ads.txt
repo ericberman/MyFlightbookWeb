@@ -1,0 +1,11 @@
+﻿CREATE TABLE `sponsoredads` (
+  `idSponsoredAds` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) NOT NULL,
+  `TargetURL` varchar(255) NOT NULL,
+  `ImageName` varchar(45) NOT NULL,
+  `ImpressionCount` int(11) NOT NULL DEFAULT '0',
+  `ClickCount` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`idSponsoredAds`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Tracks impressions, clicks for sponsored content';
+
+INSERT INTO `logbook`.`sponsoredads` (`Name`, `TargetURL`, `ImageName`, `ImpressionCount`, `ClickCount`) VALUES ('GoldSeal Flight', 'http://www.goldsealgroundschool.com/partner.html', 'goldsealflight.jpg', '0', '0');

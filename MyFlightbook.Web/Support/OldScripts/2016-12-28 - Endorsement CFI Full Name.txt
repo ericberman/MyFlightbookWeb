@@ -1,0 +1,8 @@
+﻿ALTER TABLE `logbook`.`endorsements` 
+ADD COLUMN `CFIFullName` VARCHAR(255) NULL COMMENT 'Full name of the CFI, cached in case the account is ever deleted.' AFTER `CFI`;
+
+
+update endorsements e 
+inner join users u on e.CFI=u.username
+set e.CFIFullname=IF(TRIM(CONCAT(u.FirstName, ' ', u.LastName))='', u.Email, TRIM(CONCAT(u.FirstName, ' ', u.LastName)))
+where e.id <> 0 AND (e.CFIFullName is null OR e.CFIFullName='');

@@ -1,0 +1,1 @@
+﻿ALTER TABLE `logbook`.`users` ADD COLUMN `UsesUTCDates` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Specifies whether the date-of-flight is a UTC date or a local date.  Default is local date.'  AFTER `UsesHHMM` ;

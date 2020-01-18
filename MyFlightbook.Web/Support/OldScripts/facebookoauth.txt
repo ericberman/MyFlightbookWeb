@@ -1,0 +1,1 @@
+﻿ALTER TABLE `logbook`.`users` ADD COLUMN `FacebookAccessToken` VARCHAR(255) AFTER `UsesHHMM`;

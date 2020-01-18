@@ -1,0 +1,14 @@
+﻿delimiter $$
+
+CREATE TABLE `scheduledevents` (
+  `idEvent` varchar(64) NOT NULL COMMENT 'The GUID (assigned on the client) that identifies the event.',
+  `username` varchar(255) NOT NULL COMMENT 'The user who owns/created the event',
+  `resourceid` varchar(255) NOT NULL COMMENT 'The resource being managed/scheduled',
+  `start` datetime NOT NULL COMMENT 'The UTC start time of the event',
+  `end` datetime NOT NULL COMMENT 'The UTC End time for the event',
+  `body` varchar(255) DEFAULT NULL COMMENT 'The text of the event',
+  PRIMARY KEY (`idEvent`),
+  KEY `Resource` (`resourceid`),
+  KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contains events for scheduled resources'$$
+

@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`useraircraft` 
+ADD COLUMN `DefaultImage` VARCHAR(255) NULL COMMENT 'Filename of thumbnail for default image' AFTER `PrivateNotes`;

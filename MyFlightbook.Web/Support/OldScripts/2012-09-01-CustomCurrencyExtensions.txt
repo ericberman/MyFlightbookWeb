@@ -1,0 +1,34 @@
+﻿delimiter $$
+
+ALTER TABLE `logbook`.`customcurrency` CHANGE COLUMN `modelRestriction` `modelRestriction` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'If non-zero, only the modelID counts'  , CHANGE COLUMN `aircraftRestriction` `aircraftRestriction` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'If non-zero, only the aircraft matters'  ;
+
+CREATE TABLE `custcurrencyref` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID for this ref',
+  `idCurrency` int(10) unsigned NOT NULL COMMENT 'The currency to which this is bound',
+  `value` int(10) unsigned NOT NULL COMMENT 'The value (id) to map to',
+  `type` int(10) unsigned NOT NULL COMMENT 'the type (0=aircraft, 1 = model)',
+  PRIMARY KEY (`id`),
+  KEY `FK_CurrencyID` (`idCurrency`),
+  CONSTRAINT `FK_CurrencyID` FOREIGN KEY (`idCurrency`) REFERENCES `customcurrency` (`idCurrency`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8$$
+
+insert into custcurrencyref (idCurrency, value, type)
+select cc.idCurrency, modelRestriction as value, 1 as type from customcurrency cc where modelRestriction <> 0;
+
+insert into custcurrencyref (idCurrency, value, type)
+select cc.idCurrency, aircraftRestriction as value, 0 as type from customcurrency cc where aircraftRestriction <> 0;
+
+
+ALTER TABLE `logbook`.`customcurrency` DROP COLUMN `aircraftRestriction` , DROP COLUMN `modelRestriction` ;
+
+CREATE TABLE `deadlines` (
+  `idDeadlines` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) DEFAULT NULL,
+  `Name` varchar(45) NOT NULL COMMENT 'Name for the deadline',
+  `Expiration` date NOT NULL COMMENT 'Date of expiration',
+  `RegenSpan` int(11) DEFAULT '0' COMMENT 'Duration when regenerating',
+  `RegenUnit` int(11) DEFAULT '0' COMMENT '0 = none, 1 = days, 2 = calendar months',
+  PRIMARY KEY (`idDeadlines`),
+  KEY `Username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='Custom deadlines - e.g., inspections, expirations, etc.'$$
+

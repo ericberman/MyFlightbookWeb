@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`users` ADD COLUMN `PropertyBlackList` VARCHAR(255) NULL COMMENT 'List of property ID\'s for properties to explicitly exclude from the Used list.'  AFTER `CurrencyFlags` ;
+

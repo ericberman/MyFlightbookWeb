@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`aircraft` 
+ADD COLUMN `isLocked` TINYINT(1) UNSIGNED NOT NULL COMMENT 'Non-zero if the aircraft is locked for edits (like N1111).' AFTER `PublicNotes`;
