@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -484,7 +484,9 @@ public partial class Member_Import : System.Web.UI.Page
                 if (pendingflight != null)
                     pendingflight.Commit();
             }
-            Response.Redirect("~/Member/ReviewPendingFlights.aspx");
+            // Avoid a "Thread was being aborted" (ThreadAbortException).
+            Response.Redirect("~/Member/ReviewPendingFlights.aspx", false);
+            Context.ApplicationInstance.CompleteRequest();
         }
         catch (MyFlightbookException ex)
         {

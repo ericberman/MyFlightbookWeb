@@ -1,24 +1,20 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Text;
 using System.Web;
-using System.Web.Security;
-using System.Web.SessionState;
 using System.Web.UI;
+
+/******************************************************
+    * 
+    * Copyright (c) 2015-2020 MyFlightbook LLC
+    * Contact myflightbook-at-gmail.com for more information
+    *
+   *******************************************************/
 
 namespace MyFlightbook.Web
 {
     public class Global : System.Web.HttpApplication
     {
-        /******************************************************
-            * 
-            * Copyright (c) 2015-2020 MyFlightbook LLC
-            * Contact myflightbook-at-gmail.com for more information
-            *
-           *******************************************************/
-
-        protected void Application_Start(object sender, EventArgs e)
+       protected void Application_Start(object sender, EventArgs e)
         {
             // Code that runs on application startup
             MyFlightbook.ShuntState.Init();
