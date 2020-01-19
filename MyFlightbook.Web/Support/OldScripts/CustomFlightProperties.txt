@@ -1,38 +1,0 @@
-﻿CREATE TABLE `logbook`.`CustomPropertyTypes` (
-  `idPropType` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id of the custom property',
-  `Title` VARCHAR(45) NOT NULL DEFAULT '""' COMMENT 'Title of the property',
-  `FormatString` VARCHAR(45) NOT NULL DEFAULT '"{0}"' COMMENT 'Display format string',
-  `Type` INTEGER UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Int, Decimal, Bool, Date, DateTime, String',
-  PRIMARY KEY (`idPropType`)
-)
-ENGINE = InnoDB
-COMMENT = 'Types of custom properties that can be added';
-
- 
-CREATE TABLE `logbook`.`FlightProperties` (
-  `idProp` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id for this property',
-  `idFlight` INTEGER UNSIGNED NOT NULL COMMENT 'flight ID for which this is associated',
-  `idPropType` INTEGER UNSIGNED NOT NULL COMMENT 'property typefor this property',
-  `IntValue` INTEGER(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Integer or Bool value',
-  `DecValue` DECIMAL(10,1) NOT NULL DEFAULT 0.0 COMMENT 'Decimal value',
-  `DateValue` DATETIME COMMENT 'Date value',
-  `StringValue` VARCHAR(127) NOT NULL DEFAULT '""' COMMENT 'String Value',
-  PRIMARY KEY (`idProp`),
-  CONSTRAINT `idFlight` FOREIGN KEY `idFlight` (`idFlight`)
-    REFERENCES `flights` (`idFlight`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
-)
-ENGINE = InnoDB
-COMMENT = 'Additional custom properties for flights';
-
-load data local infile 'C:\\users\\ericbe\\desktop\\custom Property types.csv'
-ignore
-into table custompropertytypes
-fields optionally enclosed by '"' terminated by ','
-lines terminated by '\r\n'
-ignore 1 lines
-
-ALTER TABLE `logbook`.`custompropertytypes` ADD COLUMN `Flags` INTEGER UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Semantic flags for this property' AFTER `Type`;
-
-UPDATE `logbook`.`custompropertytypes` SET `Flags`= 2097152 WHERE `idPropType`='276';UPDATE `logbook`.`custompropertytypes` SET `Flags`= 2097152 WHERE `idPropType`='196';UPDATE `logbook`.`custompropertytypes` SET `Flags`= 2097152 WHERE `idPropType`='71';UPDATE `logbook`.`custompropertytypes` SET `Flags`=2097152 WHERE `idPropType`='234';UPDATE `logbook`.`custompropertytypes` SET `Flags`=2097152 WHERE `idPropType`='97';

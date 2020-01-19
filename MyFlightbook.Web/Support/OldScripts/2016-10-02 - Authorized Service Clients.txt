@@ -1,1 +1,0 @@
-﻿INSERT INTO `logbook`.`localconfig` (`keyName`, `keyValue`) VALUES ('AuthorizedWebServiceClients', '');

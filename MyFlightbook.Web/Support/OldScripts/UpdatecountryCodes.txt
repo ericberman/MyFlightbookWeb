@@ -1,7 +1,0 @@
-delete from countrycodes;
-    load data local infile 'xxx\\UpdatedCountryCodes.csv'
-    ignore
-    into table countrycodes
-    fields optionally enclosed by '"' terminated by ','
-    lines terminated by '\r\n'
-    ignore 1 lines;

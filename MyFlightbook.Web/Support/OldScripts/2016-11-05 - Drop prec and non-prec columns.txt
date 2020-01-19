@@ -1,3 +1,0 @@
-﻿ALTER TABLE `logbook`.`flights` 
-DROP COLUMN `cApprNonPrecision`,
-DROP COLUMN `cApprPrecision`;

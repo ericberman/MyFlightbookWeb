@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`aircraft` 
-ADD COLUMN `RegistrationDue` DATETIME NULL COMMENT 'Date, if any, of next renewal of registration' AFTER `LastEngine`;

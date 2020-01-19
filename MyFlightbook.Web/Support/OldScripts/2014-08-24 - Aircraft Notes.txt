@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`aircraft` ADD COLUMN `PublicNotes` TEXT NULL COMMENT 'Notes about the aircraft that are shared among all users.'  AFTER `HasGlassUpgrade` ;
-ALTER TABLE `logbook`.`useraircraft` ADD COLUMN `PrivateNotes` TEXT NULL COMMENT 'Notes about the aircraft that are private to a given user'  AFTER `Flags` ;

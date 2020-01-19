@@ -1,8 +1,0 @@
-﻿ALTER TABLE `logbook`.`flights` ADD COLUMN `cNightLandings` INTEGER UNSIGNED NOT NULL DEFAULT 0 AFTER `SIC`,
- ADD COLUMN `cFullStopLandings` INTEGER UNSIGNED NOT NULL DEFAULT 0 AFTER `cNightLandings`,
- ADD COLUMN `FlightData` MEDIUMTEXT AFTER `cFullStopLandings`;
-
-
-ALTER TABLE `logbook`.`flights` ADD COLUMN `telemetry` MEDIUMBLOB NULL  AFTER `idCatClassOverride` ;
-UPDATE FLIGHTS SET Telemetry=Compress(FlightData) WHERE FlightData <>'' AND username<>''; 
-ALTER TABLE `logbook`.`flights` DROP COLUMN `FlightData` ;

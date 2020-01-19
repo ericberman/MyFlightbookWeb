@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`models` 
-ADD COLUMN `fCertifiedSinglePilot` TINYINT(1) NOT NULL COMMENT 'For type-rated turbine aircraft, indicates certification for single-pilot operations.' AFTER `fTurbine`;

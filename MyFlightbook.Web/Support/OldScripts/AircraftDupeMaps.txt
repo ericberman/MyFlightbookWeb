@@ -1,9 +1,0 @@
-﻿delimiter $$
-
-CREATE TABLE `aircrafttombstones` (
-  `idDeletedAircraft` int(11) NOT NULL COMMENT 'The ID of the deleted aircraft',
-  `idMappedAircraft` int(11) NOT NULL COMMENT 'The ID of the aircraft with which it was merged',
-  PRIMARY KEY (`idDeletedAircraft`),
-  UNIQUE KEY `idDeletedAircraft_UNIQUE` (`idDeletedAircraft`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='We sometimes get dupe aircraft like "N1234" and "N-1234".  T'$$
-

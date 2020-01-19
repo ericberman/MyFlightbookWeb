@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`users` ADD COLUMN `TwitterAccessToken` VARCHAR(255) AFTER `FailedPasswordAnswerAttemptWindowStart`,
- ADD COLUMN `TwitterAccessSecret` VARCHAR(255) AFTER `TwitterAccessToken`;

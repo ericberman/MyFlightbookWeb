@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`badges` 
-ADD COLUMN `idFlight` INT NOT NULL DEFAULT -1 COMMENT 'ID of the flight that pushed over the edge for this badge' AFTER `ComputeDate`;

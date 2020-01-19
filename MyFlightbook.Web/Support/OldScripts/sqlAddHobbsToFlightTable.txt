@@ -1,6 +1,0 @@
-ALTER TABLE `logbook`.`flights` ADD COLUMN `hobbsStart` DECIMAL(10,1) UNSIGNED AFTER `fPublic`,
- ADD COLUMN `hobbsEnd` DECIMAL(10,1) UNSIGNED AFTER `hobbsStart`,
- ADD COLUMN `dtEngineStart` DATETIME AFTER `hobbsEnd`,
- ADD COLUMN `dtEngineEnd` DATETIME AFTER `dtEngineStart`,
- ADD COLUMN `dtFlightStart` DATETIME AFTER `dtEngineEnd`,
- ADD COLUMN `dtFlightEnd` DATETIME AFTER `dtFlightStart`;

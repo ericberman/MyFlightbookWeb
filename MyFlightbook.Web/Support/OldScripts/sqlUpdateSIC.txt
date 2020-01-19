@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`flights` MODIFY COLUMN `SIC` DECIMAL(10,1),
- ADD COLUMN `SIC` DECIMAL(10,1) AFTER `cfi`;

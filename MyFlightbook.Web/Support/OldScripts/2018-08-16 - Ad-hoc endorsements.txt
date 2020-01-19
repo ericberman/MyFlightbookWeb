@@ -1,4 +1,0 @@
-﻿ALTER TABLE `logbook`.`endorsements` 
-CHANGE COLUMN `CFI` `CFI` VARCHAR(255) NULL COMMENT 'Username of the CFI' ,
-CHANGE COLUMN `CFIFullName` `CFIFullName` VARCHAR(255) NOT NULL COMMENT 'Full name of the CFI, cached in case the account is ever deleted.' ,
-ADD COLUMN `DigitizedSignature` MEDIUMBLOB NULL COMMENT 'Scribbled signature for ad-hoc signatures.' AFTER `FARRef`;
