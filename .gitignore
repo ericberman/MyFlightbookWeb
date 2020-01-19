@@ -14,40 +14,40 @@
 *.userprefs
 
 #configuration files that should not be in source control
-connection.config
-debug.config
-email.config
+MyFlightbook.Web/App_Data/connection.config
+MyFlightbook.Web/App_Data/debug.config
+MyFlightbook.Web/App_Data/email.config
 
 #Legacy bugs file - included personal details of people who report bugs or request features.
 Private/Bugs.txt
 MyFlightbook.ruleset
 
 #batch/VBScript files that run on the server in a production environment.
-App_Data/NightlyEmail.vbs
-App_Data/NightlyStats.vbs
-App_Data/rcDesktop.bat
-App_Data/rcMac.bat
+MyFlightbook.Web/App_Data/NightlyEmail.vbs
+MyFlightbook.Web/App_Data/NightlyStats.vbs
+MyFlightbook.Web/App_Data/rcDesktop.bat
+MyFlightbook.Web/App_Data/rcMac.bat
 
 #image directories
-[Ii]mages/[Aa]ircraft/
-[Ii]mages/[Bb]asicMed/
-[Ii]mages/[Ee]ndorsements/
-[Ii]mages/[Ff]lights
-[Ii]mages/[Tt]elemetry
-[Ii]mages/rcDesktop.bat
-[Ii]mages/rcMac.bat
+MyFlightbook.Web/[Ii]mages/[Aa]ircraft/
+MyFlightbook.Web/[Ii]mages/[Bb]asicMed/
+MyFlightbook.Web/[Ii]mages/[Ee]ndorsements/
+MyFlightbook.Web/[Ii]mages/[Ff]lights
+MyFlightbook.Web/[Ii]mages/[Tt]elemetry
+MyFlightbook.Web/[Ii]mages/rcDesktop.bat
+MyFlightbook.Web/[Ii]mages/rcMac.bat
 
 #legacy stuff from SVN, including other projects that are now separately up on github
-MFBAndroid/
-MFBIphone/
-W7Phone/
-WSDLtoObjC/
+MyFlightbook.Web/MFBAndroid/
+MyFlightbook.Web/MFBIphone/
+MyFlightbook.Web/W7Phone/
+MyFlightbook.Web/WSDLtoObjC/
 .svn/
-[Aa]irport [Dd]ata/
+MyFlightbook.Web/[Aa]irport [Dd]ata/
 {*}/
-[Ss]upport/OldScripts/
-[Ss]upport/*.vbs
-[Ss]upport/Rootfiles
+MyFlightbook.Web/[Ss]upport/OldScripts/
+MyFlightbook.Web/[Ss]upport/*.vbs
+MyFlightbook.Web/[Ss]upport/Rootfiles
 
 # Mono auto generated files
 mono_crash.*
