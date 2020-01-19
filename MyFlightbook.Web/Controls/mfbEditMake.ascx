@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditMake.ascx.cs" Inherits="Controls_mfbEditMake" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEditMake.ascx.cs" Inherits="Controls_mfbEditMake" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc1" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc2" TagName="mfbTooltip" %>

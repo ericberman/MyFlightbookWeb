@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="OneDriveRedir.aspx.cs" Inherits="Public_OneDriveRedir" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="OneDriveRedir.aspx.cs" Inherits="Public_OneDriveRedir" %>
 
 <!DOCTYPE html>
 

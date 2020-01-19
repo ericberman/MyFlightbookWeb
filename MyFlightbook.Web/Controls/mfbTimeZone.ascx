@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbTimeZone.ascx.cs" Inherits="Controls_mfbTimeZone" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbTimeZone.ascx.cs" Inherits="Controls_mfbTimeZone" %>
     <asp:HiddenField ID="hdnTZOffset" Value="0" runat="server" />
 <script>
 //<![CDATA[

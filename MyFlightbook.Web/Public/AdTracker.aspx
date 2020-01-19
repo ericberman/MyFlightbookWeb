@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AdTracker.aspx.cs" Inherits="Public_AdTracker" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="AdTracker.aspx.cs" Inherits="Public_AdTracker" %>
 
 <%@ Register src="../Controls/GoogleAnalytics.ascx" tagname="GoogleAnalytics" tagprefix="uc1" %>
 

@@ -1,0 +1,2777 @@
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6B5F6A9B-EC19-432E-9B3B-A1B542C92CCE}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MyFlightbook.Web</RootNamespace>
+    <AssemblyName>MyFlightbook.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44390</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit, Version=19.1.0.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <HintPath>..\packages\AjaxControlToolkit.19.1.0\lib\net40\AjaxControlToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="AjaxControlToolkit.HtmlEditor.Sanitizer, Version=19.1.0.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <HintPath>..\packages\AjaxControlToolkit.HtmlEditor.Sanitizer.19.1.0\lib\net40\AjaxControlToolkit.HtmlEditor.Sanitizer.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK, Version=2.3.55.2, Culture=neutral, PublicKeyToken=9f476d3089b52be3, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.2.3.55.2\lib\net45\AWSSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.Core.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.Core.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.Core.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.InfoCard, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.InfoCard.4.3.4.13329\lib\net45-full\DotNetOpenAuth.InfoCard.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.InfoCard.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.InfoCard.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.InfoCard.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth.Common, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Common.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth.Consumer, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Consumer.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth.Consumer.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth.ServiceProvider, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.ServiceProvider.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth.ServiceProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth2, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth2.AuthorizationServer, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.AuthorizationServer.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.AuthorizationServer.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth2.Client, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Client.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth2.Client.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Client.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.Client.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth2.ClientAuthorization, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.ClientAuthorization.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.ClientAuthorization.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth2.ResourceServer, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.ResourceServer.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth2.ResourceServer.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.Provider, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Provider.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.Provider.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.Provider.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Provider.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.Provider.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.RelyingParty.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.RelyingParty.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenIdInfoCard.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OpenIdInfoCard.UI.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenIdInfoCard.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenIdOAuth, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OpenIdOAuth.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenIdOAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Dropbox.Api, Version=4.0.0.0, Culture=neutral, PublicKeyToken=310f0e82fbb45d01, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dropbox.Api.4.9.4\lib\net45\Dropbox.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.11.2.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.11.2\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.11.17.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.17\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Ical.Net, Version=4.1.8.0, Culture=neutral, PublicKeyToken=65c0446cd019ea53, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ical.Net.4.1.11\lib\net46\Ical.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ionic.Zip.1.9.1.8\lib\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="Magick.NET-Q16-AnyCPU, Version=7.15.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
+      <HintPath>..\packages\Magick.NET-Q16-AnyCPU.7.15.0\lib\net40\Magick.NET-Q16-AnyCPU.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.5.2.6\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=8.0.19.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.8.0.19\lib\net452\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NodaTime, Version=2.4.7.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NodaTime.2.4.7\lib\net45\NodaTime.dll</HintPath>
+    </Reference>
+    <Reference Include="OneDriveSdk, Version=1.1.47.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.OneDriveSDK.1.1.47\lib\net451\OneDriveSdk.dll</HintPath>
+    </Reference>
+    <Reference Include="OneDriveSdk.WindowsForms, Version=1.1.47.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.OneDriveSDK.1.1.47\lib\net451\OneDriveSdk.WindowsForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SecuritySwitch, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SecuritySwitch.4.4.0.0\lib\SecuritySwitch.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives, Version=4.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reflection.TypeExtensions, Version=4.1.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.TypeExtensions.4.7.0\lib\net461\System.Reflection.TypeExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Ubiety.Dns.Core, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ubiety.Dns.Core.2.4.1\lib\netstandard2.0\Ubiety.Dns.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
+    <Content Include="AppCode\Clubs\DayPilotLICENSE.txt" />
+    <Content Include="AppCode\oAuthServices\MS-PL LICENSE for DotNetOpenAuth.txt" />
+    <Content Include="App_Data\connection.config" />
+    <Content Include="App_GlobalResources\Content.en\AccountQuestionHint.txt" />
+    <Content Include="App_GlobalResources\Content.en\AccountQuestionSamplesList.txt" />
+    <Content Include="App_GlobalResources\Content.en\ClubRolesDescription.htm" />
+    <Content Include="App_GlobalResources\Content.en\CurrencyDisclaimer.htm" />
+    <Content Include="App_GlobalResources\Content.en\DeadlineDescription.htm" />
+    <Content Include="App_GlobalResources\Content.en\Email\AccountLocked.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\AccountUnlocked.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\AircraftModelChangedNotification.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\AircraftModelNewModelIgnored.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\AircraftTailSplit.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\AppointmentDeleted.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ChangeEmailConfirmation.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ChangePassEmail.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ClubInvitationAccepted.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ClubInviteJoin.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ClubRequestAccepted.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ClubRequestJoin.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ContactMeResponse.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\DonationThankYou.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\DropboxExpired.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\DropboxExpiring.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\DropboxFailure.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\EnableFacebook.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\EnableTwitter.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\GoogleDriveFailure.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\OneDriveFailure.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\PasswordChanged.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ReauthFacebook.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ResetPassEmail.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ResourceBooked.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\ResourceChangedByOther.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\Resourcedoublebooked.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\RoleInvitation.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\SendFlightBody.htm" />
+    <Content Include="App_GlobalResources\Content.en\Email\SignInvitationExisting.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\TelemetryTooLarge.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\Welcomeemail.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\Welcomeemailhtm.txt" />
+    <Content Include="App_GlobalResources\Content.en\FlightDataKey.txt" />
+    <Content Include="App_GlobalResources\Content.en\ImportTableDescription.txt" />
+    <Content Include="App_GlobalResources\Content.en\mapnavaidtip.htm" />
+    <Content Include="App_GlobalResources\Content.en\MobileAppPromo.txt" />
+    <Content Include="App_GlobalResources\Content.en\NewAccountPromo.txt" />
+    <Content Include="App_GlobalResources\Content.en\Privacy.htm" />
+    <Content Include="App_GlobalResources\Content.en\SharingDescription.htm" />
+    <Content Include="App_GlobalResources\Content.en\TAADefinition.htm" />
+    <Content Include="App_GlobalResources\Content.en\TermsAndConditions.htm" />
+    <Content Include="App_GlobalResources\Content.en\WhyStartingFlights.txt" />
+    <Content Include="App_GlobalResources\Content.en\wkhtmlnote.htm" />
+    <Content Include="Controls\AccountQuestions.ascx" />
+    <Content Include="Controls\adminStats.ascx" />
+    <Content Include="Controls\AircraftControls\AircraftList.ascx" />
+    <Content Include="Controls\AircraftControls\SelectMake.ascx" />
+    <Content Include="Controls\ChecklistControls\ChecklistItem.ascx" />
+    <Content Include="Controls\ClubControls\ClubAircraftSchedule.ascx" />
+    <Content Include="Controls\ClubControls\FlyingReport.ascx" />
+    <Content Include="Controls\ClubControls\InsuranceReport.ascx" />
+    <Content Include="Controls\ClubControls\MaintenanceReport.ascx" />
+    <Content Include="Controls\ClubControls\SchedSummary.ascx" />
+    <Content Include="Controls\ClubControls\TimeZone.ascx" />
+    <Content Include="Controls\ClubControls\ViewClub.ascx" />
+    <Content Include="Controls\Expando.ascx" />
+    <Content Include="Controls\fbComment.ascx" />
+    <Content Include="Controls\GoogleAnalytics.ascx" />
+    <Content Include="Controls\GoogleChart.ascx" />
+    <Content Include="Controls\imageSlider.ascx" />
+    <Content Include="Controls\METAR.ascx" />
+    <Content Include="Controls\mfbAccordionProxyControl.ascx" />
+    <Content Include="Controls\mfbAccordionProxyExtender.ascx" />
+    <Content Include="Controls\mfbAirportIDGame.ascx" />
+    <Content Include="Controls\mfbAirportServices.ascx" />
+    <Content Include="Controls\mfbATDFTD.ascx" />
+    <Content Include="Controls\mfbBadgeSet.ascx" />
+    <Content Include="Controls\mfbBasicMedManager.ascx" />
+    <Content Include="Controls\mfbChartTotals.ascx" />
+    <Content Include="Controls\mfbCurrency.ascx" />
+    <Content Include="Controls\mfbCustCurrency.ascx" />
+    <Content Include="Controls\mfbCustomCurrencyList.ascx" />
+    <Content Include="Controls\mfbDateTime.ascx" />
+    <Content Include="Controls\mfbDeadlines.ascx" />
+    <Content Include="Controls\mfbDecimalEdit.ascx" />
+    <Content Include="Controls\mfbDownload.ascx" />
+    <Content Include="Controls\mfbEditableImage.ascx" />
+    <Content Include="Controls\mfbEditAircraft.ascx" />
+    <Content Include="Controls\mfbEditAppt.ascx" />
+    <Content Include="Controls\mfbEditEndorsement.ascx" />
+    <Content Include="Controls\mfbEditFlight.ascx" />
+    <Content Include="Controls\mfbEditMake.ascx" />
+    <Content Include="Controls\mfbEditProp.ascx" />
+    <Content Include="Controls\mfbEditPropSet.ascx" />
+    <Content Include="Controls\mfbEditPropTemplate.ascx" />
+    <Content Include="Controls\mfbEndorsement.ascx" />
+    <Content Include="Controls\mfbEndorsementList.ascx" />
+    <Content Include="Controls\mfbFacebookFan.ascx" />
+    <Content Include="Controls\mfbFileUpload.ascx" />
+    <Content Include="Controls\mfbFlightContextMenu.ascx" />
+    <Content Include="Controls\mfbFlightInfo.ascx" />
+    <Content Include="Controls\mfbFlightProperties.ascx" />
+    <Content Include="Controls\mfbFooter.ascx" />
+    <Content Include="Controls\mfbGoogleAdSense.ascx" />
+    <Content Include="Controls\mfbGoogleMapManager.ascx" />
+    <Content Include="Controls\mfbGooglePlus.ascx" />
+    <Content Include="Controls\mfbHeader.ascx" />
+    <Content Include="Controls\mfbHoverImageList.ascx" />
+    <Content Include="Controls\mfbHtmlEdit.ascx" />
+    <Content Include="Controls\mfbImageList.ascx" />
+    <Content Include="Controls\mfbImpersonate.ascx" />
+    <Content Include="Controls\mfbImportAircraft.ascx" />
+    <Content Include="Controls\mfbLogbook.ascx" />
+    <Content Include="Controls\mfbLogbookSidebar.ascx" />
+    <Content Include="Controls\mfbMaintainAircraft.ascx" />
+    <Content Include="Controls\mfbMakeListItem.ascx" />
+    <Content Include="Controls\mfbMiniFacebook.ascx" />
+    <Content Include="Controls\mfbMultiFileUpload.ascx" />
+    <Content Include="Controls\mfbPublicFlightItem.ascx" />
+    <Content Include="Controls\mfbQueryDescriptor.ascx" />
+    <Content Include="Controls\mfbQueryDescriptorItem.ascx" />
+    <Content Include="Controls\mfbRecentAchievements.ascx" />
+    <Content Include="Controls\mfbResourceSchedule.ascx" />
+    <Content Include="Controls\mfbScribbleSignature.ascx" />
+    <Content Include="Controls\mfbSearchAndTotals.ascx" />
+    <Content Include="Controls\mfbSearchbox.ascx" />
+    <Content Include="Controls\mfbSearchForm.ascx" />
+    <Content Include="Controls\mfbSelectTemplates.ascx" />
+    <Content Include="Controls\mfbSendFlight.ascx" />
+    <Content Include="Controls\mfbSignature.ascx" />
+    <Content Include="Controls\mfbSignFlight.ascx" />
+    <Content Include="Controls\mfbSignIn.ascx" />
+    <Content Include="Controls\mfbSimpleTotals.ascx" />
+    <Content Include="Controls\mfbSubscriptionManager.ascx" />
+    <Content Include="Controls\mfbTandC.ascx" />
+    <Content Include="Controls\mfbTimeZone.ascx" />
+    <Content Include="Controls\mfbTooltip.ascx" />
+    <Content Include="Controls\mfbTotalSummary.ascx" />
+    <Content Include="Controls\mfbTweetThis.ascx" />
+    <Content Include="Controls\mfbTypeInDate.ascx" />
+    <Content Include="Controls\mfbVideoEntry.ascx" />
+    <Content Include="Controls\oAuthAuthorizationManager.ascx" />
+    <Content Include="Controls\popmenu.ascx" />
+    <Content Include="Controls\PrintingLayouts\layoutCanada.ascx" />
+    <Content Include="Controls\PrintingLayouts\layoutCASA.ascx" />
+    <Content Include="Controls\PrintingLayouts\layoutEASAFCL.ascx" />
+    <Content Include="Controls\PrintingLayouts\layoutGlider.ascx" />
+    <Content Include="Controls\PrintingLayouts\layoutNative.ascx" />
+    <Content Include="Controls\PrintingLayouts\layoutNZ.ascx" />
+    <Content Include="Controls\PrintingLayouts\layoutPortrait.ascx" />
+    <Content Include="Controls\PrintingLayouts\LayoutSACAA.ascx" />
+    <Content Include="Controls\PrintingLayouts\layoutUSA.ascx" />
+    <Content Include="Controls\PrintingLayouts\pageFooter.ascx" />
+    <Content Include="Controls\PrintingLayouts\pageHeader.ascx" />
+    <Content Include="Controls\PrintOptions.ascx" />
+    <Content Include="Controls\RSSCurrency.ascx" />
+    <Content Include="Controls\SponsoredAd.ascx" />
+    <Content Include="Controls\XMLNav.ascx" />
+    <Content Include="Default.aspx" />
+    <Content Include="DefaultMini.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="HTTP403.htm" />
+    <Content Include="HTTP404.htm" />
+    <Content Include="HTTP500.htm" />
+    <Content Include="images\1536 full.png" />
+    <Content Include="images\1536 with white.png" />
+    <Content Include="images\1536xparent.png" />
+    <Content Include="images\add.png" />
+    <Content Include="images\addgoogle.gif" />
+    <Content Include="images\AircraftImportSample.png" />
+    <Content Include="images\airport.png" />
+    <Content Include="images\ajax-loader-transparent-ball.gif" />
+    <Content Include="images\ajax-loader.gif" />
+    <Content Include="images\apple-touch-icon.png" />
+    <Content Include="images\Badge-Achieved.png" />
+    <Content Include="images\Badge-Bronze.png" />
+    <Content Include="images\Badge-Gold.png" />
+    <Content Include="images\Badge-Platinum.png" />
+    <Content Include="images\Badge-Silver.png" />
+    <Content Include="images\Badge-sm.png" />
+    <Content Include="images\BadgeOverlays\alabama.png" />
+    <Content Include="images\BadgeOverlays\alaska.png" />
+    <Content Include="images\BadgeOverlays\arizona.png" />
+    <Content Include="images\BadgeOverlays\arkansas.png" />
+    <Content Include="images\BadgeOverlays\california.png" />
+    <Content Include="images\BadgeOverlays\certificate.png" />
+    <Content Include="images\BadgeOverlays\cloud.png" />
+    <Content Include="images\BadgeOverlays\colorado.png" />
+    <Content Include="images\BadgeOverlays\connecticut.png" />
+    <Content Include="images\BadgeOverlays\delaware.png" />
+    <Content Include="images\BadgeOverlays\florida.png" />
+    <Content Include="images\BadgeOverlays\georgia.png" />
+    <Content Include="images\BadgeOverlays\hawaii.png" />
+    <Content Include="images\BadgeOverlays\idaho.png" />
+    <Content Include="images\BadgeOverlays\illinois.png" />
+    <Content Include="images\BadgeOverlays\indiana.png" />
+    <Content Include="images\BadgeOverlays\iowa.png" />
+    <Content Include="images\BadgeOverlays\kansas.png" />
+    <Content Include="images\BadgeOverlays\kentucky.png" />
+    <Content Include="images\BadgeOverlays\louisiana.png" />
+    <Content Include="images\BadgeOverlays\maine.png" />
+    <Content Include="images\BadgeOverlays\maryland.png" />
+    <Content Include="images\BadgeOverlays\massachusetts.png" />
+    <Content Include="images\BadgeOverlays\michigan.png" />
+    <Content Include="images\BadgeOverlays\minnesota.png" />
+    <Content Include="images\BadgeOverlays\mississippi.png" />
+    <Content Include="images\BadgeOverlays\missouri.png" />
+    <Content Include="images\BadgeOverlays\montana.png" />
+    <Content Include="images\BadgeOverlays\nebraska.png" />
+    <Content Include="images\BadgeOverlays\nevada.png" />
+    <Content Include="images\BadgeOverlays\new-hampshire.png" />
+    <Content Include="images\BadgeOverlays\new-jersey.png" />
+    <Content Include="images\BadgeOverlays\new-mexico.png" />
+    <Content Include="images\BadgeOverlays\newyork.png" />
+    <Content Include="images\BadgeOverlays\nightowl.png" />
+    <Content Include="images\BadgeOverlays\north-carolina.png" />
+    <Content Include="images\BadgeOverlays\north-dakota.png" />
+    <Content Include="images\BadgeOverlays\ohio.png" />
+    <Content Include="images\BadgeOverlays\oklahoma.png" />
+    <Content Include="images\BadgeOverlays\oregon.png" />
+    <Content Include="images\BadgeOverlays\penguin.png" />
+    <Content Include="images\BadgeOverlays\pennsylvania.png" />
+    <Content Include="images\BadgeOverlays\rhodeisland.png" />
+    <Content Include="images\BadgeOverlays\south-carolina.png" />
+    <Content Include="images\BadgeOverlays\south-dakota.png" />
+    <Content Include="images\BadgeOverlays\tennessee.png" />
+    <Content Include="images\BadgeOverlays\texas.png" />
+    <Content Include="images\BadgeOverlays\utah.png" />
+    <Content Include="images\BadgeOverlays\vermont.png" />
+    <Content Include="images\BadgeOverlays\virginia.png" />
+    <Content Include="images\BadgeOverlays\washington.png" />
+    <Content Include="images\BadgeOverlays\west-virginia.png" />
+    <Content Include="images\BadgeOverlays\wisconsin.png" />
+    <Content Include="images\BadgeOverlays\wyoming.png" />
+    <Content Include="images\CalendarPopup.png" />
+    <Content Include="images\camera.gif" />
+    <Content Include="images\camera.png" />
+    <Content Include="images\cameramarker%402x.png" />
+    <Content Include="images\cameramarker.png" />
+    <Content Include="images\checkmark.png" />
+    <Content Include="images\Chrome32x32.png" />
+    <Content Include="images\Chrome48x48.png" />
+    <Content Include="images\Chrome64x64.png" />
+    <Content Include="images\circleslash.png" />
+    <Content Include="images\Clip.png" />
+    <Content Include="images\cloudahoy-sm.png" />
+    <Content Include="images\CloudAhoyTrans.png" />
+    <Content Include="images\collapse.png" />
+    <Content Include="images\copyflight.png" />
+    <Content Include="images\copyflightreverse.png" />
+    <Content Include="images\cross-fill.png" />
+    <Content Include="images\csvicon_med.png" />
+    <Content Include="images\download.png" />
+    <Content Include="images\drive_white-large.png" />
+    <Content Include="images\dropbox-logos_dropbox-logotype-blue.png" />
+    <Content Include="images\Edge32x32.png" />
+    <Content Include="images\Edge48x48.png" />
+    <Content Include="images\Edge64x64.png" />
+    <Content Include="images\EdgeInvert32x32.png" />
+    <Content Include="images\EdgeInvert48x48.png" />
+    <Content Include="images\EdgeInvert64x64.png" />
+    <Content Include="images\expand.png" />
+    <Content Include="images\facebookicon.gif" />
+    <Content Include="images\facebooklogo.png" />
+    <Content Include="images\favorite.png" />
+    <Content Include="images\favoritefilled.png" />
+    <Content Include="images\favoritefilledsm.png" />
+    <Content Include="images\favoritesm.png" />
+    <Content Include="images\Firefox32x32.png" />
+    <Content Include="images\Firefox48x48.png" />
+    <Content Include="images\Firefox64x64.png" />
+    <Content Include="images\flight.png" />
+    <Content Include="images\google-drive-logo-lockup.png" />
+    <Content Include="images\google-play-badge.png" />
+    <Content Include="images\icon1024x1024.png" />
+    <Content Include="images\import.png" />
+    <Content Include="images\InternetExplorer32x32.png" />
+    <Content Include="images\InternetExplorer48x48.png" />
+    <Content Include="images\InternetExplorer64x64.png" />
+    <Content Include="images\kmlicon_med.png" />
+    <Content Include="images\Landscape.png" />
+    <Content Include="images\landscapeprint.png" />
+    <Content Include="images\Link.png" />
+    <Content Include="images\mapmarker.png" />
+    <Content Include="images\mapmarkersm.png" />
+    <Content Include="images\mapzoom.png" />
+    <Content Include="images\MenuChevron.png" />
+    <Content Include="images\MFBIcon.gif" />
+    <Content Include="images\mfbicon.png" />
+    <Content Include="images\mfbicon20x20.png" />
+    <Content Include="images\MyFlightbookHuge.png" />
+    <Content Include="images\MyFlightbookHugeNew.png" />
+    <Content Include="images\MyFlightbookHugeTransParent.png" />
+    <Content Include="images\MyFlightbookHugeTransParentNew.png" />
+    <Content Include="images\MyFlightbookMed.png" />
+    <Content Include="images\MyFlightbookMedNew.png" />
+    <Content Include="images\myflightbooknew120x120.png" />
+    <Content Include="images\myflightbooknew180x120.png" />
+    <Content Include="images\noimage.png" />
+    <Content Include="images\OneDrive_rgb_Blue2728.png" />
+    <Content Include="images\pdficon_large.gif" />
+    <Content Include="images\pdficon_large.png" />
+    <Content Include="images\pdficon_med.png" />
+    <Content Include="images\pdficon_small.png" />
+    <Content Include="images\pencil.png" />
+    <Content Include="images\pencilsm.png" />
+    <Content Include="images\pendingflights.png" />
+    <Content Include="images\pendingvideo.png" />
+    <Content Include="images\portraitprint.png" />
+    <Content Include="images\product32.png" />
+    <Content Include="images\progress.gif" />
+    <Content Include="images\pushpin.png" />
+    <Content Include="images\pushpinsm.png" />
+    <Content Include="images\resizehandle.png" />
+    <Content Include="images\rightarrow.png" />
+    <Content Include="images\ruler.png" />
+    <Content Include="images\Safari32x32.png" />
+    <Content Include="images\Safari48x48.png" />
+    <Content Include="images\Safari64x64.png" />
+    <Content Include="images\Search.png" />
+    <Content Include="images\sendflight.png" />
+    <Content Include="images\siginvalid%402x.png" />
+    <Content Include="images\siginvalid.png" />
+    <Content Include="images\signature.png" />
+    <Content Include="images\signaturesm.png" />
+    <Content Include="images\sigok%402x.png" />
+    <Content Include="images\sigok.png" />
+    <Content Include="images\Smartphone.png" />
+    <Content Include="images\SponsoredAds\goldmethod-150.jpg" />
+    <Content Include="images\SponsoredAds\goldsealflight.jpg" />
+    <Content Include="images\startingtotals.png" />
+    <Content Include="images\TabBarGradient.gif" />
+    <Content Include="images\tower.png" />
+    <Content Include="images\twitter.gif" />
+    <Content Include="images\twitter.png" />
+    <Content Include="images\twitter20x20.png" />
+    <Content Include="images\twitter_logo_header.png" />
+    <Content Include="images\update.png" />
+    <Content Include="images\windvector.png" />
+    <Content Include="images\x.gif" />
+    <Content Include="images\xlicon_med.png" />
+    <Content Include="images\xml.gif" />
+    <Content Include="images\zip_med.png" />
+    <Content Include="Logon\newuser.aspx" />
+    <Content Include="Logon\ResetPass.aspx" />
+    <Content Include="MasterPage.master" />
+    <Content Include="Member\8710Form.aspx" />
+    <Content Include="Member\Achievements.aspx" />
+    <Content Include="Member\ACSchedule.aspx" />
+    <Content Include="Member\AddEndorsement.aspx" />
+    <Content Include="Member\AddRelationship.aspx" />
+    <Content Include="Member\Admin.aspx" />
+    <Content Include="Member\AdminImages.aspx" />
+    <Content Include="Member\AdminTelemetry.aspx" />
+    <Content Include="Member\Aircraft.aspx" />
+    <Content Include="Member\Airports.aspx" />
+    <Content Include="Member\BrowseTemplates.aspx" />
+    <Content Include="Member\ClubDetails.aspx" />
+    <Content Include="Member\ClubManage.aspx" />
+    <Content Include="Member\Donate.aspx" />
+    <Content Include="Member\Download.aspx" />
+    <Content Include="Member\EditAircraft.aspx" />
+    <Content Include="Member\EditAirports.aspx" />
+    <Content Include="Member\EditMake.aspx" />
+    <Content Include="Member\EditProfile.aspx" />
+    <Content Include="Member\EndorseStudent.aspx" />
+    <Content Include="Member\FAQEdit.aspx" />
+    <Content Include="Member\FBPost.aspx" />
+    <Content Include="Member\FindFlights.aspx" />
+    <Content Include="Member\FlightAnalysis.aspx" />
+    <Content Include="Member\FlightDetail.aspx" />
+    <Content Include="Member\FlyingTrends.aspx" />
+    <Content Include="Member\Game.aspx" />
+    <Content Include="Member\IcalAppt.aspx" />
+    <Content Include="Member\ImpAircraft.aspx" />
+    <Content Include="Member\ImpAircraftService.aspx" />
+    <Content Include="Member\Import.aspx" />
+    <Content Include="Member\ImportTelemetry.aspx" />
+    <Content Include="Member\Logbook.aspx" />
+    <Content Include="Member\LogbookNew.aspx" />
+    <Content Include="Member\makes.aspx" />
+    <Content Include="Member\MiniLogbook.aspx" />
+    <Content Include="Member\MiniRecents.aspx" />
+    <Content Include="Member\MiniTotals.aspx" />
+    <Content Include="Member\oAuthAuthorize.aspx" />
+    <Content Include="Member\PrintView.aspx" />
+    <Content Include="Member\RatingProgress.aspx" />
+    <Content Include="Member\RequestSigs.aspx" />
+    <Content Include="Member\ReviewPendingFlights.aspx" />
+    <Content Include="Member\Schedule.aspx" />
+    <Content Include="Member\SearchTotals.aspx" />
+    <Content Include="Member\SignFlight.aspx" />
+    <Content Include="Member\StartingTotals.aspx" />
+    <Content Include="Member\Stats.aspx" />
+    <Content Include="Member\StudentLogbook.aspx" />
+    <Content Include="Member\Totals.aspx" />
+    <Content Include="Member\Training.aspx" />
+    <Content Include="NavLinks.xml" />
+    <Content Include="OAuth\oAuthToken.aspx" />
+    <Content Include="PlayPen\Checklist.aspx" />
+    <Content Include="PlayPen\DayNight.aspx" />
+    <Content Include="PlayPen\Default.aspx" />
+    <Content Include="PlayPen\iCalConvert.aspx" />
+    <Content Include="PlayPen\ImgDbg.aspx" />
+    <Content Include="PlayPen\MergeFlights.aspx" />
+    <Content Include="PlayPen\MergeTelemetry.aspx" />
+    <Content Include="PlayPen\oAuthClientTest.aspx" />
+    <Content Include="Private\SetupNotes.txt" />
+    <Content Include="Public\AdTracker.aspx" />
+    <Content Include="Public\AllClubs.aspx" />
+    <Content Include="Public\AllMakes.aspx" />
+    <Content Include="Public\AndroidImages\amazon-apps-kindle-us-white.png" />
+    <Content Include="Public\AndroidImages\amazon-apps-store-us-white.png" />
+    <Content Include="Public\AndroidImages\Android1.png" />
+    <Content Include="Public\AndroidImages\Android2.png" />
+    <Content Include="Public\AndroidImages\Android3.png" />
+    <Content Include="Public\AndroidImages\Android4.png" />
+    <Content Include="Public\AndroidImages\Android5.png" />
+    <Content Include="Public\AndroidImages\Android6.png" />
+    <Content Include="Public\AndroidImages\Android7.png" />
+    <Content Include="Public\AndroidImages\APKs\mfbapks.htm" />
+    <Content Include="Public\AppleAppStore.svg" />
+    <Content Include="Public\authredir.aspx" />
+    <Content Include="Public\AWS-SNSListener.aspx" />
+    <Content Include="Public\bxslider\images\bx_loader.gif" />
+    <Content Include="Public\bxslider\images\controls.png" />
+    <Content Include="Public\bxslider\jquery.bxslider.min.css" />
+    <Content Include="Public\bxslider\jquery.bxslider.min.js" />
+    <Content Include="Public\bxslider\jquery.fitvids.js" />
+    <Content Include="Public\CFISigs-2012-12.htm" />
+    <Content Include="Public\CFISigs.aspx" />
+    <Content Include="Public\CloudAhoyRedir.aspx" />
+    <Content Include="Public\Clubs.aspx" />
+    <Content Include="Public\ClubsManual.aspx" />
+    <Content Include="Public\ClubsManual_files\image015.png" />
+    <Content Include="Public\ClubsManual_files\image016.png" />
+    <Content Include="Public\ClubsManual_files\image017.jpg" />
+    <Content Include="Public\ClubsManual_files\image018.jpg" />
+    <Content Include="Public\ClubsManual_files\image019.png" />
+    <Content Include="Public\ClubsManual_files\image020.jpg" />
+    <Content Include="Public\ClubsManual_files\image021.jpg" />
+    <Content Include="Public\ClubsManual_files\image022.jpg" />
+    <Content Include="Public\ClubsManual_files\image023.jpg" />
+    <Content Include="Public\ClubsManual_files\updatehours.png" />
+    <Content Include="Public\ContactMe.aspx" />
+    <Content Include="Public\CrashReport.aspx" />
+    <Content Include="Public\CSS\ChecklistBase.css" />
+    <Content Include="Public\CSS\MobileSheet.css" />
+    <Content Include="Public\CSS\NightMode.css" />
+    <Content Include="Public\CSS\printCanada.css" />
+    <Content Include="Public\CSS\printCASA.css" />
+    <Content Include="Public\CSS\printEASA.css" />
+    <Content Include="Public\CSS\printGlider.css" />
+    <Content Include="Public\CSS\printNative.css" />
+    <Content Include="Public\CSS\printNZ.css" />
+    <Content Include="Public\CSS\printPortrait.css" />
+    <Content Include="Public\CSS\printSACAA.css" />
+    <Content Include="Public\CSS\printUSA.css" />
+    <Content Include="Public\CSS\staging.css" />
+    <Content Include="Public\CurrencyDisclaimer.aspx" />
+    <Content Include="Public\DayPilot-LICENSE.txt" />
+    <Content Include="Public\DayPilot-NOTICE.txt" />
+    <Content Include="Public\Developer.aspx" />
+    <Content Include="Public\Export.aspx" />
+    <Content Include="Public\FAQ.aspx" />
+    <Content Include="Public\FindAirport.aspx" />
+    <Content Include="Public\FlightDataKey.aspx" />
+    <Content Include="Public\Game.aspx" />
+    <Content Include="Public\ImportTable.aspx" />
+    <Content Include="Public\iPadImages\Full\iPad1.png" />
+    <Content Include="Public\iPadImages\Full\iPad2.png" />
+    <Content Include="Public\iPadImages\Full\iPad3.png" />
+    <Content Include="Public\iPadImages\Full\iPad4.png" />
+    <Content Include="Public\iPadImages\Full\iPad5.png" />
+    <Content Include="Public\iPadImages\Full\iPad6.png" />
+    <Content Include="Public\iPadImages\Full\iPad7.png" />
+    <Content Include="Public\iPadImages\Full\iPad8.png" />
+    <Content Include="Public\iPadImages\iPad1.png" />
+    <Content Include="Public\iPadImages\iPad2.png" />
+    <Content Include="Public\iPadImages\iPad3.png" />
+    <Content Include="Public\iPadImages\iPad4.png" />
+    <Content Include="Public\iPadImages\iPad5.png" />
+    <Content Include="Public\iPadImages\iPad6.png" />
+    <Content Include="Public\iPadImages\iPad7.png" />
+    <Content Include="Public\iPadImages\iPad8.png" />
+    <Content Include="Public\iPhoneImages\Full\iPhone1.png" />
+    <Content Include="Public\iPhoneImages\Full\iPhone2.png" />
+    <Content Include="Public\iPhoneImages\Full\iPhone3.png" />
+    <Content Include="Public\iPhoneImages\Full\iPhone4.png" />
+    <Content Include="Public\iPhoneImages\Full\iPhone5.png" />
+    <Content Include="Public\iPhoneImages\Full\iPhone6.png" />
+    <Content Include="Public\iPhoneImages\Full\iPhone7.png" />
+    <Content Include="Public\iPhoneImages\Full\iPhone8.png" />
+    <Content Include="Public\iPhoneImages\iPhone1.png" />
+    <Content Include="Public\iPhoneImages\iPhone2.png" />
+    <Content Include="Public\iPhoneImages\iPhone3.png" />
+    <Content Include="Public\iPhoneImages\iPhone4.png" />
+    <Content Include="Public\iPhoneImages\iPhone5.png" />
+    <Content Include="Public\iPhoneImages\iPhone6.png" />
+    <Content Include="Public\iPhoneImages\iPhone7.png" />
+    <Content Include="Public\iPhoneImages\iPhone8.png" />
+    <Content Include="Public\MapRoute2.aspx" />
+    <Content Include="Public\mfblogonew-large.png" />
+    <Content Include="Public\mfblogonew.png" />
+    <Content Include="Public\MobileApps.aspx" />
+    <Content Include="Public\myflightbook.gif" />
+    <Content Include="Public\myflightbook.png" />
+    <Content Include="Public\myflightbooknew.png" />
+    <Content Include="Public\myflightbooknew100x33.png" />
+    <Content Include="Public\myflightbooknewstaging.png" />
+    <Content Include="Public\MyFlights.aspx" />
+    <Content Include="Public\oAuthToken.aspx" />
+    <Content Include="Public\OneDriveRedir.aspx" />
+    <Content Include="Public\PaypalIPNListener.aspx" />
+    <Content Include="Public\PendingImg.aspx" />
+    <Content Include="Public\Privacy.aspx" />
+    <Content Include="Public\RSSCurrency.aspx" />
+    <Content Include="Public\Scripts\daypilot-all.min.js" />
+    <Content Include="Public\Scripts\DropDownFilter.js" />
+    <Content Include="Public\Scripts\endless-scroll.js" />
+    <Content Include="Public\Scripts\GMapScript.js" />
+    <Content Include="Public\Scripts\ImpAircraft.js" />
+    <Content Include="Public\Scripts\jquery.json-2.4.js" />
+    <Content Include="Public\Scripts\jquery.json-2.4.min.js" />
+    <Content Include="Public\Scripts\listdrag.js" />
+    <Content Include="Public\Scripts\mfbAccordionProxy.js" />
+    <Content Include="Public\Scripts\mfbcalendar.js" />
+    <Content Include="Public\Scripts\oms.min.js" />
+    <Content Include="Public\Scripts\Signature.js" />
+    <Content Include="Public\Scripts\todataurl-png.js" />
+    <Content Include="Public\SignEntry.aspx" />
+    <Content Include="Public\StatsForMail.aspx" />
+    <Content Include="Public\stylesheet.css" />
+    <Content Include="Public\tabimages\AdminTab.png" />
+    <Content Include="Public\tabimages\AircraftTab.png" />
+    <Content Include="Public\tabimages\AirportTab.png" />
+    <Content Include="Public\tabimages\LogbookTab.png" />
+    <Content Include="Public\tabimages\ProfileTab.png" />
+    <Content Include="Public\tabimages\TrainingTab.png" />
+    <Content Include="Public\TandC.aspx" />
+    <Content Include="Public\TotalsAndCurrencyEmail.aspx" />
+    <Content Include="Public\Unsubscribe.aspx" />
+    <Content Include="Public\UploadAirplanePicture.aspx" />
+    <Content Include="Public\UploadEndorsement.aspx" />
+    <Content Include="Public\UploadPicture.aspx" />
+    <Content Include="Public\ViewPic.aspx" />
+    <Content Include="Public\ViewPublicFlight.aspx" />
+    <Content Include="Public\ViewSig.aspx" />
+    <Content Include="Public\WebService.asmx" />
+    <Content Include="Public\WP7Images\154x40_WPS_Download_cyan.png" />
+    <Content Include="Public\WP7Images\258x67_WPS_Download_cyan.png" />
+    <Content Include="Public\WP7Images\WindowsPhone_icon_badge_cyan120x120.png" />
+    <Content Include="Public\WP7Images\WindowsPhone_icon_badge_cyan40x40.png" />
+    <Content Include="Public\WP7Images\WP71.png" />
+    <Content Include="Public\WP7Images\WP72.png" />
+    <Content Include="Public\WP7Images\WP73.png" />
+    <Content Include="Public\WP7Images\WP74.png" />
+    <Content Include="Public\WP7Images\WP75.png" />
+    <Content Include="Public\WP7Images\WP76.png" />
+    <Content Include="Public\WP7Images\WP77.png" />
+    <Content Include="Secure\login.aspx" />
+    <Content Include="SecurityError.aspx" />
+    <Content Include="Shunt.aspx" />
+    <Content Include="Support\CleanDB.txt" />
+    <Content Include="Support\MinimalDB-2019-11-27.sql" />
+    <Content Include="Support\wkhtmltox-0.12.4_msvc2015-win64.exe" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppCode\Aircraft\Aircraft.cs" />
+    <Compile Include="AppCode\Aircraft\CategoryClass.cs" />
+    <Compile Include="AppCode\Aircraft\Checklist.cs" />
+    <Compile Include="AppCode\Aircraft\CountryCodes.cs" />
+    <Compile Include="AppCode\Aircraft\Maintenance.cs" />
+    <Compile Include="AppCode\Aircraft\Makes.cs" />
+    <Compile Include="AppCode\Aircraft\Manufacturer.cs" />
+    <Compile Include="AppCode\Aircraft\UserAircraft.cs" />
+    <Compile Include="AppCode\Clubs\Clubs.cs" />
+    <Compile Include="AppCode\Clubs\Schedule.cs" />
+    <Compile Include="AppCode\CSV\CSVAnalyzer.cs" />
+    <Compile Include="AppCode\CSV\CSVReader.cs" />
+    <Compile Include="AppCode\CSV\CSVWriter.cs" />
+    <Compile Include="AppCode\Flights\Achievement.cs" />
+    <Compile Include="AppCode\Flights\Backup.cs" />
+    <Compile Include="AppCode\Flights\CanadaCurrency.cs" />
+    <Compile Include="AppCode\Flights\Currency.cs" />
+    <Compile Include="AppCode\Flights\CustomCurrency.cs" />
+    <Compile Include="AppCode\Flights\Deadline.cs" />
+    <Compile Include="AppCode\Flights\EASACurrencies.cs" />
+    <Compile Include="AppCode\Flights\FlightQuery.cs" />
+    <Compile Include="AppCode\Flights\FlightStats.cs" />
+    <Compile Include="AppCode\Flights\Import\CloudAhoyFlight.cs" />
+    <Compile Include="AppCode\Flights\Import\CrewLog.cs" />
+    <Compile Include="AppCode\Flights\Import\CrewTrac.cs" />
+    <Compile Include="AppCode\Flights\Import\CSVImporter.cs" />
+    <Compile Include="AppCode\Flights\Import\eLogSite.cs" />
+    <Compile Include="AppCode\Flights\Import\ExternalFormat.cs" />
+    <Compile Include="AppCode\Flights\Import\ForeFlight.cs" />
+    <Compile Include="AppCode\Flights\Import\LogTenPro.cs" />
+    <Compile Include="AppCode\Flights\Import\MccPilot.cs" />
+    <Compile Include="AppCode\Flights\Import\RosterBuster.cs" />
+    <Compile Include="AppCode\Flights\Import\TASC.cs" />
+    <Compile Include="AppCode\Flights\LogbookEntry.cs" />
+    <Compile Include="AppCode\Flights\Part135Currency.cs" />
+    <Compile Include="AppCode\Flights\PendingFlight.cs" />
+    <Compile Include="AppCode\Flights\Printing.cs" />
+    <Compile Include="AppCode\Flights\Properties.cs" />
+    <Compile Include="AppCode\Flights\PropertyTemplate.cs" />
+    <Compile Include="AppCode\Flights\Ratings\ATPRatings.cs" />
+    <Compile Include="AppCode\Flights\Ratings\CASRRatings.cs" />
+    <Compile Include="AppCode\Flights\Ratings\Checkrides.cs" />
+    <Compile Include="AppCode\Flights\Ratings\CommRatings.cs" />
+    <Compile Include="AppCode\Flights\Ratings\DPE.cs" />
+    <Compile Include="AppCode\Flights\Ratings\EASARatings.cs" />
+    <Compile Include="AppCode\Flights\Ratings\IFRRatings.cs" />
+    <Compile Include="AppCode\Flights\Ratings\MilestoneProgress.cs" />
+    <Compile Include="AppCode\Flights\Ratings\Part135Ratings.cs" />
+    <Compile Include="AppCode\Flights\Ratings\PPLRatings.cs" />
+    <Compile Include="AppCode\Flights\Ratings\RecentAchievements.cs" />
+    <Compile Include="AppCode\Flights\Ratings\RecreationalRatings.cs" />
+    <Compile Include="AppCode\Flights\Ratings\SportRatings.cs" />
+    <Compile Include="AppCode\Flights\SignOffs.cs" />
+    <Compile Include="AppCode\Flights\StartingFlight.cs" />
+    <Compile Include="AppCode\Flights\Totals.cs" />
+    <Compile Include="AppCode\Flights\UASCurrency.cs" />
+    <Compile Include="AppCode\GlobalSuppressions.cs" />
+    <Compile Include="AppCode\Images\ImageInfo\Constants.cs" />
+    <Compile Include="AppCode\Images\ImageInfo\Fraction.cs" />
+    <Compile Include="AppCode\Images\ImageInfo\Info.cs" />
+    <Compile Include="AppCode\Images\ImageInfo\PropertyTag.cs" />
+    <Compile Include="AppCode\Images\ImageList.cs" />
+    <Compile Include="AppCode\Images\MFBImageInfo.cs" />
+    <Compile Include="AppCode\Images\Video.cs" />
+    <Compile Include="AppCode\oAuthServices\AWSNotifications.cs" />
+    <Compile Include="AppCode\oAuthServices\CloudAhoyClient.cs" />
+    <Compile Include="AppCode\oAuthServices\CloudStorage.cs" />
+    <Compile Include="AppCode\oAuthServices\OAuth2AuthorizationServer.cs" />
+    <Compile Include="AppCode\oAuthServices\OAuthClientBase.cs" />
+    <Compile Include="AppCode\oAuthServices\SocialMedia.cs" />
+    <Compile Include="AppCode\OAuthWebService.cs" />
+    <Compile Include="AppCode\Places\Airbly.cs" />
+    <Compile Include="AppCode\Places\Airports.cs" />
+    <Compile Include="AppCode\Places\CSV.cs" />
+    <Compile Include="AppCode\Places\FlightData.cs" />
+    <Compile Include="AppCode\Places\Geography.cs" />
+    <Compile Include="AppCode\Places\GPX.cs" />
+    <Compile Include="AppCode\Places\IGC.cs" />
+    <Compile Include="AppCode\Places\KML.cs" />
+    <Compile Include="AppCode\Places\Mapping.cs" />
+    <Compile Include="AppCode\Places\NMEA.cs" />
+    <Compile Include="AppCode\Places\Solar.cs" />
+    <Compile Include="AppCode\Places\Weather\ADDS.cs" />
+    <Compile Include="AppCode\Places\Weather\ADDS_METAR.cs" />
+    <Compile Include="AppCode\UserAccounts\BasicMed.cs" />
+    <Compile Include="AppCode\UserAccounts\MySQLMembershipProvider.cs" />
+    <Compile Include="AppCode\UserAccounts\MySQLRoleProvider.cs" />
+    <Compile Include="AppCode\UserAccounts\Profile.cs" />
+    <Compile Include="AppCode\UserAccounts\Subscriptions.cs" />
+    <Compile Include="AppCode\Utility\Branding.cs" />
+    <Compile Include="AppCode\Utility\DBHelper.cs" />
+    <Compile Include="AppCode\Utility\Encryptor.cs" />
+    <Compile Include="AppCode\Utility\Exceptions.cs" />
+    <Compile Include="AppCode\Utility\FAQ.cs" />
+    <Compile Include="AppCode\Utility\Histogram.cs" />
+    <Compile Include="AppCode\Utility\LocalConfig.cs" />
+    <Compile Include="AppCode\Utility\MFBExtensions.cs" />
+    <Compile Include="AppCode\Utility\Payment.cs" />
+    <Compile Include="AppCode\Utility\SponsoredAd.cs" />
+    <Compile Include="AppCode\Utility\Tabs.cs" />
+    <Compile Include="AppCode\Utility\util.cs" />
+    <Compile Include="AppCode\WebService.cs" />
+    <Compile Include="App_GlobalResources\Achievements.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Achievements.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Admin.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Admin.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Aircraft.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Aircraft.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Airports.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Airports.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Club.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Club.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Currency.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Currency.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Currency.fr.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Currency.fr.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\EmailTemplates.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EmailTemplates.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\FlightData.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FlightData.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\FlightQuery.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FlightQuery.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Geography.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Geography.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\LocalizedText.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocalizedText.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\LocalizedText.fr.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocalizedText.fr.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\LogbookEntry.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LogbookEntry.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Makes.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Makes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\MilestoneProgress.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MilestoneProgress.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\oAuth.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>oAuth.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Profile.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Profile.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Schedule.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Schedule.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\SignOff.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SignOff.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\SignOff.fr.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SignOff.fr.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Tabs.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tabs.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Totals.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Totals.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Totals.fr.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Totals.fr.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\Weather.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Weather.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\WebService.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WebService.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AccountQuestions.ascx.cs">
+      <DependentUpon>AccountQuestions.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\AccountQuestions.ascx.designer.cs">
+      <DependentUpon>AccountQuestions.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\adminStats.ascx.cs">
+      <DependentUpon>adminStats.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\adminStats.ascx.designer.cs">
+      <DependentUpon>adminStats.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AircraftControls\AircraftList.ascx.cs">
+      <DependentUpon>AircraftList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\AircraftControls\AircraftList.ascx.designer.cs">
+      <DependentUpon>AircraftList.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AircraftControls\SelectMake.ascx.cs">
+      <DependentUpon>SelectMake.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\AircraftControls\SelectMake.ascx.designer.cs">
+      <DependentUpon>SelectMake.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ChecklistControls\ChecklistItem.ascx.cs">
+      <DependentUpon>ChecklistItem.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ChecklistControls\ChecklistItem.ascx.designer.cs">
+      <DependentUpon>ChecklistItem.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\ClubAircraftSchedule.ascx.cs">
+      <DependentUpon>ClubAircraftSchedule.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ClubControls\ClubAircraftSchedule.ascx.designer.cs">
+      <DependentUpon>ClubAircraftSchedule.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\FlyingReport.ascx.cs">
+      <DependentUpon>FlyingReport.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ClubControls\FlyingReport.ascx.designer.cs">
+      <DependentUpon>FlyingReport.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\InsuranceReport.ascx.cs">
+      <DependentUpon>InsuranceReport.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ClubControls\InsuranceReport.ascx.designer.cs">
+      <DependentUpon>InsuranceReport.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\MaintenanceReport.ascx.cs">
+      <DependentUpon>MaintenanceReport.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ClubControls\MaintenanceReport.ascx.designer.cs">
+      <DependentUpon>MaintenanceReport.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\SchedSummary.ascx.cs">
+      <DependentUpon>SchedSummary.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ClubControls\SchedSummary.ascx.designer.cs">
+      <DependentUpon>SchedSummary.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\TimeZone.ascx.cs">
+      <DependentUpon>TimeZone.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ClubControls\TimeZone.ascx.designer.cs">
+      <DependentUpon>TimeZone.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClubControls\ViewClub.ascx.cs">
+      <DependentUpon>ViewClub.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ClubControls\ViewClub.ascx.designer.cs">
+      <DependentUpon>ViewClub.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Expando.ascx.cs">
+      <DependentUpon>Expando.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Expando.ascx.designer.cs">
+      <DependentUpon>Expando.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\fbComment.ascx.cs">
+      <DependentUpon>fbComment.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\fbComment.ascx.designer.cs">
+      <DependentUpon>fbComment.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GoogleAnalytics.ascx.cs">
+      <DependentUpon>GoogleAnalytics.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\GoogleAnalytics.ascx.designer.cs">
+      <DependentUpon>GoogleAnalytics.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GoogleChart.ascx.cs">
+      <DependentUpon>GoogleChart.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\GoogleChart.ascx.designer.cs">
+      <DependentUpon>GoogleChart.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\imageSlider.ascx.cs">
+      <DependentUpon>imageSlider.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\imageSlider.ascx.designer.cs">
+      <DependentUpon>imageSlider.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\METAR.ascx.cs">
+      <DependentUpon>METAR.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\METAR.ascx.designer.cs">
+      <DependentUpon>METAR.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbAccordionProxyControl.ascx.cs">
+      <DependentUpon>mfbAccordionProxyControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbAccordionProxyControl.ascx.designer.cs">
+      <DependentUpon>mfbAccordionProxyControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbAccordionProxyExtender.ascx.cs">
+      <DependentUpon>mfbAccordionProxyExtender.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbAccordionProxyExtender.ascx.designer.cs">
+      <DependentUpon>mfbAccordionProxyExtender.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbAirportIDGame.ascx.cs">
+      <DependentUpon>mfbAirportIDGame.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbAirportIDGame.ascx.designer.cs">
+      <DependentUpon>mfbAirportIDGame.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbAirportServices.ascx.cs">
+      <DependentUpon>mfbAirportServices.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbAirportServices.ascx.designer.cs">
+      <DependentUpon>mfbAirportServices.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbATDFTD.ascx.cs">
+      <DependentUpon>mfbATDFTD.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbATDFTD.ascx.designer.cs">
+      <DependentUpon>mfbATDFTD.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbBadgeSet.ascx.cs">
+      <DependentUpon>mfbBadgeSet.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbBadgeSet.ascx.designer.cs">
+      <DependentUpon>mfbBadgeSet.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbBasicMedManager.ascx.cs">
+      <DependentUpon>mfbBasicMedManager.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbBasicMedManager.ascx.designer.cs">
+      <DependentUpon>mfbBasicMedManager.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbChartTotals.ascx.cs">
+      <DependentUpon>mfbChartTotals.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbChartTotals.ascx.designer.cs">
+      <DependentUpon>mfbChartTotals.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbCurrency.ascx.cs">
+      <DependentUpon>mfbCurrency.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbCurrency.ascx.designer.cs">
+      <DependentUpon>mfbCurrency.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbCustCurrency.ascx.cs">
+      <DependentUpon>mfbCustCurrency.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbCustCurrency.ascx.designer.cs">
+      <DependentUpon>mfbCustCurrency.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbCustomCurrencyList.ascx.cs">
+      <DependentUpon>mfbCustomCurrencyList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbCustomCurrencyList.ascx.designer.cs">
+      <DependentUpon>mfbCustomCurrencyList.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbDateTime.ascx.cs">
+      <DependentUpon>mfbDateTime.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbDateTime.ascx.designer.cs">
+      <DependentUpon>mfbDateTime.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbDeadlines.ascx.cs">
+      <DependentUpon>mfbDeadlines.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbDeadlines.ascx.designer.cs">
+      <DependentUpon>mfbDeadlines.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbDecimalEdit.ascx.cs">
+      <DependentUpon>mfbDecimalEdit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbDecimalEdit.ascx.designer.cs">
+      <DependentUpon>mfbDecimalEdit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbDownload.ascx.cs">
+      <DependentUpon>mfbDownload.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbDownload.ascx.designer.cs">
+      <DependentUpon>mfbDownload.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbEditableImage.ascx.cs">
+      <DependentUpon>mfbEditableImage.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbEditableImage.ascx.designer.cs">
+      <DependentUpon>mfbEditableImage.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbEditAircraft.ascx.cs">
+      <DependentUpon>mfbEditAircraft.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbEditAircraft.ascx.designer.cs">
+      <DependentUpon>mfbEditAircraft.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbEditAppt.ascx.cs">
+      <DependentUpon>mfbEditAppt.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbEditAppt.ascx.designer.cs">
+      <DependentUpon>mfbEditAppt.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbEditEndorsement.ascx.cs">
+      <DependentUpon>mfbEditEndorsement.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbEditEndorsement.ascx.designer.cs">
+      <DependentUpon>mfbEditEndorsement.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbEditFlight.ascx.cs">
+      <DependentUpon>mfbEditFlight.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbEditFlight.ascx.designer.cs">
+      <DependentUpon>mfbEditFlight.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbEditMake.ascx.cs">
+      <DependentUpon>mfbEditMake.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbEditMake.ascx.designer.cs">
+      <DependentUpon>mfbEditMake.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbEditProp.ascx.cs">
+      <DependentUpon>mfbEditProp.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbEditProp.ascx.designer.cs">
+      <DependentUpon>mfbEditProp.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbEditPropSet.ascx.cs">
+      <DependentUpon>mfbEditPropSet.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbEditPropSet.ascx.designer.cs">
+      <DependentUpon>mfbEditPropSet.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbEditPropTemplate.ascx.cs">
+      <DependentUpon>mfbEditPropTemplate.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbEditPropTemplate.ascx.designer.cs">
+      <DependentUpon>mfbEditPropTemplate.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbEndorsement.ascx.cs">
+      <DependentUpon>mfbEndorsement.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbEndorsement.ascx.designer.cs">
+      <DependentUpon>mfbEndorsement.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbEndorsementList.ascx.cs">
+      <DependentUpon>mfbEndorsementList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbEndorsementList.ascx.designer.cs">
+      <DependentUpon>mfbEndorsementList.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbFacebookFan.ascx.cs">
+      <DependentUpon>mfbFacebookFan.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbFacebookFan.ascx.designer.cs">
+      <DependentUpon>mfbFacebookFan.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbFileUpload.ascx.cs">
+      <DependentUpon>mfbFileUpload.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbFileUpload.ascx.designer.cs">
+      <DependentUpon>mfbFileUpload.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbFlightContextMenu.ascx.cs">
+      <DependentUpon>mfbFlightContextMenu.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbFlightContextMenu.ascx.designer.cs">
+      <DependentUpon>mfbFlightContextMenu.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbFlightInfo.ascx.cs">
+      <DependentUpon>mfbFlightInfo.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbFlightInfo.ascx.designer.cs">
+      <DependentUpon>mfbFlightInfo.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbFlightProperties.ascx.cs">
+      <DependentUpon>mfbFlightProperties.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbFlightProperties.ascx.designer.cs">
+      <DependentUpon>mfbFlightProperties.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbFooter.ascx.cs">
+      <DependentUpon>mfbFooter.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbFooter.ascx.designer.cs">
+      <DependentUpon>mfbFooter.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbGoogleAdSense.ascx.cs">
+      <DependentUpon>mfbGoogleAdSense.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbGoogleAdSense.ascx.designer.cs">
+      <DependentUpon>mfbGoogleAdSense.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbGoogleMapManager.ascx.cs">
+      <DependentUpon>mfbGoogleMapManager.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbGoogleMapManager.ascx.designer.cs">
+      <DependentUpon>mfbGoogleMapManager.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbGooglePlus.ascx.cs">
+      <DependentUpon>mfbGooglePlus.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbGooglePlus.ascx.designer.cs">
+      <DependentUpon>mfbGooglePlus.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbHeader.ascx.cs">
+      <DependentUpon>mfbHeader.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbHeader.ascx.designer.cs">
+      <DependentUpon>mfbHeader.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbHoverImageList.ascx.cs">
+      <DependentUpon>mfbHoverImageList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbHoverImageList.ascx.designer.cs">
+      <DependentUpon>mfbHoverImageList.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbHtmlEdit.ascx.cs">
+      <DependentUpon>mfbHtmlEdit.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbHtmlEdit.ascx.designer.cs">
+      <DependentUpon>mfbHtmlEdit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbImageList.ascx.cs">
+      <DependentUpon>mfbImageList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbImageList.ascx.designer.cs">
+      <DependentUpon>mfbImageList.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbImpersonate.ascx.cs">
+      <DependentUpon>mfbImpersonate.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbImpersonate.ascx.designer.cs">
+      <DependentUpon>mfbImpersonate.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbImportAircraft.ascx.cs">
+      <DependentUpon>mfbImportAircraft.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbImportAircraft.ascx.designer.cs">
+      <DependentUpon>mfbImportAircraft.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbLogbook.ascx.cs">
+      <DependentUpon>mfbLogbook.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbLogbook.ascx.designer.cs">
+      <DependentUpon>mfbLogbook.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbLogbookSidebar.ascx.cs">
+      <DependentUpon>mfbLogbookSidebar.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbLogbookSidebar.ascx.designer.cs">
+      <DependentUpon>mfbLogbookSidebar.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbMaintainAircraft.ascx.cs">
+      <DependentUpon>mfbMaintainAircraft.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbMaintainAircraft.ascx.designer.cs">
+      <DependentUpon>mfbMaintainAircraft.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbMakeListItem.ascx.cs">
+      <DependentUpon>mfbMakeListItem.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbMakeListItem.ascx.designer.cs">
+      <DependentUpon>mfbMakeListItem.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbMiniFacebook.ascx.cs">
+      <DependentUpon>mfbMiniFacebook.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbMiniFacebook.ascx.designer.cs">
+      <DependentUpon>mfbMiniFacebook.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbMultiFileUpload.ascx.cs">
+      <DependentUpon>mfbMultiFileUpload.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbMultiFileUpload.ascx.designer.cs">
+      <DependentUpon>mfbMultiFileUpload.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbPublicFlightItem.ascx.cs">
+      <DependentUpon>mfbPublicFlightItem.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbPublicFlightItem.ascx.designer.cs">
+      <DependentUpon>mfbPublicFlightItem.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbQueryDescriptor.ascx.cs">
+      <DependentUpon>mfbQueryDescriptor.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbQueryDescriptor.ascx.designer.cs">
+      <DependentUpon>mfbQueryDescriptor.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbQueryDescriptorItem.ascx.cs">
+      <DependentUpon>mfbQueryDescriptorItem.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbQueryDescriptorItem.ascx.designer.cs">
+      <DependentUpon>mfbQueryDescriptorItem.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbRecentAchievements.ascx.cs">
+      <DependentUpon>mfbRecentAchievements.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbRecentAchievements.ascx.designer.cs">
+      <DependentUpon>mfbRecentAchievements.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbResourceSchedule.ascx.cs">
+      <DependentUpon>mfbResourceSchedule.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbResourceSchedule.ascx.designer.cs">
+      <DependentUpon>mfbResourceSchedule.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbScribbleSignature.ascx.cs">
+      <DependentUpon>mfbScribbleSignature.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbScribbleSignature.ascx.designer.cs">
+      <DependentUpon>mfbScribbleSignature.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbSearchAndTotals.ascx.cs">
+      <DependentUpon>mfbSearchAndTotals.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbSearchAndTotals.ascx.designer.cs">
+      <DependentUpon>mfbSearchAndTotals.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbSearchbox.ascx.cs">
+      <DependentUpon>mfbSearchbox.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbSearchbox.ascx.designer.cs">
+      <DependentUpon>mfbSearchbox.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbSearchForm.ascx.cs">
+      <DependentUpon>mfbSearchForm.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbSearchForm.ascx.designer.cs">
+      <DependentUpon>mfbSearchForm.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbSelectTemplates.ascx.cs">
+      <DependentUpon>mfbSelectTemplates.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbSelectTemplates.ascx.designer.cs">
+      <DependentUpon>mfbSelectTemplates.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbSendFlight.ascx.cs">
+      <DependentUpon>mfbSendFlight.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbSendFlight.ascx.designer.cs">
+      <DependentUpon>mfbSendFlight.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbSignature.ascx.cs">
+      <DependentUpon>mfbSignature.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbSignature.ascx.designer.cs">
+      <DependentUpon>mfbSignature.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbSignFlight.ascx.cs">
+      <DependentUpon>mfbSignFlight.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbSignFlight.ascx.designer.cs">
+      <DependentUpon>mfbSignFlight.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbSignIn.ascx.cs">
+      <DependentUpon>mfbSignIn.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbSignIn.ascx.designer.cs">
+      <DependentUpon>mfbSignIn.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbSimpleTotals.ascx.cs">
+      <DependentUpon>mfbSimpleTotals.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbSimpleTotals.ascx.designer.cs">
+      <DependentUpon>mfbSimpleTotals.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbSubscriptionManager.ascx.cs">
+      <DependentUpon>mfbSubscriptionManager.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbSubscriptionManager.ascx.designer.cs">
+      <DependentUpon>mfbSubscriptionManager.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbTandC.ascx.cs">
+      <DependentUpon>mfbTandC.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbTandC.ascx.designer.cs">
+      <DependentUpon>mfbTandC.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbTimeZone.ascx.cs">
+      <DependentUpon>mfbTimeZone.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbTimeZone.ascx.designer.cs">
+      <DependentUpon>mfbTimeZone.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbTooltip.ascx.cs">
+      <DependentUpon>mfbTooltip.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbTooltip.ascx.designer.cs">
+      <DependentUpon>mfbTooltip.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbTotalSummary.ascx.cs">
+      <DependentUpon>mfbTotalSummary.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbTotalSummary.ascx.designer.cs">
+      <DependentUpon>mfbTotalSummary.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbTweetThis.ascx.cs">
+      <DependentUpon>mfbTweetThis.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbTweetThis.ascx.designer.cs">
+      <DependentUpon>mfbTweetThis.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbTypeInDate.ascx.cs">
+      <DependentUpon>mfbTypeInDate.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbTypeInDate.ascx.designer.cs">
+      <DependentUpon>mfbTypeInDate.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbVideoEntry.ascx.cs">
+      <DependentUpon>mfbVideoEntry.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbVideoEntry.ascx.designer.cs">
+      <DependentUpon>mfbVideoEntry.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\oAuthAuthorizationManager.ascx.cs">
+      <DependentUpon>oAuthAuthorizationManager.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\oAuthAuthorizationManager.ascx.designer.cs">
+      <DependentUpon>oAuthAuthorizationManager.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\popmenu.ascx.cs">
+      <DependentUpon>popmenu.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\popmenu.ascx.designer.cs">
+      <DependentUpon>popmenu.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutCanada.ascx.cs">
+      <DependentUpon>layoutCanada.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutCanada.ascx.designer.cs">
+      <DependentUpon>layoutCanada.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutCASA.ascx.cs">
+      <DependentUpon>layoutCASA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutCASA.ascx.designer.cs">
+      <DependentUpon>layoutCASA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutEASAFCL.ascx.cs">
+      <DependentUpon>layoutEASAFCL.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutEASAFCL.ascx.designer.cs">
+      <DependentUpon>layoutEASAFCL.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutGlider.ascx.cs">
+      <DependentUpon>layoutGlider.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutGlider.ascx.designer.cs">
+      <DependentUpon>layoutGlider.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutNative.ascx.cs">
+      <DependentUpon>layoutNative.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutNative.ascx.designer.cs">
+      <DependentUpon>layoutNative.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutNZ.ascx.cs">
+      <DependentUpon>layoutNZ.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutNZ.ascx.designer.cs">
+      <DependentUpon>layoutNZ.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutPortrait.ascx.cs">
+      <DependentUpon>layoutPortrait.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutPortrait.ascx.designer.cs">
+      <DependentUpon>layoutPortrait.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\LayoutSACAA.ascx.cs">
+      <DependentUpon>LayoutSACAA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\LayoutSACAA.ascx.designer.cs">
+      <DependentUpon>LayoutSACAA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutUSA.ascx.cs">
+      <DependentUpon>layoutUSA.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\layoutUSA.ascx.designer.cs">
+      <DependentUpon>layoutUSA.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\pageFooter.ascx.cs">
+      <DependentUpon>pageFooter.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\pageFooter.ascx.designer.cs">
+      <DependentUpon>pageFooter.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\pageHeader.ascx.cs">
+      <DependentUpon>pageHeader.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintingLayouts\pageHeader.ascx.designer.cs">
+      <DependentUpon>pageHeader.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrintOptions.ascx.cs">
+      <DependentUpon>PrintOptions.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrintOptions.ascx.designer.cs">
+      <DependentUpon>PrintOptions.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RSSCurrency.ascx.cs">
+      <DependentUpon>RSSCurrency.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\RSSCurrency.ascx.designer.cs">
+      <DependentUpon>RSSCurrency.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SponsoredAd.ascx.cs">
+      <DependentUpon>SponsoredAd.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\SponsoredAd.ascx.designer.cs">
+      <DependentUpon>SponsoredAd.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\XMLNav.ascx.cs">
+      <DependentUpon>XMLNav.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\XMLNav.ascx.designer.cs">
+      <DependentUpon>XMLNav.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DefaultMini.aspx.cs">
+      <DependentUpon>DefaultMini.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DefaultMini.aspx.designer.cs">
+      <DependentUpon>DefaultMini.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Logon\newuser.aspx.cs">
+      <DependentUpon>newuser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Logon\newuser.aspx.designer.cs">
+      <DependentUpon>newuser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Logon\ResetPass.aspx.cs">
+      <DependentUpon>ResetPass.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Logon\ResetPass.aspx.designer.cs">
+      <DependentUpon>ResetPass.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MasterPage.master.cs">
+      <DependentUpon>MasterPage.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MasterPage.master.designer.cs">
+      <DependentUpon>MasterPage.master</DependentUpon>
+    </Compile>
+    <Compile Include="Member\8710Form.aspx.cs">
+      <DependentUpon>8710Form.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\8710Form.aspx.designer.cs">
+      <DependentUpon>8710Form.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Achievements.aspx.cs">
+      <DependentUpon>Achievements.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Achievements.aspx.designer.cs">
+      <DependentUpon>Achievements.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\ACSchedule.aspx.cs">
+      <DependentUpon>ACSchedule.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\ACSchedule.aspx.designer.cs">
+      <DependentUpon>ACSchedule.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\AddEndorsement.aspx.cs">
+      <DependentUpon>AddEndorsement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\AddEndorsement.aspx.designer.cs">
+      <DependentUpon>AddEndorsement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\AddRelationship.aspx.cs">
+      <DependentUpon>AddRelationship.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\AddRelationship.aspx.designer.cs">
+      <DependentUpon>AddRelationship.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Admin.aspx.cs">
+      <DependentUpon>Admin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Admin.aspx.designer.cs">
+      <DependentUpon>Admin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\AdminImages.aspx.cs">
+      <DependentUpon>AdminImages.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\AdminImages.aspx.designer.cs">
+      <DependentUpon>AdminImages.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\AdminTelemetry.aspx.cs">
+      <DependentUpon>AdminTelemetry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\AdminTelemetry.aspx.designer.cs">
+      <DependentUpon>AdminTelemetry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Aircraft.aspx.cs">
+      <DependentUpon>Aircraft.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Aircraft.aspx.designer.cs">
+      <DependentUpon>Aircraft.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Airports.aspx.cs">
+      <DependentUpon>Airports.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Airports.aspx.designer.cs">
+      <DependentUpon>Airports.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\BrowseTemplates.aspx.cs">
+      <DependentUpon>BrowseTemplates.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\BrowseTemplates.aspx.designer.cs">
+      <DependentUpon>BrowseTemplates.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\ClubDetails.aspx.cs">
+      <DependentUpon>ClubDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\ClubDetails.aspx.designer.cs">
+      <DependentUpon>ClubDetails.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\ClubManage.aspx.cs">
+      <DependentUpon>ClubManage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\ClubManage.aspx.designer.cs">
+      <DependentUpon>ClubManage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Donate.aspx.cs">
+      <DependentUpon>Donate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Donate.aspx.designer.cs">
+      <DependentUpon>Donate.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Download.aspx.cs">
+      <DependentUpon>Download.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Download.aspx.designer.cs">
+      <DependentUpon>Download.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\EditAircraft.aspx.cs">
+      <DependentUpon>EditAircraft.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\EditAircraft.aspx.designer.cs">
+      <DependentUpon>EditAircraft.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\EditAirports.aspx.cs">
+      <DependentUpon>EditAirports.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\EditAirports.aspx.designer.cs">
+      <DependentUpon>EditAirports.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\EditMake.aspx.cs">
+      <DependentUpon>EditMake.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\EditMake.aspx.designer.cs">
+      <DependentUpon>EditMake.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\EditProfile.aspx.cs">
+      <DependentUpon>EditProfile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\EditProfile.aspx.designer.cs">
+      <DependentUpon>EditProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\EndorseStudent.aspx.cs">
+      <DependentUpon>EndorseStudent.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\EndorseStudent.aspx.designer.cs">
+      <DependentUpon>EndorseStudent.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\FAQEdit.aspx.cs">
+      <DependentUpon>FAQEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\FAQEdit.aspx.designer.cs">
+      <DependentUpon>FAQEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\FBPost.aspx.cs">
+      <DependentUpon>FBPost.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\FBPost.aspx.designer.cs">
+      <DependentUpon>FBPost.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\FindFlights.aspx.cs">
+      <DependentUpon>FindFlights.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\FindFlights.aspx.designer.cs">
+      <DependentUpon>FindFlights.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\FlightAnalysis.aspx.cs">
+      <DependentUpon>FlightAnalysis.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\FlightAnalysis.aspx.designer.cs">
+      <DependentUpon>FlightAnalysis.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\FlightDetail.aspx.cs">
+      <DependentUpon>FlightDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\FlightDetail.aspx.designer.cs">
+      <DependentUpon>FlightDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\FlyingTrends.aspx.cs">
+      <DependentUpon>FlyingTrends.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\FlyingTrends.aspx.designer.cs">
+      <DependentUpon>FlyingTrends.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Game.aspx.cs">
+      <DependentUpon>Game.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Game.aspx.designer.cs">
+      <DependentUpon>Game.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\IcalAppt.aspx.cs">
+      <DependentUpon>IcalAppt.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\IcalAppt.aspx.designer.cs">
+      <DependentUpon>IcalAppt.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\ImpAircraft.aspx.cs">
+      <DependentUpon>ImpAircraft.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\ImpAircraft.aspx.designer.cs">
+      <DependentUpon>ImpAircraft.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\ImpAircraftService.aspx.cs">
+      <DependentUpon>ImpAircraftService.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\ImpAircraftService.aspx.designer.cs">
+      <DependentUpon>ImpAircraftService.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Import.aspx.cs">
+      <DependentUpon>Import.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Import.aspx.designer.cs">
+      <DependentUpon>Import.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\ImportTelemetry.aspx.cs">
+      <DependentUpon>ImportTelemetry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\ImportTelemetry.aspx.designer.cs">
+      <DependentUpon>ImportTelemetry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Logbook.aspx.cs">
+      <DependentUpon>Logbook.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Logbook.aspx.designer.cs">
+      <DependentUpon>Logbook.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\LogbookNew.aspx.cs">
+      <DependentUpon>LogbookNew.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\LogbookNew.aspx.designer.cs">
+      <DependentUpon>LogbookNew.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\makes.aspx.cs">
+      <DependentUpon>makes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\makes.aspx.designer.cs">
+      <DependentUpon>makes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\MiniLogbook.aspx.cs">
+      <DependentUpon>MiniLogbook.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\MiniLogbook.aspx.designer.cs">
+      <DependentUpon>MiniLogbook.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\MiniRecents.aspx.cs">
+      <DependentUpon>MiniRecents.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\MiniRecents.aspx.designer.cs">
+      <DependentUpon>MiniRecents.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\MiniTotals.aspx.cs">
+      <DependentUpon>MiniTotals.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\MiniTotals.aspx.designer.cs">
+      <DependentUpon>MiniTotals.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\oAuthAuthorize.aspx.cs">
+      <DependentUpon>oAuthAuthorize.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\oAuthAuthorize.aspx.designer.cs">
+      <DependentUpon>oAuthAuthorize.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\PrintView.aspx.cs">
+      <DependentUpon>PrintView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\PrintView.aspx.designer.cs">
+      <DependentUpon>PrintView.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\RatingProgress.aspx.cs">
+      <DependentUpon>RatingProgress.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\RatingProgress.aspx.designer.cs">
+      <DependentUpon>RatingProgress.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\RequestSigs.aspx.cs">
+      <DependentUpon>RequestSigs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\RequestSigs.aspx.designer.cs">
+      <DependentUpon>RequestSigs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\ReviewPendingFlights.aspx.cs">
+      <DependentUpon>ReviewPendingFlights.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\ReviewPendingFlights.aspx.designer.cs">
+      <DependentUpon>ReviewPendingFlights.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Schedule.aspx.cs">
+      <DependentUpon>Schedule.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Schedule.aspx.designer.cs">
+      <DependentUpon>Schedule.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\SearchTotals.aspx.cs">
+      <DependentUpon>SearchTotals.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\SearchTotals.aspx.designer.cs">
+      <DependentUpon>SearchTotals.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\SignFlight.aspx.cs">
+      <DependentUpon>SignFlight.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\SignFlight.aspx.designer.cs">
+      <DependentUpon>SignFlight.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\StartingTotals.aspx.cs">
+      <DependentUpon>StartingTotals.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\StartingTotals.aspx.designer.cs">
+      <DependentUpon>StartingTotals.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Stats.aspx.cs">
+      <DependentUpon>Stats.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Stats.aspx.designer.cs">
+      <DependentUpon>Stats.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\StudentLogbook.aspx.cs">
+      <DependentUpon>StudentLogbook.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\StudentLogbook.aspx.designer.cs">
+      <DependentUpon>StudentLogbook.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Totals.aspx.cs">
+      <DependentUpon>Totals.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Totals.aspx.designer.cs">
+      <DependentUpon>Totals.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Member\Training.aspx.cs">
+      <DependentUpon>Training.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\Training.aspx.designer.cs">
+      <DependentUpon>Training.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="OAuth\oAuthToken.aspx.cs">
+      <DependentUpon>oAuthToken.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="OAuth\oAuthToken.aspx.designer.cs">
+      <DependentUpon>oAuthToken.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayPen\Checklist.aspx.cs">
+      <DependentUpon>Checklist.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlayPen\Checklist.aspx.designer.cs">
+      <DependentUpon>Checklist.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayPen\DayNight.aspx.cs">
+      <DependentUpon>DayNight.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlayPen\DayNight.aspx.designer.cs">
+      <DependentUpon>DayNight.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayPen\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlayPen\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayPen\iCalConvert.aspx.cs">
+      <DependentUpon>iCalConvert.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlayPen\iCalConvert.aspx.designer.cs">
+      <DependentUpon>iCalConvert.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayPen\ImgDbg.aspx.cs">
+      <DependentUpon>ImgDbg.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlayPen\ImgDbg.aspx.designer.cs">
+      <DependentUpon>ImgDbg.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayPen\MergeFlights.aspx.cs">
+      <DependentUpon>MergeFlights.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlayPen\MergeFlights.aspx.designer.cs">
+      <DependentUpon>MergeFlights.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayPen\MergeTelemetry.aspx.cs">
+      <DependentUpon>MergeTelemetry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlayPen\MergeTelemetry.aspx.designer.cs">
+      <DependentUpon>MergeTelemetry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayPen\oAuthClientTest.aspx.cs">
+      <DependentUpon>oAuthClientTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlayPen\oAuthClientTest.aspx.designer.cs">
+      <DependentUpon>oAuthClientTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Public\AdTracker.aspx.cs">
+      <DependentUpon>AdTracker.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\AdTracker.aspx.designer.cs">
+      <DependentUpon>AdTracker.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\AllClubs.aspx.cs">
+      <DependentUpon>AllClubs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\AllClubs.aspx.designer.cs">
+      <DependentUpon>AllClubs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\AllMakes.aspx.cs">
+      <DependentUpon>AllMakes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\AllMakes.aspx.designer.cs">
+      <DependentUpon>AllMakes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\authredir.aspx.cs">
+      <DependentUpon>authredir.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\authredir.aspx.designer.cs">
+      <DependentUpon>authredir.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\AWS-SNSListener.aspx.cs">
+      <DependentUpon>AWS-SNSListener.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\AWS-SNSListener.aspx.designer.cs">
+      <DependentUpon>AWS-SNSListener.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\CFISigs.aspx.cs">
+      <DependentUpon>CFISigs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\CFISigs.aspx.designer.cs">
+      <DependentUpon>CFISigs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\CloudAhoyRedir.aspx.cs">
+      <DependentUpon>CloudAhoyRedir.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\CloudAhoyRedir.aspx.designer.cs">
+      <DependentUpon>CloudAhoyRedir.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\Clubs.aspx.cs">
+      <DependentUpon>Clubs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\Clubs.aspx.designer.cs">
+      <DependentUpon>Clubs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\ClubsManual.aspx.cs">
+      <DependentUpon>ClubsManual.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\ClubsManual.aspx.designer.cs">
+      <DependentUpon>ClubsManual.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\ContactMe.aspx.cs">
+      <DependentUpon>ContactMe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\ContactMe.aspx.designer.cs">
+      <DependentUpon>ContactMe.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\CrashReport.aspx.cs">
+      <DependentUpon>CrashReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\CrashReport.aspx.designer.cs">
+      <DependentUpon>CrashReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\CurrencyDisclaimer.aspx.cs">
+      <DependentUpon>CurrencyDisclaimer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\CurrencyDisclaimer.aspx.designer.cs">
+      <DependentUpon>CurrencyDisclaimer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\Developer.aspx.cs">
+      <DependentUpon>Developer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\Developer.aspx.designer.cs">
+      <DependentUpon>Developer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\Export.aspx.cs">
+      <DependentUpon>Export.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\Export.aspx.designer.cs">
+      <DependentUpon>Export.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\FAQ.aspx.cs">
+      <DependentUpon>FAQ.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\FAQ.aspx.designer.cs">
+      <DependentUpon>FAQ.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\FindAirport.aspx.cs">
+      <DependentUpon>FindAirport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\FindAirport.aspx.designer.cs">
+      <DependentUpon>FindAirport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\FlightDataKey.aspx.cs">
+      <DependentUpon>FlightDataKey.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\FlightDataKey.aspx.designer.cs">
+      <DependentUpon>FlightDataKey.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\Game.aspx.cs">
+      <DependentUpon>Game.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\Game.aspx.designer.cs">
+      <DependentUpon>Game.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\ImportTable.aspx.cs">
+      <DependentUpon>ImportTable.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\ImportTable.aspx.designer.cs">
+      <DependentUpon>ImportTable.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\MapRoute2.aspx.cs">
+      <DependentUpon>MapRoute2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\MapRoute2.aspx.designer.cs">
+      <DependentUpon>MapRoute2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\MobileApps.aspx.cs">
+      <DependentUpon>MobileApps.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\MobileApps.aspx.designer.cs">
+      <DependentUpon>MobileApps.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\MyFlights.aspx.cs">
+      <DependentUpon>MyFlights.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\MyFlights.aspx.designer.cs">
+      <DependentUpon>MyFlights.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\oAuthToken.aspx.cs">
+      <DependentUpon>oAuthToken.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\oAuthToken.aspx.designer.cs">
+      <DependentUpon>oAuthToken.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\OneDriveRedir.aspx.cs">
+      <DependentUpon>OneDriveRedir.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\OneDriveRedir.aspx.designer.cs">
+      <DependentUpon>OneDriveRedir.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\PaypalIPNListener.aspx.cs">
+      <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\PaypalIPNListener.aspx.designer.cs">
+      <DependentUpon>PaypalIPNListener.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\PendingImg.aspx.cs">
+      <DependentUpon>PendingImg.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\PendingImg.aspx.designer.cs">
+      <DependentUpon>PendingImg.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\Privacy.aspx.cs">
+      <DependentUpon>Privacy.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\Privacy.aspx.designer.cs">
+      <DependentUpon>Privacy.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\RSSCurrency.aspx.cs">
+      <DependentUpon>RSSCurrency.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\RSSCurrency.aspx.designer.cs">
+      <DependentUpon>RSSCurrency.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\SignEntry.aspx.cs">
+      <DependentUpon>SignEntry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\SignEntry.aspx.designer.cs">
+      <DependentUpon>SignEntry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\StatsForMail.aspx.cs">
+      <DependentUpon>StatsForMail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\StatsForMail.aspx.designer.cs">
+      <DependentUpon>StatsForMail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\TandC.aspx.cs">
+      <DependentUpon>TandC.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\TandC.aspx.designer.cs">
+      <DependentUpon>TandC.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\TotalsAndCurrencyEmail.aspx.cs">
+      <DependentUpon>TotalsAndCurrencyEmail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\TotalsAndCurrencyEmail.aspx.designer.cs">
+      <DependentUpon>TotalsAndCurrencyEmail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\Unsubscribe.aspx.cs">
+      <DependentUpon>Unsubscribe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\Unsubscribe.aspx.designer.cs">
+      <DependentUpon>Unsubscribe.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\UploadAirplanePicture.aspx.cs">
+      <DependentUpon>UploadAirplanePicture.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\UploadAirplanePicture.aspx.designer.cs">
+      <DependentUpon>UploadAirplanePicture.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\UploadEndorsement.aspx.cs">
+      <DependentUpon>UploadEndorsement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\UploadEndorsement.aspx.designer.cs">
+      <DependentUpon>UploadEndorsement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\UploadPicture.aspx.cs">
+      <DependentUpon>UploadPicture.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\UploadPicture.aspx.designer.cs">
+      <DependentUpon>UploadPicture.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\ViewPic.aspx.cs">
+      <DependentUpon>ViewPic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\ViewPic.aspx.designer.cs">
+      <DependentUpon>ViewPic.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\ViewPublicFlight.aspx.cs">
+      <DependentUpon>ViewPublicFlight.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\ViewPublicFlight.aspx.designer.cs">
+      <DependentUpon>ViewPublicFlight.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\ViewSig.aspx.cs">
+      <DependentUpon>ViewSig.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\ViewSig.aspx.designer.cs">
+      <DependentUpon>ViewSig.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Secure\login.aspx.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Secure\login.aspx.designer.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SecurityError.aspx.cs">
+      <DependentUpon>SecurityError.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SecurityError.aspx.designer.cs">
+      <DependentUpon>SecurityError.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Shunt.aspx.cs">
+      <DependentUpon>Shunt.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Shunt.aspx.designer.cs">
+      <DependentUpon>Shunt.aspx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_GlobalResources\Content.en\Email\Web.config" />
+    <Content Include="Logon\Web.config" />
+    <Content Include="Member\Web.Config" />
+    <Content Include="OAuth\Web.config" />
+    <Content Include="app.config" />
+    <Content Include="appsettings.config" />
+    <Content Include="App_Data\debug.config" />
+    <Content Include="App_Data\email.config" />
+    <Content Include="PlayPen\Web.config" />
+    <Content Include="Private\MyFlightbook Admin Tools.pptx" />
+    <Content Include="Private\Ribbons Source.pptx" />
+    <Content Include="Private\Web.Config" />
+    <Content Include="Public\AndroidImages\MyFlightbook Android Feature Graphic.xcf" />
+    <Content Include="Public\bxslider\LICENSE.md" />
+    <Content Include="Public\bxslider\README.md" />
+    <Content Include="Public\CSS\Web.config" />
+    <Content Include="Public\Fonts\open-sans.bold.ttf" />
+    <Content Include="Public\Fonts\open-sans.regular.ttf" />
+    <Content Include="Public\Fonts\roboto.bold.ttf" />
+    <Content Include="Public\ImportTemplate.csv" />
+    <Content Include="Public\MyFlightbook backup.xls" />
+    <Content Include="Public\Web.config" />
+    <Content Include="LICENSE" />
+    <None Include="packages.config" />
+    <Content Include="README.md" />
+    <None Include="SecuritySwitch-v4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_GlobalResources\Achievements.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Achievements.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="App_GlobalResources\Admin.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Admin.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Aircraft.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Aircraft.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Airports.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Airports.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Club.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Club.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Currency.fr.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Currency.fr.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Currency.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Currency.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\EmailTemplates.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>EmailTemplates.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\FlightData.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>FlightData.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\FlightQuery.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>FlightQuery.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Geography.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Geography.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\LocalizedText.fr.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>LocalizedText.fr.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\LocalizedText.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>LocalizedText.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\LogbookEntry.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>LogbookEntry.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Makes.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Makes.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\MilestoneProgress.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>MilestoneProgress.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\oAuth.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>oAuth.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Profile.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Profile.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Schedule.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Schedule.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\SignOff.fr.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>SignOff.fr.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\SignOff.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>SignOff.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Tabs.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Tabs.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Totals.fr.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Totals.fr.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Totals.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Totals.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\Weather.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Weather.designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="App_GlobalResources\WebService.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>WebService.designer.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_LocalResources\DefaultMini.aspx.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Controls\App_LocalResources\mfbDeadlines.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Controls\App_LocalResources\mfbEditFlight.ascx.resx" />
+    <Content Include="Controls\App_LocalResources\mfbEditMake.ascx.resx" />
+    <Content Include="Controls\App_LocalResources\mfbFlightProperties.ascx.resx" />
+    <Content Include="Controls\App_LocalResources\mfbFooter.ascx.resx" />
+    <Content Include="Controls\App_LocalResources\mfbImportAircraft.ascx.resx" />
+    <Content Include="Controls\App_LocalResources\mfbMaintainAircraft.ascx.resx" />
+    <Content Include="Controls\App_LocalResources\mfbSearchForm.ascx.resx" />
+    <Content Include="Controls\App_LocalResources\mfbSignFlight.ascx.fr.resx" />
+    <Content Include="Controls\App_LocalResources\mfbSignFlight.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Logon\App_LocalResources\newuser.aspx.resx" />
+    <Content Include="Logon\App_LocalResources\ResetPass.aspx.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Member\App_LocalResources\8710Form.aspx.resx" />
+    <Content Include="Member\App_LocalResources\ACSchedule.aspx.resx" />
+    <Content Include="Member\App_LocalResources\Airports.aspx.resx" />
+    <Content Include="Member\App_LocalResources\EditAirports.aspx.resx" />
+    <Content Include="Member\App_LocalResources\EditProfile.aspx.resx" />
+    <Content Include="Member\App_LocalResources\FlightAnalysis.aspx.resx" />
+    <Content Include="Member\App_LocalResources\FlightDetail.aspx.resx" />
+    <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
+    <Content Include="Member\App_LocalResources\Import.aspx.resx" />
+    <Content Include="Member\App_LocalResources\Logbook.aspx.resx" />
+    <Content Include="Member\App_LocalResources\makes.aspx.resx" />
+    <Content Include="Member\App_LocalResources\MiniLogbook.aspx.resx" />
+    <Content Include="Member\App_LocalResources\oAuthAuthorize.aspx.resx" />
+    <Content Include="Member\App_LocalResources\RequestSigs.aspx.resx" />
+    <Content Include="Member\App_LocalResources\StartingTotals.aspx.resx" />
+    <Content Include="Member\App_LocalResources\Training.aspx.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Public\App_LocalResources\FindAirport.aspx.resx" />
+    <Content Include="Public\App_LocalResources\MobileApps.aspx.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>65326</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44390/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

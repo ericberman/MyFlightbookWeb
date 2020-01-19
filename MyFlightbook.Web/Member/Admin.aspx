@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
-    CodeFile="Admin.aspx.cs" Inherits="Member_Admin" Title="Administer MyFlightbook" %>
+    Codebehind="Admin.aspx.cs" Inherits="Member_Admin" Title="Administer MyFlightbook" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbImpersonate.ascx" TagName="mfbImpersonate" TagPrefix="uc1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

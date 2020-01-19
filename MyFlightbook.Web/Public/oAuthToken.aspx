@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="oAuthToken.aspx.cs" Inherits="Member_oAuthToken" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="oAuthToken.aspx.cs" Inherits="Member_oAuthToken" %>
 
 <!DOCTYPE html>
 

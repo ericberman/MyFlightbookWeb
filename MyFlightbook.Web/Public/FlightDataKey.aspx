@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="FlightDataKey.aspx.cs" Inherits="Public_FlightDataKey" Title="" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="FlightDataKey.aspx.cs" Inherits="Public_FlightDataKey" Title="" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblHeader" runat="server" Text="<%$ Resources:FlightData, FlightDataHeader %>"></asp:Label>

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="AddEndorsement.aspx.cs" Inherits="Member_AddEndorsement" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="AddEndorsement.aspx.cs" Inherits="Member_AddEndorsement" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/mfbEditEndorsement.ascx" TagPrefix="uc1" TagName="mfbEditEndorsement" %>

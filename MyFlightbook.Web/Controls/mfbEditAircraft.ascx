@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditAircraft.ascx.cs"
+<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEditAircraft.ascx.cs"
     Inherits="Controls_mfbEditAircraft" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>

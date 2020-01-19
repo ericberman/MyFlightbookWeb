@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbSimpleTotals.ascx.cs" Inherits="Controls_mfbSimpleTotals" %>
+<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbSimpleTotals.ascx.cs" Inherits="Controls_mfbSimpleTotals" %>
 <%@ Register src="mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc1" %>
 <div>Flight Totals -
 <asp:DropDownList ID="cmbTotals" runat="server" AutoPostBack="True" OnSelectedIndexChanged="cmbTotals_SelectedIndexChanged">

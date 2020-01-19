@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="SelectMake.ascx.cs" Inherits="Controls_AircraftControls_SelectMake" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="SelectMake.ascx.cs" Inherits="Controls_AircraftControls_SelectMake" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
 <asp:MultiView ID="mvModel" runat="server" ActiveViewIndex="0">

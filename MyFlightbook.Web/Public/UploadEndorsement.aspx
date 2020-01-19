@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="UploadEndorsement.aspx.cs" Inherits="Public_UploadEndorsement" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="UploadEndorsement.aspx.cs" Inherits="Public_UploadEndorsement" %>
 
 <%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc1" %>
 

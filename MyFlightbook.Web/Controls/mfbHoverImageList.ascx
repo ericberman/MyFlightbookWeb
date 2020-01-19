@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbHoverImageList.ascx.cs" Inherits="Controls_mfbHoverImageList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbHoverImageList.ascx.cs" Inherits="Controls_mfbHoverImageList" %>
 <%@ Register src="mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:HyperLink ID="lnkViewFullImage" runat="server" Target="_blank">

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbHeader.ascx.cs" Inherits="Controls_mfbHeader" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbHeader.ascx.cs" Inherits="Controls_mfbHeader" %>
 <%@ Register Src="XMLNav.ascx" TagName="XMLNav" TagPrefix="uc2" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc2" TagName="mfbSearchbox" %>

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="TimeZone.ascx.cs" Inherits="Controls_ClubControls_TimeZone" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="TimeZone.ascx.cs" Inherits="Controls_ClubControls_TimeZone" %>
 <asp:DropDownList CausesValidation="true" ID="cmbTimezones" runat="server" DataTextField="DisplayName" DataValueField="Id" AppendDataBoundItems="true">
     <asp:ListItem Text="<%$ Resources:Schedule, ItemEmptyTimezone %>" Value=""></asp:ListItem>
 </asp:DropDownList><br />

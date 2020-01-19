@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="layoutEASAFCL.ascx.cs" Inherits="Controls_PrintingLayouts_layoutEASAFCL" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="layoutEASAFCL.ascx.cs" Inherits="Controls_PrintingLayouts_layoutEASAFCL" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageFooter.ascx" TagPrefix="uc1" TagName="pageFooter" %>
 <%@ Register Src="~/Controls/PrintingLayouts/pageHeader.ascx" TagPrefix="uc1" TagName="pageHeader" %>
 <%@ Register Src="~/Controls/mfbSignature.ascx" TagPrefix="uc1" TagName="mfbSignature" %>

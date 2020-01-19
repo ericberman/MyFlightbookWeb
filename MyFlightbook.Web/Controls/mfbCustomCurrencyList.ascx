@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbCustomCurrencyList.ascx.cs" Inherits="Controls_mfbCustomCurrencyList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbCustomCurrencyList.ascx.cs" Inherits="Controls_mfbCustomCurrencyList" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="~/Controls/mfbCustCurrency.ascx" TagPrefix="uc1" TagName="mfbCustCurrency" %>
 

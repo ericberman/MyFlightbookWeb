@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="RatingProgress.aspx.cs" Inherits="Member_RatingProgress" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="RatingProgress.aspx.cs" Inherits="Member_RatingProgress" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <asp:Label ID="lblTitle" runat="server" Text=""></asp:Label>

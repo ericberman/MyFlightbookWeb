@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbMaintainAircraft.ascx.cs"
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbMaintainAircraft.ascx.cs" 
     Inherits="Controls_mfbMaintainAircraft" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="mfbDecimalEdit.ascx" TagName="mfbDecimalEdit" TagPrefix="uc3" %>

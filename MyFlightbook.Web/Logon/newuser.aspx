@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="newuser.aspx.cs" Inherits="newuser" Title="Create Account" culture="auto" meta:resourcekey="PageResource1" %>
+<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="newuser.aspx.cs" Inherits="newuser" Title="Create Account" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbTandC.ascx" tagname="mfbTandC" tagprefix="uc1" %>

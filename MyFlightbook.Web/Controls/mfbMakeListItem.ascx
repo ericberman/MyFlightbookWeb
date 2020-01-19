@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbMakeListItem.ascx.cs" Inherits="Controls_mfbMakeListItem" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbMakeListItem.ascx.cs" Inherits="Controls_mfbMakeListItem" %>
 <%@ Register src="mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc1" %>
 <asp:FormView ID="modelView" Width="100%" runat="server">
     <ItemTemplate>

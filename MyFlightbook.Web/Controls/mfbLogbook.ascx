@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbLogbook.ascx.cs" Inherits="Controls_mfbLogbook" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbLogbook.ascx.cs" Inherits="Controls_mfbLogbook" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Src="mfbImageList.ascx" TagName="mfbImageList" TagPrefix="uc1" %>
 <%@ Register src="mfbMiniFacebook.ascx" tagname="mfbMiniFacebook" tagprefix="uc2" %>

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbGoogleAdSense.ascx.cs" Inherits="Controls_mfbGoogleAdSense" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbGoogleAdSense.ascx.cs" Inherits="Controls_mfbGoogleAdSense" %>
 <asp:MultiView ID="mvGoogleAd" runat="server">
     <asp:View ID="vwHorizontalAd" runat="server">
         <script><!--

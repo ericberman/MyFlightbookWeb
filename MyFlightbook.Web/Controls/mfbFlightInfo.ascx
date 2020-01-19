@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbFlightInfo.ascx.cs"
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbFlightInfo.ascx.cs"
     Inherits="Controls_mfbFlightInfo" %>
 <%@ Register Src="mfbDateTime.ascx" TagName="mfbDateTime" TagPrefix="uc2" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

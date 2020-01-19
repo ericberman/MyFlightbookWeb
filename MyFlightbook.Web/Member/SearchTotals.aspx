@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Title="" CodeFile="SearchTotals.aspx.cs" Inherits="SearchTotals" %>
+<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Title="" Codebehind="SearchTotals.aspx.cs" Inherits="SearchTotals" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbLogbook.ascx" TagName="mfbLogbook" TagPrefix="uc2" %>
 <%@ Register src="../Controls/mfbTotalSummary.ascx" tagname="mfbTotalSummary" tagprefix="uc3" %>

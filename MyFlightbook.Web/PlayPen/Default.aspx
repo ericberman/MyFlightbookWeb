@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" MasterPageFile="~/MasterPage.master" Inherits="PlayPen_Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="Default.aspx.cs" MasterPageFile="~/MasterPage.master" Inherits="PlayPen_Default" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     Playpen

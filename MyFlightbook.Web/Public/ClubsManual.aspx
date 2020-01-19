@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="ClubsManual.aspx.cs" Inherits="Public_ClubsManual" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="ClubsManual.aspx.cs" Inherits="Public_ClubsManual" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" runat="Server">
     Overview of Clubs on MyFlightbook

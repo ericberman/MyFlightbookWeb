@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" AutoEventWireup="true" CodeFile="CrashReport.aspx.cs" Inherits="Public_CrashReport" ValidateRequest="False" %>
+﻿<%@ Page Title="" Language="C#" AutoEventWireup="true" Codebehind="CrashReport.aspx.cs" Inherits="Public_CrashReport" ValidateRequest="False" %>
 
 
 <form id="form1" runat="server" visible="false">

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="SignFlight.aspx.cs" Inherits="Member_SignFlight" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="SignFlight.aspx.cs" Inherits="Member_SignFlight" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbSignFlight.ascx" tagname="mfbSignFlight" tagprefix="uc1" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" Runat="Server">

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="GoogleAnalytics.ascx.cs" Inherits="Controls_GoogleAnalytics" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="GoogleAnalytics.ascx.cs" Inherits="Controls_GoogleAnalytics" %>
 <!-- Google Analytics -->
 <script>
     window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;

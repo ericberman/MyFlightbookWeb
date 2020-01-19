@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbBasicMedManager.ascx.cs" Inherits="Controls_mfbBasicMedManager" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbBasicMedManager.ascx.cs" Inherits="Controls_mfbBasicMedManager" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="../Controls/mfbMultiFileUpload.ascx" tagname="mfbMultiFileUpload" tagprefix="uc7" %>
 <%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc8" %>

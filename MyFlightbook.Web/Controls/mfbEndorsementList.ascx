@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEndorsementList.ascx.cs" Inherits="Controls_mfbEndorsementList" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEndorsementList.ascx.cs" Inherits="Controls_mfbEndorsementList" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <%@ Register src="mfbEndorsement.ascx" tagname="mfbEndorsement" tagprefix="uc1" %>
 <div>

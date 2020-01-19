@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbEditAppt.ascx.cs" Inherits="Controls_mfbEditAppt" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEditAppt.ascx.cs" Inherits="Controls_mfbEditAppt" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register src="mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc3" %>
 <asp:ModalPopupExtender ID="ModalPopupExtender1" BehaviorID="mpeEditAppt" BackgroundCssClass="modalBackground" runat="server" TargetControlID="btnDummy" PopupControlID="pnlEditAppt"></asp:ModalPopupExtender>

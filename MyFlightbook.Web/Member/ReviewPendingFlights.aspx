@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="ReviewPendingFlights.aspx.cs" Inherits="Member_ReviewPendingFlights" Culture="auto" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="ReviewPendingFlights.aspx.cs" Inherits="Member_ReviewPendingFlights" Culture="auto" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="~/Controls/mfbLogbook.ascx" TagPrefix="uc1" TagName="mfbLogbook" %>
 <%@ Register Src="~/Controls/mfbEditFlight.ascx" TagPrefix="uc1" TagName="mfbEditFlight" %>

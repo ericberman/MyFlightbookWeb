@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="RSSCurrency.aspx.cs" Inherits="Public_RSSCurrency" %>
+<%@ Page Language="C#" AutoEventWireup="true" Codebehind="RSSCurrency.aspx.cs" Inherits="Public_RSSCurrency" %>
 
 <%@ Register Src="../Controls/mfbCurrency.ascx" TagName="mfbCurrency" TagPrefix="uc1" %>
 <%@ Register Src="~/Controls/mfbTotalSummary.ascx" TagPrefix="uc1" TagName="mfbTotalSummary" %>

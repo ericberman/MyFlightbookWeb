@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" CodeFile="BrowseTemplates.aspx.cs" Inherits="Member_BrowseTemplates" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Codebehind="BrowseTemplates.aspx.cs" Inherits="Member_BrowseTemplates" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><asp:Localize ID="locHeader" runat="server" Text="<%$ Resources:LogbookEntry, TemplateBrowseTemplatesheader %>"></asp:Localize></asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">

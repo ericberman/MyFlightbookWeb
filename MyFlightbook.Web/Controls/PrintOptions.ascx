@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="PrintOptions.ascx.cs" Inherits="Controls_PrintOptions" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="PrintOptions.ascx.cs" Inherits="Controls_PrintOptions" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
 
 <div>

@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeFile="mfbGoogleMapManager.ascx.cs" Inherits="Controls_mfbGoogleMapMgr" %>
+<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbGoogleMapManager.ascx.cs" Inherits="Controls_mfbGoogleMapMgr" %>
 <asp:MultiView ID="mvMap" runat="server" ActiveViewIndex="0">
     <asp:View ID="vwDynamic" runat="server">
         <asp:Panel ID="pnlMap" runat="server" EnableViewState="false" Width="100%" Height="400px">
