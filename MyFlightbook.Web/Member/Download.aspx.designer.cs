@@ -163,7 +163,7 @@ public partial class Member_Download
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.UpdatePanel updDropbox;
+    protected global::System.Web.UI.UpdatePanel updDropbox;
 
     /// <summary>
     /// lnkSaveDropbox control.
@@ -262,7 +262,7 @@ public partial class Member_Download
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.UpdateProgress UpdateProgress1;
+    protected global::System.Web.UI.UpdateProgress UpdateProgress1;
 
     /// <summary>
     /// imgProgress control.
