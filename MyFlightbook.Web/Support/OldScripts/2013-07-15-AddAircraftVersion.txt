@@ -1,1 +1,0 @@
-﻿ALTER TABLE `logbook`.`aircraft` ADD COLUMN `version` INT NOT NULL DEFAULT 0 COMMENT 'The version of this aircraft (e.g., if multiple aircraft share a tailnumber)'  AFTER `tailnumber` ;

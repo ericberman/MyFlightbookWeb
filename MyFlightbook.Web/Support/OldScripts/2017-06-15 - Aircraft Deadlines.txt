@@ -1,3 +1,0 @@
-﻿ALTER TABLE `logbook`.`deadlines` 
-ADD COLUMN `aircraftID` INT NOT NULL DEFAULT 0 COMMENT 'ID of the aircraft to which this deadline is tied, if any' AFTER `RegenUnit`,
-ADD COLUMN `aircraftHours` DECIMAL(10,2) NULL DEFAULT 0.0 COMMENT 'hours at which this is due, if for an airplane.  Unitless' AFTER `aircraftID`;

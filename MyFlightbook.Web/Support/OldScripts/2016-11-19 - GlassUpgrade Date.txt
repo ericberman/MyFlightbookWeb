@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`aircraft` 
-ADD COLUMN `GlassUpgradeDate` DATETIME NULL COMMENT 'If a glass upgrade has been performed, optionally specifies the date of the upgrade' AFTER `HasGlassUpgrade`;

@@ -1,1 +1,0 @@
-﻿ALTER TABLE `logbook`.`useraircraft` DROP COLUMN `tailNumber` , ADD COLUMN `Flags` INT UNSIGNED NULL DEFAULT 0 COMMENT 'Flags describing how the aircraft is to be used.'  AFTER `idAircraft` ;

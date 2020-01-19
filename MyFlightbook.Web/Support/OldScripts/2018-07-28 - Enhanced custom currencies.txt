@@ -1,6 +1,0 @@
-﻿ALTER TABLE `logbook`.`customcurrency` 
-ADD COLUMN `airportRestriction` VARCHAR(45) NOT NULL COMMENT 'Airport that must be contained in the flight' AFTER `catClassRestriction`,
-ADD COLUMN `textRestriction` VARCHAR(255) NOT NULL COMMENT 'Text that must be in the comments field or text property\n' AFTER `airportRestriction`;
-
-ALTER TABLE `logbook`.`customcurrency` 
-CHANGE COLUMN `minEvents` `minEvents` DECIMAL(6,2) UNSIGNED NOT NULL COMMENT 'Number of events that must be counted' ;

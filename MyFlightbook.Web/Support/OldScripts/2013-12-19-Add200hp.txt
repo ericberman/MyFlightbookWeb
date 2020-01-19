@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`models` ADD COLUMN `f200HP` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Is this model exactly 200HP (was high performance until Aug 4 1997)'  AFTER `fHighPerf` ;
-ALTER TABLE `logbook`.`models` ADD COLUMN `family` VARCHAR(45) NULL COMMENT 'The family for the model (e.g., PA28-160 and PA28-180 are both PA28\'s)'  AFTER `typename` ;

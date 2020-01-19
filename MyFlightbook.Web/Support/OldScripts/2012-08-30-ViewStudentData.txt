@@ -1,2 +1,0 @@
-ALTER TABLE `logbook`.`students` ADD COLUMN `CanViewStudent` INT NULL DEFAULT 0  AFTER `CFIName` ;
-

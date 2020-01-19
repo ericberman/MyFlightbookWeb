@@ -1,2 +1,0 @@
-﻿ALTER TABLE `logbook`.`flights` ADD COLUMN `cApprPrecision` INTEGER UNSIGNED NOT NULL DEFAULT 0 COMMENT '# of Precision Approaches' AFTER `FlightData`,
- ADD COLUMN `cApprNonPrecision` INTEGER UNSIGNED NOT NULL DEFAULT 0 COMMENT '# of non-Precision approaches' AFTER `cApprPrecision`;

@@ -1,8 +1,0 @@
-﻿CREATE TABLE `storedqueries` (
-  `username` varchar(255) NOT NULL COMMENT 'Name of the user who owns the query',
-  `name` varchar(255) NOT NULL COMMENT 'Name for the query',
-  `queryjson` mediumtext NOT NULL COMMENT 'JSON blob of the query',
-  PRIMARY KEY (`username`,`name`),
-  KEY `username_idx` (`username`),
-  CONSTRAINT `username` FOREIGN KEY (`username`) REFERENCES `users` (`Username`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contains stored queries for a user';

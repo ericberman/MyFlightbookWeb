@@ -1,5 +1,0 @@
-﻿ALTER TABLE `logbook`.`customcurrency` 
-ADD COLUMN `limitType` INT ZEROFILL NULL DEFAULT 0 COMMENT '0 = minimum events must be met, 1 = no more than maximum' AFTER `minEvents`;
-
-ALTER TABLE `logbook`.`customcurrency` 
-CHANGE COLUMN `limitType` `limitType` INT(10) UNSIGNED NULL DEFAULT '0000000000' COMMENT '0 = minimum events must be met, 1 = no more than maximum' ;

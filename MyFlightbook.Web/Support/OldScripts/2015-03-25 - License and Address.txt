@@ -1,1 +1,0 @@
-﻿ALTER TABLE `logbook`.`users` ADD COLUMN `Address` VARCHAR(255) NULL COMMENT 'Pilot\'s mailing address'  AFTER `LastName` , ADD COLUMN `License` VARCHAR(45) NULL COMMENT 'Pilot\'s license'  AFTER `OverwriteDropbox` ;

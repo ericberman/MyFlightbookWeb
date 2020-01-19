@@ -1,25 +1,0 @@
-﻿ALTER TABLE `logbook`.`users` ADD COLUMN `AchievementStatus` TINYINT NULL DEFAULT 0 COMMENT 'Current status of achievement computation for this user.'  AFTER `LastEmail` ;
-
-CREATE TABLE `badges` (
-  `BadgeID` int(11) NOT NULL COMMENT 'The ID of the badge that was earned',
-  `Username` varchar(255) NOT NULL COMMENT 'The user who earned the badge',
-  `ClassName` varchar(100) NOT NULL COMMENT 'Name of the class which implements this badge',
-  `AchievementLevel` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'The level to which the badge was earned',
-  `AchievedDate` datetime DEFAULT NULL COMMENT 'The date on which the achievement was reached',
-  `ComputeDate` datetime NOT NULL COMMENT 'The date when the achievement was computed',
-  PRIMARY KEY (`BadgeID`,`Username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table of badges earned by various users';
-
-CREATE  TABLE `logbook`.`airportlistachievement` (
-  `idachievement` INT NOT NULL AUTO_INCREMENT COMMENT 'The ID for this achievement' ,
-  `name` VARCHAR(100) NOT NULL COMMENT 'The name of the achievement' ,
-  `airportcodes` VARCHAR(1000) NOT NULL COMMENT 'A route that can be parsed to an airportlist.' ,
-  PRIMARY KEY (`idachievement`) )
-AUTO_INCREMENT = 10000
-COMMENT = 'Achievements for landing at specific airport collections';
-
-
-ALTER TABLE `logbook`.`airportlistachievement` ADD COLUMN `overlayname` VARCHAR(45) NULL COMMENT 'Name for the overlay file, if any'  AFTER `airportcodes` AFTER `name`;
-UPDATE `logbook`.`airportlistachievement` SET `overlayname`='hawaii.png' WHERE `idachievement`='10000';UPDATE `logbook`.`airportlistachievement` SET `overlayname`='washington.png' WHERE `idachievement`='10001';UPDATE `logbook`.`airportlistachievement` SET `overlayname`='oregon.png' WHERE `idachievement`='10002';UPDATE `logbook`.`airportlistachievement` SET `overlayname`='rhodeisland.png' WHERE `idachievement`='10003';UPDATE `logbook`.`airportlistachievement` SET `overlayname`='maryland.png' WHERE `idachievement`='10004';
-ALTER TABLE `logbook`.`airportlistachievement` 	ADD COLUMN `thresholdBronze` INT NOT NULL COMMENT ''  AFTER `overlayname` , 	ADD COLUMN `thresholdSilver` INT NOT NULL  AFTER `thresholdBronze` , 	ADD COLUMN `thresholdGold` INT NOT NULL  AFTER `thresholdSilver` , 	ADD COLUMN `thresholdPlatinum` INT NOT NULL  AFTER `thresholdGold` , 	ADD COLUMN `fBinaryOnly` TINYINT NOT NULL  AFTER `thresholdPlatinum` ;
-	UPDATE `logbook`.`airportlistachievement` SET `fBinaryOnly`=1 WHERE `idachievement`='10000';	UPDATE `logbook`.`airportlistachievement` SET `fBinaryOnly`=1 WHERE `idachievement`='10001';	UPDATE `logbook`.`airportlistachievement` SET `fBinaryOnly`=1 WHERE `idachievement`='10002';	UPDATE `logbook`.`airportlistachievement` SET `fBinaryOnly`=1 WHERE `idachievement`='10003';	UPDATE `logbook`.`airportlistachievement` SET `fBinaryOnly`=1 WHERE `idachievement`='10004';
