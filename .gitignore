@@ -38,12 +38,12 @@ MyFlightbook.Web/[Ii]mages/rcDesktop.bat
 MyFlightbook.Web/[Ii]mages/rcMac.bat
 
 #legacy stuff from SVN, including other projects that are now separately up on github
-MyFlightbook.Web/MFBAndroid/
-MyFlightbook.Web/MFBIphone/
-MyFlightbook.Web/W7Phone/
-MyFlightbook.Web/WSDLtoObjC/
+MFBAndroid/
+MFBIphone/
+W7Phone/
+WSDLtoObjC/
 .svn/
-MyFlightbook.Web/[Aa]irport [Dd]ata/
+[Aa]irport [Dd]ata/
 {*}/
 MyFlightbook.Web/[Ss]upport/OldScripts/
 MyFlightbook.Web/[Ss]upport/*.vbs
