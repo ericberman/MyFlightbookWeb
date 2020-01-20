@@ -2568,7 +2568,6 @@
     <Content Include="Public\Web.config" />
     <Content Include="LICENSE" />
     <None Include="packages.config" />
-    <Content Include="README.md" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>
     </None>

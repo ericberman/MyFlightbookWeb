@@ -23,36 +23,6 @@ The website and service for MyFlightbook.  This provides the back-end for the mo
 and the application should be called "logbook" and point to the /logbook branch.
 * Set up a certificate to enable https.
 * Make sure that IIS is set up to serve .KML, .GPX, .PDF, .JPG, .DOCX, .APK (application/vnd.android.package-archive) etc.
- * Add debug.config in the App_Data folder so that you can turn debug mode on/off locally:
- ~~~~
- <?xml version="1.0"?>
-<!-- 
-            Set compilation debug="true" to insert debugging 
-            symbols into the compiled page. Because this 
-            affects performance, set this value to true only 
-            during development.
-        -->
-<compilation defaultLanguage="c#" debug="true" targetFramework="4.6.1">
-  <assemblies>
-    <add assembly="System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/>
-    <add assembly="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
-    <add assembly="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
-    <add assembly="System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
-    <add assembly="System.Xml.Linq, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
-    <add assembly="System.Data.DataSetExtensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/>
-    <add assembly="System.Net, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" />
-    <add assembly="System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" />
-    <add assembly="System.Net.Http.WebRequest, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" />
-    <add assembly="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
-    <add assembly="System.Runtime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <add assembly="System.Threading.Tasks, Version=1.5.11.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <add assembly="System.IO, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <add assembly="System.ComponentModel.Composition, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
-    <add assembly="System.Numerics.Vectors, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" />
-    <add assembly="System.Numerics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089" />
-  </assemblies>
-</compilation>
-~~~~
  * Add email.config to App_Data so that you can send email:
 ~~~~
 <?xml version="1.0"?>
