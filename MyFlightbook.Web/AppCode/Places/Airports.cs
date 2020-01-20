@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -863,6 +863,7 @@ namespace MyFlightbook.Airports
         /// </summary>
         /// <param name="szSearchText">The words to find</param>
         /// <returns>A set of matching airports</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static IEnumerable<airport> AirportsMatchingText(string szSearchText)
         {
             List<airport> lstAp = new List<airport>();

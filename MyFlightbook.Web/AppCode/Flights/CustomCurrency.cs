@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -904,7 +904,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         fq.HasLandings = true;
                         break;
                     default:
-                        throw new MyFlightbookException("Unknown event type: " + EventType.ToString() + " in ToQuery()");
+                        throw new InvalidOperationException("Unknown event type: " + EventType.ToString() + " in ToQuery()");
                 }
                 if (prop != CustomPropertyType.KnownProperties.IDPropInvalid)
                     fq.PropertyTypes = lstprops.FindAll(cpt => cpt.PropTypeID == (int)prop).ToArray();

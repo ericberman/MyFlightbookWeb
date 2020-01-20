@@ -18,7 +18,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1373,6 +1373,7 @@ namespace MyFlightbook
         /// <param name="fUpdateFlightData">True if telemetry is to be updated</param>
         /// <param name="fUpdateSignature">True if the signature is to be recomputed and saved</param>
         /// <returns>True if success, else false</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public virtual bool FCommit(bool fUpdateFlightData = false, bool fUpdateSignature = false)
         {
             Boolean fResult = false;

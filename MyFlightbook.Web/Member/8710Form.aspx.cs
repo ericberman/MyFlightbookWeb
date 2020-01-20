@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2019 MyFlightbook LLC
+ * Copyright (c) 2011-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -46,6 +46,7 @@ public partial class Member_8710Form : System.Web.UI.Page
 
     private Dictionary<string, List<ClassTotal>> ClassTotals { get; set; }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
     protected void RefreshFormData()
     {
 

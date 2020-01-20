@@ -11,7 +11,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -435,7 +435,7 @@ namespace MyFlightbook.Instruction
                     comm.Parameters.Add(p);
             },
                 (dr) => { lst.Add(new EndorsementType(dr)); }))
-                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture,"Unable to load templates:", dbh.LastError));
+                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture,"Unable to load templates: {0}", dbh.LastError));
 
             return lst;
         }
