@@ -16,16 +16,16 @@
                 <div id="headerLoginStatus">
                     <asp:MultiView ID="mvLoginStatus" runat="server">
                         <asp:View ID="vwSignedIn" runat="server">
-                            <asp:Panel runat="server" ID="pnlUser" style="padding: 2px; margin-top: 2px">
+                            <asp:Panel runat="server" ID="pnlUser" style="padding: 2px; margin-top: 2px; width: 180px">
                                 <asp:Image ID="imgProfile" runat="server" style="width:12pt; height:12pt; vertical-align:middle" ImageUrl="~/Public/tabimages/ProfileTab.png" />&nbsp;
                                 <asp:Label ID="lblUser" runat="server" style="vertical-align:middle;"></asp:Label>  
                             </asp:Panel>
-                            <asp:Panel ID="pnlMenuContent" runat="server" BackColor="#FAFAFA" BorderColor="Black" style="padding: 3px; display:none;" BorderWidth="1px">
-                                <div style="padding:4px; text-align:left;">
+                            <asp:Panel ID="pnlMenuContent" runat="server" BackColor="#FAFAFA" BorderColor="Black" style="padding: 3px; display:none; width: 180px" BorderWidth="1px">
+                                <div style="padding:4px; text-align:center;">
                                     <div><asp:Label ID="lblMemberSince" runat="server"></asp:Label></div>
                                     <div><asp:Label ID="lblLastLogin" runat="server"></asp:Label></div>
                                     <div runat="server" id="itemLastActivity"><asp:Label ID="lblLastActivity" runat="server"></asp:Label></div>
-                                    <p style="text-align:center; width:100%"><asp:LoginStatus ID="LoginStatus2" runat="server" LogoutPageUrl="~/secure/login.aspx" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" /></p>
+                                    <div><asp:LoginStatus ID="LoginStatus2" runat="server" LogoutPageUrl="~/secure/login.aspx" LoginText="<%$ Resources:LocalizedText, LoginStatusSignIn %>" LogoutText="<%$ Resources:LocalizedText, LoginStatusSignOut %>" LogoutAction="RedirectToLoginPage" /></div>
                                 </div>
                             </asp:Panel>
                             <asp:dropshadowextender ID="DropShadowExtender1" runat="server" TargetControlID="pnlMenuContent" Opacity=".5"></asp:dropshadowextender>
