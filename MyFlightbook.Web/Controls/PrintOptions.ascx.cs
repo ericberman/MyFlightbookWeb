@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -62,9 +62,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
         }
         set
         {
-            if (value == null)
-                throw new ArgumentNullException("value");
-            m_options = value;
+            m_options = value ?? throw new ArgumentNullException(nameof(value));
             cmbFlightsPerPage.SelectedValue = m_options.FlightsPerPage.ToString(CultureInfo.InvariantCulture);
             ckIncludeImages.Checked = m_options.IncludeImages;
             ckIncludeSignatures.Checked = m_options.IncludeSignatures;
@@ -101,7 +99,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
     protected void AdjustForLayoutCapabilities(PrintingOptions po)
     {
         if (po == null)
-            throw new ArgumentNullException("po");
+            throw new ArgumentNullException(nameof(po));
         PrintLayout pl = PrintLayout.LayoutForType(po.Layout);
         pnlIncludeImages.Visible = pl.SupportsImages;
         if (!pl.SupportsImages)
@@ -115,18 +113,16 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             return;
 
         if (lst == null)
-            throw new ArgumentNullException("lst");
+            throw new ArgumentNullException(nameof(lst));
 
         // Enum.TryParse works with integers as well as symbolic names, so try it first as an integer (i.e., custom property type)
-        int idPropType;
-        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out idPropType))
+        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idPropType))
         {
             lst.Add(new OptionalColumn(idPropType));
             return;
         }
 
-        OptionalColumnType oct;
-        if (Enum.TryParse<OptionalColumnType>(value, out oct))
+        if (Enum.TryParse<OptionalColumnType>(value, out OptionalColumnType oct))
         {
             lst.Add(new OptionalColumn(oct));
             return;
@@ -205,8 +201,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
 
     protected void NotifyDelegate()
     {
-        if (OptionsChanged != null)
-            OptionsChanged(this, new PrintingOptionsEventArgs(Options));
+        OptionsChanged?.Invoke(this, new PrintingOptionsEventArgs(Options));
     }
     
     protected void ckIncludeImages_CheckedChanged(object sender, EventArgs e)

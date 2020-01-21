@@ -3242,6 +3242,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string PrintOptionsEntriesPerPageDescription {
+            get {
+                return ResourceManager.GetString("PrintOptionsEntriesPerPageDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Continuous.
         /// </summary>
         internal static string PrintViewAsFit {

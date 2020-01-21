@@ -1,5 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="PrintOptions.ascx.cs" Inherits="Controls_PrintOptions" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
 
 <div>
     <p><asp:Label ID="lblLayoutPrompt" runat="server" Font-Bold="true" Text="<%$ Resources:LogbookEntry, PrintFormatPrompt %>"></asp:Label></p>
@@ -20,7 +22,13 @@
     <div><asp:CheckBox ID="ckIncludeSignatures" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeSignatures %>" Checked="true" AutoPostBack="true" OnCheckedChanged="ckIncludeSignatures_CheckedChanged" /></div>
 </div>
 <asp:Panel ID="pnlFlightsPerPage" runat="server">
-    <p><asp:Label ID="lblFlightsPerPage" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, PrintViewFlightsPerPage %>"></asp:Label></p>
+    <p><asp:Label ID="lblFlightsPerPage" Font-Bold="true" runat="server" Text="<%$ Resources:LocalizedText, PrintViewFlightsPerPage %>"></asp:Label>
+        <uc1:mfbTooltip runat="server" id="mfbTooltip">
+            <TooltipBody>
+                <asp:Localize ID="locApproximatePageDesc" runat="server" Text="<%$ Resources:LocalizedText, PrintOptionsEntriesPerPageDescription %>"></asp:Localize>
+            </TooltipBody>
+        </uc1:mfbTooltip>
+    </p>
     <asp:DropDownList ID="cmbFlightsPerPage" runat="server" AutoPostBack="true" OnSelectedIndexChanged="cmbFlightsPerPage_SelectedIndexChanged">
         <asp:ListItem Value="-1" Text="<%$ Resources:LocalizedText, PrintViewAsFit %>"></asp:ListItem>
     </asp:DropDownList>

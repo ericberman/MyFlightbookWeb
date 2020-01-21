@@ -169,6 +169,9 @@
     <Reference Include="System.ComponentModel" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.4.5.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -300,6 +303,7 @@
     <Content Include="App_GlobalResources\Content.en\mapnavaidtip.htm" />
     <Content Include="App_GlobalResources\Content.en\MobileAppPromo.txt" />
     <Content Include="App_GlobalResources\Content.en\NewAccountPromo.txt" />
+    <Content Include="App_GlobalResources\Content.en\PrintOptionsEntriesPerPageDescription.htm" />
     <Content Include="App_GlobalResources\Content.en\Privacy.htm" />
     <Content Include="App_GlobalResources\Content.en\SharingDescription.htm" />
     <Content Include="App_GlobalResources\Content.en\TAADefinition.htm" />
