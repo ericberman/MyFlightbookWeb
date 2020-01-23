@@ -193,15 +193,6 @@ public partial class Member_Training
     protected global::System.Web.UI.WebControls.View vwStudents;
 
     /// <summary>
-    /// locStudentsPrompt control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Localize locStudentsPrompt;
-
-    /// <summary>
     /// gvStudents control.
     /// </summary>
     /// <remarks>
@@ -308,6 +299,33 @@ public partial class Member_Training
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.HyperLink lnkAddOfflineEndorsement;
+
+    /// <summary>
+    /// mfuOfflineEndorsements control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbMultiFileUpload mfuOfflineEndorsements;
+
+    /// <summary>
+    /// btnUploadOfflineImages control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnUploadOfflineImages;
+
+    /// <summary>
+    /// mfbIlOfflineEndorsements control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbImageList mfbIlOfflineEndorsements;
 
     /// <summary>
     /// vwInstructors control.

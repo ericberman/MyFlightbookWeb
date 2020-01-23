@@ -1581,6 +1581,10 @@ namespace MyFlightbook
             il.Refresh(true);
             foreach (MFBImageInfo mfbii in il.ImageArray)
                 mfbii.DeleteImage();
+            il.Class = MFBImageInfo.ImageClass.OfflineEndorsement;
+            il.Refresh(true);
+            foreach (MFBImageInfo mfbii in il.ImageArray)
+                mfbii.DeleteImage();
 
             // Delete basicmed records
             foreach (Basicmed.BasicMedEvent bme in Basicmed.BasicMedEvent.EventsForUser(mu.UserName))

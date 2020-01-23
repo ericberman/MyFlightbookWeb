@@ -877,6 +877,33 @@ public partial class Member_Admin
     protected global::System.Web.UI.WebControls.Button btnDelS3EndorsementOrphans;
 
     /// <summary>
+    /// lnkOfflineEndorsementImages control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkOfflineEndorsementImages;
+
+    /// <summary>
+    /// btnSyncOfflineEndorsements control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnSyncOfflineEndorsements;
+
+    /// <summary>
+    /// btnDelS3OfflineEndorsementOrphans control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnDelS3OfflineEndorsementOrphans;
+
+    /// <summary>
     /// lnkBasicMedImages control.
     /// </summary>
     /// <remarks>

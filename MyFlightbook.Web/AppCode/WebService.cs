@@ -17,7 +17,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -114,7 +114,7 @@ namespace MyFlightbook
         public static void ValidateAuth(MFBImageInfo mfbii, string szuser)
         {
             if (mfbii == null)
-                throw new ArgumentNullException("mfbii");
+                throw new ArgumentNullException(nameof(mfbii));
 
             if (String.IsNullOrEmpty(szuser))
                 throw new UnauthorizedAccessException();
@@ -134,6 +134,7 @@ namespace MyFlightbook
                     }
                     break;
                 case MFBImageInfo.ImageClass.Endorsement:
+                case MFBImageInfo.ImageClass.OfflineEndorsement:
                     if (szuser.CompareCurrentCultureIgnoreCase(mfbii.Key) != 0)
                         throw new UnauthorizedAccessException();
                     break;
@@ -267,7 +268,7 @@ namespace MyFlightbook
                 UserAircraft ua = new UserAircraft(szUser);
                 Aircraft[] rgAc = ua.GetAircraftForUser();
                 if (rgAc == null)
-                    rgAc = new Aircraft[0]; // return an empty array rather than null
+                    rgAc = Array.Empty<Aircraft>(); // return an empty array rather than null
                 else
                     foreach (Aircraft ac in rgAc)
                     {
@@ -363,7 +364,7 @@ namespace MyFlightbook
         public Aircraft[] AircraftMatchingPrefix(string szAuthToken, string szPrefix)
         {
             if (string.IsNullOrWhiteSpace(szPrefix))
-                return new Aircraft[0];
+                return Array.Empty<Aircraft>();
 
             if (szAuthToken == null)
                 throw new MyFlightbookException(Resources.WebService.errBadAuth);
@@ -603,7 +604,7 @@ namespace MyFlightbook
         /// <param name="fq">FlightQuery object with valid username provided.</param>
         /// <param name="maxCount">Maximum number of results, -1 for all</param>
         /// <returns>Matching flights.</returns>
-        public LogbookEntry[] FlightsWithQuery(FlightQuery fq, int offset, int maxCount)
+        private static LogbookEntry[] FlightsWithQuery(FlightQuery fq, int offset, int maxCount)
         {
             if (String.IsNullOrEmpty(fq.UserName))
                 throw new MyFlightbookException("FlightsWithQuery - no valid username specified");
@@ -793,9 +794,9 @@ namespace MyFlightbook
         public LogbookEntry CommitFlightWithOptions(string szAuthUserToken, LogbookEntry le, PostingOptions po)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
             if (szAuthUserToken == null)
-                throw new ArgumentNullException("szAuthUserToken");
+                throw new ArgumentNullException(nameof(szAuthUserToken));
             if (po != null)
                 po.ToString();  // avoid warning about unused po
 
@@ -1019,7 +1020,7 @@ namespace MyFlightbook
         public void DeleteImage(string szAuthUserToken, MFBImageInfo mfbii)
         {
             if (mfbii == null)
-                throw new ArgumentNullException("mfbii");
+                throw new ArgumentNullException(nameof(mfbii));
             string szUser = GetEncryptedUser(szAuthUserToken);
 
             // Hack to work around a bug: the incoming mfbii (at least from iPhone) specifies JPG as image type...always (not initialized). So...
@@ -1039,7 +1040,7 @@ namespace MyFlightbook
         public void UpdateImageAnnotation(string szAuthUserToken, MFBImageInfo mfbii)
         {
             if (mfbii == null)
-                throw new ArgumentNullException("mfbii");
+                throw new ArgumentNullException(nameof(mfbii));
             string szUser = GetEncryptedUser(szAuthUserToken);
 
             ImageAuthorization.ValidateAuth(mfbii, szUser);
@@ -1056,21 +1057,21 @@ namespace MyFlightbook
         public static bool CheckSecurity(HttpRequest r)
         {
             if (r == null)
-                throw new ArgumentNullException("r");
+                throw new ArgumentNullException(nameof(r));
             return (r.IsSecureConnection || r.Url.Host.StartsWith("192.168", StringComparison.OrdinalIgnoreCase) || r.Url.Host.StartsWith("10.", StringComparison.OrdinalIgnoreCase) || r.IsLocal);
         }
 
         private static string AuthTokenForValidatedUser(string szUser)
         {
             if (szUser == null)
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
             return new Encryptors.WebServiceEncryptor().Encrypt(szUser + ";" + DateTime.Now.Ticks);
         }
 
         public static string AuthTokenFromOAuthToken(DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag token)
         {
             if (token == null)
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
 
             return AuthTokenForValidatedUser(token.User);
         }
@@ -1090,9 +1091,9 @@ namespace MyFlightbook
                 return null;
 
             if (szUser == null)
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
             if (szPass == null)
-                throw new ArgumentNullException("szPass");
+                throw new ArgumentNullException(nameof(szPass));
 
             // look for admin emulation in the form of 
             string[] rgUsers = szUser.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
@@ -1269,11 +1270,11 @@ namespace MyFlightbook
         public CannedQuery[] AddNamedQueryForUser(string szAuthToken, FlightQuery fq, string szName)
         {
             if (szAuthToken == null)
-                throw new ArgumentNullException("szAuthToken");
+                throw new ArgumentNullException(nameof(szAuthToken));
             if (fq == null)
-                throw new ArgumentNullException("fq");
+                throw new ArgumentNullException(nameof(fq));
             if (szName == null)
-                throw new ArgumentNullException("szName");
+                throw new ArgumentNullException(nameof(szName));
             if (String.IsNullOrWhiteSpace(szName))
                 throw new InvalidOperationException("Missing or empty name passed to AddNamedQueryForUser");
 
@@ -1291,9 +1292,9 @@ namespace MyFlightbook
         public CannedQuery[] DeleteNamedQueryForUser(string szAuthToken, CannedQuery cq)
         {
             if (szAuthToken == null)
-                throw new ArgumentNullException("szAuthToken");
+                throw new ArgumentNullException(nameof(szAuthToken));
             if (cq == null)
-                throw new ArgumentNullException("cq");
+                throw new ArgumentNullException(nameof(cq));
 
             string szUser = GetEncryptedUser(szAuthToken);
             if (!String.IsNullOrEmpty(szUser) && cq != null)
@@ -1311,7 +1312,7 @@ namespace MyFlightbook
         #region Autocomplete
         private const string keyColumn = "ColumnKey";
 
-        public string[] GetKeysFromDB(string szQ, string prefixText)
+        public static string[] GetKeysFromDB(string szQ, string prefixText)
         {
             ArrayList al = new ArrayList();
             DBHelper dbo = new DBHelper(szQ);
@@ -1320,13 +1321,13 @@ namespace MyFlightbook
                 (comm) => { comm.Parameters.AddWithValue("prefix", prefixText); },
                 (dr) => { al.Add(dr[keyColumn].ToString()); }))
                 return (string[])al.ToArray(typeof(string));
-            return new string[0];
+            return Array.Empty<string>();
         }
 
         private string[] DoSuggestion(string szQ, string prefixText, int count)
         {
             if (String.IsNullOrEmpty(prefixText) || string.IsNullOrEmpty(szQ) || prefixText.Length <= 2)
-                return new string[0];
+                return Array.Empty<string>();
 
             string[] rgsz = GetKeysFromDB(String.Format(CultureInfo.InvariantCulture,szQ, keyColumn, count), prefixText);
 
@@ -1354,7 +1355,7 @@ namespace MyFlightbook
         [System.Web.Script.Services.ScriptMethod]
         public string[] PreviouslyUsedTextProperties(string prefixText, int count, string contextKey)
         {
-            string[] rgResultDefault = new string[0];
+            string[] rgResultDefault = Array.Empty<string>();
 
             if (String.IsNullOrEmpty(contextKey))
                 return rgResultDefault;
@@ -1363,16 +1364,14 @@ namespace MyFlightbook
             if (rgsz.Length != 2 || String.IsNullOrEmpty(rgsz[0]) || string.IsNullOrEmpty(rgsz[1]))
                 return rgResultDefault;
 
-            int idPropType;
-
-            if (!Int32.TryParse(rgsz[1], out idPropType))
+            if (!Int32.TryParse(rgsz[1], out int idPropType))
                 return rgResultDefault;
 
             Dictionary<int, List<string>> d = CustomFlightProperty.PreviouslyUsedTextValuesForUser(rgsz[0]);
 
             List<string> lst = (d.ContainsKey(idPropType)) ? d[idPropType] : null;
             if (lst == null)
-                return new string[0];
+                return Array.Empty<string>();
 
             string szSearch = prefixText.ToUpperInvariant();
 
@@ -1388,7 +1387,7 @@ namespace MyFlightbook
         [WebMethod]
         public airport[] AirportsInBoundingBox(double latSouth, double lonWest, double latNorth, double lonEast)
         {
-            return (IsValidCaller()) ? airport.AirportsWithinBounds(latSouth, lonWest, latNorth, lonEast).ToArray() : new airport[0];
+            return (IsValidCaller()) ? airport.AirportsWithinBounds(latSouth, lonWest, latNorth, lonEast).ToArray() : Array.Empty<airport>();
         }
         #endregion
     }

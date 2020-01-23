@@ -13,7 +13,7 @@ using System.Web.Caching;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -1355,6 +1355,7 @@ GROUP BY fp.idPropType;";
     ///    a) Show warnings / expirations that are not strictly flight-experience related (e.g., flight reviews)
     ///    b) Display a list of BFRs and IPCs to the user
     /// </summary>
+    [Serializable]
     public class ProfileEvent : CustomFlightProperty, IComparable
     {
         #region properties

@@ -1930,6 +1930,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your endorsement.
+        /// </summary>
+        internal static string EndorsementAltText {
+            get {
+                return ResourceManager.GetString("EndorsementAltText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This file appears to be in Excel native format, not CSV.
         /// </summary>
         internal static string errImportXLSNotCSV {
@@ -3242,7 +3251,9 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to &lt;p&gt;This is an approximate number of flights per page because the height of each row cannot be determined with accuracy before rendering of the entire page.&lt;/p&gt;
+        ///&lt;p&gt;The system does try to adjust the row height based on the data a given flight contains - more data is assumed to require more height, reducing the number of flights on the containing page,
+        ///    but this is just an approximation.  Things that contribute to &quot;more height&quot; include: long comments, lots of properties, images (if images are included in  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PrintOptionsEntriesPerPageDescription {
             get {
@@ -3997,6 +4008,51 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An endorsement you&apos;ve given to a student.
+        /// </summary>
+        internal static string StudentEndorsementAltText {
+            get {
+                return ResourceManager.GetString("StudentEndorsementAltText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have no students who are using %APP_NAME%.
+        /// </summary>
+        internal static string StudentsMemberNoneFound {
+            get {
+                return ResourceManager.GetString("StudentsMemberNoneFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your students who are on %APP_NAME%.
+        /// </summary>
+        internal static string StudentsMemberPrompt {
+            get {
+                return ResourceManager.GetString("StudentsMemberPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Here you can record digital records or scans/images of endorsements that you have given to students who are not using %APP_NAME%, .
+        /// </summary>
+        internal static string StudentsNonMemberDescription {
+            get {
+                return ResourceManager.GetString("StudentsNonMemberDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your students who are NOT on %APP_NAME%.
+        /// </summary>
+        internal static string StudentsNonMemberPrompt {
+            get {
+                return ResourceManager.GetString("StudentsNonMemberPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flights with Telemetry.
         /// </summary>
         internal static string TelemetryBackupHeader {
@@ -4118,6 +4174,15 @@ namespace Resources {
         internal static string TypeInDateInvalidDate {
             get {
                 return ResourceManager.GetString("TypeInDateInvalidDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload Images.
+        /// </summary>
+        internal static string UploadImages {
+            get {
+                return ResourceManager.GetString("UploadImages", resourceCulture);
             }
         }
         

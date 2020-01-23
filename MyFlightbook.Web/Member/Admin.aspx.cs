@@ -18,7 +18,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -247,7 +247,7 @@ public partial class Member_Admin : System.Web.UI.Page
     protected void CustomValidator1_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         if (cmbModelToMergeInto.SelectedValue == cmbModelToDelete.SelectedValue)
             args.IsValid = false;
         MakeModel mmToDelete = new MakeModel(Convert.ToInt32(cmbModelToDelete.SelectedValue, CultureInfo.InvariantCulture));
@@ -310,7 +310,7 @@ public partial class Member_Admin : System.Web.UI.Page
     protected void ValidateDupeMans(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         if (cmbManToKeep.SelectedValue == cmbManToKill.SelectedValue ||
             cmbManToKeep.SelectedItem == null || cmbManToKill.SelectedItem == null ||
             cmbManToKill.SelectedItem.Text.Length == 0 || cmbManToKeep.SelectedItem.Text.Length == 0)
@@ -345,7 +345,7 @@ public partial class Member_Admin : System.Web.UI.Page
     protected void gvManufacturers_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if ((e.Row.RowState & DataControlRowState.Edit) == DataControlRowState.Edit)
         {
             RadioButtonList rbl = (RadioButtonList)e.Row.FindControl("rblDefaultSim");
@@ -356,9 +356,9 @@ public partial class Member_Admin : System.Web.UI.Page
     protected void ManRowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
 
         GridView gv = (GridView)sender;
         RadioButtonList rbl = (RadioButtonList)gv.Rows[e.RowIndex].FindControl("rblDefaultSim");
@@ -505,7 +505,7 @@ public partial class Member_Admin : System.Web.UI.Page
         gvOrphanedAircraft.DataBind();
     }
 
-    protected void DeleteOrphanAircraft(int idAircraft)
+    protected static void DeleteOrphanAircraft(int idAircraft)
     {
         Aircraft ac = new Aircraft(idAircraft);
         ac.PopulateImages();
@@ -549,7 +549,7 @@ public partial class Member_Admin : System.Web.UI.Page
     protected void gvDupeAircraft_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         int rowClicked = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
         GridViewRow gvr = gvDupeAircraft.Rows[rowClicked];
         string szTail = gvr.Cells[0].Text;
@@ -594,7 +594,7 @@ public partial class Member_Admin : System.Web.UI.Page
     protected void gvSims_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         int rowClicked = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
         int idAircraft = Convert.ToInt32(gvSims.Rows[rowClicked].Cells[0].Text, CultureInfo.InvariantCulture);
         Aircraft ac = new Aircraft(idAircraft);
@@ -614,7 +614,7 @@ public partial class Member_Admin : System.Web.UI.Page
     protected void gvDupeSims_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         int rowClicked = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
         GridViewRow gvr = gvDupeSims.Rows[rowClicked];
         int idInstanceTypeKeep = Convert.ToInt32(gvr.Cells[0].Text, CultureInfo.InvariantCulture);
@@ -730,7 +730,7 @@ GROUP BY ac.idaircraft";
     protected void gvMapModels_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (e.CommandName.CompareCurrentCultureIgnoreCase("_MapModel") == 0)
         {
@@ -757,7 +757,7 @@ GROUP BY ac.idaircraft";
     protected void gvCountryCodes_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if ((e.Row.RowState & DataControlRowState.Edit) == DataControlRowState.Edit)
         {
             RadioButtonList rbl = (RadioButtonList)e.Row.FindControl("rblTemplateType");
@@ -783,9 +783,9 @@ GROUP BY ac.idaircraft";
     protected void gvCountryCodes_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
 
         GridView gv = (GridView)sender;
         RadioButtonList rbl = (RadioButtonList)gv.Rows[e.RowIndex].FindControl("rblTemplateType");
@@ -802,7 +802,7 @@ GROUP BY ac.idaircraft";
     protected void gvCountryCodes_RowEditing(object sender, GridViewEditEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         gvCountryCodes.EditIndex = e.NewEditIndex;
         gvCountryCodes.DataBind();
     }
@@ -810,7 +810,7 @@ GROUP BY ac.idaircraft";
     protected void gvCountryCodes_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (e.CommandName.CompareCurrentCultureIgnoreCase("fixHyphens") == 0)
         {
@@ -845,7 +845,7 @@ GROUP BY ac.idaircraft";
     protected void gvEndorsementTemplate_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             Controls_mfbEditEndorsement ee = (Controls_mfbEditEndorsement)e.Row.FindControl("mfbEditEndorsement1");
@@ -897,6 +897,11 @@ GROUP BY ac.idaircraft";
         SyncImagesToDB(MFBImageInfo.ImageClass.Endorsement);
     }
 
+    protected void btnSyncOfflineEndorsements_Click(object sender, EventArgs e)
+    {
+        SyncImagesToDB(MFBImageInfo.ImageClass.OfflineEndorsement);
+    }
+
     protected void btnSyncBasicMed_Click(object sender, EventArgs e)
     {
         SyncImagesToDB(MFBImageInfo.ImageClass.BasicMed);
@@ -919,6 +924,11 @@ GROUP BY ac.idaircraft";
     protected void btnDelS3EndorsementOrphans_Click(object sender, EventArgs e)
     {
         DeleteS3Orphans(MFBImageInfo.ImageClass.Endorsement);
+    }
+
+    protected void btnDelS3OfflineEndorsementOrphans_Click(object sender, EventArgs e)
+    {
+        DeleteS3Orphans(MFBImageInfo.ImageClass.OfflineEndorsement);
     }
 
     protected void btnDelS3BasicMedOrphans_Click(object sender, EventArgs e)
@@ -1082,7 +1092,7 @@ GROUP BY ac.idaircraft";
             if (Net == 0)
                 return;
             if (c == null)
-                throw new ArgumentNullException("c");
+                throw new ArgumentNullException(nameof(c));
             Label l = new Label();
             c.Controls.Add(l);
             l.Text = Net.ToString("C", CultureInfo.CurrentCulture);
@@ -1117,7 +1127,7 @@ GROUP BY ac.idaircraft";
             Dictionary<int, YearlyPayments> d = new Dictionary<int, YearlyPayments>();
 
             if (idr == null)
-                throw new ArgumentNullException("idr");
+                throw new ArgumentNullException(nameof(idr));
             while (idr.Read())
             {
                 string MonthPeriod = idr["MonthPeriod"].ToString();
@@ -1186,7 +1196,7 @@ GROUP BY ac.idaircraft";
             if (rgyp == null)
                 return;
             if (c == null)
-                throw new ArgumentNullException("c");
+                throw new ArgumentNullException(nameof(c));
             Table t = new Table();
             c.Controls.Add(t);
             t.CellPadding = 3;

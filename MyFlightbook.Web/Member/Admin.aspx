@@ -662,6 +662,17 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                 </tr>
                 <tr>
                     <td>
+                        <asp:HyperLink ID="lnkOfflineEndorsementImages" NavigateUrl="~/Member/AdminImages.aspx?r=OfflineEndorsement" Target="_blank" runat="server">Review Offline Endorsements</asp:HyperLink>
+                    </td>
+                    <td>
+                        <asp:Button ID="btnSyncOfflineEndorsements" runat="server" Text="Sync Offline Endorsements to DB" OnClick="btnSyncOfflineEndorsements_Click" />
+                    </td>
+                    <td>
+                        <asp:Button ID="btnDelS3OfflineEndorsementOrphans" runat="server" Text="Delete Orphan S3 Images" OnClick="btnDelS3OfflineEndorsementOrphans_Click" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <asp:HyperLink ID="lnkBasicMedImages" NavigateUrl="~/Member/AdminImages.aspx?r=Endorsement" Target="_blank" runat="server">Review BasicMed</asp:HyperLink>
                     </td>
                     <td>
@@ -719,45 +730,45 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
             &nbsp;(if any badge criteria changes, use this to set everybody to &quot;needs computed&quot;)
 
             <h2>Airport-list achievements:</h2>
-            <table width="400px">
+            <table style="width:400px">
                 <tr>
-                    <td valign="top"><b>Title</b></td>
+                    <td style="vertical-align: top"><b>Title</b></td>
                     <td><asp:TextBox ID="txtAirportAchievementName" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td valign="top"><b>Binary (all or nothing)?</b></td>
+                    <td style="vertical-align: top"><b>Binary (all or nothing)?</b></td>
                     <td><asp:CheckBox ID="ckBinaryAchievement" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td valign="top"><b>Bronze Level:</b></td>
+                    <td style="vertical-align: top"><b>Bronze Level:</b></td>
                     <td>
                         <uc3:mfbDecimalEdit ID="mfbDecEditBronze" DefaultValueInt="0" EditingMode="Integer" runat="server" />
                     </td>
                 </tr>
                 <tr>
-                    <td valign="top"><b>Silver Level:</b></td>
+                    <td style="vertical-align: top"><b>Silver Level:</b></td>
                     <td>
                         <uc3:mfbDecimalEdit ID="mfbDecEditSilver" DefaultValueInt="0" EditingMode="Integer" runat="server" />
                     </td>
                 </tr>
                 <tr>
-                    <td valign="top"><b>Gold Level:</b></td>
+                    <td style="vertical-align: top"><b>Gold Level:</b></td>
                     <td>
                         <uc3:mfbDecimalEdit ID="mfbDecEditGold" DefaultValueInt="0" EditingMode="Integer" runat="server" />
                     </td>
                 </tr>
                 <tr>
-                    <td valign="top"><b>Platinum Level:</b></td>
+                    <td style="vertical-align: top"><b>Platinum Level:</b></td>
                     <td>
                         <uc3:mfbDecimalEdit ID="mfbDecEditPlatinum" DefaultValueInt="0" EditingMode="Integer" runat="server" />
                     </td>
                 </tr>
                 <tr>
-                    <td valign="top"><b>Overlay</b></td>
+                    <td style="vertical-align: top"><b>Overlay</b></td>
                     <td><asp:TextBox ID="txtOverlay" runat="server" /></td>
                 </tr>
                 <tr>
-                    <td valign="top"><b>Airport Codes</b></td>
+                    <td style="vertical-align: top"><b>Airport Codes</b></td>
                     <td><asp:TextBox ID="txtAirportAchievementList" TextMode="MultiLine" runat="server" Width="300px"></asp:TextBox></td>
                 </tr>
             </table>
@@ -799,41 +810,41 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                                         <asp:HyperLink ID="lnkViewAirports" Target="_blank" runat="server" NavigateUrl='<%# String.Format("~/public/maproute2.aspx?Airports={0}", HttpUtility.UrlEncode(Eval("airportcodes").ToString())) %>'>
                                             <asp:Label  ID="txtText" runat="server" Width="300px" Text='<%# Bind("airportcodes")%>' />
                                         </asp:HyperLink><asp:Label ID="lblLevels" runat="server" Text='<%# Convert.ToInt32(Eval("fBinaryOnly")) != 0 ? "Binary Only" : String.Format("{0}, {1}, {2}, {3}", Eval("thresholdBronze"), Eval("thresholdSilver"), Eval("thresholdGold"), Eval("thresholdPlatinum"))  %>'></asp:Label></td></tr></table></ItemTemplate><EditItemTemplate>
-                            <table width="400px">
+                            <table style="width:400px">
                                 <tr>
-                                    <td valign="top"><b>ID</b></td><td><asp:Label ID="txtID" runat="server" Text='<%# Bind("idAchievement") %>' /></td>
+                                    <td style="vertical-align: top"><b>ID</b></td><td><asp:Label ID="txtID" runat="server" Text='<%# Bind("idAchievement") %>' /></td>
                                 </tr>
                                 <tr>
-                                    <td valign="top"><b>Title</b></td><td><asp:TextBox ID="txtTitle" runat="server" Text='<%# Bind("name") %>' /></td>
+                                    <td style="vertical-align: top"><b>Title</b></td><td><asp:TextBox ID="txtTitle" runat="server" Text='<%# Bind("name") %>' /></td>
                                 </tr>
                                 <tr>
-                                    <td valign="top"><b>Binary (all or nothing)?</b></td><td><asp:TextBox ID="txtBinaryOnly" runat="server" Text='<%# Bind("fBinaryOnly") %>' /></td>
+                                    <td style="vertical-align: top"><b>Binary (all or nothing)?</b></td><td><asp:TextBox ID="txtBinaryOnly" runat="server" Text='<%# Bind("fBinaryOnly") %>' /></td>
                                 </tr>
                                 <tr>
-                                    <td valign="top"><b>Bronze Level:</b></td><td>
+                                    <td style="vertical-align: top"><b>Bronze Level:</b></td><td>
                                         <asp:TextBox ID="txtBronze" runat="server" Text='<%# Bind("thresholdBronze") %>' /><br />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td valign="top"><b>Silver Level:</b></td><td>
+                                    <td style="vertical-align: top"><b>Silver Level:</b></td><td>
                                         <asp:TextBox ID="txtSilver" runat="server" Text='<%# Bind("thresholdSilver") %>' /><br />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td valign="top"><b>Gold Level:</b></td><td>
+                                    <td style="vertical-align: top"><b>Gold Level:</b></td><td>
                                         <asp:TextBox ID="txtGold" runat="server" Text='<%# Bind("thresholdGold") %>' /><br />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td valign="top"><b>Platinum Level:</b></td><td>
+                                    <td style="vertical-align: top"><b>Platinum Level:</b></td><td>
                                         <asp:TextBox ID="txtPlatinum" runat="server" Text='<%# Bind("thresholdPlatinum") %>' />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td valign="top"><b>Overlay</b></td><td><asp:TextBox ID="txtOverlay" runat="server" Text='<%# Bind("overlayname") %>' /></td>
+                                    <td style="vertical-align: top"><b>Overlay</b></td><td><asp:TextBox ID="txtOverlay" runat="server" Text='<%# Bind("overlayname") %>' /></td>
                                 </tr>
                                 <tr>
-                                    <td valign="top"><b>Airport Codes</b></td><td><asp:TextBox ID="txtText" runat="server" Width="300px" Text='<%# Bind("airportcodes")%>' TextMode="MultiLine" /></td>
+                                    <td style="vertical-align: top"><b>Airport Codes</b></td><td><asp:TextBox ID="txtText" runat="server" Width="300px" Text='<%# Bind("airportcodes")%>' TextMode="MultiLine" /></td>
                                 </tr>
                             </table>
                         </EditItemTemplate>
@@ -1290,24 +1301,24 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                             <asp:TemplateField HeaderText="Endorsement Template Data">
                                 <ItemStyle VerticalAlign="Top" />
                                 <ItemTemplate>
-                                    <table width="600px">
+                                    <table style="width:600px">
                                         <tr>
-                                            <td valign="top"><b>ID</b></td><td><asp:Label ID="Label1" runat="server"><%# Eval("id") %></asp:Label></td></tr><tr>
-                                            <td valign="top"><b>Title</b></td><td><asp:Label ID="Label2" runat="server"><%# Eval("Title") %></asp:Label></td></tr><tr>
-                                            <td valign="top"><b>FAR</b></td><td><asp:Label ID="Label3" runat="server"><%# Eval("FARRef") %></asp:Label></td></tr><tr>
-                                            <td valign="top"><b>Template</b></td><td><asp:Label ID="Label4" runat="server"><%# Eval("Text") %></asp:Label></td></tr></table></ItemTemplate><EditItemTemplate>
-                                    <table width="400px">
+                                            <td style="vertical-align: top"><b>ID</b></td><td><asp:Label ID="Label1" runat="server"><%# Eval("id") %></asp:Label></td></tr><tr>
+                                            <td style="vertical-align: top"><b>Title</b></td><td><asp:Label ID="Label2" runat="server"><%# Eval("Title") %></asp:Label></td></tr><tr>
+                                            <td style="vertical-align: top"><b>FAR</b></td><td><asp:Label ID="Label3" runat="server"><%# Eval("FARRef") %></asp:Label></td></tr><tr>
+                                            <td style="vertical-align: top"><b>Template</b></td><td><asp:Label ID="Label4" runat="server"><%# Eval("Text") %></asp:Label></td></tr></table></ItemTemplate><EditItemTemplate>
+                                    <table style="width:400px">
                                         <tr>
-                                            <td valign="top"><b>ID</b></td><td><asp:Label ID="txtID" runat="server" Text='<%# Bind("id") %>' /></td>
+                                            <td style="vertical-align: top"><b>ID</b></td><td><asp:Label ID="txtID" runat="server" Text='<%# Bind("id") %>' /></td>
                                         </tr>
                                         <tr>
-                                            <td valign="top"><b>Title</b></td><td><asp:TextBox ID="txtTitle" runat="server" Text='<%# Bind("Title") %>' /></td>
+                                            <td style="vertical-align: top"><b>Title</b></td><td><asp:TextBox ID="txtTitle" runat="server" Text='<%# Bind("Title") %>' /></td>
                                         </tr>
                                         <tr>
-                                            <td valign="top"><b>FAR</b></td><td><asp:TextBox ID="txtFAR" runat="server" Text='<%# Bind("FARRef") %>' /></td>
+                                            <td style="vertical-align: top"><b>FAR</b></td><td><asp:TextBox ID="txtFAR" runat="server" Text='<%# Bind("FARRef") %>' /></td>
                                         </tr>
                                         <tr>
-                                            <td valign="top"><b>Template</b></td><td><asp:TextBox ID="txtText" runat="server" Width="300px" Text='<%# Bind("Text")%>' TextMode="MultiLine" /></td>
+                                            <td style="vertical-align: top"><b>Template</b></td><td><asp:TextBox ID="txtText" runat="server" Width="300px" Text='<%# Bind("Text")%>' TextMode="MultiLine" /></td>
                                         </tr>
                                     </table>
                                 </EditItemTemplate>

@@ -1,27 +1,24 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Image;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Configuration;
-using System.IO;
-using System.Collections;
-using System.Globalization;
-using MyFlightbook;
-using MyFlightbook.Image;
-using MyFlightbook.SocialMedia;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Member_AdminImages : System.Web.UI.Page
+public partial class Member_AdminImages : Page
 {
-    protected string szBase = "";
+    protected string szBase = string.Empty;
 
     protected const string szVSDBKey = "imagesFromDatabaseVS";
     protected string m_szLinkTemplate = String.Empty;
@@ -119,13 +116,9 @@ public partial class Member_AdminImages : System.Web.UI.Page
         bool fNumericKeySort = true;
         string szRoot = util.GetStringParam(Request, "r");
 
-        CurrentSource = MFBImageInfo.ImageClass.Flight;
-
-        try
-        {
-            CurrentSource = (MFBImageInfo.ImageClass)Enum.Parse(typeof(MFBImageInfo.ImageClass), szRoot);
-        }
-        catch { }
+        if (!Enum.TryParse<MFBImageInfo.ImageClass>(szRoot, out MFBImageInfo.ImageClass imageClass))
+            imageClass = MFBImageInfo.ImageClass.Flight;
+        CurrentSource = imageClass;
 
         switch (CurrentSource)
         {
@@ -136,6 +129,7 @@ public partial class Member_AdminImages : System.Web.UI.Page
                 m_szLinkTemplate = "~/member/EditAircraft.aspx?a=1&id={0}";
                 break;
             case MFBImageInfo.ImageClass.Endorsement:
+            case MFBImageInfo.ImageClass.OfflineEndorsement:
                 fNumericKeySort = false;
                 break;
             case MFBImageInfo.ImageClass.BasicMed:
@@ -173,9 +167,10 @@ public partial class Member_AdminImages : System.Web.UI.Page
                             continue;
                         }
 
-                        DirKey dk = new DirKey();
-
-                        dk.Key = di.Name;
+                        DirKey dk = new DirKey
+                        {
+                            Key = di.Name
+                        };
                         if (fNumericKeySort)
                         {
                             try
@@ -381,8 +376,7 @@ public partial class Member_AdminImages : System.Web.UI.Page
 
     protected void UpdateGrid()
     {
-        List<string> lstKeys = new List<string>();
-        Dictionary<string, List<MFBImageInfo>> dictRows = QueryResults = MFBImageInfo.FromDB(CurrentSource, CurrentImageRowOffset, PageSize, out lstKeys);
+        Dictionary<string, List<MFBImageInfo>> dictRows = QueryResults = MFBImageInfo.FromDB(CurrentSource, CurrentImageRowOffset, PageSize, out List<string> lstKeys);
         gvImages.DataSource = lstKeys;
         gvImages.DataBind();
         int curOffset = CurrentImageRowOffset;
@@ -405,7 +399,6 @@ public partial class Member_AdminImages : System.Web.UI.Page
             if (lst == null || lst.Count == 0)
                 return;
 
-            MFBImageInfo mfbii0 = lst[0];
             if (CurrentSource == MFBImageInfo.ImageClass.Flight)
             {
                 ((LinkButton)e.Row.FindControl("lnkGetAircraft")).CommandArgument = szKey;
@@ -453,15 +446,13 @@ public partial class Member_AdminImages : System.Web.UI.Page
     {
         Int32 cBytesDone = 0;
         Int32 cFilesDone = 0;
-        Int32 cMBytesLimit = 100;
-        Int32 cFilesLimit = 100;
 
-        if (!Int32.TryParse(txtLimitMB.Text, out cMBytesLimit))
+        if (!Int32.TryParse(txtLimitMB.Text, out int cMBytesLimit))
             cMBytesLimit = 100;
 
         Int32 cBytesLimit = cMBytesLimit * 1024 * 1024;
 
-        if (!Int32.TryParse(txtLimitFiles.Text, out cFilesLimit))
+        if (!Int32.TryParse(txtLimitFiles.Text, out int cFilesLimit))
             cFilesLimit = 100;
 
         Dictionary<string, List<MFBImageInfo>> images = ImageDictionary;

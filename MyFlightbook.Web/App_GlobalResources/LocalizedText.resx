@@ -1584,4 +1584,25 @@
   <data name="PrintOptionsEntriesPerPageDescription" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\printoptionsentriesperpagedescription.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="EndorsementAltText" xml:space="preserve">
+    <value>Your endorsement</value>
+  </data>
+  <data name="StudentEndorsementAltText" xml:space="preserve">
+    <value>An endorsement you've given to a student</value>
+  </data>
+  <data name="StudentsMemberNoneFound" xml:space="preserve">
+    <value>You have no students who are using %APP_NAME%</value>
+  </data>
+  <data name="StudentsMemberPrompt" xml:space="preserve">
+    <value>Your students who are on %APP_NAME%</value>
+  </data>
+  <data name="StudentsNonMemberDescription" xml:space="preserve">
+    <value>Here you can record digital records or scans/images of endorsements that you have given to students who are not using %APP_NAME%, </value>
+  </data>
+  <data name="StudentsNonMemberPrompt" xml:space="preserve">
+    <value>Your students who are NOT on %APP_NAME%</value>
+  </data>
+  <data name="UploadImages" xml:space="preserve">
+    <value>Upload Images</value>
+  </data>
 </root>

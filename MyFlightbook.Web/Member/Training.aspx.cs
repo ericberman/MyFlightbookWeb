@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -39,12 +39,7 @@ public partial class Member_Training : System.Web.UI.Page
         string[] rgPrefPath = szPrefPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
         if (rgPrefPath.Length > 0 && !String.IsNullOrEmpty(rgPrefPath[0]))
-        {
-            try { sidebarTab = (tabID)Enum.Parse(typeof(tabID), rgPrefPath[0]); }
-            catch (ArgumentNullException) { }
-            catch (ArgumentException) { }
-            catch (OverflowException) { }
-        }
+            Enum.TryParse<tabID>(rgPrefPath[0], out sidebarTab);
 
         if (sidebarTab == tabID.tabUnknown)
             sidebarTab = tabID.instInstructors;
@@ -96,6 +91,13 @@ public partial class Member_Training : System.Web.UI.Page
                 case tabID.instSignFlights:
                     RefreshFlightsToBeSigned();
                     break;
+                case tabID.instStudents:
+                    if (Request.IsMobileDevice())
+                        mfbIlOfflineEndorsements.Columns = 1;
+                    mfuOfflineEndorsements.Class = MyFlightbook.Image.MFBImageInfo.ImageClass.OfflineEndorsement;
+                    mfbIlOfflineEndorsements.Key = Page.User.Identity.Name;
+                    mfbIlOfflineEndorsements.Refresh();
+                    break;
             }
         }
 
@@ -116,7 +118,8 @@ public partial class Member_Training : System.Web.UI.Page
     protected override void OnLoadComplete(EventArgs e)
     {
         // show an upload control in case the user switched from ajax to legacy upload
-        btnUploadImages.Visible = mfbMultiFileUpload1.Mode == Controls_mfbMultiFileUpload.UploadMode.Legacy;
+        btnUploadImages.Visible = (mfbMultiFileUpload1.Mode == Controls_mfbMultiFileUpload.UploadMode.Legacy);
+        btnUploadOfflineImages.Visible = (mfuOfflineEndorsements.Mode == Controls_mfbMultiFileUpload.UploadMode.Legacy);
         base.OnLoadComplete(e);
     }
 
@@ -156,6 +159,23 @@ public partial class Member_Training : System.Web.UI.Page
         }
     }
 
+    protected void ProcessOfflineEndorsementImages()
+    {
+        mfbIlOfflineEndorsements.Key = mfuOfflineEndorsements.ImageKey = User.Identity.Name;
+        mfuOfflineEndorsements.ProcessUploadedImages();
+        mfbIlOfflineEndorsements.Refresh();
+    }
+
+    protected void mfuOfflineEndorsements_UploadComplete(object sender, EventArgs e)
+    {
+        ProcessOfflineEndorsementImages();
+    }
+
+    protected void btnUploadOfflineImages_Click(object sender, EventArgs e)
+    {
+        ProcessOfflineEndorsementImages();
+    }
+
     protected void btnAddInstructor_Click(object sender, EventArgs e)
     {
         if (!Page.IsValid)
@@ -178,7 +198,7 @@ public partial class Member_Training : System.Web.UI.Page
     protected void gvStudents_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         // Show link to view logbook IF can view student's book
         // set the checkbox to set the permission to view the logbook
         if (e.Row.RowType == DataControlRowType.DataRow)
@@ -193,7 +213,7 @@ public partial class Member_Training : System.Web.UI.Page
     protected void gvStudents_Delete(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (String.Compare(e.CommandName, "_Delete", StringComparison.OrdinalIgnoreCase) == 0)
         {
             m_sm.RemoveStudent(e.CommandArgument.ToString());
@@ -204,7 +224,7 @@ public partial class Member_Training : System.Web.UI.Page
     protected void gvInstructors_Delete(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (String.Compare(e.CommandName, "_Delete", StringComparison.OrdinalIgnoreCase) == 0)
         {
             m_sm.RemoveInstructor(e.CommandArgument.ToString());
@@ -232,7 +252,7 @@ public partial class Member_Training : System.Web.UI.Page
     protected void LinkToPendingFlightDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             LogbookEntry le = (LogbookEntry)e.Row.DataItem;
@@ -258,7 +278,7 @@ public partial class Member_Training : System.Web.UI.Page
     protected void DeletePendingFlightSignatureForStudent(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.CommandName.CompareOrdinalIgnoreCase("Ignore") == 0)
         {
             ClearSignature(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
@@ -269,7 +289,7 @@ public partial class Member_Training : System.Web.UI.Page
     protected void DeletePendingFlightSignature(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.CommandName.CompareOrdinalIgnoreCase("Ignore") == 0)
         {
             ClearSignature(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));

@@ -7,6 +7,10 @@
 <%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc8" %>
 <%@ Register src="../Controls/mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc9" %>
 <%@ Register src="../Controls/AccountQuestions.ascx" tagname="AccountQuestions" tagprefix="uc4" %>
+<%@ Register Src="~/Controls/mfbMultiFileUpload.ascx" TagPrefix="uc2" TagName="mfbMultiFileUpload" %>
+<%@ Register Src="~/Controls/mfbImageList.ascx" TagPrefix="uc2" TagName="mfbImageList" %>
+
+
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -41,9 +45,9 @@
                         runat="server" Mode="Legacy" RefreshOnUpload="true" IncludeDocs="true" />
                 <asp:Button ID="btnUploadImages" runat="server" CausesValidation="False" 
                      onclick="btnUploadImages_Click" 
-                    Text="Upload Images" meta:resourcekey="btnUploadImagesResource1" />
+                    Text="<%$ Resources:LocalizedText, UploadImages %>" />
             </div>
-            <uc8:mfbImageList ID="mfbIlEndorsements" runat="server" AltText="Endorsements" 
+            <uc8:mfbImageList ID="mfbIlEndorsements" runat="server" AltText="<%$ Resources:LocalizedText, EndorsementAltText %>" 
                 CanEdit="true" Columns="3" ImageClass="Endorsement" IncludeDocs="true" MaxImage="-1" />
         </asp:View>
         <asp:View runat="server" ID="vwSignFlights">
@@ -76,8 +80,7 @@
             </asp:GridView>
         </asp:View>
         <asp:View runat="server" ID="vwStudents">
-            <h2><asp:Localize ID="locStudentsPrompt" runat="server" Text="Your Students" meta:resourcekey="locStudentsPromptResource1" 
-                    ></asp:Localize></h2>
+            <h2><% =Branding.ReBrand(Resources.LocalizedText.StudentsMemberPrompt) %></h2>
             <asp:GridView ID="gvStudents" GridLines="None" runat="server" 
                 AutoGenerateColumns="False" ShowHeader="False"
                     OnRowCommand="gvStudents_Delete" EnableViewState="False" CellPadding="3"
@@ -148,8 +151,7 @@
                         </asp:TemplateField>
                     </Columns>
                     <EmptyDataTemplate>
-                        <asp:Label ID="lblNoStudents" runat="server" Text="You have no students." meta:resourcekey="lblNoStudentsResource1" 
-                    ></asp:Label>
+                        <%# Branding.ReBrand(Resources.LocalizedText.StudentsMemberNoneFound) %>
                     </EmptyDataTemplate>
             </asp:GridView>
             <asp:Panel ID="pnlViewAllEndorsements" runat="server" meta:resourcekey="pnlViewAllEndorsementsResource1" >
@@ -189,7 +191,14 @@
                     ></asp:Label>
                 <br />
             </asp:Panel>
+            <h2><% =Branding.ReBrand(Resources.LocalizedText.StudentsNonMemberPrompt) %></h2>
+            <p><% =Branding.ReBrand(Resources.LocalizedText.StudentsNonMemberDescription) %></p>
             <p><asp:HyperLink ID="lnkAddOfflineEndorsement" Text="Record an endorsement given to a student off-line" NavigateUrl="~/Member/EndorseStudent.aspx/?extern=1" runat="server" meta:resourcekey="lnkAddOfflineEndorsementResource1" ></asp:HyperLink></p>
+            <uc2:mfbMultiFileUpload runat="server" ID="mfuOfflineEndorsements" IncludeDocs="true" IncludeVideos="false" Mode="Ajax" Class="OfflineEndorsement" RefreshOnUpload="true" OnUploadComplete="mfuOfflineEndorsements_UploadComplete" />
+            <asp:Button ID="btnUploadOfflineImages" runat="server" CausesValidation="False" 
+                     onclick="btnUploadOfflineImages_Click" 
+                    Text="<%$ Resources:LocalizedText, UploadImages %>" />
+            <uc2:mfbImageList runat="server" ID="mfbIlOfflineEndorsements" ImageClass="OfflineEndorsement" CanEdit="true" Columns="3" MaxImage="-1" IncludeDocs="true" AltText="<%$ Resources:LocalizedText, StudentEndorsementAltText %>" />
         </asp:View>
         <asp:View runat="server" ID="vwInstructors">
             <h2><asp:Localize ID="locInstructorsPrompt" runat="server" Text="Your Instructors" meta:resourcekey="locInstructorsPromptResource1" 

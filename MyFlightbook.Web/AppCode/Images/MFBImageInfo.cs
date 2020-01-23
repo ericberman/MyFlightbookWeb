@@ -77,7 +77,7 @@ namespace MyFlightbook.Image
         /// <summary>
         /// What class of image is this (Flight, Aircraft, Endorsement, etc.)
         /// </summary>
-        public enum ImageClass { Flight, Aircraft, Endorsement, BasicMed, Unknown };
+        public enum ImageClass { Flight, Aircraft, Endorsement, BasicMed, OfflineEndorsement, Unknown };
 
         public const string ThumbnailPrefix = "t_";
         public const string ThumbnailPrefixVideo = "v_";
@@ -372,7 +372,7 @@ namespace MyFlightbook.Image
         public static ImageFileType ImageTypeFromName(string szName)
         {
             if (szName == null)
-                throw new ArgumentNullException("szName");
+                throw new ArgumentNullException(nameof(szName));
             string szExt = Path.GetExtension(szName);
             if (szExt.CompareOrdinalIgnoreCase(FileExtensions.PDF) == 0)
                 return ImageFileType.PDF;
@@ -394,7 +394,7 @@ namespace MyFlightbook.Image
         public static ImageFileType ImageTypeFromFile(MFBPostedFile pf)
         {
             if (pf == null)
-                throw new ArgumentNullException("pf");
+                throw new ArgumentNullException(nameof(pf));
             if (Regex.IsMatch(pf.ContentType, "image/\\S+"))
                 return ImageFileType.JPEG;
             else if (Regex.IsMatch(pf.ContentType, "video/\\S+"))
@@ -437,6 +437,8 @@ namespace MyFlightbook.Image
                     return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["AircraftPixDir"].ToString());
                 case ImageClass.Endorsement:
                     return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"].ToString());
+                case ImageClass.OfflineEndorsement:
+                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"].ToString());
                 case ImageClass.Flight:
                     return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["FlightsPixDir"].ToString());
                 case ImageClass.BasicMed:
@@ -464,6 +466,8 @@ namespace MyFlightbook.Image
                 return ImageClass.Flight;
             if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"].ToString()), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.Endorsement;
+            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"].ToString()), StringComparison.OrdinalIgnoreCase) == 0)
+                return ImageClass.OfflineEndorsement;
             if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"].ToString()), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.BasicMed;
 
@@ -938,7 +942,7 @@ namespace MyFlightbook.Image
         static public MFBImageInfo ImageFromDBRow(MySql.Data.MySqlClient.MySqlDataReader dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
 
             MFBImageInfo.ImageClass ic = (MFBImageInfo.ImageClass)Convert.ToInt32(dr["VirtPathID"], CultureInfo.InvariantCulture);
             string szKey = (string)dr["ImageKey"];
@@ -1170,9 +1174,9 @@ namespace MyFlightbook.Image
         public static List<MFBImageInfo> Deserialize(ImageClass ic, string szKey, string szSerialization)
         {
             if (szKey == null)
-                throw new ArgumentNullException("szKey");
+                throw new ArgumentNullException(nameof(szKey));
             if (szSerialization == null)
-                throw new ArgumentNullException("szSerialization");
+                throw new ArgumentNullException(nameof(szSerialization));
             List<MFBImageInfo> lst = new List<MFBImageInfo>();
 
             string[] rgRows = szSerialization.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -1220,7 +1224,7 @@ namespace MyFlightbook.Image
         public MFBImageInfo(ImageClass ic, string szKey, string szThumbnail) : this(ic, szKey)
         {
             if (szThumbnail == null)
-                throw new ArgumentNullException("szThumbnail");
+                throw new ArgumentNullException(nameof(szThumbnail));
             ThumbnailFile = szThumbnail;
             if (szThumbnail.StartsWith(ThumbnailPrefixVideo, StringComparison.OrdinalIgnoreCase))
                 ImageType = ImageFileType.S3VideoMP4;
@@ -1253,7 +1257,7 @@ namespace MyFlightbook.Image
         public MFBImageInfo(SNSNotification notification) : this()
         {
             if (notification == null)
-                throw new ArgumentNullException("notification");
+                throw new ArgumentNullException(nameof(notification));
             AWSETSStateMessage etsNotification = JsonConvert.DeserializeObject<AWSETSStateMessage>(notification.Message);
 
             lock (videoLockObject)   // avoid re-entrancy due to possible timeouts.
@@ -1378,7 +1382,7 @@ namespace MyFlightbook.Image
         public static Bitmap BitmapFromImage(System.Drawing.Image img, int maxHeight, int maxWidth)
         {
             if (img == null)
-                throw new ArgumentNullException("img");
+                throw new ArgumentNullException(nameof(img));
             int originalWidth = img.Width;
             int originalHeight = img.Height;
             float resizeRatio = MFBImageInfo.ResizeRatio(maxHeight, maxWidth, originalHeight, originalWidth);
@@ -1398,7 +1402,7 @@ namespace MyFlightbook.Image
         public static System.Drawing.Image DrawingCompatibleImageFromStream(Stream s, out string szTemp)
         {
             if (s == null)
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
 
             szTemp = null;
             try
@@ -1429,8 +1433,7 @@ namespace MyFlightbook.Image
         /// <returns>A system.drawing.image object</returns>
         public static System.Drawing.Image DrawingCompatibleImageFromStream(Stream s)
         {
-            string szTempFile;
-            System.Drawing.Image result = DrawingCompatibleImageFromStream(s, out szTempFile);
+            System.Drawing.Image result = DrawingCompatibleImageFromStream(s, out string szTempFile);
             if (szTempFile != null || File.Exists(szTempFile))
                 throw new InvalidOperationException("DrawingCompatibleImageBytesFromStream called on an image that generated a temp file, but without the temp file being cleaned up.");
             return result;
@@ -1444,7 +1447,7 @@ namespace MyFlightbook.Image
         public static byte[] ConvertStreamToJPG(Stream s)
         {
             if (s == null)
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
 
             byte[] result = null;
             using (MagickImage image = new MagickImage(s))
@@ -1640,7 +1643,7 @@ namespace MyFlightbook.Image
         public void ToHtml(HtmlTextWriter tw, string szThumbFolder)
         {
             if (tw == null)
-                throw new ArgumentNullException("tw");
+                throw new ArgumentNullException(nameof(tw));
 
             if (szThumbFolder == null)
                 szThumbFolder = "thumbs/";
@@ -1696,6 +1699,9 @@ namespace MyFlightbook.Image
                     break;
                 case ImageClass.Endorsement:
                     szQ = "SELECT DISTINCT(ImageKey) AS idPic FROM images i LEFT JOIN users u ON i.imagekey=u.username WHERE i.VirtPathID=2 AND u.username IS NULL;";
+                    break;
+                case ImageClass.OfflineEndorsement:
+                    szQ = "SELECT DISTINCT(ImageKey) AS idPic FROM images i LEFT JOIN users u ON i.imagekey=u.username WHERE i.VirtPathID=4 AND u.username IS NULL;";
                     break;
                 case ImageClass.Flight:
                     szQ = "SELECT DISTINCT(ImageKey) AS idPic FROM images i LEFT JOIN flights f ON i.imagekey=f.idflight WHERE i.VirtPathID=0 AND f.idflight IS NULL";
@@ -1915,9 +1921,9 @@ namespace MyFlightbook.Image
         public void MoveByRequest(PutObjectRequest por, MFBImageInfo mfbii)
         {
             if (mfbii == null)
-                throw new ArgumentNullException("mfbii");
+                throw new ArgumentNullException(nameof(mfbii));
             if (por == null)
-                throw new ArgumentNullException("por");
+                throw new ArgumentNullException(nameof(por));
             lock (lockObject)
             {
                 try
@@ -2031,7 +2037,7 @@ namespace MyFlightbook.Image
         public void UploadVideo(string szFileName, string szContentType, string szBucket, string szPipelineID, MFBImageInfo mfbii)
         {
             if (mfbii == null)
-                throw new ArgumentNullException("mfbii");
+                throw new ArgumentNullException(nameof(mfbii));
 
             using (var etsClient = AWSConfiguration.ElasticTranscoderClient())
             {
@@ -2403,7 +2409,7 @@ namespace MyFlightbook.Image
         public void InitThumbnail(string szBasePath, string szPhysicalPath)
         {
             if (szBasePath == null)
-                throw new ArgumentNullException("szBasePath");
+                throw new ArgumentNullException(nameof(szBasePath));
 
             string szThumbFile = String.Format(CultureInfo.InvariantCulture, "{0}{1}00001{2}", MFBImageInfo.ThumbnailPrefixVideo, GUID, FileExtensions.JPG);
 
@@ -2556,7 +2562,7 @@ namespace MyFlightbook.Image
             : base()
         {
             if (mfbpf == null)
-                throw new ArgumentNullException("mfbpf");
+                throw new ArgumentNullException(nameof(mfbpf));
             Init();
             PostedFile = mfbpf;
             ImageType = ImageTypeFromFile(mfbpf);
@@ -2606,7 +2612,7 @@ namespace MyFlightbook.Image
         public MFBPostedFile(HttpPostedFile pf) : this()
         {
             if (pf == null)
-                throw new ArgumentNullException("pf");
+                throw new ArgumentNullException(nameof(pf));
             FileName = pf.FileName;
             ContentType = pf.ContentType;
             ContentLength = pf.ContentLength;
@@ -2789,7 +2795,7 @@ namespace MyFlightbook.Image
         public static byte[] FromDataLinkURL(string szLink)
         {
             if (szLink == null)
-                return new byte[0];
+                return Array.Empty<byte>();
 
             string szSigB64 = szLink.Substring(ScribbleImage.DataURLPrefix.Length);
             byte[] rgbSignature = Convert.FromBase64CharArray(szSigB64.ToCharArray(), 0, szSigB64.Length);
