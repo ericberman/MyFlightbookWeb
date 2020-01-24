@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master"
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master"
     Codebehind="EditProfile.aspx.cs" Inherits="Member_EditProfile" Title="Edit Profile" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
@@ -862,13 +862,29 @@
                 <asp:Label ID="lblDonatePromptGratuity" runat="server" 
                     Text="<%$ Resources:LocalizedText, DonatePromptGratuity %>" meta:resourcekey="lblDonatePromptGratuityResource8"></asp:Label>
             </p>
-            <ul>
+            <table style="border-spacing: 0px; border-collapse: collapse;">
+                <tr>
+                    <td></td>
+                    <td style="width: 5em; text-align: center; font-weight:bold;">US$10</td>
+                    <td style="width: 5em; text-align: center; font-weight:bold;">US$15</td>
+                    <td style="width: 5em; text-align: center; font-weight:bold;">US$25</td>
+                    <td style="width: 5em; text-align: center; font-weight:bold;">US$40</td>
+                    <td style="width: 5em; text-align: center; font-weight:bold;">US$100</td>
+                </tr>
                 <asp:Repeater ID="rptAvailableGratuities" runat="server">
                     <ItemTemplate>
-                        <li><span style="font-weight:bold">US$<%# String.Format("{0:F0}", Eval("Threshold")) %></span>: <%# Eval("Name") %></li>
+                        <tr>
+                            <td style="max-width: 250px; text-align:left; padding: 3px; border-bottom: 1px solid gray;"><%# Eval("Name") %></td>
+                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 10 ? "●" : string.Empty %></td>
+                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 15 ? "●" : string.Empty %></td>
+                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 25 ? "●" : string.Empty %></td>
+                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 40 ? "●" : string.Empty %></td>
+                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 100 ? "●" : string.Empty %></td>
+                        </tr>
                     </ItemTemplate>
                 </asp:Repeater>
-            </ul>
+            </table>
+            <div>&nbsp;</div>
             <iframe id="iframeDonate" src="../Donate.aspx" style="border:none;" width="300" height="120"></iframe>
             <div><asp:Label ID="lblDonateCrypto" runat="server" Text="Prefer cryptocurrency?  MyFlightbook now accepts Bitcoin and Ethereum" meta:resourcekey="lblDonateCryptoResource1"></asp:Label> <asp:HyperLink ID="lnkContact" runat="server" Text="Contact us for details." NavigateUrl="~/Public/ContactMe.aspx" meta:resourcekey="lnkContactResource1"></asp:HyperLink></div>
             <h2><asp:Label ID="lblDonationHistory" runat="server" Text="Your donation history"

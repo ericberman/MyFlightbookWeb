@@ -2,7 +2,6 @@ TODO: Expiration of authtokens - can we do this?
 TODO: "Getting Started" page, with big green link in the welcome email?
 TODO: AWS should move from access key/secret to IAM (account management)
 TODO: Email club owners on creation about the 30 day expiration
-TODO: Push notification when a currency is going to expire?
 BUG: SFAR 73 - flight review is 12 months unless you have 200hrs of helicopter time.  should fix that.
 
 Badges:
