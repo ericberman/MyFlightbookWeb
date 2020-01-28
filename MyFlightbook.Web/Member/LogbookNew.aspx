@@ -52,7 +52,7 @@
             <ajaxToolkit:AccordionPane ID="acpTotals" runat="server">
                 <Content>
                     <div style="float:right;">
-                        <uc1:popmenu runat="server" ID="popmenu">
+                        <uc1:popmenu runat="server" ID="popmenu" OffsetX="-100">
                             <MenuContent>
                                 <asp:RadioButtonList ID="rblTotalsMode" runat="server" OnSelectedIndexChanged="rblTotalsMode_SelectedIndexChanged" AutoPostBack="true">
                                     <asp:ListItem Text="<%$ Resources:Totals, TotalsModeFlat %>" Value="False" Selected="True"></asp:ListItem>
