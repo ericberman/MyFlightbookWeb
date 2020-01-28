@@ -20,7 +20,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2019 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -180,6 +180,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             mvReturn.SetActiveView(vwReturnStudent);
             lnkReturnStudent.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/StudentLogbook.aspx?student={0}", szFlightOwner);
             lnkReturnStudent.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.ReturnToStudent, MyFlightbook.Profile.GetUser(szFlightOwner).UserFullName);
+            popmenu.Visible = false;
         }
 
         // If we're here, we're authorized
@@ -219,7 +220,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
     protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClicked fic)
     {
         if (fic == null)
-            throw new ArgumentNullException("fic");
+            throw new ArgumentNullException(nameof(fic));
         Restriction.ClearRestriction(fic.FilterItem);
         UpdateRestriction();
     }
@@ -591,7 +592,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
     protected void OnRowDatabound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             Image i = (Image)e.Row.FindControl("imgPin");
@@ -674,7 +675,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
     protected void fmvLE_DataBound(object sender, EventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         FormView fv = sender as FormView;
         LogbookEntryDisplay le = (LogbookEntryDisplay)fv.DataItem;
@@ -716,7 +717,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
     protected void btnMetars_Click(object sender, EventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         Controls_METAR m = (Controls_METAR)fmvLE.FindControl("METARDisplay");
         m.METARs = new ADDSService().LatestMETARSForAirports(CurrentFlight.Route);
     }
@@ -724,7 +725,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
     protected void mfbFlightContextMenu_DeleteFlight(object sender, LogbookEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookEntryDisplay.FDeleteEntry(e.FlightID, Page.User.Identity.Name);
         Response.Redirect(TargetPage);
@@ -733,7 +734,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
     protected void mfbFlightContextMenu_SendFlight(object sender, LogbookEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         mfbSendFlight.SendFlight(e.FlightID);
     }

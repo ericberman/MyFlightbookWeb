@@ -299,6 +299,8 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         get { return String.Compare(Page.User.Identity.Name, this.User, StringComparison.Ordinal) == 0; }
     }
 
+    public bool IsReadOnly { get; set; }
+
     protected bool CacheFlushed { get; set; }
 
     /// <summary>
@@ -391,8 +393,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
                 {
                     if (b.IDFlightEarned == LogbookEntry.idFlightNone)
                         continue;
-                    List<Badge> lst = null;
-                    if (m_cachedBadges.TryGetValue(b.IDFlightEarned, out lst))
+                    if (m_cachedBadges.TryGetValue(b.IDFlightEarned, out List<Badge> lst))
                         lst.Add(b);
                     else
                         m_cachedBadges[b.IDFlightEarned] = new List<Badge>() { b };
@@ -504,18 +505,16 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         // - If cookie is not present, use 25
         // - If cookie is present, use its value
         // - Still can be overridden by "pageSize" URL parameter
-        int cFlights;
         HttpCookie cookie = Request.Cookies[szCookiesFlightsPerPage];
-        if (cookie != null && int.TryParse(cookie.Value, out cFlights) && cFlights > 0)
+        if (cookie != null && int.TryParse(cookie.Value, out int cFlights) && cFlights > 0)
             gvFlightLogs.PageSize = cFlights;
         else
             cFlights = 25;
 
         gvFlightLogs.PageSize = util.GetIntParam(Request, "pageSize", cFlights);
 
-        bool f;
         cookie = Request.Cookies[szCookieCompact];
-        if (cookie != null && bool.TryParse(cookie.Value, out f))
+        if (cookie != null && bool.TryParse(cookie.Value, out bool f))
             m_isCompact = f;
         cookie = Request.Cookies[szCookieImages];
         if (cookie != null && bool.TryParse(cookie.Value, out f))
@@ -556,6 +555,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
             ckIncludeImages.Checked = m_showImagesInline;
             rblShowInPages.Checked = gvFlightLogs.AllowPaging;
             rblShowAll.Checked = !rblShowInPages.Checked;
+            ckSelectFlights.Visible = IsViewingOwnFlights;
 
             decPageSize.IntValue = gvFlightLogs.PageSize;
             decPageSize.EditBox.MaxLength = 2;
@@ -563,8 +563,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
             // Refresh state from params.  
             // fq is handled at the host level.
             string szLastSort = util.GetStringParam(Request, "so");
-            SortDirection sortDirection;
-            if (!String.IsNullOrEmpty(szLastSort) && Enum.TryParse<SortDirection>(szLastSort, true, out sortDirection))
+            if (!String.IsNullOrEmpty(szLastSort) && Enum.TryParse<SortDirection>(szLastSort, true, out SortDirection sortDirection))
                 LastSortDir = sortDirection;
             string szSortExpr = util.GetStringParam(Request, "se");
             if (!String.IsNullOrEmpty(szSortExpr))
@@ -651,9 +650,9 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     protected void gvFlightLogs_Sorting(Object sender, GridViewSortEventArgs e)
     {
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         GridView gv = (GridView)sender;
         List<LogbookEntryDisplay> lst = (List<LogbookEntryDisplay>)gv.DataSource;
@@ -679,7 +678,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     protected void gridView_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         GridView gv = (GridView)sender;
         gv.PageIndex = e.NewPageIndex;
         BindData();
@@ -688,7 +687,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     public void gvFlightLogs_RowDataBound(Object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.Footer)
         {
             int cCols = e.Row.Cells.Count;
@@ -787,7 +786,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         }
     }
 
-    protected void ShowButton(Control lnk, Boolean fShow)
+    protected static void ShowButton(Control lnk, Boolean fShow)
     {
         if (lnk != null)
             lnk.Visible = fShow;
@@ -813,8 +812,6 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         ShowButton(lnkPrev, gvFlightLogs.PageIndex > 0);
         ShowButton(lnkNext, gvFlightLogs.PageIndex < gvFlightLogs.PageCount - 1);
         ShowButton(lnkLast, gvFlightLogs.PageIndex < gvFlightLogs.PageCount - 1);
-
-        Control lnkShowAll = gvr.Cells[0].FindControl("lnkShowAll");
     }
 
     protected void gvFlightLogs_DataBound(Object sender, EventArgs e)
@@ -915,9 +912,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
 
         try
         {
-            int iPage = 0;
 
-            bool fIsYear = Int32.TryParse(decPageNum.Text, out iPage) && iPage > 1900 && iPage < 2200;
+            bool fIsYear = Int32.TryParse(decPageNum.Text, out int iPage) && iPage > 1900 && iPage < 2200;
 
             // See if a date works
             DateTime dtAttempted = DateTime.MinValue;
@@ -973,7 +969,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     protected void mfbFlightContextMenu_DeleteFlight(object sender, LogbookEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         DeleteFlight(e.FlightID);
     }
@@ -981,7 +977,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     protected void mfbFlightContextMenu_SendFlight(object sender, LogbookEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         mfbSendFlight.SendFlight(e.FlightID);
     }
