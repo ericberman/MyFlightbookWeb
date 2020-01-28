@@ -1291,13 +1291,13 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Localize locShareAllFlightsPrompt;
 
     /// <summary>
-    /// lnkMyFlights control.
+    /// locSharePublicDesc control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkMyFlights;
+    protected global::System.Web.UI.WebControls.Localize locSharePublicDesc;
 
     /// <summary>
     /// locShareAllFlightsDisclaimer control.
@@ -1307,6 +1307,69 @@ public partial class Member_EditProfile
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Localize locShareAllFlightsDisclaimer;
+
+    /// <summary>
+    /// lnkMyFlights control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.TextBox lnkMyFlights;
+
+    /// <summary>
+    /// imgCopyMyFlights control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.ImageButton imgCopyMyFlights;
+
+    /// <summary>
+    /// lblMyFlightsCopied control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblMyFlightsCopied;
+
+    /// <summary>
+    /// locShareLogbook control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locShareLogbook;
+
+    /// <summary>
+    /// locCreateShareLinksPrompt control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locCreateShareLinksPrompt;
+
+    /// <summary>
+    /// UpdatePanel3 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.UpdatePanel UpdatePanel3;
+
+    /// <summary>
+    /// mfbShareKeys control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::MyFlightbook.Web.Controls.mfbShareKeys mfbShareKeys;
 
     /// <summary>
     /// lblSocNetworkPrefsUpdated control.

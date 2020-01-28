@@ -169,9 +169,6 @@
     <Reference Include="System.ComponentModel" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration.Install" />
-    <Reference Include="System.Drawing.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Drawing.Common.4.5.0\lib\net461\System.Drawing.Common.dll</HintPath>
-    </Reference>
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -386,6 +383,7 @@
     <Content Include="Controls\mfbSearchForm.ascx" />
     <Content Include="Controls\mfbSelectTemplates.ascx" />
     <Content Include="Controls\mfbSendFlight.ascx" />
+    <Content Include="Controls\mfbShareKeys.ascx" />
     <Content Include="Controls\mfbSignature.ascx" />
     <Content Include="Controls\mfbSignFlight.ascx" />
     <Content Include="Controls\mfbSignIn.ascx" />
@@ -774,6 +772,7 @@
     <Content Include="Public\PendingImg.aspx" />
     <Content Include="Public\Privacy.aspx" />
     <Content Include="Public\RSSCurrency.aspx" />
+    <Content Include="Public\Scripts\CopyClipboard.js" />
     <Content Include="Public\Scripts\daypilot-all.min.js" />
     <Content Include="Public\Scripts\DropDownFilter.js" />
     <Content Include="Public\Scripts\endless-scroll.js" />
@@ -804,6 +803,7 @@
     <Content Include="Public\UploadPicture.aspx" />
     <Content Include="Public\ViewPic.aspx" />
     <Content Include="Public\ViewPublicFlight.aspx" />
+    <Content Include="Public\ViewSharedLogbook.aspx" />
     <Content Include="Public\ViewSig.aspx" />
     <Content Include="Public\WebService.asmx" />
     <Content Include="Public\WP7Images\154x40_WPS_Download_cyan.png" />
@@ -820,6 +820,7 @@
     <Content Include="Secure\login.aspx" />
     <Content Include="SecurityError.aspx" />
     <Content Include="Shunt.aspx" />
+    <Content Include="Support\2020-01-24 - create sharekeys table.txt" />
     <Content Include="Support\CleanDB.txt" />
     <Content Include="Support\MinimalDB-2019-11-27.sql" />
     <Content Include="Support\wkhtmltox-0.12.4_msvc2015-win64.exe" />
@@ -924,6 +925,7 @@
     <Compile Include="AppCode\Utility\LocalConfig.cs" />
     <Compile Include="AppCode\Utility\MFBExtensions.cs" />
     <Compile Include="AppCode\Utility\Payment.cs" />
+    <Compile Include="AppCode\Utility\ShareKey.cs" />
     <Compile Include="AppCode\Utility\SponsoredAd.cs" />
     <Compile Include="AppCode\Utility\Tabs.cs" />
     <Compile Include="AppCode\Utility\util.cs" />
@@ -1589,6 +1591,13 @@
     </Compile>
     <Compile Include="Controls\mfbSendFlight.ascx.designer.cs">
       <DependentUpon>mfbSendFlight.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbShareKeys.ascx.cs">
+      <DependentUpon>mfbShareKeys.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbShareKeys.ascx.designer.cs">
+      <DependentUpon>mfbShareKeys.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbSignature.ascx.cs">
       <DependentUpon>mfbSignature.ascx</DependentUpon>
@@ -2518,6 +2527,13 @@
     <Compile Include="Public\ViewPublicFlight.aspx.designer.cs">
       <DependentUpon>ViewPublicFlight.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Public\ViewSharedLogbook.aspx.cs">
+      <DependentUpon>ViewSharedLogbook.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\ViewSharedLogbook.aspx.designer.cs">
+      <DependentUpon>ViewSharedLogbook.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Public\ViewSig.aspx.cs">
       <DependentUpon>ViewSig.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2635,6 +2651,7 @@
     <Content Include="App_GlobalResources\LocalizedText.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>LocalizedText.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\LogbookEntry.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>

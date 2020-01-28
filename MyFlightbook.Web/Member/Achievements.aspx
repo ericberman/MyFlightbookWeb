@@ -25,32 +25,6 @@
     </asp:MultiView>
     <asp:UpdatePanel ID="updRA" runat="server">
         <ContentTemplate>
-            <script>
-                // Credit to https://hackernoon.com/copying-text-to-clipboard-with-javascript-df4d4988697f
-                function copyAchievements() {
-                    const el = document.createElement('textarea');  // Create a <textarea> element
-                    var title = document.getElementById('<% =lblRecentAchievementsTitle.ClientID %>').innerText;
-                    var body = document.getElementById('raContainer').innerText;
-                    el.value = title + '\n' + body;   // Set its value to the string that you want copied
-                    el.setAttribute('readonly', '');                // Make it readonly to be tamper-proof
-                    el.style.position = 'absolute';
-                    el.style.left = '-9999px';                      // Move outside the screen to make it invisible
-                    document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
-                    const selected =
-                        document.getSelection().rangeCount > 0        // Check if there is any content selected previously
-                            ? document.getSelection().getRangeAt(0)     // Store selection if found
-                            : false;                                    // Mark as false to know no selection existed before
-                    el.select();                                    // Select the <textarea> content
-                    document.execCommand('copy');                   // Copy - only works as a result of a user action (e.g. click events)
-                    document.body.removeChild(el);                  // Remove the <textarea> element
-                    if (selected) {                                 // If a selection existed before copying
-                        document.getSelection().removeAllRanges();    // Unselect everything on the HTML document
-                        document.getSelection().addRange(selected);   // Restore the original selection
-                    }
-                    document.getElementById('<% =lblCopied.ClientID %>').style.display = "inline";
-                    setTimeout(function () { jQuery('#<%=lblCopied.ClientID %>').fadeOut(); }, 2000);
-                }
-            </script>
             <h2>
                 <asp:Label ID="lblRecentAchievementsTitle" runat="server"></asp:Label>
                 <asp:DropDownList ID="cmbAchievementDates" runat="server" AutoPostBack="True" OnSelectedIndexChanged="cmbAchievementDates_SelectedIndexChanged">
@@ -65,7 +39,7 @@
                     <asp:ListItem Value="PrevYear" Text="<%$ Resources:FlightQuery, DatesPrevYear %>"></asp:ListItem>
                     <asp:ListItem Value="Custom" Text="<%$ Resources:Achievements, RecentAchievementCustomDates %>"></asp:ListItem>
                 </asp:DropDownList>
-                <asp:ImageButton ID="imgCopy" style="vertical-align:text-bottom" OnClientClick="javascript:copyAchievements();return false;" ImageUrl="~/images/copyflight.png" AlternateText="<%$ Resources:LocalizedText, CopyToClipboard %>" ToolTip="<%$ Resources:LocalizedText, CopyToClipboard %>" runat="server" />
+                <asp:ImageButton ID="imgCopy" style="vertical-align:text-bottom" ImageUrl="~/images/copyflight.png" AlternateText="<%$ Resources:LocalizedText, CopyToClipboard %>" ToolTip="<%$ Resources:LocalizedText, CopyToClipboard %>" runat="server" />
                 <asp:Label ID="lblCopied" runat="server" Text="<%$ Resources:LocalizedText, CopiedToClipboard %>" CssClass="hintPopup" style="display:none; font-weight:bold; font-size: 10pt; color:black; "></asp:Label>
             </h2>
             <asp:Panel runat="server" ID="pnlCustomDates" Visible="false">
