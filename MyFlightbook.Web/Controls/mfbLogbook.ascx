@@ -323,7 +323,7 @@
                 <asp:TemplateField>
                     <ItemStyle CssClass="noprint" />
                     <ItemTemplate>
-                        <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights && !IsInSelectMode %>" OffsetX="-180" OffsetY="-20">
+                        <uc7:popmenu ID="popmenu1" runat="server" Visible="<%# IsViewingOwnFlights && !IsInSelectMode && !IsReadOnly %>" OffsetX="-180" OffsetY="-20">
                             <MenuContent>
                                 <uc1:mfbFlightContextMenu runat="server" ID="mfbFlightContextMenu" SignTargetFormatString="~/Member/RequestSigs.aspx?id={0}" OnDeleteFlight="mfbFlightContextMenu_DeleteFlight" OnSendFlight="mfbFlightContextMenu_SendFlight" />
                             </MenuContent>
@@ -339,7 +339,7 @@
                         <asp:HyperLink ID="lnkSignEntry" runat="server"
                             NavigateUrl='<%# String.Format("~/Member/SignFlight.aspx?idFlight={0}&ret={1}", Eval("FlightID"), HttpUtility.UrlEncode(Page.Request.Url.PathAndQuery)) %>'
                             Text='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) == LogbookEntry.SignatureState.Invalid ? Resources.SignOff.LogbookResign : Resources.SignOff.LogbookSign %>' 
-                            Visible='<%# !IsViewingOwnFlights && ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.Valid %>'></asp:HyperLink>
+                            Visible='<%# !IsViewingOwnFlights && !IsReadOnly && ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.Valid %>'></asp:HyperLink>
                     </ItemTemplate>
                     <ItemStyle CssClass="noprint" />
                 </asp:TemplateField>
