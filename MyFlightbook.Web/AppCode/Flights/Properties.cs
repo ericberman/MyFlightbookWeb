@@ -1135,7 +1135,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         {
             if (PropID >= 0)
             {
-                DBHelper dbh = new DBHelper(String.Format(szDeleteBase, PropID));
+                DBHelper dbh = new DBHelper(szDeleteBase);
                 if (!dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idProp", PropID); }))
                     throw new MyFlightbookException(String.Format("Error attempting to delete property: {0} parameters - (idProp = {1}): {2}", dbh.CommandText, PropID, dbh.LastError));
             }
