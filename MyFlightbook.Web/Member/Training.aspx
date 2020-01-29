@@ -92,7 +92,7 @@
                                     CommandArgument='<%# Bind("username") %>' runat="server" meta:resourcekey="imgDeleteResource1" 
                                      /><cc1:ConfirmButtonExtender ID="cbeDeleteStudent" runat="server" TargetControlID="imgDelete"
                                     ConfirmOnFormSubmit="True" 
-                                    ConfirmText="<%$ Resources:Profile, EditProfileDeleteStudentConfirmation %>" BehaviorID="cbeDeleteStudent"></cc1:ConfirmButtonExtender></ItemTemplate>
+                                    ConfirmText="<%$ Resources:Profile, EditProfileDeleteStudentConfirmation %>"></cc1:ConfirmButtonExtender></ItemTemplate>
                             <ItemStyle VerticalAlign="Top" />
                         </asp:TemplateField>
                         <asp:BoundField DataField="UserFullName" ShowHeader="False" meta:resourcekey="BoundFieldResource1">
