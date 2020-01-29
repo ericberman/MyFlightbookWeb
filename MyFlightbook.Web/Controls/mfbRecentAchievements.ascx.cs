@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2019 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -42,6 +42,8 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
     /// Description of the recent achievements, including date range
     /// </summary>
     public string Summary { get; private set; }
+
+    public bool IsReadOnly { get; set; }
     #endregion
 
     #region Calendar drawing
@@ -140,7 +142,7 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
     public int Refresh(string szUser, DateTime dtStart, DateTime dtEnd, bool fIncludeBadges)
     {
         if (szUser == null)
-            throw new ArgumentNullException("szUser");
+            throw new ArgumentNullException(nameof(szUser));
         if (String.IsNullOrWhiteSpace(szUser))
             throw new MyFlightbookValidationException("Invalid user");
 

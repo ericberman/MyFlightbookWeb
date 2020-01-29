@@ -1644,4 +1644,7 @@
   <data name="SharePublicFlightsDescription" xml:space="preserve">
     <value>Anyone with this link can view the flights that you have indicated are visible to the public.  You can't disable this link, but you can share or not share details for individual flights.</value>
   </data>
+  <data name="ShareKeyPermissionViewAchievements" xml:space="preserve">
+    <value>Achievements</value>
+  </data>
 </root>

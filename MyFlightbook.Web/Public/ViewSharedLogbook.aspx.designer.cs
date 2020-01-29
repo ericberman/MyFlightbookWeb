@@ -78,6 +78,15 @@ namespace MyFlightbook.Web.Public
         protected global::Controls_mfbAccordionProxyControl apcAnalysis;
 
         /// <summary>
+        /// apcAchievements control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbAccordionProxyControl apcAchievements;
+
+        /// <summary>
         /// pnlFilter control.
         /// </summary>
         /// <remarks>
@@ -175,6 +184,78 @@ namespace MyFlightbook.Web.Public
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Controls_mfbChartTotals mfbChartTotals;
+
+        /// <summary>
+        /// acpPaneAchievements control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.AccordionPane acpPaneAchievements;
+
+        /// <summary>
+        /// mvBadges control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.MultiView mvBadges;
+
+        /// <summary>
+        /// vwNoBadges control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwNoBadges;
+
+        /// <summary>
+        /// lblNoBadges control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNoBadges;
+
+        /// <summary>
+        /// vwBadges control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwBadges;
+
+        /// <summary>
+        /// rptBadgeset control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptBadgeset;
+
+        /// <summary>
+        /// lblRecentAchievementsTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRecentAchievementsTitle;
+
+        /// <summary>
+        /// mfbRecentAchievements control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbRecentAchievements mfbRecentAchievements;
 
         /// <summary>
         /// lblErr control.

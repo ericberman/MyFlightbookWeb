@@ -1,4 +1,5 @@
-﻿using MyFlightbook.Web.Sharing;
+﻿using MyFlightbook.Achievements;
+using MyFlightbook.Web.Sharing;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -77,7 +78,7 @@ namespace MyFlightbook.Web.Public
 
                 int privCount = sk.PrivilegeCount;
 
-                apcAnalysis.Container.Style["display"] = apcCurrency.Container.Style["display"] = apcTotals.Container.Style["display"] = apcFilter.Container.Style["display"] = "none";
+                apcAnalysis.Container.Style["display"] = apcCurrency.Container.Style["display"] = apcTotals.Container.Style["display"] = apcFilter.Container.Style["display"] = apcAchievements.Container.Style["display"] = "none";
 
                 if (sk.CanViewCurrency)
                 {
@@ -115,6 +116,27 @@ namespace MyFlightbook.Web.Public
 
                     mfbChartTotals.Visible = true;
                     mfbChartTotals.Refresh(mfbLogbook.Data);
+                }
+
+                if (sk.CanViewAchievements)
+                {
+                    apcAchievements.Container.Style["display"] = "inline-block";
+                    mfbRecentAchievements.Visible = mvBadges.Visible = true;
+
+                    List<Badge> lst = new Achievement(sk.Username).BadgesForUser();
+                    if (lst == null || lst.Count == 0)
+                        mvBadges.SetActiveView(vwNoBadges);
+                    else
+                    {
+                        mvBadges.SetActiveView(vwBadges);
+                        rptBadgeset.DataSource = BadgeSet.BadgeSetsFromBadges(lst);
+                        rptBadgeset.DataBind();
+                    }
+                    mfbRecentAchievements.AutoDateRange = true;
+                    mfbRecentAchievements.Refresh(sk.Username, DateTime.MaxValue, DateTime.MinValue, false);
+                    lblRecentAchievementsTitle.Text = mfbRecentAchievements.Summary;
+                    if (privCount == 1) // if ONLY showing totals, expand it
+                        SetAccordionPane(acpPaneAchievements.ID);
                 }
             }
 

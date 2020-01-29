@@ -9,17 +9,22 @@
 <%@ Register Src="~/Controls/mfbQueryDescriptor.ascx" TagPrefix="uc1" TagName="mfbQueryDescriptor" %>
 <%@ Register Src="~/Controls/mfbChartTotals.ascx" TagPrefix="uc1" TagName="mfbChartTotals" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Src="~/Controls/mfbRecentAchievements.ascx" TagPrefix="uc1" TagName="mfbRecentAchievements" %>
+<%@ Register Src="~/Controls/mfbBadgeSet.ascx" TagPrefix="uc1" TagName="mfbBadgeSet" %>
+
+
 
 <asp:Content id="Content2" contentplaceholderid="cpPageTitle" runat="Server">
     <asp:Label ID="lblHeader" runat="server"></asp:Label>
 </asp:Content>
 <asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
-    <uc1:mfbAccordionProxyExtender runat="server" ID="mfbAccordionProxyExtender" AccordionControlID="AccordionCtrl" HeaderProxyIDs="apcFilter,apcTotals,apcCurrency,apcAnalysis" />
+    <uc1:mfbAccordionProxyExtender runat="server" ID="mfbAccordionProxyExtender" AccordionControlID="AccordionCtrl" HeaderProxyIDs="apcFilter,apcTotals,apcCurrency,apcAnalysis,apcAchievements" />
     <asp:Panel ID="pnlAccordionMenuContainer" CssClass="accordionMenuContainer" runat="server">
         <uc1:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:LocalizedText, LogTabFilter %>" ID="apcFilter" />
         <uc1:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:LocalizedText, LogTabTotals %>" ID="apcTotals" />
         <uc1:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:LocalizedText, LogTabCurrency %>" ID="apcCurrency" />
         <uc1:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:LocalizedText, LogTabAnalysis %>" ID="apcAnalysis" />
+        <uc1:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:LocalizedText, ShareKeyPermissionViewAchievements %>" ID="apcAchievements" />
     </asp:Panel>
     <asp:Panel ID="pnlFilter" runat="server" CssClass="filterApplied" Visible="false" >
         <div style="display:inline-block;"><%=Resources.LocalizedText.ResultsFiltered %></div>
@@ -45,6 +50,24 @@
             <cc1:AccordionPane runat="server" ID="acpPaneAnalysis">
                 <Content>
                     <uc1:mfbChartTotals runat="server" ID="mfbChartTotals" Visible="false" />
+                </Content>
+            </cc1:AccordionPane>
+            <cc1:AccordionPane runat="server" ID="acpPaneAchievements">
+                <Content>
+                    <asp:MultiView ID="mvBadges" runat="server" Visible="false">
+                        <asp:View ID="vwNoBadges" runat="server">
+                            <p><asp:Label ID="lblNoBadges" runat="server" Text="<%$ Resources:Achievements, errNoBadgesEarned %>"></asp:Label></p>
+                        </asp:View>
+                        <asp:View ID="vwBadges" runat="server">
+                            <asp:Repeater ID="rptBadgeset" runat="server">
+                                <ItemTemplate>
+                                    <div><uc1:mfbBadgeSet runat="server" ID="mfbBadgeSet" BadgeSet='<%# Container.DataItem %>' IsReadOnly="true" /></div>
+                                </ItemTemplate>
+                            </asp:Repeater>
+                        </asp:View>
+                    </asp:MultiView>
+                    <h2><asp:Label ID="lblRecentAchievementsTitle" runat="server"></asp:Label></h2>
+                    <uc1:mfbRecentAchievements runat="server" ID="mfbRecentAchievements" Visible="false" IsReadOnly="true" AutoDateRange="true" />
                 </Content>
             </cc1:AccordionPane>
         </Panes>

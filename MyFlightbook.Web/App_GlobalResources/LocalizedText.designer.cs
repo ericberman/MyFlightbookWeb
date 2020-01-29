@@ -3907,6 +3907,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Achievements.
+        /// </summary>
+        internal static string ShareKeyPermissionViewAchievements {
+            get {
+                return ResourceManager.GetString("ShareKeyPermissionViewAchievements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Currency.
         /// </summary>
         internal static string ShareKeyPermissionViewCurrency {

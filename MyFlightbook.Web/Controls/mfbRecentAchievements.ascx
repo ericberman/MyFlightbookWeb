@@ -7,7 +7,7 @@
                 <ItemTemplate>
                     <li>
                         <asp:Label ID="lblTitle" runat="server" Text='<%# Eval("Title") %>'></asp:Label>
-                        <asp:MultiView ID="mvAchievement" runat="server" ActiveViewIndex='<%# String.IsNullOrEmpty((string) Eval("TargetLink")) ? 0 : 1 %>'>
+                        <asp:MultiView ID="mvAchievement" runat="server" ActiveViewIndex='<%# String.IsNullOrEmpty((string) Eval("TargetLink")) || IsReadOnly ? 0 : 1 %>'>
                             <asp:View ID="vwStatic" runat="server">
                                 <asp:Label ID="lblStatic" runat="server" Text='<%# Eval("MatchingEventText") %>'></asp:Label>
                             </asp:View>
