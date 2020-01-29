@@ -403,7 +403,7 @@ namespace MyFlightbook
                 else
                 {
                     FileSize = 0;
-                    DigitizedSignature = new byte[0];
+                    DigitizedSignature = Array.Empty<byte>();
                 }
             });
         }
@@ -457,7 +457,7 @@ namespace MyFlightbook
         public static LogbookEntry LogbookEntryFromHash(string szHash)
         {
             if (String.IsNullOrEmpty(szHash))
-                throw new ArgumentNullException("szHash");
+                throw new ArgumentNullException(nameof(szHash));
 
             Regex rFlight = new Regex("^ID(?<ID>\\d+)DT(?<Date>[0-9-]+)AC(?<Aircraft>\\d+)A(?<Approaches>\\d+)H(?<Hold>[01])L(?<Landings>\\d+)NL(?<NightLandings>\\d+)XC(?<XC>[0-9.]+)N(?<Night>[0-9.]+)SI(?<SimInst>[0-9.]+)IM(?<IMC>[0-9.]+)GS(?<GroundSim>[0-9.]+)DU(?<Dual>[0-9.]+)CF(?<CFI>[0-9.]+)SI(?<SIC>[0-9.]+)PI(?<PIC>[0-9.]+)TT(?<Total>[0-9.]+)PR(?<props>.*)CC(?<CatClassOver>\\d+)CM(?<Comments>.*)$", RegexOptions.Compiled);
 
@@ -778,8 +778,7 @@ namespace MyFlightbook
             Profile pfCFI = Profile.GetUser(szCFIUsername);
 
             // Validate that the named user can sign this flight.
-            string szErr;
-            if (!CanSignThisFlight(szCFIUsername, out szErr))
+            if (!CanSignThisFlight(szCFIUsername, out string szErr))
                 throw new MyFlightbookException(szErr);
 
             if (!pfCFI.CanSignFlights(out szErr))
@@ -950,7 +949,7 @@ namespace MyFlightbook
                 return false;
 
             if (le == null)
-                throw new ArgumentNullException("le");  // shouldn't ever happen at this point!  But we suppress a warning...
+                throw new ArgumentNullException(nameof(le));  // shouldn't ever happen at this point!  But we suppress a warning...
 
             // OK, now we're to the case where both are non-null but different references.
             // See if the main properties are equal.
@@ -1025,7 +1024,7 @@ namespace MyFlightbook
         public static DBHelperCommandArgs QueryCommand(FlightQuery fq, int offset = -1, int limit = -1, bool fAsc = false, LoadTelemetryOption lto = LoadTelemetryOption.None)
         {
             if (fq == null)
-                throw new ArgumentNullException("fq");
+                throw new ArgumentNullException(nameof(fq));
             DBHelperCommandArgs comm = new DBHelperCommandArgs();
 
             // Add the current locale
@@ -1204,7 +1203,7 @@ namespace MyFlightbook
         public void AutofillForAircraft(Aircraft ac)
         {
             if (ac == null)
-                throw new ArgumentNullException("ac");
+                throw new ArgumentNullException(nameof(ac));
 
             if (IsNewFlight)
             {
@@ -1454,7 +1453,7 @@ namespace MyFlightbook
                     if (fUpdateSignature)
                     {
                         comm.Parameters.AddWithValue("sigState", UpdateSignatureState());
-                        comm.Parameters.AddWithValue("cficomment", this.CFIComments == null ? null : this.CFIComments.LimitTo(255));
+                        comm.Parameters.AddWithValue("cficomment", CFIComments?.LimitTo(255));
                         comm.Parameters.AddWithValue("sigDate", this.CFISignatureDate);
                         comm.Parameters.AddWithValue("cficert", this.CFICertificate);
                         comm.Parameters.AddWithValue("cfiExpiration", this.CFIExpiration);
@@ -1556,7 +1555,7 @@ namespace MyFlightbook
             CatClassDisplay = ModelDisplay = TailNumDisplay = String.Empty;
             CFISignatureState = SignatureState.None;
             CustomProperties = new CustomPropertyCollection();
-            Videos = new VideoRef[0];
+            Videos = Array.Empty<VideoRef>();
             Telemetry = new TelemetryReference();
         }
 
@@ -1569,7 +1568,7 @@ namespace MyFlightbook
         protected Boolean InitFromDataReader(MySqlDataReader dr, string szUser, LoadTelemetryOption lto)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             try
             {
                 if (string.Compare(dr["username"].ToString().Trim(), szUser, StringComparison.OrdinalIgnoreCase) == 0)
@@ -1758,8 +1757,7 @@ namespace MyFlightbook
                             szUserName = dr["username"].ToString().Trim();
 
                         fResult = InitFromDataReader(dr, szUserName, lto);
-                        if (additionalInit != null)
-                            additionalInit(dr);
+                        additionalInit?.Invoke(dr);
                     }))
                     szError += dbh.LastError;
 
@@ -1914,7 +1912,7 @@ namespace MyFlightbook
         public virtual void AddFrom(LogbookEntry le)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
 
             Approaches += le.Approaches;
 
@@ -2244,7 +2242,7 @@ namespace MyFlightbook
             {
                 CategoryClass ccThis = CatClassOverride == 0 ? null : CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)CatClassOverride);
                 CategoryClass ccNew = le.CatClassOverride == 0 ? null : CategoryClass.CategoryClassFromID((CategoryClass.CatClassID)le.CatClassOverride);
-                PropertyDelta.AddPotentialChange(Resources.LogbookEntry.PrintHeaderCategory2, ccThis == null ? null : ccThis.CatClass, ccNew == null ? null : ccNew.CatClass, lst);
+                PropertyDelta.AddPotentialChange(Resources.LogbookEntry.PrintHeaderCategory2, ccThis?.CatClass, ccNew?.CatClass, lst);
             }
 
             PropertyDelta.AddPotentialChange(Resources.LogbookEntry.HobbsStart, HobbsStart.FormatDecimal(fUseHHMM), le.HobbsStart.FormatDecimal(fUseHHMM), lst);
@@ -2308,7 +2306,7 @@ namespace MyFlightbook
         public void AutoHobbs(AutoFillOptions opt)
         {
             if (opt == null)
-                throw new ArgumentNullException("opt");
+                throw new ArgumentNullException(nameof(opt));
 
             if (HobbsStart != 0 && HobbsEnd <= HobbsStart)
             {
@@ -2346,7 +2344,7 @@ namespace MyFlightbook
         public void AutoTotals(AutoFillOptions opt)
         {
             if (opt == null)
-                throw new ArgumentNullException("opt");
+                throw new ArgumentNullException(nameof(opt));
 
             // Compute total time based on autofill options
             if (TotalFlightTime == 0)
@@ -2399,7 +2397,7 @@ namespace MyFlightbook
         public void AutoFillFinish(AutoFillOptions opt)
         {
             if (opt == null)
-                throw new ArgumentNullException("opt");
+                throw new ArgumentNullException(nameof(opt));
             AirportList al = new AirportList(Route);
             if (TotalFlightTime > 0)
             {
@@ -2494,7 +2492,7 @@ namespace MyFlightbook
         {
             ColumnType = type;
             if (type == OptionalColumnType.CustomProp || type == OptionalColumnType.None)
-                throw new ArgumentOutOfRangeException("type");
+                throw new ArgumentOutOfRangeException(nameof(type));
 
             ValueType = OptionalColumnValueType.Decimal;
             Title = TitleForType(type);
@@ -2514,7 +2512,7 @@ namespace MyFlightbook
                     ValueType = OptionalColumnValueType.Integer;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("idPropType");
+                    throw new ArgumentOutOfRangeException(nameof(idPropType));
             }
             Title = cpt.Title;
         }
@@ -2560,7 +2558,7 @@ namespace MyFlightbook
                 case OptionalColumnType.FFS:
                     return type.ToString();
             }
-            throw new ArgumentOutOfRangeException("type", "Unknown OptionalColumnType: " + type.ToString());
+            throw new ArgumentOutOfRangeException(nameof(type), "Unknown OptionalColumnType: " + type.ToString());
         }
 
         public bool IsCatClass
@@ -3103,7 +3101,7 @@ namespace MyFlightbook
             get
             {
                 if (String.IsNullOrEmpty(Route))
-                    return new string[0];
+                    return Array.Empty<string>();
                 if (m_airports == null)
                     m_airports = AirportList.NormalizeAirportList(Route);
                 return m_airports;
@@ -3250,7 +3248,7 @@ namespace MyFlightbook
             : base(dr, szUser)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
 
             RowHeight = 1;  // takes one slot by default.
             RowType = LogbookRowType.Flight;
@@ -3283,7 +3281,12 @@ namespace MyFlightbook
             DBHelper dbh = new DBHelper(args);
             args.Timeout = 120; // give it up to 120 seconds.
             List<LogbookEntryDisplay> lst = new List<LogbookEntryDisplay>();
-            if (!dbh.ReadRows((c) => { }, (dr) => { lst.Add(new LogbookEntryDisplay(dr, szUser, fUseHHMM, fUseUTCDate)); }))
+            if (!dbh.ReadRows((c) => { }, (dr) =>
+            {
+                LogbookEntryDisplay led = new LogbookEntryDisplay(dr, szUser, fUseHHMM, fUseUTCDate);
+                if (led.LastError != ErrorCode.NotOwned && led.LastError != ErrorCode.NotFound)
+                    lst.Add(led);
+            }))
                 util.NotifyAdminEvent("Error in RefreshData", String.Format(CultureInfo.InvariantCulture, "{0}\r\n{1}\r\n{2}", szUser, dbh.LastError, args.QueryString), ProfileRoles.maskSiteAdminOnly);
 
             // Sort the list by the sort expression and direction
@@ -3565,7 +3568,7 @@ namespace MyFlightbook
         public double HistogramValue(IDictionary<string, object> context = null)
         {
             if (context == null)
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException(nameof(context));
             if (!context.ContainsKey(HistogramContextSelectorKey))
                 throw new MyFlightbookException("HistogramValue: context doesn't specify which field you want to sum!");
 
@@ -3710,7 +3713,7 @@ namespace MyFlightbook
         public ApproachDescription(Match m)
         {
             if (m == null)
-                throw new ArgumentNullException("m");
+                throw new ArgumentNullException(nameof(m));
             Count = Convert.ToInt32(m.Groups["count"].Value, CultureInfo.CurrentCulture);
             Description = m.Groups["desc"].Value;
             Runway = m.Groups["rwy"].Value;
@@ -3811,9 +3814,9 @@ namespace MyFlightbook
         public static void AddPotentialChange(string name, string oldVal, string newVal, IList<PropertyDelta> lst)
         {
             if (lst == null)
-                throw new ArgumentNullException("lst");
+                throw new ArgumentNullException(nameof(lst));
             if (String.IsNullOrEmpty(name))
-                throw new ArgumentOutOfRangeException("name");
+                throw new ArgumentOutOfRangeException(nameof(name));
 
             PropertyDelta pd = new PropertyDelta(name, oldVal, newVal);
             if (pd.Change != ChangeType.Unchanged)
