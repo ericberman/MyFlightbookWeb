@@ -457,7 +457,7 @@ namespace MyFlightbook
             Type = CFPPropertyType.cfpInteger;
             Flags = CFPPropertyFlag.cfpFlagNone;
             PropTypeID = (int) KnownProperties.IDPropInvalid;
-            PreviousValues = new string[0];
+            PreviousValues = Array.Empty<string>();
         }
 
         public CustomPropertyType(int id) : this()
@@ -490,7 +490,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
         private void InitFromDataReader(MySqlDataReader dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             PropTypeID = Convert.ToInt32(dr["idPropType"], CultureInfo.InvariantCulture);
             Title = dr["LocTitle"].ToString();
             FormatString = dr["LocFormatString"].ToString();
@@ -590,7 +590,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             {
                 Cache appcache = HttpRuntime.Cache;
                 Dictionary<int, CustomPropertyType> d = (Dictionary<int, CustomPropertyType>)appcache[szAppCacheDictKey];
-                if (d == null)
+                if (d == null || d.Count == 0)  // Issue #464
                 {
                     appcache[szAppCacheDictKey] = d = new Dictionary<int, CustomPropertyType>();
                     var rgProps = GetCustomPropertyTypes();
@@ -613,11 +613,12 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
 
             Dictionary<int, CustomPropertyType> d = PropTypeDictionary;
             if (d == null) // shouldn't happen, but if it does, do a brute-force search - a bit slower.
-                return GetCustomPropertyTypes().FirstOrDefault(proptype => proptype.PropTypeID == id);
-            
-            CustomPropertyType cpt = null;
-            d.TryGetValue(id, out cpt);
-            return cpt;
+                return GetCustomPropertyTypes(null, true).FirstOrDefault(proptype => proptype.PropTypeID == id);
+
+            if (d.TryGetValue(id, out CustomPropertyType cpt))
+                return cpt;
+
+            return null;
         }
 
         /// <summary>
@@ -638,8 +639,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
 
             foreach (int id in lstIds)
             {
-                CustomPropertyType cpt = null;
-                d.TryGetValue(id, out cpt);
+                d.TryGetValue(id, out CustomPropertyType cpt);
                 if (cpt != null)
                     lstResult.Add(cpt);
             }
@@ -950,7 +950,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         protected CustomFlightProperty(MySqlDataReader dr) : this()
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             try
             {
 
@@ -988,7 +988,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         public static IEnumerable<CustomFlightProperty> PropertiesFromJSONTuples(string szJSON, int idFlight)
         {
             if (String.IsNullOrEmpty(szJSON))
-                return new CustomFlightProperty[0];
+                return Array.Empty<CustomFlightProperty>();
 
             JArray tuples;
             try
@@ -1150,7 +1150,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         public void InitFromString(String szVal, DateTime? dtDefault = null)
         {
             if (szVal == null)
-                throw new ArgumentNullException("szVal");
+                throw new ArgumentNullException(nameof(szVal));
             szVal = szVal.Trim();
             switch (PropertyType.Type)
             {
@@ -1189,7 +1189,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         public void InitPropertyType(IEnumerable<CustomPropertyType> rgcpt)
         {
             if (rgcpt == null)
-                throw new ArgumentNullException("rgcpt");
+                throw new ArgumentNullException(nameof(rgcpt));
             foreach (CustomPropertyType cpt in rgcpt)
             {
                 if (cpt.PropTypeID == this.PropTypeID)
@@ -1333,7 +1333,6 @@ GROUP BY fp.idPropType;";
                 return lst;
 
             Dictionary<int, string> d = ComputeTotals(rgprops, fUseHHMM);
-            StringBuilder sb = new StringBuilder();
             foreach (CustomFlightProperty cfp in rgprops)
             {
                 string sz = (fUseHHMM ? cfp.DisplayStringHHMM : cfp.DisplayString) + (d.ContainsKey(cfp.PropTypeID) ? Resources.LocalizedText.LocalizedSpace + d[cfp.PropTypeID] : string.Empty);
@@ -1403,7 +1402,7 @@ GROUP BY fp.idPropType;";
             : base(dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             Date = Convert.ToDateTime(dr["DateOfFlight"], CultureInfo.InvariantCulture);
             Category = Convert.ToString(dr["Category"], CultureInfo.InvariantCulture);
             Model = dr["model"].ToString();
@@ -1560,8 +1559,7 @@ ORDER BY f.Date Desc";
 
         public CustomFlightProperty GetEventWithTypeID(int id)
         {
-            CustomFlightProperty cfp;
-            return m_dictProps.TryGetValue(id, out cfp) ? cfp : null;
+            return m_dictProps.TryGetValue(id, out CustomFlightProperty cfp) ? cfp : null;
         }
 
         public CustomFlightProperty GetEventWithTypeIDOrNew(CustomPropertyType.KnownProperties id)
@@ -1616,7 +1614,7 @@ ORDER BY f.Date Desc";
         public decimal TotalTimeForPredicate(Predicate<CustomFlightProperty> p)
         {
             if (p == null)
-                throw new ArgumentNullException("p");
+                throw new ArgumentNullException(nameof(p));
             decimal d = 0.0M;
             foreach (CustomFlightProperty cfp in m_dictProps.Values)
                 if (p(cfp))
@@ -1632,7 +1630,7 @@ ORDER BY f.Date Desc";
         public int TotalCountForPredicate(Predicate<CustomFlightProperty> p)
         {
             if (p == null)
-                throw new ArgumentNullException("p");
+                throw new ArgumentNullException(nameof(p));
             int i = 0;
             foreach (CustomFlightProperty cfp in m_dictProps.Values)
                 if (p(cfp))
@@ -1695,7 +1693,7 @@ ORDER BY f.Date Desc";
         public void AddItems(IEnumerable<CustomFlightProperty> rgcfp)
         {
             if (rgcfp == null)
-                throw new ArgumentNullException("rgcfp");
+                throw new ArgumentNullException(nameof(rgcfp));
             foreach (CustomFlightProperty cfp in rgcfp)
                 Add(cfp);
         }
@@ -1715,7 +1713,7 @@ ORDER BY f.Date Desc";
         public void SetItems(IEnumerable<CustomFlightProperty> rgcfp)
         {
             if (rgcfp == null)
-                throw new ArgumentNullException("rgcfp");
+                throw new ArgumentNullException(nameof(rgcfp));
             Clear();
             AddItems(rgcfp);
         }
