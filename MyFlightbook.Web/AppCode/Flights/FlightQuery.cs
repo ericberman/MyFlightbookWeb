@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -246,7 +246,7 @@ namespace MyFlightbook
                 List<int> lst = new List<int>();
                 if (AircraftList == null || AircraftList.Length == 0)
                 {
-                    AircraftList = new Aircraft[0];
+                    AircraftList = Array.Empty<Aircraft>();
                     return null;
                 }
                     
@@ -258,7 +258,7 @@ namespace MyFlightbook
             {
                 if (value == null)
                 {
-                    AircraftList = new Aircraft[0];
+                    AircraftList = Array.Empty<Aircraft>();
                     return;
                 }
                 List<Aircraft> lst = new List<Aircraft>();
@@ -478,7 +478,9 @@ namespace MyFlightbook
 
         #region JSON Management
         #region Serialization of empty arrays
+#pragma warning disable CA1822 // Mark members as static
         public bool ShouldSerializeSearchColumns() { return false; }
+#pragma warning restore CA1822 // Mark members as static
         #endregion
 
         /// <summary>
@@ -639,15 +641,15 @@ namespace MyFlightbook
             DateMin = DateMax = DateTime.MinValue;
             Distance = FlightDistance.AllFlights;
             GeneralText = ModelName = string.Empty;
-            AircraftList = new Aircraft[0];
-            AirportList = new string[0];
-            MakeList = new MakeModel[0];
-            TypeNames = new string[0];
+            AircraftList = Array.Empty<Aircraft>();
+            AirportList = Array.Empty<string>();
+            MakeList = Array.Empty<MakeModel>();
+            TypeNames = Array.Empty<string>();
 
             DateRange = DateRanges.AllTime;
             m_rgParams = new List<MySqlParameter>();
-            CatClasses = new CategoryClass[0];
-            PropertyTypes = new CustomPropertyType[0];
+            CatClasses = Array.Empty<CategoryClass>();
+            PropertyTypes = Array.Empty<CustomPropertyType>();
 
             FlightCharacteristicsConjunction = GroupConjunction.All;
             PropertiesConjunction = GroupConjunction.Any;
@@ -877,7 +879,6 @@ namespace MyFlightbook
 
         private void UpdateModels(StringBuilder sbQuery)
         {
-            StringBuilder sbModelsQuery = new StringBuilder();
             string szModelsIDQuery = string.Empty;
             string szModelsTextQuery = string.Empty;
             string szModelsTypeQuery = string.Empty;
@@ -1212,7 +1213,7 @@ namespace MyFlightbook
         public FlightQuery ClearRestriction(QueryFilterItem qfi)
         {
             if (qfi == null)
-                throw new ArgumentNullException("qfi");
+                throw new ArgumentNullException(nameof(qfi));
             FlightQuery fqBlank = new FlightQuery();
 
             Type t = typeof(FlightQuery);
@@ -1281,10 +1282,10 @@ namespace MyFlightbook
         public static IEnumerable<CannedQuery> QueriesForUser(string szUser)
         {
             if (szUser == null)
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
 
             if (String.IsNullOrWhiteSpace(szUser))
-                throw new ArgumentOutOfRangeException("szUser");
+                return Array.Empty<CannedQuery>();
 
             Profile pf = Profile.GetUser(szUser);
             List<CannedQuery> lst = (List<CannedQuery>) pf.CachedObject(szUserQueriesKey);

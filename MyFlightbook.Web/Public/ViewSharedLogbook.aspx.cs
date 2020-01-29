@@ -48,16 +48,26 @@ namespace MyFlightbook.Web.Public
             }
         }
 
+        /// <summary>
+        /// We set up the sharekey here because mfblogbook could try to load first - if it's an invalid sharekey, then we'll do the redirect without a db hit
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            string guid = util.GetStringParam(Request, "g");
+            ShareKey sk = ShareKey.ShareKeyWithID(guid);
+            if (sk == null)
+                Response.Redirect("~/HTTP403.htm");
+            CurrentShareKey = sk;
+            mfbLogbook.User = sk.Username;
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                string guid = util.GetStringParam(Request, "g");
-                ShareKey sk = ShareKey.ShareKeyWithID(guid);
-                if (sk == null)
-                    Response.Redirect("/SecurityError.aspx");
-                CurrentShareKey = sk;
-
+                ShareKey sk = CurrentShareKey;  // set in Page_Init
                 Profile pf = Profile.GetUser(sk.Username);
 
                 lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, pf.UserFullName);
@@ -100,7 +110,7 @@ namespace MyFlightbook.Web.Public
                 {
                     apcAnalysis.Container.Style["display"] = apcFilter.Container.Style["display"] = "inline-block";
                     mfbLogbook.Visible = true;
-                    mfbLogbook.User = sk.Username;
+                    mfbSearchForm.Username = mfbLogbook.User = sk.Username;
                     mfbLogbook.RefreshData();
 
                     mfbChartTotals.Visible = true;

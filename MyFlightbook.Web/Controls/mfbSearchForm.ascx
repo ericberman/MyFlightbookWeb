@@ -370,7 +370,7 @@
                 <asp:Button ID="btnSearch" runat="server" Text="Find Matching Flights" 
                     OnClick="btnSearch_Click" meta:resourcekey="btnGetTotalsResource1" />
                 <div style="vertical-align:text-bottom; display:inline-block;">
-                    <uc2:popmenu runat="server" ID="popmenu">
+                    <uc2:popmenu runat="server" ID="popCannedQueries">
                         <MenuContent>
                             <div style="padding:4px; text-align:left;">
                                 <div><% =Resources.FlightQuery.SaveQueryNamePrompt %></div>

@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -56,6 +56,8 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
                         mfbEditFlight.SetUpNewOrEdit(LogbookEntry.idFlightNew);
                     else
                         apcNewFlight.Visible = false;
+
+                    mfbSearchForm.Username = student.UserName;
                 }
             }
 
@@ -107,7 +109,7 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
     protected void mfbQueryDescriptor_QueryUpdated(object sender, FilterItemClicked fic)
     {
         if (fic == null)
-            throw new ArgumentNullException("fic");
+            throw new ArgumentNullException(nameof(fic));
         mfbSearchForm.Restriction = Restriction.ClearRestriction(fic.FilterItem);
         UpdateQuery();
     }
@@ -126,7 +128,7 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
     protected void mfbEditFlight_FlightWillBeSaved(object sender, LogbookEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookEntry le = e.Flight;
         if (le == null)

@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -43,7 +43,11 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
     public string Username 
     {
         get { return String.IsNullOrEmpty(m_szUser) ? Page.User.Identity.Name : m_szUser; }
-        set { m_szUser = value; }
+        set
+        {
+            m_szUser = value;
+            popCannedQueries.Visible = (string.CompareOrdinal(Page.User.Identity.Name, m_szUser) == 0);
+        }
     }
     #endregion
 
@@ -122,7 +126,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         cmbPropertiesConjunction.SelectedValue = GroupConjunction.Any.ToString();
 
         // reset any cached types
-        ViewState[szKeyVSTypes] = new string[0];
+        ViewState[szKeyVSTypes] = Array.Empty<string>();
 
         txtQueryName.Text = string.Empty;
 
@@ -350,9 +354,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         get { return txtAirports.Text; }
         set 
         {
-            if (value == null)
-                throw new ArgumentNullException("value");
-            txtAirports.Text = value;
+            txtAirports.Text = value ?? throw new ArgumentNullException(nameof(value));
             cpeAirports.Collapsed = (value.Length == 0);
             GetFlightQuery(); 
         }
@@ -705,7 +707,7 @@ function setDates(isCustom)
         CustomPropsFromForm();
 
         // Typenames aren't exposed to the user; reset them here.
-        m_fq.TypeNames = (string[])ViewState[szKeyVSTypes] ?? new string[0];
+        m_fq.TypeNames = (string[])ViewState[szKeyVSTypes] ?? Array.Empty<string>();
 
         m_fq.Refresh();
 
@@ -717,16 +719,14 @@ function setDates(isCustom)
         GetFlightQuery();
 
         // Save it, if it was given a name
-        CannedQuery cq = m_fq as CannedQuery;
-        if (cq != null && !String.IsNullOrEmpty(cq.QueryName))
+        if (m_fq is CannedQuery cq && !String.IsNullOrEmpty(cq.QueryName))
         {
             cq.Commit();
             UpdateSavedQueries();
             txtQueryName.Text = string.Empty;
         }
 
-        if (QuerySubmitted != null)
-            QuerySubmitted(this, new FlightQueryEventArgs(m_fq));
+        QuerySubmitted?.Invoke(this, new FlightQueryEventArgs(m_fq));
     }
 
     protected void btnSearch_Click(object sender, EventArgs e)
@@ -739,16 +739,14 @@ function setDates(isCustom)
         ClearForm();
 
         // Page should be valid at this point; no need to verify validity.
-        if (Reset != null)
-            Reset(sender, new FlightQueryEventArgs(Restriction));
+        Reset?.Invoke(sender, new FlightQueryEventArgs(Restriction));
     }
 
     protected void gvSavedQueries_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
-        int idRow;
-        if (!int.TryParse(e.CommandArgument.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out idRow))
+            throw new ArgumentNullException(nameof(e));
+        if (!int.TryParse(e.CommandArgument.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int idRow))
             return;
 
         CannedQuery cq = CannedQuery.QueriesForUser(Page.User.Identity.Name).ElementAt(idRow);
