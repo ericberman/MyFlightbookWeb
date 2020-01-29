@@ -1198,7 +1198,7 @@
     <value>This will ONLY show flights for which you have allowed details to be visible.</value>
   </data>
   <data name="locShareAllFlightsPromptResource1.Text" xml:space="preserve">
-    <value>Share your public flights with this link:</value>
+    <value>Share your public flights</value>
   </data>
   <data name="NewPasswordCompareResource1.ErrorMessage" xml:space="preserve">
     <value>The Confirm New Password must match the New Password entry.</value>

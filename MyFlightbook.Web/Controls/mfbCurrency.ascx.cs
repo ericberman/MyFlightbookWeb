@@ -94,6 +94,13 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
     /// Set to true to disable autorefresh on initial GET. You'll need to call RefreshCurrencyTable if you want to refresh currency.
     /// </summary>
     public bool SuppressAutoRefresh { get; set; }
+
+    private bool m_LinkAssociatedResources = true;
+    public bool LinkAssociatedResources
+    {
+        get { return m_LinkAssociatedResources; }
+        set { m_LinkAssociatedResources = value; }
+    }
     #endregion
 
     protected string CSSForItem(CurrencyState cs)
@@ -133,11 +140,11 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
     protected void gvCurrency_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             CurrencyStatusItem csi = (CurrencyStatusItem)e.Row.DataItem;
-            bool fLink = !String.IsNullOrEmpty(csi.AssociatedResourceLink);
+            bool fLink = LinkAssociatedResources && !String.IsNullOrEmpty(csi.AssociatedResourceLink);
             MultiView mv = (MultiView) e.Row.FindControl("mvTitle");
             mv.ActiveViewIndex = fLink ? 1 : 0;
             if (fLink)

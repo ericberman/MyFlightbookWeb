@@ -16,6 +16,7 @@
 <%@ Register Src="~/Controls/mfbBasicMedManager.ascx" TagPrefix="uc1" TagName="mfbBasicMedManager" %>
 <%@ Register Src="~/Controls/mfbEditPropTemplate.ascx" TagPrefix="uc1" TagName="mfbEditPropTemplate" %>
 <%@ Register Src="~/Controls/ClubControls/TimeZone.ascx" TagPrefix="uc1" TagName="TimeZone" %>
+<%@ Register Src="~/Controls/mfbShareKeys.ascx" TagPrefix="uc1" TagName="mfbShareKeys" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -493,15 +494,29 @@
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
-                                <p><asp:Localize ID="locShareAllFlightsPrompt" runat="server" 
-                                    Text="Share your public flights with this link:" 
-                                    meta:resourcekey="locShareAllFlightsPromptResource1"></asp:Localize></p>
-                                <p><asp:HyperLink ID="lnkMyFlights" runat="server" Target="_blank" 
-                                    meta:resourcekey="lnkMyFlightsResource1"></asp:HyperLink></p>
+                                <h2><asp:Localize ID="locShareAllFlightsPrompt" runat="server" 
+                                    Text="Share your public flights" 
+                                    meta:resourcekey="locShareAllFlightsPromptResource1"></asp:Localize></h2>
                                 <p>
+                                    <asp:Localize ID="locSharePublicDesc" runat="server" Text="<%$ Resources:LocalizedText, SharePublicFlightsDescription %>"></asp:Localize></p>
                                 <asp:Localize ID="locShareAllFlightsDisclaimer" runat="server" 
                                     Text="This will ONLY show flights for which you have allowed details to be visible." 
                                     meta:resourcekey="locShareAllFlightsDisclaimerResource1"></asp:Localize></p>
+                                <p>
+                                    <asp:TextBox ID="lnkMyFlights" runat="server" ReadOnly="true" Width="200px" meta:resourcekey="lnkMyFlightsResource1"></asp:TextBox>
+                                    <asp:ImageButton ID="imgCopyMyFlights" style="vertical-align:text-bottom" ImageUrl="~/images/copyflight.png" AlternateText="<%$ Resources:LocalizedText, CopyToClipboard %>" ToolTip="<%$ Resources:LocalizedText, CopyToClipboard %>" runat="server" />
+                                    <asp:Label ID="lblMyFlightsCopied" runat="server" Text="<%$ Resources:LocalizedText, CopiedToClipboard %>" CssClass="hintPopup" style="display:none; font-weight:bold; font-size: 10pt; color:black; "></asp:Label>
+                                </p>
+                                <p>
+                            </div>
+                            <div class="prefSectionRow">
+                                <h2><asp:Localize ID="locShareLogbook" runat="server" Text="<%$ Resources:LocalizedText, ShareLogbookPrompt1 %>"></asp:Localize></h2>
+                                <p><asp:Localize ID="locCreateShareLinksPrompt" runat="server" Text="<%$ Resources:LocalizedText, ShareLogbookPrompt2 %>"></asp:Localize></p>
+                                <asp:UpdatePanel ID="UpdatePanel3" runat="server">
+                                    <ContentTemplate>
+                                        <uc1:mfbShareKeys runat="server" id="mfbShareKeys" />
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
                             </div>
                             <div class="prefSectionRow">
                                 <asp:Label ID="lblSocNetworkPrefsUpdated" runat="server" CssClass="success" EnableViewState="False"

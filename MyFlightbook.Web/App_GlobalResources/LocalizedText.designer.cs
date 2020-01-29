@@ -3853,6 +3853,123 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this link?  This cannot be undone, and once deleted the link will no longer work for anybody that has it..
+        /// </summary>
+        internal static string ShareKeyDeleteConfirm {
+            get {
+                return ResourceManager.GetString("ShareKeyDeleteConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Viewed.
+        /// </summary>
+        internal static string ShareKeyLastAccessHeader {
+            get {
+                return ResourceManager.GetString("ShareKeyLastAccessHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Never).
+        /// </summary>
+        internal static string ShareKeyLastAccessNever {
+            get {
+                return ResourceManager.GetString("ShareKeyLastAccessNever", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SUGGESTION: Use the name of the recipient.
+        /// </summary>
+        internal static string ShareKeyNameHint {
+            get {
+                return ResourceManager.GetString("ShareKeyNameHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name for link.
+        /// </summary>
+        internal static string ShareKeyNamePrompt {
+            get {
+                return ResourceManager.GetString("ShareKeyNamePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You do not currently have any links created to share data..
+        /// </summary>
+        internal static string ShareKeyNoKeysFound {
+            get {
+                return ResourceManager.GetString("ShareKeyNoKeysFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currency.
+        /// </summary>
+        internal static string ShareKeyPermissionViewCurrency {
+            get {
+                return ResourceManager.GetString("ShareKeyPermissionViewCurrency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flights.
+        /// </summary>
+        internal static string ShareKeyPermissionViewFlights {
+            get {
+                return ResourceManager.GetString("ShareKeyPermissionViewFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Totals.
+        /// </summary>
+        internal static string ShareKeyPermissionViewTotals {
+            get {
+                return ResourceManager.GetString("ShareKeyPermissionViewTotals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No permissions were granted - please give permission to view something..
+        /// </summary>
+        internal static string ShareKeyValidationNoPrivileges {
+            get {
+                return ResourceManager.GetString("ShareKeyValidationNoPrivileges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share your logbook and more details.
+        /// </summary>
+        internal static string ShareLogbookPrompt1 {
+            get {
+                return ResourceManager.GetString("ShareLogbookPrompt1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Here you can create links that you can share with people to enable them to view aspects of your logbook.  You can revoke these links, which will render them useless to people that have them..
+        /// </summary>
+        internal static string ShareLogbookPrompt2 {
+            get {
+                return ResourceManager.GetString("ShareLogbookPrompt2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anyone with this link can view the flights that you have indicated are visible to the public.  You can&apos;t disable this link, but you can share or not share details for individual flights..
+        /// </summary>
+        internal static string SharePublicFlightsDescription {
+            get {
+                return ResourceManager.GetString("SharePublicFlightsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;div&gt;
         ///    &lt;p&gt;If you share a link to this flight with someone, they will see high-level details of the flight including:&lt;/p&gt;
         ///    &lt;ul&gt;

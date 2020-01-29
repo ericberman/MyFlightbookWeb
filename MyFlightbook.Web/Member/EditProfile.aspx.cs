@@ -45,27 +45,21 @@ public partial class Member_EditProfile : System.Web.UI.Page
         string[] rgPrefPath = szPrefPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
         string szPref = util.GetStringParam(Request, "pref");
 
-        if (rgPrefPath.Length > 0 && !String.IsNullOrEmpty(rgPrefPath[0]))
-        {
-            try { sidebarTab = (tabID)Enum.Parse(typeof(tabID), rgPrefPath[0]); }
-            catch (ArgumentException) { }
-            catch (OverflowException) { }
-        }
+        if (rgPrefPath.Length > 0 && !String.IsNullOrEmpty(rgPrefPath[0]) && Enum.TryParse<tabID>(rgPrefPath[0], out tabID tid))
+            sidebarTab = tid;
 
         if (sidebarTab == tabID.tabUnknown && !String.IsNullOrEmpty(szPref))
         {
             // Backwards compatibility - redirect if using the szPref method 
-            try
+            if (Enum.TryParse<tabID>(szPref, out tabID tid2))
             {
-                sidebarTab = (tabID)Enum.Parse(typeof(tabID), szPref);
+                sidebarTab = tid2;
 
                 // Redirect now using PathInfo scheme
                 string szNew = Request.Url.PathAndQuery.Replace(".aspx", String.Format(CultureInfo.InvariantCulture, ".aspx/{0}", szPref)).Replace(String.Format(CultureInfo.InvariantCulture, "pref={0}", szPref), string.Empty).Replace("?&", "?");
                 Response.Redirect(szNew, true);
                 return sidebarTab;
             }
-            catch (ArgumentException) { }
-            catch (OverflowException) { }
         }
 
         if (sidebarTab == tabID.tabUnknown)
@@ -237,7 +231,9 @@ public partial class Member_EditProfile : System.Web.UI.Page
     private void InitSocialNetworking()
     {
         // Sharing
-        lnkMyFlights.Text = lnkMyFlights.NavigateUrl = m_pf.PublicFlightsURL(Request.Url.Host).AbsoluteUri;
+        lnkMyFlights.Text = m_pf.PublicFlightsURL(Request.Url.Host).AbsoluteUri;
+        ClientScript.RegisterClientScriptInclude("copytoClip", ResolveClientUrl("~/public/Scripts/CopyClipboard.js"));
+        imgCopyMyFlights.OnClientClick = String.Format(CultureInfo.InvariantCulture, "javascript:copyClipboard(null, '{0}', true, '{1}');return false;", lnkMyFlights.ClientID, lblMyFlightsCopied.ClientID);
     }
 
     private void InitCloudProviders()
@@ -466,7 +462,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
     public void VerifyEmailAvailable(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name, true);
         args.IsValid = true;
         if (String.Compare(txtEmail.Text, pf.Email, StringComparison.OrdinalIgnoreCase) != 0)
@@ -522,7 +518,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
     public void ValidateCurrentPassword(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         if (CurrentPassword.Text.Length == 0 && NewPassword.Text.Length > 0)
             args.IsValid = false;
     }
@@ -642,6 +638,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
             lblCurrencyPrefsUpdated.CssClass = "error";
         }
     }
+
     #region Deadlines
     #endregion
 
@@ -685,14 +682,11 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     protected void cmbDefaultCloud_SelectedIndexChanged(object sender, EventArgs e)
     {
-        try
+        if (Enum.TryParse<StorageID>(cmbDefaultCloud.SelectedValue, out StorageID sid))
         {
-            m_pf.DefaultCloudStorage = (StorageID)Enum.Parse(typeof(StorageID), cmbDefaultCloud.SelectedValue);
+            m_pf.DefaultCloudStorage = sid;
             m_pf.FCommit();
         }
-        catch (ArgumentNullException) { }
-        catch (ArgumentException) { }
-        catch (OverflowException) { }
     }
 
     protected void rblCloudBackupAppendDate_SelectedIndexChanged(object sender, EventArgs e)
@@ -850,7 +844,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
     public void DurationIsValid(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         args.IsValid = (dateMedical.Date == DateTime.MinValue || cmbMonthsMedical.SelectedValue != "0");
     }
     #endregion

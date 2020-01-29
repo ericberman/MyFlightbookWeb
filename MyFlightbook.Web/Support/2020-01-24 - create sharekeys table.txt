@@ -1,0 +1,11 @@
+﻿CREATE TABLE `sharekeys` (
+  `GUID` varchar(36) NOT NULL COMMENT 'GUID assigned to the user',
+  `username` varchar(255) NOT NULL COMMENT 'The user who owns this share key',
+  `name` varchar(45) DEFAULT NULL COMMENT 'Name for this share key',
+  `privileges` int(10) unsigned DEFAULT '0' COMMENT 'Bit mask indicating the allowed privileges for this sharekey.',
+  `lastaccess` datetime DEFAULT NULL COMMENT 'Date when the sharekey was last accessed.',
+  PRIMARY KEY (`GUID`),
+  UNIQUE KEY `GUID_UNIQUE` (`GUID`),
+  KEY `sharekeyUser_idx` (`username`),
+  CONSTRAINT `sharekeyUser` FOREIGN KEY (`username`) REFERENCES `users` (`Username`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contains keys that allow users to grant/revoke access to their logbook data';

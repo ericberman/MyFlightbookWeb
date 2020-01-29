@@ -1605,4 +1605,43 @@
   <data name="UploadImages" xml:space="preserve">
     <value>Upload Images</value>
   </data>
+  <data name="ShareKeyDeleteConfirm" xml:space="preserve">
+    <value>Are you sure you want to delete this link?  This cannot be undone, and once deleted the link will no longer work for anybody that has it.</value>
+  </data>
+  <data name="ShareKeyLastAccessHeader" xml:space="preserve">
+    <value>Last Viewed</value>
+  </data>
+  <data name="ShareKeyLastAccessNever" xml:space="preserve">
+    <value>(Never)</value>
+  </data>
+  <data name="ShareKeyNameHint" xml:space="preserve">
+    <value>SUGGESTION: Use the name of the recipient</value>
+  </data>
+  <data name="ShareKeyNamePrompt" xml:space="preserve">
+    <value>Name for link</value>
+  </data>
+  <data name="ShareKeyNoKeysFound" xml:space="preserve">
+    <value>You do not currently have any links created to share data.</value>
+  </data>
+  <data name="ShareKeyPermissionViewCurrency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="ShareKeyPermissionViewFlights" xml:space="preserve">
+    <value>Flights</value>
+  </data>
+  <data name="ShareKeyPermissionViewTotals" xml:space="preserve">
+    <value>Totals</value>
+  </data>
+  <data name="ShareKeyValidationNoPrivileges" xml:space="preserve">
+    <value>No permissions were granted - please give permission to view something.</value>
+  </data>
+  <data name="ShareLogbookPrompt1" xml:space="preserve">
+    <value>Share your logbook and more details</value>
+  </data>
+  <data name="ShareLogbookPrompt2" xml:space="preserve">
+    <value>Here you can create links that you can share with people to enable them to view aspects of your logbook.  You can revoke these links, which will render them useless to people that have them.</value>
+  </data>
+  <data name="SharePublicFlightsDescription" xml:space="preserve">
+    <value>Anyone with this link can view the flights that you have indicated are visible to the public.  You can't disable this link, but you can share or not share details for individual flights.</value>
+  </data>
 </root>

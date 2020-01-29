@@ -26,6 +26,8 @@ public partial class Member_Achievements : System.Web.UI.Page
             RefreshPage();
             Master.ShowSponsoredAd = false;
         }
+        ClientScript.RegisterClientScriptInclude("copytoClip", ResolveClientUrl("~/public/Scripts/CopyClipboard.js"));
+        imgCopy.OnClientClick = String.Format(CultureInfo.InvariantCulture, "javascript:copyClipboard('{0}', 'raContainer', false, '{1}');return false;", lblRecentAchievementsTitle.ClientID, lblCopied.ClientID);
     }
 
     protected void RefreshPage()
@@ -40,9 +42,9 @@ public partial class Member_Achievements : System.Web.UI.Page
             rptBadgeset.DataBind();
         }
 
-        FlightQuery.DateRanges dr;
         DateTime dtMin, dtMax = DateTime.Now;
-        if (!Enum.TryParse<FlightQuery.DateRanges>(cmbAchievementDates.SelectedValue, out dr))
+
+        if (!Enum.TryParse<FlightQuery.DateRanges>(cmbAchievementDates.SelectedValue, out FlightQuery.DateRanges dr))
             throw new MyFlightbookValidationException("Invalid date range: " + cmbAchievementDates.SelectedValue);
         mfbRecentAchievements.AutoDateRange = false;
 
