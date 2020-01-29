@@ -84,6 +84,24 @@ namespace MyFlightbook.Web.Sharing
             get { return (privFlags & (UInt32)SharePrivs.Currency) != 0; }
             set { privFlags = value ? privFlags | (UInt32)SharePrivs.Currency : privFlags & ~(UInt32)SharePrivs.Currency; }
         }
+
+        /// <summary>
+        /// Returns the number of privileges that have been granted
+        /// (Ha!  Actually need a count-bits implementation!
+        /// </summary>
+        public int PrivilegeCount
+        {
+            get {
+                int i = 0;
+                UInt32 p = privFlags;
+                while (p != 0)
+                {
+                    i++;
+                    p &= (p - 1);
+                }
+                return i;
+            }
+        }
         #endregion
 
         #region Constructors

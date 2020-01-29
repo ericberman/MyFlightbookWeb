@@ -24,13 +24,112 @@ namespace MyFlightbook.Web.Public
         protected global::System.Web.UI.WebControls.Label lblHeader;
 
         /// <summary>
-        /// mfbCurrency control.
+        /// mfbAccordionProxyExtender control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Controls_mfbCurrency mfbCurrency;
+        protected global::Controls_mfbAccordionProxyExtender mfbAccordionProxyExtender;
+
+        /// <summary>
+        /// pnlAccordionMenuContainer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAccordionMenuContainer;
+
+        /// <summary>
+        /// apcFilter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbAccordionProxyControl apcFilter;
+
+        /// <summary>
+        /// apcTotals control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbAccordionProxyControl apcTotals;
+
+        /// <summary>
+        /// apcCurrency control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbAccordionProxyControl apcCurrency;
+
+        /// <summary>
+        /// apcAnalysis control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbAccordionProxyControl apcAnalysis;
+
+        /// <summary>
+        /// pnlFilter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlFilter;
+
+        /// <summary>
+        /// mfbQueryDescriptor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbQueryDescriptor mfbQueryDescriptor;
+
+        /// <summary>
+        /// AccordionCtrl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.Accordion AccordionCtrl;
+
+        /// <summary>
+        /// acpPaneFilter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.AccordionPane acpPaneFilter;
+
+        /// <summary>
+        /// mfbSearchForm control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbSearchForm mfbSearchForm;
+
+        /// <summary>
+        /// acpPaneTotals control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.AccordionPane acpPaneTotals;
 
         /// <summary>
         /// mfbTotalSummary control.
@@ -40,6 +139,51 @@ namespace MyFlightbook.Web.Public
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Controls_mfbTotalSummary mfbTotalSummary;
+
+        /// <summary>
+        /// acpPaneCurrency control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.AccordionPane acpPaneCurrency;
+
+        /// <summary>
+        /// mfbCurrency control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbCurrency mfbCurrency;
+
+        /// <summary>
+        /// acpPaneAnalysis control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.AccordionPane acpPaneAnalysis;
+
+        /// <summary>
+        /// mfbChartTotals control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbChartTotals mfbChartTotals;
+
+        /// <summary>
+        /// lblErr control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblErr;
 
         /// <summary>
         /// mfbLogbook control.
