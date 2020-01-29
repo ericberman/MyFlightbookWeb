@@ -272,8 +272,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     {
         idPrev = idNext = LogbookEntry.idFlightNone;
 
-        List<LogbookEntryDisplay> lst = Data as List<LogbookEntryDisplay>;
-        if (lst == null)
+        if (!(Data is List<LogbookEntryDisplay> lst))
             return;
 
         int index = lst.FindIndex(led => led.FlightID == idFlight);
@@ -574,7 +573,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
                 SortGridview(gvFlightLogs, Data as List<LogbookEntryDisplay>);
         }
 
-        if (!HasBeenBound)
+        if (!HasBeenBound && !String.IsNullOrEmpty(User))
             BindData(Data);
 
         gvFlightLogs.Columns[FindColumn(gvFlightLogs, "CFI")].Visible = Pilot.IsInstructor && !MiniMode;
@@ -910,49 +909,45 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     {
         TextBox decPageNum = (TextBox)gvFlightLogs.BottomPagerRow.FindControl("decPage");
 
-        try
+        bool fParsesAsInt = Int32.TryParse(decPageNum.Text, out int iPage);
+
+        bool fIsYear = fParsesAsInt && iPage > 1900 && iPage < 2200;
+
+        // See if a date works
+        bool fParsesAsDate = DateTime.TryParse(decPageNum.Text, out DateTime dtAttempted);
+        int yearAttempted = fIsYear ? iPage : 0;
+        if (fIsYear || fParsesAsDate)
         {
+            int distance = Int32.MaxValue;
+            int iRowMatch = 0;
 
-            bool fIsYear = Int32.TryParse(decPageNum.Text, out int iPage) && iPage > 1900 && iPage < 2200;
-
-            // See if a date works
-            DateTime dtAttempted = DateTime.MinValue;
-            int yearAttempted = fIsYear ? iPage : 0;
-            if (fIsYear || DateTime.TryParse(decPageNum.Text, out dtAttempted))
+            // Find the entry with the date or year closest to the typed date.
+            List<LogbookEntryDisplay> lst = (List<LogbookEntryDisplay>)gvFlightLogs.DataSource;
+            for (int iRow = 0; iRow < lst.Count; iRow++)
             {
-                int distance = Int32.MaxValue;
-                int iRowMatch = 0;
+                DateTime dtEntry = lst[iRow].Date;
 
-                // Find the entry with the date or year closest to the typed date.
-                List<LogbookEntryDisplay> lst = (List<LogbookEntryDisplay>)gvFlightLogs.DataSource;
-                for (int iRow = 0; iRow < lst.Count; iRow++)
+                int distThis = (fIsYear) ? Math.Abs(dtEntry.Year - yearAttempted) : (int)Math.Abs(dtEntry.Subtract(dtAttempted).TotalDays);
+
+                if (distThis < distance)
                 {
-                    DateTime dtEntry = lst[iRow].Date;
-
-                    int distThis = (fIsYear) ? Math.Abs(dtEntry.Year - yearAttempted) : (int)Math.Abs(dtEntry.Subtract(dtAttempted).TotalDays);
-
-                    if (distThis < distance)
-                    {
-                        distance = distThis;
-                        iRowMatch = iRow;
-                    }
+                    distance = distThis;
+                    iRowMatch = iRow;
                 }
-
-                iPage = iRowMatch / gvFlightLogs.PageSize;
-            }
-            else
-                iPage = Convert.ToInt32(decPageNum.Text, CultureInfo.InvariantCulture) - 1;
-
-            if (iPage < gvFlightLogs.PageCount && iPage >= 0)
-            {
-                gvFlightLogs.PageIndex = iPage;
-                BindData();
             }
 
-            decPageNum.Text = (gvFlightLogs.PageIndex + 1).ToString(CultureInfo.CurrentCulture);
+            iPage = iRowMatch / gvFlightLogs.PageSize;
         }
-        catch (ArgumentException) { }
-        catch (FormatException) { }
+        else
+            iPage--;    // since we need to be 0 based
+
+        if (iPage < gvFlightLogs.PageCount && iPage >= 0)
+        {
+            gvFlightLogs.PageIndex = iPage;
+            BindData();
+        }
+
+        decPageNum.Text = (gvFlightLogs.PageIndex + 1).ToString(CultureInfo.CurrentCulture);
     }
 
     #region Context menu operations
@@ -962,8 +957,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         FlushCache();
         BindData(Data);
         RefreshNumFlights();
-        if (ItemDeleted != null)
-            ItemDeleted(this, new LogbookEventArgs(id));
+        ItemDeleted?.Invoke(this, new LogbookEventArgs(id));
     }
 
     protected void mfbFlightContextMenu_DeleteFlight(object sender, LogbookEventArgs e)
