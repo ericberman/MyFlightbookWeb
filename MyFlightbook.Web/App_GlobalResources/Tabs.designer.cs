@@ -304,7 +304,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 8710.
+        ///   Looks up a localized string similar to 8710 / IACRA.
         /// </summary>
         internal static string Logbook8710 {
             get {
