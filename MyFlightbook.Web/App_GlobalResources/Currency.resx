@@ -932,4 +932,19 @@
   <data name="PassengersEASANight" xml:space="preserve">
     <value>(EASA FCL.060)</value>
   </data>
+  <data name="FAR135267B1Title" xml:space="preserve">
+    <value>FAR 135.267(b)(1) - 8 hours in 24</value>
+  </data>
+  <data name="FAR135267B2Title" xml:space="preserve">
+    <value>FAR 135.267(b)(2) - 10 hours in 24</value>
+  </data>
+  <data name="FAR135267BDiscrepancy" xml:space="preserve">
+    <value>{0} hours remaining out of {1} hours</value>
+  </data>
+  <data name="FAR135267BPastLimit" xml:space="preserve">
+    <value>{0} hours over the {1} hour limit</value>
+  </data>
+  <data name="FAR135267BStatus" xml:space="preserve">
+    <value>{0} hours of flying in past 24 hours</value>
+  </data>
 </root>

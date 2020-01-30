@@ -1628,6 +1628,51 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FAR 135.267(b)(1) - 8 hours in 24.
+        /// </summary>
+        internal static string FAR135267B1Title {
+            get {
+                return ResourceManager.GetString("FAR135267B1Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAR 135.267(b)(2) - 10 hours in 24.
+        /// </summary>
+        internal static string FAR135267B2Title {
+            get {
+                return ResourceManager.GetString("FAR135267B2Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} hours remaining out of {1} hours.
+        /// </summary>
+        internal static string FAR135267BDiscrepancy {
+            get {
+                return ResourceManager.GetString("FAR135267BDiscrepancy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} hours over the {1} hour limit.
+        /// </summary>
+        internal static string FAR135267BPastLimit {
+            get {
+                return ResourceManager.GetString("FAR135267BPastLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} hours of flying in past 24 hours.
+        /// </summary>
+        internal static string FAR135267BStatus {
+            get {
+                return ResourceManager.GetString("FAR135267BStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} hours remaining out of 8 hours.
         /// </summary>
         internal static string FAR195aDiscrepancy {

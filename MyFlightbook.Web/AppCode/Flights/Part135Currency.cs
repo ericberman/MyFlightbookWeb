@@ -22,7 +22,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDProp135293Knowledge))
                 AddRecentFlightEvents(cfr.dtFlight, 1);
         }
@@ -75,7 +75,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             if (cfr.fIsRealAircraft && cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDProp135299FlightCheck))
                 AddRecentFlightEvents(cfr.dtFlight, 1);
@@ -111,7 +111,7 @@ namespace MyFlightbook.FlightCurrency
         public void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             // Only include potential commercial flying - so nothing in a sim.
             if (!cfr.fIsRealAircraft)
@@ -122,7 +122,7 @@ namespace MyFlightbook.FlightCurrency
                 if (cfr.dtFlightStart.HasValue() && cfr.dtFlightEnd.HasValue())
                 {
                     DateTime dtEffectivestart = cfr.dtFlightStart.LaterDate(PeriodStart);
-                    TimeSpan ts = cfr.dtFlightEnd.Subtract(cfr.dtFlightStart);
+                    TimeSpan ts = cfr.dtFlightEnd.Subtract(dtEffectivestart);
                     if (ts.TotalHours > 0)
                         StatusSoFar += ts.TotalHours;
                 }
@@ -184,6 +184,7 @@ namespace MyFlightbook.FlightCurrency
         #endregion
     }
 
+    #region Concrete 135.267(a) classes
     public class Part135_267a1 : Part135_267Base
     {
         public Part135_267a1() : base(Resources.Currency.Part135267a1Title, 500, Resources.Currency.Part135267FormatStatusQuarter)
@@ -243,5 +244,92 @@ namespace MyFlightbook.FlightCurrency
 
         public override DateTime ExpirationDate { get { return DateTime.Now; } }
     }
+    #endregion
+
+    #region 135.267(b)
+    /// <summary>
+    /// 61.195(a) - can't have more than 8 hours of instruction within 24 hours.
+    /// </summary>
+    public abstract class Part135_267BBase : FAR117Currency
+    {
+        private readonly DateTime dt24HoursAgo = DateTime.UtcNow.AddHours(-24);
+        private double TotalFlying = 0.0;
+
+        protected double MaxFlying { get; set; }
+        protected double GettingClose { get; set; }
+
+        protected Part135_267BBase(string szTitle, double maxFlying, double gettingClose, bool fUseHHMM)
+        {
+            DisplayName = szTitle;
+            MaxFlying = maxFlying;
+            GettingClose = gettingClose;
+            UseHHMM = fUseHHMM;
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            // quick short circuit for anything more than 24 hours old, or not a real aircraft
+            if (!cfr.fIsRealAircraft || cfr.dtFlight.CompareTo(dt24HoursAgo.Date) < 0)
+                return;
+
+            EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr) { FlightDutyStart = DateTime.UtcNow.AddDays(-1), FlightDutyEnd = DateTime.UtcNow };
+
+            TimeSpan ts = edp.TimeSince(dt24HoursAgo, (double) cfr.Total, cfr);
+            if (ts.TotalHours > 0)
+                TotalFlying += Math.Min((double) cfr.Total, ts.TotalHours);
+        }
+
+        public override CurrencyState CurrentState
+        {
+            get
+            {
+                if (TotalFlying > MaxFlying)
+                    return CurrencyState.NotCurrent;
+                else if (TotalFlying > GettingClose)
+                    return CurrencyState.GettingClose;
+                else
+                    return CurrencyState.OK;
+            }
+        }
+
+        public override bool HasBeenCurrent
+        {
+            get { return TotalFlying > 0; }
+        }
+
+        public override string DiscrepancyString
+        {
+            get
+            {
+                double totalRemaining = MaxFlying - TotalFlying;
+
+                return totalRemaining > 0 ?
+                    String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR135267BDiscrepancy, totalRemaining.FormatDecimal(UseHHMM), MaxFlying) :
+                    String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR135267BPastLimit, (-totalRemaining).FormatDecimal(UseHHMM), MaxFlying);
+            }
+        }
+
+        public override string StatusDisplay
+        {
+            get { return String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR135267BStatus, TotalFlying.FormatDecimal(UseHHMM)); }
+        }
+
+        public override DateTime ExpirationDate { get { return DateTime.Now; } }
+    }
+    #region concrete classes
+    public class Part135_267B1Currency : Part135_267BBase
+    {
+        public Part135_267B1Currency(bool UseHHMM) : base(Resources.Currency.FAR135267B1Title, 8, 6, UseHHMM) { }
+    }
+
+    public class Part135_267B2Currency : Part135_267BBase
+    {
+        public Part135_267B2Currency(bool UseHHMM) : base(Resources.Currency.FAR135267B2Title, 10, 7, UseHHMM) { }
+    }
+    #endregion
+    #endregion
     #endregion
 }

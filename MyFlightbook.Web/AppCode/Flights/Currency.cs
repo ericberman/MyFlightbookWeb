@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -305,7 +305,7 @@ namespace MyFlightbook.FlightCurrency
         public ExaminerFlightRow(MySqlDataReader dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
 
             dtFlight = (DateTime)dr["date"];
             flightID = Convert.ToInt32(dr["FlightID"], CultureInfo.InvariantCulture);
@@ -423,7 +423,7 @@ namespace MyFlightbook.FlightCurrency
         public bool MergeWith(CurrencyPeriod cp)
         {
             if (cp == null)
-                throw new ArgumentNullException("cp");
+                throw new ArgumentNullException(nameof(cp));
             if (cp.EndDate.CompareTo(StartDate) < 0 || cp.StartDate.CompareTo(EndDate) > 0)
                 return false;
             StartDate = cp.StartDate.EarlierDate(this.StartDate);
@@ -543,7 +543,7 @@ namespace MyFlightbook.FlightCurrency
         public static IEnumerable<CurrencyStatusItem> ComputeCurrency(string szUser)
         {
             if (String.IsNullOrEmpty(szUser))
-                return new CurrencyStatusItem[0];
+                return Array.Empty<CurrencyStatusItem>();
 
             Profile pf = Profile.GetUser(szUser);
 
@@ -703,6 +703,8 @@ namespace MyFlightbook.FlightCurrency
                         const string szKey265a1 = "135.265(a)(1)";
                         const string szKey265a2 = "135.265(a)(2)";
                         const string szKey265a3 = "135.265(a)(3)";
+                        const string szKey267b1 = "135.267(b)(1)";
+                        const string szKey267b2 = "135.267(b)(2)";
 
                         if (!dictFlightCurrency.ContainsKey(szKey267a1))
                             dictFlightCurrency.Add(szKey267a1, new Part135_267a1());
@@ -727,6 +729,14 @@ namespace MyFlightbook.FlightCurrency
                         if (!dictFlightCurrency.ContainsKey(szKey265a3))
                             dictFlightCurrency.Add(szKey265a3, new Part135_265a3());
                         dictFlightCurrency[szKey265a3].ExamineFlight(cfr);
+
+                        if (!dictFlightCurrency.ContainsKey(szKey267b1))
+                            dictFlightCurrency.Add(szKey267b1, new Part135_267B1Currency(pf.UsesHHMM));
+                        dictFlightCurrency[szKey267b1].ExamineFlight(cfr);
+
+                        if (!dictFlightCurrency.ContainsKey(szKey267b2))
+                            dictFlightCurrency.Add(szKey267b2, new Part135_267B2Currency(pf.UsesHHMM));
+                        dictFlightCurrency[szKey267b2].ExamineFlight(cfr);
                     }
 
                     // Army 95-1 currency
@@ -1080,9 +1090,9 @@ namespace MyFlightbook.FlightCurrency
         private static List<CurrencyPeriod> MergeLists(IList<CurrencyPeriod> l1, IList<CurrencyPeriod> l2, MergeOption option)
         {
             if (l1 == null)
-                throw new ArgumentNullException("l1");
+                throw new ArgumentNullException(nameof(l1));
             if (l2 == null)
-                throw new ArgumentNullException("l2");
+                throw new ArgumentNullException(nameof(l2));
             // How to merge listA and listB of currency periods:
             //  Each list is effectively a set of descending dates.  EndDate, StartDate, EndDate, StartDate, ...
             //  We have a routine "GetDateAtVirtualIndex" that will get the n'th date in this list, which is in the (n/2)'th currency period.  So...
@@ -1160,7 +1170,7 @@ namespace MyFlightbook.FlightCurrency
         public FlightCurrency AND(FlightCurrency fc)
         {
             if (fc == null)
-                throw new ArgumentNullException("fc");
+                throw new ArgumentNullException(nameof(fc));
             FlightCurrency fcNew = new FlightCurrency(NumEvents, ExpirationSpan, IsCalendarMonth, DisplayName) { m_lstValidCurrencies = MergeLists(m_lstValidCurrencies, fc.m_lstValidCurrencies, MergeOption.AND) };
             return fcNew;
         }
@@ -1173,7 +1183,7 @@ namespace MyFlightbook.FlightCurrency
         public FlightCurrency OR(FlightCurrency fc)
         {
             if (fc == null)
-                throw new ArgumentNullException("fc");
+                throw new ArgumentNullException(nameof(fc));
             FlightCurrency fcNew = new FlightCurrency(NumEvents, ExpirationSpan, IsCalendarMonth, DisplayName) { m_lstValidCurrencies = MergeLists(m_lstValidCurrencies, fc.m_lstValidCurrencies, MergeOption.OR) };
             return fcNew;
         }
@@ -1394,7 +1404,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             base.ExamineFlight(cfr);
 
             // we need to subtract out monitored landings, or ignore all if you were monitoring for the whole flight
@@ -1420,7 +1430,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             base.ExamineFlight(cfr);
 
             // we need to subtract out monitored landings, or ignore all if you were monitoring for the whole flight
@@ -1545,7 +1555,7 @@ namespace MyFlightbook.FlightCurrency
             public EffectiveDutyPeriod(ExaminerFlightRow cfr, bool fInferDutyEnd = false) : this()
             {
                 if (cfr == null)
-                    throw new ArgumentNullException("cfr");
+                    throw new ArgumentNullException(nameof(cfr));
 
                 CustomFlightProperty pfeFlightDutyStart = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart);
                 CustomFlightProperty pfeFlightDutyEnd = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd);
@@ -1614,7 +1624,7 @@ namespace MyFlightbook.FlightCurrency
             public TimeSpan TimeSince(DateTime dtStart, double netTime, ExaminerFlightRow cfr)
             {
                 if (cfr == null)
-                    throw new ArgumentNullException("cfr");
+                    throw new ArgumentNullException(nameof(cfr));
 
                 DateTime dtDutyStart = FlightDutyStart;
                 DateTime dtDutyEnd = FlightDutyEnd;
@@ -1655,7 +1665,7 @@ namespace MyFlightbook.FlightCurrency
         public static bool IsFAR117Property(CustomFlightProperty pfe)
         {
             if (pfe == null)
-                throw new ArgumentNullException("pfe");
+                throw new ArgumentNullException(nameof(pfe));
 
             int typeID = pfe.PropTypeID;
             return typeID == (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd ||
@@ -1703,8 +1713,6 @@ namespace MyFlightbook.FlightCurrency
 
         private void Add11723BTime(ExaminerFlightRow cfr, DateTime dtDutyEnd)
         {
-            DateTime dtFlight = DateTime.SpecifyKind(cfr.dtFlight, DateTimeKind.Utc);
-
             DateTime flightStart, flightEnd;
 
             decimal totalMinutesTime = Math.Round(cfr.Total * 60.0M) / 60.0M;
@@ -1740,7 +1748,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr, IsMostRecentFlight);
             IsMostRecentFlight = false; // no more inferring duty end!
@@ -1872,7 +1880,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             // quick short circuit for anything more than 24 hours old, or no instruction given, or not a real aircraft
             if (cfr.CFI == 0 || !cfr.fIsRealAircraft || cfr.dtFlight.CompareTo(dt24HoursAgo.Date) < 0)
@@ -1941,7 +1949,7 @@ namespace MyFlightbook.FlightCurrency
                 return;
 
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (cfr.CFI > 0 || cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven) > 0)
                 LastInstruction = cfr.dtFlight;
         }
@@ -2220,7 +2228,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             base.ExamineFlight(cfr);
 
             if (!cfr.fIsCertifiedLanding)
@@ -2578,7 +2586,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             if (!cfr.fIsCertifiedIFR)
                 return;
@@ -2877,10 +2885,6 @@ namespace MyFlightbook.FlightCurrency
             DateTime dtExpirationSolo;
             DateTime dtExpirationPassengers;
 
-            CurrencyState cs6157c6iA = fcGliderIFRTime.CurrentState;
-            CurrencyState cs6157c6iB = fcGliderInstrumentManeuvers.CurrentState;
-            CurrencyState cs6157c6iiA = fcGliderIFRTimePassengers.CurrentState;
-            CurrencyState cs6157c6iiB = fcGliderInstrumentPassengers.CurrentState;
             // 61.57(c)(6)(i)  => (c)(3)(i) - basic instrument currency
             if (fcGliderIFRTime.HasBeenCurrent && fcGliderInstrumentManeuvers.HasBeenCurrent)
             {
@@ -3073,7 +3077,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (cfr.fIsSingleEngine || cfr.fIsGlider)
             {
                 if (cfr.IMC + cfr.IMCSim > 0)
