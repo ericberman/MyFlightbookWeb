@@ -17,9 +17,9 @@ namespace MyFlightbook.Web
        protected void Application_Start(object sender, EventArgs e)
         {
             // Code that runs on application startup
-            MyFlightbook.ShuntState.Init();
+            ShuntState.Init();
             ScriptManager.ScriptResourceMapping.AddDefinition("jquery", new ScriptResourceDefinition { Path = "https://code.jquery.com/jquery-1.10.1.min.js" });
-            System.Web.UI.ValidationSettings.UnobtrusiveValidationMode = UnobtrusiveValidationMode.WebForms;
+            ValidationSettings.UnobtrusiveValidationMode = UnobtrusiveValidationMode.WebForms;
         }
 
         protected void Application_End(object sender, EventArgs e)
@@ -28,19 +28,31 @@ namespace MyFlightbook.Web
 
         }
 
+        protected void Application_BeginRequest(Object sender, EventArgs e)
+        {
+            // Issue #476: Switch from www.myflightbook.com to myflightbook.com with 301 error; this helps google analytics
+            Uri uri = HttpContext.Current?.Request?.Url;
+            if (uri is null)
+                return;
+
+            if (uri.Host.CompareCurrentCultureIgnoreCase("www.myflightbook.com") == 0 && HttpContext.Current.Request.HttpMethod.CompareCurrentCultureIgnoreCase("GET") == 0)
+            {
+                Response.Status = "301 Moved Permanently";
+                Response.AddHeader("Location", uri.ToString().Replace("www.myflightbook.com", "myflightbook.com"));
+                Response.End();
+            }
+        }
+
         protected void Application_Error(object sender, EventArgs e)
         {
             // Code that runs when an unhandled error occurs
             StringBuilder ErrorMessage = new StringBuilder();
-            Exception myError = null;
-
-            myError = Server.GetLastError();
+            Exception myError = Server.GetLastError();
 
             if (Context.Request.IsLocal)
                 return;
 
-            HttpException err = myError as HttpException;
-            if (err != null && err.GetHttpCode() == 404)
+            if (myError is HttpException err && err.GetHttpCode() == 404)
                 return;
 
             if (Context != null)
