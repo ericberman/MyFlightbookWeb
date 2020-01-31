@@ -1,15 +1,15 @@
-﻿using Ionic.Zip;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Telemetry;
 using System;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -141,38 +141,35 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
             string sz = string.Empty;
             if (mfbUploadFlightData.HasFile && mfbUploadFlightData.PostedFile.ContentLength > 0)
             {
-                // check for zip
+                // check for zip - grab the first entry if found.
                 try
                 {
-                    using (ZipFile z = ZipFile.Read(mfbUploadFlightData.PostedFile.InputStream))
+                    using (ZipArchive zipArchive = new ZipArchive(mfbUploadFlightData.PostedFile.InputStream, ZipArchiveMode.Read))
                     {
-                        MemoryStream ms = null;
-
-                        foreach (ZipEntry ze in z.Entries)
+                        foreach (ZipArchiveEntry entry in zipArchive.Entries)
                         {
+                            Stream s = null;
                             try
                             {
-                                ms = new MemoryStream();
-                                ze.Extract(ms);
-                                ms.Seek(0, SeekOrigin.Begin);
-                                using (StreamReader sr = new StreamReader(ms))
+                                using (s = entry.Open())
                                 {
-                                    ms = null; //for CA2202
-                                    ViewState[keyFlightData] = sz = sr.ReadToEnd();
+                                    using (StreamReader sr = new StreamReader(s))
+                                    {
+                                        s = null; //for CA2202
+                                        ViewState[keyFlightData] = sz = sr.ReadToEnd();
+                                        return sz;
+                                    }
                                 }
                             }
                             finally
                             {
-                                if (ms != null)
-                                    ms.Dispose();
+                                if (s != null)
+                                    s.Dispose();
                             }
-                            return sz;
                         }
                     }
                 }
-                catch (ZipException) { }
-                catch (IOException) { }
-                catch (ArgumentException) { }
+                catch (Exception ex) when (ex is IOException || ex is ArgumentException || ex is InvalidDataException) { }
 
                 byte[] rgbytes = new byte[mfbUploadFlightData.PostedFile.ContentLength];
                 mfbUploadFlightData.PostedFile.InputStream.Read(rgbytes, 0, mfbUploadFlightData.PostedFile.ContentLength);

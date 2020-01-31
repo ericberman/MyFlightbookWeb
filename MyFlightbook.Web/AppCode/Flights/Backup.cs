@@ -1,5 +1,4 @@
-﻿using Ionic.Zip;
-using MyFlightbook.Basicmed;
+﻿using MyFlightbook.Basicmed;
 using MyFlightbook.CloudStorage;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -16,7 +16,7 @@ using System.Web.UI.HtmlControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -32,16 +32,16 @@ namespace MyFlightbook
 
         public LogbookBackup(Profile user)
         {
-            if (user == null)
-                throw new ArgumentNullException("user");
-            User = user;
+            User = user ?? throw new ArgumentNullException(nameof(user));
         }
 
-        private string WriteTelemetryStringToArchive(ZipFile z, string szTelemetry, int idFlight)
+        private string WriteTelemetryStringToArchive(ZipArchive z, string szTelemetry, int idFlight)
         {
             DataSourceType dst = DataSourceType.BestGuessTypeFromText(szTelemetry);
             string szFile = String.Format(CultureInfo.InvariantCulture, "Telemetry\\{0}.{1}", idFlight, dst.DefaultExtension);
-            z.AddEntry(szFile, szTelemetry);
+            ZipArchiveEntry ze = z.CreateEntry(szFile);
+            using (StreamWriter writer = new StreamWriter(ze.Open()))
+                writer.Write(szTelemetry);
             return szFile;
         }
 
@@ -58,7 +58,29 @@ namespace MyFlightbook
         const string szThumbFolderBasicMed = "thumbsbasicmed";
         const string szThumbFolderFlights = "thumbsFlights";
 
-        private void WriteFlightInfo(HtmlTextWriter tw, ZipFile zip, LogbookEntry le)
+        private void AddThumbnailToZip(MFBImageInfo mfbii, ZipArchive zip, string szFolder)
+        {
+            if (mfbii is null)
+                throw new ArgumentNullException(nameof(mfbii));
+            if (zip is null)
+                throw new ArgumentNullException(nameof(zip));
+            if (szFolder is null)
+                throw new ArgumentNullException(nameof(szFolder));
+
+            string imgPath = System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail);
+            if (!File.Exists(imgPath))
+            {
+                mfbii.DeleteFromDB();   // clean up an orphan
+                return;
+            }
+
+            // No need to add an S3PDF to the zip file; it's just a placeholder file on the disk, and it can 
+            // potentially have a duplicate name with another PDF as well.
+            if (mfbii.ImageType != MFBImageInfo.ImageFileType.S3PDF)
+                zip.CreateEntryFromFile(imgPath, szFolder + "\\" + mfbii.ThumbnailFile);
+        }
+
+        private void WriteFlightInfo(HtmlTextWriter tw, ZipArchive zip, LogbookEntry le)
         {
             tw.RenderBeginTag(HtmlTextWriterTag.H2);
             tw.Write(String.Format(CultureInfo.CurrentCulture, "{0} - {1}", HttpUtility.HtmlEncode(le.Date.ToShortDateString()), HttpUtility.HtmlEncode(le.TailNumDisplay)));
@@ -80,17 +102,7 @@ namespace MyFlightbook
                 foreach (MFBImageInfo mfbii in le.FlightImages)
                 {
                     mfbii.ToHtml(tw, szThumbFolderFlights);
-                    // Add the image to the zip
-                    string imgPath = System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail);
-                    if (File.Exists(imgPath))
-                    {
-                        // No need to add an S3PDF to the zip file; it's just a placeholder file on the disk, and it can 
-                        // potentially have a duplicate name with another PDF as well.
-                        if (mfbii.ImageType != MFBImageInfo.ImageFileType.S3PDF)
-                            zip.AddFile(imgPath, szThumbFolderFlights);
-                    }
-                    else
-                        mfbii.DeleteFromDB();   // clean up an orphan.
+                    AddThumbnailToZip(mfbii, zip, szThumbFolderFlights);
                 }
             }
 
@@ -114,7 +126,7 @@ namespace MyFlightbook
 
             MemoryStream ms = new MemoryStream();
 
-            using (ZipFile zip = new ZipFile())
+            using (ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create))
             {
                 StringWriter sw = new StringWriter();
                 using (HtmlTextWriter tw = new HtmlTextWriter(sw))
@@ -140,8 +152,8 @@ namespace MyFlightbook
                     il.Refresh(true);
                     foreach (MFBImageInfo mfbii in il.ImageArray)
                     {
-                        zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szThumbFolderEndorsements);
                         mfbii.ToHtml(tw, szThumbFolderEndorsements);
+                        AddThumbnailToZip(mfbii, zip, szThumbFolderEndorsements);
                         mfbii.UnCache();
                     }
 
@@ -171,8 +183,8 @@ namespace MyFlightbook
                         ilBasicMed.Refresh(true);
                         foreach (MFBImageInfo mfbii in ilBasicMed.ImageArray)
                         {
-                            zip.AddFile(System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), szZipFolder);
                             mfbii.ToHtml(tw, szZipFolder);
+                            AddThumbnailToZip(mfbii, zip, szZipFolder);
                             mfbii.UnCache();
                         }
                     }
@@ -216,7 +228,7 @@ namespace MyFlightbook
                             (dr) =>
                             {
                                 LogbookEntry le = new LogbookEntry(dr, User.UserName, LogbookEntry.LoadTelemetryOption.LoadAll);
-                                le.FlightImages = (dImages.ContainsKey(le.FlightID)) ? dImages[le.FlightID].ToArray() : new MFBImageInfo[0];
+                                le.FlightImages = (dImages.ContainsKey(le.FlightID)) ? dImages[le.FlightID].ToArray() : Array.Empty<MFBImageInfo>();
 
                             // skip any flights here that don't have images, videos, or telemetry
                             if (le.FlightImages.Length > 0 || le.Videos.Count() > 0 || le.HasFlightData)
@@ -231,8 +243,11 @@ namespace MyFlightbook
                     tw.RenderEndTag();  // Html
                 }
 
-                zip.AddEntry(Branding.ReBrand(String.Format(CultureInfo.InvariantCulture, "{0}.htm", Resources.LocalizedText.ImagesBackupFilename), activeBrand), sw.ToString());
-                zip.Save(ms);
+                ZipArchiveEntry zipArchiveEntry = zip.CreateEntry(Branding.ReBrand(String.Format(CultureInfo.InvariantCulture, "{0}.htm", Resources.LocalizedText.ImagesBackupFilename), activeBrand));
+                using (StreamWriter swHtm = new StreamWriter(zipArchiveEntry.Open()))
+                {
+                    swHtm.Write(sw.ToString());
+                }
             }
 
             return ms;
@@ -254,7 +269,7 @@ namespace MyFlightbook
         public string BackupFilename(Brand activeBrand)
         {
             if (activeBrand == null)
-                throw new ArgumentNullException("activeBrand");
+                throw new ArgumentNullException(nameof(activeBrand));
             string szBaseName = String.Format(CultureInfo.InvariantCulture, "{0}-{1}{2}", activeBrand.AppName, User.UserFullName, User.OverwriteCloudBackup ? string.Empty : String.Format(CultureInfo.InvariantCulture, "-{0}", DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))).Replace(" ", "-");
             return String.Format(CultureInfo.InvariantCulture, "{0}.csv", System.Text.RegularExpressions.Regex.Replace(szBaseName, "[^0-9a-zA-Z-]", ""));
         }
@@ -262,10 +277,10 @@ namespace MyFlightbook
         /// <summary>
         /// The name for the images file
         /// </summary>
-        public string BackupImagesFilename(Brand activeBrand, bool fDateStamp = false)
+        public static string BackupImagesFilename(Brand activeBrand, bool fDateStamp = false)
         {
             if (activeBrand == null)
-                throw new ArgumentNullException("activeBrand");
+                throw new ArgumentNullException(nameof(activeBrand));
             return Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, "%APP_NAME% Images{0}.zip", fDateStamp ? " " + DateTime.Now.YMDString() : string.Empty), activeBrand);
         }
 
@@ -378,7 +393,7 @@ namespace MyFlightbook
                 activeBrand = Branding.CurrentBrand;
 
             if (gd == null)
-                throw new ArgumentNullException("gd");
+                throw new ArgumentNullException(nameof(gd));
 
             if (User.GoogleDriveAccessToken == null)
                 throw new MyFlightbookException(Resources.Profile.errNotConfiguredGoogleDrive);
@@ -400,7 +415,7 @@ namespace MyFlightbook
         public async Task<IReadOnlyDictionary<string, string>> BackupToGoogleDrive(GoogleDrive gd, Brand activeBrand = null)
         {
             if (gd == null)
-                throw new ArgumentNullException("gd");
+                throw new ArgumentNullException(nameof(gd));
 
             if (User.GoogleDriveAccessToken == null)
                 throw new MyFlightbookException(Resources.Profile.errNotConfiguredGoogleDrive);
