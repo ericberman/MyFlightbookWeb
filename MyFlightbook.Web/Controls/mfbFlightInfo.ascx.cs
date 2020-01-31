@@ -148,23 +148,10 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
                     {
                         foreach (ZipArchiveEntry entry in zipArchive.Entries)
                         {
-                            Stream s = null;
-                            try
+                            using (StreamReader sr = new StreamReader(entry.Open()))
                             {
-                                using (s = entry.Open())
-                                {
-                                    using (StreamReader sr = new StreamReader(s))
-                                    {
-                                        s = null; //for CA2202
-                                        ViewState[keyFlightData] = sz = sr.ReadToEnd();
-                                        return sz;
-                                    }
-                                }
-                            }
-                            finally
-                            {
-                                if (s != null)
-                                    s.Dispose();
+                                ViewState[keyFlightData] = sz = sr.ReadToEnd();
+                                return sz;
                             }
                         }
                     }
