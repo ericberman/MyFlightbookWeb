@@ -1067,10 +1067,63 @@ ORDER BY dateEarned ASC ";
             return lst;
         }
 
+        #region IComparable
         public int CompareTo(object obj)
         {
             return Year.CompareTo(((YearlyPayments)obj).Year);
         }
+        public override bool Equals(object obj)
+        {
+            return obj is YearlyPayments payments &&
+                   Year == payments.Year &&
+                   EqualityComparer<IList<PeriodPaymentStat>>.Default.Equals(MonthlyPayments, payments.MonthlyPayments) &&
+                   EqualityComparer<PeriodPaymentStat>.Default.Equals(AnnualPayment, payments.AnnualPayment);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -296683479;
+            hashCode = hashCode * -1521134295 + Year.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<IList<PeriodPaymentStat>>.Default.GetHashCode(MonthlyPayments);
+            hashCode = hashCode * -1521134295 + EqualityComparer<PeriodPaymentStat>.Default.GetHashCode(AnnualPayment);
+            return hashCode;
+        }
+
+        public static bool operator ==(YearlyPayments left, YearlyPayments right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(YearlyPayments left, YearlyPayments right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(YearlyPayments left, YearlyPayments right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(YearlyPayments left, YearlyPayments right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(YearlyPayments left, YearlyPayments right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(YearlyPayments left, YearlyPayments right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
 
         private static TableCell[] NewRow()
         {
