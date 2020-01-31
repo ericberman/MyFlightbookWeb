@@ -707,7 +707,7 @@ namespace MyFlightbook
                 {
                     return TimeZoneInfo.FindSystemTimeZoneById(PreferredTimeZoneID) ?? TimeZoneInfo.Utc;
                 }
-                catch
+                catch (Exception ex) when (ex is OutOfMemoryException || ex is ArgumentNullException || ex is TimeZoneNotFoundException || ex is System.Security.SecurityException || ex is InvalidTimeZoneException)
                 {
                     return TimeZoneInfo.Utc;
                 }
@@ -740,7 +740,7 @@ namespace MyFlightbook
             else
             {
                 if (szEmail == null)
-                    throw new ArgumentNullException("szEmail");
+                    throw new ArgumentNullException(nameof(szEmail));
                 // No first or last name, so use the email address to the left of the @ sign.
                 int i = szEmail.IndexOf('@');
 
@@ -758,8 +758,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public object CachedObject(string szKey)
         {
-            object o;
-            return (AssociatedData.TryGetValue(szKey, out o)) ? o : null;
+            return (AssociatedData.TryGetValue(szKey, out object o)) ? o : null;
         }
         #endregion
     }
@@ -975,7 +974,7 @@ namespace MyFlightbook
         private static void LoadUserFromDB(string szUser, Action<MySqlDataReader> action)
         {
             if (action == null)
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
 
             DBHelper dbh = new DBHelper("SELECT uir.Rolename AS Role, u.* FROM users u LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook') WHERE u.Username=?UserName LIMIT 1");
             dbh.ReadRow(
@@ -1133,7 +1132,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="bfrLast">Date of the last BFR</param>
         /// <returns>Datetime representing the date of the next BFR, Datetime.minvalue for unknown</returns>
-        public DateTime NextBFR(DateTime bfrLast)
+        public static DateTime NextBFR(DateTime bfrLast)
         {
             return bfrLast.AddCalendarMonths(24);
         }
@@ -1272,12 +1271,10 @@ namespace MyFlightbook
         /// <exception cref="MyFlightbookException"></exception>
         public void ChangeNameAndEmail(string szNewFirst, string szNewLast, string szNewEmail, string szNewAddress)
         {
-            if (szNewEmail == null)
-                throw new ArgumentNullException("szNewEmail");
             string szOriginalEmail = Email;
             FirstName = szNewFirst;
             LastName = szNewLast;
-            Email = szNewEmail;
+            Email = szNewEmail ?? throw new ArgumentNullException(nameof(szNewEmail));
             Address = szNewAddress;
 
             FCommit();
@@ -1396,7 +1393,7 @@ namespace MyFlightbook
         public static bool ValidateUser(string szUser)
         {
             if (szUser == null)
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
             if (szUser.Contains("@"))
                 szUser = Membership.GetUserNameByEmail(szUser);
 
@@ -1407,7 +1404,7 @@ namespace MyFlightbook
         public static MembershipUser ADMINUserFromName(string szName)
         {
             if (szName == null)
-                throw new ArgumentNullException("szName");
+                throw new ArgumentNullException(nameof(szName));
             MembershipProvider mp = Membership.Providers["AdminMembershipProvider"];
             String szUserToReset = szName;
 
@@ -1449,9 +1446,7 @@ namespace MyFlightbook
                     }
                 }
             }
-            catch (ArgumentNullException) { }
-            catch (TimeoutException) { }
-            catch (InvalidOperationException) { }
+            catch (Exception ex) when (ex is ArgumentNullException || ex is TimeoutException || ex is InvalidOperationException) { }
         }
 
         private static void DeleteUserImages(DBHelper dbh)
@@ -1717,7 +1712,7 @@ namespace MyFlightbook
         static public string UserNameForEmail(string szEmail)
         {
             if (szEmail == null)
-                throw new ArgumentNullException("szEmail");
+                throw new ArgumentNullException(nameof(szEmail));
             //  find a unique username to propose
             int ichAt = szEmail.IndexOf('@');
             string szUserBase = (ichAt > 0) ? szEmail.Remove(ichAt) : szEmail;
@@ -1800,7 +1795,6 @@ namespace MyFlightbook
 
             MySqlMembershipProvider mmp = new MySqlMembershipProvider();
             NameValueCollection nvc = new NameValueCollection();
-            MembershipCreateStatus result;
 
             // Validate - this will throw a UserEntityException if there is an issue.
             ValidateEmailAndUser(szEmail, szUser);
@@ -1813,7 +1807,7 @@ namespace MyFlightbook
 
             mmp.Initialize(null, nvc);
 
-            MembershipUser mu = mmp.CreateUser(szUser, szPass, szEmail, szQuestion, szAnswer, true, Guid.NewGuid(), out result);
+            MembershipUser mu = mmp.CreateUser(szUser, szPass, szEmail, szQuestion, szAnswer, true, Guid.NewGuid(), out MembershipCreateStatus result);
 
             return new UserEntity() { mcs = result, szUsername = mu == null ? string.Empty : mu.UserName };
         }
@@ -1882,7 +1876,7 @@ namespace MyFlightbook
                         Status = RequestStatus.Expired;
                 });
             if (!fFound)
-                throw new ArgumentOutOfRangeException("id", "pending password reset with ID " + id + "was not found");
+                throw new ArgumentOutOfRangeException(nameof(id), "pending password reset with ID " + id + "was not found");
         }
 
         /// <summary>
@@ -1913,7 +1907,7 @@ namespace MyFlightbook
             : base(dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             uint perms = Convert.ToUInt32(dr["CanViewStudent"], CultureInfo.InvariantCulture);
             CanViewLogbook = (perms & (uint) PermissionMask.ViewLogbook) != 0;
             CanAddLogbook = (perms & (uint)PermissionMask.AddLogbook) != 0;

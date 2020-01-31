@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2018 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -42,8 +42,7 @@ public partial class Public_PaypalIPNListener : System.Web.UI.Page
             //process payment
 
             StringBuilder sbErr = new StringBuilder();
-            decimal d;
-            if (!Decimal.TryParse(szAmount, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
+            if (!Decimal.TryParse(szAmount, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal d))
             {
                 sbErr.AppendFormat(CultureInfo.CurrentCulture, "Invalid payment amount: {0}\r\n\r\n", szAmount);
                 d = 0.0M;
@@ -53,8 +52,7 @@ public partial class Public_PaypalIPNListener : System.Web.UI.Page
                 sbErr.AppendFormat(CultureInfo.CurrentCulture, "Payment amount of 0.0!\r\n\r\n");
             Payment.TransactionType transType = (d > 0) ? Payment.TransactionType.Payment : Payment.TransactionType.Refund;
 
-            decimal fee = 0.0M;
-            if (!Decimal.TryParse(szFee, NumberStyles.Any, CultureInfo.InvariantCulture, out fee))
+            if (!Decimal.TryParse(szFee, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal fee))
                 fee = 0.0M;
 
             if (String.IsNullOrEmpty(szTransactionID))
@@ -116,7 +114,7 @@ public partial class Public_PaypalIPNListener : System.Web.UI.Page
                     }
                     p.Commit();
 
-                    EarnedGrauity.UpdateEarnedGratuities(p.Username, true);
+                    EarnedGratuity.UpdateEarnedGratuities(p.Username, true);
                 }
                 catch (InvalidOperationException ex)
                 {

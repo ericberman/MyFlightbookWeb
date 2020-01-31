@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2019 MyFlightbook LLC
+ * Copyright (c) 2014-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -95,7 +95,7 @@ public partial class Public_Clubs : System.Web.UI.Page
         set { ViewState[szVSUserSate] = value; }
     }
 
-    protected string FixUpDonationAmount()
+    protected static string FixUpDonationAmount()
     {
         return String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.Club.CreateClubRestriction), Gratuity.GratuityFromType(Gratuity.GratuityTypes.CreateClub).Threshold);
     }
@@ -107,7 +107,7 @@ public partial class Public_Clubs : System.Web.UI.Page
         if (!IsPostBack)
         {
             expandoCreateClub.ExpandoLabel.Font.Bold = true;
-            UserState = Page.User.Identity.IsAuthenticated ? (EarnedGrauity.UserQualifies(Page.User.Identity.Name, Gratuity.GratuityTypes.CreateClub) ? AuthState.Authorized : AuthState.Unauthorized) : AuthState.Unauthenticated;
+            UserState = Page.User.Identity.IsAuthenticated ? (EarnedGratuity.UserQualifies(Page.User.Identity.Name, Gratuity.GratuityTypes.CreateClub) ? AuthState.Authorized : AuthState.Unauthorized) : AuthState.Unauthenticated;
 
             vcNew.ActiveClub = new Club();
 
@@ -158,7 +158,7 @@ public partial class Public_Clubs : System.Web.UI.Page
     protected void vcNew_ClubChanged(object sender, ClubChangedEventsArgs e)
     {
         if (e == null || e.EventClub == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         Club.ClearCachedClub(e.EventClub.ID);   // newly created - cache actually doesn't have things like the airport code, so force a reload when we redirect.
         Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/ClubDetails.aspx/{0}", e.EventClub.ID));
     }

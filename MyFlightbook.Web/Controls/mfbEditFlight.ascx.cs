@@ -185,8 +185,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         {
             if (le.IsNewFlight)
             {
-                decimal hobbsEnd;
-                if (decimal.TryParse(c.Value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out hobbsEnd))
+                if (decimal.TryParse(c.Value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal hobbsEnd))
                     le.HobbsStart = hobbsEnd;
             }
             Response.Cookies[keyCookieLastEndingHobbs].Expires = DateTime.Now.AddDays(-1);   // clear it.
@@ -196,7 +195,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
         InitFormFromLogbookEntry(le);
 
-        bool fCanDoVideo = EarnedGrauity.UserQualifies(Page.User.Identity.Name, Gratuity.GratuityTypes.Videos);
+        bool fCanDoVideo = EarnedGratuity.UserQualifies(Page.User.Identity.Name, Gratuity.GratuityTypes.Videos);
         mfbMFUFlightImages.IncludeVideos = fCanDoVideo;
         mfbVideoEntry1.CanAddVideos = fCanDoVideo;
         mfbVideoEntry1.FlightID = le.FlightID;
@@ -210,7 +209,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
     public void SetPendingFlight(PendingFlight pendingFlight)
     {
         if (pendingFlight == null)
-            throw new ArgumentNullException("pendingFlight");
+            throw new ArgumentNullException(nameof(pendingFlight));
         SetUpNewOrEdit(pendingFlight.FlightID);
         hdnPendingID.Value = pendingFlight.PendingID;
         InitFormFromLogbookEntry(pendingFlight);
@@ -390,14 +389,10 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             }
 
             int idAircraftOrigin = le.AircraftID;
-            try
-            {
-                le.AircraftID = Convert.ToInt32(cmbAircraft.SelectedValue, CultureInfo.InvariantCulture); // initialize the aircraft so that the landings auto-expands based on tailwheel 
-            }
-            catch (FormatException)
-            {
+            if (Int32.TryParse(cmbAircraft.SelectedValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idAc)) // initialize the aircraft so that the landings auto-expands based on tailwheel 
+                le.AircraftID = idAc;
+            else
                 le.AircraftID = Aircraft.idAircraftUnknown;
-            }
 
             if (idAircraftOrigin != le.AircraftID)
                 SetTemplatesForAircraft(le.AircraftID);
@@ -448,8 +443,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             if (cmbAircraft.Items.Count > 0)
             {
                 cmbAircraft.SelectedIndex = 0;
-                int idAircraft;
-                if (Int32.TryParse(cmbAircraft.SelectedValue, out idAircraft))
+                if (Int32.TryParse(cmbAircraft.SelectedValue, out int idAircraft))
                     le.AircraftID = idAircraft;
             }
         }
@@ -615,8 +609,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
         LogbookEntry le = InitLogbookEntryFromForm();
 
-        if (FlightWillBeSaved != null)
-            FlightWillBeSaved(this, new LogbookEventArgs(le));
+        FlightWillBeSaved?.Invoke(this, new LogbookEventArgs(le));
 
         if (le.IsValid())
         {
@@ -667,8 +660,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         int idResult = CommitChanges();
         if (idResult >= 0)
         {
-            if (FlightUpdated != null)
-                FlightUpdated(sender, new LogbookEventArgs(idResult, nextFlightToEdit));
+            FlightUpdated?.Invoke(sender, new LogbookEventArgs(idResult, nextFlightToEdit));
         }
     }
 
@@ -732,8 +724,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
         // No need - by definition - to handle errors.
         le.Commit();
-        if (FlightUpdated != null)
-            FlightUpdated(sender, new LogbookEventArgs(le));
+        FlightUpdated?.Invoke(sender, new LogbookEventArgs(le));
     }
 
     protected void lnkAddAircraft_Click(object sender, EventArgs e)
@@ -746,7 +737,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
     protected void CheckFullStopCount(object sender, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         if (intLandings.IntValue > 0 && intFullStopLandings.IntValue + intNightLandings.IntValue > intLandings.IntValue)
             args.IsValid = false;
     }
@@ -754,7 +745,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
     protected void valDate_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         if (DateTime.Compare(mfbDate.Date, DateTime.Now.AddDays(2)) > 0)
             args.IsValid = false;
     }
@@ -762,7 +753,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
     protected void AutoFill(object sender, AutofillEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         LogbookEntry le = InitLogbookEntryFromForm();
         le.FlightData = e.Telemetry;
         using (FlightData fd = new FlightData())
@@ -775,8 +766,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
     protected void btnCancel_Click(object sender, EventArgs e)
     {
-        if (FlightEditCanceled != null)
-            FlightEditCanceled(this, e);
+        FlightEditCanceled?.Invoke(this, e);
     }
 
     #region Admin tools for signatures

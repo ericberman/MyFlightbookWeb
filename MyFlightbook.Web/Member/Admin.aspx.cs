@@ -988,20 +988,10 @@ GROUP BY ac.idaircraft";
         IEnumerable<Payment> lst = Payment.AllRecords();
         foreach (Payment p in lst)
         {
-            try
-            {
-                System.Collections.Specialized.NameValueCollection nvc = HttpUtility.ParseQueryString(p.TransactionNotes);
-                p.Fee = Math.Abs(Convert.ToDecimal(nvc["mc_fee"], CultureInfo.InvariantCulture));
-                if (p.Type == Payment.TransactionType.Payment || p.Type == Payment.TransactionType.Refund)
-                    p.Commit();
-            }
-            catch (InvalidOperationException)
-            {
-            }
-            catch (MySqlException)
-            {
-                throw;
-            }
+            System.Collections.Specialized.NameValueCollection nvc = HttpUtility.ParseQueryString(p.TransactionNotes);
+            p.Fee = Math.Abs(Convert.ToDecimal(nvc["mc_fee"], CultureInfo.InvariantCulture));
+            if (p.Type == Payment.TransactionType.Payment || p.Type == Payment.TransactionType.Refund)
+                p.Commit();
         }
         RefreshDonations();
         gvDonations.DataBind();
@@ -1040,7 +1030,7 @@ GROUP BY ac.idaircraft";
 
     protected void btnResetGratuities_Click(object sender, EventArgs e)
     {
-        EarnedGrauity.UpdateEarnedGratuities(string.Empty, ckResetGratuityReminders.Checked);
+        EarnedGratuity.UpdateEarnedGratuities(string.Empty, ckResetGratuityReminders.Checked);
     }
 
     protected void btnEnterTestTransaction_Click(object sender, EventArgs e)
@@ -1063,7 +1053,7 @@ GROUP BY ac.idaircraft";
             }
             Payment p = new Payment(dateTestTransaction.Date, txtTestTransactionUsername.Text, amount, decTestTransactionFee.Value, tt , txtTestTransactionNotes.Text, "Manual Entry", string.Empty);
             p.Commit();
-            EarnedGrauity.UpdateEarnedGratuities(txtTestTransactionUsername.Text, true);
+            EarnedGratuity.UpdateEarnedGratuities(txtTestTransactionUsername.Text, true);
             txtTestTransactionUsername.Text = txtTestTransactionNotes.Text = string.Empty;
             decTestTransactionAmount.Value = decTestTransactionFee.Value = 0;
             RefreshDonations();
@@ -1078,155 +1068,6 @@ GROUP BY ac.idaircraft";
             RefreshDonations();
         }
     }
-
-    protected class PeriodPaymentStat
-    {
-        public double Net { get; set; }
-        public double Gross { get; set; }
-        public double Fee { get; set; }
-        public double YOYPercent { get; set; }
-        public double YOYGross { get; set; }
-
-        public void AddToContainer(Control c)
-        {
-            if (Net == 0)
-                return;
-            if (c == null)
-                throw new ArgumentNullException(nameof(c));
-            Label l = new Label();
-            c.Controls.Add(l);
-            l.Text = Net.ToString("C", CultureInfo.CurrentCulture);
-
-            l.ToolTip = String.Format(CultureInfo.CurrentCulture, "Gross: {0:C}, Fee: {1:C}", Gross, Fee);
-
-            if (YOYGross != 0)
-            {
-                l.ToolTip += String.Format(CultureInfo.CurrentCulture, ".\r\nYOY: {0:C} ({1:#,##0.0}%)", YOYGross, YOYPercent * 100);
-                l.ForeColor = (YOYGross > 0) ? System.Drawing.Color.Green : System.Drawing.Color.Red;
-            }
-        }
-    }
-
-    protected class YearlyPayments : IComparable
-    {
-        public int Year { get; set; }
-        public PeriodPaymentStat[] MonthlyPayments { get; set; }
-        public PeriodPaymentStat AnnualPayment { get; set; }
-
-        public YearlyPayments(int year)
-        {
-            Year = year;
-            MonthlyPayments = new PeriodPaymentStat[12];
-            for (int i = 0; i < 12; i++)
-                MonthlyPayments[i] = new PeriodPaymentStat();
-            AnnualPayment = new PeriodPaymentStat();
-        }
-
-        public static IEnumerable<YearlyPayments> PaymentsByYearAndMonth(IDataReader idr)
-        {
-            Dictionary<int, YearlyPayments> d = new Dictionary<int, YearlyPayments>();
-
-            if (idr == null)
-                throw new ArgumentNullException(nameof(idr));
-            while (idr.Read())
-            {
-                string MonthPeriod = idr["MonthPeriod"].ToString();
-                string[] rgsz = MonthPeriod.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
-                if (rgsz.Length != 2)
-                    throw new MyFlightbookValidationException("Bogus month/year in donations");
-                int year = Convert.ToInt32(rgsz[0], CultureInfo.InvariantCulture);
-                int month = Convert.ToInt32(rgsz[1], CultureInfo.InvariantCulture);
-                if (!d.ContainsKey(year))
-                    d[year] = new YearlyPayments(year);
-                if (month <= 0 || month > 12)
-                    throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Invalid month in donations: {0}", month));
-                d[year].MonthlyPayments[month - 1] = new PeriodPaymentStat() {
-                    Net = Convert.ToDouble(idr["NetPaypal"], CultureInfo.InvariantCulture),
-                    Gross = Convert.ToDouble(idr["Gross"], CultureInfo.InvariantCulture),
-                    Fee = Convert.ToDouble(idr["Fee"], CultureInfo.InvariantCulture)
-                };
-            }
-
-            List<YearlyPayments> lst = new List<YearlyPayments>(d.Values);
-            lst.Sort();
-
-            // Now go through and compute stats.
-            for (int i = 1; i < lst.Count; i++)
-            {
-                if (lst[i - 1].Year != lst[i].Year - 1) // ignore non-congiguous years (shouldn't happen)
-                    continue;
-
-                double annual = 0;
-                YearlyPayments lastYear = lst[i - 1];
-                YearlyPayments thisYear = lst[i];
-
-                for (int j = 0; j < 12; j++)
-                {
-                    PeriodPaymentStat lastYearMonth = lastYear.MonthlyPayments[j];
-                    PeriodPaymentStat thisYearMonth = thisYear.MonthlyPayments[j];
-
-                    annual += thisYearMonth.Net;
-                    thisYearMonth.YOYGross = thisYearMonth.Net - lastYearMonth.Net;
-                    thisYearMonth.YOYPercent = (lastYearMonth.Net == 0) ? 0 : thisYearMonth.YOYGross / lastYearMonth.Net;
-                }
-
-                thisYear.AnnualPayment.Net = annual;
-                thisYear.AnnualPayment.YOYGross = thisYear.AnnualPayment.Net - lastYear.AnnualPayment.Net;
-                thisYear.AnnualPayment.YOYPercent = (lastYear.AnnualPayment.Net == 0) ? 0 : thisYear.AnnualPayment.YOYGross / lastYear.AnnualPayment.Net;
-            }
-
-            return lst;
-        }
-
-        public int CompareTo(object obj)
-        {
-            return Year.CompareTo(((YearlyPayments)obj).Year);
-        }
-
-        private static TableCell[] NewRow()
-        {
-            TableCell[] rgc = new TableCell[14];
-            for (int i = 0; i < rgc.Length; i++)
-                rgc[i] = new TableCell();
-            return rgc;
-        }
-
-        public static void ToTable(Control c, IEnumerable<YearlyPayments> rgyp)
-        {
-            if (rgyp == null)
-                return;
-            if (c == null)
-                throw new ArgumentNullException(nameof(c));
-            Table t = new Table();
-            c.Controls.Add(t);
-            t.CellPadding = 3;
-
-            TableRow tr = new TableRow();
-            t.Rows.Add(tr);
-            tr.TableSection = TableRowSection.TableHeader;
-            tr.Cells.AddRange(NewRow());
-
-            tr.Cells[0].Text = Resources.LocalizedText.ChartTotalsGroupYear;
-            for (int i = 1; i < 13; i++)
-                tr.Cells[i].Text = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedMonthNames[i - 1];
-            tr.Cells[13].Text = Resources.LocalizedText.ChartDataTotal;
-            tr.Font.Bold = true;
-
-            foreach(YearlyPayments yp in rgyp)
-            {
-                tr = new TableRow();
-                t.Rows.Add(tr);
-                tr.Cells.AddRange(NewRow());
-                tr.Cells[0].Text = yp.Year.ToString(CultureInfo.CurrentCulture);
-                tr.Cells[0].Font.Bold = true;
-                for (int i = 1; i < 13; i++)
-                    yp.MonthlyPayments[i - 1].AddToContainer(tr.Cells[i]);
-                yp.AnnualPayment.AddToContainer(tr.Cells[13]);
-                tr.Cells[13].Font.Bold = true;
-            }
-        }
-    }
-
     #endregion
 
     #region Misc
@@ -1310,7 +1151,7 @@ GROUP BY ac.idaircraft";
         gvDupeProps.DataBind();
     }
 
-    protected void FlushCache()
+    protected static void FlushCache()
     {
         foreach (System.Collections.DictionaryEntry entry in HttpRuntime.Cache)
             HttpRuntime.Cache.Remove((string)entry.Key);

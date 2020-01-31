@@ -2227,6 +2227,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Anyone can create a club, but it will go inactive after a 30-day trial period.  If the you make a one-time contribution at this level, then any club you create over the following year (or any inactive club you have previously created) will be active forever..
+        /// </summary>
+        internal static string GratuityDescriptionClub {
+            get {
+                return ResourceManager.GetString("GratuityDescriptionClub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Of course, your data is already in the cloud and backed up!  And you can link your account to Dropbox, OneDrive, or Google Drive and save a copy of your flights to any of these services at any time.  This gratuity will &quot;press the button&quot; on your behalf every night for a year, giving you a nightly off-line spreadsheet with your flights..
+        /// </summary>
+        internal static string GratuityDescriptionDropbox {
+            get {
+                return ResourceManager.GetString("GratuityDescriptionDropbox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Good karma and appreciation is yours for all of eternity...for a year!.
+        /// </summary>
+        internal static string GratuityDescriptionGratitude {
+            get {
+                return ResourceManager.GetString("GratuityDescriptionGratitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Videos are one of those few things where my costs go up the more they are used, so I ask for a contribution if you want videos.  With this gratuity, you can add videos to your flights for a year.  Videos remain after the year is up, but you can&apos;t upload new ones..
+        /// </summary>
+        internal static string GratuityDescriptionVideo {
+            get {
+                return ResourceManager.GetString("GratuityDescriptionVideo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to As a thank-you for your support, you have earned the following gratuities:.
         /// </summary>
         internal static string GratuityEarnedHeader {
@@ -2245,11 +2281,20 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A year of nightly Backup to a cloud storage provider (requires configuration).
+        ///   Looks up a localized string similar to Receive nightly backup to a cloud storage provider for a year.
         /// </summary>
         internal static string GratuityNameDropbox {
             get {
                 return ResourceManager.GetString("GratuityNameDropbox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enjoy a year&apos;s worth of eternal gratitude.
+        /// </summary>
+        internal static string GratuityNameEternalGratitude {
+            get {
+                return ResourceManager.GetString("GratuityNameEternalGratitude", resourceCulture);
             }
         }
         
@@ -2281,7 +2326,16 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can attach links to videos to your flights.
+        ///   Looks up a localized string similar to You will enjoy our eternal gratitude...for a year.
+        /// </summary>
+        internal static string GratuityThanksEternalGratitude {
+            get {
+                return ResourceManager.GetString("GratuityThanksEternalGratitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can attach videos to your flights.
         /// </summary>
         internal static string GratuityThanksVideo {
             get {

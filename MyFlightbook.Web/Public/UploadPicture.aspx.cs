@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,7 +30,7 @@ public partial class Public_UploadPicture : UploadImagePage
             throw new MyFlightbookException(Resources.WebService.errFlightNotYours);
 
         // Check if authorized for videos
-        if (MFBImageInfo.ImageTypeFromFile(pf) == MFBImageInfo.ImageFileType.S3VideoMP4 && !EarnedGrauity.UserQualifies(szUser, Gratuity.GratuityTypes.Videos))
+        if (MFBImageInfo.ImageTypeFromFile(pf) == MFBImageInfo.ImageFileType.S3VideoMP4 && !EarnedGratuity.UserQualifies(szUser, Gratuity.GratuityTypes.Videos))
             throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.errNotAuthorizedVideos));
 
         LatLong ll = null;

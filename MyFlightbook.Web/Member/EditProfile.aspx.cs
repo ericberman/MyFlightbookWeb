@@ -165,7 +165,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
         if (rgpfeBFR.Length > 0) // we have at least one BFR event, so the last one should be the most recent.
         {
-            lblNextBFR.Text = m_pf.NextBFR(rgpfeBFR[rgpfeBFR.Length - 1].Date).ToShortDateString();
+            lblNextBFR.Text = Profile.NextBFR(rgpfeBFR[rgpfeBFR.Length - 1].Date).ToShortDateString();
             pnlNextBFR.Visible = true;
         }
 
@@ -374,8 +374,8 @@ public partial class Member_EditProfile : System.Web.UI.Page
         gvDonations.DataSource = Payment.RecordsForUser(User.Identity.Name);
         gvDonations.DataBind();
 
-        List<EarnedGrauity> lst = EarnedGrauity.GratuitiesForUser(User.Identity.Name, Gratuity.GratuityTypes.Unknown);
-        lst.RemoveAll(eg => eg.CurrentStatus == EarnedGrauity.EarnedGratuityStatus.Expired);
+        List<EarnedGratuity> lst = EarnedGratuity.GratuitiesForUser(User.Identity.Name, Gratuity.GratuityTypes.Unknown);
+        lst.RemoveAll(eg => eg.CurrentStatus == EarnedGratuity.EarnedGratuityStatus.Expired);
         if (pnlEarnedGratuities.Visible = (lst.Count > 0))
         {
             rptEarnedGratuities.DataSource = lst;

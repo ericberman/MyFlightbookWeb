@@ -8,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -219,15 +219,15 @@ namespace MyFlightbook.Subscriptions
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             System.Text.StringBuilder sbFailures = new System.Text.StringBuilder();
-            List<EarnedGrauity> lstUsersWithCloudBackup = EarnedGrauity.GratuitiesForUser(string.Empty, Gratuity.GratuityTypes.CloudBackup);
+            List<EarnedGratuity> lstUsersWithCloudBackup = EarnedGratuity.GratuitiesForUser(string.Empty, Gratuity.GratuityTypes.CloudBackup);
 
             if (!String.IsNullOrEmpty(UserRestriction))
                 lstUsersWithCloudBackup.RemoveAll(eg => eg.Username.CompareCurrentCultureIgnoreCase(UserRestriction) != 0);
 
-            foreach (EarnedGrauity eg in lstUsersWithCloudBackup)
+            foreach (EarnedGratuity eg in lstUsersWithCloudBackup)
             {
                 StorageID sid = StorageID.None;
-                if (eg.UserProfile != null && ((sid = eg.UserProfile.BestCloudStorage) != StorageID.None) && eg.CurrentStatus != EarnedGrauity.EarnedGratuityStatus.Expired)
+                if (eg.UserProfile != null && ((sid = eg.UserProfile.BestCloudStorage) != StorageID.None) && eg.CurrentStatus != EarnedGratuity.EarnedGratuityStatus.Expired)
                 {
                     try
                     {
@@ -471,7 +471,7 @@ namespace MyFlightbook.Subscriptions
                 await BackupToCloud();
 
             // Send out any notices of pending gratuity expirations
-            List<EarnedGrauity> lstEg = EarnedGrauity.GratuitiesForUser(string.Empty, Gratuity.GratuityTypes.Unknown);
+            List<EarnedGratuity> lstEg = EarnedGratuity.GratuitiesForUser(string.Empty, Gratuity.GratuityTypes.Unknown);
             if (!String.IsNullOrEmpty(UserRestriction))
                 lstEg.RemoveAll(eg => eg.Username.CompareCurrentCultureIgnoreCase(UserRestriction) != 0);
             lstEg.ForEach((eg) => { eg.SendReminderIfNeeded(); });

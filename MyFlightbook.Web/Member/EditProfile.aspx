@@ -17,6 +17,8 @@
 <%@ Register Src="~/Controls/mfbEditPropTemplate.ascx" TagPrefix="uc1" TagName="mfbEditPropTemplate" %>
 <%@ Register Src="~/Controls/ClubControls/TimeZone.ascx" TagPrefix="uc1" TagName="TimeZone" %>
 <%@ Register Src="~/Controls/mfbShareKeys.ascx" TagPrefix="uc1" TagName="mfbShareKeys" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -889,7 +891,8 @@
                 <asp:Repeater ID="rptAvailableGratuities" runat="server">
                     <ItemTemplate>
                         <tr>
-                            <td style="max-width: 250px; text-align:left; padding: 3px; border-bottom: 1px solid gray;"><%# Eval("Name") %></td>
+                            <td style="max-width: 250px; text-align:left; padding: 3px; border-bottom: 1px solid gray;"><%# Eval("Name") %>&nbsp;<uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent='<%# Eval("Description") %>' />
+                            </td>
                             <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 10 ? "●" : string.Empty %></td>
                             <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 15 ? "●" : string.Empty %></td>
                             <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 25 ? "●" : string.Empty %></td>

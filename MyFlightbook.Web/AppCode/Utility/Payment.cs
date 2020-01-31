@@ -6,10 +6,12 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -162,19 +164,6 @@ namespace MyFlightbook.Payments
             Timestamp = DateTime.MinValue;
         }
 
-        /// <summary>
-        /// Initializes the payment object from the database with the specified ID
-        /// </summary>
-        /// <param name="id">The id of the payment to load</param>
-        public Payment(int id) : this()
-        {
-            DBHelper dbh = new DBHelper("SELECT * FROM payments WHERE idPayments=?id");
-            dbh.ReadRow(
-                (comm) => { comm.Parameters.AddWithValue("id", ID); },
-                (dr) => { InitFromDatareader(dr); }
-            );
-        }
-
         protected Payment(MySqlDataReader dr) : this()
         {
             InitFromDatareader(dr);
@@ -298,7 +287,7 @@ namespace MyFlightbook.Payments
             Name = ThankYou = string.Empty;
         }
 
-        protected Gratuity(GratuityTypes gt, Decimal threshold, TimeSpan window, int maxreminders, string szName, string szThankyou) : this()
+        protected Gratuity(GratuityTypes gt, Decimal threshold, TimeSpan window, int maxreminders, string szName, string szThankyou, string szDescription) : this()
         {
             GratuityType = gt;
             Threshold = threshold;
@@ -306,6 +295,7 @@ namespace MyFlightbook.Payments
             MaxReminders = maxreminders;
             Name = szName;
             ThankYou = szThankyou;
+            Description = szDescription;
         }
 
         #region properties
@@ -338,22 +328,27 @@ namespace MyFlightbook.Payments
         /// Text to display for "Thank-you"
         /// </summary>
         public string ThankYou { get; set; }
+
+        /// <summary>
+        /// Text to display that describes the gratuity in more detail.
+        /// </summary>
+        public string Description { get; set; }
         #endregion
 
         #region Reminders
         /// <summary>
         /// Get the subject line for a reminder email
         /// </summary>
-        public virtual string ReminderSubject(EarnedGrauity eg) { return string.Empty; }
+        public virtual string ReminderSubject(EarnedGratuity eg) { return string.Empty; }
 
         /// <summary>
         /// Get the body for a reminder email
         /// </summary>
-        public virtual string ReminderBody(EarnedGrauity eg) { return string.Empty; }
+        public virtual string ReminderBody(EarnedGratuity eg) { return string.Empty; }
         #endregion
 
         #region GratuityFactory
-        public enum GratuityTypes { Unknown, CloudBackup, Videos, CreateClub };
+        public enum GratuityTypes { Unknown, CloudBackup, Videos, CreateClub, EternalGratitude };
 
         /// <summary>
         /// Return a concrete gratuity from a specified gratuitytype.
@@ -370,6 +365,8 @@ namespace MyFlightbook.Payments
                     return new StoreVideosGratuity();
                 case GratuityTypes.CreateClub:
                     return new CreateClubGratuity();
+                case GratuityTypes.EternalGratitude:
+                    return new EternalGratitudeGratuity();
                 case GratuityTypes.Unknown:
                 default:
                     return null;
@@ -379,15 +376,15 @@ namespace MyFlightbook.Payments
         /// <summary>
         /// Return an array of the known gratuity types
         /// </summary>
-        public static System.Collections.ObjectModel.ReadOnlyCollection<GratuityTypes> KnownGratuityTypes
+        public static IEnumerable<GratuityTypes> KnownGratuityTypes
         {
-            get { return new System.Collections.ObjectModel.ReadOnlyCollection<GratuityTypes>((GratuityTypes[])Enum.GetValues(typeof(GratuityTypes))); }
+            get { return (GratuityTypes[])Enum.GetValues(typeof(GratuityTypes)); }
         }
 
         /// <summary>
         /// Return an array of the known gratuities
         /// </summary>
-        public static ReadOnlyCollection<Gratuity> KnownGratuities
+        public static IEnumerable<Gratuity> KnownGratuities
         {
             get
             {
@@ -395,7 +392,7 @@ namespace MyFlightbook.Payments
                 foreach (Gratuity.GratuityTypes gt in KnownGratuityTypes)
                     if (gt != Gratuity.GratuityTypes.Unknown)
                         lstGratuities.Add(Gratuity.GratuityFromType(gt));
-                return new ReadOnlyCollection<Gratuity>(lstGratuities);
+                return lstGratuities;
             }
         }
         #endregion    /// <summary>
@@ -412,7 +409,7 @@ namespace MyFlightbook.Payments
         /// Notification when this gratuity has been earned, in case there is any action to take at the point of earning it
         /// </summary>
         /// <param name="dt"></param>
-        public virtual void GratuityWasEarned(EarnedGrauity eg) { }
+        public virtual void GratuityWasEarned(EarnedGratuity eg) { }
     }
 
     /// <summary>
@@ -421,7 +418,7 @@ namespace MyFlightbook.Payments
     public class NightlyDropbox : Gratuity
     {
         public NightlyDropbox()
-            : base(GratuityTypes.CloudBackup, 25.0M, new TimeSpan(366, 0, 0, 0), 2, Resources.LocalizedText.GratuityNameDropbox, Resources.LocalizedText.GratuityThanksDropbox)
+            : base(GratuityTypes.CloudBackup, 25.0M, new TimeSpan(366, 0, 0, 0), 2, Resources.LocalizedText.GratuityNameDropbox, Resources.LocalizedText.GratuityThanksDropbox, Resources.LocalizedText.GratuityDescriptionDropbox)
         {
         }
 
@@ -433,22 +430,22 @@ namespace MyFlightbook.Payments
             }
         }
 
-        public override string ReminderSubject(EarnedGrauity eg)
+        public override string ReminderSubject(EarnedGratuity eg)
         {
             if (eg == null)
-                throw new ArgumentNullException("eg");
+                throw new ArgumentNullException(nameof(eg));
 
             switch (eg.CurrentStatus)
             {
                 default:
-                case EarnedGrauity.EarnedGratuityStatus.OK: // shouldn't even be called in this case
+                case EarnedGratuity.EarnedGratuityStatus.OK: // shouldn't even be called in this case
                     return string.Empty;
-                case EarnedGrauity.EarnedGratuityStatus.ExpiringSoon:
+                case EarnedGratuity.EarnedGratuityStatus.ExpiringSoon:
                     if (eg.ReminderCount == 0)
                         return Branding.ReBrand(Resources.LocalizedText.gratuityCloudStorageExpiring);
                     else
                         return string.Empty;
-                case EarnedGrauity.EarnedGratuityStatus.Expired:
+                case EarnedGratuity.EarnedGratuityStatus.Expired:
                     if (eg.ReminderCount <= 1)
                         return Branding.ReBrand(Resources.LocalizedText.gratuityCloudStorageExpired);
                     else
@@ -456,23 +453,23 @@ namespace MyFlightbook.Payments
             }
         }
 
-        public override string ReminderBody(EarnedGrauity eg)
+        public override string ReminderBody(EarnedGratuity eg)
         {
             if (eg == null)
-                throw new ArgumentNullException("eg");
+                throw new ArgumentNullException(nameof(eg));
 
             Profile pf = eg.UserProfile ?? Profile.GetUser(eg.Username);
             switch (eg.CurrentStatus)
             {
                 default:
-                case EarnedGrauity.EarnedGratuityStatus.OK:
+                case EarnedGratuity.EarnedGratuityStatus.OK:
                     return string.Empty;
-                case EarnedGrauity.EarnedGratuityStatus.ExpiringSoon:
+                case EarnedGratuity.EarnedGratuityStatus.ExpiringSoon:
                     if (eg.ReminderCount == 0)
                         return String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.DropboxExpiring), pf.UserFullName);
                     else
                         return string.Empty;
-                case EarnedGrauity.EarnedGratuityStatus.Expired:
+                case EarnedGratuity.EarnedGratuityStatus.Expired:
                     if (eg.ReminderCount <= 1)
                         return String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.DropboxExpired), pf.UserFullName);
                     else
@@ -484,7 +481,7 @@ namespace MyFlightbook.Payments
     public class StoreVideosGratuity : Gratuity
     {
         public StoreVideosGratuity()
-            : base(GratuityTypes.Videos, 10.0M, new TimeSpan(366, 0, 0, 0), 0, Resources.LocalizedText.GratuityNameVideo, Resources.LocalizedText.GratuityThanksVideo)
+            : base(GratuityTypes.Videos, 10.0M, new TimeSpan(366, 0, 0, 0), 0, Resources.LocalizedText.GratuityNameVideo, Resources.LocalizedText.GratuityThanksVideo, Resources.LocalizedText.GratuityDescriptionVideo)
         {
         }
     }
@@ -492,7 +489,7 @@ namespace MyFlightbook.Payments
     public class CreateClubGratuity : Gratuity
     {
         public CreateClubGratuity()
-            : base(GratuityTypes.CreateClub, 40.0M, new TimeSpan(366, 0, 0, 0), 0, Resources.LocalizedText.GratuityNameClub, Resources.LocalizedText.GratuityThanksClub)
+            : base(GratuityTypes.CreateClub, 40.0M, new TimeSpan(366, 0, 0, 0), 0, Resources.LocalizedText.GratuityNameClub, Resources.LocalizedText.GratuityThanksClub, Resources.LocalizedText.GratuityDescriptionClub)
         {
         }
 
@@ -500,10 +497,10 @@ namespace MyFlightbook.Payments
         /// If you earn a club-creation activity and you have promotional or inactive clubs, we will re-activate the clubs
         /// </summary>
         /// <param name="eg">The earned gratuity</param>
-        public override void GratuityWasEarned(EarnedGrauity eg)
+        public override void GratuityWasEarned(EarnedGratuity eg)
         {
             if (eg == null)
-                throw new ArgumentNullException("eg");
+                throw new ArgumentNullException(nameof(eg));
 
             base.GratuityWasEarned(eg);
 
@@ -515,11 +512,16 @@ namespace MyFlightbook.Payments
         }
     }
 
+    public class EternalGratitudeGratuity : Gratuity
+    {
+        public EternalGratitudeGratuity() : base(GratuityTypes.EternalGratitude, 0.01M, new TimeSpan(366, 0, 0, 0), 0, Resources.LocalizedText.GratuityNameEternalGratitude, Resources.LocalizedText.GratuityThanksEternalGratitude, Resources.LocalizedText.GratuityDescriptionGratitude) { }
+    }
+
     /// <summary>
     /// An instance of a gratuity that has been earned by a user and which expires on a particular date.
     /// EarnedGratuities encapsulate the business rules for determining qualification and fulfillment of a gratuity
     /// </summary>
-    public class EarnedGrauity
+    public class EarnedGratuity
     {
         public enum EarnedGratuityStatus { OK, ExpiringSoon, Expired };
 
@@ -582,7 +584,7 @@ namespace MyFlightbook.Payments
         #endregion
 
         #region Constructors
-        public EarnedGrauity()
+        public EarnedGratuity()
         {
             Username = string.Empty;
             EarnedDate = ExpirationDate = LastReminderDate = DateTime.MinValue;
@@ -592,10 +594,10 @@ namespace MyFlightbook.Payments
             UserProfile = null;
         }
 
-        protected EarnedGrauity(MySqlDataReader dr) : this()
+        protected EarnedGratuity(MySqlDataReader dr) : this()
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             Username = (string)dr["username"];
             GratuityType = (Gratuity.GratuityTypes)(Convert.ToInt32(dr["idGratuityType"], CultureInfo.InvariantCulture));
             GratuityEarned = Gratuity.GratuityFromType(GratuityType);
@@ -611,17 +613,16 @@ namespace MyFlightbook.Payments
             catch (MyFlightbookException)
             {
                 UserProfile = null;
+                throw;
             }
         }
 
-        public EarnedGrauity(Gratuity g, Payment p) : this()
+        public EarnedGratuity(Gratuity g, Payment p) : this()
         {
-            if (g == null)
-                throw new ArgumentNullException("g");
             if (p == null)
-                throw new ArgumentNullException("p");
+                throw new ArgumentNullException(nameof(p));
 
-            GratuityEarned = g;
+            GratuityEarned = g ?? throw new ArgumentNullException(nameof(g));
             GratuityType = g.GratuityType;
             Username = p.Username;
             EarnedDate = p.Timestamp;
@@ -660,7 +661,7 @@ namespace MyFlightbook.Payments
         /// <param name="szUser">Username - pass an empty string or null for all users</param>
         /// <param name="gt">Type of gratuity - pass Unknown for all</param>
         /// <returns>The gratuityties earned for the userc</returns>
-        public static List<EarnedGrauity> GratuitiesForUser(string szUser, Gratuity.GratuityTypes gt)
+        public static List<EarnedGratuity> GratuitiesForUser(string szUser, Gratuity.GratuityTypes gt)
         {
             List<string> lstRestrictions = new List<string>();
 
@@ -682,13 +683,13 @@ LEFT JOIN usersinroles uir ON users.username=uir.username
 {0} 
 ORDER BY dateEarned ASC ";
             DBHelper dbh = new DBHelper(String.Format(szQ, String.IsNullOrEmpty(szWhereClause) ? string.Empty : String.Format("WHERE {0}", szWhereClause)));
-            List<EarnedGrauity> lst = new List<EarnedGrauity>();
+            List<EarnedGratuity> lst = new List<EarnedGratuity>();
             dbh.ReadRows((comm) =>
             {
                 comm.Parameters.AddWithValue("user", szUser);
                 comm.Parameters.AddWithValue("gt", (int)gt);
             },
-                (dr) => { lst.Add(new EarnedGrauity(dr)); });
+                (dr) => { lst.Add(new EarnedGratuity(dr)); });
             return lst;
         }
         #endregion
@@ -735,7 +736,7 @@ ORDER BY dateEarned ASC ";
         protected virtual bool ExtendExpiration(Payment p, Boolean fUpdateReminderCount)
         {
             if (p == null)
-                throw new ArgumentNullException("p");
+                throw new ArgumentNullException(nameof(p));
 
             DateTime dtFromPayment = p.Timestamp.Add(GratuityEarned.Window);
             DateTime dtFromExistingExpiration = ExpirationDate.Add(GratuityEarned.Window);
@@ -772,16 +773,16 @@ ORDER BY dateEarned ASC ";
         /// <returns>True if they have spent (net of refunds) the required amount within the required window</returns>
         public static bool UserQualifies(string szUser, Gratuity.GratuityTypes gt)
         {
-            Boolean f = false;
+            Boolean f;
             string szSessionKey = SessionKeyForUser(szUser, gt);
-            System.Web.SessionState.HttpSessionState sess = ((HttpContext.Current != null) ? HttpContext.Current.Session : null);
+            System.Web.SessionState.HttpSessionState sess = (HttpContext.Current?.Session);
             if (sess != null)
             {
                 object o = sess[szSessionKey];
                 if (o != null)
                     return Convert.ToBoolean(o, CultureInfo.InvariantCulture);
             }
-            List<EarnedGrauity> lst = EarnedGrauity.GratuitiesForUser(szUser, gt);
+            List<EarnedGratuity> lst = EarnedGratuity.GratuitiesForUser(szUser, gt);
             if (lst.Count == 0)
                 f = false;
             else
@@ -793,7 +794,7 @@ ORDER BY dateEarned ASC ";
 
         private static void ResetSessionForGratuities(string szUser)
         {
-            System.Web.SessionState.HttpSessionState sess = ((HttpContext.Current != null) ? HttpContext.Current.Session : null);
+            System.Web.SessionState.HttpSessionState sess = (HttpContext.Current?.Session);
             if (sess == null)
                 return;
 
@@ -882,8 +883,8 @@ ORDER BY dateEarned ASC ";
 
             Dictionary<string, Collection<Payment>> dictPayments = PaymentListsForUser(szUser);
 
-            ReadOnlyCollection<Gratuity> lstKnownGratuities = Gratuity.KnownGratuities;
-            List<EarnedGrauity> lstUpdatedGratuityList = new List<EarnedGrauity>();
+            IEnumerable<Gratuity> lstKnownGratuities = Gratuity.KnownGratuities;
+            List<EarnedGratuity> lstUpdatedGratuityList = new List<EarnedGratuity>();
 
             ResetSessionForGratuities(szUser);
 
@@ -906,10 +907,10 @@ ORDER BY dateEarned ASC ";
                         {
                             // Find the existing gratuity, if any, for the user
                             // Add it to the list to update if we either have a new one, or if we have extended the epxiration
-                            EarnedGrauity eg = lstUpdatedGratuityList.Find(eg2 => (eg2.GratuityType == g.GratuityType && eg2.Username == p.Username));
+                            EarnedGratuity eg = lstUpdatedGratuityList.Find(eg2 => (eg2.GratuityType == g.GratuityType && eg2.Username == p.Username));
                             if (eg == null)
                             {
-                                eg = new EarnedGrauity(g, p);
+                                eg = new EarnedGratuity(g, p);
                                 lstUpdatedGratuityList.Add(eg);
                             }
                             else
@@ -923,12 +924,12 @@ ORDER BY dateEarned ASC ";
             }
 
             // We now have a list of gratuities that should be correct
-            List<EarnedGrauity> lstExistingEarnedGratuities = EarnedGrauity.GratuitiesForUser(szUser, Gratuity.GratuityTypes.Unknown);
+            List<EarnedGratuity> lstExistingEarnedGratuities = EarnedGratuity.GratuitiesForUser(szUser, Gratuity.GratuityTypes.Unknown);
 
-            foreach (EarnedGrauity eg in lstUpdatedGratuityList)
+            foreach (EarnedGratuity eg in lstUpdatedGratuityList)
             {
                 // if this exists as an existing earned gratuity, update the expiration date on that one and save it OR if reseting
-                EarnedGrauity egExisting = lstExistingEarnedGratuities.Find(eg2 => (eg2.GratuityType == eg.GratuityType && eg2.Username == eg.Username));
+                EarnedGratuity egExisting = lstExistingEarnedGratuities.Find(eg2 => (eg2.GratuityType == eg.GratuityType && eg2.Username == eg.Username));
 
                 if (egExisting == null) // not found - this one is new
                     eg.Commit();
@@ -947,7 +948,7 @@ ORDER BY dateEarned ASC ";
 
             // Anything that is left is no longer found (e.g., if a payment was deleted)
             // Shouldn't happen, but clean up just in case
-            foreach (EarnedGrauity eg in lstExistingEarnedGratuities)
+            foreach (EarnedGratuity eg in lstExistingEarnedGratuities)
                 eg.Delete();
         }
     }
@@ -989,6 +990,157 @@ ORDER BY dateEarned ASC ";
                 strResponse = streamIn.ReadToEnd();
             }
             return strResponse;
+        }
+    }
+
+    public class YearlyPayments : IComparable
+    {
+        public int Year { get; set; }
+        public IList<PeriodPaymentStat> MonthlyPayments { get; set; }
+        public PeriodPaymentStat AnnualPayment { get; set; }
+
+        public YearlyPayments(int year)
+        {
+            Year = year;
+            PeriodPaymentStat[] rgPayments = new PeriodPaymentStat[12];
+            MonthlyPayments = new List<PeriodPaymentStat>(rgPayments);
+            for (int i = 0; i < 12; i++)
+                MonthlyPayments[i] = new PeriodPaymentStat();
+            AnnualPayment = new PeriodPaymentStat();
+        }
+
+        public static IEnumerable<YearlyPayments> PaymentsByYearAndMonth(System.Data.IDataReader idr)
+        {
+            Dictionary<int, YearlyPayments> d = new Dictionary<int, YearlyPayments>();
+            
+
+            if (idr == null)
+                throw new ArgumentNullException(nameof(idr));
+            while (idr.Read())
+            {
+                string MonthPeriod = idr["MonthPeriod"].ToString();
+                string[] rgsz = MonthPeriod.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                if (rgsz.Length != 2)
+                    throw new MyFlightbookValidationException("Bogus month/year in donations");
+                int year = Convert.ToInt32(rgsz[0], CultureInfo.InvariantCulture);
+                int month = Convert.ToInt32(rgsz[1], CultureInfo.InvariantCulture);
+                if (!d.ContainsKey(year))
+                    d[year] = new YearlyPayments(year);
+                if (month <= 0 || month > 12)
+                    throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Invalid month in donations: {0}", month));
+                d[year].MonthlyPayments[month - 1] = new PeriodPaymentStat()
+                {
+                    Net = Convert.ToDouble(idr["NetPaypal"], CultureInfo.InvariantCulture),
+                    Gross = Convert.ToDouble(idr["Gross"], CultureInfo.InvariantCulture),
+                    Fee = Convert.ToDouble(idr["Fee"], CultureInfo.InvariantCulture)
+                };
+            }
+
+            List<YearlyPayments> lst = new List<YearlyPayments>(d.Values);
+            lst.Sort();
+
+            // Now go through and compute stats.
+            for (int i = 1; i < lst.Count; i++)
+            {
+                if (lst[i - 1].Year != lst[i].Year - 1) // ignore non-congiguous years (shouldn't happen)
+                    continue;
+
+                double annual = 0;
+                YearlyPayments lastYear = lst[i - 1];
+                YearlyPayments thisYear = lst[i];
+
+                for (int j = 0; j < 12; j++)
+                {
+                    PeriodPaymentStat lastYearMonth = lastYear.MonthlyPayments[j];
+                    PeriodPaymentStat thisYearMonth = thisYear.MonthlyPayments[j];
+
+                    annual += thisYearMonth.Net;
+                    thisYearMonth.YOYGross = thisYearMonth.Net - lastYearMonth.Net;
+                    thisYearMonth.YOYPercent = (lastYearMonth.Net == 0) ? 0 : thisYearMonth.YOYGross / lastYearMonth.Net;
+                }
+
+                thisYear.AnnualPayment.Net = annual;
+                thisYear.AnnualPayment.YOYGross = thisYear.AnnualPayment.Net - lastYear.AnnualPayment.Net;
+                thisYear.AnnualPayment.YOYPercent = (lastYear.AnnualPayment.Net == 0) ? 0 : thisYear.AnnualPayment.YOYGross / lastYear.AnnualPayment.Net;
+            }
+
+            return lst;
+        }
+
+        public int CompareTo(object obj)
+        {
+            return Year.CompareTo(((YearlyPayments)obj).Year);
+        }
+
+        private static TableCell[] NewRow()
+        {
+            TableCell[] rgc = new TableCell[14];
+            for (int i = 0; i < rgc.Length; i++)
+                rgc[i] = new TableCell();
+            return rgc;
+        }
+
+        public static void ToTable(Control c, IEnumerable<YearlyPayments> rgyp)
+        {
+            if (rgyp == null)
+                return;
+            if (c == null)
+                throw new ArgumentNullException(nameof(c));
+            Table t = new Table();
+            c.Controls.Add(t);
+            t.CellPadding = 3;
+
+            TableRow tr = new TableRow();
+            t.Rows.Add(tr);
+            tr.TableSection = TableRowSection.TableHeader;
+            tr.Cells.AddRange(NewRow());
+
+            tr.Cells[0].Text = Resources.LocalizedText.ChartTotalsGroupYear;
+            for (int i = 1; i < 13; i++)
+                tr.Cells[i].Text = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedMonthNames[i - 1];
+            tr.Cells[13].Text = Resources.LocalizedText.ChartDataTotal;
+            tr.Font.Bold = true;
+
+            foreach (YearlyPayments yp in rgyp)
+            {
+                tr = new TableRow();
+                t.Rows.Add(tr);
+                tr.Cells.AddRange(NewRow());
+                tr.Cells[0].Text = yp.Year.ToString(CultureInfo.CurrentCulture);
+                tr.Cells[0].Font.Bold = true;
+                for (int i = 1; i < 13; i++)
+                    yp.MonthlyPayments[i - 1].AddToContainer(tr.Cells[i]);
+                yp.AnnualPayment.AddToContainer(tr.Cells[13]);
+                tr.Cells[13].Font.Bold = true;
+            }
+        }
+    }
+
+    public class PeriodPaymentStat
+    {
+        public double Net { get; set; }
+        public double Gross { get; set; }
+        public double Fee { get; set; }
+        public double YOYPercent { get; set; }
+        public double YOYGross { get; set; }
+
+        public void AddToContainer(Control c)
+        {
+            if (Net == 0)
+                return;
+            if (c == null)
+                throw new ArgumentNullException(nameof(c));
+            Label l = new Label();
+            c.Controls.Add(l);
+            l.Text = Net.ToString("C", CultureInfo.CurrentCulture);
+
+            l.ToolTip = String.Format(CultureInfo.CurrentCulture, "Gross: {0:C}, Fee: {1:C}", Gross, Fee);
+
+            if (YOYGross != 0)
+            {
+                l.ToolTip += String.Format(CultureInfo.CurrentCulture, ".\r\nYOY: {0:C} ({1:#,##0.0}%)", YOYGross, YOYPercent * 100);
+                l.ForeColor = (YOYGross > 0) ? System.Drawing.Color.Green : System.Drawing.Color.Red;
+            }
         }
     }
 }
