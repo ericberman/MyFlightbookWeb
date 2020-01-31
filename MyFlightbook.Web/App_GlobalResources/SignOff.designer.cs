@@ -906,6 +906,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I hold an ATP certificate.
+        /// </summary>
+        internal static string SignFlightATP {
+            get {
+                return ResourceManager.GetString("SignFlightATP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add this flight to {0}&apos;s logbook.
         /// </summary>
         internal static string SignFlightCopy {

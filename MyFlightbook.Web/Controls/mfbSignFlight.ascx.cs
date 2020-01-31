@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2019 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -51,6 +51,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     // Show the editable fields and hide the pre-filled ones.
                     rowSignature.Visible = rowEmail.Visible = true;
                     dropDateCFIExpiration.Visible = true;
+                    ckATP.Visible = true;
                     txtCFICertificate.Visible = true;
 
                     lblCFIDate.Visible = false;
@@ -69,12 +70,12 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     break;
                 case SignMode.Authenticated:
                     // Show the static fields and hide the editable ones.
-                    string szError;
-                    bool fValidCFIInfo = (CFIProfile == null) ? false : CFIProfile.CanSignFlights(out szError);
+                    bool fValidCFIInfo = (CFIProfile == null) ? false : CFIProfile.CanSignFlights(out string _);
 
                     lblCFIDate.Visible = fValidCFIInfo;
                     lblCFICertificate.Visible = fValidCFIInfo;
                     dropDateCFIExpiration.Visible = !fValidCFIInfo;
+                    ckATP.Visible = false;
                     txtCFICertificate.Visible = !fValidCFIInfo;
 
                     rowSignature.Visible = rowEmail.Visible = false;
@@ -164,9 +165,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         }
         set 
         {
-            if (value == null)
-                throw new ArgumentNullException("value");
-            m_le = value;
+            m_le = value ?? throw new ArgumentNullException(nameof(value));
             ViewState[szKeyVSIDFlight] = value.FlightID;
             ViewState[szKeyVSIDStudent] = value.User;
 
@@ -235,12 +234,20 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
             if (Request.Cookies[szKeyCookieCopy] != null)
             {
-                bool copyFlight;
-                if (Boolean.TryParse(Request.Cookies[szKeyCookieCopy].Value, out copyFlight))
+                if (Boolean.TryParse(Request.Cookies[szKeyCookieCopy].Value, out bool copyFlight))
                     ckCopyFlight.Checked = copyFlight;
             }
         }
+
+        UpdateDateState();
         dropDateCFIExpiration.DefaultDate = DateTime.MinValue;
+    }
+
+    protected void UpdateDateState()
+    {
+        valCFIExpiration.Enabled = dropDateCFIExpiration.TextControl.Enabled = !ckATP.Checked && !ckSignSICEndorsement.Checked;
+        if (!dropDateCFIExpiration.TextControl.Enabled)
+            dropDateCFIExpiration.Date = dropDateCFIExpiration.DefaultDate;
     }
 
     protected void fvEntryToSign_OnDataBound(object sender, EventArgs e)
@@ -308,7 +315,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     {
                         byte[] rgSig = mfbScribbleSignature.Base64Data();
                         if (rgSig != null)
-                            Flight.SignFlightAdHoc(txtCFIName.Text, txtCFIEmail.Text, txtCFICertificate.Text, dropDateCFIExpiration.Date, SigningComments, rgSig, ckSignSICEndorsement.Checked);
+                            Flight.SignFlightAdHoc(txtCFIName.Text, txtCFIEmail.Text, txtCFICertificate.Text, dropDateCFIExpiration.Date, SigningComments, rgSig, ckSignSICEndorsement.Checked || ckATP.Checked);
                         else
                             return;
                     }
@@ -358,38 +365,29 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
             return;
         }
 
-        if (SigningFinished != null)
-            SigningFinished(sender, e);
+        SigningFinished?.Invoke(sender, e);
     }
 
     protected void btnCancel_Click(object sender, EventArgs e)
     {
-        if (Cancel != null)
-            Cancel(sender, e);
+        Cancel?.Invoke(sender, e);
     }
 
     protected void valCFIExpiration_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         if (SigningMode == SignMode.AdHoc)
         {
-            try
-            {
-                if (dropDateCFIExpiration.Date.AddDays(1).CompareTo(DateTime.Now) <= 0)
-                    args.IsValid = false;
-            }
-            catch (ArgumentOutOfRangeException)
-            {
+            if (dropDateCFIExpiration.Date.AddDays(1).CompareTo(DateTime.Now) <= 0)
                 args.IsValid = false;
-            }
         }
     }
 
     protected void valCorrectPassword_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         if (String.IsNullOrEmpty(txtPassConfirm.Text) ||
             CFIProfile == null ||
             !System.Web.Security.Membership.ValidateUser(CFIProfile.UserName, txtPassConfirm.Text))
@@ -418,7 +416,13 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
         bool fUseTemplate = ((CheckBox)sender).Checked;
         mvComments.SetActiveView(fUseTemplate ? vwTemplate : vwEdit);
 
-        valCFIExpiration.Enabled = !fUseTemplate;
         CFIExpiration = (m_pfCFI == null || fUseTemplate) ? DateTime.MinValue : m_pfCFI.CertificateExpiration;
+
+        UpdateDateState();
+    }
+
+    protected void ckATP_CheckedChanged(object sender, EventArgs e)
+    {
+        UpdateDateState();
     }
 }

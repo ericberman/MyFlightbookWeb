@@ -193,6 +193,15 @@ public partial class Controls_mfbSignFlight
     protected global::System.Web.UI.WebControls.RequiredFieldValidator valCertificateRequired;
 
     /// <summary>
+    /// updPanelComments control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.UpdatePanel updPanelComments;
+
+    /// <summary>
     /// lblCFIDatePrompt control.
     /// </summary>
     /// <remarks>
@@ -202,6 +211,15 @@ public partial class Controls_mfbSignFlight
     protected global::System.Web.UI.WebControls.Label lblCFIDatePrompt;
 
     /// <summary>
+    /// ckATP control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.CheckBox ckATP;
+
+    /// <summary>
     /// lblCFIDate control.
     /// </summary>
     /// <remarks>
@@ -209,15 +227,6 @@ public partial class Controls_mfbSignFlight
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Label lblCFIDate;
-
-    /// <summary>
-    /// updPanelComments control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.UpdatePanel updPanelComments;
 
     /// <summary>
     /// dropDateCFIExpiration control.

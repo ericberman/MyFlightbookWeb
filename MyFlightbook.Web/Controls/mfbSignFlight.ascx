@@ -166,15 +166,17 @@
                             meta:resourcekey="RequiredFieldValidator2Resource1"></asp:RequiredFieldValidator>
                         </div>
                     </div>
-                    <div>
-                        <asp:Label ID="lblCFIDatePrompt" runat="server" 
-                            Text="<%$ Resources:SignOff, EditEndorsementExpirationPrompt %>" 
-                            Font-Bold="True" meta:resourcekey="lblCFIDatePromptResource1"></asp:Label>
-                            <asp:Label ID="lblCFIDate" runat="server" 
-                            meta:resourcekey="lblCFIDateResource1"></asp:Label>
-                    </div>
                     <asp:UpdatePanel ID="updPanelComments" runat="server">
                         <ContentTemplate>
+                            <div>
+                                <asp:Label ID="lblCFIDatePrompt" runat="server" 
+                                    Text="<%$ Resources:SignOff, EditEndorsementExpirationPrompt %>" 
+                                    Font-Bold="True" meta:resourcekey="lblCFIDatePromptResource1">
+                                </asp:Label>
+                                <asp:CheckBox ID="ckATP" runat="server" Text="<%$ Resources:Signoff, SignFlightATP %>" AutoPostBack="true" OnCheckedChanged="ckATP_CheckedChanged" />
+                                <asp:Label ID="lblCFIDate" runat="server" 
+                                    meta:resourcekey="lblCFIDateResource1"></asp:Label>
+                            </div>
                             <div>
                                 <uc2:mfbTypeInDate runat="server" ID="dropDateCFIExpiration" Visible="false" Width="280px" DefaultType="Today" />
                                 <div>
@@ -233,22 +235,21 @@
                         <asp:CheckBox ID="ckCopyFlight" runat="server" />
                     </asp:Panel>
                     <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="False" 
-                        meta:resourcekey="lblErrResource1"></asp:Label></div>
-                    <div style="text-align:center">
-                        <asp:Button ID="btnCancel" runat="server" 
-                            Text="<%$ Resources:SignOff, CancelSignFlight %>" Visible="False" 
-                            onclick="btnCancel_Click" meta:resourcekey="btnCancelResource1" />
-                        &nbsp;&nbsp;
-                        <asp:Button ID="btnSign" runat="server" 
-                            Text="<%$ Resources:SignOff, SignFlight %>" onclick="btnSign_Click" 
-                            meta:resourcekey="btnSignResource1" />
-                    </div>
+                        meta:resourcekey="lblErrResource1"></asp:Label>
+                </div>
+                <div style="text-align:center">
+                    <asp:Button ID="btnCancel" runat="server" 
+                        Text="<%$ Resources:SignOff, CancelSignFlight %>" Visible="False" 
+                        onclick="btnCancel_Click" meta:resourcekey="btnCancelResource1" />
+                    &nbsp;&nbsp;
+                    <asp:Button ID="btnSign" runat="server" 
+                        Text="<%$ Resources:SignOff, SignFlight %>" onclick="btnSign_Click" 
+                        meta:resourcekey="btnSignResource1" />
                 </div>
             </asp:View>
             <asp:View ID="vwEntryEdit" runat="server">
                 <uc4:mfbEditFlight ID="mfbEditFlight1" runat="server" OnFlightUpdated="mfbEditFlight1_FlightUpdated" />
             </asp:View>
         </asp:MultiView>
-    <div>
     <div><br />&nbsp;<br />&nbsp;<br />&nbsp;</div>
 </asp:Panel>

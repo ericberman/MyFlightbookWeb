@@ -440,4 +440,7 @@
   <data name="RequestSignatures" xml:space="preserve">
     <value>Request signatures</value>
   </data>
+  <data name="SignFlightATP" xml:space="preserve">
+    <value>I hold an ATP certificate</value>
+  </data>
 </root>
