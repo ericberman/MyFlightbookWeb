@@ -2730,7 +2730,6 @@
   <ItemGroup>
     <Content Include="Member\App_LocalResources\8710Form.aspx.resx" />
     <Content Include="Member\App_LocalResources\ACSchedule.aspx.resx" />
-    <Content Include="Member\App_LocalResources\Airports.aspx.resx" />
     <Content Include="Member\App_LocalResources\EditAirports.aspx.resx" />
     <Content Include="Member\App_LocalResources\EditProfile.aspx.resx" />
     <Content Include="Member\App_LocalResources\FlightAnalysis.aspx.resx" />

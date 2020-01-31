@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2018 MyFlightbook LLC
+ * Copyright (c) 2011-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -24,7 +24,7 @@ public partial class Member_Airports : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         this.Master.SelectedTab = tabID.mptVisited;
-        Title = (string)GetLocalResourceObject("PageResource1.Title");
+        Title = Resources.Airports.visitedAirportTitle;
 
         if (!IsPostBack)
         {
@@ -163,14 +163,10 @@ public partial class Member_Airports : System.Web.UI.Page
         gvAirports.DataBind();
     }
 
-    protected void gvAirports_Sorted(Object sender, EventArgs e)
-    {
-    }
-
     protected void btnEstimateDistance_Click(object sender, EventArgs e)
     {
-        string szErr = lblErr.Text = string.Empty;
-        double distance = VisitedAirport.DistanceFlownByUser(mfbSearchForm1.Restriction, out szErr);
+        lblErr.Text = string.Empty;
+        double distance = VisitedAirport.DistanceFlownByUser(mfbSearchForm1.Restriction, out string szErr);
 
         if (String.IsNullOrEmpty(szErr))
         {
@@ -184,12 +180,11 @@ public partial class Member_Airports : System.Web.UI.Page
 
     protected void btnGetTotalKML(object sender, EventArgs e)
     {
-        string szErr = string.Empty;
         DataSourceType dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.KML);
         Response.Clear();
         Response.ContentType = dst.Mimetype;
         Response.AddHeader("Content-Disposition", String.Format(CultureInfo.CurrentCulture, "attachment;filename={0}-AllFlights.{1}", Branding.CurrentBrand.AppName, dst.DefaultExtension));
-        VisitedAirport.AllFlightsAsKML(mfbSearchForm1.Restriction, Response.OutputStream, out szErr);
+        VisitedAirport.AllFlightsAsKML(mfbSearchForm1.Restriction, Response.OutputStream, out _);
         Response.End();
     }
 
@@ -219,7 +214,7 @@ public partial class Member_Airports : System.Web.UI.Page
     protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClicked fic)
     {
         if (fic == null)
-            throw new ArgumentNullException("fic");
+            throw new ArgumentNullException(nameof(fic));
         mfbSearchForm1.Restriction = mfbSearchForm1.Restriction.ClearRestriction(fic.FilterItem);
         ShowResults(sender, new FlightQueryEventArgs(mfbSearchForm1.Restriction));
     }

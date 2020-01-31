@@ -3970,6 +3970,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Airports.
+        /// </summary>
+        internal static string ShareKeyPermissionViewAirports {
+            get {
+                return ResourceManager.GetString("ShareKeyPermissionViewAirports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Currency.
         /// </summary>
         internal static string ShareKeyPermissionViewCurrency {

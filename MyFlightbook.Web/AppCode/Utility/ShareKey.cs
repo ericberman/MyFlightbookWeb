@@ -19,6 +19,7 @@ namespace MyFlightbook.Web.Sharing
         Currency = 0x0002,
         Totals = 0x0004,
         Achievements = 0x0008,
+        Visited = 0x0010,
     };
 
     [Serializable]
@@ -90,6 +91,12 @@ namespace MyFlightbook.Web.Sharing
         {
             get { return (privFlags & (UInt32)SharePrivs.Achievements) != 0; }
             set { privFlags = value ? privFlags | (UInt32)SharePrivs.Achievements : privFlags & ~(UInt32)SharePrivs.Achievements; }
+        }
+
+        public bool CanViewVisitedAirports
+        {
+            get { return (privFlags & (UInt32)SharePrivs.Visited) != 0; }
+            set { privFlags = value ? privFlags | (UInt32)SharePrivs.Visited : privFlags & ~(UInt32)SharePrivs.Visited; }
         }
 
         /// <summary>

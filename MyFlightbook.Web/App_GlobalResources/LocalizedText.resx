@@ -1665,4 +1665,7 @@
   <data name="GratuityThanksEternalGratitude" xml:space="preserve">
     <value>You will enjoy our eternal gratitude...for a year</value>
   </data>
+  <data name="ShareKeyPermissionViewAirports" xml:space="preserve">
+    <value>Airports</value>
+  </data>
 </root>

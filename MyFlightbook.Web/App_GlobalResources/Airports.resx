@@ -217,4 +217,43 @@
   <data name="errNoAirportsFound" xml:space="preserve">
     <value>No airports found</value>
   </data>
+  <data name="airportCode" xml:space="preserve">
+    <value>Facility</value>
+  </data>
+  <data name="airportEarliestVisit" xml:space="preserve">
+    <value>Date of first visit</value>
+  </data>
+  <data name="airportLatestVisit" xml:space="preserve">
+    <value>Date of last visit</value>
+  </data>
+  <data name="airportLatitude" xml:space="preserve">
+    <value>Latitude</value>
+  </data>
+  <data name="airportLongitude" xml:space="preserve">
+    <value>Longitude</value>
+  </data>
+  <data name="airportName" xml:space="preserve">
+    <value>Facility Name</value>
+  </data>
+  <data name="airportType" xml:space="preserve">
+    <value>Facility Type</value>
+  </data>
+  <data name="airportViewFlights" xml:space="preserve">
+    <value>View flights</value>
+  </data>
+  <data name="airportVisitedAirportsNote" xml:space="preserve">
+    <value>you may have visited more airports than this; this is only the count of distinct 3- or 4-letter codes within the 'Route' field of flights in your account.</value>
+  </data>
+  <data name="airportVisits" xml:space="preserve">
+    <value>Visits</value>
+  </data>
+  <data name="MapZoomAllAirports" xml:space="preserve">
+    <value>Zoom to fit all airports</value>
+  </data>
+  <data name="visitedAirportComputing" xml:space="preserve">
+    <value>Computing...</value>
+  </data>
+  <data name="visitedAirportTitle" xml:space="preserve">
+    <value>Visited Airports</value>
+  </data>
 </root>

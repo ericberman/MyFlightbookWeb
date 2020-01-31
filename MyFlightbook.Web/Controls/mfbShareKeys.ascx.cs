@@ -31,13 +31,14 @@ namespace MyFlightbook.Web.Controls
                 CanViewCurrency = ckShareLinkCurrency.Checked,
                 CanViewFlights = ckShareLinkFlights.Checked,
                 CanViewTotals = ckShareLinkTotals.Checked,
-                CanViewAchievements = ckShareLinkAchievements.Checked
+                CanViewAchievements = ckShareLinkAchievements.Checked,
+                CanViewVisitedAirports = ckShareLinkAirports.Checked
             };
             try
             {
                 sk.FCommit();
                 txtShareLinkName.Text = string.Empty;
-                ckShareLinkCurrency.Checked = ckShareLinkFlights.Checked = ckShareLinkTotals.Checked = ckShareLinkAchievements.Checked = true;
+                ckShareLinkCurrency.Checked = ckShareLinkFlights.Checked = ckShareLinkTotals.Checked = ckShareLinkAchievements.Checked = ckShareLinkAirports.Checked = true;
                 gvShareKeys.EditIndex = -1;
                 RefreshSharekeys();
             }
@@ -95,6 +96,7 @@ namespace MyFlightbook.Web.Controls
             sk.CanViewTotals = (bool)e.NewValues["CanViewTotals"];
             sk.CanViewFlights = (bool)e.NewValues["CanViewFlights"];
             sk.CanViewAchievements = (bool)e.NewValues["CanViewAchievements"];
+            sk.CanViewVisitedAirports = (bool)e.NewValues["CanViewVisitedAirports"];
             if (sk.FCommit())
             {
                 gvShareKeys.EditIndex = -1;

@@ -61,11 +61,101 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Facility.
+        /// </summary>
+        internal static string airportCode {
+            get {
+                return ResourceManager.GetString("airportCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date of first visit.
+        /// </summary>
+        internal static string airportEarliestVisit {
+            get {
+                return ResourceManager.GetString("airportEarliestVisit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airport Identification Game.
         /// </summary>
         internal static string airportGameTitle {
             get {
                 return ResourceManager.GetString("airportGameTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date of last visit.
+        /// </summary>
+        internal static string airportLatestVisit {
+            get {
+                return ResourceManager.GetString("airportLatestVisit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Latitude.
+        /// </summary>
+        internal static string airportLatitude {
+            get {
+                return ResourceManager.GetString("airportLatitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longitude.
+        /// </summary>
+        internal static string airportLongitude {
+            get {
+                return ResourceManager.GetString("airportLongitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Facility Name.
+        /// </summary>
+        internal static string airportName {
+            get {
+                return ResourceManager.GetString("airportName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Facility Type.
+        /// </summary>
+        internal static string airportType {
+            get {
+                return ResourceManager.GetString("airportType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View flights.
+        /// </summary>
+        internal static string airportViewFlights {
+            get {
+                return ResourceManager.GetString("airportViewFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to you may have visited more airports than this; this is only the count of distinct 3- or 4-letter codes within the &apos;Route&apos; field of flights in your account..
+        /// </summary>
+        internal static string airportVisitedAirportsNote {
+            get {
+                return ResourceManager.GetString("airportVisitedAirportsNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visits.
+        /// </summary>
+        internal static string airportVisits {
+            get {
+                return ResourceManager.GetString("airportVisits", resourceCulture);
             }
         }
         
@@ -312,11 +402,38 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zoom to fit all airports.
+        /// </summary>
+        internal static string MapZoomAllAirports {
+            get {
+                return ResourceManager.GetString("MapZoomAllAirports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zoom to fit entire route..
         /// </summary>
         internal static string MapZoomOut {
             get {
                 return ResourceManager.GetString("MapZoomOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Computing....
+        /// </summary>
+        internal static string visitedAirportComputing {
+            get {
+                return ResourceManager.GetString("visitedAirportComputing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visited Airports.
+        /// </summary>
+        internal static string visitedAirportTitle {
+            get {
+                return ResourceManager.GetString("visitedAirportTitle", resourceCulture);
             }
         }
         

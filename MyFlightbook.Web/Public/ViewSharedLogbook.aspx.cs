@@ -1,8 +1,13 @@
 ﻿using MyFlightbook.Achievements;
+using MyFlightbook.Airports;
+using MyFlightbook.Telemetry;
 using MyFlightbook.Web.Sharing;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -17,6 +22,8 @@ namespace MyFlightbook.Web.Public
     {
         private const string keyVSRestriction = "vsCurrentRestriction";
         private const string keyVSShareKey = "vsCurrentShareKey";
+        private const string szKeyVAState = "VisitedAirports";
+
         protected FlightQuery Restriction
         {
             get
@@ -78,7 +85,8 @@ namespace MyFlightbook.Web.Public
 
                 int privCount = sk.PrivilegeCount;
 
-                apcAnalysis.Container.Style["display"] = apcCurrency.Container.Style["display"] = apcTotals.Container.Style["display"] = apcFilter.Container.Style["display"] = apcAchievements.Container.Style["display"] = "none";
+                apcAnalysis.Container.Style["display"] = apcCurrency.Container.Style["display"] = apcTotals.Container.Style["display"] = 
+                    apcFilter.Container.Style["display"] = apcAchievements.Container.Style["display"] = apcAirports.Container.Style["display"] = "none";
 
                 if (sk.CanViewCurrency)
                 {
@@ -135,33 +143,52 @@ namespace MyFlightbook.Web.Public
                     mfbRecentAchievements.AutoDateRange = true;
                     mfbRecentAchievements.Refresh(sk.Username, DateTime.MaxValue, DateTime.MinValue, false);
                     lblRecentAchievementsTitle.Text = mfbRecentAchievements.Summary;
-                    if (privCount == 1) // if ONLY showing totals, expand it
+                    if (privCount == 1) // if ONLY showing achievements, expand it
                         SetAccordionPane(acpPaneAchievements.ID);
+                }
+
+                if (sk.CanViewVisitedAirports)
+                {
+                    apcAirports.Container.Style["display"] = "inline-block";
+                    if (privCount == 1) // if ONLY showing airports, expand it
+                        SetAccordionPane(acpPaneAirports.ID);
                 }
             }
 
             if (mfbLogbook.Visible && apcAnalysis.Visible)
                 mfbChartTotals.SourceData = mfbLogbook.Data;   // do this every time, since charttotals doesn't persist its data.
+
+            if (CurrentShareKey.CanViewVisitedAirports)
+                RefreshVisitedAirports();
         }
 
         protected void UpdateForUser(string szUser)
         {
             FlightQuery r = Restriction;
+
             mfbTotalSummary.Username = mfbCurrency.UserName = mfbLogbook.User = szUser;
-            mfbTotalSummary.CustomRestriction = mfbLogbook.Restriction = r;
-            mfbCurrency.RefreshCurrencyTable();
+
+            if (CurrentShareKey.CanViewTotals)
+                mfbTotalSummary.CustomRestriction = mfbLogbook.Restriction = r;
+
             bool fRestrictionIsDefault = r.IsDefault;
             mfbQueryDescriptor.DataSource = fRestrictionIsDefault ? null : r;
             mfbQueryDescriptor.DataBind();
             apcFilter.LabelControl.Font.Bold = !fRestrictionIsDefault;
             apcFilter.IsEnhanced = !fRestrictionIsDefault;
             pnlFilter.Visible = !fRestrictionIsDefault;
-            mfbLogbook.RefreshData();
+
+            if (CurrentShareKey.CanViewFlights)
+                mfbLogbook.RefreshData();
+
+            if (CurrentShareKey.CanViewVisitedAirports)
+                RefreshVisitedAirports();
         }
 
         protected void UpdateQuery()
         {
             Restriction = mfbSearchForm.Restriction;
+            CurrentVisitedAirports = null;
             UpdateForUser(CurrentShareKey.Username);
             AccordionCtrl.SelectedIndex = -1;
             apcAnalysis.LazyLoad = true;
@@ -189,5 +216,122 @@ namespace MyFlightbook.Web.Public
             mfbSearchForm.Restriction = Restriction.ClearRestriction(fic.FilterItem);
             UpdateQuery();
         }
+
+        #region Visited Airports
+        private VisitedAirport[] CurrentVisitedAirports
+        {
+            get { return (VisitedAirport[])ViewState[szKeyVAState]; }
+            set { ViewState[szKeyVAState] = value; }
+        }
+
+        protected int LastSortDirection
+        {
+            get { return Convert.ToInt32(hdnLastSortDirection.Value, CultureInfo.InvariantCulture); }
+            set { hdnLastSortDirection.Value = value.ToString(CultureInfo.InvariantCulture); }
+        }
+
+        protected string LastSortExpression
+        {
+            get { return hdnLastSortExpression.Value; }
+            set { hdnLastSortExpression.Value = value; }
+        }
+
+        protected void RefreshVisitedAirports()
+        {
+            if (CurrentVisitedAirports == null)
+                CurrentVisitedAirports = VisitedAirport.VisitedAirportsForQuery(Restriction);
+            lblNumAirports.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsNumAirports, CurrentVisitedAirports.Length);
+
+            gvAirports.DataSource = CurrentVisitedAirports;
+            gvAirports.DataBind();
+
+            mfbGoogleMapManager1.Visible = CurrentVisitedAirports.Length > 0;   //  Avoid excessive map loads.
+
+            AirportList alMatches = new AirportList(CurrentVisitedAirports);
+
+            // get an airport list of the airports
+            mfbGoogleMapManager1.Map.SetAirportList(alMatches);
+
+            lnkZoomOut.NavigateUrl = mfbGoogleMapManager1.ZoomToFitScript;
+            lnkZoomOut.Visible = (CurrentVisitedAirports.Length > 0);
+        }
+
+        protected void gvAirports_DataBound(Object sender, GridViewRowEventArgs e)
+        {
+            if (e != null && e.Row.RowType == DataControlRowType.DataRow)
+            {
+                PlaceHolder p = (PlaceHolder)e.Row.FindControl("plcZoomCode");
+                HtmlAnchor a = new HtmlAnchor();
+                p.Controls.Add(a);
+                VisitedAirport va = (VisitedAirport)e.Row.DataItem;
+
+                string szLink = String.Format(CultureInfo.InvariantCulture, "javascript:{0}.gmap.setCenter(new google.maps.LatLng({1}, {2}));{0}.gmap.setZoom(14);",
+                    mfbGoogleMapManager1.MapID, va.Airport.LatLong.Latitude, va.Airport.LatLong.Longitude);
+                a.InnerText = va.Code;
+                a.HRef = szLink;
+            }
+        }
+
+        protected void gvAirports_Sorting(Object sender, GridViewSortEventArgs e)
+        {
+            if (e.SortExpression.CompareTo(LastSortExpression) != 0)
+            {
+                LastSortDirection = 1;
+                LastSortExpression = e.SortExpression;
+            }
+            else if (LastSortDirection != 1)
+                LastSortDirection = 1;
+            else
+                LastSortDirection = -1;
+
+            int Direction = LastSortDirection;
+
+            switch (e.SortExpression.ToUpper())
+            {
+                case "CODE":
+                    Array.Sort(CurrentVisitedAirports, delegate (VisitedAirport va1, VisitedAirport va2) { return Direction * va1.Code.CompareTo(va2.Code); });
+                    break;
+                case "FACILITYNAME":
+                    Array.Sort(CurrentVisitedAirports, delegate (VisitedAirport va1, VisitedAirport va2) { return Direction * va1.FacilityName.CompareTo(va2.FacilityName); });
+                    break;
+                case "NUMBEROFVISITS":
+                    Array.Sort(CurrentVisitedAirports, delegate (VisitedAirport va1, VisitedAirport va2) { return Direction * va1.NumberOfVisits.CompareTo(va2.NumberOfVisits); });
+                    break;
+                case "EARLIESTVISITDATE":
+                    Array.Sort(CurrentVisitedAirports, delegate (VisitedAirport va1, VisitedAirport va2) { return Direction * va1.EarliestVisitDate.CompareTo(va2.EarliestVisitDate); });
+                    break;
+                case "LATESTVISITDATE":
+                    Array.Sort(CurrentVisitedAirports, delegate (VisitedAirport va1, VisitedAirport va2) { return Direction * va1.LatestVisitDate.CompareTo(va2.LatestVisitDate); });
+                    break;
+            }
+            gvAirports.DataSource = CurrentVisitedAirports;
+            gvAirports.DataBind();
+        }
+
+        protected void btnEstimateDistance_Click(object sender, EventArgs e)
+        {
+            lblErr.Text = string.Empty;
+            double distance = VisitedAirport.DistanceFlownByUser(Restriction, out string szErr);
+
+            if (String.IsNullOrEmpty(szErr))
+            {
+                btnEstimateDistance.Visible = false;
+                pnlDistanceResults.Visible = true;
+                lblDistanceEstimate.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.VisitedAirportsDistanceEstimate, distance);
+            }
+            else
+                lblErr.Text = szErr;
+        }
+
+        protected void btnGetTotalKML(object sender, EventArgs e)
+        {
+            DataSourceType dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.KML);
+            Response.Clear();
+            Response.ContentType = dst.Mimetype;
+            Response.AddHeader("Content-Disposition", String.Format(CultureInfo.CurrentCulture, "attachment;filename={0}-AllFlights.{1}", Branding.CurrentBrand.AppName, dst.DefaultExtension));
+            VisitedAirport.AllFlightsAsKML(Restriction, Response.OutputStream, out _);
+            Response.End();
+        }
+        #endregion
     }
 }

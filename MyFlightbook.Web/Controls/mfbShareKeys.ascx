@@ -6,6 +6,7 @@
     <asp:CheckBox ID="ckShareLinkTotals" runat="server" Checked="true" Text="<%$ Resources:LocalizedText, ShareKeyPermissionViewTotals %>" />
     <asp:CheckBox ID="ckShareLinkCurrency" runat="server" Checked="true" Text="<%$ Resources:LocalizedText, ShareKeyPermissionViewCurrency %>" />
     <asp:CheckBox ID="ckShareLinkAchievements" runat="server" Checked="true" Text="<%$ Resources:LocalizedText, ShareKeyPermissionViewAchievements %>" />
+    <asp:CheckBox ID="ckShareLinkAirports" runat="server" Checked="true" Text="<%$ Resources:LocalizedText, ShareKeyPermissionViewAirports %>" />
     <asp:Button ID="btnCreateShareLink" runat="server" Text="Create Link" OnClick="btnCreateShareLink_Click" />
 </div>
 <div>
@@ -37,6 +38,7 @@
             <asp:CheckBoxField DataField="CanViewTotals" ItemStyle-HorizontalAlign="Center" HeaderText="<%$ Resources:LocalizedText, ShareKeyPermissionViewTotals %>" />
             <asp:CheckBoxField DataField="CanViewCurrency" ItemStyle-HorizontalAlign="Center" HeaderText="<%$ Resources:LocalizedText, ShareKeyPermissionViewCurrency %>" />
             <asp:CheckBoxField DataField="CanViewAchievements" ItemStyle-HorizontalAlign="Center" HeaderText="<%$ Resources:LocalizedText, ShareKeyPermissionViewAchievements %>" />
+            <asp:CheckBoxField DataField="CanViewVisitedAirports" ItemStyle-HorizontalAlign="Center" HeaderText="<%$ Resources:LocalizedText, ShareKeyPermissionViewAirports %>" />
             <asp:BoundField DataField="LastAccessDisplay" HeaderText="<%$ Resources:LocalizedText, ShareKeyLastAccessHeader %>" ReadOnly="true" />
             <asp:TemplateField>
                 <ItemTemplate>
