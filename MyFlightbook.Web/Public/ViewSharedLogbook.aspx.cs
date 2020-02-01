@@ -150,6 +150,7 @@ namespace MyFlightbook.Web.Public
                 if (sk.CanViewVisitedAirports)
                 {
                     apcAirports.Container.Style["display"] = "inline-block";
+                    Restriction.UserName = mfbSearchForm.Username = mfbLogbook.User = sk.Username;
                     if (privCount == 1) // if ONLY showing airports, expand it
                         SetAccordionPane(acpPaneAirports.ID);
                 }
