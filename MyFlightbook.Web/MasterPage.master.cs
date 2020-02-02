@@ -75,8 +75,8 @@ namespace MyFlightbook.Web
 
         public bool ShowSponsoredAd
         {
-            get { return SponsoredAd1.Visible; }
-            set { SponsoredAd1.Visible = value; }
+            get { /* return SponsoredAd1.Visible; */ return true; }
+            set { /* SponsoredAd1.Visible = value; */ }
         }
 
         /// <summary>

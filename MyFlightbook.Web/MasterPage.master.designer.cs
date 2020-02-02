@@ -7,9 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
 namespace MyFlightbook.Web
 {
+
+
     public partial class MasterPage
     {
 
@@ -174,15 +175,6 @@ namespace MyFlightbook.Web
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder cpPageTitle;
-
-        /// <summary>
-        /// SponsoredAd1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Controls_SponsoredAd SponsoredAd1;
 
         /// <summary>
         /// pnlTopForm control.

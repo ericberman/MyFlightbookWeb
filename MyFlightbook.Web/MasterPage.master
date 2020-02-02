@@ -54,9 +54,6 @@
         <asp:Panel ID="pnlTitle" runat="server" CssClass="noprint centeredBody">
             <h1><asp:ContentPlaceHolder ID="cpPageTitle" runat="server"></asp:ContentPlaceHolder></h1>
         </asp:Panel>
-        <div style="float:right;">
-            <uc5:SponsoredAd ID="SponsoredAd1" runat="server" SponsoredAdID="1" Visible="false" />
-        </div>
         <asp:Panel ID="pnlTopForm" runat="server" CssClass="topForm">
             <asp:Panel ID="pnlSideBarRight" runat="server" CssClass="sidebarRight">
                 <asp:ContentPlaceHolder ID="cpTopForm" runat="server">
