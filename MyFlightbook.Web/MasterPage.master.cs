@@ -211,7 +211,7 @@ namespace MyFlightbook.Web
 
                 IsNaked = util.GetIntParam(Request, "naked", 0) != 0 || (Session["IsNaked"] != null && ((bool)Session["IsNaked"]) == true);
                 if (IsNaked)
-                    pnlCookies.Visible = mfbHeader.Visible = MfbFooter.Visible = SponsoredAd1.Visible = false;
+                    pnlCookies.Visible = mfbHeader.Visible = MfbFooter.Visible = /* SponsoredAd1.Visible = */ false;
 
                 string nightRequest = util.GetStringParam(Request, "night");
                 if (nightRequest.CompareCurrentCultureIgnoreCase("yes") == 0)
