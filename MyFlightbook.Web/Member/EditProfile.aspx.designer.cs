@@ -850,6 +850,15 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Localize locPropertiesHeader;
 
     /// <summary>
+    /// locPropHeader control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locPropHeader;
+
+    /// <summary>
     /// lblPropertyDesc control.
     /// </summary>
     /// <remarks>

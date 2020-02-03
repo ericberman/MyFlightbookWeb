@@ -1089,7 +1089,7 @@ Proceed with import?</value>
     <value>Drag/drop from the list of available properties (on the left) into this list</value>
   </data>
   <data name="TemplateShare" xml:space="preserve">
-    <value>Available to others</value>
+    <value>Share with others</value>
   </data>
   <data name="TemplateBrowseAddPublic" xml:space="preserve">
     <value>Add to my templates</value>
@@ -1110,7 +1110,7 @@ Proceed with import?</value>
     <value>Template added to your account</value>
   </data>
   <data name="TemplateYours" xml:space="preserve">
-    <value>(Already in your account)</value>
+    <value>✓</value>
   </data>
   <data name="TemplateActionOr" xml:space="preserve">
     <value> - OR - </value>
@@ -1143,7 +1143,7 @@ Proceed with import?</value>
     <value>Templates for this aircraft:</value>
   </data>
   <data name="TemplateDefaultHeader" xml:space="preserve">
-    <value>Use by&lt;br /&gt;default</value>
+    <value>Default</value>
   </data>
   <data name="FlightDistanceFurthestPoints" xml:space="preserve">
     <value>● Furthest points from each other: {0} and {1} ({2:#,#.0}nm)</value>
@@ -1168,5 +1168,17 @@ Proceed with import?</value>
   </data>
   <data name="LogbookSelectFlights" xml:space="preserve">
     <value>Select Flights</value>
+  </data>
+  <data name="PropertiesHeader" xml:space="preserve">
+    <value>Flight Properties</value>
+  </data>
+  <data name="TemplateBrowseReturn" xml:space="preserve">
+    <value>← Return to my templates</value>
+  </data>
+  <data name="TemplateCopy" xml:space="preserve">
+    <value>Copy this template</value>
+  </data>
+  <data name="TemplateCopyTemplate" xml:space="preserve">
+    <value>{0} - Copy</value>
   </data>
 </root>

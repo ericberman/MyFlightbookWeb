@@ -1,8 +1,9 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEditPropTemplate.ascx.cs" Inherits="Controls_mfbEditPropTemplate" %>
 <%@ Register Src="~/Controls/mfbSearchbox.ascx" TagPrefix="uc1" TagName="mfbSearchbox" %>
 <%@ Register Src="~/Controls/Expando.ascx" TagPrefix="uc1" TagName="Expando" %>
+<%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
 
-<h3><asp:Localize ID="locTemplateHeader" runat="server" Text="<%$ Resources:LogbookEntry, TemplateHeader %>"></asp:Localize></h3>
+<h2><asp:Localize ID="locTemplateHeader" runat="server" Text="<%$ Resources:LogbookEntry, TemplateHeader %>"></asp:Localize></h2>
 <p><asp:Localize ID="locTemplateDescription1" runat="server"></asp:Localize></p>
 <p><asp:Localize ID="locTemplateDescription2" runat="server"></asp:Localize></p>
 <p>
@@ -101,27 +102,21 @@
         <table>
             <tr style="vertical-align:bottom">
                 <td></td>
-                <td></td>
-                <td style="padding: 3px; text-align:center">
+                <td style="padding: 3px; text-align:center; -webkit-transform: rotate(315deg); -moz-transform: rotate(315deg);-o-transform: rotate(315deg);-ms-transform: rotate(315deg);transform: rotate(315deg);">
                     <asp:Label ID="LocIsPublic" runat="server" Font-Bold="true" Text="<%$ Resources:LogbookEntry, TemplateShare %>"></asp:Label>&nbsp;&nbsp;</td>
-                <td style="padding: 3px; text-align:center">
+                <td style="padding: 3px; text-align:center; -webkit-transform: rotate(315deg); -moz-transform: rotate(315deg);-o-transform: rotate(315deg);-ms-transform: rotate(315deg);transform: rotate(315deg);">
                     <asp:Label ID="locDefault" runat="server" Font-Bold="true" Text="<%$ Resources:LogbookEntry, TemplateDefaultHeader %>"></asp:Label></td>
+                <td></td>
                 <td></td>
             </tr>
             <asp:Repeater ID="rptTemplateGroups" runat="server">
                 <ItemTemplate>
                     <tr>
-                        <td colspan="5" style="padding: 3px;"><asp:Label ID="lblGroupName" Font-Bold="true" Font-Size="Smaller" runat="server" Text='<%# Eval("GroupName") %>'></asp:Label></td>
+                        <td colspan="5" style="border-bottom: 1px solid gray; margin-top: 3px; text-align:center;"><asp:Label ID="lblGroupName" Font-Bold="true" runat="server" Font-Size="Larger" Text='<%# Eval("GroupName") %>'></asp:Label></td>
                     </tr>
-                    <asp:Repeater ID="rptTemplates" runat="server" DataSource='<%# Eval("Templates") %>'>
+                    <asp:Repeater ID="rptTemplates" runat="server" DataSource='<%# Eval("Templates") %>' OnItemDataBound="rptTemplates_ItemDataBound">
                         <ItemTemplate>
                             <tr>
-                                <td style="padding: 3px;">
-                                    <asp:ImageButton ID="imgbtnEdit" runat="server" Visible='<%# Eval("IsMutable") %>'
-                                        AlternateText="<%$ Resources:LogbookEntry, TemplateEditTip %>"
-                                        ImageUrl="~/images/pencilsm.png" OnClick="imgbtnEdit_Click"
-                                        ToolTip="<%$ Resources:LogbookEntry, TemplateEditTip %>" />
-                                </td>
                                 <td style="padding: 3px;">
                                     <div>
                                         <span style="font-weight:bold; font-size:larger"><%#: Eval("Name") %></span>
@@ -138,14 +133,37 @@
                                     <asp:CheckBox ID="ckDefault" Visible='<%# Eval("IsMutable") %>' runat="server" Checked='<%# Eval("IsDefault") %>' AutoPostBack="true" OnCheckedChanged="ckDefault_CheckedChanged" ToolTip="<%$ Resources:LogbookEntry, TemplateDefaultTooltip %>" />
                                 </td>
                                 <td style="padding: 3px;">
-                                    <asp:ImageButton ID="imgDelete" runat="server"  Visible='<%# Eval("IsMutable") %>'
-                                        AlternateText="<%$ Resources:LogbookEntry, TemplateDeleteTip %>"
-                                        ImageUrl="~/images/x.gif" OnClick="imgDelete_Click"
-                                        ToolTip="<%$ Resources:LogbookEntry, TemplateDeleteTip %>" />
-                                    <ajaxToolkit:ConfirmButtonExtender ID="confirmDeleteDeadline" runat="server"
-                                        ConfirmOnFormSubmit="True"
-                                        ConfirmText="<%$ Resources:LogbookEntry, TemplateDeleteConfirm %>"
-                                        TargetControlID="imgDelete" />
+                                    <uc1:popmenu runat="server" ID="popmenu">
+                                        <MenuContent>
+                                            <div style="line-height: 26px;">
+                                                <asp:LinkButton ID="imgbtnEdit" runat="server" OnClick="imgbtnEdit_Click">
+                                                    <asp:Image ID="imgEditTemplate" runat="server" AlternateText="<%$ Resources:LogbookEntry, TemplateEditTip %>"
+                                                    ImageUrl="~/images/pencilsm.png" style="padding-right:4px;" />
+                                                    <asp:Label ID="lblEditTemplate" runat="server" Text="<%$ Resources:LogbookEntry, TemplateEditTip %>"></asp:Label>
+                                                </asp:LinkButton>
+                                            </div>
+                                            <div style="line-height: 26px;">
+                                                <asp:LinkButton ID="lnkEditTemplate" runat="server" OnClick="imgDelete_Click">
+                                                    <asp:Image ID="imgDelete" runat="server" style="padding-right: 10px"
+                                                        AlternateText="<%$ Resources:LogbookEntry, TemplateDeleteTip %>"
+                                                        ImageUrl="~/images/x.gif" />
+                                                    <asp:Label ID="lblDeleteTemplate" runat="server" Text="<%$ Resources:LogbookEntry, TemplateDeleteTip %>"></asp:Label>
+                                                </asp:LinkButton>
+                                                <ajaxToolkit:ConfirmButtonExtender ID="confirmDeleteDeadline" runat="server"
+                                                    ConfirmOnFormSubmit="True"
+                                                    ConfirmText="<%$ Resources:LogbookEntry, TemplateDeleteConfirm %>"
+                                                    TargetControlID="lnkEditTemplate" />
+                                            </div>
+                                            <div style="line-height: 26px;">
+                                                <asp:LinkButton ID="imgCopy" runat="server" OnClick="imgCopy_Click">
+                                                    <asp:Image ID="imgCopyTemplate" runat="server" style="padding-right:4px;"  
+                                                    AlternateText="<%$ Resources:LogbookEntry, TemplateCopy %>"
+                                                    ImageUrl="~/images/copyflight.png"/>
+                                                    <asp:Label ID="lblCopyTemplate" runat="server" Text="<%$ Resources:LogbookEntry, TemplateCopy %>"></asp:Label>
+                                                </asp:LinkButton>
+                                            </div>
+                                        </MenuContent>
+                                    </uc1:popmenu>
                                 </td>
                             </tr>
                         </ItemTemplate>

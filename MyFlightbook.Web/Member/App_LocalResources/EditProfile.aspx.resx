@@ -1180,7 +1180,7 @@
     <value>Show these...</value>
   </data>
   <data name="locPropertiesHeaderResource1.Text" xml:space="preserve">
-    <value>Flight Properties</value>
+    <value>Flight Properties and Templates</value>
   </data>
   <data name="locQuestionPromptResource1.Text" xml:space="preserve">
     <value>New Security Question</value>
