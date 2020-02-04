@@ -907,13 +907,13 @@
     <value>Attach Videos to Flights</value>
   </data>
   <data name="GratuityThanksClub" xml:space="preserve">
-    <value>You can create flying clubs to schedule airplanes and report on flying</value>
+    <value>You can create flying clubs to schedule airplanes and report on flying (Expires {0:d})</value>
   </data>
   <data name="GratuityThanksDropbox" xml:space="preserve">
-    <value>Your logbook will be backed up nightly to your cloud storage account (requires configuration under Preferences) for a year</value>
+    <value>Your logbook will be saved to a cloud provider nightly (requires configuration) (Expires {0:d})</value>
   </data>
   <data name="GratuityThanksVideo" xml:space="preserve">
-    <value>You can attach videos to your flights</value>
+    <value>You can attach videos to your flights (Expires {0:d})</value>
   </data>
   <data name="videoDefaultYouTubeTitle" xml:space="preserve">
     <value>Video from a pilot on %APP_NAME%</value>
@@ -1663,9 +1663,15 @@
     <value>Enjoy a year's worth of eternal gratitude</value>
   </data>
   <data name="GratuityThanksEternalGratitude" xml:space="preserve">
-    <value>You will enjoy our eternal gratitude...for a year</value>
+    <value>You will enjoy our eternal gratitude...until {0:d}</value>
   </data>
   <data name="ShareKeyPermissionViewAirports" xml:space="preserve">
     <value>Airports</value>
+  </data>
+  <data name="gratuityEternalGratitudeExpired" xml:space="preserve">
+    <value>Your eternal gratitude from %APP_NAME% has ended</value>
+  </data>
+  <data name="gratuityEternalGratitudeExpiring" xml:space="preserve">
+    <value>Your eternal gratitude from %APP_NAME% will end soon</value>
   </data>
 </root>

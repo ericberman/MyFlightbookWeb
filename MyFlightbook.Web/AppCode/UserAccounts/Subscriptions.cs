@@ -462,7 +462,6 @@ namespace MyFlightbook.Subscriptions
         {
             if (ActiveBrand == null)
                 ActiveBrand = Branding.CurrentBrand;
-
             if (TasksToRun == SelectedTasks.All || TasksToRun == SelectedTasks.EmailOnly)
                 SendNightlyEmails();
 
@@ -471,10 +470,7 @@ namespace MyFlightbook.Subscriptions
                 await BackupToCloud();
 
             // Send out any notices of pending gratuity expirations
-            List<EarnedGratuity> lstEg = EarnedGratuity.GratuitiesForUser(string.Empty, Gratuity.GratuityTypes.Unknown);
-            if (!String.IsNullOrEmpty(UserRestriction))
-                lstEg.RemoveAll(eg => eg.Username.CompareCurrentCultureIgnoreCase(UserRestriction) != 0);
-            lstEg.ForEach((eg) => { eg.SendReminderIfNeeded(); });
+            EarnedGratuity.SendRemindersOfExpiringGratuities(UserRestriction);
 
             if (DateTime.Now.Day == 1)
                 Clubs.Club.SendMonthlyClubReports();

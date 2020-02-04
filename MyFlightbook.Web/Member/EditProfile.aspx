@@ -916,7 +916,7 @@
                 <ul>
                     <asp:Repeater ID="rptEarnedGratuities" runat="server">
                         <ItemTemplate>
-                            <li><%# Eval("GratuityEarned.ThankYou") %></li>
+                            <li><%# Eval("ThankYou") %></li>
                         </ItemTemplate>
                     </asp:Repeater>
                 </ul>

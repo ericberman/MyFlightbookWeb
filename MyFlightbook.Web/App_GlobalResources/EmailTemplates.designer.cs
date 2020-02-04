@@ -314,6 +314,44 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dear {0}:
+        ///
+        ///Thank-you very much for your previous donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
+        ///
+        ///Your last donation was a year ago entitled you to a year of eternal gratitude, which has now expired.
+        ///
+        ///Please consider continuing your support for %APP_NAME% with a new donation, and your eternal gratitude will resume.
+        ///
+        ///You can view your donation history and make a new donation at http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate
+        ///
+        ///Thank [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string EternalGratitudeExpired {
+            get {
+                return ResourceManager.GetString("EternalGratitudeExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dear {0}:
+        ///
+        ///Thank-you very much for your previous donation to %APP_NAME%.  Your support is very greatly appreciated, and helps to keep the service free!
+        ///
+        ///Your last donation entitled you to a year of eternal gratitude.  
+        ///
+        ///Please consider continuing your support for %APP_NAME% with a new donation, and will continue to receive eternal gratitude for another year.
+        ///
+        ///You can view your donation history and make a new donation at http://%APP_URL%%APP_ROOT%/Member/EditProfile.aspx/pftDonate
+        ///
+        ///Thanks again for [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string EternalGratitudeExpiring {
+            get {
+                return ResourceManager.GetString("EternalGratitudeExpiring", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Per your request, your flights on %APP_NAME% have been deleted.  This email contains a backup of your flights (if any) just prior to deletion, just in case..
         /// </summary>
         internal static string FlightsDeletedBody {

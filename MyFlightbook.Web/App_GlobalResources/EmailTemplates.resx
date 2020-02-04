@@ -163,6 +163,12 @@
   <data name="EnableTwitter" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Content.en\Email\EnableTwitter.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="EternalGratitudeExpired" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\eternalgratitudeexpired.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="EternalGratitudeExpiring" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\email\eternalgratitudeexpiring.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="FlightsDeletedBody" xml:space="preserve">
     <value>Per your request, your flights on %APP_NAME% have been deleted.  This email contains a backup of your flights (if any) just prior to deletion, just in case.</value>
   </data>

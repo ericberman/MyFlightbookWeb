@@ -239,20 +239,6 @@ namespace MyFlightbook.Payments
         }
 
         /// <summary>
-        /// Finds the total of payments since a given date in a list.
-        /// </summary>
-        /// <param name="dtStart">The threshold date</param>
-        /// <param name="dtEnd">The latest date to contribute</param>
-        /// <param name="lst">The list of payments</param>
-        /// <returns>The total amount of the payments</returns>
-        public static decimal PaymentsInDateRange(DateTime dtStart, DateTime dtEnd, List<Payment> lst)
-        {
-            decimal total = 0;
-            lst.ForEach((p) => { if (p.Timestamp.Date.CompareTo(dtStart) >= 0 && p.Timestamp.Date.CompareTo(dtEnd) <= 0) total += p.CreditedAmount; });
-            return total;
-        }
-
-        /// <summary>
         /// Returns the total amount paid by the specified user, net of refunds, since a specified date
         /// </summary>
         /// <param name="dt">Date in question</param>
@@ -284,17 +270,17 @@ namespace MyFlightbook.Payments
             GratuityType = GratuityTypes.Unknown;
             Window = TimeSpan.Zero;
             Threshold = 0;
-            Name = ThankYou = string.Empty;
+            Name = ThankYouTemplate = string.Empty;
         }
 
-        protected Gratuity(GratuityTypes gt, Decimal threshold, TimeSpan window, int maxreminders, string szName, string szThankyou, string szDescription) : this()
+        protected Gratuity(GratuityTypes gt, Decimal threshold, TimeSpan window, int maxreminders, string szName, string szThankyouTemplate, string szDescription) : this()
         {
             GratuityType = gt;
             Threshold = threshold;
             Window = window;
             MaxReminders = maxreminders;
             Name = szName;
-            ThankYou = szThankyou;
+            ThankYouTemplate = szThankyouTemplate;
             Description = szDescription;
         }
 
@@ -327,7 +313,7 @@ namespace MyFlightbook.Payments
         /// <summary>
         /// Text to display for "Thank-you"
         /// </summary>
-        public string ThankYou { get; set; }
+        public string ThankYouTemplate { get; set; }
 
         /// <summary>
         /// Text to display that describes the gratuity in more detail.
@@ -514,7 +500,54 @@ namespace MyFlightbook.Payments
 
     public class EternalGratitudeGratuity : Gratuity
     {
-        public EternalGratitudeGratuity() : base(GratuityTypes.EternalGratitude, 0.01M, new TimeSpan(366, 0, 0, 0), 0, Resources.LocalizedText.GratuityNameEternalGratitude, Resources.LocalizedText.GratuityThanksEternalGratitude, Resources.LocalizedText.GratuityDescriptionGratitude) { }
+        public EternalGratitudeGratuity() : base(GratuityTypes.EternalGratitude, 0.01M, new TimeSpan(366, 0, 0, 0), 2, Resources.LocalizedText.GratuityNameEternalGratitude, Resources.LocalizedText.GratuityThanksEternalGratitude, Resources.LocalizedText.GratuityDescriptionGratitude) { }
+
+        public override string ReminderSubject(EarnedGratuity eg)
+        {
+            if (eg == null)
+                throw new ArgumentNullException(nameof(eg));
+
+            switch (eg.CurrentStatus)
+            {
+                default:
+                case EarnedGratuity.EarnedGratuityStatus.OK: // shouldn't even be called in this case
+                    return string.Empty;
+                case EarnedGratuity.EarnedGratuityStatus.ExpiringSoon:
+                    if (eg.ReminderCount == 0)
+                        return Branding.ReBrand(Resources.LocalizedText.gratuityEternalGratitudeExpiring);
+                    else
+                        return string.Empty;
+                case EarnedGratuity.EarnedGratuityStatus.Expired:
+                    if (eg.ReminderCount <= 1)
+                        return Branding.ReBrand(Resources.LocalizedText.gratuityEternalGratitudeExpired);
+                    else
+                        return string.Empty;
+            }
+        }
+
+        public override string ReminderBody(EarnedGratuity eg)
+        {
+            if (eg == null)
+                throw new ArgumentNullException(nameof(eg));
+
+            Profile pf = eg.UserProfile ?? Profile.GetUser(eg.Username);
+            switch (eg.CurrentStatus)
+            {
+                default:
+                case EarnedGratuity.EarnedGratuityStatus.OK:
+                    return string.Empty;
+                case EarnedGratuity.EarnedGratuityStatus.ExpiringSoon:
+                    if (eg.ReminderCount == 0)
+                        return String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.EternalGratitudeExpiring), pf.UserFullName);
+                    else
+                        return string.Empty;
+                case EarnedGratuity.EarnedGratuityStatus.Expired:
+                    if (eg.ReminderCount <= 1)
+                        return String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.EternalGratitudeExpired), pf.UserFullName);
+                    else
+                        return string.Empty;
+            }
+        }
     }
 
     /// <summary>
@@ -565,6 +598,11 @@ namespace MyFlightbook.Payments
         /// Optionally filled in profile for the user; COULD BE NULL
         /// </summary>
         public Profile UserProfile { get; set; }
+
+        public string ThankYou
+        {
+            get { return GratuityEarned == null ? string.Empty : String.Format(CultureInfo.CurrentCulture, GratuityEarned.ThankYouTemplate, ExpirationDate); }
+        }
 
         /// <summary>
         /// Get the current status of the earned gratuity
@@ -699,10 +737,46 @@ ORDER BY dateEarned ASC ";
             return String.Format(CultureInfo.CurrentCulture, "{0} - User '{1}', earned on {2} expires on {3}", GratuityType.ToString(), Username, EarnedDate.ToShortDateString(), ExpirationDate.ToShortDateString());
         }
 
-        public bool SendReminderIfNeeded()
+        /// <summary>
+        /// Goes through all earned gratuities and sends out reminders as needed.
+        /// </summary>
+        /// <param name="userRestriction">Username desired; null or empty for all users.</param>
+        public static void SendRemindersOfExpiringGratuities(string userRestriction)
+        {
+            List<EarnedGratuity> lstEg = EarnedGratuity.GratuitiesForUser(userRestriction ?? string.Empty, Gratuity.GratuityTypes.Unknown);
+
+            // Group these by user
+            Dictionary<string, List<EarnedGratuity>> dict = new Dictionary<string, List<EarnedGratuity>>();
+            foreach (EarnedGratuity eg in lstEg)
+            {
+                // Don't waste time or space with OK gratuities
+                if (eg.CurrentStatus == EarnedGratuityStatus.OK)
+                    continue;
+
+                if (!dict.ContainsKey(eg.Username))
+                    dict[eg.Username] = new List<EarnedGratuity>();
+                dict[eg.Username].Add(eg);
+            }
+
+            foreach (string szuser in dict.Keys)
+            {
+                List<EarnedGratuity> lstForUser = dict[szuser];
+                // sort by descending threshold values.
+                lstForUser.Sort((eg1, eg2) => { return eg2.GratuityEarned.Threshold.CompareTo(eg1.GratuityEarned.Threshold); });
+
+                // Now find the highest value gratuity that needs a reminder - send the reminder for that, then set the last reminder date for any other (presumably lower-value) gratuities.
+                foreach (EarnedGratuity eg in lstForUser)
+                {
+                    if (eg.SendReminderIfNeeded())
+                        break;  // don't send any more reminders for this gratuity
+                }
+            }
+        }
+
+        protected bool SendReminderIfNeeded()
         {
             // do nothing if we aren't getting close to expiration, or if we've sent the max # of reminders
-            if (CurrentStatus == EarnedGratuityStatus.OK || ReminderCount >= GratuityEarned.MaxReminders)
+            if (CurrentStatus == EarnedGratuityStatus.OK || ReminderCount >= GratuityEarned.MaxReminders || DateTime.Now.Subtract(LastReminderDate).TotalDays < 1)
                 return false;
 
             // ensure the profile is filled in; the gratuity might want to use it.
@@ -725,10 +799,7 @@ ORDER BY dateEarned ASC ";
         }
 
         /// <summary>
-        /// Extends the expiration date the specified timespan, extending an existing 
-        /// expiration or setting a new one as appropriate.  E.g., if you are just earning 
-        /// a 1-year gratuity, sets it for 1 year from today.  If it is June 5 and your existing
-        /// gratuity expires on Aug 12, you get until Aug 12 one year beyond.
+        /// Sets the expiration date to the date of the qualifying payment
         /// </summary>
         /// <param name="p">The payment that extends the date</param>
         /// <param name="fUpdateReminderCount">Reset the reminder regime?</param>
@@ -739,13 +810,9 @@ ORDER BY dateEarned ASC ";
                 throw new ArgumentNullException(nameof(p));
 
             DateTime dtFromPayment = p.Timestamp.Add(GratuityEarned.Window);
-            DateTime dtFromExistingExpiration = ExpirationDate.Add(GratuityEarned.Window);
 
-            // Our business rule here is that if the payment is LESS than the amount required for the gratuity, we will extend from the date of the payment
-            // (Assumes that this is a top-off.  E.g., $10/month will extend month by month).
-            // BUT if the payment triggers a new gratuity match, we will extend.  E.g., pay $25 in April gets you to the following April.  But pay another $25
-            // in June and we'll extend you to the april after that.
-            DateTime dtNew = (p.Amount >= GratuityEarned.Threshold) ? dtFromPayment.LaterDate(dtFromExistingExpiration) : dtFromPayment;
+            // No later than now + window
+            DateTime dtNew = dtFromPayment.EarlierDate(DateTime.Now.Add(GratuityEarned.Window));
             if ((ExpirationDate.CompareTo(dtNew) != 0))
             {
                 ExpirationDate = dtNew;
@@ -842,8 +909,6 @@ ORDER BY dateEarned ASC ";
         /// -$25, $40, -$50 ==> -$35
         /// The business rule here is that the refund goes against the most recent prior payment
         /// This ensures that we don't over-extend the gratuity.
-        /// So if I pay $100 on June 1 2014, then $40 on Sept 1, I expire my 1-year gratuity on June 1 2016 (2 full years).
-        /// But if I then get a refund of $25 on Sept 15, I now expire on June 1 2015.
         /// </summary>
         /// <param name="lstPayments">The list of payments for the user; modified in place</param>
         private static void CompressPaymentsForUser(List<Payment> lstPayments)
@@ -889,24 +954,31 @@ ORDER BY dateEarned ASC ";
             ResetSessionForGratuities(szUser);
 
             // Go through each user's payment history (could be just the one user) and determine their gratuities.
+            // Treat this as a flight currency - look back however far is necessary to meet the threshold and compute expiration from that.
             foreach (string szKey in dictPayments.Keys)
             {
                 List<Payment> lstPayments = new List<Payment>(dictPayments[szKey]);
 
                 CompressPaymentsForUser(lstPayments);
 
+                // Reverse sort
+                lstPayments.Sort((p1, p2) => { return p2.Timestamp.CompareTo(p1.Timestamp); });
+
                 // OK, payments should be compacted - go through them and apply the gratuities
-                foreach (Payment p in lstPayments)
+                foreach (Gratuity g in lstKnownGratuities)
                 {
-                    // Now process the payment: 
-                    // Enumerate each known gratuity and, if this qualifies for the gratuity, create/extend the gratuity.
-                    foreach (Gratuity g in lstKnownGratuities)
+                    // Go backwards in time until we either hit the threshold or the window.
+                    DateTime dtEarliest = DateTime.Now.Subtract(g.Window).Date;
+
+                    decimal total = 0;
+                    foreach (Payment p in lstPayments)
                     {
-                        // see if this payment + priors qualifies
-                        if (Payment.PaymentsInDateRange(p.Timestamp.Subtract(g.Window).Date, p.Timestamp.Date, lstPayments) >= g.Threshold)
+                        if (p.Timestamp.CompareTo(dtEarliest) < 0)
+                            break;  // not earned.
+
+                        total += p.Amount;
+                        if (total >= g.Threshold)
                         {
-                            // Find the existing gratuity, if any, for the user
-                            // Add it to the list to update if we either have a new one, or if we have extended the epxiration
                             EarnedGratuity eg = lstUpdatedGratuityList.Find(eg2 => (eg2.GratuityType == g.GratuityType && eg2.Username == p.Username));
                             if (eg == null)
                             {
@@ -914,10 +986,12 @@ ORDER BY dateEarned ASC ";
                                 lstUpdatedGratuityList.Add(eg);
                             }
                             else
-                                eg.ExtendExpiration(p, fResetReminders);    // don't extend expiration for new earned gratuities; correct date is already set above.
-                            eg.EarnedDate = p.Timestamp.LaterDate(eg.EarnedDate);
-
-                            g.GratuityWasEarned(eg);   // take any action that is appropriate for the gratuity now that it is earned.
+                            {
+                                eg.EarnedDate = p.Timestamp.Date;
+                                eg.ExtendExpiration(p, fResetReminders);
+                            }
+                            g.GratuityWasEarned(eg);
+                            break;  // earned; no need to continue processing payments
                         }
                     }
                 }

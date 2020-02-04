@@ -2272,6 +2272,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your eternal gratitude from %APP_NAME% has ended.
+        /// </summary>
+        internal static string gratuityEternalGratitudeExpired {
+            get {
+                return ResourceManager.GetString("gratuityEternalGratitudeExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your eternal gratitude from %APP_NAME% will end soon.
+        /// </summary>
+        internal static string gratuityEternalGratitudeExpiring {
+            get {
+                return ResourceManager.GetString("gratuityEternalGratitudeExpiring", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create and manage flying clubs.
         /// </summary>
         internal static string GratuityNameClub {
@@ -2308,7 +2326,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can create flying clubs to schedule airplanes and report on flying.
+        ///   Looks up a localized string similar to You can create flying clubs to schedule airplanes and report on flying (Expires {0:d}).
         /// </summary>
         internal static string GratuityThanksClub {
             get {
@@ -2317,7 +2335,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your logbook will be backed up nightly to your cloud storage account (requires configuration under Preferences) for a year.
+        ///   Looks up a localized string similar to Your logbook will be saved to a cloud provider nightly (requires configuration) (Expires {0:d}).
         /// </summary>
         internal static string GratuityThanksDropbox {
             get {
@@ -2326,7 +2344,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You will enjoy our eternal gratitude...for a year.
+        ///   Looks up a localized string similar to You will enjoy our eternal gratitude...until {0:d}.
         /// </summary>
         internal static string GratuityThanksEternalGratitude {
             get {
@@ -2335,7 +2353,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can attach videos to your flights.
+        ///   Looks up a localized string similar to You can attach videos to your flights (Expires {0:d}).
         /// </summary>
         internal static string GratuityThanksVideo {
             get {

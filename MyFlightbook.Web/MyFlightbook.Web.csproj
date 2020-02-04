@@ -279,6 +279,8 @@
     <Content Include="App_GlobalResources\Content.en\Email\DropboxFailure.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\EnableFacebook.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\EnableTwitter.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpired.txt" />
+    <Content Include="App_GlobalResources\Content.en\Email\EternalGratitudeExpiring.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\GoogleDriveFailure.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\OneDriveFailure.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\PasswordChanged.txt" />
