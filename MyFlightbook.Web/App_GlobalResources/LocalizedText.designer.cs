@@ -3496,7 +3496,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose up to 4 additional columns to display:.
+        ///   Looks up a localized string similar to Choose up to 4 additional columns:.
         /// </summary>
         internal static string PrintViewOptionalColumns {
             get {
@@ -3523,7 +3523,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exclude these properties when printing:.
+        ///   Looks up a localized string similar to Exclude these properties from print view:.
         /// </summary>
         internal static string PrintViewPropertyInclusion {
             get {

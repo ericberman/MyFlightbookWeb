@@ -1419,7 +1419,7 @@
     <value>Printing of flight properties</value>
   </data>
   <data name="PrintViewPropertyInclusion" xml:space="preserve">
-    <value>Exclude these properties when printing:</value>
+    <value>Exclude these properties from print view:</value>
   </data>
   <data name="PrintViewPropertySeparator" xml:space="preserve">
     <value>Separate Properties with:</value>
@@ -1452,7 +1452,7 @@
     <value>(None)</value>
   </data>
   <data name="PrintViewOptionalColumns" xml:space="preserve">
-    <value>Choose up to 4 additional columns to display:</value>
+    <value>Choose up to 4 additional columns:</value>
   </data>
   <data name="PDFMargin" xml:space="preserve">
     <value>Margins (mm)</value>
