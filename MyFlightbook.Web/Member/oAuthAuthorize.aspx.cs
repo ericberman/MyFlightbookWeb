@@ -12,7 +12,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -61,11 +61,17 @@ public partial class Secure_oAuthAuthorize : System.Web.UI.Page
             else
                 m_pendingRequest = (EndUserAuthorizationRequest)ViewState[szVSKeyPendingRequest];
         }
-        catch (HttpException ex)
+        catch (Exception ex) when (ex is HttpException || ex is ProtocolException || ex is ProtocolFaultResponseException)
         {
-            RejectWithError(ex.Message);
+            if (m_pendingRequest != null)
+                RejectWithError(ex.Message);
+            else
+            {
+                lblErr.Text = ex.Message;
+                mvAuthorize.SetActiveView(vwErr);
+            }
         }
-        catch (MyFlightbook.MyFlightbookException ex)
+        catch (Exception ex) when (ex is MyFlightbook.MyFlightbookException)
         {
             lblErr.Text = ex.Message;
             mvAuthorize.SetActiveView(vwErr);
@@ -85,7 +91,6 @@ public partial class Secure_oAuthAuthorize : System.Web.UI.Page
         if (m_pendingRequest == null)
             throw new HttpException((int)HttpStatusCode.BadRequest, Resources.LocalizedText.oAuthErrMissingRequest);
 
-        MFBOauth2Client client = (MFBOauth2Client) authorizationServer.AuthorizationServerServices.GetClient(m_pendingRequest.ClientIdentifier);
         MFBOauthClientAuth ca = new MFBOauthClientAuth { Scope = OAuthUtilities.JoinScopes(m_pendingRequest.Scope), ClientId = m_pendingRequest.ClientIdentifier, UserId = Page.User.Identity.Name, ExpirationDateUtc = DateTime.UtcNow.AddDays(14) };
         if (ca.fCommit())
         {
