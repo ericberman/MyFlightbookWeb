@@ -328,10 +328,11 @@
                     </cc1:AccordionPane>
                     <cc1:AccordionPane runat="server" ID="acpProperties" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpPropertiesResource1">
                         <Header>
-                            <asp:Localize ID="locPropertiesHeader" runat="server" Text="Flight Properties" meta:resourcekey="locPropertiesHeaderResource1"></asp:Localize>
+                            <asp:Localize ID="locPropertiesHeader" runat="server" Text="Flight Properties and Templates" meta:resourcekey="locPropertiesHeaderResource1"></asp:Localize>
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
+                                <h2><asp:Localize ID="locPropHeader" runat="server" Text="<%$ Resources:LogbookEntry, PropertiesHeader %>"></asp:Localize></h2>
                                 <p><asp:Localize ID="lblPropertyDesc" runat="server" Text="Properties that you have used on previous flights are automatically shown for new flights.  To reduce clutter, though, you can choose to not display some by default." meta:resourcekey="lblPropertyDescResource1"></asp:Localize></p>
                                 <p><asp:Localize ID="locInstructions" runat="server" Text="Drag and drop between the two lists below if using a mouse; if using touch, press-and-hold to move an item between lists." meta:resourcekey="locInstructionsResource1"></asp:Localize></p>
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel1">
@@ -382,10 +383,10 @@
                                                 </td>
                                             </tr>
                                         </table>
+                                        <uc1:mfbEditPropTemplate runat="server" ID="mfbEditPropTemplate" />
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
-                            <uc1:mfbEditPropTemplate runat="server" ID="mfbEditPropTemplate" />
                         </Content>
                     </cc1:AccordionPane>
                     <cc1:AccordionPane ID="acpCurrency" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpCurrencyResource1">

@@ -4,13 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web;
-using System.Web.Services;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -69,7 +67,7 @@ public partial class Member_BrowseTemplates : System.Web.UI.Page
     protected void gvTemplates_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (e.CommandName.CompareCurrentCultureIgnoreCase("_add") == 0)
         {
@@ -88,7 +86,7 @@ public partial class Member_BrowseTemplates : System.Web.UI.Page
     protected void gvTemplates_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (e.Row.RowType == DataControlRowType.DataRow)
         {

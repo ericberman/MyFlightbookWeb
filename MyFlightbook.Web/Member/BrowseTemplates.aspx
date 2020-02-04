@@ -2,6 +2,7 @@
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><asp:Localize ID="locHeader" runat="server" Text="<%$ Resources:LogbookEntry, TemplateBrowseTemplatesheader %>"></asp:Localize></asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
+    <p><asp:HyperLink ID="lnkReturn" runat="server" Text="<%$ Resources:LogbookEntry, TemplateBrowseReturn %>" NavigateUrl="~/Member/EditProfile.aspx/pftPrefs?pane=props"></asp:HyperLink></p>
     <p><asp:Label ID="lblDesc1" runat="server"></asp:Label></p>
     <p><asp:Label ID="lblDesc2" runat="server" Text="<%$ Resources:LogbookEntry, TemplateBrowseHeaderDescription2 %>"></asp:Label></p>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -10,7 +11,7 @@
                 <Columns>
                     <asp:TemplateField ItemStyle-VerticalAlign="Top">
                         <ItemTemplate>
-                            <h3><asp:Label ID="lblGroupName" runat="server" Text='<%# Eval("GroupName") %>' /></h3>
+                            <div style="border-bottom: 1px solid gray; margin-top: 3px; text-align:center; font-weight:bold; font-size: larger;"><asp:Label ID="lblGroupName" runat="server" Text='<%# Eval("GroupName") %>' /></div>
                             <asp:GridView ID="gvTemplates" runat="server" Width="100%" DataSource='<%# Eval("Templates") %>' CellPadding="3" GridLines="None" ShowFooter="false" ShowHeader="false" AutoGenerateColumns="false"
                                 OnRowCommand="gvTemplates_RowCommand" OnRowDataBound="gvTemplates_RowDataBound">
                                 <Columns>
@@ -32,7 +33,7 @@
                                         <ItemTemplate>
                                             <asp:MultiView ID="mvStatus" runat="server">
                                                 <asp:View ID="vwOwned" runat="server">
-                                                    <asp:Label ID="lblOwned" runat="server" Text="<%$ Resources:LogbookEntry, TemplateYours %>" Font-Italic="true"></asp:Label>
+                                                    <asp:Label ID="lblOwned" runat="server" Text="<%$ Resources:LogbookEntry, TemplateYours %>" Font-Bold="true" Font-Size="Larger"></asp:Label>
                                                 </asp:View>
                                                 <asp:View ID="vwUnOwned" runat="server">
                                                     <ajaxToolkit:ConfirmButtonExtender ID="confirmOverwrite" runat="server" ConfirmText='<%# String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateBrowseAddPublicOverwrite, Eval("Name")) %>'

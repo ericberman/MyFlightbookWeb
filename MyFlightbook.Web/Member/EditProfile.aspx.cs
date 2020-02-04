@@ -346,6 +346,9 @@ public partial class Member_EditProfile : System.Web.UI.Page
                 case "cloudahoy":
                     acpTarget = acpCloudAhoy;
                     break;
+                case "props":
+                    acpTarget = acpProperties;
+                    break;
                 default:
                     break;
             }

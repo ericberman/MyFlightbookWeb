@@ -2298,6 +2298,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight Properties.
+        /// </summary>
+        internal static string PropertiesHeader {
+            get {
+                return ResourceManager.GetString("PropertiesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to . - - - {0} - - -.
         /// </summary>
         internal static string PropertyGroupSeparator {
@@ -2819,6 +2828,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ← Return to my templates.
+        /// </summary>
+        internal static string TemplateBrowseReturn {
+            get {
+                return ResourceManager.GetString("TemplateBrowseReturn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse available templates.
         /// </summary>
         internal static string TemplateBrowseTemplates {
@@ -2864,6 +2882,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy this template.
+        /// </summary>
+        internal static string TemplateCopy {
+            get {
+                return ResourceManager.GetString("TemplateCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - Copy.
+        /// </summary>
+        internal static string TemplateCopyTemplate {
+            get {
+                return ResourceManager.GetString("TemplateCopyTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save Template.
         /// </summary>
         internal static string TemplateCreate {
@@ -2873,7 +2909,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use by&lt;br /&gt;default.
+        ///   Looks up a localized string similar to Default.
         /// </summary>
         internal static string TemplateDefaultHeader {
             get {
@@ -3098,7 +3134,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Available to others.
+        ///   Looks up a localized string similar to Share with others.
         /// </summary>
         internal static string TemplateShare {
             get {
@@ -3125,7 +3161,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (Already in your account).
+        ///   Looks up a localized string similar to ✓.
         /// </summary>
         internal static string TemplateYours {
             get {

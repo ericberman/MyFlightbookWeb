@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -120,8 +120,7 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         try
         {
             ActiveTemplate.Commit();
-            if (TemplateCreated != null)
-                TemplateCreated(this, new PropertyTemplateEventArgs(ActiveTemplate));
+            TemplateCreated?.Invoke(this, new PropertyTemplateEventArgs(ActiveTemplate));
 
             // Clear for the next
             ActiveTemplate = new UserPropertyTemplate();
@@ -134,10 +133,10 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         }
     }
 
-    protected UserPropertyTemplate Target(Control c)
+    protected static UserPropertyTemplate Target(Control c)
     {
         if (c == null)
-            throw new ArgumentNullException("c");
+            throw new ArgumentNullException(nameof(c));
         HiddenField h = (HiddenField)c.NamingContainer.FindControl("hdnID");
         UserPropertyTemplate pt = new UserPropertyTemplate(Convert.ToInt32(h.Value, CultureInfo.InvariantCulture));
         return pt;
@@ -146,8 +145,7 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
     protected void ckIsPublic_CheckedChanged(object sender, EventArgs e)
     {
         if (sender == null)
-            throw new ArgumentNullException("sender");
-
+            throw new ArgumentNullException(nameof(sender));
 
         CheckBox ck = (CheckBox)sender;
         UserPropertyTemplate pt = Target(ck);
@@ -167,20 +165,20 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         pt.Commit();
     }
 
-    protected void imgbtnEdit_Click(object sender, ImageClickEventArgs e)
+    protected void imgbtnEdit_Click(object sender, EventArgs e)
     {
-        ActiveTemplate = Target(sender as Control);
+        ActiveTemplate = Target((sender as Control).NamingContainer);
         ToForm();
         cpeNewTemplate.Collapsed = false;
         cpeNewTemplate.ClientState = "false";
     }
 
-    protected void imgDelete_Click(object sender, ImageClickEventArgs e)
+    protected void imgDelete_Click(object sender, EventArgs e)
     {
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
 
-        PersistablePropertyTemplate pt = Target(sender as Control);
+        PersistablePropertyTemplate pt = Target((sender as Control).NamingContainer);
 
         // Remove this from any aircraft templates that it may be associated with
         UserAircraft ua = new UserAircraft(pt.Owner);
@@ -199,6 +197,24 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         ToForm();
     }
 
+    protected void imgCopy_Click(object sender, EventArgs e)
+    {
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
+
+        UserPropertyTemplate pt = Target((sender as Control).NamingContainer);
+        pt.Name = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateCopyTemplate, pt.Name);
+        pt.ID = (int)KnownTemplateIDs.ID_NEW;
+        pt.Commit();
+
+        // And set up to edit this.
+        ActiveTemplate = pt;
+        cpeNewTemplate.Collapsed = false;
+        cpeNewTemplate.ClientState = "false";
+
+        ToForm();
+    }
+
     protected void ckDefault_CheckedChanged(object sender, EventArgs e)
     {
         CheckBox ck = sender as CheckBox;
@@ -207,7 +223,6 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         pt.Commit();
         ToForm();
     }
-
 
     protected bool MatchesFilter(string text)
     {
@@ -236,5 +251,15 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
     protected void searchProps_SearchClicked(object sender, EventArgs e)
     {
         UpdateLists();
+    }
+
+    protected void rptTemplates_ItemDataBound(object sender, RepeaterItemEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        Controls_popmenu pop = (Controls_popmenu) e.Item.FindControl("popmenu");
+        PersistablePropertyTemplate pt = (PersistablePropertyTemplate) e.Item.DataItem;
+        pop.FindControl("imgbtnEdit").Visible = pop.FindControl("lnkEditTemplate").Visible = pt.IsMutable;
     }
 }
