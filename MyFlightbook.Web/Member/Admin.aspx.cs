@@ -987,6 +987,8 @@ GROUP BY ac.idaircraft";
         IEnumerable<Payment> lst = Payment.AllRecords();
         foreach (Payment p in lst)
         {
+            if (String.IsNullOrEmpty(p.TransactionID) || String.IsNullOrEmpty(p.TransactionNotes))
+                continue;
             System.Collections.Specialized.NameValueCollection nvc = HttpUtility.ParseQueryString(p.TransactionNotes);
             p.Fee = Math.Abs(Convert.ToDecimal(nvc["mc_fee"], CultureInfo.InvariantCulture));
             if (p.Type == Payment.TransactionType.Payment || p.Type == Payment.TransactionType.Refund)
@@ -1029,19 +1031,7 @@ GROUP BY ac.idaircraft";
 
     protected void btnResetGratuities_Click(object sender, EventArgs e)
     {
-        if (String.IsNullOrEmpty(txtDonationUser.Text))
-        {
-            List<string> lstDonors = new List<string>();
-            DBHelper dbh = new DBHelper("select distinct(username) from payments");
-            dbh.ReadRows((comm) => { }, (dr) => { lstDonors.Add((string)dr["username"]); });
-
-            foreach (string szUser in lstDonors)
-                EarnedGratuity.UpdateEarnedGratuities(szUser, ckResetGratuityReminders.Checked);
-        }
-        else
-        {
-            EarnedGratuity.UpdateEarnedGratuities(txtDonationUser.Text, ckResetGratuityReminders.Checked);
-        }
+        EarnedGratuity.UpdateEarnedGratuities(txtDonationUser.Text, ckResetGratuityReminders.Checked);
     }
 
     protected void btnEnterTestTransaction_Click(object sender, EventArgs e)

@@ -960,20 +960,17 @@ ORDER BY dateEarned ASC ";
         /// <param name="fResetReminders">True to reset reminders to 0 (i.e., no reminders sent)</param>
         public static void UpdateEarnedGratuities(string szUser, bool fResetReminders)
         {
-            if (String.IsNullOrEmpty(szUser))
-                return;
-
             Dictionary<string, Collection<Payment>> dictPayments = PaymentListsForUser(szUser);
 
             IEnumerable<Gratuity> lstKnownGratuities = Gratuity.KnownGratuities;
             List<EarnedGratuity> lstUpdatedGratuityList = new List<EarnedGratuity>();
 
-            ResetSessionForGratuities(szUser);
-
             // Go through each user's payment history (could be just the one user) and determine their gratuities.
             // Treat this as a flight currency - look back however far is necessary to meet the threshold and compute expiration from that.
             foreach (string szKey in dictPayments.Keys)
             {
+                ResetSessionForGratuities(szUser);
+
                 List<Payment> lstPayments = new List<Payment>(dictPayments[szKey]);
 
                 CompressPaymentsForUser(lstPayments);
@@ -1019,22 +1016,10 @@ ORDER BY dateEarned ASC ";
 
             foreach (EarnedGratuity eg in lstUpdatedGratuityList)
             {
-                // if this exists as an existing earned gratuity, update the expiration date on that one and save it OR if reseting
-                EarnedGratuity egExisting = lstExistingEarnedGratuities.Find(eg2 => (eg2.GratuityType == eg.GratuityType && eg2.Username == eg.Username));
-
-                if (egExisting == null) // not found - this one is new
-                    eg.Commit();
-                else
-                {
-                    int prevReminderCount = egExisting.ReminderCount;
-                    if (fResetReminders)
-                        egExisting.ReminderCount = 0;
-                    egExisting.ExpirationDate = eg.ExpirationDate;
-                    // Only save to database if expiration date or reminders changed
-                    if (eg.ReminderCount != egExisting.ReminderCount || egExisting.ReminderCount != prevReminderCount || eg.ExpirationDate.CompareTo(egExisting.ExpirationDate) != 0 || eg.EarnedDate.CompareTo(egExisting.EarnedDate) != 0)
-                        egExisting.Commit();
-                    lstExistingEarnedGratuities.Remove(egExisting);
-                }
+                // save this one
+                eg.Commit();
+                // And remove it from the list of prior earned gratuities (we'll remove any stragglers below)
+                lstExistingEarnedGratuities.RemoveAll(eg2 => (eg2.GratuityType == eg.GratuityType && eg2.Username == eg.Username));
             }
 
             // Anything that is left is no longer found (e.g., if a payment was deleted)
