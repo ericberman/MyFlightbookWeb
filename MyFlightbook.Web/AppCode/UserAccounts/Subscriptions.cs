@@ -3,6 +3,7 @@ using MyFlightbook.Payments;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -18,7 +19,7 @@ namespace MyFlightbook.Subscriptions
     /// <summary>
     /// Possible email subscriptions
     /// </summary>
-    public enum SubscriptionType { Currency, Totals, MonthlyTotals };
+    public enum SubscriptionType { Currency, Totals, MonthlyTotals, Expiration };
 
     /// <summary>
     /// An individual subscription.
@@ -51,6 +52,8 @@ namespace MyFlightbook.Subscriptions
                     return Resources.Profile.EmailTotalsName;
                 case SubscriptionType.MonthlyTotals:
                     return Resources.Profile.EmailMonthlyName;
+                case SubscriptionType.Expiration:
+                    return Resources.Profile.EmailCurrencyExpiration;
                 default:
                     return String.Empty;
             }
@@ -121,10 +124,17 @@ namespace MyFlightbook.Subscriptions
         public string UserRestriction { get; set; }
         #endregion
 
+        #region constructors
         public EmailSubscriptionManager()
         {
             TasksToRun = SelectedTasks.All;
         }
+
+        public EmailSubscriptionManager(UInt32 u) : this()
+        {
+            FromUInt(u);
+        }
+        #endregion
 
         /// <summary>
         /// Initializes the subscriptions from a bit-field of subscriptions
@@ -178,22 +188,43 @@ namespace MyFlightbook.Subscriptions
             ToUint();
         }
 
-        public EmailSubscriptionManager(UInt32 u)
-        {
-            TasksToRun = SelectedTasks.All;
-            FromUInt(u);
-        }
-
         /// <summary>
         /// Sends the nightly/monthly emails for users that have requested it.
         /// </summary>
         private void SendNightlyEmails()
         {
+            // Find all users who have expiring currencies - they may trigger an early email.
+            List<EarnedGratuity> lstUsersWithExpiringCurrencies = EarnedGratuity.GratuitiesForUser(null, Gratuity.GratuityTypes.CurrencyAlerts);
+            if (!String.IsNullOrEmpty(UserRestriction))
+                lstUsersWithExpiringCurrencies.RemoveAll(eg => eg.Username.CompareCurrentCultureIgnoreCase(UserRestriction) != 0);
+
             // get the list of people who have a subscription OTHER than simple monthly
             List<Profile> lstUsersToSend = new List<Profile>(Profile.UsersWithSubscriptions(~EmailSubscription.FlagForType(SubscriptionType.MonthlyTotals), DateTime.Now.AddDays(-7)));
 
             if (!String.IsNullOrEmpty(UserRestriction))
                 lstUsersToSend.RemoveAll(pf => pf.UserName.CompareOrdinalIgnoreCase(UserRestriction) != 0);
+
+            // See who has expiring currencies that require notification.
+            foreach (EarnedGratuity eg in lstUsersWithExpiringCurrencies)
+            {
+                IEnumerable<FlightCurrency.CurrencyStatusItem> expiringCurrencies = FlightCurrency.CurrencyStatusItem.CheckForExpiringCurrencies(eg.State, eg.Username, out string newState);
+                if (newState.CompareOrdinal(eg.State) != 0)
+                {
+                    eg.State = newState;
+                    eg.Commit();
+                }
+                if (expiringCurrencies.Count() > 0)
+                {
+                    Profile pf = Profile.GetUser(eg.Username);
+                    if (SendMailForUser(pf, Resources.Profile.EmailCurrencyExpiringMailSubject, string.Empty))
+                    {
+                        // Don't send the weekly mail, since we just pre-empted it.
+                        lstUsersToSend.RemoveAll(p => pf.UserName.CompareCurrentCultureIgnoreCase(eg.Username) == 0);
+                        pf.LastEmailDate = DateTime.Now;
+                        pf.FCommit();
+                    }
+                }
+            }
 
             foreach (Profile pf in lstUsersToSend)
             {

@@ -1,0 +1,2 @@
+﻿ALTER TABLE `logbook`.`earnedgratuities` 
+ADD COLUMN `state` TEXT NULL DEFAULT NULL COMMENT 'Any additional state for the earned gratuity; format is unique to each gratuity type' AFTER `dateLastReminder`;

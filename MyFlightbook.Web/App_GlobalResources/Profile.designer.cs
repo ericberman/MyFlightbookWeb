@@ -529,6 +529,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Or as needed when currency expires or gets close to expiration.
+        /// </summary>
+        internal static string EmailCurrencyExpiration {
+            get {
+                return ResourceManager.GetString("EmailCurrencyExpiration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Support %APP_NAME% for US$15 to get this feature for a year!.
+        /// </summary>
+        internal static string EmailCurrencyExpirationPromotion {
+            get {
+                return ResourceManager.GetString("EmailCurrencyExpirationPromotion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have flying currency that has expired or is expiring soon.
+        /// </summary>
+        internal static string EmailCurrencyExpiringMailSubject {
+            get {
+                return ResourceManager.GetString("EmailCurrencyExpiringMailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your currency as of {0}.
         /// </summary>
         internal static string EmailCurrencyHeader {

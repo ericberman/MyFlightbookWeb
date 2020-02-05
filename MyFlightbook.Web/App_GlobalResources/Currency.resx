@@ -947,4 +947,7 @@
   <data name="FAR135267BStatus" xml:space="preserve">
     <value>{0} hours of flying in past 24 hours</value>
   </data>
+  <data name="CurrencyExpiringHeader" xml:space="preserve">
+    <value>The following currencies are getting close to expiring or have recently expired:</value>
+  </data>
 </root>

@@ -334,7 +334,7 @@ namespace MyFlightbook.Payments
         #endregion
 
         #region GratuityFactory
-        public enum GratuityTypes { Unknown, CloudBackup, Videos, CreateClub, EternalGratitude };
+        public enum GratuityTypes { Unknown, CloudBackup, Videos, CreateClub, EternalGratitude, CurrencyAlerts };
 
         /// <summary>
         /// Return a concrete gratuity from a specified gratuitytype.
@@ -353,6 +353,8 @@ namespace MyFlightbook.Payments
                     return new CreateClubGratuity();
                 case GratuityTypes.EternalGratitude:
                     return new EternalGratitudeGratuity();
+                case GratuityTypes.CurrencyAlerts:
+                    return new CurrencyAlertGratuity();
                 case GratuityTypes.Unknown:
                 default:
                     return null;
@@ -398,6 +400,7 @@ namespace MyFlightbook.Payments
         public virtual void GratuityWasEarned(EarnedGratuity eg) { }
     }
 
+    #region Concrete Gratuities
     /// <summary>
     /// You get nightly dropbox
     /// </summary>
@@ -550,6 +553,12 @@ namespace MyFlightbook.Payments
         }
     }
 
+    public class CurrencyAlertGratuity : Gratuity
+    {
+        public CurrencyAlertGratuity() : base(GratuityTypes.CurrencyAlerts, 15, new TimeSpan(366, 0, 0, 0), 0, Resources.LocalizedText.GratuityNameCurrencyNotifications, Resources.LocalizedText.GratuityThanksCurrencyNotification, Resources.LocalizedText.GratuityDescriptionCurrencyNotification) { }
+    }
+    #endregion
+
     /// <summary>
     /// An instance of a gratuity that has been earned by a user and which expires on a particular date.
     /// EarnedGratuities encapsulate the business rules for determining qualification and fulfillment of a gratuity
@@ -599,6 +608,11 @@ namespace MyFlightbook.Payments
         /// </summary>
         public Profile UserProfile { get; set; }
 
+        /// <summary>
+        /// Any state information for the gratuity - CAN BE NULL
+        /// </summary>
+        public string State { get; set; }
+
         public string ThankYou
         {
             get { return GratuityEarned == null ? string.Empty : String.Format(CultureInfo.CurrentCulture, GratuityEarned.ThankYouTemplate, ExpirationDate); }
@@ -630,6 +644,7 @@ namespace MyFlightbook.Payments
             GratuityType = Gratuity.GratuityTypes.Unknown;
             GratuityEarned = null;
             UserProfile = null;
+            State = null;
         }
 
         protected EarnedGratuity(MySqlDataReader dr) : this()
@@ -643,6 +658,7 @@ namespace MyFlightbook.Payments
             ExpirationDate = Convert.ToDateTime(dr["dateExpired"], CultureInfo.InvariantCulture);
             ReminderCount = Convert.ToInt32(dr["remindersSent"], CultureInfo.InvariantCulture);
             LastReminderDate = Convert.ToDateTime(dr["dateLastReminder"], CultureInfo.InvariantCulture);
+            State = (string) util.ReadNullableField(dr, "state", null);
             UserProfile = null;
             try
             {
@@ -669,9 +685,9 @@ namespace MyFlightbook.Payments
         #endregion
 
         #region DB
-        protected virtual void Commit()
+        public void Commit()
         {
-            DBHelper dbh = new DBHelper("REPLACE INTO earnedgratuities SET username=?user, idGratuityType=?gt, dateEarned=?earnedDate, dateExpired=?expireDate, remindersSent=?reminderCount, dateLastReminder=?lastReminderDate");
+            DBHelper dbh = new DBHelper("REPLACE INTO earnedgratuities SET username=?user, idGratuityType=?gt, dateEarned=?earnedDate, dateExpired=?expireDate, remindersSent=?reminderCount, dateLastReminder=?lastReminderDate, state=?state");
             dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("user", Username);
@@ -680,6 +696,7 @@ namespace MyFlightbook.Payments
                 comm.Parameters.AddWithValue("expireDate", ExpirationDate);
                 comm.Parameters.AddWithValue("reminderCount", ReminderCount);
                 comm.Parameters.AddWithValue("lastReminderDate", LastReminderDate);
+                comm.Parameters.AddWithValue("state", State);
             });
         }
 

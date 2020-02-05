@@ -30,6 +30,16 @@
     </div>
     <asp:Panel ID="pnlCurrency" runat="server" Visible="false" EnableViewState="false">
         <h2><asp:Label ID="lblCurrency" runat="server" Text=""></asp:Label></h2>
+        <asp:Panel ID="pnlExpiringCurrencies" runat="server" Visible="false">
+            <h3><asp:Label ID="lblExpiring" runat="server" Text="<%$ Resources:Currency, CurrencyExpiringHeader %>"></asp:Label></h3>
+            <ul>
+                <asp:Repeater ID="rptExpiring" runat="server">
+                    <ItemTemplate>
+                        <li><%# Eval("Attribute") %></li>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </ul>
+        </asp:Panel>
         <uc3:mfbCurrency ID="mfbCurrency" UseInlineFormatting="true" runat="server" EnableViewState="false" />
     </asp:Panel>
     <asp:Panel ID="pnlTotals" runat="server" Visible="false" EnableViewState="false">

@@ -1,6 +1,7 @@
 using MyFlightbook;
 using MyFlightbook.FlightCurrency;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
 using System.Web.UI;
@@ -128,9 +129,13 @@ public partial class Controls_mfbCurrency : System.Web.UI.UserControl
         }
     }
 
-    public void RefreshCurrencyTable()
+    /// <summary>
+    /// Updates the table of currencies for the user
+    /// </summary>
+    /// <param name="rgcsi">Optional set of currencies to pass.  If null, the specified username (if available) or the currently authenticated user (if not) is used</param>
+    public void RefreshCurrencyTable(IEnumerable<CurrencyStatusItem> rgcsi = null)
     {
-        gvCurrency.DataSource = CurrencyStatusItem.GetCurrencyItemsForUser(String.IsNullOrEmpty(UserName) ? Page.User.Identity.Name : UserName);
+        gvCurrency.DataSource = rgcsi ?? (CurrencyStatusItem.GetCurrencyItemsForUser(String.IsNullOrEmpty(UserName) ? Page.User.Identity.Name : UserName));
         gvCurrency.DataBind();
 
         // HACK - We do this here because Page_Load may not be called if this is for an RSS feed, and it needs to be an absolute URL (including branded host name) for scenarios like that

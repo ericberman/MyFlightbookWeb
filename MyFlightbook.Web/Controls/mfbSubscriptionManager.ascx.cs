@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using MyFlightbook;
+﻿using MyFlightbook;
+using MyFlightbook.Payments;
 using MyFlightbook.Subscriptions;
+using System;
+using System.Collections.Generic;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,13 +21,15 @@ public partial class Controls_mfbSubscriptionManager : System.Web.UI.UserControl
 
         if (!IsPostBack)
         {
+            lblCurrencyExpirationPromotion.Text = Branding.ReBrand(Resources.Profile.EmailCurrencyExpirationPromotion);
+            rowPromo.Visible = !(ckCurrencyExpiring.Enabled = EarnedGratuity.UserQualifies(Page.User.Identity.Name, Gratuity.GratuityTypes.CurrencyAlerts));
+
             EmailSubscriptionManager esm = new EmailSubscriptionManager(m_pf.Subscriptions);
-            foreach (EmailSubscription es in esm.Subscriptions)
-            {
-                ListItem li = new ListItem(es.Name, es.Type.ToString(), true);
-                li.Selected = es.IsSubscribed;
-                cklEmailSubscriptions.Items.Add(li);
-            }
+
+            ckCurrencyWeekly.Checked = esm.HasSubscription(SubscriptionType.Currency);
+            ckCurrencyExpiring.Checked = esm.HasSubscription(SubscriptionType.Expiration);
+            ckTotalsWeekly.Checked = esm.HasSubscription(SubscriptionType.Totals);
+            ckMonthly.Checked = esm.HasSubscription(SubscriptionType.MonthlyTotals);
         }
     }
 
@@ -36,12 +37,12 @@ public partial class Controls_mfbSubscriptionManager : System.Web.UI.UserControl
     {
         Profile m_pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
 
-        List<EmailSubscription> l = new List<EmailSubscription>();
-        foreach (ListItem li in cklEmailSubscriptions.Items)
-            l.Add(new EmailSubscription((SubscriptionType)Enum.Parse(typeof(SubscriptionType), li.Value), li.Text, li.Selected));
-
         EmailSubscriptionManager esm = new EmailSubscriptionManager(m_pf.Subscriptions);
-        esm.Subscriptions = l;
+        esm.SetSubscription(SubscriptionType.Currency, ckCurrencyWeekly.Checked);
+        esm.SetSubscription(SubscriptionType.Expiration, ckCurrencyExpiring.Checked);
+        esm.SetSubscription(SubscriptionType.Totals, ckTotalsWeekly.Checked);
+        esm.SetSubscription(SubscriptionType.MonthlyTotals, ckMonthly.Checked);
+
         m_pf.Subscriptions = esm.ToUint();
 
         try

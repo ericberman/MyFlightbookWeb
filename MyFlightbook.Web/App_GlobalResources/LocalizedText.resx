@@ -1674,4 +1674,13 @@
   <data name="gratuityEternalGratitudeExpiring" xml:space="preserve">
     <value>Your eternal gratitude from %APP_NAME% will end soon</value>
   </data>
+  <data name="GratuityDescriptionCurrencyNotification" xml:space="preserve">
+    <value>Each night we check your currency, including things like medical expiration and flight reviews.  If a currency gets close to its expiration - or expires - we'll send you an email notification!</value>
+  </data>
+  <data name="GratuityNameCurrencyNotifications" xml:space="preserve">
+    <value>Get notified when a currency will expire</value>
+  </data>
+  <data name="GratuityThanksCurrencyNotification" xml:space="preserve">
+    <value>You can sign up to receive notifications when currencies near expiration (Expires {0:d})</value>
+  </data>
 </root>

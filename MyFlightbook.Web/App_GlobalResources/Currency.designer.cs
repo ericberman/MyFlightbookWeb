@@ -166,6 +166,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The following currencies are getting close to expiring or have recently expired:.
+        /// </summary>
+        internal static string CurrencyExpiringHeader {
+            get {
+                return ResourceManager.GetString("CurrencyExpiringHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Some important notes about currency calculations!.
         /// </summary>
         internal static string CurrencyImportantNotes {

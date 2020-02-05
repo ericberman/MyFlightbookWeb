@@ -821,6 +821,7 @@
     <Content Include="SecurityError.aspx" />
     <Content Include="Shunt.aspx" />
     <Content Include="Support\2020-01-24 - create sharekeys table.txt" />
+    <Content Include="Support\2020-02-04 - State for earned gratuities.txt" />
     <Content Include="Support\CleanDB.txt" />
     <Content Include="Support\MinimalDB-2019-11-27.sql" />
     <Content Include="Support\wkhtmltox-0.12.4_msvc2015-win64.exe" />

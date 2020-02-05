@@ -2236,6 +2236,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Each night we check your currency, including things like medical expiration and flight reviews.  If a currency gets close to its expiration - or expires - we&apos;ll send you an email notification!.
+        /// </summary>
+        internal static string GratuityDescriptionCurrencyNotification {
+            get {
+                return ResourceManager.GetString("GratuityDescriptionCurrencyNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Of course, your data is already in the cloud and backed up!  And you can link your account to Dropbox, OneDrive, or Google Drive and save a copy of your flights to any of these services at any time.  This gratuity will &quot;press the button&quot; on your behalf every night for a year, giving you a nightly off-line spreadsheet with your flights..
         /// </summary>
         internal static string GratuityDescriptionDropbox {
@@ -2299,6 +2308,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get notified when a currency will expire.
+        /// </summary>
+        internal static string GratuityNameCurrencyNotifications {
+            get {
+                return ResourceManager.GetString("GratuityNameCurrencyNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Receive nightly backup to a cloud storage provider for a year.
         /// </summary>
         internal static string GratuityNameDropbox {
@@ -2331,6 +2349,15 @@ namespace Resources {
         internal static string GratuityThanksClub {
             get {
                 return ResourceManager.GetString("GratuityThanksClub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can sign up to receive notifications when currencies near expiration (Expires {0:d}).
+        /// </summary>
+        internal static string GratuityThanksCurrencyNotification {
+            get {
+                return ResourceManager.GetString("GratuityThanksCurrencyNotification", resourceCulture);
             }
         }
         

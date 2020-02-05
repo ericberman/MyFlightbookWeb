@@ -1,9 +1,12 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Encryptors;
+using MyFlightbook.FlightCurrency;
 using MyFlightbook.Payments;
 using MyFlightbook.Subscriptions;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Web;
 using System.Web.UI;
@@ -19,32 +22,24 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
 {
     protected void KickOffRun()
     {
-        // see if this is coming from the local machine
-        string szIPThis = System.Net.Dns.GetHostAddresses(Request.Url.Host)[0].ToString();
-        if (String.Compare(Request.UserHostAddress, szIPThis, StringComparison.CurrentCultureIgnoreCase) == 0)
-        {
-            // request came from this machine - make a request to ourselves and send it out in email
-            EmailSubscriptionManager em = new EmailSubscriptionManager() { ActiveBrand = Branding.CurrentBrand };
-            if (util.GetIntParam(Request, "dbg", 0) != 0)
-                em.UserRestriction = Page.User.Identity.Name;
-            string szTasksToRun = util.GetStringParam(Request, "tasks");
-            if (!String.IsNullOrEmpty(szTasksToRun))
-            {
-                try { em.TasksToRun = (EmailSubscriptionManager.SelectedTasks)Convert.ToInt32(szTasksToRun, CultureInfo.InvariantCulture); }
-                catch (FormatException)
-                { em.TasksToRun = EmailSubscriptionManager.SelectedTasks.All; }
-            }
-            new Thread(new ThreadStart(em.NightlyRun)).Start();
-            lblSuccess.Visible = true;
-        }
-        else
-        {
-            lblErr.Visible = true;
-        }
+        // request came from this machine - make a request to ourselves and send it out in email
+        EmailSubscriptionManager em = new EmailSubscriptionManager() { ActiveBrand = Branding.CurrentBrand };
+        if (util.GetIntParam(Request, "dbg", 0) != 0)
+            em.UserRestriction = Page.User.Identity.Name;
+        string szTasksToRun = util.GetStringParam(Request, "tasks");
+        if (!String.IsNullOrEmpty(szTasksToRun))
+            em.TasksToRun = Int32.TryParse(szTasksToRun, out int tasks) ? (EmailSubscriptionManager.SelectedTasks) tasks : EmailSubscriptionManager.SelectedTasks.All;
+        new Thread(new ThreadStart(em.NightlyRun)).Start();
+        lblSuccess.Visible = true;
     }
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        // see if this is coming from the local machine - reject anything that isn't.
+        string szIPThis = System.Net.Dns.GetHostAddresses(Request.Url.Host)[0].ToString();
+        if (Request.UserHostAddress.CompareCurrentCultureIgnoreCase(szIPThis) != 0)
+            throw new UnauthorizedAccessException("Attempt to view this page from other than local machine");
+
         if (!IsPostBack)
         {
             cssRef.Href = "~/Public/Stylesheet.css?v=18".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
@@ -78,7 +73,17 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
                     Profile pf = MyFlightbook.Profile.GetUser(szUser);
                     EmailSubscriptionManager em = new EmailSubscriptionManager(pf.Subscriptions);
 
-                    bool fHasCurrency = em.HasSubscription(SubscriptionType.Currency);
+                    IEnumerable<CurrencyStatusItem> rgExpiringCurrencies = null;
+                    IEnumerable<CurrencyStatusItem> rgPrecomputedCurrencies = null;
+                    if (pf.AssociatedData.TryGetValue(CurrencyStatusItem.AssociatedDateKeyExpiringCurrencies, out object o))
+                        rgExpiringCurrencies = (IEnumerable<CurrencyStatusItem>)o;
+                    if (pf.AssociatedData.TryGetValue(CurrencyStatusItem.AssociatedDataKeyCachedCurrencies, out o))
+                        rgPrecomputedCurrencies = (IEnumerable<CurrencyStatusItem>)o;
+
+                    pf.AssociatedData.Remove(CurrencyStatusItem.AssociatedDateKeyExpiringCurrencies);
+                    pf.AssociatedData.Remove(CurrencyStatusItem.AssociatedDataKeyCachedCurrencies);
+
+                    bool fHasCurrency = em.HasSubscription(SubscriptionType.Currency) || (em.HasSubscription(SubscriptionType.Expiration) && rgExpiringCurrencies != null && rgPrecomputedCurrencies != null);
                     bool fHasTotals = em.HasSubscription(SubscriptionType.Totals);
                     bool fHasMonthly = em.HasSubscription(SubscriptionType.MonthlyTotals);
 
@@ -146,8 +151,15 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
                     if (fHasCurrency || fMonthlySummary)
                     {
                         mfbCurrency.UserName = pf.UserName;
-                        mfbCurrency.RefreshCurrencyTable();
+                        mfbCurrency.RefreshCurrencyTable(rgPrecomputedCurrencies);
                         pnlCurrency.Visible = true;
+
+                        if (rgExpiringCurrencies != null && rgExpiringCurrencies.Count() > 0)
+                        {
+                            pnlExpiringCurrencies.Visible = true;
+                            rptExpiring.DataSource = rgExpiringCurrencies;
+                            rptExpiring.DataBind();
+                        }
                     }
                 }
                 catch (MyFlightbookException ex)

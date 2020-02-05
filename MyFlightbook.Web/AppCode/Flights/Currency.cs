@@ -1,6 +1,7 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Configuration;
 using System.Globalization;
 using System.Runtime.Serialization;
@@ -104,6 +105,10 @@ namespace MyFlightbook.FlightCurrency
     {
         public enum CurrencyGroups { None, FlightExperience, FlightReview, Aircraft, AircraftDeadline, Certificates, Medical, Deadline, CustomCurrency }
 
+        // Keys for profile associated data
+        public const string AssociatedDateKeyExpiringCurrencies = "ExpiringCurrencies";
+        public const string AssociatedDataKeyCachedCurrencies = "MostRecentCurrency";
+
         #region properties
         /// <summary>
         /// The specific currency attribute (e.g., "Instrument flight", "BFR Due," or "VOR Check"
@@ -186,14 +191,11 @@ namespace MyFlightbook.FlightCurrency
         [DataMember]
         public FlightQuery Query { get; set; }
         #endregion
-
+        
+        #region Constructors
         /// <summary>
         /// Creates a currency status item in-place
         /// </summary>
-        /// <param name="szAttribute">The specific currency attribute (e.g., "Instrument flight," "BFR Due," etc.</param>
-        /// <param name="szValue">The value or description of the state</param>
-        /// <param name="cs">Everything OK?  Expired?  Close to expiration?</param>
-        /// <param name="szDiscrepancy">What is the gap between the current state and some bad state?</param>
         public CurrencyStatusItem()
         {
             Attribute = Value = Discrepancy = string.Empty;
@@ -203,12 +205,22 @@ namespace MyFlightbook.FlightCurrency
             CurrencyGroup = CurrencyGroups.None;
         }
 
+        /// <param name="szAttribute">The specific currency attribute (e.g., "Instrument flight," "BFR Due," etc.</param>
+        /// <param name="szValue">The value or description of the state</param>
+        /// <param name="cs">Everything OK?  Expired?  Close to expiration?</param>
+        /// <param name="szDiscrepancy">What is the gap between the current state and some bad state?</param>
         public CurrencyStatusItem(string szAttribute, string szValue, CurrencyState cs, string szDiscrepancy = null) : this()
         {
             Attribute = szAttribute;
             Value = szValue;
             Status = cs;
             Discrepancy = szDiscrepancy;
+        }
+        #endregion
+
+        public override string ToString()
+        {
+            return String.Format(CultureInfo.CurrentCulture, "{0} - {1} ({2}, {3})", Attribute, Value, Status.ToString(), Discrepancy);
         }
 
         /// <summary>
@@ -228,6 +240,72 @@ namespace MyFlightbook.FlightCurrency
             lst.AddRange(DeadlineCurrency.CurrencyForDeadlines(lstNoAircraft));
             lst.AddRange(Profile.GetUser(szUser).WarningsForUser());
             return lst;
+        }
+
+        /// <summary>
+        /// Checks to see if the user has any expiring currencies relative to the last time a check was made.
+        /// Caches the expiring items and current items (if any expiring items) in the profile cache for quick retrieval
+        /// </summary>
+        /// <param name="state">Any state returned from the last check</param>
+        /// <param name="szUser">The user for whom to check</param>
+        /// <param name="newState">Current state</param>
+        /// <returns>An enumerable of expiring (newly expired) currencies.  If zero length, then nothing has changed.</returns>
+        static public IEnumerable<CurrencyStatusItem> CheckForExpiringCurrencies(string state, string szUser, out string newState)
+        {
+            if (string.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            Profile pf = Profile.GetUser(szUser);
+            if (string.IsNullOrEmpty(pf.UserName))
+                throw new MyFlightbookValidationException("No such user: " + szUser);
+
+            IEnumerable<CurrencyStatusItem> priorItems = (state == null) ? Array.Empty<CurrencyStatusItem>() : Newtonsoft.Json.JsonConvert.DeserializeObject<CurrencyStatusItem[]>(state);
+            IEnumerable<CurrencyStatusItem> newItems = GetCurrencyItemsForUser(szUser);
+            newState = Newtonsoft.Json.JsonConvert.SerializeObject(newItems);
+
+            IEnumerable<CurrencyStatusItem> expiringItems = NeedsNotification(priorItems, newItems);
+
+            if (expiringItems.Count() > 0)
+            {
+                pf.AssociatedData[AssociatedDataKeyCachedCurrencies] = newItems;
+                pf.AssociatedData[AssociatedDateKeyExpiringCurrencies] = expiringItems;
+            }
+
+            return expiringItems;
+        }
+
+        /// <summary>
+        /// Compares two sets of currency status items and returns the set of status items that change from OK to nearing expiration, or from either of those states to Expired.
+        /// </summary>
+        /// <param name="rgcsi1">Set of previous status items</param>
+        /// <param name="rgcsi2">Set of current status items</param>
+        /// <returns></returns>
+        static protected IEnumerable<CurrencyStatusItem> NeedsNotification(IEnumerable<CurrencyStatusItem> rgcsi1, IEnumerable<CurrencyStatusItem> rgcsi2)
+        {
+            if (rgcsi2 == null)
+                throw new ArgumentNullException(nameof(rgcsi2));
+
+            if (rgcsi2.Count() == 0)
+                return Array.Empty<CurrencyStatusItem>();
+
+            List<CurrencyStatusItem> lstResult = new List<CurrencyStatusItem>(rgcsi2).FindAll(csi => csi.Status != CurrencyState.OK && csi.Status != CurrencyState.NoDate);
+
+            // quick short circuit - if there's nothing in the previous items, just return the current ones that aren't OK.
+            if (rgcsi1 == null || rgcsi1.Count() == 0)
+                return lstResult;
+
+            Dictionary<string, CurrencyStatusItem> dict2 = new Dictionary<string, CurrencyStatusItem>();
+
+            foreach (CurrencyStatusItem csi in lstResult)
+                dict2[csi.Attribute] = csi;
+
+            // Remove everything from dict2 that has NOT changed state since last time.
+            foreach (CurrencyStatusItem csi in rgcsi1)
+            {
+                if (dict2.TryGetValue(csi.Attribute, out CurrencyStatusItem csi2) && csi2.Status == csi.Status)
+                    dict2.Remove(csi.Attribute);
+            }
+            return dict2.Values;
         }
     }
 

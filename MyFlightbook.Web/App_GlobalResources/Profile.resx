@@ -524,4 +524,13 @@
   <data name="DeAuthCloudAhoy" xml:space="preserve">
     <value>Deauthorize %APP_NAME% on CloudAhoy</value>
   </data>
+  <data name="EmailCurrencyExpiration" xml:space="preserve">
+    <value>Or as needed when currency expires or gets close to expiration</value>
+  </data>
+  <data name="EmailCurrencyExpirationPromotion" xml:space="preserve">
+    <value>Support %APP_NAME% for US$15 to get this feature for a year!</value>
+  </data>
+  <data name="EmailCurrencyExpiringMailSubject" xml:space="preserve">
+    <value>You have flying currency that has expired or is expiring soon</value>
+  </data>
 </root>

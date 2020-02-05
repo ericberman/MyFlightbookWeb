@@ -130,6 +130,33 @@ public partial class Public_TotalsAndCurrencyEmail
     protected global::System.Web.UI.WebControls.Label lblCurrency;
 
     /// <summary>
+    /// pnlExpiringCurrencies control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlExpiringCurrencies;
+
+    /// <summary>
+    /// lblExpiring control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblExpiring;
+
+    /// <summary>
+    /// rptExpiring control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Repeater rptExpiring;
+
+    /// <summary>
     /// mfbCurrency control.
     /// </summary>
     /// <remarks>
