@@ -2,7 +2,6 @@
 using MyFlightbook.Achievements;
 using MyFlightbook.Image;
 using MyFlightbook.Payments;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -1030,7 +1029,19 @@ GROUP BY ac.idaircraft";
 
     protected void btnResetGratuities_Click(object sender, EventArgs e)
     {
-        EarnedGratuity.UpdateEarnedGratuities(string.Empty, ckResetGratuityReminders.Checked);
+        if (String.IsNullOrEmpty(txtDonationUser.Text))
+        {
+            List<string> lstDonors = new List<string>();
+            DBHelper dbh = new DBHelper("select distinct(username) from payments");
+            dbh.ReadRows((comm) => { }, (dr) => { lstDonors.Add((string)dr["username"]); });
+
+            foreach (string szUser in lstDonors)
+                EarnedGratuity.UpdateEarnedGratuities(szUser, ckResetGratuityReminders.Checked);
+        }
+        else
+        {
+            EarnedGratuity.UpdateEarnedGratuities(txtDonationUser.Text, ckResetGratuityReminders.Checked);
+        }
     }
 
     protected void btnEnterTestTransaction_Click(object sender, EventArgs e)
