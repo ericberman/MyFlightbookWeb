@@ -201,12 +201,20 @@ namespace MyFlightbook.Subscriptions
             // get the list of people who have a subscription OTHER than simple monthly
             List<Profile> lstUsersToSend = new List<Profile>(Profile.UsersWithSubscriptions(~EmailSubscription.FlagForType(SubscriptionType.MonthlyTotals), DateTime.Now.AddDays(-7)));
 
+            // And the list of people who have a subscription to expiring currencies
+            List<Profile> lstUsersSubscribedForExpiration = new List<Profile>(Profile.UsersWithSubscriptions(EmailSubscription.FlagForType(SubscriptionType.Expiration), DateTime.Now.AddDays(-7)));
+
             if (!String.IsNullOrEmpty(UserRestriction))
                 lstUsersToSend.RemoveAll(pf => pf.UserName.CompareOrdinalIgnoreCase(UserRestriction) != 0);
 
             // See who has expiring currencies that require notification.
             foreach (EarnedGratuity eg in lstUsersWithExpiringCurrencies)
             {
+                // Skip over anybody that's not also subscribed for expiration notices
+                Profile pf = lstUsersSubscribedForExpiration.Find(profile => profile.UserName.CompareCurrentCultureIgnoreCase(eg.Username) == 0);
+                if (pf == null)
+                    continue;
+
                 IEnumerable<FlightCurrency.CurrencyStatusItem> expiringCurrencies = FlightCurrency.CurrencyStatusItem.CheckForExpiringCurrencies(eg.State, eg.Username, out string newState);
                 if (newState.CompareOrdinal(eg.State) != 0)
                 {
@@ -215,7 +223,6 @@ namespace MyFlightbook.Subscriptions
                 }
                 if (expiringCurrencies.Count() > 0)
                 {
-                    Profile pf = Profile.GetUser(eg.Username);
                     if (SendMailForUser(pf, Resources.Profile.EmailCurrencyExpiringMailSubject, string.Empty))
                     {
                         // Don't send the weekly mail, since we just pre-empted it.
