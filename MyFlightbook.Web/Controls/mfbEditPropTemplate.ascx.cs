@@ -261,5 +261,6 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         Controls_popmenu pop = (Controls_popmenu) e.Item.FindControl("popmenu");
         PersistablePropertyTemplate pt = (PersistablePropertyTemplate) e.Item.DataItem;
         pop.FindControl("imgbtnEdit").Visible = pop.FindControl("lnkEditTemplate").Visible = pt.IsMutable;
+        ((AjaxControlToolkit.ConfirmButtonExtender)(pop.FindControl("confirmDeleteTemplate"))).ConfirmText = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateDeleteConfirm, pt.Name);
     }
 }

@@ -1026,7 +1026,7 @@ Proceed with import?</value>
     <value>Save Template</value>
   </data>
   <data name="TemplateDeleteConfirm" xml:space="preserve">
-    <value>Are you sure you want to delete this template?  This cannot be undone.</value>
+    <value>Are you sure you want to delete the template "{0}"?  This cannot be undone.</value>
   </data>
   <data name="TemplateDeleteTip" xml:space="preserve">
     <value>Delete this template</value>

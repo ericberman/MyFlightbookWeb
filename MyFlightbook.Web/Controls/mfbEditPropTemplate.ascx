@@ -149,9 +149,8 @@
                                                         ImageUrl="~/images/x.gif" />
                                                     <asp:Label ID="lblDeleteTemplate" runat="server" Text="<%$ Resources:LogbookEntry, TemplateDeleteTip %>"></asp:Label>
                                                 </asp:LinkButton>
-                                                <ajaxToolkit:ConfirmButtonExtender ID="confirmDeleteDeadline" runat="server"
+                                                <ajaxToolkit:ConfirmButtonExtender ID="confirmDeleteTemplate" runat="server"
                                                     ConfirmOnFormSubmit="True"
-                                                    ConfirmText="<%$ Resources:LogbookEntry, TemplateDeleteConfirm %>"
                                                     TargetControlID="lnkEditTemplate" />
                                             </div>
                                             <div style="line-height: 26px;">

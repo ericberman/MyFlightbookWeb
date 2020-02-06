@@ -2927,7 +2927,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to delete this template?  This cannot be undone..
+        ///   Looks up a localized string similar to Are you sure you want to delete the template &quot;{0}&quot;?  This cannot be undone..
         /// </summary>
         internal static string TemplateDeleteConfirm {
             get {
