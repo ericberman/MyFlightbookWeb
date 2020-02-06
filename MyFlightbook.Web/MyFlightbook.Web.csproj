@@ -31,6 +31,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\Visual Studio 2015\Projects\logbook\myFlightbook rules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -768,6 +769,7 @@
     <Content Include="Public\MyFlights.aspx" />
     <Content Include="Public\oAuthToken.aspx" />
     <Content Include="Public\OneDriveRedir.aspx" />
+    <Content Include="Public\OpenSource\Database model.svg" />
     <Content Include="Public\PaypalIPNListener.aspx" />
     <Content Include="Public\PendingImg.aspx" />
     <Content Include="Public\Privacy.aspx" />
@@ -2589,6 +2591,8 @@
     <Content Include="Public\Web.config" />
     <Content Include="LICENSE" />
     <None Include="packages.config" />
+    <Content Include="Public\OpenSource\Database model.pdf" />
+    <Content Include="Public\OpenSource\myflightbook.mwb" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>
     </None>
