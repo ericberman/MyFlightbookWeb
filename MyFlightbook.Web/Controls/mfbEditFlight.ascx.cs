@@ -689,7 +689,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         }
         else
         {
-            popmenuCommitAndNavigate.Visible = !LogbookEntry.IsNewFlightID(FlightID);    // need to set master visibility so that the next line can work; issue #458 - suppress pop menu for clone/reverse (essentially new flights)
+            popmenuCommitAndNavigate.Visible = (!LogbookEntry.IsNewFlightID(FlightID) || !String.IsNullOrEmpty(hdnPendingID.Value));    // need to set master visibility so that the next line can work; issue #458 - suppress pop menu for clone/reverse (essentially new flights)
             divUpdateNext.Visible = true;
             hdnNextID.Value = idFlight.ToString(CultureInfo.InvariantCulture);
         }
@@ -706,7 +706,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         }
         else
         {
-            popmenuCommitAndNavigate.Visible = !LogbookEntry.IsNewFlightID(FlightID);    // need to set master visibility so that the next line can work; issue #458 - suppress pop menu for clone/reverse (essentially new flights)
+            popmenuCommitAndNavigate.Visible = (!LogbookEntry.IsNewFlightID(FlightID) || !String.IsNullOrEmpty(hdnPendingID.Value));    // need to set master visibility so that the next line can work; issue #458 - suppress pop menu for clone/reverse (essentially new flights)
             divUpdatePrev.Visible = true;
             hdnPrevID.Value = idFlight.ToString(CultureInfo.InvariantCulture);
         }
