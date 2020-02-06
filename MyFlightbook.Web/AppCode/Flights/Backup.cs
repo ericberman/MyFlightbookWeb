@@ -126,7 +126,7 @@ namespace MyFlightbook
 
             MemoryStream ms = new MemoryStream();
 
-            using (ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create))
+            using (ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
             {
                 StringWriter sw = new StringWriter();
                 using (HtmlTextWriter tw = new HtmlTextWriter(sw))
