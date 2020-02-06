@@ -133,7 +133,7 @@
                                     <asp:CheckBox ID="ckDefault" Visible='<%# Eval("IsMutable") %>' runat="server" Checked='<%# Eval("IsDefault") %>' AutoPostBack="true" OnCheckedChanged="ckDefault_CheckedChanged" ToolTip="<%$ Resources:LogbookEntry, TemplateDefaultTooltip %>" />
                                 </td>
                                 <td style="padding: 3px;">
-                                    <uc1:popmenu runat="server" ID="popmenu">
+                                    <uc1:popmenu runat="server" ID="popmenu" OffsetX="-110">
                                         <MenuContent>
                                             <div style="line-height: 26px;">
                                                 <asp:LinkButton ID="imgbtnEdit" runat="server" OnClick="imgbtnEdit_Click">
