@@ -52,7 +52,7 @@ namespace MyFlightbook.Web
             if (Context.Request.IsLocal)
                 return;
 
-            if (myError is HttpException err && err.GetHttpCode() == 404)
+            if (myError is HttpException err && (err.GetHttpCode() == 404) || myError.Message.Contains("Failed to load viewstate"))
                 return;
 
             if (Context != null)
