@@ -337,6 +337,10 @@ namespace MyFlightbook.Templates
                 comm.Parameters.AddWithValue("public", IsPublic);
                 comm.Parameters.AddWithValue("def", IsDefault);
             });
+            
+            if (ID == (int)KnownTemplateIDs.ID_NEW && dbh.LastInsertedRowId > 0)
+                ID = dbh.LastInsertedRowId;
+
             InvalidateCache();
         }
 

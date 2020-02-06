@@ -203,6 +203,8 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
             throw new ArgumentNullException(nameof(sender));
 
         UserPropertyTemplate pt = Target((sender as Control).NamingContainer);
+        if (pt.Name.Length > 35)
+            pt.Name = pt.Name.Substring(0, 35) + "…";
         pt.Name = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateCopyTemplate, pt.Name);
         pt.ID = (int)KnownTemplateIDs.ID_NEW;
         pt.Commit();
