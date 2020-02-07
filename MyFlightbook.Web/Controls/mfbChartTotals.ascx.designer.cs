@@ -31,13 +31,13 @@ public partial class Controls_mfbChartTotals
     protected global::System.Web.UI.WebControls.Localize locTotalsHeader;
 
     /// <summary>
-    /// cmbFieldToview control.
+    /// cmbFieldToView control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.DropDownList cmbFieldToview;
+    protected global::System.Web.UI.WebControls.DropDownList cmbFieldToView;
 
     /// <summary>
     /// lblGroupBy control.
@@ -56,6 +56,42 @@ public partial class Controls_mfbChartTotals
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.DropDownList cmbGrouping;
+
+    /// <summary>
+    /// lnkDownloadCSV control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.LinkButton lnkDownloadCSV;
+
+    /// <summary>
+    /// imgDownloadCSV control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgDownloadCSV;
+
+    /// <summary>
+    /// imgCSVIcon control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgCSVIcon;
+
+    /// <summary>
+    /// locDownloadCSV control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locDownloadCSV;
 
     /// <summary>
     /// pnlChart control.

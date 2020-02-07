@@ -1683,4 +1683,13 @@
   <data name="GratuityThanksCurrencyNotification" xml:space="preserve">
     <value>You can sign up to receive notifications when currencies near expiration (Expires {0:d})</value>
   </data>
+  <data name="ChartTotalsAmountOfX" xml:space="preserve">
+    <value>Amount of {0}:</value>
+  </data>
+  <data name="DownloadFlyingStats" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="DownloadFlyingStatsFilename" xml:space="preserve">
+    <value>Flying-Stats</value>
+  </data>
 </root>

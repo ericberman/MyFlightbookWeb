@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -191,7 +191,7 @@ namespace MyFlightbook
         static public void SetValidationGroup(Control ctlRoot, string szGroup)
         {
             if (ctlRoot == null)
-                throw new ArgumentNullException("ctlRoot");
+                throw new ArgumentNullException(nameof(ctlRoot));
             foreach (Control ctl in ctlRoot.Controls)
             {
                 if (ctl.GetType().BaseType == typeof(BaseValidator))
@@ -228,8 +228,7 @@ namespace MyFlightbook
                 return defaultValue;
             else
             {
-                int i;
-                if (int.TryParse(req[szKey], NumberStyles.Integer, CultureInfo.InvariantCulture, out i))
+                if (int.TryParse(req[szKey], NumberStyles.Integer, CultureInfo.InvariantCulture, out int i))
                     return i;
 
                 return defaultValue;
@@ -244,7 +243,7 @@ namespace MyFlightbook
         public static string CSVFromData(this GridView gv)
         {
             if (gv == null)
-                throw new ArgumentNullException("gv");
+                throw new ArgumentNullException(nameof(gv));
             using (DataTable dt = new DataTable())
             {
                 dt.Locale = CultureInfo.CurrentCulture;
@@ -262,11 +261,24 @@ namespace MyFlightbook
                     for (int j = 0; j < gvr.Cells.Count; j++)
                     {
                         string szCell = gvr.Cells[j].Text;
-                        if (szCell.Length == 0 && gvr.Cells[j].Controls.Count > 1)
+                        if (szCell.Length == 0 && gvr.Cells[j].Controls.Count > 0)
                         {
-                            Control c = gvr.Cells[j].Controls[1];
-                            if (c.GetType() == typeof(Label))
-                                szCell = ((Label)c).Text;
+                            Control c;
+                            // Look for a label or a hyperlink
+                            if (gvr.Cells[j].Controls.Count > 1)
+                            {
+                                c = gvr.Cells[j].Controls[1];
+                                if (c is Label l)
+                                    szCell = l.Text;
+                            }
+                            else
+                            {
+                                c = gvr.Cells[j].Controls[0];
+                                if (c is HyperLink h)
+                                    szCell = h.Text;
+                                else if (c is Label l)
+                                    szCell = l.Text;
+                            }
                         }
                         szCell = HttpUtility.HtmlDecode(szCell).Trim().Replace('\uFFFD', ' ');
 
@@ -293,9 +305,9 @@ namespace MyFlightbook
         public static IDictionary<string, IEnumerable<T>> GroupByProperty<T>(IEnumerable<T> lst, string PropertyName)
         {
             if (lst == null)
-                throw new ArgumentNullException("lst");
+                throw new ArgumentNullException(nameof(lst));
             if (PropertyName == null)
-                throw new ArgumentNullException("PropertyName");
+                throw new ArgumentNullException(nameof(PropertyName));
 
             Dictionary<string, IEnumerable<T>> d = new Dictionary<string, IEnumerable<T>>();
 
@@ -341,7 +353,7 @@ namespace MyFlightbook
         static public void AddAdminsToMessage(MailMessage msg, bool fTo, uint RoleMask)
         {
             if (msg == null)
-                throw new ArgumentNullException("msg");
+                throw new ArgumentNullException(nameof(msg));
             IEnumerable<ProfileBase> lst = ProfileRoles.GetNonUsers();
             foreach (ProfileBase pf in lst)
             {
@@ -480,7 +492,7 @@ namespace MyFlightbook
         static public object ReadNullableField(MySqlDataReader dr, string key, object defObj)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             if (string.IsNullOrEmpty(key))
                 return defObj;
             try
@@ -504,7 +516,7 @@ namespace MyFlightbook
         static public string ReadNullableString(MySqlDataReader dr, string key)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             object o = dr[key];
             if (o == null || o == System.DBNull.Value)
                 return string.Empty;

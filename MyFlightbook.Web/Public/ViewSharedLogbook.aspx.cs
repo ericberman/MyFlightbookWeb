@@ -123,7 +123,6 @@ namespace MyFlightbook.Web.Public
                     mfbLogbook.RefreshData();
 
                     mfbChartTotals.Visible = true;
-                    mfbChartTotals.Refresh(mfbLogbook.Data);
                 }
 
                 if (sk.CanViewAchievements)
@@ -157,7 +156,10 @@ namespace MyFlightbook.Web.Public
             }
 
             if (mfbLogbook.Visible && apcAnalysis.Visible)
-                mfbChartTotals.SourceData = mfbLogbook.Data;   // do this every time, since charttotals doesn't persist its data.
+            {
+                mfbChartTotals.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook.Data, CurrentShareKey.Username);   // do this every time, since charttotals doesn't persist its data.
+                mfbChartTotals.Refresh();
+            }
 
             if (CurrentShareKey.CanViewVisitedAirports)
                 RefreshVisitedAirports();
@@ -182,6 +184,9 @@ namespace MyFlightbook.Web.Public
             if (CurrentShareKey.CanViewFlights)
                 mfbLogbook.RefreshData();
 
+            mfbChartTotals.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook.Data, r.UserName);
+            mfbChartTotals.Refresh();
+
             if (CurrentShareKey.CanViewVisitedAirports)
                 RefreshVisitedAirports();
         }
@@ -192,12 +197,6 @@ namespace MyFlightbook.Web.Public
             CurrentVisitedAirports = null;
             UpdateForUser(CurrentShareKey.Username);
             AccordionCtrl.SelectedIndex = -1;
-            apcAnalysis.LazyLoad = true;
-            mfbChartTotals.Visible = false;
-            int idx = mfbAccordionProxyExtender.IndexForProxyID(apcAnalysis.ID);
-            if (idx == AccordionCtrl.SelectedIndex)
-                AccordionCtrl.SelectedIndex = -1;
-            mfbAccordionProxyExtender.SetJavascriptForControl(apcAnalysis, false, idx);
         }
 
         public void ClearForm(object sender, EventArgs e)

@@ -3,7 +3,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -51,13 +51,10 @@ public partial class Controls_mfbAccordionProxyControl : System.Web.UI.UserContr
     }
     #endregion
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-
-    }
+    protected void Page_Load(object sender, EventArgs e) {  }
 
     protected void btnPostback_Click(object sender, EventArgs e)
     {
-        ControlClicked(this, e);
+        ControlClicked?.Invoke(this, e);
     }
 }

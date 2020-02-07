@@ -706,6 +706,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount of {0}:.
+        /// </summary>
+        internal static string ChartTotalsAmountOfX {
+            get {
+                return ResourceManager.GetString("ChartTotalsAmountOfX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Approach(es).
         /// </summary>
         internal static string ChartTotalsApproaches {
@@ -1557,6 +1566,24 @@ namespace Resources {
         internal static string DownloadAsPDFTabHeader {
             get {
                 return ResourceManager.GetString("DownloadAsPDFTabHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        internal static string DownloadFlyingStats {
+            get {
+                return ResourceManager.GetString("DownloadFlyingStats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flying-Stats.
+        /// </summary>
+        internal static string DownloadFlyingStatsFilename {
+            get {
+                return ResourceManager.GetString("DownloadFlyingStatsFilename", resourceCulture);
             }
         }
         

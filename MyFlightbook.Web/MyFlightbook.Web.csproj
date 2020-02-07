@@ -508,6 +508,7 @@
     <Content Include="images\copyflightreverse.png" />
     <Content Include="images\cross-fill.png" />
     <Content Include="images\csvicon_med.png" />
+    <Content Include="images\csvicon_sm.png" />
     <Content Include="images\download.png" />
     <Content Include="images\drive_white-large.png" />
     <Content Include="images\dropbox-logos_dropbox-logotype-blue.png" />
@@ -627,7 +628,6 @@
     <Content Include="Member\FindFlights.aspx" />
     <Content Include="Member\FlightAnalysis.aspx" />
     <Content Include="Member\FlightDetail.aspx" />
-    <Content Include="Member\FlyingTrends.aspx" />
     <Content Include="Member\Game.aspx" />
     <Content Include="Member\IcalAppt.aspx" />
     <Content Include="Member\ImpAircraft.aspx" />
@@ -2018,13 +2018,6 @@
     <Compile Include="Member\FlightDetail.aspx.designer.cs">
       <DependentUpon>FlightDetail.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\FlyingTrends.aspx.cs">
-      <DependentUpon>FlyingTrends.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Member\FlyingTrends.aspx.designer.cs">
-      <DependentUpon>FlyingTrends.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Member\Game.aspx.cs">
       <DependentUpon>Game.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2616,6 +2609,7 @@
     <Content Include="App_GlobalResources\Aircraft.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>Aircraft.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\Airports.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
@@ -2745,7 +2739,9 @@
     <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
     <Content Include="Member\App_LocalResources\Import.aspx.resx" />
     <Content Include="Member\App_LocalResources\Logbook.aspx.resx" />
-    <Content Include="Member\App_LocalResources\makes.aspx.resx" />
+    <Content Include="Member\App_LocalResources\makes.aspx.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Member\App_LocalResources\MiniLogbook.aspx.resx" />
     <Content Include="Member\App_LocalResources\oAuthAuthorize.aspx.resx" />
     <Content Include="Member\App_LocalResources\RequestSigs.aspx.resx" />

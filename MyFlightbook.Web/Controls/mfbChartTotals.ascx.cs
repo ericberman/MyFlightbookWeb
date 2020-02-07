@@ -1,44 +1,53 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Histogram;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Histogram;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2017 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
 {
-    /// <summary>
-    /// Not persisted - source data, to potentially avoid hitting the database.
-    /// </summary>
-    public IEnumerable<IHistogramable> SourceData { get; set; }
+    public HistogramManager HistogramManager { get; set; }
 
-    private const string szVSRawData = "keyViewStateRawData";
-
-    public DateBucketManager.GroupingMode CurrentGrouping
+    protected BucketManager BucketManager
     {
-        get { return (DateBucketManager.GroupingMode)Enum.Parse(typeof(DateBucketManager.GroupingMode), cmbGrouping.SelectedValue); }
-        set { cmbGrouping.SelectedValue = value.ToString(); }
+        get { return HistogramManager.SupportedBucketManagers.FirstOrDefault(bm => bm.DisplayName.CompareOrdinal(cmbGrouping.SelectedValue) == 0); }
+        set { cmbGrouping.SelectedValue = value.DisplayName; }
     }
 
-    private Bucket<DateTime>[] RawData
+    protected HistogramableValue SelectedFieldToGraph
     {
-        get { return (Bucket<DateTime>[])ViewState[szVSRawData]; }
-        set { ViewState[szVSRawData] = value; }
+        get { return HistogramManager.Values.FirstOrDefault(hv => hv.DataField.CompareOrdinal(cmbFieldToView.SelectedValue) == 0); }
     }
 
-    protected LogbookEntryDisplay.HistogramSelector SelectedFieldToGraph
+    public bool CanDownload
     {
-        get { return (LogbookEntryDisplay.HistogramSelector)Enum.Parse(typeof(LogbookEntryDisplay.HistogramSelector), cmbFieldToview.SelectedValue); }
+        get { return lnkDownloadCSV.Visible; }
+        set { lnkDownloadCSV.Visible = value; }
+    }
+
+    protected void SetUpSelectors()
+    {
+        if (HistogramManager != null && cmbFieldToView.Items.Count == 0)
+        {
+            cmbFieldToView.DataSource = HistogramManager.Values;
+            cmbFieldToView.DataBind();
+            cmbFieldToView.SelectedIndex = 0;
+
+            cmbGrouping.DataSource = HistogramManager.SupportedBucketManagers;
+            cmbGrouping.DataBind();
+            cmbGrouping.SelectedIndex = 0;
+        }
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -49,99 +58,129 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
             if (!Page.User.Identity.IsAuthenticated)
                 return;
 
-            MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
-
-            cmbFieldToview.Items.FindByValue("CFI").Enabled = pf.IsInstructor;
-            cmbFieldToview.Items.FindByValue("SIC").Enabled = pf.TracksSecondInCommandTime;
+            SetUpSelectors();
         }
-        else if (Visible)
-            RefreshChartAndTable();
+        
+        if (Visible)
+            Refresh();
     }
 
     /// <summary>
     /// Updates the chart based on the computed data (stored in RawData)
     /// </summary>
-    protected void RefreshChartAndTable()
+    protected void RefreshChartAndTable(IEnumerable<Bucket> buckets)
     {
-        gvRawData.DataSource = RawData;
-        gvRawData.DataBind();
+        if (buckets == null)
+            throw new ArgumentNullException(nameof(buckets));
 
-        LogbookEntryDisplay.HistogramSelector sel = SelectedFieldToGraph;
-        Boolean fIsInt = (sel == LogbookEntryDisplay.HistogramSelector.Landings || sel == LogbookEntryDisplay.HistogramSelector.Approaches || sel == LogbookEntryDisplay.HistogramSelector.Flights || sel == LogbookEntryDisplay.HistogramSelector.FlightDays);
+        HistogramableValue hv = SelectedFieldToGraph;
 
         gcTrends.Clear();
-        foreach (Bucket<DateTime> b in RawData)
+        foreach (Bucket b in buckets)
         {
-            gcTrends.XVals.Add((DateTime) b.Ordinal);
-            gcTrends.YVals.Add(b.Value);
-            gcTrends.Y2Vals.Add(b.RunningTotal);
+            gcTrends.XVals.Add(b.OrdinalValue);
+            gcTrends.YVals.Add(b.Values[hv.DataField]);
+
+            if (b.HasRunningTotals)
+                gcTrends.Y2Vals.Add(b.RunningTotals[hv.DataField]);
         }
-        gcTrends.YLabel = String.Format(CultureInfo.CurrentCulture, fIsInt ? Resources.LocalizedText.ChartTotalsNumOfX : Resources.LocalizedText.ChartTotalsHoursOfX, cmbFieldToview.SelectedItem.Text);
+
+        string szLabel = "{0}";
+        {
+            switch (hv.DataType)
+            {
+                case HistogramValueTypes.Integer:
+                    szLabel = Resources.LocalizedText.ChartTotalsNumOfX;
+                    break;
+                case HistogramValueTypes.Time:
+                    szLabel = Resources.LocalizedText.ChartTotalsHoursOfX;
+                    break;
+                case HistogramValueTypes.Decimal:
+                case HistogramValueTypes.Currency:
+                    szLabel = Resources.LocalizedText.ChartTotalsAmountOfX;
+                    break;
+            }
+        }
+        gcTrends.YLabel = String.Format(CultureInfo.CurrentCulture, szLabel, hv.DataName);
         gcTrends.Y2Label = Resources.LocalizedText.ChartRunningTotal;
-        gcTrends.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "window.open('{0}?y=' + xvalue.getFullYear() {1} {2} {3}, '_blank').focus()",
-            VirtualPathUtility.ToAbsolute("~/Member/LogbookNew.aspx"),
-            CurrentGrouping == DateBucketManager.GroupingMode.Year ? string.Empty : " + '&m=' + xvalue.getMonth() ",
-            CurrentGrouping == DateBucketManager.GroupingMode.Month ? string.Empty : " + '&d=' + xvalue.getDate()",
-            CurrentGrouping == DateBucketManager.GroupingMode.Week ? " + '&w=1'" : string.Empty);
+
+        gcTrends.ClickHandlerJS = BucketManager.ChartJScript;
 
         pnlChart.Visible = true;
     }
 
     protected void cmbFieldToview_SelectedIndexChanged(object sender, EventArgs e)
     {
-        Refresh(SourceData);
+        Refresh();
     }
 
     /// <summary>
     /// Recomputes the data from the datasource and refreshes it
     /// </summary>
-    /// <param name="datasource">Histogrammable data that uses datetime for the buckets.</param>
-    public void Refresh(IEnumerable<IHistogramable> datasource)
+    public void Refresh()
     {
-        if (datasource == null)
-            throw new ArgumentNullException("datasource");
-        DateBucketManager bm = DateBucketManager.BucketManagerForGroupingMode(CurrentGrouping);
-        Dictionary<string, object> context = new Dictionary<string, object>() { { LogbookEntryDisplay.HistogramContextSelectorKey, SelectedFieldToGraph } };
-        bm.ScanData(datasource, context, true);
+        // In case Page_Load has not been called, make sure combo boxes are populated.
+        SetUpSelectors();
+        if (String.IsNullOrEmpty(cmbGrouping.SelectedValue))
+            cmbGrouping.SelectedIndex = 0;
+
+        if (HistogramManager == null)
+            throw new InvalidOperationException("Null HistogramManager");
+
+        BucketManager bm = BucketManager;
+        
+        bm.ScanData(HistogramManager);
+
         // check for daily with less than a year
-        if (CurrentGrouping == DateBucketManager.GroupingMode.Day && bm.MaxDate.CompareTo(bm.MinDate) > 0 && bm.MaxDate.Subtract(bm.MinDate).TotalDays > 365)
+        if (bm is DailyBucketManager dbm && dbm.MaxDate.CompareTo(dbm.MinDate) > 0 && dbm.MaxDate.Subtract(dbm.MinDate).TotalDays > 365)
         {
-            CurrentGrouping = DateBucketManager.GroupingMode.Week;
-            bm = new WeeklyBucketManager();
-            bm.ScanData(datasource, context, true);
+            BucketManager = bm = new WeeklyBucketManager();
+            bm.ScanData(HistogramManager);
         }
-        gcTrends.XDatePattern = bm.DateFormat;
 
-        RawData = bm.Buckets.ToArray<Bucket<DateTime>>();
-        RefreshChartAndTable();
-    }
-
-    protected void gvRawData_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e != null && e.Row.RowType == DataControlRowType.DataRow)
+        if (bm is DateBucketManager datebm)
         {
-            Bucket<DateTime> b = (Bucket<DateTime>)e.Row.DataItem;
-            HyperLink h = (HyperLink)e.Row.FindControl("lnkValue");
-            h.Text = b.Value.ToString(CultureInfo.InvariantCulture);
-            DateTime dt = (DateTime)b.Ordinal;
-            System.Text.StringBuilder sb = new System.Text.StringBuilder("~/Member/LogbookNew.aspx?y=");
-            sb.Append(dt.Year.ToString(CultureInfo.InvariantCulture));
-            if (CurrentGrouping != DateBucketManager.GroupingMode.Year)
+            gcTrends.XDatePattern = datebm.DateFormat;
+            gcTrends.XDataType = Controls_GoogleChart.GoogleColumnDataType.date;
+        }
+        else
+        {
+            gcTrends.XDatePattern = "{0}";
+            gcTrends.XDataType = Controls_GoogleChart.GoogleColumnDataType.@string;
+        }
+
+        using (DataTable dt = bm.ToDataTable(HistogramManager))
+        {
+            gvRawData.Columns.Clear();
+            gvRawData.Columns.Add(new HyperLinkField() { DataTextField = BucketManager.ColumnNameDisplayName, DataNavigateUrlFormatString = "{0}", DataNavigateUrlFields = new string[] { BucketManager.ColumnNameHRef }, HeaderText = bm.DisplayName, Target = "_blank" });
+            foreach (DataColumn dc in dt.Columns)
             {
-                sb.AppendFormat(CultureInfo.InvariantCulture, "&m={0}", dt.Month - 1);
-                if (CurrentGrouping != DateBucketManager.GroupingMode.Month)
-                {
-                    sb.AppendFormat(CultureInfo.InvariantCulture, "&d={0}", dt.Day);
-                    if (CurrentGrouping == DateBucketManager.GroupingMode.Week)
-                        sb.AppendFormat(CultureInfo.InvariantCulture, "&w=1");
-                }
+                if (dc.ColumnName.CompareCurrentCultureIgnoreCase(BucketManager.ColumnNameHRef) == 0 || dc.ColumnName.CompareOrdinal(BucketManager.ColumnNameDisplayName) == 0)
+                    continue;
+                gvRawData.Columns.Add(new BoundField() { HeaderText = dc.ColumnName, DataField = dc.ColumnName });
             }
-            h.NavigateUrl = sb.ToString();
+            gvRawData.DataSource = dt;
+            gvRawData.DataBind();
         }
+
+        RefreshChartAndTable(bm.Buckets);
     }
 
     protected void cmbGrouping_SelectedIndexChanged(object sender, EventArgs e)
     {
-        Refresh(SourceData);
+        Refresh();
+    }
+
+    protected void lnkDownloadCSV_Click(object sender, EventArgs e)
+    {
+        Response.Clear();
+        Response.ContentType = "text/csv";
+        // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
+        string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}-{3}", Branding.CurrentBrand.AppName, Resources.LocalizedText.DownloadFlyingStatsFilename, Profile.GetUser(Page.User.Identity.Name).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
+        string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
+        Response.AddHeader("Content-Disposition", szDisposition);
+        Response.Write('\uFEFF');   // UTF-8 BOM.
+        Response.Write(gvRawData.CSVFromData());
+        Response.End();
     }
 }
