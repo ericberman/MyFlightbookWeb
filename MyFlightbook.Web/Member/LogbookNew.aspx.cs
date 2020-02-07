@@ -3,6 +3,7 @@ using MyFlightbook.Printing;
 using MyFlightbook.SocialMedia;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
 using System.Web.Services;
@@ -136,6 +137,10 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         int year = util.GetIntParam(Request, "y", -1);
         int day = util.GetIntParam(Request, "d", -1);
         int week = util.GetIntParam(Request, "w", -1);
+        string szReqTail = util.GetStringParam(Request, "tn");
+        string szReqModel = util.GetStringParam(Request, "mn");
+        string szReqICAO = util.GetStringParam(Request, "icao");
+
         if (!String.IsNullOrEmpty(szFQParam))
         {
             try
@@ -173,12 +178,37 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
             }
         }
 
+        if (!String.IsNullOrEmpty(szReqTail) || !String.IsNullOrEmpty(szReqModel) || !String.IsNullOrEmpty(szReqICAO))
+        {
+            UserAircraft ua = new UserAircraft(Restriction.UserName);
+            List<Aircraft> lstac = new List<Aircraft>();
+            List<MakeModel> lstmm = new List<MakeModel>();
+
+            foreach (Aircraft ac in ua.GetAircraftForUser())
+            {
+                if (ac.DisplayTailnumber.CompareCurrentCultureIgnoreCase(szReqTail) == 0)
+                    lstac.Add(ac);
+
+                MakeModel mm = MakeModel.GetModel(ac.ModelID);
+                if (!lstmm.Contains(mm) && 
+                    ((!String.IsNullOrEmpty(szReqModel) && mm.Model.CompareCurrentCultureIgnoreCase(szReqModel) == 0) ||
+                    (!String.IsNullOrEmpty(szReqICAO) && mm.FamilyName.CompareCurrentCultureIgnoreCase(szReqICAO) == 0)))
+                    lstmm.Add(mm);
+            }
+            if (lstac.Count > 0)
+                Restriction.AircraftList = lstac.ToArray();
+            if (lstmm.Count > 0)
+                Restriction.MakeList = lstmm.ToArray();
+        }
+
         Refresh();
     }
 
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.tabLogbook;
+
+        mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, User.Identity.Name);  // do this every time.
 
         if (!IsPostBack)
         {
@@ -193,11 +223,10 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
             rblTotalsMode.SelectedValue = mfbTotalSummary1.DefaultGroupMode.ToString(CultureInfo.InvariantCulture);
 
             // Handle a requested tab - turning of lazy load as needed
-            FlightsTab ft;
             string szReqTab = util.GetStringParam(Request, "ft");
             if (!String.IsNullOrEmpty(szReqTab))
             {
-                if (Enum.TryParse<FlightsTab>(szReqTab, out ft))
+                if (Enum.TryParse<FlightsTab>(szReqTab, out FlightsTab ft))
                 {
                     AccordionCtrl.SelectedIndex = (int)ft - 1;
                     switch (ft)
@@ -227,11 +256,8 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
                 return;
             }
 
-            if (Request.PathInfo.Length > 0)
-            {
-                try { idFlight = Convert.ToInt32(Request.PathInfo.Substring(1), CultureInfo.InvariantCulture); }
-                catch (FormatException) { }
-            }
+            if (Request.PathInfo.Length > 0 && Int32.TryParse(Request.PathInfo.Substring(1), out int id))
+                idFlight = id;
 
             SetUpForFlight(idFlight);
 
@@ -247,8 +273,6 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         else
         {
         }
-
-        mfbChartTotals1.SourceData = mfbLogbook1.Data;  // do this every time.
     }
 
     private const string szVSFlightID = "vsFlightID";
@@ -287,7 +311,10 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         mfbLogbook1.Restriction = Restriction;
         mfbLogbook1.RefreshData();
         if (mfbChartTotals1.Visible)
-            mfbChartTotals1.Refresh(mfbLogbook1.Data);
+        {
+            mfbChartTotals1.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, Restriction.UserName);
+            mfbChartTotals1.Refresh();
+        }
         if (mfbTotalSummary1.Visible)
             mfbTotalSummary1.CustomRestriction = Restriction;
         ResolvePrintLink();
@@ -298,8 +325,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
 
         if (!IsNewFlight)
         {
-            int prevFlightID, nextFlightID;
-            mfbLogbook1.GetNeighbors(FlightID, out prevFlightID, out nextFlightID);
+            mfbLogbook1.GetNeighbors(FlightID, out int prevFlightID, out int nextFlightID);
             mfbEditFlight1.SetPrevFlight(prevFlightID);
             mfbEditFlight1.SetNextFlight(nextFlightID);
         }
@@ -313,8 +339,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         Refresh();
         AccordionCtrl.SelectedIndex = -1;
 
-        int idxLast;
-        if (Int32.TryParse(hdnLastViewedPaneIndex.Value, out idxLast))
+        if (Int32.TryParse(hdnLastViewedPaneIndex.Value, out int idxLast))
         {
             if (idxLast == mfbAccordionProxyExtender1.IndexForProxyID(apcTotals.ID))
             {
@@ -334,7 +359,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
     protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClicked fic)
     {
         if (fic == null)
-            throw new ArgumentNullException("fic");
+            throw new ArgumentNullException(nameof(fic));
         mfbSearchForm1.Restriction = Restriction.ClearRestriction(fic.FilterItem);
         Refresh();
     }
@@ -379,7 +404,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
     protected void mfbEditFlight1_FlightUpdated(object sender, LogbookEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         // if we had been editing a flight do a redirect so we have a clean URL
         // OR if there are pending redirects, do them.
@@ -406,10 +431,9 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
     protected void rblTotalsMode_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
 
-        bool fGrouped;
-        if (bool.TryParse(rblTotalsMode.SelectedValue, out fGrouped))
+        if (bool.TryParse(rblTotalsMode.SelectedValue, out bool fGrouped))
         {
             mfbTotalSummary1.DefaultGroupMode = fGrouped;
             mfbTotalSummary1.IsGrouped = fGrouped;
@@ -429,13 +453,10 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
     protected void TurnOnLazyLoad(Controls_mfbAccordionProxyControl apc, Action act)
     {
         if (apc == null)
-            throw new ArgumentNullException("apc");
+            throw new ArgumentNullException(nameof(apc));
         int idx = mfbAccordionProxyExtender1.IndexForProxyID(apc.ID);
         if (idx == AccordionCtrl.SelectedIndex)
-        {
-            if (act != null)
-                act();
-        }
+            act?.Invoke();
         else
         {
             apc.LazyLoad = true;
@@ -463,7 +484,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
     {
         TurnOffLazyLoad(sender);
         mfbChartTotals1.Visible = true;
-        mfbChartTotals1.Refresh(mfbLogbook1.Data);
+        mfbChartTotals1.Refresh();
         hdnLastViewedPaneIndex.Value = mfbAccordionProxyExtender1.IndexForProxyID(apcAnalysis.ID).ToString(CultureInfo.InvariantCulture);
     }
     #endregion
@@ -480,6 +501,6 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         // Turn on lazy load for any items that could be affected by the deletion, or else refresh them if already visible.
         TurnOnLazyLoad(apcTotals, () => { mfbTotalSummary1.CustomRestriction = Restriction; });
         TurnOnLazyLoad(apcCurrency, () => { mfbCurrency1.RefreshCurrencyTable(); });
-        TurnOnLazyLoad(apcAnalysis, () => { mfbChartTotals1.Refresh(mfbLogbook1.Data); });
+        TurnOnLazyLoad(apcAnalysis, () => { mfbChartTotals1.Refresh(); });
     }
 }

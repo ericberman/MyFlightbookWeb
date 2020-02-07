@@ -54,7 +54,7 @@
             </cc1:AccordionPane>
             <cc1:AccordionPane runat="server" ID="acpPaneAnalysis">
                 <Content>
-                    <uc1:mfbChartTotals runat="server" ID="mfbChartTotals" Visible="false" />
+                    <uc1:mfbChartTotals runat="server" ID="mfbChartTotals" Visible="false" CanDownload="false" />
                 </Content>
             </cc1:AccordionPane>
             <cc1:AccordionPane runat="server" ID="acpPaneAchievements">

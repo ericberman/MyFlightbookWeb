@@ -3557,53 +3557,150 @@ namespace MyFlightbook
         #endregion
 
         #region IHistogramable support
-        public const string HistogramContextSelectorKey = "hgContextSelector";
-        public enum HistogramSelector { TotalFlightTime, Landings, Approaches, Night, IMC, SimulatedIMC, Dual, PIC, SIC, CFI, XC, GroundSim, Flights, FlightDays}
-
-        public IComparable BucketSelector
+        /// <summary>
+        /// Returns a histogrammanager suitable for logbookentry objects
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="szUser"></param>
+        /// <returns></returns>
+        public static HistogramManager GetHistogramManager(IEnumerable<LogbookEntryDisplay> source, string szUser)
         {
-            get { return Date; }
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (String.IsNullOrEmpty(szUser))
+                throw new ArgumentNullException(nameof(szUser));
+
+            Profile pf = Profile.GetUser(szUser);
+
+            List<HistogramableValue> lstValues = new List<HistogramableValue>()
+            {
+                    new HistogramableValue("TotalFlightTime", Resources.LocalizedText.ChartTotalsTotalFlyingTime, HistogramValueTypes.Time),
+                    new HistogramableValue("PIC", Resources.LocalizedText.ChartTotalsTotalPIC, HistogramValueTypes.Time),
+                    new HistogramableValue("SIC", Resources.LocalizedText.ChartTotalsTotalSIC, HistogramValueTypes.Time),
+                    new HistogramableValue("CFI", Resources.LocalizedText.ChartTotalsTotalCFI, HistogramValueTypes.Time),
+                    new HistogramableValue("Approaches", Resources.LocalizedText.ChartTotalsTotalApproaches, HistogramValueTypes.Integer),
+                    new HistogramableValue("Landings", Resources.LocalizedText.ChartTotalsTotalLandings, HistogramValueTypes.Integer),
+                    new HistogramableValue("Dual", Resources.LocalizedText.ChartTotalsTotalDual, HistogramValueTypes.Time),
+                    new HistogramableValue("Night", Resources.LocalizedText.ChartTotalsTotalNight, HistogramValueTypes.Time),
+                    new HistogramableValue("SimulatedIMC", Resources.LocalizedText.ChartTotalsTotalSimIMC, HistogramValueTypes.Time),
+                    new HistogramableValue("IMC", Resources.LocalizedText.ChartTotalsTotalIMC, HistogramValueTypes.Time),
+                    new HistogramableValue("XC", Resources.LocalizedText.ChartTotalsXC, HistogramValueTypes.Time),
+                    new HistogramableValue("GroundSim", Resources.LocalizedText.ChartTotalsGroundSim, HistogramValueTypes.Time),
+                    new HistogramableValue("Flights", Resources.LocalizedText.ChartTotalsTotalFlights, HistogramValueTypes.Integer),
+                    new HistogramableValue("FlightDays", Resources.LocalizedText.ChartTotalsTotalFlightDays, HistogramValueTypes.Integer)
+            };
+
+            if (!pf.TracksSecondInCommandTime)
+                lstValues.RemoveAll(hv => hv.DataField.CompareOrdinal("SIC") == 0);
+            if (!pf.IsInstructor)
+                lstValues.RemoveAll(hv => hv.DataField.CompareOrdinal("CFI") == 0);
+
+            IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes(szUser);
+            foreach (CustomPropertyType cpt in rgcpt)
+            {
+                if (!cpt.IsFavorite || pf.BlacklistedProperties.Contains(cpt.PropTypeID))
+                    continue;
+
+                switch (cpt.Type)
+                {
+                    case CFPPropertyType.cfpCurrency:
+                        lstValues.Add(new HistogramableValue(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, HistogramValueTypes.Currency));
+                        break;
+                    case CFPPropertyType.cfpDecimal:
+                        if (!cpt.IsNoSum)
+                            lstValues.Add(new HistogramableValue(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, cpt.IsBasicDecimal ? HistogramValueTypes.Decimal : HistogramValueTypes.Time));
+                        break;
+                    case CFPPropertyType.cfpInteger:
+                        lstValues.Add(new HistogramableValue(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, cpt.IsBasicDecimal ? HistogramValueTypes.Decimal : HistogramValueTypes.Integer));
+                        break;
+                    // these types can't be summed
+                    case CFPPropertyType.cfpBoolean:
+                    case CFPPropertyType.cfpDate:
+                    case CFPPropertyType.cfpDateTime:
+                    case CFPPropertyType.cfpString:
+                        break;
+                }
+            }
+
+            const string szBaseHref = "~/Member/LogbookNew.aspx";
+            HistogramManager hm = new HistogramManager()
+            {
+                SourceData = source,
+                SupportedBucketManagers = new BucketManager[] { 
+                    new YearlyBucketManager(szBaseHref), 
+                    new YearMonthBucketManager(szBaseHref), 
+                    new WeeklyBucketManager(szBaseHref), 
+                    new DailyBucketManager(szBaseHref), 
+                    new StringBucketManager("TAILNUMBER", Resources.LogbookEntry.FieldTail, szBaseHref) { SearchParam = "tn" },
+                    new StringBucketManager("MODEL", Resources.Aircraft.ViewAircraftModel, szBaseHref) {SearchParam = "mn" },
+                    new StringBucketManager("ICAO", Resources.Aircraft.ViewAircraftICAO, szBaseHref) {SearchParam = "icao" }
+                },
+                Values = lstValues
+            };
+
+            return hm;
         }
 
-        public double HistogramValue(IDictionary<string, object> context = null)
+        public IComparable BucketSelector(string bucketSelectorName)
+        {
+            switch (bucketSelectorName.ToUpperInvariant())
+            {
+                case "DATE":
+                    return Date;
+                case "TAILNUMBER":
+                    return TailNumDisplay.ToUpper(CultureInfo.CurrentCulture);
+                case "MODEL":
+                    return MakeModel.GetModel(ModelID).Model.ToUpper(CultureInfo.CurrentCulture);
+                case "ICAO":
+                    return MakeModel.GetModel(ModelID).FamilyName.ToUpper(CultureInfo.CurrentCulture);
+                default:
+                    throw new InvalidOperationException("Unknown bucketSelectorName: " + bucketSelectorName);
+            }
+        }
+
+        public double HistogramValue(string value, IDictionary<string, object> context = null)
         {
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
-            if (!context.ContainsKey(HistogramContextSelectorKey))
-                throw new MyFlightbookException("HistogramValue: context doesn't specify which field you want to sum!");
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
 
-            HistogramSelector sel = (HistogramSelector)context[HistogramContextSelectorKey];
-
-            switch (sel)
+            switch (value)
             {
-                case HistogramSelector.TotalFlightTime:
+                case "TotalFlightTime":
                 default:
-                    return (double)TotalFlightTime;
-                case HistogramSelector.Approaches:
+                    if (Int32.TryParse(value, out int idPropType))
+                    {
+                        CustomFlightProperty cfp = CustomProperties.GetEventWithTypeID(idPropType);
+                        return (cfp == null) ? 0.0 : (cfp.PropertyType.Type == CFPPropertyType.cfpInteger ? cfp.IntValue : (double) cfp.DecValue);
+                    }
+                    else
+                        return (double)TotalFlightTime;
+                case "Approaches":
                     return Approaches;
-                case HistogramSelector.Landings:
+                case "Landings":
                     return Landings;
-                case HistogramSelector.Dual:
+                case "Dual":
                     return (double)Dual;
-                case HistogramSelector.Night:
+                case "Night":
                     return (double)Nighttime;
-                case HistogramSelector.SimulatedIMC:
+                case "SimulatedIMC":
                     return (double)SimulatedIFR;
-                case HistogramSelector.IMC:
+                case "IMC":
                     return (double)IMC;
-                case HistogramSelector.PIC:
+                case "PIC":
                     return (double)PIC;
-                case HistogramSelector.SIC:
+                case "SIC":
                     return (double)SIC;
-                case HistogramSelector.CFI:
+                case "CFI":
                     return (double)CFI;
-                case HistogramSelector.XC:
+                case "XC":
                     return (double)CrossCountry;
-                case HistogramSelector.GroundSim:
+                case "GroundSim":
                     return (double)GroundSim;
-                case HistogramSelector.Flights:
+                case "Flights":
                     return 1;
-                case HistogramSelector.FlightDays:
+                case "FlightDays":
                     {
                         const string FlightDaysContextKey = "hgFlightDays";
                         HashSet<DateTime> hs;

@@ -65,7 +65,7 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
         }
 
         if (pnlLogbook.Visible && mfbChartTotals.Visible)
-            mfbChartTotals.SourceData = mfbLogbook1.Data;   // do this every time, since charttotals doesn't persist its data.
+            mfbChartTotals.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, hdnStudent.Value);   // do this every time, since charttotals doesn't persist its data.
     }
 
     protected void UpdateForUser(string szUser)
@@ -94,6 +94,8 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
         if (idx == AccordionCtrl.SelectedIndex)
             AccordionCtrl.SelectedIndex = -1;
         mfbAccordionProxyExtender.SetJavascriptForControl(apcAnalysis, false, idx);
+        mfbChartTotals.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, hdnStudent.Value);
+        mfbChartTotals.Refresh();
     }
 
     public void ClearForm(object sender, EventArgs e)
@@ -122,7 +124,8 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
         AccordionCtrl.SelectedIndex = idx;
 
         mfbChartTotals.Visible = true;
-        mfbChartTotals.Refresh(mfbLogbook1.Data);
+        mfbChartTotals.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, hdnStudent.Value);
+        mfbChartTotals.Refresh();
     }
 
     protected void mfbEditFlight_FlightWillBeSaved(object sender, LogbookEventArgs e)
