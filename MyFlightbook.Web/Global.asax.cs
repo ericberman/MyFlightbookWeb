@@ -52,7 +52,7 @@ namespace MyFlightbook.Web
             if (Context.Request.IsLocal)
                 return;
 
-            if ((myError is HttpException err && err.GetHttpCode() == 404) || myError.Message.Contains("Failed to load viewstate"))
+            if ((myError is HttpException err && err.GetHttpCode() == 404))
                 return;
 
             if (Context != null)
@@ -69,7 +69,7 @@ namespace MyFlightbook.Web
                     ErrorMessage.Append(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Last page requested by user = {0}\r\n", Session[szKey].ToString()));
             }
 
-            MyFlightbook.util.NotifyAdminException(ErrorMessage.ToString(), myError);
+            util.NotifyAdminException(ErrorMessage.ToString(), myError);
         }
 
         protected void Session_Start(object sender, EventArgs e)

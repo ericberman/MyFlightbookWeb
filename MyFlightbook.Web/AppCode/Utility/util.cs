@@ -458,6 +458,9 @@ namespace MyFlightbook
                     ErrorMessage.Append("Target site\r\n" + myError.TargetSite.ToString() + "\r\n\r\n");
                 ErrorMessage.Append("Stack trace\r\n" + myError.StackTrace + "\r\n\r\n");
                 ErrorMessage.Append("Overall Data:\r\n" + myError.ToString() + "\r\n\r\n");
+                // Reduce viewstate spam if it's just a viewstate error.
+                if (myError.ToString().Contains("Failed to load viewstate"))
+                    return;
                 if (myError.Data != null && myError.Data.Keys != null)
                 {
                     foreach (string key in myError.Data.Keys)
