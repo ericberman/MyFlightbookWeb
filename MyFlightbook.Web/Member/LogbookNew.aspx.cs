@@ -42,7 +42,7 @@ public partial class Member_LogbookNew : System.Web.UI.Page
         },
         (dr) =>
         {
-            val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0));
+            val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
         });
         return val.ToString("0.0#", CultureInfo.CurrentCulture);
     }
@@ -69,7 +69,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         },
         (dr) =>
         {
-            val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0));
+            val = Convert.ToDecimal(util.ReadNullableField(dr, "highWater", 0.0), CultureInfo.InvariantCulture);
         });
         return val.ToString("0.0#", CultureInfo.CurrentCulture);
     }
@@ -147,10 +147,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
             {
                 Restriction = mfbSearchForm1.Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
             }
-            catch (ArgumentNullException) { }
-            catch (FormatException) { }
-            catch (JsonSerializationException) { }
-            catch (JsonException) { }
+            catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is JsonSerializationException || ex is JsonException) { }
         }
         else
             Restriction = mfbSearchForm1.Restriction = new FlightQuery(Page.User.Identity.Name);
