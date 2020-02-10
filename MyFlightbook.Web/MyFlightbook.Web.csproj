@@ -2634,10 +2634,12 @@
     <Content Include="App_GlobalResources\FlightData.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>FlightData.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\FlightQuery.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>FlightQuery.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\Geography.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>

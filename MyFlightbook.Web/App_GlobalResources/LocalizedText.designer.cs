@@ -2990,6 +2990,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (None).
+        /// </summary>
+        internal static string None {
+            get {
+                return ResourceManager.GetString("None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Note:.
         /// </summary>
         internal static string Note {

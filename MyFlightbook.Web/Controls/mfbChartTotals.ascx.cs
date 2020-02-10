@@ -152,7 +152,11 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         using (DataTable dt = bm.ToDataTable(HistogramManager))
         {
             gvRawData.Columns.Clear();
-            gvRawData.Columns.Add(new HyperLinkField() { DataTextField = BucketManager.ColumnNameDisplayName, DataNavigateUrlFormatString = "{0}", DataNavigateUrlFields = new string[] { BucketManager.ColumnNameHRef }, HeaderText = bm.DisplayName, Target = "_blank" });
+            if (String.IsNullOrEmpty(bm.BaseHRef))
+                gvRawData.Columns.Add(new BoundField() { DataField = BucketManager.ColumnNameDisplayName, HeaderText = bm.DisplayName });
+            else
+                gvRawData.Columns.Add(new HyperLinkField() { DataTextField = BucketManager.ColumnNameDisplayName, DataNavigateUrlFormatString = "{0}", DataNavigateUrlFields = new string[] { BucketManager.ColumnNameHRef }, HeaderText = bm.DisplayName, Target = "_blank" });
+
             foreach (DataColumn dc in dt.Columns)
             {
                 if (dc.ColumnName.CompareCurrentCultureIgnoreCase(BucketManager.ColumnNameHRef) == 0 || dc.ColumnName.CompareOrdinal(BucketManager.ColumnNameDisplayName) == 0)

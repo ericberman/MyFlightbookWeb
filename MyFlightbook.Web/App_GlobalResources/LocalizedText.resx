@@ -1692,4 +1692,7 @@
   <data name="DownloadFlyingStatsFilename" xml:space="preserve">
     <value>Flying-Stats</value>
   </data>
+  <data name="None" xml:space="preserve">
+    <value>(None)</value>
+  </data>
 </root>

@@ -3595,6 +3595,19 @@ namespace MyFlightbook
             if (!pf.IsInstructor)
                 lstValues.RemoveAll(hv => hv.DataField.CompareOrdinal("CFI") == 0);
 
+            const string szBaseHref = "~/Member/LogbookNew.aspx";
+
+            List<BucketManager> lstStrings = new List<BucketManager>()
+            {
+                new YearlyBucketManager(szBaseHref),
+                new YearMonthBucketManager(szBaseHref),
+                new WeeklyBucketManager(szBaseHref),
+                new DailyBucketManager(szBaseHref),
+                new StringBucketManager("TAILNUMBER", Resources.LogbookEntry.FieldTail, szBaseHref) { SearchParam = "tn" },
+                new StringBucketManager("MODEL", Resources.Aircraft.ViewAircraftModel, szBaseHref) {SearchParam = "mn" },
+                new StringBucketManager("ICAO", Resources.Aircraft.ViewAircraftICAO, szBaseHref) {SearchParam = "icao" }
+            };
+
             IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes(szUser);
             foreach (CustomPropertyType cpt in rgcpt)
             {
@@ -3617,24 +3630,19 @@ namespace MyFlightbook
                     case CFPPropertyType.cfpBoolean:
                     case CFPPropertyType.cfpDate:
                     case CFPPropertyType.cfpDateTime:
+                        break;
+
+                    // Strings can't be summed, but they can serve for grouping.  We do simple text-contains searches.
                     case CFPPropertyType.cfpString:
+                        lstStrings.Add(new StringBucketManager(cpt.PropTypeID.ToString(CultureInfo.InvariantCulture), cpt.Title, string.Empty));
                         break;
                 }
             }
 
-            const string szBaseHref = "~/Member/LogbookNew.aspx";
             HistogramManager hm = new HistogramManager()
             {
                 SourceData = source,
-                SupportedBucketManagers = new BucketManager[] { 
-                    new YearlyBucketManager(szBaseHref), 
-                    new YearMonthBucketManager(szBaseHref), 
-                    new WeeklyBucketManager(szBaseHref), 
-                    new DailyBucketManager(szBaseHref), 
-                    new StringBucketManager("TAILNUMBER", Resources.LogbookEntry.FieldTail, szBaseHref) { SearchParam = "tn" },
-                    new StringBucketManager("MODEL", Resources.Aircraft.ViewAircraftModel, szBaseHref) {SearchParam = "mn" },
-                    new StringBucketManager("ICAO", Resources.Aircraft.ViewAircraftICAO, szBaseHref) {SearchParam = "icao" }
-                },
+                SupportedBucketManagers = lstStrings,
                 Values = lstValues
             };
 
@@ -3654,8 +3662,25 @@ namespace MyFlightbook
                 case "ICAO":
                     return MakeModel.GetModel(ModelID).FamilyName.ToUpper(CultureInfo.CurrentCulture);
                 default:
-                    throw new InvalidOperationException("Unknown bucketSelectorName: " + bucketSelectorName);
+                    if (Int32.TryParse(bucketSelectorName, out int idPropType))
+                    {
+                        CustomFlightProperty cfp = CustomProperties.GetEventWithTypeID(idPropType);
+                        return (cfp == null || cfp.PropertyType.Type != CFPPropertyType.cfpString) ? Resources.LocalizedText.None.ToUpper(CultureInfo.CurrentCulture) : cfp.TextValue.ToUpper(CultureInfo.CurrentCulture);
+                    }
+                    else
+                        throw new InvalidOperationException("Unknown bucketSelectorName: " + bucketSelectorName);
             }
+        }
+
+        private double TryReturnPropType(string value, double defaultValue)
+        {
+            if (Int32.TryParse(value, out int idPropType))
+            {
+                CustomFlightProperty cfp = CustomProperties.GetEventWithTypeID(idPropType);
+                return (cfp == null) ? 0.0 : (cfp.PropertyType.Type == CFPPropertyType.cfpInteger ? cfp.IntValue : (double)cfp.DecValue);
+            }
+            else
+                return defaultValue;
         }
 
         public double HistogramValue(string value, IDictionary<string, object> context = null)
@@ -3669,13 +3694,7 @@ namespace MyFlightbook
             {
                 case "TotalFlightTime":
                 default:
-                    if (Int32.TryParse(value, out int idPropType))
-                    {
-                        CustomFlightProperty cfp = CustomProperties.GetEventWithTypeID(idPropType);
-                        return (cfp == null) ? 0.0 : (cfp.PropertyType.Type == CFPPropertyType.cfpInteger ? cfp.IntValue : (double) cfp.DecValue);
-                    }
-                    else
-                        return (double)TotalFlightTime;
+                    return TryReturnPropType(value, (double)TotalFlightTime);
                 case "Approaches":
                     return Approaches;
                 case "Landings":

@@ -816,7 +816,7 @@ namespace MyFlightbook.Histogram
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
         {
-            return new Dictionary<string, string>() { {SearchParam,  (string) b.OrdinalValue } };
+            return new Dictionary<string, string>() { {SearchParam ?? string.Empty,  (string) b.OrdinalValue } };
         }
 
         public StringBucketManager(string dataField, string displayName, string baseHRef) : base(baseHRef) 
