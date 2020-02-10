@@ -38,7 +38,7 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
 
     protected void SetUpSelectors()
     {
-        if (HistogramManager != null && cmbFieldToView.Items.Count == 0 || cmbGrouping.Items.Count == 0)
+        if (HistogramManager != null && (cmbFieldToView.Items.Count == 0 || cmbGrouping.Items.Count == 0))
         {
             cmbFieldToView.DataSource = HistogramManager.Values;
             cmbFieldToView.DataBind();
