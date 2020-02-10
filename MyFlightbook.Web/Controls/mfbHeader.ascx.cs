@@ -33,7 +33,7 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
             lnkDownloadIPhone.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadIOS);
             lnkDownloadAndroid.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadAndroid);
             lnkDownloadWindowsPhone.Text = Branding.ReBrand(Resources.LocalizedText.HeaderDownloadWP7);
-            lnkLogo.ImageUrl = Branding.CurrentBrand.LogoURL;
+            lnkLogo.ImageUrl = Branding.CurrentBrand.LogoHRef;
             pnlDonate.Visible = Page.User.Identity.IsAuthenticated;
             lnkDonate.Text = Branding.ReBrand(Resources.LocalizedText.DonateSolicitation);
 

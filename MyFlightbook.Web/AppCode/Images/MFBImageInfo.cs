@@ -434,15 +434,15 @@ namespace MyFlightbook.Image
                 case ImageClass.Unknown:
                     return null;
                 case ImageClass.Aircraft:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["AircraftPixDir"].ToString());
+                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["AircraftPixDir"]);
                 case ImageClass.Endorsement:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"].ToString());
+                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"]);
                 case ImageClass.OfflineEndorsement:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"].ToString());
+                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"]);
                 case ImageClass.Flight:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["FlightsPixDir"].ToString());
+                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["FlightsPixDir"]);
                 case ImageClass.BasicMed:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"].ToString());
+                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"]);
             }
         }
 
@@ -460,15 +460,15 @@ namespace MyFlightbook.Image
                 szVirtPath = szVirtPath.Substring(0, szVirtPath.Length - 1);
             szVirtPath = szVirtPath.ToUpperInvariant();
 
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["AircraftPixDir"].ToString()), StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["AircraftPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.Aircraft;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["FlightsPixDir"].ToString()), StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["FlightsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.Flight;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"].ToString()), StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.Endorsement;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"].ToString()), StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.OfflineEndorsement;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"].ToString()), StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"]), StringComparison.OrdinalIgnoreCase) == 0)
                 return ImageClass.BasicMed;
 
             // No exact match - try looking for other clues
@@ -566,6 +566,79 @@ namespace MyFlightbook.Image
                 return this.FullImageFile.CompareOrdinalIgnoreCase(mfbii.FullImageFile);
             else
                 return this.ImageType == ImageFileType.JPEG ? -1 : 1;
+        }
+
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj is null)
+            {
+                return false;
+            }
+
+            return CompareTo(obj) == 0;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -750829556;
+            hashCode = hashCode * -1521134295 + ImageType.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Comment);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(VirtualPath);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
+            hashCode = hashCode * -1521134295 + Class.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ThumbnailFile);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FullImageFile);
+            hashCode = hashCode * -1521134295 + EqualityComparer<LatLong>.Default.GetHashCode(Location);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLFullImage);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLThumbnail);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Uri>.Default.GetHashCode(UriS3VideoThumbnail);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImage);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathThumbnail);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(S3Key);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImageS3);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathThumbnail);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathFull);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPath);
+            hashCode = hashCode * -1521134295 + IsLocal.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CacheKey);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PrimaryKey);
+            return hashCode;
+        }
+
+        public static bool operator ==(MFBImageInfo left, MFBImageInfo right)
+        {
+            return EqualityComparer<MFBImageInfo>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(MFBImageInfo left, MFBImageInfo right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(MFBImageInfo left, MFBImageInfo right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(MFBImageInfo left, MFBImageInfo right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(MFBImageInfo left, MFBImageInfo right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(MFBImageInfo left, MFBImageInfo right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
 
@@ -821,7 +894,7 @@ namespace MyFlightbook.Image
         /// <returns>True if we are using the DB</returns>
         private static bool UseDB()
         {
-            return (String.Compare(ConfigurationManager.AppSettings["UseImageDB"].ToString(), "yes", StringComparison.OrdinalIgnoreCase) == 0);
+            return (String.Compare(ConfigurationManager.AppSettings["UseImageDB"], "yes", StringComparison.OrdinalIgnoreCase) == 0);
         }
 
         /// <summary>
@@ -948,14 +1021,10 @@ namespace MyFlightbook.Image
             string szKey = (string)dr["ImageKey"];
 
             MFBImageInfo mfbii = new MFBImageInfo(ic, szKey, (string)dr["ThumbFilename"]);
-            try
-            {
-                double lat = Convert.ToDouble(dr["Latitude"], CultureInfo.InvariantCulture);
-                double lon = Convert.ToDouble(dr["Longitude"], CultureInfo.InvariantCulture);
-                if (lat != 0 && lon != 0)
-                    mfbii.Location = new LatLong(lat, lon);
-            }
-            catch (FormatException) { }
+            double lat = (double)util.ReadNullableField(dr, "Latitude", 0.0);
+            double lon = (double)util.ReadNullableField(dr, "Longitude", 0.0); 
+            if (lat != 0 && lon != 0)
+                mfbii.Location = new LatLong(lat, lon);
             mfbii.Comment = (string)dr["Comment"];
             mfbii.WidthThumbnail = Convert.ToInt32(dr["ThumbWidth"], CultureInfo.InvariantCulture);
             mfbii.HeightThumbnail = Convert.ToInt32(dr["ThumbHeight"], CultureInfo.InvariantCulture);
@@ -1091,44 +1160,6 @@ namespace MyFlightbook.Image
         }
 
         /// <summary>
-        /// Returns a dictionary of images from the DB matching the specified class and keys - integer only (i.e., for aircraft/flights).
-        /// </summary>
-        /// <param name="ic">The image class</param>
-        /// <param name="lstKeys">List of integer keys</param>
-        /// <returns>Matching results.  Index by key, each key returns a list of images</returns>
-        static public Dictionary<int, List<MFBImageInfo>> FromDB(MFBImageInfo.ImageClass ic, List<int> lstKeys)
-        {
-            List<string> lstKeyStrings = new List<string>();
-            foreach (int key in lstKeys)
-                lstKeyStrings.Add(key.ToString());
-
-            string szIDs = String.Join("', '", lstKeyStrings.ToArray());
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT * FROM images WHERE virtPathID={0} AND ImageKey IN ('{1}')", (int)ic, szIDs));
-
-            Dictionary<int, List<MFBImageInfo>> dictResults = new Dictionary<int, List<MFBImageInfo>>();
-
-            dbh.ReadRows(
-                (comm) => { },
-                (dr) =>
-                {
-                    MFBImageInfo mfbii = ImageFromDBRow(dr);
-                    int iKey = Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture);
-                    List<MFBImageInfo> lst;
-
-                    if (dictResults.ContainsKey(iKey))
-                        lst = dictResults[iKey];
-                    else
-                    {
-                        lst = new List<MFBImageInfo>();
-                        dictResults[iKey] = lst;
-                    }
-                    lst.Add(mfbii);
-                });
-
-            return dictResults;
-        }
-
-        /// <summary>
         /// Returns the images that match a specified key and imageclass
         /// </summary>
         /// <param name="ic">The imageclass</param>
@@ -1154,57 +1185,6 @@ namespace MyFlightbook.Image
 
             return lstResult;
         }
-
-        /// <summary>
-        /// Initializes from a simple serialized form.  Each image is separated by \r\n, and each field by \t.
-        /// Order of tabbed data is:
-        ///  - Thumbnail file
-        ///  - Image Type
-        ///  - Latitude
-        ///  - Longitude
-        ///  - Local (0/1)
-        ///  - ThumbWidth
-        ///  - ThumbHeight
-        ///  - Comment
-        ///  
-        /// The key/imageclass is inferred from this ImageList
-        /// </summary>
-        /// <param name="szSerialization">The serialized objects</param>
-        /*
-        public static List<MFBImageInfo> Deserialize(ImageClass ic, string szKey, string szSerialization)
-        {
-            if (szKey == null)
-                throw new ArgumentNullException(nameof(szKey));
-            if (szSerialization == null)
-                throw new ArgumentNullException(nameof(szSerialization));
-            List<MFBImageInfo> lst = new List<MFBImageInfo>();
-
-            string[] rgRows = szSerialization.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (string szRow in rgRows)
-            {
-                string[] szCols = szRow.Split(new char[] { '\t' }, StringSplitOptions.None);
-                string szThumb = szCols[0];
-                MFBImageInfo.ImageFileType imageType = (MFBImageInfo.ImageFileType)Convert.ToInt32(szCols[1], CultureInfo.InvariantCulture);
-                double lat = Convert.ToDouble(szCols[2], CultureInfo.InvariantCulture);
-                double lon = Convert.ToDouble(szCols[3], CultureInfo.InvariantCulture);
-                int thWidth = Convert.ToInt32(szCols[4], CultureInfo.InvariantCulture);
-                int thHeight = Convert.ToInt32(szCols[5], CultureInfo.InvariantCulture);
-                string szComment = szCols[7];
-
-                MFBImageInfo mfbii = new MFBImageInfo(ic, szKey, szThumb);
-                if (lat != 0 && lon != 0)
-                    mfbii.Location = new LatLong(lat, lon);
-                mfbii.Comment = szComment;
-                mfbii.ImageType = imageType;
-                mfbii.WidthThumbnail = thWidth;
-                mfbii.HeightThumbnail = thHeight;
-                lst.Add(mfbii);
-            }
-
-            return lst;
-        }
-         * */
         #endregion
 
         #region Constructors
@@ -1223,9 +1203,7 @@ namespace MyFlightbook.Image
         /// <param name="szThumbnail">The filename of the *thumbnail* for the file</param>
         public MFBImageInfo(ImageClass ic, string szKey, string szThumbnail) : this(ic, szKey)
         {
-            if (szThumbnail == null)
-                throw new ArgumentNullException(nameof(szThumbnail));
-            ThumbnailFile = szThumbnail;
+            ThumbnailFile = szThumbnail ?? throw new ArgumentNullException(nameof(szThumbnail));
             if (szThumbnail.StartsWith(ThumbnailPrefixVideo, StringComparison.OrdinalIgnoreCase))
                 ImageType = ImageFileType.S3VideoMP4;
             else if (Path.GetExtension(szThumbnail).CompareCurrentCultureIgnoreCase(FileExtensions.PDF) == 0)
@@ -1362,9 +1340,7 @@ namespace MyFlightbook.Image
                 // Now that the image has been rotated, we do NOT want to flag it as rotated any more.
                 inf.Image.RemovePropertyItem((int)PropertyTagId.Orientation);
             }
-            catch (InvalidCastException) { }
-            catch (ArgumentException) { }
-            finally
+            catch (Exception ex) when (ex is InvalidCastException || ex is ArgumentException)
             {
                 // nothing to do...move on if property were was not found.
             }
@@ -1405,24 +1381,30 @@ namespace MyFlightbook.Image
                 throw new ArgumentNullException(nameof(s));
 
             szTemp = null;
+            MagickImage image = null;
             try
             {
                 return System.Drawing.Image.FromStream(s);
             }
-            catch (ArgumentException)
+            catch (Exception ex) when (ex is ArgumentException)
             {
                 szTemp = Path.GetTempFileName();
                 try
                 {
-                    using (MagickImage image = new MagickImage(s))
-                        image.Write(szTemp, MagickFormat.Jpg);
+                    image = new MagickImage(s);
+                    image.Write(szTemp, MagickFormat.Jpg);
 
                     return System.Drawing.Image.FromFile(szTemp);
                 }
-                catch (MagickException)
+                catch (Exception ex2) when (ex2 is MagickException)
                 {
                     return null;
                 }
+            }
+            finally
+            {
+                if (image != null)
+                    image.Dispose();
             }
         }
 
@@ -1507,7 +1489,7 @@ namespace MyFlightbook.Image
                         {
                             // Create a file with a unique name - use current time for uniqueness
                             DateTime dt = DateTime.Now;
-                            string szFileName = String.Format(CultureInfo.InvariantCulture, "{0}-{1}{2}{3}", dt.ToString("yyyyMMddHHmmssff", CultureInfo.InvariantCulture), myFile.ContentLength.ToString(), szNewS3KeySuffix, FileExtensions.JPG);
+                            string szFileName = String.Format(CultureInfo.InvariantCulture, "{0}-{1}{2}{3}", dt.ToString("yyyyMMddHHmmssff", CultureInfo.InvariantCulture), myFile.ContentLength.ToString(CultureInfo.InvariantCulture), szNewS3KeySuffix, FileExtensions.JPG);
                             ThumbnailFile = MFBImageInfo.ThumbnailPrefix + szFileName;
 
                             // Resize the image if needed, and then create a thumbnail of it and write that too:
@@ -1516,39 +1498,34 @@ namespace MyFlightbook.Image
                                 // rotate the image, if necessary
                                 Info inf = InfoFromImage(image);
 
-                                // update the location
-                                try
-                                {
-                                    // save the comment
-                                    inf.ImageDescription = szComment;
+                                // save the comment
+                                inf.ImageDescription = szComment;
 
-                                    if (ll == null) // no geotag is specified - initialize location from the underlying image.
-                                    {
-                                        if (inf.HasGeotag)
-                                            Location = new LatLong(inf.Latitude, inf.Longitude);
-                                        if (!Location.IsValid)
-                                            Location = null;
-                                    }
-                                    else
-                                    {
-                                        // A specific geotag is provided: geotag the image.
-                                        Location = ll;
-                                        inf.Latitude = ll.Latitude;
-                                        inf.Longitude = ll.Longitude;
-                                    }
+                                // update the location
+                                if (ll == null) // no geotag is specified - initialize location from the underlying image.
+                                {
+                                    if (inf.HasGeotag)
+                                        Location = new LatLong(inf.Latitude, inf.Longitude);
                                 }
-                                catch { }
+                                else
+                                {
+                                    // A specific geotag is provided: geotag the image.
+                                    Location = ll;
+                                    inf.Latitude = ll.Latitude;
+                                    inf.Longitude = ll.Longitude;
+                                }
 
                                 if (Location != null && !Location.IsValid)
                                     Location = null;
 
                                 // save the full-sized image
-                                Bitmap bmp = BitmapFromImage(inf.Image, MaxImgHeight, MaxImgWidth);
-                                Width = bmp.Width;
-                                Height = bmp.Height;
+                                Bitmap bmp;
 
-                                using (bmp)
+                                using (bmp = BitmapFromImage(inf.Image, MaxImgHeight, MaxImgWidth))
                                 {
+                                    Width = bmp.Width;
+                                    Height = bmp.Height;
+
                                     // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
                                     foreach (PropertyItem pi in inf.Image.PropertyItems)
                                         bmp.SetPropertyItem(pi);
@@ -1557,11 +1534,11 @@ namespace MyFlightbook.Image
                                     bmp.Save(szPathFullImage, ImageFormat.Jpeg);
                                 }
 
-                                bmp = BitmapFromImage(inf.Image, ThumbnailHeight, ThumbnailWidth);
-                                WidthThumbnail = bmp.Width;
-                                HeightThumbnail = bmp.Height;
-                                using (bmp)
+                                using (bmp = BitmapFromImage(inf.Image, ThumbnailHeight, ThumbnailWidth))
                                 {
+                                    WidthThumbnail = bmp.Width;
+                                    HeightThumbnail = bmp.Height;
+
                                     // copy the properties here too.
                                     foreach (PropertyItem pi in inf.Image.PropertyItems)
                                         bmp.SetPropertyItem(pi);
@@ -1571,8 +1548,6 @@ namespace MyFlightbook.Image
                                 // if we got here, everything is hunky-dory.  Cache it!
                                 if (HttpRuntime.Cache != null)
                                     HttpRuntime.Cache[CacheKey] = this;
-
-                                inf.Image.Dispose();
 
                                 // Save it in the DB - we do this BEFORE moving to S3 to avoid a race condition
                                 // that could arise when MoveImageToS3 attempts to update the record to show that it is no longer local.
@@ -1720,13 +1695,13 @@ namespace MyFlightbook.Image
                 (dr) =>
                 {
                     string szIDOrphan = dr["idPic"].ToString();
-                    DirectoryInfo dirOrphan = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(String.Format("{0}\\{1}", szPixDir, szIDOrphan)));
+                    DirectoryInfo dirOrphan = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(String.Format(CultureInfo.InvariantCulture, "{0}\\{1}", szPixDir, szIDOrphan)));
 
-                    ImageList il = new ImageList(ic, szIDOrphan.ToString());
+                    ImageList il = new ImageList(ic, szIDOrphan);
                     il.Refresh();
                     foreach (MFBImageInfo mfbii in il.ImageArray)
                     {
-                        sbLog.AppendFormat("Deleting: {0} and {1}\r\n<br />", System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), mfbii.IsLocal ? System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathFullImage) : mfbii.PathFullImageS3);
+                        sbLog.AppendFormat(CultureInfo.CurrentCulture, "Deleting: {0} and {1}\r\n<br />", System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathThumbnail), mfbii.IsLocal ? System.Web.Hosting.HostingEnvironment.MapPath(mfbii.PathFullImage) : mfbii.PathFullImageS3);
                         mfbii.DeleteImage();
                     }
 
@@ -1777,7 +1752,7 @@ namespace MyFlightbook.Image
         /// </summary>
         public static string CurrentS3Bucket
         {
-            get { return UseDebugBucket ? S3BucketNameDebug : S3BucketName; }
+            get { return UseDebugBucket ? S3BucketNameDebug : Branding.CurrentBrand.AWSBucket; }
         }
 
         /// <summary>
@@ -1960,15 +1935,7 @@ namespace MyFlightbook.Image
                                                 fs.Write(rgBytes, 0, rgBytes.Length);
                                             }
                                         }
-                                        catch (UnauthorizedAccessException)
-                                        {
-                                            mfbii.ImageType = MFBImageInfo.ImageFileType.PDF;
-                                        }
-                                        catch (FileNotFoundException)
-                                        {
-                                            mfbii.ImageType = MFBImageInfo.ImageFileType.PDF;
-                                        }
-                                        catch (IOException)
+                                        catch (Exception ex) when (ex is UnauthorizedAccessException || ex is FileNotFoundException || ex is IOException)
                                         {
                                             mfbii.ImageType = MFBImageInfo.ImageFileType.PDF;
                                         }
@@ -2117,8 +2084,6 @@ namespace MyFlightbook.Image
         /// <param name="handleS3Object"></param>
         public static void ADMINDeleteS3Orphans(MFBImageInfo.ImageClass ic, Action<long, long, long, long> onSummary, Action onS3EnumDone, Func<string, int, bool> onDelete)
         {
-            try
-            {
                 string szBasePath = MFBImageInfo.BasePathFromClass(ic);
                 if (szBasePath.StartsWith("/"))
                     szBasePath = szBasePath.Substring(1);
@@ -2130,101 +2095,99 @@ namespace MyFlightbook.Image
                 long cFilesOnS3 = 0;
                 long cOrphansFound = 0;
 
-                using (IAmazonS3 s3 = AWSConfiguration.S3Client())
+            using (IAmazonS3 s3 = AWSConfiguration.S3Client())
+            {
+                ListObjectsRequest request = new ListObjectsRequest() { BucketName = AWSConfiguration.S3BucketName, Prefix = szBasePath };
+
+                /*
+                 * Need to get the files from S3 FIRST, otherwise there is a race condition
+                 * I.e., if we get files from the DB, then get files from S3, a file could be added to the db AFTER our query
+                 * but BEFORE we retrieve it from the S3 listing, and we will thus treat it as an orphan and delete it.
+                 * But since the file is put into the DB before being moved to S3, if we get all the S3 files and THEN
+                 * get the DB references, we will always have a subset of the valid S3 files, which prevents a false positive 
+                 * orphan identification.
+                 */
+
+                List<S3Object> lstS3Objects = new List<S3Object>();
+                // Get the list of S3 objects
+                do
                 {
-                    ListObjectsRequest request = new ListObjectsRequest() { BucketName = AWSConfiguration.S3BucketName, Prefix = szBasePath };
+                    ListObjectsResponse response = s3.ListObjects(request);
 
-                    /*
-                     * Need to get the files from S3 FIRST, otherwise there is a race condition
-                     * I.e., if we get files from the DB, then get files from S3, a file could be added to the db AFTER our query
-                     * but BEFORE we retrieve it from the S3 listing, and we will thus treat it as an orphan and delete it.
-                     * But since the file is put into the DB before being moved to S3, if we get all the S3 files and THEN
-                     * get the DB references, we will always have a subset of the valid S3 files, which prevents a false positive 
-                     * orphan identification.
-                     */
-
-                    List<S3Object> lstS3Objects = new List<S3Object>();
-                    // Get the list of S3 objects
-                    do
+                    cFilesOnS3 += response.S3Objects.Count;
+                    foreach (S3Object o in response.S3Objects)
                     {
-                        ListObjectsResponse response = s3.ListObjects(request);
+                        cBytesOnS3 += o.Size;
+                        lstS3Objects.Add(o);
+                    }
 
-                        cFilesOnS3 += response.S3Objects.Count;
-                        foreach (S3Object o in response.S3Objects)
-                        {
-                            cBytesOnS3 += o.Size;
-                            lstS3Objects.Add(o);
-                        }
+                    // If response is truncated, set the marker to get the next 
+                    // set of keys.
+                    if (response.IsTruncated)
+                        request.Marker = response.NextMarker;
+                    else
+                        request = null;
+                } while (request != null);
 
-                        // If response is truncated, set the marker to get the next 
-                        // set of keys.
-                        if (response.IsTruncated)
-                            request.Marker = response.NextMarker;
-                        else
-                            request = null;
-                    } while (request != null);
+                onS3EnumDone();
 
-                    onS3EnumDone();
+                // Now get all of the images in the class and do orphan detection
+                Dictionary<string, MFBImageInfo> dictDBResults = MFBImageInfo.AllImagesForClass(ic);
 
-                    // Now get all of the images in the class and do orphan detection
-                    Dictionary<string, MFBImageInfo> dictDBResults = MFBImageInfo.AllImagesForClass(ic);
+                long cOrphansLikely = Math.Max(lstS3Objects.Count - dictDBResults.Keys.Count, 1);
+                Regex rGuid = new Regex(String.Format(CultureInfo.InvariantCulture, "^({0})?([^_]*).*", MFBImageInfo.ThumbnailPrefixVideo), RegexOptions.Compiled);  // for use below in extracting GUIDs from video thumbnail and video file names.
+                lstS3Objects.ForEach((o) =>
+                {
+                    Match m = r.Match(o.Key);
+                    if (m.Groups.Count < 3)
+                        return;
 
-                    long cOrphansLikely = Math.Max(lstS3Objects.Count - dictDBResults.Keys.Count, 1);
-                    Regex rGuid = new Regex(String.Format(CultureInfo.InvariantCulture, "^({0})?([^_]*).*", MFBImageInfo.ThumbnailPrefixVideo), RegexOptions.Compiled);  // for use below in extracting GUIDs from video thumbnail and video file names.
-                    lstS3Objects.ForEach((o) =>
+                    string szKey = m.Groups[1].Value;
+                    string szName = m.Groups[2].Value;
+                    string szExt = m.Groups[3].Value;
+
+                    bool fPDF = (String.Compare(szExt, FileExtensions.PDF, true) == 0);
+                    bool fVid = (String.Compare(szExt, FileExtensions.MP4, true) == 0);
+                    bool fVidThumb = Regex.IsMatch(szExt, FileExtensions.RegExpImageFileExtensions) && szName.StartsWith(MFBImageInfo.ThumbnailPrefixVideo);
+                    bool fJpg = (String.Compare(szExt, FileExtensions.JPG, true) == 0 || String.Compare(szExt, FileExtensions.JPEG, true) == 0);
+
+                    string szThumb = string.Empty;
+                    if (fPDF)
+                        szThumb = szName + FileExtensions.S3PDF;
+                    else if (fVid || fVidThumb)
                     {
-                        Match m = r.Match(o.Key);
-                        if (m.Groups.Count < 3)
-                            return;
-
-                        string szKey = m.Groups[1].Value;
-                        string szName = m.Groups[2].Value;
-                        string szExt = m.Groups[3].Value;
-
-                        bool fPDF = (String.Compare(szExt, FileExtensions.PDF, true) == 0);
-                        bool fVid = (String.Compare(szExt, FileExtensions.MP4, true) == 0);
-                        bool fVidThumb = Regex.IsMatch(szExt, FileExtensions.RegExpImageFileExtensions) && szName.StartsWith(MFBImageInfo.ThumbnailPrefixVideo);
-                        bool fJpg = (String.Compare(szExt, FileExtensions.JPG, true) == 0 || String.Compare(szExt, FileExtensions.JPEG, true) == 0);
-
-                        string szThumb = string.Empty;
-                        if (fPDF)
-                            szThumb = szName + FileExtensions.S3PDF;
-                        else if (fVid || fVidThumb)
-                        {
                             // This is a bit of a hack, but we have two files on the server for a video, neither of which precisely matches what's in the database.
                             // The video file is {guid}.mp4 or {guid}_.mp4, the thumbnail on S3 is v_{guid}_0001.jpg.
                             // So we grab the GUID and see if we have a database entry matching that guid.
                             Match mGuid = rGuid.Match(szName);
-                            szThumb = (mGuid.Groups.Count >= 3) ? mGuid.Groups[2].Value : szName + szExt;
-                            string szMatchKey = dictDBResults.Keys.FirstOrDefault(skey => skey.Contains(szThumb));
-                            if (!String.IsNullOrEmpty(szMatchKey))  // leave it in the dictionary - don't remove it - because we may yet hit the Mp4 or the JPG.
+                        szThumb = (mGuid.Groups.Count >= 3) ? mGuid.Groups[2].Value : szName + szExt;
+                        string szMatchKey = dictDBResults.Keys.FirstOrDefault(skey => skey.Contains(szThumb));
+                        if (!String.IsNullOrEmpty(szMatchKey))  // leave it in the dictionary - don't remove it - because we may yet hit the Mp4 or the JPG.
                                 return;
-                        }
-                        else if (fJpg)
-                            szThumb = MFBImageInfo.ThumbnailPrefix + szName + szExt;
+                    }
+                    else if (fJpg)
+                        szThumb = MFBImageInfo.ThumbnailPrefix + szName + szExt;
 
-                        string szPrimary = MFBImageInfo.PrimaryKeyForValues(ic, szKey, szThumb);
+                    string szPrimary = MFBImageInfo.PrimaryKeyForValues(ic, szKey, szThumb);
 
                         // if it is found, super - remove it from the dictionary (for performance) and return
                         if (dictDBResults.ContainsKey(szPrimary))
-                            dictDBResults.Remove(szPrimary);
-                        else
+                        dictDBResults.Remove(szPrimary);
+                    else
+                    {
+                        cOrphansFound++;
+                        cBytesToFree += o.Size;
+                        if (onDelete(o.Key, (int)((100 * cOrphansFound) / cOrphansLikely)))
                         {
-                            cOrphansFound++;
-                            cBytesToFree += o.Size;
-                            if (onDelete(o.Key, (int)((100 * cOrphansFound) / cOrphansLikely)))
-                            {
                                 // Make sure that the item 
                                 DeleteObjectRequest dor = new DeleteObjectRequest() { BucketName = AWSConfiguration.S3BucketName, Key = o.Key };
-                                DeleteObjectResponse delr = s3.DeleteObject(dor);
-                            }
+                            DeleteObjectResponse delr = s3.DeleteObject(dor);
                         }
-                    });
+                    }
+                });
 
-                    onSummary(cFilesOnS3, cBytesOnS3, cOrphansFound, cBytesToFree);
-                }
+                onSummary(cFilesOnS3, cBytesOnS3, cOrphansFound, cBytesToFree);
             }
-            catch { }
         }
 
         /// <summary>
@@ -2358,7 +2321,7 @@ namespace MyFlightbook.Image
                     Class = (MFBImageInfo.ImageClass)Convert.ToInt32(dr["virtPathID"], CultureInfo.InvariantCulture);
                     Key = (string)dr["imagekey"];
                     Bucket = (string)dr["Bucket"];
-                    SubmissionTime = DateTime.SpecifyKind(Convert.ToDateTime(dr["Submitted"]), DateTimeKind.Utc);
+                    SubmissionTime = DateTime.SpecifyKind(Convert.ToDateTime(dr["Submitted"], CultureInfo.InvariantCulture), DateTimeKind.Utc);
                 });
         }
         #endregion
@@ -2561,10 +2524,8 @@ namespace MyFlightbook.Image
         public MFBPendingImage(MFBPostedFile mfbpf, string szSessKey)
             : base()
         {
-            if (mfbpf == null)
-                throw new ArgumentNullException(nameof(mfbpf));
             Init();
-            PostedFile = mfbpf;
+            PostedFile = mfbpf ?? throw new ArgumentNullException(nameof(mfbpf));
             ImageType = ImageTypeFromFile(mfbpf);
             ThumbnailFile = MFBImageInfo.ThumbnailPrefix + mfbpf.FileID;
             SessionKey = szSessKey;
@@ -2650,7 +2611,9 @@ namespace MyFlightbook.Image
         /// <summary>
         /// The bytes of the posted file.
         /// </summary>
+#pragma warning disable CA1819 // Properties should not return arrays
         public byte[] ContentData { get; set; }
+#pragma warning restore CA1819 // Properties should not return arrays
 
         /// <summary>
         /// The unique ID provided by the AJAX file upload control
@@ -2678,7 +2641,7 @@ namespace MyFlightbook.Image
                         return ContentData;
                     }
                 }
-                catch (ArgumentException)
+                catch (Exception ex) when (ex is ArgumentException)
                 {
                     return MFBImageInfo.ConvertStreamToJPG(ms);
                 }

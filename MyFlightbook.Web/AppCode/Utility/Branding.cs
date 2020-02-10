@@ -3,7 +3,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2019 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,7 +44,7 @@ namespace MyFlightbook
         /// <summary>
         /// The URL for the logo for the app (upper corner)
         /// </summary>
-        public string LogoURL { get; set; }
+        public string LogoHRef { get; set; }
 
         /// <summary>
         /// The Email address used for mail that gets sent from the app
@@ -75,6 +75,11 @@ namespace MyFlightbook
         /// Link to any video/tutorial channel
         /// </summary>
         public string VideoRef { get; set; }
+
+        /// <summary>
+        /// which AWS bucket to use for this brand?
+        /// </summary>
+        public string AWSBucket { get; set; }
         #endregion
 
         /// <summary>
@@ -89,24 +94,26 @@ namespace MyFlightbook
         /// <param name="szFacebook">Link to the facebook feed for this brand</param>
         /// <param name="szStyleSheet">Link to the stylesheet for this brand</param>
         /// <param name="szTwitter">Link to the twitter feed for this brand</param>
-        public Brand(BrandID ID, string szapp, string szhost, string szRoot, string szlogo, string szStyleSheet, string szEmail, string szFacebook, string szTwitter, string szBlog) : this(ID)
+        /// <param name="awsBucket">Name of AWS bucket to use for images.</param>
+        public Brand(BrandID ID, string szapp, string szhost, string szRoot, string szlogo, string szStyleSheet, string szEmail, string szFacebook, string szTwitter, string szBlog, string awsBucket) : this(ID)
         {
             BrandID = ID;
             AppName = szapp;
             HostName = szhost;
             Root = szRoot;
-            LogoURL = szlogo;
+            LogoHRef = szlogo;
             EmailAddress = szEmail;
             FacebookFeed = szFacebook;
             TwitterFeed = szTwitter;
             StyleSheet = szStyleSheet;
             BlogAddress = szBlog;
+            AWSBucket = awsBucket;
         }
 
         public Brand(BrandID brandID)
         {
             BrandID = brandID;
-            AppName = HostName = Root = LogoURL = EmailAddress = FacebookFeed = TwitterFeed = StyleSheet = BlogAddress = VideoRef = string.Empty;
+            AppName = HostName = Root = LogoHRef = EmailAddress = FacebookFeed = TwitterFeed = StyleSheet = BlogAddress = VideoRef = AWSBucket = string.Empty;
         }
 
         private const string szPrefixToIgnore = "www.";
@@ -120,7 +127,7 @@ namespace MyFlightbook
         public bool MatchesHost(string szHost)
         {
             if (szHost == null)
-                throw new ArgumentNullException("szHost");
+                throw new ArgumentNullException(nameof(szHost));
             if (szHost.StartsWith(szPrefixToIgnore, StringComparison.OrdinalIgnoreCase))
                 szHost = szHost.Substring(szPrefixToIgnore.Length);
             return String.Compare(HostName, szHost, StringComparison.OrdinalIgnoreCase) == 0;
@@ -129,28 +136,30 @@ namespace MyFlightbook
 
     public static class Branding
     {
-        static private Brand[] knownBrands =
+        static readonly private Brand[] knownBrands =
         {
         new Brand(BrandID.brandMyFlightbook) {
             AppName ="MyFlightbook",
             HostName = "myflightbook.com",
             Root = "/logbook",
-            LogoURL = "~/Public/mfblogonew.png",
+            LogoHRef = "~/Public/mfblogonew.png",
             StyleSheet = string.Empty,
             EmailAddress ="noreply@mg.myflightbook.com",
             FacebookFeed = "http://www.facebook.com/MyFlightbook",
             TwitterFeed = "http://twitter.com/MyFlightbook",
             BlogAddress = "https://myflightbookblog.blogspot.com/",
-            VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber"
+            VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber",
+            AWSBucket = "mfbimages"
             },
         new Brand(BrandID.brandMyFlightbookStaging)
         {
             AppName = "MFBStaging",
             HostName = "staging.myflightbook.com",
             Root = "/logbook",
-            LogoURL = "~/Public/myflightbooknewstaging.png",
+            LogoHRef = "~/Public/myflightbooknewstaging.png",
             StyleSheet = "~/Public/CSS/staging.css",
-            EmailAddress = "noreply@mg.myflightbook.com"
+            EmailAddress = "noreply@mg.myflightbook.com",
+            AWSBucket = "mfb-staging"
         }
         };
 
@@ -220,14 +229,14 @@ namespace MyFlightbook
         static public string ReBrand(string szTemplate, Brand brand)
         {
             if (szTemplate == null)
-                throw new ArgumentNullException("szTemplate");
+                throw new ArgumentNullException(nameof(szTemplate));
             if (brand == null)
-                throw new ArgumentNullException("brand");
+                throw new ArgumentNullException(nameof(brand));
             string szNew = szTemplate.Replace("%APP_NAME%", brand.AppName).
                 Replace("%SHORT_DATE%", System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern).
                 Replace("%DATE_TIME%", DateTime.UtcNow.UTCDateFormatString()).
                 Replace("%APP_URL%", brand.HostName).
-                Replace("%APP_LOGO%", VirtualPathUtility.ToAbsolute(brand.LogoURL)).
+                Replace("%APP_LOGO%", VirtualPathUtility.ToAbsolute(brand.LogoHRef)).
                 Replace("%APP_ROOT%", brand.Root);
 
             return szNew;
