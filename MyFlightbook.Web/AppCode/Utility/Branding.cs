@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Web;
 
 /******************************************************
@@ -24,96 +25,73 @@ namespace MyFlightbook
         /// <summary>
         /// The ID for the brand
         /// </summary>
-        public BrandID BrandID { get; set; }
+        public BrandID BrandID { get; private set; }
 
         /// <summary>
         /// The name of the app (e.g., "MyFlightbook")
         /// </summary>
-        public string AppName { get; set; }
+        public string AppName { get; private set; }
 
         /// <summary>
         /// The host name for the app (e.g., "myflightbook.com")
         /// </summary>
-        public string HostName { get; set; }
+        public string HostName { get; private set; }
 
         /// <summary>
         /// The root for the app (e.g., "/logbook" on the live site).  The equivalent to "~" in relative URLs
         /// </summary>
-        public string Root { get; set; }
+        public string Root { get; private set; }
 
         /// <summary>
         /// The URL for the logo for the app (upper corner)
         /// </summary>
-        public string LogoHRef { get; set; }
+        public string LogoHRef { get; private set; }
 
         /// <summary>
         /// The Email address used for mail that gets sent from the app
         /// </summary>
-        public string EmailAddress { get; set; }
+        public string EmailAddress { get; private set; }
 
         /// <summary>
         /// Link to Facebook feed
         /// </summary>
-        public string FacebookFeed { get; set; }
+        public string FacebookFeed { get; private set; }
 
         /// <summary>
         /// Link to Twitter feed
         /// </summary>
-        public string TwitterFeed { get; set; }
+        public string TwitterFeed { get; private set; }
 
         /// <summary>
         /// Link to Blog
         /// </summary>
-        public string BlogAddress { get; set; }
+        public string BlogAddress { get; private set; }
 
         /// <summary>
         /// Link to stylesheet path.
         /// </summary>
-        public string StyleSheet { get; set; }
+        public string StyleSheet { get; private set; }
 
         /// <summary>
         /// Link to any video/tutorial channel
         /// </summary>
-        public string VideoRef { get; set; }
+        public string VideoRef { get; private set; }
 
         /// <summary>
         /// which AWS bucket to use for this brand?
         /// </summary>
-        public string AWSBucket { get; set; }
-        #endregion
+        public string AWSBucket { get; private set; }
 
         /// <summary>
-        /// Creates a Brand object
+        /// Which LocalConfig key retrieves the pipeline config for this brand
         /// </summary>
-        /// <param name="ID">The ID for the brand</param>
-        /// <param name="szapp">The application name</param>
-        /// <param name="szhost">Host name</param>
-        /// <param name="szRoot">Root for the app (analogous to "~")</param>
-        /// <param name="szlogo">URL to a logo image</param>
-        /// <param name="szEmail">Email address from which mail is sent</param>
-        /// <param name="szFacebook">Link to the facebook feed for this brand</param>
-        /// <param name="szStyleSheet">Link to the stylesheet for this brand</param>
-        /// <param name="szTwitter">Link to the twitter feed for this brand</param>
-        /// <param name="awsBucket">Name of AWS bucket to use for images.</param>
-        public Brand(BrandID ID, string szapp, string szhost, string szRoot, string szlogo, string szStyleSheet, string szEmail, string szFacebook, string szTwitter, string szBlog, string awsBucket) : this(ID)
-        {
-            BrandID = ID;
-            AppName = szapp;
-            HostName = szhost;
-            Root = szRoot;
-            LogoHRef = szlogo;
-            EmailAddress = szEmail;
-            FacebookFeed = szFacebook;
-            TwitterFeed = szTwitter;
-            StyleSheet = szStyleSheet;
-            BlogAddress = szBlog;
-            AWSBucket = awsBucket;
-        }
+        public string AWSETSPipelineConfigKey { get; private set; }
+        #endregion
 
         public Brand(BrandID brandID)
         {
             BrandID = brandID;
-            AppName = HostName = Root = LogoHRef = EmailAddress = FacebookFeed = TwitterFeed = StyleSheet = BlogAddress = VideoRef = AWSBucket = string.Empty;
+            AppName = HostName = Root = LogoHRef = EmailAddress = FacebookFeed = TwitterFeed = StyleSheet = BlogAddress = VideoRef = AWSBucket = AWSETSPipelineConfigKey = string.Empty;
         }
 
         private const string szPrefixToIgnore = "www.";
@@ -132,37 +110,51 @@ namespace MyFlightbook
                 szHost = szHost.Substring(szPrefixToIgnore.Length);
             return String.Compare(HostName, szHost, StringComparison.OrdinalIgnoreCase) == 0;
         }
+
+        static private Collection<Brand> _knownBrands = null;
+
+        static public Collection<Brand> KnownBrands
+        {
+            get
+            {
+                if (_knownBrands == null)
+                {
+                    _knownBrands = new Collection<Brand> {
+                        new Brand(BrandID.brandMyFlightbook)
+                        {
+                            AppName = "MyFlightbook",
+                            HostName = "myflightbook.com",
+                            Root = "/logbook",
+                            LogoHRef = "~/Public/mfblogonew.png",
+                            StyleSheet = string.Empty,
+                            EmailAddress = "noreply@mg.myflightbook.com",
+                            FacebookFeed = "http://www.facebook.com/MyFlightbook",
+                            TwitterFeed = "http://twitter.com/MyFlightbook",
+                            BlogAddress = "https://myflightbookblog.blogspot.com/",
+                            VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber",
+                            AWSBucket = "mfbimages",
+                            AWSETSPipelineConfigKey = "ETSPipelineID"
+                        },
+                        new Brand(BrandID.brandMyFlightbookStaging)
+                        {
+                            AppName = "MFBStaging",
+                            HostName = "staging.myflightbook.com",
+                            Root = "/logbook",
+                            LogoHRef = "~/Public/myflightbooknewstaging.png",
+                            StyleSheet = "~/Public/CSS/staging.css",
+                            EmailAddress = "noreply@mg.myflightbook.com",
+                            AWSBucket = "mfb-staging",
+                            AWSETSPipelineConfigKey = "ETSPipelineIDStaging"
+                        }
+                    };
+                }
+                return _knownBrands;
+            }
+        }
     }
 
     public static class Branding
     {
-        static readonly private Brand[] knownBrands =
-        {
-        new Brand(BrandID.brandMyFlightbook) {
-            AppName ="MyFlightbook",
-            HostName = "myflightbook.com",
-            Root = "/logbook",
-            LogoHRef = "~/Public/mfblogonew.png",
-            StyleSheet = string.Empty,
-            EmailAddress ="noreply@mg.myflightbook.com",
-            FacebookFeed = "http://www.facebook.com/MyFlightbook",
-            TwitterFeed = "http://twitter.com/MyFlightbook",
-            BlogAddress = "https://myflightbookblog.blogspot.com/",
-            VideoRef = "https://www.youtube.com/channel/UC6oqJL-aLMEagSyV0AKkIoQ?view_as=subscriber",
-            AWSBucket = "mfbimages"
-            },
-        new Brand(BrandID.brandMyFlightbookStaging)
-        {
-            AppName = "MFBStaging",
-            HostName = "staging.myflightbook.com",
-            Root = "/logbook",
-            LogoHRef = "~/Public/myflightbooknewstaging.png",
-            StyleSheet = "~/Public/CSS/staging.css",
-            EmailAddress = "noreply@mg.myflightbook.com",
-            AWSBucket = "mfb-staging"
-        }
-        };
-
         private const string brandStateKey = "_brandid";
 
         /// <summary>
@@ -186,7 +178,7 @@ namespace MyFlightbook
                 BrandID result = BrandID.brandMyFlightbook;
 
                 string szHost = HttpContext.Current.Request.Url.Host;
-                foreach (Brand b in knownBrands)
+                foreach (Brand b in Brand.KnownBrands)
                     if (String.Compare(szHost, b.HostName, StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         result = b.BrandID;
@@ -210,7 +202,7 @@ namespace MyFlightbook
         /// </summary>
         static public Brand CurrentBrand
         {
-            get { return knownBrands[(int)CurrentBrandID]; }
+            get { return Brand.KnownBrands[(int)CurrentBrandID]; }
         }
 
         /// <summary>

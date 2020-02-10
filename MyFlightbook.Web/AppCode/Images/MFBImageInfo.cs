@@ -1478,7 +1478,7 @@ namespace MyFlightbook.Image
                         else
                             return;
                         string szBucket = AWSConfiguration.CurrentS3Bucket;  // bind this now - in a separate thread (below) it defaults to main, not debug.
-                        string szPipelineID = LocalConfig.SettingForKey(AWSConfiguration.UseDebugBucket ? "ETSPipelineIDDebug" : "ETSPipelineID");  // bind this as well, same reason
+                        string szPipelineID = LocalConfig.SettingForKey(AWSConfiguration.UseDebugBucket ? "ETSPipelineIDDebug" : Branding.CurrentBrand.AWSETSPipelineConfigKey);  // bind this as well, same reason
                         new Thread(new ThreadStart(() => { new AWSS3ImageManager().UploadVideo(szTemp, myFile.ContentType, szBucket, szPipelineID, this); })).Start();
                     }
                     break;
