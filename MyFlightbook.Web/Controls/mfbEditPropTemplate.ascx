@@ -91,7 +91,12 @@
                 <tr>
                     <td></td>
                     <td><asp:Label ID="lblFilteredLabel" runat="server" CssClass="fineprint" EnableViewState="false"></asp:Label></td>
-                    <td><div><asp:Button runat="server" Text="<%$ Resources:LogbookEntry, TemplateCreate %>" ValidationGroup="vgPropTemplate" ID="btnSaveTemplate" OnClick="btnSaveTemplate_Click" /> <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false"></asp:Label></div></td>
+                    <td><div>
+                        <asp:Button runat="server" Text="<%$ Resources:LocalizedText, Cancel %>" ValidationGroup="vgPropTemplate" Visible="false" ID="btnCancelEditTemplate" OnClick="btnCancelEditTemplate_Click" /> 
+                        <asp:Button runat="server" Text="<%$ Resources:LogbookEntry, TemplateCreate %>" ValidationGroup="vgPropTemplate" ID="btnSaveTemplate" OnClick="btnSaveTemplate_Click" /> 
+                        <asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false"></asp:Label>
+
+                        </div></td>
                 </tr>
             </table>
         </ContentTemplate>

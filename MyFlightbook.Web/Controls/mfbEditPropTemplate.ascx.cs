@@ -57,13 +57,13 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         else
         {
             if (ActiveTemplate == null)
-                throw new NullReferenceException("Active Template is null - how? ");
+                throw new InvalidOperationException("Active Template is null - how? ");
             ActiveTemplate.PropertyTypes.Clear();
             if (hdnUsedProps.Value == null)
-                throw new NullReferenceException("hdnUsedProps.Value is null");
+                throw new InvalidOperationException("hdnUsedProps.Value is null");
             int[] props = JsonConvert.DeserializeObject<int[]>(hdnUsedProps.Value);
             if (props == null)
-                throw new NullReferenceException("props is null");
+                throw new InvalidOperationException("props is null");
             foreach (int propid in props)
                 ActiveTemplate.PropertyTypes.Add(propid);
             UpdateLists();
@@ -103,6 +103,9 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
         rgtc.RemoveAll(tc => tc.Group == PropertyTemplateGroup.Automatic);
         rptTemplateGroups.DataSource = rgtc;
         rptTemplateGroups.DataBind();
+        btnCancelEditTemplate.Visible = ActiveTemplate.ID > 0;
+
+        mvOwnedTemplates.Visible = ActiveTemplate.ID <= 0;
 
         mvOwnedTemplates.SetActiveView(rgtc.Count == 0 ? vwNoTemplates : vwTemplates);
     }
@@ -132,6 +135,14 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
             lblErr.Text = ex.Message;
         }
     }
+
+    protected void btnCancelEditTemplate_Click(object sender, EventArgs e)
+    {
+        ActiveTemplate = new UserPropertyTemplate();
+        ToForm();
+        cpeNewTemplate.ClientState = "true";
+    }
+
 
     protected static UserPropertyTemplate Target(Control c)
     {

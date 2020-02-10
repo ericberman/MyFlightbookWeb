@@ -247,6 +247,15 @@ public partial class Controls_mfbEditPropTemplate
     protected global::System.Web.UI.WebControls.Label lblFilteredLabel;
 
     /// <summary>
+    /// btnCancelEditTemplate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnCancelEditTemplate;
+
+    /// <summary>
     /// btnSaveTemplate control.
     /// </summary>
     /// <remarks>
