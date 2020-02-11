@@ -1462,24 +1462,13 @@ namespace MyFlightbook.Image
             switch (this.ImageType)
             {
                 case ImageFileType.S3VideoMP4:
-                    // Copy the file to a temp file so that we can return quickly and don't have to hold open the input stream
                     {
-                        string szTemp = Path.GetTempFileName();
-                        if (myFile.PostedFile != null)
-                            myFile.PostedFile.SaveAs(szTemp);
-                        else if (myFile.InputStream != null)
-                        {
-                            using (var fileStream = File.Create(szTemp))
-                            {
-                                myFile.InputStream.Seek(0, SeekOrigin.Begin);
-                                myFile.InputStream.CopyTo(fileStream);
-                            }
-                        }
-                        else
+                        if (String.IsNullOrEmpty(myFile.TempFileName) || !File.Exists(myFile.TempFileName))
                             return;
+
                         string szBucket = AWSConfiguration.CurrentS3Bucket;  // bind this now - in a separate thread (below) it defaults to main, not debug.
                         string szPipelineID = LocalConfig.SettingForKey(AWSConfiguration.UseDebugBucket ? "ETSPipelineIDDebug" : Branding.CurrentBrand.AWSETSPipelineConfigKey);  // bind this as well, same reason
-                        new Thread(new ThreadStart(() => { new AWSS3ImageManager().UploadVideo(szTemp, myFile.ContentType, szBucket, szPipelineID, this); })).Start();
+                        new Thread(new ThreadStart(() => { new AWSS3ImageManager().UploadVideo(myFile.TempFileName, myFile.ContentType, szBucket, szPipelineID, this); })).Start();
                     }
                     break;
                 case ImageFileType.JPEG:
@@ -1492,71 +1481,74 @@ namespace MyFlightbook.Image
                             string szFileName = String.Format(CultureInfo.InvariantCulture, "{0}-{1}{2}{3}", dt.ToString("yyyyMMddHHmmssff", CultureInfo.InvariantCulture), myFile.ContentLength.ToString(CultureInfo.InvariantCulture), szNewS3KeySuffix, FileExtensions.JPG);
                             ThumbnailFile = MFBImageInfo.ThumbnailPrefix + szFileName;
 
-                            // Resize the image if needed, and then create a thumbnail of it and write that too:
-                            using (System.Drawing.Image image = DrawingCompatibleImageFromStream(myFile.InputStream, out szTempFile))
+                            using (Stream s = myFile.GetInputStream())
                             {
-                                // rotate the image, if necessary
-                                Info inf = InfoFromImage(image);
-
-                                // save the comment
-                                inf.ImageDescription = szComment;
-
-                                // update the location
-                                if (ll == null) // no geotag is specified - initialize location from the underlying image.
+                                // Resize the image if needed, and then create a thumbnail of it and write that too:
+                                using (System.Drawing.Image image = DrawingCompatibleImageFromStream(s, out szTempFile))
                                 {
-                                    if (inf.HasGeotag)
-                                        Location = new LatLong(inf.Latitude, inf.Longitude);
+                                    // rotate the image, if necessary
+                                    Info inf = InfoFromImage(image);
+
+                                    // save the comment
+                                    inf.ImageDescription = szComment;
+
+                                    // update the location
+                                    if (ll == null) // no geotag is specified - initialize location from the underlying image.
+                                    {
+                                        if (inf.HasGeotag)
+                                            Location = new LatLong(inf.Latitude, inf.Longitude);
+                                    }
+                                    else
+                                    {
+                                        // A specific geotag is provided: geotag the image.
+                                        Location = ll;
+                                        inf.Latitude = ll.Latitude;
+                                        inf.Longitude = ll.Longitude;
+                                    }
+
+                                    if (Location != null && !Location.IsValid)
+                                        Location = null;
+
+                                    // save the full-sized image
+                                    Bitmap bmp;
+
+                                    using (bmp = BitmapFromImage(inf.Image, MaxImgHeight, MaxImgWidth))
+                                    {
+                                        Width = bmp.Width;
+                                        Height = bmp.Height;
+
+                                        // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
+                                        foreach (PropertyItem pi in inf.Image.PropertyItems)
+                                            bmp.SetPropertyItem(pi);
+
+                                        string szPathFullImage = PhysicalPathFull;
+                                        bmp.Save(szPathFullImage, ImageFormat.Jpeg);
+                                    }
+
+                                    using (bmp = BitmapFromImage(inf.Image, ThumbnailHeight, ThumbnailWidth))
+                                    {
+                                        WidthThumbnail = bmp.Width;
+                                        HeightThumbnail = bmp.Height;
+
+                                        // copy the properties here too.
+                                        foreach (PropertyItem pi in inf.Image.PropertyItems)
+                                            bmp.SetPropertyItem(pi);
+                                        bmp.Save(PhysicalPathThumbnail, ImageFormat.Jpeg);
+                                    }
+
+                                    // if we got here, everything is hunky-dory.  Cache it!
+                                    if (HttpRuntime.Cache != null)
+                                        HttpRuntime.Cache[CacheKey] = this;
+
+                                    // Save it in the DB - we do this BEFORE moving to S3 to avoid a race condition
+                                    // that could arise when MoveImageToS3 attempts to update the record to show that it is no longer local.
+                                    // We need the record to be present so that the update works.
+                                    ToDB();
+
+                                    // Move this up to S3.  Note that if we're debugging, it will go into the debug bucket.
+                                    if (AWSConfiguration.UseS3)
+                                        new AWSS3ImageManager().MoveImageToS3(false, this);
                                 }
-                                else
-                                {
-                                    // A specific geotag is provided: geotag the image.
-                                    Location = ll;
-                                    inf.Latitude = ll.Latitude;
-                                    inf.Longitude = ll.Longitude;
-                                }
-
-                                if (Location != null && !Location.IsValid)
-                                    Location = null;
-
-                                // save the full-sized image
-                                Bitmap bmp;
-
-                                using (bmp = BitmapFromImage(inf.Image, MaxImgHeight, MaxImgWidth))
-                                {
-                                    Width = bmp.Width;
-                                    Height = bmp.Height;
-
-                                    // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
-                                    foreach (PropertyItem pi in inf.Image.PropertyItems)
-                                        bmp.SetPropertyItem(pi);
-
-                                    string szPathFullImage = PhysicalPathFull;
-                                    bmp.Save(szPathFullImage, ImageFormat.Jpeg);
-                                }
-
-                                using (bmp = BitmapFromImage(inf.Image, ThumbnailHeight, ThumbnailWidth))
-                                {
-                                    WidthThumbnail = bmp.Width;
-                                    HeightThumbnail = bmp.Height;
-
-                                    // copy the properties here too.
-                                    foreach (PropertyItem pi in inf.Image.PropertyItems)
-                                        bmp.SetPropertyItem(pi);
-                                    bmp.Save(PhysicalPathThumbnail, ImageFormat.Jpeg);
-                                }
-
-                                // if we got here, everything is hunky-dory.  Cache it!
-                                if (HttpRuntime.Cache != null)
-                                    HttpRuntime.Cache[CacheKey] = this;
-
-                                // Save it in the DB - we do this BEFORE moving to S3 to avoid a race condition
-                                // that could arise when MoveImageToS3 attempts to update the record to show that it is no longer local.
-                                // We need the record to be present so that the update works.
-                                ToDB();
-
-                                // Move this up to S3.  Note that if we're debugging, it will go into the debug bucket.
-                                if (AWSConfiguration.UseS3)
-                                    new AWSS3ImageManager().MoveImageToS3(false, this);
                             }
                         }
                         catch
@@ -1568,6 +1560,8 @@ namespace MyFlightbook.Image
                             // clean up a temp file, if one was created; can only do this AFTER the image that used it has been disposed (above).
                             if (!String.IsNullOrEmpty(szTempFile) && File.Exists(szTempFile))
                                 File.Delete(szTempFile);
+
+                            myFile.CleanUp();
                         }
                     }
                     break;
@@ -1590,10 +1584,15 @@ namespace MyFlightbook.Image
                     WidthThumbnail = HeightThumbnail = 100;
                     string szFullPhysicalPath = HostingEnvironment.MapPath(VirtualPath + szFilename);
 
-                    if (myFile.PostedFile != null)
-                        myFile.PostedFile.SaveAs(szFullPhysicalPath);
-                    else if (myFile.ContentData != null)
-                        File.WriteAllBytes(szFullPhysicalPath, myFile.ContentData);
+                    using (FileStream fsDst = File.OpenWrite(szFullPhysicalPath))
+                    {
+                        using (Stream src = myFile.GetInputStream())
+                        {
+                            src.Seek(0, SeekOrigin.Begin);
+                            src.CopyTo(fsDst);
+                        }
+                    }
+                    myFile.CleanUp();
 
                     // Save it in the DB - do this BEFORE moving to S3 to avoid a race condition (see above).
                     ToDB();
@@ -1994,7 +1993,7 @@ namespace MyFlightbook.Image
 
         #region Video Support
         /// <summary>
-        /// Uploads a video for transcoding
+        /// Uploads a video for transcoding.  Deletes the source file named in szFileName
         /// </summary>
         /// <param name="szFileName">Filename of the input stream</param>
         /// <param name="szContentType">Content type of the video file</param>
@@ -2546,6 +2545,7 @@ namespace MyFlightbook.Image
         /// </summary>
         public override void DeleteImage()
         {
+            PostedFile?.CleanUp();
             PostedFile = null;
             ThumbnailFile = string.Empty;
             if (SessionKey != null && HttpContext.Current != null && HttpContext.Current.Session != null)
@@ -2574,21 +2574,44 @@ namespace MyFlightbook.Image
         {
             if (pf == null)
                 throw new ArgumentNullException(nameof(pf));
-            FileName = pf.FileName;
+            WriteStreamToTempFile(pf.InputStream);
+            FileID = FileName = pf.FileName;
+
             ContentType = pf.ContentType;
             ContentLength = pf.ContentLength;
-            ContentData = null;
-            PostedFile = pf;
         }
 
-        public MFBPostedFile(string szFile, string szContentType, int cBytes, byte[] rgBytes, string szID) : this()
+        public MFBPostedFile(AjaxControlToolkit.AjaxFileUploadEventArgs e) : this()
         {
-            FileName = szFile;
-            ContentType = szContentType;
-            ContentLength = cBytes;
-            ContentData = rgBytes;
-            FileID = szID;
-            PostedFile = null;
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+
+            using (Stream s = e.GetStreamContents())
+                WriteStreamToTempFile(s);
+
+            FileID = e.FileId;
+            FileName = e.FileName;
+
+            ContentType = e.ContentType;
+            ContentLength = e.FileSize;
+        }
+
+        ~MFBPostedFile()
+        {
+            // We can't make MFBPostedFile be disposable because we hold it indefinitely in the session
+            // But we're not holding anything open either. 
+            // So on object deletion, clean up any temp files.
+            CleanUp();
+        }
+
+        private void WriteStreamToTempFile(Stream s)
+        {
+            TempFileName = Path.GetTempFileName();
+            using (FileStream fs = File.OpenWrite(TempFileName))
+            {
+                s.Seek(0, SeekOrigin.Begin);
+                s.CopyTo(fs);
+            }
         }
         #endregion
 
@@ -2609,11 +2632,10 @@ namespace MyFlightbook.Image
         public int ContentLength { get; set; }
 
         /// <summary>
-        /// The bytes of the posted file.
+        /// The name of the temp file to which the data has been written, so that we're not holding a potentially huge file in memory.
+        /// The file can be safely deleted at any time.
         /// </summary>
-#pragma warning disable CA1819 // Properties should not return arrays
-        public byte[] ContentData { get; set; }
-#pragma warning restore CA1819 // Properties should not return arrays
+        public string TempFileName { get; private set; }
 
         /// <summary>
         /// The unique ID provided by the AJAX file upload control
@@ -2627,23 +2649,26 @@ namespace MyFlightbook.Image
         /// </summary>
         public byte[] CompatibleContentData()
         {
-            if (ContentData == null)
+            if (TempFileName == null)
                 return null;
 
-            using (MemoryStream ms = new MemoryStream(ContentData))
+            using (FileStream fs = File.OpenRead(TempFileName))
             {
                 // Check for HEIC
                 try
                 {
-                    using (System.Drawing.Image img = System.Drawing.Image.FromStream(ms))
+                    using (System.Drawing.Image img = System.Drawing.Image.FromStream(fs))
                     {
                         // If we got here then the content is Drawing Compatible - i.e., not HEIC; just return contentdata
-                        return ContentData;
+                        fs.Seek(0, SeekOrigin.Begin);
+                        byte[] rgb = new byte[fs.Length];
+                        fs.Read(rgb, 0, rgb.Length);
+                        return rgb;
                     }
                 }
                 catch (Exception ex) when (ex is ArgumentException)
                 {
-                    return MFBImageInfo.ConvertStreamToJPG(ms);
+                    return MFBImageInfo.ConvertStreamToJPG(fs);
                 }
             }
         }
@@ -2656,8 +2681,7 @@ namespace MyFlightbook.Image
             if (m_ThumbBytes != null)
                 return m_ThumbBytes;
 
-            Stream s = InputStream;
-            if (s != null)
+            using (Stream s = GetInputStream())
             {
                 string szTempFile = null;
                 try
@@ -2685,21 +2709,19 @@ namespace MyFlightbook.Image
         }
 
         /// <summary>
-        /// The HTTPPostedFile from which this was created, if any
+        /// Returns a stream to the underlying data.
+        /// MUST BE DISPOSED BY CALLER
         /// </summary>
-        public HttpPostedFile PostedFile { get; set; }
-
-        public Stream InputStream
+        /// <returns></returns>
+        public Stream GetInputStream()
         {
-            get
-            {
-                if (PostedFile != null)
-                    return PostedFile.InputStream;
-                else if (ContentData != null)
-                    return new MemoryStream(ContentData);
-                else
-                    return null;
-            }
+            return File.OpenRead(TempFileName);
+        }
+
+        public void CleanUp()
+        {
+            if (!String.IsNullOrEmpty(TempFileName) && File.Exists(TempFileName))
+                File.Delete(TempFileName);
         }
         #endregion
     }

@@ -8,7 +8,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -124,7 +124,7 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
     }
     #endregion
 
-    protected string FileObjectSessionKey(string id)
+    protected static string FileObjectSessionKey(string id)
     {
         return String.Format(CultureInfo.InvariantCulture, "ajaxFileUploadObject-{0}", id);
     }
@@ -144,13 +144,14 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
     protected void AjaxFileUpload1_UploadComplete(object sender, AjaxControlToolkit.AjaxFileUploadEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.State != AjaxControlToolkit.AjaxFileUploadState.Success)
             return;
 
         string szKey = FileObjectSessionKey(e.FileId);
         PendingIDs.Add(szKey);
-        Session[szKey] = new MFBPendingImage(new MFBPostedFile(e.FileName, e.ContentType, e.FileSize, e.GetContents(), e.FileId), szKey);
+
+        Session[szKey] = new MFBPendingImage(new MFBPostedFile(e), szKey);
         e.DeleteTemporaryData();
 
         RefreshPreviewList();
@@ -158,8 +159,7 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
         if (Mode == UploadMode.Legacy)
             Mode = UploadMode.Ajax;
 
-        if (UploadComplete != null)
-            UploadComplete(this, e);
+        UploadComplete?.Invoke(this, e);
     }
 
     protected void RefreshPreviewList()
@@ -252,14 +252,15 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
                         continue;
 
                     // skip anything that isn't an image if we're not supposed to include non-image docs.
-                    if (!ValidateFileType(MFBImageInfo.ImageTypeFromFile(mfbpi.PostedFile)))
-                        continue;
+                    if (ValidateFileType(MFBImageInfo.ImageTypeFromFile(mfbpi.PostedFile)))
+                        mfbii = mfbpi.Commit(Class, ImageKey);
 
-                    mfbii = mfbpi.Commit(Class, ImageKey);
-                    Session[FileObjectSessionKey(szID)] = null;     // free up some memory and prevent duplicate processing.
+                    // Regardless, clean up the temp file and 
+                    Session.Remove(szID);     // free up some memory and prevent duplicate processing.
                     PendingIDs.Remove(szID);
                 }
                 RefreshPreviewList();
+                GC.Collect();    // could be a lot of memory used and/or temp files from the images, so clean them up.
                 break;
         }
     }
