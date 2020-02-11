@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -92,7 +92,7 @@ namespace MyFlightbook.ImportFlights
         private readonly static string[] colLandings = { "Landings", "LAND_STD" };
         private readonly static string[] colNightLandings = { "FS Night Landings", "flight_nightLandings", "Night Ldg", "Night Ldgs", "Ngt Ldgs", "Full-Stop Night Landings", "LANDINGS NIGHT", "Night Landings", "LandsNight", "landings_night" };
         private readonly static string[] colFullStopLandings = { "FS Day Landings", "flight_dayLandings", "Day Ldg", "Day Ldgs", "Full-Stop Day Landings", "LANDINGS DAY", "Day Landings", "LandsDay", "landings_day" };
-        private readonly static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY", "Cross Country Duration" };
+        private readonly static string[] colCrossCountry = { "X-Country", "flight_crossCountry", "XCountry", "XC", "X CNTY", "X/Ctry", "X/C", "CROSS COUNTRY", "CrossCountry", "Cross Country Duration" };
         private readonly static string[] colNight = { "Night", "flight_night", "Night Duration" };
         private readonly static string[] colIMC = { "IMC", "flight_actualInstrument", "Actual Inst", "INSTRUMENT", "Actual Instrument Duration", "Instr" };
         private readonly static string[] colSimIFR = { "Simulated Instrument", "flight_simulatedInstrument", "Hood", "Sim Inst", "Simulated Instrument Duration" };
@@ -151,7 +151,7 @@ namespace MyFlightbook.ImportFlights
         public static void InitializeDataTable(DataTable dt)
         {
             if (dt == null)
-                throw new ArgumentNullException("dt");
+                throw new ArgumentNullException(nameof(dt));
 
             dt.Columns.Add(new DataColumn(colFlightID[0], typeof(int)));
             dt.Columns.Add(new DataColumn(colDate[0], typeof(string)));
@@ -188,9 +188,9 @@ namespace MyFlightbook.ImportFlights
         public static void WriteEntryToDataTable(LogbookEntryBase le, DataTable dt)
         {
             if (dt == null)
-                throw new ArgumentNullException("dt");
+                throw new ArgumentNullException(nameof(dt));
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
 
             DataRow dr = dt.NewRow();
             dt.Rows.Add(dr);
@@ -247,8 +247,7 @@ namespace MyFlightbook.ImportFlights
         // Resolve a prop name that could be referenced by alias.
         private static string[] ResolvePropNameAlias(string szPropname)
         {
-            string[] retValue;
-            if (PropNameAliases.TryGetValue(szPropname, out retValue))
+            if (PropNameAliases.TryGetValue(szPropname, out string[] retValue))
                 return retValue;
             else
                 return new string[] { szPropname };
@@ -445,9 +444,7 @@ namespace MyFlightbook.ImportFlights
 
             public LogbookEntry FlightFromRow(LogbookEntry le, string[] rgszRow, AutoFillOptions afo)
             {
-                if (rgszRow == null)
-                    throw new ArgumentNullException("rgszRow");
-                m_rgszRow = rgszRow;
+                m_rgszRow = rgszRow ?? throw new ArgumentNullException(nameof(rgszRow));
 
                 // Check integrity of the row
                 if (m_cm.ColumnCount != m_rgszRow.Length)
@@ -741,8 +738,7 @@ namespace MyFlightbook.ImportFlights
 
                 string sz = m_rgszRow[iCol].ToUpperInvariant().Trim();
 
-                Int32 i;
-                if (Int32.TryParse(sz, NumberStyles.Any, CultureInfo.CurrentCulture, out i))
+                if (Int32.TryParse(sz, NumberStyles.Any, CultureInfo.CurrentCulture, out int i))
                     return i;
 
                 return 0;
@@ -1003,15 +999,13 @@ namespace MyFlightbook.ImportFlights
                         try
                         {
                             le = rr.FlightFromRow(le, rgszRow, afo);
-                            if (rowOK != null)
-                                rowOK(le, iRow);
+                            rowOK?.Invoke(le, iRow);
                         }
                         catch (MyFlightbookException ex)
                         {
                             HasErrors = true;
                             le.ErrorString = ex.Message;
-                            if (rowHasError != null)
-                                rowHasError(le, String.Join(",", rgszRow), iRow);
+                            rowHasError?.Invoke(le, String.Join(",", rgszRow), iRow);
                         }
 
                         FlightsToImport.Add(le);
@@ -1074,16 +1068,14 @@ namespace MyFlightbook.ImportFlights
                             cfp.DeleteProperty();
                     }
 
-                    if (OnRowAdded != null)
-                        OnRowAdded(le, fInsert);
+                    OnRowAdded?.Invoke(le, fInsert);
 
                     cFlightsImported++;
                 }
                 catch (MyFlightbookException ex)
                 {
                     le.ErrorString = ex.Message;
-                    if (OnRowFailure != null)
-                        OnRowFailure(le, ex);
+                    OnRowFailure?.Invoke(le, ex);
                 }
             }
 
