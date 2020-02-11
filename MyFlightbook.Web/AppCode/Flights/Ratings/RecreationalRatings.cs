@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,7 +22,7 @@ namespace MyFlightbook.MilestoneProgress
         public RecreationalMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupRecreational;
-            Milestones = new MilestoneProgress[] {
+            Milestones = new Collection<MilestoneProgress> {
                     new RP6199ASEL(),
                     new RP6199ASES(),
                     new RP6199AMEL(),
@@ -77,7 +77,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (!cfr.fIsRealAircraft)
                 return;
 

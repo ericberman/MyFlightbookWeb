@@ -12,7 +12,7 @@ using MyFlightbook.MilestoneProgress;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2017 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -104,7 +104,7 @@ public partial class Member_RatingProgress : System.Web.UI.Page
                     cmbMilestones.SelectedValue = cookieLastMilestone.Value.Replace(szCommaCookieSub, ",");
                     Refresh();
                 }
-                catch (ArgumentOutOfRangeException)
+                catch (Exception ex) when (ex is ArgumentOutOfRangeException)
                 {
                     ClearCookie();
                 }
@@ -127,7 +127,7 @@ public partial class Member_RatingProgress : System.Web.UI.Page
 
         MilestoneGroup mgSel = Milestones.FirstOrDefault(mg => mg.GroupName.CompareCurrentCulture(cmbMilestoneGroup.SelectedValue) == 0);
 
-        if (mgSel == null || cmbMilestones.SelectedIndex > mgSel.Milestones.Length || cmbMilestones.SelectedIndex == 0)
+        if (mgSel == null || cmbMilestones.SelectedIndex > mgSel.Milestones.Count || cmbMilestones.SelectedIndex == 0)
             return;
 
         MilestoneProgress mp = mgSel.Milestones[cmbMilestones.SelectedIndex - 1];
@@ -162,7 +162,7 @@ public partial class Member_RatingProgress : System.Web.UI.Page
     protected void gvMilestoneProgress_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             MilestoneItem mi = (MilestoneItem)e.Row.DataItem;
@@ -171,7 +171,6 @@ public partial class Member_RatingProgress : System.Web.UI.Page
             {
                 mv.ActiveViewIndex = 1;
                 HyperLink l = (HyperLink)e.Row.FindControl("lnkFlight");
-                Label lblNotMet = (Label)e.Row.FindControl("lblNotDone");
                 l.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Public/ViewPublicFlight.aspx/{0}", mi.MatchingEventID);
 
                 MultiView mvAchievedStatus = (MultiView)e.Row.FindControl("mvAchievement");
@@ -194,8 +193,10 @@ public partial class Member_RatingProgress : System.Web.UI.Page
     protected void cmbMilestoneGroup_SelectedIndexChanged(object sender, EventArgs e)
     {
         cmbMilestones.Items.Clear();
-        ListItem li = new ListItem(Resources.MilestoneProgress.RatingUnknown, String.Empty);
-        li.Selected = true;
+        ListItem li = new ListItem(Resources.MilestoneProgress.RatingUnknown, String.Empty)
+        {
+            Selected = true
+        };
         cmbMilestones.Items.Add(li);
 
         MilestoneGroup mgSel = Milestones.FirstOrDefault(mg => mg.GroupName.CompareCurrentCulture(cmbMilestoneGroup.SelectedValue) == 0);

@@ -7,7 +7,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -45,7 +45,7 @@ namespace MyFlightbook.MilestoneProgress
             lst.AddRange(CAPrivatePilot.AvailableRatings);
             lst.AddRange(SAPPLBase.AvailableRatings);
             lst.AddRange(CASRLicenseBase.AvailableRatings);
-            Milestones = lst.ToArray();
+            Milestones = new Collection<MilestoneProgress>(lst);
         }
     }
 
@@ -148,7 +148,7 @@ namespace MyFlightbook.MilestoneProgress
         }
         #endregion
 
-        protected RatingType RatingFromCatClass(CategoryClass.CatClassID ccid)
+        protected static RatingType RatingFromCatClass(CategoryClass.CatClassID ccid)
         {
             switch (ccid)
             {
@@ -557,7 +557,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (!cfr.fIsFTD && !cfr.fIsRealAircraft)
                 return;
 
@@ -697,7 +697,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             base.ExamineFlight(cfr);
             if (cfr.fIsRealAircraft && RatingFromCatClass(cfr.idCatClassOverride) == this.RatingSought)
                 miMinFlights.AddEvent(1.0M);
@@ -727,7 +727,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             base.ExamineFlight(cfr);
 
             // Must be in a gas balloon AND over 2 hours each
@@ -777,7 +777,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             base.ExamineFlight(cfr);
 
@@ -1259,7 +1259,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             bool fIsMatch = CatClassMatchesRatingSought(cfr.idCatClassOverride);
             bool fIsSim = cfr.fIsCertifiedIFR && !cfr.fIsRealAircraft;
@@ -1319,7 +1319,7 @@ namespace MyFlightbook.MilestoneProgress
             base.ExamineFlight(cfr);
 
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             if (!IsMatchingClass(cfr))
                 return;
@@ -1352,7 +1352,7 @@ namespace MyFlightbook.MilestoneProgress
         protected override bool IsMatchingClass(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             return CategoryClass.IsAirplane(cfr.idCatClassOverride) && !CategoryClass.IsSeaClass(cfr.idCatClassOverride);
         }
@@ -1366,7 +1366,7 @@ namespace MyFlightbook.MilestoneProgress
         protected override bool IsMatchingClass(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             return CategoryClass.IsAirplane(cfr.idCatClassOverride) && CategoryClass.IsSeaClass(cfr.idCatClassOverride);
         }
@@ -1502,10 +1502,10 @@ namespace MyFlightbook.MilestoneProgress
     [Serializable]
     public abstract class SANightRating : MilestoneProgress
     {
-        protected MilestoneItem miInstrumentDual;
-        protected MilestoneItem miNightLandings;
-        protected MilestoneItem miNightTakeoffs;
-        protected MilestoneItem miNightDualXC;
+        private readonly MilestoneItem miInstrumentDual;
+        private readonly MilestoneItem miNightLandings;
+        private readonly MilestoneItem miNightTakeoffs;
+        private readonly MilestoneItem miNightDualXC;
 
         private const decimal MaxFTD = 5.0M;
         private readonly decimal nightXCDistance = 0;

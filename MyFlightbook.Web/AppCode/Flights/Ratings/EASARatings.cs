@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,7 +22,7 @@ namespace MyFlightbook.MilestoneProgress
         public LAPLMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupLAPL;
-            Milestones = new MilestoneProgress[] {
+            Milestones = new Collection<MilestoneProgress> {
                 new EASALAPLAirplane(),
                 new EASALAPLHelicopter(),
                 new EASALAPLSailplane() };
@@ -299,7 +299,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             // no provision for training devices.
             if (!cfr.fIsRealAircraft)
@@ -375,7 +375,7 @@ namespace MyFlightbook.MilestoneProgress
         public override bool MatchesClassDual(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             return cfr.idCatClassOverride == CategoryClass.CatClassID.ASEL;
         }
@@ -383,7 +383,7 @@ namespace MyFlightbook.MilestoneProgress
         public override bool MatchesSoloOrTotalDual(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             bool fAirplane = cfr.idCatClassOverride == CategoryClass.CatClassID.ASEL;
             bool fTMG = cfr.idCatClassOverride == CategoryClass.CatClassID.Glider && cfr.fMotorGlider;
@@ -412,7 +412,7 @@ namespace MyFlightbook.MilestoneProgress
         public override bool MatchesClassDual(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             return cfr.idCatClassOverride == CategoryClass.CatClassID.Helicopter;
         }
@@ -420,7 +420,7 @@ namespace MyFlightbook.MilestoneProgress
         public override bool MatchesSoloOrTotalDual(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             return cfr.idCatClassOverride == CategoryClass.CatClassID.Helicopter;
         }
@@ -455,7 +455,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             // no provision for training devices.
             if (!cfr.fIsRealAircraft)

@@ -871,6 +871,7 @@
     <Compile Include="AppCode\Flights\PropertyTemplate.cs" />
     <Compile Include="AppCode\Flights\Ratings\ATPRatings.cs" />
     <Compile Include="AppCode\Flights\Ratings\CASRRatings.cs" />
+    <Compile Include="AppCode\Flights\Ratings\CFIRatings.cs" />
     <Compile Include="AppCode\Flights\Ratings\Checkrides.cs" />
     <Compile Include="AppCode\Flights\Ratings\CommRatings.cs" />
     <Compile Include="AppCode\Flights\Ratings\DPE.cs" />

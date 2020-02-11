@@ -1417,4 +1417,49 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="TitleEASAPPLNightAirplane" xml:space="preserve">
     <value>EASA - PPL: Night (Aeroplane)</value>
   </data>
+  <data name="CFISASELPICPowered" xml:space="preserve">
+    <value>100 hours as PIC in a powered aircraft</value>
+  </data>
+  <data name="CFISASELTotalSEL" xml:space="preserve">
+    <value>50 hours of flight time in a single-engine airplane</value>
+  </data>
+  <data name="CFISASELTotalTime" xml:space="preserve">
+    <value>150 hours of flight time as a pilot</value>
+  </data>
+  <data name="CFISASELXC" xml:space="preserve">
+    <value>25 hours of cross-country flight time.</value>
+  </data>
+  <data name="CFISASELXCSEL" xml:space="preserve">
+    <value>10 hours of cross-country flight time in a single-engine airplane</value>
+  </data>
+  <data name="CFITimeInCategoryClass" xml:space="preserve">
+    <value>{0} hours of PIC time in {1}</value>
+  </data>
+  <data name="NoteLSATime" xml:space="preserve">
+    <value>15 hours of this must be in an aircraft certified as an LSA; %APP_NAME% does not know which aircraft are certified as an LSA, so cannot determine this for you</value>
+  </data>
+  <data name="RatingGroupCFI" xml:space="preserve">
+    <value>CFI Rating</value>
+  </data>
+  <data name="Title61183AMEL" xml:space="preserve">
+    <value>CFI - Airplane, Multi-Engine Land</value>
+  </data>
+  <data name="Title61183AMES" xml:space="preserve">
+    <value>CFI - Airplane, Multi-Engine Sea</value>
+  </data>
+  <data name="Title61183ASEL" xml:space="preserve">
+    <value>CFI - Airplane, Single-Engine Land</value>
+  </data>
+  <data name="Title61183ASES" xml:space="preserve">
+    <value>CFI - Airplane, Single-Engine Sea</value>
+  </data>
+  <data name="Title61183Glider" xml:space="preserve">
+    <value>CFI - Glider</value>
+  </data>
+  <data name="Title61183Helicopter" xml:space="preserve">
+    <value>CFI - Helicopter</value>
+  </data>
+  <data name="Title61411CFISportSEL" xml:space="preserve">
+    <value>CFI-Sport - Airplane, Single-Engine Land</value>
+  </data>
 </root>

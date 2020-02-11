@@ -8,7 +8,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -185,7 +185,7 @@ namespace MyFlightbook.MilestoneProgress
             if (Type == MilestoneType.AchieveOnce && !IsSatisfied)
             {
                 if (cfr == null)
-                    throw new ArgumentNullException("cfr");
+                    throw new ArgumentNullException(nameof(cfr));
                 AddEvent(1);
                 MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MatchingXCFlightTemplate, cfr.dtFlight.ToShortDateString(), cfr.Route);
                 MatchingEventID = cfr.flightID;
@@ -200,7 +200,7 @@ namespace MyFlightbook.MilestoneProgress
     [Serializable]
     public abstract class MilestoneGroup
     {
-        public MilestoneProgress[] Milestones { get; set; }
+        public Collection<MilestoneProgress> Milestones { get; set; }
         public string GroupName { get; set; }
     }
     #endregion
@@ -303,6 +303,14 @@ namespace MyFlightbook.MilestoneProgress
         DPEAMESCommercial,
         DPEHelicopterCommercial,
         DPEGliderCommercial,
+
+        // CFI - 61.183
+        CFIASEL,
+        CFIASES,
+        CFIAMEL,
+        CFIAMES,
+        CFIGlider,
+        CFIHelicopter,
 
         // Placeholder for unknown
         Unknown
@@ -469,8 +477,9 @@ namespace MyFlightbook.MilestoneProgress
                 new LAPLMilestones(),           // EASA LAPL ratings
                 new CommercialMilestones(),     // Commercial Pilot Ratings
                 new ATPMilestones(),            // ATP Ratings
-                new Part135Milestones(),         // Part 135 Ratings
-                new DPEMilestones()
+                new Part135Milestones(),        // Part 135 Ratings
+                new DPEMilestones(),            // DPEMilestones
+                new CFIMilestones()             // CFI Milestones
             };
         }
 
@@ -496,7 +505,7 @@ namespace MyFlightbook.MilestoneProgress
                 (dr) =>
                 {
                     ExaminerFlightRow cfr = new ExaminerFlightRow(dr);
-                    sbRoutes.AppendFormat("{0} ", cfr.Route);
+                    sbRoutes.AppendFormat(CultureInfo.InvariantCulture, "{0} ", cfr.Route);
                     lstRows.Add(cfr);   // we'll examine it below, after we've populated the routes
                 });
 

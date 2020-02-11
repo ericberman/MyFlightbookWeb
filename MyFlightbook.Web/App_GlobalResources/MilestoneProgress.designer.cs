@@ -817,6 +817,60 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 100 hours as PIC in a powered aircraft.
+        /// </summary>
+        internal static string CFISASELPICPowered {
+            get {
+                return ResourceManager.GetString("CFISASELPICPowered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 50 hours of flight time in a single-engine airplane.
+        /// </summary>
+        internal static string CFISASELTotalSEL {
+            get {
+                return ResourceManager.GetString("CFISASELTotalSEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 150 hours of flight time as a pilot.
+        /// </summary>
+        internal static string CFISASELTotalTime {
+            get {
+                return ResourceManager.GetString("CFISASELTotalTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 25 hours of cross-country flight time..
+        /// </summary>
+        internal static string CFISASELXC {
+            get {
+                return ResourceManager.GetString("CFISASELXC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10 hours of cross-country flight time in a single-engine airplane.
+        /// </summary>
+        internal static string CFISASELXCSEL {
+            get {
+                return ResourceManager.GetString("CFISASELXCSEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} hours of PIC time in {1}.
+        /// </summary>
+        internal static string CFITimeInCategoryClass {
+            get {
+                return ResourceManager.GetString("CFITimeInCategoryClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One cross-country flight in daytime conditions that is at least {0}hrs and goes at least {1}nm from the point of departure.
         /// </summary>
         internal static string Comm141DayXCFlight {
@@ -2250,6 +2304,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 15 hours of this must be in an aircraft certified as an LSA; %APP_NAME% does not know which aircraft are certified as an LSA, so cannot determine this for you.
+        /// </summary>
+        internal static string NoteLSATime {
+            get {
+                return ResourceManager.GetString("NoteLSATime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to See FAR 61.110 for possible exceptions that may apply to you.  Night landings are assumed to have involved flight in the traffic pattern..
         /// </summary>
         internal static string NoteNightRequirements {
@@ -2671,6 +2734,15 @@ namespace Resources {
         internal static string RatingGroupATP {
             get {
                 return ResourceManager.GetString("RatingGroupATP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CFI Rating.
+        /// </summary>
+        internal static string RatingGroupCFI {
+            get {
+                return ResourceManager.GetString("RatingGroupCFI", resourceCulture);
             }
         }
         
@@ -3535,6 +3607,69 @@ namespace Resources {
         internal static string Title61163 {
             get {
                 return ResourceManager.GetString("Title61163", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CFI - Airplane, Multi-Engine Land.
+        /// </summary>
+        internal static string Title61183AMEL {
+            get {
+                return ResourceManager.GetString("Title61183AMEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CFI - Airplane, Multi-Engine Sea.
+        /// </summary>
+        internal static string Title61183AMES {
+            get {
+                return ResourceManager.GetString("Title61183AMES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CFI - Airplane, Single-Engine Land.
+        /// </summary>
+        internal static string Title61183ASEL {
+            get {
+                return ResourceManager.GetString("Title61183ASEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CFI - Airplane, Single-Engine Sea.
+        /// </summary>
+        internal static string Title61183ASES {
+            get {
+                return ResourceManager.GetString("Title61183ASES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CFI - Glider.
+        /// </summary>
+        internal static string Title61183Glider {
+            get {
+                return ResourceManager.GetString("Title61183Glider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CFI - Helicopter.
+        /// </summary>
+        internal static string Title61183Helicopter {
+            get {
+                return ResourceManager.GetString("Title61183Helicopter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CFI-Sport - Airplane, Single-Engine Land.
+        /// </summary>
+        internal static string Title61411CFISportSEL {
+            get {
+                return ResourceManager.GetString("Title61411CFISportSEL", resourceCulture);
             }
         }
         

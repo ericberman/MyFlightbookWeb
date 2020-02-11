@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2018 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,7 +22,7 @@ namespace MyFlightbook.MilestoneProgress
         public DPEMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupDPE;
-            Milestones = new MilestoneProgress[] {
+            Milestones = new Collection<MilestoneProgress> {
                 new DPEASELPPL(),
                 new DPEAMELPPL(),
                 new DPEASESPPL(),
@@ -82,7 +82,7 @@ namespace MyFlightbook.MilestoneProgress
         public DPEBase(DPEThresholds dpet, CategoryClass.CatClassID ccid, string szFarRef)
         {
             if (dpet == null)
-                throw new ArgumentNullException("dpet");
+                throw new ArgumentNullException(nameof(dpet));
             BaseFAR = "Order 8900.2A";
             string szResolved = ResolvedFAR(szFarRef);
             catClass = CategoryClass.CategoryClassFromID(ccid);
@@ -104,7 +104,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             if (!cfr.fIsRealAircraft)
                 return;

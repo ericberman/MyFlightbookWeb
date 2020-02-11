@@ -7,7 +7,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -23,7 +23,7 @@ namespace MyFlightbook.MilestoneProgress
         public CommercialMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupCommercial;
-            Milestones = new MilestoneProgress[] {
+            Milestones = new Collection<MilestoneProgress> {
                 new Comm61129ASEL(),
                 new Comm61129ASES(),
                 new Comm61129AMEL(),
@@ -55,10 +55,10 @@ namespace MyFlightbook.MilestoneProgress
         /// </summary>
         /// <param name="cfr"></param>
         /// <returns></returns>
-        protected bool IsComplexOrTurbine(ExaminerFlightRow cfr)
+        protected static bool IsComplexOrTurbine(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             return (cfr.fIsComplex || cfr.turbineLevel == MakeModel.TurbineLevel.Jet || cfr.turbineLevel == MakeModel.TurbineLevel.UnspecifiedTurbine || cfr.turbineLevel == MakeModel.TurbineLevel.TurboProp);
         }
@@ -605,7 +605,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             base.ExamineFlight(cfr);
 
@@ -677,7 +677,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             // simulators need not apply!
             if (!cfr.fIsRealAircraft)

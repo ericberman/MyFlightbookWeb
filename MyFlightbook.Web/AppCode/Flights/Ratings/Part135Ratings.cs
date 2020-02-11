@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2018 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -23,7 +23,7 @@ namespace MyFlightbook.MilestoneProgress
         public Part135Milestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroup135;
-            Milestones = new MilestoneProgress[]
+            Milestones = new Collection<MilestoneProgress>
             {
                 new Part135243b(),
                 new Part135243c()
@@ -85,7 +85,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             if (!cfr.fIsRealAircraft)
                 return;
@@ -141,7 +141,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             decimal IMCTime = cfr.IMC + cfr.IMCSim;
             if (cfr.fIsCertifiedIFR)

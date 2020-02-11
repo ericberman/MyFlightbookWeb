@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -23,7 +23,7 @@ namespace MyFlightbook.MilestoneProgress
         public InstrumentMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupInstrument;
-            Milestones = new MilestoneProgress[] {
+            Milestones = new Collection<MilestoneProgress> {
                     new IFR6165D(),
                     new IFR6165E(),
                     new IFR6165F(),
@@ -80,7 +80,6 @@ namespace MyFlightbook.MilestoneProgress
             FTDTimeRemaining = MaxFTDTime;
 
             string szAircraftCategory;
-            string szBrand = Branding.CurrentBrand.AppName;
 
             switch (RatingSought)
             {
@@ -119,7 +118,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             decimal IMCTime = cfr.IMC + cfr.IMCSim;
 
@@ -229,7 +228,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             base.ExamineFlight(cfr);    // really only picks up the cross-country flight
 
             if (cfr.fIsCertifiedIFR && CatClassMatchesRatingSought(cfr.idCatClassOverride))

@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,7 +21,7 @@ namespace MyFlightbook.MilestoneProgress
         public ATPMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupATP;
-            Milestones = new MilestoneProgress[] {
+            Milestones = new Collection<MilestoneProgress> {
                 new ATPAirplaneASEL(),
                 new ATPAirplaneASES(),
                 new ATPAirplaneAMEL(),
@@ -353,7 +353,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             bool fIsHelicopter = (cfr.idCatClassOverride == CategoryClass.CatClassID.Helicopter);
             bool fIsRotorcraft = (fIsHelicopter || cfr.idCatClassOverride == CategoryClass.CatClassID.Gyroplane);
             bool fIsIFRSim = (fIsRotorcraft && cfr.fIsFTD);
@@ -440,7 +440,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             bool fIsPoweredLift = (cfr.idCatClassOverride == CategoryClass.CatClassID.PoweredLift);
             bool fIsIFRSim = (fIsPoweredLift && cfr.fIsFTD);
 
@@ -492,22 +492,22 @@ namespace MyFlightbook.MilestoneProgress
     [Serializable]
     public abstract class ATPCanadaBase : MilestoneProgress
     {
-        protected int MinHours;
-        protected int MinInCategory;
-        protected int MinPICInCategory;
-        protected int MaxPICUSInCategory;
-        protected int MinXC;
-        protected int MinPICXC;
-        protected int MinPICXCNight;
-        protected int MinNight;
-        protected int MinNightInCategory;
-        protected int MinXCPICAdditional;
-        protected int MinXCSICPICAdditional;
-        protected int MinInstrument;
-        protected int MaxSimulator;
-        protected int MaxInstrumentAlternativeCategory;
-        protected string Category;
-        protected string AltCategory;
+        protected int MinHours { get; set; }
+        protected int MinInCategory { get; set; }
+        protected int MinPICInCategory { get; set; }
+        protected int MaxPICUSInCategory { get; set; }
+        protected int MinXC { get; set; }
+        protected int MinPICXC { get; set; }
+        protected int MinPICXCNight { get; set; }
+        protected int MinNight { get; set; }
+        protected int MinNightInCategory { get; set; }
+        protected int MinXCPICAdditional { get; set; }
+        protected int MinXCSICPICAdditional { get; set; }
+        protected int MinInstrument { get; set; }
+        protected int MaxSimulator { get; set; }
+        protected int MaxInstrumentAlternativeCategory { get; set; }
+        protected string Category { get; set; }
+        protected string AltCategory { get; set; }
 
         #region MilestoneItems
         protected MilestoneItem miTotal { get; set; }
@@ -553,7 +553,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             if (!cfr.fIsRealAircraft && cfr.fIsCertifiedIFR)
                 miInstrument.AddTrainingEvent(cfr.IMCSim, MaxSimulator, !cfr.fIsRealAircraft);
