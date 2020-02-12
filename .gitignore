@@ -19,7 +19,7 @@ MyFlightbook.Web/App_Data/debug.config
 MyFlightbook.Web/App_Data/email.config
 
 #Legacy bugs file - included personal details of people who report bugs or request features.
-Private/Bugs.txt
+MyFlightbook.Web/Private/Bugs.txt
 MyFlightbook.ruleset
 
 #batch/VBScript files that run on the server in a production environment.
