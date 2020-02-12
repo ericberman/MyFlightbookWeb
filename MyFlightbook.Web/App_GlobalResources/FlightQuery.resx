@@ -157,7 +157,7 @@
     <value>Make/model</value>
   </data>
   <data name="ContainsText" xml:space="preserve">
-    <value>Contains words</value>
+    <value>Matches search terms</value>
   </data>
   <data name="DatesAfter" xml:space="preserve">
     <value>After {0}</value>

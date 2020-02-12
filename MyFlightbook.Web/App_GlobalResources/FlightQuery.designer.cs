@@ -322,7 +322,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Contains words.
+        ///   Looks up a localized string similar to Matches search terms.
         /// </summary>
         internal static string ContainsText {
             get {

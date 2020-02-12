@@ -772,30 +772,86 @@ namespace MyFlightbook
                     throw new MyFlightbookValidationException("Unknown date range!");
             }
         }
-        
+
+        private static Regex rQuotedExpressions = null;
+        private static Regex rSplitWords = null;
+        private static Regex rMergeOR = null;
+
         private void UpdateGeneralText(StringBuilder sbQuery)
         {
             if (GeneralText.Length > 0)
             {
-                Regex rg = new Regex(" ");
-                string[] words = rg.Split(GeneralText);
+                List<string> lstSearchTerms = new List<string>();
 
-                if (words.Length > 0)
+                /* following Google model (sorta) here:
+                    * dog cat = must contain "dog" and must contain "cat" (but not necessarily in that order, separated by anything)
+                    * "dog cat" = must contains "dog cat" (inclusive of spaces)
+                    * dog OR cat = contains dog OR contains cat
+                    * -dog = must NOT contain dog
+                    * -"dog cat" = must NOT contain "dog cat"
+                    * -"dog -cat" must NOT contain "dog -cat" (i.e., the hyphen inside the quoted text is preserved, not negation)
+                    * -dog -cat = contains neither dog nor cat ("NOT dog AND NOT cat") - so there is no negation of an "OR", since this can express that.
+                    * -dog OR cat = doesn't contain dog OR does contain cat.
+
+                    This is nice because we can largely just look at prefixes
+
+                    Searches are ALWAYS case insensitive, ALWAYS partial word search
+                */
+
+                if (rQuotedExpressions == null)
+                    rQuotedExpressions = new Regex("(?<negated>-?)\"(?<phrase>[^\"]*)\"", RegexOptions.Compiled);
+                if (rSplitWords == null)
+                    rSplitWords = new Regex("\\s");
+                if (rMergeOR == null)
+                    rMergeOR = new Regex("\\sOR\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+                // Convert " OR " pattern with "|" so that it survives string split at word boundaries; we'll separate them later
+                string szMerged = rMergeOR.Replace(GeneralText, "|");
+
+                // Extract out the quoted expressions first
+                MatchCollection quoted = rQuotedExpressions.Matches(szMerged);
+                foreach (Match m in quoted)
                 {
-                    int iWord = 0;
-                    foreach (string word in words)
-                    {
-                        if (word.Trim().Length > 0)
-                        {
-                            string szParam = "SearchWord" + (iWord++).ToString(CultureInfo.InvariantCulture);
-
-                            AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "CONCAT_WS(' ', ModelDisplay, TailNumber, Route, Comments, CustomProperties, CFIComment, CFIName, AircraftPrivateNotes) LIKE ?{0} ", szParam));
-                            AddParameter(szParam, String.Format(CultureInfo.InvariantCulture, "%{0}%", word.Trim()));
-                        }
-                    }
-
-                    Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsText, GeneralText, "GeneralText"));
+                    if (m.Groups["phrase"].Value.Trim().Length > 0)
+                        lstSearchTerms.Add(m.Groups["negated"] + m.Groups["phrase"].Value.Trim());
+                    szMerged = szMerged.Replace(m.Value, string.Empty); // pull it out of the remaining search text so that we can do a word search
                 }
+
+                // Split what is left
+                lstSearchTerms.AddRange(rSplitWords.Split(szMerged));
+
+                const string szFreeText = "CONCAT_WS(' ', ModelDisplay, TailNumber, Route, Comments, CustomProperties, CFIComment, CFIName, AircraftPrivateNotes)";
+
+                int iWord = 0;
+                foreach (string term in lstSearchTerms)
+                {
+                    string[] phrases = term.Split(new char[] { '|', '"' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (phrases.Length == 0)    // naked "|", perhaps?
+                        continue;
+                    else
+                    {
+                        // Treat as the "AND" of a set of OR clauses.  Of course, if only one clause it's just an AND...
+                        List<string> lstORClauses = new List<string>();
+                        foreach (string phrase in phrases)
+                        {
+                            string szPhrase = phrase;
+                            bool fNegate = szPhrase.StartsWith("-");
+                            if (fNegate)
+                                szPhrase = szPhrase.Substring(1);
+
+                            if (szPhrase.Trim().Length == 0)
+                                continue;
+                            string szParam = "SearchWord" + (iWord++).ToString(CultureInfo.InvariantCulture);
+                            lstORClauses.Add(String.Format(CultureInfo.InvariantCulture, "{0} {1} LIKE ?{2}", szFreeText, fNegate ? "NOT " : string.Empty, szParam));
+                            AddParameter(szParam, String.Format(CultureInfo.InvariantCulture, "%{0}%", szPhrase.Trim()));
+                        }
+                        if (lstORClauses.Count > 0)
+                            AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "({0}) ", String.Join(" OR ", lstORClauses)));
+                    }
+                }
+
+                Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsText, GeneralText, "GeneralText"));
             }
         }
 
