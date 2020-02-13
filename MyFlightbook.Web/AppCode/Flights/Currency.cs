@@ -608,7 +608,7 @@ namespace MyFlightbook.FlightCurrency
 
         public static string CurrencyQuery(CurrencyQueryDirection dir)
         {
-            return String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["FlightsCurrencyQuery"].ToString(), dir == CurrencyQueryDirection.Ascending ? "ASC" : "DESC");
+            return String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["FlightsCurrencyQuery"], dir == CurrencyQueryDirection.Ascending ? "ASC" : "DESC");
         }
         #endregion
 
@@ -691,7 +691,7 @@ namespace MyFlightbook.FlightCurrency
                     List<string> lstCatClasses = new List<string>();
                     Boolean fFlightInTypeRatedAircraft = cfr.szType.Length > 0;
                     if (pf.UsesPerModelCurrency)
-                        lstCatClasses.Add(String.Format("{0} ({1})", cfr.szFamily, cfr.szCatClassType));
+                        lstCatClasses.Add(String.Format(CultureInfo.InvariantCulture, "{0} ({1})", cfr.szFamily, cfr.szCatClassType));
                     else
                     {
                         lstCatClasses.Add(cfr.szCatClassType);
@@ -705,11 +705,11 @@ namespace MyFlightbook.FlightCurrency
                         bool fIsTypeRatedCategory = szCatClass.CompareOrdinal(cfr.szCatClassBase) != 0 && szCatClass.CompareOrdinal(cfr.szCatClassType) == 0;
 
                         // Night, tailwheel, and basic passenger carrying
-                        if ((cfr.cLandingsThisFlight > 0 || pf.UseCanadianCurrencyRules || fIsTypeRatedCategory) && (cfr.fIsCertifiedLanding || cfr.fIsFullMotion))
+                        if ((cfr.cLandingsThisFlight > 0 || cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropertyType.IsNightTakeOff) > 0 || pf.UseCanadianCurrencyRules || fIsTypeRatedCategory) && (cfr.fIsCertifiedLanding || cfr.fIsFullMotion))
                         {
                             if (!dictFlightCurrency.ContainsKey(szCatClass))
                             {
-                                string szName = String.Format("{0} - {1}", szCatClass, Resources.Currency.Passengers);
+                                string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", szCatClass, Resources.Currency.Passengers);
                                 dictFlightCurrency.Add(szCatClass, pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new PassengerCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName) : (ICurrencyExaminer)new PassengerCurrency(szName)));
                             }
 
@@ -730,7 +730,7 @@ namespace MyFlightbook.FlightCurrency
                             string szNightKey = szCatClass + "NIGHT";
                             if (!dictFlightCurrency.ContainsKey(szNightKey))
                             {
-                                string szName = String.Format("{0} - {1}", szCatClass, Resources.Currency.Night);
+                                string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", szCatClass, Resources.Currency.Night);
                                 dictFlightCurrency.Add(szNightKey, pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new NightCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)new EASAPPLNightPassengerCurrency(szName) : (ICurrencyExaminer)new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty)));
                             }
 
@@ -898,7 +898,7 @@ namespace MyFlightbook.FlightCurrency
                         if (fHasPICCheck)
                         {
                             if (!dictPICProficiencyChecks.ContainsKey(cfr.szType))
-                                dictPICProficiencyChecks[cfr.szType] = new FlightCurrency(1, 24, true, String.Format("61.58(b) - PIC Check in this {0}", cfr.szType));
+                                dictPICProficiencyChecks[cfr.szType] = new FlightCurrency(1, 24, true, String.Format(CultureInfo.CurrentCulture, "61.58(b) - PIC Check in this {0}", cfr.szType));
                             dictPICProficiencyChecks[cfr.szType].AddRecentFlightEvents(cfr.dtFlight, 1);
                             fcPICPCInAny.AddRecentFlightEvents(cfr.dtFlight, 1);
                         }
@@ -995,7 +995,7 @@ namespace MyFlightbook.FlightCurrency
                 FlightCurrency fcComputed = fcInType.AND(fcPICPCInAny);
 
                 if (fcComputed.HasBeenCurrent && fcComputed.ExpirationDate.CompareTo(dtCutoff) > 0)
-                    arcs.Add(new CurrencyStatusItem(String.Format(Resources.Currency.NextPICProficiencyCheck, szKey), fcComputed.StatusDisplay, fcComputed.CurrentState, string.Empty));
+                    arcs.Add(new CurrencyStatusItem(String.Format(CultureInfo.CurrentCulture, Resources.Currency.NextPICProficiencyCheck, szKey), fcComputed.StatusDisplay, fcComputed.CurrentState, string.Empty));
             }
 
             // FAR 117 status
@@ -2337,11 +2337,9 @@ namespace MyFlightbook.FlightCurrency
                     AddNighttimeLandingEvent(cfr.dtFlight, Math.Max(cfr.cFullStopNightLandings - cMonitoredLandings, 0), nco);
 
                 // Night-time take-offs are also technically required for night currency
-                cfr.FlightProps.ForEachEvent((pfe) =>
-                {
-                    if (pfe.PropertyType.IsNightTakeOff)
-                        AddNighttimeTakeOffEvent(cfr.dtFlight, Math.Max(pfe.IntValue - cMonitoredTakeoffs, 0), nco);
-                });
+                int cNightTakeoffs = cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropertyType.IsNightTakeOff);
+                if (cNightTakeoffs > 0)
+                    AddNighttimeTakeOffEvent(cfr.dtFlight, Math.Max(cNightTakeoffs - cMonitoredTakeoffs, 0), nco);
             }
         }
     }

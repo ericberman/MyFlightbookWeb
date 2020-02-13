@@ -539,7 +539,7 @@ namespace MyFlightbook.Subscriptions
                     }
                 }
             }
-            catch (MyFlightbookException) { }    // EAT ANY ERRORS so that we don't skip subsequent users.  NotifyUser shouldn't cause any, though.
+            catch (Exception ex) when (ex is MyFlightbookException) { }    // EAT ANY ERRORS so that we don't skip subsequent users.  NotifyUser shouldn't cause any, though.
             return false;
         }
     }
