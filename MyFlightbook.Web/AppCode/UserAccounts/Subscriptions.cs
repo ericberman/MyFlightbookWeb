@@ -193,17 +193,16 @@ namespace MyFlightbook.Subscriptions
         /// </summary>
         private void SendNightlyEmails()
         {
-            // Find all users who have expiring currencies - they may trigger an early email.
+            // Find all users who qualify for expiring currency notifications - they may trigger an early email.
             List<EarnedGratuity> lstUsersWithExpiringCurrencies = EarnedGratuity.GratuitiesForUser(null, Gratuity.GratuityTypes.CurrencyAlerts);
             if (!String.IsNullOrEmpty(UserRestriction))
                 lstUsersWithExpiringCurrencies.RemoveAll(eg => eg.Username.CompareCurrentCultureIgnoreCase(UserRestriction) != 0);
 
-            // get the list of people who have a subscription OTHER than simple monthly
-            List<Profile> lstUsersToSend = new List<Profile>(Profile.UsersWithSubscriptions(~EmailSubscription.FlagForType(SubscriptionType.MonthlyTotals), DateTime.Now.AddDays(-7)));
-
             // And the list of people who have a subscription to expiring currencies
             List<Profile> lstUsersSubscribedForExpiration = new List<Profile>(Profile.UsersWithSubscriptions(EmailSubscription.FlagForType(SubscriptionType.Expiration), DateTime.Now.AddDays(-7)));
 
+            // get the list of people who have a subscription OTHER than simple monthly or expiration
+            List<Profile> lstUsersToSend = new List<Profile>(Profile.UsersWithSubscriptions(~(EmailSubscription.FlagForType(SubscriptionType.MonthlyTotals) | EmailSubscription.FlagForType(SubscriptionType.Expiration)), DateTime.Now.AddDays(-7)));
             if (!String.IsNullOrEmpty(UserRestriction))
                 lstUsersToSend.RemoveAll(pf => pf.UserName.CompareOrdinalIgnoreCase(UserRestriction) != 0);
 
