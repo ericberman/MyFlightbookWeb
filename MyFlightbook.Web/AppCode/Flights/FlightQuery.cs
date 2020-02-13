@@ -964,17 +964,23 @@ namespace MyFlightbook
 
             if (!String.IsNullOrEmpty(ModelName.Trim()))
             {
-                string[] rgModelFragment = Regex.Split(ModelName, "[^a-zA-Z0-9]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                string[] rgModelFragment = Regex.Split(ModelName, "[^a-zA-Z0-9:]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 int i = 0;
                 StringBuilder sbModelName = new StringBuilder();
                 foreach (string sz in rgModelFragment)
                 {
-                    if (sz.Trim().Length > 0)
+                    const string szICAOPrefix = "ICAO:";
+                    string szSearch = sz.Trim();
+                    bool fICAO = szSearch.ToUpperInvariant().StartsWith(szICAOPrefix);
+                    if (fICAO)
+                        szSearch = szSearch.Substring(szICAOPrefix.Length).Trim();
+
+                    if (szSearch.Length > 0)
                     {
                         string szParamName = String.Format(CultureInfo.InvariantCulture, "?modelQuery{0}", i++);
-                        AddParameter(szParamName, String.Format(CultureInfo.InvariantCulture, "%{0}%", sz));
+                        AddParameter(szParamName, fICAO ? szSearch : String.Format(CultureInfo.InvariantCulture, "%{0}%", szSearch));
                         sbModelName.Append(sbModelName.Length == 0 ? "(" : " AND ");
-                        sbModelName.AppendFormat(CultureInfo.InvariantCulture, "(ModelDisplay LIKE {0} OR FamilyDisplay LIKE {0}) ", szParamName);
+                        sbModelName.AppendFormat(CultureInfo.InvariantCulture, fICAO ? "(models.family={0}) " : "(ModelDisplay LIKE {0} OR FamilyDisplay LIKE {0}) ", szParamName);
                     }
                 }
                 if (sbModelName.Length > 0)
