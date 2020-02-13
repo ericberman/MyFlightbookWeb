@@ -90,10 +90,10 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
                     bool fMonthlySummary = (String.Compare(szParam, "monthly", StringComparison.OrdinalIgnoreCase) == 0);
 
                     if (!fHasCurrency && !fHasTotals && !fMonthlySummary)
-                        throw new MyFlightbookException("Email requested but no subscriptions found!");
+                        throw new MyFlightbookException("Email requested but no subscriptions found! User =" + szUser);
 
                     if (fMonthlySummary && !fHasMonthly)
-                        throw new MyFlightbookException("Monthly email requested but user does not subscribe to monthly email");
+                        throw new MyFlightbookException("Monthly email requested but user does not subscribe to monthly email.  User = " + szUser);
 
                     // Donation solicitation: thank-them if they've made a donation within the previous 12 months, else solicit.
                     lblThankyou.Text = Branding.ReBrand(Resources.LocalizedText.DonateThankYouTitle);
@@ -162,15 +162,10 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
                         }
                     }
                 }
-                catch (MyFlightbookException ex)
+                catch (Exception ex) when (ex is MyFlightbookException || ex is FormatException)
                 {
                     MyFlightbookException.NotifyAdminException(ex);
                     throw;  // ensure that the success tag doesn't show!
-                }
-                catch (FormatException ex)
-                {
-                    MyFlightbookException.NotifyAdminException(ex);
-                    throw;
                 }
             }
         }
