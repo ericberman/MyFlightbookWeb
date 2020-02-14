@@ -576,7 +576,7 @@ namespace MyFlightbook.Image
                 return true;
             }
 
-            if (obj is null)
+            if (obj is null || !(obj is MFBImageInfo))
             {
                 return false;
             }

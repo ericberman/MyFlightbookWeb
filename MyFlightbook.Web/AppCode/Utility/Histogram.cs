@@ -167,6 +167,9 @@ namespace MyFlightbook.Histogram
                 return false;
             }
 
+            if (!(obj is Bucket))
+                return false;
+
             return CompareTo(obj) == 0;
         }
 

@@ -168,7 +168,7 @@ namespace MyFlightbook.Airports
         private void MergeWith(VisitedAirport va)
         {
             if (va == null)
-                throw new ArgumentNullException("va");
+                throw new ArgumentNullException(nameof(va));
             if (EarliestVisitDate.CompareTo(va.EarliestVisitDate) > 0)
             {
                 EarliestVisitDate = va.EarliestVisitDate;
@@ -191,7 +191,7 @@ namespace MyFlightbook.Airports
         public static VisitedAirport[] VisitedAirportsForQuery(FlightQuery fq)
         {
             if (String.IsNullOrEmpty(fq.UserName))
-                throw new ArgumentNullException("fq");
+                throw new ArgumentNullException(nameof(fq));
 
             AirportList al = new AirportList();
             Dictionary<string, VisitedAirport> dictVA = new Dictionary<string, VisitedAirport>();
@@ -382,7 +382,7 @@ namespace MyFlightbook.Airports
         {
             DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq));
             StringBuilder sb = new StringBuilder();
-            dbh.ReadRows((comm) => { }, (dr) => { sb.AppendFormat("{0} ", util.ReadNullableField(dr, "Route", string.Empty)); });
+            dbh.ReadRows((comm) => { }, (dr) => { sb.AppendFormat(CultureInfo.InvariantCulture, "{0} ", util.ReadNullableField(dr, "Route", string.Empty)); });
             return new AirportList(sb.ToString());
         }
 
@@ -419,7 +419,7 @@ namespace MyFlightbook.Airports
         public static double DistanceFlownByUser(FlightQuery fq, out string error)
         {
             if (fq == null)
-                throw new ArgumentNullException("fq");
+                throw new ArgumentNullException(nameof(fq));
             if (String.IsNullOrEmpty(fq.UserName))
                 throw new MyFlightbookException("Don't estimate distance for an empty user!!");
 
@@ -457,7 +457,7 @@ namespace MyFlightbook.Airports
         public static void AllFlightsAsKML(FlightQuery fq, Stream s, out string error, IEnumerable<int> lstIDs = null)
         {
             if (fq == null)
-                throw new ArgumentNullException("fq");
+                throw new ArgumentNullException(nameof(fq));
             if (String.IsNullOrEmpty(fq.UserName) && (lstIDs == null || lstIDs.Count() == 0))
                 throw new MyFlightbookException("Don't get all flights as KML for an empty user!!");
 
@@ -487,7 +487,7 @@ namespace MyFlightbook.Airports
                                     fd.ParseFlightData(tr.RawData);
                                     if (fd.HasLatLongInfo)
                                     {
-                                        kw.AddPath(fd.GetTrajectory(), String.Format(CultureInfo.CurrentCulture, "{0} - {1}", dt.ToString(), szComment), fd.SpeedFactor);
+                                        kw.AddPath(fd.GetTrajectory(), String.Format(CultureInfo.CurrentCulture, "{0:d} - {1}", dt, szComment), fd.SpeedFactor);
                                         return;
                                     }
                                 }
@@ -496,7 +496,7 @@ namespace MyFlightbook.Airports
                         }
                         // No path was found above.
                         AirportList al = alMaster.CloneSubset(szRoute);
-                        kw.AddRoute(al.GetNormalizedAirports(), String.Format(CultureInfo.CurrentCulture, "{0} - {1}", dt.ToShortDateString(), szRoute));
+                        kw.AddRoute(al.GetNormalizedAirports(), String.Format(CultureInfo.CurrentCulture, "{0:d} - {1}", dt, szRoute));
                     });
                 kw.EndKML();
             }
@@ -741,7 +741,7 @@ namespace MyFlightbook.Airports
         public airport(MySqlDataReader dr) : this()
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
 
             Code = dr["airportID"].ToString();
             Name = dr["FacilityName"].ToString();
@@ -767,7 +767,7 @@ namespace MyFlightbook.Airports
         public double DistanceFromFix(IFix f)
         {
             if (f == null)
-                throw new ArgumentNullException("f");
+                throw new ArgumentNullException(nameof(f));
             return this.LatLong.DistanceFrom(f.LatLong);
         }
 
@@ -790,7 +790,7 @@ namespace MyFlightbook.Airports
         public static string USPrefixConvenienceAlias(string szcode)
         {
             if (szcode == null)
-                throw new ArgumentNullException("szcode");
+                throw new ArgumentNullException(nameof(szcode));
             return IsUSAirport(szcode) ? szcode.Substring(1) : szcode;
         }
 
@@ -802,7 +802,7 @@ namespace MyFlightbook.Airports
         public static IEnumerable<string> SplitCodes(string szAirports)
         {
             if (szAirports == null)
-                throw new ArgumentNullException("szAirports");
+                throw new ArgumentNullException(nameof(szAirports));
             List<string> lst = new List<string>();
             MatchCollection mc = regAirport.Matches(szAirports.ToUpper(CultureInfo.CurrentCulture));
 
@@ -885,8 +885,8 @@ namespace MyFlightbook.Airports
                         {
                             if (sb.Length > 0)
                                 sb.Append(" AND ");
-                            string szParam = "AirportName" + comm.Parameters.Count.ToString();
-                            sb.AppendFormat("(CONCAT(FacilityName, ' ', AirportID) LIKE ?{0})", szParam);
+                            string szParam = "AirportName" + comm.Parameters.Count.ToString(CultureInfo.InvariantCulture);
+                            sb.AppendFormat(CultureInfo.InvariantCulture, "(CONCAT(FacilityName, ' ', AirportID) LIKE ?{0})", szParam);
                             comm.Parameters.AddWithValue(szParam, String.Format(CultureInfo.InvariantCulture, "%{0}%", sz));
                         }
                     }
@@ -1298,7 +1298,7 @@ namespace MyFlightbook.Airports
         public void MergeFrom(AdminAirport apSource)
         {
             if (apSource == null)
-                throw new ArgumentNullException("apSource");
+                throw new ArgumentNullException(nameof(apSource));
 
             LatLong = apSource.LatLong;
             if (!FCommit(fAdmin:true))
@@ -1534,7 +1534,7 @@ namespace MyFlightbook.Airports
             set 
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(nameof(value));
                 m_rgAirports = new List<airport>(value);
                 foreach (airport ap in value)
                     AddAirportToHashtable(ap);
@@ -1550,7 +1550,7 @@ namespace MyFlightbook.Airports
         public AirportList(IEnumerable<VisitedAirport> rgVA) : this()
         {
             if (rgVA == null)
-                throw new ArgumentNullException("rgVA");
+                throw new ArgumentNullException(nameof(rgVA));
             m_rgAirports = new List<airport>();
             List<string> alAirports = new List<string>();
             foreach (VisitedAirport va in rgVA)
@@ -1583,8 +1583,7 @@ namespace MyFlightbook.Airports
             {
                 string szKey = airport.ForceNavaidPrefix + ap.Code;
                 // see if a navaid is already there; store the new one only if it is higher priority (lower value) than what's already there.
-                airport ap2;
-                m_htAirportsByCode.TryGetValue(szKey, out ap2);
+                m_htAirportsByCode.TryGetValue(szKey, out airport ap2);
                 if (ap2 == null || (ap.Priority < ap2.Priority))
                     m_htAirportsByCode[szKey] = ap;
             }
@@ -1676,7 +1675,7 @@ namespace MyFlightbook.Airports
         public static ListsFromRoutesResults ListsFromRoutes(string szAirports)
         {
             if (szAirports == null)
-                throw new ArgumentNullException("szAirports");
+                throw new ArgumentNullException(nameof(szAirports));
             return ListsFromRoutes(new List<string>(szAirports.Split(new string[] { RouteSeparator }, StringSplitOptions.RemoveEmptyEntries)));
         }
         #endregion
@@ -1689,8 +1688,7 @@ namespace MyFlightbook.Airports
         /// <returns>The matching airport, null if not found.</returns>
         private airport GetAirportByCode(string sz)
         {
-            airport ap;
-            m_htAirportsByCode.TryGetValue(sz, out ap);
+            m_htAirportsByCode.TryGetValue(sz, out airport ap);
 
             // if this wasn't a forced navaid and the airport wasn't found, look to see if the navaid matched.
             if (ap == null && !sz.StartsWith(airport.ForceNavaidPrefix, StringComparison.CurrentCultureIgnoreCase))
@@ -1730,7 +1728,7 @@ namespace MyFlightbook.Airports
 
         public IEnumerable<airport> UniqueAirports
         {
-            get { return (m_htAirportsByCode == null) ? new airport[0] : (IEnumerable<airport>)m_htAirportsByCode.Values; }
+            get { return (m_htAirportsByCode == null) ? Array.Empty<airport>() : (IEnumerable<airport>)m_htAirportsByCode.Values; }
         }
         #endregion
 
@@ -1743,7 +1741,7 @@ namespace MyFlightbook.Airports
         public static string[] NormalizeAirportList(string szAirports)
         {
             if (szAirports == null)
-                throw new ArgumentNullException("szAirports");
+                throw new ArgumentNullException(nameof(szAirports));
             return airport.SplitCodes(szAirports).ToArray();
         }
 
@@ -1755,7 +1753,7 @@ namespace MyFlightbook.Airports
         public static airport[] RemoveNavaids(IEnumerable<airport> rgap)
         {
             if (rgap == null)
-                throw new ArgumentNullException("rgap");
+                throw new ArgumentNullException(nameof(rgap));
             List<airport> al = new List<airport>();
             foreach (airport ap in rgap)
                 if (ap.IsPort)
@@ -1784,7 +1782,7 @@ namespace MyFlightbook.Airports
         public void InitFromSearch(string szQuery)
         {
             m_rgAirports = new List<airport>();
-            m_rgszAirportsNormal = new string[0];
+            m_rgszAirportsNormal = Array.Empty<string>();
             m_htAirportsByCode = new Dictionary<string, airport>();
             List<string> lstCodes = new List<string>();
 
@@ -1930,7 +1928,7 @@ namespace MyFlightbook.Airports
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(nameof(value));
                 foreach (FlownSegment fs in value)
                     FlownSegments[fs.Segment] = fs;
             }
@@ -2195,10 +2193,7 @@ namespace MyFlightbook.Airports
         /// <param name="szDefaultAirportList"></param>
         public void Init(airport[] rgAirports)
         {
-            if (rgAirports == null)
-                throw new ArgumentNullException("rgAirports");
-
-            DefaultAirportList = rgAirports;
+            DefaultAirportList = rgAirports ?? throw new ArgumentNullException(nameof(rgAirports));
 
             m_rgAirport = rgAirports;
             m_rgShuffle = ShuffleIndex(m_rgAirport.Length);
@@ -2308,6 +2303,9 @@ namespace MyFlightbook.Airports
             
             public override bool Equals(object obj)
             {
+                if (obj == null || !(obj is Stop))
+                    return false;
+
                 return Fix.Code.CompareCurrentCultureIgnoreCase(((Stop)obj).Fix.Code) == 0;
             }
             
@@ -2415,7 +2413,7 @@ namespace MyFlightbook.Airports
         public static IEnumerable<IFix> ShortestPath(IEnumerable<IFix> rgFixes)
         {
             if (rgFixes == null)
-                return new airport[0];
+                return Array.Empty<airport>();
             if (rgFixes.Count() <= 2)
                 return rgFixes;
 

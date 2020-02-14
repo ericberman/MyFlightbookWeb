@@ -8,7 +8,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -370,7 +370,7 @@ namespace MyFlightbook.FlightCurrency
                     return true;
                 }
 
-                if (((object)mft1 == null) || ((object)mft2 == null))
+                if ((mft1 is null) || (mft2 is null))
                     return false;
 
                 return (mft1.PIC == mft2.PIC && mft1.SIC == mft2.SIC && mft1.TotalTime == mft2.TotalTime);
@@ -383,6 +383,9 @@ namespace MyFlightbook.FlightCurrency
 
             public override bool Equals(object obj)
             {
+                if (obj == null || !(obj is ModelFeatureTotal))
+                    return false;
+
                 return base.Equals(obj);
             }
 
@@ -692,7 +695,7 @@ namespace MyFlightbook.FlightCurrency
         {
             foreach (ModelFeatureTotal mft in rgModelFeatureTotals)
             {
-                comm.CommandText = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsByModelType"].ToString(), szTempTableName, mft.Restriction);
+                comm.CommandText = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsByModelType"], szTempTableName, mft.Restriction);
 
                 try
                 {
@@ -796,10 +799,10 @@ namespace MyFlightbook.FlightCurrency
                 }
 
                 // All three queries below use the innerquery above to find the matching flights; they then find totals from that subset of flights.
-                string szQTotalTimes = pf.DisplayTimesByDefault ? ConfigurationManager.AppSettings["TotalTimesSubQuery"].ToString() : string.Empty;
-                string szQTotalsByCatClass = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"].ToString(), szQTotalTimes, szTempTableName, szGroupField);
-                string szQTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"].ToString(), szQTotalTimes, szTempTableName, "username"); // Note: this username is the "Group By" field, not a restriction.
-                string szQCustomPropTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsCustomProperties"].ToString(), szTempTableName);
+                string szQTotalTimes = pf.DisplayTimesByDefault ? ConfigurationManager.AppSettings["TotalTimesSubQuery"] : string.Empty;
+                string szQTotalsByCatClass = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"], szQTotalTimes, szTempTableName, szGroupField);
+                string szQTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsQuery"], szQTotalTimes, szTempTableName, "username"); // Note: this username is the "Group By" field, not a restriction.
+                string szQCustomPropTotals = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["TotalsCustomProperties"], szTempTableName);
 
                 alTotals.Clear();
 
