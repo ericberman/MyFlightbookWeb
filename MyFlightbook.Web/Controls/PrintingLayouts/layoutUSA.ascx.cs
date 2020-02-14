@@ -2,11 +2,12 @@
 using MyFlightbook.Printing;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,7 +18,7 @@ public partial class Controls_PrintingLayouts_layoutUSA : System.Web.UI.UserCont
 
     protected bool ShowFooter { get; set; }
 
-    protected OptionalColumn[] OptionalColumns { get; set; }
+    protected Collection<OptionalColumn> OptionalColumns { get; set; }
 
     protected string OtherCatClassValue(LogbookEntryDisplay led)
     {

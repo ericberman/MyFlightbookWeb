@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -82,7 +83,7 @@ namespace MyFlightbook.Printing
                 case PrintLayoutType.CASA:
                     return new PrintLayoutCASA() { CurrentUser = pf };
                 default:
-                    throw new ArgumentOutOfRangeException("plt");
+                    throw new ArgumentOutOfRangeException(nameof(plt));
             }
         }
     }
@@ -97,11 +98,11 @@ namespace MyFlightbook.Printing
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
             // Signature can be about 3 lines tall
             int sigHeight = le.CFISignatureState == LogbookEntry.SignatureState.None ? 0 : (le.HasDigitizedSig ? 2 : 1);
-            int imgHeight = le.FlightImages != null && le.FlightImages.Length > 0 ? 3 : 0;
+            int imgHeight = le.FlightImages != null && le.FlightImages.Count > 0 ? 3 : 0;
 
             // see how many rows of times we have - IF the user shows them
             int times = 0;
@@ -131,11 +132,11 @@ namespace MyFlightbook.Printing
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
             // Signature can be about 3 lines tall
             int sigHeight = le.CFISignatureState == LogbookEntry.SignatureState.None ? 0 : (le.HasDigitizedSig ? 2 : 1);
-            int imgHeight = le.FlightImages != null && le.FlightImages.Length > 0 ? 3 : 0;
+            int imgHeight = le.FlightImages != null && le.FlightImages.Count > 0 ? 3 : 0;
 
             // see how many rows of times we have - IF the user shows them
             int times = 0;
@@ -165,7 +166,7 @@ namespace MyFlightbook.Printing
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
             return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
@@ -178,7 +179,7 @@ namespace MyFlightbook.Printing
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
             return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
@@ -195,7 +196,7 @@ namespace MyFlightbook.Printing
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
             return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
@@ -212,7 +213,7 @@ namespace MyFlightbook.Printing
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
             return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
@@ -229,7 +230,7 @@ namespace MyFlightbook.Printing
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
             return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
@@ -246,7 +247,7 @@ namespace MyFlightbook.Printing
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
             // Very rough computation: look at customproperties + comments, shoot for ~50chars/line, 2 lines/flight, so divide by 100
             return Math.Max(1, (le.RedactedComment.Length + le.CustPropertyDisplay.Length) / 100);
         }
@@ -267,7 +268,7 @@ namespace MyFlightbook.Printing
         public override int RowHeight(LogbookEntryDisplay le)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
             // Very rough computation: look at customproperties + comments, shoot for ~120chars/line
             int linesOfText = (int) Math.Ceiling(le.RedactedComment.Length / 120.0) + (int) Math.Ceiling(le.CustPropertyDisplay.Length / 120.0);
             int routeLine = le.Airports.Count() > 2 ? 1 : 0;
@@ -320,7 +321,7 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Properties to exclude from printing
         /// </summary>
-        public int[] ExcludedPropertyIDs { get; set; }
+        public Collection<int> ExcludedPropertyIDs { get; set; }
 
         /// <summary>
         /// How do we want to display model names?
@@ -360,7 +361,7 @@ namespace MyFlightbook.Printing
             }
         }
 
-        public OptionalColumn[] OptionalColumns { get; set; }
+        public Collection<OptionalColumn> OptionalColumns { get; set; }
         #endregion
 
         public PrintingOptions()
@@ -372,9 +373,9 @@ namespace MyFlightbook.Printing
             BreakAtMonthBoundary = false;
             DisplayMode = ModelDisplayMode.Full;
             Layout = PrintLayoutType.Native;
-            ExcludedPropertyIDs = new int[0];
+            ExcludedPropertyIDs = new Collection<int>();
             PropertySeparator = PropertySeparatorType.Space;
-            OptionalColumns = new OptionalColumn[0];
+            OptionalColumns = new Collection<OptionalColumn>();
         }
     }
 
@@ -437,9 +438,9 @@ namespace MyFlightbook.Printing
         public string WKHtmlToPDFArguments(string inputFile, string outputFile)
         {
             if (inputFile == null)
-                throw new ArgumentNullException("inputFile");
+                throw new ArgumentNullException(nameof(inputFile));
             if (outputFile == null)
-                throw new ArgumentNullException("outputFile");
+                throw new ArgumentNullException(nameof(outputFile));
             return String.Format(CultureInfo.InvariantCulture, "--orientation {0} --print-media-type --disable-javascript --footer-font-size 8 -s {1} {2} {3} {4} {5} {6} {7} {8} {9}",
                 Orientation.ToString(),
                 PaperSize.ToString(),
@@ -594,12 +595,12 @@ namespace MyFlightbook.Printing
         public static IEnumerable<LogbookPrintedPage> Paginate(IEnumerable<LogbookEntryDisplay> lstIn, PrintingOptions po)
         {
             if (lstIn == null)
-                throw new ArgumentNullException("lstIn");
+                throw new ArgumentNullException(nameof(lstIn));
             if (po == null)
-                throw new ArgumentNullException("po");
+                throw new ArgumentNullException(nameof(po));
             int cIn = lstIn.Count();
             if (cIn == 0)
-                return new LogbookPrintedPage[0];
+                return Array.Empty<LogbookPrintedPage>();
 
             // For speed, cache the names of each category/class
             Dictionary<int, string> dictCatClasses = new Dictionary<int, string>();
@@ -696,7 +697,7 @@ namespace MyFlightbook.Printing
             return lstOut;
         }
 
-        private static void ConsolidateTotals(IDictionary<string, LogbookEntryDisplay> d, LogbookEntryDisplay.LogbookRowType rowType, OptionalColumn[] optionalColumns)
+        private static void ConsolidateTotals(IDictionary<string, LogbookEntryDisplay> d, LogbookEntryDisplay.LogbookRowType rowType, Collection<OptionalColumn> optionalColumns)
         {
             if (d == null || d.Count <= 1)
                 return;

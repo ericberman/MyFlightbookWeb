@@ -2,6 +2,7 @@
 using MyFlightbook.Airports;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -17,7 +18,6 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
 {
-    const string szKeyVSTypes = "Types";
     private FlightQuery m_fq = null;
     private string m_szUser = null;
 
@@ -38,6 +38,13 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
             m_fq = value;
             RefreshFormForQuery();
         }
+    }
+
+    const string szKeyVSTypes = "Types";
+    protected Collection<string> TypeNames
+    {
+        get { return (Collection<string>) ViewState[szKeyVSTypes] ?? new Collection<string>(); }
+        set { ViewState[szKeyVSTypes] = value; }
     }
 
     public string Username 
@@ -126,7 +133,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         cmbPropertiesConjunction.SelectedValue = GroupConjunction.Any.ToString();
 
         // reset any cached types
-        ViewState[szKeyVSTypes] = Array.Empty<string>();
+        TypeNames = new Collection<string>();
 
         txtQueryName.Text = string.Empty;
 
@@ -186,7 +193,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
 
         rblFlightDistance.SelectedValue = ((int) m_fq.Distance).ToString(CultureInfo.InvariantCulture);
 
-        cpeAirports.Collapsed = m_fq.AirportList.Length == 0 && m_fq.Distance == FlightQuery.FlightDistance.AllFlights;
+        cpeAirports.Collapsed = m_fq.AirportList.Count == 0 && m_fq.Distance == FlightQuery.FlightDistance.AllFlights;
     }
 
     private void FlightCharacteristicsToForm()
@@ -330,7 +337,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         CustomPropertiesToForm();
 
         // TypeNames aren't shown to the user, but we want to preserve them
-        ViewState[szKeyVSTypes] = m_fq.TypeNames;
+        TypeNames = m_fq.TypeNames;
     }
 
     /// <summary>
@@ -404,7 +411,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         // (a) all aircraft are active, or 
         // (b) the current query references inactive aircraft
         // (c) pnlshowAllAircraft is invisible (indicating that it has been clicked)
-        bool fShowAll = !pnlShowAllAircraft.Visible || rgacActive.Length == rgac.Length || Array.Exists(Restriction.AircraftList, ac => ac.HideFromSelection);
+        bool fShowAll = !pnlShowAllAircraft.Visible || rgacActive.Length == rgac.Length || Restriction.AircraftList.FirstOrDefault(ac => ac.HideFromSelection) != null;
         if (fShowAll)
             pnlShowAllAircraft.Visible = false;
         cklAircraft.DataSource = fShowAll ? rgac : rgacActive;
@@ -533,20 +540,18 @@ function setDates(isCustom)
         // Airplanes:
         if (cklAircraft.SelectedIndex >= 0)
         {
-            List<Aircraft> lstAircraft = new List<Aircraft>();
             UserAircraft ua = new UserAircraft(Username);
             Aircraft[] rgAircraft = ua.GetAircraftForUser();
 
+            m_fq.AircraftList.Clear();
             foreach (ListItem li in cklAircraft.Items)
                 if (li.Selected)
                 {
                     // ac can be null if it's been deleted between the form being populated and this method being called.  Ignore it in that case.
                     Aircraft acQuery = Array.Find(rgAircraft, ac => ac.AircraftID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture));
                     if (acQuery != null)
-                        lstAircraft.Add(acQuery);
+                        m_fq.AircraftList.Add(acQuery);
                 }
-
-            m_fq.AircraftList = lstAircraft.ToArray();
         }
     }
 
@@ -557,13 +562,11 @@ function setDates(isCustom)
     {
         if (cklMakes.SelectedIndex >= 0)
         {
-            List<MakeModel> lstMakes = new List<MakeModel>();
+            m_fq.MakeList.Clear();
 
             foreach (ListItem li in cklMakes.Items)
                 if (li.Selected)
-                    lstMakes.Add(MakeModel.GetModel(Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)));
-
-            m_fq.MakeList = lstMakes.ToArray();
+                    m_fq.MakeList.Add(MakeModel.GetModel(Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)));
         }
         m_fq.ModelName = txtModelNameText.Text;
     }
@@ -640,16 +643,14 @@ function setDates(isCustom)
     {
         if (cklCatClass.SelectedIndex >= 0)
         {
-            List<CategoryClass> lstCc = new List<CategoryClass>();
             List<CategoryClass> rgcc = new List<CategoryClass>(CategoryClass.CategoryClasses());
+            m_fq.CatClasses.Clear();
             foreach (ListItem li in cklCatClass.Items)
             {
                 int idCc = Convert.ToInt32(li.Value, CultureInfo.InvariantCulture);
                 if (li.Selected)
-                    lstCc.Add(rgcc.Find(cc => (int)cc.IdCatClass == idCc));
+                    m_fq.CatClasses.Add(rgcc.Find(cc => (int)cc.IdCatClass == idCc));
             }
-
-            m_fq.CatClasses = lstCc.ToArray();
         }
     }
 
@@ -660,14 +661,13 @@ function setDates(isCustom)
     {
         if (cklCustomProps.SelectedIndex >= 0)
         {
-            List<CustomPropertyType> lstCpt = new List<CustomPropertyType>();
+            m_fq.PropertyTypes.Clear();
             CustomPropertyType[] rgcptAll = CustomPropertyType.GetCustomPropertyTypes();
 
             foreach (ListItem li in cklCustomProps.Items)
                 if (li.Selected)
-                    lstCpt.Add(Array.Find<CustomPropertyType>(rgcptAll, cpt => cpt.PropTypeID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)));
+                    m_fq.PropertyTypes.Add(Array.Find<CustomPropertyType>(rgcptAll, cpt => cpt.PropTypeID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)));
 
-            m_fq.PropertyTypes = lstCpt.ToArray();
             m_fq.PropertiesConjunction = (GroupConjunction)Enum.Parse(typeof(GroupConjunction), cmbPropertiesConjunction.SelectedValue);
         }
     }
@@ -686,13 +686,11 @@ function setDates(isCustom)
         // Airports:
         if (txtAirports.Text.Length > 0)
         {
+            m_fq.AirportList.Clear();
             MatchCollection mc = regAirports.Matches(txtAirports.Text);
-            List<string> lst = new List<string>();
             foreach (Match m in mc)
                 if (!String.IsNullOrEmpty(m.Value))
-                    lst.Add(m.Value);
-
-            m_fq.AirportList = lst.ToArray();
+                    m_fq.AirportList.Add(m.Value);
         }
 
         m_fq.Distance = (FlightQuery.FlightDistance)Convert.ToInt32(rblFlightDistance.SelectedValue, CultureInfo.InvariantCulture);
@@ -707,7 +705,7 @@ function setDates(isCustom)
         CustomPropsFromForm();
 
         // Typenames aren't exposed to the user; reset them here.
-        m_fq.TypeNames = (string[])ViewState[szKeyVSTypes] ?? Array.Empty<string>();
+        m_fq.TypeNames = TypeNames;
 
         m_fq.Refresh();
 

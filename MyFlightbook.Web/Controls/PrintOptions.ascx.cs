@@ -2,6 +2,7 @@
 using MyFlightbook.Printing;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Web.UI.WebControls;
 
@@ -43,16 +44,16 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             m_options.Layout = (PrintLayoutType) Enum.Parse(typeof(PrintLayoutType), cmbLayout.SelectedValue);
             m_options.PropertySeparator = (PrintingOptions.PropertySeparatorType)Enum.Parse(typeof(PrintingOptions.PropertySeparatorType), rblPropertySeparator.SelectedValue);
 
-            List<int> l = new List<int>();
+            Collection<int> l = new Collection<int>();
             foreach (ListItem li in cklProperties.Items)
                 if (li.Selected)
                     l.Add(Convert.ToInt32(li.Value, CultureInfo.InvariantCulture));
-            m_options.ExcludedPropertyIDs = l.ToArray();
+            m_options.ExcludedPropertyIDs = l;
 
-            List<OptionalColumn> lst = new List<OptionalColumn>();
+            Collection<OptionalColumn> lst = new Collection<OptionalColumn>();
             foreach (DropDownList ddl in OptionalColumnDropDowns)
                 AddOptionalColumnForValue(ddl.SelectedValue, lst);
-            m_options.OptionalColumns = lst.ToArray();
+            m_options.OptionalColumns = lst;
 
             m_options.IncludePullForwardTotals = ckPullForwardTotals.Checked;
 
@@ -80,7 +81,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             for (int i = 0; i < OptionalColumnDropDowns.Length; i++)
             {
                 OptionalColumnDropDowns[i].SelectedValue = string.Empty;   //just in case
-                if (value.OptionalColumns != null && value.OptionalColumns.Length > i)
+                if (value.OptionalColumns != null && value.OptionalColumns.Count > i)
                 {
                     OptionalColumn oc = value.OptionalColumns[i];
                     OptionalColumnDropDowns[i].SelectedValue = oc.ColumnType == OptionalColumnType.CustomProp ? oc.IDPropType.ToString(CultureInfo.InvariantCulture) : oc.ColumnType.ToString();
@@ -107,7 +108,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
         pnlOptionalColumns.Visible = pl.SupportsOptionalColumns;
     }
 
-    private void AddOptionalColumnForValue(string value, List<OptionalColumn> lst)
+    private void AddOptionalColumnForValue(string value, Collection<OptionalColumn> lst)
     {
         if (String.IsNullOrEmpty(value))
             return;

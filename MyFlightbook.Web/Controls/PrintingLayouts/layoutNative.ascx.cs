@@ -2,12 +2,13 @@
 using MyFlightbook.Printing;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -20,11 +21,11 @@ public partial class Controls_PrintingLayouts_layoutNative : System.Web.UI.UserC
 
     protected bool ShowFooter { get; set; }
 
-    protected OptionalColumn[] OptionalColumns { get; set; }
+    protected Collection<OptionalColumn> OptionalColumns { get; set; }
 
     protected Boolean ShowOptionalColumn(int index)
     {
-        return OptionalColumns != null && index >= 0 && index < OptionalColumns.Length;
+        return OptionalColumns != null && index >= 0 && index < OptionalColumns.Count;
     }
 
     protected string OptionalColumnName(int index)
@@ -36,7 +37,7 @@ public partial class Controls_PrintingLayouts_layoutNative : System.Web.UI.UserC
     public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {
         if (options == null)
-            throw new ArgumentNullException("options");
+            throw new ArgumentNullException(nameof(options));
         ShowFooter = showFooter;
         IncludeImages = options.IncludeImages;
         CurrentUser = user;
@@ -52,7 +53,7 @@ public partial class Controls_PrintingLayouts_layoutNative : System.Web.UI.UserC
     protected void rptPages_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
 
@@ -68,7 +69,7 @@ public partial class Controls_PrintingLayouts_layoutNative : System.Web.UI.UserC
     protected void rptFlight_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookEntryDisplay led = (LogbookEntryDisplay)e.Item.DataItem;
         Controls_mfbImageList mfbil = (Controls_mfbImageList)e.Item.FindControl("mfbilFlights");
@@ -81,7 +82,7 @@ public partial class Controls_PrintingLayouts_layoutNative : System.Web.UI.UserC
     protected void rptSubtotalCollections_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookPrintedPageSubtotalsCollection sc = (LogbookPrintedPageSubtotalsCollection)e.Item.DataItem;
         Repeater rpt = (Repeater)e.Item.FindControl("rptSubtotals");

@@ -1,7 +1,9 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Globalization;
@@ -44,7 +46,7 @@ namespace MyFlightbook.FlightCurrency
         }
     }
 
-    public class TotalsItem : IComparable
+    public class TotalsItem : IComparable, IEquatable<TotalsItem>
     {
         /// <summary>
         /// Type of number
@@ -105,14 +107,78 @@ namespace MyFlightbook.FlightCurrency
         }
         #endregion
 
+        #region IComparable
         public int CompareTo(object obj)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+
             TotalsItem ti = (TotalsItem)obj;
             if (this.Sort == ti.Sort)
                 return String.Compare(Description, ti.Description, StringComparison.CurrentCultureIgnoreCase);
             else
                 return (int)this.Sort - (int)ti.Sort;
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as TotalsItem);
+        }
+
+        public bool Equals(TotalsItem other)
+        {
+            return other != null &&
+                   Value == other.Value &&
+                   Description == other.Description &&
+                   SubDescription == other.SubDescription &&
+                   NumericType == other.NumericType &&
+                   Group == other.Group;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 1244116911;
+                hashCode = hashCode * -1521134295 + Value.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Description);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(SubDescription);
+                hashCode = hashCode * -1521134295 + NumericType.GetHashCode();
+                hashCode = hashCode * -1521134295 + Group.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(TotalsItem left, TotalsItem right)
+        {
+            return EqualityComparer<TotalsItem>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(TotalsItem left, TotalsItem right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(TotalsItem left, TotalsItem right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(TotalsItem left, TotalsItem right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(TotalsItem left, TotalsItem right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(TotalsItem left, TotalsItem right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
 
         #region Properties
         /// <summary>
@@ -219,7 +285,7 @@ namespace MyFlightbook.FlightCurrency
 
     public enum TotalsGrouping { CatClass, Model, Family }
 
-    public class TotalsItemCollection : IComparable
+    public class TotalsItemCollection : IComparable, IEquatable<TotalsItemCollection>
     {
         #region Properties
         public IEnumerable<TotalsItem> Items { get; set; }
@@ -258,10 +324,64 @@ namespace MyFlightbook.FlightCurrency
             return lstOut;
         }
 
+        #region IComparable
         public int CompareTo(object obj)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
             return this.Group.CompareTo(((TotalsItemCollection)obj).Group);
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as TotalsItemCollection);
+        }
+
+        public bool Equals(TotalsItemCollection other)
+        {
+            return other != null &&
+                   EqualityComparer<IEnumerable<TotalsItem>>.Default.Equals(Items, other.Items) &&
+                   Group == other.Group;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -513398093;
+            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<TotalsItem>>.Default.GetHashCode(Items);
+            hashCode = hashCode * -1521134295 + Group.GetHashCode();
+            return hashCode;
+        }
+
+        public static bool operator ==(TotalsItemCollection left, TotalsItemCollection right)
+        {
+            return EqualityComparer<TotalsItemCollection>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(TotalsItemCollection left, TotalsItemCollection right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(TotalsItemCollection left, TotalsItemCollection right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(TotalsItemCollection left, TotalsItemCollection right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(TotalsItemCollection left, TotalsItemCollection right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(TotalsItemCollection left, TotalsItemCollection right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
     }
 
     public class UserTotals
@@ -538,26 +658,6 @@ namespace MyFlightbook.FlightCurrency
         }
 
         #region Totals Helper methods
-        private FlightQuery AddModelToQuery(FlightQuery fq, int idModel)
-        {
-            List<MakeModel> lst = new List<MakeModel>(fq.MakeList);
-            if (!lst.Exists(m => m.MakeModelID == idModel))
-                lst.Add(MakeModel.GetModel(idModel));
-            fq.MakeList = lst.ToArray();
-            return fq;
-        }
-
-        private FlightQuery AddCatClassToQuery(FlightQuery fq, CategoryClass cc, string szTypeName)
-        {
-            List<CategoryClass> lst = new List<CategoryClass>(fq.CatClasses);
-            if (!lst.Exists(c => c.IdCatClass == cc.IdCatClass))
-                lst.Add(cc);
-            fq.CatClasses = lst.ToArray();
-            if (!String.IsNullOrEmpty(szTypeName))
-                fq.TypeNames = new string[] { szTypeName };
-            return fq;
-        }
-
         private void ComputeTotalsByCatClass(MySqlCommand comm, Profile pf)
         {
             // first get the totals by catclass
@@ -599,12 +699,12 @@ namespace MyFlightbook.FlightCurrency
                         switch (pf.TotalsGroupingMode)
                         {
                             case TotalsGrouping.CatClass:
-                                AddCatClassToQuery(fq, cct.CatClass, szTypeName);
+                                fq.AddCatClass(cct.CatClass, szTypeName);
                                 szTitle = szCatClassDisplay;
                                 group = TotalsGroup.CategoryClass;
                                 break;
                             case TotalsGrouping.Model:
-                                AddModelToQuery(fq, idModel);
+                                fq.AddModel(idModel);
                                 szTitle = szModelDisplay;
                                 group = TotalsGroup.Model;
                                 break;
@@ -627,7 +727,8 @@ namespace MyFlightbook.FlightCurrency
             // Add in any catclass subtotals
             foreach (CatClassTotal cct in htCct.Values)
             {
-                FlightQuery fq = AddCatClassToQuery(new FlightQuery(Restriction), cct.CatClass, string.Empty);
+                FlightQuery fq = new FlightQuery(Restriction);
+                fq.AddCatClass(cct.CatClass, string.Empty);
                 if (pf.TotalsGroupingMode != TotalsGrouping.CatClass || !cct.IsRedundant)
                 {
                     if (pf.TotalsGroupingMode == TotalsGrouping.CatClass) {
@@ -637,8 +738,11 @@ namespace MyFlightbook.FlightCurrency
                         foreach (TotalsItem ti in Totals)
                         {
                             FlightQuery q = ti.Query;
-                            if (q != null && q.CatClasses != null && q.CatClasses.Length == 1 && q.CatClasses[0].IdCatClass == ccTarget.IdCatClass && (q.TypeNames == null || q.TypeNames.Length == 0))
-                                q.TypeNames = new string[1] { string.Empty };
+                            if (q != null && q.CatClasses != null && q.CatClasses.Count == 1 && q.CatClasses[0].IdCatClass == ccTarget.IdCatClass && (q.TypeNames == null || q.TypeNames.Count == 0))
+                            {
+                                q.TypeNames.Clear();
+                                q.TypeNames.Add(string.Empty);
+                            }
                         }
                     }
 
@@ -664,7 +768,7 @@ namespace MyFlightbook.FlightCurrency
                         List<CustomPropertyType> lstCpt = new List<CustomPropertyType>(Restriction.PropertyTypes);
                         if (!lstCpt.Exists(c => c.PropTypeID == cpt.PropTypeID))
                             lstCpt.Add(cpt);
-                        FlightQuery fq = new FlightQuery(Restriction) { PropertyTypes = lstCpt.ToArray() };
+                        FlightQuery fq = new FlightQuery(Restriction) { PropertyTypes = new Collection<CustomPropertyType>(lstCpt) };
                         switch (cpt.Type)
                         {
                             case CFPPropertyType.cfpDecimal:

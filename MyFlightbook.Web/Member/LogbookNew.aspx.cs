@@ -4,6 +4,7 @@ using MyFlightbook.SocialMedia;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Web;
 using System.Web.Services;
@@ -155,7 +156,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         if (!String.IsNullOrEmpty(szSearchParam))
             Restriction.GeneralText = szSearchParam;
         if (!String.IsNullOrEmpty(szAirportParam))
-            Restriction.AirportList = MyFlightbook.Airports.AirportList.NormalizeAirportList(szAirportParam);
+            Restriction.AirportList = new Collection<string>(new List<string>(MyFlightbook.Airports.AirportList.NormalizeAirportList(szAirportParam)));
 
         if (year > 1900)
         {
@@ -178,8 +179,8 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         if (!String.IsNullOrEmpty(szReqTail) || !String.IsNullOrEmpty(szReqModel) || !String.IsNullOrEmpty(szReqICAO))
         {
             UserAircraft ua = new UserAircraft(Restriction.UserName);
-            List<Aircraft> lstac = new List<Aircraft>();
-            List<MakeModel> lstmm = new List<MakeModel>();
+            Collection<Aircraft> lstac = new Collection<Aircraft>();
+            Collection<MakeModel> lstmm = new Collection<MakeModel>();
 
             foreach (Aircraft ac in ua.GetAircraftForUser())
             {
@@ -193,9 +194,9 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
                     lstmm.Add(mm);
             }
             if (lstac.Count > 0)
-                Restriction.AircraftList = lstac.ToArray();
+                Restriction.AircraftList = lstac;
             if (lstmm.Count > 0)
-                Restriction.MakeList = lstmm.ToArray();
+                Restriction.MakeList = lstmm;
         }
 
         Refresh();

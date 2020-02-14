@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -77,12 +78,12 @@ namespace MyFlightbook
         /// <summary>
         /// The requested category/classes
         /// </summary>
-        public CategoryClass[] CatClasses { get; set; }
+        public Collection<CategoryClass> CatClasses { get; set; }
 
         /// <summary>
         /// The requested property types
         /// </summary>
-        public CustomPropertyType[] PropertyTypes { get; set; }
+        public Collection<CustomPropertyType> PropertyTypes { get; set; }
 
         /// <summary>
         /// Properties to search - AND?  OR? NOT?  Default is OR ("ANY")
@@ -233,7 +234,7 @@ namespace MyFlightbook
         /// List of aircraft for the matching flights
         /// </summary>
         [JsonIgnore]
-        public Aircraft[] AircraftList { get; set; }
+        public Collection<Aircraft> AircraftList { get; set; }
 
         /// <summary>
         /// Much smaller list of aircraft ID's, rather than full aircraft (significantly reduces JSON size)
@@ -244,11 +245,8 @@ namespace MyFlightbook
             get
             {
                 List<int> lst = new List<int>();
-                if (AircraftList == null || AircraftList.Length == 0)
-                {
-                    AircraftList = Array.Empty<Aircraft>();
+                if (AircraftList == null || AircraftList.Count == 0)
                     return null;
-                }
                     
                 foreach (Aircraft ac in AircraftList)
                     lst.Add(ac.AircraftID);
@@ -258,20 +256,20 @@ namespace MyFlightbook
             {
                 if (value == null)
                 {
-                    AircraftList = Array.Empty<Aircraft>();
+                    AircraftList = new Collection<Aircraft>();
                     return;
                 }
-                List<Aircraft> lst = new List<Aircraft>();
                 if (String.IsNullOrEmpty(UserName)) // no user - hit the database
-                    AircraftList = Aircraft.AircraftFromIDs(value).ToArray();
+                    AircraftList = new Collection<Aircraft>(new List<Aircraft>(Aircraft.AircraftFromIDs(value)));
                 else
                 {
+                    List<Aircraft> lst = new List<Aircraft>();
                     UserAircraft ua = new UserAircraft(UserName);
                     if (value != null)
                         foreach (int id in value)
                             lst.Add(ua.GetUserAircraftByID(id));
                     lst.RemoveAll(ac => ac == null);
-                    AircraftList = lst.ToArray();
+                    AircraftList = new Collection<Aircraft>(lst);
                 }
             }
         }
@@ -279,13 +277,13 @@ namespace MyFlightbook
         /// <summary>
         /// List of matching airports for the matching flights
         /// </summary>
-        public string[] AirportList { get; set; }
+        public Collection<string> AirportList { get; set; }
 
         /// <summary>
         /// List of matching makes/models for the matching flights
         /// </summary>
         [JsonIgnore]
-        public MakeModel[] MakeList { get; set; }
+        public Collection<MakeModel> MakeList { get; set; }
 
         /// <summary>
         /// Much smaller list of model ID's, rather than full models (significantly reduces JSON size)
@@ -295,7 +293,7 @@ namespace MyFlightbook
         {
             get
             {
-                if (MakeList == null || MakeList.Length == 0)
+                if (MakeList == null || MakeList.Count == 0)
                     return null;
 
                 List<int> lst = new List<int>();
@@ -305,11 +303,11 @@ namespace MyFlightbook
             }
             set
             {
-                List<MakeModel> lst = new List<MakeModel>();
+                Collection<MakeModel> lst = new Collection<MakeModel>();
                 if (value != null)
                     foreach (int i in value)
                         lst.Add(MakeModel.GetModel(i));
-                MakeList = lst.ToArray();
+                MakeList = lst;
             }
         }
 
@@ -321,7 +319,7 @@ namespace MyFlightbook
         /// <summary>
         /// Text of type names - not contains, must match.
         /// </summary>
-        public string[] TypeNames { get; set; }
+        public Collection<string> TypeNames { get; set; }
 
         /// <summary>
         /// All matching flights must be in complex aircraft
@@ -459,7 +457,41 @@ namespace MyFlightbook
         {
             get { return JsonConvert.SerializeObject(this).CompareCurrentCultureIgnoreCase(JsonConvert.SerializeObject(new FlightQuery(this.UserName))) == 0; }
         }
+        #endregion
 
+        #region Collection Helpers
+        /// <summary>
+        /// Adds the model associated with the given ID, avoiding duplicates
+        /// </summary>
+        /// <param name="idModel">The model ID</param>
+        public void AddModel(int idModel)
+        {
+            if (MakeList.Where(mm => mm.MakeModelID == idModel).Count() == 0)
+            {
+                MakeModel mm = MakeModel.GetModel(idModel);
+                if (mm != null)
+                    MakeList.Add(mm);
+            }
+        }
+
+        /// <summary>
+        /// Adds the category class associated and type with the given ID, avoiding duplicates
+        /// </summary>
+        /// <param name="cc">The category class</param>
+        /// <param name="szTypeName">The type name</param>
+        public void AddCatClass(CategoryClass cc, string szTypeName = null)
+        {
+            if (cc == null)
+                throw new ArgumentNullException(nameof(cc));
+            if (CatClasses.Where(c => c.IdCatClass == cc.IdCatClass).Count() == 0)
+                CatClasses.Add(cc);
+
+            if (!String.IsNullOrEmpty(szTypeName))
+            {
+                TypeNames.Clear();
+                TypeNames.Add(szTypeName);
+            }
+        }
         #endregion
 
         /// <summary>
@@ -494,23 +526,23 @@ namespace MyFlightbook
                 fqNew.GeneralText = null;
             if (String.IsNullOrEmpty(fqNew.ModelName))
                 fqNew.ModelName = null;
-            if (fqNew.CatClasses == null || fqNew.CatClasses.Length == 0)
+            if (fqNew.CatClasses == null || fqNew.CatClasses.Count == 0)
                 fqNew.CatClasses = null;
             if (fqNew.AircraftIDList == null || fqNew.AircraftIDList.Count() == 0)
                 fqNew.AircraftIDList = null;
-            if (fqNew.AirportList == null || fqNew.AirportList.Length == 0)
+            if (fqNew.AirportList == null || fqNew.AirportList.Count == 0)
                 fqNew.AirportList = null;
             if (fqNew.MakeIDList == null || fqNew.MakeIDList.Count() == 0)
                 fqNew.MakeIDList = null;
-            if (fqNew.TypeNames == null || fqNew.TypeNames.Length == 0)
+            if (fqNew.TypeNames == null || fqNew.TypeNames.Count == 0)
                 fqNew.TypeNames = null;
 
-            if (fqNew.PropertyTypes == null || fqNew.PropertyTypes.Length == 0)
+            if (fqNew.PropertyTypes == null || fqNew.PropertyTypes.Count == 0)
                 fqNew.PropertyTypes = null;
             else
             {
-                fqNew.PropertyTypes = new CustomPropertyType[PropertyTypes.Length];
-                for (int i = 0; i < fqNew.PropertyTypes.Length; i++)
+                fqNew.PropertyTypes = new Collection<CustomPropertyType>(new List<CustomPropertyType>(PropertyTypes.Count));
+                for (int i = 0; i < fqNew.PropertyTypes.Count; i++)
                 {
                     CustomPropertyType cpt = new CustomPropertyType();
                     util.CopyObject(PropertyTypes[i], cpt);
@@ -641,15 +673,15 @@ namespace MyFlightbook
             DateMin = DateMax = DateTime.MinValue;
             Distance = FlightDistance.AllFlights;
             GeneralText = ModelName = string.Empty;
-            AircraftList = Array.Empty<Aircraft>();
-            AirportList = Array.Empty<string>();
-            MakeList = Array.Empty<MakeModel>();
-            TypeNames = Array.Empty<string>();
+            AircraftList = new Collection<Aircraft>();
+            AirportList = new Collection<string>();
+            MakeList = new Collection<MakeModel>();
+            TypeNames = new Collection<string>();
 
             DateRange = DateRanges.AllTime;
             m_rgParams = new List<MySqlParameter>();
-            CatClasses = Array.Empty<CategoryClass>();
-            PropertyTypes = Array.Empty<CustomPropertyType>();
+            CatClasses = new Collection<CategoryClass>();
+            PropertyTypes = new Collection<CustomPropertyType>();
 
             FlightCharacteristicsConjunction = GroupConjunction.All;
             PropertiesConjunction = GroupConjunction.Any;
@@ -857,12 +889,12 @@ namespace MyFlightbook
 
         private void UpdateAircraft(StringBuilder sbQuery)
         {
-            if (AircraftList.Length > 0)
+            if (AircraftList.Count > 0)
             {
                 StringBuilder sbAircraftID = new StringBuilder("flights.idaircraft IN (");
                 StringBuilder sbAircraftDesc = new StringBuilder();
 
-                for (int i = 0; i < AircraftList.Length; i++)
+                for (int i = 0; i < AircraftList.Count; i++)
                 {
                     if (i > 0)
                     {
@@ -939,12 +971,12 @@ namespace MyFlightbook
             string szModelsTextQuery = string.Empty;
             string szModelsTypeQuery = string.Empty;
 
-            if (MakeList.Length > 0)
+            if (MakeList.Count > 0)
             {
                 StringBuilder sbModelID = new StringBuilder("models.idmodel IN (");
                 StringBuilder sbDescMakes = new StringBuilder();
 
-                for (int i = 0; i < MakeList.Length; i++)
+                for (int i = 0; i < MakeList.Count; i++)
                 {
                     if (i > 0)
                     {
@@ -991,9 +1023,9 @@ namespace MyFlightbook
                 }
             }
 
-            if (TypeNames != null && TypeNames.Length > 0)
+            if (TypeNames != null && TypeNames.Count > 0)
             {
-                if (TypeNames.Length == 1 && String.IsNullOrEmpty(TypeNames[0]))
+                if (TypeNames.Count == 1 && String.IsNullOrEmpty(TypeNames[0]))
                 {
                     // special case: single empty typename = "No type."
                     szModelsTypeQuery = " (typename='') ";
@@ -1017,7 +1049,7 @@ namespace MyFlightbook
                     {
                         sbTypes.Append(")");
                         szModelsTypeQuery = sbTypes.ToString();
-                        Filters.Add(new QueryFilterItem(TypeNames.Length == 1 ? Resources.FlightQuery.ContainsType : Resources.FlightQuery.ContainsTypeMultiple, String.Join(",", TypeNames), "TypeNames"));
+                        Filters.Add(new QueryFilterItem(TypeNames.Count == 1 ? Resources.FlightQuery.ContainsType : Resources.FlightQuery.ContainsTypeMultiple, String.Join(",", TypeNames), "TypeNames"));
                     }
                 }
 
@@ -1176,7 +1208,7 @@ namespace MyFlightbook
 
         private void UpdateFlightProperties(StringBuilder sbQuery)
         {
-            if (PropertyTypes != null && PropertyTypes.Length > 0)
+            if (PropertyTypes != null && PropertyTypes.Count > 0)
             {
                 List<string> lstCPT = new List<string>();
                 List<string> lstCPTDesc = new List<string>();
@@ -1209,12 +1241,12 @@ namespace MyFlightbook
 
         private void UpdateCatClass(StringBuilder sbQuery)
         {
-            if (CatClasses.Length > 0)
+            if (CatClasses.Count > 0)
             {
                 StringBuilder sbCatClass = new StringBuilder("(");
                 StringBuilder sbDescCatClass = new StringBuilder();
 
-                for (int i = 0; i < CatClasses.Length; i++)
+                for (int i = 0; i < CatClasses.Count; i++)
                 {
                     if (i > 0)
                     {
@@ -1407,7 +1439,66 @@ namespace MyFlightbook
         #region IComparable
         public int CompareTo(object obj)
         {
-            return QueryName.CompareCurrentCultureIgnoreCase(((CannedQuery)obj).QueryName);
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+            CannedQuery cq = obj as CannedQuery;
+            return (UserName + QueryName).CompareCurrentCultureIgnoreCase(cq.UserName + cq.QueryName);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 1285204636;
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(UserName);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(QueryName);
+                return hashCode;
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            if (obj is null || !(obj is CannedQuery))
+                return false;
+
+            return CompareTo(obj) == 0;
+        }
+
+        public static bool operator ==(CannedQuery left, CannedQuery right)
+        {
+            if (left is null)
+                return right is null;
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(CannedQuery left, CannedQuery right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(CannedQuery left, CannedQuery right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(CannedQuery left, CannedQuery right)
+        {
+            return 
+                left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(CannedQuery left, CannedQuery right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(CannedQuery left, CannedQuery right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
     }
