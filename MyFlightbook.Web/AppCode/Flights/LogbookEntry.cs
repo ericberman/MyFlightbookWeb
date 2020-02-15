@@ -3993,11 +3993,14 @@ namespace MyFlightbook
 
         public override int GetHashCode()
         {
-            var hashCode = 31089781;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PropName);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(OldValue);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NewValue);
-            return hashCode;
+            unchecked
+            {
+                var hashCode = 31089781;
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PropName);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(OldValue);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NewValue);
+                return hashCode;
+            }
         }
 
         public static bool operator ==(PropertyDelta left, PropertyDelta right)

@@ -1158,11 +1158,14 @@ ORDER BY dateEarned ASC ";
 
         public override int GetHashCode()
         {
-            var hashCode = -296683479;
-            hashCode = hashCode * -1521134295 + Year.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<IList<PeriodPaymentStat>>.Default.GetHashCode(MonthlyPayments);
-            hashCode = hashCode * -1521134295 + EqualityComparer<PeriodPaymentStat>.Default.GetHashCode(AnnualPayment);
-            return hashCode;
+            unchecked
+            {
+                var hashCode = -296683479;
+                hashCode = hashCode * -1521134295 + Year.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<IList<PeriodPaymentStat>>.Default.GetHashCode(MonthlyPayments);
+                hashCode = hashCode * -1521134295 + EqualityComparer<PeriodPaymentStat>.Default.GetHashCode(AnnualPayment);
+                return hashCode;
+            }
         }
 
         public static bool operator ==(YearlyPayments left, YearlyPayments right)
