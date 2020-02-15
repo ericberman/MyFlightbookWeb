@@ -2375,6 +2375,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SIC Proficiency (61.55) - {0}.
+        /// </summary>
+        internal static string SIC6155CurrencyName {
+            get {
+                return ResourceManager.GetString("SIC6155CurrencyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Short by one full-stop landing).
+        /// </summary>
+        internal static string SIC6155ShortLanding {
+            get {
+                return ResourceManager.GetString("SIC6155ShortLanding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Short by an SIC Recurrency Check).
+        /// </summary>
+        internal static string SIC6155ShortProficiencyCheck {
+            get {
+                return ResourceManager.GetString("SIC6155ShortProficiencyCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Short by one takeoff).
+        /// </summary>
+        internal static string SIC6155ShortTakeoff {
+            get {
+                return ResourceManager.GetString("SIC6155ShortTakeoff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Status.
         /// </summary>
         internal static string StatusTitle {
