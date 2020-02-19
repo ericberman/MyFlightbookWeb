@@ -175,11 +175,14 @@ namespace MyFlightbook.Histogram
 
         public override int GetHashCode()
         {
-            var hashCode = -1524998725;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DisplayName);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IComparable>.Default.GetHashCode(OrdinalValue);
-            hashCode = hashCode * -1521134295 + Values.GetHashCode();
-            return hashCode;
+            unchecked
+            {
+                var hashCode = -1524998725;
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DisplayName);
+                hashCode = hashCode * -1521134295 + EqualityComparer<IComparable>.Default.GetHashCode(OrdinalValue);
+                hashCode = hashCode * -1521134295 + Values.GetHashCode();
+                return hashCode;
+            }
         }
 
         public static bool operator ==(Bucket left, Bucket right)

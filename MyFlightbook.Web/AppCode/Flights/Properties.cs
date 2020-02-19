@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
@@ -151,7 +152,8 @@ namespace MyFlightbook
             IDPropDutyEnd = 609,
             IDPropNightRating = 623,
             IDPropLessonStart = 668,
-            IDPropLessonEnd = 669
+            IDPropLessonEnd = 669,
+            IDProp6155SICCheck = 677
         }
 
         internal static class CFPPropertyFlag
@@ -236,7 +238,7 @@ namespace MyFlightbook
         /// <summary>
         /// For string properties, contains previously used values
         /// </summary>
-        public string[] PreviousValues { get; set; }
+        public Collection<string> PreviousValues { get; set; }
 
         #region Attributes from flags
         /// <summary>
@@ -457,12 +459,12 @@ namespace MyFlightbook
             Type = CFPPropertyType.cfpInteger;
             Flags = CFPPropertyFlag.cfpFlagNone;
             PropTypeID = (int) KnownProperties.IDPropInvalid;
-            PreviousValues = Array.Empty<string>();
+            PreviousValues = new Collection<string>();
         }
 
         public CustomPropertyType(int id) : this()
         {
-            DBHelper dbh = new DBHelper(String.Format(@"
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"
 SELECT cpt.*, COALESCE(l.Text, cpt.Title) AS LocTitle, 
     COALESCE(l2.Text, cpt.FormatString) AS LocFormatString, 
     COALESCE(l3.Text, cpt.Description) AS LocDescription,
@@ -502,10 +504,12 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             IsFavorite = Convert.ToBoolean(dr["IsFavorite"], CultureInfo.InvariantCulture);
             Description = Convert.ToString(dr["LocDescription"], CultureInfo.InvariantCulture);
             string szPreviousVals = Convert.ToString(dr["prevValues"], CultureInfo.InvariantCulture);
+            PreviousValues?.Clear();    // not strictly necessary, but prevents a warning about unused PreviousValues, which of course are needed for serialization for the mobile apps
             if (!String.IsNullOrEmpty(szPreviousVals))
             {
-                PreviousValues = szPreviousVals.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                Array.Sort<string>(PreviousValues);
+                List<string> lst = new List<string>(szPreviousVals.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries));
+                lst.Sort();
+                PreviousValues = new Collection<string>(lst);
             }
         }
         #endregion
@@ -694,7 +698,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             else
             {
                 Profile pf = Profile.GetUser(szUser);
-                szQ = String.Format(ConfigurationManager.AppSettings["CustomPropsForUserQuery"].ToString(), pf.BlacklistedProperties.Count == 0 ? string.Empty : String.Format(" AND fp.idPropType NOT IN ('{0}') ", String.Join("', '", pf.BlacklistedProperties)));
+                szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["CustomPropsForUserQuery"], pf.BlacklistedProperties.Count == 0 ? string.Empty : String.Format(CultureInfo.InvariantCulture, " AND fp.idPropType NOT IN ('{0}') ", String.Join("', '", pf.BlacklistedProperties)));
             }
 
             DBHelper dbh = new DBHelper(szQ);
@@ -1137,7 +1141,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             {
                 DBHelper dbh = new DBHelper(szDeleteBase);
                 if (!dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("idProp", PropID); }))
-                    throw new MyFlightbookException(String.Format("Error attempting to delete property: {0} parameters - (idProp = {1}): {2}", dbh.CommandText, PropID, dbh.LastError));
+                    throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error attempting to delete property: {0} parameters - (idProp = {1}): {2}", dbh.CommandText, PropID, dbh.LastError));
             }
         }
         #endregion
@@ -1272,7 +1276,7 @@ GROUP BY fp.idPropType;";
             Dictionary<int, List<string>> d = new Dictionary<int, List<string>>();
 
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
-                (dr) => { d[Convert.ToInt32(dr["PropTypeID"])] = new List<string>(dr["PrevVals"].ToString().Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries)); });
+                (dr) => { d[(int) dr["PropTypeID"]] = new List<string>(dr["PrevVals"].ToString().Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries)); });
 
             return d;
         }
@@ -1355,7 +1359,7 @@ GROUP BY fp.idPropType;";
     ///    b) Display a list of BFRs and IPCs to the user
     /// </summary>
     [Serializable]
-    public class ProfileEvent : CustomFlightProperty, IComparable
+    public class ProfileEvent : CustomFlightProperty, IComparable, IEquatable<ProfileEvent>
     {
         #region properties
         /// <summary>
@@ -1484,7 +1488,69 @@ ORDER BY f.Date Desc";
         #region IComparable implementation
         public int CompareTo(object obj)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
             return Date.CompareTo(((ProfileEvent)obj).Date);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as ProfileEvent);
+        }
+
+        public bool Equals(ProfileEvent other)
+        {
+            return other != null &&
+                   Date == other.Date &&
+                   Model == other.Model &&
+                   Type == other.Type &&
+                   Category == other.Category &&
+                   IsR22 == other.IsR22 &&
+                   IsR44 == other.IsR44;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 1522972355;
+                hashCode = hashCode * -1521134295 + Date.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Model);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Type);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Category);
+                hashCode = hashCode * -1521134295 + IsR22.GetHashCode();
+                hashCode = hashCode * -1521134295 + IsR44.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(ProfileEvent left, ProfileEvent right)
+        {
+            return EqualityComparer<ProfileEvent>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(ProfileEvent left, ProfileEvent right)
+        {
+            return !(left == right);
+        }
+        public static bool operator <(ProfileEvent left, ProfileEvent right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(ProfileEvent left, ProfileEvent right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(ProfileEvent left, ProfileEvent right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(ProfileEvent left, ProfileEvent right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
 
@@ -1498,7 +1564,7 @@ ORDER BY f.Date Desc";
     public class CustomPropertyCollection : IEnumerable<CustomFlightProperty>
     {
         #region Properties
-        protected Dictionary<int, CustomFlightProperty> m_dictProps;
+        private readonly Dictionary<int, CustomFlightProperty> m_dictProps;
 
         public int Count
         {
@@ -1562,9 +1628,19 @@ ORDER BY f.Date Desc";
             return m_dictProps.TryGetValue(id, out CustomFlightProperty cfp) ? cfp : null;
         }
 
+        public CustomFlightProperty this[int id]
+        {
+            get { return GetEventWithTypeID(id); }
+        }
+
+        public CustomFlightProperty this[CustomPropertyType.KnownProperties id]
+        {
+            get { return GetEventWithTypeID(id); }
+        }
+
         public CustomFlightProperty GetEventWithTypeIDOrNew(CustomPropertyType.KnownProperties id)
         {
-            return GetEventWithTypeIDOrNew((int) id);
+            return GetEventWithTypeIDOrNew((int)id);
         }
 
         public CustomFlightProperty GetEventWithTypeIDOrNew(int id)

@@ -950,4 +950,16 @@
   <data name="CurrencyExpiringHeader" xml:space="preserve">
     <value>The following currencies are getting close to expiring or have recently expired:</value>
   </data>
+  <data name="SIC6155CurrencyName" xml:space="preserve">
+    <value>SIC Proficiency (61.55) - {0}</value>
+  </data>
+  <data name="SIC6155ShortLanding" xml:space="preserve">
+    <value>(Short by one full-stop landing)</value>
+  </data>
+  <data name="SIC6155ShortProficiencyCheck" xml:space="preserve">
+    <value>(Short by an SIC Recurrency Check)</value>
+  </data>
+  <data name="SIC6155ShortTakeoff" xml:space="preserve">
+    <value>(Short by one takeoff)</value>
+  </data>
 </root>
