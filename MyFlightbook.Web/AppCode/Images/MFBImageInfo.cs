@@ -586,29 +586,32 @@ namespace MyFlightbook.Image
 
         public override int GetHashCode()
         {
-            var hashCode = -750829556;
-            hashCode = hashCode * -1521134295 + ImageType.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Comment);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(VirtualPath);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
-            hashCode = hashCode * -1521134295 + Class.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ThumbnailFile);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FullImageFile);
-            hashCode = hashCode * -1521134295 + EqualityComparer<LatLong>.Default.GetHashCode(Location);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLFullImage);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLThumbnail);
-            hashCode = hashCode * -1521134295 + EqualityComparer<Uri>.Default.GetHashCode(UriS3VideoThumbnail);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImage);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathThumbnail);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(S3Key);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImageS3);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathThumbnail);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathFull);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPath);
-            hashCode = hashCode * -1521134295 + IsLocal.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CacheKey);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PrimaryKey);
-            return hashCode;
+            unchecked
+            {
+                var hashCode = -750829556;
+                hashCode = hashCode * -1521134295 + ImageType.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Comment);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(VirtualPath);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
+                hashCode = hashCode * -1521134295 + Class.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ThumbnailFile);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FullImageFile);
+                hashCode = hashCode * -1521134295 + EqualityComparer<LatLong>.Default.GetHashCode(Location);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLFullImage);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLThumbnail);
+                hashCode = hashCode * -1521134295 + EqualityComparer<Uri>.Default.GetHashCode(UriS3VideoThumbnail);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImage);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathThumbnail);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(S3Key);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImageS3);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathThumbnail);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathFull);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPath);
+                hashCode = hashCode * -1521134295 + IsLocal.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CacheKey);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PrimaryKey);
+                return hashCode;
+            }
         }
 
         public static bool operator ==(MFBImageInfo left, MFBImageInfo right)

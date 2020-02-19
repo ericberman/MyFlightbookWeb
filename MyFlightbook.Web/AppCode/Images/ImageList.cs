@@ -5,7 +5,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -53,9 +53,9 @@ namespace MyFlightbook.Image
         /// <summary>
         /// The array of images associated with this imagelist
         /// </summary>
-        public ReadOnlyCollection<MFBImageInfo> ImageArray
+        public Collection<MFBImageInfo> ImageArray
         {
-            get { return new ReadOnlyCollection<MFBImageInfo>(rgMfbii); }
+            get { return new Collection<MFBImageInfo>(rgMfbii); }
         }
 
         // removes all images in the image list, setting it to null

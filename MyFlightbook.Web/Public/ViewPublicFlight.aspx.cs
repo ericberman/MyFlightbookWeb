@@ -10,7 +10,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -76,12 +76,13 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
             lnkShowMapOnly.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", szURL, szURL.Contains("?") ? "&" : "?", "show=map");
         }
 
-        MfbGoogleMap1.Map.Images = ckShowImages.Checked ? mfbIlFlight.Images.ImageArray.ToArray() : new MFBImageInfo[0];
+        MfbGoogleMap1.Map.Images = ckShowImages.Checked ? mfbIlFlight.Images.ImageArray.ToArray() : Array.Empty<MFBImageInfo>();
 
         bool fForceDynamicMap = util.GetIntParam(Request, "dm", 0) != 0;
         bool fHasGeotaggedImages = false;
         if (le.FlightImages != null)
-            Array.ForEach<MFBImageInfo>(le.FlightImages, (mfbii) => { fHasGeotaggedImages = fHasGeotaggedImages || mfbii.Location != null; });
+            foreach (MFBImageInfo mfbii in le.FlightImages)
+                fHasGeotaggedImages = fHasGeotaggedImages || mfbii.Location != null; 
 
         // By default, show only a static map (cut down on dynamic map hits)
         if (fForceDynamicMap || fHasGeotaggedImages || fHasPath)

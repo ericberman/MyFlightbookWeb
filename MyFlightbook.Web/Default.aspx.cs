@@ -118,9 +118,9 @@ public partial class Public_Home : System.Web.UI.Page
 
         foreach (LogbookEntry le in lstRecent)
         {
-            if (le.FlightImages == null || le.FlightImages.Length == 0)
+            if (le.FlightImages == null || le.FlightImages.Count == 0)
                 le.PopulateImages();
-            if (le.FlightImages.Length > 0)
+            if (le.FlightImages.Count > 0)
                 lstRecentImages.Add(le.FlightImages[0]);
             else
                 recentAircraft.Add(le.AircraftID);

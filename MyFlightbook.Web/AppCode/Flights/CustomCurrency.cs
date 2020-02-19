@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
@@ -382,7 +383,7 @@ namespace MyFlightbook.FlightCurrency
         private CustomCurrency(MySqlDataReader dr) : this()
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
 
             ID = Convert.ToInt32(dr["idCurrency"], CultureInfo.InvariantCulture);
             UserName = dr["username"].ToString();
@@ -528,7 +529,7 @@ namespace MyFlightbook.FlightCurrency
         static public IEnumerable<CustomCurrency> CustomCurrenciesForUser(string szUser)
         {
             List<CustomCurrency> lst = new List<CustomCurrency>();
-            DBHelper dbh = new DBHelper(ConfigurationManager.AppSettings["CustomCurrencyForUserQuery"].ToString());
+            DBHelper dbh = new DBHelper(ConfigurationManager.AppSettings["CustomCurrencyForUserQuery"]);
             if (!dbh.ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("uname", szUser); },
                 (dr) => { lst.Add(new CustomCurrency(dr)); }))
@@ -777,7 +778,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         break;
                 }
 
-                List<CategoryClass> lstCc = new List<CategoryClass>();
+                Collection<CategoryClass> lstCc = new Collection<CategoryClass>();
                 if (CatClassRestriction > 0)
                     lstCc.Add(CategoryClass.CategoryClassFromID(CatClassRestriction));
                 if (!String.IsNullOrEmpty(CategoryRestriction))
@@ -786,20 +787,20 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         if (cc.Category.CompareOrdinalIgnoreCase(CategoryRestriction) == 0)
                             lstCc.Add(cc);
                 }
-                fq.CatClasses = lstCc.ToArray();
+                fq.CatClasses = lstCc;
 
-                List<MakeModel> lstModels = new List<MakeModel>();
+                Collection<MakeModel> lstModels = new Collection<MakeModel>();
                 foreach (int idmodel in ModelsRestriction)
                     lstModels.Add(MakeModel.GetModel(idmodel));
-                fq.MakeList = lstModels.ToArray();
+                fq.MakeList = lstModels;
 
                 UserAircraft ua = new UserAircraft(UserName);
-                List<Aircraft> lstAircraft = new List<Aircraft>();
+                Collection<Aircraft> lstAircraft = new Collection<Aircraft>();
                 Array.ForEach<Aircraft>(ua.GetAircraftForUser(), (ac) => { if (AircraftRestriction.Contains(ac.AircraftID)) lstAircraft.Add(ac); });
-                fq.AircraftList = lstAircraft.ToArray();
+                fq.AircraftList = lstAircraft;
 
                 if (!String.IsNullOrEmpty(AirportRestriction))
-                    fq.AirportList = Airports.AirportList.NormalizeAirportList(AirportRestriction);
+                    fq.AirportList = new Collection<string>(new List<string>(Airports.AirportList.NormalizeAirportList(AirportRestriction)));
 
                 if (!String.IsNullOrEmpty(TextRestriction))
                     fq.GeneralText = TextRestriction;
@@ -813,7 +814,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         prop = CustomPropertyType.KnownProperties.IDPropBackSeatTime;
                         break;
                     case CustomCurrencyEventType.BaseCheck:
-                        fq.PropertyTypes = lstprops.FindAll(cpt => cpt.IsBaseCheck).ToArray();
+                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsBaseCheck).ToArray());
                         break;
                     case CustomCurrencyEventType.Flights:
                         break;
@@ -854,7 +855,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         prop = CustomPropertyType.KnownProperties.IDPropNightTouchAndGo;
                         break;
                     case CustomCurrencyEventType.NightTakeoffs:
-                        fq.PropertyTypes = lstprops.FindAll(cpt => cpt.IsNightTakeOff).ToArray();
+                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsNightTakeOff));
                         break;
                     case CustomCurrencyEventType.NVFLIR:
                         prop = CustomPropertyType.KnownProperties.IDPropNVFLIRTime;
@@ -863,7 +864,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         prop = CustomPropertyType.KnownProperties.IDPropNVGoggleTime;
                         break;
                     case CustomCurrencyEventType.NVHours:
-                        fq.PropertyTypes = lstprops.FindAll(cpt => cpt.IsNightVisionTime).ToArray();
+                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsNightVisionTime));
                         break;
                     case CustomCurrencyEventType.PICNightLandings:
                         fq.HasNightLandings = true;
@@ -873,10 +874,10 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         fq.HasTotalTime = true;
                         break;
                     case CustomCurrencyEventType.UASLaunch:
-                        fq.PropertyTypes = lstprops.FindAll(cpt => cpt.IsUASLaunch).ToArray();
+                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsUASLaunch));
                         break;
                     case CustomCurrencyEventType.UASRecovery:
-                        fq.PropertyTypes = lstprops.FindAll(cpt => cpt.IsUASRecovery).ToArray();
+                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsUASRecovery));
                         break;
                     case CustomCurrencyEventType.CAP5Checkride:
                         prop = CustomPropertyType.KnownProperties.IDPropCAP5Checkride;
@@ -894,10 +895,10 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         fq.HasDual = true;
                         break;
                     case CustomCurrencyEventType.FlightReview:
-                        fq.PropertyTypes = lstprops.FindAll(cpt => cpt.IsBFR).ToArray();
+                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsBFR));
                         break;
                     case CustomCurrencyEventType.IPC:
-                        fq.PropertyTypes = lstprops.FindAll(cpt => cpt.IsIPC).ToArray();
+                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsIPC));
                         break;
                     case CustomCurrencyEventType.NightLandingAny:
                         fq.HasNight = true;
@@ -907,17 +908,17 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         throw new InvalidOperationException("Unknown event type: " + EventType.ToString() + " in ToQuery()");
                 }
                 if (prop != CustomPropertyType.KnownProperties.IDPropInvalid)
-                    fq.PropertyTypes = lstprops.FindAll(cpt => cpt.PropTypeID == (int)prop).ToArray();
+                    fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.PropTypeID == (int)prop));
 
                 if (PropertyRestriction != null && PropertyRestriction.Count() > 0)
                 {
                     // Merge additional properties with any "intrinsic" properties from the type of custom currency above.
-                    HashSet<CustomPropertyType> hs = new HashSet<CustomPropertyType>(fq.PropertyTypes ?? new CustomPropertyType[0]);
+                    HashSet<CustomPropertyType> hs = new HashSet<CustomPropertyType>(fq.PropertyTypes ?? new Collection<CustomPropertyType>());
 
                     foreach (int i in PropertyRestriction)
                         hs.Add(CustomPropertyType.GetCustomPropertyType(i));
 
-                    fq.PropertyTypes = hs.ToArray();
+                    fq.PropertyTypes = new Collection<CustomPropertyType>(new List<CustomPropertyType>(hs));
                 }
 
                 return fq;
@@ -939,7 +940,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             int idmodel = cfr.idModel;
             if (ModelsRestriction != null && ModelsRestriction.Count() > 0 && !ModelsRestriction.Any(model => model == idmodel))
                 return false;
-            if (!String.IsNullOrEmpty(CategoryRestriction) && cfr.szCategory.ToString().CompareTo(CategoryRestriction) != 0)
+            if (!String.IsNullOrEmpty(CategoryRestriction) && cfr.szCategory.CompareTo(CategoryRestriction) != 0)
                 return false;
             if (CatClassRestriction > 0 && cfr.idCatClassOverride != CatClassRestriction)
                 return false;

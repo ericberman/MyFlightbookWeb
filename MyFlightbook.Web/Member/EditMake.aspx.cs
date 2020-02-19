@@ -9,7 +9,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -98,7 +98,8 @@ public partial class EditMake : System.Web.UI.Page
                     lstAttribs.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsAircraftCount, rgac.Count())));
 
                     lnkViewTotals.Visible = true;
-                    FlightQuery fq = new FlightQuery(Page.User.Identity.Name) { MakeList = new MakeModel[] { mfbEditMake1.Model } };
+                    FlightQuery fq = new FlightQuery(Page.User.Identity.Name);
+                    fq.MakeList.Add(mfbEditMake1.Model);
                     MakeModelStats stats = Stats;
                     string szStatsLabel = String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsCount, stats.NumFlights, stats.EarliestFlight.HasValue && stats.LatestFlight.HasValue ?
                         String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsFlightsDateRange, stats.EarliestFlight.Value, stats.LatestFlight.Value) : string.Empty);

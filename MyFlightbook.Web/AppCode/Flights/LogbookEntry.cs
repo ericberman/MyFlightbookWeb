@@ -8,6 +8,7 @@ using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -302,12 +303,12 @@ namespace MyFlightbook
         /// <summary>
         /// Images associated with the flight.  For efficiency, this MUST BE EXPLICITLY POPULATED AND SET.
         /// </summary>
-        public MFBImageInfo[] FlightImages { get; set; }
+        public Collection<MFBImageInfo> FlightImages { get; set; }
 
         /// <summary>
         /// Videos associated with the flight.
         /// </summary>
-        public VideoRef[] Videos { get; set; }
+        public Collection<VideoRef> Videos { get; set; }
 
         #region Signature properties
         /// <summary>
@@ -363,7 +364,9 @@ namespace MyFlightbook
         /// <summary>
         /// Digitized PNG of the signature.  Not read by default; call LoadDigitalSig to get it.
         /// </summary>
+#pragma warning disable CA1819 // Properties should not return arrays
         public byte[] DigitizedSignature { get; set; }
+#pragma warning restore CA1819 // Properties should not return arrays
 
         /// <summary>
         /// Does this have a digitized sig?
@@ -390,13 +393,13 @@ namespace MyFlightbook
 
         public void LoadDigitalSig()
         {
-            DBHelper dbh = new DBHelper(String.Format("SELECT DigitizedSignature, LENGTH(DigitizedSignature) AS FileSize FROM flights WHERE idFlight={0}", FlightID));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT DigitizedSignature, LENGTH(DigitizedSignature) AS FileSize FROM flights WHERE idFlight={0}", FlightID));
             int FileSize = 0;
             dbh.ReadRow((comm) => { }, (dr) =>
             {
                 if (!(dr["FileSize"] is DBNull))
                 {
-                    FileSize = Convert.ToInt32(dr["FileSize"]);
+                    FileSize = Convert.ToInt32(dr["FileSize"], CultureInfo.InvariantCulture);
                     DigitizedSignature = new byte[FileSize];
                     dr.GetBytes(dr.GetOrdinal("DigitizedSignature"), 0, DigitizedSignature, 0, FileSize);
                 }
@@ -810,7 +813,7 @@ namespace MyFlightbook
         {
             const string szAnyPending = "((f.CFIUsername IS NOT NULL AND f.CFIUserName <> '') OR (f.CFIEmail IS NOT NULL AND f.CFIEmail <> ''))";
             const string szJustForCFI = "(f.CFIUsername=?user OR f.CFIEmail=?email)";
-            DBHelper dbh = new DBHelper(String.Format("SELECT f.Date, f.idFlight, f.Comments, f.Route FROM Flights f WHERE f.username=?student AND {0} AND f.SignatureState=0 ORDER BY f.Date DESC", pfCFI == null ? szAnyPending : szJustForCFI));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT f.Date, f.idFlight, f.Comments, f.Route FROM Flights f WHERE f.username=?student AND {0} AND f.SignatureState=0 ORDER BY f.Date DESC", pfCFI == null ? szAnyPending : szJustForCFI));
             List<LogbookEntry> lstFlightsToSign = new List<LogbookEntry>();
             dbh.ReadRows(
                 (comm) =>
@@ -827,10 +830,10 @@ namespace MyFlightbook
                 {
                     LogbookEntry le = new LogbookEntry()
                     {
-                        FlightID = Convert.ToInt32(dr["idFlight"]),
+                        FlightID = Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture),
                         Date = Convert.ToDateTime(dr["Date"], CultureInfo.InvariantCulture),
-                        Comment = dr["Comments"].ToString(),
-                        Route = dr["Route"].ToString(),
+                        Comment = (string) dr["Comments"],
+                        Route = (string) dr["Route"],
                         User = pfStudent.UserName
                     };
                     lstFlightsToSign.Add(le);
@@ -1036,7 +1039,7 @@ namespace MyFlightbook
             foreach (MySqlParameter p in fq.QueryParameters())
                 comm.Parameters.Add(p);
 
-            string szTemplate = ConfigurationManager.AppSettings["LogbookForUserQuery"].ToString();
+            string szTemplate = ConfigurationManager.AppSettings["LogbookForUserQuery"];
 
             StringBuilder sbAdditionalColumns = new StringBuilder(fq.SearchColumns);
             if (lto != LoadTelemetryOption.None)
@@ -1304,14 +1307,14 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("UserName", szUser);
                 });
             if (dbh.LastError.Length > 0)
-                throw new MyFlightbookException(String.Format("Error attempting to delete flight: {0} parameters - (flightID = {1} user = {2}): {3}", dbh.CommandText, id, szUser, dbh.LastError));
+                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error attempting to delete flight: {0} parameters - (flightID = {1} user = {2}): {3}", dbh.CommandText, id, szUser, dbh.LastError));
 
             Profile.GetUser(szUser).SetAchievementStatus(MyFlightbook.Achievements.Achievement.ComputeStatus.NeedsComputing);
 
             // Now delete any associated images.
             try
             {
-                ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, id.ToString());
+                ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, id.ToString(CultureInfo.InvariantCulture));
                 il.Refresh(true);
                 foreach (MFBImageInfo mfbii in il.ImageArray)
                     mfbii.DeleteImage();
@@ -1319,7 +1322,7 @@ namespace MyFlightbook
                 DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
                 di.Delete(true);
             }
-            catch
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
             { }
 
             // And any associated telemetry
@@ -1399,18 +1402,18 @@ namespace MyFlightbook
                 dtFlightStart=?dtFlightStart, dtFlightEnd=?dtFlightEnd, dtEngineStart=?dtEngineStart, dtEngineEnd=?dtEngineEnd, cfi=?cfi, SIC=?SIC
                 {0} {1} ";
 
-            string szSet = String.Format(szSetTemplate, (fUpdateSignature ? szSetSig : szRefreshSig), (fUpdateFlightData ? szSetTelemetry : ""));
+            string szSet = String.Format(CultureInfo.InvariantCulture, szSetTemplate, (fUpdateSignature ? szSetSig : szRefreshSig), (fUpdateFlightData ? szSetTelemetry : string.Empty));
 
             dbh.DoNonQuery(
                 (comm) =>
                 {
                     if (this.IsNewFlight)
                     {
-                        comm.CommandText = String.Format("INSERT INTO flights {0}", szSet);
+                        comm.CommandText = String.Format(CultureInfo.InvariantCulture, "INSERT INTO flights {0}", szSet);
                     }
                     else
                     {
-                        comm.CommandText = String.Format("UPDATE flights {0} WHERE idFlight = ?idFlight AND username = ?UserName", szSet);
+                        comm.CommandText = String.Format(CultureInfo.InvariantCulture, "UPDATE flights {0} WHERE idFlight = ?idFlight AND username = ?UserName", szSet);
                         comm.Parameters.AddWithValue("idFlight", FlightID);
                     }
 
@@ -1510,7 +1513,7 @@ namespace MyFlightbook
                         {
                             this.MoveTelemetryFromFlightEntry();
                         }
-                        catch (Exception ex)
+                        catch (Exception ex) when (!(ex is OutOfMemoryException))
                         {
                             util.NotifyAdminException(String.Format(CultureInfo.CurrentCulture, "Exception moving telemetry for flight {0}", FlightID), ex);
                         }
@@ -1555,7 +1558,7 @@ namespace MyFlightbook
             CatClassDisplay = ModelDisplay = TailNumDisplay = String.Empty;
             CFISignatureState = SignatureState.None;
             CustomProperties = new CustomPropertyCollection();
-            Videos = Array.Empty<VideoRef>();
+            Videos = new Collection<VideoRef>();
             Telemetry = new TelemetryReference();
         }
 
@@ -1608,7 +1611,7 @@ namespace MyFlightbook
                             {
                                 Telemetry.LoadData();
                             }
-                            catch (FileNotFoundException)
+                            catch (Exception ex) when (ex is FileNotFoundException)
                             {
                                 Telemetry.RawData = string.Empty;
                             }
@@ -1647,13 +1650,7 @@ namespace MyFlightbook
 
                     string szVids = dr["FlightVids"].ToString();
                     if (!String.IsNullOrEmpty(szVids))
-                    {
-                        VideoRef[] vids = Newtonsoft.Json.JsonConvert.DeserializeObject<VideoRef[]>(szVids);
-                        List<VideoRef> lst = new List<VideoRef>();
-                        foreach (VideoRef vid in vids)
-                            lst.Add(vid);
-                        Videos = lst.ToArray();
-                    }
+                        Videos = Newtonsoft.Json.JsonConvert.DeserializeObject<Collection<VideoRef>>(szVids);
 
                     return true;
                 }
@@ -1741,7 +1738,7 @@ namespace MyFlightbook
             User = szUserName;    // in case we don't actually load anything, we should at least set this so that subsequent saves do the right thing.
             if (idRow > 0)
             {
-                FlightQuery fq = new FlightQuery(string.Empty) { CustomRestriction = String.Format(" (flights.idflight={0}) ", idRow) };
+                FlightQuery fq = new FlightQuery(string.Empty) { CustomRestriction = String.Format(CultureInfo.InvariantCulture, " (flights.idflight={0}) ", idRow) };
                 DBHelper dbh = new DBHelper(QueryCommand(fq, 0, 1, false, lto));
 
                 bool fRowFound = false;
@@ -2110,7 +2107,7 @@ namespace MyFlightbook
         public MFBImageInfo SocialMediaImage(string szHost = null)
         {
             PopulateImages();
-            if (FlightImages.Length > 0)
+            if (FlightImages.Count > 0)
                 return FlightImages[0].ImageType == MFBImageInfo.ImageFileType.JPEG ? FlightImages[0] : FlightImages[0];    // use video thumbnail if it's for a video, since we can't use the video link itself.
             else
             {
@@ -2217,7 +2214,7 @@ namespace MyFlightbook
         {
             ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, FlightID.ToString(CultureInfo.InvariantCulture));
             il.Refresh(true, null, !fOnlyImages);
-            FlightImages = il.ImageArray.ToArray();
+            FlightImages = il.ImageArray;
         }
         #endregion
 
@@ -2890,12 +2887,12 @@ namespace MyFlightbook
         public decimal GroundInstructionTotal { get; set; }
         public decimal IFRTimeTotal { get; set; }
 
-        public decimal[] OptionalColumnTotals { get; set; }
+        public Collection<decimal> OptionalColumnTotals { get; set; }
 
         /// <summary>
         /// Any additional columns to display.  Use OptionalColumnValue to get the value, or, after using AddFrom, use OptionalColumnTotalValue to retrieve the total
         /// </summary>
-        public OptionalColumn[] OptionalColumns { get; set; }
+        public Collection<OptionalColumn> OptionalColumns { get; set; }
 
         // Glider counts
         public int SelfLaunchTotal { get; set; }
@@ -3403,10 +3400,15 @@ namespace MyFlightbook
 
                 if (OptionalColumns != null)
                 {
-                    if (OptionalColumnTotals == null || OptionalColumnTotals.Length != OptionalColumns.Length)
-                        OptionalColumnTotals = new decimal[OptionalColumns.Length];
+                    if (OptionalColumnTotals == null || OptionalColumnTotals.Count != OptionalColumns.Count)
+                    {
+                        OptionalColumnTotals = new Collection<decimal>();
+                        // Initialize to 0's.
+                        for (int i = 0; i < OptionalColumns.Count; i++)
+                            OptionalColumnTotals.Add(0.0M);
+                    }
 
-                    for (int i = 0; i < OptionalColumns.Length; i++)
+                    for (int i = 0; i < OptionalColumns.Count; i++)
                     {
                         if (OptionalColumns[i].ValueType == OptionalColumnValueType.Integer)
                             OptionalColumnTotals[i] += led.RowType == LogbookRowType.Flight ? led.OptionalColumnValue(i) : led.OptionalColumnTotalValue(i);
@@ -3451,7 +3453,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public decimal OptionalColumnValue(int columnIndex)
         {
-            if (OptionalColumns == null || columnIndex < 0 || columnIndex >= OptionalColumns.Length)
+            if (OptionalColumns == null || columnIndex < 0 || columnIndex >= OptionalColumns.Count)
                 return 0.0M;
 
             OptionalColumn oc = OptionalColumns[columnIndex];
@@ -3523,7 +3525,7 @@ namespace MyFlightbook
         /// <returns>Formatted string</returns>
         public string OptionalColumnDisplayValue(decimal value, int columnIndex)
         {
-            if (OptionalColumns == null || columnIndex < 0 || columnIndex >= OptionalColumns.Length)
+            if (OptionalColumns == null || columnIndex < 0 || columnIndex >= OptionalColumns.Count)
                 return string.Empty;
 
             switch (OptionalColumns[columnIndex].ValueType)
@@ -3545,13 +3547,13 @@ namespace MyFlightbook
 
         public decimal OptionalColumnTotalValue(int columnIndex)
         {
-            return (OptionalColumnTotals == null || columnIndex < 0 || columnIndex > OptionalColumnTotals.Length) ? 0.0M : OptionalColumnTotals[columnIndex];
+            return (OptionalColumnTotals == null || columnIndex < 0 || columnIndex > OptionalColumnTotals.Count) ? 0.0M : OptionalColumnTotals[columnIndex];
         }
 
         public string OptionalColumnTotalDisplayValue(int columnIndex, bool fUseHHMM)
         {
             UseHHMM = fUseHHMM;
-            return OptionalColumnTotals == null || columnIndex < 0 || columnIndex >= OptionalColumnTotals.Length ? string.Empty : OptionalColumnDisplayValue(OptionalColumnTotals[columnIndex], columnIndex);
+            return OptionalColumnTotals == null || columnIndex < 0 || columnIndex >= OptionalColumnTotals.Count ? string.Empty : OptionalColumnDisplayValue(OptionalColumnTotals[columnIndex], columnIndex);
         }
         #endregion
         #endregion
@@ -3875,7 +3877,7 @@ namespace MyFlightbook
     }
 
     [Serializable]
-    public class PropertyDelta : IComparable
+    public class PropertyDelta : IComparable, IEquatable<PropertyDelta>
     {
         public enum ChangeType { Unchanged, Added, Deleted, Modified }
 
@@ -3955,15 +3957,82 @@ namespace MyFlightbook
             }
         }
 
+        #region IComparable
         public int CompareTo(object obj)
         {
-            PropertyDelta pd = (PropertyDelta)obj;
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+
+            PropertyDelta pd = obj as PropertyDelta;
 
             if (pd.Change == Change)
                 return PropName.CompareCurrentCultureIgnoreCase(pd.PropName);
             else
                 return Change.CompareTo(pd.Change);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            PropertyDelta pd = obj as PropertyDelta;
+            if (pd == null)
+                return false;
+
+            return Equals(pd);
+        }
+
+        public bool Equals(PropertyDelta other)
+        {
+            return other != null &&
+                   PropName == other.PropName &&
+                   OldValue == other.OldValue &&
+                   NewValue == other.NewValue;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 31089781;
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PropName);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(OldValue);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NewValue);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(PropertyDelta left, PropertyDelta right)
+        {
+            return EqualityComparer<PropertyDelta>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(PropertyDelta left, PropertyDelta right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(PropertyDelta left, PropertyDelta right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(PropertyDelta left, PropertyDelta right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(PropertyDelta left, PropertyDelta right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(PropertyDelta left, PropertyDelta right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
     }
 }
 

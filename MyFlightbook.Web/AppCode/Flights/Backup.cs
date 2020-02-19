@@ -5,6 +5,7 @@ using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -169,7 +170,7 @@ namespace MyFlightbook
                             {
                                 el.SetEndorsement(en);
                                 try { ((UserControl)el).RenderControl(tw); }
-                                catch { }  // don't write bogus or incomplete HTML
+                                catch (Exception ex) when (!(ex is OutOfMemoryException)) { }  // don't write bogus or incomplete HTML
                             }
                         }
                     }
@@ -201,16 +202,16 @@ namespace MyFlightbook
             WHERE f.username=?user AND img.VirtPathID=0
             ORDER BY f.Date desc, f.idFlight desc";
                     DBHelper dbhImages = new DBHelper(szQ);
-                    Dictionary<int, List<MFBImageInfo>> dImages = new Dictionary<int, List<MFBImageInfo>>();
+                    Dictionary<int, Collection<MFBImageInfo>> dImages = new Dictionary<int, Collection<MFBImageInfo>>();
                     dbhImages.ReadRows((comm) => { comm.Parameters.AddWithValue("user", User.UserName); },
                         (dr) =>
                         {
                             int idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture);
-                            List<MFBImageInfo> lstMFBii;
+                            Collection<MFBImageInfo> lstMFBii;
                             if (dImages.ContainsKey(idFlight))
                                 lstMFBii = dImages[idFlight];
                             else
-                                dImages[idFlight] = lstMFBii = new List<MFBImageInfo>();
+                                dImages[idFlight] = lstMFBii = new Collection<MFBImageInfo>();
                             lstMFBii.Add(MFBImageInfo.ImageFromDBRow(dr));
                         });
 
@@ -228,10 +229,10 @@ namespace MyFlightbook
                             (dr) =>
                             {
                                 LogbookEntry le = new LogbookEntry(dr, User.UserName, LogbookEntry.LoadTelemetryOption.LoadAll);
-                                le.FlightImages = (dImages.ContainsKey(le.FlightID)) ? dImages[le.FlightID].ToArray() : Array.Empty<MFBImageInfo>();
+                                le.FlightImages = (dImages.ContainsKey(le.FlightID)) ? dImages[le.FlightID] : new Collection<MFBImageInfo>();
 
                             // skip any flights here that don't have images, videos, or telemetry
-                            if (le.FlightImages.Length > 0 || le.Videos.Count() > 0 || le.HasFlightData)
+                            if (le.FlightImages.Count > 0 || le.Videos.Count() > 0 || le.HasFlightData)
                                     WriteFlightInfo(tw, zip, le);
                                 iRow++;
                             });

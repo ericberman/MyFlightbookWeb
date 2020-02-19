@@ -581,7 +581,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
         le.CustomProperties.SetItems(mfbEditPropSet1.DistilledList);
 
-        le.Videos = mfbVideoEntry1.Videos.ToArray();
+        le.Videos = mfbVideoEntry1.Videos;
 
         return le;
     }
