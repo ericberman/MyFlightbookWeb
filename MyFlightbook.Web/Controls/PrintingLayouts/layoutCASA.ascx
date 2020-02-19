@@ -15,10 +15,10 @@
                 <th class="headerSmall" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderPICName %></th>
                 <th class="headerSmall" rowspan="2"><% =Resources.LogbookEntry.PrintHeaderCoPilotOrStudent %></th>
                 <th class="headerBig" rowspan="2"><%=Resources.LogbookEntry.PrintHeaderFlightDetails %></th>
-                <th class="headerSmall" rowspan="2" runat="server" id="optcolumnHeader1" style="width:1cm" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 0, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# OptionalColumn.OptionalColumnName(OptionalColumns, 0) %></div></th>
-                <th class="headerSmall" rowspan="2" runat="server" id="optcolumnHeader2" style="width:1cm" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 1, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# OptionalColumn.OptionalColumnName(OptionalColumns, 1) %></div></th>
-                <th class="headerSmall" rowspan="2" runat="server" id="optcolumnHeader3" style="width:1cm" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 2, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# OptionalColumn.OptionalColumnName(OptionalColumns, 2) %></div></th>
-                <th class="headerSmall" rowspan="2" runat="server" id="optcolumnHeader4" style="width:1cm" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 3, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# OptionalColumn.OptionalColumnName(OptionalColumns, 3) %></div></th>
+                <th class="headerSmall" rowspan="2" runat="server" id="optcolumnHeader1" style="width:1cm" Visible="<%# ShowOptionalColumn(0) %>"><div><%# OptionalColumnName(0) %></div></th>
+                <th class="headerSmall" rowspan="2" runat="server" id="optcolumnHeader2" style="width:1cm" Visible="<%# ShowOptionalColumn(1) %>"><div><%# OptionalColumnName(1) %></div></th>
+                <th class="headerSmall" rowspan="2" runat="server" id="optcolumnHeader3" style="width:1cm" Visible="<%# ShowOptionalColumn(2) %>"><div><%# OptionalColumnName(2) %></div></th>
+                <th class="headerSmall" rowspan="2" runat="server" id="optcolumnHeader4" style="width:1cm" Visible="<%# ShowOptionalColumn(3) %>"><div><%# OptionalColumnName(3) %></div></th>
                 <th class="headerSmall" colspan="2" style="width:1cm"><%=Resources.LogbookEntry.FieldDual %></th>
                 <th class="headerSmall" colspan="2" style="width:1cm"><%=Resources.LogbookEntry.PrintHeaderPICUS %></th>
                 <th class="headerSmall" colspan="2" style="width:1cm"><%=Resources.LogbookEntry.PrintHeaderPIC2 %></th>
@@ -28,10 +28,6 @@
             <tr class="bordered">
                 <th class="headerSmall"><% =Resources.LogbookEntry.PrintHeaderTypeShort %></th>
                 <th class="headerSmall"><% =Resources.LogbookEntry.PrintHeaderRegistration %></th>
-                <th class="headerSmall" style="width:1cm" runat="server" id="optcolumnHeaderCatClass1" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 0, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><%# OptionalColumn.OptionalColumnName(OptionalColumns, 0) %></th>
-                <th class="headerSmall" style="width:1cm" runat="server" id="optcolumnHeaderCatClass2" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 1, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><%# OptionalColumn.OptionalColumnName(OptionalColumns, 1) %></th>
-                <th class="headerSmall" style="width:1cm" runat="server" id="optcolumnHeaderCatClass3" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 2, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><%# OptionalColumn.OptionalColumnName(OptionalColumns, 2) %></th>
-                <th class="headerSmall" style="width:1cm" runat="server" id="optcolumnHeaderCatClass4" Visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 3, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><%# OptionalColumn.OptionalColumnName(OptionalColumns, 3) %></th>
                 <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
                 <th class="headerSmall nightCol" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderNight %></th>
                 <th class="headerSmall" style="width:1cm"><% =Resources.LogbookEntry.PrintHeaderDay %></th>
@@ -63,14 +59,10 @@
                             <uc1:mfbImageList ID="mfbilFlights" runat="server" Columns="3" CanEdit="false" ImageClass="Flight" IncludeDocs="false" MaxImage="3" />
                         </asp:Panel>
                     </td>
-                    <td runat="server" id="tdOptColumnCatClass1" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 0, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
-                    <td runat="server" id="tdOptColumnCatClass2" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 1, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(1) %></div></td>
-                    <td runat="server" id="tdOptColumnCatClass3" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 2, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(2) %></div></td>
-                    <td runat="server" id="tdOptColumnCatClass4" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 3, OptionalColumn.OptionalColumnRestriction.CatClassOnly) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(3) %></div></td>
-                    <td runat="server" id="tdoptColumn1" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 0, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
-                    <td runat="server" id="tdoptColumn2" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 1, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(1) %></div></td>
-                    <td runat="server" id="tdoptColumn3" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 2, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(2) %></div></td>
-                    <td runat="server" id="tdoptColumn4" visible="<%# OptionalColumn.ShowOptionalColumn(OptionalColumns, 3, OptionalColumn.OptionalColumnRestriction.NotCatClass) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(3) %></div></td>
+                    <td runat="server" id="tdOptColumnCatClass1" visible="<%# ShowOptionalColumn(0) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(0) %></div></td>
+                    <td runat="server" id="tdOptColumnCatClass2" visible="<%# ShowOptionalColumn(1) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(1) %></div></td>
+                    <td runat="server" id="tdOptColumnCatClass3" visible="<%# ShowOptionalColumn(2) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(2) %></div></td>
+                    <td runat="server" id="tdOptColumnCatClass4" visible="<%# ShowOptionalColumn(3) %>"><div><%# ((LogbookEntryDisplay) Container.DataItem).OptionalColumnDisplayValue(3) %></div></td>
                     <td><%# ((decimal) Eval("Dual") - Math.Min((decimal) Eval("Dual"), (decimal) Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td class="nightCol"><%# Math.Min((decimal) Eval("Dual"), (decimal) Eval("Nighttime")).FormatDecimal(CurrentUser.UsesHHMM) %></td>
                     <td><%# ((decimal) Eval("PICUSTime") - Math.Min((decimal) Eval("PICUSTime"), (decimal) Eval("Nighttime"))).FormatDecimal(CurrentUser.UsesHHMM) %></td>

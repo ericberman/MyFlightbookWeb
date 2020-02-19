@@ -24,11 +24,9 @@ public partial class Controls_PrintingLayouts_LayoutSACAA : System.Web.UI.UserCo
     #region IPrintingTemplate
     public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {
-        if (options == null)
-            throw new ArgumentNullException("options");
         ShowFooter = showFooter;
         CurrentUser = user;
-        Options = options;
+        Options = options ?? throw new ArgumentNullException(nameof(options));
         PropSeparator = options.PropertySeparatorText;
         rptPages.DataSource = lst;
         rptPages.DataBind();
@@ -40,7 +38,7 @@ public partial class Controls_PrintingLayouts_LayoutSACAA : System.Web.UI.UserCo
     protected void rptPages_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
 
@@ -65,7 +63,7 @@ public partial class Controls_PrintingLayouts_LayoutSACAA : System.Web.UI.UserCo
     protected void rptSubtotalCollections_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookPrintedPageSubtotalsCollection sc = (LogbookPrintedPageSubtotalsCollection)e.Item.DataItem;
         Repeater rpt = (Repeater)e.Item.FindControl("rptSubtotals");
@@ -76,7 +74,7 @@ public partial class Controls_PrintingLayouts_LayoutSACAA : System.Web.UI.UserCo
     protected void rptFlight_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         Controls_mfbSignature sig = (Controls_mfbSignature)e.Item.FindControl("mfbSignature");
         sig.Flight = (LogbookEntryDisplay)e.Item.DataItem;
     }

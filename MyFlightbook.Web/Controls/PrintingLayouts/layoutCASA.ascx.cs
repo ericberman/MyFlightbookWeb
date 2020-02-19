@@ -23,6 +23,16 @@ public partial class Controls_PrintingLayouts_layoutCASA : System.Web.UI.UserCon
 
     protected Collection<OptionalColumn> OptionalColumns { get; set; }
 
+    protected Boolean ShowOptionalColumn(int index)
+    {
+        return OptionalColumns != null && index >= 0 && index < OptionalColumns.Count;
+    }
+
+    protected string OptionalColumnName(int index)
+    {
+        return ShowOptionalColumn(index) ? OptionalColumns[index].Title : string.Empty;
+    }
+
     protected string OtherCatClassValue(LogbookEntryDisplay led)
     {
         return (led != null && led.EffectiveCatClass != (int)CategoryClass.CatClassID.ASEL && led.EffectiveCatClass != (int)CategoryClass.CatClassID.AMEL && OptionalColumn.ShowOtherCatClass(OptionalColumns, (CategoryClass.CatClassID)led.EffectiveCatClass)) ?
@@ -34,7 +44,7 @@ public partial class Controls_PrintingLayouts_layoutCASA : System.Web.UI.UserCon
     public void BindPages(IEnumerable<LogbookPrintedPage> lst, Profile user, PrintingOptions options, bool showFooter = true)
     {
         if (options == null)
-            throw new ArgumentNullException("options");
+            throw new ArgumentNullException(nameof(options));
         ShowFooter = showFooter;
         CurrentUser = user;
         OptionalColumns = options.OptionalColumns;
@@ -50,7 +60,7 @@ public partial class Controls_PrintingLayouts_layoutCASA : System.Web.UI.UserCon
     protected void rptPages_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
 
@@ -66,7 +76,7 @@ public partial class Controls_PrintingLayouts_layoutCASA : System.Web.UI.UserCon
     protected void rptSubtotalCollections_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookPrintedPageSubtotalsCollection sc = (LogbookPrintedPageSubtotalsCollection)e.Item.DataItem;
         Repeater rpt = (Repeater)e.Item.FindControl("rptSubtotals");
@@ -77,7 +87,7 @@ public partial class Controls_PrintingLayouts_layoutCASA : System.Web.UI.UserCon
     protected void rptFlight_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookEntryDisplay led = (LogbookEntryDisplay)e.Item.DataItem;
         Controls_mfbImageList mfbil = (Controls_mfbImageList)e.Item.FindControl("mfbilFlights");
