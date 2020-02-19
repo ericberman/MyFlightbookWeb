@@ -399,7 +399,7 @@ namespace MyFlightbook
             {
                 if (!(dr["FileSize"] is DBNull))
                 {
-                    FileSize = (int) dr["FileSize"];
+                    FileSize = Convert.ToInt32(dr["FileSize"], CultureInfo.InvariantCulture);
                     DigitizedSignature = new byte[FileSize];
                     dr.GetBytes(dr.GetOrdinal("DigitizedSignature"), 0, DigitizedSignature, 0, FileSize);
                 }
@@ -830,7 +830,7 @@ namespace MyFlightbook
                 {
                     LogbookEntry le = new LogbookEntry()
                     {
-                        FlightID = (int) dr["idFlight"],
+                        FlightID = Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture),
                         Date = Convert.ToDateTime(dr["Date"], CultureInfo.InvariantCulture),
                         Comment = (string) dr["Comments"],
                         Route = (string) dr["Route"],

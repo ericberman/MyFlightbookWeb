@@ -1,6 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -346,10 +345,13 @@ namespace MyFlightbook.FlightCurrency
 
         public override int GetHashCode()
         {
-            var hashCode = -513398093;
-            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<TotalsItem>>.Default.GetHashCode(Items);
-            hashCode = hashCode * -1521134295 + Group.GetHashCode();
-            return hashCode;
+            unchecked
+            {
+                var hashCode = -513398093;
+                hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<TotalsItem>>.Default.GetHashCode(Items);
+                hashCode = hashCode * -1521134295 + Group.GetHashCode();
+                return hashCode;
+            }
         }
 
         public static bool operator ==(TotalsItemCollection left, TotalsItemCollection right)
