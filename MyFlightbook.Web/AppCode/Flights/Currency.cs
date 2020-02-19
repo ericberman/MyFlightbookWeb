@@ -1810,17 +1810,27 @@ namespace MyFlightbook.FlightCurrency
         {
             DateTime flightStart, flightEnd;
 
-            decimal totalMinutesTime = Math.Round(cfr.Total * 60.0M) / 60.0M;
+            decimal totalHoursTime = Math.Round(cfr.Total * 60.0M) / 60.0M;
 
-            if (cfr.dtEngineStart.HasValue() && cfr.dtEngineEnd.HasValue())
+            // Issue #503 - favor block time (which matches the regulation's "flight time" definition), using engine as a secondary proxy
+            CustomFlightProperty cfpBlockOut = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockOut);
+            CustomFlightProperty cfpBlockIn = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn);
+            if (cfpBlockOut != null && cfpBlockIn != null && cfpBlockIn.DateValue.CompareTo(cfpBlockOut.DateValue) > 0)
+            {
+                flightStart = cfpBlockOut.DateValue;
+                flightEnd = cfpBlockIn.DateValue;
+                totalHoursTime = Math.Round((decimal) flightEnd.Subtract(flightStart).TotalHours * 60.0M) / 60.0M;
+            } else if (cfr.dtEngineStart.HasValue() && cfr.dtEngineEnd.HasValue())
             {
                 flightStart = cfr.dtEngineStart;
                 flightEnd = cfr.dtEngineEnd;
+                totalHoursTime = Math.Round((decimal)flightEnd.Subtract(flightStart).TotalHours * 60.0M) / 60.0M;
             }
             else if (cfr.dtFlightStart.HasValue() && cfr.dtFlightEnd.HasValue())
             {
                 flightStart = cfr.dtFlightStart;
                 flightEnd = cfr.dtFlightEnd;
+                // Don't adjust total minnutes here because flight time is likely and undercount.
             }
             else
             {
@@ -1829,15 +1839,15 @@ namespace MyFlightbook.FlightCurrency
                 flightEnd = new DateTime(cfr.dtFlight.Year, cfr.dtFlight.Month, cfr.dtFlight.Day, 23, 59, 0, DateTimeKind.Utc);
                 if (dtDutyEnd.HasValue())
                     flightEnd = flightEnd.EarlierDate(dtDutyEnd);
-                flightStart = flightEnd.AddHours((double) -totalMinutesTime);
+                flightStart = flightEnd.AddHours((double) -totalHoursTime);
             }
 
             // 117.23(b)(1) - 100 hours of flight time in 672 consecutive
             if (flightEnd.CompareTo(dt672HoursAgo) > 0)
-                hoursFlightTime11723b1 += Math.Max((totalMinutesTime - Math.Max((decimal) dt672HoursAgo.Subtract(flightStart).TotalHours, 0.0M)), 0.0M);
+                hoursFlightTime11723b1 += Math.Max((totalHoursTime - Math.Max((decimal) dt672HoursAgo.Subtract(flightStart).TotalHours, 0.0M)), 0.0M);
             // 117.23(b)(2) - 1000 hours in 365 consecutive days.  This is NOT hour-for-hour, so can simply compare dates.
             if (flightEnd.CompareTo(dt365DaysAgo) > 0)
-                hoursFlightTime11723b2 += totalMinutesTime;
+                hoursFlightTime11723b2 += totalHoursTime;
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
