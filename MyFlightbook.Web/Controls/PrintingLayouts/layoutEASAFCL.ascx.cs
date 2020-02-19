@@ -32,7 +32,7 @@ public partial class Controls_PrintingLayouts_layoutEASAFCL : System.Web.UI.User
     protected void rptPages_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
 
@@ -48,7 +48,7 @@ public partial class Controls_PrintingLayouts_layoutEASAFCL : System.Web.UI.User
     protected void rptSubtotalCollections_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookPrintedPageSubtotalsCollection sc = (LogbookPrintedPageSubtotalsCollection)e.Item.DataItem;
         bool fHHMM = CurrentUser.UsesHHMM;
@@ -62,7 +62,7 @@ public partial class Controls_PrintingLayouts_layoutEASAFCL : System.Web.UI.User
     protected void rptFlight_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         Controls_mfbSignature sig = (Controls_mfbSignature)e.Item.FindControl("mfbSignature");
         sig.Flight = (LogbookEntryDisplay)e.Item.DataItem;
     }
