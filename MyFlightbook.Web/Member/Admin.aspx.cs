@@ -24,9 +24,6 @@ using System.Web.UI.WebControls;
 
 public partial class Member_Admin : System.Web.UI.Page
 {
-    private const string szTemplateAircraftOfModelType = "SELECT * FROM aircraft WHERE idmodel={0}";
-    private const string szTemplateModelsForManufacturer = "SELECT * FROM models WHERE idmanufacturer={0}";
-
     protected void RejectUser()
     {
         util.NotifyAdminEvent("Attempt to view admin page", String.Format(CultureInfo.CurrentCulture, "User {0} tried to hit the admin page.", Page.User.Identity.Name), ProfileRoles.maskSiteAdminOnly);
@@ -110,6 +107,7 @@ public partial class Member_Admin : System.Web.UI.Page
                 case tabID.admModels:
                     mvAdmin.SetActiveView(vwModels);
                     mvMain.SetActiveView(vwMainModels);
+                    RefreshDupeModels();
                     break;
                 case tabID.admProperties:
                     mvAdmin.SetActiveView(vwProperties);
@@ -143,6 +141,28 @@ public partial class Member_Admin : System.Web.UI.Page
     }
 
     #region models
+    protected void RefreshDupeModels()
+    {
+        SqlDataSourceDupeModels.SelectCommand = String.Format(CultureInfo.InvariantCulture, @"SELECT man.manufacturer, 
+                    cc.CatClass,
+                    CAST(CONCAT(model, CONCAT(' ''', modelname, ''' '), IF(typename='', '', CONCAT('TYPE=', typename)), CONCAT(' - ', idmodel)) AS CHAR) AS 'DisplayName',
+                    m.*
+                FROM models m
+                    INNER JOIN manufacturers man ON m.idmanufacturer = man.idManufacturer
+                    INNER JOIN categoryclass cc ON cc.idCatClass=m.idcategoryclass
+                WHERE UPPER(REPLACE(REPLACE(CONCAT(m.model,CONVERT(m.idcategoryclass, char),m.typename), '-', ''), ' ', '')) IN
+                    (SELECT modelandtype FROM (SELECT model, COUNT(model) AS cModel, UPPER(REPLACE(REPLACE(CONCAT(m2.model,CONVERT(m2.idcategoryclass, char),m2.typename), '-', ''), ' ', '')) AS modelandtype FROM models m2 GROUP BY modelandtype HAVING cModel > 1) as dupes)
+                {0}
+                ORDER BY m.model", ckExcludeSims.Checked ? "HAVING m.fSimOnly = 0" : string.Empty);
+
+        gvDupeModels.DataBind();
+    }
+
+    protected void ckExcludeSims_CheckedChanged(object sender, EventArgs e)
+    {
+        RefreshDupeModels();
+    }
+
     protected void btnPreview_Click(object sender, EventArgs e)
     {
         if (!Page.IsValid)
@@ -155,7 +175,6 @@ public partial class Member_Admin : System.Web.UI.Page
 
         pnlPreview.Visible = true;
 
-        sqlAirplanesToReMap.SelectCommand = String.Format(CultureInfo.InvariantCulture, szTemplateAircraftOfModelType, cmbModelToDelete.SelectedValue);
         gvAirplanesToRemap.DataBind();
         lblPreview.Text = sb.ToString();
     }
@@ -186,8 +205,6 @@ public partial class Member_Admin : System.Web.UI.Page
             }
         }
 
-        string szQ = "";
-        sqlAirplanesToReMap.SelectCommand = String.Format(CultureInfo.InvariantCulture, szTemplateAircraftOfModelType, idModelToDelete);
         using (IDataReader idr = (IDataReader)sqlAirplanesToReMap.Select(DataSourceSelectArguments.Empty))
         {
             // migrate the aircraft on the old model to the new model
@@ -210,14 +227,14 @@ public partial class Member_Admin : System.Web.UI.Page
         });
 
         // Then delete the old model
-        szQ = String.Format(CultureInfo.InvariantCulture, "DELETE FROM models WHERE idmodel={0}", idModelToDelete);
+        string szQ = String.Format(CultureInfo.InvariantCulture, "DELETE FROM models WHERE idmodel={0}", idModelToDelete);
         DBHelper dbh = new DBHelper(szQ);
         if (!dbh.DoNonQuery())
             throw new MyFlightbookException("Error deleting model: " + szQ + "\r\n" + dbh.LastError);
         sbAudit.Append(szQ + "<br />");
         lblPreview.Text = sbAudit.ToString();
 
-        gvDupeModels.DataBind();
+        RefreshDupeModels();
         gvOrphanMakes.DataBind();
         cmbModelToDelete.DataBind();
         cmbModelToMergeInto.DataBind();
@@ -276,7 +293,6 @@ public partial class Member_Admin : System.Web.UI.Page
 
         pnlPreviewDupeMan.Visible = true;
 
-        sqlModelsToRemap.SelectCommand = String.Format(CultureInfo.InvariantCulture, szTemplateModelsForManufacturer, cmbManToKill.SelectedValue);
         gvModelsToRemap.DataBind();
         lblPreviewDupeMan.Text = sb.ToString();
     }
@@ -489,7 +505,7 @@ public partial class Member_Admin : System.Web.UI.Page
             if (gc != null && gc.Count > 1)
             {
                 string szTailnumFixed = String.Format(CultureInfo.InvariantCulture, "N{0}", gc[1].Value);
-                h.Text = String.Format(CultureInfo.CurrentCulture, Resources.Admin.ViewRegistrationTemplate, szTailnumFixed);
+                h.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.Admin.ViewRegistrationTemplate, szTailnumFixed));
                 h.NavigateUrl = Aircraft.LinkForTailnumberRegistry(szTailnumFixed);
             }
             else
@@ -600,7 +616,7 @@ public partial class Member_Admin : System.Web.UI.Page
         if (e.CommandName == "Preview")
         {
             Label lb = (Label)gvSims.Rows[rowClicked].FindControl("lblProposedRename");
-            lb.Text = Aircraft.SuggestTail(ac.ModelID, ac.InstanceType).TailNumber;
+            lb.Text = HttpUtility.HtmlEncode(Aircraft.SuggestTail(ac.ModelID, ac.InstanceType).TailNumber);
         }
         else if (e.CommandName == "Rename")
         {
@@ -683,7 +699,7 @@ GROUP BY ac.idaircraft";
 
         List<int> lst = new List<int>();
         DBHelper dbh = new DBHelper(szSQLMaintainedVirtualAircraft);
-        dbh.ReadRows((comm) => { }, (dr) => { lst.Add(Convert.ToInt32(dr["idaircraft"])); });
+        dbh.ReadRows((comm) => { }, (dr) => { lst.Add(Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture)); });
         if (lst.Count == 0)
             return;
         IEnumerable<Aircraft> rgac = Aircraft.AircraftFromIDs(lst);
@@ -773,7 +789,7 @@ GROUP BY ac.idaircraft";
             {
                 Label l = (Label)e.Row.FindControl("lblHyphenResult");
                 l.Visible = true;
-                l.Text = hdnLastCountryResult.Value;
+                l.Text = HttpUtility.HtmlEncode(hdnLastCountryResult.Value);
                 hdnLastCountryResult.Value = hdnLastCountryEdited.Value = string.Empty;
             }
         }
@@ -1019,12 +1035,12 @@ GROUP BY ac.idaircraft";
 
                 TableCell tc = new TableCell();
                 tr.Cells.Add(tc);
-                tc.Text = szKey;
+                tc.Text = HttpUtility.HtmlEncode(szKey);
                 tc.Style["font-weight"] = "bold";
 
                 tc = new TableCell();
                 tr.Cells.Add(tc);
-                tc.Text = nvc[szKey];
+                tc.Text = HttpUtility.HtmlEncode(nvc[szKey]);
             }
         }
     }
@@ -1109,7 +1125,7 @@ GROUP BY ac.idaircraft";
         gvInvalidSignatures.DataSource = ViewState["InvalidSigs"] = lst;
         gvInvalidSignatures.DataBind();
 
-        lblSigResults.Text = String.Format("Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", cTotalSigned, lst.Count, lstAutoFix.Count);
+        lblSigResults.Text = String.Format(CultureInfo.CurrentCulture, "Found {0} signed flights, {1} appear to have problems, {2} were autofixed (capitalization or leading/trailing whitespace)", cTotalSigned, lst.Count, lstAutoFix.Count);
     }
 
     protected void btnFixInvalidSigState_Click(object sender, EventArgs e)

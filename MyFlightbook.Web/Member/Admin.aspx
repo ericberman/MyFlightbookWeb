@@ -479,7 +479,12 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                   (SELECT manufacturer FROM manufacturers GROUP BY manufacturer HAVING count(manufacturer) &gt; 1) ORDER BY idmanufacturer;">
                         </asp:SqlDataSource>
                         <asp:SqlDataSource ID="sqlModelsToRemap" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" 
-                            ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" runat="server"></asp:SqlDataSource>
+                            SelectCommand="SELECT * FROM models WHERE idmanufacturer=?idman"
+                            ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" runat="server">
+                            <SelectParameters>
+                                <asp:ControlParameter ControlID="cmbManToKill" PropertyName="SelectedValue" Name="idman" />
+                            </SelectParameters>
+                        </asp:SqlDataSource>
                         <asp:GridView ID="gvDupeMan" runat="server" AutoGenerateColumns="False" 
                             DataSourceID="sqlDataSourceDupeMan" EnableModelValidation="True">
                             <Columns>
@@ -1128,19 +1133,10 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                 </UpdateParameters>
             </asp:SqlDataSource>  
             <h2>Models that are potential dupes:</h2><asp:SqlDataSource ID="SqlDataSourceDupeModels" runat="server" ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>"
-                ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" 
-                SelectCommand="SELECT man.manufacturer, 
-                    cc.CatClass,
-                    CAST(CONCAT(model, CONCAT(' ''', modelname, ''' '), IF(typename='', '', CONCAT('TYPE=', typename)), CONCAT(' - ', idmodel)) AS CHAR) AS 'DisplayName',
-                    m.*
-                FROM models m
-                    INNER JOIN manufacturers man ON m.idmanufacturer = man.idManufacturer
-                    INNER JOIN categoryclass cc ON cc.idCatClass=m.idcategoryclass
-                WHERE UPPER(REPLACE(REPLACE(CONCAT(m.model,CONVERT(m.idcategoryclass, char),m.typename), '-', ''), ' ', '')) IN
-                    (SELECT modelandtype FROM (SELECT model, COUNT(model) AS cModel, UPPER(REPLACE(REPLACE(CONCAT(m2.model,CONVERT(m2.idcategoryclass, char),m2.typename), '-', ''), ' ', '')) AS modelandtype FROM models m2 GROUP BY modelandtype HAVING cModel &gt; 1) as dupes)
-                ORDER BY m.model">
+                ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>" >
             </asp:SqlDataSource>
             <div>
+                <p><asp:CheckBox ID="ckExcludeSims" runat="server" Text="Exclude Sims (i.e., real aircraft only)" AutoPostBack="true" OnCheckedChanged="ckExcludeSims_CheckedChanged" /></p>
                 <p>
                     Keep <asp:DropDownList ID="cmbModelToMergeInto" runat="server" DataSourceID="SqlDataSourceDupeModels"
                         DataTextField="DisplayName" DataValueField="idmodel">
@@ -1159,9 +1155,14 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
                     <br />
                 </asp:Panel>
             </div>
-            <div>&nbsp;</div><asp:SqlDataSource ID="sqlAirplanesToReMap" DataSourceMode="DataReader" runat="server"
+            <div>&nbsp;</div>
+            <asp:SqlDataSource ID="sqlAirplanesToReMap" DataSourceMode="DataReader" runat="server"
                 ConnectionString="<%$ ConnectionStrings:logbookConnectionString %>" ProviderName="<%$ ConnectionStrings:logbookConnectionString.ProviderName %>"
-                SelectCommand=""></asp:SqlDataSource>
+                SelectCommand="SELECT * FROM aircraft WHERE idmodel=?idModel">
+                <SelectParameters>
+                    <asp:ControlParameter ControlID="cmbModelToDelete" PropertyName="SelectedValue" Name="idModel" />
+                </SelectParameters>
+            </asp:SqlDataSource>
             <asp:GridView ID="gvDupeModels" DataSourceID="SqlDataSourceDupeModels" runat="server" EnableModelValidation="True" AutoGenerateColumns="false">
                 <Columns>
                     <asp:BoundField DataField="idmodel" 
