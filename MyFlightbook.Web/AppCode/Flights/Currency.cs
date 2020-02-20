@@ -629,7 +629,7 @@ namespace MyFlightbook.FlightCurrency
             Dictionary<string, ICurrencyExaminer> dictFlightCurrency = new Dictionary<string, ICurrencyExaminer>();   // Flight currency per 61.57(a), striped by category/class/type.  Also does night and tailwheel
             Dictionary<string, ArmyMDSCurrency> dictArmyCurrency = new Dictionary<string, ArmyMDSCurrency>();     // Flight currency per AR 95-1
             Dictionary<string, CurrencyExaminer> dictIFRCurrency = new Dictionary<string, CurrencyExaminer>();      // IFR currency per 61.57(c)(1) or 61.57(c)(2) (Real airplane or certified flight simulator
-            Dictionary<string, FlightCurrency> dictPICProficiencyChecks = new Dictionary<string, FlightCurrency>();     // PIC Proficiency checks
+            Dictionary<string, PIC6158Currency> dictPICProficiencyChecks = new Dictionary<string, PIC6158Currency>();     // PIC Proficiency checks
             Dictionary<string, SIC6155Currency> dictSICProficiencyChecks = new Dictionary<string, SIC6155Currency>();   // 61.55 SIC Proficiency checks
             bool fHasIR = false;    // for EASA currency, don't bother reporting night currency if user holds an instrument rating (defined as having seen an IPC/instrument checkride.
 
@@ -639,7 +639,7 @@ namespace MyFlightbook.FlightCurrency
             NVCurrency nvCurrencyNonHeli = new NVCurrency(CategoryClass.CatClassID.ASEL);
 
             // PIC Proficiency check in ANY aircraft
-            FlightCurrency fcPICPCInAny = new FlightCurrency(1, 12, true, "61.58(a) - PIC Check in ANY type-rated aircraft");
+            PIC6158Currency fcPICPCInAny = new PIC6158Currency(1, 12, true, "61.58(a) - PIC Check in ANY type-rated aircraft");
 
             bool fIncludeFAR117 = pf.UsesFAR117DutyTime;
 
@@ -902,15 +902,10 @@ namespace MyFlightbook.FlightCurrency
                     // 61.58 - Pilot proficiency checks
                     if (!String.IsNullOrEmpty(cfr.szType))
                     {
-                        bool fHasPICCheck = false;
-                        cfr.FlightProps.ForEachEvent(pe => { if (pe.PropertyType.IsPICProficiencyCheck6158) fHasPICCheck = true; });
-                        if (fHasPICCheck)
-                        {
-                            if (!dictPICProficiencyChecks.ContainsKey(cfr.szType))
-                                dictPICProficiencyChecks[cfr.szType] = new FlightCurrency(1, 24, true, String.Format(CultureInfo.CurrentCulture, "61.58(b) - PIC Check in this {0}", cfr.szType));
-                            dictPICProficiencyChecks[cfr.szType].AddRecentFlightEvents(cfr.dtFlight, 1);
-                            fcPICPCInAny.AddRecentFlightEvents(cfr.dtFlight, 1);
-                        }
+                        fcPICPCInAny.ExamineFlight(cfr);
+                        if (!dictPICProficiencyChecks.ContainsKey(cfr.szType))
+                            dictPICProficiencyChecks[cfr.szType] = new PIC6158Currency(1, 24, true, String.Format(CultureInfo.CurrentCulture, "61.58(b) - PIC Check in this {0}", cfr.szType));
+                        dictPICProficiencyChecks[cfr.szType].ExamineFlight(cfr);
                     }
 
                     // FAR 117 - Pilot rest/duty periods
@@ -1006,10 +1001,12 @@ namespace MyFlightbook.FlightCurrency
             }
 
             // PIC Proficiency checks
+            fcPICPCInAny.Finalize(totalTime, picTime);
             foreach (string szKey in SortedKeys(dictPICProficiencyChecks.Keys))
             {
-                FlightCurrency fcInType = dictPICProficiencyChecks[szKey];
-                FlightCurrency fcComputed = fcInType.AND(fcPICPCInAny);
+                PIC6158Currency fcInType = dictPICProficiencyChecks[szKey];
+                fcInType.Finalize(totalTime, picTime);
+                PIC6158Currency fcComputed = fcInType.AND(fcPICPCInAny);
 
                 if (fcComputed.HasBeenCurrent && fcComputed.ExpirationDate.CompareTo(dtCutoff) > 0)
                     arcs.Add(new CurrencyStatusItem(String.Format(CultureInfo.CurrentCulture, Resources.Currency.NextPICProficiencyCheck, szKey), fcComputed.StatusDisplay, fcComputed.CurrentState, string.Empty));
@@ -3331,6 +3328,94 @@ namespace MyFlightbook.FlightCurrency
                     return string.Empty;
             }
         }
+    }
+
+    /// <summary>
+    /// Determines the status w.r.t. PIC privileges for 61.58, including provisions for 61.58(i), which allows for one month on either side.
+    /// </summary>
+    public class PIC6158Currency : FlightCurrency
+    {
+        #region properties
+        private readonly List<DateTime> lstDatesOfCurrencyChecks = new List<DateTime>();
+        private DateTime? dtExpiration = null;
+        #endregion
+
+        public PIC6158Currency(decimal cThreshold, int period, bool fMonths, string szName) : base(cThreshold, period, fMonths, szName) { }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            if (String.IsNullOrEmpty(cfr.szType))
+                return;
+
+            if (cfr.FlightProps.FindEvent(pe => pe.PropertyType.IsPICProficiencyCheck6158) != null)
+                lstDatesOfCurrencyChecks.Add(cfr.dtFlight);
+        }
+
+        public override bool HasBeenCurrent
+        {
+            get { return lstDatesOfCurrencyChecks.Count > 0; }
+        }
+
+        public override void Finalize(decimal totalTime, decimal picTime)
+        {
+            // compute the expiration date.
+            if (!HasBeenCurrent)
+                return;
+
+            // see when last check would have expired
+            // we have to go through each of the ones we have seen, due to 61.58(i)'s ridiculous rules
+            // So, for example, suppose we see the following dates:
+            //   June 8, 2012 - good until June 30, 2013
+            //   June 12, 2013 - good until June 30, 2014
+            //   July 9, 2014 - ONLY GOOD until June 30 (since this is in the month after it is due
+            //   May 28, 2015 - GOOD UNTIL June 30 2015 (since this is in the month before it was due)
+            //   Aug 8, 2016 - Good until Aug 31, 2017
+            lstDatesOfCurrencyChecks.Sort();    // need to go in ascending order.
+            DateTime effectiveLastCheck = lstDatesOfCurrencyChecks[0];
+            foreach (DateTime dt in lstDatesOfCurrencyChecks)
+            {
+                DateTime dtBracketStart = effectiveLastCheck.Date.AddCalendarMonths(ExpirationSpan - 2).AddDays(1);     // first day of the calendar month preceding expiration
+                DateTime dtBracketEnd = effectiveLastCheck.Date.AddCalendarMonths(ExpirationSpan + 1);                  // last day of the month following expiration
+                if (dtBracketStart.CompareTo(dt.Date) <= 0 && dtBracketEnd.CompareTo(dt.Date) >= 0)                 // fell in the bracket
+                    effectiveLastCheck = effectiveLastCheck.AddCalendarMonths(ExpirationSpan);                      // so go ExpirationSpan from that prior check
+                else
+                    effectiveLastCheck = dt;
+            }
+
+            dtExpiration = effectiveLastCheck.AddCalendarMonths(ExpirationSpan);
+        }
+
+        public PIC6158Currency AND(PIC6158Currency pic6158Currency)
+        {
+            PIC6158Currency result = new PIC6158Currency(RequiredEvents, ExpirationSpan, true, DisplayName);
+            if (HasBeenCurrent && pic6158Currency.HasBeenCurrent)
+            {
+                result.lstDatesOfCurrencyChecks.AddRange(lstDatesOfCurrencyChecks);
+                result.lstDatesOfCurrencyChecks.AddRange(pic6158Currency.lstDatesOfCurrencyChecks);
+                result.dtExpiration = this.dtExpiration.Value.EarlierDate(pic6158Currency.dtExpiration.Value);
+            }
+            return result;
+        }
+
+        public override CurrencyState CurrentState
+        {
+            get
+            {
+                if (dtExpiration == null || !dtExpiration.HasValue || DateTime.Now.CompareTo(dtExpiration.Value) > 0)
+                    return CurrencyState.NotCurrent;
+                else if (DateTime.Now.AddDays(30).CompareTo(dtExpiration.Value) > 0)
+                    return CurrencyState.GettingClose;
+                else
+                    return CurrencyState.OK;
+            }
+        }
+
+        public override DateTime ExpirationDate => dtExpiration != null || dtExpiration.HasValue ? dtExpiration.Value : DateTime.MinValue;
+
+        public override string DiscrepancyString => string.Empty;
     }
     #endregion
 }
