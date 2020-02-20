@@ -40,7 +40,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         }
     }
 
-    const string szKeyVSTypes = "Types";
+    const string szKeyVSTypes = "vsKeyTypes";
     protected Collection<string> TypeNames
     {
         get { return (Collection<string>) ViewState[szKeyVSTypes] ?? new Collection<string>(); }

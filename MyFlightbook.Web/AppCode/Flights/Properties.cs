@@ -1276,7 +1276,7 @@ GROUP BY fp.idPropType;";
             Dictionary<int, List<string>> d = new Dictionary<int, List<string>>();
 
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
-                (dr) => { d[(int) dr["PropTypeID"]] = new List<string>(dr["PrevVals"].ToString().Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries)); });
+                (dr) => { d[Convert.ToInt32(dr["PropTypeID"], CultureInfo.InvariantCulture)] = new List<string>(dr["PrevVals"].ToString().Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries)); });
 
             return d;
         }
