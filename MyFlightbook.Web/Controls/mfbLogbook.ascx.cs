@@ -55,7 +55,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     public Boolean SuppressImages 
     {
         get { return !String.IsNullOrEmpty((string) ViewState["vsSI"]); }
-        set { ViewState["vsSI"] = value ? value.ToString() : string.Empty; }
+        set { ViewState["vsSI"] = value ? value.ToString(CultureInfo.InvariantCulture) : string.Empty; }
     }
 
     private const string keyVSUser = "logbookUser";

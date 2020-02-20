@@ -74,7 +74,7 @@ public partial class makes : System.Web.UI.Page
                             tr.RenderControl(htmlTW);
                             lst.Add(sb.ToString());
                         }
-                        catch (ArgumentException) { } // don't write bogus or incomplete HTML
+                        catch (ArgumentException ex) when (ex is ArgumentOutOfRangeException) { } // don't write bogus or incomplete HTML
                     }
                 }
                 finally
@@ -155,7 +155,7 @@ public partial class makes : System.Web.UI.Page
     protected void MakesRowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             Controls_mfbMakeListItem mli = (Controls_mfbMakeListItem)e.Row.FindControl("mfbMakeListItem1");
@@ -165,7 +165,7 @@ public partial class makes : System.Web.UI.Page
         }
     }
 
-    protected void ShowButton(Control lnk, Boolean fShow)
+    protected static void ShowButton(Control lnk, Boolean fShow)
     {
         if (lnk != null)
             lnk.Visible = fShow;
@@ -178,12 +178,9 @@ public partial class makes : System.Web.UI.Page
 
     protected void UpdateSortHeaders(ModelQuery.ModelSortMode sortmode)
     {
-        lnkSortCatclass.Font.Bold = (sortmode == ModelQuery.ModelSortMode.CatClass);
-        lnkSortCatclass.Font.Size = (sortmode == ModelQuery.ModelSortMode.CatClass) ? FontUnit.Larger : FontUnit.Empty;
-        lnkSortManufacturer.Font.Bold = (sortmode == ModelQuery.ModelSortMode.Manufacturer);
-        lnkSortManufacturer.Font.Size = (sortmode == ModelQuery.ModelSortMode.Manufacturer) ? FontUnit.Larger : FontUnit.Empty;
-        lnkSortModel.Font.Bold = (sortmode == ModelQuery.ModelSortMode.ModelName);
-        lnkSortModel.Font.Size = (sortmode == ModelQuery.ModelSortMode.ModelName) ? FontUnit.Larger : FontUnit.Empty;
+        lnkSortCatclass.CssClass = (sortmode == ModelQuery.ModelSortMode.CatClass) ? (ActiveQuery.SortDir == ModelQuery.ModelSortDirection.Ascending ? "headerSortAsc" : "headerSortDesc") : string.Empty;
+        lnkSortManufacturer.CssClass = (sortmode == ModelQuery.ModelSortMode.Manufacturer) ? (ActiveQuery.SortDir == ModelQuery.ModelSortDirection.Ascending ? "headerSortAsc" : "headerSortDesc") : string.Empty;
+        lnkSortModel.CssClass = (sortmode == ModelQuery.ModelSortMode.ModelName) ? (ActiveQuery.SortDir == ModelQuery.ModelSortDirection.Ascending ? "headerSortAsc" : "headerSortDesc") : string.Empty;
     }
 
     protected void SetSort(ModelQuery.ModelSortMode sortmode)

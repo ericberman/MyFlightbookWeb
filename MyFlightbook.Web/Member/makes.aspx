@@ -83,7 +83,7 @@
     <p><% =Resources.Makes.searchWildcardTip %></p>
     <asp:HiddenField runat="server" ID="hdnQueryJSON" />
     <div style="width:800px">
-        <table width="100%" runat="server" id="tblHeaderRow" visible="false">
+        <table style="width:100%" runat="server" id="tblHeaderRow" visible="false">
             <tr>
                 <td style="width:160px;"></td>
                 <td style="text-align:left;">
@@ -91,16 +91,16 @@
                         <tr>
                             <td style="width:30%;">
                                 <asp:LinkButton ID="lnkSortManufacturer" runat="server" Text="Manufacturer" 
-                                    Font-Bold="False" meta:resourcekey="lnkSortManufacturerResource1" 
+                                    meta:resourcekey="lnkSortManufacturerResource1" 
                                     onclick="lnkSortManufacturer_Click"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
                             </td>
                             <td style="width:40%;">
-                                <asp:LinkButton ID="lnkSortModel" runat="server" Text="Model" Font-Bold="True" 
+                                <asp:LinkButton ID="lnkSortModel" runat="server" Text="Model"
                                     meta:resourcekey="lnkSortModelResource1" onclick="lnkSortModel_Click"></asp:LinkButton>&nbsp;&nbsp;&nbsp;
                             </td>
                             <td style="width:30%;">
                                 <asp:LinkButton ID="lnkSortCatclass" runat="server" Text="Category/Class" 
-                                    Font-Bold="False" meta:resourcekey="lnkSortCatclassResource1" 
+                                    meta:resourcekey="lnkSortCatclassResource1" 
                                     onclick="lnkSortCatclass_Click"></asp:LinkButton>
                             </td>
                         </tr>
