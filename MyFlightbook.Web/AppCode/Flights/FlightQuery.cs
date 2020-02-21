@@ -696,7 +696,16 @@ namespace MyFlightbook
         /// <param name="q">The query from which to initialize</param>
         public FlightQuery(FlightQuery q) : this()
         {
+            // Collections are copied by reference (unlike arrays), so util.copyobject doesn't quite work.
+            // So we start with copyObject, but then explicitly make copies of the other collections.
             util.CopyObject(q, this);
+            // Go through the collections and copy them explicitly
+            CatClasses = new Collection<CategoryClass>(new List<CategoryClass>(q.CatClasses));
+            PropertyTypes = new Collection<CustomPropertyType>(new List<CustomPropertyType>(q.PropertyTypes));
+            AircraftList = new Collection<Aircraft>(new List<Aircraft>(q.AircraftList));
+            AirportList = new Collection<string>(new List<string>(q.AirportList));
+            MakeList = new Collection<MakeModel>(new List<MakeModel>(q.MakeList));
+            TypeNames = new Collection<string>(new List<String>(q.TypeNames));
         }
 
         /// <summary>
