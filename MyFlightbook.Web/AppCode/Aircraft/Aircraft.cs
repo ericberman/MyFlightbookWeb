@@ -24,7 +24,7 @@ namespace MyFlightbook
 {
     /// <summary>
     /// Instance types for an aircraft.  Meaning it's a real aircraft or one of a set of different flavors of aircraft.
-    /// Does NOT have a 0 value, since that doesn't correspond to anything int he database.
+    /// Does NOT have a 0 value, since that doesn't correspond to anything in the database.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
     public enum AircraftInstanceTypes
@@ -138,7 +138,7 @@ namespace MyFlightbook
         protected AircraftInstance(MySqlDataReader dr) : this()
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             InstanceType = (AircraftInstanceTypes)Convert.ToInt32(dr["ID"], CultureInfo.InvariantCulture);
             DisplayName = dr["Description"].ToString();
             IsCertifiedIFR = Convert.ToBoolean(dr["IsCertifiedIFR"], CultureInfo.InvariantCulture);
@@ -201,7 +201,7 @@ namespace MyFlightbook
         /// </summary>
         public int Users { get; private set; }
 
-        public string[] UserNames { get; set; }
+        public IEnumerable<string> UserNames { get; private set; }
 
         /// <summary>
         /// The number of flights for the specified airplane, period.
@@ -353,9 +353,9 @@ WHERE
         public static void PopulateStatsForAircraft(IEnumerable<Aircraft> lstAc, string szUser)
         {
             if (szUser == null)
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
             if (lstAc == null)
-                throw new ArgumentNullException("lstAc");
+                throw new ArgumentNullException(nameof(lstAc));
 
             foreach (Aircraft ac in lstAc)
                 ac.Stats = new AircraftStats(szUser, ac.AircraftID);
@@ -615,7 +615,7 @@ WHERE
         public void CopyFlags(Aircraft ac)
         {
             if (ac == null)
-                throw new ArgumentNullException("ac");
+                throw new ArgumentNullException(nameof(ac));
             Flags = ac.Flags;
         }
 
@@ -737,7 +737,7 @@ WHERE
                     if (HttpContext.Current.Request.Cookies[MFBConstants.keyLastTail] != null && HttpContext.Current.Request.Cookies[MFBConstants.keyLastTail].Value != null)
                         return Convert.ToInt32(HttpContext.Current.Request.Cookies[MFBConstants.keyLastTail].Value, CultureInfo.InvariantCulture);
                 }
-                catch (System.FormatException)
+                catch (Exception ex) when (ex is FormatException)
                 {
                 }
                 return 0;
@@ -888,7 +888,7 @@ WHERE
         /// <param name="id"></param>
         public Aircraft(int id) : this()
         {
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", " WHERE aircraft.idAircraft=?idAircraft") + " LIMIT 1");
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", " WHERE aircraft.idAircraft=?idAircraft") + " LIMIT 1");
             dbh.ReadRow(
                 (comm) => { comm.Parameters.AddWithValue("idAircraft", id); },
                 (dr) => { InitFromDataReader(dr); });
@@ -910,7 +910,7 @@ WHERE
         protected void InitFromDataReader(MySqlDataReader dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
 
             AircraftID = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture);
             TailNumber = dr["TailNumber"].ToString();
@@ -971,7 +971,7 @@ WHERE
             if (ids == null)
                 return lst;
             string szIDs = String.Join(",", ids);
-            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture, " WHERE aircraft.idAircraft in ({0})", szIDs)));
+            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture, " WHERE aircraft.idAircraft in ({0})", szIDs)));
             new DBHelper(dba).ReadRows(
                 (comm) => { },
                 (dr) => { lst.Add(new Aircraft(dr)); }
@@ -996,7 +996,7 @@ WHERE
                 maxCount = 10;
 
             szPrefix = Regex.Replace(szPrefix, "[^a-zA-Z0-9]", string.Empty) + "%";
-            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", " WHERE REPLACE(aircraft.TailNumber, '-', '') LIKE ?prefix") + String.Format(CultureInfo.InvariantCulture, " LIMIT {0}", maxCount));
+            DBHelperCommandArgs dba = new DBHelperCommandArgs(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", " WHERE REPLACE(aircraft.TailNumber, '-', '') LIKE ?prefix") + String.Format(CultureInfo.InvariantCulture, " LIMIT {0}", maxCount));
             new DBHelper(dba).ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("prefix", szPrefix); },
                 (dr) => { lst.Add(new Aircraft(dr)); }
@@ -1134,7 +1134,7 @@ WHERE
                 throw new MyFlightbookException(ErrorString);
 
             if (szUser == null)
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
 
             // Check for a tailnumber collision with a DIFFERENT existing aircraft
             // Then check to see if THIS ID is in the list (if the list has any hits at all)
@@ -1213,67 +1213,7 @@ WHERE
         }
         #endregion
 
-        /// <summary>
-        /// Save the ID of the last tail in a cookie
-        /// </summary>
-        /// <param name="szValue">The ID of the most recently used aircraft</param>
-        static public void SaveLastTail(int ID)
-        {
-            // Save the aircraft ID in a cookie
-            HttpContext.Current.Response.Cookies[MFBConstants.keyLastTail].Value = ID.ToString(CultureInfo.InvariantCulture);
-            HttpContext.Current.Response.Cookies[MFBConstants.keyLastTail].Expires = DateTime.Now.AddYears(5);
-            HttpContext.Current.Session[MFBConstants.keyLastTail] = ID.ToString(CultureInfo.InvariantCulture);
-        }
-
         #region Validation
-        private const string szRegexValidTail = "^[a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+$";
-
-        /// <summary>
-        /// Admin utility to quickly find all invalid aircraft (since examining them one at a time is painfully slow and pounds the database)
-        /// KEEP IN SYNC WITH IsValid!!
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerable<Aircraft> AdminAllInvalidAircraft()
-        {
-            List<Aircraft> lst = new List<Aircraft>();
-
-            List<string> lstNakedPrefix = new List<string>();
-            foreach (CountryCodePrefix cc in CountryCodePrefix.CountryCodes())
-                lstNakedPrefix.Add(cc.NormalizedPrefix);
-
-            string szNaked = String.Join("', '", lstNakedPrefix);
-
-            const string szQInvalidAircraftRestriction = @"WHERE
-(aircraft.idmodel < 0 OR models.idmodel IS NULL)
-OR (aircraft.tailnumber = '') OR (LENGTH(aircraft.tailnumber) <= 2) OR (LENGTH(aircraft.tailnumber) > {0})
-OR (aircraft.tailnumber LIKE '{2}%' AND aircraft.tailnumber <> CONCAT('{2}', LPAD(aircraft.idmodel, 6, '0')))
-OR (aircraft.tailnumber NOT LIKE '{2}%' AND aircraft.tailnumber NOT RLIKE '{1}')
-OR (aircraft.instancetype = 1 AND aircraft.tailnumber LIKE '{3}%')
-OR (aircraft.instancetype <> 1 AND aircraft.tailnumber NOT LIKE '{3}%')
-OR (models.fSimOnly = 1 AND aircraft.instancetype={4})
-OR (models.fSimOnly = 2 AND aircraft.InstanceType={4} AND aircraft.tailnumber NOT LIKE '{2}%')
-OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
-
-            string szQInvalid = String.Format(CultureInfo.InvariantCulture, szQInvalidAircraftRestriction, 
-                maxTailLength, 
-                szRegexValidTail, 
-                CountryCodePrefix.szAnonPrefix, 
-                CountryCodePrefix.szSimPrefix,
-                (int) AircraftInstanceTypes.RealAircraft,
-                szNaked);
-
-            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", szQInvalid);
-
-            DBHelper dbh = new DBHelper(szQ);
-            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new Aircraft(dr)); });
-
-            // set the error for each one
-            foreach (Aircraft ac in lst)
-                ac.IsValid(true);
-
-            return lst;
-        }
-
         /// <summary>
         /// Tests the aircraft for validity prior to commitment
         /// KEEP IN SYNC WITH AdminAllInvalidAircraft()
@@ -1310,7 +1250,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             }
             else
             {
-                Regex r = new Regex(szRegexValidTail, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                Regex r = new Regex(AircraftUtility.RegexValidTail, RegexOptions.IgnoreCase | RegexOptions.Compiled);
                 Match mt = r.Match(TailNumber);
                 if (mt.Captures.Count != 1 || String.Compare(TailNumber, mt.Captures[0].Value, StringComparison.OrdinalIgnoreCase) != 0)
                     ErrorString = Resources.Aircraft.errInvalidChars;
@@ -1366,7 +1306,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                         }
                     }
                 }
-                catch (MyFlightbookException)
+                catch (Exception ex) when (ex is MyFlightbookException)
                 {
                     ErrorString = String.Format(CultureInfo.CurrentCulture, "Invalid model ID {0}", this.ModelID);
                 }
@@ -1401,7 +1341,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                 return string.Empty;
 
             StringBuilder sb = new StringBuilder("\r\n" + Resources.Aircraft.alternateVersionsList + "\r\n");
-            lst.ForEach((ac) => sb.AppendFormat("\r\n - {0}", ac.LongDescription));
+            lst.ForEach((ac) => sb.AppendFormat(CultureInfo.CurrentCulture, "\r\n - {0}", ac.LongDescription));
             sb.Append("\r\n");
 
             return sb.ToString();
@@ -1488,7 +1428,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
             // See if there's even an issue
             // If it's not used in any flights, or there's exactly one user (the owner), no problem.
             AircraftStats acs = new AircraftStats(String.Empty, acMatch.AircraftID);
-            if (acs.Flights == 0 || (acs.Users == 1 && String.Compare(szUser, acs.UserNames[0], StringComparison.CurrentCultureIgnoreCase) == 0))
+            if (acs.Flights == 0 || (acs.Users == 1 && String.Compare(szUser, acs.UserNames.ElementAt(0), StringComparison.CurrentCultureIgnoreCase) == 0))
                 return;
 
             // Notify the admin here - model changed, I want to see it.
@@ -1523,74 +1463,6 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         }
 
         /// <summary>
-        /// Admin function to merge an old aircraft into a new one
-        /// </summary>
-        /// <param name="acMaster">The TARGET aircraft</param>
-        /// <param name="ac">The aircraft being merged - this one will be DELETED (but a tombstone will remain)</param>
-        public static void AdminMergeDupeAircraft(Aircraft acMaster, Aircraft ac)
-        {
-            if (ac == null)
-                throw new ArgumentNullException("ac");
-            if (acMaster == null)
-                throw new ArgumentNullException("acMaster");
-            if (ac.AircraftID == acMaster.AircraftID)
-                return;
-
-            // merge the aircraft into the master.  This will merge maintenance and images.
-            acMaster.MergeWith(ac, true);
-
-            // map all future references to this aircraft to the new master
-            AircraftTombstone act = new AircraftTombstone(ac.AircraftID, acMaster.AircraftID);
-            act.Commit();
-
-            // It's slower than doing a simple "UPDATE Flights f SET f.idAircraft=?idAircraftNew WHERE f.idAircraft=?idAircraftOld",
-            // but first find all of the users with flights in the old aircraft and then call ReplaceAircraftForUser on each one
-            // This ensures that useraircraft is correctly updated.
-            DBHelperCommandArgs dba = new DBHelperCommandArgs("SELECT DISTINCT username FROM flights WHERE idAircraft=?idAircraftOld");
-            dba.AddWithValue("idAircraftNew", acMaster.AircraftID);
-            dba.AddWithValue("idAircraftOld", ac.AircraftID);
-            // Remap any flights that use the old aircraft
-            DBHelper dbh = new DBHelper(dba);
-
-            List<string> lstAffectedUsers = new List<string>();
-            dbh.ReadRows((comm) => { }, (dr) => { lstAffectedUsers.Add((string)dr["username"]); });
-
-            foreach (string szUser in lstAffectedUsers)
-                new UserAircraft(szUser).ReplaceAircraftForUser(acMaster, ac, true);
-                
-            // remap any club aircraft and scheduled events.
-            dbh.CommandText = "UPDATE clubaircraft ca SET ca.idaircraft=?idAircraftNew WHERE ca.idAircraft=?idAircraftOld";
-            dbh.DoNonQuery();
-            dbh.CommandText = "UPDATE scheduledEvents se SET se.resourceid=?idAircraftNew WHERE se.resourceid=?idAircraftOld";
-            dbh.DoNonQuery();
-
-            // User aircraft might already have the target, which can lead to a duplicate primary key error.
-            // So first find everybody that has both in their account; for them, we'll just delete the old (since it's redundant).
-            List<string> lstUsersWithBoth = new List<string>();
-            dbh.CommandText = "SELECT ua1.username FROM useraircraft ua1 INNER JOIN useraircraft ua2 ON ua1.username = ua2.username WHERE ua1.idaircraft=?idAircraftOld AND ua2.idaircraft=?idAircraftNew";
-            dbh.ReadRows((comm) => { }, (dr) => { lstUsersWithBoth.Add((string)dr["username"]); });
-            foreach (string szUser in lstUsersWithBoth)
-            {
-                DBHelper dbhDelete = new DBHelper("DELETE FROM useraircraft WHERE username=?user AND idAircraft=?idAircraftOld");
-                dbhDelete.DoNonQuery((comm) =>
-                {
-                    comm.Parameters.AddWithValue("user", szUser);
-                    comm.Parameters.AddWithValue("idAircraftOld", ac.AircraftID);
-                });
-            }
-            // should now be safe to map the remaining ones.
-            dbh.CommandText = "UPDATE useraircraft ua SET ua.idAircraft=?idAircraftNew WHERE ua.idAircraft=?idAircraftOld";
-            dbh.DoNonQuery();
-
-            // And fix up any pre-existing tombstones that point to this aircraft
-            dbh.CommandText = "UPDATE aircrafttombstones SET idMappedAircraft=?idAircraftNew WHERE idMappedAircraft=?idAircraftOld";
-            dbh.DoNonQuery();
-
-            // Finally, it should now be safe to delete the aircraft
-            dbh.CommandText = "DELETE FROM aircraft WHERE idAircraft=?idAircraftOld";
-            dbh.DoNonQuery();
-        }
-
         /// <summary>
         /// Admin function to make this instance the default instance for the tailnumber.
         /// </summary>
@@ -1633,7 +1505,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         public void Clone(int idModelTarget, IEnumerable<string> lstUsersToMigrate)
         {
             if (lstUsersToMigrate == null)
-                throw new ArgumentNullException("lstUsersToMigrate");
+                throw new ArgumentNullException(nameof(lstUsersToMigrate));
 
             if (idModelTarget == MakeModel.UnknownModel)
                 throw new MyFlightbookException("Can't clone to empty model");
@@ -1727,11 +1599,11 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                 });
 
             // Migrate any images
-            ImageList ilSrc = new ImageList(MFBImageInfo.ImageClass.Aircraft, ac.AircraftID.ToString());
+            ImageList ilSrc = new ImageList(MFBImageInfo.ImageClass.Aircraft, ac.AircraftID.ToString(CultureInfo.InvariantCulture));
             ilSrc.Refresh();
 
             foreach (MFBImageInfo mfbii in ilSrc.ImageArray)
-                mfbii.MoveImage(this.AircraftID.ToString());
+                mfbii.MoveImage(this.AircraftID.ToString(CultureInfo.InvariantCulture));
 
             this.PopulateImages();
         }
@@ -1802,7 +1674,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         public void UpdateMaintenanceForUser(MaintenanceRecord mr, string szUser)
         {
             if (mr == null)
-                throw new ArgumentNullException("mr");
+                throw new ArgumentNullException(nameof(mr));
 
             List<MaintenanceLog> rgml = new List<MaintenanceLog>();
 
@@ -1830,7 +1702,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         /// </summary>
         private static string AircraftByTailQuery
         {
-            get { return String.Format(CultureInfo.InvariantCulture,ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", "WHERE REPLACE(UPPER(tailnumber), '-', '')=?tailNum"); }
+            get { return String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", "WHERE REPLACE(UPPER(tailnumber), '-', '')=?tailNum"); }
         }
 
         /// <summary>
@@ -1841,7 +1713,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         /// <returns>The list of matching tailnumbers</returns>
         public static List<Aircraft> AircraftByTailListQuery(IEnumerable<string> lstTails)
         {
-            string szQ = String.Format(CultureInfo.InvariantCulture,ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture,"WHERE REPLACE(UPPER(tailnumber), '-', '') IN ('{0}')", String.Join("', '", lstTails)));
+            string szQ = String.Format(CultureInfo.InvariantCulture,ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", String.Format(CultureInfo.InvariantCulture,"WHERE REPLACE(UPPER(tailnumber), '-', '') IN ('{0}')", String.Join("', '", lstTails)));
 
             List<Aircraft> lst = new List<Aircraft>();
 
@@ -2039,6 +1911,141 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
     }
 
     /// <summary>
+    /// Contains utility and admin functions for working with aircraft.
+    /// </summary>
+    public static class AircraftUtility
+    {
+        /// <summary>
+        /// Save the ID of the last tail in a cookie
+        /// </summary>
+        /// <param name="szValue">The ID of the most recently used aircraft</param>
+        static public void SaveLastTail(int ID)
+        {
+            // Save the aircraft ID in a cookie
+            HttpContext.Current.Response.Cookies[MFBConstants.keyLastTail].Value = ID.ToString(CultureInfo.InvariantCulture);
+            HttpContext.Current.Response.Cookies[MFBConstants.keyLastTail].Expires = DateTime.Now.AddYears(5);
+            HttpContext.Current.Session[MFBConstants.keyLastTail] = ID.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public const string RegexValidTail = "^[a-zA-Z0-9]+-?[a-zA-Z0-9]+-?[a-zA-Z0-9]+$";
+
+        /// <summary>
+        /// Admin utility to quickly find all invalid aircraft (since examining them one at a time is painfully slow and pounds the database)
+        /// KEEP IN SYNC WITH IsValid!!
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<Aircraft> AdminAllInvalidAircraft()
+        {
+            List<Aircraft> lst = new List<Aircraft>();
+
+            List<string> lstNakedPrefix = new List<string>();
+            foreach (CountryCodePrefix cc in CountryCodePrefix.CountryCodes())
+                lstNakedPrefix.Add(cc.NormalizedPrefix);
+
+            string szNaked = String.Join("', '", lstNakedPrefix);
+
+            const string szQInvalidAircraftRestriction = @"WHERE
+(aircraft.idmodel < 0 OR models.idmodel IS NULL)
+OR (aircraft.tailnumber = '') OR (LENGTH(aircraft.tailnumber) <= 2) OR (LENGTH(aircraft.tailnumber) > {0})
+OR (aircraft.tailnumber LIKE '{2}%' AND aircraft.tailnumber <> CONCAT('{2}', LPAD(aircraft.idmodel, 6, '0')))
+OR (aircraft.tailnumber NOT LIKE '{2}%' AND aircraft.tailnumber NOT RLIKE '{1}')
+OR (aircraft.instancetype = 1 AND aircraft.tailnumber LIKE '{3}%')
+OR (aircraft.instancetype <> 1 AND aircraft.tailnumber NOT LIKE '{3}%')
+OR (models.fSimOnly = 1 AND aircraft.instancetype={4})
+OR (models.fSimOnly = 2 AND aircraft.InstanceType={4} AND aircraft.tailnumber NOT LIKE '{2}%')
+OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
+
+            string szQInvalid = String.Format(CultureInfo.InvariantCulture, szQInvalidAircraftRestriction,
+                Aircraft.maxTailLength,
+                RegexValidTail,
+                CountryCodePrefix.szAnonPrefix,
+                CountryCodePrefix.szSimPrefix,
+                (int)AircraftInstanceTypes.RealAircraft,
+                szNaked);
+
+            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], 0, "''", "''", "''", szQInvalid);
+
+            DBHelper dbh = new DBHelper(szQ);
+            dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new Aircraft(dr)); });
+
+            // set the error for each one
+            foreach (Aircraft ac in lst)
+                ac.IsValid(true);
+
+            return lst;
+        }
+
+        /// <summary>
+        /// Admin function to merge an old aircraft into a new one
+        /// </summary>
+        /// <param name="acMaster">The TARGET aircraft</param>
+        /// <param name="ac">The aircraft being merged - this one will be DELETED (but a tombstone will remain)</param>
+        public static void AdminMergeDupeAircraft(Aircraft acMaster, Aircraft ac)
+        {
+            if (ac == null)
+                throw new ArgumentNullException(nameof(ac));
+            if (acMaster == null)
+                throw new ArgumentNullException(nameof(acMaster));
+            if (ac.AircraftID == acMaster.AircraftID)
+                return;
+
+            // merge the aircraft into the master.  This will merge maintenance and images.
+            acMaster.MergeWith(ac, true);
+
+            // map all future references to this aircraft to the new master
+            AircraftTombstone act = new AircraftTombstone(ac.AircraftID, acMaster.AircraftID);
+            act.Commit();
+
+            // It's slower than doing a simple "UPDATE Flights f SET f.idAircraft=?idAircraftNew WHERE f.idAircraft=?idAircraftOld",
+            // but first find all of the users with flights in the old aircraft and then call ReplaceAircraftForUser on each one
+            // This ensures that useraircraft is correctly updated.
+            DBHelperCommandArgs dba = new DBHelperCommandArgs("SELECT DISTINCT username FROM flights WHERE idAircraft=?idAircraftOld");
+            dba.AddWithValue("idAircraftNew", acMaster.AircraftID);
+            dba.AddWithValue("idAircraftOld", ac.AircraftID);
+            // Remap any flights that use the old aircraft
+            DBHelper dbh = new DBHelper(dba);
+
+            List<string> lstAffectedUsers = new List<string>();
+            dbh.ReadRows((comm) => { }, (dr) => { lstAffectedUsers.Add((string)dr["username"]); });
+
+            foreach (string szUser in lstAffectedUsers)
+                new UserAircraft(szUser).ReplaceAircraftForUser(acMaster, ac, true);
+
+            // remap any club aircraft and scheduled events.
+            dbh.CommandText = "UPDATE clubaircraft ca SET ca.idaircraft=?idAircraftNew WHERE ca.idAircraft=?idAircraftOld";
+            dbh.DoNonQuery();
+            dbh.CommandText = "UPDATE scheduledEvents se SET se.resourceid=?idAircraftNew WHERE se.resourceid=?idAircraftOld";
+            dbh.DoNonQuery();
+
+            // User aircraft might already have the target, which can lead to a duplicate primary key error.
+            // So first find everybody that has both in their account; for them, we'll just delete the old (since it's redundant).
+            List<string> lstUsersWithBoth = new List<string>();
+            dbh.CommandText = "SELECT ua1.username FROM useraircraft ua1 INNER JOIN useraircraft ua2 ON ua1.username = ua2.username WHERE ua1.idaircraft=?idAircraftOld AND ua2.idaircraft=?idAircraftNew";
+            dbh.ReadRows((comm) => { }, (dr) => { lstUsersWithBoth.Add((string)dr["username"]); });
+            foreach (string szUser in lstUsersWithBoth)
+            {
+                DBHelper dbhDelete = new DBHelper("DELETE FROM useraircraft WHERE username=?user AND idAircraft=?idAircraftOld");
+                dbhDelete.DoNonQuery((comm) =>
+                {
+                    comm.Parameters.AddWithValue("user", szUser);
+                    comm.Parameters.AddWithValue("idAircraftOld", ac.AircraftID);
+                });
+            }
+            // should now be safe to map the remaining ones.
+            dbh.CommandText = "UPDATE useraircraft ua SET ua.idAircraft=?idAircraftNew WHERE ua.idAircraft=?idAircraftOld";
+            dbh.DoNonQuery();
+
+            // And fix up any pre-existing tombstones that point to this aircraft
+            dbh.CommandText = "UPDATE aircrafttombstones SET idMappedAircraft=?idAircraftNew WHERE idMappedAircraft=?idAircraftOld";
+            dbh.DoNonQuery();
+
+            // Finally, it should now be safe to delete the aircraft
+            dbh.CommandText = "DELETE FROM aircraft WHERE idAircraft=?idAircraftOld";
+            dbh.DoNonQuery();
+        }
+    }
+
+    /// <summary>
     /// A group of aircraft with a title
     /// </summary>
     public class AircraftGroup
@@ -2096,10 +2103,10 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                     lstDst.Add(new AircraftGroup() { GroupTitle = string.Empty, MatchingAircraft = d[string.Empty] });
                     break;
                 case GroupMode.Recency:
-                    if (d.ContainsKey(true.ToString()))
+                    if (d.ContainsKey(true.ToString(CultureInfo.InvariantCulture)))
                     {
                         // HasBeenFlown, so Stats and dates are both present
-                        List<Aircraft> lstActive = new List<Aircraft>(d[true.ToString()]);
+                        List<Aircraft> lstActive = new List<Aircraft>(d[true.ToString(CultureInfo.InvariantCulture)]);
                         lstActive.Sort((ac1, ac2) =>
                         {
                             if (ac1.Stats.LatestDate.Value.CompareTo(ac2.Stats.LatestDate) == 0)
@@ -2109,14 +2116,14 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                         });
                         lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupFlown, MatchingAircraft = lstActive });
                     }
-                    if (d.ContainsKey(false.ToString()))
-                            lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupUnflown, MatchingAircraft = d[false.ToString()] });
+                    if (d.ContainsKey(false.ToString(CultureInfo.InvariantCulture)))
+                            lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupUnflown, MatchingAircraft = d[false.ToString(CultureInfo.InvariantCulture)] });
                     break;
                 case GroupMode.Activity:
-                    if (d.ContainsKey(false.ToString()))
-                        lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupActive, MatchingAircraft = d[false.ToString()] });
-                    if (d.ContainsKey(true.ToString()))
-                        lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupInactive, MatchingAircraft = d[true.ToString()] });
+                    if (d.ContainsKey(false.ToString(CultureInfo.InvariantCulture)))
+                        lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupActive, MatchingAircraft = d[false.ToString(CultureInfo.InvariantCulture)] });
+                    if (d.ContainsKey(true.ToString(CultureInfo.InvariantCulture)))
+                        lstDst.Add(new AircraftGroup() { GroupTitle = Resources.Aircraft.AircraftGroupInactive, MatchingAircraft = d[true.ToString(CultureInfo.InvariantCulture)] });
                     break;
                 case GroupMode.Model:
                 case GroupMode.CategoryClass:
@@ -2137,7 +2144,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
     /// Note that this does NOT inherit from Aircraft because we set the BestMatchAircraft after the fact.
     /// </summary>
     [Serializable]
-    public class AircraftImportMatchRow : IComparable
+    public class AircraftImportMatchRow : IComparable, IEquatable<AircraftImportMatchRow>
     {
         public enum MatchState { MatchedExisting, UnMatched, MatchedInProfile, JustAdded }
         static readonly private Regex rNormalize = new Regex("[^a-zA-Z0-9#]*", RegexOptions.Compiled);
@@ -2145,11 +2152,82 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         #region Comparable
         public int CompareTo(object obj)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+
             AircraftImportMatchRow aim = (AircraftImportMatchRow)obj;
+            if (aim is null)
+                throw new InvalidCastException("object passed to CompareTo is not an AircraftImportMatchRow");
+
             if (State == aim.State)
                 return TailNumber.CompareCurrentCultureIgnoreCase(aim.TailNumber);
             else
                 return ((int)State) - ((int)aim.State);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as AircraftImportMatchRow);
+        }
+
+        public bool Equals(AircraftImportMatchRow other)
+        {
+            return other != null &&
+                   TailNumber == other.TailNumber &&
+                   NormalizedModelGiven == other.NormalizedModelGiven &&
+                   EqualityComparer<Aircraft>.Default.Equals(BestMatchAircraft, other.BestMatchAircraft) &&
+                   EqualityComparer<Collection<MakeModel>>.Default.Equals(MatchingModels, other.MatchingModels) &&
+                   EqualityComparer<MakeModel>.Default.Equals(SuggestedModel, other.SuggestedModel) &&
+                   EqualityComparer<MakeModel>.Default.Equals(SpecifiedModel, other.SpecifiedModel) &&
+                   State == other.State &&
+                   ID == other.ID;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 1409820271;
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TailNumber);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NormalizedModelGiven);
+                hashCode = hashCode * -1521134295 + EqualityComparer<Aircraft>.Default.GetHashCode(BestMatchAircraft);
+                hashCode = hashCode * -1521134295 + EqualityComparer<Collection<MakeModel>>.Default.GetHashCode(MatchingModels);
+                hashCode = hashCode * -1521134295 + EqualityComparer<MakeModel>.Default.GetHashCode(SuggestedModel);
+                hashCode = hashCode * -1521134295 + EqualityComparer<MakeModel>.Default.GetHashCode(SpecifiedModel);
+                hashCode = hashCode * -1521134295 + State.GetHashCode();
+                hashCode = hashCode * -1521134295 + ID.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(AircraftImportMatchRow left, AircraftImportMatchRow right)
+        {
+            return EqualityComparer<AircraftImportMatchRow>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(AircraftImportMatchRow left, AircraftImportMatchRow right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(AircraftImportMatchRow left, AircraftImportMatchRow right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(AircraftImportMatchRow left, AircraftImportMatchRow right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(AircraftImportMatchRow left, AircraftImportMatchRow right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(AircraftImportMatchRow left, AircraftImportMatchRow right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
 
@@ -2186,9 +2264,9 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         public static void RefreshRecentlyAddedAircraftForUser(IEnumerable<AircraftImportMatchRow> lstMatches, string szUser)
         {
             if (String.IsNullOrEmpty(szUser))
-                throw new ArgumentNullException("szUser", "AddAllExistingAircraftForUser - no user specified");
+                throw new ArgumentNullException(nameof(szUser), "AddAllExistingAircraftForUser - no user specified");
             if (lstMatches == null)
-                throw new ArgumentNullException("lstMatches");
+                throw new ArgumentNullException(nameof(lstMatches));
 
             UserAircraft ua = new UserAircraft(szUser);
             Aircraft[] rgac = ua.GetAircraftForUser();
@@ -2296,7 +2374,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         public static IEnumerable<AircraftAdminModelMapping> MapModels(Stream s)
         {
             if (s == null)
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
 
             List<AircraftAdminModelMapping> lstMappings = new List<AircraftAdminModelMapping>();
 
@@ -2597,7 +2675,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         protected void SetModelMatch(AircraftImportMatchRow mr, AircraftImportMatchRow.MatchState ms)
         {
             if (mr == null)
-                throw new ArgumentNullException("mr");
+                throw new ArgumentNullException(nameof(mr));
             mr.State = ms;
             mr.BestMatchAircraft.InstanceTypeDescription = m_rgAircraftInstances[mr.BestMatchAircraft.InstanceTypeID - 1].DisplayName;
             mr.SpecifiedModel = mr.SuggestedModel = MakeModel.GetModel(mr.BestMatchAircraft.ModelID);
@@ -2610,7 +2688,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         public void ProcessParseResultsForUser(string szUser)
         {
             if (String.IsNullOrEmpty(szUser))
-                throw new ArgumentNullException("szUser", "ProcessParseResultsForUser - no user specified");
+                throw new ArgumentNullException(nameof(szUser), "ProcessParseResultsForUser - no user specified");
 
             // Now, get a list of user aircraft and of all potential matching aircraft (at most 2 DB hits, rather than 1 per aircraft)
             List<Aircraft> lstUserAircraft = new List<Aircraft>(new UserAircraft(szUser).GetAircraftForUser());
@@ -2713,7 +2791,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         public void AddAllExistingAircraftForUser(string szUser)
         {
             if (String.IsNullOrEmpty(szUser))
-                throw new ArgumentNullException("szUser", "AddAllExistingAircraftForUser - no user specified");
+                throw new ArgumentNullException(nameof(szUser), "AddAllExistingAircraftForUser - no user specified");
 
             UserAircraft ua = new UserAircraft(szUser);
             foreach (AircraftImportMatchRow mr in _matchResults)
@@ -2734,7 +2812,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         public bool AddAllNewAircraftForUser(string szUser)
         {
             if (String.IsNullOrEmpty(szUser))
-                throw new ArgumentNullException("szUser", "AddAllNewAircraftForUser - no user specified");
+                throw new ArgumentNullException(nameof(szUser), "AddAllNewAircraftForUser - no user specified");
 
             bool fErrorsFound = false;
             foreach (AircraftImportMatchRow mr in AllUnmatched)

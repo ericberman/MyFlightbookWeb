@@ -185,7 +185,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         {
             if (le.IsNewFlight)
             {
-                if (decimal.TryParse(c.Value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal hobbsEnd))
+                if (decimal.TryParse(c.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal hobbsEnd))
                     le.HobbsStart = hobbsEnd;
             }
             Response.Cookies[keyCookieLastEndingHobbs].Expires = DateTime.Now.AddDays(-1);   // clear it.
@@ -623,7 +623,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             {
                 if (le.FCommit(le.HasFlightData))
                 {
-                    Aircraft.SaveLastTail(le.AircraftID);
+                    AircraftUtility.SaveLastTail(le.AircraftID);
 
                     ProcessImages(le.FlightID);
 
