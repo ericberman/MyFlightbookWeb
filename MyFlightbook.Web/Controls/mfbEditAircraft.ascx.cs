@@ -6,12 +6,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -56,7 +57,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     public bool AdminMode
     {
         get { return Convert.ToBoolean(hdnAdminMode.Value, CultureInfo.CurrentCulture); }
-        set { hdnAdminMode.Value = value.ToString(); }
+        set { hdnAdminMode.Value = value.ToString(CultureInfo.InvariantCulture); }
     }
 
     /// <summary>
@@ -224,7 +225,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     protected void mfbIl_MakeDefault(object sender, MFBImageInfoEvent e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         m_ac.DefaultImage = e.Image.ThumbnailFile;
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
@@ -242,7 +243,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     protected void ValidateTailNum(object sender, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
 
         string szNormalTail = Aircraft.NormalizeTail(txtTail.Text);
         // ensure that there is more than just the country code that is specified by the drop-down
@@ -262,7 +263,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     protected void ValidateSim(object sender, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(txtTail.Text);
         AircraftInstanceTypes ait = SelectedInstanceType;
 
@@ -284,7 +285,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         get
         {
             if (m_ac.IsNew)
-                return new LinkedString[0]; // nothing to add for a new aircraft
+                return Array.Empty<LinkedString>(); // nothing to add for a new aircraft
 
             List<LinkedString> lst = new List<LinkedString>();
 
@@ -438,8 +439,6 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     protected void InitFormForAircraft()
     {
         bool fIsNew = m_ac.IsNew;
-        bool fIsReal = m_ac.InstanceType == AircraftInstanceTypes.RealAircraft;
-        bool fIsAnonymous = m_ac.IsAnonymous;
 
         mvInstanceType.SetActiveView(fIsNew ? vwInstanceNew : vwInstanceExisting);
 
@@ -588,9 +587,10 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             else
             {
                 if (cc.IsSim || cc.IsAnonymous)   // reset tail if switching from sim or anonymous
-                    m_ac.TailNumber = txtTail.Text = cmbCountryCode.SelectedItem.Value;
+                    m_ac.TailNumber = cmbCountryCode.SelectedItem.Value;
                 else
-                    m_ac.TailNumber = txtTail.Text = CountryCodePrefix.SetCountryCodeForTail(new CountryCodePrefix(cmbCountryCode.SelectedItem.Text, cmbCountryCode.SelectedValue), txtTail.Text);
+                    m_ac.TailNumber = CountryCodePrefix.SetCountryCodeForTail(new CountryCodePrefix(cmbCountryCode.SelectedItem.Text, cmbCountryCode.SelectedValue), txtTail.Text);
+                txtTail.Text = HttpUtility.HtmlEncode(m_ac.TailNumber);
             }
 
             mvRealAircraft.SetActiveView(fIsAnonymous ? vwAnonTail : vwRegularTail);
@@ -684,7 +684,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             if (fMigrateUser)
                 ua.ReplaceAircraftForUser(ac, new Aircraft(AircraftIDOrig), true);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!(ex is OutOfMemoryException))
         {
             lblError.Text = ex.Message;
         }
@@ -698,8 +698,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
             if (lblError.Text.Length == 0)
             {
-                if (AircraftUpdated != null)
-                    AircraftUpdated(sender, e);
+                AircraftUpdated?.Invoke(sender, e);
             }
         }
     }
@@ -741,16 +740,14 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
     protected void UpdateMask()
     {
-        string szCountry = IsRealAircraft ? cmbCountryCode.SelectedValue : hdnSimCountry.Value;
-        txtTail.Text = CountryCodePrefix.SetCountryCodeForTail(new CountryCodePrefix(cmbCountryCode.SelectedItem.Text, cmbCountryCode.SelectedValue), txtTail.Text);
+        txtTail.Text = HttpUtility.HtmlEncode(CountryCodePrefix.SetCountryCodeForTail(new CountryCodePrefix(cmbCountryCode.SelectedItem.Text, cmbCountryCode.SelectedValue), txtTail.Text));
     }
 
     protected void lnkPopulateAircraft_Click(object sender, EventArgs e)
     {
         if (!String.IsNullOrEmpty(txtTail.Text))
         {
-            int aircraftID;
-            if (int.TryParse(hdnSelectedAircraftID.Value, out aircraftID))
+            if (int.TryParse(hdnSelectedAircraftID.Value, out int aircraftID))
             {
                 StringBuilder sb = new StringBuilder("~/Member/EditAircraft.aspx?id=" + aircraftID.ToString(CultureInfo.InvariantCulture));
                 foreach (var key in Request.QueryString.AllKeys)
@@ -792,7 +789,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     protected void gvAlternativeVersions_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (e.CommandName.CompareCurrentCultureIgnoreCase("_switchMigrate") == 0)
             SwitchToAlternateVersion(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture), true);
@@ -803,7 +800,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             Aircraft acClone = new Aircraft(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
             if (!acClone.IsNew)
             {
-                Aircraft.AdminMergeDupeAircraft(m_ac, acClone);
+                AircraftUtility.AdminMergeDupeAircraft(m_ac, acClone);
                 Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", m_ac.AircraftID));
             }
         }
@@ -822,7 +819,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     protected void rptSchedules_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         Controls_mfbResourceSchedule sched = (Controls_mfbResourceSchedule)e.Item.FindControl("schedAircraft");
         Controls_SchedSummary summ = (Controls_SchedSummary)sched.SubNavContainer.Controls[0].FindControl("schedSummary");
         summ.Refresh();
@@ -837,7 +834,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     protected void SelectMake1_ModelChanged(object sender, MakeSelectedEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         m_ac.ModelID = e.SelectedModel;
         AvionicsUpgrade = MakeModel.AvionicsTechnologyType.None;  // reset this since model changed.
         AdjustForAircraftType();

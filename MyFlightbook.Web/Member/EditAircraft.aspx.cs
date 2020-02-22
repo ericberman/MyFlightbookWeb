@@ -22,7 +22,7 @@ public partial class Member_EditAircraft : System.Web.UI.Page
     public static string[] SuggestFullModels(string prefixText, int count)
     {
         if (String.IsNullOrEmpty(prefixText))
-            return new string[0];
+            return Array.Empty<string>();
 
         ModelQuery modelQuery = new ModelQuery() { FullText = prefixText.Replace("-", "*"), PreferModelNameMatch=true, Skip = 0, Limit = count };
         List<string> lst = new List<string>();
@@ -37,7 +37,7 @@ public partial class Member_EditAircraft : System.Web.UI.Page
     public static string[] SuggestAircraft(string prefixText, int count)
     {
         if (String.IsNullOrEmpty(prefixText))
-            return new string[0];
+            return Array.Empty<string>();
         IEnumerable<Aircraft> lstAircraft = Aircraft.AircraftWithPrefix(prefixText, count);
         List<string> lst = new List<string>();
         foreach (Aircraft ac in lstAircraft)
@@ -102,7 +102,6 @@ public partial class Member_EditAircraft : System.Web.UI.Page
                 lblAddEdit1.Text = Resources.Aircraft.AircraftEditAdd;
             else
             {
-                bool fIsKnownAircraft = new UserAircraft(Page.User.Identity.Name).CheckAircraftForUser(MfbEditAircraft1.Aircraft);
                 lblAddEdit1.Text = Resources.Aircraft.AircraftEditEdit;
                 lblTail.Text = MfbEditAircraft1.Aircraft.DisplayTailnumberWithModel;
             }
@@ -116,7 +115,7 @@ public partial class Member_EditAircraft : System.Web.UI.Page
 
     protected void AircraftUpdated(object sender, EventArgs e)
     {
-        Aircraft.SaveLastTail(MfbEditAircraft1.AircraftID);
+        AircraftUtility.SaveLastTail(MfbEditAircraft1.AircraftID);
         Response.Redirect(!String.IsNullOrEmpty(hdnReturnURL.Value) ? hdnReturnURL.Value : "Aircraft.aspx");
     }
 
@@ -166,14 +165,14 @@ public partial class Member_EditAircraft : System.Web.UI.Page
             acGeneric.Commit();
         }
 
-        Aircraft.AdminMergeDupeAircraft(acGeneric, acOriginal);
+        AircraftUtility.AdminMergeDupeAircraft(acGeneric, acOriginal);
         Response.Redirect(Request.Url.PathAndQuery.Replace(String.Format(CultureInfo.InvariantCulture, "id={0}", acOriginal.AircraftID), String.Format(CultureInfo.InvariantCulture, "id={0}", acGeneric.AircraftID)));
     }
 
-    protected AircraftInstanceTypes PseudoSimTypeFromTail(string szTail)
+    protected static AircraftInstanceTypes PseudoSimTypeFromTail(string szTail)
     {
         if (szTail == null)
-            throw new ArgumentNullException("szTail");
+            throw new ArgumentNullException(nameof(szTail));
         szTail = szTail.ToUpper(CultureInfo.CurrentCulture).Replace("-", string.Empty);
         if (szTail.Contains("ATD"))
             return AircraftInstanceTypes.CertifiedATD;
@@ -185,10 +184,10 @@ public partial class Member_EditAircraft : System.Web.UI.Page
             return AircraftInstanceTypes.RealAircraft;
     }
 
-    protected bool CouldBeSim(Aircraft ac)
+    protected static bool CouldBeSim(Aircraft ac)
     {
         if (ac == null)
-            throw new ArgumentNullException("ac");
+            throw new ArgumentNullException(nameof(ac));
         return ac.InstanceType == AircraftInstanceTypes.RealAircraft && PseudoSimTypeFromTail(ac.TailNumber) != AircraftInstanceTypes.RealAircraft;
     }
 
@@ -218,7 +217,7 @@ public partial class Member_EditAircraft : System.Web.UI.Page
 
         // set the original's instance type so that merge works.
         acOriginal.InstanceType = ait;
-        Aircraft.AdminMergeDupeAircraft(acNew, acOriginal);
+        AircraftUtility.AdminMergeDupeAircraft(acNew, acOriginal);
         Response.Redirect(Request.Url.PathAndQuery.Replace(String.Format(CultureInfo.InvariantCulture, "id={0}", acOriginal.AircraftID), String.Format(CultureInfo.InvariantCulture, "id={0}", acNew.AircraftID)));
     }
     #endregion
