@@ -71,7 +71,7 @@ public partial class Member_Download : System.Web.UI.Page
 
         try
         {
-            if (await new MFBDropbox().ValidateDropboxToken(pf, true, true) == MFBDropbox.TokenStatus.None)
+            if (await new MFBDropbox().ValidateDropboxToken(pf, true) == MFBDropbox.TokenStatus.None)
                 return;
 
             Dropbox.Api.Files.FileMetadata result = await lb.BackupToDropbox();
@@ -143,7 +143,7 @@ public partial class Member_Download : System.Web.UI.Page
         {
             ShowDropboxError(ex.Message);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!(ex is OutOfMemoryException))
         {
             ShowDropboxError(ex.Message);
         }
@@ -180,7 +180,7 @@ public partial class Member_Download : System.Web.UI.Page
         {
             ShowDropboxError(ex.Message);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!(ex is OutOfMemoryException))
         {
             ShowDropboxError(ex.Message);
         }

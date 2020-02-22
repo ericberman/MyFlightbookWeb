@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -176,8 +176,7 @@ namespace MyFlightbook.Telemetry
             {
                 KnownColumn kc = KnownColumn.GetKnownColumn(KnownColumnNames.UTCDateTime);
                 pc.ColumnList.Add(kc);
-                DataColumn dc = new DataColumn(kc.Column, KnownColumn.ColumnDataType(kc.Type)) { DateTimeMode = DataSetDateTime.Utc };
-                ParsedData.Columns.Add(dc);
+                DataColumn dc = ParsedData.Columns.Add(kc.Column, KnownColumn.ColumnDataType(kc.Type));
                 dc.DateTimeMode = DataSetDateTime.Utc;
                 pc.derivedColumnCount++;
             }
@@ -192,7 +191,8 @@ namespace MyFlightbook.Telemetry
                 pc.fDeriveUTCDateTime = true;
                 KnownColumn kc = KnownColumn.GetKnownColumn(KnownColumnNames.UTCDateTime);
                 pc.ColumnList.Add(kc);
-                ParsedData.Columns.Add(new DataColumn(kc.Column, KnownColumn.ColumnDataType(kc.Type)) { DateTimeMode = DataSetDateTime.Utc });
+                DataColumn dc = ParsedData.Columns.Add(kc.Column, KnownColumn.ColumnDataType(kc.Type));
+                dc.DateTimeMode = DataSetDateTime.Utc;
                 pc.derivedColumnCount++;
             }
 

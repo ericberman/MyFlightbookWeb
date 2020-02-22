@@ -133,7 +133,7 @@ namespace MyFlightbook
         static public decimal DecimalFromHHMM(this string s, decimal defVal = 0.0M)
         {
             if (s == null)
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
             string[] rgSz = s.Split(new string[] { System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.TimeSeparator }, StringSplitOptions.None);
             if (rgSz.Length == 0 || rgSz.Length > 2)
                 return defVal;
@@ -146,7 +146,7 @@ namespace MyFlightbook
                     return defVal;
                 return Math.Round((hours + (minutes / 60.0M)) * 100.0M) / 100.0M;
             }
-            catch (FormatException)
+            catch (Exception ex) when (ex is FormatException)
             {
                 return defVal;
             }
@@ -163,8 +163,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(sz))
                 return defVal;
 
-            Decimal d;
-            if (Decimal.TryParse(sz, NumberStyles.Any, CultureInfo.CurrentCulture, out d))
+            if (Decimal.TryParse(sz, NumberStyles.Any, CultureInfo.CurrentCulture, out decimal d))
                 return d;
             else
                 return sz.DecimalFromHHMM(defVal);
@@ -181,8 +180,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(sz))
                 return defVal;
 
-            double d;
-            if (double.TryParse(sz, NumberStyles.Any, CultureInfo.CurrentCulture, out d))
+            if (double.TryParse(sz, NumberStyles.Any, CultureInfo.CurrentCulture, out double d))
                 return d;
 
             return defVal;
@@ -199,8 +197,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(sz))
                 return defVal;
 
-            int i;
-            if (Int32.TryParse(sz, NumberStyles.Integer, CultureInfo.CurrentCulture, out i))
+            if (Int32.TryParse(sz, NumberStyles.Integer, CultureInfo.CurrentCulture, out int i))
                 return i;
             return defVal;
         }
@@ -233,7 +230,7 @@ namespace MyFlightbook
         static public DateTime ParseUTCDateTime(this string sz, DateTime? dtNakedTime = null)
         {
             if (sz == null)
-                throw new ArgumentNullException("sz");
+                throw new ArgumentNullException(nameof(sz));
 
             // if it appears to be only a naked time and a date for the naked time is provided, use that date.
             if (dtNakedTime != null && sz.Length <= 5 && System.Text.RegularExpressions.Regex.IsMatch(sz, "^\\d{0,2}:\\d{2}$", System.Text.RegularExpressions.RegexOptions.Compiled))
@@ -241,15 +238,12 @@ namespace MyFlightbook
                 string[] rgszHM = sz.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                 if (rgszHM.Length == 2)
                 {
-                    int hour;
-                    int minute;
-                    if (int.TryParse(rgszHM[0], out hour) && int.TryParse(rgszHM[1], out minute))
+                    if (int.TryParse(rgszHM[0], out int hour) && int.TryParse(rgszHM[1], out int minute))
                         sz = String.Format(CultureInfo.InvariantCulture, "{0}T{1}:{2}Z", dtNakedTime.Value.YMDString(), hour.ToString("00", CultureInfo.InvariantCulture), minute.ToString("00", CultureInfo.InvariantCulture));
                 }
             }
 
-            DateTime d;
-            if (DateTime.TryParse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal, out d))
+            if (DateTime.TryParse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal, out DateTime d))
                 return d;
 
             return DateTime.MinValue;
@@ -266,8 +260,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(sz))
                 return defVal;
 
-            DateTime dt;
-            if (DateTime.TryParse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AllowWhiteSpaces, out dt))
+            if (DateTime.TryParse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AllowWhiteSpaces, out DateTime dt))
                 return dt;
 
             return defVal;
@@ -290,8 +283,7 @@ namespace MyFlightbook
             {
                 if (sz[0] == 'Y' || sz[0] == 'T' || sz[0] == '1')
                     return true;
-                Boolean f;
-                if (Boolean.TryParse(sz, out f))
+                if (Boolean.TryParse(sz, out bool f))
                     return f;
                 return false;
             }
@@ -491,7 +483,7 @@ namespace MyFlightbook
         public static string JavascriptEncode(this string s)
         {
             if (s == null)
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
             return s.Replace("'", "\\'").Replace("\"", "\\\"");
         }
 
@@ -504,7 +496,7 @@ namespace MyFlightbook
         public static string LimitTo(this string sz, int maxLength)
         {
             if (sz == null)
-                throw new ArgumentNullException("sz");
+                throw new ArgumentNullException(nameof(sz));
             return (sz.Length >= maxLength) ? sz.Substring(0, maxLength - 1) : sz;
         }
 
@@ -537,16 +529,16 @@ namespace MyFlightbook
         public static Uri ToAbsoluteURL(this string s, HttpRequest Request)
         {
             if (Request == null)
-                throw new ArgumentNullException("Request");
+                throw new ArgumentNullException(nameof(Request));
             return s.ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host, Request.Url.Port);
         }
 
         public static Uri ToAbsoluteURL(this string s, string scheme, string host, int port = 80)
         {
             if (scheme == null)
-                throw new ArgumentNullException("scheme");
+                throw new ArgumentNullException(nameof(scheme));
             if (host == null)
-                throw new ArgumentNullException("host");
+                throw new ArgumentNullException(nameof(host));
             if (String.IsNullOrEmpty(s))
                 return null;
             return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", scheme, host, (port == 80 || port == 443) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ":{0}", port), VirtualPathUtility.ToAbsolute(s)));
@@ -639,7 +631,7 @@ namespace MyFlightbook
                 if (Convert.ToInt32(i, CultureInfo.InvariantCulture) != 0)
                     sz = "Yes";
             }
-            catch (FormatException) { }
+            catch (Exception ex) when (ex is FormatException) { }
             return sz;
         }
 
@@ -656,7 +648,7 @@ namespace MyFlightbook
                 if (ss != LogbookEntry.SignatureState.None)
                     return ss.ToString();
             }
-            catch (InvalidCastException) { }
+            catch (Exception ex) when (ex is InvalidCastException) { }
             return string.Empty;
         }
 
@@ -738,7 +730,7 @@ namespace MyFlightbook
         public static string SerializeXML(this object obj)
         {
             if (obj == null)
-                throw new ArgumentNullException("obj");
+                throw new ArgumentNullException(nameof(obj));
             System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(obj.GetType());
 
             using (StringWriter writer = new StringWriter(CultureInfo.InvariantCulture))
@@ -799,12 +791,10 @@ namespace MyFlightbook
         public static async Task<HttpResponseMessage> PatchAsync(this HttpClient client, Uri requestUri, HttpContent iContent)
         {
             var method = new HttpMethod("PATCH");
-            var request = new HttpRequestMessage(method, requestUri)
+            using (var request = new HttpRequestMessage(method, requestUri) { Content = iContent }) 
             {
-                Content = iContent
-            };
-
-            return await client.SendAsync(request);
+                return await client.SendAsync(request);
+            }
         }
         #endregion
 
@@ -845,17 +835,14 @@ namespace MyFlightbook
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader == null)
-                throw new ArgumentNullException("reader");
-
-            long t;
-            DateTime dt;
+                throw new ArgumentNullException(nameof(reader));
 
             if (reader.Value is Int32 || reader.Value is Int64)
                 return DateTimeOffset.FromUnixTimeSeconds((Int64)reader.Value).UtcDateTime;
 
-            if (long.TryParse((string)reader.Value, out t))
+            if (long.TryParse((string)reader.Value, out long t))
                 return DateTimeOffset.FromUnixTimeSeconds(t).UtcDateTime;
-            else if (DateTime.TryParse((string)reader.Value, out dt))
+            else if (DateTime.TryParse((string)reader.Value, out DateTime dt))
                 return dt;
             return null;
         }

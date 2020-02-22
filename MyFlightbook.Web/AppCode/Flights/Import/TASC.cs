@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,14 +22,14 @@ namespace MyFlightbook.ImportFlights
     public class TASCFlight : ExternalFormat
     {
         #region Properties
-        public DateTime blockIn;
-        public DateTime blockOut;
-        public string model;
-        public string tail;
-        public string dep;
-        public string arr;
-        public string position;
-        public string flightNumber;
+        public DateTime blockIn { get; set; }
+        public DateTime blockOut { get; set; }
+        public string model { get; set; }
+        public string tail { get; set; }
+        public string dep { get; set; }
+        public string arr { get; set; }
+        public string position { get; set; }
+        public string flightNumber { get; set; }
         #endregion
 
         public TASCFlight()
@@ -89,50 +89,52 @@ namespace MyFlightbook.ImportFlights
             if (rgb == null)
                 return null;
 
-            String sz = Encoding.UTF8.GetString(rgb);
             DateTime dt = DateTime.Now;
             string szLine;
-            using (StreamReader sr = new StreamReader(new MemoryStream(rgb)))
+            using (MemoryStream ms = new MemoryStream(rgb))
             {
-                while ((szLine = sr.ReadLine()) != null)
+                using (StreamReader sr = new StreamReader(ms))
                 {
-                    MatchCollection mc = regDateAnchor.Matches(szLine);
-                    if (mc != null && mc.Count > 0)
+                    while ((szLine = sr.ReadLine()) != null)
                     {
-                        try
+                        MatchCollection mc = regDateAnchor.Matches(szLine);
+                        if (mc != null && mc.Count > 0)
                         {
-                            dt = Convert.ToDateTime(mc[0].Groups["date"].Value, CultureInfo.CurrentCulture);
-                        }
-                        catch (FormatException) { }
-                        continue;
-                    }
-
-                    mc = regTASC.Matches(szLine);
-                    if (mc != null && mc.Count > 0)
-                    {
-                        GroupCollection gc = mc[0].Groups;
-                        TASCFlight t = new TASCFlight()
-                        {
-                            position = gc["position"].Value,
-                            model = gc["model"].Value,
-                            tail = gc["tail"].Value,
-                            flightNumber = gc["flight"].Value,
-                            dep = gc["dep"].Value,
-                            arr = gc["arr"].Value,
-                            blockOut = new DateTime(dt.Year, Convert.ToInt32(gc["depmonth"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["depday"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["dephour"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["depmin"].Value, CultureInfo.InvariantCulture), 0, DateTimeKind.Utc),
-                            blockIn = new DateTime(dt.Year, Convert.ToInt32(gc["arrmonth"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["arrday"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["arrhour"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["arrmin"].Value, CultureInfo.InvariantCulture), 0, DateTimeKind.Utc)
-                        };
-
-                        // handle rollover to new year
-                        if (t.blockOut.Month < dt.Month)
-                            t.blockOut = t.blockOut.AddYears(1);
-                        if (t.blockIn.Month < dt.Month)
-                            t.blockIn = t.blockIn.AddYears(1);
-
-                        if (t.position.CompareCurrentCultureIgnoreCase("PO") == 0)
+                            try
+                            {
+                                dt = Convert.ToDateTime(mc[0].Groups["date"].Value, CultureInfo.CurrentCulture);
+                            }
+                            catch (Exception ex) when (ex is FormatException) { }
                             continue;
+                        }
 
-                        lstMatches.Add(t);
+                        mc = regTASC.Matches(szLine);
+                        if (mc != null && mc.Count > 0)
+                        {
+                            GroupCollection gc = mc[0].Groups;
+                            TASCFlight t = new TASCFlight()
+                            {
+                                position = gc["position"].Value,
+                                model = gc["model"].Value,
+                                tail = gc["tail"].Value,
+                                flightNumber = gc["flight"].Value,
+                                dep = gc["dep"].Value,
+                                arr = gc["arr"].Value,
+                                blockOut = new DateTime(dt.Year, Convert.ToInt32(gc["depmonth"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["depday"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["dephour"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["depmin"].Value, CultureInfo.InvariantCulture), 0, DateTimeKind.Utc),
+                                blockIn = new DateTime(dt.Year, Convert.ToInt32(gc["arrmonth"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["arrday"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["arrhour"].Value, CultureInfo.InvariantCulture), Convert.ToInt32(gc["arrmin"].Value, CultureInfo.InvariantCulture), 0, DateTimeKind.Utc)
+                            };
+
+                            // handle rollover to new year
+                            if (t.blockOut.Month < dt.Month)
+                                t.blockOut = t.blockOut.AddYears(1);
+                            if (t.blockIn.Month < dt.Month)
+                                t.blockIn = t.blockIn.AddYears(1);
+
+                            if (t.position.CompareCurrentCultureIgnoreCase("PO") == 0)
+                                continue;
+
+                            lstMatches.Add(t);
+                        }
                     }
                 }
             }

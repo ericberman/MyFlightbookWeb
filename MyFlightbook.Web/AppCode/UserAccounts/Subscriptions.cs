@@ -278,7 +278,7 @@ namespace MyFlightbook.Subscriptions
                                 {
                                     try
                                     {
-                                        MFBDropbox.TokenStatus ts = await new MFBDropbox().ValidateDropboxToken(pf, true, true);
+                                        MFBDropbox.TokenStatus ts = await new MFBDropbox().ValidateDropboxToken(pf, true);
                                         if (ts == MFBDropbox.TokenStatus.None)
                                             continue;
 
@@ -361,7 +361,7 @@ namespace MyFlightbook.Subscriptions
                                     {
                                         sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
                                     }
-                                    catch (Exception ex)
+                                    catch (Exception ex) when (!(ex is OutOfMemoryException))
                                     {
                                         sbFailures.AppendFormat(CultureInfo.CurrentCulture, "Dropbox FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n{3}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message, ex.StackTrace);
                                         if (ex.InnerException != null)
@@ -419,7 +419,7 @@ namespace MyFlightbook.Subscriptions
                                     {
                                         sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
                                     }
-                                    catch (Exception ex)
+                                    catch (Exception ex) when (!(ex is OutOfMemoryException))
                                     {
                                         sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n{3}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message, ex.StackTrace);
                                     }
@@ -468,7 +468,7 @@ namespace MyFlightbook.Subscriptions
                                     {
                                         sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user: FileNotFoundException, no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
                                     }
-                                    catch (Exception ex)
+                                    catch (Exception ex) when (!(ex is OutOfMemoryException))
                                     {
                                         sbFailures.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive FAILED for user (Unknown Exception), no notification sent {0}: {1} {2}\r\n\r\n", pf.UserName, ex.GetType().ToString(), ex.Message);
                                     }
@@ -480,10 +480,10 @@ namespace MyFlightbook.Subscriptions
                                 break;
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) when (!(ex is OutOfMemoryException))
                     {
                         string szError = String.Format(CultureInfo.CurrentCulture, "eg user={0}{1}\r\n\r\n{2}\r\n\r\n{3}", eg == null ? "NULL eg!" : eg.Username, (eg != null && eg.UserProfile == null) ? " NULL PROFILE" : string.Empty, sbFailures.ToString(), sb.ToString());
-                        util.NotifyAdminException("ERROR running nightly backup", new Exception(szError, ex));
+                        util.NotifyAdminException("ERROR running nightly backup", new MyFlightbookException(szError, ex));
                     }
                 }
             };
