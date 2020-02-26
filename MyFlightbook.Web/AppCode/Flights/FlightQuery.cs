@@ -541,14 +541,14 @@ namespace MyFlightbook
                 fqNew.PropertyTypes = null;
             else
             {
-                fqNew.PropertyTypes = new Collection<CustomPropertyType>(new List<CustomPropertyType>(PropertyTypes.Count));
-                for (int i = 0; i < fqNew.PropertyTypes.Count; i++)
+                fqNew.PropertyTypes = new Collection<CustomPropertyType>();
+                for (int i = 0; i < PropertyTypes.Count; i++)
                 {
                     CustomPropertyType cpt = new CustomPropertyType();
                     util.CopyObject(PropertyTypes[i], cpt);
                     cpt.Description = cpt.FormatString = null;
                     cpt.PreviousValues = null;
-                    fqNew.PropertyTypes[i] = cpt;
+                    fqNew.PropertyTypes.Add(cpt);
                 }
             }
             return JsonConvert.SerializeObject(fqNew, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
