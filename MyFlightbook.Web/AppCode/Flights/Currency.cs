@@ -1778,7 +1778,7 @@ namespace MyFlightbook.FlightCurrency
 
             dt168HoursAgo = DateTime.UtcNow.AddHours(-168);
             dt672HoursAgo = DateTime.UtcNow.AddHours(-672);
-            dt365DaysAgo = DateTime.UtcNow.AddDays(-365);
+            dt365DaysAgo = DateTime.UtcNow.AddDays(-365).Date;
         }
 
         private void UpdateRest(DateTime dtDutyStart, DateTime dtDutyEnd)
@@ -1843,7 +1843,7 @@ namespace MyFlightbook.FlightCurrency
             if (flightEnd.CompareTo(dt672HoursAgo) > 0)
                 hoursFlightTime11723b1 += Math.Max((totalHoursTime - Math.Max((decimal) dt672HoursAgo.Subtract(flightStart).TotalHours, 0.0M)), 0.0M);
             // 117.23(b)(2) - 1000 hours in 365 consecutive days.  This is NOT hour-for-hour, so can simply compare dates.
-            if (flightEnd.CompareTo(dt365DaysAgo) > 0)
+            if (flightEnd.Date.CompareTo(dt365DaysAgo) > 0)
                 hoursFlightTime11723b2 += totalHoursTime;
         }
 
