@@ -1393,7 +1393,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A solo cross-country flight in {0} of not less than 300nm total distance, with 3 landings, at least one of which is 250nm away from the departure point..
+        ///   Looks up a localized string similar to A solo cross-country flight in {0} of not less than 300nm total distance, with 3 landings, at least one of which is 250nm away from the departure point (straight line)..
         /// </summary>
         internal static string CommPICSoloXCCategory {
             get {
@@ -1420,7 +1420,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A 2-hour cross-country training flight in {0} in daytime conditions with total distance over {1}nm from the point of departure..
+        ///   Looks up a localized string similar to A 2-hour cross-country training flight in {0} in daytime conditions with total distance (straight line) over {1}nm from the point of departure..
         /// </summary>
         internal static string CommXCCategory {
             get {
@@ -1429,7 +1429,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A 2-hour night cross-country training flight in {0} with total distance over {1}nm from point of departure..
+        ///   Looks up a localized string similar to A 2-hour night cross-country training flight in {0} with total distance (straight line) over {1}nm from point of departure..
         /// </summary>
         internal static string CommXCCategoryNight {
             get {
