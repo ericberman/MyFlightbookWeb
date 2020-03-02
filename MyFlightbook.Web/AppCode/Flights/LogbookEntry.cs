@@ -3142,12 +3142,12 @@ namespace MyFlightbook
             get
             {
                 CustomFlightProperty cfpBlockOut;
-                if (FlightStart.HasValue())
-                    return FlightStart;
+                if ((cfpBlockOut = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockOut)) != null)
+                    return cfpBlockOut.DateValue;
                 else if (EngineStart.HasValue())
                     return EngineStart;
-                else if ((cfpBlockOut = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockOut)) != null)
-                    return cfpBlockOut.DateValue;
+                else if (FlightStart.HasValue())
+                    return FlightStart;
                 else
                     return DateTime.MinValue;
             }
@@ -3161,12 +3161,12 @@ namespace MyFlightbook
             get
             {
                 CustomFlightProperty cfpBlockIn;
-                if (FlightEnd.HasValue())
-                    return FlightEnd;
+                if ((cfpBlockIn = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn)) != null)
+                        return cfpBlockIn.DateValue; 
                 else if (EngineEnd.HasValue())
                     return EngineEnd;
-                else if ((cfpBlockIn = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn)) != null)
-                    return cfpBlockIn.DateValue;
+                else if (FlightEnd.HasValue())
+                    return FlightEnd;
                 else
                     return DateTime.MinValue;
             }
