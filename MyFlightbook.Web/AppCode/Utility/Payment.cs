@@ -727,7 +727,7 @@ namespace MyFlightbook.Payments
                 lstRestrictions.Add(" eg.idGratuityType=?gt ");
                 string szUserRestriction = Gratuity.GratuityFromType(gt).UserRestriction;
                 if (!String.IsNullOrEmpty(szUserRestriction))
-                    lstRestrictions.Add(String.Format(" ({0}) ", szUserRestriction));
+                    lstRestrictions.Add(String.Format(CultureInfo.InvariantCulture, " ({0}) ", szUserRestriction));
             }
             string szWhereClause = String.Join(" AND ", lstRestrictions.ToArray()).Trim();
 
@@ -737,7 +737,7 @@ INNER JOIN users ON eg.username=users.username
 LEFT JOIN usersinroles uir ON users.username=uir.username
 {0} 
 ORDER BY dateEarned ASC ";
-            DBHelper dbh = new DBHelper(String.Format(szQ, String.IsNullOrEmpty(szWhereClause) ? string.Empty : String.Format("WHERE {0}", szWhereClause)));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szQ, String.IsNullOrEmpty(szWhereClause) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "WHERE {0}", szWhereClause)));
             List<EarnedGratuity> lst = new List<EarnedGratuity>();
             dbh.ReadRows((comm) =>
             {
@@ -872,7 +872,7 @@ ORDER BY dateEarned ASC ";
             else
                 f = lst[0].ExpirationDate.CompareTo(DateTime.Now) > 0;
             if (sess != null)
-                sess[szSessionKey] = f.ToString();
+                sess[szSessionKey] = f.ToString(CultureInfo.InvariantCulture);
             return f;
         }
 
@@ -893,7 +893,7 @@ ORDER BY dateEarned ASC ";
         public static void DeleteGratuitiesForUser(string szUser)
         {
             // Delete all gratuities for the specified user, or all gratuities for all users.
-            DBHelper dbh = new DBHelper(String.Format("DELETE FROM earnedgratuities WHERE {0} AND idGratuityType > 0", String.IsNullOrEmpty(szUser) ? "username <> ''" : "username = ?user"));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "DELETE FROM earnedgratuities WHERE {0} AND idGratuityType > 0", String.IsNullOrEmpty(szUser) ? "username <> ''" : "username = ?user"));
             dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("user", szUser); });
         }
 
@@ -1039,6 +1039,13 @@ ORDER BY dateEarned ASC ";
             //Post back to either sandbox or live
             const string strSandbox = "https://www.sandbox.paypal.com/cgi-bin/webscr";
             const string strLive = "https://www.paypal.com/cgi-bin/webscr";
+
+            // Issue #511: https://stackoverflow.com/questions/2859790/the-request-was-aborted-could-not-create-ssl-tls-secure-channel
+            // Need to set security protocol BEFORE WebRequest.Create, not after.
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            // allows for validation of SSL conversations
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(new Uri(fSandbox ? strSandbox : strLive));
 
             //Set values for the request back
@@ -1047,10 +1054,6 @@ ORDER BY dateEarned ASC ";
             strRequest += "&cmd=_notify-validate";
             req.ContentLength = strRequest.Length;
             string strResponse = string.Empty;
-
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            // allows for validation of SSL conversations
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
             //for proxy
             //WebProxy proxy = new WebProxy(new Uri("http://url:port#"));
