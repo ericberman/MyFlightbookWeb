@@ -11,7 +11,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2019 MyFlightbook LLC
+ * Copyright (c) 2014-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -199,6 +199,8 @@ public partial class Member_ClubDetails : System.Web.UI.Page
 
     protected void RefreshSummary()
     {
+        if (CurrentClub == null)
+            return;
         SchedSummary1.UserName = ckSummaryScope.Checked ? Page.User.Identity.Name : null;
         SchedSummary1.ClubID = CurrentClub.ID;
         SchedSummary1.ResourceName = null;
