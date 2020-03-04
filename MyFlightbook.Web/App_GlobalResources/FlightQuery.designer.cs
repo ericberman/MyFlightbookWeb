@@ -232,6 +232,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (Clear All Search Criteria).
+        /// </summary>
+        internal static string ClearAllCriteria {
+            get {
+                return ResourceManager.GetString("ClearAllCriteria", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
         internal static string ConjunctionAll {

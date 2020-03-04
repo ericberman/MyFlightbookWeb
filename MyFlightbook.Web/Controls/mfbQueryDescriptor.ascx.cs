@@ -1,14 +1,11 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2016 MyFlightbook LLC
+ * Copyright (c) 2016-2019 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,7 +26,11 @@ public partial class Controls_mfbQueryDescriptor : System.Web.UI.UserControl
 
     public override void DataBind()
     {
-        IEnumerable<QueryFilterItem> src = (DataSource == null || DataSource.IsDefault) ? new QueryFilterItem[0] : DataSource.QueryFilterItems;
+        List<QueryFilterItem> src = new List<QueryFilterItem>((DataSource == null || DataSource.IsDefault) ? new QueryFilterItem[0] : DataSource.QueryFilterItems);
+
+        // Add a "Clear all" if more than one restriction (redundant if only one restriction).
+        if (src.Count > 1)
+            src.Add(new QueryFilterItem(Resources.FlightQuery.ClearAllCriteria, string.Empty, string.Empty));
 
         rptItems.DataSource = src;
         rptItems.DataBind();
@@ -42,6 +43,8 @@ public partial class Controls_mfbQueryDescriptor : System.Web.UI.UserControl
     {
 
     }
+
+
 
     protected void filterItem_DeleteItemClicked(object sender, FilterItemClicked fic)
     {

@@ -22,6 +22,15 @@ public partial class Controls_mfbQueryDescriptorItem
     protected global::System.Web.UI.WebControls.Label lblTitle;
 
     /// <summary>
+    /// lblColon control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblColon;
+
+    /// <summary>
     /// lblDescriptor control.
     /// </summary>
     /// <remarks>

@@ -1317,7 +1317,17 @@ namespace MyFlightbook
         {
             if (qfi == null)
                 throw new ArgumentNullException(nameof(qfi));
-            FlightQuery fqBlank = new FlightQuery();
+            FlightQuery fqBlank = new FlightQuery(UserName);
+
+            // Blank property means clear all
+            if (String.IsNullOrEmpty(qfi.PropertyName))
+            {
+                foreach (QueryFilterItem q in this.QueryFilterItems)
+                    if (!String.IsNullOrEmpty(q.PropertyName))
+                        ClearRestriction(q);
+                Filters.Clear();
+                return this;
+            }
 
             Type t = typeof(FlightQuery);
 

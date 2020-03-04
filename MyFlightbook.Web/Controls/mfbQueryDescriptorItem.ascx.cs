@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using MyFlightbook;
+using System;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2016 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -25,7 +21,11 @@ public partial class Controls_mfbQueryDescriptorItem : System.Web.UI.UserControl
     public string Description
     {
         get { return lblDescriptor.Text; }
-        set { lblDescriptor.Text = value; }
+        set
+        {
+            lblDescriptor.Text = value; 
+            lblColon.Visible = !String.IsNullOrEmpty(value);
+        }
     }
 
     public string PropName

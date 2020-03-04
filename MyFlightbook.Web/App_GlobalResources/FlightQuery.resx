@@ -343,4 +343,7 @@
   <data name="ConjunctionPrompt2" xml:space="preserve">
     <value>of the following:</value>
   </data>
+  <data name="ClearAllCriteria" xml:space="preserve">
+    <value>(Clear All Search Criteria)</value>
+  </data>
 </root>
