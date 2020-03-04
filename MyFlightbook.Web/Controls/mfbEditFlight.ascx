@@ -329,7 +329,6 @@
         meta:resourcekey="pnlSubmitResource1">
         <div style="text-align:center;">
             <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LogbookEntry, EditFlightInlineCancel %>" OnClick="btnCancel_Click" Visible="false" />&nbsp;&nbsp;
-            <asp:Button ID="btnAddPending" runat="server" Text="Add Pending" Visible="false" OnClick="btnAddPending_Click" meta:resourcekey="btnAddPendingResource1" />
             <asp:Button ID="btnAddFlight" runat="server" Text="Add Flight" 
                 OnClick="btnAddFlight_Click" TabIndex="31" 
                 meta:resourcekey="btnAddFlightResource1"/>
@@ -338,6 +337,13 @@
                     <div style="text-align:left">
                         <div runat="server" id="divUpdateNext" visible="false" style="margin: 3px;"><asp:Label ID="LocNext" runat="server" Font-Names="Arial" Font-Size="Larger" Text="<%$ ResourceS:LogbookEntry, NextFlight %>" />&nbsp;<asp:LinkButton ID="lnkUpdateNext" runat="server" Text="<%$ Resources:LocalizedText, EditFlightUpdateFlightNext %>" OnClick="lnkUpdateNext_Click"></asp:LinkButton></div>
                         <div runat="server" id="divUpdatePrev" visible="false" style="margin: 3px;"><asp:Label ID="LocPrev" runat="server" Font-Names="Arial" Font-Size="Larger" Text="<%$ ResourceS:LogbookEntry, PreviousFlight %>" />&nbsp;<asp:LinkButton ID="lnkUpdatePrev" runat="server" Text="<%$ Resources:LocalizedText, EditFlightUpdateFlightPrev %>" OnClick="lnkUpdatePrev_Click"></asp:LinkButton></div>
+                    </div>
+                </MenuContent>
+            </uc1:popmenu>
+            <uc1:popmenu runat="server" ID="popmenuPending" Visible="false">
+                <MenuContent>
+                    <div style="text-align:left">
+                        <div runat="server" style="margin: 3px;"><asp:LinkButton ID="lnkAddPending" runat="server" Text="Add Pending" OnClick="lnkAddPending_Click" meta:resourcekey="lnkAddPendingResource1" /></div>
                     </div>
                 </MenuContent>
             </uc1:popmenu>

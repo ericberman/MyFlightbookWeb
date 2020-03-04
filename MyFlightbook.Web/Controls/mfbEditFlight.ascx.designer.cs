@@ -796,15 +796,6 @@ public partial class Controls_mfbEditFlight
     protected global::System.Web.UI.WebControls.Button btnCancel;
 
     /// <summary>
-    /// btnAddPending control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnAddPending;
-
-    /// <summary>
     /// btnAddFlight control.
     /// </summary>
     /// <remarks>
@@ -875,6 +866,24 @@ public partial class Controls_mfbEditFlight
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.LinkButton lnkUpdatePrev;
+
+    /// <summary>
+    /// popmenuPending control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_popmenu popmenuPending;
+
+    /// <summary>
+    /// lnkAddPending control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.LinkButton lnkAddPending;
 
     /// <summary>
     /// hdnNextID control.

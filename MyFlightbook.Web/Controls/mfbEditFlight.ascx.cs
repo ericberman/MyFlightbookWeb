@@ -63,23 +63,6 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         set { btnCancel.Visible = value; }
     }
 
-    /// <summary>
-    /// Show a "Save Pending" button?
-    /// </summary>
-    public bool CanSavePending
-    {
-        get { return btnAddPending.Visible; }
-        set { btnAddPending.Visible = value; }
-    }
-
-    /// <summary>
-    /// Show an Add/Update button?
-    /// </summary>
-    public bool CanSaveNonPending
-    {
-        get { return btnAddFlight.Visible; }
-        set { btnAddFlight.Visible = value; }
-    }
 
     #region internal settings - NOT PERSISTED
     protected bool UseLastTail { get; set; }
@@ -203,6 +186,8 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
         FinalizeSetupForFlight(le);
 
+        popmenuPending.Visible = le.IsNewFlight;
+
         mfbDate.Focus();
     }
 
@@ -242,8 +227,6 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         if (!IsPostBack)
         {
             InitBasicControls();
-            if (util.GetIntParam(Request, "pend", 0) != 0)
-                CanSavePending = true;
         }
         else
             ProcessImages(FlightID);
@@ -714,13 +697,16 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         popmenuCommitAndNavigate.Visible = divUpdateNext.Visible || divUpdatePrev.Visible;
     }
 
-    protected void btnAddPending_Click(object sender, EventArgs e)
+    protected void lnkAddPending_Click(object sender, EventArgs e)
     {
         if (String.IsNullOrWhiteSpace(hdnPendingID.Value))
             hdnPendingID.Value = new PendingFlight().PendingID;
 
         PendingFlight le = (PendingFlight) InitLogbookEntryFromForm();
         le.FlightData = mfbFlightInfo1.Telemetry;
+        Aircraft ac = new Aircraft(le.AircraftID);
+        le.TailNumDisplay = ac.DisplayTailnumber;
+        le.ModelDisplay = ac.ModelDescription;
 
         // No need - by definition - to handle errors.
         le.Commit();
