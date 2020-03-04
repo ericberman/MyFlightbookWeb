@@ -2627,6 +2627,7 @@
     <Content Include="App_GlobalResources\Currency.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>Currency.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\EmailTemplates.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
@@ -2675,6 +2676,7 @@
     <Content Include="App_GlobalResources\Profile.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>Profile.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\Schedule.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>

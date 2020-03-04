@@ -161,10 +161,10 @@
     <value>Security question is too long.</value>
   </data>
   <data name="ProfileCurrencyStatusClose" xml:space="preserve">
-    <value>Due in {0} day(s)</value>
+    <value>Due in {0:#,##0} day(s)</value>
   </data>
   <data name="ProfileCurrencyStatusNotCurrent" xml:space="preserve">
-    <value>Expired {0} day(s) ago</value>
+    <value>Expired {0:#,##0} day(s) ago</value>
   </data>
   <data name="WelcomeTitle" xml:space="preserve">
     <value>Welcome to {0}</value>

@@ -1090,7 +1090,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Due in {0} day(s).
+        ///   Looks up a localized string similar to Due in {0:#,##0} day(s).
         /// </summary>
         internal static string ProfileCurrencyStatusClose {
             get {
@@ -1099,7 +1099,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expired {0} day(s) ago.
+        ///   Looks up a localized string similar to Expired {0:#,##0} day(s) ago.
         /// </summary>
         internal static string ProfileCurrencyStatusNotCurrent {
             get {

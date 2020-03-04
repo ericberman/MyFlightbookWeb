@@ -200,11 +200,11 @@
     <comment>You've been out of IFR currency for long enough that an InstrumentProficiencyCheck is required</comment>
   </data>
   <data name="NextFlightReview" xml:space="preserve">
-    <value>Flight Review Due</value>
+    <value>Flight Review</value>
     <comment>Next BFR</comment>
   </data>
   <data name="NextMedical" xml:space="preserve">
-    <value>Medical Due</value>
+    <value>Medical</value>
     <comment>Next Medical</comment>
   </data>
   <data name="NextPICProficiencyCheck" xml:space="preserve">
@@ -310,10 +310,10 @@
     <value>calendar months</value>
   </data>
   <data name="CertificateExpiration" xml:space="preserve">
-    <value>CFI Certificate Expiration</value>
+    <value>CFI Certificate</value>
   </data>
   <data name="NextLanguageProficiency" xml:space="preserve">
-    <value>English Proficiency Check Due</value>
+    <value>English Proficiency Check</value>
     <comment>When is your next English proficiency check?</comment>
   </data>
   <data name="CustomCurrencyEventApproach" xml:space="preserve">
@@ -337,11 +337,11 @@
     <comment>If you have a 6+ month gap in currency, technically you need an IPC.  We'll treat this same as night takeoffs for now - not preventing currency, but putting it in as a warning.</comment>
   </data>
   <data name="NextFlightReviewR22" xml:space="preserve">
-    <value>SFAR73 Flight Review (R22) Due</value>
+    <value>Flight Review (SFAR73/R22)</value>
     <comment>Per SFAR 73, you are only current in an R22 only if you have an unexpired flight review in an R22</comment>
   </data>
   <data name="NextFlightReviewR44" xml:space="preserve">
-    <value>SFAR73 Flight Review (R44) Due</value>
+    <value>Flight Review (SFAR73/R44)</value>
     <comment>Per SFAR 73, you are only current in an R44 only if you have an unexpired flight review in an R44</comment>
   </data>
   <data name="CustomCurrencyEventBaseCheck" xml:space="preserve">

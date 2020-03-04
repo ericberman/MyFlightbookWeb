@@ -154,7 +154,7 @@ namespace MyFlightbook
             HttpContext.Current.Response.Cookies[MFBConstants.keyOriginalID].Value = szAdminName;
             HttpContext.Current.Response.Cookies[MFBConstants.keyOriginalID].Expires = DateTime.Now.AddDays(30);
             FormsAuthentication.SetAuthCookie(szTargetName, true);
-            HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Value = true.ToString();
+            HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Value = true.ToString(CultureInfo.InvariantCulture);
             HttpContext.Current.Response.Cookies[MFBConstants.keyIsImpersonating].Expires = DateTime.Now.AddDays(30);
         }
         #endregion
@@ -1045,7 +1045,7 @@ namespace MyFlightbook
 
         public static IEnumerable<Profile> UsersWithSubscriptions(UInt32 subscriptionMask, DateTime dtMin)
         {
-            string szQ = String.Format(CultureInfo.InvariantCulture, "SELECT uir.Rolename AS Role, u.* FROM users u LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook') WHERE (u.EmailSubscriptions & {0}) <> 0 AND (LastEmail IS NULL OR LastEmail <= '{1}')", subscriptionMask, dtMin.ToString("yyyy-MM-dd"));
+            string szQ = String.Format(CultureInfo.InvariantCulture, "SELECT uir.Rolename AS Role, u.* FROM users u LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook') WHERE (u.EmailSubscriptions & {0}) <> 0 AND (LastEmail IS NULL OR LastEmail <= '{1}')", subscriptionMask, dtMin.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             DBHelper dbh = new DBHelper(szQ);
             List<Profile> l = new List<Profile>();
             dbh.ReadRows(
@@ -1104,30 +1104,6 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Last BFR in a Robinson R22 (see SFAR 73)
-        /// </summary>
-        public DateTime LastBFRR22()
-        {
-            ProfileEvent[] rgPfe = CachedBFREvents();
-            for (int i = rgPfe.Length - 1; i >= 0; i--)
-                if (rgPfe[i].IsR22)
-                    return rgPfe[i].Date;
-            return DateTime.MinValue;
-        }
-
-        /// <summary>
-        /// Last BFR in a Robinson R44 (see SFAR 73)
-        /// </summary>
-        public DateTime LastBFRR44()
-        {
-            ProfileEvent[] rgPfe = CachedBFREvents();
-            for (int i = rgPfe.Length - 1; i >= 0; i--)
-                if (rgPfe[i].IsR44)
-                    return rgPfe[i].Date;
-            return DateTime.MinValue;
-        }
-
-        /// <summary>
         /// Predicted date that next BFR is due
         /// </summary>
         /// <param name="bfrLast">Date of the last BFR</param>
@@ -1161,7 +1137,7 @@ namespace MyFlightbook
                 TimeSpan ts = dt.Subtract(DateTime.Now);
                 int days = (int)Math.Ceiling(ts.TotalDays);
                 CurrencyState cs = (days < 0) ? CurrencyState.NotCurrent : ((ts.Days < 30) ? CurrencyState.GettingClose : CurrencyState.OK);
-                return new CurrencyStatusItem(szLabel, dt.ToShortDateString(), cs, (cs == CurrencyState.GettingClose) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
+                return new CurrencyStatusItem(szLabel, CurrencyExaminer.StatusDisplayForDate(dt), cs, (cs == CurrencyState.GettingClose) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
                                                                                    (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty) { CurrencyGroup = rt };
             }
             else
@@ -1234,19 +1210,6 @@ namespace MyFlightbook
             DateTime dtBfrLast = LastBFR();
             if (dtBfrLast.HasValue())
                 rgCS.Add(StatusForDate(NextBFR(dtBfrLast), Resources.Currency.NextFlightReview, CurrencyStatusItem.CurrencyGroups.FlightReview));
-
-            // SFAR 73 support - check if there is an expired R22/R44 BFR
-            DateTime dtBfrLastR22 = LastBFRR22();
-            DateTime dtBfrLastR44 = LastBFRR44();
-
-            if (dtBfrLastR22.HasValue() || dtBfrLastR44.HasValue())
-            {
-                SFAR73Currency sFAR73Currency = new SFAR73Currency(UserName);   // database hit, unfortunately.  But only if you actually have R22/R44 experience!
-                if (dtBfrLastR22.HasValue())
-                    rgCS.Add(StatusForDate(sFAR73Currency.NextR22FlightReview(dtBfrLastR22), Resources.Currency.NextFlightReviewR22, CurrencyStatusItem.CurrencyGroups.FlightExperience));
-                if (dtBfrLastR44.HasValue())
-                    rgCS.Add(StatusForDate(sFAR73Currency.NextR44FlightReview(dtBfrLastR44), Resources.Currency.NextFlightReviewR44, CurrencyStatusItem.CurrencyGroups.FlightExperience));
-            }
 
             BFREvents = null; // clear the cache again (memory).
 

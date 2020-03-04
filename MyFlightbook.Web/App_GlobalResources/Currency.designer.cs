@@ -70,7 +70,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CFI Certificate Expiration.
+        ///   Looks up a localized string similar to CFI Certificate.
         /// </summary>
         internal static string CertificateExpiration {
             get {
@@ -1889,7 +1889,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flight Review Due.
+        ///   Looks up a localized string similar to Flight Review.
         /// </summary>
         internal static string NextFlightReview {
             get {
@@ -1898,7 +1898,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SFAR73 Flight Review (R22) Due.
+        ///   Looks up a localized string similar to Flight Review (SFAR73/R22).
         /// </summary>
         internal static string NextFlightReviewR22 {
             get {
@@ -1907,7 +1907,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SFAR73 Flight Review (R44) Due.
+        ///   Looks up a localized string similar to Flight Review (SFAR73/R44).
         /// </summary>
         internal static string NextFlightReviewR44 {
             get {
@@ -1916,7 +1916,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to English Proficiency Check Due.
+        ///   Looks up a localized string similar to English Proficiency Check.
         /// </summary>
         internal static string NextLanguageProficiency {
             get {
@@ -1925,7 +1925,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Medical Due.
+        ///   Looks up a localized string similar to Medical.
         /// </summary>
         internal static string NextMedical {
             get {

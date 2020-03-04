@@ -1381,16 +1381,6 @@ GROUP BY fp.idPropType;";
         /// The category of aircraft in which the event occured
         /// </summary>
         public string Category { get; set; }
-
-        /// <summary>
-        /// Was this event in a Robinson R22 (for SFAR 73)
-        /// </summary>
-        public bool IsR22 { get; set; }
-
-        /// <summary>
-        /// Was this event in a Robinson R44 (for SFAR 73)
-        /// </summary>
-        public bool IsR44 { get; set; }
         #endregion
 
         #region Instantiation/Initialization
@@ -1399,7 +1389,6 @@ GROUP BY fp.idPropType;";
         {
             Date = DateTime.MinValue;
             Category = Type = Model = string.Empty;
-            IsR22 = IsR44 = false;
         }
 
         protected ProfileEvent(MySqlDataReader dr)
@@ -1411,8 +1400,6 @@ GROUP BY fp.idPropType;";
             Category = Convert.ToString(dr["Category"], CultureInfo.InvariantCulture);
             Model = dr["model"].ToString();
             Type = dr["typename"].ToString();
-            IsR22 = Convert.ToBoolean(dr["IsR22"], CultureInfo.InvariantCulture);
-            IsR44 = Convert.ToBoolean(dr["IsR44"], CultureInfo.InvariantCulture);
         }
         #endregion
 
@@ -1430,8 +1417,6 @@ SELECT f.date AS DateOfFlight,
     mo.*,
     COALESCE(l.Text, cp.Title) AS LocTitle,
     COALESCE(l2.Text, cp.FormatString) AS LocFormatString,
-    IF (man.idManufacturer = 20 AND mo.idcategoryclass=7 AND (mo.model LIKE 'R%22' OR mo.typename LIKE 'R%22'), 1, 0) AS IsR22,
-    IF (man.idManufacturer = 20 AND mo.idcategoryclass=7 AND (mo.model LIKE 'R%44' OR mo.typename LIKE 'R%44'), 1, 0) AS IsR44,
     0 AS IsFavorite,
     '' AS LocDescription, '' AS prevValues
 FROM flights f 
@@ -1504,9 +1489,7 @@ ORDER BY f.Date Desc";
                    Date == other.Date &&
                    Model == other.Model &&
                    Type == other.Type &&
-                   Category == other.Category &&
-                   IsR22 == other.IsR22 &&
-                   IsR44 == other.IsR44;
+                   Category == other.Category;
         }
 
         public override int GetHashCode()
@@ -1518,8 +1501,6 @@ ORDER BY f.Date Desc";
                 hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Model);
                 hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Type);
                 hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Category);
-                hashCode = hashCode * -1521134295 + IsR22.GetHashCode();
-                hashCode = hashCode * -1521134295 + IsR44.GetHashCode();
                 return hashCode;
             }
         }

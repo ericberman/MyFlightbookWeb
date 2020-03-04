@@ -101,7 +101,7 @@ namespace MyFlightbook.FlightCurrency
     /// </summary>
     [Serializable]
     [DataContract]
-    public class CurrencyStatusItem
+    public class CurrencyStatusItem : IComparable, IEquatable<CurrencyStatusItem>
     {
         public enum CurrencyGroups { None, FlightExperience, FlightReview, Aircraft, AircraftDeadline, Certificates, Medical, Deadline, CustomCurrency }
 
@@ -239,6 +239,7 @@ namespace MyFlightbook.FlightCurrency
             lst.AddRange(MaintenanceLog.AircraftInspectionWarningsForUser(szUser, lstWithAircraft));
             lst.AddRange(DeadlineCurrency.CurrencyForDeadlines(lstNoAircraft));
             lst.AddRange(Profile.GetUser(szUser).WarningsForUser());
+            lst.Sort();
             return lst;
         }
 
@@ -307,6 +308,110 @@ namespace MyFlightbook.FlightCurrency
             }
             return dict2.Values;
         }
+
+        #region IComparable
+
+        /// <summary>
+        /// When sorting, we can group custom currencies together and we can group aircraft deadlines with aircraft maintenance
+        /// </summary>
+        /// <param name="cg"></param>
+        /// <returns></returns>
+        protected static int GroupSortBucket(CurrencyGroups cg)
+        {
+            switch (cg)
+            {
+                case CurrencyGroups.None:
+                    return 0;
+                case CurrencyGroups.FlightExperience:
+                case CurrencyGroups.CustomCurrency:
+                    return 1;
+                case CurrencyGroups.Aircraft:
+                case CurrencyGroups.AircraftDeadline:
+                    return 2;
+                case CurrencyGroups.FlightReview:
+                    return 3;
+                case CurrencyGroups.Certificates:
+                    return 4;
+                case CurrencyGroups.Medical:
+                    return 5;
+                case CurrencyGroups.Deadline:
+                    return 6;
+                default:
+                    return (int)cg;
+            }
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+            if (!(obj is CurrencyStatusItem csi))
+                throw new InvalidCastException("obj is not currencystatusitem, it is " + obj.GetType().ToString());
+
+            int gspThis = GroupSortBucket(CurrencyGroup);
+            int gspThat = GroupSortBucket(csi.CurrencyGroup);
+            return gspThis.CompareTo(gspThat);  // don't subsort on name because the ordering of that is fine as is.
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as CurrencyStatusItem);
+        }
+
+        public bool Equals(CurrencyStatusItem other)
+        {
+            return other != null &&
+                   Attribute == other.Attribute &&
+                   Value == other.Value &&
+                   Status == other.Status &&
+                   Discrepancy == other.Discrepancy &&
+                   CurrencyGroup == other.CurrencyGroup;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = -1537879147;
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Attribute);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Value);
+                hashCode = hashCode * -1521134295 + Status.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Discrepancy);
+                hashCode = hashCode * -1521134295 + CurrencyGroup.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(CurrencyStatusItem left, CurrencyStatusItem right)
+        {
+            return EqualityComparer<CurrencyStatusItem>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(CurrencyStatusItem left, CurrencyStatusItem right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(CurrencyStatusItem left, CurrencyStatusItem right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(CurrencyStatusItem left, CurrencyStatusItem right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(CurrencyStatusItem left, CurrencyStatusItem right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(CurrencyStatusItem left, CurrencyStatusItem right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -475,7 +580,7 @@ namespace MyFlightbook.FlightCurrency
     }
 
     /// <summary>
-    /// Represents a period of time.  We use it here to representa  period of time when the user was current.
+    /// Represents a period of time.  We use it here to represent a period of time when the user was current.
     /// </summary>
     public class CurrencyPeriod
     {
@@ -579,7 +684,7 @@ namespace MyFlightbook.FlightCurrency
         /// </summary>
         /// <param name="dtExpiration">The expiration date</param>
         /// <returns>A human-readable string for the currency status</returns>
-        protected static string StatusDisplayForDate(DateTime dtExpiration)
+        public static string StatusDisplayForDate(DateTime dtExpiration)
         {
             return String.Format(CultureInfo.CurrentCulture, (DateTime.Compare(dtExpiration.Date, DateTime.Now.Date) < 0) ? Resources.Currency.FormatExpired : Resources.Currency.FormatCurrent, dtExpiration.ToShortDateString());
         }
@@ -652,6 +757,7 @@ namespace MyFlightbook.FlightCurrency
             FAR117Currency fcFAR117 = new FAR117Currency(pf.UsesFAR117DutyTimeAllFlights, pf.UsesHHMM);
             FAR195ACurrency fcFAR195 = new FAR195ACurrency(pf.UsesHHMM);
             UASCurrency fcUAS = new UASCurrency();
+            IEnumerable<FlightCurrency> sFAR73Currencies = SFAR73Currency.SFAR73Currencies;
 
             decimal totalTime = 0.0M;
             decimal picTime = 0.0M;
@@ -862,6 +968,10 @@ namespace MyFlightbook.FlightCurrency
                         }
                     }
 
+                    // SFAR 73 currencies
+                    foreach (FlightCurrency fc in sFAR73Currencies)
+                        fc.ExamineFlight(cfr);
+
                     // get glider IFR currency events.
                     gliderIFR.ExamineFlight(cfr);
 
@@ -1032,6 +1142,13 @@ namespace MyFlightbook.FlightCurrency
             {
                 if (cc.HasBeenCurrent && (!cc.ExpirationDate.HasValue() || cc.ExpirationDate.CompareTo(dtCutoff) > 0))
                     arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString) { Query = cc.Query, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.CustomCurrency });
+            }
+
+            // And any flight reviews from SFAR 73 (i.e., not picked up by profile events):
+            foreach (FlightCurrency fc in sFAR73Currencies)
+            {
+                if (fc.HasBeenCurrent & (fc.ExpirationDate.HasValue() || fc.ExpirationDate.CompareTo(dtCutoff) > 0))
+                    arcs.Add(new CurrencyStatusItem(fc.DisplayName, fc.StatusDisplay, fc.CurrentState, fc.DiscrepancyString) { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.FlightReview });
             }
 
             return arcs;
@@ -2088,58 +2205,119 @@ namespace MyFlightbook.FlightCurrency
     /// <summary>
     /// Compute Flight review requirements for SFAR 73 (regular R22/R44 currency is computed by piggybacking on type-rated currency)
     /// </summary>
-    public class SFAR73Currency
+    public class SFAR73Currency : FlightCurrency
     {
-        private readonly int R22Duration;
-        private readonly int R44Duration;
+        protected const string R22ICAO = "R22";
+        protected const string R44ICAO = "R44";
+        protected const decimal MinRxxHours = 50;
+        protected const decimal MinHelicopterHours = 200;
+        protected const decimal MaxR22HoursTowardsR44 = 25;
 
-        public DateTime NextR22FlightReview(DateTime lastR22Review)
+        #region properties
+        protected string Model { get; set; }
+
+        protected bool IsR44 { get; set; }
+
+        protected decimal HelicopterHours { get; set; }
+
+        protected decimal HoursInType { get; set; }
+
+        protected decimal R22SubstituteHours { get; set; }
+
+        protected DateTime? LastFlightReviewInType { get; set; }
+        #endregion
+
+        public static IEnumerable<SFAR73Currency> SFAR73Currencies
         {
-            return lastR22Review.AddCalendarMonths(R22Duration);
+            get { return new SFAR73Currency[] { new SFAR73Currency(R22ICAO, Resources.Currency.NextFlightReviewR22), new SFAR73Currency(R44ICAO, Resources.Currency.NextFlightReviewR44) }; }
         }
 
-        public DateTime NextR44FlightReview(DateTime lastR44Review)
+        public SFAR73Currency(string icao, string szName) : base(1, 24, true, szName)
         {
-            return lastR44Review.AddCalendarMonths(R44Duration);
+            Model = icao ?? throw new ArgumentNullException(nameof(icao));
+            if (icao.Length == 0)
+                throw new ArgumentOutOfRangeException(nameof(icao), "Must specify an ICAO value");
+
+            IsR44 = icao.CompareCurrentCultureIgnoreCase(R44ICAO) == 0;
         }
 
-        public SFAR73Currency(string szUser)
+        public override void ExamineFlight(ExaminerFlightRow cfr)
         {
-            if (string.IsNullOrEmpty(szUser))
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            if (!cfr.fIsRealAircraft)
                 return;
 
-            // Get Helicopter time and R22/R44 time to comply with SFAR 73
-            DBHelper dbh = new DBHelper(@"SELECT 
-                                                    SUM(f.totalflighttime) AS totalTime, m.typename
-                                                FROM
-                                                    flights f
-                                                        INNER JOIN
-                                                    aircraft ac ON f.idaircraft = ac.idaircraft
-                                                        INNER JOIN
-                                                    models m ON ac.idmodel = m.idmodel
-                                                WHERE
-                                                    f.username = ?user
-                                                        AND m.idcategoryclass = 7
-                                                GROUP BY m.typename");
+            if (cfr.idCatClassOverride != CategoryClass.CatClassID.Helicopter)
+                return;
 
-            double heliTime = 0.0;
-            double R22Time = 0.0;
-            double R44Time = 0.0;
+            HelicopterHours += cfr.Total;
 
-            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
-                (dr) =>
+            // SFAR 73 (b)(2)(i) Can count up to 25 hours of R22 time towards R44 hours
+            if (IsR44 && R22SubstituteHours < MaxR22HoursTowardsR44 && cfr.szFamily.CompareCurrentCultureIgnoreCase(R22ICAO) == 0)
+                R22SubstituteHours = Math.Min(MaxR22HoursTowardsR44, R22SubstituteHours + cfr.Total);
+
+            if (cfr.szFamily.CompareCurrentCultureIgnoreCase(Model) == 0)
+            {
+                HoursInType += cfr.Total;
+                // Look for a BFR in this model of Robinson
+                if (!LastFlightReviewInType.HasValue)
                 {
-                    double time = Convert.ToDouble(dr["totalTime"], CultureInfo.InvariantCulture);
-                    heliTime += time;
-                    if (((string)dr["typename"]).CompareCurrentCultureIgnoreCase("R22") == 0)
-                        R22Time += time;
-                    if (((string)dr["typename"]).CompareCurrentCultureIgnoreCase("R44") == 0)
-                        R44Time += time;
-                });
-            R44Time += Math.Min(R22Time, 25.0); // up to 25 hours of R22 time can credit towards R44 time
+                    cfr.FlightProps.ForEachEvent(cfp =>
+                    {
+                        if (cfp.PropertyType.IsBFR)
+                            LastFlightReviewInType = cfr.dtFlight;
+                    });
+                }
+            }
+        }
 
-            R22Duration = (heliTime >= 200.0) && R22Time >= 50.0 ? 24 : 12;
-            R44Duration = (heliTime >= 200.0) && R44Time >= 50.0 ? 24 : 12;
+        // Per SFAR73(b)(1/2)(i), if you HAVE 200 hrs in helicopters + 50 hrs in R22 ((b)(1)(i)) or R44 ((b)(2)(i), allowing up to 25 hrs of R22 time) , you're good to go 
+        // but then SFAR73(c)(1/2) kicks in, so you need your most recent flight review (per 61.56) to have been in an R22/R44.  Since that's a regular flight review, it's
+        // good for 2 years.
+        //
+        // If you *DON'T* meet SFAR73(b)(1/2)(i), then you instead must meet SFAR73(b)(1/2)(ii), which requires 10 hours of dual (not counted here since that's not really a currency thing)
+        // and have a flight review in an R22/R44 within the preceding *12* calendar months.
+        //
+        // I.e., if you have the 200+50 time, you're on a 24 month flight review, otherwise you're on a 12 month.
+        protected int FlightReviewDuration
+        {
+            get { return (HelicopterHours >= MinHelicopterHours && HoursInType + R22SubstituteHours >= MinRxxHours) ? 24 : 12; }
+        }
+
+        public override DateTime ExpirationDate
+        {
+            get { return LastFlightReviewInType.HasValue ? LastFlightReviewInType.Value.AddCalendarMonths(FlightReviewDuration) : DateTime.MinValue; }
+        }
+
+        public override CurrencyState CurrentState
+        {
+            get
+            {
+                if (!LastFlightReviewInType.HasValue)
+                    return CurrencyState.NotCurrent;
+
+                DateTime dtExpiration = ExpirationDate;
+
+                return dtExpiration.CompareTo(DateTime.Now) < 0 ? CurrencyState.NotCurrent : (dtExpiration.CompareTo(DateTime.Now.AddDays(30)) < 0 ? CurrencyState.GettingClose : CurrencyState.OK);
+            }
+        }
+
+        public override bool HasBeenCurrent
+        {
+            get { return LastFlightReviewInType.HasValue; }
+        }
+
+        public override string DiscrepancyString {
+            get
+            {
+                TimeSpan ts = ExpirationDate.Subtract(DateTime.Now);
+                int days = (int)Math.Ceiling(ts.TotalDays);
+                CurrencyState cs = CurrentState;
+                return (cs == CurrencyState.GettingClose) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusClose, days) :
+                                                                                   (cs == CurrencyState.NotCurrent) ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileCurrencyStatusNotCurrent, -days) : string.Empty;
+            }
         }
     }
 
