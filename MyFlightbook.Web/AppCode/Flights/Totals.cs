@@ -768,11 +768,21 @@ namespace MyFlightbook.FlightCurrency
                             continue;
 
                         List<CustomPropertyType> lstCpt = new List<CustomPropertyType>(Restriction.PropertyTypes);
+
+                        // Add in any property that was found that isn't in the restriction's list of property types
+                        // Unless it is a boolean property.  Only total flights for boolean properties
                         if (!lstCpt.Exists(c => c.PropTypeID == cpt.PropTypeID))
                             lstCpt.Add(cpt);
+
                         FlightQuery fq = new FlightQuery(Restriction) { PropertyTypes = new Collection<CustomPropertyType>(lstCpt) };
                         switch (cpt.Type)
                         {
+                            case CFPPropertyType.cfpBoolean:
+                                // "total" here is the number of flights.
+                                // Only include the total if it is part of the search!
+                                if (!cpt.IsExcludedFromMRU && lstCpt.Exists(c => c.PropTypeID == cpt.PropTypeID))
+                                    AddToList(new TotalsItem(String.Format(CultureInfo.CurrentCulture, Resources.Totals.FlightsWithBooleanProp, cpt.Title), Convert.ToInt32(dr["intTotal"], CultureInfo.InvariantCulture)) { Query = fq, Group = TotalsGroup.Properties });
+                                break;
                             case CFPPropertyType.cfpDecimal:
                                 if (cpt.IsBasicDecimal)
                                     AddToList(new TotalsItem(cpt.Title, Convert.ToDecimal(dr["decTotal"], CultureInfo.InvariantCulture), TotalsItem.NumType.Decimal) { Query = fq, Group = TotalsGroup.Properties });

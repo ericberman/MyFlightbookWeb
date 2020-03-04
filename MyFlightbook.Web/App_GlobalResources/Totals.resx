@@ -266,4 +266,8 @@
   <data name="TotalsModeGrouped" xml:space="preserve">
     <value>Show grouped</value>
   </data>
+  <data name="FlightsWithBooleanProp" xml:space="preserve">
+    <value>Flights with "{0}"</value>
+    <comment>{0} is the name of the property</comment>
+  </data>
 </root>

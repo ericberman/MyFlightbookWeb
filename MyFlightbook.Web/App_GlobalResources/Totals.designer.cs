@@ -133,6 +133,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flights with &quot;{0}&quot;.
+        /// </summary>
+        internal static string FlightsWithBooleanProp {
+            get {
+                return ResourceManager.GetString("FlightsWithBooleanProp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight Time.
         /// </summary>
         internal static string FlightTime {
