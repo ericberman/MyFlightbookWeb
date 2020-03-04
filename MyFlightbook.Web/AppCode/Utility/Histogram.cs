@@ -356,6 +356,26 @@ namespace MyFlightbook.Histogram
                 }
             }
 
+            // Remove any rows that have no data
+            List<int> emptyColumns = new List<int>();
+            for (int iCol = 0; iCol < dt.Columns.Count; iCol++)
+            {
+                bool fHasValue = false;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if (!decimal.TryParse(dr[iCol].ToString(), out decimal result) || result != 0)
+                    {
+                        fHasValue = true;
+                        break;
+                    }
+                }
+                if (!fHasValue)
+                    emptyColumns.Add(iCol);
+            }
+            emptyColumns.Sort();
+            for (int iCol = emptyColumns.Count - 1; iCol >= 0; iCol--)
+                dt.Columns.RemoveAt(emptyColumns[iCol]);
+
             return dt;
         }
 
