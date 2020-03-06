@@ -38,10 +38,8 @@ public partial class Member_Import : System.Web.UI.Page
 
     public string GetClassForWizardStep(object wizardStep)
     {
-        WizardStep step = wizardStep as WizardStep;
-
-        if (step == null)
-            return "";
+        if (!(wizardStep is WizardStep step))
+            return string.Empty;
 
         int stepIndex = wzImportFlights.WizardSteps.IndexOf(step);
 
@@ -119,10 +117,10 @@ public partial class Member_Import : System.Web.UI.Page
         }
     }
 
-    protected void AddTextRow(Control parent, string sz, string szClass = "")
+    protected static void AddTextRow(Control parent, string sz, string szClass = "")
     {
         if (parent == null)
-            throw new ArgumentNullException("parent");
+            throw new ArgumentNullException(nameof(parent));
         Panel p = new Panel();
         parent.Controls.Add(p);
         Label l = new Label();
@@ -135,7 +133,7 @@ public partial class Member_Import : System.Web.UI.Page
     protected void rptPreview_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookEntry le = (LogbookEntry)e.Item.DataItem;
 
@@ -185,16 +183,16 @@ public partial class Member_Import : System.Web.UI.Page
         }
     }
 
-    protected void AddSuccessRow(LogbookEntry le, int iRow)
+    protected static void AddSuccessRow(LogbookEntry le, int iRow)
     {
         if (le == null)
-            throw new ArgumentNullException("le");
+            throw new ArgumentNullException(nameof(le));
     }
 
     protected void AddErrorRow(LogbookEntryBase le, string szContext, int iRow)
     {
         if (le == null)
-            throw new ArgumentNullException("le");
+            throw new ArgumentNullException(nameof(le));
 
         if (IsPendingOnly && le.LastError != LogbookEntryBase.ErrorCode.None)   // ignore errors if the importer is only pending flights and the error is a logbook validation error (no tail, future date, night, etc.)
             return;
@@ -238,7 +236,7 @@ public partial class Member_Import : System.Web.UI.Page
 
         mvPreviewResults.SetActiveView(vwPreviewResults);   // default to showing results.
 
-        mfbImportAircraft1.CandidatesForImport = new AircraftImportMatchRow[0]; // start fresh every time.
+        mfbImportAircraft1.CandidatesForImport = Array.Empty<AircraftImportMatchRow>(); // start fresh every time.
 
         byte[] rgb = CurrentCSVSource;
         if (rgb == null || rgb.Length == 0)
@@ -259,9 +257,10 @@ public partial class Member_Import : System.Web.UI.Page
             IsPendingOnly = efi.IsPendingOnly;
         }
 
-        MemoryStream ms = new MemoryStream(rgb);
+        MemoryStream ms = null;
         try
         {
+            ms = new MemoryStream(rgb);
             pnlConverted.Visible = pnlAudit.Visible = false;
             lblAudit.Text = string.Empty;
             using (CSVAnalyzer csvAnalyzer = new CSVAnalyzer(ms))
@@ -329,7 +328,7 @@ public partial class Member_Import : System.Web.UI.Page
             if (csvimporter.HasErrors)
             {
                 if (!IsPendingOnly)
-                    lblError.Text = String.Format(CultureInfo.InvariantCulture, "<p>{0}</p><p>{1}</p>", Resources.LogbookEntry.ImportPreviewNotSuccessful, lblError.Text);
+                    lblError.Text = Resources.LogbookEntry.ImportPreviewNotSuccessful;
 
                 List<AircraftImportMatchRow> missing = new List<AircraftImportMatchRow>(csvimporter.MissingAircraft);
                 if (missing.Count > 0)
@@ -360,7 +359,7 @@ public partial class Member_Import : System.Web.UI.Page
         CSVImporter csvimporter = CurrentImporter;
 
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (csvimporter == null)
         {
@@ -480,8 +479,7 @@ public partial class Member_Import : System.Web.UI.Page
             IEnumerable<CloudAhoyFlight> rgcaf = await client.GetFlights(User.Identity.Name, dtStart, dtEnd);
             foreach (CloudAhoyFlight caf in rgcaf)
             {
-                PendingFlight pendingflight = caf.ToLogbookEntry() as PendingFlight;
-                if (pendingflight != null)
+                if (caf.ToLogbookEntry() is PendingFlight pendingflight)
                     pendingflight.Commit();
             }
             // Avoid a "Thread was being aborted" (ThreadAbortException).
