@@ -154,6 +154,7 @@ namespace MyFlightbook
             IDPropDutyStart = 608,
             IDPropDutyEnd = 609,
             IDPropNightRating = 623,
+            IDPropXCMoreThan100nm = 665,
             IDPropLessonStart = 668,
             IDPropLessonEnd = 669,
             IDProp6155SICCheck = 677
