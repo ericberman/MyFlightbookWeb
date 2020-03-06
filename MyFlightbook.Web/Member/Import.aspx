@@ -172,12 +172,12 @@
                 <div>
                     <asp:Label ID="lblUpdateOverwriteKey" runat="server" Text="Use the icons below to determine whether a flight is going to be updated, or if a new flight is going to be created." meta:resourcekey="lblUpdateOverwriteKeyResource1" ></asp:Label>
                     <table>
-                        <tr valign="middle">
+                        <tr style="vertical-align:middle">
                             <td>&nbsp;&nbsp;</td>
                             <td><asp:Image ID="imgAddKey" runat="server" ImageAlign="Middle" ImageUrl="~/images/add.png" meta:resourcekey="imgAddKeyResource1"  /></td>
                             <td><asp:Label ID="lblKeyAdd" runat="server" Text="Flight will be ADDED - be sure it's not already present, or it will be a duplicate!" meta:resourcekey="lblKeyAddResource1" ></asp:Label></td>
                         </tr>
-                        <tr valign="middle">
+                        <tr style="vertical-align:middle">
                             <td>&nbsp;&nbsp;</td>
                             <td><asp:Image ID="imgUpdateKey" runat="server" ImageAlign="Middle" ImageUrl="~/images/update.png" meta:resourcekey="imgUpdateKeyResource1"  /></td>
                             <td><asp:Label ID="lblKeyUpdate" runat="server" Text="Flight to import matches an existing flight in your logbook and the existing flight will be updated." meta:resourcekey="lblKeyUpdateResource1" ></asp:Label></td>
@@ -233,32 +233,32 @@
             <asp:View runat="server" ID="vwPreviewResults">
                 <asp:MultiView ID="mvPreview" runat="server">
                     <asp:View ID="vwPreview" runat="server">
-                        <table style="width:100%; font-size: 8pt; border-color: gray; border-collapse:collapse" border="1" cellpadding="2">
+                        <table style="width:100%; font-size: 8pt; border-color: gray; border-collapse:collapse" border="1">
                             <thead>
                                 <tr style="font-weight:bold">
                                     <td></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldTail %></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldApproaches %></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldHold %></td>
-                                    <td style="text-align:center">
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldTail %></td>
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldApproaches %></td>
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldHold %></td>
+                                    <td style="text-align:center;padding: 2px">
                                         <% =Resources.LogbookEntry.FieldLanding %>
                                         <uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent="<%$ Resources:LogbookEntry, LogbookLandingKey %>" />
                                     </td>
-                                    <td style="text-align:center"><% =Resources.LogbookEntry.FieldXCountry %></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldNight %></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldSimIMC %></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldIMC %></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldGroundSim %></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldDual %></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldCFI %></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldSIC %></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldPIC %></td>
-                                    <td style="text-align:center"><%=Resources.LogbookEntry.FieldTotal %></td>
+                                    <td style="text-align:center;padding: 2px"><% =Resources.LogbookEntry.FieldXCountry %></td>
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldNight %></td>
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldSimIMC %></td>
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldIMC %></td>
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldGroundSim %></td>
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldDual %></td>
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldCFI %></td>
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldSIC %></td>
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldPIC %></td>
+                                    <td style="text-align:center;padding: 2px"><%=Resources.LogbookEntry.FieldTotal %></td>
                                 </tr>
                             </thead>
                             <asp:Repeater ID="rptPreview" OnItemDataBound="rptPreview_ItemDataBound" runat="server">
                                 <ItemTemplate>
-                                    <tr runat="server" id="rowError" visible='false' valign="top">
+                                    <tr runat="server" id="rowError" visible='false' style="vertical-align:top">
                                         <td colspan="15" runat="server">
                                             <div><asp:Label ID="lblFlightErr" CssClass="error" runat="server" Text='<%# Eval("ErrorString") %>'></asp:Label></div>
                                             <div><asp:Label ID="lblRawRow" CssClass="error" runat="server"></asp:Label></div>
