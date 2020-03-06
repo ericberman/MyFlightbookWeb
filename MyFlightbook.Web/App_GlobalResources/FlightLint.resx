@@ -241,7 +241,7 @@
     <value>Instrument approaches or holding is indicated without IMC or simulated IMC</value>
   </data>
   <data name="warningIFRNoApproachDescription" xml:space="preserve">
-    <value>Appoaches were performed but no "Approach Name(s)" property was found.  Be sure that the approaches are documented either in the comments or in the "Approach Name(s)" property.</value>
+    <value>Approaches were performed but no "Approach Name(s)" property was found.  Be sure that the approaches are documented either in the comments or in the "Approach Name(s)" property.</value>
   </data>
   <data name="warningIFRNoSafetyPilot" xml:space="preserve">
     <value>Simulated instrument in a real aircraft is indicated, but no safety pilot is specified.  Be sure to indicate the name of the safety pilot!</value>

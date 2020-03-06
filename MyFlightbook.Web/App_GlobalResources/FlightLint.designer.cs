@@ -430,7 +430,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Appoaches were performed but no &quot;Approach Name(s)&quot; property was found.  Be sure that the approaches are documented either in the comments or in the &quot;Approach Name(s)&quot; property..
+        ///   Looks up a localized string similar to Approaches were performed but no &quot;Approach Name(s)&quot; property was found.  Be sure that the approaches are documented either in the comments or in the &quot;Approach Name(s)&quot; property..
         /// </summary>
         internal static string warningIFRNoApproachDescription {
             get {
