@@ -2,13 +2,14 @@ using MyFlightbook;
 using MyFlightbook.Airports;
 using MyFlightbook.Mapping;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -128,8 +129,7 @@ public partial class Controls_mfbAirportIDGame : System.Web.UI.UserControl, INam
     {
         if (m_AirportQuiz == null)
         {
-            m_AirportQuiz = new AirportQuiz();
-            m_AirportQuiz.BluffCount = m_BluffCount;
+            m_AirportQuiz = new AirportQuiz { BluffCount = m_BluffCount };
 
             ViewState[keyQuiz] = m_AirportQuiz;
         }
@@ -169,7 +169,7 @@ public partial class Controls_mfbAirportIDGame : System.Web.UI.UserControl, INam
                 }
 
                 if (fCorrectAnswer)
-                    m_AirportQuiz.CorrectAnswerCount = m_AirportQuiz.CorrectAnswerCount + 1;
+                    m_AirportQuiz.CorrectAnswerCount += 1;
 
                 if (m_AirportQuiz.CorrectAnswerCount > 0)
                     lblRunningScore.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.AirportGameAnswerStatus, m_AirportQuiz.CorrectAnswerCount);
@@ -229,7 +229,7 @@ public partial class Controls_mfbAirportIDGame : System.Web.UI.UserControl, INam
     /// Start the quiz.
     /// </summary>
     /// <param name="szDefaultAirportList">The list of airports to use</param>
-    protected void BeginQuiz(airport[] rgAirports)
+    protected void BeginQuiz(IEnumerable<airport> rgAirports)
     {
         mvQuiz.SetActiveView(vwQuestions);
 
@@ -274,8 +274,7 @@ public partial class Controls_mfbAirportIDGame : System.Web.UI.UserControl, INam
         int score = Convert.ToInt32((cCorrectAnswers * 100.0) / QuestionCount);
         lblResults.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.AirportGameCompletionStatus, cCorrectAnswers, QuestionCount, score);
 
-        if (this.QuizFinished != null)
-            this.QuizFinished(this, new EventArgs());
+        QuizFinished?.Invoke(this, new EventArgs());
 
         if (score == 100)
             lblSnark.Text = Resources.LocalizedText.AirportGameSnarkPerfect;
@@ -317,7 +316,7 @@ public partial class Controls_mfbAirportIDGame : System.Web.UI.UserControl, INam
 
     public class QuizSummaryTemplate : Control, INamingContainer
     {
-        private Controls_mfbAirportIDGame parent;
+        private readonly Controls_mfbAirportIDGame parent;
 
         public int QuestionCount
         {

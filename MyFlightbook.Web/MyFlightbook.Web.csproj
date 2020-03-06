@@ -614,6 +614,7 @@
     <Content Include="Member\Aircraft.aspx" />
     <Content Include="Member\Airports.aspx" />
     <Content Include="Member\BrowseTemplates.aspx" />
+    <Content Include="Member\CheckFlights.aspx" />
     <Content Include="Member\ClubDetails.aspx" />
     <Content Include="Member\ClubManage.aspx" />
     <Content Include="Member\Donate.aspx" />
@@ -850,6 +851,7 @@
     <Compile Include="AppCode\Flights\CustomCurrency.cs" />
     <Compile Include="AppCode\Flights\Deadline.cs" />
     <Compile Include="AppCode\Flights\EASACurrencies.cs" />
+    <Compile Include="AppCode\Flights\FlightLint.cs" />
     <Compile Include="AppCode\Flights\FlightQuery.cs" />
     <Compile Include="AppCode\Flights\FlightStats.cs" />
     <Compile Include="AppCode\Flights\Import\CloudAhoyFlight.cs" />
@@ -978,6 +980,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FlightData.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_GlobalResources\FlightLint.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FlightLint.resx</DependentUpon>
     </Compile>
     <Compile Include="App_GlobalResources\FlightQuery.designer.cs">
       <AutoGen>True</AutoGen>
@@ -1921,6 +1928,13 @@
     <Compile Include="Member\BrowseTemplates.aspx.designer.cs">
       <DependentUpon>BrowseTemplates.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Member\CheckFlights.aspx.cs">
+      <DependentUpon>CheckFlights.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Member\CheckFlights.aspx.designer.cs">
+      <DependentUpon>CheckFlights.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Member\ClubDetails.aspx.cs">
       <DependentUpon>ClubDetails.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2759,6 +2773,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_GlobalResources\FlightLint.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>FlightLint.designer.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -615,6 +615,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BETA.
+        /// </summary>
+        internal static string Beta {
+            get {
+                return ResourceManager.GetString("Beta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string Cancel {

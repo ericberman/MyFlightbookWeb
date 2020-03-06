@@ -74,7 +74,7 @@ namespace MyFlightbook.Airports
     /// A record of a visit to an airport.  Does not derive from airport, but includes an airport object which can be null under some circumstances.
     /// </summary>
     [Serializable]
-    public class VisitedAirport : IComparable
+    public class VisitedAirport : IComparable, IEquatable<VisitedAirport>
     {
         #region Properties
         public string Code
@@ -126,6 +126,71 @@ namespace MyFlightbook.Airports
         public int CompareTo(object obj)
         {
             return Airport.CompareTo(((VisitedAirport)obj).Airport);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as VisitedAirport);
+        }
+
+        public bool Equals(VisitedAirport other)
+        {
+            return other != null &&
+                   Code == other.Code &&
+                   FacilityName == other.FacilityName &&
+                   Aliases == other.Aliases &&
+                   AllCodes == other.AllCodes &&
+                   EarliestVisitDate == other.EarliestVisitDate &&
+                   LatestVisitDate == other.LatestVisitDate &&
+                   NumberOfVisits == other.NumberOfVisits &&
+                   FlightIDOfFirstVisit == other.FlightIDOfFirstVisit;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 1930749431;
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Code);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FacilityName);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Aliases);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AllCodes);
+                hashCode = hashCode * -1521134295 + EarliestVisitDate.GetHashCode();
+                hashCode = hashCode * -1521134295 + LatestVisitDate.GetHashCode();
+                hashCode = hashCode * -1521134295 + NumberOfVisits.GetHashCode();
+                hashCode = hashCode * -1521134295 + FlightIDOfFirstVisit.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(VisitedAirport left, VisitedAirport right)
+        {
+            return EqualityComparer<VisitedAirport>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(VisitedAirport left, VisitedAirport right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(VisitedAirport left, VisitedAirport right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(VisitedAirport left, VisitedAirport right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(VisitedAirport left, VisitedAirport right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(VisitedAirport left, VisitedAirport right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
 
@@ -491,7 +556,7 @@ namespace MyFlightbook.Airports
                                         return;
                                     }
                                 }
-                                catch { }   // eat any error and fall through below
+                                catch (Exception ex) when (!(ex is OutOfMemoryException)) { }   // eat any error and fall through below
                             }
                         }
                         // No path was found above.
@@ -521,7 +586,7 @@ namespace MyFlightbook.Airports
     /// Represents an airport as a latitude/longitude, airport code, and name
     /// </summary>
     [Serializable]
-    public class airport : IComparable, IFix
+    public class airport : IComparable, IFix, IEquatable<airport>
     {
         #region properties
         /// <summary>
@@ -701,6 +766,70 @@ namespace MyFlightbook.Airports
         public int CompareTo(object obj)
         {
             return String.Compare(Code, ((airport)obj).Code, StringComparison.CurrentCulture);
+        }
+
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as airport);
+        }
+
+        public bool Equals(airport other)
+        {
+            return other != null &&
+                   UserName == other.UserName &&
+                   FacilityTypeCode == other.FacilityTypeCode &&
+                   Code == other.Code &&
+                   Name == other.Name &&
+                   LatLong.Latitude == other.LatLong.Latitude &&
+                   LatLong.Longitude == other.LatLong.Longitude &&
+                   Priority == other.Priority;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = -1236571660;
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(UserName);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FacilityTypeCode);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Code);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+                hashCode = hashCode * -1521134295 + EqualityComparer<LatLong>.Default.GetHashCode(LatLong);
+                hashCode = hashCode * -1521134295 + Priority.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(airport left, airport right)
+        {
+            return EqualityComparer<airport>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(airport left, airport right)
+        {
+            return !(left == right);
+        }
+
+
+        public static bool operator <(airport left, airport right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(airport left, airport right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(airport left, airport right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(airport left, airport right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
 
@@ -1686,8 +1815,11 @@ namespace MyFlightbook.Airports
         /// </summary>
         /// <param name="sz">The code of the airport</param>
         /// <returns>The matching airport, null if not found.</returns>
-        private airport GetAirportByCode(string sz)
+        public airport GetAirportByCode(string sz)
         {
+            if (sz == null)
+                return null;
+
             m_htAirportsByCode.TryGetValue(sz, out airport ap);
 
             // if this wasn't a forced navaid and the airport wasn't found, look to see if the navaid matched.
@@ -2185,7 +2317,7 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// Returns the list of airports used to initialize this quiz
         /// </summary>
-        public airport[] DefaultAirportList { get; set;}
+        public IEnumerable<airport> DefaultAirportList { get; set;}
 
         /// <summary>
         /// Initializes a quiz, shuffling the airports and resetting the current quiz index and correct answer count.  You must then do GenerateQuestion to actually create a question.
