@@ -26,6 +26,7 @@
                 <ItemTemplate>
                     <div>
                         <asp:HyperLink ID="lnkEditFlight" runat="server" Font-Size="Larger" Font-Bold="true" Text='<%# ((LogbookEntryBase) Eval("Flight")).Date.ToShortDateString() %>' Target="_blank" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}", ((LogbookEntryBase) Eval("Flight")).FlightID) %>'></asp:HyperLink>
+                        <asp:Label ID="lblTail" Font-Size="Larger" Font-Bold="true" runat="server" Text='<%#: ((LogbookEntryBase) Eval("Flight")).TailNumDisplay %>'></asp:Label>
                         <asp:Label ID="lblRoute" Font-Bold="true" runat="server" Text='<%#: ((LogbookEntryBase) Eval("Flight")).Route %>'></asp:Label>
                         <asp:Label ID="lblComments" runat="server" Text='<%# ((LogbookEntryBase) Eval("Flight")).Comment.Linkify() %>'></asp:Label>
                     </div>

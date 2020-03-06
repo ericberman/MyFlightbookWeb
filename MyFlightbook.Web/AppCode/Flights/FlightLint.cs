@@ -213,7 +213,10 @@ namespace MyFlightbook.Lint
         private void CheckIFRIssues(LogbookEntryBase le)
         {
             AddConditionalIssue(le.Approaches > 0 && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropApproachName) && ApproachDescription.ExtractApproaches(le.Comment).Count() == 0, LintOptions.IFRIssues, Resources.FlightLint.warningIFRNoApproachDescription);
-            AddConditionalIssue(le.SimulatedIFR > 0 && le.Dual == 0 && currentAircraft.InstanceType == AircraftInstanceTypes.RealAircraft && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropSafetyPilotName), LintOptions.IFRIssues, Resources.FlightLint.warningIFRNoSafetyPilot);
+
+            AddConditionalIssue(le.SimulatedIFR > 0 && le.Dual == 0 && currentAircraft.InstanceType == AircraftInstanceTypes.RealAircraft && 
+                !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropSafetyPilotName) &&
+                !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropNameOfExaminer), LintOptions.IFRIssues, Resources.FlightLint.warningIFRNoSafetyPilot);
             AddConditionalIssue((le.Approaches > 0 || le.fHoldingProcedures) && le.SimulatedIFR + le.IMC == 0, LintOptions.IFRIssues, Resources.FlightLint.warningIFRApproachesButNoIFR);
         }
 
