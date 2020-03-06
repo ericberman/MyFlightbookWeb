@@ -1,0 +1,324 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CheckFlightsBegin" xml:space="preserve">
+    <value>Check Flights</value>
+  </data>
+  <data name="CheckFlightsCategoriesHeader" xml:space="preserve">
+    <value>%APP_NAME% can examine your flights for issues in the following categories; you may wish to turn off those that are not relevant to you:</value>
+  </data>
+  <data name="CheckFlightsDescription1" xml:space="preserve">
+    <value>This will go through your flights and try to identify common issues.  NONE OF THESE ISSUES RISE TO THE LEVEL OF ERROR, they may be perfectly valid, but they are things you may wish to check or clean up.</value>
+  </data>
+  <data name="CheckFlightsNoIssuesFound" xml:space="preserve">
+    <value>No issues were found!</value>
+  </data>
+  <data name="errNoOptionsSelected" xml:space="preserve">
+    <value>No options for checking flights have been selected.  Please select at least one category.</value>
+  </data>
+  <data name="LintCategoryAirports" xml:space="preserve">
+    <value>Airports/route-of-flight issues</value>
+  </data>
+  <data name="LintCategoryAirportsTip" xml:space="preserve">
+    <value>Finds common issues around logging the route of flight, including invalid or missing airports.</value>
+  </data>
+  <data name="LintCategoryCrossCountry" xml:space="preserve">
+    <value>Cross-country issues</value>
+  </data>
+  <data name="LintCategoryCrossCountryTip" xml:space="preserve">
+    <value>Looks for common issues around logging of cross-country flights</value>
+  </data>
+  <data name="LintCategoryDateTime" xml:space="preserve">
+    <value>UTC Time issues</value>
+  </data>
+  <data name="LintCategoryDateTimeTip" xml:space="preserve">
+    <value>Ensures consistency for timestamps on flights, such as engine, flight, and block time</value>
+  </data>
+  <data name="LintCategoryIFR" xml:space="preserve">
+    <value>IFR Issues</value>
+  </data>
+  <data name="LintCategoryIFRTip" xml:space="preserve">
+    <value>Looks for common issues around logging instrument flight</value>
+  </data>
+  <data name="LintCategoryMisc" xml:space="preserve">
+    <value>Additional (uncategorized) issues</value>
+  </data>
+  <data name="LintCategoryMiscTip" xml:space="preserve">
+    <value>Checks for other common issues</value>
+  </data>
+  <data name="LintCategoryPICSICDualMath" xml:space="preserve">
+    <value>Time accounting issues</value>
+  </data>
+  <data name="LintCategoryPICSICDualMathTip" xml:space="preserve">
+    <value>In much of the world (but NOT the US), Total=PIC+SIC+Dual.  This checks for scenarios where this equation doesn't hold</value>
+  </data>
+  <data name="LintCategorySim" xml:space="preserve">
+    <value>Simulator/Training Device Issues</value>
+  </data>
+  <data name="LintCategorySimTip" xml:space="preserve">
+    <value>Looks for common issues and best practices regarding logging of time in a simulator.</value>
+  </data>
+  <data name="LintCategoryTimes" xml:space="preserve">
+    <value>Logged Time Issues</value>
+  </data>
+  <data name="LintCategoryTimesTip" xml:space="preserve">
+    <value>Ensures that time quantities within a flight make sense - e.g., that PIC time doesn't exceed total time.</value>
+  </data>
+  <data name="TitleCheckFlights" xml:space="preserve">
+    <value>Check Flights</value>
+  </data>
+  <data name="TitleCheckThisFlight" xml:space="preserve">
+    <value>Check this flight for possible issues</value>
+  </data>
+  <data name="warningAirportAirplaneAtHeliport" xml:space="preserve">
+    <value>Airplane landed at heliport: {0}</value>
+  </data>
+  <data name="warningAirportLandPlaneAtSeaport" xml:space="preserve">
+    <value>Land airplane landed at seaport: {0}</value>
+  </data>
+  <data name="warningAirportLocal" xml:space="preserve">
+    <value>Don't use "Local" or "LCL" for local flights around the pattern.  Just one code is fine.  (And LCL is an airport in Cuba).</value>
+  </data>
+  <data name="warningAirportNotFound" xml:space="preserve">
+    <value>Airport in route not found: {0}</value>
+  </data>
+  <data name="warningAirportUnlikelyImpliedSpeed" xml:space="preserve">
+    <value>Route and total time imply a speed of {0:#,##0}kts.  Errant airport code?</value>
+  </data>
+  <data name="warningBlockTimeDiffersDate" xml:space="preserve">
+    <value>Block in or out differs from date of flight by more than a day</value>
+  </data>
+  <data name="warningDateBlockAfterFlight" xml:space="preserve">
+    <value>Block out time is after flight start</value>
+  </data>
+  <data name="warningDateEngineAfterFlight" xml:space="preserve">
+    <value>Engine start is after flight start</value>
+  </data>
+  <data name="warningDateTimeInvalidBlock" xml:space="preserve">
+    <value>Block out time is after block in time.</value>
+  </data>
+  <data name="warningEngineEndBeforeBlockIn" xml:space="preserve">
+    <value>Engine end time is before block in time</value>
+  </data>
+  <data name="warningEngineStartAfterBlockIn" xml:space="preserve">
+    <value>Engine start is after block in</value>
+  </data>
+  <data name="warningEngineTimeDiffersDate" xml:space="preserve">
+    <value>Engine start or end differs from date of flight by more than a day</value>
+  </data>
+  <data name="warningFlightEndAfterBlockIn" xml:space="preserve">
+    <value>Flight end time is after block in time</value>
+  </data>
+  <data name="warningFlightEndAfterEngineEnd" xml:space="preserve">
+    <value>Flight end time is after engine end time</value>
+  </data>
+  <data name="warningFlightEndBeforeBlockOut" xml:space="preserve">
+    <value>Flight end time is before block out</value>
+  </data>
+  <data name="warningFlightEndBeforeEngineStart" xml:space="preserve">
+    <value>Flight end is before engine start</value>
+  </data>
+  <data name="warningFlightTimeDiffersDate" xml:space="preserve">
+    <value>Flight start or end differs from date of flight by more than a day</value>
+  </data>
+  <data name="warningIFRApproachesButNoIFR" xml:space="preserve">
+    <value>Instrument approaches or holding is indicated without IMC or simulated IMC</value>
+  </data>
+  <data name="warningIFRNoApproachDescription" xml:space="preserve">
+    <value>Appoaches were performed but no "Approach Name(s)" property was found.  Be sure that the approaches are documented either in the comments or in the "Approach Name(s)" property.</value>
+  </data>
+  <data name="warningIFRNoSafetyPilot" xml:space="preserve">
+    <value>Simulated instrument in a real aircraft is indicated, but no safety pilot is specified.  Be sure to indicate the name of the safety pilot!</value>
+  </data>
+  <data name="warningMiscMultipleRedundantCheckrides" xml:space="preserve">
+    <value>The property {0} is indicated on multiple flights, but should generally only ever happen once.  E.g., you only ever take one Private Pilot Checkride, but later you might add new category/class privileges.  </value>
+  </data>
+  <data name="warningPICSICDualBroken" xml:space="preserve">
+    <value>Total time does not equal PIC + SIC + Dual time.</value>
+  </data>
+  <data name="warningPropertyGreaterThanTotal" xml:space="preserve">
+    <value>Property "{0}" indicates more time than total time</value>
+  </data>
+  <data name="warningSIMActualIMC" xml:space="preserve">
+    <value>Actual IMC time logged in a sim - this should be recorded as simulated instrument.</value>
+  </data>
+  <data name="warningSIMAircraftNotFound" xml:space="preserve">
+    <value>Specified aircraft was not found!!</value>
+  </data>
+  <data name="warningSIMCrossCountryInSim" xml:space="preserve">
+    <value>Cross-country flight indicated in a sim - check that it's OK to log that!</value>
+  </data>
+  <data name="warningSIMGroundSimInRealAircraft" xml:space="preserve">
+    <value>Ground sim time is logged in a real aircraft</value>
+  </data>
+  <data name="warningSIMNoDeviceIdentifier" xml:space="preserve">
+    <value>Sim flight found with no "Simulator/Training Device Identifier" property to record the device's identifier.  Ensure that this is recorded either in this property or in the comments.</value>
+  </data>
+  <data name="warningSIMPICInSim" xml:space="preserve">
+    <value>PIC time logged in a training device - check that this is OK to do!</value>
+  </data>
+  <data name="warningSIMSICInSim" xml:space="preserve">
+    <value>SIC time logged in a training device - check that this is OK to do!</value>
+  </data>
+  <data name="warningSIMTotalInSim" xml:space="preserve">
+    <value>Total time logged in a training device - check that this is OK to do!</value>
+  </data>
+  <data name="warningTimesCFIGreaterThanTotal" xml:space="preserve">
+    <value>More CFI time recorded than total time.</value>
+  </data>
+  <data name="warningTimesDualGreaterThanTotal" xml:space="preserve">
+    <value>More dual time recorded than total time.</value>
+  </data>
+  <data name="warningTimesIMCGreaterThanTotal" xml:space="preserve">
+    <value>More IMC time recorded than total time.</value>
+  </data>
+  <data name="warningTimesNightGreaterThanTotal" xml:space="preserve">
+    <value>More night time recorded than total time.</value>
+  </data>
+  <data name="warningTimesPICGreaterThanTotal" xml:space="preserve">
+    <value>More PIC time recorded than total time.</value>
+  </data>
+  <data name="warningTimesSICGreaterThanTotal" xml:space="preserve">
+    <value>More SIC time recorded than total time.</value>
+  </data>
+  <data name="warningTimesSimIFRGreaterThanTotal" xml:space="preserve">
+    <value>More simulated time recorded than total time.</value>
+  </data>
+  <data name="warningTimesSimPlusIMCGreaterThanTotal" xml:space="preserve">
+    <value>More simulated and actual IMC time recorded than total time.</value>
+  </data>
+  <data name="warningTimesXCGreaterThanTotal" xml:space="preserve">
+    <value>More cross-country time recorded than total time.</value>
+  </data>
+  <data name="warningXCDistanceLessThan25ButFlewMore" xml:space="preserve">
+    <value>Flight indicates cross-country flight of less than 25nm, but route was longer than that from departure airport</value>
+  </data>
+  <data name="warningXCDistanceLessThan50ButFlewMore" xml:space="preserve">
+    <value>Flight indicates cross-country flight of less than 50nm, but route was longer than that from departure airport</value>
+  </data>
+  <data name="warningXCDistanceMoreThan50ButFlewLess" xml:space="preserve">
+    <value>Flight indicates cross-country flight of more than 50nm, but route from departure airport was less than that</value>
+  </data>
+  <data name="warningXCMissingXC" xml:space="preserve">
+    <value>Flight indicates travel of more than {0}nm from starting airport, but no cross-country time was logged.  Shorting yourself?</value>
+  </data>
+  <data name="warningXCNotWholeFlightXC" xml:space="preserve">
+    <value>Some, but not all of the flight is listed as cross-country</value>
+  </data>
+</root>

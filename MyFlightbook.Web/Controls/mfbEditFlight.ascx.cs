@@ -1,5 +1,6 @@
 using MyFlightbook;
 using MyFlightbook.Image;
+using MyFlightbook.Lint;
 using MyFlightbook.Payments;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
@@ -352,6 +353,8 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
         mfbEditPropSet1.CrossFillSourceClientID = decCFI.CrossFillSourceClientID = decDual.CrossFillSourceClientID = decGrndSim.CrossFillSourceClientID = decIMC.CrossFillSourceClientID = 
             decNight.CrossFillSourceClientID = decPIC.CrossFillSourceClientID = decSIC.CrossFillSourceClientID = decSimulatedIFR.CrossFillSourceClientID = decXC.CrossFillSourceClientID = decTotal.EditBox.ClientID;
+
+        lnkCheckFlight.Visible = util.GetIntParam(Request, "lint", 0) != 0;
     }
 
     private void FinalizeSetupForFlight(LogbookEntry le)
@@ -368,7 +371,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             if (idLastAircraft != 0 && UseLastTail)
             {
                 try { cmbAircraft.SelectedValue = idLastAircraft.ToString(CultureInfo.InvariantCulture); }
-                catch (ArgumentOutOfRangeException) { }
+                catch (Exception ex) when (ex is ArgumentOutOfRangeException) { }
             }
 
             int idAircraftOrigin = le.AircraftID;
@@ -419,7 +422,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         {
             // try to select the aircraft based on the flight aircraft
             try { cmbAircraft.SelectedValue = le.AircraftID.ToString(CultureInfo.InvariantCulture); }
-            catch (ArgumentOutOfRangeException) { cmbAircraft.SelectedIndex = 0; }
+            catch (Exception ex) when (ex is ArgumentOutOfRangeException) { cmbAircraft.SelectedIndex = 0; }
         }
         else
         {
@@ -778,5 +781,12 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         InitFormFromLogbookEntry(InitLogbookEntryFromForm());
     }
 
+    protected void lnkCheckFlight_Click(object sender, EventArgs e)
+    {
+        LogbookEntryBase le = InitLogbookEntryFromForm();
+        gvFlightLint.DataSource = new FlightLint().CheckFlights(new LogbookEntryBase[] { le }, le.User, FlightLint.DefaultOptionsForLocale);
+        gvFlightLint.DataBind();
+        mpeCheckFlight.Show();
+    }
 }
 

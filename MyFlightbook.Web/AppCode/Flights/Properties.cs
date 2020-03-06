@@ -68,6 +68,7 @@ namespace MyFlightbook
             IDPropTakeoffAny = 93,              // Not flagged as a known property
             IDPropTachStart = 95,
             IDPropTachEnd = 96,
+            IDPropXCLessThan50nm = 100,
             IDPropInstrumentExaminer = 107,
             IDPropMilitaryCoPilottime = 110,
             IDPropHoistOperations = 118,
@@ -125,7 +126,9 @@ namespace MyFlightbook
             IDPropTakeoffTowered = 357,
             IDPropTakeoffToweredNight = 358,
             IDPropTakeoffUntoweredNight = 449,
+            IDPropXCMoreThan50nm = 380,
             IDPropNightTouchAndGo = 397,
+            IDPropXCLessThan25nm = 405,
             IDProp135293Knowledge = 427,
             IDProp135293Competency = 428,
             IDProp135299FlightCheck = 429,
