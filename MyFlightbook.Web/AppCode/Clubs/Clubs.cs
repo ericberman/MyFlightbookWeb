@@ -14,7 +14,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2019 MyFlightbook LLC
+ * Copyright (c) 2014-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -382,7 +382,7 @@ namespace MyFlightbook.Clubs
         protected Club(MySqlDataReader dr) : this()
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
 
             ID = Convert.ToInt32(dr["idclub"], CultureInfo.InvariantCulture);
             Creator = dr["creator"].ToString();
@@ -450,7 +450,7 @@ namespace MyFlightbook.Clubs
 
                 bool fNew = IsNew;
 
-                DBHelper dbh = new DBHelper(String.Format(IsNew ? szQInsertT : szQUpdateT, szSetCore));
+                DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, IsNew ? szQInsertT : szQUpdateT, szSetCore));
 
                 fResult = dbh.DoNonQuery((comm) =>
                     {
@@ -608,7 +608,7 @@ namespace MyFlightbook.Clubs
         public static IEnumerable<Club> ClubsForAircraft(int idaircraft, string szUser = null)
         {
             List<Club> lst = new List<Club>();
-            string szQ = String.Format(@"SELECT c.*, ap.*, 0 AS dist, '' AS FriendlyName 
+            string szQ = String.Format(CultureInfo.InvariantCulture, @"SELECT c.*, ap.*, 0 AS dist, '' AS FriendlyName 
                 FROM clubaircraft ca 
                 INNER JOIN clubs c ON ca.idclub=c.idclub 
                 {0}
@@ -710,12 +710,12 @@ namespace MyFlightbook.Clubs
 
             s.LocalTimeZone = TimeZone;    // ensure that we're using the right timezone
             if (s.ResourceAircraft == null)
-                s.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString().CompareTo(s.ResourceID) == 0);
+                s.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString(CultureInfo.InvariantCulture).CompareTo(s.ResourceID) == 0);
 
             string szBody = Resources.Schedule.ResourceBooked
                 .Replace("<% Creator %>", pfCreator.UserFullName)
                 .Replace("<% Resource %>", s.ResourceAircraft == null ? string.Empty : s.ResourceAircraft.DisplayTailnumber)
-                .Replace("<% ScheduleDetail %>", String.Format("{0:d} {1:t} ({2}){3}", s.LocalStart, s.LocalStart, s.DurationDisplay, String.IsNullOrEmpty(s.Body) ? string.Empty : String.Format(" - {0}", s.Body)));
+                .Replace("<% ScheduleDetail %>", String.Format(CultureInfo.CurrentCulture, "{0:d} {1:t} ({2}){3}", s.LocalStart, s.LocalStart, s.DurationDisplay, String.IsNullOrEmpty(s.Body) ? string.Empty : String.Format(CultureInfo.CurrentCulture, " - {0}", s.Body)));
             string szSubject = Branding.ReBrand(Resources.Schedule.CreateNotificationSubject);
 
             foreach (Profile pf in lst)
@@ -752,15 +752,15 @@ namespace MyFlightbook.Clubs
 
             sOriginal.LocalTimeZone = TimeZone;    // ensure that we're using the right timezone
             if (sOriginal.ResourceAircraft == null)
-                sOriginal.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString().CompareTo(sOriginal.ResourceID) == 0);
+                sOriginal.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString(CultureInfo.InvariantCulture).CompareTo(sOriginal.ResourceID) == 0);
 
             Profile pfChanging = Profile.GetUser(changingUser);
 
             string szBody = Resources.Schedule.ResourceChangedByOther
                 .Replace("<% Deleter %>", pfChanging.UserFullName)
                 .Replace("<% Resource %>", sOriginal.ResourceAircraft == null ? string.Empty : sOriginal.ResourceAircraft.DisplayTailnumber)
-                .Replace("<% ScheduleDetail %>", String.Format("{0:d} {1:t} ({2}){3}", sOriginal.LocalStart, sOriginal.LocalStart, sOriginal.DurationDisplay, String.IsNullOrEmpty(sOriginal.Body) ? string.Empty : String.Format(" - {0}", sOriginal.Body)))
-                .Replace("<% ScheduleDetailNew %>", String.Format("{0:d} {1:t} ({2}){3}", sNew.LocalStart, sNew.LocalStart, sNew.DurationDisplay, String.IsNullOrEmpty(sNew.Body) ? string.Empty : String.Format(" - {0}", sNew.Body)))
+                .Replace("<% ScheduleDetail %>", String.Format(CultureInfo.CurrentCulture, "{0:d} {1:t} ({2}){3}", sOriginal.LocalStart, sOriginal.LocalStart, sOriginal.DurationDisplay, String.IsNullOrEmpty(sOriginal.Body) ? string.Empty : String.Format(CultureInfo.CurrentCulture, " - {0}", sOriginal.Body)))
+                .Replace("<% ScheduleDetailNew %>", String.Format(CultureInfo.CurrentCulture, "{0:d} {1:t} ({2}){3}", sNew.LocalStart, sNew.LocalStart, sNew.DurationDisplay, String.IsNullOrEmpty(sNew.Body) ? string.Empty : String.Format(CultureInfo.CurrentCulture, " - {0}", sNew.Body)))
                 .Replace("<% TimeStamp %>", string.Empty /* DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture) */);
             string szSubject = Branding.ReBrand(Resources.Schedule.ChangeNotificationSubject);
 
@@ -792,13 +792,13 @@ namespace MyFlightbook.Clubs
             {
                 s.LocalTimeZone = TimeZone;    // ensure that we're using the right timezone
                 if (s.ResourceAircraft == null)
-                    s.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString().CompareTo(s.ResourceID) == 0);
+                    s.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString(CultureInfo.InvariantCulture).CompareTo(s.ResourceID) == 0);
 
                 Profile pfDeleting = Profile.GetUser(deletingUser);
                 string szBody = Resources.Schedule.AppointmentDeleted
                     .Replace("<% Deleter %>", pfDeleting.UserFullName)
                     .Replace("<% Resource %>", s.ResourceAircraft == null ? string.Empty : s.ResourceAircraft.DisplayTailnumber)
-                    .Replace("<% ScheduleDetail %>", String.Format("{0:d} {1:t} ({2}){3}", s.LocalStart, s.LocalStart, s.DurationDisplay, String.IsNullOrEmpty(s.Body) ? string.Empty : String.Format(" - {0}", s.Body)))
+                    .Replace("<% ScheduleDetail %>", String.Format(CultureInfo.CurrentCulture, "{0:d} {1:t} ({2}){3}", s.LocalStart, s.LocalStart, s.DurationDisplay, String.IsNullOrEmpty(s.Body) ? string.Empty : String.Format(CultureInfo.CurrentCulture, " - {0}", s.Body)))
                     .Replace("<% TimeStamp %>", string.Empty /* DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture) */);
                 string szSubject = Branding.ReBrand(Resources.Schedule.DeleteNotificationSubject);
 
@@ -817,8 +817,7 @@ namespace MyFlightbook.Clubs
             // Fix up the aircraft, owner names
             lst.ForEach((se) =>
                 {
-                    int idAircraft = 0;
-                    if (int.TryParse(se.ResourceID, out idAircraft))
+                    if (int.TryParse(se.ResourceID, out int idAircraft))
                         se.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID == idAircraft);
                     se.OwnerProfile = Members.FirstOrDefault(cm => String.Compare(cm.UserName, se.OwningUser, StringComparison.Ordinal) == 0);
                 });
@@ -830,9 +829,9 @@ namespace MyFlightbook.Clubs
         private static void SendReport(ClubMember cm, string szReportName, string szReportPrefix, string controlName)
         {
             if (controlName == null)
-                throw new ArgumentNullException("getBody");
+                throw new ArgumentNullException(nameof(controlName));
             if (cm == null)
-                throw new ArgumentNullException("cm");
+                throw new ArgumentNullException(nameof(cm));
             using (MailMessage msg = new MailMessage())
             {
                 Brand brand = Branding.CurrentBrand;
@@ -900,7 +899,6 @@ namespace MyFlightbook.Clubs
         public static void SendMonthlyClubReports()
         {
             DateTime startDate = new DateTime(DateTime.Now.AddDays(-1).Year, DateTime.Now.AddDays(-1).Month, 1);
-            DateTime endDate = startDate.AddMonths(1).AddDays(-1);
             string szDateMonth = startDate.ToString("MMM yyyy", CultureInfo.CurrentCulture);
 
             foreach(ClubMember cm in ClubMember.AllClubOfficers())
@@ -1051,7 +1049,7 @@ namespace MyFlightbook.Clubs
         public ClubMember(MySqlDataReader dr) : base(dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             ClubID = Convert.ToInt32(dr["idclub"], CultureInfo.InvariantCulture);
             UInt32 roleFlags = Convert.ToUInt32(dr["role"], CultureInfo.InvariantCulture);
             RoleInClub = (ClubMemberRole)(roleFlags & RoleMask);
@@ -1156,7 +1154,7 @@ namespace MyFlightbook.Clubs
                 INNER JOIN users u ON cm.username=u.username
                 LEFT JOIN usersinroles uir ON (u.Username=uir.Username AND uir.ApplicationName='Logbook')
                 WHERE (cm.role & ~0x{0}) <> 0
-                ORDER BY u.Lastname ASC, u.FirstName ASC, u.Username ASC", RoleMask.ToString("x")));
+                ORDER BY u.Lastname ASC, u.FirstName ASC, u.Username ASC", RoleMask.ToString("x", CultureInfo.InvariantCulture)));
             List<ClubMember> lst = new List<ClubMember>();
             dbh.ReadRows((comm) => { }, (dr) => { lst.Add(new ClubMember(dr)); });
             return lst;
@@ -1270,7 +1268,7 @@ namespace MyFlightbook.Clubs
         public ClubAircraft(MySqlDataReader dr) : base(dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             ClubID = Convert.ToInt32(dr["idclub"], CultureInfo.InvariantCulture);
             ClubDescription = util.ReadNullableString(dr, "description");
             HighWater = Convert.ToDecimal(dr["highWaterMark"], CultureInfo.InvariantCulture);
@@ -1318,8 +1316,7 @@ namespace MyFlightbook.Clubs
             if (!ValidateChange())
                 return false;
 
-            string szError;
-            bool fResult = FDeleteAircraftFromClub(ClubID, AircraftID, out szError);
+            bool fResult = FDeleteAircraftFromClub(ClubID, AircraftID, out string szError);
             LastError = szError;
             if (fResult)
                 Club.ClearCachedClub(ClubID);
@@ -1336,7 +1333,7 @@ namespace MyFlightbook.Clubs
 
         public static List<ClubAircraft> AircraftForClub(int idclub)
         {
-            DBHelper dbh = new DBHelper(String.Format(ConfigurationManager.AppSettings["AircraftForUserCore"], "ca.idclub, ca.description, ca.highWaterMark, 0", "''", "''", "''", " INNER JOIN clubaircraft ca ON aircraft.idaircraft=ca.idaircraft WHERE ca.idclub=?clubid "));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], "ca.idclub, ca.description, ca.highWaterMark, 0", "''", "''", "''", " INNER JOIN clubaircraft ca ON aircraft.idaircraft=ca.idaircraft WHERE ca.idclub=?clubid "));
             List<ClubAircraft> lst = new List<ClubAircraft>();
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("clubid", idclub); },
                 (dr) => { lst.Add(new ClubAircraft(dr)); });
@@ -1369,7 +1366,7 @@ GROUP BY idaircraft");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("idClub", idclub); },
                 (dr) =>
                 {
-                    ClubAircraft ca = lst.First(ca2 => ca2.AircraftID == Convert.ToInt32(dr["idaircraft"]));
+                    ClubAircraft ca = lst.First(ca2 => ca2.AircraftID == Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture));
                     if (ca != null)
                     {
                         ca.HighestRecordedHobbs = (Decimal) util.ReadNullableField(dr, "MaxHobbs", 0.0M);

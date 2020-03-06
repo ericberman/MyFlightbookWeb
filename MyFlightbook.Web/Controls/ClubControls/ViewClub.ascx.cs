@@ -1,17 +1,15 @@
-﻿using System;
+﻿using MyFlightbook.Airports;
+using MyFlightbook.Clubs;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Globalization;
-using System.Web;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Clubs;
-using MyFlightbook.Airports;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2016 MyFlightbook LLC
+ * Copyright (c) 2014-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -93,7 +91,7 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
     protected void fvClub_ItemUpdating(object sender, FormViewUpdateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         Page.Validate("valEditClub");
         if (Page.IsValid)
         {
@@ -125,8 +123,7 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
                 c.Creator = Page.User.Identity.Name;
             if (c.FCommit())
             {
-                if (ClubChanged != null)
-                    ClubChanged(this, new ClubChangedEventsArgs(ActiveClub));
+                ClubChanged?.Invoke(this, new ClubChangedEventsArgs(ActiveClub));
                 this.ActiveClub = c;
             }
             else
@@ -138,16 +135,14 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
     {
         fvClub.ChangeMode(FormViewMode.ReadOnly);
         Refresh();
-        if (ClubChangeCanceled != null)
-            ClubChangeCanceled(sender, new ClubChangedEventsArgs(ActiveClub));
+        ClubChangeCanceled?.Invoke(sender, new ClubChangedEventsArgs(ActiveClub));
     }
 
     protected void btnDelete_Click(object sender, EventArgs e)
     {
         fvClub.ChangeMode(FormViewMode.ReadOnly);
         Refresh();
-        if (ClubDeleted != null)
-            ClubDeleted(sender, new ClubChangedEventsArgs(ActiveClub));
+        ClubDeleted?.Invoke(sender, new ClubChangedEventsArgs(ActiveClub));
     }
 
     protected void fvClub_ModeChanging(object sender, FormViewModeEventArgs e)
