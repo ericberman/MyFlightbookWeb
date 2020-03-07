@@ -97,6 +97,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Review flights to find inconsistencies, potential data errors, or opportunities for best practices.
+        /// </summary>
+        internal static string CheckFlightsShortDescription {
+            get {
+                return ResourceManager.GetString("CheckFlightsShortDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No options for checking flights have been selected.  Please select at least one category..
         /// </summary>
         internal static string errNoOptionsSelected {

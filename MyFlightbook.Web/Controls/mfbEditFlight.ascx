@@ -328,7 +328,7 @@
     <asp:Panel ID="pnlSubmit" runat="server" CssClass="fullblock" 
         meta:resourcekey="pnlSubmitResource1">
         <div style="text-align:center;">
-            <div style="float:right"><asp:LinkButton ID="lnkCheckFlight" Visible="false" runat="server" OnClick="lnkCheckFlight_Click" ForeColor="Green" Font-Size="X-Large" ToolTip="<%$ Resources:FlightLint, TitleCheckThisFlight %>">&#10004;</asp:LinkButton></div>
+            <div style="float:right"><asp:LinkButton ID="lnkCheckFlight" runat="server" OnClick="lnkCheckFlight_Click" Font-Size="X-Large" ToolTip="<%$ Resources:FlightLint, TitleCheckThisFlight %>">&#10004;</asp:LinkButton></div>
             <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LogbookEntry, EditFlightInlineCancel %>" OnClick="btnCancel_Click" Visible="false" />&nbsp;&nbsp;
             <asp:Button ID="btnAddFlight" runat="server" Text="Add Flight" 
                 OnClick="btnAddFlight_Click" TabIndex="31" 
@@ -366,7 +366,7 @@
             </asp:Repeater>
         </ul>
     </asp:Panel>
-    <asp:Panel ID="pnlCheckFlight" runat="server" CssClass="modalpopup" style="margin-left:auto; margin-right:auto;">
+    <asp:Panel ID="pnlCheckFlight" runat="server" CssClass="modalpopup" style="margin-left:auto; margin-right:auto; display:none;">
         <asp:GridView ID="gvFlightLint" runat="server" AutoGenerateColumns="false" ShowHeader="false" ShowFooter="false" GridLines="None">
             <Columns>
                 <asp:TemplateField>
@@ -388,7 +388,7 @@
         <div style="text-align:center"><asp:Button ID="btnCloseChecks" runat="server" Text="<%$ Resources:LocalizedText, Close %>" /></div>
     </asp:Panel>
     <asp:Label ID="lblDummy" Text="Required for popup" style="display:none" runat="server" meta:resourcekey="lblDummyResource1"></asp:Label>
-    <cc1:ModalPopupExtender ID="mpeCheckFlight" runat="server" BackgroundCssClass="modalBackground" CancelControlID="btnCloseChecks" PopupControlID="pnlCheckFlight" TargetControlID="lblDummy" />
+    <cc1:ModalPopupExtender ID="mpeCheckFlight" runat="server" BackgroundCssClass="modalBackground" RepositionMode="RepositionOnWindowResizeAndScroll" CancelControlID="btnCloseChecks" PopupControlID="pnlCheckFlight" TargetControlID="lblDummy" />
     <asp:Panel ID="pnlAdminFixSignature" runat="server" Visible="false">
         <table>
             <tr>

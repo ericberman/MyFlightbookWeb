@@ -495,6 +495,7 @@
     <Content Include="images\camera.png" />
     <Content Include="images\cameramarker%402x.png" />
     <Content Include="images\cameramarker.png" />
+    <Content Include="images\CheckFlights.png" />
     <Content Include="images\checkmark.png" />
     <Content Include="images\Chrome32x32.png" />
     <Content Include="images\Chrome48x48.png" />

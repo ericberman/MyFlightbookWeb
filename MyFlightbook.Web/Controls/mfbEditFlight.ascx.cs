@@ -353,8 +353,6 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
         mfbEditPropSet1.CrossFillSourceClientID = decCFI.CrossFillSourceClientID = decDual.CrossFillSourceClientID = decGrndSim.CrossFillSourceClientID = decIMC.CrossFillSourceClientID = 
             decNight.CrossFillSourceClientID = decPIC.CrossFillSourceClientID = decSIC.CrossFillSourceClientID = decSimulatedIFR.CrossFillSourceClientID = decXC.CrossFillSourceClientID = decTotal.EditBox.ClientID;
-
-        lnkCheckFlight.Visible = util.GetIntParam(Request, "lint", 0) != 0;
     }
 
     private void FinalizeSetupForFlight(LogbookEntry le)

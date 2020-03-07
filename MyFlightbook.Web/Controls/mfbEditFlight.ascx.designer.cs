@@ -949,6 +949,15 @@ public partial class Controls_mfbEditFlight
     protected global::System.Web.UI.WebControls.Repeater rptDiffs;
 
     /// <summary>
+    /// pnlCheckFlight control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlCheckFlight;
+
+    /// <summary>
     /// gvFlightLint control.
     /// </summary>
     /// <remarks>

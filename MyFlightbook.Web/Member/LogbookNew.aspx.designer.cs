@@ -364,6 +364,24 @@ public partial class Member_LogbookNew
     protected global::System.Web.UI.WebControls.HyperLink lnkPendingFlights;
 
     /// <summary>
+    /// imgCheckFlights control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgCheckFlights;
+
+    /// <summary>
+    /// lnkCheckFlights control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkCheckFlights;
+
+    /// <summary>
     /// mfbLogbook1 control.
     /// </summary>
     /// <remarks>
