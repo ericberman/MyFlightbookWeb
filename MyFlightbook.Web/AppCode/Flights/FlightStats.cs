@@ -1,9 +1,7 @@
-﻿using MyFlightbook.Airports;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
-using System.Text;
 
 /******************************************************
  * 
@@ -23,9 +21,9 @@ namespace MyFlightbook.FlightStats
         public int NumUsers { get; set; }
         public int NumDays { get; set; }
 
-        public int NumAircraft;
-        public int NumModels;
-        public int NumFlightsTotal;
+        public int NumAircraft { get; set; }
+        public int NumModels { get; set; }
+        public int NumFlightsTotal { get; set; }
 
         private readonly List<LogbookEntry> m_lstFlights = new List<LogbookEntry>();
 
@@ -108,8 +106,8 @@ LIMIT 200";
                     (dr) =>
                     {
                         fs.NumDays = MaxDays;
-                        fs.NumFlights = Convert.ToInt32(dr["numFlights"]);
-                        fs.NumUsers = Convert.ToInt32(dr["numUsers"]);
+                        fs.NumFlights = Convert.ToInt32(dr["numFlights"], CultureInfo.InvariantCulture);
+                        fs.NumUsers = Convert.ToInt32(dr["numUsers"], CultureInfo.InvariantCulture);
                     });
 
                 // Get a few more interesting stats
