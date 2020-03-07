@@ -265,7 +265,6 @@ public partial class Member_Import : System.Web.UI.Page
             lblAudit.Text = string.Empty;
             using (CSVAnalyzer csvAnalyzer = new CSVAnalyzer(ms))
             {
-                ms = null;  // Avoid CA2202
                 CSVAnalyzer.CSVStatus result = csvAnalyzer.Status;
                 hdnAuditState.Value = result.ToString();
 

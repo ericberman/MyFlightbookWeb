@@ -1,20 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 namespace JouniHeikniemi.Tools.Text
 {
-
     /// <summary>
     /// A data-reader style interface for reading CSV files.
     /// </summary>
     public sealed class CSVReader : IDisposable
     {
         #region Private variables
-        private Stream stream;
-        private StreamReader reader;
+        private readonly Stream stream;
+        private readonly StreamReader reader;
         private bool fNoReadahead = false;  // suppresses read-ahead (for multi-line).
         private const string KnownCSVSeparators = ", ; \t"; // space separates them
         private const string QuoteAsString = "\"";
@@ -76,9 +74,7 @@ namespace JouniHeikniemi.Tools.Text
         /// <param name="enc">The encoding used.</param>
         public CSVReader(Stream s, Encoding enc)
         {
-            if (s == null)
-                throw new ArgumentNullException("s");
-            this.stream = s;
+            this.stream = s ?? throw new ArgumentNullException(nameof(s));
             if (!s.CanRead)
             {
                 throw new CSVReaderException("Could not read the given CSV stream!");
@@ -105,7 +101,7 @@ namespace JouniHeikniemi.Tools.Text
                 ((data[0] == 'P' && data[1] == 'K' && data[2] == 3 && data[3] == 4) ||
                  (data[0] == 0xFFFD && data[1] == 0xFFFD)))
                 throw new CSVReaderInvalidCSVException(Resources.LocalizedText.errImportXLSNotCSV);
-            if (data.Length == 0) return new string[0];
+            if (data.Length == 0) return Array.Empty<string>();
 
             if (fInferSeparator)
                 ListSeparator = BestGuessSeparator(data);
@@ -145,15 +141,14 @@ namespace JouniHeikniemi.Tools.Text
                 // only contains the quote
                 if (fromPos == data.Length - 1)
                 {
-                    fromPos++;
                     startSeparatorPosition = data.Length;
                     return QuoteAsString;
                 }
 
-                // Otherwise, return a string of appropriate length with double quotes collapsed
-                int nextSingleQuote = -1;
                 string szNextLine = null;
 
+                // Otherwise, return a string of appropriate length with double quotes collapsed
+                int nextSingleQuote;
                 do
                 {
                     nextSingleQuote = NextNakedDoubleQuote(data, fromPos + 1);
@@ -222,9 +217,10 @@ namespace JouniHeikniemi.Tools.Text
         public void Dispose()
         {
             // Closing the reader closes the underlying stream, too
-            if (reader != null) reader.Close();
+            if (reader != null) 
+                reader.Dispose();
             else if (stream != null)
-                stream.Close(); // In case we failed before the reader was constructed
+                stream.Dispose(); // In case we failed before the reader was constructed
             GC.SuppressFinalize(this);
         }
     }
