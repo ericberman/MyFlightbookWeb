@@ -21,12 +21,12 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
     [Serializable]
     protected class PageState
     {
-        public string AuthURL { get; set; }
-        public string TokenURL { get; set; }
-        public string ResourceURL { get; set; }
+        public Uri AuthURL { get; set; }
+        public Uri TokenURL { get; set; }
+        public Uri ResourceURL { get; set; }
         public string ClientID { get; set; }
         public string ClientSecret { get; set; }
-        public string RedirectURL { get; set; }
+        public Uri RedirectURL { get; set; }
         public string Scope { get; set; }
         public string State { get; set; }
         public string Authorization { get; set; }
@@ -41,7 +41,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             {
                 return (PageState)Session["oAuthClientPageState"];
             }
-            catch (InvalidCastException)
+            catch (Exception ex) when (ex is InvalidCastException)
             {
                 return null;
             }
@@ -55,12 +55,12 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         if (ps == null)
             return;
 
-        txtAuthURL.Text = ps.AuthURL;
-        txtTokenURL.Text = ps.TokenURL;
-        txtResourceURL.Text = ps.ResourceURL;
+        txtAuthURL.Text = ps.AuthURL.ToString();
+        txtTokenURL.Text = ps.TokenURL.ToString();
+        txtResourceURL.Text = ps.ResourceURL.ToString();
         txtClientID.Text = ps.ClientID;
         txtClientSecret.Text = ps.ClientSecret;
-        txtRedirectURL.Text = ps.RedirectURL;
+        txtRedirectURL.Text = ps.RedirectURL.ToString();
         txtScope.Text = ps.Scope;
         txtState.Text = ps.State;
         lblAuthorization.Text = ps.Authorization;
@@ -71,13 +71,12 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
     {
         PageState ps = new PageState()
         {
-
-            AuthURL = txtAuthURL.Text,
-            TokenURL = txtTokenURL.Text,
-            ResourceURL = txtResourceURL.Text,
+            AuthURL = new Uri(txtAuthURL.Text),
+            TokenURL = new Uri(txtTokenURL.Text),
+            ResourceURL = new Uri(txtResourceURL.Text),
             ClientID = txtClientID.Text,
             ClientSecret = txtClientSecret.Text,
-            RedirectURL = txtRedirectURL.Text,
+            RedirectURL = new Uri(txtRedirectURL.Text),
             Scope = txtScope.Text,
             State = txtState.Text,
             Authorization = lblAuthorization.Text,
@@ -102,17 +101,18 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         {
             FromSession();
             if (Request["code"] != null)
-                lblAuthorization.Text = Request["code"].ToString();
+                lblAuthorization.Text = HttpUtility.HtmlEncode((string) Request["code"]);
             if (Request["state"] != null)
-                txtState.Text = Request["state"].ToString();
+                txtState.Text = HttpUtility.HtmlEncode((string) Request["state"]);
             if (Request["access_token"] != null)
-                lblToken.Text = Request["access_token"].ToString();
+                lblToken.Text = HttpUtility.HtmlEncode((string) Request["access_token"]);
 
-            txtAuthURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/member/oAuthAuthorize.aspx"));
-            txtRedirectURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/playpen/oAuthClientTest.aspx"));
-            txtResourceURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}/", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/OAuth/oAuthToken.aspx"));
-            txtTokenURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/OAuth/oAuthToken.aspx"));
-            txtImgUploadURL.Text = String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/UploadPicture.aspx")); ;
+            Uri uriBase = new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}", Request.Url.Host));
+            txtAuthURL.Text = HttpUtility.HtmlEncode(new Uri(uriBase, VirtualPathUtility.ToAbsolute("~/member/oAuthAuthorize.aspx")).ToString());
+            txtRedirectURL.Text = HttpUtility.HtmlEncode(new Uri(uriBase, VirtualPathUtility.ToAbsolute("~/playpen/oAuthClientTest.aspx")).ToString());
+            txtResourceURL.Text = HttpUtility.HtmlEncode(new Uri(uriBase, VirtualPathUtility.ToAbsolute("~/OAuth/oAuthToken.aspx")).ToString());
+            txtTokenURL.Text = HttpUtility.HtmlEncode(new Uri(uriBase, VirtualPathUtility.ToAbsolute("~/OAuth/oAuthToken.aspx")).ToString());
+            txtImgUploadURL.Text = HttpUtility.HtmlEncode(new Uri(uriBase, VirtualPathUtility.ToAbsolute("~/public/UploadPicture.aspx")).ToString());
 
             List<KeyValuePair<string, string>> lst = new List<KeyValuePair<string,string>>();
             foreach (string szKey in Request.Params.Keys)
@@ -121,7 +121,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             gvResults.DataBind();
 
             if (Request["error"] != null)
-                lblErr.Text = Request["error"].ToString();
+                lblErr.Text = HttpUtility.HtmlEncode((string) Request["error"]);
         }
     }
 
@@ -163,10 +163,10 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         }
     }
 
-    protected void AppendQueryString(string szKey, string szVal, StringBuilder sb)
+    protected static void AppendQueryString(string szKey, string szVal, StringBuilder sb)
     {
         if (sb == null)
-            throw new ArgumentNullException("sb");
+            throw new ArgumentNullException(nameof(sb));
         if (sb.Length > 0)
             sb.Append("&");
         sb.AppendFormat(CultureInfo.CurrentCulture, "{0}={1}", szKey, HttpUtility.UrlEncode(szVal));
@@ -202,7 +202,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         {
             OAuthServiceID action = SelectedAction;
 
-            return String.Format(CultureInfo.InvariantCulture, "{0}{1}?access_token={2}&json={3}{4}",
+            return String.Format(CultureInfo.InvariantCulture, "{0}/{1}?access_token={2}&json={3}{4}",
                 action == OAuthServiceID.UploadImage ? txtImgUploadURL.Text : txtResourceURL.Text,
                 action == OAuthServiceID.none ? txtCustomVerb.Text : (action == OAuthServiceID.UploadImage ? string.Empty : action.ToString()),
                 lblToken.Text,
@@ -262,7 +262,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
     protected void AddPostParams(NameValueCollection postParams)
     {
         if (postParams == null)
-            throw new ArgumentNullException("postParams");
+            throw new ArgumentNullException(nameof(postParams));
 
         switch (SelectedAction)
         {
@@ -326,63 +326,75 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
         AddPostParams(postParams);
 
+        List<IDisposable> objectsToDispose = new List<IDisposable>();
+
         using (MultipartFormDataContent form = new MultipartFormDataContent())
         {
-            // Add each of the parameters
-            foreach (string key in postParams.Keys)
+            try
             {
-                StringContent sc = new StringContent(postParams[key]);
-                form.Add(sc);
-                sc.Headers.ContentDisposition = (new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") { Name = key });
-            }
+                // Add each of the parameters
+                foreach (string key in postParams.Keys)
+                {
+                    StringContent sc = new StringContent(postParams[key]);
+                    form.Add(sc);
+                    sc.Headers.ContentDisposition = (new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") { Name = key });
+                    objectsToDispose.Add(sc);
+                }
 
                 if (fuImage.HasFile)
                 {
                     StreamContent sc = new StreamContent(fuImage.FileContent);
                     form.Add(sc, "imgPicture", fuImage.FileName);
                     sc.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(fuImage.PostedFile.ContentType);
+                    objectsToDispose.Add(sc);
                 }
 
-            using (HttpClient httpClient = new HttpClient())
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    HttpResponseMessage response = null;
+                    string szError = string.Empty;
+                    try
+                    {
+                        response = httpClient.PostAsync(new Uri(ResourcePath), form).Result;
+                        if (!response.IsSuccessStatusCode)
+                            szError = response.Content.ReadAsStringAsync().Result;
+                        response.EnsureSuccessStatusCode();
+
+                        Page.Response.Clear();
+                        Response.ContentType = ckJSON.Checked ? (String.IsNullOrEmpty(txtCallBack.Text) ? "application/json; charset=utf-8" : "application/javascript; charset=utf-8") : "text/xml; charset=utf-8";
+                        System.Threading.Tasks.Task.Run(async () => { await response.Content.CopyToAsync(Page.Response.OutputStream); }).Wait();
+                        Page.Response.Flush();
+
+                        // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
+                        Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
+                        HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
+                    }
+                    catch (System.Threading.ThreadAbortException ex)
+                    {
+                        lblErr.Text = ex.Message;
+                    }
+                    catch (HttpUnhandledException ex)
+                    {
+                        lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
+                    }
+                    catch (HttpException ex)
+                    {
+                        lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
+                    }
+                    catch (System.Net.WebException ex)
+                    {
+                        lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
+                    }
+                }
+            }
+            finally
             {
-                HttpResponseMessage response = null;
-                string szError = string.Empty;
-                try
-                {
-                    response = httpClient.PostAsync(new Uri(ResourcePath), form).Result;
-                    if (!response.IsSuccessStatusCode)
-                        szError = response.Content.ReadAsStringAsync().Result;
-                    response.EnsureSuccessStatusCode();
-
-                    Page.Response.Clear();
-                    Response.ContentType = ckJSON.Checked ? (String.IsNullOrEmpty(txtCallBack.Text) ? "application/json; charset=utf-8" : "application/javascript; charset=utf-8") : "text/xml; charset=utf-8";
-                    System.Threading.Tasks.Task.Run(async () => { await response.Content.CopyToAsync(Page.Response.OutputStream); }).Wait();
-                    Page.Response.Flush();
-
-                    // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
-                    Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                    HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
-                }
-                catch (System.Threading.ThreadAbortException ex)
-                {
-                    lblErr.Text = ex.Message;
-                }
-                catch (HttpUnhandledException ex)
-                {
-                    lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-                }
-                catch (HttpException ex)
-                {
-                    lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-                }
-                catch (HttpRequestException ex)
-                {
-                    lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-                }
-                catch (System.Net.WebException ex)
-                {
-                    lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-                }
+                foreach (IDisposable disposable in objectsToDispose)
+                    disposable.Dispose();
             }
         }
     }
@@ -391,8 +403,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
     {
         get
         {
-            OAuthServiceID action;
-            if (Enum.TryParse(cmbResourceAction.SelectedValue, out action))
+            if (Enum.TryParse(cmbResourceAction.SelectedValue, out OAuthServiceID action))
                 return action;
             return OAuthServiceID.currency;
         }
