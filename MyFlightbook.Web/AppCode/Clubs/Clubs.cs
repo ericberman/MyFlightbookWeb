@@ -157,9 +157,9 @@ namespace MyFlightbook.Clubs
         public string Description {get; set;}
 
         /// <summary>
-        /// URL for the club
+        /// URL for the club, as provided by the user.  This is NOT stored as a URL because it may not pass syntax muster, and we just want to use it as is.
         /// </summary>
-        public string URL {get; set;}
+        public string ProvidedLink {get; set;}
 
         /// <summary>
         /// Returns a fixed URL (includes HTTP if needed)
@@ -168,7 +168,7 @@ namespace MyFlightbook.Clubs
         {
             get
             {
-                return (URL.StartsWith("http", StringComparison.CurrentCultureIgnoreCase)) ? URL : "http://" + URL;
+                return (ProvidedLink.StartsWith("http", StringComparison.CurrentCultureIgnoreCase)) ? ProvidedLink : "http://" + ProvidedLink;
             }
         }
 
@@ -204,7 +204,7 @@ namespace MyFlightbook.Clubs
         /// </summary>
         public string EditLink
         {
-            get { return VirtualPathUtility.ToAbsolute("~/Member/ClubDetails.aspx/" + ID); }
+            get { return VirtualPathUtility.ToAbsolute("~/Member/ClubDetails.aspx/" + ID.ToString(CultureInfo.InvariantCulture)); }
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace MyFlightbook.Clubs
 	    public Club()
 	    {
             ID = ClubIDNew;
-            Creator = Name = Description = URL = City = StateProvince = Country = ContactPhone = HomeAirportCode = string.Empty;
+            Creator = Name = Description = ProvidedLink = City = StateProvince = Country = ContactPhone = HomeAirportCode = string.Empty;
             CreationDate = DateTime.MinValue;
             Status = ClubStatus.OK;
             LastError = string.Empty;
@@ -390,7 +390,7 @@ namespace MyFlightbook.Clubs
             Status = (ClubStatus)Convert.ToInt32(dr["clubStatus"], CultureInfo.InvariantCulture);
             Name = dr["clubname"].ToString();
             Description = util.ReadNullableString(dr, "clubdesc");
-            URL = util.ReadNullableString(dr, "clubURL");
+            ProvidedLink = util.ReadNullableString(dr, "clubURL");
             City = util.ReadNullableString(dr, "clubcity");
             StateProvince = util.ReadNullableString(dr, "clubStateProvince");
             Country = util.ReadNullableString(dr, "clubcountry");
@@ -458,12 +458,12 @@ namespace MyFlightbook.Clubs
                         comm.Parameters.AddWithValue("name", Name.LimitTo(90));
                         comm.Parameters.AddWithValue("description", Description.LimitTo(40000));
                         comm.Parameters.AddWithValue("status", (int)Status);
-                        comm.Parameters.AddWithValue("url", URL.LimitTo(255));
+                        comm.Parameters.AddWithValue("url", ProvidedLink.LimitTo(255));
                         comm.Parameters.AddWithValue("city", City.LimitTo(45));
                         comm.Parameters.AddWithValue("state", StateProvince.LimitTo(45));
                         comm.Parameters.AddWithValue("country", Country.LimitTo(45));
                         comm.Parameters.AddWithValue("contact", ContactPhone.LimitTo(45));
-                        comm.Parameters.AddWithValue("airport", HomeAirportCode.LimitTo(45).ToUpper());
+                        comm.Parameters.AddWithValue("airport", HomeAirportCode.LimitTo(45).ToUpperInvariant());
                         comm.Parameters.AddWithValue("idClub", ID);
                         comm.Parameters.AddWithValue("tzID", TimeZone.Id);
                         comm.Parameters.AddWithValue("tzOffset", (int) TimeZone.BaseUtcOffset.TotalMinutes);
@@ -668,7 +668,7 @@ namespace MyFlightbook.Clubs
         /// <returns>The member, null if not found</returns>
         public ClubMember GetMember(string szUser)
         {
-            return Members.FirstOrDefault(cm => cm.UserName.CompareTo(szUser) == 0);
+            return Members.FirstOrDefault(cm => cm.UserName.CompareOrdinalIgnoreCase(szUser) == 0);
         }
 
         /// <summary>
@@ -678,7 +678,7 @@ namespace MyFlightbook.Clubs
         /// <returns>True if they are in the admin list.</returns>
         public bool HasAdmin(string szUser)
         {
-            return Admins.FirstOrDefault(cm => cm.UserName.CompareTo(szUser) == 0) != null;
+            return Admins.FirstOrDefault(cm => cm.UserName.CompareOrdinalIgnoreCase(szUser) == 0) != null;
         }
 
         /// <summary>
@@ -688,7 +688,7 @@ namespace MyFlightbook.Clubs
         /// <returns>True if they are in the admin list.</returns>
         public bool HasMember(string szUser)
         {
-            return MembersAsList.Exists(cm => cm.UserName.CompareTo(szUser) == 0);
+            return MembersAsList.Exists(cm => cm.UserName.CompareOrdinalIgnoreCase(szUser) == 0);
         }
 
         public void NotifyAdd(ScheduledEvent s, string addingUser)
@@ -710,7 +710,7 @@ namespace MyFlightbook.Clubs
 
             s.LocalTimeZone = TimeZone;    // ensure that we're using the right timezone
             if (s.ResourceAircraft == null)
-                s.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString(CultureInfo.InvariantCulture).CompareTo(s.ResourceID) == 0);
+                s.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString(CultureInfo.InvariantCulture).CompareOrdinal(s.ResourceID) == 0);
 
             string szBody = Resources.Schedule.ResourceBooked
                 .Replace("<% Creator %>", pfCreator.UserFullName)
@@ -752,7 +752,7 @@ namespace MyFlightbook.Clubs
 
             sOriginal.LocalTimeZone = TimeZone;    // ensure that we're using the right timezone
             if (sOriginal.ResourceAircraft == null)
-                sOriginal.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString(CultureInfo.InvariantCulture).CompareTo(sOriginal.ResourceID) == 0);
+                sOriginal.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString(CultureInfo.InvariantCulture).CompareOrdinal(sOriginal.ResourceID) == 0);
 
             Profile pfChanging = Profile.GetUser(changingUser);
 
@@ -785,14 +785,14 @@ namespace MyFlightbook.Clubs
             }
 
             // And add the owner if they didn't delete it themselves - but only if not already in list above
-            if (s.OwningUser.CompareTo(deletingUser) != 0 && !lst.Exists(pf => pf.UserName.CompareTo(s.OwningUser) == 0))
+            if (s.OwningUser.CompareOrdinalIgnoreCase(deletingUser) != 0 && !lst.Exists(pf => pf.UserName.CompareOrdinalIgnoreCase(s.OwningUser) == 0))
                 lst.Add(Profile.GetUser(s.OwningUser));
 
             if (lst.Count > 0)
             {
                 s.LocalTimeZone = TimeZone;    // ensure that we're using the right timezone
                 if (s.ResourceAircraft == null)
-                    s.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString(CultureInfo.InvariantCulture).CompareTo(s.ResourceID) == 0);
+                    s.ResourceAircraft = MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString(CultureInfo.InvariantCulture).CompareOrdinal(s.ResourceID) == 0);
 
                 Profile pfDeleting = Profile.GetUser(deletingUser);
                 string szBody = Resources.Schedule.AppointmentDeleted
@@ -1204,7 +1204,7 @@ namespace MyFlightbook.Clubs
         /// <returns>True if they are somewhere in the list</returns>
         public static bool IsMember(int idclub, string szuser)
         {
-            return MembersForClub(idclub).Exists(cm => cm.UserName.CompareTo(szuser) == 0);
+            return MembersForClub(idclub).Exists(cm => cm.UserName.CompareOrdinalIgnoreCase(szuser) == 0);
         }
 
         /// <summary>
@@ -1215,7 +1215,7 @@ namespace MyFlightbook.Clubs
         /// <returns>True if they are in the list with a non-member role</returns>
         public static bool IsAdmin(int idclub, string szuser)
         {
-            return AdminsForClub(idclub).FirstOrDefault<ClubMember>(cm => cm.UserName.CompareTo(szuser) == 0) != null;
+            return AdminsForClub(idclub).FirstOrDefault<ClubMember>(cm => cm.UserName.CompareOrdinalIgnoreCase(szuser) == 0) != null;
         }
         #endregion
     }

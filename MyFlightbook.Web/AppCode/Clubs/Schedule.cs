@@ -1,15 +1,14 @@
-﻿using System;
+﻿using MyFlightbook.Clubs;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
-using System.Globalization;
-using MySql.Data;
-using MySql.Data.MySqlClient;
-using MyFlightbook.Clubs;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -34,8 +33,7 @@ namespace MyFlightbook.Schedule
                     HttpCookie cookie = HttpContext.Current.Request.Cookies[szKeyCookieDisplayMode];
                     if (cookie != null)
                     {
-                        int i = 0;
-                        if (int.TryParse(cookie.Value, out i))
+                        if (int.TryParse(cookie.Value, out int i))
                             sdm = (ScheduleDisplayMode)i;
                     }
                 }
@@ -130,7 +128,7 @@ namespace MyFlightbook.Schedule
         {
             TimeZoneInfo tz = null;
             try { tz = TimeZoneInfo.FindSystemTimeZoneById(szId); }
-            catch (TimeZoneNotFoundException) { }
+            catch (Exception ex) when (ex is TimeZoneNotFoundException) { }
 
             return tz ?? TimeZoneForOffset(TimeSpan.FromMinutes(offset));
         }
@@ -340,12 +338,12 @@ namespace MyFlightbook.Schedule
         public static bool operator ==(ScheduledEvent se1, ScheduledEvent se2)
         {
             // If both are null, or both are same instance, return true.
-            if (System.Object.ReferenceEquals(se1, se2))
+            if (object.ReferenceEquals(se1, se2))
             {
                 return true;
             }
 
-            if (((object)se1 == null) || ((object)se2 == null))
+            if ((se1 is null) || (se2 is null))
                 return false;
 
             return se1.StartUtc.CompareTo(se2.StartUtc) == 0 &&
@@ -454,11 +452,11 @@ namespace MyFlightbook.Schedule
             {
                 if (!dictAffectedUsers.ContainsKey(s.OwningUser))
                     dictAffectedUsers.Add(s.OwningUser, Profile.GetUser(s.OwningUser));
-                lst.Add(String.Format("{0}: {1:d} {2:t} ({3}){4}", dictAffectedUsers[s.OwningUser].UserFullName, s.LocalStart, s.LocalStart, s.DurationDisplay, String.IsNullOrEmpty(s.Body) ? string.Empty : String.Format(" - {0}", s.Body)));
+                lst.Add(String.Format(CultureInfo.CurrentCulture, "{0}: {1:d} {2:t} ({3}){4}", dictAffectedUsers[s.OwningUser].UserFullName, s.LocalStart, s.LocalStart, s.DurationDisplay, String.IsNullOrEmpty(s.Body) ? string.Empty : String.Format(CultureInfo.CurrentCulture, " - {0}", s.Body)));
             });
 
             if (ResourceAircraft == null)
-                ResourceAircraft = Club.ClubWithID(ClubID).MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString().CompareTo(ResourceID) == 0);
+                ResourceAircraft = Club.ClubWithID(ClubID).MemberAircraft.FirstOrDefault(ca => ca.AircraftID.ToString(CultureInfo.InvariantCulture).CompareOrdinal(ResourceID) == 0);
 
             string szMsgBody = Branding.ReBrand(Resources.Schedule.Resourcedoublebooked.Replace("<% ScheduleDetail %>", String.Join("  \r\n  ", lst.ToArray())).Replace("<% Creator %>", dictAffectedUsers[OwningUser].UserFullName).Replace("<% Resource %>", ResourceAircraft == null ? string.Empty : ResourceAircraft.DisplayTailnumber));
 
@@ -543,13 +541,13 @@ namespace MyFlightbook.Schedule
 
         public static List<ScheduledEvent> AppointmentsForResource(string resource, int idclub, TimeZoneInfo tz)
         {
-            return AppointmentsForQuery(String.Format("SELECT * FROM scheduledevents WHERE resourceID=?rid {0}", idclub == Club.ClubIDNew ? "AND idclub=?clubid" : string.Empty),
+            return AppointmentsForQuery(String.Format(CultureInfo.InvariantCulture, "SELECT * FROM scheduledevents WHERE resourceID=?rid {0}", idclub == Club.ClubIDNew ? "AND idclub=?clubid" : string.Empty),
                 (comm) => { comm.Parameters.AddWithValue("rid", resource); comm.Parameters.AddWithValue("clubid", idclub); }, tz);
         }
 
         public static List<ScheduledEvent> UpcomingAppointments(int idclub, TimeZoneInfo tz, int limit, string resource = null, string owner = null)
         {
-            return AppointmentsForQuery(String.Format("SELECT * FROM scheduledevents WHERE end >=?dtNow AND idclub=?clubid {0} {1} ORDER BY start ASC LIMIT {2}",
+            return AppointmentsForQuery(String.Format(CultureInfo.InvariantCulture, "SELECT * FROM scheduledevents WHERE end >=?dtNow AND idclub=?clubid {0} {1} ORDER BY start ASC LIMIT {2}",
                 resource == null ? string.Empty : "AND resourceID=?rid",
                 owner == null ? string.Empty : "AND username=?owner",
                 limit),
@@ -565,7 +563,7 @@ namespace MyFlightbook.Schedule
 
         public static List<ScheduledEvent> AppointmentsInTimeRange(DateTime dtStartUtc, DateTime dtEndUtc, string resource, int idclub, TimeZoneInfo tz)
         {
-            return AppointmentsForQuery(String.Format("SELECT se.* FROM scheduledevents se INNER JOIN clubs c ON se.idclub=c.idclub WHERE resourceid=?rid AND se.idclub=?clubid AND start < ?endRange AND end > ?startRange AND start >= c.creationDate"),
+            return AppointmentsForQuery(String.Format(CultureInfo.InvariantCulture, "SELECT se.* FROM scheduledevents se INNER JOIN clubs c ON se.idclub=c.idclub WHERE resourceid=?rid AND se.idclub=?clubid AND start < ?endRange AND end > ?startRange AND start >= c.creationDate"),
                 (comm) =>
                 {
                     comm.Parameters.AddWithValue("startRange", dtStartUtc);

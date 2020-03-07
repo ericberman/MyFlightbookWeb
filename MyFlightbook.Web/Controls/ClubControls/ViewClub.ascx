@@ -20,7 +20,7 @@
                 </asp:Panel>
                 <asp:Panel ID="pnlLocation" Visible='<%# Eval("HasContactInfo") %>' runat="server">
                     <%# Eval("LocationString") %> <%# Eval("ContactPhone") %></asp:Panel>
-                <asp:Panel ID="pnlURL" Visible='<%# !String.IsNullOrEmpty(Eval("URL").ToString()) %>' runat="server">
+                <asp:Panel ID="pnlURL" Visible='<%# !String.IsNullOrEmpty(Eval("ProvidedLink").ToString()) %>' runat="server">
                     <asp:HyperLink ID="lnkClub" NavigateUrl='<%# Eval("Link") %>' Target="_blank" runat="server" Text='<%$ Resources:Club, LabelClubWebsite %>'></asp:HyperLink>
                 </asp:Panel>
             </asp:Panel>
@@ -49,7 +49,7 @@
             <tr>
                 <td style="width:400px; padding:3px" colspan="2">
                     <div><asp:Label ID="Label3" runat="server" Text="<%$ Resources:Club, labelURL %>"></asp:Label></div>
-                    http://<asp:TextBox ID="txtURL" runat="server" Text='<%# Bind("URL") %>' Width="400px"></asp:TextBox>
+                    http://<asp:TextBox ID="txtURL" runat="server" Text='<%# Bind("ProvidedLink") %>' Width="400px"></asp:TextBox>
                 </td>
             </tr>
             <tr>

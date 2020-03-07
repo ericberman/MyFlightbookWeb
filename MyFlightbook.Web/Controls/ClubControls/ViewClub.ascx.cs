@@ -110,7 +110,7 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
             }
             c.Name = (string)e.NewValues["Name"];
             c.StateProvince = (string)e.NewValues["StateProvince"];
-            c.URL = (string)e.NewValues["URL"];
+            c.ProvidedLink = (string)e.NewValues["ProvidedLink"];
             c.ID = Convert.ToInt32(e.NewValues["ID"], CultureInfo.InvariantCulture);
             c.RestrictEditingToOwnersAndAdmins = Convert.ToBoolean(e.NewValues["RestrictEditingToOwnersAndAdmins"], CultureInfo.InvariantCulture);
             c.IsPrivate = Convert.ToBoolean(e.NewValues["IsPrivate"], CultureInfo.InvariantCulture);

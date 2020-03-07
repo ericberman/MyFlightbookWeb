@@ -4,7 +4,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -28,9 +28,9 @@ namespace MyFlightbook.CSV
         public static void WriteToStream(TextWriter stream, DataTable table, bool header, bool quoteall)
         {
             if (stream == null)
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
             if (table == null)
-                throw new ArgumentNullException("header");
+                throw new ArgumentNullException(nameof(header));
 
             if (header)
             {
