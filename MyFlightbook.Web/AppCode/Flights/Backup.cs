@@ -379,7 +379,7 @@ namespace MyFlightbook
             if (od == null)
                 od = new OneDrive(User.OneDriveAccessToken);
 
-            return await od.PutFile(BackupFilename(activeBrand), LogbookDataForBackup());
+            return await od.PutFileDirect(BackupFilename(activeBrand), LogbookDataForBackup(), "text/csv");
         }
         #endregion
 

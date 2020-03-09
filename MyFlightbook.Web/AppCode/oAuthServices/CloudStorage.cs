@@ -2,6 +2,7 @@
 using Dropbox.Api;
 using Microsoft.OneDrive.Sdk;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -431,6 +432,81 @@ namespace MyFlightbook.CloudStorage
         }
     }
 
+    public class OneDriveError
+    {
+        private enum OneDriveErrorCodeMFB
+        {
+            Unknown = -1,
+            AccessDenied = 0,
+            ActivityLimitReached = 1,
+            AuthenticationCancelled = 2,
+            AuthenticationFailure = 3,
+            GeneralException = 4,
+            InvalidRange = 5,
+            InvalidRequest = 6,
+            ItemNotFound = 7,
+            MalwareDetected = 8,
+            MyFilesCapabilityNotFound = 9,
+            NameAlreadyExists = 10,
+            NotAllowed = 11,
+            NotSupported = 12,
+            ResourceModified = 13,
+            ResyncRequired = 14,
+            ServiceNotAvailable = 15,
+            Timeout = 16,
+            TooManyRedirects = 17,
+            QuotaLimitReached = 18,
+            Unauthenticated = 19,
+            UserDoesNotHaveMyFilesService = 20
+        }
+
+        OneDriveErrorCodeMFB ErrorCode { get; set; }
+
+        public string Message { get; set; }
+
+        public OneDriveError(string szJSon) : base()
+        {
+            Message = string.Empty;
+            ErrorCode = OneDriveErrorCodeMFB.Unknown;
+
+            if (String.IsNullOrEmpty(szJSon))
+                return;
+
+            dynamic result = JObject.Parse(szJSon);
+            string szCode = result.error.code;
+            Message = result.error.message;
+
+            if (Enum.TryParse(szCode, true, out OneDriveErrorCodeMFB errCode))
+                ErrorCode = errCode;
+
+            switch (ErrorCode)
+            {
+                case OneDriveErrorCodeMFB.AccessDenied:
+                case OneDriveErrorCodeMFB.AuthenticationCancelled:
+                case OneDriveErrorCodeMFB.AuthenticationFailure:
+                case OneDriveErrorCodeMFB.Unauthenticated:
+                    Message = Branding.ReBrand(Resources.LocalizedText.OneDriveBadAuth);
+                    break;
+                case OneDriveErrorCodeMFB.QuotaLimitReached:
+                    Message = Resources.LocalizedText.OneDriveErrorOutOfSpace;
+                    break;
+                case OneDriveErrorCodeMFB.Timeout:
+                case OneDriveErrorCodeMFB.ServiceNotAvailable:
+                case OneDriveErrorCodeMFB.TooManyRedirects:
+                    Message = Resources.LocalizedText.OneDriveCantReachService;
+                    break;
+                default:
+                    break;
+            }
+
+        }
+  
+        public override string ToString()
+        {
+            return String.Format(CultureInfo.CurrentCulture, "{0}: {1}", ErrorCode, Message);
+        }
+    }
+
     /// <summary>
     /// Provides utilities for using OneDrive from MyFlightbook
     /// 
@@ -507,6 +583,69 @@ namespace MyFlightbook.CloudStorage
                 return Resources.LocalizedText.OneDriveCantReachService;
             else
                 return ex.Message;
+        }
+
+        private UriBuilder BuilderForPath(string szPath)
+        {
+            return new UriBuilder("https://api.onedrive.com")
+            {
+                Query = String.Format(CultureInfo.InvariantCulture, "access_token={0}", AuthState.AccessToken),
+                Path = szPath
+            };
+        }
+
+
+        public async Task<Item> PutFileDirect(string szFileName, byte[] rgData, string szMimeType)
+        {
+            using (MemoryStream ms = new MemoryStream(rgData))
+            {
+                return await PutFileDirect(szFileName, ms, szMimeType);
+            }
+        }
+
+        public async Task<Item> PutFileDirect(string szFilename, Stream ms, string szMimeType)
+        {
+            ms.Seek(0, SeekOrigin.Begin);
+            if (!CheckAccessToken() && !await RefreshAccessToken())
+                throw new MyFlightbookException("OneDrive: access token missing or expired");
+
+            string szResult = string.Empty;
+            HttpResponseMessage response = null;
+            using (StreamContent body = new StreamContent(ms))
+            {
+                body.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(szMimeType);
+                body.Headers.ContentDisposition = (new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") { Name = szFilename, FileName = szFilename });
+
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    // Don't need the access token in the headers because it is in the URL.
+                    // httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
+
+                    try
+                    {
+                        UriBuilder builder = BuilderForPath(String.Format(CultureInfo.InvariantCulture, "v1.0/drive/root:/{0}{1}:/content", RootPath, szFilename));
+                        response = await httpClient.PutAsync(builder.Uri, body);
+                        szResult = response.Content.ReadAsStringAsync().Result;
+                        response.EnsureSuccessStatusCode();
+                        if (String.IsNullOrEmpty(szResult))
+                            return null;
+                        else
+                            return JsonConvert.DeserializeObject<Item>(szResult);
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        if (response == null)
+                            throw new MyFlightbookException("Unknown error in OneDrive.PutFileDirect", ex);
+                        else
+                            throw new MyFlightbookException(new OneDriveError(szResult).Message);
+                    }
+                    finally
+                    {
+                        if (response != null)
+                            response.Dispose();
+                    }
+                }
+            }
         }
 
         /// <summary>
