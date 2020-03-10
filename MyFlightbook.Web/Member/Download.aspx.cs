@@ -1,5 +1,4 @@
-﻿using Microsoft.OneDrive.Sdk;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.CloudStorage;
 using System;
 using System.Globalization;
@@ -135,15 +134,7 @@ public partial class Member_Download : System.Web.UI.Page
 
             lblDropBoxSuccess.Visible = true;
         }
-        catch (OneDriveException ex)
-        {
-            ShowDropboxError(OneDrive.MessageForException(ex));
-        }
-        catch (MyFlightbookException ex)
-        {
-            ShowDropboxError(ex.Message);
-        }
-        catch (Exception ex) when (!(ex is OutOfMemoryException))
+        catch (Exception ex) when (ex is OneDriveExceptionMFB || ex is MyFlightbookException || !(ex is OutOfMemoryException))
         {
             ShowDropboxError(ex.Message);
         }

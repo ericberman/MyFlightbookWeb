@@ -376,16 +376,20 @@ namespace MyFlightbook.Subscriptions
                                         if (pf.OneDriveAccessToken == null)
                                             throw new UnauthorizedAccessException();
 
-                                        Microsoft.OneDrive.Sdk.Item item = null;
                                         OneDrive od = new OneDrive(pf.OneDriveAccessToken);
-                                        item = await lb.BackupToOneDrive(od);
+                                        if(await lb.BackupToOneDrive(od))
+                                        {
                                         sb.AppendFormat(CultureInfo.CurrentCulture, "OneDrive: user {0} ", pf.UserName);
                                         sb.AppendFormat(CultureInfo.CurrentCulture, "Logbook backed up for user {0}...", pf.UserName);
-                                        System.Threading.Thread.Sleep(0);
-                                        item = await lb.BackupImagesToOneDrive(od, Branding.CurrentBrand);
-                                        System.Threading.Thread.Sleep(0);
-                                        sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
 
+                                        }
+                                        System.Threading.Thread.Sleep(0);
+                                        if (await lb.BackupImagesToOneDrive(od, Branding.CurrentBrand))
+                                        {
+                                            sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
+                                        }
+
+                                        System.Threading.Thread.Sleep(0);
                                         // if we are here we were successful, so save the updated refresh token
                                         if (String.Compare(pf.OneDriveAccessToken.RefreshToken, od.AuthState.RefreshToken, StringComparison.Ordinal) != 0)
                                         {
@@ -393,16 +397,9 @@ namespace MyFlightbook.Subscriptions
                                             pf.FCommit();
                                         }
                                     }
-                                    catch (Microsoft.OneDrive.Sdk.OneDriveException ex)
+                                    catch (Exception ex) when (ex is OneDriveExceptionMFB || ex is MyFlightbookException)
                                     {
-                                        string szMessage = OneDrive.MessageForException(ex);
-                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (OneDriveException) {0}: {1}\r\n\r\n", pf.UserName, szMessage + " " + ex.Message);
-                                        util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.OneDriveFailureSubject, ActiveBrand),
-                                            Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.OneDriveFailure, pf.UserFullName, szMessage, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
-                                    }
-                                    catch (MyFlightbookException ex)
-                                    {
-                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (MyFlightbookException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message);
+                                        sbFailures.AppendFormat(CultureInfo.CurrentCulture, "OneDrive FAILED for user (OneDriveException) {0}: {1}\r\n\r\n", pf.UserName, ex.Message + " " + ex.Message);
                                         util.NotifyUser(Branding.ReBrand(Resources.EmailTemplates.OneDriveFailureSubject, ActiveBrand),
                                             Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.EmailTemplates.OneDriveFailure, pf.UserFullName, ex.Message, string.Empty), ActiveBrand), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), true, false);
                                     }
