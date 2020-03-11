@@ -147,6 +147,10 @@ namespace MyFlightbook.Lint
             {
                 currentIssues = new List<FlightIssue>();
 
+                // If the flight has any actual errors, add those first
+                if (!String.IsNullOrEmpty(le.ErrorString))
+                    currentIssues.Add(new FlightIssue() { IssueDescription = le.ErrorString });
+
                 currentAircraft = userAircraft.GetUserAircraftByID(le.AircraftID);
 
                 if (currentAircraft == null)

@@ -781,10 +781,13 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
     protected void lnkCheckFlight_Click(object sender, EventArgs e)
     {
+        Page.Validate(szValGroupEdit); // catch any actual errors too.
         LogbookEntryBase le = InitLogbookEntryFromForm();
+        // See if there are any actual errors, stick those at the top of the list.
+        le.IsValid(); // will populate ErrorString.
         gvFlightLint.DataSource = new FlightLint().CheckFlights(new LogbookEntryBase[] { le }, le.User, FlightLint.DefaultOptionsForLocale);
         gvFlightLint.DataBind();
-        mpeCheckFlight.Show();
+        pnlFlightLint.Visible = true;
     }
 }
 

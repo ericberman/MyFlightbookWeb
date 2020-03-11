@@ -325,51 +325,14 @@
     </asp:Panel>
     <asp:HiddenField ID="hdnItem" runat="server" Value="-1" />
     <asp:HiddenField ID="hdnPendingID" runat="server" Value="" />
-    <asp:Panel ID="pnlSubmit" runat="server" CssClass="fullblock" 
-        meta:resourcekey="pnlSubmitResource1">
-        <div style="text-align:center;">
-            <div style="float:right">
-                <asp:ImageButton ID="ImageButton1" runat="server" OnClick="lnkCheckFlight_Click" ToolTip="<%$ Resources:FlightLint, TitleCheckThisFlight %>" ImageUrl="~/images/CheckFlights.png" />
-            </div>
-            <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LogbookEntry, EditFlightInlineCancel %>" OnClick="btnCancel_Click" Visible="false" />&nbsp;&nbsp;
-            <asp:Button ID="btnAddFlight" runat="server" Text="Add Flight" 
-                OnClick="btnAddFlight_Click" TabIndex="31" 
-                meta:resourcekey="btnAddFlightResource1"/>
-            <uc1:popmenu runat="server" ID="popmenuCommitAndNavigate" Visible="false">
-                <MenuContent>
-                    <div style="text-align:left">
-                        <div runat="server" id="divUpdateNext" visible="false" style="margin: 3px;"><asp:Label ID="LocNext" runat="server" Font-Names="Arial" Font-Size="Larger" Text="<%$ ResourceS:LogbookEntry, NextFlight %>" />&nbsp;<asp:LinkButton ID="lnkUpdateNext" runat="server" Text="<%$ Resources:LocalizedText, EditFlightUpdateFlightNext %>" OnClick="lnkUpdateNext_Click"></asp:LinkButton></div>
-                        <div runat="server" id="divUpdatePrev" visible="false" style="margin: 3px;"><asp:Label ID="LocPrev" runat="server" Font-Names="Arial" Font-Size="Larger" Text="<%$ ResourceS:LogbookEntry, PreviousFlight %>" />&nbsp;<asp:LinkButton ID="lnkUpdatePrev" runat="server" Text="<%$ Resources:LocalizedText, EditFlightUpdateFlightPrev %>" OnClick="lnkUpdatePrev_Click"></asp:LinkButton></div>
-                    </div>
-                </MenuContent>
-            </uc1:popmenu>
-            <uc1:popmenu runat="server" ID="popmenuPending" Visible="false">
-                <MenuContent>
-                    <div style="text-align:left">
-                        <div runat="server" style="margin: 3px;"><asp:LinkButton ID="lnkAddPending" runat="server" Text="Add Pending" OnClick="lnkAddPending_Click" meta:resourcekey="lnkAddPendingResource1" /></div>
-                    </div>
-                </MenuContent>
-            </uc1:popmenu>
-            <asp:HiddenField ID="hdnNextID" runat="server" />
-            <asp:HiddenField ID="hdnPrevID" runat="server" />
-        </div>
-        <div><asp:Label ID="lblError" runat="server" CssClass="error" 
-            EnableViewState="False" meta:resourcekey="lblErrorResource1"></asp:Label>
-        </div>
-        <div>&nbsp;</div>
-    </asp:Panel>
-    <asp:Panel ID="pnlSigEdits" runat="server" Visible="false">
-        <p><asp:Label ID="lblChanges" runat="server" Text="<%$ Resources:LogbookEntry, CompareHeader %>"></asp:Label></p>
-        <ul>
-            <asp:Repeater ID="rptDiffs" runat="server">
-                <ItemTemplate>
-                    <li><%# Container.DataItem.ToString() %></li>
-                </ItemTemplate>
-            </asp:Repeater>
-        </ul>
-    </asp:Panel>
-    <asp:Panel ID="pnlCheckFlight" runat="server" CssClass="modalpopup" style="margin-left:auto; margin-right:auto; display:none;">
-        <asp:GridView ID="gvFlightLint" runat="server" AutoGenerateColumns="false" ShowHeader="false" ShowFooter="false" GridLines="None">
+    <script>
+        function hideLint() {
+            document.getElementById('<% = pnlFlightLint.ClientID %>').style.display = "none";
+        }
+    </script>
+    <asp:Panel ID="pnlFlightLint" runat="server" Visible="false" EnableViewState="false" CssClass="hintPopup" style="display:block; max-width:80%; margin-top: 3px; margin-left: auto; margin-right:auto;">
+        <div style="float:right"><asp:HyperLink ID="lnkClose" runat="server" onclick="javascript:hideLint()" NavigateUrl="javascript:void(0);" Text="<%$ Resources:LocalizedText, Close %>"></asp:HyperLink></div>
+        <asp:GridView ID="gvFlightLint" runat="server" AutoGenerateColumns="false" ShowHeader="false" EnableViewState="false" ShowFooter="false" GridLines="None">
             <Columns>
                 <asp:TemplateField>
                     <ItemTemplate>
@@ -387,10 +350,56 @@
                 <p><asp:Label ID="lblNoIssues" runat="server" Text="<%$ Resources:FlightLint, CheckFlightsNoIssuesFound %>"></asp:Label></p>
             </EmptyDataTemplate>
         </asp:GridView>
-        <div style="text-align:center"><asp:Button ID="btnCloseChecks" runat="server" Text="<%$ Resources:LocalizedText, Close %>" /></div>
     </asp:Panel>
-    <asp:Label ID="lblDummy" Text="Required for popup" style="display:none" runat="server" meta:resourcekey="lblDummyResource1"></asp:Label>
-    <cc1:ModalPopupExtender ID="mpeCheckFlight" runat="server" BackgroundCssClass="modalBackground" RepositionMode="RepositionOnWindowResizeAndScroll" CancelControlID="btnCloseChecks" PopupControlID="pnlCheckFlight" TargetControlID="lblDummy" />
+    <asp:Panel ID="pnlSubmit" runat="server" CssClass="fullblock" 
+        meta:resourcekey="pnlSubmitResource1">
+        <div style="float:left">
+            <asp:ImageButton ID="ImageButton1" runat="server" style="vertical-align:top;" OnClick="lnkCheckFlight_Click" ToolTip="<%$ Resources:FlightLint, TitleCheckThisFlight %>" ImageUrl="~/images/CheckFlights.png" />
+        </div>
+        <table style="margin-left:auto; margin-right: auto;">
+            <tr style="vertical-align:top;">
+                <td>
+                    <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LogbookEntry, EditFlightInlineCancel %>" OnClick="btnCancel_Click" Visible="false" />&nbsp;&nbsp;
+                    <asp:Button ID="btnAddFlight" runat="server" Text="Add Flight" 
+                        OnClick="btnAddFlight_Click" TabIndex="31" 
+                        meta:resourcekey="btnAddFlightResource1"/>
+                </td>
+                <td>
+                    <uc1:popmenu runat="server" ID="popmenuCommitAndNavigate" Visible="false">
+                        <MenuContent>
+                            <div style="text-align:left">
+                                <div runat="server" id="divUpdateNext" visible="false" style="margin: 3px;"><asp:Label ID="LocNext" runat="server" Font-Names="Arial" Font-Size="Larger" Text="<%$ ResourceS:LogbookEntry, NextFlight %>" />&nbsp;<asp:LinkButton ID="lnkUpdateNext" runat="server" Text="<%$ Resources:LocalizedText, EditFlightUpdateFlightNext %>" OnClick="lnkUpdateNext_Click"></asp:LinkButton></div>
+                                <div runat="server" id="divUpdatePrev" visible="false" style="margin: 3px;"><asp:Label ID="LocPrev" runat="server" Font-Names="Arial" Font-Size="Larger" Text="<%$ ResourceS:LogbookEntry, PreviousFlight %>" />&nbsp;<asp:LinkButton ID="lnkUpdatePrev" runat="server" Text="<%$ Resources:LocalizedText, EditFlightUpdateFlightPrev %>" OnClick="lnkUpdatePrev_Click"></asp:LinkButton></div>
+                            </div>
+                        </MenuContent>
+                    </uc1:popmenu>
+                    <uc1:popmenu runat="server" ID="popmenuPending" Visible="false">
+                        <MenuContent>
+                            <div style="text-align:left">
+                                <div runat="server" style="margin: 3px;"><asp:LinkButton ID="lnkAddPending" runat="server" Text="Add Pending" OnClick="lnkAddPending_Click" meta:resourcekey="lnkAddPendingResource1" /></div>
+                            </div>
+                        </MenuContent>
+                    </uc1:popmenu>
+                </td>
+            </tr>
+        </table>
+        <asp:HiddenField ID="hdnNextID" runat="server" />
+        <asp:HiddenField ID="hdnPrevID" runat="server" />
+        <div><asp:Label ID="lblError" runat="server" CssClass="error" 
+            EnableViewState="False" meta:resourcekey="lblErrorResource1"></asp:Label>
+        </div>
+        <div>&nbsp;</div>
+    </asp:Panel>
+    <asp:Panel ID="pnlSigEdits" runat="server" Visible="false">
+        <p><asp:Label ID="lblChanges" runat="server" Text="<%$ Resources:LogbookEntry, CompareHeader %>"></asp:Label></p>
+        <ul>
+            <asp:Repeater ID="rptDiffs" runat="server">
+                <ItemTemplate>
+                    <li><%# Container.DataItem.ToString() %></li>
+                </ItemTemplate>
+            </asp:Repeater>
+        </ul>
+    </asp:Panel>
     <asp:Panel ID="pnlAdminFixSignature" runat="server" Visible="false">
         <table>
             <tr>
