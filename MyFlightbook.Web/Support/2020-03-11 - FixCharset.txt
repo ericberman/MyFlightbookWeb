@@ -1,0 +1,6 @@
+﻿ALTER TABLE `logbook`.`images` 
+CONVERT TO CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE `logbook`.`images` 
+CHANGE COLUMN `Comment` `Comment` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT 'Image Comment' ;
