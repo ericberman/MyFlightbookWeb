@@ -1,11 +1,9 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" CodeBehind="CheckFlights.aspx.cs" Inherits="MyFlightbook.Web.Member.CheckFlights" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Title="<%$ Resources:FlightLint, TitleCheckFlights %>" CodeBehind="CheckFlights.aspx.cs" Inherits="MyFlightbook.Web.Member.CheckFlights" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
-
-
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><asp:Localize ID="locHeader" runat="server" Text="<%$ Resources:FlightLint, TitleCheckFlights %>"></asp:Localize></asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
-    <h2><asp:Label ID="lblBeta" runat="server" Font-Size="Large" Text="<%$ Resources:LocalizedText, Beta %>"></asp:Label> <asp:Label ID="Label1" runat="server" Text="<%$ Resources:FlightLint, TitleCheckFlights %>"></asp:Label></h2>
+    <h2><asp:Label ID="lblTitleCheckFlights" runat="server" Text="<%$ Resources:FlightLint, TitleCheckFlights %>"></asp:Label></h2>
     <p><asp:Label ID="lblCheckFlightsDescription" runat="server" Text="<%$ Resources:FlightLint, CheckFlightsDescription1 %>"></asp:Label></p>
     <p><asp:Label ID="lblCheckFlightsCategories" runat="server"></asp:Label></p>
     <div>

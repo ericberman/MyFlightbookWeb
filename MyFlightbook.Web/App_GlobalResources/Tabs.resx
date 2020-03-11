@@ -207,6 +207,9 @@
   <data name="LogbookAnalysis" xml:space="preserve">
     <value>Analysis</value>
   </data>
+  <data name="LogbookCheckFlights" xml:space="preserve">
+    <value>Check Flights</value>
+  </data>
   <data name="LogbookCurrency" xml:space="preserve">
     <value>Currency</value>
   </data>

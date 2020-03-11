@@ -328,7 +328,9 @@
     <asp:Panel ID="pnlSubmit" runat="server" CssClass="fullblock" 
         meta:resourcekey="pnlSubmitResource1">
         <div style="text-align:center;">
-            <div style="float:right"><asp:LinkButton ID="lnkCheckFlight" runat="server" OnClick="lnkCheckFlight_Click" Font-Size="X-Large" ToolTip="<%$ Resources:FlightLint, TitleCheckThisFlight %>">&#10004;</asp:LinkButton></div>
+            <div style="float:right">
+                <asp:ImageButton ID="ImageButton1" runat="server" OnClick="lnkCheckFlight_Click" ToolTip="<%$ Resources:FlightLint, TitleCheckThisFlight %>" ImageUrl="~/images/CheckFlights.png" />
+            </div>
             <asp:Button ID="btnCancel" runat="server" Text="<%$ Resources:LogbookEntry, EditFlightInlineCancel %>" OnClick="btnCancel_Click" Visible="false" />&nbsp;&nbsp;
             <asp:Button ID="btnAddFlight" runat="server" Text="Add Flight" 
                 OnClick="btnAddFlight_Click" TabIndex="31" 

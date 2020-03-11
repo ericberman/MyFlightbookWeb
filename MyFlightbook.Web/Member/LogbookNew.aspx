@@ -113,6 +113,17 @@
                         </tr>
                         <tr>
                             <td style="text-align:center;">
+                                <asp:Image ID="imgCheckFlights" runat="server" ImageUrl="~/images/CheckFlights.png" AlternateText="<%$ Resources:FlightLint, TitleCheckFlights %>" />
+                            </td>
+                            <td>
+                                <asp:HyperLink ID="lnkCheckFlights" Font-Bold="true" runat="server" Text="<%$ Resources:FlightLint, TitleCheckFlights %>" NavigateUrl="~/Member/CheckFlights.aspx"></asp:HyperLink>
+                            </td>
+                            <td>
+                                <% =Branding.ReBrand(Resources.FlightLint.CheckFlightsShortDescription) %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center;">
                                 <asp:Image ID="imgStartingTotals" ImageUrl="~/images/startingtotals.png" AlternateText="<%$ Resources:LocalizedText, StartingTotalsLink %>" runat="server" />
                             </td>
                             <td>
@@ -131,17 +142,6 @@
                             </td>
                             <td>
                                 <% =Branding.ReBrand(Resources.LocalizedText.LogbookPendingFlightsDescription) %>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:center;">
-                                <asp:Image ID="imgCheckFlights" runat="server" ImageUrl="~/images/CheckFlights.png" AlternateText="<%$ Resources:FlightLint, TitleCheckFlights %>" />
-                            </td>
-                            <td>
-                                <asp:HyperLink ID="lnkCheckFlights" Font-Bold="true" runat="server" Text="<%$ Resources:FlightLint, TitleCheckFlights %>" NavigateUrl="~/Member/CheckFlights.aspx"></asp:HyperLink>
-                            </td>
-                            <td>
-                                <% =Branding.ReBrand(Resources.FlightLint.CheckFlightsShortDescription) %>
                             </td>
                         </tr>
                     </table>

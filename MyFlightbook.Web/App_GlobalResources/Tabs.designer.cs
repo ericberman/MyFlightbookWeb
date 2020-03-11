@@ -331,6 +331,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check Flights.
+        /// </summary>
+        internal static string LogbookCheckFlights {
+            get {
+                return ResourceManager.GetString("LogbookCheckFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Currency.
         /// </summary>
         internal static string LogbookCurrency {

@@ -51,6 +51,11 @@
         <Roles></Roles>
       </Item>
       <Item>
+        <Link>~/Member/CheckFlights.aspx</Link>
+        <ID>lbtCheckFlights</ID>
+        <Roles></Roles>
+      </Item>
+      <Item>
         <Link>~/Member/LogbookNew.aspx?ft=Printing</Link>
         <ID>lbtPrintView</ID>
         <Roles></Roles>
