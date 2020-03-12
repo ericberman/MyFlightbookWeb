@@ -38,6 +38,7 @@ namespace MyFlightbook
         lbtDownload,
         lbtImport,
         lbtStartingTotals,
+        lbtCheckFlights,
         lbtPrintView,
         lbtPending,
 
@@ -95,7 +96,7 @@ namespace MyFlightbook
             switch (id)
             {
                 default:
-                    throw new ArgumentOutOfRangeException("Unknown tab ID");
+                    throw new ArgumentOutOfRangeException(nameof(id));
                 case tabID.tabUnknown:
                     return string.Empty;
                 case tabID.tabHome:
@@ -136,6 +137,8 @@ namespace MyFlightbook
                     return Resources.Tabs.LogbookPrintView;
                 case tabID.lbtPending:
                     return Resources.Tabs.LogbookPending;
+                case tabID.lbtCheckFlights:
+                    return Resources.Tabs.LogbookCheckFlights;
 
                 // Profile
                 case tabID.pftAccount:
@@ -362,7 +365,7 @@ namespace MyFlightbook
         static public bool ContainsTab(IEnumerable<TabItem> lst, tabID id)
         {
             if (lst == null)
-                throw new ArgumentNullException("lst");
+                throw new ArgumentNullException(nameof(lst));
             foreach (TabItem ti in lst)
             {
                 if (ti.ID == id)

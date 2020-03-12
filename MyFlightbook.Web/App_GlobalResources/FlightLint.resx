@@ -129,6 +129,9 @@
   <data name="CheckFlightsNoIssuesFound" xml:space="preserve">
     <value>No issues were found!</value>
   </data>
+  <data name="CheckFlightsShortDescription" xml:space="preserve">
+    <value>Review flights to find inconsistencies, potential data errors, or opportunities for best practices</value>
+  </data>
   <data name="errNoOptionsSelected" xml:space="preserve">
     <value>No options for checking flights have been selected.  Please select at least one category.</value>
   </data>

@@ -778,6 +778,33 @@ public partial class Controls_mfbEditFlight
     protected global::System.Web.UI.WebControls.HiddenField hdnPendingID;
 
     /// <summary>
+    /// pnlFlightLint control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlFlightLint;
+
+    /// <summary>
+    /// lnkClose control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkClose;
+
+    /// <summary>
+    /// gvFlightLint control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.GridView gvFlightLint;
+
+    /// <summary>
     /// pnlSubmit control.
     /// </summary>
     /// <remarks>
@@ -787,13 +814,13 @@ public partial class Controls_mfbEditFlight
     protected global::System.Web.UI.WebControls.Panel pnlSubmit;
 
     /// <summary>
-    /// lnkCheckFlight control.
+    /// ImageButton1 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.LinkButton lnkCheckFlight;
+    protected global::System.Web.UI.WebControls.ImageButton ImageButton1;
 
     /// <summary>
     /// btnCancel control.
@@ -947,42 +974,6 @@ public partial class Controls_mfbEditFlight
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Repeater rptDiffs;
-
-    /// <summary>
-    /// gvFlightLint control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.GridView gvFlightLint;
-
-    /// <summary>
-    /// btnCloseChecks control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnCloseChecks;
-
-    /// <summary>
-    /// lblDummy control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblDummy;
-
-    /// <summary>
-    /// mpeCheckFlight control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.ModalPopupExtender mpeCheckFlight;
 
     /// <summary>
     /// pnlAdminFixSignature control.
