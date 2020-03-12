@@ -34,7 +34,7 @@ and the application should be called "logbook" and point to the /logbook branch.
  ~~~~
  <?xml version="1.0"?>
   <connectionStrings>
-    <add name="logbookConnectionString" connectionString="server=...;User Id=...;password=...;Persist Security Info=false;database=logbook;Pooling=false" providerName="MySql.Data.MySqlClient" />
+    <add name="logbookConnectionString" connectionString="server=...;User Id=...;password=...;Persist Security Info=false;database=logbook;;CharSet=utf8mb4;Pooling=false" providerName="MySql.Data.MySqlClient" />
   </connectionStrings>
 ~~~~
  * Review Packages.config and install the requisite products/DLLs (typically via NuGet) into the Bin directory.
