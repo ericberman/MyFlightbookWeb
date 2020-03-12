@@ -3318,6 +3318,10 @@ namespace MyFlightbook
                     if (comp == 0 && (l1.EngineStart.HasValue() || l2.EngineStart.HasValue()))
                         comp = dir * l1.EngineStart.CompareTo(l2.EngineStart);
 
+                    // Add in block time, if present.  This is NOT done at the database level!
+                    if (comp == 0 && l1.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockOut) && l2.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockOut))
+                        comp = dir * l1.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut].DateValue.CompareTo(l2.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut].DateValue);
+
                     if (comp == 0)
                         comp = dir * l1.HobbsStart.CompareTo(l2.HobbsStart);
 

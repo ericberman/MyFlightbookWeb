@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,6 +33,8 @@ public partial class Controls_mfbTypeInDate : System.Web.UI.UserControl
         }
     }
 
+    public AjaxControlToolkit.TextBoxWatermarkExtender WatermarkExtender { get { return wme; } }
+
     private const string szVSDefaultDate = "keyVSDefault";
     /// <summary>
     /// Gets/sets the date to use when the field is blank.  If the field is set to this value, the text field will be blanked out.
@@ -43,7 +45,7 @@ public partial class Controls_mfbTypeInDate : System.Web.UI.UserControl
         set
         {
             ViewState[szVSDefaultDate] = value;
-            TextBoxWatermarkExtender1.WatermarkText = value.HasValue() ? value.ToShortDateString() : CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
+            wme.WatermarkText = value.HasValue() ? value.ToShortDateString() : CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
         }
     }
 
@@ -106,7 +108,7 @@ public partial class Controls_mfbTypeInDate : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (String.IsNullOrEmpty(TextBoxWatermarkExtender1.WatermarkText))
+        if (String.IsNullOrEmpty(wme.WatermarkText))
             DefaultType = DefaultDateType.Today;
 
         CalendarExtender1.Format = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;

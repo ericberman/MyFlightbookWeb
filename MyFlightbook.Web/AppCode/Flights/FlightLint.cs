@@ -88,6 +88,16 @@ namespace MyFlightbook.Lint
         protected HashSet<int> seenCheckrides { get; private set; }
 
         protected List<FlightIssue> currentIssues { get; private set; }
+
+        protected LogbookEntryBase previousFlight { get; set; }
+
+        protected DateTime? dutyStart { get; set; }
+
+        protected DateTime? dutyEnd { get; set; }
+
+        protected DateTime? flightDutyStart { get; set; }
+
+        protected DateTime? flightDutyEnd { get; set; }
         #endregion
 
         public static UInt32 DefaultOptionsForLocale
@@ -119,10 +129,12 @@ namespace MyFlightbook.Lint
         /// <summary>
         /// Checks flights for various potential issues
         /// </summary>
-        /// <param name="rgle">An enumerable of flights</param>
+        /// <param name="rgle">An enumerable of flights.  MUST BE IN ASCENDING CHRONOLOGICAL ORDER</param>
         /// <param name="options">A bitmask of LintOptions flags</param>
+        /// <param name="szUser">The name of the user (necessary to get their aircraft, other preferences</param>
+        /// <param name="dtMinDate">Ignore any issues with flights on or before this date</param>
         /// <returns></returns>
-        public IEnumerable<FlightWithIssues> CheckFlights(IEnumerable<LogbookEntryBase> rgle, string szUser, UInt32 options)
+        public IEnumerable<FlightWithIssues> CheckFlights(IEnumerable<LogbookEntryBase> rgle, string szUser, UInt32 options, DateTime? dtMinDate = null)
         {
             if (rgle == null)
                 throw new ArgumentNullException(nameof(rgle));
@@ -142,6 +154,12 @@ namespace MyFlightbook.Lint
             foreach (LogbookEntryBase le in rgle)
                 sb.AppendFormat(CultureInfo.CurrentCulture, "{0} ", le.Route);
             alMaster = new AirportList(sb.ToString());
+
+            // context for sequential flight issues
+            previousFlight = null;
+            dutyStart = dutyEnd = null;
+            flightDutyStart = flightDutyEnd = null;
+
 
             foreach (LogbookEntryBase le in rgle)
             {
@@ -190,8 +208,10 @@ namespace MyFlightbook.Lint
                 if ((options & (UInt32)LintOptions.MiscIssues) != 0)
                     CheckMiscIssues(le);
 
-                if (currentIssues.Count > 0)
+                if (currentIssues.Count > 0 && (dtMinDate == null || (dtMinDate.HasValue && le.Date.CompareTo(dtMinDate.Value) > 0)))
                     lstFlights.Add(new FlightWithIssues(le, currentIssues));
+
+                previousFlight = le;
             }
 
             return lstFlights;
@@ -361,6 +381,54 @@ namespace MyFlightbook.Lint
             AddConditionalIssue((cfpBlockOut != null && Math.Abs(cfpBlockOut.DateValue.Subtract(le.Date).TotalHours) > MaxHoursDifference) ||
                 (cfpBlockIn != null && Math.Abs(cfpBlockIn.DateValue.Subtract(le.Date).TotalHours) > MaxHoursDifference),
                 LintOptions.DateTimeIssues, Resources.FlightLint.warningBlockTimeDiffersDate);
+
+            // Look for issues with sequential flights
+            CheckSequentialFlightIssues(le);
+        }
+
+        private void CheckSequentialFlightIssues(LogbookEntryBase le)
+        {
+            if (previousFlight == null)
+                return;
+
+            AddConditionalIssue(previousFlight.EngineEnd.HasValue() && le.EngineStart.HasValue() && previousFlight.EngineEnd.CompareTo(le.EngineStart) > 0,
+                LintOptions.DateTimeIssues, Resources.FlightLint.warningPreviousEngineEndsAfterStart);
+
+            AddConditionalIssue(previousFlight.FlightEnd.HasValue() && le.FlightStart.HasValue() && previousFlight.FlightEnd.CompareTo(le.FlightStart) > 0,
+                LintOptions.DateTimeIssues, Resources.FlightLint.warningPreviousFlightEndsAfterStart);
+
+            CustomFlightProperty cfpBlockOut = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut];
+            AddConditionalIssue(cfpBlockOut != null && previousFlight.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockIn) && cfpBlockOut.DateValue.CompareTo(previousFlight.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn].DateValue) > 0,
+                LintOptions.DateTimeIssues, Resources.FlightLint.warningPreviousFlightBlockEndAfterStart);
+
+            // Look for a new duty start when a prior period is still open.
+            CustomFlightProperty cfpDutyStart = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropDutyStart];
+            CustomFlightProperty cfpFlightDutyStart = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart];
+            CustomFlightProperty cfpDutyEnd = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropDutyEnd];
+            CustomFlightProperty cfpFlightDutyEnd = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd];
+
+            AddConditionalIssue(dutyStart != null && dutyStart.HasValue && cfpDutyStart != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewDutyStart);
+            AddConditionalIssue(flightDutyStart != null && flightDutyStart.HasValue && cfpFlightDutyStart != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewFlightDutyStart);
+
+            AddConditionalIssue(dutyEnd != null && dutyEnd.HasValue && cfpDutyStart != null && cfpDutyStart.DateValue.CompareTo(dutyEnd.Value) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningDutyStartPriorToPreviousDutyEnd);
+            AddConditionalIssue(flightDutyEnd != null && flightDutyEnd.HasValue && cfpFlightDutyStart != null && cfpFlightDutyStart.DateValue.CompareTo(flightDutyEnd.Value) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightDutyStartPriorToPreviousFlightDutyEnd);
+
+            // Close off a duty period if we have a duty end; if we're starting (or restarting) a duty period (and not closing it in the same flight), reset the duty period
+            if (cfpDutyEnd != null)
+            {
+                dutyStart = null;   // don't have an open duty period
+                dutyEnd = cfpDutyEnd.DateValue;
+            }
+            else if (cfpDutyStart != null)
+                dutyStart = cfpDutyStart.DateValue;
+
+            if (cfpFlightDutyEnd != null)
+            {
+                flightDutyStart = null;  // don't have an open flight duty period
+                flightDutyEnd = cfpFlightDutyEnd.DateValue;
+            }
+            else if (cfpFlightDutyStart != null)
+                flightDutyStart = cfpFlightDutyStart.DateValue;
         }
 
         private void CheckMiscIssues(LogbookEntryBase le)

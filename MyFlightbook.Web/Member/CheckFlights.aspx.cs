@@ -1,10 +1,9 @@
-﻿using System;
+﻿using MyFlightbook.Lint;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook.Lint;
 
 /******************************************************
  * 
@@ -17,12 +16,29 @@ namespace MyFlightbook.Web.Member
 {
     public partial class CheckFlights : System.Web.UI.Page
     {
+        protected const string szCookieLastCheck = "cookieLastCheck";
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            mfbDateLastCheck.DefaultDate = DateTime.MinValue;
+
             if (!IsPostBack)
             {
                 lblCheckFlightsCategories.Text = Branding.ReBrand(Resources.FlightLint.CheckFlightsCategoriesHeader);
                 SetOptions(FlightLint.DefaultOptionsForLocale);
+
+                mfbDateLastCheck.Date = DateTime.MinValue;
+
+                if (Request.Cookies[szCookieLastCheck] != null)
+                {
+                    string szLastCheck = Request.Cookies[szCookieLastCheck].Value;
+                    if (DateTime.TryParse(szLastCheck, out DateTime dtLastCheck))
+                    {
+                        spanLastCheck.Visible = true;
+                        lblLastCheck.Text = String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.PromptLastCheckDate, dtLastCheck);
+                        hdnLastDateCheck.Value = dtLastCheck.ToString("d", CultureInfo.CurrentCulture);
+                    }
+                }
             }
         }
 
@@ -65,13 +81,16 @@ namespace MyFlightbook.Web.Member
             }
 
             FlightQuery fq = new FlightQuery(Page.User.Identity.Name);
-            DBHelperCommandArgs dbhq = LogbookEntryBase.QueryCommand(fq);
+            DBHelperCommandArgs dbhq = LogbookEntryBase.QueryCommand(fq, fAsc:true);
             IEnumerable<LogbookEntryBase> rgle = LogbookEntryDisplay.GetFlightsForQuery(dbhq, Page.User.Identity.Name, "Date", SortDirection.Ascending, false, false);
 
             FlightLint fl = new FlightLint();
-            IEnumerable<FlightWithIssues> flightsWithIssues = fl.CheckFlights(rgle, Page.User.Identity.Name, selectedOptions);
+            IEnumerable<FlightWithIssues> flightsWithIssues = fl.CheckFlights(rgle, Page.User.Identity.Name, selectedOptions, mfbDateLastCheck.Date);
             gvFlights.DataSource = flightsWithIssues;
             gvFlights.DataBind();
+
+            Response.Cookies[szCookieLastCheck].Value = DateTime.Now.YMDString();
+            Response.Cookies[szCookieLastCheck].Expires = DateTime.Now.AddYears(5);
         }
     }
 }

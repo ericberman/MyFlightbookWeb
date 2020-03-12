@@ -40,11 +40,11 @@ public partial class Controls_mfbTypeInDate
     protected global::System.Web.UI.WebControls.CustomValidator valDateOK;
 
     /// <summary>
-    /// TextBoxWatermarkExtender1 control.
+    /// wme control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::AjaxControlToolkit.TextBoxWatermarkExtender TextBoxWatermarkExtender1;
+    protected global::AjaxControlToolkit.TextBoxWatermarkExtender wme;
 }

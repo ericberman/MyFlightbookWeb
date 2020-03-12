@@ -183,6 +183,15 @@
   <data name="LintCategoryTimesTip" xml:space="preserve">
     <value>Ensures that time quantities within a flight make sense - e.g., that PIC time doesn't exceed total time.</value>
   </data>
+  <data name="PromptCopyLastCheckDate" xml:space="preserve">
+    <value>Fill in the date of the last check</value>
+  </data>
+  <data name="PromptLastCheckDate" xml:space="preserve">
+    <value>Last check performed on {0:d}</value>
+  </data>
+  <data name="PromptOnlyCheckNewFlights" xml:space="preserve">
+    <value>Only check flights since: </value>
+  </data>
   <data name="TitleCheckFlights" xml:space="preserve">
     <value>Check Flights</value>
   </data>
@@ -216,6 +225,9 @@
   <data name="warningDateTimeInvalidBlock" xml:space="preserve">
     <value>Block out time is after block in time.</value>
   </data>
+  <data name="warningDutyStartPriorToPreviousDutyEnd" xml:space="preserve">
+    <value>New duty period started found that begins is prior to the end of an earlier duty period.</value>
+  </data>
   <data name="warningEngineEndBeforeBlockIn" xml:space="preserve">
     <value>Engine end time is before block in time</value>
   </data>
@@ -224,6 +236,9 @@
   </data>
   <data name="warningEngineTimeDiffersDate" xml:space="preserve">
     <value>Engine start or end differs from date of flight by more than a day</value>
+  </data>
+  <data name="warningFlightDutyStartPriorToPreviousFlightDutyEnd" xml:space="preserve">
+    <value>New flight duty period started found that begins is prior to the end of an earlier flight duty period.</value>
   </data>
   <data name="warningFlightEndAfterBlockIn" xml:space="preserve">
     <value>Flight end time is after block in time</value>
@@ -252,8 +267,23 @@
   <data name="warningMiscMultipleRedundantCheckrides" xml:space="preserve">
     <value>The property {0} is indicated on multiple flights, but should generally only ever happen once.  E.g., you only ever take one Private Pilot Checkride, but later you might add new category/class privileges.  </value>
   </data>
+  <data name="warningNewDutyStart" xml:space="preserve">
+    <value>Duty Period Start found while a prior one is still open (not matched with a corresponding Duty Period End)</value>
+  </data>
+  <data name="warningNewFlightDutyStart" xml:space="preserve">
+    <value>Flight Duty Period Start found while a prior one is still open (not matched with a corresponding Flight Duty Period End)</value>
+  </data>
   <data name="warningPICSICDualBroken" xml:space="preserve">
     <value>Total time does not equal PIC + SIC + Dual time.</value>
+  </data>
+  <data name="warningPreviousEngineEndsAfterStart" xml:space="preserve">
+    <value>Engine Start is prior to previous flight's engine end</value>
+  </data>
+  <data name="warningPreviousFlightBlockEndAfterStart" xml:space="preserve">
+    <value>Block Out is prior to previous flight's Block In</value>
+  </data>
+  <data name="warningPreviousFlightEndsAfterStart" xml:space="preserve">
+    <value>Flight Start is prior to previous flight's flight end</value>
   </data>
   <data name="warningPropertyGreaterThanTotal" xml:space="preserve">
     <value>Property "{0}" indicates more time than total time</value>

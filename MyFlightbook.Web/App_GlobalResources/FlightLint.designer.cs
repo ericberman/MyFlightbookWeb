@@ -259,6 +259,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fill in the date of the last check.
+        /// </summary>
+        internal static string PromptCopyLastCheckDate {
+            get {
+                return ResourceManager.GetString("PromptCopyLastCheckDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last check performed on {0:d}.
+        /// </summary>
+        internal static string PromptLastCheckDate {
+            get {
+                return ResourceManager.GetString("PromptLastCheckDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only check flights since: .
+        /// </summary>
+        internal static string PromptOnlyCheckNewFlights {
+            get {
+                return ResourceManager.GetString("PromptOnlyCheckNewFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check Flights.
         /// </summary>
         internal static string TitleCheckFlights {
@@ -358,6 +385,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New duty period started found that begins is prior to the end of an earlier duty period..
+        /// </summary>
+        internal static string warningDutyStartPriorToPreviousDutyEnd {
+            get {
+                return ResourceManager.GetString("warningDutyStartPriorToPreviousDutyEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Engine end time is before block in time.
         /// </summary>
         internal static string warningEngineEndBeforeBlockIn {
@@ -381,6 +417,15 @@ namespace Resources {
         internal static string warningEngineTimeDiffersDate {
             get {
                 return ResourceManager.GetString("warningEngineTimeDiffersDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New flight duty period started found that begins is prior to the end of an earlier flight duty period..
+        /// </summary>
+        internal static string warningFlightDutyStartPriorToPreviousFlightDutyEnd {
+            get {
+                return ResourceManager.GetString("warningFlightDutyStartPriorToPreviousFlightDutyEnd", resourceCulture);
             }
         }
         
@@ -466,11 +511,56 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duty Period Start found while a prior one is still open (not matched with a corresponding Duty Period End).
+        /// </summary>
+        internal static string warningNewDutyStart {
+            get {
+                return ResourceManager.GetString("warningNewDutyStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight Duty Period Start found while a prior one is still open (not matched with a corresponding Flight Duty Period End).
+        /// </summary>
+        internal static string warningNewFlightDutyStart {
+            get {
+                return ResourceManager.GetString("warningNewFlightDutyStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total time does not equal PIC + SIC + Dual time..
         /// </summary>
         internal static string warningPICSICDualBroken {
             get {
                 return ResourceManager.GetString("warningPICSICDualBroken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Engine Start is prior to previous flight&apos;s engine end.
+        /// </summary>
+        internal static string warningPreviousEngineEndsAfterStart {
+            get {
+                return ResourceManager.GetString("warningPreviousEngineEndsAfterStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block Out is prior to previous flight&apos;s Block In.
+        /// </summary>
+        internal static string warningPreviousFlightBlockEndAfterStart {
+            get {
+                return ResourceManager.GetString("warningPreviousFlightBlockEndAfterStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight Start is prior to previous flight&apos;s flight end.
+        /// </summary>
+        internal static string warningPreviousFlightEndsAfterStart {
+            get {
+                return ResourceManager.GetString("warningPreviousFlightEndsAfterStart", resourceCulture);
             }
         }
         
