@@ -18,10 +18,10 @@ using System.Web.UI.WebControls;
 
 public partial class Member_AdminImages : Page
 {
-    protected string szBase = string.Empty;
+    protected string szBase { get; set; } = string.Empty;
 
     protected const string szVSDBKey = "imagesFromDatabaseVS";
-    protected string m_szLinkTemplate = String.Empty;
+    protected string m_szLinkTemplate { get; set; } = string.Empty;
 
     #region Properties
     protected MFBImageInfo.ImageClass CurrentSource { get; set; }
@@ -83,7 +83,7 @@ public partial class Member_AdminImages : Page
     #endregion
 
     [Serializable]
-    protected class DirKey : IComparable
+    protected class DirKey : IComparable, IEquatable<DirKey>
     {
         public string Key { get; set; }
         public int SortID { get; set; }
@@ -92,6 +92,7 @@ public partial class Member_AdminImages : Page
         {
         }
 
+        #region IComparable
         public int CompareTo(object obj)
         {
             DirKey dk = (DirKey)obj;
@@ -102,6 +103,60 @@ public partial class Member_AdminImages : Page
             else
                 return 1;
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as DirKey);
+        }
+
+        public bool Equals(DirKey other)
+        {
+            return other != null &&
+                   Key == other.Key &&
+                   SortID == other.SortID;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 556471408;
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
+                hashCode = hashCode * -1521134295 + SortID.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(DirKey left, DirKey right)
+        {
+            return EqualityComparer<DirKey>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(DirKey left, DirKey right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(DirKey left, DirKey right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(DirKey left, DirKey right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(DirKey left, DirKey right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(DirKey left, DirKey right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -109,7 +164,7 @@ public partial class Member_AdminImages : Page
         Master.SelectedTab = tabID.tabAdmin;
         if (!MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanManageData)
         {
-            util.NotifyAdminEvent("Attempt to view admin page", String.Format("User {0} tried to hit the admin page.", Page.User.Identity.Name), ProfileRoles.maskSiteAdminOnly);
+            util.NotifyAdminEvent("Attempt to view admin page", String.Format(CultureInfo.CurrentCulture, "User {0} tried to hit the admin page.", Page.User.Identity.Name), ProfileRoles.maskSiteAdminOnly);
             Response.Redirect("~/HTTP403.htm");
         }
 
@@ -173,14 +228,10 @@ public partial class Member_AdminImages : Page
                         };
                         if (fNumericKeySort)
                         {
-                            try
-                            {
-                                dk.SortID = Convert.ToInt32(dk.Key);
-                            }
-                            catch
-                            {
+                            if (Int32.TryParse(dk.Key, out int num))
+                                dk.SortID = num;
+                            else
                                 dk.SortID = i;
-                            }
                         }
                         else
                             dk.SortID = i;
@@ -195,8 +246,8 @@ public partial class Member_AdminImages : Page
             else if (cAutoMigrate == 0)
             {
                 // Get the total # of image rows
-                DBHelper dbh = new DBHelper(String.Format("SELECT COUNT(DISTINCT imagekey) AS NumRows FROM images WHERE virtpathid={0}", (int)CurrentSource));
-                dbh.ReadRow((comm) => { }, (dr) => { TotalImageRows = Convert.ToInt32(dr["NumRows"]); });
+                DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT COUNT(DISTINCT imagekey) AS NumRows FROM images WHERE virtpathid={0}", (int)CurrentSource));
+                dbh.ReadRow((comm) => { }, (dr) => { TotalImageRows = Convert.ToInt32(dr["NumRows"], CultureInfo.InvariantCulture); });
                 CurrentImageRowOffset = 0;
             }
         }
@@ -207,7 +258,7 @@ public partial class Member_AdminImages : Page
             DeleteS3Orphans();
         else if (cAutoMigrate != 0)
         {
-            txtLimitFiles.Text = Math.Min(Math.Max(cAutoMigrate, 10), 100).ToString();
+            txtLimitFiles.Text = Math.Min(Math.Max(cAutoMigrate, 10), 100).ToString(CultureInfo.CurrentCulture);
             btnMigrateImages_Click(sender, e);
         }
         else
@@ -218,21 +269,21 @@ public partial class Member_AdminImages : Page
     protected void DeleteS3Orphans()
     {
         Response.Clear();
-        Response.Write(String.Format("<html><head><link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" /></head><body><p>", VirtualPathUtility.ToAbsolute("~/Public/stylesheet.css")));
+        Response.Write(String.Format(CultureInfo.InvariantCulture, "<html><head><link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" /></head><body><p>", VirtualPathUtility.ToAbsolute("~/Public/stylesheet.css")));
 
         // Get a list of all of the images in the DB for this category:
-        UpdateProgress(1, 0, String.Format("Getting images for {0} from S3", CurrentSource.ToString()));
+        UpdateProgress(1, 0, String.Format(CultureInfo.CurrentCulture, "Getting images for {0} from S3", CurrentSource.ToString()));
 
         bool fIsLiveSite = Branding.CurrentBrand.MatchesHost(Request.Url.Host);
         bool fIsPreview = !String.IsNullOrEmpty(Request["preview"]);
 
         AWSImageManagerAdmin.ADMINDeleteS3Orphans(CurrentSource,
             (cFiles, cBytesTotal, cOrphans, cBytesToFree) =>
-            { UpdateProgress(4, 100, String.Format("{0} orphaned files ({1:#,##0} bytes) found out of {2} files ({3:#,##0} bytes).", cOrphans, cBytesToFree, cFiles, cBytesTotal)); },
+            { UpdateProgress(4, 100, String.Format(CultureInfo.CurrentCulture, "{0} orphaned files ({1:#,##0} bytes) found out of {2} files ({3:#,##0} bytes).", cOrphans, cBytesToFree, cFiles, cBytesTotal)); },
             () => { UpdateProgress(2, 0, "S3 Enumeration done, getting files from DB");},
             (szKey, percent) =>
             {
-                UpdateProgress(3, percent, String.Format("{0}: {1}", fIsPreview ? "PREVIEW" : (fIsLiveSite ? "ACTUAL" : "NOT LIVE SITE"), szKey));
+                UpdateProgress(3, percent, String.Format(CultureInfo.CurrentCulture, "{0}: {1}", fIsPreview ? "PREVIEW" : (fIsLiveSite ? "ACTUAL" : "NOT LIVE SITE"), szKey));
                 return !fIsPreview && fIsLiveSite;
             });
 
@@ -245,7 +296,7 @@ public partial class Member_AdminImages : Page
     protected void SyncImages(List<DirKey> lstDk)
     {
         Response.Clear();
-        Response.Write(String.Format("<html><head><link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" /></head><body><p>", VirtualPathUtility.ToAbsolute("~/Public/stylesheet.css")));
+        Response.Write(String.Format(CultureInfo.InvariantCulture, "<html><head><link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" /></head><body><p>", VirtualPathUtility.ToAbsolute("~/Public/stylesheet.css")));
 
         DateTime dtStart = DateTime.Now;
         int cNewImages = 0;
@@ -257,7 +308,7 @@ public partial class Member_AdminImages : Page
         try
         {
             // Get a list of all of the images in the DB for this category:
-            UpdateProgress(1, 0, String.Format("Getting images for {0} from DB", CurrentSource.ToString()));
+            UpdateProgress(1, 0, String.Format(CultureInfo.CurrentCulture, "Getting images for {0} from DB", CurrentSource.ToString()));
             Dictionary<string, MFBImageInfo> dictDBResults = MFBImageInfo.AllImagesForClass(CurrentSource);
 
             int cDBEntriesToStart = dictDBResults.Count;
@@ -267,9 +318,11 @@ public partial class Member_AdminImages : Page
             int cDirectoriesProcessed = 0;
             int c5Percent = Math.Max(1, cDirectories / 20);
 
-            UpdateProgress(2, 0, String.Format("Getting images for {0} ({1} folders)...", CurrentSource.ToString(), cDirectories));
-            ImageList il = new ImageList();
-            il.Class = CurrentSource;
+            UpdateProgress(2, 0, String.Format(CultureInfo.CurrentCulture, "Getting images for {0} ({1} folders)...", CurrentSource.ToString(), cDirectories));
+            ImageList il = new ImageList
+            {
+                Class = CurrentSource
+            };
             foreach (DirKey dk in lstDk)
             {
                 il.Key = dk.Key;
@@ -294,10 +347,10 @@ public partial class Member_AdminImages : Page
                             if (mfbii.Location != null && !mfbii.Location.IsValid)
                                 mfbii.Location = null;
 
-                            UpdateProgress(4, (100 * cDirectoriesProcessed) / cDirectories, String.Format("Changed {0}:{1}{2}",
+                            UpdateProgress(2, (100 * cDirectoriesProcessed) / cDirectories, String.Format(CultureInfo.CurrentCulture, "Changed {0}:{1}{2}",
                                 mfbii.PrimaryKey,
-                                fCommentChanged ? String.Format("<br />&nbsp;Comment: {0} => {1}", mfbiiMatch.Comment, mfbii.Comment) : string.Empty,
-                                fLocChanged ? String.Format("<br />&nbsp;Location: {0} => {1}", (mfbiiMatch.Location == null ? "null" : mfbiiMatch.Location.ToString()), (mfbii.Location == null ? "null" : mfbii.Location.ToString())) : string.Empty));
+                                fCommentChanged ? String.Format(CultureInfo.CurrentCulture, "<br />&nbsp;Comment: {0} => {1}", mfbiiMatch.Comment, mfbii.Comment) : string.Empty,
+                                fLocChanged ? String.Format(CultureInfo.CurrentCulture, "<br />&nbsp;Location: {0} => {1}", (mfbiiMatch.Location == null ? "null" : mfbiiMatch.Location.ToString()), (mfbii.Location == null ? "null" : mfbii.Location.ToString())) : string.Empty));
 
                             lstMfbiiNewOrChanged.Add(mfbii);
                             cChangedImages++;
@@ -318,46 +371,55 @@ public partial class Member_AdminImages : Page
                 if (++cDirectoriesProcessed % c5Percent == 0)
                 {
                     GC.Collect();
-                    UpdateProgress(2, (100 * cDirectoriesProcessed) / cDirectories, String.Format("{0} Folders processed, {1} images found", cDirectoriesProcessed, cImagesExamined));
+                    UpdateProgress(2, (100 * cDirectoriesProcessed) / cDirectories, String.Format(CultureInfo.CurrentCulture, "{0} Folders processed, {1} images found", cDirectoriesProcessed, cImagesExamined));
                 }
             }
 
-            UpdateProgress(3, 100, String.Format("Elapsed Time: {0} seconds", DateTime.Now.Subtract(dtStart).TotalSeconds));
+            UpdateProgress(3, 100, String.Format(CultureInfo.CurrentCulture, "Elapsed Time: {0} seconds", DateTime.Now.Subtract(dtStart).TotalSeconds));
 
-            UpdateProgress(4, 0, String.Format("{0} image files found, {1} images in DB", cImagesExamined, cDBEntriesToStart));
+            UpdateProgress(4, 0, String.Format(CultureInfo.CurrentCulture, "{0} image files found, {1} images in DB", cImagesExamined, cDBEntriesToStart));
 
             // Now see if anything got deleted but not from the DB
             int cImagesToDelete = dictDBResults.Values.Count;
             if (String.IsNullOrEmpty(Request["preview"]))
             {
-                UpdateProgress(5, 0, String.Format("{0} images found in DB that weren't found as files; deleting these.", cImagesToDelete));
+                UpdateProgress(5, 0, String.Format(CultureInfo.CurrentCulture, "{0} images found in DB that weren't found as files; deleting these.", cImagesToDelete));
                 foreach (MFBImageInfo mfbii in dictDBResults.Values)
                 {
                     mfbii.DeleteFromDB();
                     cDeletedImages++;
 
                     if (cDeletedImages % 100 == 0)
-                        UpdateProgress(5, (100 * cDeletedImages) / cImagesToDelete, String.Format("Deleted {0} images from DB", cDeletedImages));
+                        UpdateProgress(5, (100 * cDeletedImages) / cImagesToDelete, String.Format(CultureInfo.CurrentCulture, "Deleted {0} images from DB", cDeletedImages));
                 }
 
                 // And finally add new images back
-                UpdateProgress(6, 0, String.Format("{0} new and {1} changed images (total of {2}) to be added to/updated in the DB", cNewImages, cChangedImages, lstMfbiiNewOrChanged.Count));
-                lstMfbiiNewOrChanged.ForEach((mfbii) => { mfbii.ToDB(); });
+                UpdateProgress(6, 0, String.Format(CultureInfo.CurrentCulture, "{0} new and {1} changed images (total of {2}) to be added to/updated in the DB", cNewImages, cChangedImages, lstMfbiiNewOrChanged.Count));
+                lstMfbiiNewOrChanged.ForEach((mfbii) => {
+                    try
+                    {
+                        mfbii.ToDB();
+                    }
+                    catch (Exception ex) when (ex is MyFlightbookException)
+                    {
+                        Response.Write(String.Format(CultureInfo.InvariantCulture, "<p class=\"error\">Exception sync'ing DB: {0}</p>", ex.Message));
+                    }
+                });
             }
             else
             {
-                UpdateProgress(5, 0, String.Format("{0} images found in DB that weren't found as files; these are:", cImagesToDelete));
+                UpdateProgress(5, 0, String.Format(CultureInfo.CurrentCulture, "{0} images found in DB that weren't found as files; these are:", cImagesToDelete));
                 foreach (MFBImageInfo mfbii in dictDBResults.Values)
                     UpdateProgress(5, 0, mfbii.PathThumbnail);
-                UpdateProgress(6, 0, String.Format("{0} images found that are new or changed that weren't in DB; these are:", cNewImages + cChangedImages));
+                UpdateProgress(6, 0, String.Format(CultureInfo.CurrentCulture, "{0} images found that are new or changed that weren't in DB; these are:", cNewImages + cChangedImages));
                 lstMfbiiNewOrChanged.ForEach((mfbii) => { UpdateProgress(6, 0, mfbii.PathThumbnail); });
             }
 
             UpdateProgress(6, 100, "Finished!");
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!(ex is OutOfMemoryException))
         {
-            Response.Write(String.Format("<p class=\"error\">Exception sync'ing DB: {0}</p>", ex.Message));
+            Response.Write(String.Format(CultureInfo.InvariantCulture, "<p class=\"error\">Exception sync'ing DB: {0}</p>", ex.Message));
         }
 
         Response.Write("</p></body></html>");
@@ -425,7 +487,7 @@ public partial class Member_AdminImages : Page
             plc.Controls.Add(lnkAc);
             lnkAc.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}&a=1", le.AircraftID);
             lnkAc.Target = "_blank";
-            lnkAc.Text = le.TailNumDisplay;
+            lnkAc.Text = HttpUtility.HtmlEncode(le.TailNumDisplay);
         }
     }
 
