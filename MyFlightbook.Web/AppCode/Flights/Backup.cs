@@ -340,10 +340,10 @@ namespace MyFlightbook
         /// Saves a zip of the user's images to OneDrive, if configured.
         /// </summary>
         /// <exception cref="MyFlightbookException"></exception>
-        /// <exception cref="Microsoft.OneDrive.Sdk.OneDriveException"></exception>
+        /// <exception cref="OneDriveExceptionMFB"></exception>
         /// <param name="activeBrand">The brand to use.  Current brand is used if null.</param>
         /// <param name="od">The OneDrive object to use (one will be initialized, if necessary)</param>
-        public async Task<Microsoft.OneDrive.Sdk.Item> BackupImagesToOneDrive(OneDrive od = null, Brand activeBrand = null)
+        public async Task<bool> BackupImagesToOneDrive(OneDrive od = null, Brand activeBrand = null)
         {
             if (activeBrand == null)
                 activeBrand = Branding.CurrentBrand;
@@ -356,7 +356,7 @@ namespace MyFlightbook
 
             using (MemoryStream ms = ZipOfImagesForUser(activeBrand))
             {
-                return await od.PutFile(ms, BackupImagesFilename(activeBrand));
+                return await od.PutFileDirect(BackupImagesFilename(activeBrand), ms, "application/zip");
             }
         }
 
@@ -364,11 +364,11 @@ namespace MyFlightbook
         /// Saves a the user's logbook to OneDrive, if configured.
         /// </summary>
         /// <exception cref="MyFlightbookException"></exception>
-        /// <exception cref="Microsoft.OneDrive.Sdk.OneDriveException"></exception>
+        /// <exception cref="OneDriveExceptionMFB"></exception>
         /// <exception cref="UnauthorizedAccessException"></exception>
         /// <param name="od">The OneDrive object to use (one will be initialized, if necessary)</param>
         /// <param name="activeBrand">The brand to use.  Current brand is used if null.</param>
-        public async Task<Microsoft.OneDrive.Sdk.Item> BackupToOneDrive(OneDrive od = null, Brand activeBrand = null)
+        public async Task<bool> BackupToOneDrive(OneDrive od = null, Brand activeBrand = null)
         {
             if (User.OneDriveAccessToken == null)
                 throw new MyFlightbookException(Resources.Profile.errNotConfiguredOneDrive);
@@ -379,7 +379,7 @@ namespace MyFlightbook
             if (od == null)
                 od = new OneDrive(User.OneDriveAccessToken);
 
-            return await od.PutFile(BackupFilename(activeBrand), LogbookDataForBackup());
+            return await od.PutFileDirect(BackupFilename(activeBrand), LogbookDataForBackup(), "text/csv");
         }
         #endregion
 
