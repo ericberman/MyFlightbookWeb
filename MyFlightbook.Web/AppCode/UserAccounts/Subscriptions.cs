@@ -377,25 +377,17 @@ namespace MyFlightbook.Subscriptions
                                             throw new UnauthorizedAccessException();
 
                                         OneDrive od = new OneDrive(pf.OneDriveAccessToken);
-                                        if(await lb.BackupToOneDrive(od))
-                                        {
-                                        sb.AppendFormat(CultureInfo.CurrentCulture, "OneDrive: user {0} ", pf.UserName);
-                                        sb.AppendFormat(CultureInfo.CurrentCulture, "Logbook backed up for user {0}...", pf.UserName);
+                                        if (await lb.BackupToOneDrive(od))
+                                            sb.AppendFormat(CultureInfo.CurrentCulture, "OneDrive: user {0} Logbook backed up for user {0}...", pf.UserName);
 
-                                        }
                                         System.Threading.Thread.Sleep(0);
                                         if (await lb.BackupImagesToOneDrive(od, Branding.CurrentBrand))
-                                        {
                                             sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
-                                        }
 
                                         System.Threading.Thread.Sleep(0);
                                         // if we are here we were successful, so save the updated refresh token
-                                        if (String.Compare(pf.OneDriveAccessToken.RefreshToken, od.AuthState.RefreshToken, StringComparison.Ordinal) != 0)
-                                        {
-                                            pf.OneDriveAccessToken.RefreshToken = od.AuthState.RefreshToken;
-                                            pf.FCommit();
-                                        }
+                                        pf.OneDriveAccessToken = od.AuthState;
+                                        pf.FCommit();
                                     }
                                     catch (Exception ex) when (ex is OneDriveExceptionMFB || ex is MyFlightbookException)
                                     {
@@ -430,7 +422,6 @@ namespace MyFlightbook.Subscriptions
                                             throw new UnauthorizedAccessException();
 
                                         GoogleDrive gd = new GoogleDrive(pf.GoogleDriveAccessToken);
-                                        bool fRefreshed = await gd.RefreshAccessToken();
 
                                         sb.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive: user {0} ", pf.UserName);
                                         IReadOnlyDictionary<string, string> meta = await lb.BackupToGoogleDrive(gd, Branding.CurrentBrand);
@@ -443,8 +434,8 @@ namespace MyFlightbook.Subscriptions
                                             sb.AppendFormat(CultureInfo.CurrentCulture, "and images backed up for user {0}.\r\n \r\n", pf.UserName);
 
                                         // if we are here we were successful, so save the updated refresh token
-                                        if (fRefreshed)
-                                            pf.FCommit();
+                                        pf.GoogleDriveAccessToken = gd.AuthState;
+                                        pf.FCommit();
                                     }
                                     catch (MyFlightbookException ex)
                                     {

@@ -344,8 +344,20 @@ namespace MyFlightbook.CloudStorage
         /// <exception cref="System.Net.Http.HttpRequestException"></exception>
         public async Task<IReadOnlyDictionary<string, string>> PutFile(Stream ms, string szFileName, string szMimeType)
         {
-            if (!CheckAccessToken())
-                throw new MyFlightbookException("Google drive: access token missing or expired");
+            try
+            {
+                await RefreshAccessToken();
+            }
+            catch (DotNetOpenAuth.Messaging.ProtocolException ex)
+            {
+                GDriveError error = JsonConvert.DeserializeObject<GDriveError>(ExtractResponseString(ex.InnerException as WebException));
+                if (error == null)
+                    throw new MyFlightbookException("Unknown error refreshing access token", ex);
+                else if (error.error.CompareCurrentCultureIgnoreCase("invalid_grant") == 0)
+                    throw new UnauthorizedAccessException(Branding.ReBrand(Resources.LocalizedText.GoogleDriveBadAuth), ex);
+                else
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error from Google Drive: {0} {1} {2}", error.error, error.error_description, error.error_link), ex);
+            }
 
             bool fIsCSV = szMimeType.CompareCurrentCultureIgnoreCase("text/csv") == 0;
 
@@ -435,37 +447,63 @@ namespace MyFlightbook.CloudStorage
     #endregion
 
     #region OneDrive
+    public enum OneDriveErrorCodeMFB
+    {
+        Unknown = -1,
+        AccessDenied = 0,
+        ActivityLimitReached = 1,
+        AuthenticationCancelled = 2,
+        AuthenticationFailure = 3,
+        GeneralException = 4,
+        InvalidRange = 5,
+        InvalidRequest = 6,
+        ItemNotFound = 7,
+        MalwareDetected = 8,
+        MyFilesCapabilityNotFound = 9,
+        NameAlreadyExists = 10,
+        NotAllowed = 11,
+        NotSupported = 12,
+        ResourceModified = 13,
+        ResyncRequired = 14,
+        ServiceNotAvailable = 15,
+        Timeout = 16,
+        TooManyRedirects = 17,
+        QuotaLimitReached = 18,
+        Unauthenticated = 19,
+        UserDoesNotHaveMyFilesService = 20
+    }
+
     public class OneDriveError
     {
-        private enum OneDriveErrorCodeMFB
-        {
-            Unknown = -1,
-            AccessDenied = 0,
-            ActivityLimitReached = 1,
-            AuthenticationCancelled = 2,
-            AuthenticationFailure = 3,
-            GeneralException = 4,
-            InvalidRange = 5,
-            InvalidRequest = 6,
-            ItemNotFound = 7,
-            MalwareDetected = 8,
-            MyFilesCapabilityNotFound = 9,
-            NameAlreadyExists = 10,
-            NotAllowed = 11,
-            NotSupported = 12,
-            ResourceModified = 13,
-            ResyncRequired = 14,
-            ServiceNotAvailable = 15,
-            Timeout = 16,
-            TooManyRedirects = 17,
-            QuotaLimitReached = 18,
-            Unauthenticated = 19,
-            UserDoesNotHaveMyFilesService = 20
-        }
-
         OneDriveErrorCodeMFB ErrorCode { get; set; }
 
         public string Message { get; set; }
+
+        public OneDriveError(OneDriveErrorCodeMFB errCode)
+        {
+            ErrorCode = errCode;
+            Message = MessageForCode(errCode);
+        }
+
+        protected static string MessageForCode(OneDriveErrorCodeMFB errCode)
+        {
+            switch (errCode)
+            {
+                case OneDriveErrorCodeMFB.AccessDenied:
+                case OneDriveErrorCodeMFB.AuthenticationCancelled:
+                case OneDriveErrorCodeMFB.AuthenticationFailure:
+                case OneDriveErrorCodeMFB.Unauthenticated:
+                    return Branding.ReBrand(Resources.LocalizedText.OneDriveBadAuth);
+                case OneDriveErrorCodeMFB.QuotaLimitReached:
+                    return Resources.LocalizedText.OneDriveErrorOutOfSpace;
+                case OneDriveErrorCodeMFB.Timeout:
+                case OneDriveErrorCodeMFB.ServiceNotAvailable:
+                case OneDriveErrorCodeMFB.TooManyRedirects:
+                    return Resources.LocalizedText.OneDriveCantReachService;
+                default:
+                    return errCode.ToString();
+            }
+        }
 
         public OneDriveError(string szJSon) : base()
         {
@@ -487,25 +525,7 @@ namespace MyFlightbook.CloudStorage
             }
             catch (Exception ex) when (ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException) { }
 
-            switch (ErrorCode)
-            {
-                case OneDriveErrorCodeMFB.AccessDenied:
-                case OneDriveErrorCodeMFB.AuthenticationCancelled:
-                case OneDriveErrorCodeMFB.AuthenticationFailure:
-                case OneDriveErrorCodeMFB.Unauthenticated:
-                    Message = Branding.ReBrand(Resources.LocalizedText.OneDriveBadAuth);
-                    break;
-                case OneDriveErrorCodeMFB.QuotaLimitReached:
-                    Message = Resources.LocalizedText.OneDriveErrorOutOfSpace;
-                    break;
-                case OneDriveErrorCodeMFB.Timeout:
-                case OneDriveErrorCodeMFB.ServiceNotAvailable:
-                case OneDriveErrorCodeMFB.TooManyRedirects:
-                    Message = Resources.LocalizedText.OneDriveCantReachService;
-                    break;
-                default:
-                    break;
-            }
+            Message = MessageForCode(ErrorCode);
 
         }
   
@@ -598,6 +618,20 @@ namespace MyFlightbook.CloudStorage
             AuthState = authstate;
         }
 
+        protected static void HandleInvalidAuth(DotNetOpenAuth.Messaging.ProtocolException ex)
+        {
+            dynamic error = JsonConvert.DeserializeObject(ExtractResponseString(ex.InnerException as WebException));
+            if (error == null)
+                throw new MyFlightbookException("Unknown error refreshing access token", ex);
+            else if (error.error != null && String.Compare(error.error.ToString(), "invalid_grant", StringComparison.InvariantCulture) == 0)
+            {
+                OneDriveExceptionMFB ode = new OneDriveExceptionMFB(new OneDriveError(OneDriveErrorCodeMFB.AuthenticationFailure), ex);
+                throw new UnauthorizedAccessException(ode.Message, ode);
+            }
+            else
+                throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.OneDriveBadAuth));
+        }
+
         private UriBuilder BuilderForPath(string szPath)
         {
             return new UriBuilder("https://api.onedrive.com")
@@ -651,8 +685,14 @@ namespace MyFlightbook.CloudStorage
         public async Task<bool> PutFileDirect(string szFilename, Stream ms, string szMimeType)
         {
             ms.Seek(0, SeekOrigin.Begin);
-            if (!CheckAccessToken() && !await RefreshAccessToken())
-                throw new MyFlightbookException("OneDrive: access token missing or expired");
+            try
+            {
+                await RefreshAccessToken();
+            }
+            catch (DotNetOpenAuth.Messaging.ProtocolException ex)
+            {
+                HandleInvalidAuth(ex);
+            }
 
             string szResult = string.Empty;
             HttpResponseMessage response = null;

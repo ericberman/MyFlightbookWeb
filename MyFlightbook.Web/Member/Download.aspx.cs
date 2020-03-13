@@ -129,7 +129,7 @@ public partial class Member_Download : System.Web.UI.Page
                 await lb.BackupImagesToOneDrive(od);
 
             // if we are here we were successful, so save the updated refresh token
-            pf.OneDriveAccessToken.RefreshToken = od.AuthState.RefreshToken;
+            pf.OneDriveAccessToken = od.AuthState;
             pf.FCommit();
 
             lblDropBoxSuccess.Visible = true;
@@ -153,23 +153,16 @@ public partial class Member_Download : System.Web.UI.Page
         {
             GoogleDrive gd = new GoogleDrive(pf.GoogleDriveAccessToken);
 
-            if (await gd.RefreshAccessToken())
-                pf.FCommit();
-
             await lb.BackupToGoogleDrive(gd);
 
             if (ckIncludeImages.Checked)
                 await lb.BackupImagesToGoogleDrive(gd);
 
+            // if we are here we were successful, so save the updated refresh token
+            pf.GoogleDriveAccessToken = gd.AuthState;
+            pf.FCommit();
+
             lblDropBoxSuccess.Visible = true;
-        }
-        catch (MyFlightbookException ex)
-        {
-            ShowDropboxError(ex.Message);
-        }
-        catch (System.Net.Http.HttpRequestException ex)
-        {
-            ShowDropboxError(ex.Message);
         }
         catch (Exception ex) when (!(ex is OutOfMemoryException))
         {

@@ -13,8 +13,8 @@
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <div style="width:600px; margin-left: auto; margin-right: auto">
     <p><% = Resources.LocalizedText.DownloadYourData %></p>
-    <table cellpadding="5">
-        <tr valign="top">
+    <table>
+        <tr style="vertical-align: top; padding: 3px">
             <td style="width:50%">
                 <div style="vertical-align:middle;">
                     <asp:HyperLink ID="lnkDownloadXL" NavigateUrl="~/Public/MyFlightbook backup.xls"
@@ -30,12 +30,12 @@
             </td>
         </tr>
         <tr>
-            <td valign="middle" style="font-weight: bold; text-align: center;" colspan="2">
+            <td style="vertical-align: middle; font-weight: bold; text-align: center;" colspan="2">
                 <hr />
                 <asp:Label Font-Bold="true" ID="Label1" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookSeparator %>"></asp:Label>
             </td>
         </tr>
-        <tr valign="top">
+        <tr style="vertical-align: top; padding: 3px">
             <td>
                 <div style="vertical-align:middle;">
                     <asp:LinkButton ID="lnkDownloadCSV" runat="server" OnClick="lnkDownloadCSV_Click">
@@ -58,12 +58,12 @@
             </td>
         </tr>
         <tr>
-            <td valign="middle" style="font-weight: bold; text-align: center;" colspan="2">
+            <td style="vertical-align: middle;font-weight: bold; text-align: center;" colspan="2">
                 <hr />
                 <asp:Label Font-Bold="true" ID="lblOR" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookSeparator %>"></asp:Label>
             </td>
         </tr>
-        <tr valign="top">
+        <tr style="vertical-align: top; padding: 3px">
             <td>
                 <asp:UpdatePanel ID="updDropbox" runat="server">
                     <ContentTemplate>
@@ -104,7 +104,7 @@
             </td>
         </tr>
         <tr>
-            <td valign="middle" style="font-weight: bold; text-align: center;" colspan="2">
+            <td style="vertical-align: middle;font-weight: bold; text-align: center;" colspan="2">
                 <hr />
                 <asp:Label Font-Bold="true" ID="lblOR2" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookSeparator %>"></asp:Label>
             </td>

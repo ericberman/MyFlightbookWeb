@@ -1,6 +1,7 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -9,7 +10,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,10 +22,10 @@ namespace MyFlightbook.OAuth
     /// </summary>
     public abstract class OAuthClientBase
     {
-        private string _oA2AuthEndpoint;
-        private string _oA2TokenEndpoint;
-        private string _oA2UpgradeEndpoint;
-        private string _oA2DisableTokenEndpoint;
+        private readonly string _oA2AuthEndpoint;
+        private readonly string _oA2TokenEndpoint;
+        private readonly string _oA2UpgradeEndpoint;
+        private readonly string _oA2DisableTokenEndpoint;
 
         #region properties
         /// <summary>
@@ -60,7 +61,7 @@ namespace MyFlightbook.OAuth
         /// <summary>
         /// The scopes that apply to this
         /// </summary>
-        public string[] Scopes { get; set; }
+        public IEnumerable<string> Scopes { get; set; }
 
         /// <summary>
         /// The oAuth2 AppKey (from LocalConfig)
@@ -104,10 +105,12 @@ namespace MyFlightbook.OAuth
 
         private AuthorizationServerDescription Description()
         {
-            AuthorizationServerDescription desc = new AuthorizationServerDescription();
-            desc.AuthorizationEndpoint = new Uri(oAuth2AuthorizeEndpoint);
-            desc.ProtocolVersion = ProtocolVersion.V20;
-            desc.TokenEndpoint = new Uri(oAuth2TokenEndpoint);
+            AuthorizationServerDescription desc = new AuthorizationServerDescription
+            {
+                AuthorizationEndpoint = new Uri(oAuth2AuthorizeEndpoint),
+                ProtocolVersion = ProtocolVersion.V20,
+                TokenEndpoint = new Uri(oAuth2TokenEndpoint)
+            };
             return desc;
         }
 
@@ -126,14 +129,14 @@ namespace MyFlightbook.OAuth
             Client().RequestUserAuthorization(Scopes, szCallbackUri);
         }
 
-        protected Uri RedirectUri(HttpRequest request, string basepath, string param)
+        protected static Uri RedirectUri(HttpRequest request, string basepath, string param)
         {
             if (request == null)
-                throw new ArgumentNullException("request");
+                throw new ArgumentNullException(nameof(request));
             if (basepath == null)
-                throw new ArgumentNullException("basepath");
+                throw new ArgumentNullException(nameof(basepath));
             if (param == null)
-                throw new ArgumentNullException("param");
+                throw new ArgumentNullException(nameof(param));
             return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}?{3}=1",
                 request.IsLocal && !request.IsSecureConnection ? "http" : "https",
                 request.Url.Host,
@@ -171,23 +174,22 @@ namespace MyFlightbook.OAuth
         {
             public string error { get; set; }
             public string error_description { get; set; }
-            public string error_uri { get; set; }
+
+            [JsonProperty("error_uri")]
+            public string error_link { get; set; }
 
             public GDriveError()
             {
-                error = error_description = error_uri = string.Empty;
+                error = error_description = error_link = string.Empty;
             }
         }
 
-        private string ExtractResponseString(WebException webException)
+        protected static string ExtractResponseString(WebException webException)
         {
             if (webException == null || webException.Response == null)
                 return null;
 
-            var responseStream =
-                webException.Response.GetResponseStream() as MemoryStream;
-
-            if (responseStream == null)
+            if (!(webException.Response.GetResponseStream() is MemoryStream responseStream))
                 return null;
 
             var responseBytes = responseStream.ToArray();
@@ -200,7 +202,8 @@ namespace MyFlightbook.OAuth
         /// Refreshes the access token if (a) there is a refresh token, and (b) there is not an unexpired accesstoken
         /// </summary>
         /// <returns>True if the update happened and was successful</returns>
-        public async Task<bool> RefreshAccessToken()
+        /// <exception cref="DotNetOpenAuth.Messaging.ProtocolException"
+        protected async Task<bool> RefreshAccessToken()
         {
             return await Task.Run<bool>(() =>
             {
@@ -209,20 +212,7 @@ namespace MyFlightbook.OAuth
                     return false;
 
                 WebServerClient client = Client();
-                try
-                {
-                    client.RefreshAuthorization(AuthState);
-                }
-                catch (DotNetOpenAuth.Messaging.ProtocolException ex)
-                {
-                    GDriveError error = JsonConvert.DeserializeObject<GDriveError>(ExtractResponseString(ex.InnerException as WebException));
-                    if (error == null)
-                        throw;
-                    else if (error.error.CompareCurrentCultureIgnoreCase("invalid_grant") == 0)
-                        throw new MyFlightbookException(Branding.ReBrand(Resources.LocalizedText.GoogleDriveBadAuth), ex);
-                    else
-                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error from Google Drive: {0} {1} {2}", error.error, error.error_description, error.error_uri), ex);
-                }
+                client.RefreshAuthorization(AuthState); // Throws DotNetOpenAuth.Messaging.ProtocolException if failure.
                 return true;
             });
         }
@@ -234,8 +224,10 @@ namespace MyFlightbook.OAuth
         /// <returns>The granted access token</returns>
         public virtual AuthorizationState ConvertToken(HttpRequest Request)
         {
-            WebServerClient consumer = new WebServerClient(Description(), AppKey, AppSecret);
-            consumer.ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(AppSecret);
+            WebServerClient consumer = new WebServerClient(Description(), AppKey, AppSecret)
+            {
+                ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(AppSecret)
+            };
             IAuthorizationState grantedAccess = consumer.ProcessUserAuthorization(new HttpRequestWrapper(Request));
             // Kindof a hack below, but we convert from IAuthorizationState to AuthorizationState via JSON so that we have a concrete object that we can instantiate.
             return JsonConvert.DeserializeObject<AuthorizationState>(JsonConvert.SerializeObject(grantedAccess));
