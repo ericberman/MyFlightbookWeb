@@ -11,7 +11,7 @@ using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -216,7 +216,7 @@ namespace MyFlightbook.Mapping
             ShowMarkers = true;
             ShowRoute = true;
             MapVisible = true;
-            Path = new LatLong[0];
+            Path = Array.Empty<LatLong>();
             ZoomFactor = GMap_ZoomLevels.US;
             MapCenter = new LatLong(35.224762, -86.156354); // approximate center of US
             ClickHandler = string.Empty;
@@ -349,18 +349,16 @@ namespace MyFlightbook.Mapping
         /// </summary>
         public string MapJScript(string mapID, string containerID)
         {
-            Boolean fAutoZoom = false;
 
             // Initialize any airports
             BoundingBox = null;
-            StringBuilder sbJSAirports = new StringBuilder("function InitAirports() {\r\n", 2000);
 
             string szAirportMarkers = ProcessAirports();
 
             string szImages = ProcessImages();
 
             string szClubs = ProcessClubs();
-            fAutoZoom = (BoundingBox != null && !BoundingBox.IsEmpty);
+            bool fAutoZoom = BoundingBox != null && !BoundingBox.IsEmpty;
 
             string szPath = ProcessPath();
             if (!String.IsNullOrEmpty(szPath))

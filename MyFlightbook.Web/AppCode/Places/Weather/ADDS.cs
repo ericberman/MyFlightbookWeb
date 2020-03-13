@@ -8,7 +8,7 @@ using MyFlightbook.Airports;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2019 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -29,8 +29,7 @@ namespace MyFlightbook.Weather.ADDS
             {
                 if (String.IsNullOrEmpty(observation_time))
                     return null;
-                DateTime dt;
-                if (DateTime.TryParse(observation_time, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal, out dt))
+                if (DateTime.TryParse(observation_time, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal, out DateTime dt))
                     return dt.ToUniversalTime();
                 return null;
             }
@@ -214,6 +213,61 @@ namespace MyFlightbook.Weather.ADDS
 
             return m.TimeStamp.Value.CompareTo(TimeStamp.Value);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj is null)
+            {
+                return false;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool operator ==(METAR left, METAR right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(METAR left, METAR right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(METAR left, METAR right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(METAR left, METAR right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(METAR left, METAR right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(METAR left, METAR right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
         #endregion
     }
 
@@ -269,7 +323,7 @@ namespace MyFlightbook.Weather.ADDS
                     strResponse = streamIn.ReadToEnd();
                 return strResponse.DeserializeFromXML<response>();
             }
-            catch (WebException)
+            catch (Exception ex) when (ex is WebException)
             {
                 return null;
             }

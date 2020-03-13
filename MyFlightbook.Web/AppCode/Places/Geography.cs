@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -101,8 +101,7 @@ namespace MyFlightbook.Geography
                     return;
                 }
             }
-            catch (FormatException)
-            { }
+            catch (Exception ex) when (ex is FormatException) { }
 
             // Default value
             Degrees = Minutes = 0;
@@ -167,7 +166,7 @@ namespace MyFlightbook.Geography
         public LatLong(LatLong ll)
         {
             if (ll == null)
-                throw new ArgumentNullException("ll");
+                throw new ArgumentNullException(nameof(ll));
             Latitude = ll.Latitude;
             Longitude = ll.Longitude;
         }
@@ -330,9 +329,9 @@ namespace MyFlightbook.Geography
         public static double DistanceBetweenPoints(LatLong ll1, LatLong ll2)
         {
             if (ll1 == null)
-                throw new ArgumentNullException("ll1");
+                throw new ArgumentNullException(nameof(ll1));
             if (ll2 == null)
-                throw new ArgumentNullException("ll2");
+                throw new ArgumentNullException(nameof(ll2));
 
             // Short circuit 0 distance
             if (ll1.Latitude == ll2.Latitude && ll1.Longitude == ll2.Longitude)
@@ -370,12 +369,10 @@ namespace MyFlightbook.Geography
         /// <returns>A latlon object, or null</returns>
         public static LatLong TryParse(object szLat, object szLon, IFormatProvider ci = null)
         {
-            double lat, lon;
-
             if (szLat == null)
-                throw new ArgumentNullException("szLat");
+                throw new ArgumentNullException(nameof(szLat));
             if (szLon == null)
-                throw new ArgumentNullException("szLon");
+                throw new ArgumentNullException(nameof(szLon));
 
             if (szLat.GetType() == typeof(double) && szLon.GetType() == typeof(double))
                 return new LatLong((double)szLat, (double)szLon);
@@ -383,7 +380,7 @@ namespace MyFlightbook.Geography
             if (ci == null)
                 ci = CultureInfo.CurrentCulture;
 
-            if (double.TryParse(szLat.ToString(), System.Globalization.NumberStyles.Any, ci, out lat) && double.TryParse(szLon.ToString(), System.Globalization.NumberStyles.Any, ci, out lon))
+            if (double.TryParse(szLat.ToString(), NumberStyles.Any, ci, out double lat) && double.TryParse(szLon.ToString(), System.Globalization.NumberStyles.Any, ci, out double lon))
                 return new LatLong(lat, lon);
             return null;
         }
@@ -404,7 +401,7 @@ namespace MyFlightbook.Geography
     /// Position report: LatLong plus optional altitude and optional timestamp.
     /// </summary>
     [Serializable]
-    public class Position : LatLong, IComparable
+    public class Position : LatLong, IComparable, IEquatable<Position>
     {
         private double m_Altitude;
         private double m_Speed;
@@ -502,9 +499,8 @@ namespace MyFlightbook.Geography
             if (rgCoord == null || rgCoord.Length < 2)
                 throw new MyFlightbookException("Error reading KML coordinate: need at least a latitude and a longitude, both were not provided"); ;
 
-            double lat, lon, alt;
-            if (double.TryParse(rgCoord[0], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out lon) &&
-                double.TryParse(rgCoord[1], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out lat))
+            if (double.TryParse(rgCoord[0], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double lon) &&
+                double.TryParse(rgCoord[1], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double lat))
             {
                 Latitude = lat;
                 Longitude = lon;
@@ -514,7 +510,7 @@ namespace MyFlightbook.Geography
 
             if (rgCoord.Length > 2)
             {
-                if (double.TryParse(rgCoord[2], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out alt))
+                if (double.TryParse(rgCoord[2], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double alt))
                     Altitude = alt;
                 else
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error reading altitude '{0}'", rgCoord[2]));
@@ -571,6 +567,7 @@ namespace MyFlightbook.Geography
             }
         }
 
+        #region IComparable
         /// <summary>
         /// Orders by date, if date is present; order is otherwise undefined
         /// </summary>
@@ -584,6 +581,72 @@ namespace MyFlightbook.Geography
             else
                 return 0;
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Position);
+        }
+
+        public bool Equals(Position other)
+        {
+            return other != null &&
+                   HasAltitude == other.HasAltitude &&
+                   HasSpeed == other.HasSpeed &&
+                   HasTimeStamp == other.HasTimeStamp &&
+                   TypeOfSpeed == other.TypeOfSpeed &&
+                   Altitude == other.Altitude &&
+                   Timestamp == other.Timestamp &&
+                   Speed == other.Speed &&
+                   Comment == other.Comment;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = -2147241889;
+                hashCode = hashCode * -1521134295 + HasAltitude.GetHashCode();
+                hashCode = hashCode * -1521134295 + HasSpeed.GetHashCode();
+                hashCode = hashCode * -1521134295 + HasTimeStamp.GetHashCode();
+                hashCode = hashCode * -1521134295 + TypeOfSpeed.GetHashCode();
+                hashCode = hashCode * -1521134295 + Altitude.GetHashCode();
+                hashCode = hashCode * -1521134295 + Timestamp.GetHashCode();
+                hashCode = hashCode * -1521134295 + Speed.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Comment);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(Position left, Position right)
+        {
+            return EqualityComparer<Position>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Position left, Position right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(Position left, Position right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(Position left, Position right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(Position left, Position right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(Position left, Position right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
 
         public override string ToString()
         {
@@ -619,9 +682,9 @@ namespace MyFlightbook.Geography
         public static IEnumerable<Position> SynthesizePath(LatLong llStart, DateTime dtStart, LatLong llEnd, DateTime dtEnd)
         {
             if (llStart == null)
-                throw new ArgumentNullException("llStart");
+                throw new ArgumentNullException(nameof(llStart));
             if (llEnd == null)
-                throw new ArgumentNullException("llEnd");
+                throw new ArgumentNullException(nameof(llEnd));
 
             List<Position> lst = new List<Position>();
 
@@ -692,7 +755,7 @@ namespace MyFlightbook.Geography
             lst.AddRange(rgPadding);
 
             return lst;
-        }
+        }        
     }
 
     [Serializable]
@@ -711,7 +774,7 @@ namespace MyFlightbook.Geography
         public LatLongBox(LatLong l)
         {
             if (l == null)
-                throw new ArgumentNullException("l");
+                throw new ArgumentNullException(nameof(l));
             LongEast = LongWest = l.Longitude;
             LatNorth = LatSouth = l.Latitude;
         }
@@ -769,7 +832,7 @@ namespace MyFlightbook.Geography
         public bool ContainsPoint(LatLong ll)
         {
             if (ll == null)
-                throw new ArgumentNullException("ll");
+                throw new ArgumentNullException(nameof(ll));
 
             // Reject if it doesn't fall between north/south
             if (ll.Latitude > LatNorth || ll.Latitude < LatSouth)
@@ -798,7 +861,7 @@ namespace MyFlightbook.Geography
         public void ExpandToInclude(LatLong l)
         {
             if (l == null)
-                throw new ArgumentNullException("l");
+                throw new ArgumentNullException(nameof(l));
             if (LatNorth < l.Latitude)
                 LatNorth = l.Latitude;
             if (LatSouth > l.Latitude)

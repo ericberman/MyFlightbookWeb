@@ -6,7 +6,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2017 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -38,7 +38,7 @@ namespace MyFlightbook.Telemetry
         public override bool Parse(string szData)
         {
             if (szData == null)
-                throw new ArgumentNullException("szData");
+                throw new ArgumentNullException(nameof(szData));
 
             Boolean fResult = true;
             StringBuilder sbErr = new StringBuilder();
@@ -104,7 +104,7 @@ namespace MyFlightbook.Telemetry
                 ParsedData.Columns.Add(new DataColumn(KnownColumnNames.LAT, typeof(double)));
                 ParsedData.Columns.Add(new DataColumn(KnownColumnNames.SPEED, typeof(double)));
 
-                CultureInfo ci = System.Globalization.CultureInfo.InvariantCulture;
+                CultureInfo ci = CultureInfo.InvariantCulture;
 
                 int iSentence = 0;
                 foreach (string sentence in rgSentences)

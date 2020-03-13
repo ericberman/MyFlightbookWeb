@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2011-2018 MyFlightbook LLC
+ * Copyright (c) 2011-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -314,7 +314,7 @@ namespace MyFlightbook.Solar
                             (Math.Cos(latRad) * Math.Cos(decl) * Math.Cos(degToRad(hourAngle)) +
                             (Math.Sin(latRad) * Math.Sin(decl))));
             }
-            catch (OverflowException) { }
+            catch (Exception ex) when (ex is OverflowException) { }
 
             return radToDeg(altitudeAngle);
         }

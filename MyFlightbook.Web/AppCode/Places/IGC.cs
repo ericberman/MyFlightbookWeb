@@ -7,7 +7,7 @@ using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2016 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -59,7 +59,7 @@ namespace MyFlightbook.Telemetry
         {
             ParsedData.Clear();
 
-            MatchCollection mcDate = null;
+            MatchCollection mcDate;
             try
             {
                 // check for valid IGC data
@@ -136,8 +136,8 @@ namespace MyFlightbook.Telemetry
             return true;
         }
 
-        private static Regex rIGCPrefix = new Regex("^A[a-zA-Z0-9]{6}[^,;]*$", RegexOptions.Compiled);
-        private static Regex rIGCPosition = new Regex("^B(?<hrs>[0-9]{2})(?<min>[0-9]{2})(?<sec>[0-9]{2})(?<latd>[0-9]{2})(?<latm>[0-9]{5})(?<latns>[NS])(?<lond>[0-9]{3})(?<lonm>[0-9]{5})(?<lonew>[EW])(?<val>[AV])(?<palt>[0-9]{5})(?<gpsalt>[0-9]{5})", RegexOptions.Compiled | RegexOptions.Multiline);
-        private static Regex rIGCDate = new Regex("^HFDTE(?<day>[0-3][0-9])(?<month>[01][0-9])(?<year>[0-9]{2})", RegexOptions.Compiled | RegexOptions.Multiline);
+        private static readonly Regex rIGCPrefix = new Regex("^A[a-zA-Z0-9]{6}[^,;]*$", RegexOptions.Compiled);
+        private static readonly Regex rIGCPosition = new Regex("^B(?<hrs>[0-9]{2})(?<min>[0-9]{2})(?<sec>[0-9]{2})(?<latd>[0-9]{2})(?<latm>[0-9]{5})(?<latns>[NS])(?<lond>[0-9]{3})(?<lonm>[0-9]{5})(?<lonew>[EW])(?<val>[AV])(?<palt>[0-9]{5})(?<gpsalt>[0-9]{5})", RegexOptions.Compiled | RegexOptions.Multiline);
+        private static readonly Regex rIGCDate = new Regex("^HFDTE(?<day>[0-3][0-9])(?<month>[01][0-9])(?<year>[0-9]{2})", RegexOptions.Compiled | RegexOptions.Multiline);
     }
 }

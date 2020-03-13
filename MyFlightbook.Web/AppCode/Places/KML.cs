@@ -14,7 +14,7 @@ using System.Xml.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -107,16 +107,13 @@ namespace MyFlightbook.Telemetry
                 // We've had instances where szName has invalid cahracters, so ignore any errors that arise
                 kml.WriteElementString("name", szName);
             }
-            catch (ArgumentException) { }
-            catch (InvalidOperationException) { }
+            catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException) { }
 
             kml.WriteElementString("styleUrl", "#redPoly");
             kml.WriteStartElement("gx", "Track", null);
 
             kml.WriteElementString("extrude", "0"); // don't connect to the ground
             kml.WriteElementString("altitudeMode", rgPos.Length > 0 && rgPos[0].HasAltitude ? "absolute" : "clampToGround");
-
-            StringBuilder sbCoords = new StringBuilder();
 
             // Altitude, in meters
             foreach (Position p in rgPos)
@@ -141,8 +138,7 @@ namespace MyFlightbook.Telemetry
                 // We've had instances where szName has invalid cahracters, so ignore any errors that arise
                 kml.WriteElementString("name", szName);
             }
-            catch (ArgumentException) { }
-            catch (InvalidOperationException) { }
+            catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException) { }
             kml.WriteElementString("styleUrl", "#redPoly");
             kml.WriteStartElement("LineString");
 
@@ -194,10 +190,7 @@ namespace MyFlightbook.Telemetry
 
             public KMLElements(XDocument xml)
             {
-                if (xml == null)
-                    throw new ArgumentNullException("xml");
-
-                xmlDoc = xml;
+                xmlDoc = xml ?? throw new ArgumentNullException(nameof(xml));
                 ele = null;
                 ele22 = null;
                 eleCoords = null;
@@ -215,7 +208,7 @@ namespace MyFlightbook.Telemetry
                     eleCoords = xml.Descendants(ns + "Placemark").Descendants(ns + "LineString").Descendants(ns + "coordinates");
                     ele = eleCoords.First();
                 }
-                catch (InvalidOperationException) { }
+                catch (Exception ex) when (ex is InvalidOperationException) { }
 
                 if (ele == null)
                 {
@@ -224,28 +217,28 @@ namespace MyFlightbook.Telemetry
                         ele = xml.Descendants(nsAlt + "LineString").First();
                         eleArray = xml.Descendants(nsAlt + "LineString");
                     }
-                    catch (InvalidOperationException) { }
+                    catch (Exception ex) when (ex is InvalidOperationException) { }
                 }
 
                 try
                 {
                     ele22 = xml.Descendants(ns + "Placemark").Descendants(ns22 + "Track").First();
                 }
-                catch (InvalidOperationException)
+                catch (Exception ex) when (ex is InvalidOperationException)
                 {
                     try
                     {
                         ele = xml.Descendants(nsAlt22 + "LineString").First();
                         eleArray = xml.Descendants(nsAlt22 + "LineString");
                     }
-                    catch (InvalidOperationException)
+                    catch (Exception ex2) when (ex2 is InvalidOperationException)
                     {
                         try
                         {
                             ele = xml.Descendants(nsAlt21 + "LineString").First();
                             eleArray = xml.Descendants(nsAlt21 + "LineString");
                         }
-                        catch (InvalidOperationException) { }
+                        catch (Exception ex3) when (ex3 is InvalidOperationException) { }
                     }
                 }
             }
@@ -311,10 +304,7 @@ namespace MyFlightbook.Telemetry
             var timeStamps = k.ele22.Descendants(k.ns + "when");
             var coords = k.ele22.Descendants(k.ns22 + "coord");
 
-            int cTimeStamps = timeStamps.Count();
             int cCoords = coords.Count();
-
-            bool fHasTime = cTimeStamps > 0 && cTimeStamps == cCoords;
 
             List<Position> lstSamples = new List<Position>();
             for (int iRow = 0; iRow < cCoords; iRow++)
@@ -350,8 +340,7 @@ namespace MyFlightbook.Telemetry
                         foreach (XElement speedval in e.Descendants())
                         {
                             string szVal = speedval.Value;
-                            double sp;
-                            if (i < maxSample && double.TryParse(szVal, out sp))
+                            if (i < maxSample && double.TryParse(szVal, out double sp))
                             {
                                 Position p = lstSamples[i++];
                                 p.Speed = sp;
@@ -405,11 +394,14 @@ namespace MyFlightbook.Telemetry
 
             byte[] bytes = Encoding.UTF8.GetBytes(szData);
             KMLElements k = null;
-            using (MemoryStream stream = new MemoryStream(bytes))
+            MemoryStream stream = null;
+            try
             {
-                try
+                stream = new MemoryStream(bytes);
+                using (StreamReader sr = new StreamReader(stream))
                 {
-                    k = new KMLElements(XDocument.Load(new StreamReader(stream)));
+                    stream = null;
+                    k = new KMLElements(XDocument.Load(sr));
 
                     if (k.ele22 != null)
                         fResult = ParseKMLv2(k);
@@ -418,16 +410,20 @@ namespace MyFlightbook.Telemetry
                     else
                         throw new MyFlightbookException(Resources.FlightData.errNoKMLTrack);
                 }
-                catch (System.Xml.XmlException ex)
-                {
-                    ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message);
-                    fResult = false;
-                }
-                catch (MyFlightbookException ex)
-                {
-                    k.sbErr.Append(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message));
-                    fResult = false;
-                }
+            }
+            catch (XmlException ex)
+            {
+                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message);
+                fResult = false;
+            }
+            catch (MyFlightbookException ex)
+            {
+                k.sbErr.Append(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errGeneric, ex.Message));
+                fResult = false;
+            }
+            finally
+            {
+                stream?.Dispose();
             }
 
             ErrorString = (k == null) ? string.Empty : k.sbErr.ToString();
