@@ -5,7 +5,7 @@ using System.Data;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,7 +21,7 @@ namespace MyFlightbook.Telemetry
         public bool authSuccess { get; set; }
         public Int64 timeStamp { get; set; }
 
-        private Dictionary<string, AirblyPoint> m_dictPoints = new Dictionary<string, AirblyPoint>();
+        private readonly Dictionary<string, AirblyPoint> m_dictPoints = new Dictionary<string, AirblyPoint>();
         public IDictionary<string, AirblyPoint> points { get { return m_dictPoints; } }
         #endregion
 
@@ -77,7 +77,7 @@ namespace MyFlightbook.Telemetry
         public override bool Parse(string szData)
         {
             if (szData == null)
-                throw new ArgumentNullException("szData");
+                throw new ArgumentNullException(nameof(szData));
 
             bool fResult = true;
 

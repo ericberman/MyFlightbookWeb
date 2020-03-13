@@ -9,7 +9,7 @@ using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,7 +22,7 @@ namespace MyFlightbook.Telemetry
 
         public override bool CanParse(string szData)
         {
-            return szData != null && IsXML(szData) && szData.Contains("<gpx");
+            return IsXML(szData) && szData.Contains("<gpx");
         }
 
         public override FlightData.AltitudeUnitTypes AltitudeUnits
@@ -55,7 +55,7 @@ namespace MyFlightbook.Telemetry
             {
                 ele = xml.Descendants(ns + "trk").First().Descendants(ns + "trkseg");
             }
-            catch (InvalidOperationException)
+            catch (Exception ex) when (ex is InvalidOperationException)
             {
                 try
                 {
@@ -63,7 +63,7 @@ namespace MyFlightbook.Telemetry
                     if (ele != null)
                         ns = "";
                 }
-                catch (InvalidOperationException)
+                catch (Exception ex2) when (ex2 is InvalidOperationException)
                 {
                     try
                     {
@@ -72,7 +72,7 @@ namespace MyFlightbook.Telemetry
                         if (ele != null)
                             ns = ns11;
                     }
-                    catch (InvalidOperationException)
+                    catch (Exception ex3) when (!(ex3 is OutOfMemoryException))
                     {
                     }
                 }
@@ -121,12 +121,15 @@ namespace MyFlightbook.Telemetry
             Boolean fResult = true;
 
             byte[] bytes = Encoding.UTF8.GetBytes(szData);
-            using (MemoryStream stream = new MemoryStream(bytes))
+            MemoryStream stream = null;
+            try
             {
-                try
+                stream = new MemoryStream(bytes);
+                using (StreamReader sr = new StreamReader(stream))
                 {
-                    XDocument xml = XDocument.Load(new StreamReader(stream));
-                    
+                    stream = null;
+                    XDocument xml = XDocument.Load(sr);
+
                     GPXPathRoot root = FindRoot(xml);
 
                     if (root == null)
@@ -180,7 +183,7 @@ namespace MyFlightbook.Telemetry
                                             samp.Speed = Convert.ToDouble(xSpeed.Value, System.Globalization.CultureInfo.InvariantCulture);
                                         lst.Add(samp);
                                     }
-                                    catch (System.FormatException)
+                                    catch (Exception ex) when (ex is FormatException)
                                     {
                                         fResult = false;
                                         sbErr.AppendFormat(CultureInfo.CurrentCulture, Resources.FlightData.errGPXBadRow, iRow);
@@ -204,16 +207,20 @@ namespace MyFlightbook.Telemetry
                     else
                         throw new MyFlightbookException(Resources.FlightData.errGPXNoPath);
                 }
-                catch (System.Xml.XmlException ex)
-                {
-                    sbErr.Append(Resources.FlightData.errGeneric + ex.Message);
-                    fResult = false;
-                }
-                catch (MyFlightbookException ex)
-                {
-                    sbErr.Append(Resources.FlightData.errGeneric + ex.Message);
-                    fResult = false;
-                }
+            }
+            catch (System.Xml.XmlException ex)
+            {
+                sbErr.Append(Resources.FlightData.errGeneric + ex.Message);
+                fResult = false;
+            }
+            catch (MyFlightbookException ex)
+            {
+                sbErr.Append(Resources.FlightData.errGeneric + ex.Message);
+                fResult = false;
+            }
+            finally
+            {
+                stream?.Dispose();
             }
             ErrorString = sbErr.ToString();
 

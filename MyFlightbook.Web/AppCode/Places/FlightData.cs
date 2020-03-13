@@ -18,7 +18,7 @@ using System.Xml;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -103,17 +103,9 @@ namespace MyFlightbook.Telemetry
 
         private int ParseToInt(string szNumber)
         {
-            Int32 i;
-            if (!Int32.TryParse(szNumber, out i))
+            if (!Int32.TryParse(szNumber, out int i))
             {
-                try
-                {
-                    i = (int)Convert.ToDouble(szNumber, CultureInfo.CurrentCulture);
-                }
-                catch (FormatException)
-                {
-                    i = 0;
-                }
+                i = Double.TryParse(szNumber, NumberStyles.Float, CultureInfo.CurrentCulture, out double d) ? (int)d : 0;
             }
 
             return i;
@@ -130,8 +122,7 @@ namespace MyFlightbook.Telemetry
         private object ParseUnixTimeStamp(string szValue)
         {
             // UnixTimeStamp, at least in ForeFlight, is # of ms since Jan 1 1970.
-            Int64 i;
-            if (Int64.TryParse(szValue, out i))
+            if (Int64.TryParse(szValue, out Int64 i))
                 return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(i / 1000);
             else
                 return szValue.ParseUTCDate();
@@ -141,9 +132,8 @@ namespace MyFlightbook.Telemetry
         {
             if (String.IsNullOrEmpty(szValue))
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errBadLatLong, string.Empty));
-            double d;
 
-            if (!double.TryParse(szValue, out d))
+            if (!double.TryParse(szValue, out double d))
                 d = new DMSAngle(szValue).Value;
 
             if (d > 180.0 || d < -180.0 || d == 0.0000)
@@ -154,8 +144,7 @@ namespace MyFlightbook.Telemetry
 
         public object ParseToType(string szValue)
         {
-            object o = null;
-
+            object o;
             try
             {
                 switch (Type)
@@ -333,34 +322,28 @@ namespace MyFlightbook.Telemetry
         {
             if (cookies != null)
             {
-                int defaultSpeed;
-                if (cookies[keyCookieSpeed] == null || !int.TryParse(cookies[keyCookieSpeed].Value, out defaultSpeed))
+                if (cookies[keyCookieSpeed] == null || !int.TryParse(cookies[keyCookieSpeed].Value, out int defaultSpeed))
                     defaultSpeed = AutoFillOptions.DefaultTakeoffSpeed;
                 TakeOffSpeed = defaultSpeed;
                 LandingSpeed = AutoFillOptions.BestLandingSpeedForTakeoffSpeed((int) TakeOffSpeed);
 
-                bool includeHeliports;
-                if (cookies[keyCookieHeliport] == null || !bool.TryParse(cookies[keyCookieHeliport].Value, out includeHeliports))
+                if (cookies[keyCookieHeliport] == null || !bool.TryParse(cookies[keyCookieHeliport].Value, out bool includeHeliports))
                     includeHeliports = false;
                 IncludeHeliports = includeHeliports;
 
-                bool estimateNight;
-                if (cookies[keyCookieEstimateNight] == null || !bool.TryParse(cookies[keyCookieEstimateNight].Value, out estimateNight))
+                if (cookies[keyCookieEstimateNight] == null || !bool.TryParse(cookies[keyCookieEstimateNight].Value, out bool estimateNight))
                     estimateNight = true;
                 AutoSynthesizePath = estimateNight;
 
-                bool roundTo10th;
-                if (cookies[keyCookieRoundToTenth] == null || !bool.TryParse(cookies[keyCookieRoundToTenth].Value, out roundTo10th))
+                if (cookies[keyCookieRoundToTenth] == null || !bool.TryParse(cookies[keyCookieRoundToTenth].Value, out bool roundTo10th))
                     roundTo10th = false;
                 RoundToTenth = roundTo10th;
 
-                AutoFillOptions.NightCritera nightCritera;
-                if (cookies[keyCookieNightDef] == null || !Enum.TryParse<AutoFillOptions.NightCritera>(cookies[keyCookieNightDef].Value, out nightCritera))
+                if (cookies[keyCookieNightDef] == null || !Enum.TryParse<AutoFillOptions.NightCritera>(cookies[keyCookieNightDef].Value, out NightCritera nightCritera))
                     nightCritera = AutoFillOptions.NightCritera.EndOfCivilTwilight;
                 Night = nightCritera;
 
-                AutoFillOptions.NightLandingCriteria nightLandingCriteria;
-                if (cookies[keyCookieNightLandingDef] == null || !Enum.TryParse<AutoFillOptions.NightLandingCriteria>(cookies[keyCookieNightLandingDef].Value, out nightLandingCriteria))
+                if (cookies[keyCookieNightLandingDef] == null || !Enum.TryParse<AutoFillOptions.NightLandingCriteria>(cookies[keyCookieNightLandingDef].Value, out NightLandingCriteria nightLandingCriteria))
                     nightLandingCriteria = AutoFillOptions.NightLandingCriteria.SunsetPlus60;
                 NightLanding = nightLandingCriteria;
             }
@@ -370,14 +353,14 @@ namespace MyFlightbook.Telemetry
         public void ToCookies(HttpCookieCollection cookies)
         {
             if (cookies == null)
-                throw new ArgumentNullException("cookies");
+                throw new ArgumentNullException(nameof(cookies));
 
             cookies[keyCookieSpeed].Value = TakeOffSpeed.ToString(CultureInfo.InvariantCulture);
             cookies[keyCookieHeliport].Value = IncludeHeliports.ToString(CultureInfo.InvariantCulture);
             cookies[keyCookieEstimateNight].Value = AutoSynthesizePath.ToString(CultureInfo.InvariantCulture);
             cookies[keyCookieNightDef].Value = Night.ToString();
             cookies[keyCookieNightLandingDef].Value = NightLanding.ToString();
-            cookies[keyCookieRoundToTenth].Value = RoundToTenth.ToString();
+            cookies[keyCookieRoundToTenth].Value = RoundToTenth.ToString(CultureInfo.InvariantCulture);
 
             cookies[keyCookieSpeed].Expires =
                 cookies[keyCookieHeliport].Expires =
@@ -482,7 +465,7 @@ namespace MyFlightbook.Telemetry
         public bool IsNightForFlight(SunriseSunsetTimes sst)
         {
             if (sst == null)
-                throw new ArgumentNullException("sst");
+                throw new ArgumentNullException(nameof(sst));
 
             // short circuit
             if (!sst.IsNight)
@@ -645,7 +628,7 @@ namespace MyFlightbook.Telemetry
             if (sz[0] == (char)0xFEFF)  // look for UTF-16 BOM and strip it if needed.
                 sz = sz.Substring(1);
 
-            if (kp.IsXML(sz))
+            if (TelemetryParser.IsXML(sz))
             {
                 if (kp.CanParse(sz))
                     return DataSourceTypeFromFileType(FileType.KML);
@@ -899,7 +882,7 @@ namespace MyFlightbook.Telemetry
         /// </summary>
         /// <param name="sz">The string to test</param>
         /// <returns>True if it appears to be XML</returns>
-        public bool IsXML(string sz)
+        public static bool IsXML(string sz)
         {
             return sz != null && sz.StartsWith("<?xml", StringComparison.OrdinalIgnoreCase);
         }
@@ -1135,11 +1118,9 @@ namespace MyFlightbook.Telemetry
                             timestamp = DateTime.SpecifyKind(timestamp.AddMinutes(Convert.ToInt32(dr[KnownColumnNames.UTCOffSet], CultureInfo.InvariantCulture)), DateTimeKind.Utc);
                         else if (fHasTimeKind)
                         {
-                            DateTimeKind kind;
-                            if (!Enum.TryParse<DateTimeKind>(dr[KnownColumnNames.TIMEKIND].ToString(), out kind))
+                            if (!Enum.TryParse<DateTimeKind>(dr[KnownColumnNames.TIMEKIND].ToString(), out DateTimeKind kind))
                             {
-                                int intKind;
-                                if (int.TryParse(dr[KnownColumnNames.TIMEKIND].ToString(), out intKind))
+                                if (int.TryParse(dr[KnownColumnNames.TIMEKIND].ToString(), out int intKind))
                                     kind = (DateTimeKind)intKind;
                                 else
                                     kind = DateTimeKind.Unspecified;
@@ -1210,7 +1191,7 @@ namespace MyFlightbook.Telemetry
         public void WriteCSVData(Stream s)
         {
             if (s == null)
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
             using (StreamWriter sw = new StreamWriter(s, Encoding.UTF8))
                 CsvWriter.WriteToStream(sw, Data, true, true);
         }
@@ -1488,7 +1469,7 @@ namespace MyFlightbook.Telemetry
             public void ProcessSample(DataRow dr)
             {
                 if (dr == null)
-                    throw new ArgumentNullException("dr");
+                    throw new ArgumentNullException(nameof(dr));
 
                 object o = dr[DateColumn];
 
@@ -1571,24 +1552,24 @@ namespace MyFlightbook.Telemetry
                         LatLong ll2 = rgap[1].LatLong;
 
                         IEnumerable<Position> rgPos = Position.SynthesizePath(ll1, dtStart, ll2, dtEnd);
+                        SpeedUnits = SpeedUnitTypes.MetersPerSecond;    // SynthesizePath uses meters/s.
 
                         MemoryStream ms = null;
                         try
                         {
                             ms = new MemoryStream();
-                            SpeedUnits = SpeedUnitTypes.MetersPerSecond;    // SynthesizePath uses meters/s.
-                            WriteGPXData(ms, rgPos, true, false, true);
-                            ms.Seek(0, SeekOrigin.Begin);
                             using (StreamReader sr = new StreamReader(ms))
                             {
                                 ms = null;
+                                MemoryStream ms2 = sr.BaseStream as MemoryStream;
+                                WriteGPXData(ms2, rgPos, true, false, true);
+                                ms2.Seek(0, SeekOrigin.Begin);
                                 result = sr.ReadToEnd();
                             }
                         }
                         finally
                         {
-                            if (ms != null)
-                                ms.Dispose();
+                            ms?.Dispose();
                         }
                     }
                 }
@@ -1603,8 +1584,6 @@ namespace MyFlightbook.Telemetry
         /// <returns></returns>
         public void AutoFill(LogbookEntry le, AutoFillOptions opt)
         {
-            StringBuilder sbSummary = new StringBuilder();
-
             if (le == null || opt == null)
                 return;
 
@@ -1732,7 +1711,7 @@ namespace MyFlightbook.Telemetry
         private void InitFromTelemetry(string szTelemetry = null)
         {
             if (string.IsNullOrEmpty(szTelemetry) && string.IsNullOrEmpty(RawData))
-                throw new ArgumentNullException("szTelemetry");
+                throw new ArgumentNullException(nameof(szTelemetry));
             
             if (szTelemetry == null)
                 szTelemetry = RawData;
@@ -1751,7 +1730,7 @@ namespace MyFlightbook.Telemetry
         private void InitFromDataReader(IDataReader dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
 
             object o = dr["idflight"];
             if (o is DBNull)   // don't initialize if values are null (flights with no telemetry are like this)
@@ -1784,7 +1763,7 @@ namespace MyFlightbook.Telemetry
             {
                 comm.Parameters.AddWithValue("idf", FlightID);
                 comm.Parameters.AddWithValue("d", CachedDistance.HasValue && !double.IsNaN(CachedDistance.Value) ? CachedDistance : null);
-                comm.Parameters.AddWithValue("path", GoogleData == null ? null : GoogleData.EncodedPath);
+                comm.Parameters.AddWithValue("path", GoogleData?.EncodedPath);
                 comm.Parameters.AddWithValue("tt", (int)TelemetryType);
             }))
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception committing TelemetryReference: idFlight={0}, distance={1}, path={2}, type={3}, error={4}", FlightID, CachedDistance.HasValue ? CachedDistance.Value.ToString(CultureInfo.InvariantCulture) : "(none)", GoogleData == null ? "(none)" : "(path)", TelemetryType.ToString(), dbh.LastError));
