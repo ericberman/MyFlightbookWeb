@@ -207,6 +207,14 @@
   <data name="warningAirportLocal" xml:space="preserve">
     <value>Don't use "Local" or "LCL" for local flights around the pattern.  Just one code is fine.  (And LCL is an airport in Cuba).</value>
   </data>
+  <data name="warningAirportMissingNightLanding" xml:space="preserve">
+    <value>Flight end at {0} at {1} appears to qualify as a night landing, but no night landings recorded</value>
+    <comment>{0} is airport, {1} is UTC formatted time</comment>
+  </data>
+  <data name="warningAirportMissingNightTakeoff" xml:space="preserve">
+    <value>Flight start at {0} at {1} appears to qualify as a night takeoff, but no night takeoffs recorded</value>
+    <comment>{0} is airport, {1} is UTC formatted time</comment>
+  </data>
   <data name="warningAirportNotFound" xml:space="preserve">
     <value>Airport in route not found: {0}</value>
   </data>

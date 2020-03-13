@@ -331,6 +331,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight end at {0} at {1} appears to qualify as a night landing, but no night landings recorded.
+        /// </summary>
+        internal static string warningAirportMissingNightLanding {
+            get {
+                return ResourceManager.GetString("warningAirportMissingNightLanding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight start at {0} at {1} appears to qualify as a night takeoff, but no night takeoffs recorded.
+        /// </summary>
+        internal static string warningAirportMissingNightTakeoff {
+            get {
+                return ResourceManager.GetString("warningAirportMissingNightTakeoff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airport in route not found: {0}.
         /// </summary>
         internal static string warningAirportNotFound {
