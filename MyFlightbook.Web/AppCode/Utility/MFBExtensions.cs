@@ -585,6 +585,16 @@ namespace MyFlightbook
         {
             return Math.Round(d1, precision) == Math.Round(d2, precision);
         }
+
+        /// <summary>
+        /// Converts the decimal hours to a whole number of minutes
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        static public int ToMinutes(this decimal d)
+        {
+            return (int) Math.Round(d * 60);
+        }
         #endregion
 
         #region Integer Extensions

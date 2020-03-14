@@ -296,7 +296,7 @@ namespace MyFlightbook.Lint
             if (currentAircraft.InstanceType != AircraftInstanceTypes.RealAircraft)
                 return;
 
-            AddConditionalIssue(le.CrossCountry > 0 && le.CrossCountry < le.TotalFlightTime, LintOptions.XCIssues, Resources.FlightLint.warningXCNotWholeFlightXC);
+            AddConditionalIssue(le.CrossCountry > 0 && le.CrossCountry.ToMinutes() < le.TotalFlightTime.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCNotWholeFlightXC);
 
             double distance = alSubset.MaxDistanceFromStartingAirport();
 
@@ -318,7 +318,7 @@ namespace MyFlightbook.Lint
 
         private void CheckPICSICDualIssues(LogbookEntryBase le)
         {
-            AddConditionalIssue(le.PIC + le.SIC + le.Dual - le.TotalFlightTime != 0, LintOptions.PICSICDualMath, Resources.FlightLint.warningPICSICDualBroken);
+            AddConditionalIssue(le.PIC.ToMinutes() + le.SIC.ToMinutes() + le.Dual.ToMinutes() - le.TotalFlightTime.ToMinutes() != 0, LintOptions.PICSICDualMath, Resources.FlightLint.warningPICSICDualBroken);
         }
 
         private void CheckTimeIssues(LogbookEntryBase le)
@@ -326,22 +326,24 @@ namespace MyFlightbook.Lint
             if (currentAircraft.InstanceType != AircraftInstanceTypes.RealAircraft)
                 return;
 
-            AddConditionalIssue(le.CrossCountry > le.TotalFlightTime, LintOptions.TimeIssues, Resources.FlightLint.warningTimesXCGreaterThanTotal);
-            AddConditionalIssue(le.Nighttime > le.TotalFlightTime, LintOptions.TimeIssues, Resources.FlightLint.warningTimesNightGreaterThanTotal);
-            AddConditionalIssue(le.SimulatedIFR > le.TotalFlightTime, LintOptions.TimeIssues, Resources.FlightLint.warningTimesSimIFRGreaterThanTotal);
-            AddConditionalIssue(le.IMC > le.TotalFlightTime, LintOptions.TimeIssues, Resources.FlightLint.warningTimesIMCGreaterThanTotal);
-            AddConditionalIssue(le.IMC + le.SimulatedIFR > le.TotalFlightTime, LintOptions.TimeIssues, Resources.FlightLint.warningTimesSimPlusIMCGreaterThanTotal);
-            AddConditionalIssue(le.Dual > le.TotalFlightTime, LintOptions.TimeIssues, Resources.FlightLint.warningTimesDualGreaterThanTotal);
-            AddConditionalIssue(le.CFI > le.TotalFlightTime, LintOptions.TimeIssues, Resources.FlightLint.warningTimesCFIGreaterThanTotal);
-            AddConditionalIssue(le.SIC > le.TotalFlightTime, LintOptions.TimeIssues, Resources.FlightLint.warningTimesSICGreaterThanTotal);
-            AddConditionalIssue(le.PIC > le.TotalFlightTime, LintOptions.TimeIssues, Resources.FlightLint.warningTimesPICGreaterThanTotal);
+            int totalMinutes = le.TotalFlightTime.ToMinutes();
+
+            AddConditionalIssue(le.CrossCountry.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesXCGreaterThanTotal);
+            AddConditionalIssue(le.Nighttime.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesNightGreaterThanTotal);
+            AddConditionalIssue(le.SimulatedIFR.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesSimIFRGreaterThanTotal);
+            AddConditionalIssue(le.IMC.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesIMCGreaterThanTotal);
+            AddConditionalIssue(le.IMC.ToMinutes() + le.SimulatedIFR.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesSimPlusIMCGreaterThanTotal);
+            AddConditionalIssue(le.Dual.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesDualGreaterThanTotal);
+            AddConditionalIssue(le.CFI.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesCFIGreaterThanTotal);
+            AddConditionalIssue(le.SIC.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesSICGreaterThanTotal);
+            AddConditionalIssue(le.PIC.ToMinutes() > totalMinutes, LintOptions.TimeIssues, Resources.FlightLint.warningTimesPICGreaterThanTotal);
 
             foreach (CustomFlightProperty cfp in le.CustomProperties)
             {
                 AddConditionalIssue(cfp.PropertyType.Type == CFPPropertyType.cfpDecimal && !cfp.PropertyType.IsBasicDecimal &&
                     cfp.PropTypeID != (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven &&
                     cfp.PropTypeID != (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived &&
-                    cfp.DecValue > le.TotalFlightTime, 
+                    cfp.DecValue.ToMinutes() > totalMinutes, 
                     LintOptions.TimeIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningPropertyGreaterThanTotal, cfp.PropertyType.Title));
             }
         }
