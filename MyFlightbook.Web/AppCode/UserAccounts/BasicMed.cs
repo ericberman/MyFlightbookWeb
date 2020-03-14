@@ -8,7 +8,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -199,7 +199,7 @@ namespace MyFlightbook.Basicmed
             EventType = BasicMedEventType.Unknown;
             User = Description = LastError = string.Empty;
             ID = -1;
-            Images = new MFBImageInfo[0];
+            Images = Array.Empty<MFBImageInfo>();
         }
 
         public BasicMedEvent(BasicMedEventType eventType, string szUser) : this()
@@ -314,10 +314,7 @@ namespace MyFlightbook.Basicmed
                 DirectoryInfo di = new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath(il.VirtPath));
                 di.Delete(true);
             }
-            catch (UnauthorizedAccessException) { }
-            catch (DirectoryNotFoundException) { }
-            catch (IOException) { }
-            catch (Exception) { throw; }
+            catch (Exception ex) when (ex is UnauthorizedAccessException || ex is DirectoryNotFoundException || ex is IOException) { }
 
             new DBHelper("DELETE FROM basicmedevent WHERE idbasicmedevent=?id").DoNonQuery((comm) => { comm.Parameters.AddWithValue("id", ID); });
             ClearCache(User);
@@ -330,7 +327,7 @@ namespace MyFlightbook.Basicmed
         public static IEnumerable<BasicMedEvent> EventsForUser(string szUser)
         {
             if (szUser == null)
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
 
             IEnumerable<BasicMedEvent> cached = CachedEvents(szUser);
             if (cached != null)

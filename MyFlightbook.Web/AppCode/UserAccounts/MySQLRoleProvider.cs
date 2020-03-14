@@ -1,12 +1,11 @@
-using System.Web.Security;
-using System.Configuration.Provider;
-using System.Collections.Specialized;
-using System;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Specialized;
 using System.Configuration;
+using System.Configuration.Provider;
 using System.Diagnostics;
-using System.Web;
 using System.Globalization;
+using System.Web.Security;
 
 /*
 
@@ -44,9 +43,9 @@ namespace Andri.Web
         private const string rolesTable = "Roles";
         private const string usersInRolesTable = "UsersInRoles";
 
-        private string eventSource = "MySqlRoleProvider";
-        private string eventLog = "Application";
-        private string exceptionMessage = "An exception occurred. Please check the Event Log.";
+        private readonly string eventSource = "MySqlRoleProvider";
+        private readonly string eventLog = "Application";
+        private readonly string exceptionMessage = "An exception occurred. Please check the Event Log.";
 
         private ConnectionStringSettings pConnectionStringSettings;
         private string connectionString;
@@ -79,7 +78,7 @@ namespace Andri.Web
             //
 
             if (config == null)
-                throw new ArgumentNullException("config");
+                throw new ArgumentNullException(nameof(config));
 
             if (name == null || name.Length == 0)
                 name = "MySqlRoleProvider";
@@ -155,9 +154,9 @@ namespace Andri.Web
         public override void AddUsersToRoles(string[] usernames, string[] roleNames)
         {
             if (usernames == null)
-                throw new ArgumentNullException("usernames");
+                throw new ArgumentNullException(nameof(usernames));
             if (roleNames == null)
-                throw new ArgumentNullException("roleNames");
+                throw new ArgumentNullException(nameof(roleNames));
             foreach (string rolename in roleNames)
             {
                 if (!RoleExists(rolename))
@@ -220,7 +219,7 @@ namespace Andri.Web
                         {
                             tran.Rollback();
                         }
-                        catch (MySqlException) { }
+                        catch (Exception ex) when (ex is MySqlException) { }
 
 
                         if (WriteExceptionsToEventLog)
@@ -244,7 +243,7 @@ namespace Andri.Web
         public override void CreateRole(string roleName)
         {
             if (roleName == null)
-                throw new ArgumentNullException("roleName");
+                throw new ArgumentNullException(nameof(roleName));
             if (roleName.IndexOf(',') > 0)
             {
                 throw new ArgumentException("Role names cannot contain commas.");
@@ -340,7 +339,7 @@ namespace Andri.Web
                             {
                                 tran.Rollback();
                             }
-                            catch (MySqlException) { }
+                            catch (Exception ex) when (ex is MySqlException) { }
 
 
                             if (WriteExceptionsToEventLog)
@@ -413,7 +412,7 @@ namespace Andri.Web
                 }
             }
 
-            return new string[0];
+            return Array.Empty<string>();
         }
 
 
@@ -469,7 +468,7 @@ namespace Andri.Web
                 }
             }
 
-            return new string[0];
+            return Array.Empty<string>();
         }
 
 
@@ -524,7 +523,7 @@ namespace Andri.Web
                 return tmpUserNames.Split(',');
             }
 
-            return new string[0];
+            return Array.Empty<string>();
         }
 
 
@@ -581,9 +580,9 @@ namespace Andri.Web
         public override void RemoveUsersFromRoles(string[] usernames, string[] roleNames)
         {
             if (usernames == null)
-                throw new ArgumentNullException("usernames");
+                throw new ArgumentNullException(nameof(usernames));
             if (roleNames == null)
-                throw new ArgumentNullException("roleNames");
+                throw new ArgumentNullException(nameof(roleNames));
 
             foreach (string rolename in roleNames)
             {
@@ -641,7 +640,7 @@ namespace Andri.Web
                         {
                             tran.Rollback();
                         }
-                        catch (MySqlException) { }
+                        catch (Exception ex) when (ex is MySqlException) { }
 
 
                         if (WriteExceptionsToEventLog)
@@ -754,7 +753,7 @@ namespace Andri.Web
                 }
             }
 
-            return new string[0];
+            return Array.Empty<string>();
         }
 
         //

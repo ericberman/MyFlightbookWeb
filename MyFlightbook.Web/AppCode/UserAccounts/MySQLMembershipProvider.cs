@@ -1,17 +1,15 @@
-using System.Web.Security;
-using System.Configuration.Provider;
-using System.Collections.Specialized;
-using System;
-using System.Data;
 using MyFlightbook;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Specialized;
 using System.Configuration;
+using System.Configuration.Provider;
+using System.Data;
 using System.Diagnostics;
-using System.Web;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web.Configuration;
+using System.Web.Security;
 
 /*
 
@@ -57,10 +55,10 @@ namespace Andri.Web
         // Global connection string, generated password length, generic exception message, event log info.
         //
 
-        private int newPasswordLength = 8;
-        private string eventSource = "MySqlMembershipProvider";
-        private string eventLog = "Application";
-        private string exceptionMessage = "An exception occurred. Please check the Event Log.";
+        private readonly int newPasswordLength = 8;
+        private readonly string eventSource = "MySqlMembershipProvider";
+        private readonly string eventLog = "Application";
+        private readonly string exceptionMessage = "An exception occurred. Please check the Event Log.";
         private const string tableName = "Users";
         private string connectionString;
 
@@ -94,7 +92,7 @@ namespace Andri.Web
             //
 
             if (config == null)
-                throw new ArgumentNullException("config");
+                throw new ArgumentNullException(nameof(config));
 
             if (name == null || name.Length == 0)
                 name = "MySqlMembershipProvider";
@@ -1148,7 +1146,7 @@ namespace Andri.Web
         public override void UpdateUser(MembershipUser user)
         {
             if (user == null)
-                throw new ArgumentNullException("user");
+                throw new ArgumentNullException(nameof(user));
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 using (MySqlCommand cmd = new MySqlCommand("UPDATE `" + tableName + "`" +
