@@ -872,9 +872,9 @@ namespace MyFlightbook.Image
                         foreach (FileInfo fi in rgfi)
                         {
                             // skip full-image files, skip this file
-                            if (String.Compare(fi.Name, ThumbnailFile) == 0)
+                            if (String.Compare(fi.Name, ThumbnailFile, StringComparison.CurrentCultureIgnoreCase) == 0)
                                 continue;
-                            if (this.ImageType == ImageFileType.JPEG && !fi.Name.StartsWith(ThumbnailPrefix))
+                            if (this.ImageType == ImageFileType.JPEG && !fi.Name.StartsWith(ThumbnailPrefix, StringComparison.CurrentCultureIgnoreCase))
                                 continue;
 
                             // test to see if the bytes are the same
@@ -1123,7 +1123,7 @@ namespace MyFlightbook.Image
                         dictResults[mfbii.Key] = lst = new List<MFBImageInfo>();
                     lst.Add(mfbii);
 
-                    if (String.Compare(szKeyCurrent, mfbii.Key) != 0 && keyList != null)
+                    if (String.Compare(szKeyCurrent, mfbii.Key, StringComparison.InvariantCultureIgnoreCase) != 0 && keyList != null)
                         keyList.Add(szKeyCurrent = mfbii.Key);
                 });
 
@@ -1554,10 +1554,7 @@ namespace MyFlightbook.Image
                                 }
                             }
                         }
-                        catch
-                        {
-                            // nothing to do here; fail silently.
-                        }
+                        catch (Exception ex) when (!(ex is OutOfMemoryException)) { } // nothing to do here; fail silently.
                         finally
                         {
                             // clean up a temp file, if one was created; can only do this AFTER the image that used it has been disposed (above).
@@ -2087,7 +2084,7 @@ namespace MyFlightbook.Image
         public static void ADMINDeleteS3Orphans(MFBImageInfo.ImageClass ic, Action<long, long, long, long> onSummary, Action onS3EnumDone, Func<string, int, bool> onDelete)
         {
                 string szBasePath = MFBImageInfo.BasePathFromClass(ic);
-                if (szBasePath.StartsWith("/"))
+                if (szBasePath.StartsWith("/", StringComparison.InvariantCultureIgnoreCase))
                     szBasePath = szBasePath.Substring(1);
 
                 Regex r = new Regex(String.Format(CultureInfo.InvariantCulture, "{0}(.*)/(.*)(\\.jpg|\\.jpeg|\\.pdf|\\.s3pdf|\\.mp4)", szBasePath), RegexOptions.IgnoreCase);
@@ -2148,10 +2145,10 @@ namespace MyFlightbook.Image
                     string szName = m.Groups[2].Value;
                     string szExt = m.Groups[3].Value;
 
-                    bool fPDF = (String.Compare(szExt, FileExtensions.PDF, true) == 0);
-                    bool fVid = (String.Compare(szExt, FileExtensions.MP4, true) == 0);
-                    bool fVidThumb = Regex.IsMatch(szExt, FileExtensions.RegExpImageFileExtensions) && szName.StartsWith(MFBImageInfo.ThumbnailPrefixVideo);
-                    bool fJpg = (String.Compare(szExt, FileExtensions.JPG, true) == 0 || String.Compare(szExt, FileExtensions.JPEG, true) == 0);
+                    bool fPDF = (String.Compare(szExt, FileExtensions.PDF, StringComparison.InvariantCultureIgnoreCase) == 0);
+                    bool fVid = (String.Compare(szExt, FileExtensions.MP4, StringComparison.InvariantCultureIgnoreCase) == 0);
+                    bool fVidThumb = Regex.IsMatch(szExt, FileExtensions.RegExpImageFileExtensions) && szName.StartsWith(MFBImageInfo.ThumbnailPrefixVideo, StringComparison.InvariantCultureIgnoreCase);
+                    bool fJpg = (String.Compare(szExt, FileExtensions.JPG, StringComparison.InvariantCultureIgnoreCase) == 0 || String.Compare(szExt, FileExtensions.JPEG, StringComparison.InvariantCultureIgnoreCase) == 0);
 
                     string szThumb = string.Empty;
                     if (fPDF)

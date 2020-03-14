@@ -96,7 +96,7 @@ namespace MyFlightbook
         /// <summary>
         /// The URL template to look up an aircraft by registration
         /// </summary>
-        public string RegistrationURLTemplate { get; set; }
+        public string RegistrationLinkTemplate { get; set; }
 
         /// <summary>
         /// How to use the template with a tailnumber
@@ -131,7 +131,7 @@ namespace MyFlightbook
         #region constructors
         public CountryCodePrefix()
         {
-            Prefix = NormalizedPrefix = CountryName = RegistrationURLTemplate = String.Empty;
+            Prefix = NormalizedPrefix = CountryName = RegistrationLinkTemplate = String.Empty;
             RegistrationURLTemplateMode = RegistrationTemplateMode.NoSearch;
             HyphenPref = HyphenPreference.None;
         }
@@ -154,7 +154,7 @@ namespace MyFlightbook
             Prefix = Convert.ToString(dr["Prefix"], CultureInfo.InvariantCulture);
             NormalizedPrefix = Prefix.Replace("-", string.Empty);
             Locale = Convert.ToString(dr["locale"], CultureInfo.InvariantCulture);
-            RegistrationURLTemplate = (string)util.ReadNullableField(dr, "RegistrationURLTemplate", string.Empty);
+            RegistrationLinkTemplate = (string)util.ReadNullableField(dr, "RegistrationURLTemplate", string.Empty);
             RegistrationURLTemplateMode = (RegistrationTemplateMode)Convert.ToInt32(dr["TemplateType"], CultureInfo.InvariantCulture);
             HyphenPref = (HyphenPreference)Convert.ToInt32(dr["HyphenPref"], CultureInfo.InvariantCulture);
         }
@@ -169,7 +169,7 @@ namespace MyFlightbook
         public static CountryCodePrefix BestMatchCountryCode(string szTail)
         {
             if (szTail == null)
-                throw new ArgumentNullException("szTail");
+                throw new ArgumentNullException(nameof(szTail));
 
             CountryCodePrefix ccBestMatch = CountryCodePrefix.UnknownCountry;
 
@@ -202,7 +202,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(szlocale))
                 return rgcc[0];
 
-            List<CountryCodePrefix> rgccMatch = rgcc.FindAll(cc => String.Compare(cc.Locale, szlocale, true) == 0);
+            List<CountryCodePrefix> rgccMatch = rgcc.FindAll(cc => cc.Locale.CompareCurrentCultureIgnoreCase(szlocale) == 0);
             return rgccMatch.Count == 0 ? rgcc[0] : rgccMatch[0];
         }
 
@@ -216,7 +216,7 @@ namespace MyFlightbook
         public static string SetCountryCodeForTail(CountryCodePrefix ccNew, string szTail)
         {
             if (ccNew == null)
-                throw new ArgumentNullException("ccNew");
+                throw new ArgumentNullException(nameof(ccNew));
 
             if (!String.IsNullOrEmpty(szTail) && (szTail.StartsWith(szAnonPrefix, StringComparison.OrdinalIgnoreCase) || szTail.StartsWith(szSimPrefix, StringComparison.OrdinalIgnoreCase)))
                 return szTail;

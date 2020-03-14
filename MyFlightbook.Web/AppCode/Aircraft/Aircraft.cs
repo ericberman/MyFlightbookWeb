@@ -1893,13 +1893,13 @@ WHERE
             {
                 default:
                 case CountryCodePrefix.RegistrationTemplateMode.NoSearch:
-                    return cc.RegistrationURLTemplate ?? string.Empty;
+                    return cc.RegistrationLinkTemplate ?? string.Empty;
                 case CountryCodePrefix.RegistrationTemplateMode.SuffixOnly:
-                    return String.Format(CultureInfo.InvariantCulture,cc.RegistrationURLTemplate, NormalizeTail(szTailNumber).Substring(cc.NormalizedPrefix.Length));
+                    return String.Format(CultureInfo.InvariantCulture,cc.RegistrationLinkTemplate, NormalizeTail(szTailNumber).Substring(cc.NormalizedPrefix.Length));
                 case CountryCodePrefix.RegistrationTemplateMode.WholeTail:
-                    return String.Format(CultureInfo.InvariantCulture,cc.RegistrationURLTemplate, NormalizeTail(szTailNumber));
+                    return String.Format(CultureInfo.InvariantCulture,cc.RegistrationLinkTemplate, NormalizeTail(szTailNumber));
                 case CountryCodePrefix.RegistrationTemplateMode.WholeWithDash:
-                    return String.Format(CultureInfo.InvariantCulture, cc.RegistrationURLTemplate, NormalizeTail(szTailNumber, cc));
+                    return String.Format(CultureInfo.InvariantCulture, cc.RegistrationLinkTemplate, NormalizeTail(szTailNumber, cc));
             }
         }
 

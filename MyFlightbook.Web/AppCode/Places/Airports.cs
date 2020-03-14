@@ -277,10 +277,10 @@ namespace MyFlightbook.Airports
 
                     for (int iAp = 0; iAp < rgszapFlight.Length; iAp++)
                     {
-                        string szap = rgszapFlight[iAp].ToUpper();
+                        string szap = rgszapFlight[iAp].ToUpperInvariant();
 
                         // If it's explicitly a navaid, ignore it
-                        if (szap.StartsWith(airport.ForceNavaidPrefix))
+                        if (szap.StartsWith(airport.ForceNavaidPrefix, StringComparison.InvariantCultureIgnoreCase))
                             continue;
 
                         VisitedAirport va = dictVA.ContainsKey(szap) ? dictVA[szap] : null;
@@ -335,7 +335,7 @@ namespace MyFlightbook.Airports
                     else
                     {
                         // Check for the un-K variant (e.g., user typed Kxxx but xxx got returned
-                        if (szCode.StartsWith(airport.USAirportPrefix))
+                        if (szCode.StartsWith(airport.USAirportPrefix, StringComparison.InvariantCultureIgnoreCase))
                         {
                             string szKUnhack = airport.USPrefixConvenienceAlias(szCode);
                             if (dictAirportResults.ContainsKey(szKUnhack))
@@ -1075,7 +1075,7 @@ namespace MyFlightbook.Airports
                         where a1.airportid like 'K%' and length(a1.airportid) = 4 and a1.type='A' AND a2.airportid is null;
 
                      * */
-                    if (szairport.StartsWith(ForceNavaidPrefix))
+                    if (szairport.StartsWith(ForceNavaidPrefix, StringComparison.InvariantCultureIgnoreCase))
                     {
                         if (regAdHocFix.IsMatch(szairport)) // adhoc fix - just make up the airport, don't add to query
                             al.Add(new AdHocFix(szairport.Replace(ForceNavaidPrefix, string.Empty)));
@@ -1324,7 +1324,7 @@ namespace MyFlightbook.Airports
                     {
                         comm.Parameters.AddWithValue("Code2", this.Code);
                         comm.Parameters.AddWithValue("Type2", this.FacilityTypeCode);
-                        comm.Parameters.AddWithValue("Code", this.Code.ToUpper());
+                        comm.Parameters.AddWithValue("Code", this.Code.ToUpperInvariant());
                         comm.Parameters.AddWithValue("Name", this.Name);
                         comm.Parameters.AddWithValue("lat", this.LatLong.Latitude);
                         comm.Parameters.AddWithValue("lon", this.LatLong.Longitude);
@@ -1555,12 +1555,12 @@ namespace MyFlightbook.Airports
             matchedAirport = null;
             if (String.IsNullOrEmpty(szcode))
                 return MatchStatus.NotApplicable;
-            matchedAirport = Array.Find<airport>(rgap, ap2 => String.Compare(szcode, ap2.Code, true) == 0);
+            matchedAirport = Array.Find<airport>(rgap, ap2 => String.Compare(szcode, ap2.Code, StringComparison.InvariantCultureIgnoreCase) == 0);
             if (matchedAirport == null)
                 return MatchStatus.NotInDB;
 
             matchedName = matchedAirport.Name;
-            if (String.Compare(matchedAirport.FacilityTypeCode, FacilityTypeCode, true) != 0)
+            if (String.Compare(matchedAirport.FacilityTypeCode, FacilityTypeCode, StringComparison.InvariantCultureIgnoreCase) != 0)
                 return MatchStatus.WrongType;
             if (this.LatLong == null || !matchedAirport.LatLong.IsSameLocation(this.LatLong, LocationTolerance))
             {

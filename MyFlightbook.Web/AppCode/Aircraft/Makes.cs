@@ -14,7 +14,7 @@ using MyFlightbook.Image;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -46,7 +46,7 @@ namespace MyFlightbook
         public static SimpleMakeModel[] GetAllMakeModels()
         {
             ArrayList al = new ArrayList();
-            DBHelper dbh = new DBHelper(ConfigurationManager.AppSettings["MakesAndModels"].ToString());
+            DBHelper dbh = new DBHelper(ConfigurationManager.AppSettings["MakesAndModels"]);
             if (!dbh.ReadRows(
                 (comm) => { },
                 (dr) =>
@@ -215,7 +215,7 @@ namespace MyFlightbook
         public int[] SampleAircraft()
         {
             if (szSampleAircraftIDs.Length == 0)
-                return new int[0];
+                return Array.Empty<int>();
 
             string[] rgSz = szSampleAircraftIDs.Split(',');
             // discard the last 2, which could be bogus (if sample list got truncated)
@@ -601,7 +601,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         private void InitFromDataReader(MySqlDataReader dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             Model = dr["model"].ToString();
             ModelName = dr["modelname"].ToString();
             TypeName = dr["typename"].ToString();
@@ -676,7 +676,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         public static Collection<MakeModel> MatchingMakes(IEnumerable<MakeModel> rgMakes, string szModelName)
         {
             if (rgMakes == null)
-                throw new ArgumentNullException("rgMakes");
+                throw new ArgumentNullException(nameof(rgMakes));
             List<MakeModel> lst = new List<MakeModel>();
 
             foreach (MakeModel mm in rgMakes)
@@ -731,7 +731,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         public Boolean IsPossibleMatch(MakeModel mm)
         {
             if (mm == null)
-                throw new ArgumentNullException("mm");
+                throw new ArgumentNullException(nameof(mm));
             string szCompare = rNormalize.Replace(mm.DisplayName, "").ToUpper(CultureInfo.CurrentCulture);
 
             // for now, let's see how this works if you just see if the manufacturer name is present AND the (modelname OR model) is present
@@ -788,7 +788,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         public static IEnumerable<MakeModel> ModelsForAircraft(IEnumerable<Aircraft> rgac)
         {
             if (rgac == null)
-                throw new ArgumentNullException("rgac");
+                throw new ArgumentNullException(nameof(rgac));
             Dictionary<int, MakeModel> dModels = new Dictionary<int, MakeModel>();
             List<int> lstIdsToGet = new List<int>();
             foreach (Aircraft ac in rgac)
