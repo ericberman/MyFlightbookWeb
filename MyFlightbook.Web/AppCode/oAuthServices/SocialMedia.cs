@@ -29,7 +29,7 @@ namespace MyFlightbook.SocialMedia
         public static Uri ShareFlightUri(LogbookEntryBase le, string szHost = null)
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
             return String.Format(CultureInfo.InvariantCulture, "~/Public/ViewPublicFlight.aspx/{0}?v={1}", le.FlightID, (new Random()).Next(10000)).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
         }
 
@@ -43,7 +43,7 @@ namespace MyFlightbook.SocialMedia
         public static Uri SendFlightUri(string szEncodedShareKey, string szHost = null, string szTarget = null)
         {
             if (szEncodedShareKey == null)
-                throw new ArgumentNullException("szEncodedShareKey");
+                throw new ArgumentNullException(nameof(szEncodedShareKey));
             return String.Format(CultureInfo.InvariantCulture, "{0}?src={1}", szTarget ?? "~/Member/LogbookNew.aspx", HttpUtility.UrlEncode(szEncodedShareKey)).ToAbsoluteURL("https", szHost ?? Branding.CurrentBrand.HostName);
         }
     }
@@ -158,7 +158,7 @@ namespace MyFlightbook.SocialMedia
         public static bool ExchangeToken(IAuthorizationState authState)
         {
             if (authState == null)
-                throw new ArgumentNullException("authState");
+                throw new ArgumentNullException(nameof(authState));
 
             if (String.IsNullOrEmpty(authState.AccessToken))
                 throw new MyFlightbookException("authState access token is null");
@@ -185,8 +185,7 @@ namespace MyFlightbook.SocialMedia
                         authState.AccessToken = szNewAccess;
                         authState.AccessTokenExpirationUtc = dtNewExpiration;
                     }
-                    catch (FormatException) { }
-                    catch (NullReferenceException) { }
+                    catch (Exception ex) when (ex is FormatException || ex is NullReferenceException) { }
                 }
             }
             return fResult;
@@ -228,13 +227,13 @@ namespace MyFlightbook.SocialMedia
         public bool PostToSocialMedia(IPostable o, string szUser, string szHost = null)
         {
             if (o == null)
-                throw new ArgumentNullException("o");
+                throw new ArgumentNullException(nameof(o));
 
             if (!o.CanPost)
                 return false;
 
             if (String.IsNullOrEmpty(szUser))
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
 
             if (String.IsNullOrEmpty(szHost))
                 szHost = Branding.CurrentBrand.HostName;
@@ -357,7 +356,7 @@ namespace MyFlightbook.SocialMedia
         public static string TweetContent(IPostable o, string szHost)
         {
             if (o == null)
-                throw new ArgumentNullException("o");
+                throw new ArgumentNullException(nameof(o));
 
             if (!o.CanPost)
                 return string.Empty;
@@ -379,13 +378,13 @@ namespace MyFlightbook.SocialMedia
         public bool PostToSocialMedia(IPostable o, string szUser, string szHost = null)
         {
             if (o == null)
-                throw new ArgumentNullException("o");
+                throw new ArgumentNullException(nameof(o));
 
             if (!o.CanPost)
                 return false;
 
             if (String.IsNullOrEmpty(szUser))
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
 
             if (String.IsNullOrEmpty(szHost))
                 szHost = Branding.CurrentBrand.HostName;

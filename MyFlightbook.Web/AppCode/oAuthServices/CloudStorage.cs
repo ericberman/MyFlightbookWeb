@@ -344,6 +344,9 @@ namespace MyFlightbook.CloudStorage
         /// <exception cref="System.Net.Http.HttpRequestException"></exception>
         public async Task<IReadOnlyDictionary<string, string>> PutFile(Stream ms, string szFileName, string szMimeType)
         {
+            if (ms == null)
+                throw new ArgumentNullException(nameof(ms));
+
             try
             {
                 await RefreshAccessToken();
@@ -549,12 +552,12 @@ namespace MyFlightbook.CloudStorage
             Error = null;
         }
 
-        public OneDriveExceptionMFB(OneDriveError err) : base(err.Message)
+        public OneDriveExceptionMFB(OneDriveError err) : base(err == null ? string.Empty : err.Message)
         {
             Error = err;
         }
 
-        public OneDriveExceptionMFB(OneDriveError err, Exception innerException) : base(err.Message, innerException)
+        public OneDriveExceptionMFB(OneDriveError err, Exception innerException) : base(err == null ? string.Empty : err.Message, innerException)
         {
             Error = err;
         }
@@ -620,6 +623,9 @@ namespace MyFlightbook.CloudStorage
 
         protected static void HandleInvalidAuth(DotNetOpenAuth.Messaging.ProtocolException ex)
         {
+            if (ex == null)
+                throw new ArgumentNullException(nameof(ex));
+
             dynamic error = JsonConvert.DeserializeObject(ExtractResponseString(ex.InnerException as WebException));
             if (error == null)
                 throw new MyFlightbookException("Unknown error refreshing access token", ex);
@@ -684,6 +690,8 @@ namespace MyFlightbook.CloudStorage
 
         public async Task<bool> PutFileDirect(string szFilename, Stream ms, string szMimeType)
         {
+            if (ms == null)
+                throw new ArgumentNullException(nameof(ms));
             ms.Seek(0, SeekOrigin.Begin);
             try
             {
@@ -853,6 +861,8 @@ namespace MyFlightbook.CloudStorage
         /// <returns>FileMetadata with the result</returns>
         public async static Task<Dropbox.Api.Files.FileMetadata> PutFile(string szDropboxAccessToken, Stream ms, string szFileName)
         {
+            if (ms == null)
+                throw new ArgumentNullException(nameof(ms));
             ms.Seek(0, SeekOrigin.Begin);   // write out the whole stream.  UploadAsync appears to pick up from the current location, which is the end-of-file after writing to a ZIP.
             using (DropboxClient dbx = new DropboxClient(szDropboxAccessToken))
             {

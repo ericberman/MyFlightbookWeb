@@ -560,7 +560,10 @@ namespace MyFlightbook.Image
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-            MFBImageInfo mfbii = (MFBImageInfo)obj;
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+
+            MFBImageInfo mfbii = obj as MFBImageInfo;
 
             if (this.ImageType == mfbii.ImageType)
                 return this.FullImageFile.CompareOrdinalIgnoreCase(mfbii.FullImageFile);
@@ -636,7 +639,7 @@ namespace MyFlightbook.Image
 
         public static bool operator >(MFBImageInfo left, MFBImageInfo right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(MFBImageInfo left, MFBImageInfo right)
@@ -1310,6 +1313,9 @@ namespace MyFlightbook.Image
         /// <returns>The Info object</returns>
         public static Info InfoFromImage(System.Drawing.Image image)
         {
+            if (image == null)
+                throw new ArgumentNullException(nameof(image));
+
             Info inf = new Info(image);
             try
             {
@@ -1849,6 +1855,9 @@ namespace MyFlightbook.Image
         /// <param name="mfbii">The image to delete</param>
         public void DeleteImageOnS3(MFBImageInfo mfbii)
         {
+            if (mfbii == null)
+                return;
+
             try
             {
                 DeleteObjectRequest dor = new DeleteObjectRequest()
@@ -1962,6 +1971,9 @@ namespace MyFlightbook.Image
         /// </summary>
         public void MoveImageToS3(bool fSynchronous, MFBImageInfo mfbii)
         {
+            if (mfbii == null)
+                return;
+
             try
             {
                 PutObjectRequest por = new PutObjectRequest()
@@ -2128,7 +2140,7 @@ namespace MyFlightbook.Image
                         request = null;
                 } while (request != null);
 
-                onS3EnumDone();
+                onS3EnumDone?.Invoke();
 
                 // Now get all of the images in the class and do orphan detection
                 Dictionary<string, MFBImageInfo> dictDBResults = MFBImageInfo.AllImagesForClass(ic);

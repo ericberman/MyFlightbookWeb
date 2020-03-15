@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  * 
  * Much of the code in this file came from DotNetOpenAuth.
@@ -22,7 +22,7 @@ using System.Security.Cryptography;
 *******************************************************/
 
 namespace OAuthAuthorizationServer.Code
-{    
+{
     class MySqlNonceStore : INonceStore
     {
         public MySqlNonceStore()
@@ -47,7 +47,7 @@ namespace OAuthAuthorizationServer.Code
                         comm.Parameters.AddWithValue("ts", timestampUtc);
                     });
             }
-            catch
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
             {
                 fResult = false;
             }
@@ -89,7 +89,7 @@ namespace OAuthAuthorizationServer.Code
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("bucket", bucket); },
                 (dr) =>
                 {
-                    lst.Add(new KeyValuePair<string, CryptoKey>(Convert.ToString(dr["handle"]), keyFromDataReader(dr)));
+                    lst.Add(new KeyValuePair<string, CryptoKey>(Convert.ToString(dr["handle"], CultureInfo.InvariantCulture), keyFromDataReader(dr)));
                 });
             return lst;
         }
@@ -225,9 +225,9 @@ namespace OAuthAuthorizationServer.Code
         public static void DeleteForUser(string id, string user)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new ArgumentNullException(nameof(id));
             if (user == null)
-                throw new ArgumentNullException("user");
+                throw new ArgumentNullException(nameof(user));
 
             DBHelper dbh = new DBHelper("DELETE FROM allowedoauthclients WHERE owningUserName=?user AND ClientID=?id");
             dbh.DoNonQuery((comm) =>
@@ -315,7 +315,7 @@ namespace OAuthAuthorizationServer.Code
             }
 
             if (callback == null)
-                throw new ArgumentNullException("callback");
+                throw new ArgumentNullException(nameof(callback));
 
             if (IsDeveloperCallback(callback))
                 return true;
@@ -360,7 +360,7 @@ namespace OAuthAuthorizationServer.Code
         public MFBOauthClientAuth(MySqlDataReader dr) : this()
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             AuthorizationId = Convert.ToInt32(dr["AuthorizationId"], CultureInfo.InvariantCulture);
             CreatedOnUtc = Convert.ToDateTime(dr["CreatedOnUtc"], CultureInfo.InvariantCulture);
             ClientId = Convert.ToString(dr["ClientId"], CultureInfo.InvariantCulture);
@@ -511,12 +511,12 @@ namespace OAuthAuthorizationServer.Code
 
         public IClientDescription GetClient(string clientIdentifier)
         {
-            List<MFBOauth2Client> lst = _lstClients.FindAll(ic => ic.ClientIdentifier.CompareTo(clientIdentifier) == 0);
+            List<MFBOauth2Client> lst = _lstClients.FindAll(ic => ic.ClientIdentifier.CompareOrdinalIgnoreCase(clientIdentifier) == 0);
             if (lst.Count == 0)
-                throw new MyFlightbookException(String.Format("GetClient: client '{0}' not found.", clientIdentifier));
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "GetClient: client '{0}' not found.", clientIdentifier));
 
             if (lst.Count > 1)
-                throw new MyFlightbookException(String.Format("GetClient: multiple clients with ID '{0}' found", clientIdentifier));
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "GetClient: multiple clients with ID '{0}' found", clientIdentifier));
 
             return lst[0];
         }
@@ -524,7 +524,7 @@ namespace OAuthAuthorizationServer.Code
         public bool IsAuthorizationValid(IAuthorizationDescription authorization)
         {
             if (authorization == null)
-                throw new ArgumentNullException("authorization");
+                throw new ArgumentNullException(nameof(authorization));
             return this.IsAuthorizationValid(authorization.Scope, authorization.ClientIdentifier, authorization.UtcIssued, authorization.User);
         }
 
@@ -536,6 +536,9 @@ namespace OAuthAuthorizationServer.Code
 
         public AutomatedAuthorizationCheckResponse CheckAuthorizeClientCredentialsGrant(IAccessTokenRequest accessRequest)
         {
+            if (accessRequest == null)
+                throw new ArgumentNullException(nameof(accessRequest));
+
             // Find the client
             var client = _lstClients.Single(consumerCandidate => consumerCandidate.ClientIdentifier == accessRequest.ClientIdentifier);
 
@@ -554,11 +557,11 @@ namespace OAuthAuthorizationServer.Code
 
         #endregion
 
-        public bool CanBeAutoApproved(EndUserAuthorizationRequest authorizationRequest)
+        public static bool CanBeAutoApproved(EndUserAuthorizationRequest authorizationRequest)
         {
             if (authorizationRequest == null)
             {
-                throw new ArgumentNullException("authorizationRequest");
+                throw new ArgumentNullException(nameof(authorizationRequest));
             }
 
             return false;

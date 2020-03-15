@@ -22,6 +22,8 @@ namespace MyFlightbook.Telemetry
 
         public override bool CanParse(string szData)
         {
+            if (szData == null)
+                return false;
             return IsXML(szData) && szData.Contains("<gpx");
         }
 

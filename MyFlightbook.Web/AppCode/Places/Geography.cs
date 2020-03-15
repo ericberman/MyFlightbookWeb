@@ -575,7 +575,10 @@ namespace MyFlightbook.Geography
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-            Position samp = (Position)obj;
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+
+            Position samp = obj as Position;
             if (this.HasTimeStamp && samp.HasTimeStamp)
                 return this.Timestamp.CompareTo(samp.Timestamp);
             else
@@ -639,7 +642,7 @@ namespace MyFlightbook.Geography
 
         public static bool operator >(Position left, Position right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(Position left, Position right)

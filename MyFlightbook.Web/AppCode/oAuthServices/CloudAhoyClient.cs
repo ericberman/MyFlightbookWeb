@@ -15,7 +15,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -38,7 +38,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
         public CloudAhoyPostFileMetaData(LogbookEntryBase le) : this()
         {
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
 
             tail = le.TailNumDisplay;
             remarks = le.Comment;
@@ -91,33 +91,41 @@ namespace MyFlightbook.OAuth.CloudAhoy
         public async Task<bool> PutStream(Stream s, LogbookEntryBase le)
         {
             if (s == null)
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
             if (le == null)
-                throw new ArgumentNullException("le");
+                throw new ArgumentNullException(nameof(le));
 
             HttpResponseMessage response = null;
 
             using (MultipartFormDataContent form = new MultipartFormDataContent())
             {
-                form.Add(new StringContent(JsonConvert.SerializeObject(new CloudAhoyPostFileMetaData(le))), "METADATA");
-                form.Add(new StreamContent(s), "IMPORT", "data.gpx");
-
-                string szResult = string.Empty;
-
-                using (HttpClient httpClient = new HttpClient())
+                using (StringContent sc = new StringContent(JsonConvert.SerializeObject(new CloudAhoyPostFileMetaData(le))))
                 {
-                    httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
+                    form.Add(sc, "METADATA");
 
-                    try
+                    using (StreamContent streamContent = new StreamContent(s))
                     {
-                        response = await httpClient.PostAsync(FlightsEndpoint, form);
+                        form.Add(streamContent, "IMPORT", "data.gpx");
 
-                        szResult = response.Content.ReadAsStringAsync().Result;
-                        response.EnsureSuccessStatusCode();
-                    }
-                    catch (HttpRequestException ex)
-                    {
-                        throw new MyFlightbookException(ex.Message + " " + response.ReasonPhrase + " " + TextFromHTML(szResult), ex);
+                        string szResult = string.Empty;
+
+                        using (HttpClient httpClient = new HttpClient())
+                        {
+                            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
+
+                            try
+                            {
+                                using (response = await httpClient.PostAsync(FlightsEndpoint, form))
+                                {
+                                    szResult = response.Content.ReadAsStringAsync().Result;
+                                    response.EnsureSuccessStatusCode();
+                                }
+                            }
+                            catch (HttpRequestException ex)
+                            {
+                                throw new MyFlightbookException(ex.Message + " " + response.ReasonPhrase + " " + TextFromHTML(szResult), ex);
+                            }
+                        }
                     }
                 }
             }
@@ -166,24 +174,24 @@ namespace MyFlightbook.OAuth.CloudAhoy
 
                         builder.Query = nvc.ToString();
 
-                        response = await httpClient.GetAsync(builder.ToString());
+                        using (response = await httpClient.GetAsync(builder.ToString()))
+                        {
+                            bool fHasMore = false;
+                            if (response.Headers.TryGetValues("ca-has-more", out IEnumerable<string> values))
+                                fHasMore = Convert.ToBoolean(values.First(), CultureInfo.InvariantCulture);
 
-                        IEnumerable<string> values = null;
-                        bool fHasMore = false;
-                        if (response.Headers.TryGetValues("ca-has-more", out values))
-                            fHasMore = Convert.ToBoolean(values.First(), CultureInfo.InvariantCulture);
+                            szResult = response.Content.ReadAsStringAsync().Result;
+                            response.EnsureSuccessStatusCode();
+                            CloudAhoyFlight[] rgFlights = JsonConvert.DeserializeObject<CloudAhoyFlight[]>(szResult, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
+                            if (szUserName != null)
+                                foreach (CloudAhoyFlight caf in rgFlights)
+                                    caf.UserName = szUserName;
 
-                        szResult = response.Content.ReadAsStringAsync().Result;
-                        response.EnsureSuccessStatusCode();
-                        CloudAhoyFlight[] rgFlights = JsonConvert.DeserializeObject<CloudAhoyFlight[]>(szResult, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
-                        if (szUserName != null)
-                            foreach (CloudAhoyFlight caf in rgFlights)
-                                caf.UserName = szUserName;
+                            lstResult.AddRange(rgFlights);
 
-                        lstResult.AddRange(rgFlights);
-
-                        if (!fHasMore)
-                            break;  // don't go infnite loop!
+                            if (!fHasMore)
+                                break;  // don't go infnite loop!
+                        }
                     }
                     return lstResult;
                 }

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -7,7 +8,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
  * This file contains classes to handle Amazon notifications
@@ -158,10 +159,10 @@ namespace AWSNotifications
         public string Signature { get; set; }
 
         [JsonProperty("SigningCertURL")]
-        public string SigningCertURL { get; set; }
+        public string SigningCertLink { get; set; }
 
         [JsonProperty("UnsubscribeURL")]
-        public string UnsubscribeURL { get; set; }
+        public string UnsubscribeLink { get; set; }
         #endregion
 
         public SNSNotification() { }
@@ -184,7 +185,7 @@ namespace AWSNotifications
             sbGenerated.Append("TopicArn\n").Append(TopicArn).Append("\n");
             sbGenerated.Append("Type\n").Append(Type).Append("\n");
 
-            return SNSUtility.ValidateSignature(sbGenerated.ToString(), SigningCertURL, Signature);
+            return SNSUtility.ValidateSignature(sbGenerated.ToString(), SigningCertLink, Signature);
         }
     }
 
@@ -210,7 +211,7 @@ namespace AWSNotifications
         public string Message { get; set; }
 
         [JsonProperty("SubscribeURL")]
-        public string SubscribeURL { get; set; }
+        public string SubscribeLink { get; set; }
 
         [JsonProperty("Timestamp")]
         public string Timestamp { get; set; }
@@ -222,7 +223,7 @@ namespace AWSNotifications
         public string Signature { get; set; }
 
         [JsonProperty("SigningCertURL")]
-        public string SigningCertURL { get; set; }
+        public string SigningCertLink { get; set; }
         #endregion
 
         public SNSSubscriptionConfirmation() { }
@@ -235,20 +236,20 @@ namespace AWSNotifications
         public Boolean VerifySignature()
         {
             // we can bypass the signature if the subscribe URL we are being asked to hit doesn't belong to AmazonAWS.
-            Uri uri = new Uri(SubscribeURL);
+            Uri uri = new Uri(SubscribeLink);
             if (!uri.Host.EndsWith("amazonaws.com", StringComparison.OrdinalIgnoreCase))
                 return false;
 
             StringBuilder sbGenerated = new StringBuilder();
             sbGenerated.Append("Message\n").Append(Message).Append("\n");
             sbGenerated.Append("MessageId\n").Append(MessageId).Append("\n");
-            sbGenerated.Append("SubscribeURL\n").Append(SubscribeURL).Append("\n");
+            sbGenerated.Append("SubscribeURL\n").Append(SubscribeLink).Append("\n");
             sbGenerated.Append("Timestamp\n").Append(Timestamp).Append("\n");
             sbGenerated.Append("Token\n").Append(Token).Append("\n");
             sbGenerated.Append("TopicArn\n").Append(TopicArn).Append("\n");
             sbGenerated.Append("Type\n").Append(Type).Append("\n");
 
-            return SNSUtility.ValidateSignature(sbGenerated.ToString(), SigningCertURL, Signature);
+            return SNSUtility.ValidateSignature(sbGenerated.ToString(), SigningCertLink, Signature);
         }
     }
 
@@ -274,7 +275,7 @@ namespace AWSNotifications
         public string Message { get; set; }
 
         [JsonProperty("SubscribeURL")]
-        public string SubscribeURL { get; set; }
+        public string SubscribeLink { get; set; }
 
         [JsonProperty("Timestamp")]
         public string Timestamp { get; set; }
@@ -286,7 +287,7 @@ namespace AWSNotifications
         public string Signature { get; set; }
 
         [JsonProperty("SigningCertURL")]
-        public string SigningCertURL { get; set; }
+        public string SigningCertLink { get; set; }
         #endregion
 
         public SNSUnsubscribeConfirmation() { }
@@ -375,8 +376,7 @@ namespace AWSNotifications
         {
             get
             {
-                ETSStates s;
-                if (Enum.TryParse<ETSStates>(State, out s))
+                if (Enum.TryParse<ETSStates>(State, out ETSStates s))
                     return s;
                 return ETSStates.PROGRESSING;
             }
@@ -401,7 +401,7 @@ namespace AWSNotifications
         public ETSInput Input { get; set; }
 
         [JsonProperty("outputs")]
-        public ETSOutput[] Outputs { get; set; }
+        public Collection<ETSOutput> Outputs { get; set; }
         #endregion
 
         public AWSETSStateMessage() { }
