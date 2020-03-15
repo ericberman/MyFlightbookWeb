@@ -3,7 +3,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,8 +44,8 @@ namespace MyFlightbook.FlightCurrency
     /// </summary>
     public class EASAPPLNightPassengerCurrency : FlightCurrency
     {
-        protected FlightCurrency fcNightLanding = new FlightCurrency(1, 90, false, string.Empty);
-        protected FlightCurrency fcNightTakeoff = new FlightCurrency(1, 90, false, string.Empty);
+        protected FlightCurrency fcNightLanding { get; set; } = new FlightCurrency(1, 90, false, string.Empty);
+        protected FlightCurrency fcNightTakeoff { get; set; } = new FlightCurrency(1, 90, false, string.Empty);
 
         public EASAPPLNightPassengerCurrency(string szName) : base()
         {
@@ -64,7 +64,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             // Must be real aircraft or FFS
             if (!cfr.fIsCertifiedLanding)
@@ -148,7 +148,7 @@ namespace MyFlightbook.FlightCurrency
         public static string KeyForLAPL(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (cfr.fIsRealAircraft)
             {
                 if (cfr.fMotorGlider || CategoryClass.IsAirplane(cfr.idCatClassOverride))
@@ -168,7 +168,7 @@ namespace MyFlightbook.FlightCurrency
         public static LAPLBase LAPLACurrencyForCategoryClass(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (!cfr.fIsRealAircraft)
                 return null;
             if (cfr.fMotorGlider || CategoryClass.IsAirplane(cfr.idCatClassOverride))
@@ -189,7 +189,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             // Normal currency
             fcPIC.AddRecentFlightEvents(cfr.dtFlight, cfr.PIC);
             if (cfr.PIC > 0)
@@ -258,7 +258,7 @@ namespace MyFlightbook.FlightCurrency
         protected override bool IsQualifyingFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             return (cfr.fIsRealAircraft && (cfr.fMotorGlider || CategoryClass.IsAirplane(cfr.idCatClassOverride)));
         }
     }
@@ -273,7 +273,7 @@ namespace MyFlightbook.FlightCurrency
         protected override bool IsQualifyingFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             return (cfr.fIsRealAircraft && cfr.idCatClassOverride == CategoryClass.CatClassID.Helicopter);
         }
     }

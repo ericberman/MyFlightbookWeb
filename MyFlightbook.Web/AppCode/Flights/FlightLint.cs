@@ -284,10 +284,12 @@ namespace MyFlightbook.Lint
             {
                 airport apDep = alSubset.GetAirportByCode(rgCodes.ElementAt(0));
                 airport apArr = alSubset.GetAirportByCode(rgCodes.ElementAt(rgCodes.Count() - 1));
-                AddConditionalIssue(le.FlightStart.HasValue() && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropNightTakeoff) &&
-                    new Solar.SunriseSunsetTimes(le.FlightStart, apDep.LatLong.Latitude, apDep.LatLong.Longitude).IsFAANight, LintOptions.AirportIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningAirportMissingNightTakeoff, apDep.Code, le.FlightStart.UTCFormattedStringOrEmpty(false)));
-                AddConditionalIssue(le.FlightEnd.HasValue() && le.NightLandings == 0 &&
-                    new Solar.SunriseSunsetTimes(le.FlightEnd, apArr.LatLong.Latitude, apArr.LatLong.Longitude).IsFAANight, LintOptions.AirportIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningAirportMissingNightLanding, apArr.Code, le.FlightEnd.UTCFormattedStringOrEmpty(false)));
+                if (apDep != null)
+                    AddConditionalIssue(le.FlightStart.HasValue() && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropNightTakeoff) &&
+                        new Solar.SunriseSunsetTimes(le.FlightStart, apDep.LatLong.Latitude, apDep.LatLong.Longitude).IsFAANight, LintOptions.AirportIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningAirportMissingNightTakeoff, apDep.Code, le.FlightStart.UTCFormattedStringOrEmpty(false)));
+                if (apArr != null)
+                    AddConditionalIssue(le.FlightEnd.HasValue() && le.NightLandings == 0 &&
+                        new Solar.SunriseSunsetTimes(le.FlightEnd, apArr.LatLong.Latitude, apArr.LatLong.Longitude).IsFAANight, LintOptions.AirportIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningAirportMissingNightLanding, apArr.Code, le.FlightEnd.UTCFormattedStringOrEmpty(false)));
             }
         }
 

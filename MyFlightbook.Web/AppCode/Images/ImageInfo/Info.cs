@@ -50,7 +50,7 @@ namespace gma.Drawing.ImageInfo
 			get
 			{
 				object tmpValue = PropertyTag.getValue(_image.GetPropertyItem((int)PropertyTagId.ExifPixXDim));
-				if (tmpValue.GetType().ToString().Equals("System.UInt16")) return (uint)(ushort)tmpValue; 
+				if (tmpValue.GetType().ToString().Equals("System.UInt16", StringComparison.InvariantCultureIgnoreCase)) return (uint)(ushort)tmpValue; 
 				return (uint)tmpValue; 			
 			}
 		}
@@ -63,7 +63,7 @@ namespace gma.Drawing.ImageInfo
 			get
 			{
 				object tmpValue = PropertyTag.getValue(_image.GetPropertyItem((int)PropertyTagId.ExifPixYDim));
-				if (tmpValue.GetType().ToString().Equals("System.UInt16")) return (uint)(ushort)tmpValue; 
+				if (tmpValue.GetType().ToString().Equals("System.UInt16", StringComparison.InvariantCultureIgnoreCase)) return (uint)(ushort)tmpValue; 
 				return (uint)tmpValue; 			
 			}
 		}
@@ -141,7 +141,7 @@ namespace gma.Drawing.ImageInfo
                                 PropertyItem pi = _image.GetPropertyItem((int)PropertyTagId.ImageDescription);
                                 return Encoding.UTF8.GetString(pi.Value, 0, pi.Len - 1);
                             }
-                            catch (ArgumentException) { }
+                            catch (Exception ex) when (ex is ArgumentException) { }
                         }
                     }
                 }
@@ -388,7 +388,7 @@ namespace gma.Drawing.ImageInfo
                 {
                     sRef = (string)PropertyTag.getValue(_image.GetPropertyItem((int)PropertyTagId.GpsLatitudeRef));
                 }
-                catch (ArgumentException) { }
+                catch (Exception ex) when (ex is ArgumentException) { }
                 Fraction[] f = (Fraction[])PropertyTag.getValue(_image.GetPropertyItem((int)PropertyTagId.GpsLatitude));
                 double fDeg = (double)f[0];;
                 double fMin = (double)f[1];
@@ -414,7 +414,7 @@ namespace gma.Drawing.ImageInfo
                 {
                     sRef = (string)PropertyTag.getValue(_image.GetPropertyItem((int)PropertyTagId.GpsLongitudeRef));
                 }
-                catch (ArgumentException) { }
+                catch (Exception ex) when (ex is ArgumentException) { }
                 Fraction[] f = (Fraction[])PropertyTag.getValue(_image.GetPropertyItem((int)PropertyTagId.GpsLongitude));
                 double fDeg = (double)f[0]; ;
                 double fMin = (double)f[1];

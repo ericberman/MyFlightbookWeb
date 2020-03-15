@@ -1,6 +1,7 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Image;
 using System;
+using System.Web;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Web.UI;
@@ -8,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -85,7 +86,7 @@ public partial class Controls_mfbVideoEntry : UserControl
             if (!v.IsValid)
             {
                 pnlError.Visible = true;
-                lblErr.Text = v.ErrorString;
+                lblErr.Text = HttpUtility.HtmlEncode(v.ErrorString);
             }
             else
             {

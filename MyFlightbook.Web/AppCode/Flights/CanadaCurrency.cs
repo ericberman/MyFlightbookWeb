@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -23,6 +23,9 @@ namespace MyFlightbook.FlightCurrency
 
         public void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
             if (cfr.dtFlight.CompareTo(DateTime.Now.AddYears(-5)) < 0)
                 return;
 
@@ -94,6 +97,8 @@ namespace MyFlightbook.FlightCurrency
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             base.ExamineFlight(cfr);
             // Add in night touch-and-go landings too, since they also count.
             AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo));
@@ -132,7 +137,7 @@ namespace MyFlightbook.FlightCurrency
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             m_fCacheValid = false;
 
             // 401.05(3)(a) - IPC or equivalent

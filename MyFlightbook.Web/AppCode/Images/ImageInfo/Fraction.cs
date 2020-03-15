@@ -83,9 +83,9 @@ namespace gma.Drawing.ImageInfo
         public static Fraction operator +(Fraction a, Fraction b) 
    		{
             if (a == null)
-                throw new ArgumentNullException("a");
+                throw new ArgumentNullException(nameof(a));
             if (b == null)
-                throw new ArgumentNullException("b");
+                throw new ArgumentNullException(nameof(b));
 
       		return new Fraction(a.num * b.den + b.num * a.den, a.den * b.den);
    		}
@@ -95,9 +95,9 @@ namespace gma.Drawing.ImageInfo
         public static Fraction operator *(Fraction a, Fraction b) 
    		{
             if (a == null)
-                throw new ArgumentNullException("a");
+                throw new ArgumentNullException(nameof(a));
             if (b == null)
-                throw new ArgumentNullException("b");
+                throw new ArgumentNullException(nameof(b));
 
             return new Fraction(a.num * b.num, a.den * b.den);
    		}

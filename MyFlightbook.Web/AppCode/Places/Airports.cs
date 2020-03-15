@@ -125,6 +125,8 @@ namespace MyFlightbook.Airports
         #region IComparable
         public int CompareTo(object obj)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
             return Airport.CompareTo(((VisitedAirport)obj).Airport);
         }
 
@@ -185,7 +187,7 @@ namespace MyFlightbook.Airports
 
         public static bool operator >(VisitedAirport left, VisitedAirport right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(VisitedAirport left, VisitedAirport right)
@@ -255,6 +257,8 @@ namespace MyFlightbook.Airports
         /// <returns>A set of visited airports</returns>
         public static VisitedAirport[] VisitedAirportsForQuery(FlightQuery fq)
         {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
             if (String.IsNullOrEmpty(fq.UserName))
                 throw new ArgumentNullException(nameof(fq));
 
@@ -765,6 +769,8 @@ namespace MyFlightbook.Airports
         #region IComparable
         public int CompareTo(object obj)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
             return String.Compare(Code, ((airport)obj).Code, StringComparison.CurrentCulture);
         }
 
@@ -824,7 +830,7 @@ namespace MyFlightbook.Airports
 
         public static bool operator >(airport left, airport right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(airport left, airport right)
@@ -997,7 +1003,7 @@ namespace MyFlightbook.Airports
         {
             List<airport> lstAp = new List<airport>();
 
-            if (String.IsNullOrEmpty(szSearchText.Trim()))
+            if (szSearchText == null || String.IsNullOrEmpty(szSearchText.Trim()))
                 return lstAp;
 
             string[] rgSearchTerms = Regex.Split(szSearchText, "\\s");

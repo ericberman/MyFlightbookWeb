@@ -1,15 +1,15 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Web;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2016 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -34,7 +34,7 @@ namespace MyFlightbook.Image
         public void InitFromSerializedString(int idFlight, string szSerialized)
         {
             if (szSerialized == null)
-                throw new ArgumentNullException("szSerialized");
+                throw new ArgumentNullException(nameof(szSerialized));
             string[] rgParams = szSerialized.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
             if (rgParams.Length < 2 || rgParams.Length > 3)
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Invalid serialization for video: {0}", szSerialized));
@@ -60,6 +60,8 @@ namespace MyFlightbook.Image
 
         protected VideoRef(MySqlDataReader dr) : this()
         {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
             InitFromDataReader(dr);
         }
 
@@ -185,10 +187,7 @@ namespace MyFlightbook.Image
         #endregion
 
         #region Parsing/display
-
-        private const string vidTemplateVimeo = "<iframe src=\"https://player.vimeo.com/video/{0}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0\" width=\"{1}\" height=\"{2}\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
         private const string vidTemplateYouTube = "<iframe src=\"https://www.youtube.com/embed/{0}\" width=\"{1}\" height=\"{2}\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
-
 
         // Adapted from http://linuxpanda.wordpress.com/2013/07/24/ultimate-best-regex-pattern-to-get-grab-parse-youtube-video-id-from-any-youtube-link-url/
         private const string szRegExpMatchYouTube = "^(?:http|https)?(?:://)?(?:www\\.)?(?:youtu\\.be/|youtube\\.com(?:/embed/|/v/|/watch?v=|/ytscreeningroom?v=|/feeds/api/videos/|/user\\S*[^\\w\\-\\s]|\\S*[^\\w\\-\\s]))([\\w\\-]{11})[a-z0-9;:@?&%=+/\\$_.-]*";
@@ -202,8 +201,8 @@ namespace MyFlightbook.Image
             "http://www.youtube.com/watch?v=6zUVS4kJtrA&feature=c4-overview-vl&list=PLbzoR-pLrL6qucl8-lOnzvhFc2UM1tcZA" ** doesn't work,
          */
 
-        private Regex rYouTube = new Regex(szRegExpMatchYouTube, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private Regex rVimeo = new Regex(szRegExpMatchVimeo, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private readonly Regex rYouTube = new Regex(szRegExpMatchYouTube, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private readonly Regex rVimeo = new Regex(szRegExpMatchVimeo, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private bool IsValidYoutubeURL()
         {
@@ -266,7 +265,7 @@ namespace MyFlightbook.Image
                             VimeoEmbedResponse ver = szJSON.DeserialiseFromJSON<VimeoEmbedResponse>();
                             return ver.HTML;
                         }
-                        catch (WebException)
+                        catch (Exception ex) when (ex is WebException)
                         {
                             return string.Empty;
                         }
@@ -303,7 +302,7 @@ namespace MyFlightbook.Image
         public string Description { get; set; }
 
         [DataMember(Name = "thumnbnail_url")]
-        public string ThumbnailURL { get; set; }
+        public string ThumbnailLink { get; set; }
 
         [DataMember(Name = "thumbnail_width")]
         public int ThumbWidth { get; set; }

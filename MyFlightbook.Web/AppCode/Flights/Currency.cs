@@ -404,7 +404,7 @@ namespace MyFlightbook.FlightCurrency
 
         public static bool operator >(CurrencyStatusItem left, CurrencyStatusItem right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(CurrencyStatusItem left, CurrencyStatusItem right)
@@ -3002,6 +3002,8 @@ namespace MyFlightbook.FlightCurrency
 
         public void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             if (cfr.FlightProps == null)
                 return;
 
@@ -3568,6 +3570,9 @@ namespace MyFlightbook.FlightCurrency
 
         public PIC6158Currency AND(PIC6158Currency pic6158Currency)
         {
+            if (pic6158Currency == null)
+                throw new ArgumentNullException(nameof(pic6158Currency));
+
             PIC6158Currency result = new PIC6158Currency(RequiredEvents, ExpirationSpan, true, DisplayName);
             if (HasBeenCurrent && pic6158Currency.HasBeenCurrent)
             {

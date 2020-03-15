@@ -1,10 +1,10 @@
-﻿using System;
-using System.Globalization;
+﻿using MyFlightbook.Airports;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
-using MyFlightbook.Airports;
 
 /******************************************************
  * 
@@ -18,7 +18,7 @@ namespace MyFlightbook.Weather.ADDS
     /// <summary>
     /// Extensions to the METAR class for sorting, etc.
     /// </summary>
-    public partial class METAR : IComparable
+    public partial class METAR : IComparable, IEquatable<METAR>
     {
         public enum FlightCategory { None, VFR, MVFR, IFR, LIFR }
 
@@ -192,13 +192,16 @@ namespace MyFlightbook.Weather.ADDS
         /// <summary>
         /// Sorts METARS in ascending order by station ID and *DESCENDING* order by timestamp
         /// </summary>
-        /// <param name="o"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
-        public int CompareTo(object o)
+        public int CompareTo(object obj)
         {
-            METAR m = o as METAR;
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
 
-            int i = station_id.CompareTo(m.station_id);
+            METAR m = obj as METAR;
+            
+            int i = String.Compare(station_id, m.station_id, StringComparison.CurrentCultureIgnoreCase);
             if (i != 0)
                 return i;
 
@@ -226,12 +229,45 @@ namespace MyFlightbook.Weather.ADDS
                 return false;
             }
 
-            throw new NotImplementedException();
+            return Equals(obj as METAR);
+        }
+
+        public bool Equals(METAR other)
+        {
+            return other != null &&
+                   TimeStamp == other.TimeStamp &&
+                   Category == other.Category &&
+                   METARTypeDisplay == other.METARTypeDisplay &&
+                   TimeDisplay == other.TimeDisplay &&
+                   AltitudeHgDisplay == other.AltitudeHgDisplay &&
+                   VisibilityDisplay == other.VisibilityDisplay &&
+                   QualityDisplay == other.QualityDisplay &&
+                   TempDewpointDisplay == other.TempDewpointDisplay &&
+                   TempDisplay == other.TempDisplay &&
+                   DewpointDisplay == other.DewpointDisplay &&
+                   TempAndDewpointDisplay == other.TempAndDewpointDisplay &&
+                   WindDirDisplay == other.WindDirDisplay;
         }
 
         public override int GetHashCode()
         {
-            throw new NotImplementedException();
+            unchecked
+            {
+                var hashCode = -106303338;
+                hashCode = hashCode * -1521134295 + TimeStamp.GetHashCode();
+                hashCode = hashCode * -1521134295 + Category.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(METARTypeDisplay);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TimeDisplay);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AltitudeHgDisplay);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(VisibilityDisplay);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(QualityDisplay);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TempDewpointDisplay);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TempDisplay);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DewpointDisplay);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TempAndDewpointDisplay);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(WindDirDisplay);
+                return hashCode;
+            }
         }
 
         public static bool operator ==(METAR left, METAR right)
@@ -261,7 +297,7 @@ namespace MyFlightbook.Weather.ADDS
 
         public static bool operator >(METAR left, METAR right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(METAR left, METAR right)

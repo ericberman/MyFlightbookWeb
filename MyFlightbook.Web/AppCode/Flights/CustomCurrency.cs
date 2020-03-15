@@ -940,7 +940,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             int idmodel = cfr.idModel;
             if (ModelsRestriction != null && ModelsRestriction.Count() > 0 && !ModelsRestriction.Any(model => model == idmodel))
                 return false;
-            if (!String.IsNullOrEmpty(CategoryRestriction) && cfr.szCategory.CompareTo(CategoryRestriction) != 0)
+            if (!String.IsNullOrEmpty(CategoryRestriction) && cfr.szCategory.CompareOrdinalIgnoreCase(CategoryRestriction) != 0)
                 return false;
             if (CatClassRestriction > 0 && cfr.idCatClassOverride != CatClassRestriction)
                 return false;
@@ -964,14 +964,14 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             }
             if (!String.IsNullOrWhiteSpace(TextRestriction))
             {
-                string szUpper = TextRestriction.ToUpper();
+                string szUpper = TextRestriction.ToUpper(CultureInfo.CurrentCulture);
                 bool fFound = false;
-                if (cfr.Comments.ToUpper().Contains(szUpper))
+                if (cfr.Comments.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
                     fFound = true;
                 if (!fFound)
                 {
                     foreach (CustomFlightProperty cfp in cfr.FlightProps)
-                        if (cfp.PropertyType.Type == CFPPropertyType.cfpString && cfp.TextValue.ToUpper().Contains(szUpper))
+                        if (cfp.PropertyType.Type == CFPPropertyType.cfpString && cfp.TextValue.ToUpper(CultureInfo.CurrentCulture).Contains(szUpper))
                         {
                             fFound = true;
                             break;
@@ -982,8 +982,8 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             }
             if (!String.IsNullOrWhiteSpace(AirportRestriction))
             {
-                string[] szAirports = Airports.AirportList.NormalizeAirportList(AirportRestriction.ToUpper());
-                string szRouteUpper = cfr.Route.ToUpper();
+                string[] szAirports = Airports.AirportList.NormalizeAirportList(AirportRestriction.ToUpper(CultureInfo.CurrentCulture));
+                string szRouteUpper = cfr.Route.ToUpper(CultureInfo.CurrentCulture);
                 foreach (string szAirport in szAirports)
                     if (!szRouteUpper.Contains(szAirport))
                         return false;
@@ -997,6 +997,8 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         /// <param name="cfr">The flight row to examine</param>
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             if (!CheckMatchesCriteria(cfr))
                 return;
             // don't look at anything older than necessary if we're a *maximum* currency

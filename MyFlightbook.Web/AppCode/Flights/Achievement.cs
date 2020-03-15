@@ -4,13 +4,14 @@ using MyFlightbook.Geography;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2019 MyFlightbook LLC
+ * Copyright (c) 2014-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -150,7 +151,7 @@ namespace MyFlightbook.Achievements
                 // Now add in all of the checkride badges.
                 lstTotal.AddRange(lstCheckrideBadges);
             }
-            catch
+            catch (Exception ex) when (!(ex is OutOfMemoryException))
             {
                 pf.SetAchievementStatus(ComputeStatus.NeedsComputing);
             }
@@ -168,7 +169,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// Represents a collection of badges within a category.
     /// </summary>
-    public class BadgeSet : IComparable
+    public class BadgeSet : IComparable, IEquatable<BadgeSet>
     {
         #region Properties
         /// <summary>
@@ -201,12 +202,11 @@ namespace MyFlightbook.Achievements
         public static IEnumerable<BadgeSet> BadgeSetsFromBadges(IEnumerable<Badge> lstIn)
         {
             if (lstIn == null)
-                throw new ArgumentNullException("lstIn");
+                throw new ArgumentNullException(nameof(lstIn));
             Dictionary<Badge.BadgeCategory, BadgeSet> d = new Dictionary<Badge.BadgeCategory, BadgeSet>();
             foreach (Badge b in lstIn)
             {
-                BadgeSet bs;
-                if (!d.TryGetValue(b.Category, out bs))
+                if (!d.TryGetValue(b.Category, out BadgeSet bs))
                     d.Add(b.Category, bs = new BadgeSet(b.Category, new List<Badge>()));
                 ((List<Badge>)bs.Badges).Add(b);
             }
@@ -220,17 +220,80 @@ namespace MyFlightbook.Achievements
             return lstOut;
         }
 
+        #region IComparable
         public int CompareTo(object obj)
         {
-            return ((int)Category).CompareTo((int)((BadgeSet)obj).Category);
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+            if (!(obj is BadgeSet bs))
+                throw new ArgumentException("object is not a badgeset");
+            return ((int)Category).CompareTo((int)bs.Category);
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as BadgeSet);
+        }
+
+        public bool Equals(BadgeSet other)
+        {
+            return other != null &&
+                   Category == other.Category &&
+                   CategoryName == other.CategoryName &&
+                   EqualityComparer<IEnumerable<Badge>>.Default.Equals(Badges, other.Badges) &&
+                   HasBadges == other.HasBadges;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 1901650559;
+                hashCode = hashCode * -1521134295 + Category.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CategoryName);
+                hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<Badge>>.Default.GetHashCode(Badges);
+                hashCode = hashCode * -1521134295 + HasBadges.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(BadgeSet left, BadgeSet right)
+        {
+            return EqualityComparer<BadgeSet>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(BadgeSet left, BadgeSet right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(BadgeSet left, BadgeSet right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(BadgeSet left, BadgeSet right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(BadgeSet left, BadgeSet right)
+        {
+            return left is object && left != null && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(BadgeSet left, BadgeSet right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
     }
 
     [Serializable]
     /// <summary>
     /// Abstract class for a badge that is awarded for meeting an achievement
     /// </summary>
-    public abstract class Badge : IComparable
+    public abstract class Badge : IComparable, IEquatable<Badge>
     {
         /// <summary>
         /// Levels of achievement - can be binary (achieved or not achieved), or have levels
@@ -538,7 +601,7 @@ namespace MyFlightbook.Achievements
         protected virtual void InitFromDataReader(MySqlDataReader dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             ID = (BadgeID)Convert.ToInt32(dr["BadgeID"], CultureInfo.InvariantCulture);
             UserName = (string)dr["Username"];
             Level = (AchievementLevel)Convert.ToInt32(dr["AchievementLevel"], CultureInfo.InvariantCulture);
@@ -694,9 +757,13 @@ namespace MyFlightbook.Achievements
             return lst;
         }
 
+        #region IComparable
         public int CompareTo(object obj)
         {
-            Badge bCompare = (Badge)obj;
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+
+            Badge bCompare = obj as Badge;
             int datecomp = DateEarned.CompareTo(bCompare.DateEarned);
             return (datecomp == 0) ? String.Compare(Name, bCompare.Name, StringComparison.CurrentCultureIgnoreCase) : datecomp;
         }
@@ -710,6 +777,88 @@ namespace MyFlightbook.Achievements
                     IDFlightEarned == bCompare.IDFlightEarned &&
                     DateEarned.CompareTo(bCompare.DateEarned) == 0);
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Badge);
+        }
+
+        public bool Equals(Badge other)
+        {
+            return other != null &&
+                   DateEarned == other.DateEarned &&
+                   DateComputed == other.DateComputed &&
+                   UserName == other.UserName &&
+                   ID == other.ID &&
+                   Level == other.Level &&
+                   Name == other.Name &&
+                   IsAchieved == other.IsAchieved &&
+                   DisplayString == other.DisplayString &&
+                   EarnedDateString == other.EarnedDateString &&
+                   IDFlightEarned == other.IDFlightEarned &&
+                   CanEarnInSim == other.CanEarnInSim &&
+                   BadgeImage == other.BadgeImage &&
+                   BadgeImageAltText == other.BadgeImageAltText &&
+                   BadgeImageOverlay == other.BadgeImageOverlay &&
+                   Category == other.Category &&
+                   CategoryName == other.CategoryName;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = -63878919;
+                hashCode = hashCode * -1521134295 + DateEarned.GetHashCode();
+                hashCode = hashCode * -1521134295 + DateComputed.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(UserName);
+                hashCode = hashCode * -1521134295 + ID.GetHashCode();
+                hashCode = hashCode * -1521134295 + Level.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+                hashCode = hashCode * -1521134295 + IsAchieved.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DisplayString);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(EarnedDateString);
+                hashCode = hashCode * -1521134295 + IDFlightEarned.GetHashCode();
+                hashCode = hashCode * -1521134295 + CanEarnInSim.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(BadgeImage);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(BadgeImageAltText);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(BadgeImageOverlay);
+                hashCode = hashCode * -1521134295 + Category.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CategoryName);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(Badge left, Badge right)
+        {
+            return EqualityComparer<Badge>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Badge left, Badge right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(Badge left, Badge right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(Badge left, Badge right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(Badge left, Badge right)
+        {
+            return left is object && left != null && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(Badge left, Badge right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
     }
 
     #region Concrete Badge Classes
@@ -730,7 +879,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (!fSeen1stFlight)
             {
                 fSeen1stFlight = true;
@@ -757,7 +906,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, Object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (Level == AchievementLevel.None)
             {
                 if (cfr.FlightProps.FindEvent(pf => (pf.PropertyType.IsSolo && pf.DecValue > 0)) != null)
@@ -786,7 +935,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (!fSeenFirstLanding && cfr.Dual > 0 && cfr.PIC == 0 && cfr.cFullStopNightLandings > 0)
             {
                 fSeenFirstLanding = true;
@@ -813,7 +962,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (!fSeen1stXC && cfr.Dual > 0 && cfr.PIC == 0 && cfr.XC > 0)
             {
                 fSeen1stXC = true;
@@ -840,7 +989,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (!fSeen1stXC && cfr.XC > 0 && cfr.FlightProps.FindEvent(pf => (pf.PropertyType.IsSolo && pf.DecValue > 0)) != null)
             {
                 fSeen1stXC = true;
@@ -865,7 +1014,7 @@ namespace MyFlightbook.Achievements
         public override void PostFlight(IDictionary<string, object> context)
         {
             if (context == null)
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException(nameof(context));
             VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
 
             if (rgva != null)
@@ -891,7 +1040,7 @@ namespace MyFlightbook.Achievements
     [Serializable]
     public abstract class MultiLevelCountBadgeBase : Badge
     {
-        protected int[] Levels {get; set;}
+        protected Collection<int> Levels {get; set;}
         protected decimal Quantity { get; set; }
         protected string ProgressTemplate { get; set; }
         
@@ -905,7 +1054,7 @@ namespace MyFlightbook.Achievements
             : base(id, nameTemplate)
         {
             ProgressTemplate = nameTemplate;
-            Levels = new int[] { Bronze, Silver, Gold, Platinum};
+            Levels = new Collection<int>(new List<int> { Bronze, Silver, Gold, Platinum });
             Level = AchievementLevel.None;
         }
 
@@ -923,7 +1072,7 @@ namespace MyFlightbook.Achievements
 
             decimal newAmount = Quantity + amount;
             AchievementLevel newLevel = Level;
-            for (int i = 0; i < Levels.Length; i++)
+            for (int i = 0; i < Levels.Count; i++)
             {
                 if (newAmount >= Levels[i])
                     newLevel = (AchievementLevel)((int)AchievementLevel.Bronze + i);
@@ -976,7 +1125,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, Object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (!hsModelsFlown.Contains(cfr.szFamily) && cfr.Total > 0 && cfr.fIsRealAircraft)
             {
                 AddToCount(1, cfr);
@@ -995,7 +1144,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, Object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             if (!hsCatClassesFlown.Contains(cfr.idCatClassOverride) && cfr.Total > 0 && cfr.fIsRealAircraft)
             {
@@ -1021,7 +1170,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, Object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             if (!lstAircraftFlown.Contains(cfr.idAircraft) && cfr.Total > 0 && cfr.fIsRealAircraft)
             {
                 AddToCount(1, cfr);
@@ -1042,7 +1191,7 @@ namespace MyFlightbook.Achievements
         public override void PostFlight(IDictionary<string, object> context)
         {
             if (context == null)
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException(nameof(context));
             if (context.ContainsKey(Achievement.KeyVisitedAirports))
             {
                 VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
@@ -1075,7 +1224,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context) 
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             AddToCount(cfr.Total, cfr);
         }
     }
@@ -1092,7 +1241,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             AddToCount(cfr.PIC, cfr);
         }
     }
@@ -1109,7 +1258,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             AddToCount(cfr.SIC, cfr);
         }
     }
@@ -1126,7 +1275,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             AddToCount(cfr.CFI, cfr);
         }
     }
@@ -1148,7 +1297,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             AddToCount(cfr.IMC, cfr);
         }
     }
@@ -1168,7 +1317,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             AddToCount(cfr.Night, cfr);
         }
     }
@@ -1181,7 +1330,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             AddToCount(cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropNVFLIRTime) + cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropNVGoggleTime), cfr);
         }
@@ -1198,7 +1347,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             AddToCount(cfr.cLandingsThisFlight, cfr);
         }
     }
@@ -1214,7 +1363,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             AddToCount(cfr.cApproaches, cfr);
         }
     }
@@ -1229,7 +1378,7 @@ namespace MyFlightbook.Achievements
         public override void PostFlight(IDictionary<string, object> context)
         {
             if (context == null)
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException(nameof(context));
             if (context.ContainsKey(Achievement.KeyVisitedAirports))
             {
                 VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
@@ -1269,7 +1418,7 @@ namespace MyFlightbook.Achievements
         public override void ExamineFlight(ExaminerFlightRow cfr, Dictionary<string, object> context)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             DateTime dtFlight = cfr.dtFlight.Date;
             if (dtFlight.CompareTo(dtLastSeen.Date) == 0)   // ignore multiple flights on the same day.
                 return;
@@ -1297,7 +1446,7 @@ namespace MyFlightbook.Achievements
         public string OverlayName { get; set; }
         public AirportList Airports { get; set; }
         public LatLongBox BoundingFrame { get; set; }
-        public int[] Levels { get; set; }
+        public Collection<int> Levels { get; set; }
         public bool BinaryOnly { get; set; }
 
         public AirportListBadgeData()
@@ -1307,7 +1456,7 @@ namespace MyFlightbook.Achievements
         public AirportListBadgeData(MySqlDataReader dr) : this()
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             Name = dr["name"].ToString();
             ID = (Badge.BadgeID)Convert.ToInt32(dr["idachievement"], CultureInfo.InvariantCulture);
             AirportsRaw = dr["airportcodes"].ToString();
@@ -1315,11 +1464,11 @@ namespace MyFlightbook.Achievements
             BoundingFrame = Airports.LatLongBox(true).Inflate(0.1); // allow for a little slop
             OverlayName = util.ReadNullableString(dr, "overlayname");
             BinaryOnly = Convert.ToInt32(dr["fBinaryOnly"], CultureInfo.InvariantCulture) != 0;
-            Levels = new int[4];
-            Levels[0] = Convert.ToInt32(dr["thresholdBronze"], CultureInfo.InvariantCulture);
-            Levels[1] = Convert.ToInt32(dr["thresholdSilver"], CultureInfo.InvariantCulture);
-            Levels[2] = Convert.ToInt32(dr["thresholdGold"], CultureInfo.InvariantCulture);
-            Levels[3] = Convert.ToInt32(dr["thresholdPlatinum"], CultureInfo.InvariantCulture);
+            Levels = new Collection<int>(new List<int>() {
+                Convert.ToInt32(dr["thresholdBronze"], CultureInfo.InvariantCulture),
+                Convert.ToInt32(dr["thresholdSilver"], CultureInfo.InvariantCulture),
+                Convert.ToInt32(dr["thresholdGold"], CultureInfo.InvariantCulture),
+                Convert.ToInt32(dr["thresholdPlatinum"], CultureInfo.InvariantCulture) });
         }
 
         /// <summary>
@@ -1373,13 +1522,9 @@ namespace MyFlightbook.Achievements
             base.InitFromDataReader(dr);
 
             // get the name that matches this
-            try
-            {
-                m_badgeData = BadgeData.Find(albd => albd.ID == ID);
-                ProgressTemplate = Name = m_badgeData.Name;
-                Levels = m_badgeData.Levels;
-            }
-            catch { }
+            m_badgeData = BadgeData.Find(albd => albd.ID == ID);
+            ProgressTemplate = Name = m_badgeData.Name;
+            Levels = m_badgeData.Levels;
         }
 
         private const string szCacheDataKey = "keyAirportListBadgesDataList";
@@ -1425,6 +1570,8 @@ namespace MyFlightbook.Achievements
 
         public override void PostFlight(IDictionary<string, object> context)
         {
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
             VisitedAirport[] rgva = (VisitedAirport[])context[Achievement.KeyVisitedAirports];
             DateTime dtEarned = DateTime.MinValue;
             if (rgva != null)
@@ -1435,7 +1582,7 @@ namespace MyFlightbook.Achievements
                 {
                     if (m_badgeData.BoundingFrame.ContainsPoint(va.Airport.LatLong))
                     {
-                        List<airport> apMatches = lstAirports.FindAll(ap => ap.LatLong.IsSameLocation(va.Airport.LatLong, 0.02) && String.Compare(ap.FacilityTypeCode, va.Airport.FacilityTypeCode) == 0);
+                        List<airport> apMatches = lstAirports.FindAll(ap => ap.LatLong.IsSameLocation(va.Airport.LatLong, 0.02) && String.Compare(ap.FacilityTypeCode, va.Airport.FacilityTypeCode, StringComparison.InvariantCultureIgnoreCase) == 0);
                         int cAirportsRemainingToHit = lstAirports.Count;
                         apMatches.ForEach((ap) => { lstAirports.Remove(ap); });
                         if (apMatches.Count > 0)
