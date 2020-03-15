@@ -1,16 +1,16 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Globalization;
-using System.Configuration;
-using MySql.Data.MySqlClient;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -118,9 +118,7 @@ namespace MyFlightbook
 
         public DBHelper(DBHelperCommandArgs args) : this()
         {
-            if (args == null)
-                throw new ArgumentNullException("args");
-            CommandArgs = args;
+            CommandArgs = args ?? throw new ArgumentNullException(nameof(args));
         }
         #endregion
 
@@ -144,9 +142,9 @@ namespace MyFlightbook
         public static void InitCommandObject(MySqlCommand comm, DBHelperCommandArgs args)
         {
             if (comm == null)
-                throw new ArgumentNullException("comm");
+                throw new ArgumentNullException(nameof(comm));
             if (args == null)
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             comm.Connection = DBHelper.GetConnection;
             comm.CommandText = args.QueryString;
             comm.Parameters.AddRange(args.Parameters.ToArray());
@@ -167,9 +165,9 @@ namespace MyFlightbook
         public bool ReadRows(DBHelperCommandArgs args, Action<MySqlCommand> initCommand, Action<MySqlDataReader> readRow, ReadRowMode rowMode)
         {
             if (args == null)
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             if (readRow == null)
-                throw new ArgumentNullException("readRow");
+                throw new ArgumentNullException(nameof(readRow));
 
             bool fResult = true;
             using (MySqlCommand comm = new MySqlCommand())
@@ -177,8 +175,7 @@ namespace MyFlightbook
                 DBHelper.InitCommandObject(comm, args);
                 LastError = string.Empty;
 
-                if (initCommand != null)
-                    initCommand(comm);
+                initCommand?.Invoke(comm);
                 try
                 {
                     comm.Connection.Open();
@@ -271,8 +268,7 @@ namespace MyFlightbook
             {
                 DBHelper.InitCommandObject(comm, args);
 
-                if (initCommand != null)
-                    initCommand(comm);
+                initCommand?.Invoke(comm);
 
                 LastError = string.Empty;
                 try

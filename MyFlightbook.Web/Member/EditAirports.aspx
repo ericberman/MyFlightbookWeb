@@ -174,6 +174,10 @@
                 <td>
                     <asp:FileUpload ID="fileUploadAirportList" runat="server" />
                     <asp:Button ValidationGroup="importAirports" ID="btnImport" runat="server" Text="Import" OnClick="btnImport_Click" />
+                    <asp:Button ValidationGroup="importAirports" ID="btnBulkImport" runat="server" Text="Bulk Import (no interactive)" OnClick="btnBulkImport_Click" />
+                    <uc2:mfbTooltip ID="mfbTooltip2" runat="server" BodyContent="MUST be: AirportID, FacilityName, Type, SourceUserName,Latitude,Longitude,Preferred.  SourceUserName and Preferred are optional." />
+                    <cc1:ConfirmButtonExtender runat="server" ID="confirmBulkImport" TargetControlID="btnBulkImport" ConfirmText="THIS WILL BULK IMPORT WITH NO UNDO!" />
+                    <asp:Label ID="lblBulkImportResults" runat="server" Text="" EnableViewState="false"></asp:Label>
                 </td>
                 <td>
                     <asp:UpdateProgress ID="UpdateProgress1" AssociatedUpdatePanelID="updAddAirports" runat="server">            

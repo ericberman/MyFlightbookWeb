@@ -16,7 +16,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -127,10 +127,8 @@ public partial class Member_EditAirports : System.Web.UI.Page
         {
             if (txtLat.Text.Length > 0 && txtLong.Text.Length > 0)
             {
-                double lat, lon;
-
-                if (double.TryParse(txtLat.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out lat) &&
-                    double.TryParse(txtLong.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out lon))
+                if (double.TryParse(txtLat.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lat) &&
+                    double.TryParse(txtLong.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lon))
                 {
                     MfbGoogleMapManager1.Map.MapCenter = new LatLong(lat, lon);
                     MfbGoogleMapManager1.Map.ZoomFactor = GMap_ZoomLevels.AirportAndVicinity;
@@ -215,7 +213,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
     protected void gvMyAirports_RowDataBound(Object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             HyperLink l = (HyperLink) e.Row.FindControl("lnkZoomCode");
@@ -227,7 +225,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
     protected void gvMyAirports_RowCommand(Object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (String.Compare(e.CommandName, "_Delete", StringComparison.OrdinalIgnoreCase) == 0)
         {
             foreach (airport ap in m_rgAirportsForUser)
@@ -257,10 +255,8 @@ public partial class Member_EditAirports : System.Web.UI.Page
 
     protected void btnAdd_Click(object sender, EventArgs e)
     {
-        double lat, lon;
-
-        if (!double.TryParse(txtLat.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out lat) ||
-            !double.TryParse(txtLong.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out lon))
+        if (!double.TryParse(txtLat.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lat) ||
+            !double.TryParse(txtLong.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double lon))
         {
             lblErr.Text = Resources.Airports.errInvalidLatLong;
             return;
@@ -306,7 +302,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
                 UpdateImportData();
         }
         else
-            lblErr.Text = ap.ErrorText;
+            lblErr.Text = HttpUtility.HtmlEncode(ap.ErrorText);
     }
 
     #region Admin - BulkAirportImport
@@ -323,15 +319,17 @@ public partial class Member_EditAirports : System.Web.UI.Page
         return rgsz[icol];
     }
 
-    protected void UpdateCandidateStatus(List<airportImportCandidate> lst)
+    protected static void UpdateCandidateStatus(List<airportImportCandidate> lst)
     {
+        if (lst == null)
+            throw new ArgumentNullException(nameof(lst));
         StringBuilder sbCodes = new StringBuilder();
 
         lst.ForEach((aic) =>
             {
-                sbCodes.AppendFormat(" {0} ", aic.FAA);
-                sbCodes.AppendFormat(" {0} ", aic.IATA);
-                sbCodes.AppendFormat(" {0} ", aic.ICAO);
+                sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.FAA);
+                sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.IATA);
+                sbCodes.AppendFormat(CultureInfo.InvariantCulture, " {0} ", aic.ICAO);
             });
         AirportList al = new AirportList(sbCodes.ToString());
         lst.ForEach((aic) => { aic.CheckStatus(al); });
@@ -363,7 +361,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
         public void InitFromHeader(string[] rgCols)
         {
             if (rgCols == null)
-                throw new ArgumentNullException("rgCols");
+                throw new ArgumentNullException(nameof(rgCols));
 
             for (int i = 0; i < rgCols.Length; i++)
             {
@@ -414,14 +412,9 @@ public partial class Member_EditAirports : System.Web.UI.Page
             {
                 ic.InitFromHeader(csvReader.GetCSVLine(true));
             }
-            catch (CSVReaderInvalidCSVException ex)
+            catch (Exception ex) when (ex is CSVReaderInvalidCSVException || ex is MyFlightbookException)
             {
-                lblUploadErr.Text = ex.Message;
-                return;
-            }
-            catch (MyFlightbookException ex)
-            {
-                lblUploadErr.Text = ex.Message;
+                lblUploadErr.Text = HttpUtility.HtmlEncode(ex.Message);
                 return;
             }
 
@@ -466,8 +459,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
                 if (aic.LatLong == null)
                 {
                     aic.LatLong = new LatLong();
-                    double d;
-                    if (double.TryParse(szLat, out d))
+                    if (double.TryParse(szLat, out double d))
                         aic.LatLong.Latitude = d;
                     else
                         aic.LatLong.Latitude = new DMSAngle(szLat).Value;
@@ -489,6 +481,90 @@ public partial class Member_EditAirports : System.Web.UI.Page
             gvImportResults.DataSource = lst;
             gvImportResults.DataBind();
             pnlImportResults.Visible = true;
+        }
+    }
+
+    protected void btnBulkImport_Click(object sender, EventArgs e)
+    {
+        if (!fileUploadAirportList.HasFile)
+            return;
+
+        Dictionary<int, int> columnMap = new Dictionary<int, int>();
+        const int iColID = 0;
+        const int iColName = 1;
+        const int iColType = 2;
+        const int iColSourceUserName = 3;
+        const int iColLat = 4;
+        const int iColLon = 5;
+        const int iColPreferred = 6;
+
+        using (CSVReader csvReader = new CSVReader(fileUploadAirportList.FileContent))
+        {
+            try
+            {
+                string[] rgheaders = csvReader.GetCSVLine(true);
+
+                for (int i = 0; i < rgheaders.Length; i++)
+                {
+                    switch (rgheaders[i].ToUpperInvariant())
+                    {
+                        case "AIRPORTID":
+                            columnMap[iColID] = i;
+                            break;
+                        case "FACILITYNAME":
+                            columnMap[iColName] = i;
+                            break;
+                        case "TYPE":
+                            columnMap[iColType] = i;
+                            break;
+                        case "SOURCEUSERNAME":
+                            columnMap[iColSourceUserName] = i;
+                            break;
+                        case "LATITUDE":
+                            columnMap[iColLat] = i;
+                            break;
+                        case "LONGITUDE":
+                            columnMap[iColLon] = i;
+                            break;
+                        case "PREFERRED":
+                            columnMap[iColPreferred] = i;
+                            break;
+                    }
+                }
+
+                if (!columnMap.ContainsKey(iColID) || !columnMap.ContainsKey(iColName) || !columnMap.ContainsKey(iColType) || !columnMap.ContainsKey(iColLat) || !columnMap.ContainsKey(iColLon))
+                    throw new MyFlightbookValidationException("File doesn't have all required columns.");
+
+                bool fHasPreferred = columnMap.ContainsKey(iColPreferred);
+                bool fHasUser = columnMap.ContainsKey(iColSourceUserName);
+
+                int cAirportsAdded = 0;
+                string[] rgCols;
+                while ((rgCols = csvReader.GetCSVLine()) != null)
+                {
+                    AdminAirport ap = new AdminAirport()
+                    {
+                        Code = rgCols[columnMap[iColID]],
+                        Name = rgCols[columnMap[iColName]],
+                        LatLong = new LatLong(Convert.ToDouble(rgCols[columnMap[iColLat]], CultureInfo.CurrentCulture), Convert.ToDouble(rgCols[columnMap[iColLon]], CultureInfo.CurrentCulture)),
+                        FacilityTypeCode = rgCols[columnMap[iColType]],
+                        UserName = fHasUser ? rgCols[columnMap[iColSourceUserName]] : string.Empty
+                    };
+
+                    if (!ap.FCommit(true, true))
+                        throw new MyFlightbookException(ap.ErrorText);
+
+                    lblBulkImportResults.Text = String.Format(CultureInfo.CurrentCulture, "{0} airports added", ++cAirportsAdded);
+
+                    if (fHasPreferred && !String.IsNullOrEmpty(rgCols[columnMap[iColPreferred]]) && Int32.TryParse(rgCols[columnMap[iColPreferred]], NumberStyles.Integer, CultureInfo.CurrentCulture, out int preferred) && preferred != 0)
+                        ap.SetPreferred(true);
+                }
+
+            }
+            catch (Exception ex) when (ex is CSVReaderInvalidCSVException || ex is MyFlightbookException)
+            {
+                lblUploadErr.Text = HttpUtility.HtmlEncode(ex.Message);
+            }
         }
     }
 
@@ -551,7 +627,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
     protected void gvImportResults_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             airportImportCandidate aic = (airportImportCandidate) e.Row.DataItem;
@@ -583,7 +659,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
     protected void gvImportResults_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         GridViewRow grow = (GridViewRow)((WebControl)e.CommandSource).NamingContainer;
         int iRow = grow.RowIndex;
 
@@ -665,22 +741,22 @@ public partial class Member_EditAirports : System.Web.UI.Page
         pnlDupeAirports.Visible = true;
         pnlMyAirports.Visible = false;
     }
-    protected string DeleteDupeScript(string user, string codeDelete, string codeMap, string type)
+    protected static string DeleteDupeScript(string user, string codeDelete, string codeMap, string type)
     { 
         return String.Format(CultureInfo.InvariantCulture, "deleteDupeUserAirport('{0}', '{1}', '{2}', '{3}', this); return false;", user, codeDelete, codeMap, type);
     }
 
-    protected string SetPreferredScript(string szCode, string szType)
+    protected static string SetPreferredScript(string szCode, string szType)
     {
         return String.Format(CultureInfo.InvariantCulture, "javascript:setPreferred('{0}', '{1}', this); return false;", szCode, szType);
     }
 
-    protected string MakeNativeScript(string szCode, string szType)
+    protected static string MakeNativeScript(string szCode, string szType)
     {
         return String.Format(CultureInfo.InvariantCulture, "javascript:makeNative('{0}', '{1}', this); return false; ", szCode, szType);
     }
 
-    protected string MergeWithScript(string szCodeTarget, string szTypeTarget, string szCodeSrc)
+    protected static string MergeWithScript(string szCodeTarget, string szTypeTarget, string szCodeSrc)
     {
         return String.Format(CultureInfo.InvariantCulture, "javascript:mergeWith('{0}', '{1}', '{2}', this); return false;", szCodeTarget, szTypeTarget, szCodeSrc);
     }

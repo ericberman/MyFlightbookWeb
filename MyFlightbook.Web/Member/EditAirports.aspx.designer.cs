@@ -382,6 +382,42 @@ public partial class Member_EditAirports
     protected global::System.Web.UI.WebControls.Button btnImport;
 
     /// <summary>
+    /// btnBulkImport control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnBulkImport;
+
+    /// <summary>
+    /// mfbTooltip2 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbTooltip mfbTooltip2;
+
+    /// <summary>
+    /// confirmBulkImport control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.ConfirmButtonExtender confirmBulkImport;
+
+    /// <summary>
+    /// lblBulkImportResults control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblBulkImportResults;
+
+    /// <summary>
     /// UpdateProgress1 control.
     /// </summary>
     /// <remarks>
