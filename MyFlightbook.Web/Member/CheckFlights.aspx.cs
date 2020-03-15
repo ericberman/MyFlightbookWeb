@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -88,6 +89,7 @@ namespace MyFlightbook.Web.Member
             IEnumerable<FlightWithIssues> flightsWithIssues = fl.CheckFlights(rgle, Page.User.Identity.Name, selectedOptions, mfbDateLastCheck.Date);
             gvFlights.DataSource = flightsWithIssues;
             gvFlights.DataBind();
+            lblSummary.Text = String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.SummaryFlightsFound, rgle.Count(), flightsWithIssues.Count());
 
             Response.Cookies[szCookieLastCheck].Value = DateTime.Now.YMDString();
             Response.Cookies[szCookieLastCheck].Expires = DateTime.Now.AddYears(5);

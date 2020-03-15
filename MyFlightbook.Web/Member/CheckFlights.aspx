@@ -33,7 +33,7 @@
                 </span>
             </asp:Panel>
         </div>
-        <p><asp:Button ID="btnCheckAll" runat="server" Text="<%$ Resources:FlightLint, CheckFlightsBegin %>" OnClick="btnCheckAll_Click" /></p>
+        <p><asp:Button ID="btnCheckAll" runat="server" Text="<%$ Resources:FlightLint, CheckFlightsBegin %>" OnClick="btnCheckAll_Click" /> <asp:Label ID="lblSummary" runat="server"></asp:Label></p>
     </asp:Panel>
     <div><asp:Label ID="lblErr" runat="server" CssClass="error" EnableViewState="false" ></asp:Label></div>
     <asp:GridView ID="gvFlights" runat="server" ShowHeader="false" GridLines="None" AutoGenerateColumns="false" Font-Size="8pt">

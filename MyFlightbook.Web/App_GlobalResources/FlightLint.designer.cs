@@ -286,6 +286,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} flight(s) checked; {1} had issues..
+        /// </summary>
+        internal static string SummaryFlightsFound {
+            get {
+                return ResourceManager.GetString("SummaryFlightsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check Flights.
         /// </summary>
         internal static string TitleCheckFlights {
