@@ -93,6 +93,8 @@ namespace MyFlightbook.Schedule
 
         public ScheduledEvent(MySqlDataReader dr, TimeZoneInfo tz)
         {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
             LocalTimeZone = tz;
             InitFromDataReader(dr);
         }

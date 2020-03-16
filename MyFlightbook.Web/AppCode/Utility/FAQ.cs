@@ -9,7 +9,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2018 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -73,7 +73,7 @@ namespace MyFlightbook
         protected FAQItem(MySqlDataReader dr) : this()
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             idFAQ = Convert.ToInt32(dr["idFAQ"], CultureInfo.InvariantCulture);
             Category = Branding.ReBrand(dr["Category"].ToString());
             Question = Branding.ReBrand(dr["Question"].ToString());
@@ -186,7 +186,7 @@ namespace MyFlightbook
         public static IEnumerable<FAQGroup> CategorizeFAQItems(IEnumerable<FAQItem> lstIn)
         {
             if (lstIn == null)
-                return new FAQGroup[0];
+                return Array.Empty<FAQGroup>();
 
             Dictionary<string, FAQGroup> dict = new Dictionary<string, FAQGroup>();
             foreach (FAQItem fi in lstIn)

@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -126,12 +126,12 @@ namespace MyFlightbook.Encryptors
                         }
                     }
                 }
-                catch (FormatException)
+                catch (Exception ex) when (ex is FormatException)
                 {
                     // Should never happen - implies bogus base64 data, so return empty string
                     return string.Empty;
                 }
-                catch (CryptographicException)
+                catch (Exception ex) when (ex is CryptographicException)
                 {
                     DecryptedData = fUseFallbackOnFail ? Decrypt(TextToBeDecrypted, m_szPassFallback, false) : TextToBeDecrypted;
                 }

@@ -53,7 +53,7 @@ namespace MyFlightbook
         /// </summary>
         public static void Init()
         {
-            IsShunted = (ConfigurationManager.AppSettings[keyShuntState].ToString().CompareOrdinalIgnoreCase("Shunted") == 0);
+            IsShunted = (ConfigurationManager.AppSettings[keyShuntState].CompareOrdinalIgnoreCase("Shunted") == 0);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace MyFlightbook
         /// </summary>
         public static string ShuntMessage
         {
-            get { return Branding.ReBrand(ConfigurationManager.AppSettings[keyShuntMsg].ToString(), Branding.CurrentBrand); }
+            get { return Branding.ReBrand(ConfigurationManager.AppSettings[keyShuntMsg], Branding.CurrentBrand); }
         }
     }
 
@@ -115,7 +115,7 @@ namespace MyFlightbook
                     System.Threading.Thread.CurrentThread.CurrentCulture = ciRequested;
                     System.Threading.Thread.CurrentThread.CurrentUICulture = ciRequested;
                 }
-                catch (CultureNotFoundException)
+                catch (Exception ex) when (ex is CultureNotFoundException)
                 {
                     try
                     {
@@ -124,8 +124,7 @@ namespace MyFlightbook
                         if (rgsz.Length == 3)
                             SetCulture(String.Format(CultureInfo.InvariantCulture, "{0}-{1}", rgsz[0], rgsz[2]));
                     }
-                    catch (CultureNotFoundException) { }
-                    catch (ArgumentNullException) { }
+                    catch (Exception ex2) when (ex2 is CultureNotFoundException || ex2 is ArgumentNullException) { }
                 }
             }
         }
@@ -385,6 +384,9 @@ namespace MyFlightbook
                 if (brand == null)
                     brand = Branding.CurrentBrand;
 
+                if (szMessage == null)
+                    throw new ArgumentNullException(nameof(szMessage));
+
                 using (MailMessage msg = new MailMessage())
                 {
                     msg.Subject = szSubject;
@@ -412,7 +414,7 @@ namespace MyFlightbook
                 MyFlightbookException mfbEx = new MyFlightbookException("Invalid Operation in NotifyUser", ex);
                 MyFlightbookException.NotifyAdminException(mfbEx);
             }
-            catch (System.Net.Mail.SmtpException)
+            catch (Exception ex) when (ex is SmtpException)
             {
                 // Don't re-throw or do anything that would cause new mail to be sent because that could loop.  Just fail silently and eat this.
             }
@@ -506,11 +508,7 @@ namespace MyFlightbook
                 else
                     return o;
             }
-            catch (IndexOutOfRangeException)
-            {
-                return defObj;
-            }
-            catch (NullReferenceException)
+            catch (Exception ex) when (ex is IndexOutOfRangeException || ex is NullReferenceException)
             {
                 return defObj;
             }

@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -71,10 +71,7 @@ public partial class Public_SignEntry : System.Web.UI.Page
             lblErr.Text = String.Empty;
             string szAuthToken = util.GetStringParam(Request, "auth");
             if (!String.IsNullOrEmpty(szAuthToken))
-            {
-                using (MFBWebService ws = new MFBWebService())
-                    Username = ws.GetEncryptedUser(szAuthToken);
-            }
+                Username = MFBWebService.GetEncryptedUser(szAuthToken);
 
             bool fIsLocalOrSecure = MFBWebService.CheckSecurity(Request);
 
@@ -154,7 +151,7 @@ public partial class Public_SignEntry : System.Web.UI.Page
     protected void chooseInstructor(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         string szInstructor = e.CommandArgument.ToString();
         if (String.IsNullOrEmpty(szInstructor))

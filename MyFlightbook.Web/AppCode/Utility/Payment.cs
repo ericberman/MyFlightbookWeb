@@ -166,6 +166,8 @@ namespace MyFlightbook.Payments
 
         protected Payment(MySqlDataReader dr) : this()
         {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
             InitFromDatareader(dr);
         }
 
@@ -1149,7 +1151,10 @@ ORDER BY dateEarned ASC ";
         #region IComparable
         public int CompareTo(object obj)
         {
-            return Year.CompareTo(((YearlyPayments)obj).Year);
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+            YearlyPayments yp = obj as YearlyPayments;
+            return Year.CompareTo(yp.Year);
         }
         public override bool Equals(object obj)
         {
@@ -1198,7 +1203,7 @@ ORDER BY dateEarned ASC ";
 
         public static bool operator >(YearlyPayments left, YearlyPayments right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(YearlyPayments left, YearlyPayments right)

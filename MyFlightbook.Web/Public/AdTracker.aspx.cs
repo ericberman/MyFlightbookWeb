@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using MyFlightbook.SponsoredAd;
+﻿using MyFlightbook.SponsoredAd;
+using System;
 using System.Globalization;
+
+/******************************************************
+ * 
+ * Copyright (c) 2016-2020 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
 
 public partial class Public_AdTracker : System.Web.UI.Page
 {
@@ -15,7 +17,7 @@ public partial class Public_AdTracker : System.Web.UI.Page
         {
             int idAd = -1;
             try { idAd = Convert.ToInt32(Request.PathInfo.Substring(1), CultureInfo.InvariantCulture); }
-            catch (FormatException) { }
+            catch (Exception ex) when (ex is FormatException) { }
 
             if (idAd > 0)
             {
@@ -23,7 +25,7 @@ public partial class Public_AdTracker : System.Web.UI.Page
                 if (ad != null)
                 {
                     ad.AddClick();
-                    GoogleAnalytics1.RedirURL = ad.TargetURL;
+                    GoogleAnalytics1.RedirURL = ad.TargetLink;
                 }
             }
         }

@@ -553,6 +553,8 @@ namespace MyFlightbook
         /// <returns></returns>
         public static string IndicateUTCOrCustomTimeZone(this string szLabel, TimeZoneInfo tz)
         {
+            if (szLabel == null)
+                throw new ArgumentNullException(nameof(szLabel));
             return (tz == null || tz.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0) ? szLabel : szLabel.Replace("UTC", Resources.LocalizedText.CustomTimeZone);
         }
 
@@ -800,6 +802,8 @@ namespace MyFlightbook
         /// <returns></returns>
         public static async Task<HttpResponseMessage> PatchAsync(this HttpClient client, Uri requestUri, HttpContent iContent)
         {
+            if (client == null)
+                throw new ArgumentNullException(nameof(client));
             var method = new HttpMethod("PATCH");
             using (var request = new HttpRequestMessage(method, requestUri) { Content = iContent }) 
             {

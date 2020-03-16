@@ -189,7 +189,7 @@ namespace MyFlightbook
             return false;
         }
 
-        public string GetEncryptedUser(string szAuthUserToken)
+        public static string GetEncryptedUser(string szAuthUserToken)
         {
             Encryptors.WebServiceEncryptor e = new Encryptors.WebServiceEncryptor();
 
@@ -385,6 +385,8 @@ namespace MyFlightbook
         [WebMethod]
         public void UpdateMaintenanceForAircraft(string szAuthUserToken, Aircraft ac)
         {
+            if (ac == null)
+                throw new ArgumentNullException(nameof(ac));
             UpdateMaintenanceForAircraftWithFlagsInternal(szAuthUserToken, ac);
         }
 
@@ -410,6 +412,8 @@ namespace MyFlightbook
         [WebMethod]
         public void UpdateMaintenanceForAircraftWithFlagsAndNotes(string szAuthUserToken, Aircraft ac)
         {
+            if (ac == null)
+                throw new ArgumentNullException(nameof(ac));
             UpdateMaintenanceForAircraftWithFlagsInternal(szAuthUserToken, ac, true, true);
         }
 
@@ -893,16 +897,17 @@ namespace MyFlightbook
                 {
                     using (FlightData fd = new FlightData())
                     {
-                        MemoryStream ms = new MemoryStream();
-
+                        MemoryStream ms = null;
                         try
                         {
-                            if (fd.ParseFlightData(le.FlightData) && fd.HasLatLongInfo)
-                                fd.WriteGPXData(ms);
-                            ms.Seek(0, SeekOrigin.Begin);
+                            ms = new MemoryStream();
                             using (StreamReader sr = new StreamReader(ms))
                             {
                                 ms = null;  // for CA2202
+                                MemoryStream bs = sr.BaseStream as MemoryStream;
+                                if (fd.ParseFlightData(le.FlightData) && fd.HasLatLongInfo)
+                                fd.WriteGPXData(bs);
+                                bs.Seek(0, SeekOrigin.Begin);
                                 szResult = sr.ReadToEnd();
                             }
                         }
@@ -1357,7 +1362,7 @@ namespace MyFlightbook
         {
             string[] rgResultDefault = Array.Empty<string>();
 
-            if (String.IsNullOrEmpty(contextKey))
+            if (String.IsNullOrEmpty(contextKey) || prefixText == null)
                 return rgResultDefault;
 
             string[] rgsz = contextKey.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
@@ -1375,7 +1380,7 @@ namespace MyFlightbook
 
             string szSearch = prefixText.ToUpperInvariant();
 
-            lst = lst.FindAll(sz => sz.ToUpperInvariant().StartsWith(szSearch));
+            lst = lst.FindAll(sz => sz.ToUpperInvariant().StartsWith(szSearch, StringComparison.InvariantCulture));
             if (lst.Count > count && count >= 1)
                 lst.RemoveRange(count - 1, lst.Count - count);
 

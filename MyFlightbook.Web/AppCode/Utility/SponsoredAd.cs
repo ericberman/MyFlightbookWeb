@@ -7,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -32,7 +32,7 @@ namespace MyFlightbook.SponsoredAd
         /// <summary>
         /// URL for clicks
         /// </summary>
-        public string TargetURL { get; set; }
+        public string TargetLink { get; set; }
 
         /// <summary>
         /// Name of the image file
@@ -61,11 +61,13 @@ namespace MyFlightbook.SponsoredAd
         #region object creation
         public SponsoredAd()
         {
-            Name = TargetURL = ImageName = string.Empty;
+            Name = TargetLink = ImageName = string.Empty;
         }
 
         public SponsoredAd(MySqlDataReader dr) : this()
         {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
             InitFromDataReader(dr);
         }
 
@@ -73,7 +75,7 @@ namespace MyFlightbook.SponsoredAd
         {
             ID = Convert.ToInt32(dr["idSponsoredAds"], CultureInfo.InvariantCulture);
             Name = (string)dr["Name"];
-            TargetURL = (string)dr["TargetURL"];
+            TargetLink = (string)dr["TargetURL"];
             ImageName = (string)dr["ImageName"];
             ImpressionCount = Convert.ToInt32(dr["ImpressionCount"], CultureInfo.InvariantCulture);
             ClickCount = Convert.ToInt32(dr["ClickCount"], CultureInfo.InvariantCulture);

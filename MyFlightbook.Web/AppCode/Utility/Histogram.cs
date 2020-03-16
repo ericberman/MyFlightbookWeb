@@ -133,6 +133,8 @@ namespace MyFlightbook.Histogram
         #region Object creation
         public void InitColumns(IEnumerable<HistogramableValue> columns)
         {
+            if (columns == null)
+                throw new ArgumentNullException(nameof(columns));
             foreach (HistogramableValue column in columns)
                 RunningTotals[column.DataField] = Values[column.DataField] = 0.0;
         }
@@ -152,7 +154,12 @@ namespace MyFlightbook.Histogram
         #region IComparable
         public int CompareTo(object obj)
         {
-            return OrdinalValue.CompareTo(((Bucket) obj).OrdinalValue);
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+            Bucket b = obj as Bucket;
+            if (b == null)
+                throw new InvalidCastException(nameof(b));
+            return OrdinalValue.CompareTo(b.OrdinalValue);
         }
 
         public override bool Equals(object obj)
@@ -207,7 +214,7 @@ namespace MyFlightbook.Histogram
 
         public static bool operator >(Bucket left, Bucket right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(Bucket left, Bucket right)
@@ -327,6 +334,9 @@ namespace MyFlightbook.Histogram
         /// <returns></returns>
         public DataTable ToDataTable(HistogramManager hm)
         {
+            if (hm == null)
+                throw new ArgumentNullException(nameof(hm));
+
             DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture };
 
             // Add two known columns: bucket name and bucket HREf.
@@ -509,6 +519,8 @@ namespace MyFlightbook.Histogram
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
         {
+            if (b == null)
+                throw new ArgumentNullException(nameof(b));
             DateTime d = (DateTime) b.OrdinalValue;
             return new Dictionary<string, string>()
             {
@@ -584,6 +596,8 @@ namespace MyFlightbook.Histogram
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
         {
+            if (b == null)
+                throw new ArgumentNullException(nameof(b));
             DateTime d = (DateTime)b.OrdinalValue;
             return new Dictionary<string, string>()
             {
@@ -663,6 +677,8 @@ namespace MyFlightbook.Histogram
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
         {
+            if (b == null)
+                throw new ArgumentNullException(nameof(b));
             DateTime d = (DateTime)b.OrdinalValue;
             return new Dictionary<string, string>()
             {
@@ -723,6 +739,8 @@ namespace MyFlightbook.Histogram
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
         {
+            if (b == null)
+                throw new ArgumentNullException(nameof(b));
             DateTime d = (DateTime)b.OrdinalValue;
             return new Dictionary<string, string>()
             {
@@ -842,6 +860,8 @@ namespace MyFlightbook.Histogram
 
         public override IDictionary<string, string> ParametersForBucket(Bucket b)
         {
+            if (b == null)
+                throw new ArgumentNullException(nameof(b));
             return new Dictionary<string, string>() { {SearchParam ?? string.Empty,  (string) b.OrdinalValue } };
         }
 
@@ -873,6 +893,8 @@ namespace MyFlightbook.Histogram
 
         protected override IComparable KeyForValue(IComparable o)
         {
+            if (o == null)
+                throw new ArgumentNullException(nameof(o));
             return ((string)o).ToUpper(CultureInfo.CurrentCulture);
         }
     }

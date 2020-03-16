@@ -18,7 +18,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -59,7 +59,7 @@ namespace OAuthAuthorizationServer.Services
                 case MFBOAuthScope.none:
                     return string.Empty;
                 default:
-                    throw new ArgumentOutOfRangeException("scope");
+                    throw new ArgumentOutOfRangeException(nameof(scope));
             }
         }
 
@@ -91,8 +91,7 @@ namespace OAuthAuthorizationServer.Services
                 return lst;
             foreach (string sz in lstsc)
             {
-                MFBOAuthScope sc;
-                if (Enum.TryParse<MFBOAuthScope>(sz, out sc) && Enum.IsDefined(typeof(MFBOAuthScope), sc))
+                if (Enum.TryParse<MFBOAuthScope>(sz, out MFBOAuthScope sc) && Enum.IsDefined(typeof(MFBOAuthScope), sc))
                     lst.Add(sc);
                 else
                     throw new ArgumentOutOfRangeException(sz);
@@ -320,9 +319,7 @@ namespace OAuthAuthorizationServer.Services
         #region Constructor
         public OAuthServiceCall(HttpRequest request)
         {
-            if (request == null)
-                throw new ArgumentNullException("request");
-            OriginalRequest = request;
+            OriginalRequest = request ?? throw new ArgumentNullException(nameof(request));
             ServiceCall = ServiceFromString(request.PathInfo);
             ResponseCallback = util.GetStringParam(request, "callback");
             ResultFormat = (util.GetIntParam(request, "json", 0) != 0) ? (String.IsNullOrEmpty(ResponseCallback) ? OutputFormat.JSON : OutputFormat.JSONP) : OutputFormat.XML;
@@ -351,7 +348,7 @@ namespace OAuthAuthorizationServer.Services
         protected string GetOptionalParam(string name)
         {
             if (String.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             string s = OriginalRequest[name];
             return s;
         }
@@ -368,7 +365,7 @@ namespace OAuthAuthorizationServer.Services
         {
             string s = GetOptionalParam(name);
             if (String.IsNullOrEmpty(s))
-                return default(T);
+                return default;
             return JsonConvert.DeserializeObject<T>(s);
         }
 
@@ -383,7 +380,7 @@ namespace OAuthAuthorizationServer.Services
             string szFormat = GetOptionalParam("format") ?? "Native";
             LogbookEntry le = (szFormat.CompareCurrentCultureIgnoreCase("LTP") == 0) ?
                 JsonConvert.DeserializeObject<LogTenPro>(GetRequiredParam("flight"), new JsonConverter[] { new MFBDateTimeConverter() }).ToLogbookEntry() :
-                le = GetRequiredParam<LogbookEntry>("le");
+                GetRequiredParam<LogbookEntry>("le");
             WriteObject(s, mfbSvc.CommitFlightWithOptions(GeneratedAuthToken, le, GetRequiredParam<PostingOptions>("po")));
         }
         #endregion
@@ -394,7 +391,8 @@ namespace OAuthAuthorizationServer.Services
         /// <param name="s">The output stream to which to write</param>
         public void Execute(Stream s)
         {
-            string szResult = string.Empty;
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
 
             CheckAuth();
 
@@ -523,10 +521,7 @@ namespace OAuthAuthorizationServer.Services
                     }
                 }
 
-                using (MFBWebService ws = new MFBWebService())
-                {
-                    szUser = ws.GetEncryptedUser(szAuth);
-                }
+                szUser = MFBWebService.GetEncryptedUser(szAuth);
 
                 if (string.IsNullOrEmpty(szUser))
                     throw new MyFlightbookException(Resources.WebService.errBadAuth);

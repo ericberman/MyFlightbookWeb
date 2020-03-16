@@ -49,7 +49,7 @@ namespace MyFlightbook.Clubs
         /// Expired = inactive due to trial period ending.  Like inactive, but paying will re-activate.
         /// Inactive = inactive, period, end of story (i.e., paying doesn't reactivate it)
         /// </summary>
-        public enum ClubStatus { None, OK = None, Promotional, Expired, Inactive }
+        public enum ClubStatus { OK, Promotional, Expired, Inactive }
 
         #region properties
         /// <summary>
@@ -693,6 +693,9 @@ namespace MyFlightbook.Clubs
 
         public void NotifyAdd(ScheduledEvent s, string addingUser)
         {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
             Profile pfCreator = Profile.GetUser(addingUser);
 
             List<Profile> lst = new List<Profile>();
@@ -727,6 +730,11 @@ namespace MyFlightbook.Clubs
             // No notification if no change was actually made
             if (sOriginal == sNew)
                 return;
+
+            if (sOriginal == null)
+                throw new ArgumentNullException(nameof(sOriginal));
+            if (sNew == null)
+                throw new ArgumentNullException(nameof(sNew));
 
             Profile pfOwner = Profile.GetUser(sOriginal.OwningUser);
 
@@ -770,6 +778,9 @@ namespace MyFlightbook.Clubs
 
         public void NotifyOfDelete(ScheduledEvent s, string deletingUser)
         {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
             List<Profile> lst = new List<Profile>();
             // Add people to notify per club policy
             switch (DeleteNotifications)
@@ -1445,7 +1456,7 @@ GROUP BY idaircraft");
 
         public ClubInsuranceReportItem(Profile user) : this()
         {
-            User = user;
+            User = user ?? throw new ArgumentNullException(nameof(user));
             PilotStatusItems = user.WarningsForUser();
         }
         #endregion
