@@ -413,7 +413,7 @@ namespace MyFlightbook.Lint
                 LintOptions.DateTimeIssues, Resources.FlightLint.warningPreviousFlightEndsAfterStart);
 
             CustomFlightProperty cfpBlockOut = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut];
-            AddConditionalIssue(cfpBlockOut != null && previousFlight.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockIn) && cfpBlockOut.DateValue.CompareTo(previousFlight.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn].DateValue) > 0,
+            AddConditionalIssue(cfpBlockOut != null && previousFlight.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockIn) && cfpBlockOut.DateValue.CompareTo(previousFlight.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn].DateValue) < 0,
                 LintOptions.DateTimeIssues, Resources.FlightLint.warningPreviousFlightBlockEndAfterStart);
 
             // Look for a new duty start when a prior period is still open.
