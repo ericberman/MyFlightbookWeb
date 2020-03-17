@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -32,7 +32,7 @@ public partial class Controls_mfbAirportServices : System.Web.UI.UserControl
     public void SetAirports(IEnumerable<airport> rgAirports)
     {
         if (rgAirports == null)
-            throw new ArgumentNullException("rgAirports");
+            throw new ArgumentNullException(nameof(rgAirports));
 
         // dedupe and sort the airports; eliminate anything that isn't an airport
         List<airport> lst = new List<airport>(rgAirports);
@@ -58,7 +58,7 @@ public partial class Controls_mfbAirportServices : System.Web.UI.UserControl
     protected string ZoomLink(airport ap)
     {
         if (ap == null)
-            throw new ArgumentNullException("ap");
+            throw new ArgumentNullException(nameof(ap));
         return String.Format(System.Globalization.CultureInfo.InvariantCulture, "javascript:{0}.gmap.setCenter(new google.maps.LatLng({1}, {2}));{0}.gmap.setZoom(14);", GoogleMapID, ap.LatLong.LatitudeString, ap.LatLong.LongitudeString);
     }
 
@@ -70,7 +70,7 @@ public partial class Controls_mfbAirportServices : System.Web.UI.UserControl
     protected void RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             HyperLink lnkZoom = (HyperLink)e.Row.FindControl("lnkZoom");

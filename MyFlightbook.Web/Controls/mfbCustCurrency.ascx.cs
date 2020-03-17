@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2018 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -101,14 +101,13 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
     protected void valRangeCheckForTimeFrame_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         if (SelectedTimespanType.IsAligned())
         {
             args.IsValid = true;
             return;
         }
-        int i;
-        if (!int.TryParse(txtTimeFrame.Text, out i))
+        if (!int.TryParse(txtTimeFrame.Text, out int i))
             args.IsValid = false;
         if (i <= 0 || i > 1000)
             args.IsValid = false;
@@ -117,7 +116,7 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
     protected void valRangeCheckEvents_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         if (decMinEvents.Value <= 0 || decMinEvents.Value > 2000)
             args.IsValid = false;
     }
@@ -125,7 +124,7 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
     protected void valCheckEventSelected_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         if (Convert.ToInt32(cmbEventTypes.SelectedValue, CultureInfo.InvariantCulture) < 0)
             args.IsValid = false;
     }
@@ -213,12 +212,13 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
 
     protected void FromForm()
     {
-        CustomCurrency cc = new CustomCurrency();
-        cc.ID = Convert.ToInt32(hdnCCId.Value, CultureInfo.InvariantCulture);
-        cc.UserName = Page.User.Identity.Name;
-        cc.DisplayName = txtRuleName.Text.Trim();
-        CustomCurrency.LimitType lt = CustomCurrency.LimitType.Minimum;
-        if (Enum.TryParse<CustomCurrency.LimitType>(cmbLimitType.SelectedValue, out lt))
+        CustomCurrency cc = new CustomCurrency
+        {
+            ID = Convert.ToInt32(hdnCCId.Value, CultureInfo.InvariantCulture),
+            UserName = Page.User.Identity.Name,
+            DisplayName = txtRuleName.Text.Trim()
+        };
+        if (Enum.TryParse<CustomCurrency.LimitType>(cmbLimitType.SelectedValue, out CustomCurrency.LimitType lt))
             cc.CurrencyLimitType = lt;
         cc.RequiredEvents = decMinEvents.Value;
         cc.EventType = (CustomCurrency.CustomCurrencyEventType)Convert.ToInt32(cmbEventTypes.SelectedValue, CultureInfo.InvariantCulture);
@@ -266,10 +266,10 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         Commit();
     }
 
-    protected IEnumerable<int> IDsFromList(ListControl l)
+    protected static IEnumerable<int> IDsFromList(ListControl l)
     {
         if (l == null)
-            throw new ArgumentNullException("l");
+            throw new ArgumentNullException(nameof(l));
         List<int> lst = new List<int>();
         foreach (ListItem li in l.Items)
             if (li.Selected)

@@ -1,15 +1,15 @@
-﻿using System;
+﻿using MyFlightbook;
+using MyFlightbook.Telemetry;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Telemetry;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2015 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -35,10 +35,10 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
     #endregion
 
     #region ViewState keys
-    private string szVSKeyXVals = "XValArrayVS";
-    private string szVSKeyYVals = "YValArrayVS";
-    private string szVSKeyY2Vals = "Y2ValArrayVS";
-    private string szVSTickSpacing = "tickspacingVS";
+    private const string szVSKeyXVals = "XValArrayVS";
+    private const string szVSKeyYVals = "YValArrayVS";
+    private const string szVSKeyY2Vals = "Y2ValArrayVS";
+    private const string szVSTickSpacing = "tickspacingVS";
     #endregion
 
     public ArrayList XVals
@@ -260,7 +260,7 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
                 return String.Empty;
         }
     }
-    public GoogleColumnDataType GoogleTypeFromKnownColumnType(KnownColumnTypes kct)
+    public static GoogleColumnDataType GoogleTypeFromKnownColumnType(KnownColumnTypes kct)
     {
         switch (kct)
         {

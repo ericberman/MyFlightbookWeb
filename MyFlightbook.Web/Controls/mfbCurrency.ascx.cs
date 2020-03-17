@@ -16,12 +16,12 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbCurrency : System.Web.UI.UserControl
 {
-    protected string m_szOKStyle = "currencyok";
-    protected string m_szNotCurrentStyle = "currencyexpired";
-    protected string m_szCurrencyDueStyle = "currencynearlydue";
-    protected string m_szCurrencyNoDateStyle = "currencynodate";
-    protected string m_szCurrencyGap = "currencygap";
-    protected string m_szCurrencyLabel = "currencylabel";
+    private string m_szOKStyle = "currencyok";
+    private string m_szNotCurrentStyle = "currencyexpired";
+    private string m_szCurrencyDueStyle = "currencynearlydue";
+    private string m_szCurrencyNoDateStyle = "currencynodate";
+    private string m_szCurrencyGap = "currencygap";
+    private string m_szCurrencyLabel = "currencylabel";
 
     #region Properties
 

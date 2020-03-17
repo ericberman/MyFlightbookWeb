@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2019 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -54,7 +54,7 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
     /// </summary>
     public string OrderString { get; set; }
 
-    protected string FormatTimeSpan(object o1, object o2)
+    protected static string FormatTimeSpan(object o1, object o2)
     {
         if (!(o1 is DateTime && o2 is DateTime))
             return string.Empty;
@@ -142,8 +142,7 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
                                 // identify the requested front columns
                                 foreach (string szcol in rgszCols)
                                 {
-                                    int col = 0;
-                                    if (int.TryParse(szcol, NumberStyles.Integer, CultureInfo.InvariantCulture, out col))
+                                    if (int.TryParse(szcol, NumberStyles.Integer, CultureInfo.InvariantCulture, out int col))
                                     {
                                         if (col < gvFlightLogs.Columns.Count)
                                             alCols.Add(col);
@@ -213,7 +212,7 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
     public void gvFlightLogs_RowDataBound(Object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             int idFlight = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "idflight"), CultureInfo.InvariantCulture);
@@ -247,7 +246,7 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
     public byte[] RawData(string szUser)
     {
         if (String.IsNullOrEmpty(szUser))
-            return new byte[0];
+            return Array.Empty<byte>();
         else
         {
             User = szUser;

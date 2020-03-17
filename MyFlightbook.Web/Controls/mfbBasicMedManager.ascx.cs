@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -58,7 +58,7 @@ public partial class Controls_mfbBasicMedManager : System.Web.UI.UserControl
     protected void gvBasicMedEvents_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             Controls_mfbImageList il = (Controls_mfbImageList)e.Row.FindControl("ilBasicMed");
@@ -87,7 +87,7 @@ public partial class Controls_mfbBasicMedManager : System.Web.UI.UserControl
     protected void gvBasicMedEvents_RowEditing(object sender, GridViewEditEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         gvBasicMedEvents.EditIndex = e.NewEditIndex;
         RefreshBasicMedEvents();
     }
@@ -101,7 +101,7 @@ public partial class Controls_mfbBasicMedManager : System.Web.UI.UserControl
     protected void gvBasicMedEvents_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         // We're only allowing image editing, at least for now.
         Controls_mfbMultiFileUpload mfu = (Controls_mfbMultiFileUpload)gvBasicMedEvents.Rows[e.RowIndex].FindControl("mfuBasicMedImages");

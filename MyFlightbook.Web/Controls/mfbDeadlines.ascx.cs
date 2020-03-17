@@ -3,12 +3,13 @@ using MyFlightbook.FlightCurrency;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2019 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -108,8 +109,7 @@ public partial class Controls_mfbDeadlines : UserControl
             {
                 dc.FDelete();
                 ForceRefresh();
-                if (DeadlineDeleted != null)
-                    DeadlineDeleted(this, new DeadlineEventArgs(dc, null));
+                DeadlineDeleted?.Invoke(this, new DeadlineEventArgs(dc, null));
             }
         }
     }
@@ -117,7 +117,7 @@ public partial class Controls_mfbDeadlines : UserControl
     protected void gvDeadlines_RowEditing(object sender, GridViewEditEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         gvDeadlines.EditIndex = e.NewEditIndex;
         Refresh();
     }
@@ -131,7 +131,7 @@ public partial class Controls_mfbDeadlines : UserControl
     protected void gvDeadlines_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             if ((e.Row.RowState & DataControlRowState.Edit) == DataControlRowState.Edit)
@@ -150,7 +150,7 @@ public partial class Controls_mfbDeadlines : UserControl
     protected void gvDeadlines_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         DeadlineCurrency dc = UserDeadlines[e.RowIndex];
         DeadlineCurrency dcOriginal = new DeadlineCurrency();
         util.CopyObject(dc, dcOriginal);
@@ -167,8 +167,7 @@ public partial class Controls_mfbDeadlines : UserControl
             gvDeadlines.EditIndex = -1;
             ForceRefresh();
 
-            if (DeadlineUpdated != null)
-                DeadlineUpdated(this, new DeadlineEventArgs(dcOriginal, dc));
+            DeadlineUpdated?.Invoke(this, new DeadlineEventArgs(dcOriginal, dc));
         }
     }
 
@@ -229,11 +228,10 @@ public partial class Controls_mfbDeadlines : UserControl
             ForceRefresh();
             ResetDeadlineForm();
             Refresh();
-            if (DeadlineAdded != null)
-                DeadlineAdded(this, new DeadlineEventArgs(null, dc));
+            DeadlineAdded?.Invoke(this, new DeadlineEventArgs(null, dc));
         }
         else
-            lblErrDeadline.Text = dc.ErrorString;
+            lblErrDeadline.Text = HttpUtility.HtmlEncode(dc.ErrorString);
     }
 
     protected void ResetDeadlineForm()

@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -91,8 +91,7 @@ public partial class Controls_mfbDateTime : System.Web.UI.UserControl
 
     protected Boolean DateIsValid()
     {
-        DateTime dt;
-        return DateTime.TryParse(txtDateTime.Text, CultureInfo.CurrentCulture, DateTimeStyles.AssumeUniversal, out dt);
+        return DateTime.TryParse(txtDateTime.Text, CultureInfo.CurrentCulture, DateTimeStyles.AssumeUniversal, out _);
     }
 
     protected void Page_Init(object sender, EventArgs e)

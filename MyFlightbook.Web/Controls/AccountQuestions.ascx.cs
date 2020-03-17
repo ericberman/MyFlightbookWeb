@@ -1,9 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
+
+/******************************************************
+ * 
+ * Copyright (c) 2016-2020 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
 
 public partial class Controls_AccountQuestions : System.Web.UI.UserControl, IEditableTextControl
 {
@@ -38,7 +42,6 @@ public partial class Controls_AccountQuestions : System.Web.UI.UserControl, IEdi
 
     protected void cmbQuestions_TextChanged(object sender, EventArgs e)
     {
-        if (TextChanged != null)
-            TextChanged(sender, e);
+        TextChanged?.Invoke(sender, e);
     }
 }

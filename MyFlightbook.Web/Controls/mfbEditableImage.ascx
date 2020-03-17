@@ -1,4 +1,5 @@
 <%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEditableImage.ascx.cs" Inherits="Controls_mfbEditableImage" %>
+
 <div>
     <asp:Literal ID="litVideoOpenTag" runat="server"></asp:Literal>
     <asp:HyperLink ID="lnkFullPicture" runat="server" Target="_blank">
@@ -12,12 +13,16 @@
         <div runat="server" id="divAnnot"><asp:HyperLink ID="lnkAnnotate" CssClass="ilToolbarItem" runat="server" Visible="false"><asp:Image ID="imgEdit" ImageUrl="~/images/pencilsm.png" ToolTip="<%$ Resources:LocalizedText, EditableImageEditPrompt %>" AlternateText="<%$ Resources:LocalizedText, EditableImageEditPrompt %>" runat="server" style="padding: 4px;" /></asp:HyperLink></div>
     </div>
 </div>
-<asp:Panel ID="pnlStatic" runat="server" style="max-width: 200px; text-align:center;">
-    <asp:Label ID="lblComments" runat="server"></asp:Label>
-</asp:Panel>
-<asp:Panel ID="pnlEdit" runat="server" DefaultButton="btnUpdateComments" style="display:none">
-    <div style="padding:5px;">
-        <asp:TextBox ID="txtComments" runat="server" Width="130px"></asp:TextBox>
-        <asp:Button ID="btnUpdateComments" runat="server" Text="<%$ Resources:LocalizedText, OK %>" OnClick="btnUpdateComments_Click" />
-    </div>
-</asp:Panel>
+<asp:UpdatePanel ID="upCmt" runat="server">
+    <ContentTemplate>
+        <asp:Panel ID="pnlStatic" runat="server" style="max-width: 200px; text-align:center;">
+            <asp:Label ID="lblComments" runat="server"></asp:Label>
+        </asp:Panel>
+        <asp:Panel ID="pnlEdit" runat="server" DefaultButton="btnUpdateComments" style="display:none">
+            <div style="padding:5px;">
+                <asp:TextBox ID="txtComments" runat="server" Width="130px"></asp:TextBox>
+                <asp:Button ID="btnUpdateComments" runat="server" Text="<%$ Resources:LocalizedText, OK %>" OnClick="btnUpdateComments_Click" />
+            </div>
+        </asp:Panel>
+    </ContentTemplate>
+</asp:UpdatePanel>

@@ -239,8 +239,10 @@ public partial class Member_FlightDetail : System.Web.UI.Page
 
                 if (Request.PathInfo.Length > 0)
                 {
-                    try { CurrentFlightID = Convert.ToInt32(Request.PathInfo.Substring(1), CultureInfo.InvariantCulture); }
-                    catch (FormatException) { CurrentFlightID = LogbookEntry.idFlightNone; }
+                    if (Int32.TryParse(Request.PathInfo.Substring(1), NumberStyles.Integer, CultureInfo.InvariantCulture, out int idflight))
+                        CurrentFlightID = idflight;
+                    else
+                        CurrentFlightID = LogbookEntry.idFlightNone;
                 }
                 if (CurrentFlightID == LogbookEntry.idFlightNone)
                     throw new MyFlightbookException("No valid ID passed");
@@ -253,10 +255,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
                         Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
                         Restriction.Refresh();
                     }
-                    catch (ArgumentNullException) { }
-                    catch (FormatException) { }
-                    catch (JsonSerializationException) { }
-                    catch (JsonException) { }
+                    catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is JsonSerializationException || ex is JsonException) { }
                 }
 
                 DetailsTab dtRequested = DetailsTab.Flight;
@@ -435,9 +434,9 @@ public partial class Member_FlightDetail : System.Web.UI.Page
 
         gcData.Clear();
 
-        gcData.XDataType = gcData.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbXAxis.SelectedValue).Type);
-        gcData.YDataType = gcData.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis1.SelectedValue).Type);
-        gcData.Y2DataType = gcData.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis2.SelectedValue).Type);
+        gcData.XDataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbXAxis.SelectedValue).Type);
+        gcData.YDataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis1.SelectedValue).Type);
+        gcData.Y2DataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis2.SelectedValue).Type);
 
         if (cmbYAxis1.SelectedItem == null || cmbYAxis2.SelectedItem == null)
         {
@@ -676,8 +675,11 @@ public partial class Member_FlightDetail : System.Web.UI.Page
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
+        if (!(sender is FormView fv))
+            throw new InvalidCastException("Sender is not a formview!");
 
-        FormView fv = sender as FormView;
         LogbookEntryDisplay le = (LogbookEntryDisplay)fv.DataItem;
         Controls_mfbImageList mfbilFlight = (Controls_mfbImageList)fv.FindControl("mfbilFlight");
         mfbilFlight.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
@@ -708,6 +710,9 @@ public partial class Member_FlightDetail : System.Web.UI.Page
 
     protected void fmvAircraft_DataBound(object sender, EventArgs e)
     {
+
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
         FormView fv = sender as FormView;
         Controls_mfbHoverImageList hil = (Controls_mfbHoverImageList)fv.FindControl("mfbHoverImageList");
         hil.Refresh();

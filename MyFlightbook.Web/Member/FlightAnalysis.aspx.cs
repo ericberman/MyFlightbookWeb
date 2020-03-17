@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -22,9 +22,8 @@ public partial class Member_FlightAnalysis : System.Web.UI.Page
     private enum DownloadFormat { Original, CSV, KML, GPX};
     private const string keyCurrentFlight = "CurFlight";
     private const string keyParsedData = "ParsedFlightData";
-    private const string szFormatDateTime = "M/d/yyyy hh:mm:ss";
     private LogbookEntry m_le;
-    private FlightData m_fd = new FlightData();
+    private readonly FlightData m_fd = new FlightData();
 
     /// <summary>
     /// Loads the specified flight into m_le, cached to avoid excess DB thrashing.
@@ -76,7 +75,7 @@ public partial class Member_FlightAnalysis : System.Web.UI.Page
     protected void LoadData(LogbookEntryBase le)
     {
         if (le == null)
-            throw new ArgumentNullException("le");
+            throw new ArgumentNullException(nameof(le));
         string szCacheKey = KeyCacheData(le.FlightID);
 
         TelemetryDataTable dt = (TelemetryDataTable)Session[szCacheKey];
@@ -142,12 +141,12 @@ public partial class Member_FlightAnalysis : System.Web.UI.Page
         }
     }
 
-    protected string KeyCacheFlight(int idFlight)
+    protected static string KeyCacheFlight(int idFlight)
     {
         return keyCurrentFlight + idFlight.ToString(CultureInfo.InvariantCulture);
     }
 
-    protected string KeyCacheData(int idFlight)
+    protected static string KeyCacheData(int idFlight)
     {
         return keyParsedData + idFlight.ToString(CultureInfo.InvariantCulture);
     }
@@ -233,9 +232,9 @@ public partial class Member_FlightAnalysis : System.Web.UI.Page
 
         gcData.Clear();
 
-        gcData.XDataType = gcData.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbXAxis.SelectedValue).Type);
-        gcData.YDataType = gcData.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis1.SelectedValue).Type);
-        gcData.Y2DataType = gcData.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis2.SelectedValue).Type);
+        gcData.XDataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbXAxis.SelectedValue).Type);
+        gcData.YDataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis1.SelectedValue).Type);
+        gcData.Y2DataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis2.SelectedValue).Type);
 
         if (cmbYAxis1.SelectedItem == null || cmbYAxis2.SelectedItem == null)
         {
@@ -287,7 +286,7 @@ public partial class Member_FlightAnalysis : System.Web.UI.Page
     protected void OnRowDatabound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             Image i = (Image) e.Row.FindControl("imgPin");

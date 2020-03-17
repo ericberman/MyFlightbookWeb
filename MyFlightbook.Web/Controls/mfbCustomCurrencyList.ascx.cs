@@ -5,6 +5,13 @@ using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
+/******************************************************
+ * 
+ * Copyright (c) 2017-2020 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
+
 public partial class Controls_mfbCustomCurrencyList : System.Web.UI.UserControl
 {
     protected void Page_Load(object sender, EventArgs e)
@@ -29,7 +36,7 @@ public partial class Controls_mfbCustomCurrencyList : System.Web.UI.UserControl
     protected void gvCustomCurrency_RowCommand(Object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (String.Compare(e.CommandName, "_Delete", StringComparison.OrdinalIgnoreCase) == 0)
         {
             IEnumerable<CustomCurrency> rgCurrency = CustomCurrency.CustomCurrenciesForUser(Page.User.Identity.Name);
@@ -48,7 +55,7 @@ public partial class Controls_mfbCustomCurrencyList : System.Web.UI.UserControl
     protected void gvCustomCurrency_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         Controls_mfbCustCurrency ccEdit = (Controls_mfbCustCurrency)gvCustomCurrency.Rows[e.RowIndex].FindControl("mfbEditCustCurrency");
         if (ccEdit.Commit())
         {
@@ -62,7 +69,7 @@ public partial class Controls_mfbCustomCurrencyList : System.Web.UI.UserControl
     protected void gvCustomCurrency_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             if ((e.Row.RowState & DataControlRowState.Edit) == DataControlRowState.Edit)
@@ -76,7 +83,7 @@ public partial class Controls_mfbCustomCurrencyList : System.Web.UI.UserControl
     protected void gvCustomCurrency_RowEditing(object sender, GridViewEditEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         gvCustomCurrency.EditIndex = e.NewEditIndex;
         RefreshCustomCurrencyList();
     }

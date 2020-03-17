@@ -1,11 +1,11 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Globalization;
 using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -178,8 +178,7 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
                 // I.e., if you're in Italy, and type in "3,14", the resulting text is "3.14", but I parse that in Italian culture!!
                 if (m_EditMode != EditMode.Integer && System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator.CompareOrdinal(".") != 0 && IsIOSSafari)
                 {
-                    Decimal d;
-                    if (Decimal.TryParse(txtDecimal.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
+                    if (Decimal.TryParse(txtDecimal.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal d))
                         return d;
                     return 0.0M;
                 }

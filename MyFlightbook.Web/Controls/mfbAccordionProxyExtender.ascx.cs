@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -69,7 +69,7 @@ public partial class Controls_mfbAccordionProxyExtender : System.Web.UI.UserCont
 
     protected IEnumerable<string> HeaderProxyIDArray
     {
-        get { return String.IsNullOrEmpty(HeaderProxyIDs) ? new string[0] : HeaderProxyIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries); }
+        get { return String.IsNullOrEmpty(HeaderProxyIDs) ? Array.Empty<string>() : HeaderProxyIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries); }
     }
 
     protected IEnumerable<string> HeaderProxyClientIDs
@@ -80,8 +80,7 @@ public partial class Controls_mfbAccordionProxyExtender : System.Web.UI.UserCont
             foreach (string szID in HeaderProxyIDArray)
             {
                 Control c = NamingContainer.FindControl(szID);
-                Controls_mfbAccordionProxyControl apc = c as Controls_mfbAccordionProxyControl;
-                if (apc != null)
+                if (c is Controls_mfbAccordionProxyControl apc)
                     lst.Add(apc.Container.ClientID);
                 else
                     lst.Add(c.ClientID);
@@ -98,8 +97,7 @@ public partial class Controls_mfbAccordionProxyExtender : System.Web.UI.UserCont
             foreach (string szID in HeaderProxyIDArray)
             {
                 Control c = NamingContainer.FindControl(szID);
-                Controls_mfbAccordionProxyControl apc = c as Controls_mfbAccordionProxyControl;
-                if (apc != null)
+                if (c is Controls_mfbAccordionProxyControl apc)
                     lst.Add(apc.PostbackID);
                 else
                     lst.Add(c.ClientID);
@@ -131,6 +129,8 @@ public partial class Controls_mfbAccordionProxyExtender : System.Web.UI.UserCont
     /// <param name="idx">The index of the control (i.e., to which pane does it correspond)</param>
     public void SetJavascriptForControl(Control c, bool isSelected, int idx)
     {
+        if (c == null)
+            throw new ArgumentNullException(nameof(c));
         Controls_mfbAccordionProxyControl apc = c as Controls_mfbAccordionProxyControl;
         string szClickScript = String.Format(CultureInfo.InvariantCulture, "javascript:{0}.proxyClicked({1});", JScriptObjectName, idx);
         string szPostbackScript = apc == null ? string.Empty : String.Format(CultureInfo.InvariantCulture, "javascript:{0}.proxyPostbackClicked({1});", JScriptObjectName, idx);

@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -111,7 +111,7 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
         }
         else if (mfbii.WidthThumbnail > 0)
         {
-            pnlStatic.Style["max-width"] = img.Width.ToString();
+            pnlStatic.Style["max-width"] = img.Width.ToString(CultureInfo.InvariantCulture);
         }
 
         if (mfbii.Location != null)
@@ -145,17 +145,6 @@ function EditComment(idStatic, idEdit) {
 
         pnlEdit.Visible = CanEdit;  // don't bother with any of the editing panel if you can't edit...
 
-        if (IsPostBack)
-        {
-            // Get what the user typed and compare it to the static comments.  If they differ, something has been updated
-            if (Request.Form[txtComments.UniqueID] != null)
-            {
-                txtComments.Text = Request.Form[txtComments.UniqueID];
-                if (txtComments.Text != mfbii.Comment)
-                    UpdateComments();
-            }
-        }
-
         lnkAnnotate.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:EditComment('{0}', '{1}');", pnlStatic.ClientID, pnlEdit.ClientID);
 
         if (mfbii != null)
@@ -174,9 +163,8 @@ function EditComment(idStatic, idEdit) {
 
     protected void btnUpdateComments_Click(object sender, EventArgs e)
     {
-        // No need to call Update Comments; this will happen automatically for any box where a difference is found between 
-        // the edit box and the existing label.
-        // So this function really just serves to cause a post-back event.
+        if (txtComments.Text != mfbii.Comment)
+            UpdateComments();
     }
 
     #region Events
@@ -191,8 +179,7 @@ function EditComment(idStatic, idEdit) {
         if (mfbii != null)
         {
             // Notify of the deletion before actually deleting it...
-            if (ImageDeleted != null)
-                ImageDeleted(sender, new MFBImageInfoEvent(mfbii));
+            ImageDeleted?.Invoke(sender, new MFBImageInfoEvent(mfbii));
             // ...then delete it
             mfbii.DeleteImage();
         }

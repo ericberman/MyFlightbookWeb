@@ -25,7 +25,7 @@ public partial class Public_AdTracker : System.Web.UI.Page
                 if (ad != null)
                 {
                     ad.AddClick();
-                    GoogleAnalytics1.RedirURL = ad.TargetLink;
+                    GoogleAnalytics1.RedirHref = ad.TargetLink;
                 }
             }
         }

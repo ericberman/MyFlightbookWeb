@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,10 +33,10 @@ public partial class Controls_METAR : System.Web.UI.UserControl
     #endregion
 
     #region Display Utilities
-    protected Color ColorForFlightRules(METAR m)
+    protected static Color ColorForFlightRules(METAR m)
     {
         if (m == null)
-            throw new ArgumentNullException("m");
+            throw new ArgumentNullException(nameof(m));
         switch (m.Category)
         {
             default:
@@ -53,10 +53,10 @@ public partial class Controls_METAR : System.Web.UI.UserControl
         }
     }
 
-    protected string WindVectorInlineStyle(METAR m)
+    protected static string WindVectorInlineStyle(METAR m)
     {
         if (m == null)
-            throw new ArgumentNullException("m");
+            throw new ArgumentNullException(nameof(m));
         StringBuilder sb = new StringBuilder();
         sb.Append("display:inline-block; height:20px; width:20px; text-align: center; line-height: 20px; position:relative; vertical-align: middle; ");
         sb.AppendFormat(CultureInfo.InvariantCulture, "transform: rotate({0}deg); -webkit-transform: rotate({0}deg); -ms-transform: rotate({0}deg); ", m.wind_dir_degrees);
@@ -84,7 +84,7 @@ public partial class Controls_METAR : System.Web.UI.UserControl
     protected void gvMetar_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (e.Row.RowType == DataControlRowType.DataRow)
         {

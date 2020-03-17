@@ -22,7 +22,12 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
     protected BucketManager BucketManager
     {
         get { return HistogramManager.SupportedBucketManagers.FirstOrDefault(bm => bm.DisplayName.CompareOrdinal(cmbGrouping.SelectedValue) == 0); }
-        set { cmbGrouping.SelectedValue = value.DisplayName; }
+        set
+        {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value));
+            cmbGrouping.SelectedValue = value.DisplayName;
+        }
     }
 
     protected HistogramableValue SelectedFieldToGraph
