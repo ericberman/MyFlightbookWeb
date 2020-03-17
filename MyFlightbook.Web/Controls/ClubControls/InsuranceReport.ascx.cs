@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,7 +17,7 @@ public partial class Controls_ClubControls_InsuranceReport : System.Web.UI.UserC
         get { return gvInsuranceReport.CSVFromData(); }
     }
 
-    protected string CSSForItem(CurrencyState cs)
+    protected static string CSSForItem(CurrencyState cs)
     {
         switch (cs)
         {
@@ -39,9 +39,9 @@ public partial class Controls_ClubControls_InsuranceReport : System.Web.UI.UserC
         gvInsuranceReport.DataBind();
     }
 
-    public void Refresh(int ClubID)
+    public void Refresh(int clubID)
     {
-        Refresh(ClubID, 1);
+        Refresh(clubID, 1);
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -52,7 +52,7 @@ public partial class Controls_ClubControls_InsuranceReport : System.Web.UI.UserC
     protected void gvInsuranceReport_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             ClubInsuranceReportItem ciri = (ClubInsuranceReportItem)e.Row.DataItem;

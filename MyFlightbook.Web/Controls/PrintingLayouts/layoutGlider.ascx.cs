@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -32,7 +32,7 @@ public partial class Controls_PrintingLayouts_layoutGlider : System.Web.UI.UserC
     protected void rptPages_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
 
@@ -48,7 +48,7 @@ public partial class Controls_PrintingLayouts_layoutGlider : System.Web.UI.UserC
     protected void rptSubtotalCollections_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         LogbookPrintedPageSubtotalsCollection sc = (LogbookPrintedPageSubtotalsCollection)e.Item.DataItem;
         Repeater rpt = (Repeater)e.Item.FindControl("rptSubtotals");
@@ -59,7 +59,7 @@ public partial class Controls_PrintingLayouts_layoutGlider : System.Web.UI.UserC
     protected void rptFlight_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         Controls_mfbSignature sig = (Controls_mfbSignature)e.Item.FindControl("mfbSignature");
         sig.Flight = (LogbookEntryDisplay)e.Item.DataItem;
     }

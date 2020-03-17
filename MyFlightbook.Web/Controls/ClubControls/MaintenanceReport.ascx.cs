@@ -5,31 +5,29 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 public partial class Controls_ClubControls_MaintenanceReport : System.Web.UI.UserControl, IReportable
 {
 
-    protected string ValueString(object o, decimal offSet = 0.0M)
+    protected static string ValueString(object o, decimal offSet = 0.0M)
     {
-        if (o is DateTime)
+        if (o is DateTime dt)
         {
-            DateTime dt = (DateTime)o;
             if (dt != null && dt.HasValue())
                 return dt.ToShortDateString();
         }
-        else if (o is decimal)
+        else if (o is decimal d)
         {
-            decimal d = (decimal)o;
             if (d > 0)
                 return (d + offSet).ToString("#,##0.0#", CultureInfo.CurrentCulture);
         }
         return string.Empty;
     }
 
-    protected string CSSForDate(DateTime dt)
+    protected static string CSSForDate(DateTime dt)
     {
         if (DateTime.Now.CompareTo(dt) > 0)
             return "currencyexpired";
@@ -38,7 +36,7 @@ public partial class Controls_ClubControls_MaintenanceReport : System.Web.UI.Use
         return "currencyok";
     }
 
-    protected string CSSForValue(decimal current, decimal due, int hoursWarning, int offSet = 0)
+    protected static string CSSForValue(decimal current, decimal due, int hoursWarning, int offSet = 0)
     {
         if (due > 0)
             due += offSet;
@@ -55,10 +53,10 @@ public partial class Controls_ClubControls_MaintenanceReport : System.Web.UI.Use
         get { return gvMaintenance.CSVFromData(); }
     }
 
-    public void Refresh(int ClubID)
+    public void Refresh(int clubID)
     {
         // flush the cache to pick up any aircraft changes
-        gvMaintenance.DataSource = Club.ClubWithID(ClubID, true).MemberAircraft;
+        gvMaintenance.DataSource = Club.ClubWithID(clubID, true).MemberAircraft;
         gvMaintenance.DataBind();
     }
 

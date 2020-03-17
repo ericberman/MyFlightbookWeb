@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2017 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -27,11 +27,11 @@ public partial class Controls_ClubControls_TimeZone : System.Web.UI.UserControl
             try
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(nameof(value));
 
                 cmbTimezones.SelectedValue = value.Id;
             }
-            catch (ArgumentOutOfRangeException)
+            catch (Exception ex) when (ex is ArgumentOutOfRangeException)
             {
                 cmbTimezones.SelectedValue = ScheduledEvent.TimeZoneForOffset(TimeSpan.FromMinutes(DefaultOffset)).Id;
             }

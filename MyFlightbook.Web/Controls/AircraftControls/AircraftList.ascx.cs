@@ -4,12 +4,13 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2019 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -117,7 +118,7 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
     protected void gvAircraft_RowCommand(Object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         int idAircraft = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
         if (String.Compare(e.CommandName, "_Delete", StringComparison.OrdinalIgnoreCase) == 0)
@@ -128,8 +129,7 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
             try
             {
                 ua.FDeleteAircraftforUser(ac.AircraftID);
-                if (AircraftDeleted != null)
-                    AircraftDeleted(sender, e);
+                AircraftDeleted?.Invoke(sender, e);
             }
             catch (MyFlightbookException ex)
             {
@@ -141,7 +141,7 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
                     {
                         GridViewRow gvr = gvSource.Rows[iRow];
                         Label l = (Label)gvr.FindControl("lblAircraftErr");
-                        l.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MyAircraftDeleteError, ac.TailNumber, ex.Message);
+                        l.Text = HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MyAircraftDeleteError, ac.TailNumber, ex.Message));
                         l.Visible = true;
                         break;
                     }
@@ -150,8 +150,10 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
         }
     }
 
-    protected Aircraft RowFromControl(Control c)
+    protected static Aircraft RowFromControl(Control c)
     {
+        if (c == null)
+            throw new ArgumentNullException(nameof(c));
         while (c != null && c.NamingContainer != null && !typeof(GridViewRow).IsAssignableFrom(c.NamingContainer.GetType()))
             c = c.NamingContainer;
         GridViewRow grow = (GridViewRow)c.NamingContainer;
@@ -167,8 +169,7 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
         ac.RoleForPilot = role;
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         ua.FAddAircraftForUser(ac);
-        if (AircraftPrefChanged != null)
-            AircraftPrefChanged(this, new EventArgs());
+        AircraftPrefChanged?.Invoke(this, new EventArgs());
     }
 
     protected void rbRoleCFI_CheckedChanged(object sender, EventArgs e)
@@ -198,27 +199,25 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
         ac.HideFromSelection = !ck.Checked;
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         ua.FAddAircraftForUser(ac);
-        if (FavoriteChanged != null)
-            FavoriteChanged(this, e);
+        FavoriteChanged?.Invoke(this, e);
     }
 
     protected void ckAddNameAsPIC_CheckedChanged(object sender, EventArgs e)
     {
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
         CheckBox ck = (CheckBox)sender;
         Aircraft ac = RowFromControl(ck);
         ac.CopyPICNameWithCrossfill = ck.Checked;
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         ua.FAddAircraftForUser(ac);
-        if (AircraftPrefChanged != null)
-            AircraftPrefChanged(this, e);
+        AircraftPrefChanged?.Invoke(this, e);
     }
 
     protected void mfbSelectTemplates_TemplatesReady(object sender, EventArgs e)
     {
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
 
         Controls_mfbSelectTemplates selectTemplates = sender as Controls_mfbSelectTemplates;
         // Hide the pop menu if only automatic templates are available
@@ -229,26 +228,28 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
     protected void mfbSelectTemplates_TemplateSelected(object sender, PropertyTemplateEventArgs e)
     {
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
 
         Aircraft ac = RowFromControl(sender as Control);
         ac.DefaultTemplates.Add(e.TemplateID);
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         ua.FAddAircraftForUser(ac);
-        if (AircraftPrefChanged != null)
-            AircraftPrefChanged(this, e);
+        AircraftPrefChanged?.Invoke(this, e);
     }
 
     protected void mfbSelectTemplates_TemplateUnselected(object sender, PropertyTemplateEventArgs e)
     {
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
 
         Aircraft ac = RowFromControl(sender as Control);
         ac.DefaultTemplates.Remove(e.TemplateID);
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         ua.FAddAircraftForUser(ac);
-        if (AircraftPrefChanged != null)
-            AircraftPrefChanged(this, e);
+        AircraftPrefChanged?.Invoke(this, e);
     }
 }

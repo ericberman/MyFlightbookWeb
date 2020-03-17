@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using MyFlightbook.Clubs;
+﻿using MyFlightbook.Clubs;
 using MyFlightbook.Schedule;
+using System;
+
+/******************************************************
+ * 
+ * Copyright (c) 2015-2020 MyFlightbook LLC
+ * Contact myflightbook-at-gmail.com for more information
+ *
+*******************************************************/
 
 public partial class Controls_ClubControls_ClubAircraftSchedule : System.Web.UI.UserControl
 {

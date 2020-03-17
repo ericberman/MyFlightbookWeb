@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -79,8 +79,7 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
     {
         get
         {
-            int modelID = MakeModel.UnknownModel;
-            if (int.TryParse(cmbMakeModel.SelectedValue, out modelID))
+            if (int.TryParse(cmbMakeModel.SelectedValue, out int modelID))
                 return modelID;
             return MakeModel.UnknownModel;
         }
@@ -158,8 +157,7 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
     {
         int modelID = SelectedModelID;
         UpdateAttributesForModel(modelID == MakeModel.UnknownModel ? null : MakeModel.GetModel(modelID));
-        if (ModelChanged != null)
-            ModelChanged(this, new MakeSelectedEventArgs(modelID));
+        ModelChanged?.Invoke(this, new MakeSelectedEventArgs(modelID));
     }
 
     protected void UpdateModelList(int idManufacturer)
@@ -179,8 +177,7 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
             UpdateAttributesForModel(null);
             UpdateModelList(newManId);
             LastSelectedManufacturer = newManId;
-            if (ModelChanged != null)
-                ModelChanged(this, new MakeSelectedEventArgs(SelectedModelID));
+            ModelChanged?.Invoke(this, new MakeSelectedEventArgs(SelectedModelID));
         }
     }
 
@@ -192,15 +189,13 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
 
     protected void btnChangeModelClone_Click(object sender, EventArgs e)
     {
-        if (MajorChangeRequested != null)
-            MajorChangeRequested(this, e);        
+        MajorChangeRequested?.Invoke(this, e);
     }
     #endregion
 
     protected void lnkPopulateModel_Click(object sender, EventArgs e)
     {
-        int mmID = MakeModel.UnknownModel;
-        if (int.TryParse(hdnSelectedModel.Value, out mmID))
+        if (int.TryParse(hdnSelectedModel.Value, out int mmID))
         {
             MakeModel mm = MakeModel.GetModel(mmID);
             cmbManufacturers.SelectedValue = mm.ManufacturerID.ToString(CultureInfo.InvariantCulture);
@@ -208,8 +203,7 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
             UpdateModelList(mm.ManufacturerID);
             cmbMakeModel.SelectedValue = mmID.ToString(CultureInfo.InvariantCulture);
             UpdateAttributesForModel(mm);
-            if (ModelChanged != null)
-                ModelChanged(this, new MakeSelectedEventArgs(SelectedModelID));
+            ModelChanged?.Invoke(this, new MakeSelectedEventArgs(SelectedModelID));
 
             hdnSelectedModel.Value = txtFilter.Text = string.Empty;
         }

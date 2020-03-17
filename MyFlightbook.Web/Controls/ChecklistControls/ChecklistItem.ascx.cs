@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,7 +30,7 @@ public partial class Controls_ChecklistControls_ChecklistItem : System.Web.UI.Us
 
     protected bool NoHeader { get; set; }
 
-    protected string CssClassForContentStyle(ContentStyle style)
+    protected static string CssClassForContentStyle(ContentStyle style)
     {
         switch (style)
         {
@@ -50,12 +50,11 @@ public partial class Controls_ChecklistControls_ChecklistItem : System.Web.UI.Us
         if (m_checklistRow == null)
             return;
 
-        ContainerRow containerRow = m_checklistRow as ContainerRow;
         ContentRow contentRow = m_checklistRow as ContentRow;
         CheckboxRow checkboxRow = m_checklistRow as CheckboxRow;
 
         // Container rows are subclasses of contentrow, so check for contentrow last.
-        if (containerRow != null)
+        if (m_checklistRow is ContainerRow containerRow)
         {
             mvItem.SetActiveView(vwRepeater);
             if (!NoHeader)
@@ -118,7 +117,7 @@ public partial class Controls_ChecklistControls_ChecklistItem : System.Web.UI.Us
     protected void accordion_ItemDataBound(object sender, AjaxControlToolkit.AccordionItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (e.ItemType == AjaxControlToolkit.AccordionItemType.Content)
         {
@@ -172,7 +171,7 @@ public partial class Controls_ChecklistControls_ChecklistItem : System.Web.UI.Us
     protected void rptSubHeaders_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         Controls_ChecklistControls_ChecklistItem ckli = (Controls_ChecklistControls_ChecklistItem)LoadControl("~/Controls/ChecklistControls/ChecklistItem.ascx");
         e.Item.Controls.Add(ckli);
@@ -182,15 +181,14 @@ public partial class Controls_ChecklistControls_ChecklistItem : System.Web.UI.Us
     protected void rptRows_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         HtmlTableRow tr = (HtmlTableRow)e.Item.FindControl("rowCheckItem");
         CheckBox ck = (CheckBox)e.Item.FindControl("ckItem");
         tr.Attributes["associatedcheck"] = ck.ClientID;
 
         ChecklistRow ckr = ((ChecklistRow)e.Item.DataItem);
-        CheckboxRow ckb = ckr as CheckboxRow;
-        if (ckb != null)
+        if (ckr is CheckboxRow ckb)
         {
             switch (ckb.Action)
             {
