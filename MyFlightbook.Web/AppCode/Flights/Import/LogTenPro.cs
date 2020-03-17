@@ -8,7 +8,7 @@ using System.IO;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2019 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -844,7 +844,7 @@ namespace MyFlightbook.ImportFlights
         public override IEnumerable<ExternalFormat> FromDataTable(DataTable dt)
         {
             if (dt == null)
-                throw new ArgumentNullException("dt");
+                throw new ArgumentNullException(nameof(dt));
             List<LogTenPro> lst = new List<LogTenPro>();
             foreach (DataRow dr in dt.Rows)
                 lst.Add(new LogTenPro(dr));
@@ -873,7 +873,7 @@ namespace MyFlightbook.ImportFlights
 
                         return hs.Contains("flight_flightDate") && hs.Contains("aircraft_aircraftID");
                     }
-                    catch (CSVReaderInvalidCSVException) { }
+                    catch (Exception ex) when (ex is CSVReaderInvalidCSVException) { }
                 }
             }
             finally
@@ -887,7 +887,7 @@ namespace MyFlightbook.ImportFlights
         public override string CSVFromDataTable(DataTable dt)
         {
             if (dt == null)
-                throw new ArgumentNullException("dt");
+                throw new ArgumentNullException(nameof(dt));
             using (DataTable dtDst = new DataTable())
             {
                 dtDst.Locale = dt.Locale;

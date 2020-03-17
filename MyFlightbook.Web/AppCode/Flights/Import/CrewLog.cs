@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -64,12 +64,11 @@ namespace MyFlightbook.ImportFlights
 
         public override LogbookEntry ToLogbookEntry()
         {
-            DateTime dt;
             DateTime blockOut = DateTime.MinValue;
             DateTime blockIn = DateTime.MinValue;
             Regex rTime = new Regex("(?<hour>\\d{2}):(?<min>\\d{2})", RegexOptions.Compiled);
 
-            if (DateTime.TryParse(DATEGMT, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal, out dt))
+            if (DateTime.TryParse(DATEGMT, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal, out DateTime dt))
             {
                 MatchCollection mc = rTime.Matches(DEPTTIME);
                 if (mc.Count == 1)
@@ -234,7 +233,7 @@ namespace MyFlightbook.ImportFlights
         public override string CSVFromDataTable(DataTable dt)
         {
             if (dt == null)
-                throw new ArgumentNullException("dt");
+                throw new ArgumentNullException(nameof(dt));
             using (DataTable dtDst = new DataTable())
             {
                 dtDst.Locale = dt.Locale;
@@ -251,7 +250,7 @@ namespace MyFlightbook.ImportFlights
         public override IEnumerable<ExternalFormat> FromDataTable(DataTable dt)
         {
             if (dt == null)
-                throw new ArgumentNullException("dt");
+                throw new ArgumentNullException(nameof(dt));
             List<CrewLogFlight> lst = new List<CrewLogFlight>();
             foreach (DataRow dr in dt.Rows)
                 lst.Add(new CrewLogFlight(dr));

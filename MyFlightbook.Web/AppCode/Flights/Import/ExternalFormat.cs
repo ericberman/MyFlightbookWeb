@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2019 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -65,11 +65,9 @@ namespace MyFlightbook.ImportFlights
                             case "BOOL":
                             case "BOOLEAN":
                                 {
-                                    Boolean f = false;
-                                    if (!Boolean.TryParse(szObj, out f))
+                                    if (!Boolean.TryParse(szObj, out bool f))
                                     {
-                                        int i = 0;
-                                        if (int.TryParse(szObj, out i))
+                                        if (int.TryParse(szObj, out int i))
                                             f = i != 0;
                                     }
                                     value = f;
@@ -92,9 +90,7 @@ namespace MyFlightbook.ImportFlights
                         targetObj.SetValue(this, value);
                     }
                 }
-                catch (AmbiguousMatchException) { }
-                catch (ArgumentNullException) { }
-                catch (FormatException) { }
+                catch (Exception ex) when (ex is AmbiguousMatchException || ex is ArgumentNullException || ex is FormatException) { }
             }
         }
 
@@ -112,7 +108,7 @@ namespace MyFlightbook.ImportFlights
         /// </summary>
         /// <param name="rgIn"></param>
         /// <returns>The merged strings</returns>
-        protected string JoinStrings(IEnumerable<string> rgIn)
+        protected static string JoinStrings(IEnumerable<string> rgIn)
         {
             if (rgIn == null)
                 return string.Empty;
@@ -147,7 +143,7 @@ namespace MyFlightbook.ImportFlights
         /// <param name="dtToFix">Time to fix</param>
         /// <param name="dtRef">Reference date; can be null</param>
         /// <returns>A fixed-up datetime that has the hour/minute component from the original date, but the date of flight (or date of flight +1) for the date portion.</returns>
-        protected DateTime FixedUTCDateFromTime(DateTime dtFlight, DateTime dtToFix, DateTime? dtRef = null)
+        protected static DateTime FixedUTCDateFromTime(DateTime dtFlight, DateTime dtToFix, DateTime? dtRef = null)
         {
             if (!dtToFix.HasValue() || !dtFlight.HasValue() || Math.Abs(dtToFix.Subtract(dtFlight).TotalDays) <= 1)
                 return dtToFix;
@@ -212,7 +208,7 @@ namespace MyFlightbook.ImportFlights
         public static ExternalFormatImporter GetImporter(byte[] rgb)
         {
             if (rgb == null)
-                throw new ArgumentNullException("rgb");
+                throw new ArgumentNullException(nameof(rgb));
 
             foreach (ExternalFormatImporter efi in rgFormatters)
             {

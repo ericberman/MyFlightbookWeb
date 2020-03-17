@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -89,13 +91,15 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
     public class CloudAhoyManeuverDescriptor
     {
         public string maneuverId { get; set; }
-        public string url { get; set; }
+        
+        [JsonProperty("url")]
+        public string link { get; set; }
         public string code { get; set; }
         public string label { get; set; }
 
         public CloudAhoyManeuverDescriptor()
         {
-            maneuverId = url = code = label = string.Empty;
+            maneuverId = link = code = label = string.Empty;
         }
     }
     #endregion
@@ -107,18 +111,21 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
     {
         #region Properties
         public CloudAhoyAircraftDescriptor aircraft { get; set; }
-        public CloudAhoyAirportDescriptor[] airports { get; set; }
+        public Collection<CloudAhoyAirportDescriptor> airports { get; set; }
         public string cfiaScore { get; set; }
-        public CloudAhoyCrewDescriptor[] crew { get; set; }
+        public Collection<CloudAhoyCrewDescriptor> crew { get; set; }
         public long duration { get; set; }
         public string flightId { get; set; }
-        public CloudAhoyManeuverDescriptor[] maneuvers { get; set; }
+        public Collection<CloudAhoyManeuverDescriptor> maneuvers { get; set; }
         public string remarks { get; set; }
         public long time { get; set; }
-        public string url { get; set; }
+        
+        [JsonProperty("url")]
+        public string link { get; set; }
         public string userRole { get; set; }
 
-        public string thumbnailUrl { get; set; }
+        [JsonProperty("thumbnailUrl")]
+        public string thumbnailLink { get; set; }
 
         private Dictionary<CustomPropertyType.KnownProperties, CustomFlightProperty> DictProps { get; set; }
 
@@ -129,10 +136,10 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
         public CloudAhoyFlight()
         {
             aircraft = new CloudAhoyAircraftDescriptor();
-            airports = new CloudAhoyAirportDescriptor[0];
-            crew = new CloudAhoyCrewDescriptor[0];
-            maneuvers = new CloudAhoyManeuverDescriptor[0];
-            cfiaScore = flightId = remarks = url = userRole = string.Empty;
+            airports = new Collection<CloudAhoyAirportDescriptor>();
+            crew = new Collection<CloudAhoyCrewDescriptor>();
+            maneuvers = new Collection<CloudAhoyManeuverDescriptor>();
+            cfiaScore = flightId = remarks = link = userRole = string.Empty;
 
             DictProps = new Dictionary<CustomPropertyType.KnownProperties, CustomFlightProperty>();
 
@@ -157,9 +164,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
                     if (cd.PIC != 0)
                         le.PIC = le.TotalFlightTime;
 
-                    CloudAhoyRoles role = CloudAhoyRoles.None;
-
-                    if (Enum.TryParse<CloudAhoyRoles>(cd.role.Replace(" ", string.Empty), out role))
+                    if (Enum.TryParse<CloudAhoyRoles>(cd.role.Replace(" ", string.Empty), out CloudAhoyRoles role))
                     {
                         switch (role)
                         {
@@ -186,7 +191,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
             }
         }
 
-        protected string MarkdownLink(string szLabel, string szurl)
+        protected static string MarkdownLink(string szLabel, string szurl)
         {
             bool fHasLabel = !String.IsNullOrEmpty(szLabel);
             bool fHasLink = !String.IsNullOrEmpty(szurl);
@@ -207,8 +212,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
 
             foreach (CloudAhoyManeuverDescriptor md in maneuvers)
             {
-                CloudAhoyManeuvers maneuver;
-                if (Enum.TryParse<CloudAhoyManeuvers>(md.code, out maneuver))
+                if (Enum.TryParse<CloudAhoyManeuvers>(md.code, out CloudAhoyManeuvers maneuver))
                 {
                     switch (maneuver)
                     {
@@ -250,7 +254,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
                             break;
                     }
 
-                    lst.Add(MarkdownLink(md.label, md.url));
+                    lst.Add(MarkdownLink(md.label, md.link));
                 }
             }
         }
@@ -268,7 +272,7 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
 
             DictProps.Clear();
 
-            List<string> lstText = new List<string>() { MarkdownLink(remarks, url) };
+            List<string> lstText = new List<string>() { MarkdownLink(remarks, link) };
 
             PendingFlight le = new PendingFlight()
             {

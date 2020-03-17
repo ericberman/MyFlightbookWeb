@@ -170,7 +170,7 @@ namespace MyFlightbook.FlightCurrency
 
         public static bool operator >(TotalsItem left, TotalsItem right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(TotalsItem left, TotalsItem right)
@@ -310,6 +310,8 @@ namespace MyFlightbook.FlightCurrency
 
         public static IEnumerable<TotalsItemCollection> AsGroups(IEnumerable<TotalsItem> lst)
         {
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
             Dictionary<TotalsGroup, TotalsItemCollection> d = new Dictionary<TotalsGroup, TotalsItemCollection>();
             foreach (TotalsItem ti in lst)
             {
@@ -376,7 +378,7 @@ namespace MyFlightbook.FlightCurrency
 
         public static bool operator >(TotalsItemCollection left, TotalsItemCollection right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(TotalsItemCollection left, TotalsItemCollection right)

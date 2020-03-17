@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2019 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -164,7 +164,7 @@ namespace MyFlightbook.ImportFlights
                             cApproaches += ad.Count;
                         }
                     }
-                    catch (FormatException) { }
+                    catch (Exception ex) when (ex is FormatException) { }
                 }
             }
 
@@ -332,7 +332,7 @@ namespace MyFlightbook.ImportFlights
         public override byte[] PreProcess(byte[] rgb)
         {
             if (rgb == null)
-                throw new ArgumentNullException("rgb");
+                throw new ArgumentNullException(nameof(rgb));
             base.PreProcess(rgb);
             MemoryStream ms = new MemoryStream(rgb);
             try
@@ -410,7 +410,7 @@ namespace MyFlightbook.ImportFlights
         public override string CSVFromDataTable(DataTable dt)
         {
             if (dt == null)
-                throw new ArgumentNullException("dt");
+                throw new ArgumentNullException(nameof(dt));
             using (DataTable dtDst = new DataTable())
             {
                 dtDst.Locale = dt.Locale;
@@ -427,7 +427,7 @@ namespace MyFlightbook.ImportFlights
         public override IEnumerable<ExternalFormat> FromDataTable(DataTable dt)
         {
             if (dt == null)
-                throw new ArgumentNullException("dt");
+                throw new ArgumentNullException(nameof(dt));
             List<ForeFlight> lst = new List<ForeFlight>();
             foreach (DataRow dr in dt.Rows)
                 lst.Add(new ForeFlight(dr, dictAircraft));

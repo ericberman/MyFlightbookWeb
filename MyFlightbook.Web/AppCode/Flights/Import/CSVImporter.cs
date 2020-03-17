@@ -645,7 +645,7 @@ namespace MyFlightbook.ImportFlights
                             MakeModel mappedModel = (m_cm.ModelMapping != null && m_cm.ModelMapping.ContainsKey(szModel)) ? m_cm.ModelMapping[szModel] : null;   // see if we have a mapping for this, BEFORE trimming the comma
 
                             // trim anything after a comma, if necessary
-                            int i = szModel.IndexOf(",");
+                            int i = szModel.IndexOf(",", StringComparison.CurrentCulture);
                             if (i > 0)
                                 szModel = szModel.Substring(0, i);
 

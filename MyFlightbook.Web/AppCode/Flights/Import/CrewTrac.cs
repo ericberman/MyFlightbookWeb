@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2019 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -78,14 +78,14 @@ namespace MyFlightbook.ImportFlights
         public CrewTrac()
         {
             AircraftNickName = From = To = Tail = Model = string.Empty;
-            Employees = new CrewTracEmployee[0];
+            Employees = Array.Empty<CrewTracEmployee>();
         }
 
         private CrewTracEmployee FirstOfficer
         {
             get
             {
-                return (Employees == null) ? null : Employees.FirstOrDefault(cte => cte.Role == CrewTracEmployee.CrewTracRole.FO);
+                return Employees?.FirstOrDefault(cte => cte.Role == CrewTracEmployee.CrewTracRole.FO);
             }
         }
 
@@ -93,7 +93,7 @@ namespace MyFlightbook.ImportFlights
         {
             get
             {
-                return (Employees == null) ? null : Employees.FirstOrDefault(cte => cte.Role == CrewTracEmployee.CrewTracRole.CA);
+                return Employees?.FirstOrDefault(cte => cte.Role == CrewTracEmployee.CrewTracRole.CA);
             }
         }
 
@@ -156,8 +156,6 @@ namespace MyFlightbook.ImportFlights
         {
             // We ignore the data table passed in - we have our data from Matches, which was initialized in CanParse.
 
-            IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes();
-
             // Build up the list of CrewTrac objects first; we'll then fill in cross-country time.
             List<CrewTrac> lstCt = new List<CrewTrac>();
             foreach (Match ctMatch in Matches)
@@ -175,8 +173,7 @@ namespace MyFlightbook.ImportFlights
                 foreach (Match empMatch in mcEmployees)
                 {
                     GroupCollection gcEmployee = empMatch.Groups;
-                    CrewTracEmployee.CrewTracRole role = CrewTracEmployee.CrewTracRole.CA;
-                    if (!Enum.TryParse<CrewTracEmployee.CrewTracRole>(gcEmployee["pos"].Value, out role))
+                    if (!Enum.TryParse<CrewTracEmployee.CrewTracRole>(gcEmployee["pos"].Value, out CrewTracEmployee.CrewTracRole role))
                         role = CrewTracEmployee.CrewTracRole.CA;
                     lst.Add(new CrewTracEmployee() { Role = role, Name = gcEmployee["empname"].Value });
                 }
@@ -198,7 +195,7 @@ namespace MyFlightbook.ImportFlights
                     lstCt.Add(ct);
 
                 }
-                catch (FormatException) { }
+                catch (Exception ex) when (ex is FormatException) { }
             }
 
             // Build up a list of airports so that we can determine cross-country time.

@@ -5,12 +5,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2019 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -155,7 +154,7 @@ namespace MyFlightbook.ImportFlights
 
                         return hs.Contains("day water landings") && hs.Contains("great circle dist") && hs.Contains("company day (aa)");
                     }
-                    catch (CSVReaderInvalidCSVException) { }
+                    catch (Exception ex) when (ex is CSVReaderInvalidCSVException) { }
                 }
             }
             finally
@@ -166,7 +165,7 @@ namespace MyFlightbook.ImportFlights
             return false;
         }
 
-        protected void NormalizeColumnNames(DataTable dt)
+        protected static void NormalizeColumnNames(DataTable dt)
         {
             if (dt == null)
                 return;
@@ -179,7 +178,7 @@ namespace MyFlightbook.ImportFlights
         public override string CSVFromDataTable(DataTable dt)
         {
             if (dt == null)
-                throw new ArgumentNullException("dt");
+                throw new ArgumentNullException(nameof(dt));
             NormalizeColumnNames(dt);
             using (DataTable dtDst = new DataTable())
             {
@@ -197,7 +196,7 @@ namespace MyFlightbook.ImportFlights
         public override IEnumerable<ExternalFormat> FromDataTable(DataTable dt)
         {
             if (dt == null)
-                throw new ArgumentNullException("dt");
+                throw new ArgumentNullException(nameof(dt));
 
             NormalizeColumnNames(dt);
             List<eLogSite> lst = new List<eLogSite>();

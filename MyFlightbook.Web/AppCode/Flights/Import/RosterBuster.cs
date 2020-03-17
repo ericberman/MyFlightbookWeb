@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -108,8 +108,6 @@ namespace MyFlightbook.ImportFlights
         {
             // We ignore the data table passed in - we have our data from Matches, which was initialized in CanParse.
 
-            IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes();
-
             // Build up the list of RosterBuster objects first
             List<RosterBuster> lstRb = new List<RosterBuster>();
             foreach (Match ctMatch in Matches)
@@ -141,7 +139,7 @@ namespace MyFlightbook.ImportFlights
                         TimeZone = gc["Timezone"].Value
                     });
                 }
-                catch (FormatException) { }
+                catch (Exception ex) when (ex is FormatException) { }
             }
 
             using (DataTable dtDst = new DataTable())

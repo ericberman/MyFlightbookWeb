@@ -7,7 +7,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -190,7 +190,7 @@ namespace MyFlightbook.ImportFlights
         public override string CSVFromDataTable(DataTable dt)
         {
             if (dt == null)
-                throw new ArgumentNullException("dt");
+                throw new ArgumentNullException(nameof(dt));
             using (DataTable dtDst = new DataTable())
             {
                 dtDst.Locale = dt.Locale;
