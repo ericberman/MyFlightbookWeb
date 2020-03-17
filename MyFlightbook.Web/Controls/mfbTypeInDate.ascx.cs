@@ -136,7 +136,7 @@ public partial class Controls_mfbTypeInDate : System.Web.UI.UserControl
     public void DateIsValid(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         args.IsValid = ValidateAndUpdateDate();
     }
 

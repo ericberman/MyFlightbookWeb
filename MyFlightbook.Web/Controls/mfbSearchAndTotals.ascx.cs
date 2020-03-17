@@ -1,22 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Xml.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using MyFlightbook;
+﻿using MyFlightbook;
+using System;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2016 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -82,13 +69,12 @@ public partial class Controls_mfbSearchAndTotals : System.Web.UI.UserControl
     protected void ShowResults(object sender, FlightQueryEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         mfbTotalSummary1.CustomRestriction = Restriction = e.Query;
         mvQuery.ActiveViewIndex = 0; // go back to the results.
         UpdateDescription();
 
-        if (QuerySubmitted != null)
-            QuerySubmitted(sender, e);
+        QuerySubmitted?.Invoke(sender, e);
     }
 
     protected void btnEditQuery_Click(object sender, EventArgs e)
@@ -105,12 +91,11 @@ public partial class Controls_mfbSearchAndTotals : System.Web.UI.UserControl
     protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClicked fic)
     {
         if (fic == null)
-            throw new ArgumentNullException("fic");
+            throw new ArgumentNullException(nameof(fic));
         FlightQuery fq = Restriction.ClearRestriction(fic.FilterItem);
         ShowResults(sender, new FlightQueryEventArgs(fq));
         UpdateDescription();
 
-        if (QuerySubmitted != null)
-            QuerySubmitted(sender, new FlightQueryEventArgs(fq));
+        QuerySubmitted?.Invoke(sender, new FlightQueryEventArgs(fq));
     }
 }

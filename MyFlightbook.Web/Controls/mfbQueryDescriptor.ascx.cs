@@ -5,7 +5,7 @@ using System.Linq;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -26,7 +26,7 @@ public partial class Controls_mfbQueryDescriptor : System.Web.UI.UserControl
 
     public override void DataBind()
     {
-        List<QueryFilterItem> src = new List<QueryFilterItem>((DataSource == null || DataSource.IsDefault) ? new QueryFilterItem[0] : DataSource.QueryFilterItems);
+        List<QueryFilterItem> src = new List<QueryFilterItem>((DataSource == null || DataSource.IsDefault) ? Array.Empty<QueryFilterItem>() : DataSource.QueryFilterItems);
 
         // Add a "Clear all" if more than one restriction (redundant if only one restriction).
         if (src.Count > 1)
@@ -49,9 +49,8 @@ public partial class Controls_mfbQueryDescriptor : System.Web.UI.UserControl
     protected void filterItem_DeleteItemClicked(object sender, FilterItemClicked fic)
     {
         if (fic == null)
-            throw new ArgumentNullException("fic");
+            throw new ArgumentNullException(nameof(fic));
 
-        if (QueryUpdated != null)
-            QueryUpdated(sender, fic);
+        QueryUpdated?.Invoke(sender, fic);
     }
 }

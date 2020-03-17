@@ -45,7 +45,6 @@ public partial class Controls_mfbQueryDescriptorItem : System.Web.UI.UserControl
     protected void btnDelete_Click(object sender, ImageClickEventArgs e)
     {
         FilterItemClicked fic = new FilterItemClicked(new QueryFilterItem(Title, Description, PropName));
-        if (DeleteItemClicked != null)
-            DeleteItemClicked(this, fic);
+        DeleteItemClicked?.Invoke(this, fic);
     }
 }

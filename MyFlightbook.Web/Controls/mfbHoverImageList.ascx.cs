@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Globalization;
 using System.Web.UI.WebControls;
 using MyFlightbook.Image;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2016 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -17,8 +18,8 @@ public partial class Controls_mfbHoverImageList : System.Web.UI.UserControl
     /// </summary>
     public Unit MaxWidth
     {
-        get { return Unit.Parse(imgThumb.Style["max-width"], System.Globalization.CultureInfo.InvariantCulture); }
-        set { imgThumb.Style["max-width"] = value.ToString(); }
+        get { return Unit.Parse(imgThumb.Style["max-width"], CultureInfo.InvariantCulture); }
+        set { imgThumb.Style["max-width"] = value.ToString(CultureInfo.InvariantCulture); }
     }
 
     /// <summary>

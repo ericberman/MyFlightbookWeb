@@ -613,7 +613,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     protected void SaveChanges()
     {
         lblError.Text = string.Empty;
-        string szTailNew = txtTail.Text.ToUpper();
+        string szTailNew = txtTail.Text.ToUpper(CultureInfo.CurrentCulture);
         int AircraftIDOrig = AircraftID;
 
         Aircraft ac = (AircraftID == Aircraft.idAircraftUnknown) ? new Aircraft() : new Aircraft(AircraftID);  // if editing an existing airplane, init to the existing data (only modify what's in the UI)
@@ -623,7 +623,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         // b) Existing aircraft with no other users: go ahead and change the aircraft.
         // c) Existing aircraft with other users: Treat as a new aircraft with the specified model; after commit, do any replacement as necessary
         // In other words, migrate the user to another aircraft if we are editing an existing aircraft, changing the tail, and there are other users.
-        bool fChangedTail = (String.Compare(Aircraft.NormalizeTail(ac.TailNumber), Aircraft.NormalizeTail(szTailNew), true) != 0);
+        bool fChangedTail = (String.Compare(Aircraft.NormalizeTail(ac.TailNumber), Aircraft.NormalizeTail(szTailNew), StringComparison.CurrentCultureIgnoreCase) != 0);
         bool fIsNew = ac.IsNew;
         bool fChangedModel = ac.ModelID != SelectedModelID;
 

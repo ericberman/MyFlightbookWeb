@@ -1,18 +1,9 @@
-using System;
-using System.Data;
-using System.Configuration;
-using System.Collections;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 using MyFlightbook;
+using System;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -56,7 +47,6 @@ public partial class Controls_mfbSimpleTotals : System.Web.UI.UserControl
 
     protected void cmbTotals_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (DateRangeChanged != null)
-            DateRangeChanged(this, e);
+        DateRangeChanged?.Invoke(this, e);
     }
 }

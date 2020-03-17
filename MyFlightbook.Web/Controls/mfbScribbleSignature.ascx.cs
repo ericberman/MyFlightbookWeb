@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2019 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -21,8 +21,7 @@ public partial class Controls_mfbScribbleSignature : System.Web.UI.UserControl
 
     public byte[] Base64Data()
     {
-        byte[] rgbSignature = null;
-
+        byte[] rgbSignature;
         try
         {
             rgbSignature = ScribbleImage.FromDataLinkURL(hdnSigData.Value);
@@ -45,7 +44,7 @@ public partial class Controls_mfbScribbleSignature : System.Web.UI.UserControl
     protected void valSignature_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
 
         if (Enabled && !ScribbleImage.IsValidDataURL(hdnSigData.Value))
             args.IsValid = false;

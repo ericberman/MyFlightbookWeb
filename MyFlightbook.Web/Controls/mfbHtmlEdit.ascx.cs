@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2014-2015 MyFlightbook LLC
+ * Copyright (c) 2014-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -59,21 +59,21 @@ public partial class Controls_mfbHtmlEdit : System.Web.UI.UserControl
     public static string FixHtml(string sz)
     {
         if (sz == null)
-            throw new ArgumentNullException("sz");
+            throw new ArgumentNullException(nameof(sz));
         return sz.Replace(szHtmlEditorNewlineHack, "<br />");
     }
 
     public static string UnFixEncodedHtml(string sz)
     {
         if (sz == null)
-            throw new ArgumentNullException("sz");
+            throw new ArgumentNullException(nameof(sz));
         return HttpContext.Current.Server.HtmlDecode(sz.Replace("&lt;br&gt;", szHtmlEditorNewlineHack));
     }
 
     public static string UnFixHtml(string sz)
     {
         if (sz == null)
-            throw new ArgumentNullException("sz");
+            throw new ArgumentNullException(nameof(sz));
         return sz.Replace("<br />", szHtmlEditorNewlineHack);
     }
     #endregion

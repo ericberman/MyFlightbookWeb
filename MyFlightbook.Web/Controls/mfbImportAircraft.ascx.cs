@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -66,7 +66,7 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
     protected void gvAircraftCandidates_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             AircraftImportMatchRow mr = (AircraftImportMatchRow)e.Row.DataItem;
@@ -180,7 +180,7 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
     protected void gvAircraftCandidates_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentException("null gridviewcommandeventargs for new aircraft to import", "e");
+            throw new ArgumentException("null gridviewcommandeventargs for new aircraft to import", nameof(e));
 
         int idRow = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
         if (e.CommandName.CompareOrdinalIgnoreCase("AddNew") == 0)

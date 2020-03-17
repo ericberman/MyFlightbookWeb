@@ -638,6 +638,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     {
         if (!String.IsNullOrEmpty(LastSortExpr))
         {
+            if (gv == null)
+                throw new ArgumentNullException(nameof(gv));
             foreach (DataControlField dcf in gv.Columns)
                 dcf.HeaderStyle.CssClass = "headerBase" + ((dcf.SortExpression.CompareCurrentCultureIgnoreCase(LastSortExpr) == 0) ? (LastSortDir == SortDirection.Ascending ? " headerSortAsc" : " headerSortDesc") : string.Empty) + (dcf.SortExpression.CompareCurrentCultureIgnoreCase("Date") == 0 ? " gvhLeft" : " gvhCentered");
         }
@@ -678,6 +680,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
         GridView gv = (GridView)sender;
         gv.PageIndex = e.NewPageIndex;
         BindData();
@@ -832,12 +836,16 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     #region Layout control
     protected void ckCompactView_CheckedChanged(object sender, EventArgs e)
     {
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
         ckCompactView.Checked = IsCompact = ((CheckBox)sender).Checked;
         BindData();
     }
 
     protected void ckIncludeImages_CheckedChanged(object sender, EventArgs e)
     {
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
         ckIncludeImages.Checked = ShowImagesInline = ((CheckBox)sender).Checked;
         BindData();
     }
@@ -889,6 +897,8 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
 
     protected void ckSelectAll_CheckedChanged(object sender, EventArgs e)
     {
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
         CheckBox ck = sender as CheckBox;
         AllSelected = ck.Checked;
         if (BoundItems == null)

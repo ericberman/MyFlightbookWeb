@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -89,14 +89,13 @@ public partial class Controls_mfbSelectTemplates : System.Web.UI.UserControl
 
         // No viewstate - refresh every time.
         Refresh();
-        if (TemplatesReady != null)
-            TemplatesReady(this, new EventArgs());
+        TemplatesReady?.Invoke(this, new EventArgs());
     }
 
     protected void ckActive_CheckedChanged(object sender, EventArgs e)
     {
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
 
         CheckBox ck = sender as CheckBox;
 
@@ -108,15 +107,13 @@ public partial class Controls_mfbSelectTemplates : System.Web.UI.UserControl
         {
             ActiveTemplates.Add(id);
             Refresh();
-            if (TemplateSelected != null)
-                TemplateSelected(this, new PropertyTemplateEventArgs(UserTemplates.FirstOrDefault(pt => pt.ID == id)));
+            TemplateSelected?.Invoke(this, new PropertyTemplateEventArgs(UserTemplates.FirstOrDefault(pt => pt.ID == id)));
         }
         else
         {
             ActiveTemplates.Remove(id);
             Refresh();
-            if (TemplateUnselected != null)
-                TemplateUnselected(this, new PropertyTemplateEventArgs(id));
+            TemplateUnselected?.Invoke(this, new PropertyTemplateEventArgs(id));
         }
     }
 }

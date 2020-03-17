@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -132,7 +132,7 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
     {
         // Remove the image from the list; faster than refreshing and works for pending images too.
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         Images.RemoveImage(e.Image);
         Refresh(false);
     }
@@ -213,7 +213,7 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
     protected void rptImg_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         Controls_mfbEditableImage c = (Controls_mfbEditableImage)e.Item.FindControl("mfbEI");
         MFBImageInfo mfbii = (MFBImageInfo)e.Item.DataItem;
         if (String.IsNullOrEmpty(mfbii.ThumbnailFile))

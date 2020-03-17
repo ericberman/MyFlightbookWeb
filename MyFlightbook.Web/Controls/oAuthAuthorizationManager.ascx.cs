@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -34,7 +34,7 @@ public partial class Controls_oAuthAuthorizationManager : System.Web.UI.UserCont
     protected void gvOAuthClients_RowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         MFBOauthClientAuth.RevokeAuthorization(Page.User.Identity.Name, e.Keys[0].ToString());
         Refresh();
     }
@@ -42,7 +42,7 @@ public partial class Controls_oAuthAuthorizationManager : System.Web.UI.UserCont
     protected void gvOAuthClients_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             MFBOauthClientAuth oauth = (MFBOauthClientAuth)e.Row.DataItem;

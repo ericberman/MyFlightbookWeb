@@ -23,7 +23,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
     public event EventHandler Cancel = null;
     public event EventHandler SigningFinished = null;
-    protected MyFlightbook.Profile m_pf = null;
+    private MyFlightbook.Profile m_pf = null;
 
     public enum SignMode { Authenticated, AdHoc };
 
@@ -259,6 +259,8 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
     protected void CopyToInstructor(LogbookEntry le)
     {
+        if (le == null)
+            throw new ArgumentNullException(nameof(le));
         // Now make it look like the CFI's: their username, swap DUAL for CFI time, ensure that PIC time is present.
         le.FlightID = LogbookEntry.idFlightNew;
         string szStudentName = MyFlightbook.Profile.GetUser(le.User).UserFullName;
@@ -349,7 +351,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     if (ckCopyFlight.Checked)
                         CopyToInstructor(Flight.Clone());
 
-                    Response.Cookies[szKeyCookieCopy].Value = ckCopyFlight.Checked.ToString();
+                    Response.Cookies[szKeyCookieCopy].Value = ckCopyFlight.Checked.ToString(CultureInfo.InvariantCulture);
                     Response.Cookies[szKeyCookieCopy].Expires = DateTime.Now.AddYears(10);
                     break;
             }
@@ -413,6 +415,8 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
 
     protected void ckSignSICEndorsement_CheckedChanged(object sender, EventArgs e)
     {
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
         bool fUseTemplate = ((CheckBox)sender).Checked;
         mvComments.SetActiveView(fUseTemplate ? vwTemplate : vwEdit);
 

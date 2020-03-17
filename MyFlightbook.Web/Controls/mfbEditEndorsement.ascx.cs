@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2018 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -35,9 +35,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
         get { return m_TargetUser; }
         set 
         {
-            if (value == null)
-                throw new ArgumentNullException("value");
-            m_TargetUser = value; 
+            m_TargetUser = value ?? throw new ArgumentNullException(nameof(value)); 
             lblStudent.Text = value.UserFullName;
             ViewState[keyVSTargetUser] = value.UserName;
         }
@@ -61,7 +59,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
         }
     }
 
-    protected string szVSMode = "vsSigningMode";
+    protected const string szVSMode = "vsSigningMode";
     /// <summary>
     /// Signing mode
     /// </summary>
@@ -101,9 +99,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
         get { return m_SourceUser; }
         set
         {
-            if (value == null)
-                throw new ArgumentNullException("value");
-            m_SourceUser = value;
+            m_SourceUser = value ?? throw new ArgumentNullException(nameof(value));
             lblCFI.Text = value.UserFullName;
             lblCFICert.Text = value.Certificate;
             lblCFIExp.Text = value.CertificateExpiration.ToShortDateString();
@@ -203,7 +199,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
     protected void NewTextBox(Control parent, string id, string szDefault, Boolean fMultiline, Boolean fRequired, string szName)
     {
         if (parent == null)
-            throw new ArgumentNullException("parent");
+            throw new ArgumentNullException(nameof(parent));
         TextBox tb = new EndorsementTextBox(id, szDefault);
         parent.Controls.Add(tb);
 
@@ -314,18 +310,13 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
 
         foreach (Control c in plcTemplateForm.Controls)
         {
-            LiteralControl l = c as LiteralControl;
-            TextBox t = c as TextBox;
-            Controls_mfbTypeInDate d = c as Controls_mfbTypeInDate;
-            DropDownList dd = c as DropDownList;
-
-            if (l != null)
+            if (c is LiteralControl l)
                 sb.Append(l.Text);
-            else if (t != null)
+            else if (c is TextBox t)
                 sb.Append(t.Text);
-            else if (d != null)
+            else if (c is Controls_mfbTypeInDate d)
                 sb.Append(d.Date.ToShortDateString());
-            else if (dd != null)
+            else if (c is DropDownList dd)
                 sb.Append(dd.SelectedValue);
         }
 
@@ -378,7 +369,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
     protected void valNoPostDate_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         // Don't allow any post dating, but allow 1 day of slop due to time zone
         if (DateTime.Now.AddDays(1).CompareTo(mfbTypeInDate1.Date) < 0)
             args.IsValid = false;
@@ -387,7 +378,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
     protected void valCorrectPassword_ServerValidate(object source, ServerValidateEventArgs args)
     {
         if (args == null)
-            throw new ArgumentNullException("args");
+            throw new ArgumentNullException(nameof(args));
         if (String.IsNullOrEmpty(txtPassConfirm.Text))
             return; // other validator will catch that
         if (SourceUser == null || !System.Web.Security.Membership.ValidateUser(SourceUser.UserName, txtPassConfirm.Text))

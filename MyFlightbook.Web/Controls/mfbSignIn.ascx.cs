@@ -1,11 +1,12 @@
 using MyFlightbook;
 using System;
+using System.Web;
 using System.Web.Security;
 using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -27,7 +28,7 @@ public partial class Controls_mfbSignIn : System.Web.UI.UserControl
         if (!IsPostBack)
         {
             HyperLink hl = (HyperLink) ctlSignIn.FindControl("CreateUserLink");
-            hl.NavigateUrl = hl.NavigateUrl + Request.Url.Query;
+            hl.NavigateUrl += Request.Url.Query;
         }
     }
 
@@ -44,6 +45,6 @@ public partial class Controls_mfbSignIn : System.Web.UI.UserControl
         // Set the Username field based on the email address provided.
         string szUser = Membership.GetUserNameByEmail(txtEmail.Text);
 
-        txtUser.Text = szUser;
+        txtUser.Text = HttpUtility.HtmlEncode(szUser);
     }
 }

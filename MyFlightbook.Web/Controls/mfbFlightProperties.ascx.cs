@@ -1,6 +1,5 @@
 ﻿using MyFlightbook;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web.UI;
@@ -8,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2019 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -212,7 +211,7 @@ public partial class Controls_mfbFlightProperties : System.Web.UI.UserControl
     protected void gvProperties_RowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         CustomFlightProperty cfp = (CustomFlightProperty)arCfp[e.RowIndex];
 
         arCfp.RemoveAt(e.RowIndex);

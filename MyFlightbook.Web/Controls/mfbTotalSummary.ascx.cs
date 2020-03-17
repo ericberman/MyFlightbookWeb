@@ -8,7 +8,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2008-2019 MyFlightbook LLC
+ * Copyright (c) 2008-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -38,8 +38,7 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
     {
         get
         {
-            bool fGrouped;
-            if (Request.Cookies[szCookieDefaultTotalsMode] != null && bool.TryParse(Request.Cookies[szCookieDefaultTotalsMode].Value, out fGrouped))
+            if (Request.Cookies[szCookieDefaultTotalsMode] != null && bool.TryParse(Request.Cookies[szCookieDefaultTotalsMode].Value, out bool fGrouped))
                 return fGrouped;
             return false;
         }

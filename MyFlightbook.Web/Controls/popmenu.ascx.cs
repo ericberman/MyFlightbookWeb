@@ -4,7 +4,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -55,11 +55,11 @@ public partial class Controls_popmenu : System.Web.UI.UserControl, INamingContai
             MenuContent.InstantiateIn(plcMenuContent);
         base.OnInit(e);
     }
+}
 
-    public class MenuContentTemplate : Control, INamingContainer
+public class MenuContentTemplate : Control, INamingContainer
+{
+    public MenuContentTemplate()
     {
-        public MenuContentTemplate()
-        {
-        }
     }
 }

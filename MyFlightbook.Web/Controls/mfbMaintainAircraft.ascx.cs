@@ -6,14 +6,14 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Controls_mfbMaintainAircraft : System.Web.UI.UserControl
 {
-    private string szKeyVSMaint = "viewstateMaintenance";
+    private const string szKeyVSMaint = "viewstateMaintenance";
 
     #region properties
     /// <summary>
@@ -110,24 +110,25 @@ public partial class Controls_mfbMaintainAircraft : System.Web.UI.UserControl
     /// </summary>
     public MaintenanceRecord MaintenanceForAircraft()
     {
-        MaintenanceRecord mr = new MaintenanceRecord();
-        mr.LastAltimeter = mfbLastAltimeter.Date;
-        mr.LastAnnual = mfbLastAnnual.Date;
-        mr.LastELT = mfbLastELT.Date;
-        mr.LastStatic = mfbLastPitotStatic.Date;
-        mr.LastTransponder = mfbLastTransponder.Date;
-        mr.LastVOR = mfbLastVOR.Date;
-        mr.LastNewEngine = mfbLastEngine.Value;
-        mr.Last100 = mfbLast100.Value;
-        mr.LastOilChange = mfbLastOil.Value;
-        mr.RegistrationExpiration = mfbRenewalDue.Date;
-        return mr;
+        return new MaintenanceRecord
+        {
+            LastAltimeter = mfbLastAltimeter.Date,
+            LastAnnual = mfbLastAnnual.Date,
+            LastELT = mfbLastELT.Date,
+            LastStatic = mfbLastPitotStatic.Date,
+            LastTransponder = mfbLastTransponder.Date,
+            LastVOR = mfbLastVOR.Date,
+            LastNewEngine = mfbLastEngine.Value,
+            Last100 = mfbLast100.Value,
+            LastOilChange = mfbLastOil.Value,
+            RegistrationExpiration = mfbRenewalDue.Date
+        };
     }
 
     protected void gvMaintLog_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         gvMaintLog.PageIndex = e.NewPageIndex;
         UpdateMaintHistory();
     }
@@ -135,7 +136,7 @@ public partial class Controls_mfbMaintainAircraft : System.Web.UI.UserControl
     protected void mfbDeadlines1_DeadlineUpdated(object sender, DeadlineEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (e.OriginalDeadline == null || e.NewDeadline == null)
             return;
@@ -153,7 +154,7 @@ public partial class Controls_mfbMaintainAircraft : System.Web.UI.UserControl
     protected void mfbDeadlines1_DeadlineAdded(object sender, DeadlineEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (e.NewDeadline.IsSharedAircraftDeadline)
         {
@@ -167,7 +168,7 @@ public partial class Controls_mfbMaintainAircraft : System.Web.UI.UserControl
     protected void mfbDeadlines1_DeadlineDeleted(object sender, DeadlineEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (e.OriginalDeadline == null)
             return;

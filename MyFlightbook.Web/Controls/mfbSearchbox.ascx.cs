@@ -3,7 +3,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2019 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -39,7 +39,6 @@ public partial class Controls_mfbSearchbox : System.Web.UI.UserControl
 
     protected void btnSearch_Click(object sender, EventArgs e)
     {
-        if (SearchClicked != null)
-            SearchClicked(sender, e);
+        SearchClicked?.Invoke(sender, e);
     }
 }

@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -85,13 +85,11 @@ public partial class Controls_mfbFlightContextMenu : UserControl
 
     protected void lnkSendFlight_Click(object sender, EventArgs e)
     {
-        if (SendFlight != null)
-            SendFlight(this, new LogbookEventArgs(FlightID));
+        SendFlight?.Invoke(this, new LogbookEventArgs(FlightID));
     }
 
     protected void lnkDelete_Click(object sender, EventArgs e)
     {
-        if (DeleteFlight != null)
-            DeleteFlight(this, new LogbookEventArgs(FlightID));
+        DeleteFlight?.Invoke(this, new LogbookEventArgs(FlightID));
     }
 }

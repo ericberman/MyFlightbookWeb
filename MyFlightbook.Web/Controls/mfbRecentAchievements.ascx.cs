@@ -49,6 +49,8 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
     #region Calendar drawing
     protected void AddDayCell(TableRow parent, DateTime dt, int value, string cssCell)
     {
+        if (parent == null)
+            throw new ArgumentNullException(nameof(parent));
         TableCell tc = new TableCell() { CssClass = cssCell };
         parent.Cells.Add(tc);
         tc.Controls.Add(new Label() { Text = dt.Day.ToString(CultureInfo.CurrentCulture), CssClass = "dayOfMonth" });
@@ -69,6 +71,10 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
 
     protected void AddMonth(DateTime dt, WebControl parent, RecentAchievements ra)
     {
+        if (parent == null)
+            throw new ArgumentNullException(nameof(parent));
+        if (ra == null)
+            throw new ArgumentNullException(nameof(ra));
         DateTime dtDay = new DateTime(dt.Year, dt.Month, 1);
         DateTime dtNextMonth = dtDay.AddMonths(1);
 
@@ -124,6 +130,8 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
 
     protected void RefreshCalendar(RecentAchievements ra)
     {
+        if (ra == null)
+            throw new ArgumentNullException(nameof(ra));
         DateTime dtMonthStart = new DateTime(ra.StartDate.Year, ra.StartDate.Month, 1);
         DateTime dtMonthEnd = new DateTime(ra.EndDate.Year, ra.EndDate.Month, 1);
 
