@@ -133,6 +133,9 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
             if (!cfr.fIsRealAircraft)
                 return;
 

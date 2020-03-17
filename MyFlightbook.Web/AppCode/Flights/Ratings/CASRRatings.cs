@@ -7,7 +7,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -91,7 +91,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             decimal ifrTraining = Math.Min(cfr.Dual, cfr.IMC + cfr.IMCSim);
 
@@ -315,7 +315,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
 
             base.ExamineFlight(cfr);
 

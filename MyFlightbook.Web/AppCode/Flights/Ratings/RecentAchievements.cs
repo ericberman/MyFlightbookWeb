@@ -152,8 +152,7 @@ namespace MyFlightbook.MilestoneProgress
         #region Flight Counts
         public int FlightCountOnDate(DateTime dt)
         {
-            int cFlights;
-            return FlightDates.TryGetValue(dt.YMDString(), out cFlights) ? cFlights : 0;
+            return FlightDates.TryGetValue(dt.YMDString(), out int cFlights) ? cFlights : 0;
         }
 
         public int FlownDaysInPeriod { get { return FlightDates.Count; } }
@@ -260,7 +259,7 @@ namespace MyFlightbook.MilestoneProgress
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
-                throw new ArgumentNullException("cfr");
+                throw new ArgumentNullException(nameof(cfr));
             DateTime dtFlight = cfr.dtFlight.Date;
 
             if (AutoDateRange)

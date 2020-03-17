@@ -68,6 +68,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             bool fIsMatch = CatClassMatchesRatingSought(cfr.idCatClassOverride);
             bool fIsSim = cfr.fIsCertifiedIFR && !cfr.fIsRealAircraft;
 
@@ -150,6 +152,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             bool fIsMatch = CatClassMatchesRatingSought(cfr.idCatClassOverride);
             bool fIsSim = cfr.fIsCertifiedIFR && !cfr.fIsRealAircraft;
 

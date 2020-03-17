@@ -242,6 +242,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             CategoryClass cc = CategoryClass.CategoryClassFromID(cfr.idCatClassOverride);
             bool fCatClassMatches = CatClassMatchesRatingSought(cc.IdCatClass);
 
@@ -823,6 +825,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             if (!CategoryClass.IsBalloon(cfr.idCatClassOverride))
                 return;
 
@@ -1065,6 +1069,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             if (cfr.fIsRealAircraft)
             {
                 miOverallTraining.AddEvent(cfr.Total);

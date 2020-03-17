@@ -263,6 +263,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             // Only real aircraft and FTDs need apply...
             if (!cfr.fIsRealAircraft && !cfr.fIsFTD)
                 return;
@@ -660,6 +662,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             base.ExamineFlight(cfr);
 
             if (RatingFromCatClass(cfr.idCatClassOverride) == this.RatingSought && cfr.fIsRealAircraft)
@@ -909,6 +913,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             // Only real aircraft and FTDs need apply...
             if (!cfr.fIsRealAircraft && !cfr.fIsFTD)
                 return;
@@ -1134,6 +1140,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             bool fIsMatch = CatClassMatchesRatingSought(cfr.idCatClassOverride);
             bool fIsSim = cfr.fIsCertifiedIFR && !cfr.fIsRealAircraft;
 
@@ -1435,6 +1443,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             bool fIsMatch = CatClassMatchesRatingSought(cfr.idCatClassOverride);
             bool fIsSim = cfr.fIsCertifiedIFR && !cfr.fIsRealAircraft;
 
@@ -1530,6 +1540,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             bool fIsMatch = CatClassMatchesRatingSought(cfr.idCatClassOverride);
             bool fIsSim = cfr.fIsCertifiedIFR && !cfr.fIsRealAircraft;
 

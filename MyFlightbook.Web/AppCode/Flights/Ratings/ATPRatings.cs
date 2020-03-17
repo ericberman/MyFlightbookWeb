@@ -99,6 +99,8 @@ namespace MyFlightbook.MilestoneProgress
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             bool fIsAirplane = CategoryClass.IsAirplane(cfr.idCatClassOverride);
             bool fIsIFRSim = (fIsAirplane && cfr.fIsFTD);
 

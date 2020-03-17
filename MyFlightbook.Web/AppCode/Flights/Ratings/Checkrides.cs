@@ -5,7 +5,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2019 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -69,7 +69,7 @@ namespace MyFlightbook.Achievements
     /// <summary>
     /// A certificate (license) with a set of associated privileges
     /// </summary>
-    public class PilotLicense : IComparable
+    public class PilotLicense : IComparable, IEquatable<PilotLicense>
     {
         private readonly List<string> m_privs;
 
@@ -130,18 +130,74 @@ namespace MyFlightbook.Achievements
             return String.Format(CultureInfo.CurrentCulture, "{0}: {1}", LicenseName, String.Join(", ", m_privs));
         }
 
+        #region IComparable
         public int CompareTo(object obj)
         {
-            PilotLicense pl = obj as PilotLicense;
-            return (pl == null) ? -1 : LicenseKind.CompareTo(pl.LicenseKind);
+            return (!(obj is PilotLicense pl)) ? -1 : LicenseKind.CompareTo(pl.LicenseKind);
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as PilotLicense);
+        }
+
+        public bool Equals(PilotLicense other)
+        {
+            return other != null &&
+                   EqualityComparer<IEnumerable<string>>.Default.Equals(Privileges, other.Privileges) &&
+                   LicenseName == other.LicenseName &&
+                   LicenseKind == other.LicenseKind;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 55507434;
+                hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<string>>.Default.GetHashCode(Privileges);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LicenseName);
+                hashCode = hashCode * -1521134295 + LicenseKind.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(PilotLicense left, PilotLicense right)
+        {
+            return EqualityComparer<PilotLicense>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(PilotLicense left, PilotLicense right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(PilotLicense left, PilotLicense right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(PilotLicense left, PilotLicense right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(PilotLicense left, PilotLicense right)
+        {
+            return left is object && left != null && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(PilotLicense left, PilotLicense right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
     }
 
     /// <summary>
     /// A checkride - earns a license for a single privilege
     /// </summary>
     [Serializable]
-    public class Checkride : IComparable
+    public class Checkride : IComparable, IEquatable<Checkride>
     {
         #region Properties
         /// <summary>
@@ -205,11 +261,79 @@ namespace MyFlightbook.Achievements
             get { return String.Format(CultureInfo.CurrentCulture, "{0}: {1} ({2})", CheckrideType.Name(), LicenseName, Privilege); }
         }
 
+        #region IComparable
         public int CompareTo(Object obj)
         {
-            Checkride cr = obj as Checkride;
-            return cr == null ? -1 : DateEarned.CompareTo(cr.DateEarned);
+            return !(obj is Checkride cr) ? -1 : DateEarned.CompareTo(cr.DateEarned);
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Checkride);
+        }
+
+        public bool Equals(Checkride other)
+        {
+            return other != null &&
+                   DateEarned == other.DateEarned &&
+                   FlightID == other.FlightID &&
+                   CheckrideType == other.CheckrideType &&
+                   LicenseKind == other.LicenseKind &&
+                   LicenseName == other.LicenseName &&
+                   CheckrideProperty == other.CheckrideProperty &&
+                   Privilege == other.Privilege &&
+                   Level == other.Level &&
+                   DisplayString == other.DisplayString;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = -1114257941;
+                hashCode = hashCode * -1521134295 + DateEarned.GetHashCode();
+                hashCode = hashCode * -1521134295 + FlightID.GetHashCode();
+                hashCode = hashCode * -1521134295 + CheckrideType.GetHashCode();
+                hashCode = hashCode * -1521134295 + LicenseKind.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LicenseName);
+                hashCode = hashCode * -1521134295 + CheckrideProperty.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Privilege);
+                hashCode = hashCode * -1521134295 + Level.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DisplayString);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(Checkride left, Checkride right)
+        {
+            return EqualityComparer<Checkride>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Checkride left, Checkride right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(Checkride left, Checkride right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(Checkride left, Checkride right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(Checkride left, Checkride right)
+        {
+            return left is object && left != null && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(Checkride left, Checkride right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
     }
 
     /// <summary>
