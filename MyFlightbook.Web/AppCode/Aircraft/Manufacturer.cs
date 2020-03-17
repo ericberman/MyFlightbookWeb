@@ -7,7 +7,7 @@ using System.Web;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -65,7 +65,7 @@ namespace MyFlightbook
             FLoad("WHERE idmanufacturer=?idMan", new MySqlParameter("idMan", id));
         }
 
-        static Regex rGeneric = new Regex("VARIOUS|UNKNOWN|MISC|MISCELLANEOUS", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        static readonly Regex rGeneric = new Regex("VARIOUS|UNKNOWN|MISC|MISCELLANEOUS", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         const string szGeneric = "Generic";
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace MyFlightbook
             {
                 FLoad("WHERE manufacturer=?manName", new MySqlParameter("manName", szName));
             }
-            catch (MyFlightbookException)
+            catch (Exception ex) when (ex is MyFlightbookException)
             {
                 ManufacturerID = UnsavedID;
             }
@@ -138,7 +138,7 @@ namespace MyFlightbook
         protected void InitFromDataReader(MySqlDataReader dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             ManufacturerID = Convert.ToInt32(dr["idManufacturer"], CultureInfo.InvariantCulture);
             ManufacturerName = (string)(dr["Manufacturer"]);
             AllowedTypes = (AllowedAircraftTypes)Convert.ToInt32(dr["DefaultSim"], CultureInfo.InvariantCulture);
@@ -175,7 +175,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public static IEnumerable<Manufacturer> CachedManufacturers()
         {
-            object o = null;
+            object o;
             if (HttpRuntime.Cache != null && (o = HttpRuntime.Cache[szCacheKey]) != null)
                 return (IEnumerable<Manufacturer>) o;
             IEnumerable<Manufacturer> lst = AllManufacturers();

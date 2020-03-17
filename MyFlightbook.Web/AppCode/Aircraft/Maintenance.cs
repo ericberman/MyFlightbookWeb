@@ -247,7 +247,7 @@ namespace MyFlightbook
         public static MaintenanceLog[] ChangesByAircraftID(int aircraftid)
         {
             ArrayList al = new ArrayList();
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["GetMaintenanceLog"].ToString(), "m.idaircraft = ?idAircraft"));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["GetMaintenanceLog"], "m.idaircraft = ?idAircraft"));
             dbh.ReadRows(
                 (comm) => { comm.Parameters.AddWithValue("idAircraft", aircraftid); },
                 (dr) => { AddLogToArray(al, dr); });
@@ -266,7 +266,7 @@ namespace MyFlightbook
             string szRestrict = @"INNER JOIN useraircraft ON aircraft.idAircraft = useraircraft.idAircraft 
 INNER JOIN maintenancelog ON maintenancelog.user = useraircraft.userName AND maintenancelog.idaircraft = aircraft.idaircraft
 WHERE useraircraft.userName = ?UserName AND (flags & 0x0008) = 0";
-            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), "useraircraft.flags", "''", "''", "''", szRestrict);
+            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], "useraircraft.flags", "''", "''", "''", szRestrict);
             ArrayList alar = new ArrayList();
 
             DBHelper dbh = new DBHelper(szQ);

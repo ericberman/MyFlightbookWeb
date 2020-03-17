@@ -32,7 +32,7 @@ namespace JouniHeikniemi.Tools.Text
         {
             string szSep = ListSeparator;
 
-            if (reader.BaseStream.CanSeek)
+            if (szLine != null && reader.BaseStream.CanSeek)
             {
                 fNoReadahead = true;    // prevent any readahead on the stream
                 int cElements = -1;

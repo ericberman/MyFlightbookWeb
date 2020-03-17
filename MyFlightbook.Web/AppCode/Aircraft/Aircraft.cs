@@ -27,7 +27,9 @@ namespace MyFlightbook
     /// Does NOT have a 0 value, since that doesn't correspond to anything in the database.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
+#pragma warning disable CA1027 // Mark enums with FlagsAttribute
     public enum AircraftInstanceTypes
+#pragma warning restore CA1027 // Mark enums with FlagsAttribute
     {
         RealAircraft = 1, Mintype = RealAircraft,
         UncertifiedSimulator,
@@ -298,6 +300,8 @@ namespace MyFlightbook
 
         protected AircraftStats(MySqlDataReader dr) : this()
         {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
             InitFromDataReader(dr);
         }
         #endregion
@@ -1560,6 +1564,8 @@ WHERE
         /// <param name="fIgnoreModelMismatch">whether to ignore mismatched model ID's</param>
         public void MergeWith(Aircraft ac, bool fIgnoreModelMismatch)
         {
+            if (ac == null)
+                throw new ArgumentNullException(nameof(ac));
             // do nothing if we're merging with self.
             if (this.AircraftID == ac.AircraftID)
                 return;
@@ -2222,7 +2228,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
 
         public static bool operator >(AircraftImportMatchRow left, AircraftImportMatchRow right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(AircraftImportMatchRow left, AircraftImportMatchRow right)

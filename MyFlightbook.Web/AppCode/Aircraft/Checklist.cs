@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -41,12 +41,12 @@ namespace MyFlightbook.Checklists
             return String.Format(CultureInfo.CurrentCulture, "{0} {1}", Content ?? string.Empty, Response ?? string.Empty);
         }
 
-        private static Regex regexPrefix = new Regex("^(?<prefix>Skin|Tab|-{1,2}|\\*{1,2}|\\[(?: |[eEbB][+-])?])?(?<content>.*)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex regexPrefix = new Regex("^(?<prefix>Skin|Tab|-{1,2}|\\*{1,2}|\\[(?: |[eEbB][+-])?])?(?<content>.*)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public static ChecklistRow ParseRowType(string szRow)
         {
             if (String.IsNullOrEmpty(szRow))
-                throw new ArgumentNullException("szRow");
+                throw new ArgumentNullException(nameof(szRow));
 
             MatchCollection mc = regexPrefix.Matches(szRow.Trim());
 
@@ -147,7 +147,7 @@ namespace MyFlightbook.Checklists
     #region Container rows
     public abstract class ContainerRow : ContentRow
     {
-        private List<ChecklistRow> m_containedItems;
+        private readonly List<ChecklistRow> m_containedItems;
 
         #region properties
         /// <summary>
@@ -201,14 +201,9 @@ namespace MyFlightbook.Checklists
 
     public class Checklist
     {
-        private ContainerRow m_rootContainer = null;
+        private readonly ContainerRow m_rootContainer = null;
 
         #region Properties
-        /// <summary>
-        /// Title of the checklist
-        /// </summary>
-        string Title { get; set; }
-
         public ContainerRow Root { get { return m_rootContainer; } }
         #endregion
 
@@ -244,8 +239,7 @@ namespace MyFlightbook.Checklists
                         throw new InvalidDataException("Can only have one root container in Checklist");
 
 
-                    ContainerRow container = checklistRow as ContainerRow;
-                    if (container != null)
+                    if (checklistRow is ContainerRow container)
                     {
                         int level = container.Level;
 

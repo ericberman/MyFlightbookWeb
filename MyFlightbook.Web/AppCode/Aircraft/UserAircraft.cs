@@ -8,7 +8,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2019 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -58,7 +58,7 @@ namespace MyFlightbook
             // If no authenticated user, return immediately - don't hit the database!
             // Should never happen.
             if (String.IsNullOrEmpty(User) && restriction == AircraftRestriction.UserAircraft)
-                return new Aircraft[0];
+                return Array.Empty<Aircraft>();
 
             Aircraft[] rgAircraft = CachedAircraft;
 
@@ -91,7 +91,7 @@ namespace MyFlightbook
                     break;
             }
 
-            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"].ToString(), szFlags, szDefaultImage, szPrivateNotes, szTemplates, szRestrict);
+            string szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["AircraftForUserCore"], szFlags, szDefaultImage, szPrivateNotes, szTemplates, szRestrict);
             ArrayList alAircraft = new ArrayList();
 
             DBHelper dbh = new DBHelper(szQ);
@@ -215,9 +215,9 @@ namespace MyFlightbook
         public void ReplaceAircraftForUser(Aircraft acNew, Aircraft acOld, bool fMigrateFlights)
         {
             if (acNew == null)
-                throw new ArgumentNullException("acNew");
+                throw new ArgumentNullException(nameof(acNew));
             if (acOld == null)
-                throw new ArgumentNullException("acOld");
+                throw new ArgumentNullException(nameof(acOld));
 
             if (acNew.AircraftID == acOld.AircraftID)
                 return;
@@ -270,7 +270,7 @@ namespace MyFlightbook
                     // Then delete the old aircraft.  Ignore any errors
                     FDeleteAircraftforUser(acOld.AircraftID);
                 }
-                catch (MyFlightbookException)
+                catch (Exception ex) when (ex is MyFlightbookException)
                 {
                     InvalidateCache();
                 }

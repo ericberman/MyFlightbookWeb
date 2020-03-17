@@ -6,7 +6,7 @@ using System.Text;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2018 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -144,7 +144,7 @@ namespace MyFlightbook
         public CountryCodePrefix(string szCountry, string szPrefix) : this()
         {
             Prefix = szPrefix ?? string.Empty;
-            NormalizedPrefix = Prefix.Replace("-", string.Empty);
+            NormalizedPrefix = (Prefix == null) ? string.Empty : Prefix.Replace("-", string.Empty);
             CountryName = szCountry;
         }
 
