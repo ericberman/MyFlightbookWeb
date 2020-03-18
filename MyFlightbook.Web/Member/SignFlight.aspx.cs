@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,8 +18,6 @@ public partial class Member_SignFlight : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            string szError = String.Empty;
-    
             int idFlight = util.GetIntParam(Request, "idFlight", LogbookEntry.idFlightNew);
             hdnFlightID.Value = idFlight.ToString(CultureInfo.InvariantCulture);
 
@@ -34,7 +32,7 @@ public partial class Member_SignFlight : System.Web.UI.Page
             LogbookEntry le = new LogbookEntry();
             le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true);
 
-            if (!le.CanSignThisFlight(Page.User.Identity.Name, out szError))
+            if (!le.CanSignThisFlight(Page.User.Identity.Name, out string szError))
                 lblError.Text = szError;
             else
             {

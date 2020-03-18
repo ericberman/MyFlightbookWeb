@@ -55,12 +55,12 @@ public partial class Member_8710Form : System.Web.UI.Page
         fq.Refresh();
 
         string szRestrict = fq.RestrictClause;
-        string szQueryTemplate = ConfigurationManager.AppSettings["8710ForUserQuery"].ToString();
+        string szQueryTemplate = ConfigurationManager.AppSettings["8710ForUserQuery"];
         string szHaving = String.IsNullOrEmpty(fq.HavingClause) ? string.Empty : "HAVING " + fq.HavingClause;
         string szQueryClassTotals = String.Format(CultureInfo.InvariantCulture, szQueryTemplate, szRestrict, szHaving, "f.InstanceTypeID, f.CatClassID"); 
         string szQueryMain = String.Format(CultureInfo.InvariantCulture, szQueryTemplate, szRestrict, szHaving, "f.category");
 
-        string szQueryRollup = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["RollupGridQuery"].ToString(), szRestrict, szHaving);
+        string szQueryRollup = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["RollupGridQuery"], szRestrict, szHaving);
 
 
         DBHelperCommandArgs args = new DBHelperCommandArgs(szQueryClassTotals);
@@ -152,7 +152,7 @@ public partial class Member_8710Form : System.Web.UI.Page
     public void ClearForm(object sender, FlightQueryEventArgs fqe)
     {
         if (fqe == null)
-            throw new ArgumentNullException("fqe");
+            throw new ArgumentNullException(nameof(fqe));
         mfbSearchForm1.Restriction = fqe.Query;
         UpdateDescription();
         ShowResults(sender, fqe);
@@ -161,7 +161,7 @@ public partial class Member_8710Form : System.Web.UI.Page
     protected void ShowResults(object sender, FlightQueryEventArgs fqe)
     {
         if (fqe == null)
-            throw new ArgumentNullException("fqe");
+            throw new ArgumentNullException(nameof(fqe));
         mfbSearchForm1.Restriction = fqe.Query;
         mvQuery.ActiveViewIndex = 0; // go back to the results.
         UpdateDescription();
@@ -182,7 +182,7 @@ public partial class Member_8710Form : System.Web.UI.Page
     protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClicked fic)
     {
         if (fic == null)
-            throw new ArgumentNullException("fic");
+            throw new ArgumentNullException(nameof(fic));
         mfbSearchForm1.Restriction = mfbSearchForm1.Restriction.ClearRestriction(fic.FilterItem);   // need to set the restriction in order to persist it (since it updates the view)
         ShowResults(sender, new FlightQueryEventArgs(mfbSearchForm1.Restriction));
     }
@@ -202,18 +202,16 @@ public partial class Member_8710Form : System.Web.UI.Page
         }
     }
 
-    protected string ModelDisplay(object o)
+    protected static string ModelDisplay(object o)
     {
-        System.Data.Common.DbDataRecord dr = o as System.Data.Common.DbDataRecord;
-
-        if (o == null || o == DBNull.Value || dr == null || dr["Family"] == DBNull.Value)
+        if (o == null || o == DBNull.Value || !(o is System.Data.Common.DbDataRecord dr) || dr["Family"] == DBNull.Value)
             return Resources.LogbookEntry.FieldTotal;
 
         string szFamily = (string)dr["Family"];
         return szFamily.StartsWith("(", StringComparison.CurrentCultureIgnoreCase) ? szFamily : (string)dr["ModelDisplay"];
     }
 
-    protected string FormatMultiDecimal(bool fUseHHMM, string separator, params object[] values)
+    protected static string FormatMultiDecimal(bool fUseHHMM, string separator, params object[] values)
     {
         if (values == null)
             return string.Empty;
@@ -234,7 +232,7 @@ public partial class Member_8710Form : System.Web.UI.Page
         return fHasValue ? String.Join(separator, lst) : string.Empty;
     }
 
-    protected string FormatMultiInt(string separator, params object[] values)
+    protected static string FormatMultiInt(string separator, params object[] values)
     {
         if (values == null)
             return string.Empty;

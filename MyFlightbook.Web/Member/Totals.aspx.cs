@@ -3,7 +3,7 @@ using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2017 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -25,8 +25,10 @@ public partial class Member_Totals : System.Web.UI.Page
 
     protected void DateRangeChanged(object sender, EventArgs e)
     {
-        FlightQuery fq = new FlightQuery(User.Identity.Name);
-        fq.DateRange = MfbSimpleTotals1.DateRange;
+        FlightQuery fq = new FlightQuery(User.Identity.Name)
+        {
+            DateRange = MfbSimpleTotals1.DateRange
+        };
         MfbLogbook1.Restriction = fq;
         MfbLogbook1.RefreshData();
     }

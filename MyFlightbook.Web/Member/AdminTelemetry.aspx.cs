@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using MyFlightbook;
+using MyFlightbook.Geography;
+using MyFlightbook.Telemetry;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
-using MyFlightbook.Telemetry;
-using MyFlightbook.Geography;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2016 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -87,7 +86,7 @@ ORDER BY f.idFlight DESC;");
     protected void gvData_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         int index = Convert.ToInt32(e.CommandArgument, System.Globalization.CultureInfo.InvariantCulture);
         TelemetryReference ted = BoundData[index];
@@ -120,15 +119,14 @@ ORDER BY f.idFlight DESC;");
     }
     protected void btnMigrateFromDB_Click(object sender, EventArgs e)
     {
-        int limit;
-        if (!Int32.TryParse(txtMaxFiles.Text, out limit))
+        if (!Int32.TryParse(txtMaxFiles.Text, out int limit))
             limit = 50;
 
         DateTime dtStart = DateTime.Now;
 
         // for memory, just get the ID's up front, then we'll do flights one at a time.
         List<int> lst = new List<int>();
-        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT idFlight FROM flights WHERE {0} telemetry IS NOT NULL LIMIT {1}", ckLimitUsername.Checked ? "username=?szuser AND " : string.Empty, limit.ToString()));
+        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT idFlight FROM flights WHERE {0} telemetry IS NOT NULL LIMIT {1}", ckLimitUsername.Checked ? "username=?szuser AND " : string.Empty, limit));
         dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("szuser", txtUser.Text); }, (dr) => { lst.Add(Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture)); });
 
         int cFlightsMigrated = 0;
@@ -143,7 +141,7 @@ ORDER BY f.idFlight DESC;");
             }
             catch (Exception ex)
             {
-                throw new MyFlightbookException(String.Format("Exception migrating flight {0}: {1}", idFlight, ex.Message), ex);
+                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception migrating flight {0}: {1}", idFlight, ex.Message), ex);
             }
         });
 
@@ -154,15 +152,14 @@ ORDER BY f.idFlight DESC;");
 
     protected void btnMigrateFromFiles_Click(object sender, EventArgs e)
     {
-        int limit;
-        if (!Int32.TryParse(txtMaxFiles.Text, out limit))
+        if (!Int32.TryParse(txtMaxFiles.Text, out int limit))
             limit = 50;
 
         DateTime dtStart = DateTime.Now;
 
         // for memory, just get the ID's up front, then we'll do flights one at a time.
         List<TelemetryReference> lst = new List<TelemetryReference>();
-        DBHelper dbh = new DBHelper((ckLimitUsername.Checked ? "SELECT ft.* FROM FlightTelemetry ft INNER JOIN flights f ON ft.idflight=f.idflight WHERE f.username=?szuser" : "SELECT * from FlightTelemetry") + " LIMIT " + limit.ToString());
+        DBHelper dbh = new DBHelper((ckLimitUsername.Checked ? "SELECT ft.* FROM FlightTelemetry ft INNER JOIN flights f ON ft.idflight=f.idflight WHERE f.username=?szuser" : "SELECT * from FlightTelemetry") + " LIMIT " + limit.ToString(CultureInfo.InvariantCulture));
         dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("szuser", txtUser.Text); }, (dr) => { lst.Add(new TelemetryReference(dr)); });
 
         int cFlightsMigrated = 0;

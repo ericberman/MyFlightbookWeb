@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2019 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -56,7 +56,7 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     }
 
     #region To/From Form
-    protected string ColumnTitleFromColumn(StartingFlightColumn sfc)
+    protected static string ColumnTitleFromColumn(StartingFlightColumn sfc)
     {
         switch (sfc)
         {
@@ -78,10 +78,10 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     /// <param name="sfc">the column to read</param>
     /// <param name="sf">The starting flight</param>
     /// <returns>The appropriate column value</returns>
-    protected Decimal GetValueForColumn(StartingFlightColumn sfc, LogbookEntryBase sf)
+    protected static Decimal GetValueForColumn(StartingFlightColumn sfc, LogbookEntryBase sf)
     {
         if (sf == null)
-            throw new ArgumentNullException("sf");
+            throw new ArgumentNullException(nameof(sf));
         switch (sfc)
         {
             case StartingFlightColumn.CFI:
@@ -102,10 +102,10 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     /// <param name="sfc">The column to read</param>
     /// <param name="sf">The target starting flight</param>
     /// <param name="value">The value</param>
-    protected void SetValueForColumn(StartingFlightColumn sfc, LogbookEntryBase sf, Decimal value)
+    protected static void SetValueForColumn(StartingFlightColumn sfc, LogbookEntryBase sf, Decimal value)
     {
         if (sf == null)
-            throw new ArgumentNullException("sf");
+            throw new ArgumentNullException(nameof(sf));
         switch (sfc)
         {
             case StartingFlightColumn.CFI:
@@ -168,10 +168,8 @@ public partial class Member_StartingTotals : System.Web.UI.Page
 
     public string GetClassForWizardStep(object wizardStep)
     {
-        WizardStep step = wizardStep as WizardStep;
-
-        if (step == null)
-            return "";
+        if (!(wizardStep is WizardStep step))
+            return string.Empty;
 
         int stepIndex = wizStartingTotals.WizardSteps.IndexOf(step);
 
@@ -184,7 +182,7 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     }
     #endregion
 
-    protected string IDForCell(int row, int column)
+    protected static string IDForCell(int row, int column)
     {
         return String.Format(CultureInfo.InvariantCulture, "decR{0}C{1}", row, column);
     }
@@ -215,7 +213,7 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     protected void InitFlights(object sender, EventArgs e)
     {
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
         if (sender.GetType() == typeof(RadioButton) && !((RadioButton)sender).Checked)
             return;
 
@@ -226,10 +224,10 @@ public partial class Member_StartingTotals : System.Web.UI.Page
         UpdateFlightTable();
     }
 
-    protected void AddAircraftDescription(string szTitle, string szSubTitle, Control tc)
+    protected static void AddAircraftDescription(string szTitle, string szSubTitle, Control tc)
     {
         if (tc == null)
-            throw new ArgumentNullException("tc");
+            throw new ArgumentNullException(nameof(tc));
         Panel pTitle = new Panel();
         tc.Controls.Add(pTitle);
         Label lTitle = new Label();

@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,10 +44,8 @@ public partial class Member_RequestSigs : System.Web.UI.Page
 
     public string GetClassForWizardStep(object wizardStep)
     {
-        WizardStep step = wizardStep as WizardStep;
-
-        if (step == null)
-            return "";
+        if (!(wizardStep is WizardStep step))
+            return string.Empty;
 
         int stepIndex = wzRequestSigs.WizardSteps.IndexOf(step);
 
@@ -62,11 +60,13 @@ public partial class Member_RequestSigs : System.Web.UI.Page
 
     protected void RefreshFlightsList(string[] rgFlightIds)
     {
+        if (rgFlightIds == null)
+            throw new ArgumentNullException(nameof(rgFlightIds));
+
         HashSet<int> lstIds = new HashSet<int>();
         foreach (string sz in rgFlightIds)
         {
-            int idFlight;
-            if (int.TryParse(sz, NumberStyles.Integer, CultureInfo.InvariantCulture, out idFlight))
+            if (int.TryParse(sz, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idFlight))
                 lstIds.Add(idFlight);
         }
 
@@ -134,7 +134,7 @@ public partial class Member_RequestSigs : System.Web.UI.Page
         get
         {
             IList<string> lstIds = SelectedFlightIDs;
-            FlightQuery fq = new FlightQuery(User.Identity.Name) { CustomRestriction = String.Format(" (flights.idFlight IN ({0})) ", String.Join(", ", lstIds)) };
+            FlightQuery fq = new FlightQuery(User.Identity.Name) { CustomRestriction = String.Format(CultureInfo.InvariantCulture, " (flights.idFlight IN ({0})) ", String.Join(", ", lstIds)) };
             DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq));
             List<LogbookEntry> lstFlights = new List<LogbookEntry>();
             dbh.ReadRows(
@@ -148,7 +148,7 @@ public partial class Member_RequestSigs : System.Web.UI.Page
     protected void VerifySeparateEmail(object sender, ServerValidateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (String.Compare(MyFlightbook.Profile.GetUser(User.Identity.Name).Email, txtCFIEmail.Text, StringComparison.CurrentCultureIgnoreCase) == 0)
             e.IsValid = false;
     }
@@ -219,7 +219,7 @@ public partial class Member_RequestSigs : System.Web.UI.Page
     protected void wzRequestSigs_NextButtonClick(object sender, WizardNavigationEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.CurrentStepIndex == 0 && SelectedFlightIDs.Count == 0)
         {
             lblErrNoSelection.Visible = true;

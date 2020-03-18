@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -25,14 +25,17 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
     protected void wzImportAircraft_NextButtonClick(object sender, WizardNavigationEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.NextStepIndex == (int)ImportStep.stepExisting)
         {
             // We re-parse each time we come to this step to account for edits that were made without postbacks
 
             // Re-init the CSV text:
             if (fuCSVAircraft.HasFile && fuCSVAircraft.PostedFile.ContentLength > 0)
-                RawCSV = new StreamReader(fuCSVAircraft.PostedFile.InputStream).ReadToEnd();
+            {
+                using (StreamReader sr = new StreamReader(fuCSVAircraft.PostedFile.InputStream))
+                RawCSV = sr.ReadToEnd();
+            }
 
             if (String.IsNullOrEmpty(RawCSV))
             {
@@ -49,7 +52,7 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
     protected void wzImportAircraft_PreviousButtonClick(object sender, WizardNavigationEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         // Re-init since we're no longer using post-backs.
         if (e.NextStepIndex == (int)ImportStep.stepExisting)
             InitFromCSV(RawCSV);
@@ -73,10 +76,8 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
 
     public string GetClassForWizardStep(object wizardStep)
     {
-        WizardStep step = wizardStep as WizardStep;
-
-        if (step == null)
-            return "";
+        if (!(wizardStep is WizardStep step))
+            return string.Empty;
 
         int stepIndex = wzImportAircraft.WizardSteps.IndexOf(step);
 

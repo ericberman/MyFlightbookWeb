@@ -4,7 +4,7 @@ using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2009-2017 MyFlightbook LLC
+ * Copyright (c) 2009-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -85,7 +85,7 @@ public partial class Member_FindFlights : System.Web.UI.Page
     protected void SearchResults(string szRestrict)
     {
         if (szRestrict == null)
-            throw new ArgumentNullException("szRestrict");
+            throw new ArgumentNullException(nameof(szRestrict));
         if (szRestrict.Length > 0)
         {
             mfbSearchAndTotals1.SimpleQuery = szRestrict;

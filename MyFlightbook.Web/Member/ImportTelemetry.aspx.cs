@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -48,7 +48,7 @@ public partial class Member_ImportTelemetry : System.Web.UI.Page
     protected void AjaxFileUpload1_UploadComplete(object sender, AjaxControlToolkit.AjaxFileUploadEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.State != AjaxControlToolkit.AjaxFileUploadState.Success)
             return;
 
@@ -65,8 +65,7 @@ public partial class Member_ImportTelemetry : System.Web.UI.Page
         MatchCollection mc = rDate.Matches(e.FileName);
         if (mc != null && mc.Count > 0 && mc[0].Groups.Count > 0)
         {
-            DateTime dt;
-            if (DateTime.TryParse(mc[0].Groups[0].Value, out dt))
+            if (DateTime.TryParse(mc[0].Groups[0].Value, out DateTime dt))
             {
                 dtFallback = dt;
                 tmr.TimeZoneOffset = 0; // do it all in local time.

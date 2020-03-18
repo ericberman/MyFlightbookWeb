@@ -1,24 +1,14 @@
-﻿using System;
-using System.Collections;
+﻿using MyFlightbook;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.Linq;
 using System.Globalization;
-using System.Web;
-using System.Web.Security;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Xml.Linq;
-using System.Text;
-using MySql.Data.MySqlClient;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -26,7 +16,7 @@ using MyFlightbook;
 public partial class Member_Stats : System.Web.UI.Page
 {
     [Serializable]
-    protected class xyvalue : IComparable
+    protected class xyvalue : IComparable, IEquatable<xyvalue>
     {
         public int x { get; set; }
         public int y { get; set; }
@@ -41,10 +31,71 @@ public partial class Member_Stats : System.Web.UI.Page
             bucket = "";
         }
 
+        #region IComparable
         public int CompareTo(object obj)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
             return this.ordinal - ((xyvalue)obj).ordinal;
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as xyvalue);
+        }
+
+        public bool Equals(xyvalue other)
+        {
+            return other != null &&
+                   x == other.x &&
+                   y == other.y &&
+                   ordinal == other.ordinal &&
+                   bucket == other.bucket;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = -720872820;
+                hashCode = hashCode * -1521134295 + x.GetHashCode();
+                hashCode = hashCode * -1521134295 + y.GetHashCode();
+                hashCode = hashCode * -1521134295 + ordinal.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(bucket);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(xyvalue left, xyvalue right)
+        {
+            return EqualityComparer<xyvalue>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(xyvalue left, xyvalue right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(xyvalue left, xyvalue right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(xyvalue left, xyvalue right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(xyvalue left, xyvalue right)
+        {
+            return left is object && left != null && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(xyvalue left, xyvalue right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -128,19 +179,19 @@ public partial class Member_Stats : System.Web.UI.Page
     protected void sqlUserActivity_Selecting(object sender, SqlDataSourceCommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         e.Command.CommandTimeout = 90;
     }
     protected void sqlFlightsPerUser_Selecting(object sender, SqlDataSourceCommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         e.Command.CommandTimeout = 90;
     }
     protected void sqlFlightsTrend_Selecting(object sender, SqlDataSourceCommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         e.Command.CommandTimeout = 90;
     }
 }

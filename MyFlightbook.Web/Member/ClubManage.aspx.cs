@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2017-2019 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -159,9 +159,14 @@ public partial class Member_ClubManage : System.Web.UI.Page
 
     protected void gvAircraft_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
-        ClubAircraft ca = CurrentClub.MemberAircraft.FirstOrDefault(ac => ac.AircraftID == Convert.ToInt32(e.Keys[0]));
+        ClubAircraft ca = CurrentClub.MemberAircraft.FirstOrDefault(ac => ac.AircraftID == Convert.ToInt32(e.Keys[0], CultureInfo.InvariantCulture));
         if (ca != null)
         {
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender));
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+
             GridViewRow row = ((GridView) sender).Rows[e.RowIndex];
             ca.ClubDescription = ((Controls_mfbHtmlEdit)row.FindControl("txtDescription")).FixedHtml;
             ca.HighWater = ((Controls_mfbDecimalEdit)row.FindControl("decEditTime")).Value;
@@ -179,7 +184,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
     protected void gvAircraft_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if ((e.Row.RowState & DataControlRowState.Edit) == DataControlRowState.Edit)
         {
             ClubAircraft ca = (ClubAircraft) e.Row.DataItem;
@@ -198,9 +203,12 @@ public partial class Member_ClubManage : System.Web.UI.Page
 
     protected void gvAircraft_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        if (e.CommandName.CompareTo("_Delete") == 0)
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        if (e.CommandName.CompareOrdinalIgnoreCase("_Delete") == 0)
         {
-            ClubAircraft ca = CurrentClub.MemberAircraft.FirstOrDefault(ac => ac.AircraftID == Convert.ToInt32(e.CommandArgument));
+            ClubAircraft ca = CurrentClub.MemberAircraft.FirstOrDefault(ac => ac.AircraftID == Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
             if (ca != null)
             {
                 if (!ca.FDeleteFromClub())
@@ -230,8 +238,8 @@ public partial class Member_ClubManage : System.Web.UI.Page
     protected void gvMembers_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
-        ClubMember cm = CurrentClub.Members.FirstOrDefault(pf => pf.UserName.CompareTo(e.Keys[0].ToString()) == 0);
+            throw new ArgumentNullException(nameof(e));
+        ClubMember cm = CurrentClub.Members.FirstOrDefault(pf => pf.UserName.CompareOrdinalIgnoreCase(e.Keys[0].ToString()) == 0);
         if (cm != null)
         {
             GridViewRow gvr = gvMembers.Rows[e.RowIndex];
@@ -292,9 +300,12 @@ public partial class Member_ClubManage : System.Web.UI.Page
 
     protected void gvMembers_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        if (e.CommandName.CompareTo("_Delete") == 0)
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        if (e.CommandName.CompareOrdinalIgnoreCase("_Delete") == 0)
         {
-            ClubMember cm = CurrentClub.Members.FirstOrDefault(pf => pf.UserName.CompareTo(e.CommandArgument) == 0);
+            ClubMember cm = CurrentClub.Members.FirstOrDefault(pf => pf.UserName.CompareOrdinalIgnoreCase(e.CommandArgument.ToString()) == 0);
             if (cm != null)
             {
                 if (cm.RoleInClub == ClubMember.ClubMemberRole.Owner)
@@ -333,7 +344,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
         try
         {
             new CFIStudentMapRequest(Page.User.Identity.Name, txtMemberEmail.Text, CFIStudentMapRequest.RoleType.RoleInviteJoinClub, CurrentClub).Send();
-            lblAddMemberSuccess.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileRequestHasBeenSent, txtMemberEmail.Text);
+            lblAddMemberSuccess.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileRequestHasBeenSent, System.Web.HttpUtility.HtmlEncode(txtMemberEmail.Text));
             lblAddMemberSuccess.CssClass = "success";
             txtMemberEmail.Text = "";
         }

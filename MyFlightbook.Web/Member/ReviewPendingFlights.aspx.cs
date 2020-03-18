@@ -1,15 +1,14 @@
-﻿using System;
+﻿using MyFlightbook;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using MyFlightbook;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -83,9 +82,9 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
     protected void gvPendingFlights_Sorting(object sender, GridViewSortEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (sender == null)
-            throw new ArgumentNullException("sender");
+            throw new ArgumentNullException(nameof(sender));
 
         GridView gv = (GridView)sender;
         List<PendingFlight> lst = new List<PendingFlight>(Flights);
@@ -116,6 +115,8 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
 
     protected void EditPendingFlightInList(PendingFlight pendingFlight, List<PendingFlight> lst)
     {
+        if (lst == null)
+            throw new ArgumentNullException(nameof(lst));
         mvPendingFlights.SetActiveView(vwEdit);
         mfbEditFlight.SetPendingFlight(pendingFlight);
         int index = lst.IndexOf(pendingFlight);
@@ -126,7 +127,7 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
     protected void gvPendingFlights_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (String.Compare(e.CommandName, "Sort", StringComparison.OrdinalIgnoreCase) == 0)
             return;
@@ -160,6 +161,8 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
 
     protected void mfbEditFlight_FlightUpdated(object sender, LogbookEventArgs e)
     {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
         Refresh();
         mvPendingFlights.SetActiveView(vwList);
         if (e.IDNextFlight >= 0)

@@ -231,7 +231,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
     private void InitSocialNetworking()
     {
         // Sharing
-        lnkMyFlights.Text = m_pf.PublicFlightsURL(Request.Url.Host).AbsoluteUri;
+        lnkMyFlights.Text = HttpUtility.HtmlEncode(m_pf.PublicFlightsURL(Request.Url.Host).AbsoluteUri);
         ClientScript.RegisterClientScriptInclude("copytoClip", ResolveClientUrl("~/public/Scripts/CopyClipboard.js"));
         imgCopyMyFlights.OnClientClick = String.Format(CultureInfo.InvariantCulture, "javascript:copyClipboard(null, '{0}', true, '{1}');return false;", lnkMyFlights.ClientID, lblMyFlightsCopied.ClientID);
     }

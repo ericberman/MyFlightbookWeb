@@ -129,7 +129,10 @@ public partial class Member_Airports : System.Web.UI.Page
 
     protected void gvAirports_Sorting(Object sender, GridViewSortEventArgs e)
     {
-        if (e.SortExpression.CompareTo(LastSortExpression) != 0)
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        if (e.SortExpression.CompareOrdinalIgnoreCase(LastSortExpression) != 0)
         {
             LastSortDirection = 1;
             LastSortExpression = e.SortExpression;
@@ -141,13 +144,13 @@ public partial class Member_Airports : System.Web.UI.Page
 
         int Direction = LastSortDirection;
 
-        switch (e.SortExpression.ToUpper())
+        switch (e.SortExpression.ToUpperInvariant())
         {
             case "CODE":
-                Array.Sort(CurrentVisitedAirports, delegate(VisitedAirport va1, VisitedAirport va2) { return Direction * va1.Code.CompareTo(va2.Code); });
+                Array.Sort(CurrentVisitedAirports, delegate(VisitedAirport va1, VisitedAirport va2) { return Direction * va1.Code.CompareCurrentCultureIgnoreCase(va2.Code); });
                 break;
             case "FACILITYNAME":
-                Array.Sort(CurrentVisitedAirports, delegate(VisitedAirport va1, VisitedAirport va2) { return Direction * va1.FacilityName.CompareTo(va2.FacilityName); });
+                Array.Sort(CurrentVisitedAirports, delegate(VisitedAirport va1, VisitedAirport va2) { return Direction * va1.FacilityName.CompareCurrentCultureIgnoreCase(va2.FacilityName); });
                 break;
             case "NUMBEROFVISITS":
                 Array.Sort(CurrentVisitedAirports, delegate(VisitedAirport va1, VisitedAirport va2) { return Direction * va1.NumberOfVisits.CompareTo(va2.NumberOfVisits); });

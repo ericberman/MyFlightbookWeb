@@ -31,8 +31,7 @@ public partial class Member_PrintView : System.Web.UI.Page
         {
             foreach (Control c in mvLayouts.GetActiveView().Controls)
             {
-                IPrintingTemplate pt = c as IPrintingTemplate;
-                if (pt != null)
+                if (c is IPrintingTemplate pt)
                     return pt;
             }
             return null;
@@ -127,7 +126,7 @@ public partial class Member_PrintView : System.Web.UI.Page
     protected void mfbSearchForm1_Reset(object sender, FlightQueryEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         mfbSearchForm1.Restriction = e.Query;
         mvSearch.SetActiveView(vwDescriptor);
         lnkReturnToFlights.NavigateUrl = "~/Member/LogbookNew.aspx";
@@ -214,7 +213,7 @@ public partial class Member_PrintView : System.Web.UI.Page
     protected void mfbQueryDescriptor_QueryUpdated(object sender, FilterItemClicked fic)
     {
         if (fic == null)
-            throw new ArgumentNullException("fic");
+            throw new ArgumentNullException(nameof(fic));
         mfbSearchForm1.Restriction = mfbSearchForm1.Restriction.ClearRestriction(fic.FilterItem);
         FilterResults(sender, new FlightQueryEventArgs(mfbSearchForm1.Restriction));
         lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", HttpUtility.UrlEncode(mfbSearchForm1.Restriction.ToBase64CompressedJSONString()));
@@ -237,9 +236,10 @@ public partial class Member_PrintView : System.Web.UI.Page
             {
                 UTF8Encoding enc = new UTF8Encoding(true);
                 swOut.Write(Encoding.UTF8.GetString(enc.GetPreamble()));
-                HtmlTextWriter htwOut = new HtmlTextWriter(swOut);
-                base.Render(htwOut);
-                string sOut = sbOut.ToString();
+                using (HtmlTextWriter htwOut = new HtmlTextWriter(swOut))
+                {
+                    base.Render(htwOut);
+                }
 
                 string szTempPath = Path.GetTempPath();
                 string szFileRoot = Guid.NewGuid().ToString();

@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2018 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -42,7 +42,7 @@ public partial class Member_FAQEdit : System.Web.UI.Page
     protected void gvFAQ_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         FAQItem.FlushFAQCache();
         Controls_mfbHtmlEdit t = (Controls_mfbHtmlEdit)gvFAQ.Rows[e.RowIndex].FindControl("txtAnswer");
         sqlFAQ.UpdateParameters["Answer"] = new Parameter("Answer", System.Data.DbType.String, t.FixedHtml);

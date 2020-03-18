@@ -95,6 +95,8 @@ public partial class Member_AdminImages : Page
         #region IComparable
         public int CompareTo(object obj)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
             DirKey dk = (DirKey)obj;
             if (this.SortID > dk.SortID)
                 return -1;
@@ -149,7 +151,7 @@ public partial class Member_AdminImages : Page
 
         public static bool operator >(DirKey left, DirKey right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(DirKey left, DirKey right)
@@ -295,6 +297,9 @@ public partial class Member_AdminImages : Page
     #region Sync Images to DB
     protected void SyncImages(List<DirKey> lstDk)
     {
+        if (lstDk == null)
+            throw new ArgumentNullException(nameof(lstDk));
+
         Response.Clear();
         Response.Write(String.Format(CultureInfo.InvariantCulture, "<html><head><link href=\"{0}\" rel=\"stylesheet\" type=\"text/css\" /></head><body><p>", VirtualPathUtility.ToAbsolute("~/Public/stylesheet.css")));
 

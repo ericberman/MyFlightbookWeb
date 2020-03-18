@@ -10,7 +10,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -90,7 +90,7 @@ public partial class Member_Schedule : System.Web.UI.Page
         List<ScheduledEvent> lst = ScheduledEvent.AppointmentsInTimeRange(ScheduledEvent.ToUTC(dtStart, tzi), ScheduledEvent.ToUTC(dtEnd, tzi), resourceName, clubID, tzi);
         // Fix up the owner's name
         lst.ForEach((se) => { 
-            se.OwnerProfile = c.PrependsScheduleWithOwnerName ? c.Members.FirstOrDefault(cm => cm.UserName.CompareTo(se.OwningUser) == 0) : null;
+            se.OwnerProfile = c.PrependsScheduleWithOwnerName ? c.Members.FirstOrDefault(cm => cm.UserName.CompareOrdinalIgnoreCase(se.OwningUser) == 0) : null;
             se.ReadOnly = !se.CanEdit(HttpContext.Current.User.Identity.Name, c);
         });
         return lst.ToArray();

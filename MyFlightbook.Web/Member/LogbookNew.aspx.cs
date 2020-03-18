@@ -441,6 +441,8 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
     #region lazy loading of tab content
     protected void TurnOffLazyLoad(object o)
     {
+        if (o == null)
+            throw new ArgumentNullException(nameof(o));
         Controls_mfbAccordionProxyControl apc = (Controls_mfbAccordionProxyControl)o;
         apc.LazyLoad = false;
         int idx = mfbAccordionProxyExtender1.IndexForProxyID(apc.ID);

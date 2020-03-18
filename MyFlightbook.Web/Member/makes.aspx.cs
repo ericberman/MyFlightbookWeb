@@ -114,6 +114,8 @@ public partial class makes : System.Web.UI.Page
 
     protected void QueryToForm(ModelQuery mq)
     {
+        if (mq == null)
+            throw new ArgumentNullException(nameof(mq));
         mfbSearchbox.SearchText = mq.FullText;
         txtModel.Text = mq.Model;
         txtModelName.Text = mq.ModelName;
@@ -126,6 +128,8 @@ public partial class makes : System.Web.UI.Page
 
     protected ModelQuery QueryFromForm(ModelQuery mq)
     {
+        if (mq == null)
+            throw new ArgumentNullException(nameof(mq));
         mq.Skip = 0;
         mq.FullText = mfbSearchbox.SearchText;
         mq.Model = txtModel.Text;

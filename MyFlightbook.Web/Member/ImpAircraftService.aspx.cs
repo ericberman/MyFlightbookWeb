@@ -8,7 +8,7 @@ using System.Web.Services;
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -49,7 +49,7 @@ public partial class Member_ImpAircraftService : System.Web.UI.Page
         // Issue #296: allow sims to come through without a sim prefix; we can fix it at AddNewAircraft time.
         AircraftInstance aic = Array.Find(AircraftInstance.GetInstanceTypes(), it => it.InstanceTypeInt == instanceType);
         string szSpecifiedTail = szTail;
-        bool fIsNamedSim = !aic.IsRealAircraft && !szTail.ToUpper(CultureInfo.CurrentCulture).StartsWith(CountryCodePrefix.SimCountry.Prefix.ToUpper(CultureInfo.CurrentCulture));
+        bool fIsNamedSim = !aic.IsRealAircraft && !szTail.ToUpper(CultureInfo.CurrentCulture).StartsWith(CountryCodePrefix.SimCountry.Prefix.ToUpper(CultureInfo.CurrentCulture), StringComparison.CurrentCultureIgnoreCase);
         if (fIsNamedSim)
             ac.TailNumber = CountryCodePrefix.SimCountry.Prefix;
 
@@ -79,7 +79,7 @@ public partial class Member_ImpAircraftService : System.Web.UI.Page
 
         // Issue #296: allow sims to come through without a sim prefix; we can fix it at AddNewAircraft time.
         AircraftInstance aic = Array.Find(AircraftInstance.GetInstanceTypes(), it => it.InstanceTypeInt == instanceType);
-        if (!aic.IsRealAircraft && !szTail.ToUpper(CultureInfo.CurrentCulture).StartsWith(CountryCodePrefix.SimCountry.Prefix.ToUpper(CultureInfo.CurrentCulture)))
+        if (!aic.IsRealAircraft && !szTail.ToUpper(CultureInfo.CurrentCulture).StartsWith(CountryCodePrefix.SimCountry.Prefix.ToUpper(CultureInfo.CurrentCulture), StringComparison.CurrentCultureIgnoreCase))
             szTail = CountryCodePrefix.SimCountry.Prefix;
 
         Aircraft ac = new Aircraft() { TailNumber = szTail, ModelID = idModel, InstanceTypeID = instanceType };
@@ -95,7 +95,7 @@ public partial class Member_ImpAircraftService : System.Web.UI.Page
             throw new MyFlightbookException("Unauthenticated call to add new aircraft");
 
         if (String.IsNullOrEmpty(prefixText))
-            return new string[0];
+            return Array.Empty<string>();
 
         Dictionary<string, object> dictContextIn = contextKey == null ? new Dictionary<string, object>() : JsonConvert.DeserializeObject<Dictionary<string, object>>(contextKey);
 

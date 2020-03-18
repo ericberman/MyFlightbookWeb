@@ -8,7 +8,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2019 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -121,7 +121,7 @@ public partial class Member_AddEndorsement : System.Web.UI.Page
     protected void mfbEditEndorsement1_NewEndorsement(object sender, EndorsementEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         try
         {
             e.Endorsement.FCommit();

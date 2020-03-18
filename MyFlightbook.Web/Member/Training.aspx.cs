@@ -148,7 +148,7 @@ public partial class Member_Training : System.Web.UI.Page
         {
             CFIStudentMapRequest smr = m_sm.GetRequest(CFIStudentMapRequest.RoleType.RoleStudent, txtStudentEmail.Text);
             smr.Send();
-            lblAddStudentSuccess.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileRequestHasBeenSent, txtStudentEmail.Text);
+            lblAddStudentSuccess.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileRequestHasBeenSent, HttpUtility.HtmlEncode(txtStudentEmail.Text));
             lblAddStudentSuccess.CssClass = "success";
             txtStudentEmail.Text = "";
         }
@@ -184,7 +184,7 @@ public partial class Member_Training : System.Web.UI.Page
         {
             CFIStudentMapRequest smr = m_sm.GetRequest(CFIStudentMapRequest.RoleType.RoleCFI, txtInstructorEmail.Text);
             smr.Send();
-            lblAddInstructorSuccess.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileRequestHasBeenSent, txtInstructorEmail.Text);
+            lblAddInstructorSuccess.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EditProfileRequestHasBeenSent, HttpUtility.HtmlEncode(txtInstructorEmail.Text));
             lblAddInstructorSuccess.CssClass = "success";
             txtInstructorEmail.Text = "";
         }
@@ -299,6 +299,9 @@ public partial class Member_Training : System.Web.UI.Page
 
     protected void ckCanViewLogbook_CheckedChanged(object sender, EventArgs e)
     {
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
+
         CheckBox ck = (CheckBox)sender;
         GridViewRow gvr = (GridViewRow)ck.NamingContainer;
         int iRow = gvr.RowIndex;
@@ -317,6 +320,8 @@ public partial class Member_Training : System.Web.UI.Page
 
     protected void ckCanAddLogbook_CheckedChanged(object sender, EventArgs e)
     {
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
         CheckBox ck = (CheckBox)sender;
         GridViewRow gvr = (GridViewRow)ck.NamingContainer;
         int iRow = gvr.RowIndex;

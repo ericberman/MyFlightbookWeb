@@ -458,6 +458,8 @@ public partial class Member_Import : System.Web.UI.Page
 
     protected void btnNewFile_Click(object sender, EventArgs e)
     {
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
         SetWizardStep(wsUpload);
         ((Control)sender).Visible = false;
     }

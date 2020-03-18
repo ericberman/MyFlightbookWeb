@@ -2,11 +2,12 @@
 using MyFlightbook.Instruction;
 using System;
 using System.Globalization;
+using System.Web;
 using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2018 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -49,10 +50,11 @@ public partial class Member_EndorseStudent : System.Web.UI.Page
 
                         Profile pfTarget = MyFlightbook.Profile.GetUser(m_szTargetUser);
                         string szTargetUser = pfTarget.UserFullName;
+                        string szEncodedUser = HttpUtility.HtmlEncode(szTargetUser);
 
-                        lblPageHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsHeader, szTargetUser);
-                        lblNewEndorsementHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsNewEndorsementHeader, szTargetUser);
-                        lblExistingEndorsementHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsExistingEndorsementHeader, szTargetUser);
+                        lblPageHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsHeader, szEncodedUser);
+                        lblNewEndorsementHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsNewEndorsementHeader, szEncodedUser);
+                        lblExistingEndorsementHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EndorsementsExistingEndorsementHeader, szEncodedUser);
                         mfbEditEndorsement1.TargetUser = pfTarget;
                         mfbEditEndorsement1.Mode = EndorsementMode.InstructorPushAuthenticated;
                     }
@@ -106,7 +108,7 @@ public partial class Member_EndorseStudent : System.Web.UI.Page
     public void OnNewEndorsement(object sender, EndorsementEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         try
         {
             e.Endorsement.FCommit();

@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -32,10 +32,10 @@ public partial class Member_ACSchedule : System.Web.UI.Page
 
             if (AircraftID != Aircraft.idAircraftUnknown && Page.User.Identity.IsAuthenticated && !String.IsNullOrEmpty(Page.User.Identity.Name))
             {
-                IEnumerable<Club> lstClubsForAircraft = null;
                 IEnumerable<Club> lstClubsForUserInAircraft = Club.ClubsForAircraft(AircraftID, Page.User.Identity.Name);
                 Aircraft ac = new Aircraft(AircraftID);
                 lblTailNumber.Text = lblTailNumber2.Text = lblTailNumber3.Text = ac.DisplayTailnumber;
+                IEnumerable<Club> lstClubsForAircraft;
                 if (lstClubsForUserInAircraft.Count() > 0)
                 {
                     mvStatus.SetActiveView(vwMember);

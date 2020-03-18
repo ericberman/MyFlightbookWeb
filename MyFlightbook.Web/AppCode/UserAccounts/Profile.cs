@@ -795,6 +795,8 @@ namespace MyFlightbook
         #region Database and caching
         protected void InitFromDataReader(MySqlDataReader dr)
         {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
             try
             {
                 UserName = dr["Username"].ToString();
@@ -855,6 +857,8 @@ namespace MyFlightbook
 
         protected static string GetCacheKey(string szUser)
         {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
             return "Profile" + szUser.ToUpper(CultureInfo.InvariantCulture);
         }
 

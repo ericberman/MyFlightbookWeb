@@ -26,7 +26,7 @@ public partial class Member_Aircraft : System.Web.UI.Page
         }
     }
 
-    protected string FormatOptionalDate(DateTime dt)
+    protected static string FormatOptionalDate(DateTime dt)
     {
         return dt.HasValue() ? dt.ToShortDateString() : string.Empty;
     }
@@ -101,7 +101,7 @@ public partial class Member_Aircraft : System.Web.UI.Page
     protected void rptAircraftGroups_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         Controls_AircraftControls_AircraftList aircraftList = (Controls_AircraftControls_AircraftList)e.Item.FindControl("AircraftList");
         aircraftList.IsAdminMode = IsAdminMode;
         aircraftList.AircraftSource = ((AircraftGroup)e.Item.DataItem).MatchingAircraft;
@@ -123,17 +123,15 @@ public partial class Member_Aircraft : System.Web.UI.Page
         Refresh(true);
     }
 
-    protected string ValueString(object o, decimal offSet = 0.0M)
+    protected static string ValueString(object o, decimal offSet = 0.0M)
     {
-        if (o is DateTime)
+        if (o is DateTime dt)
         {
-            DateTime dt = (DateTime)o;
             if (dt != null && dt.HasValue())
                 return dt.ToShortDateString();
         }
-        else if (o is decimal)
+        else if (o is decimal d)
         {
-            decimal d = (decimal)o;
             if (d > 0)
                 return (d + offSet).ToString("#,##0.0#", CultureInfo.CurrentCulture);
         }

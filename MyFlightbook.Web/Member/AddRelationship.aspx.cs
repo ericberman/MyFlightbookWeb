@@ -50,12 +50,12 @@ public partial class Member_AddRelationship : System.Web.UI.Page
             switch (m_smr.Requestedrole)
             {
                 case CFIStudentMapRequest.RoleType.RoleStudent:
-                    lblRequestDesc.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AddRelationshipRequestStudent, Branding.CurrentBrand.AppName, pfRequestor.UserFullName);
+                    lblRequestDesc.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AddRelationshipRequestStudent, Branding.CurrentBrand.AppName, HttpUtility.HtmlEncode(pfRequestor.UserFullName));
                     if (m_sm.IsStudentOf(m_smr.RequestingUser))
                         throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AddRelationshipErrAlreadyStudent, pfRequestor.UserFullName));
                     break;
                 case CFIStudentMapRequest.RoleType.RoleCFI:
-                    lblRequestDesc.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AddRelationshipRequestInstructor, Branding.CurrentBrand.AppName, pfRequestor.UserFullName);
+                    lblRequestDesc.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AddRelationshipRequestInstructor, Branding.CurrentBrand.AppName, HttpUtility.HtmlEncode(pfRequestor.UserFullName));
                     if (m_sm.IsInstructorOf(m_smr.RequestingUser))
                         throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.AddRelationshipErrAlreadyInstructor, pfRequestor.UserFullName));
                     break;
@@ -71,7 +71,7 @@ public partial class Member_AddRelationship : System.Web.UI.Page
                         throw new MyFlightbookValidationException(Resources.Club.errNoClubInRequest);
                     if (m_smr.ClubToJoin.HasMember(pfRequestor.UserName))
                         throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, Resources.Club.errAlreadyAddedMember, pfRequestor.UserFullName, m_smr.ClubToJoin.Name));
-                    lblRequestDesc.Text = String.Format(CultureInfo.CurrentCulture, Resources.Club.AddMemberFromRequest, pfRequestor.UserFullName, m_smr.ClubToJoin.Name);
+                    lblRequestDesc.Text = String.Format(CultureInfo.CurrentCulture, Resources.Club.AddMemberFromRequest, HttpUtility.HtmlEncode(pfRequestor.UserFullName), m_smr.ClubToJoin.Name);
                     break;
             }
         }

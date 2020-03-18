@@ -35,7 +35,7 @@ public partial class EditMake : System.Web.UI.Page
         Aircraft[] rgac = (new UserAircraft(User.Identity.Name)).GetAircraftForUser();
 
         if (rgac == null)
-            return new Aircraft[0];
+            return Array.Empty<Aircraft>();
 
         return Array.FindAll<Aircraft>(rgac, ac => ac.ModelID == idModel);
     }

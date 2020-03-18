@@ -1145,12 +1145,14 @@ GROUP BY ac.idaircraft";
 
     protected void gvInvalidSignatures_RowCommand(object sender, GridViewCommandEventArgs e)
     {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
         int idFlight = e.CommandArgument.ToString().SafeParseInt(LogbookEntry.idFlightNone);
         if (idFlight != LogbookEntry.idFlightNone)
         {
             LogbookEntry le = new LogbookEntry();
             le.FLoadFromDB(idFlight, string.Empty, LogbookEntry.LoadTelemetryOption.None, true);
-            if (le.AdminSignatureSanityFix(e.CommandName.CompareTo("ForceValidity") == 0))
+            if (le.AdminSignatureSanityFix(e.CommandName.CompareOrdinalIgnoreCase("ForceValidity") == 0))
             {
                 List<LogbookEntry> lst = (List<LogbookEntry>)ViewState["InvalidSigs"];
                 lst.RemoveAll(l => l.FlightID == idFlight);
