@@ -59,9 +59,7 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
             if (ActiveTemplate == null)
                 throw new InvalidOperationException("Active Template is null - how? ");
             ActiveTemplate.PropertyTypes.Clear();
-            if (hdnUsedProps.Value == null)
-                throw new InvalidOperationException("hdnUsedProps.Value is null");
-            int[] props = JsonConvert.DeserializeObject<int[]>(hdnUsedProps.Value);
+            int[] props = String.IsNullOrEmpty(hdnUsedProps.Value) ? Array.Empty<int>() : JsonConvert.DeserializeObject<int[]>(hdnUsedProps.Value);
             if (props == null)
                 throw new InvalidOperationException("props is null");
             foreach (int propid in props)
