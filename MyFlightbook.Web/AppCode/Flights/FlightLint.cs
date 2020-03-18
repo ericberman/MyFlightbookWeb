@@ -219,9 +219,11 @@ namespace MyFlightbook.Lint
 
         private void CheckSimIssues(LogbookEntryBase le)
         {
+            bool hasSimRegistration = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropSimRegistration);
             if (currentAircraft.InstanceType == AircraftInstanceTypes.RealAircraft)
             {
                 AddConditionalIssue(le.GroundSim > 0, LintOptions.SimIssues, Resources.FlightLint.warningSIMGroundSimInRealAircraft);
+                AddConditionalIssue(hasSimRegistration, LintOptions.SimIssues, Resources.FlightLint.warningSIMDeviceIdentifierOnRealAircraft);
             }
             else
             {
@@ -230,7 +232,7 @@ namespace MyFlightbook.Lint
                 AddConditionalIssue(le.TotalFlightTime > 0, LintOptions.SimIssues, Resources.FlightLint.warningSIMTotalInSim);
                 AddConditionalIssue(le.IMC > 0, LintOptions.SimIssues, Resources.FlightLint.warningSIMActualIMC);
                 AddConditionalIssue(le.CrossCountry > 0, LintOptions.SimIssues, Resources.FlightLint.warningSIMCrossCountryInSim);
-                AddConditionalIssue(!le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropSimRegistration), LintOptions.SimIssues, Resources.FlightLint.warningSIMNoDeviceIdentifier);
+                AddConditionalIssue(!hasSimRegistration, LintOptions.SimIssues, Resources.FlightLint.warningSIMNoDeviceIdentifier);
             }
         }
 

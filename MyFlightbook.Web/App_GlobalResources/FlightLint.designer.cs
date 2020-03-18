@@ -628,6 +628,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight found in a real aircraft, but a &quot;Simulator/Training Device Identifier&quot; property is specified..
+        /// </summary>
+        internal static string warningSIMDeviceIdentifierOnRealAircraft {
+            get {
+                return ResourceManager.GetString("warningSIMDeviceIdentifierOnRealAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ground sim time is logged in a real aircraft.
         /// </summary>
         internal static string warningSIMGroundSimInRealAircraft {

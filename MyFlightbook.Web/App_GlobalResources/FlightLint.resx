@@ -308,6 +308,9 @@
   <data name="warningSIMCrossCountryInSim" xml:space="preserve">
     <value>Cross-country flight indicated in a sim - check that it's OK to log that!</value>
   </data>
+  <data name="warningSIMDeviceIdentifierOnRealAircraft" xml:space="preserve">
+    <value>Flight found in a real aircraft, but a "Simulator/Training Device Identifier" property is specified.</value>
+  </data>
   <data name="warningSIMGroundSimInRealAircraft" xml:space="preserve">
     <value>Ground sim time is logged in a real aircraft</value>
   </data>
