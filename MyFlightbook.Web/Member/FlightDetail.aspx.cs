@@ -1,6 +1,7 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Achievements;
 using MyFlightbook.Airports;
+using MyFlightbook.Charting;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
@@ -434,9 +435,9 @@ public partial class Member_FlightDetail : System.Web.UI.Page
 
         gcData.Clear();
 
-        gcData.XDataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbXAxis.SelectedValue).Type);
-        gcData.YDataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis1.SelectedValue).Type);
-        gcData.Y2DataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis2.SelectedValue).Type);
+        gcData.XDataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbXAxis.SelectedValue).Type);
+        gcData.YDataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis1.SelectedValue).Type);
+        gcData.Y2DataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis2.SelectedValue).Type);
 
         if (cmbYAxis1.SelectedItem == null || cmbYAxis2.SelectedItem == null)
         {
@@ -455,7 +456,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             {
                 object o = dr[cmbYAxis1.SelectedValue];
                 gcData.YVals.Add(o);
-                if (gcData.YDataType == Controls_GoogleChart.GoogleColumnDataType.number)
+                if (gcData.YDataType == GoogleColumnDataType.number)
                 {
                     decimal d = Convert.ToDecimal(o, CultureInfo.InvariantCulture);
                     max = Math.Max(max, d);
@@ -466,7 +467,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             {
                 object o = dr[cmbYAxis2.SelectedValue];
                 gcData.Y2Vals.Add(o);
-                if (gcData.Y2DataType == Controls_GoogleChart.GoogleColumnDataType.number)
+                if (gcData.Y2DataType == GoogleColumnDataType.number)
                 {
                     decimal d = Convert.ToDecimal(o, CultureInfo.InvariantCulture);
                     max2 = Math.Max(max2, d);

@@ -1,4 +1,5 @@
 ﻿using MyFlightbook;
+using MyFlightbook.Charting;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections;
@@ -16,11 +17,6 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_GoogleChart : System.Web.UI.UserControl
 {
-    public enum GoogleChartType { LineChart, ColumnChart, ComboChart };
-    public enum GoogleSeriesType { line, bars };
-    public enum GoogleLegendType { none, top, left, right, bottom };
-    public enum GoogleColumnDataType {@string, number, boolean, date, datetime, timeofday};
-
     #region properties
     #region private vars to back initialized properties
     private int m_Width = 800;
@@ -158,7 +154,7 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
             List<string> lst = new List<string>();
             for (int i = 0; i < XVals.Count; i++)
                 lst.Add(String.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}, {1}{2}]", 
-                    FormatObjectForTypeJS(XVals[i], XDataType),
+                    GoogleChart.FormatObjectForTypeJS(XVals[i], XDataType),
                     YVals[i],
                     (i < Y2Vals.Count) ? String.Format(System.Globalization.CultureInfo.InvariantCulture, ", {0}", Y2Vals[i]) : ""));
 
@@ -198,7 +194,7 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
 
     protected string XDataFormat
     {
-        get { return FormatStringForType(XDataType); }
+        get { return GoogleChart.FormatStringForType(XDataType, UseMonthYearDate, XDatePattern); }
     }
 
     /// <summary>
@@ -212,70 +208,6 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
         Y2Vals.Clear();
         YVals.Clear();
         XVals.Clear();
-    }
-
-    /// <summary>
-    /// Writes out an object in Javascript literal notation based on its type.
-    /// </summary>
-    /// <param name="o">The object</param>
-    /// <param name="gcdt">The column data type</param>
-    /// <returns>The javascript literal notation for the object</returns>
-    private string FormatObjectForTypeJS(object o, GoogleColumnDataType gcdt)
-    {
-        switch (gcdt)
-        {
-            case GoogleColumnDataType.date:
-            case GoogleColumnDataType.datetime:
-            case GoogleColumnDataType.timeofday:
-                return String.Format(CultureInfo.InvariantCulture, "new Date({0})", ((DateTime)o).ToString("yyyy, M - 1, d, H, m, s", System.Globalization.CultureInfo.InvariantCulture));
-            case GoogleColumnDataType.boolean:
-                return ((bool)o) ? "true" : "false";
-            case GoogleColumnDataType.number:
-                return o.ToString();
-            default:
-            case GoogleColumnDataType.@string:
-                return String.Format(CultureInfo.InvariantCulture, "'{0}'", o.ToString());
-        }
-    }
-
-    /// <summary>
-    /// Provides the format string for an axis
-    /// </summary>
-    /// <param name="gcdt">The column data type</param>
-    /// <returns>The Format string</returns>
-    protected string FormatStringForType(GoogleColumnDataType gcdt)
-    {
-        switch (gcdt)
-        {
-            case GoogleColumnDataType.date:
-                return UseMonthYearDate ? "MMM yyyy" : (String.IsNullOrWhiteSpace(XDatePattern) ? System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern : XDatePattern);
-            case GoogleColumnDataType.datetime:
-                return System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern + " " + "HH:mm";
-            case GoogleColumnDataType.timeofday:
-                return System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortTimePattern;
-            default:
-            case GoogleColumnDataType.number:
-            case GoogleColumnDataType.boolean:
-            case GoogleColumnDataType.@string:
-                return String.Empty;
-        }
-    }
-    public static GoogleColumnDataType GoogleTypeFromKnownColumnType(KnownColumnTypes kct)
-    {
-        switch (kct)
-        {
-            case KnownColumnTypes.ctDateTime:
-                return GoogleColumnDataType.datetime;
-            case KnownColumnTypes.ctDec:
-            case KnownColumnTypes.ctFloat:
-            case KnownColumnTypes.ctInt:
-            case KnownColumnTypes.ctLatLong:
-                return GoogleColumnDataType.number;
-            case KnownColumnTypes.ctPosition:
-            case KnownColumnTypes.ctString:
-            default:
-                return GoogleColumnDataType.@string;
-        }
     }
 
     protected void Page_Load(object sender, EventArgs e)

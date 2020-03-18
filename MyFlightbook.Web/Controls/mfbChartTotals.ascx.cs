@@ -1,4 +1,5 @@
 ﻿using MyFlightbook;
+using MyFlightbook.Charting;
 using MyFlightbook.Histogram;
 using System;
 using System.Collections.Generic;
@@ -146,12 +147,12 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         if (bm is DateBucketManager datebm)
         {
             gcTrends.XDatePattern = datebm.DateFormat;
-            gcTrends.XDataType = Controls_GoogleChart.GoogleColumnDataType.date;
+            gcTrends.XDataType = GoogleColumnDataType.date;
         }
         else
         {
             gcTrends.XDatePattern = "{0}";
-            gcTrends.XDataType = Controls_GoogleChart.GoogleColumnDataType.@string;
+            gcTrends.XDataType = GoogleColumnDataType.@string;
         }
 
         using (DataTable dt = bm.ToDataTable(HistogramManager))

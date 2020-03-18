@@ -1,5 +1,6 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Airports;
+using MyFlightbook.Charting;
 using MyFlightbook.Geography;
 using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;
@@ -232,9 +233,9 @@ public partial class Member_FlightAnalysis : System.Web.UI.Page
 
         gcData.Clear();
 
-        gcData.XDataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbXAxis.SelectedValue).Type);
-        gcData.YDataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis1.SelectedValue).Type);
-        gcData.Y2DataType = Controls_GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis2.SelectedValue).Type);
+        gcData.XDataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbXAxis.SelectedValue).Type);
+        gcData.YDataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis1.SelectedValue).Type);
+        gcData.Y2DataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis2.SelectedValue).Type);
 
         if (cmbYAxis1.SelectedItem == null || cmbYAxis2.SelectedItem == null)
         {

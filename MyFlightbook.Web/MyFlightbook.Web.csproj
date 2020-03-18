@@ -829,6 +829,7 @@
     <Compile Include="AppCode\Aircraft\Makes.cs" />
     <Compile Include="AppCode\Aircraft\Manufacturer.cs" />
     <Compile Include="AppCode\Aircraft\UserAircraft.cs" />
+    <Compile Include="AppCode\Charting\GoogleChart.cs" />
     <Compile Include="AppCode\Clubs\Clubs.cs" />
     <Compile Include="AppCode\Clubs\Schedule.cs" />
     <Compile Include="AppCode\CSV\CSVAnalyzer.cs" />
