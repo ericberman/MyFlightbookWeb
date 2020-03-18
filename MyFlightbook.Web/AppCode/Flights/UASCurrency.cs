@@ -2,7 +2,7 @@
 
 /******************************************************
  * 
- * Copyright (c) 2016-2019 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -40,6 +40,8 @@ namespace MyFlightbook.FlightCurrency
 
         public void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             cfr.FlightProps.ForEachEvent((cfp) =>
             {
                 if (cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropUASKnowledgeTest10773)

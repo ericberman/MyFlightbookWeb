@@ -1474,7 +1474,7 @@ namespace MyFlightbook
                     }
 
                     // Hack: we have a bug in the android version (that I should fix) where the flight data consists entirely of the header row.  Kill the telemetry in this case
-                    if (!String.IsNullOrEmpty(this.FlightData) && this.FlightData.StartsWith("LAT,") && this.FlightData.Length < 60)
+                    if (!String.IsNullOrEmpty(this.FlightData) && this.FlightData.StartsWith("LAT,", StringComparison.InvariantCultureIgnoreCase) && this.FlightData.Length < 60)
                         this.FlightData = string.Empty;
 
                     if (fUpdateFlightData)
@@ -3302,6 +3302,9 @@ namespace MyFlightbook
             if (string.IsNullOrEmpty(szSortExpr))
                 return lst;
 
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+
             lst.Sort((l1, l2) =>
             {
                 int dir = (sd == SortDirection.Ascending ? 1 : -1);
@@ -3361,6 +3364,8 @@ namespace MyFlightbook
 
         public override void AddFrom(LogbookEntry le)
         {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
             base.AddFrom(le);
             LogbookEntryDisplay led = le as LogbookEntryDisplay;
             if (led != null)
@@ -3657,6 +3662,8 @@ namespace MyFlightbook
 
         public IComparable BucketSelector(string bucketSelectorName)
         {
+            if (bucketSelectorName == null)
+                throw new ArgumentNullException(nameof(bucketSelectorName));
             switch (bucketSelectorName.ToUpperInvariant())
             {
                 case "DATE":
@@ -4029,7 +4036,7 @@ namespace MyFlightbook
 
         public static bool operator >(PropertyDelta left, PropertyDelta right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(PropertyDelta left, PropertyDelta right)

@@ -130,7 +130,7 @@ namespace MyFlightbook
 
             using (ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
             {
-                using (StringWriter sw = new StringWriter())
+                using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))
                 {
                     using (HtmlTextWriter tw = new HtmlTextWriter(sw))
                     {

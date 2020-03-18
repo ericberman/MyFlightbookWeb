@@ -2197,7 +2197,7 @@ namespace MyFlightbook.Image
                     }
                 });
 
-                onSummary(cFilesOnS3, cBytesOnS3, cOrphansFound, cBytesToFree);
+                onSummary?.Invoke(cFilesOnS3, cBytesOnS3, cOrphansFound, cBytesToFree);
             }
         }
 

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -25,9 +26,7 @@ namespace MyFlightbook.StartingFlight
         public StartingFlight(string szUser, RepresentativeAircraft ra)
             : base()
         {
-            if (ra == null)
-                throw new ArgumentNullException("ra");
-            this.RepresentativeAircraft = ra;
+            this.RepresentativeAircraft = ra ?? throw new ArgumentNullException(nameof(ra));
             this.AircraftID = ra.ExampleAircraft.AircraftID;
             this.User = szUser;
             this.Comment = Resources.LogbookEntry.StartingFlightComment;
@@ -66,7 +65,7 @@ namespace MyFlightbook.StartingFlight
         public enum RepresentativeTypeMode { CatClassType, CatClassCapabilities, ByModel };
 
         #region Querystrings
-        private static string sqlRepresentativeTypesBase = @"
+        private const string sqlRepresentativeTypesBase = @"
     SELECT
     CONCAT(cc.CatClass, IF(m.typename = '', '', CONCAT(' (', m.typename, ')'))) AS catclasstype,
     CONCAT(
@@ -91,9 +90,9 @@ GROUP BY {0}
 ORDER BY catclasstype ASC, Capabilities ASC, ModelSignature DESC
     ";
 
-        private static string sqlAircraftModels = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "m.idmodel");
-        private static string sqlAircraftCatClassCapabilities = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "ModelSignature");
-        private static string sqlAircraftCatClassType = String.Format(System.Globalization.CultureInfo.InvariantCulture, "SELECT * FROM ({0}) types GROUP BY types.catclasstype", sqlAircraftCatClassCapabilities);
+        private static readonly string sqlAircraftModels = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "m.idmodel");
+        private static readonly string sqlAircraftCatClassCapabilities = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "ModelSignature");
+        private static readonly string sqlAircraftCatClassType = String.Format(System.Globalization.CultureInfo.InvariantCulture, "SELECT * FROM ({0}) types GROUP BY types.catclasstype", sqlAircraftCatClassCapabilities);
         #endregion
 
         #region Properties
@@ -176,14 +175,14 @@ ORDER BY catclasstype ASC, Capabilities ASC, ModelSignature DESC
 
                         string aircraftIDs = (string)dr["AircraftIDs"];
                         string[] rgIDs = aircraftIDs.Split(',');
-                        ra.ExampleAircraft = ua.GetUserAircraftByID(Convert.ToInt32(rgIDs[0]));
+                        ra.ExampleAircraft = ua.GetUserAircraftByID(Convert.ToInt32(rgIDs[0], CultureInfo.InvariantCulture));
 
-                        ra.IsComplex = Convert.ToBoolean(dr["fComplex"]);
-                        ra.IsConstantProp = Convert.ToBoolean(dr["fConstantProp"]);
-                        ra.IsHighPerf = Convert.ToBoolean(dr["fHighPerf"]);
-                        ra.IsRetract = Convert.ToBoolean(dr["fRetract"]);
-                        ra.IsTailwheel = Convert.ToBoolean(dr["fTailwheel"]);
-                        ra.IsTurbine = Convert.ToBoolean(dr["fTurbine"]);
+                        ra.IsComplex = Convert.ToBoolean(dr["fComplex"], CultureInfo.InvariantCulture);
+                        ra.IsConstantProp = Convert.ToBoolean(dr["fConstantProp"], CultureInfo.InvariantCulture);
+                        ra.IsHighPerf = Convert.ToBoolean(dr["fHighPerf"], CultureInfo.InvariantCulture);
+                        ra.IsRetract = Convert.ToBoolean(dr["fRetract"], CultureInfo.InvariantCulture);
+                        ra.IsTailwheel = Convert.ToBoolean(dr["fTailwheel"], CultureInfo.InvariantCulture);
+                        ra.IsTurbine = Convert.ToBoolean(dr["fTurbine"], CultureInfo.InvariantCulture);
 
                         switch (mode)
                         {
@@ -199,7 +198,7 @@ ORDER BY catclasstype ASC, Capabilities ASC, ModelSignature DESC
 
                         l.Add(ra);
                     }
-                    catch
+                    catch (Exception ex) when (!(ex is OutOfMemoryException))
                     {
                     }
                 }

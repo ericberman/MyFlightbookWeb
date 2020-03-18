@@ -1530,7 +1530,7 @@ ORDER BY f.Date Desc";
 
         public static bool operator >(ProfileEvent left, ProfileEvent right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(ProfileEvent left, ProfileEvent right)
@@ -1569,6 +1569,8 @@ ORDER BY f.Date Desc";
         /// <param name="rgcfp"></param>
         public CustomPropertyCollection(IEnumerable<CustomFlightProperty> rgcfp) : this()
         {
+            if (rgcfp == null)
+                return;
             foreach (CustomFlightProperty cfp in rgcfp)
                 if (cfp != null && !cfp.IsDefaultValue)
                     m_dictProps[cfp.PropTypeID] = cfp;
@@ -1594,6 +1596,8 @@ ORDER BY f.Date Desc";
         /// <param name="a"></param>
         public void ForEachEvent(Action<CustomFlightProperty> a)
         {
+            if (a == null)
+                return;
             foreach (CustomFlightProperty cfp in m_dictProps.Values)
                 a(cfp);
         }
@@ -1650,6 +1654,8 @@ ORDER BY f.Date Desc";
         /// <returns>First matching hit, or null</returns>
         public CustomFlightProperty FindEvent(Predicate<CustomFlightProperty> p)
         {
+            if (p == null)
+                throw new ArgumentNullException(nameof(p));
             foreach (CustomFlightProperty cfp in m_dictProps.Values)
                 if (p(cfp))
                     return cfp;

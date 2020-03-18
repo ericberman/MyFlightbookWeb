@@ -877,7 +877,7 @@ namespace MyFlightbook
                         foreach (string phrase in phrases)
                         {
                             string szPhrase = phrase;
-                            bool fNegate = szPhrase.StartsWith("-");
+                            bool fNegate = szPhrase.StartsWith("-", StringComparison.CurrentCulture);
                             if (fNegate)
                                 szPhrase = szPhrase.Substring(1);
 
@@ -1012,7 +1012,7 @@ namespace MyFlightbook
                 {
                     const string szICAOPrefix = "ICAO:";
                     string szSearch = sz.Trim();
-                    bool fICAO = szSearch.ToUpperInvariant().StartsWith(szICAOPrefix);
+                    bool fICAO = szSearch.ToUpperInvariant().StartsWith(szICAOPrefix, StringComparison.CurrentCultureIgnoreCase);
                     if (fICAO)
                         szSearch = szSearch.Substring(szICAOPrefix.Length).Trim();
 
@@ -1512,7 +1512,7 @@ namespace MyFlightbook
 
         public static bool operator >(CannedQuery left, CannedQuery right)
         {
-            return left is object && left.CompareTo(right) > 0;
+            return left is object && left != null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(CannedQuery left, CannedQuery right)

@@ -24,9 +24,9 @@ namespace MyFlightbook.Templates
     /// PropertyTemplate - basic functionality, base class for other templates
     /// </summary>
     [Serializable]
-    public class PropertyTemplate : IComparable
+    public class PropertyTemplate : IComparable, IEquatable<PropertyTemplate>
     {
-        protected HashSet<int> m_propertyTypes = new HashSet<int>();
+        protected HashSet<int> m_propertyTypes { get; set; } = new HashSet<int>();
 
         #region Properties
         public int ID { get; set; }
@@ -98,15 +98,25 @@ namespace MyFlightbook.Templates
 
         public bool ContainsProperty(int idproptype) { return m_propertyTypes.Contains(idproptype); }
 
-        public bool ContainsProperty(CustomPropertyType cpt) { return m_propertyTypes.Contains(cpt.PropTypeID); }
+        public bool ContainsProperty(CustomPropertyType cpt) { return cpt == null ? false : m_propertyTypes.Contains(cpt.PropTypeID); }
 
         public void AddProperty(int idProptype) { m_propertyTypes.Add(idProptype); }
 
-        public void AddProperty(CustomPropertyType cpt) { m_propertyTypes.Add(cpt.PropTypeID); }
+        public void AddProperty(CustomPropertyType cpt)
+        {
+            if (cpt == null)
+                throw new ArgumentNullException(nameof(cpt));
+            m_propertyTypes.Add(cpt.PropTypeID);
+        }
 
         public void RemoveProperty(int idPropType) { m_propertyTypes.Remove(idPropType); }
 
-        public void RemoveProperty(CustomPropertyType cpt) { m_propertyTypes.Remove(cpt.PropTypeID); }
+        public void RemoveProperty(CustomPropertyType cpt)
+        {
+            if (cpt == null)
+                throw new ArgumentNullException(nameof(cpt));
+            m_propertyTypes.Remove(cpt.PropTypeID);
+        }
         #endregion
 
         #region constructors
@@ -176,10 +186,83 @@ namespace MyFlightbook.Templates
             return pt;
         }
 
+        #region IComparable
         public int CompareTo(object obj)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
             return Name.CompareCurrentCultureIgnoreCase(((PropertyTemplate)obj).Name);
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as PropertyTemplate);
+        }
+
+        public bool Equals(PropertyTemplate other)
+        {
+            return other != null &&
+                   ID == other.ID &&
+                   Name == other.Name &&
+                   Description == other.Description &&
+                   Group == other.Group &&
+                   GroupAsInt == other.GroupAsInt &&
+                   GroupDisplayName == other.GroupDisplayName &&
+                   EqualityComparer<HashSet<int>>.Default.Equals(PropertyTypes, other.PropertyTypes) &&
+                   IsDefault == other.IsDefault &&
+                   IsMutable == other.IsMutable &&
+                   EqualityComparer<IEnumerable<string>>.Default.Equals(PropertyNames, other.PropertyNames);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 697218593;
+                hashCode = hashCode * -1521134295 + ID.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Description);
+                hashCode = hashCode * -1521134295 + Group.GetHashCode();
+                hashCode = hashCode * -1521134295 + GroupAsInt.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(GroupDisplayName);
+                hashCode = hashCode * -1521134295 + EqualityComparer<HashSet<int>>.Default.GetHashCode(PropertyTypes);
+                hashCode = hashCode * -1521134295 + IsDefault.GetHashCode();
+                hashCode = hashCode * -1521134295 + IsMutable.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<string>>.Default.GetHashCode(PropertyNames);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(PropertyTemplate left, PropertyTemplate right)
+        {
+            return EqualityComparer<PropertyTemplate>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(PropertyTemplate left, PropertyTemplate right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(PropertyTemplate left, PropertyTemplate right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(PropertyTemplate left, PropertyTemplate right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(PropertyTemplate left, PropertyTemplate right)
+        {
+            return left is object && left != null && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(PropertyTemplate left, PropertyTemplate right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
     }
 
     #region Built-in automatic templates
@@ -189,7 +272,7 @@ namespace MyFlightbook.Templates
     [Serializable]
     public class MRUPropertyTemplate : PropertyTemplate
     {
-        public override IEnumerable<string> PropertyNames { get { return new string[0]; } }
+        public override IEnumerable<string> PropertyNames { get { return Array.Empty<string>(); } }
 
         public MRUPropertyTemplate() : base()
         {
@@ -289,6 +372,8 @@ namespace MyFlightbook.Templates
 
         protected void InitFromDataReader(MySqlDataReader dr)
         {
+            if (dr == null)
+                throw new ArgumentNullException(nameof(dr));
             ID = Convert.ToInt32(dr["id"], CultureInfo.InvariantCulture);
             Name = (string)dr["name"];
             Description = util.ReadNullableString(dr, "description");
@@ -384,7 +469,7 @@ namespace MyFlightbook.Templates
         private static List<PropertyTemplate> CachedTemplatesForUser(string szUser)
         {
             if (szUser == null)
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
             if (String.IsNullOrWhiteSpace(szUser))
                 return null;
 
@@ -422,7 +507,7 @@ namespace MyFlightbook.Templates
         public static IEnumerable<PropertyTemplate> TemplatesForUser(string szUser, bool fIncludeAutomatic = true)
         {
             if (szUser == null)
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
 
             List<PropertyTemplate> lst = CachedTemplatesForUser(szUser);
 
@@ -471,7 +556,7 @@ namespace MyFlightbook.Templates
         #endregion
     }
 
-    public class TemplateCollection : IComparable
+    public class TemplateCollection : IComparable, IEquatable<TemplateCollection>
     {
         #region Properties
         public PropertyTemplateGroup Group { get; set; }
@@ -491,10 +576,12 @@ namespace MyFlightbook.Templates
         {
             Dictionary<PropertyTemplateGroup, List<PropertyTemplate>> d = new Dictionary<PropertyTemplateGroup, List<PropertyTemplate>>();
 
+            if (rgTemplates == null)
+                throw new ArgumentNullException(nameof(rgTemplates));
+
             foreach (PropertyTemplate pt in rgTemplates)
             {
-                List<PropertyTemplate> lst;
-                if (d.TryGetValue(pt.Group, out lst))
+                if (d.TryGetValue(pt.Group, out List<PropertyTemplate> lst))
                     lst.Add(pt);
                 else
                     d[pt.Group] = new List<PropertyTemplate>() { pt };
@@ -513,8 +600,11 @@ namespace MyFlightbook.Templates
             return lstOut;
         }
 
+        #region IComparable
         public int CompareTo(object obj)
         {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
             TemplateCollection tc = obj as TemplateCollection;
 
             // Automatic is always first - so if either this or the other is automatic, sort by ordinal value; otherwise, sort by name
@@ -523,6 +613,62 @@ namespace MyFlightbook.Templates
             else
                 return PropertyTemplate.NameForGroup(Group).CompareCurrentCultureIgnoreCase(PropertyTemplate.NameForGroup(tc.Group));
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as TemplateCollection);
+        }
+
+        public bool Equals(TemplateCollection other)
+        {
+            return other != null &&
+                   Group == other.Group &&
+                   GroupName == other.GroupName &&
+                   EqualityComparer<IEnumerable<PropertyTemplate>>.Default.Equals(Templates, other.Templates);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = -607834157;
+                hashCode = hashCode * -1521134295 + Group.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(GroupName);
+                hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<PropertyTemplate>>.Default.GetHashCode(Templates);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(TemplateCollection left, TemplateCollection right)
+        {
+            return EqualityComparer<TemplateCollection>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(TemplateCollection left, TemplateCollection right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(TemplateCollection left, TemplateCollection right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(TemplateCollection left, TemplateCollection right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(TemplateCollection left, TemplateCollection right)
+        {
+            return left is object && left != null && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(TemplateCollection left, TemplateCollection right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
     }
 
     [Serializable]
@@ -536,8 +682,8 @@ namespace MyFlightbook.Templates
         #region Constructors
         public TemplatePropTypeBundle()
         {
-            UserProperties = new CustomPropertyType[0];
-            UserTemplates = new PropertyTemplate[0];
+            UserProperties = Array.Empty<CustomPropertyType>();
+            UserTemplates = Array.Empty<PropertyTemplate>();
         }
 
         public TemplatePropTypeBundle(string szUser) : this()

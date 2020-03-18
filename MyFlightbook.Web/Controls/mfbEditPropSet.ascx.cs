@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -118,7 +118,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
     public void AddTemplate(PropertyTemplate pt)
     {
         if (pt == null)
-            throw new ArgumentNullException("pt");
+            throw new ArgumentNullException(nameof(pt));
 
         ActiveTemplates.Add(pt);
         mfbSelectTemplates.AddTemplate(pt.ID);
@@ -127,7 +127,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
     public void AddTemplates(IEnumerable<PropertyTemplate> rgpt)
     {
         if (rgpt == null)
-            throw new ArgumentNullException("rgpt");
+            throw new ArgumentNullException(nameof(rgpt));
         foreach (PropertyTemplate pt in rgpt)
             ActiveTemplates.Add(pt);
         mfbSelectTemplates.AddTemplates(rgpt);
@@ -323,12 +323,12 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
     {
         if (String.IsNullOrEmpty(cmbPropsToAdd.SelectedValue))
             return;
-        int idPropType = Convert.ToInt32(cmbPropsToAdd.SelectedValue);
+        int idPropType = Convert.ToInt32(cmbPropsToAdd.SelectedValue, CultureInfo.InvariantCulture);
         CustomPropertyType[] rgCptAll = CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.IsAuthenticated ? Page.User.Identity.Name : string.Empty);
         CustomPropertyType cpt = rgCptAll.First((cpt2) => {return cpt2.PropTypeID == idPropType;});
 
         if (cpt == null)
-            throw new MyFlightbookException(String.Format("Custom property type with id {0} not found!", idPropType));
+            throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Custom property type with id {0} not found!", idPropType));
 
         RefreshList(new CustomFlightProperty(cpt));
     }
@@ -336,7 +336,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
     protected void mfbSelectTemplates_TemplateSelected(object sender, PropertyTemplateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Template == null)
             throw new ArgumentException("Null Template in PropertyTemplateEventArgs");
 
@@ -347,7 +347,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
     protected void mfbSelectTemplates_TemplateUnselected(object sender, PropertyTemplateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         RemoveTemplate(e.TemplateID);
         Refresh();
     }
@@ -355,7 +355,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
     protected void mfbSelectTemplates_TemplatesReady(object sender, EventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         // Hide the pop menu if only automatic templates are available
         if (mfbSelectTemplates.GroupedTemplates.Count() == 1 && mfbSelectTemplates.GroupedTemplates.ElementAt(0).Group == PropertyTemplateGroup.Automatic)

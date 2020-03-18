@@ -38,6 +38,8 @@ namespace MyFlightbook.FlightCurrency
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             cfr.FlightProps.ForEachEvent((pfe) =>
             {
                 if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135293Competency || pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135297IPC)
@@ -56,6 +58,8 @@ namespace MyFlightbook.FlightCurrency
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
             cfr.FlightProps.ForEachEvent((pfe) =>
             {
                 if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDProp135297IPC)

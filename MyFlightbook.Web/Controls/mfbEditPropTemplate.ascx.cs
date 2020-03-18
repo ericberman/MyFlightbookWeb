@@ -164,7 +164,7 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
             List<UserPropertyTemplate> lst = new List<UserPropertyTemplate>(UserPropertyTemplate.PublicTemplates());
             if (lst.Find(ptPublic => ptPublic.Name.CompareCurrentCultureIgnoreCase(pt.Name) == 0 && ptPublic.Owner.CompareCurrentCultureIgnoreCase(pt.Owner) != 0) != null)
             {
-                ((Label) ck.NamingContainer.FindControl("lblPublicErr")).Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateDuplicateSharedName, pt.Name);
+                ((Label) ck.NamingContainer.FindControl("lblPublicErr")).Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.TemplateDuplicateSharedName, System.Web.HttpUtility.HtmlEncode(pt.Name));
                 ck.Checked = false;
                 return;
             }
@@ -176,6 +176,8 @@ public partial class Controls_mfbEditPropTemplate : System.Web.UI.UserControl
 
     protected void imgbtnEdit_Click(object sender, EventArgs e)
     {
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
         ActiveTemplate = Target((sender as Control).NamingContainer);
         ToForm();
         cpeNewTemplate.Collapsed = false;

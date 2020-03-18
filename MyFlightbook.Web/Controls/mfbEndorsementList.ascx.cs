@@ -11,12 +11,12 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2010-2018 MyFlightbook LLC
+ * Copyright (c) 2010-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
-public partial class Controls_mfbEndorsementList : System.Web.UI.UserControl
+public partial class Controls_mfbEndorsementList : UserControl
 {
     /// <summary>
     /// The name of the student to restrict on
@@ -98,10 +98,10 @@ public partial class Controls_mfbEndorsementList : System.Web.UI.UserControl
                 Endorsement en = rgEndorsements.FirstOrDefault(en2 => en2.ID == id);
 
                 if (en == null)
-                    throw new MyFlightbookException("Can't find endorsement with ID=" + id.ToString());
+                    throw new MyFlightbookException("Can't find endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
 
                 if (en.StudentType == Endorsement.StudentTypes.External)
-                    throw new MyFlightbookException("Can't delete external endorsement with ID=" + id.ToString());
+                    throw new MyFlightbookException("Can't delete external endorsement with ID=" + id.ToString(CultureInfo.InvariantCulture));
 
                 en.FDelete();
                 RefreshEndorsements();
