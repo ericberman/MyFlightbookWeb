@@ -132,7 +132,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
         ClubAircraft ca = new ClubAircraft()
         {
             AircraftID = Convert.ToInt32(cmbAircraftToAdd.SelectedValue, CultureInfo.InvariantCulture),
-            ClubDescription = txtDescription.FixedHtml,
+            ClubDescription = txtDescription.Text,
             ClubID = CurrentClub.ID
         };
         if (!ca.FSaveToClub())
@@ -168,7 +168,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
                 throw new ArgumentNullException(nameof(e));
 
             GridViewRow row = ((GridView) sender).Rows[e.RowIndex];
-            ca.ClubDescription = ((Controls_mfbHtmlEdit)row.FindControl("txtDescription")).FixedHtml;
+            ca.ClubDescription = ((Controls_mfbHtmlEdit)row.FindControl("txtDescription")).Text;
             ca.HighWater = ((Controls_mfbDecimalEdit)row.FindControl("decEditTime")).Value;
 
             if (ca.FSaveToClub())

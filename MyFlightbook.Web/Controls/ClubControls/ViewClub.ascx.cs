@@ -57,16 +57,9 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
         Club c = ActiveClub;
         if (c == null)
             return;
-        // Hack - page_load isn't getting called on mfbhtmlEdit, need to fix up the HTML here.
-        string szDesc = c.Description;
-        if (fvClub.CurrentMode == FormViewMode.Edit)
-            c.Description = Controls_mfbHtmlEdit.UnFixHtml(c.Description);
 
         fvClub.DataSource = new List<Club> { c };
         fvClub.DataBind();
-
-        // Restore the description
-        c.Description = szDesc;
 
         // Show the link or don't
         if (fvClub.CurrentMode == FormViewMode.ReadOnly)
@@ -99,7 +92,7 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
             c.City = (string)e.NewValues["City"];
             c.ContactPhone = (string)e.NewValues["ContactPhone"];
             c.Country = (string)e.NewValues["Country"];
-            c.Description = Controls_mfbHtmlEdit.FixHtml((string)e.NewValues["Description"]);
+            c.Description = (string)e.NewValues["Description"];
             c.HomeAirportCode = (string)e.NewValues["HomeAirportCode"];
             if (!String.IsNullOrEmpty(c.HomeAirportCode))
             {

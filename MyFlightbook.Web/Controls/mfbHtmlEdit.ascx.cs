@@ -12,11 +12,6 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbHtmlEdit : System.Web.UI.UserControl
 {
-
-    // hack: html sanitizer strips <br> tags; 
-    // See http://stackoverflow.com/questions/11398824/how-i-can-prevent-antixss-sanitizer-from-removing-html5-br-tag-from-ajaxcontro for how to fix line breaks in htmlextended text boxes
-    public const string szHtmlEditorNewlineHack = "~_!_~"; 
-
     #region properties
     public TextBox TextControl { get { return txtMain; } }
     public Unit Width
@@ -37,11 +32,6 @@ public partial class Controls_mfbHtmlEdit : System.Web.UI.UserControl
         set { txtMain.Rows = value; }
     }
 
-    public string FixedHtml
-    {
-        get { return FixHtml(txtMain.Text); }
-    }
-
     public bool ShowHtmlTab
     {
         get { return TextBox1_HtmlEditorExtender.DisplaySourceTab; }
@@ -51,30 +41,8 @@ public partial class Controls_mfbHtmlEdit : System.Web.UI.UserControl
     [System.ComponentModel.Bindable(true)]
     public string Text
     {
-        // See https://code.google.com/p/chromium/issues/detail?id=395318; htmledit with empty text causes problems on Chrome.
         get { return txtMain.Text.Trim(); }
         set { txtMain.Text = (value == null) ? string.Empty : (String.IsNullOrEmpty(value.Trim()) ? Resources.LocalizedText.ChromeTabHack.Replace("\\t", "\t") : value); }
-    }
-
-    public static string FixHtml(string sz)
-    {
-        if (sz == null)
-            throw new ArgumentNullException(nameof(sz));
-        return sz.Replace(szHtmlEditorNewlineHack, "<br />");
-    }
-
-    public static string UnFixEncodedHtml(string sz)
-    {
-        if (sz == null)
-            throw new ArgumentNullException(nameof(sz));
-        return HttpContext.Current.Server.HtmlDecode(sz.Replace("&lt;br&gt;", szHtmlEditorNewlineHack));
-    }
-
-    public static string UnFixHtml(string sz)
-    {
-        if (sz == null)
-            throw new ArgumentNullException(nameof(sz));
-        return sz.Replace("<br />", szHtmlEditorNewlineHack);
     }
     #endregion
 
@@ -85,15 +53,5 @@ public partial class Controls_mfbHtmlEdit : System.Web.UI.UserControl
         Page.Header.Controls.Add(m);
         m.HttpEquiv = "X-UA-Compatible";
         m.Content = "IE=10,chrome=1";
-
-        if (IsPostBack)
-        {
-            Text = UnFixEncodedHtml(txtMain.Text);
-        }
-    }
-
-    protected void TextBox1_HtmlEditorExtender_PreRender(object sender, EventArgs e)
-    {
-        Text = FixHtml(txtMain.Text);
     }
 }

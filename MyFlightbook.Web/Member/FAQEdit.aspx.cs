@@ -45,6 +45,6 @@ public partial class Member_FAQEdit : System.Web.UI.Page
             throw new ArgumentNullException(nameof(e));
         FAQItem.FlushFAQCache();
         Controls_mfbHtmlEdit t = (Controls_mfbHtmlEdit)gvFAQ.Rows[e.RowIndex].FindControl("txtAnswer");
-        sqlFAQ.UpdateParameters["Answer"] = new Parameter("Answer", System.Data.DbType.String, t.FixedHtml);
+        sqlFAQ.UpdateParameters["Answer"] = new Parameter("Answer", System.Data.DbType.String, t.Text);
     }
 }
