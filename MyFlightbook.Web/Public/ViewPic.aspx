@@ -1,15 +1,6 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Codebehind="ViewPic.aspx.cs" Inherits="Public_ViewPic" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" Codebehind="ViewPic.aspx.cs" Inherits="Public_ViewPic" %>
+<%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register src="../Controls/mfbEditableImage.ascx" tagname="mfbEditableImage" tagprefix="uc1" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title></title>
-</head>
-<body>
-    <form id="form1" runat="server">
-    <div>
-        <uc1:mfbEditableImage ID="mfbEditableImage1" runat="server" />
-    </div>
-    </form>
-</body>
-</html>
+<asp:content id="Content1" contentplaceholderid="cpTopForm" runat="Server">
+    <uc1:mfbEditableImage ID="mfbEditableImage1" runat="server" />
+</asp:content>

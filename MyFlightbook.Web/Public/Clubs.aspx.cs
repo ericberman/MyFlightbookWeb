@@ -185,7 +185,7 @@ public partial class Public_Clubs : System.Web.UI.Page
 
     protected void btnFindClubs_Click(object sender, EventArgs e)
     {
-        txtHomeAirport.Text = txtHomeAirport.Text.ToUpper(CultureInfo.CurrentCulture).Trim();
+        txtHomeAirport.Text = HttpUtility.HtmlEncode(txtHomeAirport.Text).ToUpper(CultureInfo.CurrentCulture).Trim();
 
         SearchResults.Clear();
 

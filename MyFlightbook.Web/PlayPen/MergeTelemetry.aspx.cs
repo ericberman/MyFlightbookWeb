@@ -6,7 +6,7 @@ using System.Globalization;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -36,7 +36,7 @@ public partial class PlayPen_MergeTelemetry : System.Web.UI.Page
         set { Session[SessionKeyBase] = value; }
     }
 
-    protected bool FromObj(object o)
+    protected static bool FromObj(object o)
     {
         return o == null ? true : Convert.ToBoolean(o, CultureInfo.InvariantCulture);
     }
@@ -44,25 +44,25 @@ public partial class PlayPen_MergeTelemetry : System.Web.UI.Page
     protected bool HasTime
     {
         get { return FromObj(Session[SessionTime]); }
-        set { Session[SessionTime] = value.ToString(); }
+        set { Session[SessionTime] = value.ToString(CultureInfo.InvariantCulture); }
     }
 
     protected bool HasAlt
     {
         get { return FromObj(Session[SessionAlt]); }
-        set { Session[SessionAlt] = value.ToString(); }
+        set { Session[SessionAlt] = value.ToString(CultureInfo.InvariantCulture); }
     }
 
     protected bool HasSpeed
     {
         get { return FromObj(Session[SessionSpeed]); }
-        set { Session[SessionSpeed] = value.ToString(); }
+        set { Session[SessionSpeed] = value.ToString(CultureInfo.InvariantCulture); }
     }
 
     protected void AjaxFileUpload1_UploadComplete(object sender, AjaxControlToolkit.AjaxFileUploadEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         if (e.State != AjaxControlToolkit.AjaxFileUploadState.Success)
             return;
@@ -89,7 +89,6 @@ public partial class PlayPen_MergeTelemetry : System.Web.UI.Page
 
     protected void btnMerge_Click(object sender, EventArgs e)
     {
-        string szResult = string.Empty;
         if (Coordinates != null)
         {
             Coordinates.Sort();

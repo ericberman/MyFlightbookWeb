@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -97,7 +97,7 @@ public partial class Public_Developer : System.Web.UI.Page
     protected void gvMyServices_RowEditing(object sender, GridViewEditEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         gvMyServices.EditIndex = e.NewEditIndex;
         gvMyServices.DataSource = OwnedClients;
         gvMyServices.DataBind();
@@ -113,7 +113,7 @@ public partial class Public_Developer : System.Web.UI.Page
     protected void gvMyServices_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         MFBOauth2Client client = new List<MFBOauth2Client>(OwnedClients)[e.RowIndex];
         client.ClientSecret = (string) e.NewValues["ClientSecret"];

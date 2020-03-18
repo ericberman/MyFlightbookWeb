@@ -7,14 +7,14 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class PlayPen_Checklist : Page
 {
-    protected string[] rgSamples =
+    private readonly string[] rgSamples =
     {
         @"TAB Inspections
 - CABIN

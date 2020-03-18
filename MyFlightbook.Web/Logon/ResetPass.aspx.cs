@@ -7,7 +7,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
  * Flow here inspired by https://www.troyhunt.com/everything-you-ever-wanted-to-know/.
@@ -60,11 +60,11 @@ public partial class ResetPass : System.Web.UI.Page
                 mvResetPass.SetActiveView(vwVerify);
                 lblQuestion.Text = Membership.GetUser(prr.UserName).PasswordQuestion;
             }
-            catch (ArgumentOutOfRangeException)
+            catch (Exception ex) when (ex is ArgumentOutOfRangeException)
             {
                 lblErr.Text = Resources.LocalizedText.ResetPasswordInvalidRequest;
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is InvalidOperationException)
             {
                 lblErr.Text = ex.Message;
             }
@@ -74,7 +74,7 @@ public partial class ResetPass : System.Web.UI.Page
     private void CheckStatus(PasswordResetRequest prr)
     {
         if (prr == null)
-            throw new ArgumentNullException("prr");
+            throw new ArgumentNullException(nameof(prr));
 
         switch (prr.Status)
         {
@@ -91,7 +91,7 @@ public partial class ResetPass : System.Web.UI.Page
         Page.Validate("resetPassEmail");
         if (Page.IsValid)
         {
-            lblEmailSent.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ResetPassEmailSent, txtEmail.Text);
+            lblEmailSent.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ResetPassEmailSent, HttpUtility.HtmlEncode(txtEmail.Text));
             mvResetPass.SetActiveView(vwEmailSent);
             string szUser = Membership.GetUserNameByEmail(txtEmail.Text);
             if (String.IsNullOrEmpty(szUser))

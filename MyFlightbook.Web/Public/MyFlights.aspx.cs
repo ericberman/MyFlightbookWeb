@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2011-2019 MyFlightbook LLC
+ * Copyright (c) 2011-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -38,7 +38,7 @@ public partial class Public_MyFlights : System.Web.UI.Page
             using (StringWriter sw = new StringWriter(CultureInfo.CurrentCulture))
                 HttpContext.Current.Server.Execute(p, sw, false);
 
-            IEnumerable<LogbookEntry> rgle = new LogbookEntry[0];
+            IEnumerable<LogbookEntry> rgle = Array.Empty<LogbookEntry>();
             if (String.IsNullOrEmpty(szUser))
             {
                 List<LogbookEntry> lst = new List<LogbookEntry>(FlightStats.GetFlightStats().RecentPublicFlights);
@@ -63,8 +63,8 @@ public partial class Public_MyFlights : System.Web.UI.Page
                 System.Text.StringBuilder sb = new System.Text.StringBuilder();
                 using (StringWriter sw = new StringWriter(sb, CultureInfo.CurrentCulture))
                 {
-                    HtmlTextWriter htmlTW = new HtmlTextWriter(sw);
-                    pfe.RenderControl(htmlTW);
+                    using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
+                        pfe.RenderControl(htmlTW);
                 }
 
                 lstRows.Add(new FlightRow() { HTMLRowText = sb.ToString(), FBDivID = string.Empty });
@@ -88,7 +88,7 @@ public partial class Public_MyFlights : System.Web.UI.Page
         // figure out who to show
         if (!IsPostBack)
         {
-            IEnumerable<LogbookEntry> rgle = new LogbookEntry[0];
+            IEnumerable<LogbookEntry> rgle = Array.Empty<LogbookEntry>();
 
             string szUserEnc = util.GetStringParam(Request, "uid");
             UserName = string.Empty;
@@ -114,10 +114,10 @@ public partial class Public_MyFlights : System.Web.UI.Page
                     // below can throw argument null exception if it's an invalid username
                     Profile pf = MyFlightbook.Profile.GetUser(UserName);
                     if (pf.UserFullName.Length > 0)
-                        lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightPageHeader, pf.UserFullName);
+                        lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.PublicFlightPageHeader, HttpUtility.HtmlEncode(pf.UserFullName));
                     rgle = LogbookEntry.GetPublicFlightsForUser(UserName, 0, PageSize);
                 }
-                catch (NullReferenceException) { }
+                catch (Exception ex) when (ex is NullReferenceException) { }
             }
 
             gvMyFlights.DataSource = rgle;
@@ -129,7 +129,7 @@ public partial class Public_MyFlights : System.Web.UI.Page
     public void gvMyFlights_rowDataBound(Object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
             ((Controls_mfbPublicFlightItem)e.Row.FindControl("mfbPublicFlightItem1")).Entry = (LogbookEntry) e.Row.DataItem;
     }

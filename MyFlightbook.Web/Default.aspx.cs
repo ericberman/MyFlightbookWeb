@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 /******************************************************
@@ -140,27 +139,5 @@ public partial class Public_Home : System.Web.UI.Page
         }
 
         imageSlider.Images = lstRecentImages;
-    }
-
-    protected void lnkViewMobile_Click(object sender, EventArgs e)
-    {
-        Response.Cookies[MFBConstants.keyClassic].Value = null;
-        Response.Redirect("DefaultMini.aspx");
-    }
-
-    protected void EnteredFlight(object sender, EventArgs e)
-    {
-        Response.Redirect(SocialNetworkAuthorization.PopRedirect(SocialNetworkAuthorization.DefaultRedirPage));
-    }
-
-    protected void OnPageIndexChanging(object sender, GridViewPageEventArgs e)
-    {
-        if (e == null)
-            throw new ArgumentNullException("e");
-        if (sender == null)
-            throw new ArgumentNullException("sender");
-        GridView gv = (GridView)sender;
-        gv.PageIndex = e.NewPageIndex;
-        gv.DataBind();
     }
 }

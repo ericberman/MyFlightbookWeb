@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -44,7 +44,7 @@ public partial class MapRoute : System.Web.UI.Page
         {
             if (!String.IsNullOrEmpty(Request.QueryString["Airports"]))
             {
-                txtAirports.Text = Request.QueryString["Airports"].ToString();
+                txtAirports.Text = HttpUtility.HtmlEncode(Request.QueryString["Airports"]);
                 txtAirports.Rows = Math.Min(Math.Max((txtAirports.Text.Length / 70) + 1, 1), 6);
                 mfbAirportServices1.GoogleMapID = MfbGoogleMapManager1.MapID;
             }
@@ -88,9 +88,7 @@ public partial class MapRoute : System.Web.UI.Page
 
     private void SetAirportsInMap(IEnumerable<AirportList> lst)
     {
-        if (lst == null)
-            throw new ArgumentNullException("lst");
-        MfbGoogleMapManager1.Map.Airports = lst;
+        MfbGoogleMapManager1.Map.Airports = lst ?? throw new ArgumentNullException(nameof(lst));
         MfbGoogleMapManager1.Map.AutofillOnPanZoom = (lst.Count() == 0);
         lnkZoomOut.NavigateUrl = MfbGoogleMapManager1.ZoomToFitScript;
     }
@@ -111,7 +109,7 @@ public partial class MapRoute : System.Web.UI.Page
     protected void btnMetars_Click(object sender, EventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         METAR.METARs = new ADDSService().LatestMETARSForAirports(txtAirports.Text);
         btnMetars.Visible = false;
     }
@@ -190,7 +188,7 @@ public partial class MapRoute : System.Web.UI.Page
     protected void gvFlownSegments_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             FlownSegment fs = (FlownSegment)e.Row.DataItem;
@@ -214,7 +212,7 @@ public partial class MapRoute : System.Web.UI.Page
         if (lst.Count == 0)
             return;
         IEnumerable<IFix> path = TravelingSalesman.ShortestPath(lst);
-        txtAirports.Text = String.Join(" ", path.Select(ap => ap.Code));
+        txtAirports.Text = HttpUtility.HtmlEncode(String.Join(" ", path.Select(ap => ap.Code)));
         btnMapEm_Click(sender, e);
     }
 }

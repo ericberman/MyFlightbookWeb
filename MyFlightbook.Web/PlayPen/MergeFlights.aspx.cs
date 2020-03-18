@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2018-2019 MyFlightbook LLC
+ * Copyright (c) 2018-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,10 +16,8 @@ public partial class PlayPen_MergeFlights : System.Web.UI.Page
 {
     public string GetClassForWizardStep(object wizardStep)
     {
-        WizardStep step = wizardStep as WizardStep;
-
-        if (step == null)
-            return "";
+        if (!(wizardStep is WizardStep step))
+            return string.Empty;
 
         int stepIndex = wzMerge.WizardSteps.IndexOf(step);
 
@@ -153,7 +151,7 @@ public partial class PlayPen_MergeFlights : System.Web.UI.Page
     protected void wzMerge_NextButtonClick(object sender, WizardNavigationEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         if (wzMerge.ActiveStep == wsSelectFlights)
         {
             if (!IsValidToMerge())

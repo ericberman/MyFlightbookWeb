@@ -9,7 +9,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -50,11 +50,11 @@ public partial class Public_ContactMe : System.Web.UI.Page
 
             if (szEmail.Length > 0)
             {
-                txtEmail.Text = szEmail;
-                txtName.Text = MyFlightbook.Profile.GetUser(Membership.GetUserNameByEmail(szEmail)).UserFullName;
+                txtEmail.Text = HttpUtility.HtmlEncode(szEmail);
+                txtName.Text = HttpUtility.HtmlEncode(Profile.GetUser(Membership.GetUserNameByEmail(szEmail)).UserFullName);
             }
             if (szSubject.Length > 0)
-                txtSubject.Text = szSubject;
+                txtSubject.Text = HttpUtility.HtmlEncode(szSubject);
         }
     }
     protected void btnSend_Click(object sender, EventArgs e)

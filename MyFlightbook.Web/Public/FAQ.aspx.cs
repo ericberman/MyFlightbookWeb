@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2018 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -31,7 +31,7 @@ public partial class Public_FAQ : System.Web.UI.Page
     protected void rptFAQGroup_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
 
         Accordion acc = (Accordion)e.Item.FindControl("accFAQGroup");
         FAQGroup fg = (FAQGroup) e.Item.DataItem;
@@ -50,7 +50,7 @@ public partial class Public_FAQ : System.Web.UI.Page
 
     protected void btnSearch_Click(object sender, EventArgs e)
     {
-        IEnumerable<FAQGroup> results = null;
+        IEnumerable<FAQGroup> results;
         if (String.IsNullOrWhiteSpace(mfbSearchbox.SearchText))
             results = FAQGroup.CategorizedFAQs;
         else

@@ -6,7 +6,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -34,7 +34,7 @@ public partial class newuser : System.Web.UI.Page
     protected void CreatingUser(object sender, LoginCancelEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         TextBox txtEmail = (TextBox)CreateUserWizardStep1.ContentTemplateContainer.FindControl("Email");
         TextBox txtUserName = (TextBox)CreateUserWizardStep1.ContentTemplateContainer.FindControl("UserName");
 
@@ -55,7 +55,7 @@ public partial class newuser : System.Web.UI.Page
         }
 
         // now find a unique username to propose
-        txtUserName.Text = UserEntity.UserNameForEmail(txtEmail.Text);
+        txtUserName.Text = HttpUtility.HtmlEncode(UserEntity.UserNameForEmail(txtEmail.Text));
     }
 
     /// <summary>
@@ -71,7 +71,7 @@ public partial class newuser : System.Web.UI.Page
         // we send email from here rather than from the createuserwizard because for some reason createuserwizard isn't sending it.
         ProfileAdmin.FinalizeUser(szUser, ((TextBox)CreateUserWizardStep1.ContentTemplateContainer.FindControl("txtFirst")).Text, ((TextBox)CreateUserWizardStep1.ContentTemplateContainer.FindControl("txtLast")).Text, false);
 
-        Response.Cookies[MFBConstants.keyNewUser].Value = true.ToString();
+        Response.Cookies[MFBConstants.keyNewUser].Value = true.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
         // Redirect to the next page, but only if it is relative (for security)
         string szURLNext = util.GetStringParam(Request, "ReturnUrl");

@@ -5,7 +5,7 @@ using MyFlightbook.Image;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -19,10 +19,8 @@ public partial class Public_ViewPic : System.Web.UI.Page
         string szThumb = util.GetStringParam(Request, "t");
 
         MFBImageInfo.ImageClass ic = MFBImageInfo.ImageClass.Unknown;
-        try { ic = (MFBImageInfo.ImageClass)Enum.Parse(typeof(MFBImageInfo.ImageClass), szClass); }
-        catch (InvalidCastException) { }
-        catch (OverflowException) { }
-        catch (ArgumentException) { }
+        if (Enum.TryParse<MFBImageInfo.ImageClass>(szClass, out MFBImageInfo.ImageClass result))
+            ic = result;
 
         this.Title = szThumb;
         if (ic != MFBImageInfo.ImageClass.Unknown && !String.IsNullOrEmpty(szKey) && !String.IsNullOrEmpty(szThumb) && !szThumb.Contains("?"))  // Googlebot seems to be adding "?resize=300,300

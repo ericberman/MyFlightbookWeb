@@ -4,7 +4,7 @@ using MyFlightbook.Encryptors;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2016 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -28,7 +28,7 @@ public partial class Public_Unsubscribe : System.Web.UI.Page
                     throw new MyFlightbookException(Resources.Profile.errUnsubscribeNotFound);
                 pf.Subscriptions = 0;
                 pf.FCommit();
-                lblSuccess.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Profile.UnsubscribeSuccessful, pf.Email);
+                lblSuccess.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Profile.UnsubscribeSuccessful, System.Web.HttpUtility.HtmlEncode(pf.Email));
             }
             catch (MyFlightbookException ex)
             {

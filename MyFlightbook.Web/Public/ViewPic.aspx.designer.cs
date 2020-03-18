@@ -13,15 +13,6 @@ public partial class Public_ViewPic
 {
 
     /// <summary>
-    /// form1 control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.HtmlControls.HtmlForm form1;
-
-    /// <summary>
     /// mfbEditableImage1 control.
     /// </summary>
     /// <remarks>
@@ -29,4 +20,18 @@ public partial class Public_ViewPic
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_mfbEditableImage mfbEditableImage1;
+
+    /// <summary>
+    /// Master property.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated property.
+    /// </remarks>
+    public new MyFlightbook.Web.MasterPage Master
+    {
+        get
+        {
+            return ((MyFlightbook.Web.MasterPage)(base.Master));
+        }
+    }
 }

@@ -24,10 +24,10 @@ public partial class Public_RSSCurrency : System.Web.UI.Page
 
         if (Request.Params["uid"] != null)
         {
-            string szUid = Request.Params["uid"].ToString().Replace(" ", "+");
+            string szUid = Request.Params["uid"].Replace(" ", "+");
             SharedDataEncryptor ec = new SharedDataEncryptor("mfb");
             szUser = ec.Decrypt(szUid);
-            szDebug += "original uid=" + Request.Params["uid"].ToString() + " fixed szUid=" + szUid + " and szUser=" + szUser + " and timestamp = " + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString();
+            szDebug += "original uid=" + Request.Params["uid"] + " fixed szUid=" + szUid + " and szUser=" + szUser + " and timestamp = " + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString();
         }
         else if (User.Identity.IsAuthenticated)
         {
@@ -46,18 +46,20 @@ public partial class Public_RSSCurrency : System.Web.UI.Page
             StringBuilder sb = new StringBuilder();
             using (StringWriter sw = new StringWriter(sb, System.Globalization.CultureInfo.CurrentCulture))
             {
-                HtmlTextWriter htmlTW = new HtmlTextWriter(sw);
-                if (IsTotals)
+                using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
                 {
-                    mfbTotalSummary.Username = szUser;
-                    mfbTotalSummary.CustomRestriction = new FlightQuery(szUser);
-                    mfbTotalSummary.RenderControl(htmlTW);
-                }
-                else
-                {
-                    mfbCurrency1.UserName = szUser;
-                    mfbCurrency1.RefreshCurrencyTable();
-                    mfbCurrency1.RenderControl(htmlTW);
+                    if (IsTotals)
+                    {
+                        mfbTotalSummary.Username = szUser;
+                        mfbTotalSummary.CustomRestriction = new FlightQuery(szUser);
+                        mfbTotalSummary.RenderControl(htmlTW);
+                    }
+                    else
+                    {
+                        mfbCurrency1.UserName = szUser;
+                        mfbCurrency1.RefreshCurrencyTable();
+                        mfbCurrency1.RenderControl(htmlTW);
+                    }
                 }
             }
             szDescription = sb.ToString();

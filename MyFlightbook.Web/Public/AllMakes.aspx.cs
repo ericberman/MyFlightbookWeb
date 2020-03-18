@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2018 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -105,7 +105,7 @@ public partial class Public_AllMakes : Page
 
                             rptAttributes.DataSource = m.AttributeList();
                             rptAttributes.DataBind();
-                            lblModel.Text = m.DisplayName;
+                            lblModel.Text = System.Web.HttpUtility.HtmlEncode(m.DisplayName);
 
                             List<Aircraft> lst = new List<Aircraft>();
                             // UserAircraft.GetAircraftForUser is pretty heavyweight, especially for models witha  lot of aircraft like C-152.
@@ -124,7 +124,7 @@ public partial class Public_AllMakes : Page
                         break;
                 }
             }
-            catch (FormatException)
+            catch (Exception ex) when (ex is FormatException)
             {
                 Response.Clear();
                 Response.StatusCode = 404;

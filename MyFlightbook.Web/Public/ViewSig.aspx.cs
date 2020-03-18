@@ -3,7 +3,7 @@ using System;
 
 /******************************************************
  * 
- * Copyright (c) 2015 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -15,8 +15,10 @@ public partial class Public_ViewSig : System.Web.UI.Page
         int idFlight = util.GetIntParam(Request, "id", LogbookEntry.idFlightNew);
         if (idFlight != LogbookEntry.idFlightNew)
         {
-            LogbookEntry le = new LogbookEntry();
-            le.FlightID = idFlight;
+            LogbookEntry le = new LogbookEntry
+            {
+                FlightID = idFlight
+            };
             le.LoadDigitalSig();
 
             if (le.DigitizedSignature != null && le.DigitizedSignature.Length > 0)

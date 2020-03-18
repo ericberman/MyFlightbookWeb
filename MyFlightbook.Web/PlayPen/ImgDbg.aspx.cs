@@ -27,46 +27,44 @@ public partial class Public_ImgDbg : System.Web.UI.Page
             if (fu.HasFile)
             {
                 sb.AppendFormat(CultureInfo.InvariantCulture, "<hr /><br />File: {0}<br />", fu.PostedFile.FileName);
-                IMagickImage image = new MagickImage(fu.PostedFile.InputStream);
-                IExifProfile exif = image.GetExifProfile();
+                using (IMagickImage image = new MagickImage(fu.PostedFile.InputStream)) { 
+                    IExifProfile exif = image.GetExifProfile();
 
                 if (exif == null)
                     continue;
 
-                // Write all values to the console
-                foreach (IExifValue value in exif.Values)
-                {
-                    if (value.IsArray)
+                    // Write all values to the console
+                    foreach (IExifValue value in exif.Values)
                     {
-                        List<string> lst = new List<string>();
-                        object o = value.GetValue();
-                        byte[] rgbyte = o as byte[];
-                        ushort[] rgshort = o as ushort[];
-                        Rational[] rgrational = o as Rational[];
+                        if (value.IsArray)
+                        {
+                            List<string> lst = new List<string>();
+                            object o = value.GetValue();
 
-                        if (rgbyte != null)
-                        {
-                            foreach (byte b in rgbyte)
-                                lst.Add(b.ToString("X", CultureInfo.InvariantCulture));
-                        }
-                        else if (rgshort != null)
-                        {
-                            foreach (ushort u in rgshort)
-                                lst.Add(u.ToString(CultureInfo.InvariantCulture));
-                        }
-                        else if (rgrational != null)
-                        {
-                            foreach (Rational r in rgrational)
-                                lst.Add(r.ToString(CultureInfo.InvariantCulture));
+                            if (o is byte[] rgbyte)
+                            {
+                                foreach (byte b in rgbyte)
+                                    lst.Add(b.ToString("X", CultureInfo.InvariantCulture));
+                            }
+                            else if (o is ushort[] rgshort)
+                            {
+                                foreach (ushort u in rgshort)
+                                    lst.Add(u.ToString(CultureInfo.InvariantCulture));
+                            }
+                            else if (o is Rational[] rgrational)
+                            {
+                                foreach (Rational r in rgrational)
+                                    lst.Add(r.ToString(CultureInfo.InvariantCulture));
+                            }
+                            else
+                                lst.Add(o.ToString());
+
+                            sb.AppendFormat(CultureInfo.CurrentCulture, "{0}({1}): [{2}]<br />", value.Tag, value.DataType, String.Join(", ", lst));
+
                         }
                         else
-                            lst.Add(o.ToString());
-
-                        sb.AppendFormat(CultureInfo.CurrentCulture, "{0}({1}): [{2}]<br />", value.Tag, value.DataType, String.Join(", ", lst));
-
+                            sb.AppendFormat(CultureInfo.CurrentCulture, "{0}({1}): {2}<br />", value.Tag, value.DataType, value.ToString());
                     }
-                    else
-                        sb.AppendFormat(CultureInfo.CurrentCulture, "{0}({1}): {2}<br />", value.Tag, value.DataType, value.ToString());
                 }
             }
         }

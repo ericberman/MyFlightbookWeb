@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -59,7 +59,9 @@ public partial class Public_FindAirport : System.Web.UI.Page
     protected void gridView_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
+        if (sender == null)
+            throw new ArgumentNullException(nameof(sender));
         GridView gv = (GridView)sender;
         gv.PageIndex = e.NewPageIndex;
         gv.DataBind();
