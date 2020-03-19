@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Xml.Serialization;
 
 /******************************************************
@@ -675,26 +675,26 @@ namespace MyFlightbook.Templates
     public class TemplatePropTypeBundle
     {
         #region Properties
-        public CustomPropertyType[] UserProperties { get; set; }
-        public PropertyTemplate[] UserTemplates { get; set; }
+        public Collection <CustomPropertyType> UserProperties { get; set; }
+        public Collection<PropertyTemplate> UserTemplates { get; set; }
         #endregion
 
         #region Constructors
         public TemplatePropTypeBundle()
         {
-            UserProperties = Array.Empty<CustomPropertyType>();
-            UserTemplates = Array.Empty<PropertyTemplate>();
+            UserProperties = new Collection<CustomPropertyType>();;
+            UserTemplates = new Collection<PropertyTemplate>();
         }
 
         public TemplatePropTypeBundle(string szUser) : this()
         {
-            UserProperties = CustomPropertyType.GetCustomPropertyTypes(szUser);
+            UserProperties = new Collection<CustomPropertyType>(new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(szUser)));
             // For serialization to work with propertytemplates, the objects need to actually be propertytemplates, not subclasses.
             List<PropertyTemplate> lst = new List<PropertyTemplate>();
             IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(szUser, true);
             foreach (PropertyTemplate pt in rgpt)
                 lst.Add(new PropertyTemplate(pt));
-            UserTemplates = lst.ToArray();
+            UserTemplates = new Collection<PropertyTemplate>(lst);
         }
         #endregion
     }
