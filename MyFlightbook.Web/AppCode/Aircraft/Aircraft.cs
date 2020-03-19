@@ -860,6 +860,16 @@ WHERE
                 }
             }
         }
+
+        /// <summary>
+        /// Any notes about the maintenance being updated.  
+        /// Note that this is effectively "write only" - it is fed into the maintenance log, and cleared for any future updates.
+        /// </summary>
+        public string MaintenanceNote
+        {
+            get { return Maintenance.Notes; }
+            set { Maintenance.Notes = value ?? string.Empty; }
+        }
         #endregion
         #endregion
 
@@ -1226,7 +1236,7 @@ WHERE
         /// <returns>True for valid aircraft</returns>
         public Boolean IsValid(Boolean fCheckMake = true)
         {
-            ErrorString = "";
+            ErrorString = string.Empty;
 
             if (String.IsNullOrEmpty(TailNumber))
             {
@@ -1684,16 +1694,26 @@ WHERE
 
             List<MaintenanceLog> rgml = new List<MaintenanceLog>();
 
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastAltimeter, mr.LastAltimeter, Resources.Aircraft.InspectionLogAltimeter, "", szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastAnnual, mr.LastAnnual, Resources.Aircraft.InspectionLogAnnual, "", szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastELT, mr.LastELT, Resources.Aircraft.InspectionLogELT, "", szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastStatic, mr.LastStatic, Resources.Aircraft.InspectionLogPitotStatic, "", szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastTransponder, mr.LastTransponder, Resources.Aircraft.InspectionLogTransponder, "", szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastVOR, mr.LastVOR, Resources.Aircraft.InspectionLogVOR, "", szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastNewEngine, mr.LastNewEngine, Resources.Aircraft.InspectionLogEngine, "", szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(Last100, mr.Last100, Resources.Aircraft.InspectionLog100hr, "", szUser));
-            AddToArrayIfNotNull(rgml, LogIfChanged(LastOilChange, mr.LastOilChange, Resources.Aircraft.InspectionLogOil, "", szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastAltimeter, mr.LastAltimeter, Resources.Aircraft.InspectionLogAltimeter, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastAnnual, mr.LastAnnual, Resources.Aircraft.InspectionLogAnnual, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastELT, mr.LastELT, Resources.Aircraft.InspectionLogELT, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastStatic, mr.LastStatic, Resources.Aircraft.InspectionLogPitotStatic, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastTransponder, mr.LastTransponder, Resources.Aircraft.InspectionLogTransponder, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastVOR, mr.LastVOR, Resources.Aircraft.InspectionLogVOR, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastNewEngine, mr.LastNewEngine, Resources.Aircraft.InspectionLogEngine, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(Last100, mr.Last100, Resources.Aircraft.InspectionLog100hr, string.Empty, szUser));
+            AddToArrayIfNotNull(rgml, LogIfChanged(LastOilChange, mr.LastOilChange, Resources.Aircraft.InspectionLogOil, string.Empty, szUser));
             AddToArrayIfNotNull(rgml, LogIfChanged(RegistrationDue, mr.RegistrationExpiration, Resources.Aircraft.RegistrationRenewal, string.Empty, szUser));
+
+            // If notes have been provided, put them into the first item; add a new item if needed
+            if (!String.IsNullOrEmpty(mr.Notes))
+            {
+                MaintenanceLog ml = rgml.FirstOrDefault(ml2 => String.IsNullOrEmpty(ml2.Comment));
+                if (ml == null)
+                    rgml.Add(new MaintenanceLog() { AircraftID = this.AircraftID, ChangeDate = DateTime.Now, Description = Resources.Aircraft.MaintenanceUpdate + mr.Notes, Comment = string.Empty, User = szUser });
+                else
+                    ml.Comment = mr.Notes;
+            }
 
             MaintenanceChanges = rgml;
 
@@ -1769,7 +1789,7 @@ WHERE
         public static Collection<Aircraft> GetSims(int idmodel, Boolean fAllSims, AircraftInstanceTypes instanceType)
         {
             // get ALL of the aircraft.
-            Aircraft[] rgua = (new UserAircraft("")).GetAircraftForUser(UserAircraft.AircraftRestriction.AllSims, idmodel);
+            Aircraft[] rgua = (new UserAircraft(string.Empty)).GetAircraftForUser(UserAircraft.AircraftRestriction.AllSims, idmodel);
 
             List<Aircraft> lstAc = new List<Aircraft>(rgua);
 
@@ -1837,7 +1857,7 @@ WHERE
         {
             MakeModel m = new MakeModel(idmodel);
             Regex r = new Regex("[^a-zA-Z0-9]", RegexOptions.Compiled);
-            string szTailBase = CountryCodePrefix.szSimPrefix + r.Replace(m.Model, "");
+            string szTailBase = CountryCodePrefix.szSimPrefix + r.Replace(m.Model, string.Empty);
             if (szTailBase.Length > Aircraft.maxTailLength)
                 szTailBase = szTailBase.Substring(0, Aircraft.maxTailLength);
 

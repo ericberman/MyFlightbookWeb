@@ -274,13 +274,13 @@ public partial class Controls_mfbMaintainAircraft
     protected global::Controls_mfbDecimalEdit mfbLastEngine;
 
     /// <summary>
-    /// Localize1 control.
+    /// locRegistration control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Localize Localize1;
+    protected global::System.Web.UI.WebControls.Localize locRegistration;
 
     /// <summary>
     /// mfbRenewalDue control.
@@ -290,6 +290,33 @@ public partial class Controls_mfbMaintainAircraft
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_mfbTypeInDate mfbRenewalDue;
+
+    /// <summary>
+    /// locComments control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locComments;
+
+    /// <summary>
+    /// ttNotes control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbTooltip ttNotes;
+
+    /// <summary>
+    /// txtNotes control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.TextBox txtNotes;
 
     /// <summary>
     /// mfbTooltip control.

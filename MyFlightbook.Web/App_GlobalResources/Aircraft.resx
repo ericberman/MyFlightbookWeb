@@ -201,7 +201,7 @@
     <value>transponder inspection</value>
   </data>
   <data name="InspectionLogVOR" xml:space="preserve">
-    <value>VOR inspection</value>
+    <value>VOR Check or inspection</value>
   </data>
   <data name="MaintenanceDelete" xml:space="preserve">
     <value>Delete - </value>
@@ -601,5 +601,53 @@
   </data>
   <data name="AircraftStatsHoursHHMM" xml:space="preserve">
     <value>{0} total</value>
+  </data>
+  <data name="Maintenance100HrPrompt" xml:space="preserve">
+    <value>100-hour (Hours):</value>
+  </data>
+  <data name="MaintenanceAltimeterPrompt" xml:space="preserve">
+    <value>Altimeter:</value>
+  </data>
+  <data name="MaintenanceAnnualPrompt" xml:space="preserve">
+    <value>Annual:</value>
+  </data>
+  <data name="MaintenanceChangeHistoryPrompt" xml:space="preserve">
+    <value>Change History:</value>
+  </data>
+  <data name="MaintenanceELTPrompt" xml:space="preserve">
+    <value>ELT:</value>
+  </data>
+  <data name="MaintenanceEnginePrompt" xml:space="preserve">
+    <value>Engine (Hours):</value>
+  </data>
+  <data name="MaintenanceLastDone" xml:space="preserve">
+    <value>Last Done:</value>
+  </data>
+  <data name="MaintenanceNextDue" xml:space="preserve">
+    <value>Next Due:</value>
+  </data>
+  <data name="MaintenanceNextOilTemplate" xml:space="preserve">
+    <value>Oil change at: 25hrs: {0:#,##0.0}, 50hrs: {1:#,##0.0}, 100hrs: {2:#,##0.0}</value>
+  </data>
+  <data name="MaintenanceNotesPrompt" xml:space="preserve">
+    <value>Notes:</value>
+  </data>
+  <data name="MaintenanceNotesWatermark" xml:space="preserve">
+    <value>E.g., location/method/error of VOR check or any other notes.</value>
+  </data>
+  <data name="MaintenanceOilPrompt" xml:space="preserve">
+    <value>Oil Change (Hours):</value>
+  </data>
+  <data name="MaintenancePitotPrompt" xml:space="preserve">
+    <value>Pitot/Static:</value>
+  </data>
+  <data name="MaintenanceRegistrationPrompt" xml:space="preserve">
+    <value>Registration Renewal Due:</value>
+  </data>
+  <data name="MaintenanceVORPrompt" xml:space="preserve">
+    <value>VOR:</value>
+  </data>
+  <data name="MaintenanceXPonderPrompt" xml:space="preserve">
+    <value>Transponder:</value>
   </data>
 </root>

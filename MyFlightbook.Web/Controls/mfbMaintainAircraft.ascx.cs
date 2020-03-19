@@ -72,7 +72,7 @@ public partial class Controls_mfbMaintainAircraft : System.Web.UI.UserControl
             SetTextForDate(lblNextPitot, Maintenance.NextStatic);
             SetTextForDate(lblNextTransponder, Maintenance.NextTransponder);
 
-            lblNextOil.Text = (Maintenance.LastOilChange > 0.0M) ? String.Format(CultureInfo.InvariantCulture, (string)GetLocalResourceObject("lblNextOilResource1.Text"), Maintenance.LastOilChange + 25, Maintenance.LastOilChange + 50, Maintenance.LastOilChange + 100) : String.Empty;
+            lblNextOil.Text = (Maintenance.LastOilChange > 0.0M) ? String.Format(CultureInfo.InvariantCulture, Resources.Aircraft.MaintenanceNextOilTemplate, Maintenance.LastOilChange + 25, Maintenance.LastOilChange + 50, Maintenance.LastOilChange + 100) : String.Empty;
 
             UpdateMaintHistory();
         }
@@ -121,7 +121,8 @@ public partial class Controls_mfbMaintainAircraft : System.Web.UI.UserControl
             LastNewEngine = mfbLastEngine.Value,
             Last100 = mfbLast100.Value,
             LastOilChange = mfbLastOil.Value,
-            RegistrationExpiration = mfbRenewalDue.Date
+            RegistrationExpiration = mfbRenewalDue.Date,
+            Notes = txtNotes.Text
         };
     }
 

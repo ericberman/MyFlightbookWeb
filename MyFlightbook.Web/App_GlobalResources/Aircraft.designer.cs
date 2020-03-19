@@ -1057,7 +1057,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VOR inspection.
+        ///   Looks up a localized string similar to VOR Check or inspection.
         /// </summary>
         internal static string InspectionLogVOR {
             get {
@@ -1156,6 +1156,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 100-hour (Hours):.
+        /// </summary>
+        internal static string Maintenance100HrPrompt {
+            get {
+                return ResourceManager.GetString("Maintenance100HrPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last Altimeter.
         /// </summary>
         internal static string MaintenanceAltimeter {
@@ -1174,6 +1183,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Altimeter:.
+        /// </summary>
+        internal static string MaintenanceAltimeterPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceAltimeterPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last Annual.
         /// </summary>
         internal static string MaintenanceAnnual {
@@ -1188,6 +1206,24 @@ namespace Resources {
         internal static string MaintenanceAnnualDue {
             get {
                 return ResourceManager.GetString("MaintenanceAnnualDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annual:.
+        /// </summary>
+        internal static string MaintenanceAnnualPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceAnnualPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change History:.
+        /// </summary>
+        internal static string MaintenanceChangeHistoryPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceChangeHistoryPrompt", resourceCulture);
             }
         }
         
@@ -1219,11 +1255,74 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ELT:.
+        /// </summary>
+        internal static string MaintenanceELTPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceELTPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last Engine.
         /// </summary>
         internal static string MaintenanceEngine {
             get {
                 return ResourceManager.GetString("MaintenanceEngine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Engine (Hours):.
+        /// </summary>
+        internal static string MaintenanceEnginePrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceEnginePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Done:.
+        /// </summary>
+        internal static string MaintenanceLastDone {
+            get {
+                return ResourceManager.GetString("MaintenanceLastDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next Due:.
+        /// </summary>
+        internal static string MaintenanceNextDue {
+            get {
+                return ResourceManager.GetString("MaintenanceNextDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oil change at: 25hrs: {0:#,##0.0}, 50hrs: {1:#,##0.0}, 100hrs: {2:#,##0.0}.
+        /// </summary>
+        internal static string MaintenanceNextOilTemplate {
+            get {
+                return ResourceManager.GetString("MaintenanceNextOilTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes:.
+        /// </summary>
+        internal static string MaintenanceNotesPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceNotesPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E.g., location/method/error of VOR check or any other notes..
+        /// </summary>
+        internal static string MaintenanceNotesWatermark {
+            get {
+                return ResourceManager.GetString("MaintenanceNotesWatermark", resourceCulture);
             }
         }
         
@@ -1264,6 +1363,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Oil Change (Hours):.
+        /// </summary>
+        internal static string MaintenanceOilPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceOilPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pitot/Static:.
+        /// </summary>
+        internal static string MaintenancePitotPrompt {
+            get {
+                return ResourceManager.GetString("MaintenancePitotPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last Pitot/Static.
         /// </summary>
         internal static string MaintenancePitotStatic {
@@ -1287,6 +1404,15 @@ namespace Resources {
         internal static string MaintenanceRegistration {
             get {
                 return ResourceManager.GetString("MaintenanceRegistration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registration Renewal Due:.
+        /// </summary>
+        internal static string MaintenanceRegistrationPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceRegistrationPrompt", resourceCulture);
             }
         }
         
@@ -1332,6 +1458,24 @@ namespace Resources {
         internal static string MaintenanceVORDue {
             get {
                 return ResourceManager.GetString("MaintenanceVORDue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VOR:.
+        /// </summary>
+        internal static string MaintenanceVORPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceVORPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transponder:.
+        /// </summary>
+        internal static string MaintenanceXPonderPrompt {
+            get {
+                return ResourceManager.GetString("MaintenanceXPonderPrompt", resourceCulture);
             }
         }
         

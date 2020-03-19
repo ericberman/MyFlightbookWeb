@@ -127,6 +127,11 @@ namespace MyFlightbook
         /// Date that the next registration renewal is due
         /// </summary>
         public DateTime RegistrationExpiration { get; set; } = DateTime.MinValue;
+
+        /// <summary>
+        /// Any comments/remarks on this update (e.g., for a VOR check the place/method/error of a VOR check)
+        /// </summary>
+        public string Notes { get; set; } = string.Empty;
         #endregion
 
         public MaintenanceRecord() { }
