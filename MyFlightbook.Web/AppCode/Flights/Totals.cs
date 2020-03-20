@@ -771,9 +771,17 @@ namespace MyFlightbook.FlightCurrency
 
                         List<CustomPropertyType> lstCpt = new List<CustomPropertyType>(Restriction.PropertyTypes);
 
-                        // Add in any property that was found that isn't in the restriction's list of property types
-                        // Unless it is a boolean property.  Only total flights for boolean properties
-                        if (!lstCpt.Exists(c => c.PropTypeID == cpt.PropTypeID))
+                        bool fPropIsInQuery = lstCpt.Exists(c => c.PropTypeID == cpt.PropTypeID);
+
+                        // Only do totals for Booleans if
+                        // (a) not in exclusion list.  Blacklisted is already handled above.
+                        // (b) ARE in query.
+                        // (c) are NOT excluded from MRU (e.g., showing # of checkrides is silly.)
+                        if (cpt.Type == CFPPropertyType.cfpBoolean && (cpt.IsExcludedFromMRU || !fPropIsInQuery))
+                            continue;
+
+                        // If we're here, then we need to add the property to the query, if it's not already there.
+                        if (!fPropIsInQuery)
                             lstCpt.Add(cpt);
 
                         FlightQuery fq = new FlightQuery(Restriction) { PropertyTypes = new Collection<CustomPropertyType>(lstCpt) };
@@ -781,9 +789,7 @@ namespace MyFlightbook.FlightCurrency
                         {
                             case CFPPropertyType.cfpBoolean:
                                 // "total" here is the number of flights.
-                                // Only include the total if it is part of the search!
-                                if (!cpt.IsExcludedFromMRU && lstCpt.Exists(c => c.PropTypeID == cpt.PropTypeID))
-                                    AddToList(new TotalsItem(String.Format(CultureInfo.CurrentCulture, Resources.Totals.FlightsWithBooleanProp, cpt.Title), Convert.ToInt32(dr["intTotal"], CultureInfo.InvariantCulture)) { Query = fq, Group = TotalsGroup.Properties });
+                                AddToList(new TotalsItem(String.Format(CultureInfo.CurrentCulture, Resources.Totals.FlightsWithBooleanProp, cpt.Title), Convert.ToInt32(dr["intTotal"], CultureInfo.InvariantCulture)) { Query = fq, Group = TotalsGroup.Properties });
                                 break;
                             case CFPPropertyType.cfpDecimal:
                                 if (cpt.IsBasicDecimal)

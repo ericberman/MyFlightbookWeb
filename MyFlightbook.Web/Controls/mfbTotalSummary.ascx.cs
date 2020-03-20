@@ -18,7 +18,8 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
     public enum TotalRecency { AllTime, TrailingYear, YearToDate};
     private FlightQuery m_fq;
     private bool m_LinkTotalsToQuery = true;
-    private const string szCookieDefaultTotalsMode = "cookieDefaultTotalsMode";
+    private const string szCookieDefaultTotalsMode = "cookieDefaultTotalsMode2";
+    private const string szFlatCookieValue = "flat";
 
     #region properties
     public string Username { get; set; }
@@ -34,17 +35,18 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
         set { m_LinkTotalsToQuery = value; }
     }
 
+    /// <summary>
+    /// Default group mode for totals.  True for grouped, false for flat.
+    /// </summary>
     public bool DefaultGroupMode
     {
         get
         {
-            if (Request.Cookies[szCookieDefaultTotalsMode] != null && bool.TryParse(Request.Cookies[szCookieDefaultTotalsMode].Value, out bool fGrouped))
-                return fGrouped;
-            return false;
+            return !(Request.Cookies[szCookieDefaultTotalsMode] != null && Request.Cookies[szCookieDefaultTotalsMode].Value.CompareCurrentCultureIgnoreCase(szFlatCookieValue) == 0);
         }
         set
         {
-            Response.Cookies[szCookieDefaultTotalsMode].Value = value.ToString(CultureInfo.InvariantCulture);
+            Response.Cookies[szCookieDefaultTotalsMode].Value = (value) ? string.Empty : szFlatCookieValue;
             Response.Cookies[szCookieDefaultTotalsMode].Expires = DateTime.Now.AddYears(20);
         }
     }
