@@ -144,6 +144,7 @@ namespace OAuthAuthorizationServer.Code
         /// Reads all available authorized clients from the database.  NOT CACHED.
         /// </summary>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public static IEnumerable<MFBOauth2Client> GetAvailableClients()
         {
             List<MFBOauth2Client> lst = new List<MFBOauth2Client>();

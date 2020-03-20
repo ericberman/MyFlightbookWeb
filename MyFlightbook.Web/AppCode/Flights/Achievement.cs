@@ -1559,6 +1559,7 @@ namespace MyFlightbook.Achievements
         /// Get a list of all database-defined airportlist badges.
         /// </summary>
         /// <returns>The new badges</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public static List<AirportListBadge> GetAirportListBadges()
         {
             List<AirportListBadge> l = new List<AirportListBadge>();

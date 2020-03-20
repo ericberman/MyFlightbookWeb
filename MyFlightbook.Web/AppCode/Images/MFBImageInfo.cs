@@ -2725,6 +2725,7 @@ namespace MyFlightbook.Image
         /// MUST BE DISPOSED BY CALLER
         /// </summary>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public Stream GetInputStream()
         {
             return File.OpenRead(TempFileName);

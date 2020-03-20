@@ -49,6 +49,8 @@ namespace MyFlightbook.FlightStats
         /// <param name="le"></param>
         public static void RefreshForFlight(LogbookEntryBase le)
         {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
             FlightStats fs = CachedStats();
 
             if (fs != null && fs.RecentPublicFlights != null && !le.fIsPublic)
@@ -59,6 +61,7 @@ namespace MyFlightbook.FlightStats
         /// Return stats for flights over the preceding N days.  This will be cached for 30 minutes
         /// </summary>
         /// <returns>A FlightStats object</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public static FlightStats GetFlightStats()
         {
             FlightStats fs = CachedStats();

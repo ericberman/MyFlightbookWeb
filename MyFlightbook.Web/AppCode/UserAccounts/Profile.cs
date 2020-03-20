@@ -87,6 +87,7 @@ namespace MyFlightbook
         /// Returns all users on the site who have some sort of admin privileges.
         /// </summary>
         /// <returns>A list of profile objects</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         static public IEnumerable<ProfileBase> GetNonUsers()
         {
             List<Profile> lst = new List<Profile>();
