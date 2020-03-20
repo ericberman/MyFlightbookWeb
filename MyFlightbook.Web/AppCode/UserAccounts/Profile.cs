@@ -885,7 +885,7 @@ namespace MyFlightbook
             return true;
         }
 
-        protected static void CacheProfile(PersistedProfile pf)
+        protected static void CacheProfile(ProfileBase pf)
         {
             if (pf == null || String.IsNullOrEmpty(pf.UserName))
                 return;

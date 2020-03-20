@@ -621,7 +621,7 @@ namespace MyFlightbook.CloudStorage
             AuthState = authstate;
         }
 
-        protected static void HandleInvalidAuth(DotNetOpenAuth.Messaging.ProtocolException ex)
+        protected static void HandleInvalidAuth(Exception ex)
         {
             if (ex == null)
                 throw new ArgumentNullException(nameof(ex));

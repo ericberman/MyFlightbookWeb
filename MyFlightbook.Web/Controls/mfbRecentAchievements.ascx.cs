@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
@@ -69,7 +70,7 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
         }
     }
 
-    protected void AddMonth(DateTime dt, WebControl parent, RecentAchievements ra)
+    protected void AddMonth(DateTime dt, Control parent, RecentAchievements ra)
     {
         if (parent == null)
             throw new ArgumentNullException(nameof(parent));

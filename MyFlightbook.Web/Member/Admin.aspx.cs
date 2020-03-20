@@ -822,7 +822,7 @@ GROUP BY ac.idaircraft";
         gvCountryCodes.DataBind();
     }
 
-    protected void gvCountryCodes_RowCommand(object sender, GridViewCommandEventArgs e)
+    protected void gvCountryCodes_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));
@@ -1143,7 +1143,7 @@ GROUP BY ac.idaircraft";
         UpdateInvalidSigs();
     }
 
-    protected void gvInvalidSignatures_RowCommand(object sender, GridViewCommandEventArgs e)
+    protected void gvInvalidSignatures_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));

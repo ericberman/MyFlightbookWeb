@@ -64,7 +64,7 @@ public partial class Member_BrowseTemplates : System.Web.UI.Page
         return UserPropertyTemplates.FirstOrDefault(ptUser => ptUser.Group == pt.Group && ptUser.Name.CompareCurrentCultureIgnoreCase(pt.Name) == 0);
     }
 
-    protected void gvTemplates_RowCommand(object sender, GridViewCommandEventArgs e)
+    protected void gvTemplates_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));

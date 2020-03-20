@@ -761,7 +761,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
         return String.Format(CultureInfo.InvariantCulture, "javascript:mergeWith('{0}', '{1}', '{2}', this); return false;", szCodeTarget, szTypeTarget, szCodeSrc);
     }
 
-    protected void sqlDSUserDupes_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
+    protected void sqlDSUserDupes_Selecting(object sender, SqlDataSourceCommandEventArgs e)
     {
         if (e != null)
             e.Command.CommandTimeout = 600; // give up to 10 minutes - this can be slow.

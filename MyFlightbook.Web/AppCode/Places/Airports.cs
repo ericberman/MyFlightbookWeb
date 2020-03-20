@@ -1430,7 +1430,7 @@ namespace MyFlightbook.Airports
         /// </summary>
         /// <param name="apSource"></param>
         /// <param name="MakeNative"></param>
-        public void MergeFrom(AdminAirport apSource)
+        public void MergeFrom(airport apSource)
         {
             if (apSource == null)
                 throw new ArgumentNullException(nameof(apSource));

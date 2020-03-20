@@ -67,7 +67,7 @@ public partial class Controls_mfbImpersonate : System.Web.UI.UserControl
         }
     }
 
-    protected void gvUsers_RowCommand(object sender, GridViewCommandEventArgs e)
+    protected void gvUsers_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));

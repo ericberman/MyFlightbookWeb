@@ -106,7 +106,7 @@ namespace MyFlightbook.Web.Controls
                 e.Cancel = true;
         }
 
-        protected void gvShareKeys_RowCommand(object sender, GridViewCommandEventArgs e)
+        protected void gvShareKeys_RowCommand(object sender, CommandEventArgs e)
         {
             if (e == null)
                 throw new ArgumentNullException(nameof(e));

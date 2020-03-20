@@ -124,7 +124,7 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
         mfbEditFlight.SetPrevFlight(index < lst.Count - 1 ? index : LogbookEntry.idFlightNone); // since save will ultimately remove this from the list.
     }
 
-    protected void gvPendingFlights_RowCommand(object sender, GridViewCommandEventArgs e)
+    protected void gvPendingFlights_RowCommand(object sender, CommandEventArgs e)
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));
