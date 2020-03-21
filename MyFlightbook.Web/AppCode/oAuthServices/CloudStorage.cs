@@ -568,9 +568,9 @@ namespace MyFlightbook.CloudStorage
             Error = null;
         }
 
-        protected OneDriveExceptionMFB(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
+        protected OneDriveExceptionMFB(SerializationInfo serializationInfo, StreamingContext streamingContext): base(serializationInfo, streamingContext)
         {
-            throw new NotImplementedException();
+            Error = null;
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
