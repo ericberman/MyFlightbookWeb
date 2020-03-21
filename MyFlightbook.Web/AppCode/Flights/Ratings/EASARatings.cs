@@ -155,7 +155,6 @@ namespace MyFlightbook.MilestoneProgress
             if (cfr == null)
                 throw new ArgumentNullException(nameof(cfr));
             bool fIsMatch = CatClassMatchesRatingSought(cfr.idCatClassOverride);
-            bool fIsSim = cfr.fIsCertifiedIFR && !cfr.fIsRealAircraft;
 
             if (!fIsMatch || !cfr.fIsCertifiedIFR)
                 return;

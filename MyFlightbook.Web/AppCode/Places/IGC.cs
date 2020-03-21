@@ -115,7 +115,6 @@ namespace MyFlightbook.Telemetry
 
                     bool fHasAlt = gc["val"].Value.CompareOrdinal("A") == 0;
                     int palt = Convert.ToInt32(gc["palt"].Value, CultureInfo.InvariantCulture);
-                    int gpsalt = Convert.ToInt32(gc["gpsalt"].Value, CultureInfo.InvariantCulture);
 
                     // check for the flight going past midnight.
                     if (h < hLast)

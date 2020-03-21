@@ -152,7 +152,6 @@ public partial class Member_PrintView : System.Web.UI.Page
         IPrintingTemplate pt = ActiveTemplate;
 
         PrintLayout pl = PrintLayout.LayoutForType(printingOptions.Layout, CurrentUser);
-        bool fCanIncludeImages = pl.SupportsImages;
 
         // Exclude both excluded properties and properties that have been moved to their own columns
         HashSet<int> lstPropsToExclude = new HashSet<int>(printingOptions.ExcludedPropertyIDs);

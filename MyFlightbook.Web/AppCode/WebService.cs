@@ -1070,7 +1070,7 @@ namespace MyFlightbook
         {
             if (szUser == null)
                 throw new ArgumentNullException(nameof(szUser));
-            return new Encryptors.WebServiceEncryptor().Encrypt(szUser + ";" + DateTime.Now.Ticks);
+            return new Encryptors.WebServiceEncryptor().Encrypt(szUser + ";" + DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture));
         }
 
         public static string AuthTokenFromOAuthToken(DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag token)

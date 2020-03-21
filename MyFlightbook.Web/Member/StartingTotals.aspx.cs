@@ -302,6 +302,7 @@ public partial class Member_StartingTotals : System.Web.UI.Page
             {
                 tc = new TableCell();
                 tr.Cells.Add(tc);
+                tc.ID = IDForCell(iRow, iCol) + sfc.ToString();
                 Controls_mfbDecimalEdit dc = (Controls_mfbDecimalEdit)LoadControl("~/Controls/mfbDecimalEdit.ascx");
                 dc.ID = IDForCell(iRow, iCol);
                 tc.Controls.Add(dc);

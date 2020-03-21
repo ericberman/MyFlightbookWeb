@@ -186,7 +186,7 @@ namespace MyFlightbook.Instruction
         protected Endorsement(MySqlDataReader dr)
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             CFICertificate = dr["CFINum"].ToString();
             StudentName = dr["Student"].ToString();
             StudentType = (StudentTypes)Convert.ToInt16(dr["StudentType"], CultureInfo.InvariantCulture);
@@ -377,7 +377,7 @@ namespace MyFlightbook.Instruction
         protected EndorsementType(MySqlDataReader dr) : this()
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             this.ID = Convert.ToInt32(dr["id"], CultureInfo.InvariantCulture);
             this.FARReference = dr["FARRef"].ToString();
             this.Title = dr["Title"].ToString();
@@ -406,7 +406,7 @@ namespace MyFlightbook.Instruction
             string szRestriction = string.Empty;
             List<MySqlParameter> lstParams = new List<MySqlParameter>();
 
-            string[] rgTerms = (szSearch == null) ? new string[0] : Regex.Split(szSearch, "\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            string[] rgTerms = (szSearch == null) ? Array.Empty<string>() : Regex.Split(szSearch, "\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             if (rgTerms != null && rgTerms.Length > 0)
             {
@@ -483,6 +483,8 @@ namespace MyFlightbook.Instruction
         /// <param name="szInit">The initialization string</param>
         public CFIStudentMapRequest(string szInit) : this()
         {
+            if (szInit == null)
+                throw new ArgumentNullException(nameof(szInit));
             InitFromString(szInit);
         }
 
@@ -522,10 +524,9 @@ namespace MyFlightbook.Instruction
             RequestingUser = rgParams[1];
             TargetUser = rgParams[2];
             ClubToJoin = null;
-            int id;
             if (rgParams.Length > 2 && (Requestedrole == RoleType.RoleInviteJoinClub || Requestedrole == RoleType.RoleRequestJoinClub)
-                && Int32.TryParse(rgParams[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out id))
-                ClubToJoin = Club.ClubWithID(id); 
+                && Int32.TryParse(rgParams[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out int id))
+                ClubToJoin = Club.ClubWithID(id);
         }
 
         /// <summary>
@@ -670,10 +671,10 @@ namespace MyFlightbook.Instruction
         /// <param name="rgpf">An enumerable of instructor/students</param>
         /// <param name="szName">The name to match on</param>
         /// <returns>the resulting InstructorStudent, or null</returns>
-        public InstructorStudent GetInstructorStudent(IEnumerable<InstructorStudent> rgpf, string szName)
+        public static InstructorStudent GetInstructorStudent(IEnumerable<InstructorStudent> rgpf, string szName)
         {
             if (rgpf == null)
-                throw new ArgumentNullException("rgpf");
+                throw new ArgumentNullException(nameof(rgpf));
             foreach (InstructorStudent pf in rgpf)
                 if (String.Compare(pf.UserName, szName, StringComparison.OrdinalIgnoreCase) == 0 || String.Compare(pf.Email, szName, StringComparison.OrdinalIgnoreCase) == 0)
                     return pf;
@@ -829,7 +830,7 @@ namespace MyFlightbook.Instruction
         public void ExecuteRequest(CFIStudentMapRequest cmr)
         {
             if (cmr == null)
-                throw new ArgumentNullException("cmr");
+                throw new ArgumentNullException(nameof(cmr));
             Profile pf = Profile.GetUser(User);
             if (String.Compare(cmr.TargetUser, pf.Email, StringComparison.OrdinalIgnoreCase) != 0)
                 throw new MyFlightbookValidationException(Resources.SignOff.errWrongAddress);

@@ -43,6 +43,7 @@ namespace MyFlightbook.Checklists
 
         private static readonly Regex regexPrefix = new Regex("^(?<prefix>Skin|Tab|-{1,2}|\\*{1,2}|\\[(?: |[eEbB][+-])?])?(?<content>.*)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public static ChecklistRow ParseRowType(string szRow)
         {
             if (String.IsNullOrEmpty(szRow))

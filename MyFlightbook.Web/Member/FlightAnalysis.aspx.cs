@@ -55,7 +55,7 @@ public partial class Member_FlightAnalysis : System.Web.UI.Page
                 {
                     // check for authorized by student
                     CFIStudentMap sm = new CFIStudentMap(Page.User.Identity.Name);
-                    InstructorStudent student = sm.GetInstructorStudent(sm.Students, m_le.User);
+                    InstructorStudent student = CFIStudentMap.GetInstructorStudent(sm.Students, m_le.User);
                     if (student == null || !student.CanViewLogbook)
                         throw new MyFlightbookException(Resources.SignOff.ViewStudentLogbookUnauthorized);
                 }

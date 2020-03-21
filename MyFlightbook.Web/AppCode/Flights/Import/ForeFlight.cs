@@ -293,10 +293,8 @@ namespace MyFlightbook.ImportFlights
                     break;
             }
 
-            int cColumnHeader;
             if (rgHeaders != null)
             {
-                cColumnHeader = rgHeaders.Length;
                 for (int i = 0; i < rgHeaders.Length; i++)
                 {
                     if (rgHeaders[i].CompareCurrentCultureIgnoreCase("AircraftID") == 0)

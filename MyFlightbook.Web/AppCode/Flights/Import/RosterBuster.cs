@@ -117,7 +117,6 @@ namespace MyFlightbook.ImportFlights
                 try
                 {
                     DateTime dtStart = Convert.ToDateTime(gc["StartDate"].Value, CultureInfo.CurrentCulture);
-                    DateTime dtEnd = Convert.ToDateTime(gc["EndDate"].Value, CultureInfo.CurrentCulture);
                     int hStart = Convert.ToInt32(gc["startZ"].Value.Substring(0, 2), CultureInfo.InvariantCulture);
                     int mStart = Convert.ToInt32(gc["startZ"].Value.Substring(2, 2), CultureInfo.InvariantCulture);
                     int hEnd = Convert.ToInt32(gc["endZ"].Value.Substring(0, 2), CultureInfo.InvariantCulture);

@@ -55,7 +55,7 @@ public partial class Public_AWS_SNSListener : System.Web.UI.Page
                             using (WebClient wc = new System.Net.WebClient())
                             {
                                 byte[] rgdata = wc.DownloadData(snsSubscription.SubscribeLink);
-                                string szContent = System.Text.UTF8Encoding.UTF8.GetString(rgdata);
+                                _ = System.Text.UTF8Encoding.UTF8.GetString(rgdata);
                             }
                         }
                     }
@@ -91,7 +91,7 @@ public partial class Public_AWS_SNSListener : System.Web.UI.Page
             hr.Timeout = 10000;
             RequestStream = hr.GetRequestStream();
             RequestStream.Write(rgBytes, 0, rgBytes.Length);
-            WebResponse response = hr.GetResponse();
+            _ = hr.GetResponse();
         }
         catch (Exception ex) when (ex is WebException || ex is InvalidOperationException || ex is NotSupportedException) { }
         finally

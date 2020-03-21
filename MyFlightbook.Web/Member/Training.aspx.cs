@@ -38,8 +38,8 @@ public partial class Member_Training : System.Web.UI.Page
         string szPrefPath = String.IsNullOrWhiteSpace(Request.PathInfo) ? string.Empty : Request.PathInfo.Substring(1);
         string[] rgPrefPath = szPrefPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
-        if (rgPrefPath.Length > 0 && !String.IsNullOrEmpty(rgPrefPath[0]))
-            Enum.TryParse<tabID>(rgPrefPath[0], out sidebarTab);
+        if (rgPrefPath.Length > 0 && !String.IsNullOrEmpty(rgPrefPath[0]) && Enum.TryParse<tabID>(rgPrefPath[0], out tabID tabid))
+            sidebarTab = tabid;
 
         if (sidebarTab == tabID.tabUnknown)
             sidebarTab = tabID.instInstructors;

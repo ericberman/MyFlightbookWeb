@@ -404,6 +404,7 @@ namespace MyFlightbook.ImportFlights
                     le.CFI = le.TotalFlightTime;
             }
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
             private void SetCAFRSPilotRole(LogbookEntry le, string szPilotRole, List<CustomFlightProperty> lstProps)
             {
                 if (String.IsNullOrEmpty(szPilotRole) || le == null || le.TotalFlightTime == 0)
@@ -966,7 +967,6 @@ namespace MyFlightbook.ImportFlights
                 OriginalFlightsToModify = new Dictionary<int, LogbookEntry>();
                 int iRow = 0;
 
-                bool fUseHHMM = Profile.GetUser(szUser).UsesHHMM;
                 HasErrors = false;
                 ErrorMessage = string.Empty;
 

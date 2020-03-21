@@ -77,8 +77,8 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
                     IEnumerable<CurrencyStatusItem> rgPrecomputedCurrencies = null;
                     if (pf.AssociatedData.TryGetValue(CurrencyStatusItem.AssociatedDateKeyExpiringCurrencies, out object o))
                         rgExpiringCurrencies = (IEnumerable<CurrencyStatusItem>)o;
-                    if (pf.AssociatedData.TryGetValue(CurrencyStatusItem.AssociatedDataKeyCachedCurrencies, out o))
-                        rgPrecomputedCurrencies = (IEnumerable<CurrencyStatusItem>)o;
+                    if (pf.AssociatedData.TryGetValue(CurrencyStatusItem.AssociatedDataKeyCachedCurrencies, out object o2))
+                        rgPrecomputedCurrencies = (IEnumerable<CurrencyStatusItem>)o2;
 
                     pf.AssociatedData.Remove(CurrencyStatusItem.AssociatedDateKeyExpiringCurrencies);
                     pf.AssociatedData.Remove(CurrencyStatusItem.AssociatedDataKeyCachedCurrencies);

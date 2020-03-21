@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+﻿using MyFlightbook.SponsoredAd;
+using System;
 using System.Globalization;
-using MyFlightbook;
-using MyFlightbook.SponsoredAd;
 
 /******************************************************
  * 
- * Copyright (c) 2016 MyFlightbook LLC
+ * Copyright (c) 2016-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -33,7 +27,7 @@ public partial class Controls_SponsoredAd : System.Web.UI.UserControl
     protected void InitForAd()
     {
         imgAd.ImageUrl = SpecifiedAd.ImagePath;
-        lnkAd.NavigateUrl = "~/public/AdTracker.aspx/" + SponsoredAdID;
+        lnkAd.NavigateUrl = "~/public/AdTracker.aspx/" + SponsoredAdID.ToString(CultureInfo.InvariantCulture);
     }
 
     protected void Page_Load(object sender, EventArgs e)

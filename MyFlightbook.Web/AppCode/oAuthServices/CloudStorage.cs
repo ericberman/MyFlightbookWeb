@@ -1,5 +1,6 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using Dropbox.Api;
+using MyFlightbook.OAuth;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,9 +11,9 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Web;
-using MyFlightbook.OAuth;
 
 /******************************************************
  * 
@@ -556,7 +557,7 @@ namespace MyFlightbook.CloudStorage
         {
             Error = err;
         }
-
+            
         public OneDriveExceptionMFB(OneDriveError err, Exception innerException) : base(err == null ? string.Empty : err.Message, innerException)
         {
             Error = err;
@@ -570,6 +571,13 @@ namespace MyFlightbook.CloudStorage
         protected OneDriveExceptionMFB(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
         {
             throw new NotImplementedException();
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+
+            info.AddValue("Error", Error);
         }
     }
 

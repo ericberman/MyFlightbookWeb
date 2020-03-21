@@ -282,7 +282,7 @@ namespace MyFlightbook
                 {
                     LastError = ex.Message;
                     fResult = false;
-                    throw new MyFlightbookException("Exception DoNonQuery:\r\nCode = " + ex.ErrorCode + "\r\n" + ex.Message + "\r\n" + comm.CommandText, ex);
+                    throw new MyFlightbookException("Exception DoNonQuery:\r\nCode = " + ex.ErrorCode.ToString(CultureInfo.InvariantCulture) + "\r\n" + ex.Message + "\r\n" + comm.CommandText, ex);
                 }
                 finally
                 {

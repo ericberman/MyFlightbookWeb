@@ -1872,17 +1872,17 @@ namespace MyFlightbook.Image
                     {
                         using (IAmazonS3 s3 = AWSConfiguration.S3Client())
                         {
-                            DeleteObjectResponse doresp = s3.DeleteObject(dor);
+                            s3.DeleteObject(dor);
                             if (mfbii.ImageType == MFBImageInfo.ImageFileType.S3VideoMP4)
                             {
                                 // Delete the thumbnail too.
                                 string szs3Key = mfbii.S3Key;
                                 dor.Key = szs3Key.Replace(Path.GetFileName(szs3Key), MFBImageInfo.ThumbnailPrefixVideo + Path.GetFileNameWithoutExtension(szs3Key) + "00001" + FileExtensions.JPG);
-                                doresp = s3.DeleteObject(dor);
+                                s3.DeleteObject(dor);
                             }
                         }
                     }
-                    catch (AmazonS3Exception ex) { string sz = ex.Message; }
+                    catch (Exception ex) when (ex is AmazonS3Exception) { }
                 }
                 )).Start();
             }
@@ -1929,7 +1929,6 @@ namespace MyFlightbook.Image
                                     {
                                         try
                                         {
-                                            string szOldPhysicalPath = mfbii.PhysicalPathFull;
                                             if (String.IsNullOrEmpty(mfbii.Comment))
                                                 mfbii.Comment = mfbii.ThumbnailFile;
                                             mfbii.ImageType = MFBImageInfo.ImageFileType.S3PDF;
@@ -2034,7 +2033,6 @@ namespace MyFlightbook.Image
                     StorageClass = S3StorageClass.Standard // vs. reduced
                 };
 
-                PutObjectResponse s3r = null;
                 lock (lockObject)
                 {
                     try
@@ -2042,7 +2040,7 @@ namespace MyFlightbook.Image
                         using (por.InputStream)
                         {
                             using (IAmazonS3 s3 = AWSConfiguration.S3Client())
-                                s3r = s3.PutObject(por);
+                                s3.PutObject(por);
                             File.Delete(szFileName);
                         }
                     }
@@ -2192,7 +2190,7 @@ namespace MyFlightbook.Image
                         {
                                 // Make sure that the item 
                                 DeleteObjectRequest dor = new DeleteObjectRequest() { BucketName = AWSConfiguration.S3BucketName, Key = o.Key };
-                            DeleteObjectResponse delr = s3.DeleteObject(dor);
+                            s3.DeleteObject(dor);
                         }
                     }
                 });
@@ -2448,7 +2446,7 @@ namespace MyFlightbook.Image
 
                 lstS3Objects.ForEach((o) =>
                 {
-                    DeleteObjectResponse delr = s3.DeleteObject(new DeleteObjectRequest() { BucketName = Bucket, Key = o.Key });
+                    s3.DeleteObject(new DeleteObjectRequest() { BucketName = Bucket, Key = o.Key });
                 });
             }
         }

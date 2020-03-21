@@ -527,8 +527,10 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
         {
             try
             {
-                CategoryClass cc = CategoryClass.CategoryClassFromID(CategoryClassID);
-                Manufacturer m = new Manufacturer(ManufacturerID);
+                // Category class and manufacturer will throw exceptions if there is an issue.
+                if (CategoryClass.CategoryClassFromID(CategoryClassID) == null || new Manufacturer(ManufacturerID) == null)
+                    return false;
+
                 if (ArmyMDS.Length > 40)
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.Makes.errMDSTooLong, ArmyMDS));
 

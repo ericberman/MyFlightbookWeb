@@ -185,7 +185,6 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
         int idRow = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
         if (e.CommandName.CompareOrdinalIgnoreCase("AddNew") == 0)
         {
-            UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
             AircraftImportMatchRow mr = CandidatesForImport.FirstOrDefault<AircraftImportMatchRow>(mr2 => mr2.ID == idRow);
             mr.BestMatchAircraft.Commit(Page.User.Identity.Name);
 

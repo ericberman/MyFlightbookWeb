@@ -663,7 +663,6 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
         public static CustomPropertyType[] GetCustomPropertyTypes(string szUser = null, bool fForceLoad = false)
         {
             List<CustomPropertyType> ar = new List<CustomPropertyType>();
-            string szSessKey = string.Empty;
 
             // if szUser is null or empty, we want to cache this in the application cache (shared across all users)
             // otherwise, we store it in the user's associated data cache

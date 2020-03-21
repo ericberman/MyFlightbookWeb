@@ -91,6 +91,7 @@ namespace MyFlightbook
 
     internal static class tabIDHelper
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public static string Description(this tabID id)
         {
             switch (id)
@@ -261,7 +262,7 @@ namespace MyFlightbook
         /// <summary>
         /// Roles to which the tab is restricted; empty for everybody
         /// </summary>
-        public List<ProfileRoles.UserRole> Roles { get; set; }
+        public List<ProfileRoles.UserRole> Roles { get; }
 
         /// <summary>
         /// Any child tabs

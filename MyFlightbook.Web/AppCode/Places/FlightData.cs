@@ -206,18 +206,15 @@ namespace MyFlightbook.Telemetry
         }
 
         #region Static utilities
-        public static IEnumerable<KnownColumn> KnownColumns
+        public static IEnumerable<KnownColumn> GetKnownColumns()
         {
-            get
-            {
-                List<KnownColumn> lst = new List<KnownColumn>();
-                DBHelper dbh = new DBHelper("SELECT * FROM FlightDataColumns ORDER BY RawName ASC");
-                if (!dbh.ReadRows(
-                    (comm) => { },
-                    (dr) => { lst.Add(new KnownColumn(dr)); }))
-                    throw new MyFlightbookException("Error initializing known column types: " + dbh.LastError);
-                return lst;
-            }
+            List<KnownColumn> lst = new List<KnownColumn>();
+            DBHelper dbh = new DBHelper("SELECT * FROM FlightDataColumns ORDER BY RawName ASC");
+            if (!dbh.ReadRows(
+                (comm) => { },
+                (dr) => { lst.Add(new KnownColumn(dr)); }))
+                throw new MyFlightbookException("Error initializing known column types: " + dbh.LastError);
+            return lst;
         }
 
         public static Type ColumnDataType(KnownColumnTypes kct)
@@ -260,7 +257,7 @@ namespace MyFlightbook.Telemetry
             if (dict == null)
             {
                 dict = new Dictionary<string, KnownColumn>();
-                IEnumerable<KnownColumn> lst = KnownColumn.KnownColumns;
+                IEnumerable<KnownColumn> lst = KnownColumn.GetKnownColumns();
                 foreach (KnownColumn kc in lst)
                     dict[kc.Column] = kc;
                 HttpRuntime.Cache[szKnownColumnsCacheKey] = dict;

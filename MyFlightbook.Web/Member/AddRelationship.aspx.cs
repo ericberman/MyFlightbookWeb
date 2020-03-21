@@ -107,7 +107,7 @@ public partial class Member_AddRelationship : System.Web.UI.Page
                         string szBody = Branding.ReBrand(Resources.Club.ClubInvitationAccepted).Replace("<% ClubName %>", m_smr.ClubToJoin.Name).Replace("<% ClubInvitee %>", pfTarget.UserFullName);
                         foreach (ClubMember cm in ClubMember.AdminsForClub(m_smr.ClubToJoin.ID))
                             util.NotifyUser(szSubject, szBody.Replace("<% FullName %>", cm.UserFullName), new MailAddress(cm.Email, cm.UserFullName), false, false);
-                        Response.Redirect("~/Member/ClubDetails.aspx/" + m_smr.ClubToJoin.ID);
+                        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/ClubDetails.aspx/{0}", m_smr.ClubToJoin.ID));
                     }
                     break;
                 case CFIStudentMapRequest.RoleType.RoleRequestJoinClub:
@@ -117,7 +117,7 @@ public partial class Member_AddRelationship : System.Web.UI.Page
                         string szSubject = String.Format(CultureInfo.CurrentCulture, Resources.Club.AddMemberRequestAccepted, m_smr.ClubToJoin.Name);
                         string szBody = Branding.ReBrand(Resources.Club.ClubRequestAccepted).Replace("<% ClubName %>", m_smr.ClubToJoin.Name).Replace("<% FullName %>", pfRequestor.UserFullName);
                         util.NotifyUser(szSubject, szBody, new MailAddress(pfRequestor.Email, pfRequestor.UserFullName), false, false);
-                        Response.Redirect("~/Member/ClubDetails.aspx/" + m_smr.ClubToJoin.ID);
+                        Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/ClubDetails.aspx/{0}", m_smr.ClubToJoin.ID));
                     }
                     break;
             }

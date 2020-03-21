@@ -120,7 +120,6 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="activeBrand">The brand to use - null for current brand</param>
         /// <returns>A memory stream of flight images followed by any profile images</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public MemoryStream ZipOfImagesForUser(Brand activeBrand)
         {
             if (activeBrand == null)

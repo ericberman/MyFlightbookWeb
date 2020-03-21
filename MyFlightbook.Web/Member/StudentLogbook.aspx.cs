@@ -35,7 +35,7 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
         {
             string szStudent = util.GetStringParam(Request, "student");
             CFIStudentMap sm = new CFIStudentMap(Page.User.Identity.Name);
-            InstructorStudent student = sm.GetInstructorStudent(sm.Students, szStudent);
+            InstructorStudent student = CFIStudentMap.GetInstructorStudent(sm.Students, szStudent);
             if (student == null)
                 lblErr.Text = Resources.SignOff.ViewStudentNoSuchStudent;
             else

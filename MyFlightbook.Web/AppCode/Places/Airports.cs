@@ -262,7 +262,6 @@ namespace MyFlightbook.Airports
             if (String.IsNullOrEmpty(fq.UserName))
                 throw new ArgumentNullException(nameof(fq));
 
-            AirportList al = new AirportList();
             Dictionary<string, VisitedAirport> dictVA = new Dictionary<string, VisitedAirport>();
 
             DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq, 0, -1, true));
@@ -532,8 +531,6 @@ namespace MyFlightbook.Airports
 
             if (lstIDs != null)
                 fq.CustomRestriction = String.Format(CultureInfo.InvariantCulture, " flights.idFlight IN ({0}) ", String.Join(", ", lstIDs));
-
-            string szKML = string.Empty;
 
             // Get the master airport list
             AirportList alMaster = AllFlightsAndNavaids(fq);
@@ -2441,10 +2438,10 @@ namespace MyFlightbook.Airports
             
             public override bool Equals(object obj)
             {
-                if (obj == null || !(obj is Stop))
+                if (obj == null || !(obj is Stop stop))
                     return false;
 
-                return Fix.Code.CompareCurrentCultureIgnoreCase(((Stop)obj).Fix.Code) == 0;
+                return Fix.Code.CompareCurrentCultureIgnoreCase(stop.Fix.Code) == 0;
             }
             
             public override int GetHashCode()

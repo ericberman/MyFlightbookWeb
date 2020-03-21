@@ -213,8 +213,6 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
     /// </summary>
     public void ProcessUploadedImages()
     {
-        MFBImageInfo mfbii;
-
         if (String.IsNullOrEmpty(ImageKey))
             throw new MyFlightbookException("No Image Key specified in ProcessUploadedImages");
         if (Class == MFBImageInfo.ImageClass.Unknown)
@@ -236,10 +234,11 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
                         if (!ValidateFileType(MFBImageInfo.ImageTypeFromFile(fu.PostedFile)))
                             continue;
 
-                        mfbii = new MFBImageInfo(Class, ImageKey, fu.PostedFile, fu.Comment, null);
+                        // Simple creation of the MFBImageInfo object will create the persisted object.
+                        if (new MFBImageInfo(Class, ImageKey, fu.PostedFile, fu.Comment, null) == null) { }
                     }
                     // clear the comment field now that it is uploaded.
-                    fu.Comment = "";
+                    fu.Comment = string.Empty;
                 }
                 break;
             case UploadMode.Ajax:
@@ -253,7 +252,7 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
 
                     // skip anything that isn't an image if we're not supposed to include non-image docs.
                     if (ValidateFileType(MFBImageInfo.ImageTypeFromFile(mfbpi.PostedFile)))
-                        mfbii = mfbpi.Commit(Class, ImageKey);
+                        mfbpi.Commit(Class, ImageKey);
 
                     // Regardless, clean up the temp file and 
                     Session.Remove(szID);     // free up some memory and prevent duplicate processing.
