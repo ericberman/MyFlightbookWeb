@@ -78,12 +78,12 @@ namespace MyFlightbook
         /// <summary>
         /// The requested category/classes
         /// </summary>
-        public Collection<CategoryClass> CatClasses { get; set; }
+        public HashSet<CategoryClass> CatClasses { get; private set; }
 
         /// <summary>
         /// The requested property types
         /// </summary>
-        public Collection<CustomPropertyType> PropertyTypes { get; set; }
+        public HashSet<CustomPropertyType> PropertyTypes { get; private set; }
 
         /// <summary>
         /// Properties to search - AND?  OR? NOT?  Default is OR ("ANY")
@@ -234,7 +234,7 @@ namespace MyFlightbook
         /// List of aircraft for the matching flights
         /// </summary>
         [JsonIgnore]
-        public Collection<Aircraft> AircraftList { get; set; }
+        public HashSet<Aircraft> AircraftList { get; private set; }
 
         /// <summary>
         /// Much smaller list of aircraft ID's, rather than full aircraft (significantly reduces JSON size)
@@ -254,22 +254,20 @@ namespace MyFlightbook
             }
             set
             {
+                AircraftList.Clear();
                 if (value == null)
-                {
-                    AircraftList = new Collection<Aircraft>();
                     return;
-                }
                 if (String.IsNullOrEmpty(UserName)) // no user - hit the database
-                    AircraftList = new Collection<Aircraft>(new List<Aircraft>(Aircraft.AircraftFromIDs(value)));
+                    AddAircraft(Aircraft.AircraftFromIDs(value));
                 else
                 {
-                    List<Aircraft> lst = new List<Aircraft>();
                     UserAircraft ua = new UserAircraft(UserName);
-                    if (value != null)
-                        foreach (int id in value)
-                            lst.Add(ua.GetUserAircraftByID(id));
-                    lst.RemoveAll(ac => ac == null);
-                    AircraftList = new Collection<Aircraft>(lst);
+                    foreach (int id in value)
+                    {
+                        Aircraft ac = ua.GetUserAircraftByID(id);
+                        if (ac != null)
+                            AircraftList.Add(ac);
+                    }
                 }
             }
         }
@@ -277,13 +275,13 @@ namespace MyFlightbook
         /// <summary>
         /// List of matching airports for the matching flights
         /// </summary>
-        public Collection<string> AirportList { get; set; }
+        public HashSet<string> AirportList { get; private set; }
 
         /// <summary>
         /// List of matching makes/models for the matching flights
         /// </summary>
         [JsonIgnore]
-        public Collection<MakeModel> MakeList { get; set; }
+        public HashSet<MakeModel> MakeList { get; private set; }
 
         /// <summary>
         /// Much smaller list of model ID's, rather than full models (significantly reduces JSON size)
@@ -303,11 +301,9 @@ namespace MyFlightbook
             }
             set
             {
-                Collection<MakeModel> lst = new Collection<MakeModel>();
+                MakeList.Clear();
                 if (value != null)
-                    foreach (int i in value)
-                        lst.Add(MakeModel.GetModel(i));
-                MakeList = lst;
+                    AddModels(value);
             }
         }
 
@@ -319,7 +315,7 @@ namespace MyFlightbook
         /// <summary>
         /// Text of type names - not contains, must match.
         /// </summary>
-        public Collection<string> TypeNames { get; set; }
+        public HashSet<string> TypeNames { get; private set; }
 
         /// <summary>
         /// All matching flights must be in complex aircraft
@@ -464,14 +460,24 @@ namespace MyFlightbook
         /// Adds the model associated with the given ID, avoiding duplicates
         /// </summary>
         /// <param name="idModel">The model ID</param>
-        public void AddModel(int idModel)
+        public void AddModelById(int idModel)
         {
-            if (MakeList.Where(mm => mm.MakeModelID == idModel).Count() == 0)
-            {
-                MakeModel mm = MakeModel.GetModel(idModel);
-                if (mm != null)
-                    MakeList.Add(mm);
-            }
+            MakeModel mm = MakeModel.GetModel(idModel);
+            if (mm != null)
+                MakeList.Add(mm);
+        }
+
+        /// <summary>
+        /// Adds the set of specified models - by ID - to the query.
+        /// </summary>
+        /// <param name="rgModelIds"></param>
+        public void AddModels(IEnumerable<int> rgModelIds)
+        {
+            if (rgModelIds == null)
+                return;
+
+            foreach (int i in rgModelIds)
+                AddModelById(i);
         }
 
         /// <summary>
@@ -483,14 +489,42 @@ namespace MyFlightbook
         {
             if (cc == null)
                 throw new ArgumentNullException(nameof(cc));
-            if (CatClasses.Where(c => c.IdCatClass == cc.IdCatClass).Count() == 0)
-                CatClasses.Add(cc);
+            CatClasses.Add(cc);
 
             if (!String.IsNullOrEmpty(szTypeName))
             {
                 TypeNames.Clear();
                 TypeNames.Add(szTypeName);
             }
+        }
+
+        public void AddAircraft(IEnumerable<Aircraft> rgac)
+        {
+            if (rgac == null)
+                return;
+
+            foreach (Aircraft ac in rgac)
+                AircraftList.Add(ac);
+        }
+
+        /// <summary>
+        /// Adds multiple airports at once
+        /// </summary>
+        /// <param name="rgsz"></param>
+        public void AddAirports(IEnumerable<string> rgsz)
+        {
+            if (rgsz == null)
+                throw new ArgumentNullException(nameof(rgsz));
+            foreach (string sz in rgsz)
+                AirportList.Add(sz);
+        }
+
+        public void AddPropertyTypes(IEnumerable<CustomPropertyType> rgcpt)
+        {
+            if (rgcpt == null)
+                return;
+            foreach (CustomPropertyType cpt in rgcpt)
+                PropertyTypes.Add(cpt);
         }
         #endregion
 
@@ -541,11 +575,11 @@ namespace MyFlightbook
                 fqNew.PropertyTypes = null;
             else
             {
-                fqNew.PropertyTypes = new Collection<CustomPropertyType>();
-                for (int i = 0; i < PropertyTypes.Count; i++)
+                fqNew.PropertyTypes = new HashSet<CustomPropertyType>();
+                foreach (CustomPropertyType cptSrc in PropertyTypes)
                 {
                     CustomPropertyType cpt = new CustomPropertyType();
-                    util.CopyObject(PropertyTypes[i], cpt);
+                    util.CopyObject(cptSrc, cpt);
                     cpt.Description = cpt.FormatString = null;
                     cpt.PreviousValues = null;
                     fqNew.PropertyTypes.Add(cpt);
@@ -647,7 +681,7 @@ namespace MyFlightbook
         }
 
         [JsonIgnoreAttribute]
-        protected List<QueryFilterItem> Filters { get; set; }
+        protected List<QueryFilterItem> Filters { get; private set; }
 
         [JsonIgnoreAttribute]
         public IEnumerable<QueryFilterItem> QueryFilterItems
@@ -673,15 +707,15 @@ namespace MyFlightbook
             DateMin = DateMax = DateTime.MinValue;
             Distance = FlightDistance.AllFlights;
             GeneralText = ModelName = string.Empty;
-            AircraftList = new Collection<Aircraft>();
-            AirportList = new Collection<string>();
-            MakeList = new Collection<MakeModel>();
-            TypeNames = new Collection<string>();
+            AircraftList = new HashSet<Aircraft>();
+            AirportList = new HashSet<string>();
+            MakeList = new HashSet<MakeModel>();
+            TypeNames = new HashSet<string>();
 
             DateRange = DateRanges.AllTime;
             m_rgParams = new List<MySqlParameter>();
-            CatClasses = new Collection<CategoryClass>();
-            PropertyTypes = new Collection<CustomPropertyType>();
+            CatClasses = new HashSet<CategoryClass>();
+            PropertyTypes = new HashSet<CustomPropertyType>();
 
             FlightCharacteristicsConjunction = GroupConjunction.All;
             PropertiesConjunction = GroupConjunction.Any;
@@ -700,12 +734,12 @@ namespace MyFlightbook
             // So we start with copyObject, but then explicitly make copies of the other collections.
             util.CopyObject(q, this);
             // Go through the collections and copy them explicitly
-            CatClasses = new Collection<CategoryClass>(new List<CategoryClass>(q.CatClasses));
-            PropertyTypes = new Collection<CustomPropertyType>(new List<CustomPropertyType>(q.PropertyTypes));
-            AircraftList = new Collection<Aircraft>(new List<Aircraft>(q.AircraftList));
-            AirportList = new Collection<string>(new List<string>(q.AirportList));
-            MakeList = new Collection<MakeModel>(new List<MakeModel>(q.MakeList));
-            TypeNames = new Collection<string>(new List<String>(q.TypeNames));
+            CatClasses = new HashSet<CategoryClass>(q.CatClasses);
+            PropertyTypes = new HashSet<CustomPropertyType>(q.PropertyTypes);
+            AircraftList = new HashSet<Aircraft>(q.AircraftList);
+            AirportList = new HashSet<string>(q.AirportList);
+            MakeList = new HashSet<MakeModel>(q.MakeList);
+            TypeNames = new HashSet<string>(q.TypeNames);
         }
 
         /// <summary>
@@ -900,24 +934,17 @@ namespace MyFlightbook
         {
             if (AircraftList.Count > 0)
             {
-                StringBuilder sbAircraftID = new StringBuilder("flights.idaircraft IN (");
-                StringBuilder sbAircraftDesc = new StringBuilder();
+                List<string> lstIds = new List<string>();
+                List<string> lstDescriptors = new List<string>();
 
-                for (int i = 0; i < AircraftList.Count; i++)
+                foreach (Aircraft ac in AircraftList)
                 {
-                    if (i > 0)
-                    {
-                        sbAircraftID.Append(", ");
-                        sbAircraftDesc.Append(", ");
-                    }
-
-                    sbAircraftID.Append(AircraftList[i].AircraftID.ToString(CultureInfo.InvariantCulture));
-                    sbAircraftDesc.Append(AircraftList[i].DisplayTailnumber);
+                    lstIds.Add(ac.AircraftID.ToString(CultureInfo.InvariantCulture));
+                    lstDescriptors.Add(ac.DisplayTailnumber);
                 }
-                sbAircraftID.Append(") ");
 
-                AddClause(sbQuery, sbAircraftID.ToString());
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsAircraft, sbAircraftDesc.ToString(), "AircraftList"));
+                AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "flights.idaircraft IN ({0}) ", String.Join(", ", lstIds)));
+                Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsAircraft, String.Join(", ", lstDescriptors), "AircraftList"));
             }
         }
         
@@ -982,25 +1009,17 @@ namespace MyFlightbook
 
             if (MakeList.Count > 0)
             {
-                StringBuilder sbModelID = new StringBuilder("models.idmodel IN (");
-                StringBuilder sbDescMakes = new StringBuilder();
+                List<string> lstIds = new List<string>();
+                List<string> lstDesc = new List<string>();
 
-                for (int i = 0; i < MakeList.Count; i++)
+                foreach (MakeModel mm in MakeList)
                 {
-                    if (i > 0)
-                    {
-                        sbModelID.Append(", ");
-                        sbDescMakes.Append(", ");
-                    }
-
-                    sbModelID.Append(MakeList[i].MakeModelID.ToString(CultureInfo.InvariantCulture));
-
-                    sbDescMakes.Append(MakeList[i].DisplayName.Trim());
+                    lstIds.Add(mm.MakeModelID.ToString(CultureInfo.InvariantCulture));
+                    lstDesc.Add(mm.DisplayName.Trim());
                 }
-                sbModelID.Append(") ");
-                szModelsIDQuery = sbModelID.ToString();
+                szModelsIDQuery = String.Format(CultureInfo.InvariantCulture, "models.idmodel IN ({0}) ", String.Join(", ", lstIds));
 
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsMakeModel, sbDescMakes.ToString(), "MakeList"));
+                Filters.Add(new QueryFilterItem(Resources.FlightQuery.ContainsMakeModel, String.Join(", ", lstDesc), "MakeList"));
             }
 
             if (!String.IsNullOrEmpty(ModelName.Trim()))
@@ -1034,7 +1053,7 @@ namespace MyFlightbook
 
             if (TypeNames != null && TypeNames.Count > 0)
             {
-                if (TypeNames.Count == 1 && String.IsNullOrEmpty(TypeNames[0]))
+                if (TypeNames.Count == 1 && String.IsNullOrEmpty(TypeNames.ElementAt(0)))
                 {
                     // special case: single empty typename = "No type."
                     szModelsTypeQuery = " (typename='') ";
@@ -1252,26 +1271,17 @@ namespace MyFlightbook
         {
             if (CatClasses.Count > 0)
             {
-                StringBuilder sbCatClass = new StringBuilder("(");
-                StringBuilder sbDescCatClass = new StringBuilder();
+                List<string> lstIds = new List<string>();
+                List<string> lstDesc = new List<string>();
 
-                for (int i = 0; i < CatClasses.Count; i++)
+                foreach (CategoryClass cc in CatClasses)
                 {
-                    if (i > 0)
-                    {
-                        sbCatClass.Append(", ");
-                        sbDescCatClass.Append(", ");
-                    }
-
-                    sbCatClass.Append((int)CatClasses[i].IdCatClass);
-
-                    sbDescCatClass.Append(CatClasses[i].CatClass);
+                    lstIds.Add(((int)cc.IdCatClass).ToString(CultureInfo.InvariantCulture));
+                    lstDesc.Add(cc.CatClass);
                 }
-                sbCatClass.Append(") ");
+                AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "((flights.idCatClassOverride = 0 AND models.idcategoryclass IN ({0})) OR flights.idCatClassOverride IN ({0}))", String.Join(", ", lstIds)));
 
-                AddClause(sbQuery, String.Format(CultureInfo.InvariantCulture, "((flights.idCatClassOverride = 0 AND models.idcategoryclass IN {0}) OR flights.idCatClassOverride IN {0})", sbCatClass.ToString()));
-
-                Filters.Add(new QueryFilterItem(Resources.FlightQuery.CategoryClass, sbDescCatClass.ToString().Trim(), "CatClasses"));
+                Filters.Add(new QueryFilterItem(Resources.FlightQuery.CategoryClass, String.Join(", ", lstDesc), "CatClasses"));
             }
         }
         #endregion

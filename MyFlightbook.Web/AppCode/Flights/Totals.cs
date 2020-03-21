@@ -2,10 +2,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 
 /******************************************************
  * 
@@ -708,12 +708,12 @@ namespace MyFlightbook.FlightCurrency
                                 group = TotalsGroup.CategoryClass;
                                 break;
                             case TotalsGrouping.Model:
-                                fq.AddModel(idModel);
+                                fq.AddModelById(idModel);
                                 szTitle = szModelDisplay;
                                 group = TotalsGroup.Model;
                                 break;
                             case TotalsGrouping.Family:
-                                fq.ModelName = szFamilyDisplay;
+                                fq.ModelName = ModelQuery.ICAOPrefix + szFamilyDisplay;
                                 szTitle = szFamilyDisplay;
                                 group = TotalsGroup.ICAO;
                                 break;
@@ -742,7 +742,7 @@ namespace MyFlightbook.FlightCurrency
                         foreach (TotalsItem ti in Totals)
                         {
                             FlightQuery q = ti.Query;
-                            if (q != null && q.CatClasses != null && q.CatClasses.Count == 1 && q.CatClasses[0].IdCatClass == ccTarget.IdCatClass && (q.TypeNames == null || q.TypeNames.Count == 0))
+                            if (q != null && q.CatClasses != null && q.CatClasses.Count == 1 && q.CatClasses.ElementAt(0).IdCatClass == ccTarget.IdCatClass && (q.TypeNames == null || q.TypeNames.Count == 0))
                             {
                                 q.TypeNames.Clear();
                                 q.TypeNames.Add(string.Empty);
@@ -769,9 +769,7 @@ namespace MyFlightbook.FlightCurrency
                         if (pf.BlacklistedProperties.Exists(i => i == cpt.PropTypeID))
                             continue;
 
-                        List<CustomPropertyType> lstCpt = new List<CustomPropertyType>(Restriction.PropertyTypes);
-
-                        bool fPropIsInQuery = lstCpt.Exists(c => c.PropTypeID == cpt.PropTypeID);
+                        bool fPropIsInQuery = Restriction.PropertyTypes.Contains(cpt);
 
                         // Only do totals for Booleans if
                         // (a) not in exclusion list.  Blacklisted is already handled above.
@@ -780,11 +778,12 @@ namespace MyFlightbook.FlightCurrency
                         if (cpt.Type == CFPPropertyType.cfpBoolean && (cpt.IsExcludedFromMRU || !fPropIsInQuery))
                             continue;
 
+                        FlightQuery fq = new FlightQuery(Restriction) { PropertiesConjunction = GroupConjunction.All };
+
                         // If we're here, then we need to add the property to the query, if it's not already there.
                         if (!fPropIsInQuery)
-                            lstCpt.Add(cpt);
+                            fq.PropertyTypes.Add(cpt);
 
-                        FlightQuery fq = new FlightQuery(Restriction) { PropertyTypes = new Collection<CustomPropertyType>(lstCpt) };
                         switch (cpt.Type)
                         {
                             case CFPPropertyType.cfpBoolean:

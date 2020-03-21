@@ -156,7 +156,10 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         if (!String.IsNullOrEmpty(szSearchParam))
             Restriction.GeneralText = szSearchParam;
         if (!String.IsNullOrEmpty(szAirportParam))
-            Restriction.AirportList = new Collection<string>(new List<string>(MyFlightbook.Airports.AirportList.NormalizeAirportList(szAirportParam)));
+        {
+            Restriction.AirportList.Clear();
+            Restriction.AddAirports(MyFlightbook.Airports.AirportList.NormalizeAirportList(szAirportParam));
+        }
 
         if (year > 1900)
         {
@@ -180,7 +183,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         {
             UserAircraft ua = new UserAircraft(Restriction.UserName);
             Collection<Aircraft> lstac = new Collection<Aircraft>();
-            Collection<MakeModel> lstmm = new Collection<MakeModel>();
+            HashSet<int> lstmm = new HashSet<int>();
 
             foreach (Aircraft ac in ua.GetAircraftForUser())
             {
@@ -188,15 +191,21 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
                     lstac.Add(ac);
 
                 MakeModel mm = MakeModel.GetModel(ac.ModelID);
-                if (!lstmm.Contains(mm) && 
+                if (!lstmm.Contains(mm.MakeModelID) && 
                     ((!String.IsNullOrEmpty(szReqModel) && mm.Model.CompareCurrentCultureIgnoreCase(szReqModel) == 0) ||
                     (!String.IsNullOrEmpty(szReqICAO) && mm.FamilyName.CompareCurrentCultureIgnoreCase(szReqICAO) == 0)))
-                    lstmm.Add(mm);
+                    lstmm.Add(mm.MakeModelID);
             }
             if (lstac.Count > 0)
-                Restriction.AircraftList = lstac;
+            {
+                Restriction.AirportList.Clear();
+                Restriction.AddAircraft(lstac);
+            }
             if (lstmm.Count > 0)
-                Restriction.MakeList = lstmm;
+            {
+                Restriction.MakeList.Clear();
+                Restriction.AddModels(lstmm);
+            }
         }
 
         Refresh();

@@ -2,7 +2,6 @@
 using MyFlightbook.Airports;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -41,9 +40,9 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
     }
 
     const string szKeyVSTypes = "vsKeyTypes";
-    protected Collection<string> TypeNames
+    protected HashSet<string> TypeNames
     {
-        get { return (Collection<string>) ViewState[szKeyVSTypes] ?? new Collection<string>(); }
+        get { return (HashSet<string>) ViewState[szKeyVSTypes] ?? new HashSet<string>(); }
         set { ViewState[szKeyVSTypes] = value; }
     }
 
@@ -133,7 +132,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         cmbPropertiesConjunction.SelectedValue = GroupConjunction.Any.ToString();
 
         // reset any cached types
-        TypeNames = new Collection<string>();
+        TypeNames.Clear();
 
         txtQueryName.Text = string.Empty;
 
@@ -705,7 +704,9 @@ function setDates(isCustom)
         CustomPropsFromForm();
 
         // Typenames aren't exposed to the user; reset them here.
-        m_fq.TypeNames = TypeNames;
+        m_fq.TypeNames.Clear();
+        foreach (string sz in TypeNames)
+            m_fq.TypeNames.Add(sz);
 
         m_fq.Refresh();
 

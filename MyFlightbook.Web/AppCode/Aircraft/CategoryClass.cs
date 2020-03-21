@@ -15,7 +15,7 @@ using MySql.Data.MySqlClient;
 namespace MyFlightbook
 {
     [Serializable]
-    public class CategoryClass
+    public class CategoryClass : IEquatable<CategoryClass>
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1027:MarkEnumsWithFlags"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
         public enum CatClassID
@@ -273,6 +273,38 @@ namespace MyFlightbook
                     return cc;
             throw new InvalidDataException("CategoryClassFromID: category/class with ID " + id.ToString() + " does not exist.");
         }
+
+        #region IEquatable
+        // Very simple definition of equals: two category classes are identical if the catclass ID is identical.
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as CategoryClass);
+        }
+
+        public bool Equals(CategoryClass other)
+        {
+            return other != null &&
+                   IdCatClass == other.IdCatClass;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return -1903991140 + IdCatClass.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(CategoryClass left, CategoryClass right)
+        {
+            return EqualityComparer<CategoryClass>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(CategoryClass left, CategoryClass right)
+        {
+            return !(left == right);
+        }
+        #endregion
         #endregion
     }
 }

@@ -27,7 +27,7 @@ namespace MyFlightbook
     /// Describes a flight property, including it's data type, display characteristics, and any flagged semantics.
     /// </summary>
     [Serializable]
-    public class CustomPropertyType
+    public class CustomPropertyType : IEquatable<CustomPropertyType>
     {
         /// <summary>
         /// ID's of known properties.  We do this as a nested static class to encapsulate it.
@@ -725,6 +725,43 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
 
             return rgcpt;
         }
+
+        #region IEquatable
+
+        /// <summary>
+        /// We take a very broad definition of equals: two property types are equal if the PropTypeID is equal.  Nothing else matters.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as CustomPropertyType);
+        }
+
+        public bool Equals(CustomPropertyType other)
+        {
+            return other != null &&
+                   PropTypeID == other.PropTypeID;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return -1747040907 + PropTypeID.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(CustomPropertyType left, CustomPropertyType right)
+        {
+            return EqualityComparer<CustomPropertyType>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(CustomPropertyType left, CustomPropertyType right)
+        {
+            return !(left == right);
+        }
+        #endregion
     }
 
     /// <summary>

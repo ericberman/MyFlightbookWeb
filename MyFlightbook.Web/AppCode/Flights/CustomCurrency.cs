@@ -780,27 +780,22 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
 
                 Collection<CategoryClass> lstCc = new Collection<CategoryClass>();
                 if (CatClassRestriction > 0)
-                    lstCc.Add(CategoryClass.CategoryClassFromID(CatClassRestriction));
+                    fq.AddCatClass(CategoryClass.CategoryClassFromID(CatClassRestriction));
                 if (!String.IsNullOrEmpty(CategoryRestriction))
                 {
                     foreach (CategoryClass cc in CategoryClass.CategoryClasses())
                         if (cc.Category.CompareOrdinalIgnoreCase(CategoryRestriction) == 0)
-                            lstCc.Add(cc);
+                            fq.AddCatClass(cc);
                 }
-                fq.CatClasses = lstCc;
 
-                Collection<MakeModel> lstModels = new Collection<MakeModel>();
                 foreach (int idmodel in ModelsRestriction)
-                    lstModels.Add(MakeModel.GetModel(idmodel));
-                fq.MakeList = lstModels;
+                    fq.AddModelById(idmodel);
 
                 UserAircraft ua = new UserAircraft(UserName);
-                Collection<Aircraft> lstAircraft = new Collection<Aircraft>();
-                Array.ForEach<Aircraft>(ua.GetAircraftForUser(), (ac) => { if (AircraftRestriction.Contains(ac.AircraftID)) lstAircraft.Add(ac); });
-                fq.AircraftList = lstAircraft;
+                Array.ForEach<Aircraft>(ua.GetAircraftForUser(), (ac) => { if (AircraftRestriction.Contains(ac.AircraftID)) fq.AircraftList.Add(ac); });
 
                 if (!String.IsNullOrEmpty(AirportRestriction))
-                    fq.AirportList = new Collection<string>(new List<string>(Airports.AirportList.NormalizeAirportList(AirportRestriction)));
+                    fq.AddAirports(Airports.AirportList.NormalizeAirportList(AirportRestriction));
 
                 if (!String.IsNullOrEmpty(TextRestriction))
                     fq.GeneralText = TextRestriction;
@@ -814,7 +809,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         prop = CustomPropertyType.KnownProperties.IDPropBackSeatTime;
                         break;
                     case CustomCurrencyEventType.BaseCheck:
-                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsBaseCheck).ToArray());
+                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsBaseCheck));
                         break;
                     case CustomCurrencyEventType.Flights:
                         break;
@@ -855,7 +850,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         prop = CustomPropertyType.KnownProperties.IDPropNightTouchAndGo;
                         break;
                     case CustomCurrencyEventType.NightTakeoffs:
-                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsNightTakeOff));
+                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsNightTakeOff));
                         break;
                     case CustomCurrencyEventType.NVFLIR:
                         prop = CustomPropertyType.KnownProperties.IDPropNVFLIRTime;
@@ -864,7 +859,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         prop = CustomPropertyType.KnownProperties.IDPropNVGoggleTime;
                         break;
                     case CustomCurrencyEventType.NVHours:
-                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsNightVisionTime));
+                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsNightVisionTime));
                         break;
                     case CustomCurrencyEventType.PICNightLandings:
                         fq.HasNightLandings = true;
@@ -874,10 +869,10 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         fq.HasTotalTime = true;
                         break;
                     case CustomCurrencyEventType.UASLaunch:
-                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsUASLaunch));
+                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsUASLaunch));
                         break;
                     case CustomCurrencyEventType.UASRecovery:
-                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsUASRecovery));
+                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsUASRecovery));
                         break;
                     case CustomCurrencyEventType.CAP5Checkride:
                         prop = CustomPropertyType.KnownProperties.IDPropCAP5Checkride;
@@ -895,10 +890,10 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         fq.HasDual = true;
                         break;
                     case CustomCurrencyEventType.FlightReview:
-                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsBFR));
+                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsBFR));
                         break;
                     case CustomCurrencyEventType.IPC:
-                        fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.IsIPC));
+                        fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.IsIPC));
                         break;
                     case CustomCurrencyEventType.NightLandingAny:
                         fq.HasNight = true;
@@ -908,17 +903,14 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         throw new InvalidOperationException("Unknown event type: " + EventType.ToString() + " in ToQuery()");
                 }
                 if (prop != CustomPropertyType.KnownProperties.IDPropInvalid)
-                    fq.PropertyTypes = new Collection<CustomPropertyType>(lstprops.FindAll(cpt => cpt.PropTypeID == (int)prop));
+                    fq.AddPropertyTypes(lstprops.FindAll(cpt => cpt.PropTypeID == (int)prop));
 
                 if (PropertyRestriction != null && PropertyRestriction.Count() > 0)
                 {
                     // Merge additional properties with any "intrinsic" properties from the type of custom currency above.
-                    HashSet<CustomPropertyType> hs = new HashSet<CustomPropertyType>(fq.PropertyTypes ?? new Collection<CustomPropertyType>());
-
                     foreach (int i in PropertyRestriction)
-                        hs.Add(CustomPropertyType.GetCustomPropertyType(i));
-
-                    fq.PropertyTypes = new Collection<CustomPropertyType>(new List<CustomPropertyType>(hs));
+                        if (fq.PropertyTypes.FirstOrDefault(cpt => i == (int) cpt.PropTypeID) == null)
+                            fq.PropertyTypes.Add(CustomPropertyType.GetCustomPropertyType(i));
                 }
 
                 return fq;
