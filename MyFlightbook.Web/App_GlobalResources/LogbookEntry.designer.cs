@@ -2505,7 +2505,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Review Pending Flights.
+        ///   Looks up a localized string similar to Review/Edit Pending Flight(s).
         /// </summary>
         internal static string ReviewPendingFlightsHeader {
             get {

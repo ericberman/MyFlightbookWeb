@@ -974,7 +974,7 @@
     <value>{0} flight(s) had errors</value>
   </data>
   <data name="ReviewPendingFlightsHeader" xml:space="preserve">
-    <value>Review Pending Flights</value>
+    <value>Review/Edit Pending Flight(s)</value>
   </data>
   <data name="ReviewPendingFlightsNoFlights" xml:space="preserve">
     <value>No flights are awaiting review.</value>

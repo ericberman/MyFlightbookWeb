@@ -2664,6 +2664,7 @@
     <Content Include="App_GlobalResources\LogbookEntry.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>LogbookEntry.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\Makes.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
@@ -2746,7 +2747,9 @@
     <Content Include="Member\App_LocalResources\FlightAnalysis.aspx.resx" />
     <Content Include="Member\App_LocalResources\FlightDetail.aspx.resx" />
     <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
-    <Content Include="Member\App_LocalResources\Import.aspx.resx" />
+    <Content Include="Member\App_LocalResources\Import.aspx.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Member\App_LocalResources\Logbook.aspx.resx" />
     <Content Include="Member\App_LocalResources\makes.aspx.resx">
       <SubType>Designer</SubType>
