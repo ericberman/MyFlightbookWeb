@@ -359,7 +359,7 @@
         </ContentTemplate>
     </asp:UpdatePanel>
     <asp:Panel ID="pnlSubmit" runat="server" CssClass="fullblock" meta:resourcekey="pnlSubmitResource1">
-        <div style="float:left"><asp:ImageButton ID="imgCheckFlights" runat="server" OnClick="lnkCheckFlight_Click" ToolTip="<%$ Resources:FlightLint, TitleCheckThisFlight %>" ImageUrl="~/images/CheckFlights.png" /></div>
+        <div style="float:right"><asp:ImageButton ID="imgCheckFlights" runat="server" OnClick="lnkCheckFlight_Click" ToolTip="<%$ Resources:FlightLint, TitleCheckThisFlight %>" ImageUrl="~/images/CheckFlights.png" /></div>
         <table style="margin-left:auto; margin-right: auto;">
             <tr style="vertical-align:top;">
                 <td>
