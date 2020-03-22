@@ -111,12 +111,12 @@ namespace MyFlightbook.ImportFlights.CloudAhoy
     {
         #region Properties
         public CloudAhoyAircraftDescriptor aircraft { get; set; }
-        public Collection<CloudAhoyAirportDescriptor> airports { get; set; }
+        public Collection<CloudAhoyAirportDescriptor> airports { get; private set; }
         public string cfiaScore { get; set; }
-        public Collection<CloudAhoyCrewDescriptor> crew { get; set; }
+        public Collection<CloudAhoyCrewDescriptor> crew { get; private set; }
         public long duration { get; set; }
         public string flightId { get; set; }
-        public Collection<CloudAhoyManeuverDescriptor> maneuvers { get; set; }
+        public Collection<CloudAhoyManeuverDescriptor> maneuvers { get; private set; }
         public string remarks { get; set; }
         public long time { get; set; }
         

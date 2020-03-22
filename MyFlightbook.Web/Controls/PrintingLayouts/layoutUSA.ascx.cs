@@ -18,7 +18,7 @@ public partial class Controls_PrintingLayouts_layoutUSA : System.Web.UI.UserCont
 
     protected bool ShowFooter { get; set; }
 
-    protected Collection<OptionalColumn> OptionalColumns { get; set; }
+    protected Collection<OptionalColumn> OptionalColumns { get; private set; }
 
     protected string OtherCatClassValue(LogbookEntryDisplay led)
     {

@@ -64,8 +64,8 @@ namespace MyFlightbook.MilestoneProgress
         public bool AutoDateRange { get; set; }
 
         // # of distinct dates with flights, flights per day
-        protected Dictionary<string, int> FlightDates { get; set; }
-        protected Dictionary<string, int> FlightLandings { get; set; }
+        protected Dictionary<string, int> FlightDates { get; private set; }
+        protected Dictionary<string, int> FlightLandings { get; private set; }
         protected int MaxFlightsPerDay { get; set; }
         protected int MaxLandingsPerDay { get; set; }
 
@@ -81,12 +81,12 @@ namespace MyFlightbook.MilestoneProgress
         protected double FurthestFlightDistance { get; set; }
         
         // Distinct aircraft/models
-        protected HashSet<int> DistinctAircraft { get; set; }
-        protected HashSet<int> DistinctModels { get; set; }
-        protected HashSet<string> DistinctICAO { get; set; }
+        protected HashSet<int> DistinctAircraft { get; private set; }
+        protected HashSet<int> DistinctModels { get; private set; }
+        protected HashSet<string> DistinctICAO { get; private set; }
 
         // Airports
-        protected HashSet<string> Airports { get; set; }
+        protected HashSet<string> Airports { get; private set; }
         protected int MostAirportsFlightCount { get; set; }
 
         #region MilestoneItems

@@ -43,7 +43,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
     protected HashSet<string> TypeNames
     {
         get { return (HashSet<string>) ViewState[szKeyVSTypes] ?? new HashSet<string>(); }
-        set { ViewState[szKeyVSTypes] = value; }
+        private set { ViewState[szKeyVSTypes] = value; }
     }
 
     public string Username 

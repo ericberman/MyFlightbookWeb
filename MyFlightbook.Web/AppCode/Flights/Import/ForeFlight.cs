@@ -86,10 +86,10 @@ namespace MyFlightbook.ImportFlights
         public string Text { get; set; }
         public string TypeCode { get; set; }
         public string Model { get; set; }
-        protected List<string> PassengerNames { get; set; }
-        protected List<string> StudentNames { get; set; }
-        protected List<string> InstructorNames { get; set; }
-        protected List<string> ExaminerNames { get; set; }
+        protected List<string> PassengerNames { get; private set; }
+        protected List<string> StudentNames { get; private set; }
+        protected List<string> InstructorNames { get; private set; }
+        protected List<string> ExaminerNames { get; private set; }
         #endregion
 
         public ForeFlight(DataRow dr, IDictionary<string, ForeFlightAircraftDescriptor> dict) : base(dr)

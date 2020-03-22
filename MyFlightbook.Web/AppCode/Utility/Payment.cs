@@ -1077,7 +1077,7 @@ ORDER BY dateEarned ASC ";
     public class YearlyPayments : IComparable
     {
         public int Year { get; set; }
-        public IList<PeriodPaymentStat> MonthlyPayments { get; set; }
+        public IList<PeriodPaymentStat> MonthlyPayments { get; private set; }
         public PeriodPaymentStat AnnualPayment { get; set; }
 
         public YearlyPayments(int year)

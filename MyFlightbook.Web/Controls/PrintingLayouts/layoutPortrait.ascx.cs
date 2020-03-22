@@ -22,7 +22,7 @@ public partial class Controls_PrintingLayouts_layoutPortrait : System.Web.UI.Use
 
     protected bool ShowFooter { get; set; }
 
-    protected Collection<OptionalColumn> OptionalColumns { get; set; }
+    protected Collection<OptionalColumn> OptionalColumns { get; private set; }
 
     protected Boolean ShowOptionalColumn(int index)
     {

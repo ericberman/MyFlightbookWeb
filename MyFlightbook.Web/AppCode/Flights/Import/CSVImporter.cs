@@ -38,12 +38,12 @@ namespace MyFlightbook.ImportFlights
         /// <summary>
         /// The set of flights to import.
         /// </summary>
-        public List<LogbookEntry> FlightsToImport { get; set; }
+        public List<LogbookEntry> FlightsToImport { get; private set; }
 
         /// <summary>
         /// Set of flights to be modified, in original state (for comparison)
         /// </summary>
-        public Dictionary<int, LogbookEntry> OriginalFlightsToModify { get; set; }
+        public Dictionary<int, LogbookEntry> OriginalFlightsToModify { get; private set; }
 
         /// <summary>
         /// The aircraft that were encountered that are not yet in the user's profile
@@ -948,6 +948,7 @@ namespace MyFlightbook.ImportFlights
 
         public CSVImporter()
         {
+            FlightsToImport = new List<LogbookEntry>();
         }
 
         /// <summary>
@@ -963,7 +964,7 @@ namespace MyFlightbook.ImportFlights
         {
             using (CSVReader csvr = new CSVReader(fileContent))
             {
-                FlightsToImport = new List<LogbookEntry>();
+                FlightsToImport.Clear();
                 OriginalFlightsToModify = new Dictionary<int, LogbookEntry>();
                 int iRow = 0;
 
@@ -1032,7 +1033,7 @@ namespace MyFlightbook.ImportFlights
                 {
                     HasErrors = true;
                     ErrorMessage = ex.Message;
-                    FlightsToImport = null;
+                    FlightsToImport.Clear();
                     return false;
                 }
             }

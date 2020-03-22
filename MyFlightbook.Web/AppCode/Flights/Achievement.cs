@@ -39,7 +39,7 @@ namespace MyFlightbook.Achievements
         /// <summary>
         /// A dictionary with context that can be used by badges to prevent duplicate computation
         /// </summary>
-        public Dictionary<string, Object> BadgeContext { get; set; }
+        public Dictionary<string, Object> BadgeContext { get; private set; }
         #endregion
 
         #region Object Creation
@@ -1040,7 +1040,7 @@ namespace MyFlightbook.Achievements
     [Serializable]
     public abstract class MultiLevelCountBadgeBase : Badge
     {
-        protected Collection<int> Levels {get; set;}
+        protected Collection<int> Levels {get; private set; }
         protected decimal Quantity { get; set; }
         protected string ProgressTemplate { get; set; }
         
@@ -1446,7 +1446,7 @@ namespace MyFlightbook.Achievements
         public string OverlayName { get; set; }
         public AirportList Airports { get; set; }
         public LatLongBox BoundingFrame { get; set; }
-        public Collection<int> Levels { get; set; }
+        public Collection<int> Levels { get; private set; }
         public bool BinaryOnly { get; set; }
 
         public AirportListBadgeData()
@@ -1524,7 +1524,9 @@ namespace MyFlightbook.Achievements
             // get the name that matches this
             m_badgeData = BadgeData.Find(albd => albd.ID == ID);
             ProgressTemplate = Name = m_badgeData.Name;
-            Levels = m_badgeData.Levels;
+            Levels.Clear();
+            foreach (int i in m_badgeData.Levels)
+                Levels.Add(i);
         }
 
         private const string szCacheDataKey = "keyAirportListBadgesDataList";

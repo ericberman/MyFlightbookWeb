@@ -200,7 +200,7 @@ namespace MyFlightbook.MilestoneProgress
     [Serializable]
     public abstract class MilestoneGroup
     {
-        public Collection<MilestoneProgress> Milestones { get; set; }
+        public Collection<MilestoneProgress> Milestones { get; protected set; }
         public string GroupName { get; set; }
     }
     #endregion

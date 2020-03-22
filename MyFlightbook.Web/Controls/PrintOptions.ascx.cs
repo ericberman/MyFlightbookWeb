@@ -44,16 +44,17 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             m_options.Layout = (PrintLayoutType) Enum.Parse(typeof(PrintLayoutType), cmbLayout.SelectedValue);
             m_options.PropertySeparator = (PrintingOptions.PropertySeparatorType)Enum.Parse(typeof(PrintingOptions.PropertySeparatorType), rblPropertySeparator.SelectedValue);
 
-            Collection<int> l = new Collection<int>();
+            m_options.ExcludedPropertyIDs.Clear();
             foreach (ListItem li in cklProperties.Items)
                 if (li.Selected)
-                    l.Add(Convert.ToInt32(li.Value, CultureInfo.InvariantCulture));
-            m_options.ExcludedPropertyIDs = l;
+                    m_options.ExcludedPropertyIDs.Add(Convert.ToInt32(li.Value, CultureInfo.InvariantCulture));
 
             Collection<OptionalColumn> lst = new Collection<OptionalColumn>();
             foreach (DropDownList ddl in OptionalColumnDropDowns)
                 AddOptionalColumnForValue(ddl.SelectedValue, lst);
-            m_options.OptionalColumns = lst;
+            m_options.OptionalColumns.Clear();
+            foreach (OptionalColumn oc in lst)
+                m_options.OptionalColumns.Add(oc);
 
             m_options.IncludePullForwardTotals = ckPullForwardTotals.Checked;
 

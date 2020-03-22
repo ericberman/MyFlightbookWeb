@@ -21,7 +21,7 @@ public partial class Controls_PrintingLayouts_layoutNative : System.Web.UI.UserC
 
     protected bool ShowFooter { get; set; }
 
-    protected Collection<OptionalColumn> OptionalColumns { get; set; }
+    protected Collection<OptionalColumn> OptionalColumns { get; private set; }
 
     protected Boolean ShowOptionalColumn(int index)
     {

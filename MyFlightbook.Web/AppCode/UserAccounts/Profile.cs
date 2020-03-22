@@ -177,6 +177,7 @@ namespace MyFlightbook
             CreationDate = LastActivity = LastLogon = LastPasswordChange = 
             LastBFRInternal = LastMedical = CertificateExpiration = EnglishProficiencyExpiration = LastEmailDate = DateTime.MinValue;
             AssociatedData = new Dictionary<string, object>();
+            BlacklistedProperties = new List<int>();
         }
         #endregion
 
@@ -680,7 +681,7 @@ namespace MyFlightbook
         /// <summary>
         /// List of properties ID's that the user has blacklisted from the previously-used list.
         /// </summary>
-        public List<int> BlacklistedProperties { get; set; }
+        public List<int> BlacklistedProperties { get; private set; }
 
         private Achievement.ComputeStatus m_AchievementStatus = Achievement.ComputeStatus.Never;
 
@@ -718,7 +719,7 @@ namespace MyFlightbook
         /// <summary>
         /// Convenience dictionary of associated data for other that want to piggy back on Profile caching.
         /// </summary>
-        public IDictionary<string, object> AssociatedData { get; set; }
+        public IDictionary<string, object> AssociatedData { get; private set; }
         #endregion
 
         /// <summary>
@@ -848,7 +849,7 @@ namespace MyFlightbook
                 PreferredTimeZoneID = (string) util.ReadNullableField(dr, "timezone", null);
 
                 string szBlacklist = util.ReadNullableString(dr, "PropertyBlackList");
-                BlacklistedProperties = new List<int>(szBlacklist.ToInts());
+                BlacklistedProperties.AddRange(szBlacklist.ToInts());
             }
             catch (Exception ex)
             {

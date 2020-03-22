@@ -90,13 +90,18 @@ namespace MyFlightbook.CloudStorage
     {
 
         [JsonProperty("errors")]
-        public Collection<GoogleDriveInternalError> errors { get; set; }
+        public Collection<GoogleDriveInternalError> errors { get; private set; }
 
         [JsonProperty("code")]
         public int code { get; set; }
 
         [JsonProperty("message")]
         public string message { get; set; }
+
+        public GoogleDriveError()
+        {
+            errors = new Collection<GoogleDriveInternalError>();
+        }
     }
     #endregion
 
@@ -123,10 +128,10 @@ namespace MyFlightbook.CloudStorage
 
         protected class GoogleFileList
         {
-            public GoogleFileList() { }
+            public GoogleFileList() { files = new Collection<GoogleDriveFileMetadata>(); }
 
             public string kind { get; set; }
-            public Collection<GoogleDriveFileMetadata> files {get; set;}
+            public Collection<GoogleDriveFileMetadata> files {get; private set;}
         }
         #endregion
 

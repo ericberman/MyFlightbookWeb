@@ -1610,7 +1610,7 @@ namespace MyFlightbook.Airports
         /// <summary>
         /// The resulting list of AirportLists
         /// </summary>
-        public List<AirportList> Result { get; set; }
+        public List<AirportList> Result { get; private set; }
 
         /// <summary>
         /// The AirportList containing the set of all airports found.

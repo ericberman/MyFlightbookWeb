@@ -206,6 +206,7 @@ namespace MyFlightbook.Telemetry
         }
 
         #region Static utilities
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public static IEnumerable<KnownColumn> GetKnownColumns()
         {
             List<KnownColumn> lst = new List<KnownColumn>();

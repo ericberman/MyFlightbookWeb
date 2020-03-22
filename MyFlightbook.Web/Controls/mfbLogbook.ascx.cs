@@ -192,14 +192,14 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         }
     }
 
-    protected HashSet<int> BoundItems { get; set; }
+    protected HashSet<int> BoundItems { get; private set; }
     #endregion
 
     #region Protected/Private Properties
     /// <summary>
     /// cached for performance
     /// </summary>
-    protected List<Aircraft> AircraftForUser { get; set; }
+    protected List<Aircraft> AircraftForUser { get; private set; }
 
     protected Boolean HasPrevSort
     {

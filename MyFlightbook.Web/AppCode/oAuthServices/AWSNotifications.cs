@@ -401,9 +401,12 @@ namespace AWSNotifications
         public ETSInput Input { get; set; }
 
         [JsonProperty("outputs")]
-        public Collection<ETSOutput> Outputs { get; set; }
+        public Collection<ETSOutput> Outputs { get; private set; }
         #endregion
 
-        public AWSETSStateMessage() { }
+        public AWSETSStateMessage()
+        {
+            Outputs = new Collection<ETSOutput>();
+        }
     }
 }

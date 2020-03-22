@@ -26,7 +26,7 @@ namespace MyFlightbook.Templates
     [Serializable]
     public class PropertyTemplate : IComparable, IEquatable<PropertyTemplate>
     {
-        protected HashSet<int> m_propertyTypes { get; set; } = new HashSet<int>();
+        protected HashSet<int> m_propertyTypes { get; private set; } = new HashSet<int>();
 
         #region Properties
         public int ID { get; set; }
@@ -301,7 +301,9 @@ namespace MyFlightbook.Templates
             Group = PropertyTemplateGroup.Automatic;
             Name = Resources.LogbookEntry.TemplateSimBasic;
             Description = Resources.LogbookEntry.TemplateSimBasicDesc;
-            m_propertyTypes = new HashSet<int>() { (int)CustomPropertyType.KnownProperties.IDPropSimRegistration, (int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived };
+            m_propertyTypes.Clear();
+            m_propertyTypes.Add((int)CustomPropertyType.KnownProperties.IDPropSimRegistration);
+            m_propertyTypes.Add((int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
         }
     }
 
@@ -314,7 +316,8 @@ namespace MyFlightbook.Templates
             Group = PropertyTemplateGroup.Automatic;
             Name = Resources.LogbookEntry.TemplateAnonymousBasic;
             Description = Resources.LogbookEntry.TemplateAnonymousBasicDesc;
-            m_propertyTypes = new HashSet<int>() { (int)CustomPropertyType.KnownProperties.IDPropAircraftRegistration };
+            m_propertyTypes.Clear();
+            m_propertyTypes.Add((int)CustomPropertyType.KnownProperties.IDPropAircraftRegistration);
         }
     }
     #endregion
@@ -382,7 +385,10 @@ namespace MyFlightbook.Templates
             Group = (PropertyTemplateGroup)Convert.ToUInt32(dr["templategroup"], CultureInfo.InvariantCulture);
             IsPublic = Convert.ToBoolean(dr["public"], CultureInfo.InvariantCulture);
             IsDefault = Convert.ToBoolean(dr["isdefault"], CultureInfo.InvariantCulture);
-            m_propertyTypes = new HashSet<int>(JsonConvert.DeserializeObject<int[]>((string)dr["properties"]));
+            m_propertyTypes.Clear();
+            int[] rgids = JsonConvert.DeserializeObject<int[]>((string)dr["properties"]);
+            foreach (int i in rgids)
+                m_propertyTypes.Add(i);
         }
 
         /// <summary>
@@ -675,8 +681,8 @@ namespace MyFlightbook.Templates
     public class TemplatePropTypeBundle
     {
         #region Properties
-        public Collection <CustomPropertyType> UserProperties { get; set; }
-        public Collection<PropertyTemplate> UserTemplates { get; set; }
+        public Collection <CustomPropertyType> UserProperties { get; private set; }
+        public Collection<PropertyTemplate> UserTemplates { get; private set; }
         #endregion
 
         #region Constructors

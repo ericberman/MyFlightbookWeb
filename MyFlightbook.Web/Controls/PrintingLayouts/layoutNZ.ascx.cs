@@ -23,7 +23,7 @@ public partial class Controls_PrintingLayouts_layoutNZ : System.Web.UI.UserContr
 
     protected PrintingOptions Options { get; set; }
 
-    protected Collection<OptionalColumn> OptionalColumns { get; set; }
+    protected Collection<OptionalColumn> OptionalColumns { get; private set; }
 
     protected Boolean ShowOptionalColumn(int index)
     {

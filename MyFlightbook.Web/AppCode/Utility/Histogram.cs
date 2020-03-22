@@ -117,7 +117,7 @@ namespace MyFlightbook.Histogram
         /// <summary>
         /// The values (Y-axes) for this bucket.
         /// </summary>
-        public IDictionary<string, double> Values { get; set; }
+        public IDictionary<string, double> Values { get; private set; }
 
         /// <summary>
         /// Does this bucket have running totals?
@@ -127,7 +127,7 @@ namespace MyFlightbook.Histogram
         /// <summary>
         /// The running totals for the Y-axis for this bucket, if appropriate
         /// </summary>
-        public IDictionary<string, double> RunningTotals { get; set; }
+        public IDictionary<string, double> RunningTotals { get; private set; }
         #endregion
 
         #region Object creation

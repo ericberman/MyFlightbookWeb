@@ -321,7 +321,7 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Properties to exclude from printing
         /// </summary>
-        public Collection<int> ExcludedPropertyIDs { get; set; }
+        public Collection<int> ExcludedPropertyIDs { get; private set; }
 
         /// <summary>
         /// How do we want to display model names?
@@ -361,7 +361,7 @@ namespace MyFlightbook.Printing
             }
         }
 
-        public Collection<OptionalColumn> OptionalColumns { get; set; }
+        public Collection<OptionalColumn> OptionalColumns { get; private set; }
         #endregion
 
         public PrintingOptions()
@@ -551,17 +551,17 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Totals from this page, striped by category/class
         /// </summary>
-        protected IDictionary<string, LogbookEntryDisplay> TotalsThisPage { get; set; }
+        protected IDictionary<string, LogbookEntryDisplay> TotalsThisPage { get; private set; }
 
         /// <summary>
         /// Totals from previous pages, striped by category/class
         /// </summary>
-        protected IDictionary<string, LogbookEntryDisplay> TotalsPreviousPages { get; set; }
+        protected IDictionary<string, LogbookEntryDisplay> TotalsPreviousPages { get; private set; }
 
         /// <summary>
         /// Running totals, striped by category/class
         /// </summary>
-        protected IDictionary<string, LogbookEntryDisplay> RunningTotals { get; set; }
+        protected IDictionary<string, LogbookEntryDisplay> RunningTotals { get; private set; }
         #endregion
         #endregion
 

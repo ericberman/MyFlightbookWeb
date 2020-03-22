@@ -21,7 +21,7 @@ public partial class Controls_PrintingLayouts_layoutCASA : System.Web.UI.UserCon
 
     public bool IncludeImages { get; set; }
 
-    protected Collection<OptionalColumn> OptionalColumns { get; set; }
+    protected Collection<OptionalColumn> OptionalColumns { get; private set; }
 
     protected Boolean ShowOptionalColumn(int index)
     {

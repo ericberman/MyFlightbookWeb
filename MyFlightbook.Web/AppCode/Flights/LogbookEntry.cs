@@ -308,7 +308,7 @@ namespace MyFlightbook
         /// <summary>
         /// Videos associated with the flight.
         /// </summary>
-        public Collection<VideoRef> Videos { get; set; }
+        public Collection<VideoRef> Videos { get; private set; }
 
         #region Signature properties
         /// <summary>
@@ -2887,7 +2887,7 @@ namespace MyFlightbook
         public decimal GroundInstructionTotal { get; set; }
         public decimal IFRTimeTotal { get; set; }
 
-        public Collection<decimal> OptionalColumnTotals { get; set; }
+        public Collection<decimal> OptionalColumnTotals { get; private set; }
 
         /// <summary>
         /// Any additional columns to display.  Use OptionalColumnValue to get the value, or, after using AddFrom, use OptionalColumnTotalValue to retrieve the total
