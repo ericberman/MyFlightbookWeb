@@ -785,6 +785,9 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         LogbookEntryBase le = InitLogbookEntryFromForm();
         // See if there are any actual errors, stick those at the top of the list.
         le.IsValid(); // will populate ErrorString.
+
+        if (!le.IsNewFlight)
+            le.CFISignatureState = new LogbookEntry(le.FlightID, le.User).CFISignatureState;
         gvFlightLint.DataSource = new FlightLint().CheckFlights(new LogbookEntryBase[] { le }, le.User, FlightLint.DefaultOptionsForLocale);
         gvFlightLint.DataBind();
         pnlFlightLint.Visible = true;

@@ -330,32 +330,36 @@
             document.getElementById('<% = pnlFlightLint.ClientID %>').style.display = "none";
         }
     </script>
-    <asp:Panel ID="pnlFlightLint" runat="server" Visible="false" EnableViewState="false" CssClass="hintPopup" style="display:block; max-width:80%; margin-top: 3px; margin-left: auto; margin-right:auto;">
-        <div style="float:right"><asp:HyperLink ID="lnkClose" runat="server" onclick="javascript:hideLint()" NavigateUrl="javascript:void(0);" Text="<%$ Resources:LocalizedText, Close %>"></asp:HyperLink></div>
-        <asp:GridView ID="gvFlightLint" runat="server" AutoGenerateColumns="false" ShowHeader="false" EnableViewState="false" ShowFooter="false" GridLines="None">
-            <Columns>
-                <asp:TemplateField>
-                    <ItemTemplate>
-                        <ul>
-                            <asp:Repeater ID="rptIssues" runat="server" DataSource='<%# Eval("Issues") %>'>
-                                <ItemTemplate>
-                                    <li><%# Eval("IssueDescription") %></li>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                        </ul>
-                    </ItemTemplate>
-                </asp:TemplateField>
-            </Columns>
-            <EmptyDataTemplate>
-                <p><asp:Label ID="lblNoIssues" runat="server" Text="<%$ Resources:FlightLint, CheckFlightsNoIssuesFound %>"></asp:Label></p>
-            </EmptyDataTemplate>
-        </asp:GridView>
-    </asp:Panel>
-    <asp:Panel ID="pnlSubmit" runat="server" CssClass="fullblock" 
-        meta:resourcekey="pnlSubmitResource1">
-        <div style="float:left">
-            <asp:ImageButton ID="ImageButton1" runat="server" style="vertical-align:top;" OnClick="lnkCheckFlight_Click" ToolTip="<%$ Resources:FlightLint, TitleCheckThisFlight %>" ImageUrl="~/images/CheckFlights.png" />
-        </div>
+    <asp:UpdatePanel ID="updCheckFlights" runat="server" style="width:100%">
+        <Triggers>
+            <asp:AsyncPostBackTrigger ControlID="imgCheckFlights" />
+        </Triggers>
+        <ContentTemplate>
+            <asp:Panel ID="pnlFlightLint" runat="server" Visible="false" EnableViewState="false" CssClass="hintPopup" style="display:block; width:80%; margin-top: 3px; margin-left: auto; margin-right:auto;">
+                <div style="float:right"><asp:HyperLink ID="lnkClose" runat="server" onclick="javascript:hideLint()" NavigateUrl="javascript:void(0);" Text="<%$ Resources:LocalizedText, Close %>"></asp:HyperLink></div>
+                <asp:GridView ID="gvFlightLint" runat="server" AutoGenerateColumns="false" ShowHeader="false" EnableViewState="false" ShowFooter="false" GridLines="None">
+                    <Columns>
+                        <asp:TemplateField>
+                            <ItemTemplate>
+                                <ul>
+                                    <asp:Repeater ID="rptIssues" runat="server" DataSource='<%# Eval("Issues") %>'>
+                                        <ItemTemplate>
+                                            <li><%# Eval("IssueDescription") %></li>
+                                        </ItemTemplate>
+                                    </asp:Repeater>
+                                </ul>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                    <EmptyDataTemplate>
+                        <p><asp:Label ID="lblNoIssues" runat="server" Text="<%$ Resources:FlightLint, CheckFlightsNoIssuesFound %>"></asp:Label></p>
+                    </EmptyDataTemplate>
+                </asp:GridView>
+            </asp:Panel>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+    <asp:Panel ID="pnlSubmit" runat="server" CssClass="fullblock" meta:resourcekey="pnlSubmitResource1">
+        <div style="float:left"><asp:ImageButton ID="imgCheckFlights" runat="server" OnClick="lnkCheckFlight_Click" ToolTip="<%$ Resources:FlightLint, TitleCheckThisFlight %>" ImageUrl="~/images/CheckFlights.png" /></div>
         <table style="margin-left:auto; margin-right: auto;">
             <tr style="vertical-align:top;">
                 <td>
@@ -388,7 +392,6 @@
         <div><asp:Label ID="lblError" runat="server" CssClass="error" 
             EnableViewState="False" meta:resourcekey="lblErrorResource1"></asp:Label>
         </div>
-        <div>&nbsp;</div>
     </asp:Panel>
     <asp:Panel ID="pnlSigEdits" runat="server" Visible="false">
         <p><asp:Label ID="lblChanges" runat="server" Text="<%$ Resources:LogbookEntry, CompareHeader %>"></asp:Label></p>
