@@ -466,6 +466,8 @@ namespace MyFlightbook.Lint
 
             LogbookEntryBase leDefault = new LogbookEntry() { Date = le.Date, AircraftID = le.AircraftID, User = le.User };
             AddConditionalIssue(le.IsEqualTo(leDefault), LintOptions.MiscIssues, Resources.FlightLint.warningFlightHasNoData);
+
+            AddConditionalIssue(previousFlight != null && le.IsEqualTo(previousFlight), LintOptions.MiscIssues, Resources.FlightLint.warningMiscDuplicateFlight);
         }
     }
 }

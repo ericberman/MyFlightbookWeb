@@ -547,6 +547,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This flight appears to be identical to the previous flight; accidental duplicate?.
+        /// </summary>
+        internal static string warningMiscDuplicateFlight {
+            get {
+                return ResourceManager.GetString("warningMiscDuplicateFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The property {0} is indicated on multiple flights, but should generally only ever happen once.  E.g., you only ever take one Private Pilot Checkride, but later you might add new category/class privileges.  .
         /// </summary>
         internal static string warningMiscMultipleRedundantCheckrides {
