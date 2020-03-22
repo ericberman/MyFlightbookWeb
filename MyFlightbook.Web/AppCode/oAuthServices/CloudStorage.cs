@@ -103,6 +103,7 @@ namespace MyFlightbook.CloudStorage
     [Serializable]
     public class GoogleDriveResultDictionary : Dictionary<string, string>
     {
+        public GoogleDriveResultDictionary(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     /// <summary>
