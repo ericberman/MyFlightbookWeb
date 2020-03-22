@@ -418,7 +418,7 @@ namespace MyFlightbook.Lint
             AddConditionalIssue(cfpBlockOut != null && previousFlight.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockIn) && cfpBlockOut.DateValue.CompareTo(previousFlight.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn].DateValue) < 0,
                 LintOptions.DateTimeIssues, Resources.FlightLint.warningPreviousFlightBlockEndAfterStart);
 
-            // Look for a new duty start when a prior period is still open.
+            // Look for a new duty start when a prior period is still open or a duty end when a prior period is NOT open
             CustomFlightProperty cfpDutyStart = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropDutyStart];
             CustomFlightProperty cfpFlightDutyStart = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart];
             CustomFlightProperty cfpDutyEnd = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropDutyEnd];
@@ -429,6 +429,9 @@ namespace MyFlightbook.Lint
 
             AddConditionalIssue(dutyEnd != null && dutyEnd.HasValue && cfpDutyStart != null && cfpDutyStart.DateValue.CompareTo(dutyEnd.Value) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningDutyStartPriorToPreviousDutyEnd);
             AddConditionalIssue(flightDutyEnd != null && flightDutyEnd.HasValue && cfpFlightDutyStart != null && cfpFlightDutyStart.DateValue.CompareTo(flightDutyEnd.Value) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightDutyStartPriorToPreviousFlightDutyEnd);
+
+            AddConditionalIssue(dutyEnd != null && cfpDutyStart == null && cfpDutyEnd != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewDutyEndNoStart);
+            AddConditionalIssue(flightDutyEnd != null && cfpFlightDutyStart == null && cfpFlightDutyEnd != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewFlightDutyEndNoStart);
 
             // Close off a duty period if we have a duty end; if we're starting (or restarting) a duty period (and not closing it in the same flight), reset the duty period
             if (cfpDutyEnd != null)
@@ -458,6 +461,8 @@ namespace MyFlightbook.Lint
                     seenCheckrides.Add(cfp.PropTypeID);
                 }
             }
+
+            AddConditionalIssue(le.Dual > 0 && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorName) && le.CFISignatureState == LogbookEntryBase.SignatureState.None, LintOptions.MiscIssues, Resources.FlightLint.warningDualLoggedButNoCFIName);
         }
     }
 }

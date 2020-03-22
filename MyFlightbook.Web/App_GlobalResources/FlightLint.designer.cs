@@ -412,6 +412,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight indicates that instruction was received, but the instructor&apos;s name cannot be determined (flight is not signed and no &quot;Instructor Name&quot; property found).
+        /// </summary>
+        internal static string warningDualLoggedButNoCFIName {
+            get {
+                return ResourceManager.GetString("warningDualLoggedButNoCFIName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New duty period started found that begins is prior to the end of an earlier duty period..
         /// </summary>
         internal static string warningDutyStartPriorToPreviousDutyEnd {
@@ -538,11 +547,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duty period end found with no corresponding start.
+        /// </summary>
+        internal static string warningNewDutyEndNoStart {
+            get {
+                return ResourceManager.GetString("warningNewDutyEndNoStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duty Period Start found while a prior one is still open (not matched with a corresponding Duty Period End).
         /// </summary>
         internal static string warningNewDutyStart {
             get {
                 return ResourceManager.GetString("warningNewDutyStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight duty period end found with no corresponding start.
+        /// </summary>
+        internal static string warningNewFlightDutyEndNoStart {
+            get {
+                return ResourceManager.GetString("warningNewFlightDutyEndNoStart", resourceCulture);
             }
         }
         

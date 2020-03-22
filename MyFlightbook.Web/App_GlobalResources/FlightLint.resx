@@ -236,6 +236,9 @@
   <data name="warningDateTimeInvalidBlock" xml:space="preserve">
     <value>Block out time is after block in time.</value>
   </data>
+  <data name="warningDualLoggedButNoCFIName" xml:space="preserve">
+    <value>Flight indicates that instruction was received, but the instructor's name cannot be determined (flight is not signed and no "Instructor Name" property found)</value>
+  </data>
   <data name="warningDutyStartPriorToPreviousDutyEnd" xml:space="preserve">
     <value>New duty period started found that begins is prior to the end of an earlier duty period.</value>
   </data>
@@ -278,8 +281,14 @@
   <data name="warningMiscMultipleRedundantCheckrides" xml:space="preserve">
     <value>The property {0} is indicated on multiple flights, but should generally only ever happen once.  E.g., you only ever take one Private Pilot Checkride, but later you might add new category/class privileges.  </value>
   </data>
+  <data name="warningNewDutyEndNoStart" xml:space="preserve">
+    <value>Duty period end found with no corresponding start</value>
+  </data>
   <data name="warningNewDutyStart" xml:space="preserve">
     <value>Duty Period Start found while a prior one is still open (not matched with a corresponding Duty Period End)</value>
+  </data>
+  <data name="warningNewFlightDutyEndNoStart" xml:space="preserve">
+    <value>Flight duty period end found with no corresponding start</value>
   </data>
   <data name="warningNewFlightDutyStart" xml:space="preserve">
     <value>Flight Duty Period Start found while a prior one is still open (not matched with a corresponding Flight Duty Period End)</value>
