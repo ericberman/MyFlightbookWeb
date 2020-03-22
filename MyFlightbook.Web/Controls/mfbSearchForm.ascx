@@ -5,8 +5,6 @@
 <%@ Register src="mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc4" %>
 <%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc2" TagName="popmenu" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc2" TagName="mfbTooltip" %>
-
-
 <asp:Panel ID="pnlSearch" runat="server" DefaultButton="btnSearch" 
     meta:resourcekey="pnlSearchResource1">
     <table>
@@ -55,9 +53,12 @@
                 </asp:Panel>
                 <p class="header" runat="server" id="TextHeader"><asp:Localize ID="locFreeformText" 
                         runat="server" Text="Text of flight contains" 
-                        meta:resourcekey="locFreeformTextResource1"></asp:Localize> 
-                    <asp:Label ID="lblTextLabel" runat="server" 
-                        meta:resourcekey="lblTextLabelResource1"></asp:Label>:
+                        meta:resourcekey="locFreeformTextResource1"></asp:Localize>
+                    <uc2:mfbTooltip runat="server" ID="ttText"> 
+                        <TooltipBody>
+                            <asp:HyperLink ID="lnkTextTips" runat="server" NavigateUrl="~/Public/FAQ.aspx?q=63#63" Target="_blank" Text="<%$ Resources:LocalizedText, SearchTipsToolTip %>"></asp:HyperLink>
+                        </TooltipBody>
+                    </uc2:mfbTooltip>
                 </p>
                 <asp:Panel ID="pnlText" runat="server" style="overflow:hidden" 
                     meta:resourcekey="pnlTextResource1">

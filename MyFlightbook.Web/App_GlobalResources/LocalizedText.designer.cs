@@ -3925,6 +3925,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to See the FAQ for search tips.
+        /// </summary>
+        internal static string SearchTipsToolTip {
+            get {
+                return ResourceManager.GetString("SearchTipsToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (Select All).
         /// </summary>
         internal static string SelectAll {
@@ -4274,15 +4283,6 @@ namespace Resources {
         internal static string StartingTotalsLink {
             get {
                 return ResourceManager.GetString("StartingTotalsLink", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
         

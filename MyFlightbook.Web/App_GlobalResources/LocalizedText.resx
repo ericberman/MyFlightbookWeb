@@ -993,9 +993,6 @@
   <data name="errImportXLSNotCSV" xml:space="preserve">
     <value>This file appears to be in Excel native format, not CSV</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value />
-  </data>
   <data name="AnswerWhyCantEditLockedAircraft" xml:space="preserve">
     <value>This aircraft has been the subject of frequent back-and-forth edits among pilots, so it has been locked down by the site administrator.  Please check if an alternative version of the aircraft is already listed (below), or else use the "Contact Us" link and we can make things right.</value>
   </data>
@@ -1697,5 +1694,8 @@
   </data>
   <data name="Beta" xml:space="preserve">
     <value>BETA</value>
+  </data>
+  <data name="SearchTipsToolTip" xml:space="preserve">
+    <value>See the FAQ for search tips</value>
   </data>
 </root>

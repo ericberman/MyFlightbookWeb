@@ -193,13 +193,22 @@ public partial class Controls_mfbSearchForm
     protected global::System.Web.UI.WebControls.Localize locFreeformText;
 
     /// <summary>
-    /// lblTextLabel control.
+    /// ttText control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblTextLabel;
+    protected global::Controls_mfbTooltip ttText;
+
+    /// <summary>
+    /// lnkTextTips control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkTextTips;
 
     /// <summary>
     /// pnlText control.
