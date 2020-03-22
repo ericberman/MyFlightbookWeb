@@ -266,6 +266,9 @@
   <data name="warningFlightEndBeforeEngineStart" xml:space="preserve">
     <value>Flight end is before engine start</value>
   </data>
+  <data name="warningFlightHasNoData" xml:space="preserve">
+    <value>Flight has a date and aircraft, but no other data.</value>
+  </data>
   <data name="warningFlightTimeDiffersDate" xml:space="preserve">
     <value>Flight start or end differs from date of flight by more than a day</value>
   </data>

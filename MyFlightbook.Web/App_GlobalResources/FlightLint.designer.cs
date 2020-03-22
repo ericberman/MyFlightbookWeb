@@ -502,6 +502,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight has a date and aircraft, but no other data..
+        /// </summary>
+        internal static string warningFlightHasNoData {
+            get {
+                return ResourceManager.GetString("warningFlightHasNoData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight start or end differs from date of flight by more than a day.
         /// </summary>
         internal static string warningFlightTimeDiffersDate {

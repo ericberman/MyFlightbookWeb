@@ -463,6 +463,9 @@ namespace MyFlightbook.Lint
             }
 
             AddConditionalIssue(le.Dual > 0 && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorName) && le.CFISignatureState == LogbookEntryBase.SignatureState.None, LintOptions.MiscIssues, Resources.FlightLint.warningDualLoggedButNoCFIName);
+
+            LogbookEntryBase leDefault = new LogbookEntry() { Date = le.Date, AircraftID = le.AircraftID, User = le.User };
+            AddConditionalIssue(le.IsEqualTo(leDefault), LintOptions.MiscIssues, Resources.FlightLint.warningFlightHasNoData);
         }
     }
 }

@@ -892,7 +892,7 @@ namespace MyFlightbook
         }
 
         #region Comparison
-        private bool HasEqualDates(LogbookEntry le)
+        private bool HasEqualDates(LogbookEntryBase le)
         {
             return Date.Year == le.Date.Year &&
                 Date.Month == le.Date.Month &&
@@ -903,14 +903,14 @@ namespace MyFlightbook
                 DateTime.Compare(FlightStart, le.FlightStart) == 0;
         }
 
-        private bool HasEqualStrings(LogbookEntry le)
+        private bool HasEqualStrings(LogbookEntryBase le)
         {
             return String.Compare(Comment, le.Comment, StringComparison.CurrentCultureIgnoreCase) == 0 && 
                    String.Compare(this.Route, le.Route, StringComparison.CurrentCultureIgnoreCase) == 0 &&
                    String.Compare(this.User, le.User, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        private bool HasEqualFields(LogbookEntry le)
+        private bool HasEqualFields(LogbookEntryBase le)
         {
             return Approaches == le.Approaches &&
                 CatClassOverride == le.CatClassOverride &&
@@ -937,7 +937,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="le">The LogbookEntry to compare</param>
         /// <returns>true if they are semantically the same</returns>
-        public bool IsEqualTo(LogbookEntry le)
+        public bool IsEqualTo(LogbookEntryBase le)
         {
             // If both are null, or both are same instance, return true.
             if (ReferenceEquals(this, le))
