@@ -100,6 +100,11 @@ namespace MyFlightbook.CloudStorage
     }
     #endregion
 
+    [Serializable]
+    public class GoogleDriveResultDictionary : Dictionary<string, string>
+    {
+    }
+
     /// <summary>
     /// Provides utilities for using GoogleDrive from MyFlightbook
     /// </summary>
@@ -326,7 +331,7 @@ namespace MyFlightbook.CloudStorage
         /// <param name="szMimeType">The mime type for the data</param>
         /// <returns>True for success</returns>
         /// <exception cref="MyFlightbookException"></exception>
-        public async Task<IReadOnlyDictionary<string, string>> PutFile(string szFileName, byte[] rgData, string szMimeType)
+        public async Task<GoogleDriveResultDictionary> PutFile(string szFileName, byte[] rgData, string szMimeType)
         {
             using (MemoryStream ms = new MemoryStream(rgData))
             {
@@ -343,7 +348,7 @@ namespace MyFlightbook.CloudStorage
         /// <returns>True for success</returns>
         /// <exception cref="MyFlightbookException"></exception>
         /// <exception cref="System.Net.Http.HttpRequestException"></exception>
-        public async Task<IReadOnlyDictionary<string, string>> PutFile(Stream ms, string szFileName, string szMimeType)
+        public async Task<GoogleDriveResultDictionary> PutFile(Stream ms, string szFileName, string szMimeType)
         {
             if (ms == null)
                 throw new ArgumentNullException(nameof(ms));
@@ -422,7 +427,7 @@ namespace MyFlightbook.CloudStorage
                                     await httpClient.PatchAsync(new Uri(String.Format(CultureInfo.InvariantCulture, szURLUpdateEndpointTemplate, idExisting)), form);
                                 szResult = response.Content.ReadAsStringAsync().Result;
                                 response.EnsureSuccessStatusCode();
-                                return (String.IsNullOrEmpty(szResult)) ? null : JsonConvert.DeserializeObject<Dictionary<string, string>>(szResult);
+                                return (String.IsNullOrEmpty(szResult)) ? null : JsonConvert.DeserializeObject<GoogleDriveResultDictionary>(szResult);
                             }
                             catch (HttpRequestException ex)
                             {

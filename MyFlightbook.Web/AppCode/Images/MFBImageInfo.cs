@@ -1082,7 +1082,7 @@ namespace MyFlightbook.Image
         /// <param name="ic">The image class</param>
         /// <param name="lstKeys">The sorted list of keys</param>
         /// <returns>Matching results.  Index by key, each key returns a list of images</returns>
-        static public Dictionary<string, List<MFBImageInfo>> FromDB(MFBImageInfo.ImageClass ic, int offset, int count, out List<string> lstKeys)
+        static public Dictionary<string, MFBImageCollection> FromDB(MFBImageInfo.ImageClass ic, int offset, int count, out List<string> lstKeys)
         {
             if (offset < 0 || count <= 0)
             {
@@ -1106,7 +1106,7 @@ namespace MyFlightbook.Image
                     break;
             }
 
-            Dictionary<string, List<MFBImageInfo>> dictResults = new Dictionary<string, List<MFBImageInfo>>();
+            Dictionary<string, MFBImageCollection> dictResults = new Dictionary<string, MFBImageCollection>();
 
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT i1.* FROM images i1 INNER JOIN (SELECT DISTINCT ImageKey FROM images WHERE virtPathID={0} {1} LIMIT {2},{3}) AS ik ON i1.ImageKey=ik.ImageKey AND i1.virtPathID={0} {4}", (int)ic, szSort, offset, count, sz2ndSort));
 
@@ -1118,12 +1118,12 @@ namespace MyFlightbook.Image
                 {
                     MFBImageInfo mfbii = ImageFromDBRow(dr);
 
-                    List<MFBImageInfo> lst;
+                    MFBImageCollection lst;
 
                     if (dictResults.ContainsKey(mfbii.Key))
                         lst = dictResults[mfbii.Key];
                     else
-                        dictResults[mfbii.Key] = lst = new List<MFBImageInfo>();
+                        dictResults[mfbii.Key] = lst = new MFBImageCollection();
                     lst.Add(mfbii);
 
                     if (String.Compare(szKeyCurrent, mfbii.Key, StringComparison.InvariantCultureIgnoreCase) != 0 && keyList != null)
@@ -1139,24 +1139,24 @@ namespace MyFlightbook.Image
         /// </summary>
         /// <param name="ic">The image class</param>
         /// <returns>Matching results.  Index by key, each key returns a list of images</returns>
-        static public Dictionary<string, List<MFBImageInfo>> FromDB(MFBImageInfo.ImageClass ic)
+        static public Dictionary<string, MFBImageCollection> FromDB(MFBImageInfo.ImageClass ic)
         {
             DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT * FROM images WHERE virtPathID={0}", (int)ic));
 
-            Dictionary<string, List<MFBImageInfo>> dictResults = new Dictionary<string, List<MFBImageInfo>>();
+            Dictionary<string, MFBImageCollection> dictResults = new Dictionary<string, MFBImageCollection>();
 
             dbh.ReadRows(
                 (comm) => { },
                 (dr) =>
                 {
                     MFBImageInfo mfbii = ImageFromDBRow(dr);
-                    List<MFBImageInfo> lst;
+                    MFBImageCollection lst;
 
                     if (dictResults.ContainsKey(mfbii.Key))
                         lst = dictResults[mfbii.Key];
                     else
                     {
-                        lst = new List<MFBImageInfo>();
+                        lst = new MFBImageCollection();
                         dictResults[mfbii.Key] = lst;
                     }
                     lst.Add(mfbii);
@@ -2745,6 +2745,12 @@ namespace MyFlightbook.Image
         {
             Image = img;
         }
+    }
+
+    [Serializable]
+    public class MFBImageCollection : List<MFBImageInfo>
+    {
+
     }
 
     /// <summary>

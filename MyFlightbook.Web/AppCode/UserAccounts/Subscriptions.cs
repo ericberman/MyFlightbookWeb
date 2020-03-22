@@ -424,7 +424,7 @@ namespace MyFlightbook.Subscriptions
                                         GoogleDrive gd = new GoogleDrive(pf.GoogleDriveAccessToken);
 
                                         sb.AppendFormat(CultureInfo.CurrentCulture, "GoogleDrive: user {0} ", pf.UserName);
-                                        IReadOnlyDictionary<string, string> meta = await lb.BackupToGoogleDrive(gd, Branding.CurrentBrand);
+                                        GoogleDriveResultDictionary meta = await lb.BackupToGoogleDrive(gd, Branding.CurrentBrand);
                                         if (meta != null)
                                             sb.AppendFormat(CultureInfo.CurrentCulture, "Logbook backed up for user {0}...", pf.UserName);
                                         System.Threading.Thread.Sleep(0);

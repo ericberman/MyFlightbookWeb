@@ -29,15 +29,15 @@ public partial class Member_AdminImages : Page
     /// <summary>
     /// A dictionary of images to admin.
     /// </summary>
-    Dictionary<string, List<MFBImageInfo>> ImageDictionary
+    Dictionary<string, MFBImageCollection> ImageDictionary
     {
         get
         {
             if (ViewState[szVSDBKey] != null)
-                return (Dictionary<string, List<MFBImageInfo>>)ViewState[szVSDBKey];
+                return (Dictionary<string, MFBImageCollection>)ViewState[szVSDBKey];
             else
             {
-                Dictionary<string, List<MFBImageInfo>> dict = MFBImageInfo.FromDB(CurrentSource);
+                Dictionary<string, MFBImageCollection> dict = MFBImageInfo.FromDB(CurrentSource);
                 ViewState[szVSDBKey] = dict;
                 return dict;
             }
@@ -73,9 +73,9 @@ public partial class Member_AdminImages : Page
         set { hdnCurrentOffset.Value = value.ToString(CultureInfo.InvariantCulture); }
     }
 
-    private Dictionary<string, List<MFBImageInfo>> QueryResults
+    private Dictionary<string, MFBImageCollection> QueryResults
     {
-        get { return (ViewState["QueryResults"] == null) ? null : (Dictionary<string, List<MFBImageInfo>>)ViewState["QueryResults"]; }
+        get { return (ViewState["QueryResults"] == null) ? null : (Dictionary<string, MFBImageCollection>)ViewState["QueryResults"]; }
         set { ViewState["QueryResults"] = value; }
     }
 
@@ -443,7 +443,7 @@ public partial class Member_AdminImages : Page
 
     protected void UpdateGrid()
     {
-        Dictionary<string, List<MFBImageInfo>> dictRows = QueryResults = MFBImageInfo.FromDB(CurrentSource, CurrentImageRowOffset, PageSize, out List<string> lstKeys);
+        Dictionary<string, MFBImageCollection> dictRows = QueryResults = MFBImageInfo.FromDB(CurrentSource, CurrentImageRowOffset, PageSize, out List<string> lstKeys);
         gvImages.DataSource = lstKeys;
         gvImages.DataBind();
         int curOffset = CurrentImageRowOffset;
@@ -457,7 +457,7 @@ public partial class Member_AdminImages : Page
     {
         if (e != null && e.Row.RowType == DataControlRowType.DataRow)
         {
-            Dictionary<string, List<MFBImageInfo>> dictRows = QueryResults;
+            Dictionary<string, MFBImageCollection> dictRows = QueryResults;
             string szKey = (string) e.Row.DataItem;
             Controls_mfbImageList mfbil = (Controls_mfbImageList) e.Row.FindControl("mfbImageList1");
             HyperLink lnk = (HyperLink)e.Row.FindControl("lnkID");
@@ -522,7 +522,7 @@ public partial class Member_AdminImages : Page
         if (!Int32.TryParse(txtLimitFiles.Text, out int cFilesLimit))
             cFilesLimit = 100;
 
-        Dictionary<string, List<MFBImageInfo>> images = ImageDictionary;
+        Dictionary<string, MFBImageCollection> images = ImageDictionary;
         foreach (string szKey in SortedKeys)
         {
             if (cBytesDone > cBytesLimit || cFilesDone >= cFilesLimit)

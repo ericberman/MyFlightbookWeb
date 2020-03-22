@@ -1372,11 +1372,13 @@ namespace MyFlightbook
             if (!Int32.TryParse(rgsz[1], out int idPropType))
                 return rgResultDefault;
 
-            Dictionary<int, List<string>> d = CustomFlightProperty.PreviouslyUsedTextValuesForUser(rgsz[0]);
+            Dictionary<int, string[]> d = CustomFlightProperty.PreviouslyUsedTextValuesForUser(rgsz[0]);
 
-            List<string> lst = (d.ContainsKey(idPropType)) ? d[idPropType] : null;
-            if (lst == null)
+            string[] results = (d.ContainsKey(idPropType)) ? d[idPropType] : null;
+            if (results == null)
                 return Array.Empty<string>();
+
+            List<string> lst = new List<string>(results);
 
             string szSearch = prefixText.ToUpperInvariant();
 

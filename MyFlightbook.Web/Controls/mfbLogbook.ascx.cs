@@ -376,7 +376,7 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
 
     private Dictionary<int, List<Badge>> m_cachedBadges = null;
 
-    protected Dictionary<int, List<Badge>> CachedBadgesByFlight {
+    private Dictionary<int, List<Badge>> CachedBadgesByFlight {
         get
         {
             if (m_cachedBadges != null)

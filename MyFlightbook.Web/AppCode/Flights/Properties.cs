@@ -1300,7 +1300,7 @@ ORDER BY f.Date Desc");
         /// </summary>
         /// <param name="szUser">The username</param>
         /// <returns>A dictionary, keyed on property type id, each containing a list of previously used strings.</returns>
-        public static Dictionary<int, List<string>> PreviouslyUsedTextValuesForUser(string szUser)
+        public static Dictionary<int, string[]> PreviouslyUsedTextValuesForUser(string szUser)
         {
             if (String.IsNullOrEmpty(szUser))
                 return null;
@@ -1313,10 +1313,10 @@ WHERE cp.Type=5 AND ((cp.flags & 0x02000000) = 0) AND f.username=?user
 GROUP BY fp.idPropType;";
 
             DBHelper dbh = new DBHelper(szQ);
-            Dictionary<int, List<string>> d = new Dictionary<int, List<string>>();
+            Dictionary<int, string[]> d = new Dictionary<int, string[]>();
 
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
-                (dr) => { d[Convert.ToInt32(dr["PropTypeID"], CultureInfo.InvariantCulture)] = new List<string>(dr["PrevVals"].ToString().Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries)); });
+                (dr) => { d[Convert.ToInt32(dr["PropTypeID"], CultureInfo.InvariantCulture)] = dr["PrevVals"].ToString().Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries); });
 
             return d;
         }

@@ -22,6 +22,11 @@ using System.Web;
 
 namespace MyFlightbook.OAuth.CloudAhoy
 {
+    public class CloudAhoyFlightCollection : List<CloudAhoyFlight>
+    {
+
+    }
+
     [Serializable]
     internal class CloudAhoyPostFileMetaData
     {
@@ -141,7 +146,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
         /// <param name="dtStart">Start date for date range</param>
         /// <exception cref="HttpRequestException"></exception>
         /// <returns></returns>
-        public async Task<IEnumerable<CloudAhoyFlight>> GetFlights(string szUserName, DateTime? dtStart, DateTime? dtEnd)
+        public async Task<CloudAhoyFlightCollection> GetFlights(string szUserName, DateTime? dtStart, DateTime? dtEnd)
         {
             HttpResponseMessage response = null;
 
@@ -160,7 +165,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
             if (dtEnd.HasValue)
                 nvc["end"] = (new DateTime(dtEnd.Value.Year, dtEnd.Value.Month, dtEnd.Value.Day, 23, 59, 59, DateTimeKind.Utc)).Subtract(dtUnix).TotalSeconds.ToString(CultureInfo.InvariantCulture);
 
-            List<CloudAhoyFlight> lstResult = new List<CloudAhoyFlight>();
+            CloudAhoyFlightCollection lstResult = new CloudAhoyFlightCollection();
 
             using (HttpClient httpClient = new HttpClient())
             {

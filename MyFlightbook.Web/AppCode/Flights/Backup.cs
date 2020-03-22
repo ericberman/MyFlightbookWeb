@@ -390,7 +390,7 @@ namespace MyFlightbook
         /// <param name="activeBrand">The brand to use.  Current brand is used if null.</param>
         /// <param name="gd">The GoogleDrive object to use - Must be initialized and refreshed!</param>
         /// <returns>True for success</returns>
-        public async Task<IReadOnlyDictionary<string, string>> BackupImagesToGoogleDrive(GoogleDrive gd, Brand activeBrand = null)
+        public async Task<GoogleDriveResultDictionary> BackupImagesToGoogleDrive(GoogleDrive gd, Brand activeBrand = null)
         {
             if (activeBrand == null)
                 activeBrand = Branding.CurrentBrand;
@@ -415,7 +415,7 @@ namespace MyFlightbook
         /// <param name="gd">The GoogleDrive object to use - Must be initialized and refreshed!</param>
         /// <param name="activeBrand">The brand to use.  Current brand is used if null.</param>
         /// <returns>True for success</returns>
-        public async Task<IReadOnlyDictionary<string, string>> BackupToGoogleDrive(GoogleDrive gd, Brand activeBrand = null)
+        public async Task<GoogleDriveResultDictionary> BackupToGoogleDrive(GoogleDrive gd, Brand activeBrand = null)
         {
             if (gd == null)
                 throw new ArgumentNullException(nameof(gd));
