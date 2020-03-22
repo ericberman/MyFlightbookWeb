@@ -198,6 +198,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             throw new ArgumentNullException(nameof(pendingFlight));
         SetUpNewOrEdit(pendingFlight.FlightID);
         hdnPendingID.Value = pendingFlight.PendingID;
+        popmenuPending.Visible = false;
         InitFormFromLogbookEntry(pendingFlight);
         // Change next/previous wording to match the fact that pending flights, kinda by definition, can't be updated.
         lnkUpdateNext.Text = Resources.LocalizedText.EditFlightAddFlightNext;
