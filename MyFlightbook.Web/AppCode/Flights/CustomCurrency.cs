@@ -778,7 +778,6 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         break;
                 }
 
-                Collection<CategoryClass> lstCc = new Collection<CategoryClass>();
                 if (CatClassRestriction > 0)
                     fq.AddCatClass(CategoryClass.CategoryClassFromID(CatClassRestriction));
                 if (!String.IsNullOrEmpty(CategoryRestriction))
@@ -987,6 +986,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         /// Looks at the events in the flight for custom currency computations.
         /// </summary>
         /// <param name="cfr">The flight row to examine</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)

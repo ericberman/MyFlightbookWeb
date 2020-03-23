@@ -39,7 +39,9 @@ public partial class Public_AWS_SNSListener : System.Web.UI.Page
                     SNSNotification snsNotification = ReadJSONObject<SNSNotification>();
                     if (String.IsNullOrEmpty(snsNotification.Signature) || snsNotification.VerifySignature())
                     {
-                        _ = new MFBImageInfo(snsNotification);  // simply creating the object will do all that is necessary.
+                        // simply creating the object will do all that is necessary.
+                        if (new MFBImageInfo(snsNotification) == null)
+                        { }
                     }
                     Response.Clear();
                     Response.Write("OK");

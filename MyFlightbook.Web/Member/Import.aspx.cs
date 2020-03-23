@@ -257,12 +257,13 @@ public partial class Member_Import : System.Web.UI.Page
             IsPendingOnly = efi.IsPendingOnly;
         }
 
+        pnlConverted.Visible = pnlAudit.Visible = false;
+        lblAudit.Text = string.Empty;
+
         MemoryStream ms = null;
         try
         {
             ms = new MemoryStream(rgb);
-            pnlConverted.Visible = pnlAudit.Visible = false;
-            lblAudit.Text = string.Empty;
             using (CSVAnalyzer csvAnalyzer = new CSVAnalyzer(ms))
             {
                 CSVAnalyzer.CSVStatus result = csvAnalyzer.Status;
@@ -304,7 +305,7 @@ public partial class Member_Import : System.Web.UI.Page
         }
 
         ErrorContext.Clear();
-        CSVImporter csvimporter = CurrentImporter = new CSVImporter() { ModelNameMappings = mfbImportAircraft1.ModelMapping };
+        CSVImporter csvimporter = CurrentImporter = new CSVImporter(mfbImportAircraft1.ModelMapping);
         AutoFillOptions afo = ckAutofill.Checked ? new AutoFillOptions(Request.Cookies) { IncludeHeliports = true } : null;
         using (MemoryStream ms2 = new MemoryStream(rgb))
             csvimporter.FInitFromStream(ms2, User.Identity.Name, AddSuccessRow, AddErrorRow, afo);
