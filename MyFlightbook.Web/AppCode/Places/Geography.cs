@@ -173,6 +173,7 @@ namespace MyFlightbook.Geography
         #endregion
 
         private readonly static Regex regPosition = new Regex("([NnSs]) ?(\\d{1,2}) (\\d{0,2}(?:.\\d*)?) ([EeWw]) ?(\\d{1,3}) (\\d{0,2}(?:.\\d*)?)", RegexOptions.Compiled);
+        private readonly static Regex regPositionTuple = new Regex("(?<lat>-?\\d{1,2}(\\.\\d*)?),(?<lon>-?\\d{1,3}(\\.\\d*)?)", RegexOptions.Compiled);
         /// <summary>
         /// Creates a LatLong from a position string in the flight data format N 46 34.345 W 122 43.34
         /// </summary>
@@ -181,11 +182,25 @@ namespace MyFlightbook.Geography
         {
             MatchCollection mc = regPosition.Matches(szPosition);
             // should have 1 match with 7 groups: the whole string, N/S, deg, minutes, EW, deg, minutes
-            if (mc.Count == 0 || mc[0].Groups.Count != 7)
-                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errBadPosition, szPosition));
-            GroupCollection g = mc[0].Groups;
-            Latitude = ((String.Compare(g[1].Value, "S", StringComparison.CurrentCultureIgnoreCase) == 0) ? -1 : 1) * (Convert.ToDouble(g[2].Value, CultureInfo.CurrentCulture) + (Convert.ToDouble(g[3].Value, CultureInfo.CurrentCulture) / 60.0));
-            Longitude = ((String.Compare(g[4].Value, "W", StringComparison.CurrentCultureIgnoreCase) == 0) ? -1 : 1) * (Convert.ToDouble(g[5].Value, CultureInfo.CurrentCulture) + (Convert.ToDouble(g[6].Value, CultureInfo.CurrentCulture) / 60.0));
+            if (mc.Count == 1 && mc[0].Groups.Count == 7)
+            {
+                GroupCollection g = mc[0].Groups;
+                Latitude = ((String.Compare(g[1].Value, "S", StringComparison.CurrentCultureIgnoreCase) == 0) ? -1 : 1) * (Convert.ToDouble(g[2].Value, CultureInfo.CurrentCulture) + (Convert.ToDouble(g[3].Value, CultureInfo.CurrentCulture) / 60.0));
+                Longitude = ((String.Compare(g[4].Value, "W", StringComparison.CurrentCultureIgnoreCase) == 0) ? -1 : 1) * (Convert.ToDouble(g[5].Value, CultureInfo.CurrentCulture) + (Convert.ToDouble(g[6].Value, CultureInfo.CurrentCulture) / 60.0));
+                return;
+            }
+            mc = regPositionTuple.Matches(szPosition);
+            if (mc.Count == 1 &&
+                double.TryParse(mc[0].Groups["lat"].Value, NumberStyles.Number, CultureInfo.InvariantCulture, out double lat) &&
+                double.TryParse(mc[0].Groups["lon"].Value, NumberStyles.Number, CultureInfo.InvariantCulture, out double lon))
+            {
+                Latitude = lat;
+                Longitude = lon;
+                return;
+            }
+
+            // If we're here, then we can't parse it.
+            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errBadPosition, szPosition));
         }
 
         /// <summary>
