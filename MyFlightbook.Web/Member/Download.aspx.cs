@@ -52,8 +52,11 @@ public partial class Member_Download : System.Web.UI.Page
         Response.Clear();
         Response.ContentType = "application/octet-stream";
         Response.AddHeader("Content-Disposition", String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}", Branding.ReBrand(String.Format(CultureInfo.InvariantCulture, "{0}.zip", Resources.LocalizedText.ImagesBackupFilename)).Replace(" ", "-")));
-        using (System.IO.MemoryStream ms = new LogbookBackup(pf).ZipOfImagesForUser(Branding.CurrentBrand))
+        using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+        {
+            new LogbookBackup(pf).WriteZipOfImagesToStream(ms, Branding.CurrentBrand);
             Response.BinaryWrite(ms.ToArray());
+        }
         Response.End();
     }
 

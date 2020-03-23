@@ -91,10 +91,13 @@ namespace MyFlightbook.ImportFlights
 
             DateTime dt = DateTime.Now;
             string szLine;
-            using (MemoryStream ms = new MemoryStream(rgb))
+            MemoryStream ms = null;
+            try
             {
+                ms = new MemoryStream(rgb);
                 using (StreamReader sr = new StreamReader(ms))
                 {
+                    ms = null; // for CA2202
                     while ((szLine = sr.ReadLine()) != null)
                     {
                         MatchCollection mc = regDateAnchor.Matches(szLine);
@@ -137,6 +140,11 @@ namespace MyFlightbook.ImportFlights
                         }
                     }
                 }
+            }
+            finally
+            {
+                if (ms != null)
+                    ms.Dispose();
             }
 
             return Encoding.UTF8.GetBytes(CSVFromDataTable(null));

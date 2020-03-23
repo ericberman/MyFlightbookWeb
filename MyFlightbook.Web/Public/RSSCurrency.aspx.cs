@@ -44,23 +44,33 @@ public partial class Public_RSSCurrency : System.Web.UI.Page
         if (szUser.Length > 0)
         {
             StringBuilder sb = new StringBuilder();
-            using (StringWriter sw = new StringWriter(sb, System.Globalization.CultureInfo.CurrentCulture))
+            StringWriter sw = null;
+            try
             {
-                using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
+                sw = new StringWriter(sb, System.Globalization.CultureInfo.CurrentCulture);
                 {
-                    if (IsTotals)
+                    using (HtmlTextWriter htmlTW = new HtmlTextWriter(sw))
                     {
-                        mfbTotalSummary.Username = szUser;
-                        mfbTotalSummary.CustomRestriction = new FlightQuery(szUser);
-                        mfbTotalSummary.RenderControl(htmlTW);
-                    }
-                    else
-                    {
-                        mfbCurrency1.UserName = szUser;
-                        mfbCurrency1.RefreshCurrencyTable();
-                        mfbCurrency1.RenderControl(htmlTW);
+                        sw = null;  // CA2202
+                        if (IsTotals)
+                        {
+                            mfbTotalSummary.Username = szUser;
+                            mfbTotalSummary.CustomRestriction = new FlightQuery(szUser);
+                            mfbTotalSummary.RenderControl(htmlTW);
+                        }
+                        else
+                        {
+                            mfbCurrency1.UserName = szUser;
+                            mfbCurrency1.RefreshCurrencyTable();
+                            mfbCurrency1.RenderControl(htmlTW);
+                        }
                     }
                 }
+            }
+            finally
+            {
+                if (sw != null)
+                    sw.Dispose();
             }
             szDescription = sb.ToString();
 
