@@ -108,7 +108,31 @@ namespace MyFlightbook.CloudStorage
     [Serializable]
     public class GoogleDriveResultDictionary : Dictionary<string, string>
     {
-        protected GoogleDriveResultDictionary(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext) { }
+        public GoogleDriveResultDictionary(int capacity) : base(capacity)
+        {
+        }
+
+        public GoogleDriveResultDictionary(IEqualityComparer<string> comparer) : base(comparer)
+        {
+        }
+
+        public GoogleDriveResultDictionary(IDictionary<string, string> dictionary) : base(dictionary)
+        {
+        }
+
+        public GoogleDriveResultDictionary(int capacity, IEqualityComparer<string> comparer) : base(capacity, comparer)
+        {
+        }
+
+        public GoogleDriveResultDictionary(IDictionary<string, string> dictionary, IEqualityComparer<string> comparer) : base(dictionary, comparer)
+        {
+        }
+
+        protected GoogleDriveResultDictionary() : base() { }
+
+        protected GoogleDriveResultDictionary(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
 
     /// <summary>
