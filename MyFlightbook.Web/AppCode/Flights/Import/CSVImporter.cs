@@ -676,11 +676,9 @@ namespace MyFlightbook.ImportFlights
 
                 if (m_rgszRow[m_cm.iColDate].Length > 0)
                 {
-                    try
-                    {
-                        le.Date = Convert.ToDateTime(m_rgszRow[m_cm.iColDate], CultureInfo.CurrentCulture);
-                    }
-                    catch
+                    if (DateTime.TryParse(m_rgszRow[m_cm.iColDate], CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dtFlight))
+                        le.Date = dtFlight;
+                    else
                     {
                         le.LastError = LogbookEntryBase.ErrorCode.InvalidDate;
                         throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportCannotReadDate, m_rgszRow[m_cm.iColDate]));
