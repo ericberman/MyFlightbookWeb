@@ -1461,21 +1461,9 @@ GROUP BY idaircraft");
         }
         #endregion
 
-        /// <summary>
-        /// Generates an insurance report for the specified club
-        /// </summary>
-        /// <param name="idClub">The ID of the club</param>
-        /// <param name="monthInterval"># of months back to look for flights</param>
-        /// <returns></returns>
-        public static IEnumerable<ClubInsuranceReportItem> ReportForClub(int idClub, int monthInterval = 6)
+        #region ReportForClub helpers.
+        private static void PopulateMemberInsurance(Dictionary<string, ClubInsuranceReportItem> d, int idClub, int monthInterval)
         {
-            Dictionary<string, ClubInsuranceReportItem> d = new Dictionary<string, ClubInsuranceReportItem>();
-            Club c = Club.ClubWithID(idClub);
-
-            // Create one reportitem per member, adding in status items
-            foreach (ClubMember cm in c.Members)
-                d[cm.UserName] = new ClubInsuranceReportItem(cm);
-
             // Get the overall totals for each user
             string szQOverview = @"SELECT 
     cm.username,
@@ -1506,10 +1494,10 @@ ORDER BY username ASC";
 
             DBHelper dbh = new DBHelper(szQOverview);
             dbh.ReadRows((comm) =>
-            {
-                comm.Parameters.AddWithValue("clubid", idClub);
-                comm.Parameters.AddWithValue("minDate", DateTime.Now.AddMonths(-monthInterval));
-            },
+                {
+                    comm.Parameters.AddWithValue("clubid", idClub);
+                    comm.Parameters.AddWithValue("minDate", DateTime.Now.AddMonths(-monthInterval));
+                },
                 (dr) =>
                 {
                     ClubInsuranceReportItem ciri = d[(string)dr["username"]];
@@ -1520,10 +1508,11 @@ ORDER BY username ASC";
                     ciri.ComplexTime = Convert.ToDecimal(dr["complextime"], CultureInfo.InvariantCulture);
                     ciri.HighPerformanceTime = Convert.ToDecimal(dr["HPTime"], CultureInfo.InvariantCulture);
                 });
+        }
 
-            List<Aircraft> lstAc = new List<Aircraft>(c.MemberAircraft);
-
-            dbh.CommandText = String.Format(CultureInfo.InvariantCulture, @"SELECT
+        private static void PopulateMemberFlights(Dictionary<string, ClubInsuranceReportItem> d, int idClub, IList<Aircraft> lstAc)
+        {
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, @"SELECT
   cm.username,
   ca.idaircraft,
   sum(round(f.totalflighttime * 60) / 60) as TimeInAircraft
@@ -1535,7 +1524,7 @@ inner JOIN clubaircraft ca ON ca.idaircraft=f.idaircraft and ca.idclub=c.idclub
 WHERE
 c.idClub = ?clubid and ca.idaircraft is not null
 GROUP BY cm.username, ca.idaircraft
-ORDER BY username asc;");
+ORDER BY username asc;"));
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("clubid", idClub); },
                 (dr) => {
                     ClubInsuranceReportItem ciri = d[(string)dr["username"]];
@@ -1546,6 +1535,29 @@ ORDER BY username asc;");
                         throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Unknown aircraft {0} for club {1} in club report", idAircraft, idClub));
                     ciri.TotalsByClubAircraft[ac.DisplayTailnumber] = timeInAircraft;
                 });
+        }
+        #endregion
+
+        /// <summary>
+        /// Generates an insurance report for the specified club
+        /// </summary>
+        /// <param name="idClub">The ID of the club</param>
+        /// <param name="monthInterval"># of months back to look for flights</param>
+        /// <returns></returns>
+        public static IEnumerable<ClubInsuranceReportItem> ReportForClub(int idClub, int monthInterval = 6)
+        {
+            Dictionary<string, ClubInsuranceReportItem> d = new Dictionary<string, ClubInsuranceReportItem>();
+            Club c = Club.ClubWithID(idClub);
+
+            // Create one reportitem per member, adding in status items
+            foreach (ClubMember cm in c.Members)
+                d[cm.UserName] = new ClubInsuranceReportItem(cm);
+
+            PopulateMemberInsurance(d, idClub, monthInterval);
+
+            List<Aircraft> lstAc = new List<Aircraft>(c.MemberAircraft);
+
+            PopulateMemberFlights(d, idClub, lstAc);
 
             List<ClubInsuranceReportItem> lst = new List<ClubInsuranceReportItem>(d.Values);
             lst.Sort((c1, c2) => { return c1.User.UserFullName.CompareCurrentCultureIgnoreCase(c2.User.UserFullName); });
