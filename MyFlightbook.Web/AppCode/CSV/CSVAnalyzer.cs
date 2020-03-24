@@ -20,11 +20,11 @@ namespace MyFlightbook
     /// Parses a CSV file into a datatable, checking for (and in some cases fixing) common issues like multi-line data not in quotes or duplicated/missing column headers.
     /// This has NO semantic understanding of the data being imported.
     /// </summary>
-    public class CSVAnalyzer : IDisposable
+    public class CSVAnalyzer
     {
         public enum CSVStatus { OK, Fixed, Broken }
 
-        private DataTable m_dt = null;
+        private readonly DataTable m_dt = null;
 
         private StringBuilder sbAudit = new StringBuilder();
 
@@ -47,44 +47,14 @@ namespace MyFlightbook
         }
         #endregion
 
-        #region IDisposable Implementation
-        private bool disposed = false; // to detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    if (m_dt != null)
-                        m_dt.Dispose();
-                }
-                m_dt = null;
-
-                disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        ~CSVAnalyzer()
-        {
-            Dispose(false);
-        }
-        #endregion
-
         #region Constructors
-        protected CSVAnalyzer()
+        protected CSVAnalyzer(DataTable dt)
         {
             Status = CSVStatus.OK;
-            m_dt = new DataTable { Locale = CultureInfo.CurrentCulture };
+            m_dt = dt ?? throw new ArgumentNullException(nameof(dt));
         }
 
-        public CSVAnalyzer(Stream sIn) : this() { Validate(sIn); }
+        public CSVAnalyzer(Stream sIn, DataTable dt) : this(dt) { Validate(sIn); }
         #endregion
 
         /// <summary>

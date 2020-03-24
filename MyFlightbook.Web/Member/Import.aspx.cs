@@ -260,48 +260,43 @@ public partial class Member_Import : System.Web.UI.Page
         pnlConverted.Visible = pnlAudit.Visible = false;
         lblAudit.Text = string.Empty;
 
-        MemoryStream ms = null;
-        try
+        CSVAnalyzer csvAnalyzer;
+        using (System.Data.DataTable dt = new System.Data.DataTable() { Locale = CultureInfo.CurrentCulture })
         {
-            ms = new MemoryStream(rgb);
-            using (CSVAnalyzer csvAnalyzer = new CSVAnalyzer(ms))
+            using (MemoryStream ms = new MemoryStream(rgb))
             {
-                CSVAnalyzer.CSVStatus result = csvAnalyzer.Status;
-                hdnAuditState.Value = result.ToString();
-
-                if (result != CSVAnalyzer.CSVStatus.Broken)
-                {
-                    string szCSV = null;
-                    if (efi == null)    // was already CSV - only update it if it was fixed (vs. broken)
-                    {
-                        if (result == CSVAnalyzer.CSVStatus.Fixed)
-                            szCSV = csvAnalyzer.DataAsCSV;
-                    }
-                    else  // But if it was converted, ALWAYS update the CSV.
-                        szCSV = efi.CSVFromDataTable(csvAnalyzer.Data);
-
-                    if (szCSV != null)
-                        CurrentCSVSource = rgb = System.Text.Encoding.UTF8.GetBytes(szCSV);
-
-                    // And show conversion, if it was converted
-                    if (efi != null)
-                    {
-                        lblFileWasConverted.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.importLabelFileWasConverted, efi.Name);
-                        pnlConverted.Visible = true;
-                    }
-                }
-
-                if (result != CSVAnalyzer.CSVStatus.OK)
-                    pnlAudit.Visible = true;
-                lblAudit.Text = csvAnalyzer.Audit;
-
-                pnlAudit.Visible = pnlConverted.Visible || !String.IsNullOrEmpty(lblAudit.Text);
+                csvAnalyzer = new CSVAnalyzer(ms, dt);
             }
-        }
-        finally
-        {
-            if (ms != null)
-                ms.Dispose();
+            CSVAnalyzer.CSVStatus result = csvAnalyzer.Status;
+            hdnAuditState.Value = result.ToString();
+
+            if (result != CSVAnalyzer.CSVStatus.Broken)
+            {
+                string szCSV = null;
+                if (efi == null)    // was already CSV - only update it if it was fixed (vs. broken)
+                {
+                    if (result == CSVAnalyzer.CSVStatus.Fixed)
+                        szCSV = csvAnalyzer.DataAsCSV;
+                }
+                else  // But if it was converted, ALWAYS update the CSV.
+                    szCSV = efi.CSVFromDataTable(csvAnalyzer.Data);
+
+                if (szCSV != null)
+                    CurrentCSVSource = rgb = System.Text.Encoding.UTF8.GetBytes(szCSV);
+
+                // And show conversion, if it was converted
+                if (efi != null)
+                {
+                    lblFileWasConverted.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.importLabelFileWasConverted, efi.Name);
+                    pnlConverted.Visible = true;
+                }
+            }
+
+            if (result != CSVAnalyzer.CSVStatus.OK)
+                pnlAudit.Visible = true;
+            lblAudit.Text = csvAnalyzer.Audit;
+
+            pnlAudit.Visible = pnlConverted.Visible || !String.IsNullOrEmpty(lblAudit.Text);
         }
 
         ErrorContext.Clear();
