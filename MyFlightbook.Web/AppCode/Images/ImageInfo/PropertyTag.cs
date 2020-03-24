@@ -46,7 +46,8 @@ namespace gma.Drawing.ImageInfo
 		private readonly static System.Text.ASCIIEncoding _encoding = new System.Text.ASCIIEncoding();
 		///<summary>Transformes value of the PropertyItem.Value byte array to apropriate .NET Framework type.</summary>
 		/// <param name="aPropertyItem"></param>
-        public static Object getValue(PropertyItem aPropertyItem)
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+		public static Object getValue(PropertyItem aPropertyItem)
 		{
 			if (aPropertyItem==null) return null;
 				switch ((PropertyTagType)aPropertyItem.Type) {

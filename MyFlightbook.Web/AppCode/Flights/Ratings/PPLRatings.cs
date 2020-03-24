@@ -927,6 +927,10 @@ namespace MyFlightbook.MilestoneProgress
             decimal dutiesOfPICTime = 0.0M;
             decimal cToweredTakeoffs = 0.0M;
             int nightTakeoffs = 0;
+
+            miTotalTime.AddEvent(cfr.Total);
+            miDualTime.AddEvent(cfr.Dual);
+
             if (fCatClassMatches)
             {
                 cfr.FlightProps.ForEachEvent(pf =>
@@ -942,16 +946,10 @@ namespace MyFlightbook.MilestoneProgress
                     if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffTowered || pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffToweredNight)
                         cToweredTakeoffs += pf.IntValue;
                 });
-            }
 
-            if (fInstructorOnBoard && AllowDPICInsteadOfSolo)
-                instructorOnBoardTime = Math.Max(Math.Min(dutiesOfPICTime, cfr.Total - cfr.Dual), 0);    // dual received does NOT count as duties of PIC time here
+                if (fInstructorOnBoard && AllowDPICInsteadOfSolo)
+                    instructorOnBoardTime = Math.Max(Math.Min(dutiesOfPICTime, cfr.Total - cfr.Dual), 0);    // dual received does NOT count as duties of PIC time here
 
-            miTotalTime.AddEvent(cfr.Total);
-            miDualTime.AddEvent(cfr.Dual);
-
-            if (fCatClassMatches)
-            {
                 double xcDistance = 0.0;
                 double xcLongestLeg = 0.0;
 

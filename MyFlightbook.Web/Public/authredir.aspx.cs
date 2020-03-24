@@ -7,13 +7,14 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2019 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
 
 public partial class Public_authredir : System.Web.UI.Page
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
     private string RedirForDest(string szDest, List<string> lstParams)
     {
         switch (szDest.ToUpperInvariant())

@@ -316,6 +316,52 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         }
     }
 
+    protected void PostForm(HttpContent form)
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            HttpResponseMessage response = null;
+            string szError = string.Empty;
+            try
+            {
+                response = httpClient.PostAsync(new Uri(ResourcePath), form).Result;
+                if (!response.IsSuccessStatusCode)
+                    szError = response.Content.ReadAsStringAsync().Result;
+                response.EnsureSuccessStatusCode();
+
+                Page.Response.Clear();
+                Response.ContentType = ckJSON.Checked ? (String.IsNullOrEmpty(txtCallBack.Text) ? "application/json; charset=utf-8" : "application/javascript; charset=utf-8") : "text/xml; charset=utf-8";
+                System.Threading.Tasks.Task.Run(async () => { await response.Content.CopyToAsync(Page.Response.OutputStream); }).Wait();
+                Page.Response.Flush();
+
+                // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
+                Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
+                HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
+            }
+            catch (System.Threading.ThreadAbortException ex)
+            {
+                lblErr.Text = ex.Message;
+            }
+            catch (HttpUnhandledException ex)
+            {
+                lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
+            }
+            catch (HttpException ex)
+            {
+                lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
+            }
+            catch (HttpRequestException ex)
+            {
+                lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
+            }
+            catch (System.Net.WebException ex)
+            {
+                lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
+            }
+        }
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
     protected void btnPostResource_Click(object sender, EventArgs e)
     {
         ToSession();
@@ -349,47 +395,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                     objectsToDispose.Add(sc);
                 }
 
-                using (HttpClient httpClient = new HttpClient())
-                {
-                    HttpResponseMessage response = null;
-                    string szError = string.Empty;
-                    try
-                    {
-                        response = httpClient.PostAsync(new Uri(ResourcePath), form).Result;
-                        if (!response.IsSuccessStatusCode)
-                            szError = response.Content.ReadAsStringAsync().Result;
-                        response.EnsureSuccessStatusCode();
-
-                        Page.Response.Clear();
-                        Response.ContentType = ckJSON.Checked ? (String.IsNullOrEmpty(txtCallBack.Text) ? "application/json; charset=utf-8" : "application/javascript; charset=utf-8") : "text/xml; charset=utf-8";
-                        System.Threading.Tasks.Task.Run(async () => { await response.Content.CopyToAsync(Page.Response.OutputStream); }).Wait();
-                        Page.Response.Flush();
-
-                        // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
-                        Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                        HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
-                    }
-                    catch (System.Threading.ThreadAbortException ex)
-                    {
-                        lblErr.Text = ex.Message;
-                    }
-                    catch (HttpUnhandledException ex)
-                    {
-                        lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-                    }
-                    catch (HttpException ex)
-                    {
-                        lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-                    }
-                    catch (HttpRequestException ex)
-                    {
-                        lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-                    }
-                    catch (System.Net.WebException ex)
-                    {
-                        lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-                    }
-                }
+                PostForm(form);
             }
             finally
             {
