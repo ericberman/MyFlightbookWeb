@@ -496,7 +496,7 @@ namespace MyFlightbook.Histogram
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
-            if (items.Count() == 0)
+            if (!items.Any())
                 return dict;
 
             ComputeDateRange(items);
@@ -564,7 +564,7 @@ namespace MyFlightbook.Histogram
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
-            if (items.Count() == 0)
+            if (!items.Any())
                 return dict;
 
             ComputeDateRange(items);
@@ -645,7 +645,7 @@ namespace MyFlightbook.Histogram
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
-            if (items.Count() == 0)
+            if (!items.Any())
                 return dict;
 
             ComputeDateRange(items);
@@ -710,7 +710,7 @@ namespace MyFlightbook.Histogram
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
-            if (items.Count() == 0)
+            if (!items.Any())
                 return dict;
 
             ComputeDateRange(items);
@@ -784,7 +784,7 @@ namespace MyFlightbook.Histogram
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
-            if (items.Count() == 0)
+            if (!items.Any())
                 return dict;
 
             if (BucketWidth == 0)
@@ -816,14 +816,14 @@ namespace MyFlightbook.Histogram
                     dict[KeyForValue(min)] = new Bucket((int)KeyForValue(min), min.ToString(CultureInfo.CurrentCulture), columns);      // zero bucket
                     ++min;
                     dict[KeyForValue(min)] = new Bucket((int)KeyForValue(min), String.Format(CultureInfo.CurrentCulture, "{0}-{1}", min, BucketWidth - 1), columns);   // 1-(Bucketwidth-1) bucket
-                    min = BucketWidth;
+                    min = BucketWidth + 1;  // go to the "101" bucket.
                 }
                 else
                 {
                     dict[KeyForValue(min)] = new Bucket((int)KeyForValue(min), String.Format(CultureInfo.CurrentCulture, "{0}-{1}", min, min + BucketWidth - 1), columns);
                     min += BucketWidth;
                 }
-            } while (min < max);
+            } while (min <= max);
 
             return dict;
         }
@@ -837,10 +837,16 @@ namespace MyFlightbook.Histogram
         {
             int i = (int)o;
 
+            // We want:
+            //   1-100 to be bucket 1
+            // 101-200 to be bucket 2
+            // 201-300 to be bucket 3
+            // ...
+            // BUT if BucketForZero is true, we want 0 to go into bucket 0 and bucket 1 to be 1-100.
             if (i == 0)
-                return BucketForZero ? 0 : 1;
+                return BucketForZero ? 0 : KeyForValue(1);
 
-            return (int) ((i < 0 ? -1 : 1) * Math.Ceiling(Math.Abs(i) / (double)BucketWidth));
+            return (i < 0 ? -1 : 1) * ((Math.Abs(i) + BucketWidth - 1) / BucketWidth);
         }
     }
 
@@ -877,7 +883,7 @@ namespace MyFlightbook.Histogram
             if (items == null)
                 throw new ArgumentNullException(nameof(items));
 
-            if (items.Count() == 0)
+            if (!items.Any())
                 return dict;
 
             // Find the range.
@@ -916,5 +922,50 @@ namespace MyFlightbook.Histogram
         /// <param name="context">An optional parameter for context.  E.g., if there are multiple fields that can be summed, this could specify the field to use</param>
         /// <returns>The value to add to the bucket for this item</returns>
         double HistogramValue(string value, IDictionary<string, object> context = null);
+    }
+
+    public class SimpleDateHistogrammable : IHistogramable
+    {
+        public DateTime Date { get; set; }
+
+        public int Count { get; set; }
+
+        public SimpleDateHistogrammable() { }
+
+        public IComparable BucketSelector(string bucketSelectorName)
+        {
+            // Ignore the bucket selector name
+            return Date;
+        }
+
+        public double HistogramValue(string value, IDictionary<string, object> context = null)
+        {
+            // Ignore the requested value
+            return Count;
+        }
+    }
+
+    public class SimpleCountHistogrammable : IHistogramable
+    {
+        /// <summary>
+        /// the top of the range (for bucketing).
+        /// </summary>
+        public int Range { get; set; }
+
+        public int Count { get; set; }
+
+        public SimpleCountHistogrammable() { }
+
+        public IComparable BucketSelector(string bucketSelectorName)
+        {
+            // Ignore the bucket selector name
+            return Range;
+        }
+
+        public double HistogramValue(string value, IDictionary<string, object> context = null)
+        {
+            // Ignore the requested value
+            return Count;
+        }
     }
 }

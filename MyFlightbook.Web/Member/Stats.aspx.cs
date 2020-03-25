@@ -1,4 +1,5 @@
 ﻿using MyFlightbook;
+using MyFlightbook.Histogram;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,157 +16,55 @@ using System.Web.UI.WebControls;
 
 public partial class Member_Stats : System.Web.UI.Page
 {
-    [Serializable]
-    protected class xyvalue : IComparable, IEquatable<xyvalue>
+    const string szFormatFlightsPerUser = @"SELECT 
+    COUNT(f2.usercount) AS numusers, f2.numflights
+FROM
+    (SELECT 
+        u.username AS usercount,
+            FLOOR((COUNT(f.idflight) + 99) / 100) * 100 AS numflights
+    FROM
+        users u
+    LEFT JOIN flights f ON u.username = f.username
+    {0}
+    GROUP BY u.username
+    ORDER BY numflights ASC) f2
+GROUP BY f2.numflights
+ORDER BY f2.numflights ASC;";
+
+    const string szFlightByMonth = @"SELECT 
+    COUNT(*) AS numflights,
+    DATE_FORMAT(f.date, '%Y-%m-01') AS creationbucket
+FROM
+    flights f
+GROUP BY creationbucket
+ORDER BY creationbucket ASC";
+
+    protected void CheckAdmin()
     {
-        public int x { get; set; }
-        public int y { get; set; }
-        public int ordinal { get; set; }
-        public string bucket { get; set; }
-
-        public xyvalue()
-        {
-            x = 0;
-            y = 0;
-            ordinal = 0;
-            bucket = "";
-        }
-
-        #region IComparable
-        public int CompareTo(object obj)
-        {
-            if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
-            return this.ordinal - ((xyvalue)obj).ordinal;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as xyvalue);
-        }
-
-        public bool Equals(xyvalue other)
-        {
-            return other != null &&
-                   x == other.x &&
-                   y == other.y &&
-                   ordinal == other.ordinal &&
-                   bucket == other.bucket;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = -720872820;
-                hashCode = hashCode * -1521134295 + x.GetHashCode();
-                hashCode = hashCode * -1521134295 + y.GetHashCode();
-                hashCode = hashCode * -1521134295 + ordinal.GetHashCode();
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(bucket);
-                return hashCode;
-            }
-        }
-
-        public static bool operator ==(xyvalue left, xyvalue right)
-        {
-            return EqualityComparer<xyvalue>.Default.Equals(left, right);
-        }
-
-        public static bool operator !=(xyvalue left, xyvalue right)
-        {
-            return !(left == right);
-        }
-
-        public static bool operator <(xyvalue left, xyvalue right)
-        {
-            return left is null ? right is object : left.CompareTo(right) < 0;
-        }
-
-        public static bool operator <=(xyvalue left, xyvalue right)
-        {
-            return left is null || left.CompareTo(right) <= 0;
-        }
-
-        public static bool operator >(xyvalue left, xyvalue right)
-        {
-            return left is object && left != null && left.CompareTo(right) > 0;
-        }
-
-        public static bool operator >=(xyvalue left, xyvalue right)
-        {
-            return left is null ? right is null : left.CompareTo(right) >= 0;
-        }
-        #endregion
-    }
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        Master.SelectedTab = tabID.admStats;
         if (!MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanReport)
         {
             util.NotifyAdminEvent("Attempt to view admin page", String.Format(CultureInfo.CurrentCulture, "User {0} tried to hit the admin page.", Page.User.Identity.Name), ProfileRoles.maskSiteAdminOnly);
             Response.Redirect("~/HTTP403.htm");
         }
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Master.SelectedTab = tabID.admStats;
+        CheckAdmin();
 
         if (!IsPostBack)
         {
-            Dictionary<string, xyvalue> dictValues = new Dictionary<string, xyvalue>();
+            // User activity - pretty fast query
+            UpdateUserActivity();
 
-            DataView dv = (DataView) sqlFlightsPerUser.Select(DataSourceSelectArguments.Empty);
-            foreach (DataRowView dr in dv)
-            {
-                string szbucket = dr["NumFlightsBucket"].ToString();
+            UpdateFlightsByDate();
 
-                xyvalue xyv = dictValues.ContainsKey(szbucket) ? dictValues[szbucket] : null;
-                if (xyv == null)
-                {
-                    xyv = new xyvalue();
-                    dictValues.Add(szbucket, xyv);
-                }
-                xyv.ordinal = Convert.ToInt32(dr["ordinal"], CultureInfo.InvariantCulture);
-                xyv.bucket = szbucket;
-
-                if (String.Compare(dr["UserClass"].ToString(), "new", StringComparison.OrdinalIgnoreCase) == 0)
-                    xyv.y = Convert.ToInt32(dr["NumUsers"], CultureInfo.InvariantCulture);
-                else
-                    xyv.x = Convert.ToInt32(dr["NumUsers"], CultureInfo.InvariantCulture);
-            }
-
-            List<xyvalue> lstVals = new List<xyvalue>();
-
-            foreach (string key in dictValues.Keys)
-                lstVals.Add(dictValues[key]);
-
-            lstVals.Sort();
-
-            foreach (xyvalue xyv in lstVals)
-            {
-                gcFlightsPerUser.YVals.Add(xyv.x + xyv.y);
-                gcFlightsPerUser.Y2Vals.Add(xyv.y);
-                gcFlightsPerUser.XVals.Add(xyv.bucket);
-            }
+            UpdateFlightsPerUser();
         }
     }
 
-    protected void btnUpdateFlights_Click(object sender, EventArgs e)
-    {
-        DataView dv = (DataView)sqlFlightsTrend.Select(DataSourceSelectArguments.Empty);
-        gcFlightsOnSite.Clear();
-        foreach (DataRowView dr in dv)
-        {
-            gcFlightsOnSite.XVals.Add((string)dr["DisplayPeriod"]);
-            gcFlightsOnSite.YVals.Add(Convert.ToInt32(dr["NewFlights"], CultureInfo.InvariantCulture));
-            gcFlightsOnSite.Y2Vals.Add(Convert.ToInt32(dr["RunningTotal"], CultureInfo.InvariantCulture));
-        }
-        gcFlightsOnSite.TickSpacing = Math.Max(1, gcFlightsOnSite.XVals.Count / 15);
-
-        gvFlightsData.DataSource = dv;
-        gvFlightsData.DataBind();
-
-        pnlFlightsChart.Visible = true;
-    }
-
-    protected void btnUserActivity_Click(object sender, EventArgs e)
+    protected void UpdateUserActivity()
     {
         DataView dv = (DataView)sqlUserActivity.Select(DataSourceSelectArguments.Empty);
         gcUserActivity.Clear();
@@ -174,24 +73,79 @@ public partial class Member_Stats : System.Web.UI.Page
             gcUserActivity.XVals.Add(new DateTime(Convert.ToInt32(dr["ActivityYear"], CultureInfo.InvariantCulture), Convert.ToInt32(dr["ActivityMonth"], CultureInfo.InvariantCulture), 1));
             gcUserActivity.YVals.Add(Convert.ToInt32(dr["UsersWithSessions"], CultureInfo.InvariantCulture));
         }
-        pnlUserActivity.Visible = true;
     }
-    protected void sqlUserActivity_Selecting(object sender, SqlDataSourceCommandEventArgs e)
+
+    protected void UpdateFlightsByDate()
     {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-        e.Command.CommandTimeout = 90;
+        YearMonthBucketManager bmFlights = new YearMonthBucketManager() { BucketSelectorName = "DateRange" };
+
+        List<SimpleDateHistogrammable> lstFlightsByDate = new List<SimpleDateHistogrammable>();
+
+        DBHelper dbh = new DBHelper(szFlightByMonth);
+        dbh.ReadRows((comm) => { }, (dr) => { lstFlightsByDate.Add(new SimpleDateHistogrammable() { Date = Convert.ToDateTime(dr["creationbucket"], CultureInfo.InvariantCulture), Count = Convert.ToInt32(dr["numflights"], CultureInfo.InvariantCulture) }); });
+
+        HistogramManager hmFlightsByDate = new HistogramManager()
+        {
+            SourceData = lstFlightsByDate,
+            SupportedBucketManagers = new BucketManager[] { bmFlights },
+            Values = new HistogramableValue[] { new HistogramableValue("DateRange", "Flights", HistogramValueTypes.Time) }
+        };
+
+        bmFlights.ScanData(hmFlightsByDate);
+
+        using (DataTable dt = bmFlights.ToDataTable(hmFlightsByDate))
+        {
+            gcFlightsOnSite.Clear();
+            foreach (DataRow dr in dt.Rows)
+            {
+                gcFlightsOnSite.XVals.Add((string)dr["DisplayName"]);
+                gcFlightsOnSite.YVals.Add((int)Convert.ToDouble(dr["Flights"], CultureInfo.InvariantCulture));
+                gcFlightsOnSite.Y2Vals.Add((int)Convert.ToDouble(dr["Flights Running Total"], CultureInfo.InvariantCulture));
+            }
+            // gcFlightsOnSite.TickSpacing = Math.Max(1, gcFlightsOnSite.XVals.Count / 15);
+            gvFlightsData.DataSource = dt;
+            gvFlightsData.DataBind();
+        }
     }
-    protected void sqlFlightsPerUser_Selecting(object sender, SqlDataSourceCommandEventArgs e)
+
+    protected void UpdateFlightsPerUser()
     {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-        e.Command.CommandTimeout = 90;
+        NumericBucketmanager bmFlightsPerUser = new NumericBucketmanager() { BucketForZero = true, BucketWidth = 100, BucketSelectorName = "FlightCount" };
+        List<SimpleCountHistogrammable> lstFlightsPerUser = new List<SimpleCountHistogrammable>();
+        HistogramManager hmFlightsPerUser = new HistogramManager()
+        {
+            SourceData = lstFlightsPerUser,
+            SupportedBucketManagers = new BucketManager[] { bmFlightsPerUser },
+            Values = new HistogramableValue[] { new HistogramableValue("Range", "Flights", HistogramValueTypes.Integer) }
+        };
+
+        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, szFormatFlightsPerUser, String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) ? string.Empty : "WHERE u.creationdate > ?creationDate"));
+        dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("creationDate", String.IsNullOrEmpty(cmbNewUserAge.SelectedValue) ? DateTime.MinValue : DateTime.Now.AddMonths(-Convert.ToInt32(cmbNewUserAge.SelectedValue, CultureInfo.InvariantCulture))); }, 
+            (dr) =>
+            {
+                lstFlightsPerUser.Add(new SimpleCountHistogrammable() { Count = Convert.ToInt32(dr["numusers"], CultureInfo.InvariantCulture), Range = Convert.ToInt32(dr["numflights"], CultureInfo.InvariantCulture) });
+            });
+
+        gcFlightsPerUser.TickSpacing = (lstFlightsPerUser.Count < 20) ? 1 : (lstFlightsPerUser.Count < 100 ? 5 : 10);
+
+        bmFlightsPerUser.ScanData(hmFlightsPerUser);
+
+        using (DataTable dt = bmFlightsPerUser.ToDataTable(hmFlightsPerUser))
+        {
+            gcFlightsPerUser.Clear();
+            foreach (DataRow dr in dt.Rows)
+            {
+                gcFlightsPerUser.XVals.Add((string)dr["DisplayName"]);
+                gcFlightsPerUser.YVals.Add((int)Convert.ToDouble(dr["Flights"], CultureInfo.InvariantCulture));
+            }
+
+            gvFlightPerUser.DataSource = dt;
+            gvFlightPerUser.DataBind();
+        }
     }
-    protected void sqlFlightsTrend_Selecting(object sender, SqlDataSourceCommandEventArgs e)
+
+    protected void cmbNewUserAge_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-        e.Command.CommandTimeout = 90;
+        UpdateFlightsPerUser();
     }
 }

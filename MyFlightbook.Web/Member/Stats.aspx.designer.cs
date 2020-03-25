@@ -22,24 +22,6 @@ public partial class Member_Stats
     protected global::Controls_adminStats adminStats1;
 
     /// <summary>
-    /// btnUserActivity control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnUserActivity;
-
-    /// <summary>
-    /// pnlUserActivity control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlUserActivity;
-
-    /// <summary>
     /// sqlUserActivity control.
     /// </summary>
     /// <remarks>
@@ -58,13 +40,13 @@ public partial class Member_Stats
     protected global::Controls_GoogleChart gcUserActivity;
 
     /// <summary>
-    /// sqlFlightsPerUser control.
+    /// cmbNewUserAge control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.SqlDataSource sqlFlightsPerUser;
+    protected global::System.Web.UI.WebControls.DropDownList cmbNewUserAge;
 
     /// <summary>
     /// gcFlightsPerUser control.
@@ -76,22 +58,40 @@ public partial class Member_Stats
     protected global::Controls_GoogleChart gcFlightsPerUser;
 
     /// <summary>
-    /// btnUpdateFlights control.
+    /// lblShowFlightsPerUser control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnUpdateFlights;
+    protected global::System.Web.UI.WebControls.Label lblShowFlightsPerUser;
 
     /// <summary>
-    /// pnlFlightsChart control.
+    /// pnlFlightPerUser control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlFlightsChart;
+    protected global::System.Web.UI.WebControls.Panel pnlFlightPerUser;
+
+    /// <summary>
+    /// gvFlightPerUser control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.GridView gvFlightPerUser;
+
+    /// <summary>
+    /// cpeFlightsPerUser control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.CollapsiblePanelExtender cpeFlightsPerUser;
 
     /// <summary>
     /// gcFlightsOnSite control.
@@ -130,22 +130,13 @@ public partial class Member_Stats
     protected global::System.Web.UI.WebControls.GridView gvFlightsData;
 
     /// <summary>
-    /// pnlShowFlightsData_CollapsiblePanelExtender control.
+    /// cpeFlightsOnSite control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::AjaxControlToolkit.CollapsiblePanelExtender pnlShowFlightsData_CollapsiblePanelExtender;
-
-    /// <summary>
-    /// sqlFlightsTrend control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.SqlDataSource sqlFlightsTrend;
+    protected global::AjaxControlToolkit.CollapsiblePanelExtender cpeFlightsOnSite;
 
     /// <summary>
     /// Master property.
