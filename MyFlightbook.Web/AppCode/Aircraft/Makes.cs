@@ -818,7 +818,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             List<MakeModel> lst = new List<MakeModel>();
             foreach (int mkey in dModels.Keys)
                 lst.Add(dModels[mkey]);
-            lst.Sort((mm1, mm2) => { return mm1.Model.CompareCurrentCulture(mm2.Model); });
+            lst.Sort((mm1, mm2) => { return mm1.DisplayName.CompareCurrentCulture(mm2.DisplayName); });
             return lst;
         }
 
@@ -888,7 +888,7 @@ INNER JOIN manufacturers ON models.idManufacturer=manufacturers.idManufacturer W
             get
             {
                 IEnumerable<string> col = AttributeList();
-                return col.Count() == 0 ? string.Empty : String.Format(CultureInfo.CurrentCulture, "({0})", String.Join(", ", col));
+                return !col.Any() ? string.Empty : String.Format(CultureInfo.CurrentCulture, "({0})", String.Join(", ", col));
             }
         }
     }
@@ -1064,7 +1064,7 @@ FROM models
         /// </summary>
         /// <param name="sz"></param>
         /// <returns></returns>
-        private string ConvertWildcards(string sz)
+        private static string ConvertWildcards(string sz)
         {
             return sz.Replace("%", "\\%").Replace("_", "\\_").Replace("*", "%").Replace("?", "_");
         }
