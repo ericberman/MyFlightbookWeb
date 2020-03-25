@@ -1258,7 +1258,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
         {
             if (rgPropsExisting == null || rgPropsNew == null)
                 return;
-            if (rgPropsExisting.Count() == 0 || rgPropsNew.Count() == 0)
+            if (!rgPropsExisting.Any() || !rgPropsNew.Any())
                 return;
 
             foreach (CustomFlightProperty cfpNew in rgPropsNew)
@@ -1373,7 +1373,7 @@ GROUP BY fp.idPropType;";
             List<string> lst = new List<string>();
 
             // short-circuit empty properties
-            if (rgprops == null || rgprops.Count() == 0)
+            if (rgprops == null || !rgprops.Any())
                 return lst;
 
             Dictionary<int, string> d = ComputeTotals(rgprops, fUseHHMM);

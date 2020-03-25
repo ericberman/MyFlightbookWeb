@@ -111,7 +111,7 @@ namespace MyFlightbook.Telemetry
             return i;
         }
 
-        private DateTime ParseToNakedTime(string szValue, bool fUTC = false)
+        private static DateTime ParseToNakedTime(string szValue, bool fUTC = false)
         {
             GroupCollection g = regNakedTime.Match(szValue).Groups;
             if (g.Count > 3)
@@ -119,7 +119,7 @@ namespace MyFlightbook.Telemetry
             return DateTime.MinValue;
         }
 
-        private object ParseUnixTimeStamp(string szValue)
+        private static object ParseUnixTimeStamp(string szValue)
         {
             // UnixTimeStamp, at least in ForeFlight, is # of ms since Jan 1 1970.
             if (Int64.TryParse(szValue, out Int64 i))
@@ -128,7 +128,7 @@ namespace MyFlightbook.Telemetry
                 return szValue.ParseUTCDate();
         }
 
-        private object ParseLatLong(string szValue)
+        private static object ParseLatLong(string szValue)
         {
             if (String.IsNullOrEmpty(szValue))
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.errBadLatLong, string.Empty));
@@ -1961,7 +1961,7 @@ namespace MyFlightbook.Telemetry
         /// <returns>A merged telemetry reference.</returns>
         public static TelemetryReference MergedTelemetry(IEnumerable<TelemetryReference> lstIn, int idFlight)
         {
-            if (lstIn == null || lstIn.Count() == 0)
+            if (lstIn == null || !lstIn.Any())
                 return null;
             if (lstIn.Count() == 1)
                 return lstIn.ElementAt(0);

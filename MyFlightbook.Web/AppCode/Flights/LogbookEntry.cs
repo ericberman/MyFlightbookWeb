@@ -1855,7 +1855,7 @@ namespace MyFlightbook
                 {
                     lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceRouteOnly, dRoute));
 
-                    if (al.GetNormalizedAirports().Count() > 2)
+                    if (al.GetNormalizedAirports().Length > 2)
                     {
                         lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceLongestSegment, dMaxSegment));
                         if (dMaxSegment != dMaxDistanceFromStart)
@@ -1929,7 +1929,7 @@ namespace MyFlightbook
             TotalFlightTime = TotalFlightTime.AddMinutes(le.TotalFlightTime);
         }
 
-        private void MergeProperty(CustomFlightProperty cfpExisting, CustomFlightProperty cfp)
+        private static void MergeProperty(CustomFlightProperty cfpExisting, CustomFlightProperty cfp)
         {
             if (cfpExisting == null || cfp == null || cfp.PropertyType == null)
                 return;
@@ -2019,7 +2019,7 @@ namespace MyFlightbook
         /// <param name="lst">The enumerable of other flights with which to merge</param>
         public void MergeFrom(IEnumerable<LogbookEntry> lst)
         {
-            if (lst == null || lst.Count() == 0)
+            if (lst == null || !lst.Any())
                 return;
 
             List<CustomFlightProperty> lstCfpThis = new List<CustomFlightProperty>(CustomProperties);
@@ -3041,7 +3041,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public bool CanCollapse(bool showTimes)
         {
-            return CFISignatureState != SignatureState.None || PropertiesWithReplacedApproaches.Count() > 0 || (showTimes && !String.IsNullOrEmpty(HobbsDisplay + EngineTimeDisplay + FlightTimeDisplay));
+            return CFISignatureState != SignatureState.None || PropertiesWithReplacedApproaches.Any() || (showTimes && !String.IsNullOrEmpty(HobbsDisplay + EngineTimeDisplay + FlightTimeDisplay));
         }
 
         /// <summary>
@@ -3110,7 +3110,7 @@ namespace MyFlightbook
         /// </summary>
         public string Departure
         {
-            get { return Airports.Count() > 0 ? Airports.ElementAt(0) : string.Empty; }
+            get { return Airports.Any() ? Airports.ElementAt(0) : string.Empty; }
         }
 
         public string Routing
@@ -3131,7 +3131,7 @@ namespace MyFlightbook
         /// </summary>
         public string Destination
         {
-            get { return Airports.Count() > 0 ? Airports.ElementAt(Airports.Count() - 1) : string.Empty; }
+            get { return Airports.Any() ? Airports.ElementAt(Airports.Count() - 1) : string.Empty; }
         }
 
         /// <summary>
