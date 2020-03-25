@@ -844,6 +844,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight includes properties indicating inconsistent or redundant distances of cross-country time for a flight..
+        /// </summary>
+        internal static string warningXCInconsistentDistances {
+            get {
+                return ResourceManager.GetString("warningXCInconsistentDistances", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flight indicates travel of more than {0}nm from starting airport, but no cross-country time was logged.  Shorting yourself?.
         /// </summary>
         internal static string warningXCMissingXC {
@@ -858,6 +867,15 @@ namespace Resources {
         internal static string warningXCNotWholeFlightXC {
             get {
                 return ResourceManager.GetString("warningXCNotWholeFlightXC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight includes a property indicating time with a particular distance of cross-country flight, but this doesn&apos;t match the total cross-country time logged on the flight..
+        /// </summary>
+        internal static string warningXCTimeDistanceNotEqualXC {
+            get {
+                return ResourceManager.GetString("warningXCTimeDistanceNotEqualXC", resourceCulture);
             }
         }
     }

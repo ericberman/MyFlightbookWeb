@@ -238,7 +238,7 @@ namespace MyFlightbook.Lint
 
         private void CheckIFRIssues(LogbookEntryBase le)
         {
-            AddConditionalIssue(le.Approaches > 0 && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropApproachName) && ApproachDescription.ExtractApproaches(le.Comment).Count() == 0, LintOptions.IFRIssues, Resources.FlightLint.warningIFRNoApproachDescription);
+            AddConditionalIssue(le.Approaches > 0 && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropApproachName) && !ApproachDescription.ExtractApproaches(le.Comment).Any(), LintOptions.IFRIssues, Resources.FlightLint.warningIFRNoApproachDescription);
 
             AddConditionalIssue(le.SimulatedIFR > 0 && le.Dual == 0 && currentAircraft.InstanceType == AircraftInstanceTypes.RealAircraft && 
                 !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropSafetyPilotName) &&
@@ -282,7 +282,7 @@ namespace MyFlightbook.Lint
             }
 
             // Look for missing night takeoffs or landings
-            if (rgCodes.Count() > 0)
+            if (rgCodes.Any())
             {
                 airport apDep = alSubset.GetAirportByCode(rgCodes.ElementAt(0));
                 airport apArr = alSubset.GetAirportByCode(rgCodes.ElementAt(rgCodes.Count() - 1));
@@ -310,14 +310,26 @@ namespace MyFlightbook.Lint
                 AddConditionalIssue(distance > minDistanceXC, LintOptions.XCIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningXCMissingXC, minDistanceXC));
             }
 
-            if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCLessThan25nm) && distance > 25)
-                AddIssue(LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceLessThan25ButFlewMore);
-            else if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCLessThan50nm) && distance > 50)
-                AddIssue(LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceLessThan50ButFlewMore);
-            else if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCMoreThan50nm) && distance < 50)
-                AddIssue(LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceMoreThan50ButFlewLess);
-            else if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCMoreThan100nm) && distance < 100)
-                AddIssue(LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceMoreThan100ButFlewLess);
+            bool fxcLessThan25 = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCLessThan25nm);
+            bool fxcLessThan50 = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCLessThan50nm);
+            bool fxcMoreThan50 = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCMoreThan50nm);
+            bool fxcMoreThan100 = le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropXCMoreThan100nm);
+
+            AddConditionalIssue(fxcLessThan25 && distance > 25, LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceLessThan25ButFlewMore);
+            AddConditionalIssue(fxcLessThan50 && distance > 50, LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceLessThan50ButFlewMore);
+            AddConditionalIssue(fxcMoreThan50 && distance < 50, LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceMoreThan50ButFlewLess);
+            AddConditionalIssue(fxcMoreThan100 && distance < 100, LintOptions.XCIssues, Resources.FlightLint.warningXCDistanceMoreThan100ButFlewLess);
+            AddConditionalIssue((fxcLessThan25 ? 1 : 0) + (fxcLessThan50 ? 1 : 0) + (fxcMoreThan50 ? 1 : 0) + (fxcMoreThan100 ? 1 : 0) > 1, LintOptions.XCIssues, Resources.FlightLint.warningXCInconsistentDistances);
+
+            decimal xcLessThan25 = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropXCLessThan25nm);
+            decimal xcLessThan50 = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropXCLessThan50nm);
+            decimal xcMoreThan50 = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropXCMoreThan50nm);
+            decimal xcMoreThan100 = le.CustomProperties.DecimalValueForProperty(CustomPropertyType.KnownProperties.IDPropXCMoreThan100nm);
+
+            AddConditionalIssue(xcLessThan25 > 0 && xcLessThan25.ToMinutes() != le.CrossCountry.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCTimeDistanceNotEqualXC);
+            AddConditionalIssue(xcLessThan50 > 0 && xcLessThan50.ToMinutes() != le.CrossCountry.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCTimeDistanceNotEqualXC);
+            AddConditionalIssue(xcMoreThan50 > 0 && xcMoreThan50.ToMinutes() != le.CrossCountry.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCTimeDistanceNotEqualXC);
+            AddConditionalIssue(xcMoreThan100 > 0 && xcMoreThan100.ToMinutes() != le.CrossCountry.ToMinutes(), LintOptions.XCIssues, Resources.FlightLint.warningXCTimeDistanceNotEqualXC);
         }
 
         private void CheckPICSICDualIssues(LogbookEntryBase le)
@@ -403,6 +415,26 @@ namespace MyFlightbook.Lint
             CheckSequentialFlightIssues(le);
         }
 
+        private void UpdateDutyPeriods(CustomFlightProperty cfpDutyStart, CustomFlightProperty cfpFlightDutyStart, CustomFlightProperty cfpDutyEnd, CustomFlightProperty cfpFlightDutyEnd)
+        {
+            // Close off a duty period if we have a duty end; if we're starting (or restarting) a duty period (and not closing it in the same flight), reset the duty period
+            if (cfpDutyEnd != null)
+            {
+                dutyStart = null;   // don't have an open duty period
+                dutyEnd = cfpDutyEnd.DateValue;
+            }
+            else if (cfpDutyStart != null)
+                dutyStart = cfpDutyStart.DateValue;
+
+            if (cfpFlightDutyEnd != null)
+            {
+                flightDutyStart = null;  // don't have an open flight duty period
+                flightDutyEnd = cfpFlightDutyEnd.DateValue;
+            }
+            else if (cfpFlightDutyStart != null)
+                flightDutyStart = cfpFlightDutyStart.DateValue;
+        }
+
         private void CheckSequentialFlightIssues(LogbookEntryBase le)
         {
             if (previousFlight == null)
@@ -433,22 +465,7 @@ namespace MyFlightbook.Lint
             AddConditionalIssue(dutyEnd != null && cfpDutyStart == null && cfpDutyEnd != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewDutyEndNoStart);
             AddConditionalIssue(flightDutyEnd != null && cfpFlightDutyStart == null && cfpFlightDutyEnd != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewFlightDutyEndNoStart);
 
-            // Close off a duty period if we have a duty end; if we're starting (or restarting) a duty period (and not closing it in the same flight), reset the duty period
-            if (cfpDutyEnd != null)
-            {
-                dutyStart = null;   // don't have an open duty period
-                dutyEnd = cfpDutyEnd.DateValue;
-            }
-            else if (cfpDutyStart != null)
-                dutyStart = cfpDutyStart.DateValue;
-
-            if (cfpFlightDutyEnd != null)
-            {
-                flightDutyStart = null;  // don't have an open flight duty period
-                flightDutyEnd = cfpFlightDutyEnd.DateValue;
-            }
-            else if (cfpFlightDutyStart != null)
-                flightDutyStart = cfpFlightDutyStart.DateValue;
+            UpdateDutyPeriods(cfpDutyStart, cfpFlightDutyStart, cfpDutyEnd, cfpFlightDutyEnd);
         }
 
         private void CheckMiscIssues(LogbookEntryBase le)

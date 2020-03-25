@@ -380,10 +380,16 @@
   <data name="warningXCDistanceMoreThan50ButFlewLess" xml:space="preserve">
     <value>Flight indicates cross-country flight of more than 50nm, but route from departure airport was less than that</value>
   </data>
+  <data name="warningXCInconsistentDistances" xml:space="preserve">
+    <value>Flight includes properties indicating inconsistent or redundant distances of cross-country time for a flight.</value>
+  </data>
   <data name="warningXCMissingXC" xml:space="preserve">
     <value>Flight indicates travel of more than {0}nm from starting airport, but no cross-country time was logged.  Shorting yourself?</value>
   </data>
   <data name="warningXCNotWholeFlightXC" xml:space="preserve">
     <value>Some, but not all of the flight is listed as cross-country</value>
+  </data>
+  <data name="warningXCTimeDistanceNotEqualXC" xml:space="preserve">
+    <value>Flight includes a property indicating time with a particular distance of cross-country flight, but this doesn't match the total cross-country time logged on the flight.</value>
   </data>
 </root>
