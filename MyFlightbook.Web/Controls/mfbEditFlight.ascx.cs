@@ -624,7 +624,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
                 }
                 else
                 {
-                    lblError.Text = le.ErrorString;
+                    lblError.Text = HttpUtility.HtmlEncode(le.ErrorString);
                 }
             }
             catch (MyFlightbookException ex)
@@ -633,7 +633,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             }
         }
         else
-            lblError.Text = le.ErrorString;
+            lblError.Text = HttpUtility.HtmlEncode(le.ErrorString);
 
         return idResult;
     }
