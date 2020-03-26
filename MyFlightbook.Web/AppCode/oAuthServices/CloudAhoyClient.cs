@@ -74,7 +74,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
             AuthState = authstate;
         }
 
-        private string TextFromHTML(string sz)
+        private static string TextFromHTML(string sz)
         {
             if (sz == null || !sz.Contains("<"))
                 return sz;
@@ -120,7 +120,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
 
                             try
                             {
-                                using (response = await httpClient.PostAsync(FlightsEndpoint, form))
+                                using (response = await httpClient.PostAsync(new Uri(FlightsEndpoint), form).ConfigureAwait(false))
                                 {
                                     szResult = response.Content.ReadAsStringAsync().Result;
                                     response.EnsureSuccessStatusCode();
@@ -179,7 +179,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
 
                         builder.Query = nvc.ToString();
 
-                        using (response = await httpClient.GetAsync(builder.ToString()))
+                        using (response = await httpClient.GetAsync(builder.Uri).ConfigureAwait(false))
                         {
                             bool fHasMore = false;
                             if (response.Headers.TryGetValues("ca-has-more", out IEnumerable<string> values))

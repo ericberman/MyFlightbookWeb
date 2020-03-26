@@ -108,7 +108,7 @@ namespace MyFlightbook
                 }
             }
 
-            if (le.Videos.Count() > 0)
+            if (le.Videos.Any())
             {
                 foreach (VideoRef v in le.Videos)
                     WriteVideo(tw, v);
@@ -149,7 +149,7 @@ namespace MyFlightbook
         private static void WriteDigitalEndorsements(HtmlTextWriter tw, string szUser)
         {
             IEnumerable<Endorsement> rgEndorsements = Endorsement.EndorsementsForUser(szUser, null);
-            if (rgEndorsements.Count() > 0)
+            if (rgEndorsements.Any())
             {
                 using (Page p = new FormlessPage())
                 {
@@ -225,7 +225,7 @@ namespace MyFlightbook
                         le.FlightImages = (dImages.ContainsKey(le.FlightID)) ? dImages[le.FlightID] : new Collection<MFBImageInfo>();
 
                                     // skip any flights here that don't have images, videos, or telemetry
-                                    if (le.FlightImages.Count > 0 || le.Videos.Count() > 0 || le.HasFlightData)
+                                    if (le.FlightImages.Count > 0 || le.Videos.Any() || le.HasFlightData)
                             WriteFlightInfo(tw, zip, le);
                         iRow++;
                     });
@@ -337,7 +337,7 @@ namespace MyFlightbook
             using (MemoryStream ms = new MemoryStream())
             {
                 WriteZipOfImagesToStream(ms, activeBrand);
-                Dropbox.Api.Files.FileMetadata result = await MFBDropbox.PutFile(User.DropboxAccessToken, ms, BackupImagesFilename(activeBrand));
+                Dropbox.Api.Files.FileMetadata result = await MFBDropbox.PutFile(User.DropboxAccessToken, ms, BackupImagesFilename(activeBrand)).ConfigureAwait(true);
                 return result;
             }
         }
@@ -359,7 +359,7 @@ namespace MyFlightbook
             if (activeBrand == null)
                 activeBrand = Branding.CurrentBrand;
 
-            return await MFBDropbox.PutFile(User.DropboxAccessToken, BackupFilename(activeBrand), LogbookDataForBackup());
+            return await MFBDropbox.PutFile(User.DropboxAccessToken, BackupFilename(activeBrand), LogbookDataForBackup()).ConfigureAwait(true);
         }
         #endregion
 
@@ -368,7 +368,7 @@ namespace MyFlightbook
         /// Saves a zip of the user's images to OneDrive, if configured.
         /// </summary>
         /// <exception cref="MyFlightbookException"></exception>
-        /// <exception cref="OneDriveExceptionMFB"></exception>
+        /// <exception cref="OneDriveMFBException"></exception>
         /// <param name="activeBrand">The brand to use.  Current brand is used if null.</param>
         /// <param name="od">The OneDrive object to use (one will be initialized, if necessary)</param>
         public async Task<bool> BackupImagesToOneDrive(OneDrive od = null, Brand activeBrand = null)
@@ -385,7 +385,7 @@ namespace MyFlightbook
             using (MemoryStream ms = new MemoryStream())
             {
                 WriteZipOfImagesToStream(ms, activeBrand);
-                return await od.PutFileDirect(BackupImagesFilename(activeBrand), ms, "application/zip");
+                return await od.PutFileDirect(BackupImagesFilename(activeBrand), ms, "application/zip").ConfigureAwait(true);
             }
         }
 
@@ -393,7 +393,7 @@ namespace MyFlightbook
         /// Saves a the user's logbook to OneDrive, if configured.
         /// </summary>
         /// <exception cref="MyFlightbookException"></exception>
-        /// <exception cref="OneDriveExceptionMFB"></exception>
+        /// <exception cref="OneDriveMFBException"></exception>
         /// <exception cref="UnauthorizedAccessException"></exception>
         /// <param name="od">The OneDrive object to use (one will be initialized, if necessary)</param>
         /// <param name="activeBrand">The brand to use.  Current brand is used if null.</param>
@@ -408,7 +408,7 @@ namespace MyFlightbook
             if (od == null)
                 od = new OneDrive(User.OneDriveAccessToken);
 
-            return await od.PutFileDirect(BackupFilename(activeBrand), LogbookDataForBackup(), "text/csv");
+            return await od.PutFileDirect(BackupFilename(activeBrand), LogbookDataForBackup(), "text/csv").ConfigureAwait(true);
         }
         #endregion
 
@@ -434,7 +434,7 @@ namespace MyFlightbook
             using (MemoryStream ms = new MemoryStream())
             {
                 WriteZipOfImagesToStream(ms, activeBrand);
-                return await gd.PutFile(ms, BackupImagesFilename(activeBrand, true), "application/zip");
+                return await gd.PutFile(ms, BackupImagesFilename(activeBrand, true), "application/zip").ConfigureAwait(true);
             }
         }
 
@@ -457,7 +457,7 @@ namespace MyFlightbook
             if (activeBrand == null)
                 activeBrand = Branding.CurrentBrand;
 
-            return await gd.PutFile(BackupFilename(activeBrand), LogbookDataForBackup(), "text/csv");
+            return await gd.PutFile(BackupFilename(activeBrand), LogbookDataForBackup(), "text/csv").ConfigureAwait(true);
         }
         #endregion
         #endregion

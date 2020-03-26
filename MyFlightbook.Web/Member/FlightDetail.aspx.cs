@@ -228,6 +228,23 @@ public partial class Member_FlightDetail : System.Web.UI.Page
     #endregion
     #endregion
 
+    protected bool DoDirectDownload()
+    {
+        // for debugging, have a download option that skips all the rest
+        if (util.GetIntParam(Request, "d", 0) != 0 && !String.IsNullOrEmpty(CurrentFlight.FlightData))
+        {
+            Response.Clear();
+            Response.ContentType = "application/octet-stream";
+            // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
+            string szFilename = String.Format(CultureInfo.InvariantCulture, "Data{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
+            string szDisposition = String.Format(CultureInfo.InvariantCulture, "inline;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
+            Response.AddHeader("Content-Disposition", szDisposition);
+            Response.Write(CurrentFlight.FlightData);
+            Response.End();
+            return true;
+        }
+        return false;
+    }
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -306,19 +323,8 @@ public partial class Member_FlightDetail : System.Web.UI.Page
                 return;
             }
 
-            // for debugging, have a download option that skips all the rest
-            if (util.GetIntParam(Request, "d", 0) != 0 && !String.IsNullOrEmpty(CurrentFlight.FlightData))
-            {
-                Response.Clear();
-                Response.ContentType = "application/octet-stream";
-                // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
-                string szFilename = String.Format(CultureInfo.InvariantCulture, "Data{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
-                string szDisposition = String.Format(CultureInfo.InvariantCulture, "inline;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
-                Response.AddHeader("Content-Disposition", szDisposition);
-                Response.Write(CurrentFlight.FlightData);
-                Response.End();
+            if (DoDirectDownload())
                 return;
-            }
         }
         else
         {
@@ -574,7 +580,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             }
 
             ms.Seek(0, SeekOrigin.Begin);
-            await client.PutStream(ms, CurrentFlight);
+            await client.PutStream(ms, CurrentFlight).ConfigureAwait(false);
             pnlCloudAhoySuccess.Visible = true;
         }
         catch (MyFlightbookException ex)

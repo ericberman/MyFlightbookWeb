@@ -73,23 +73,15 @@ public partial class Member_Download : System.Web.UI.Page
 
         try
         {
-            if (await new MFBDropbox().ValidateDropboxToken(pf, true) == MFBDropbox.TokenStatus.None)
+            if (await new MFBDropbox().ValidateDropboxToken(pf, true).ConfigureAwait(false) == MFBDropbox.TokenStatus.None)
                 return;
 
-            Dropbox.Api.Files.FileMetadata result = await lb.BackupToDropbox();
+            Dropbox.Api.Files.FileMetadata result = await lb.BackupToDropbox().ConfigureAwait(false);
 
             if (ckIncludeImages.Checked)
-                result = await lb.BackupImagesToDropbox(Branding.CurrentBrand);
+                result = await lb.BackupImagesToDropbox(Branding.CurrentBrand).ConfigureAwait(false);
 
             lblDropBoxSuccess.Visible = true;
-        }
-        catch (Dropbox.Api.ApiException<Dropbox.Api.Auth.TokenFromOAuth1Error> ex)
-        {
-            ShowDropboxError(ex.Message);
-        }
-        catch (Dropbox.Api.AuthException ex)
-        {
-            ShowDropboxError(ex.Message);
         }
         catch (Dropbox.Api.ApiException<Dropbox.Api.Files.UploadError> ex)
         {
@@ -98,19 +90,7 @@ public partial class Member_Download : System.Web.UI.Page
             else
                 ShowDropboxError(ex.Message);
         }
-        catch (Dropbox.Api.BadInputException ex)
-        {
-            ShowDropboxError(ex.Message);
-        }
-        catch (Dropbox.Api.HttpException ex)
-        {
-            ShowDropboxError(ex.Message);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            ShowDropboxError(ex.Message);
-        }
-        catch (MyFlightbookException ex)
+        catch (Exception ex) when (ex is Dropbox.Api.ApiException<Dropbox.Api.Auth.TokenFromOAuth1Error> || ex is Dropbox.Api.AuthException || ex is Dropbox.Api.BadInputException || ex is Dropbox.Api.HttpException || ex is UnauthorizedAccessException || ex is MyFlightbookException)
         {
             ShowDropboxError(ex.Message);
         }
@@ -126,10 +106,10 @@ public partial class Member_Download : System.Web.UI.Page
         try
         {
             OneDrive od = new OneDrive(pf.OneDriveAccessToken);
-            await lb.BackupToOneDrive(od);
+            await lb.BackupToOneDrive(od).ConfigureAwait(false);
 
             if (ckIncludeImages.Checked)
-                await lb.BackupImagesToOneDrive(od);
+                await lb.BackupImagesToOneDrive(od).ConfigureAwait(false);
 
             // if we are here we were successful, so save the updated refresh token
             pf.OneDriveAccessToken = od.AuthState;
@@ -137,7 +117,7 @@ public partial class Member_Download : System.Web.UI.Page
 
             lblDropBoxSuccess.Visible = true;
         }
-        catch (Exception ex) when (ex is OneDriveExceptionMFB || ex is MyFlightbookException || !(ex is OutOfMemoryException))
+        catch (Exception ex) when (ex is OneDriveMFBException || ex is MyFlightbookException || !(ex is OutOfMemoryException))
         {
             ShowDropboxError(ex.Message);
         }
@@ -156,10 +136,10 @@ public partial class Member_Download : System.Web.UI.Page
         {
             GoogleDrive gd = new GoogleDrive(pf.GoogleDriveAccessToken);
 
-            await lb.BackupToGoogleDrive(gd);
+            await lb.BackupToGoogleDrive(gd).ConfigureAwait(false);
 
             if (ckIncludeImages.Checked)
-                await lb.BackupImagesToGoogleDrive(gd);
+                await lb.BackupImagesToGoogleDrive(gd).ConfigureAwait(false);
 
             // if we are here we were successful, so save the updated refresh token
             pf.GoogleDriveAccessToken = gd.AuthState;

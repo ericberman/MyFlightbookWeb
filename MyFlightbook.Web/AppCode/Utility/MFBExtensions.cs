@@ -297,10 +297,13 @@ namespace MyFlightbook
         /// <returns></returns>
         public static T DeserializeFromXML<T>(this string xml)
         {
+            var xs = new System.Xml.Serialization.XmlSerializer(typeof(T));
             using (StringReader sr = new StringReader(xml))
             {
-                var xs = new System.Xml.Serialization.XmlSerializer(typeof(T));
-                return (T)xs.Deserialize(sr);
+                using (System.Xml.XmlReader reader = System.Xml.XmlReader.Create(sr, new System.Xml.XmlReaderSettings() { XmlResolver = null }))
+                {
+                    return (T)xs.Deserialize(reader);
+                }
             }
         }
 
@@ -800,14 +803,14 @@ namespace MyFlightbook
         /// <param name="requestUri"></param>
         /// <param name="iContent"></param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> PatchAsync(this HttpClient client, Uri requestUri, HttpContent iContent)
+        public static async Task<HttpResponseMessage> PatchAsync(this HttpClient client, Uri requestUri, HttpContent iContent, bool fConfigureAwait = true)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
             var method = new HttpMethod("PATCH");
             using (var request = new HttpRequestMessage(method, requestUri) { Content = iContent }) 
             {
-                return await client.SendAsync(request);
+                return await client.SendAsync(request).ConfigureAwait(fConfigureAwait);
             }
         }
         #endregion

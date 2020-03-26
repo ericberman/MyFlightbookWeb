@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
 
@@ -316,7 +317,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         }
     }
 
-    protected void PostForm(HttpContent form)
+    protected async Task PostForm(HttpContent form)
     {
         using (HttpClient httpClient = new HttpClient())
         {
@@ -324,14 +325,14 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             string szError = string.Empty;
             try
             {
-                response = httpClient.PostAsync(new Uri(ResourcePath), form).Result;
+                response = await httpClient.PostAsync(new Uri(ResourcePath), form).ConfigureAwait(true);
                 if (!response.IsSuccessStatusCode)
-                    szError = response.Content.ReadAsStringAsync().Result;
+                    szError = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
                 response.EnsureSuccessStatusCode();
 
                 Page.Response.Clear();
                 Response.ContentType = ckJSON.Checked ? (String.IsNullOrEmpty(txtCallBack.Text) ? "application/json; charset=utf-8" : "application/javascript; charset=utf-8") : "text/xml; charset=utf-8";
-                System.Threading.Tasks.Task.Run(async () => { await response.Content.CopyToAsync(Page.Response.OutputStream); }).Wait();
+                await response.Content.CopyToAsync(Page.Response.OutputStream).ConfigureAwait(true);
                 Page.Response.Flush();
 
                 // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
@@ -342,19 +343,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
             {
                 lblErr.Text = ex.Message;
             }
-            catch (HttpUnhandledException ex)
-            {
-                lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-            }
-            catch (HttpException ex)
-            {
-                lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-            }
-            catch (HttpRequestException ex)
-            {
-                lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
-            }
-            catch (System.Net.WebException ex)
+            catch (Exception ex) when (ex is HttpUnhandledException || ex is HttpException || ex is HttpRequestException || ex is System.Net.WebException)
             {
                 lblErr.Text = String.Format(CultureInfo.InvariantCulture, "{0} --> {1}", ex.Message, szError);
             }
@@ -362,7 +351,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-    protected void btnPostResource_Click(object sender, EventArgs e)
+    protected async void btnPostResource_Click(object sender, EventArgs e)
     {
         ToSession();
         NameValueCollection postParams = new NameValueCollection()
@@ -395,7 +384,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
                     objectsToDispose.Add(sc);
                 }
 
-                PostForm(form);
+                await PostForm(form).ConfigureAwait(true);
             }
             finally
             {

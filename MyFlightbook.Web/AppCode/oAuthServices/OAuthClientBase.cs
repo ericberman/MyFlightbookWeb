@@ -214,7 +214,7 @@ namespace MyFlightbook.OAuth
                 WebServerClient client = Client();
                 client.RefreshAuthorization(AuthState); // Throws DotNetOpenAuth.Messaging.ProtocolException if failure.
                 return true;
-            });
+            }).ConfigureAwait(false);    // CA2007 - we don't know if we need to be on the same thread.
         }
 
         /// <summary>

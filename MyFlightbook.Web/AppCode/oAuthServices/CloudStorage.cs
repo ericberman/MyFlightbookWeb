@@ -248,7 +248,7 @@ namespace MyFlightbook.CloudStorage
 
                         try
                         {
-                            response = await httpClient.PostAsync(szURLUploadEndpoint, form);
+                            response = await httpClient.PostAsync(new Uri(szURLUploadEndpoint), form).ConfigureAwait(false);
                             szResult = response.Content.ReadAsStringAsync().Result;
                             response.EnsureSuccessStatusCode();
                             if (!String.IsNullOrEmpty(szResult))
@@ -307,7 +307,7 @@ namespace MyFlightbook.CloudStorage
         protected async Task<string> FindIDForQuery(string szQuery)
         {
             // See if the folder exists
-            string szURI = String.Format(System.Globalization.CultureInfo.InvariantCulture, szURLViewFilesEndpointTemplate, szQuery, AuthState.AccessToken);
+            Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, szURLViewFilesEndpointTemplate, szQuery, AuthState.AccessToken));
 
             HttpResponseMessage response = null;
 
@@ -315,7 +315,7 @@ namespace MyFlightbook.CloudStorage
             {
                 try
                 {
-                    response = await httpClient.GetAsync(szURI);
+                    response = await httpClient.GetAsync(uri).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
                     string szResult = response.Content.ReadAsStringAsync().Result;
                     if (!String.IsNullOrEmpty(szResult))
@@ -344,12 +344,12 @@ namespace MyFlightbook.CloudStorage
 
         protected async Task<string> IDForFolder(string szFoldername)
         {
-            return await FindIDForQuery(FolderQuery(szFoldername));
+            return await FindIDForQuery(FolderQuery(szFoldername)).ConfigureAwait(false);
         }
 
         protected async Task<string> IDForFile(string szFileName, string szParentID)
         {
-            return await FindIDForQuery(FileQuery(szFileName, szParentID));
+            return await FindIDForQuery(FileQuery(szFileName, szParentID)).ConfigureAwait(false);
         }
         #endregion
 
@@ -365,8 +365,21 @@ namespace MyFlightbook.CloudStorage
         {
             using (MemoryStream ms = new MemoryStream(rgData))
             {
-                return await PutFile(ms, szFileName, szMimeType);
+                return await PutFile(ms, szFileName, szMimeType).ConfigureAwait(false);
             }
+        }
+
+        private static void ThrowGDriveError(Exception ex)
+        {
+            if (ex == null)
+                return;
+            GDriveError error = JsonConvert.DeserializeObject<GDriveError>(ExtractResponseString(ex.InnerException as WebException));
+            if (error == null)
+                throw new MyFlightbookException("Unknown error refreshing access token", ex);
+            else if (error.error.CompareCurrentCultureIgnoreCase("invalid_grant") == 0)
+                throw new UnauthorizedAccessException(Branding.ReBrand(Resources.LocalizedText.GoogleDriveBadAuth), ex);
+            else
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error from Google Drive: {0} {1} {2}", error.error, error.error_description, error.error_link), ex);
         }
 
         /// <summary>
@@ -385,17 +398,11 @@ namespace MyFlightbook.CloudStorage
 
             try
             {
-                await RefreshAccessToken();
+                await RefreshAccessToken().ConfigureAwait(false);
             }
             catch (DotNetOpenAuth.Messaging.ProtocolException ex)
             {
-                GDriveError error = JsonConvert.DeserializeObject<GDriveError>(ExtractResponseString(ex.InnerException as WebException));
-                if (error == null)
-                    throw new MyFlightbookException("Unknown error refreshing access token", ex);
-                else if (error.error.CompareCurrentCultureIgnoreCase("invalid_grant") == 0)
-                    throw new UnauthorizedAccessException(Branding.ReBrand(Resources.LocalizedText.GoogleDriveBadAuth), ex);
-                else
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error from Google Drive: {0} {1} {2}", error.error, error.error_description, error.error_link), ex);
+                ThrowGDriveError(ex);
             }
 
             bool fIsCSV = szMimeType.CompareCurrentCultureIgnoreCase("text/csv") == 0;
@@ -411,9 +418,9 @@ namespace MyFlightbook.CloudStorage
 
                 if (String.IsNullOrEmpty(RootFolderID))
                 {
-                    RootFolderID = await IDForFolder(RootPath);
+                    RootFolderID = await IDForFolder(RootPath).ConfigureAwait(false);
                     if (String.IsNullOrEmpty(RootFolderID))
-                        RootFolderID = await CreateFolder(Branding.CurrentBrand.AppName);
+                        RootFolderID = await CreateFolder(Branding.CurrentBrand.AppName).ConfigureAwait(false);
                 }
 
                 // CSV loses its extension when uploaded because we map it to a google spreadsheet.  So if it's CSV AND we are patching an existing file, drop the extension so that we ov
@@ -421,7 +428,7 @@ namespace MyFlightbook.CloudStorage
                 string szFileNameToCheck = fIsCSV ? Path.GetFileNameWithoutExtension(szFileName) : szFileName;
                 string idExisting = null;
                 if (!String.IsNullOrEmpty(RootFolderID))
-                    idExisting = await IDForFile(szFileNameToCheck, RootFolderID);
+                    idExisting = await IDForFile(szFileNameToCheck, RootFolderID).ConfigureAwait(false);
 
                 // If we got a hit, use that filename for the udpate
                 if (!String.IsNullOrEmpty(idExisting))
@@ -453,8 +460,8 @@ namespace MyFlightbook.CloudStorage
                             try
                             {
                                 response = (String.IsNullOrEmpty(idExisting)) ?
-                                    await httpClient.PostAsync(szURLUploadEndpoint, form) :
-                                    await httpClient.PatchAsync(new Uri(String.Format(CultureInfo.InvariantCulture, szURLUpdateEndpointTemplate, idExisting)), form);
+                                    await httpClient.PostAsync(new Uri(szURLUploadEndpoint), form).ConfigureAwait(false) :
+                                    await httpClient.PatchAsync(new Uri(String.Format(CultureInfo.InvariantCulture, szURLUpdateEndpointTemplate, idExisting)), form, false).ConfigureAwait(false);
                                 szResult = response.Content.ReadAsStringAsync().Result;
                                 response.EnsureSuccessStatusCode();
                                 return (String.IsNullOrEmpty(szResult)) ? null : JsonConvert.DeserializeObject<GoogleDriveResultDictionary>(szResult);
@@ -575,35 +582,35 @@ namespace MyFlightbook.CloudStorage
     }
 
     [Serializable]
-    public class OneDriveExceptionMFB : Exception
+    public class OneDriveMFBException : Exception
     {
         public OneDriveError Error { get; set; }
-        public OneDriveExceptionMFB(string message) : base(message)
+        public OneDriveMFBException(string message) : base(message)
         {
             Error = null;
         }
 
-        public OneDriveExceptionMFB(string message, Exception innerException) : base(message, innerException)
+        public OneDriveMFBException(string message, Exception innerException) : base(message, innerException)
         {
             Error = null;
         }
 
-        public OneDriveExceptionMFB(OneDriveError err) : base(err == null ? string.Empty : err.Message)
+        public OneDriveMFBException(OneDriveError err) : base(err == null ? string.Empty : err.Message)
         {
             Error = err;
         }
             
-        public OneDriveExceptionMFB(OneDriveError err, Exception innerException) : base(err == null ? string.Empty : err.Message, innerException)
+        public OneDriveMFBException(OneDriveError err, Exception innerException) : base(err == null ? string.Empty : err.Message, innerException)
         {
             Error = err;
         }
 
-        public OneDriveExceptionMFB()
+        public OneDriveMFBException()
         {
             Error = null;
         }
 
-        protected OneDriveExceptionMFB(SerializationInfo serializationInfo, StreamingContext streamingContext): base(serializationInfo, streamingContext)
+        protected OneDriveMFBException(SerializationInfo serializationInfo, StreamingContext streamingContext): base(serializationInfo, streamingContext)
         {
             Error = null;
         }
@@ -674,7 +681,7 @@ namespace MyFlightbook.CloudStorage
                 throw new MyFlightbookException("Unknown error refreshing access token", ex);
             else if (error.error != null && String.Compare(error.error.ToString(), "invalid_grant", StringComparison.InvariantCulture) == 0)
             {
-                OneDriveExceptionMFB ode = new OneDriveExceptionMFB(new OneDriveError(OneDriveErrorCodeMFB.AuthenticationFailure), ex);
+                OneDriveMFBException ode = new OneDriveMFBException(new OneDriveError(OneDriveErrorCodeMFB.AuthenticationFailure), ex);
                 throw new UnauthorizedAccessException(ode.Message, ode);
             }
             else
@@ -709,7 +716,7 @@ namespace MyFlightbook.CloudStorage
 
                     try
                     {
-                        response = await httpClient.PostAsync(builder.Uri, sc);
+                        response = await httpClient.PostAsync(builder.Uri, sc).ConfigureAwait(false);
                         szResult = response.Content.ReadAsStringAsync().Result;
                         response.EnsureSuccessStatusCode();
                         return JsonConvert.DeserializeObject<OneDriveSession>(szResult);
@@ -719,7 +726,7 @@ namespace MyFlightbook.CloudStorage
                         if (response == null)
                             throw new MyFlightbookException("Unknown error in OneDrive.PutFileDirect", ex);
                         else
-                            throw new OneDriveExceptionMFB(new OneDriveError(szResult));
+                            throw new OneDriveMFBException(new OneDriveError(szResult));
                     }
                     finally
                     {
@@ -738,7 +745,7 @@ namespace MyFlightbook.CloudStorage
             ms.Seek(0, SeekOrigin.Begin);
             try
             {
-                await RefreshAccessToken();
+                await RefreshAccessToken().ConfigureAwait(false);
             }
             catch (DotNetOpenAuth.Messaging.ProtocolException ex)
             {
@@ -749,7 +756,7 @@ namespace MyFlightbook.CloudStorage
             HttpResponseMessage response = null;
 
             // See if we need to do a resumable session
-            OneDriveSession session = (ms.Length > MinFileSizeResumable) ? await GetResumableSession(szFilename) : null;
+            OneDriveSession session = (ms.Length > MinFileSizeResumable) ? await GetResumableSession(szFilename).ConfigureAwait(false) : null;
 
             using (StreamContent body = new StreamContent(ms))
             {
@@ -766,7 +773,7 @@ namespace MyFlightbook.CloudStorage
                             body.Headers.ContentLength = ms.Length;
                             body.Headers.ContentRange = new ContentRangeHeaderValue(0, ms.Length - 1, ms.Length) { Unit = "bytes" };
                         }
-                        response = await httpClient.PutAsync(session == null ? builder.Uri : session.UploadUri, body);
+                        response = await httpClient.PutAsync(session == null ? builder.Uri : session.UploadUri, body).ConfigureAwait(false);
                         szResult = response.Content.ReadAsStringAsync().Result;
                         response.EnsureSuccessStatusCode();
                         return !String.IsNullOrEmpty(szResult);
@@ -776,7 +783,7 @@ namespace MyFlightbook.CloudStorage
                         if (response == null)
                             throw new MyFlightbookException("Unknown error in OneDrive.PutFileDirect", ex);
                         else
-                            throw new OneDriveExceptionMFB(new OneDriveError(szResult));
+                            throw new OneDriveMFBException(new OneDriveError(szResult));
                     }
                     finally
                     {
@@ -791,7 +798,7 @@ namespace MyFlightbook.CloudStorage
         {
             using (MemoryStream ms = new MemoryStream(rgData))
             {
-                return await PutFileDirect(szFileName, ms, szMimeType);
+                return await PutFileDirect(szFileName, ms, szMimeType).ConfigureAwait(false);
             }
         }
     }
@@ -856,7 +863,7 @@ namespace MyFlightbook.CloudStorage
                     {
                         using (DropboxAppClient client = new DropboxAppClient(dbAppKey, dbSecret))
                         {
-                            var tokenFromOAuth1Result = await client.Auth.TokenFromOauth1Async(szRawToken, szRawSecret);
+                            var tokenFromOAuth1Result = await client.Auth.TokenFromOauth1Async(szRawToken, szRawSecret).ConfigureAwait(false);
                             pf.DropboxAccessToken = tokenFromOAuth1Result.Oauth2Token;
                         }
 
@@ -891,7 +898,7 @@ namespace MyFlightbook.CloudStorage
         {
             using (MemoryStream ms = new MemoryStream(rgData))
             {
-                return await PutFile(szDropboxAccessToken, ms, szFileName);
+                return await PutFile(szDropboxAccessToken, ms, szFileName).ConfigureAwait(false);
             }
         }
 
@@ -909,7 +916,7 @@ namespace MyFlightbook.CloudStorage
             ms.Seek(0, SeekOrigin.Begin);   // write out the whole stream.  UploadAsync appears to pick up from the current location, which is the end-of-file after writing to a ZIP.
             using (DropboxClient dbx = new DropboxClient(szDropboxAccessToken))
             {
-                Dropbox.Api.Files.FileMetadata updated = await dbx.Files.UploadAsync("/" + szFileName, Dropbox.Api.Files.WriteMode.Overwrite.Instance, body: ms);
+                Dropbox.Api.Files.FileMetadata updated = await dbx.Files.UploadAsync("/" + szFileName, Dropbox.Api.Files.WriteMode.Overwrite.Instance, body: ms).ConfigureAwait(false);
                 return updated;
             }
         }
