@@ -173,7 +173,7 @@ public partial class Member_Import : System.Web.UI.Page
         if (!le.IsNewFlight && CurrentImporter != null && CurrentImporter.OriginalFlightsToModify.ContainsKey(le.FlightID))
         {
             IEnumerable<PropertyDelta> lst = CurrentImporter.OriginalFlightsToModify[le.FlightID].CompareTo(le, UseHHMM);
-            if (lst.Count() > 0)
+            if (lst.Any())
             {
                 e.Item.FindControl("pnlDiffs").Visible = true;
                 Repeater diffs = (Repeater)e.Item.FindControl("rptDiffs");
@@ -232,7 +232,7 @@ public partial class Member_Import : System.Web.UI.Page
 
     protected void PreviewData()
     {
-        lblError.Text = "";
+        lblError.Text = string.Empty;
 
         mvPreviewResults.SetActiveView(vwPreviewResults);   // default to showing results.
 
@@ -292,9 +292,21 @@ public partial class Member_Import : System.Web.UI.Page
                 }
             }
 
-            if (result != CSVAnalyzer.CSVStatus.OK)
-                pnlAudit.Visible = true;
+            pnlAudit.Visible = (result != CSVAnalyzer.CSVStatus.OK);
             lblAudit.Text = csvAnalyzer.Audit;
+
+            if (result == CSVAnalyzer.CSVStatus.Broken)
+            {
+                lblAudit.CssClass = "error";
+                ExpandoAudit.ExpandoControl.Collapsed = false;
+                ExpandoAudit.ExpandoControl.ClientState = "false";
+            }
+            else
+            {
+                lblAudit.CssClass = string.Empty;
+                ExpandoAudit.ExpandoControl.Collapsed = true;
+                ExpandoAudit.ExpandoControl.ClientState = "true";
+            }
 
             pnlAudit.Visible = pnlConverted.Visible || !String.IsNullOrEmpty(lblAudit.Text);
         }
@@ -473,7 +485,7 @@ public partial class Member_Import : System.Web.UI.Page
 
         try
         {
-            IEnumerable<CloudAhoyFlight> rgcaf = await client.GetFlights(User.Identity.Name, dtStart, dtEnd);
+            IEnumerable<CloudAhoyFlight> rgcaf = await client.GetFlights(User.Identity.Name, dtStart, dtEnd).ConfigureAwait(false);
             foreach (CloudAhoyFlight caf in rgcaf)
             {
                 if (caf.ToLogbookEntry() is PendingFlight pendingflight)
