@@ -214,7 +214,7 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(sz))
                 return DateTime.MinValue;
             else if (sz.EndsWith("Z", StringComparison.OrdinalIgnoreCase))
-                return DateTime.Parse(sz, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                return DateTime.Parse(sz, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
             else if (rZuluDateLocalWithOffset.IsMatch(sz))
                 return DateTime.Parse(sz, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal);
             else

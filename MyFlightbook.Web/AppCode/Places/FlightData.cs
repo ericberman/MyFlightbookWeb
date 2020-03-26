@@ -101,7 +101,7 @@ namespace MyFlightbook.Telemetry
         private readonly static Regex regNakedTime = new Regex("(\\d{1,2}):(\\d{1,2})(?::(\\d{1,2}))?", RegexOptions.Compiled | RegexOptions.CultureInvariant);
         private readonly static Regex regUTCOffset = new Regex("(-)?(\\d{1,2}):(\\d{1,2})", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-        private int ParseToInt(string szNumber)
+        private static int ParseToInt(string szNumber)
         {
             if (!Int32.TryParse(szNumber, out int i))
             {
@@ -2071,31 +2071,36 @@ namespace MyFlightbook.Telemetry
             MatchedFlightDescription = Status = TelemetryFileName = string.Empty;
         }
 
+        private static DateTime? ExtractDate(string szData, out LatLong ll)
+        {
+            ll = null;
+            using (FlightData fd = new FlightData())
+            {
+                if (fd.ParseFlightData(szData))
+                {
+                    if (fd.HasLatLongInfo)
+                    {
+                        LatLong[] rgll = fd.GetPath();
+                        if (rgll != null && rgll.Length > 0)
+                            ll = rgll[0];
+                    }
+                    if (fd.HasDateTime && fd.Data.Rows.Count > 0)
+                        return (DateTime)fd.Data.Rows[0][fd.Data.DateColumn];
+                }
+                else
+                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.ImportErrCantParse, fd.ErrorString));
+            }
+            return null;
+        }
+
         public void MatchToFlight(string szData, string szUser, DateTime? dtFallback)
         {
-            LatLong ll = null;
-
             if (String.IsNullOrEmpty(szUser))
                 throw new UnauthorizedAccessException();
 
             try
             {
-                using (FlightData fd = new FlightData())
-                {
-                    if (fd.ParseFlightData(szData))
-                    {
-                        if (fd.HasLatLongInfo)
-                        {
-                            LatLong[] rgll = fd.GetPath();
-                            if (rgll != null && rgll.Length > 0)
-                                ll = rgll[0];
-                        }
-                        if (fd.HasDateTime && fd.Data.Rows.Count > 0)
-                            Date = (DateTime)fd.Data.Rows[0][fd.Data.DateColumn];
-                    }
-                    else
-                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.ImportErrCantParse, fd.ErrorString));
-                }
+                Date = ExtractDate(szData, out LatLong ll);
 
                 if (!Date.HasValue)
                 {
