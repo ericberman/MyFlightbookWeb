@@ -32,7 +32,7 @@ public partial class Member_AddEndorsement : System.Web.UI.Page
             lblDisclaimerResponse2.Text = Branding.ReBrand(Resources.SignOff.SignDisclaimerAgreement2);
 
             CFIStudentMap sm = new CFIStudentMap(Page.User.Identity.Name);
-            if (sm.Instructors.Count() == 0)
+            if (!sm.Instructors.Any())
             {
                 mfbEditEndorsement1.Mode = EndorsementMode.StudentPullAdHoc;
                 mvAddEndorsement.SetActiveView(vwAcceptTerms);
