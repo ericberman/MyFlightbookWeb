@@ -626,7 +626,7 @@ namespace MyFlightbook.Printing
                     flightIndexOnPage = po.FlightsPerPage;
 
                 dtLastEntry = led.Date;
-                led.OptionalColumns = po.OptionalColumns;
+                led.SetOptionalColumns(po.OptionalColumns);
                 if ((po.FlightsPerPage > 0 && flightIndexOnPage >= po.FlightsPerPage) || currentPage == null)   // need to start a new page.
                 {
                     flightIndexOnPage = 0;  // reset
@@ -663,11 +663,11 @@ namespace MyFlightbook.Printing
                 if (po.FlightsPerPage > 0)
                 {
                     if (!dictPageTotals.ContainsKey(szCatClassKey))
-                        dictPageTotals[szCatClassKey] = new LogbookEntryDisplay() { RowType = LogbookEntryDisplay.LogbookRowType.PageTotal, CatClassDisplay = szCatClassKey, OptionalColumns = po.OptionalColumns };
+                        dictPageTotals[szCatClassKey] = new LogbookEntryDisplay(po.OptionalColumns) { RowType = LogbookEntryDisplay.LogbookRowType.PageTotal, CatClassDisplay = szCatClassKey  };
                     dictPageTotals[szCatClassKey].AddFrom(led);
                 }
                 if (!dictRunningTotals.ContainsKey(szCatClassKey))
-                    dictRunningTotals[szCatClassKey] = new LogbookEntryDisplay() { RowType = LogbookEntryDisplay.LogbookRowType.RunningTotal, CatClassDisplay = szCatClassKey, OptionalColumns = po.OptionalColumns };
+                    dictRunningTotals[szCatClassKey] = new LogbookEntryDisplay(po.OptionalColumns) { RowType = LogbookEntryDisplay.LogbookRowType.RunningTotal, CatClassDisplay = szCatClassKey };
                 dictRunningTotals[szCatClassKey].AddFrom(led);
             }
 
@@ -702,7 +702,7 @@ namespace MyFlightbook.Printing
             if (d == null || d.Count <= 1)
                 return;
 
-            LogbookEntryDisplay ledAll = new LogbookEntryDisplay() { RowType = rowType, OptionalColumns = optionalColumns };
+            LogbookEntryDisplay ledAll = new LogbookEntryDisplay(optionalColumns) { RowType = rowType };
             foreach (LogbookEntryDisplay led in d.Values)
                 ledAll.AddFrom(led);
             ledAll.CatClassDisplay = Resources.LogbookEntry.PrintTotalsAllCatClass;

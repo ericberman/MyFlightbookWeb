@@ -2887,12 +2887,21 @@ namespace MyFlightbook
         public decimal GroundInstructionTotal { get; set; }
         public decimal IFRTimeTotal { get; set; }
 
-        public Collection<decimal> OptionalColumnTotals { get; private set; }
+        public Collection<decimal> OptionalColumnTotals { get; } = new Collection<decimal>();
 
         /// <summary>
         /// Any additional columns to display.  Use OptionalColumnValue to get the value, or, after using AddFrom, use OptionalColumnTotalValue to retrieve the total
         /// </summary>
-        public Collection<OptionalColumn> OptionalColumns { get; set; }
+        public Collection<OptionalColumn> OptionalColumns { get; } = new Collection<OptionalColumn>();
+
+        public void SetOptionalColumns(IEnumerable<OptionalColumn> rgoc)
+        {
+            OptionalColumns.Clear();
+            if (rgoc == null)
+                return;
+            foreach (OptionalColumn oc in rgoc)
+                OptionalColumns.Add(oc);
+        }
 
         // Glider counts
         public int SelfLaunchTotal { get; set; }
@@ -3261,6 +3270,11 @@ namespace MyFlightbook
             if (flightID != idFlightNew && !String.IsNullOrEmpty(szUser))
                 FLoadFromDB(flightID, szUser, lto, fForceLoad, (dr) => { InitPropertiesFromDB(dr); });
         }
+
+        public LogbookEntryDisplay(IEnumerable<OptionalColumn> rgoc) : this()
+        {
+            SetOptionalColumns(rgoc);
+        }
         #endregion
 
         /// <summary>
@@ -3411,7 +3425,7 @@ namespace MyFlightbook
                 {
                     if (OptionalColumnTotals == null || OptionalColumnTotals.Count != OptionalColumns.Count)
                     {
-                        OptionalColumnTotals = new Collection<decimal>();
+                        OptionalColumnTotals.Clear();
                         // Initialize to 0's.
                         for (int i = 0; i < OptionalColumns.Count; i++)
                             OptionalColumnTotals.Add(0.0M);
