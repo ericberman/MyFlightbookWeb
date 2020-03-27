@@ -158,12 +158,10 @@ namespace MyFlightbook.OAuth.CloudAhoy
             UriBuilder builder = new UriBuilder(FlightsEndpoint);
             NameValueCollection nvc = HttpUtility.ParseQueryString(builder.Query);
 
-            DateTime dtUnix = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-
             if (dtStart.HasValue)
-                nvc["start"] = (new DateTime(dtStart.Value.Year, dtStart.Value.Month, dtStart.Value.Day, 0, 0, 0, DateTimeKind.Utc)).Subtract(dtUnix).TotalSeconds.ToString(CultureInfo.InvariantCulture);
+                nvc["start"] = (new DateTime(dtStart.Value.Year, dtStart.Value.Month, dtStart.Value.Day, 0, 0, 0, DateTimeKind.Utc)).UnixSeconds().ToString(CultureInfo.InvariantCulture);
             if (dtEnd.HasValue)
-                nvc["end"] = (new DateTime(dtEnd.Value.Year, dtEnd.Value.Month, dtEnd.Value.Day, 23, 59, 59, DateTimeKind.Utc)).Subtract(dtUnix).TotalSeconds.ToString(CultureInfo.InvariantCulture);
+                nvc["end"] = (new DateTime(dtEnd.Value.Year, dtEnd.Value.Month, dtEnd.Value.Day, 23, 59, 59, DateTimeKind.Utc)).UnixSeconds().ToString(CultureInfo.InvariantCulture);
 
             CloudAhoyFlightCollection lstResult = new CloudAhoyFlightCollection();
 

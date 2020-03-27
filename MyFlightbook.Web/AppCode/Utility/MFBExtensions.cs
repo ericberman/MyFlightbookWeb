@@ -120,6 +120,26 @@ namespace MyFlightbook
                 return DateTime.MinValue;
             return dt;
         }
+
+        /// <summary>
+        /// Returns the number of milliseconds since the unix reference date.
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public static double UnixMilliseconds(this DateTime dt)
+        {
+            return dt.Subtract(dtUnixReferenceDate).TotalMilliseconds;
+        }
+
+        /// <summary>
+        /// Returns the number of seconds since the unix reference date.
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public static double UnixSeconds(this DateTime dt)
+        {
+            return dt.Subtract(dtUnixReferenceDate).TotalSeconds;
+        }
         #endregion
 
         #region String Extensions
@@ -546,7 +566,6 @@ namespace MyFlightbook
                 return null;
             return new Uri(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}{3}", scheme, host, (port == 80 || port == 443) ? string.Empty : String.Format(CultureInfo.InvariantCulture, ":{0}", port), VirtualPathUtility.ToAbsolute(s)));
         }
-        #endregion
 
         /// <summary>
         /// Replaces instances of "UTC" with "Custom Time Zone" if you have a non-UTC time specified.
@@ -560,6 +579,7 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(szLabel));
             return (tz == null || tz.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0) ? szLabel : szLabel.Replace("UTC", Resources.LocalizedText.CustomTimeZone);
         }
+        #endregion
 
         #region Decimal Extensions
         static public string ToHHMM(this decimal d)
@@ -618,6 +638,19 @@ namespace MyFlightbook
                     sb.Append(" ");
             }
             return sb.ToString();
+        }
+
+        private static readonly DateTime dtUnixReferenceDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+        /// <summary>
+        /// Converts seconds (or milliseconds) since a reference unix date (Jan 1, 1970).  The system will assume seconds unless that's more than 5 days in the future.
+        /// </summary>
+        /// <param name="i">Number of seconds (milliseconds)</param>
+        /// <returns></returns>
+        public static DateTime DateFromUnixSeconds(this Int64 i)
+        {
+            // check for whole seconds - if that yields a date more than 5 days in the future, we can assume milliseconds
+            return dtUnixReferenceDate.AddSeconds(dtUnixReferenceDate.AddSeconds(i).CompareTo(DateTime.UtcNow.AddDays(5)) > 0 ? i / 1000 : i);
         }
         #endregion
 

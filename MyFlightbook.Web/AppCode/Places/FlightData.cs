@@ -123,7 +123,7 @@ namespace MyFlightbook.Telemetry
         {
             // UnixTimeStamp, at least in ForeFlight, is # of ms since Jan 1 1970.
             if (Int64.TryParse(szValue, out Int64 i))
-                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(i / 1000);
+                return i.DateFromUnixSeconds();
             else
                 return szValue.ParseUTCDate();
         }
