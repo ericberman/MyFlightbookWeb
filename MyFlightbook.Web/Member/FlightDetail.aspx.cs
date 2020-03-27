@@ -218,7 +218,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         UpdateNextPrevious();
     }
 
-    protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClicked fic)
+    protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
     {
         if (fic == null)
             throw new ArgumentNullException(nameof(fic));
@@ -731,7 +731,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         if (e == null)
             throw new ArgumentNullException(nameof(e));
         Controls_METAR m = (Controls_METAR)fmvLE.FindControl("METARDisplay");
-        m.METARs = new ADDSService().LatestMETARSForAirports(CurrentFlight.Route);
+        m.METARs = ADDSService.LatestMETARSForAirports(CurrentFlight.Route);
     }
 
     protected void mfbFlightContextMenu_DeleteFlight(object sender, LogbookEventArgs e)

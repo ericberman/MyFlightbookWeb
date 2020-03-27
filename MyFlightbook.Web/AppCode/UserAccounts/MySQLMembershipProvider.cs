@@ -62,7 +62,7 @@ namespace Andri.Web
         private const string tableName = "Users";
         private string connectionString;
 
-        private string encryptionKey
+        private static string encryptionKey
         {
             get { return LocalConfig.SettingForKey("UserPasswordHashKey"); }
         }
@@ -1509,7 +1509,7 @@ namespace Andri.Web
         // key values from the configuration.
         //
 
-        private byte[] HexToByte(string hexString)
+        private static byte[] HexToByte(string hexString)
         {
             byte[] returnBytes = new byte[hexString.Length / 2];
             for (int i = 0; i < returnBytes.Length; i++)

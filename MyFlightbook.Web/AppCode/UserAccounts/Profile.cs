@@ -781,7 +781,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="sz">The JSON string</param>
         /// <returns>The authorization state, or null if sz is null</returns>
-        private AuthorizationState AuthStateFromString(string sz)
+        private static AuthorizationState AuthStateFromString(string sz)
         {
             if (String.IsNullOrEmpty(sz))
                 return null;
@@ -1136,7 +1136,7 @@ namespace MyFlightbook
         #endregion
 
         #region Profile-based currency items (i.e., not related to flying - things like medical and flight reviews)
-        private CurrencyStatusItem StatusForDate(DateTime dt, string szLabel, CurrencyStatusItem.CurrencyGroups rt)
+        private static CurrencyStatusItem StatusForDate(DateTime dt, string szLabel, CurrencyStatusItem.CurrencyGroups rt)
         {
             if (dt.CompareTo(DateTime.MinValue) != 0)
             {

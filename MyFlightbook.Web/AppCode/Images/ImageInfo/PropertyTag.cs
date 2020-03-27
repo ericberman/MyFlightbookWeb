@@ -127,7 +127,7 @@ namespace gma.Drawing.ImageInfo
 		
 		///<summary>Returns the Display Name of a Property Item. The current imlementation will return a name of the Enumeration member.</summary>
 		///<param name="aId">PropertyId to get description for.</param>
-		private string getNameFromId(PropertyTagId aId) 
+		private static string getNameFromId(PropertyTagId aId) 
 		{
 			return aId.ToString();	
 		}

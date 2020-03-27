@@ -238,7 +238,7 @@ namespace OAuthAuthorizationServer.Services
         #region Output
         protected enum OutputFormat { XML, JSON, JSONP }
 
-        private string ObjectToJSon(object o)
+        private static string ObjectToJSon(object o)
         {
             return (o == null) ? string.Empty : JsonConvert.SerializeObject(o, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
         }

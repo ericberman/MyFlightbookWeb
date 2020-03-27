@@ -209,7 +209,7 @@ namespace MyFlightbook.Web.Public
             UpdateQuery();
         }
 
-        protected void mfbQueryDescriptor_QueryUpdated(object sender, FilterItemClicked fic)
+        protected void mfbQueryDescriptor_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
         {
             if (fic == null)
                 throw new ArgumentNullException(nameof(fic));

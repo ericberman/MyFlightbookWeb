@@ -216,7 +216,7 @@ public partial class Member_FlightAnalysis : System.Web.UI.Page
         UpdateChart();
     }
 
-    protected string PathLatLongArrayID
+    protected static string PathLatLongArrayID
     {
         get {return "rgll";}
     }

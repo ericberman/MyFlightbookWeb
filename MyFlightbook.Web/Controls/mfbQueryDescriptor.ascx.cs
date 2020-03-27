@@ -16,7 +16,7 @@ public partial class Controls_mfbQueryDescriptor : System.Web.UI.UserControl
 
     public FlightQuery DataSource { get; set; }
 
-    public event EventHandler<FilterItemClicked> QueryUpdated = null;
+    public event EventHandler<FilterItemClickedEventArgs> QueryUpdated = null;
 
     public bool ShowEmptyFilter
     {
@@ -46,7 +46,7 @@ public partial class Controls_mfbQueryDescriptor : System.Web.UI.UserControl
 
 
 
-    protected void filterItem_DeleteItemClicked(object sender, FilterItemClicked fic)
+    protected void filterItem_DeleteItemClicked(object sender, FilterItemClickedEventArgs fic)
     {
         if (fic == null)
             throw new ArgumentNullException(nameof(fic));

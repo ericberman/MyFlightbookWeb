@@ -83,7 +83,7 @@ namespace MyFlightbook.Solar
         /// <param name="dt">Requested day (only m/d/y matter)</param>
         /// <param name="minutes"></param>
         /// <returns></returns>
-        private DateTime MinutesToDateTime(DateTime dt, double minutes)
+        private static DateTime MinutesToDateTime(DateTime dt, double minutes)
         {
             DateTime dtUtc = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, DateTimeKind.Utc);
             long ticks = dtUtc.Ticks;

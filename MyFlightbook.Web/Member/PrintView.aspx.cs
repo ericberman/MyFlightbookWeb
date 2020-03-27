@@ -209,7 +209,7 @@ public partial class Member_PrintView : System.Web.UI.Page
         RefreshLogbookData();
     }
 
-    protected void mfbQueryDescriptor_QueryUpdated(object sender, FilterItemClicked fic)
+    protected void mfbQueryDescriptor_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
     {
         if (fic == null)
             throw new ArgumentNullException(nameof(fic));

@@ -576,7 +576,7 @@ namespace MyFlightbook.Printing
         #endregion
 
         #region Subtotals collections
-        private List<LogbookEntryDisplay> SortedSubtotals(IDictionary<string, LogbookEntryDisplay> d)
+        private static List<LogbookEntryDisplay> SortedSubtotals(IDictionary<string, LogbookEntryDisplay> d)
         {
             List<LogbookEntryDisplay> lstResult = new List<LogbookEntryDisplay>();
             foreach (string key in d.Keys)

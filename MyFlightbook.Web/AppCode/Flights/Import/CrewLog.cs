@@ -150,7 +150,7 @@ namespace MyFlightbook.ImportFlights
             return sz.Contains("PIC,PF,PNF") && sz.Contains("AIT,SIT,NITE,DT,NT,DL") && sz.Contains("(CREWLOG");
         }
 
-        private bool IsEmptyCell(string sz)
+        private static bool IsEmptyCell(string sz)
         {
             return String.IsNullOrWhiteSpace(sz) && sz.CompareCurrentCultureIgnoreCase("-") != 0;
         }

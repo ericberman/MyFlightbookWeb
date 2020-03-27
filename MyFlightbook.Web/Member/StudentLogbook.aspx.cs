@@ -108,7 +108,7 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
         UpdateQuery();
     }
 
-    protected void mfbQueryDescriptor_QueryUpdated(object sender, FilterItemClicked fic)
+    protected void mfbQueryDescriptor_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
     {
         if (fic == null)
             throw new ArgumentNullException(nameof(fic));

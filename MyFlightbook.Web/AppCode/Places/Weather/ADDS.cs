@@ -335,12 +335,12 @@ namespace MyFlightbook.Weather.ADDS
     /// <summary>
     /// Summary description for ADDS
     /// </summary>
-    public class ADDSService
+    public static class ADDSService
     {
         private const string szRecentTemplate = @"http://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&format=xml&requestType=retrieve&hoursBeforeNow=3&mostRecent=false&stationString={0}";
 
         #region Getting requests
-        private response GetRequest(string szU)
+        private static response GetRequest(string szU)
         {
             WebRequest req = (HttpWebRequest)WebRequest.Create(new Uri(szU));
             //Set values for the request back
@@ -365,11 +365,7 @@ namespace MyFlightbook.Weather.ADDS
         }
         #endregion
 
-        public ADDSService()
-        {
-        }
-
-        public response METARsForAirports(string airports)
+        public static response METARsForAirports(string airports)
         {
             if (string.IsNullOrEmpty(airports))
                 return null;
@@ -378,7 +374,7 @@ namespace MyFlightbook.Weather.ADDS
             return GetRequest(String.Format(CultureInfo.InvariantCulture, szRecentTemplate, fixedCodes));
         }
 
-        public IEnumerable<METAR> LatestMETARSForAirports(string airports)
+        public static IEnumerable<METAR> LatestMETARSForAirports(string airports)
         {
             response r = METARsForAirports(airports);
 

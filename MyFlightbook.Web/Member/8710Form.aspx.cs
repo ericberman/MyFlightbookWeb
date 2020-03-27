@@ -179,7 +179,7 @@ public partial class Member_8710Form : System.Web.UI.Page
         mfbQueryDescriptor1.DataBind();
     }
 
-    protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClicked fic)
+    protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
     {
         if (fic == null)
             throw new ArgumentNullException(nameof(fic));

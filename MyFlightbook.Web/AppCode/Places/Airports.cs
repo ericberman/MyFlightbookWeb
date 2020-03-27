@@ -526,7 +526,7 @@ namespace MyFlightbook.Airports
         {
             if (fq == null)
                 throw new ArgumentNullException(nameof(fq));
-            if (String.IsNullOrEmpty(fq.UserName) && (lstIDs == null || lstIDs.Count() == 0))
+            if (String.IsNullOrEmpty(fq.UserName) && (lstIDs == null || !lstIDs.Any()))
                 throw new MyFlightbookException("Don't get all flights as KML for an empty user!!");
 
             if (lstIDs != null)
@@ -1771,7 +1771,7 @@ namespace MyFlightbook.Airports
         {
             List<AirportList> lst = new List<AirportList>();
 
-            if (rgRoutes == null || rgRoutes.Count() == 0)
+            if (rgRoutes == null || !rgRoutes.Any())
                 return new ListsFromRoutesResults(lst, new AirportList(string.Empty));
 
             // Create a single "worker" airportlist from which we will create the others.
@@ -2135,7 +2135,7 @@ namespace MyFlightbook.Airports
             return lst.ToArray();
         }
 
-        private string RegexpForCode(string szCode)
+        private static string RegexpForCode(string szCode)
         {
             string szNormal = szCode.ToUpper(CultureInfo.InvariantCulture);
             if (szNormal.Length == 4 && szNormal.StartsWith("K", StringComparison.CurrentCultureIgnoreCase))
@@ -2143,7 +2143,7 @@ namespace MyFlightbook.Airports
             return (szNormal.Length == 3) ? String.Format(CultureInfo.InvariantCulture, "K?{0}", szNormal) : szNormal;
         }
 
-        private string KeyForCityPair(string szCode1, string szCode2)
+        private static string KeyForCityPair(string szCode1, string szCode2)
         {
             return String.Format(CultureInfo.InvariantCulture, "{0}-{1}", szCode1, szCode2);
         }

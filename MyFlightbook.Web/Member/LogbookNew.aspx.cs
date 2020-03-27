@@ -363,7 +363,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         }
     }
 
-    protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClicked fic)
+    protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
     {
         if (fic == null)
             throw new ArgumentNullException(nameof(fic));

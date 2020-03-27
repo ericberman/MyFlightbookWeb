@@ -507,7 +507,7 @@ namespace MyFlightbook.Achievements
         #endregion
 
         #region Determining ratings that are held based on checkrides taken
-        private PilotLicense MergeCheckrides(IEnumerable<Checkride> lstIn)
+        private static PilotLicense MergeCheckrides(IEnumerable<Checkride> lstIn)
         {
             PilotLicense pl = null;
 
@@ -541,7 +541,7 @@ namespace MyFlightbook.Achievements
                 m_lstLicenses.Add(pl);
         }
 
-        private void AddCheckridesForPrivileges(Dictionary<string, Checkride> d, IEnumerable<Checkride> rgcr)
+        private static void AddCheckridesForPrivileges(Dictionary<string, Checkride> d, IEnumerable<Checkride> rgcr)
         {
             foreach (Checkride cr in rgcr)
                 d[cr.Privilege] = cr;   // overwrite since we're calling this from most to least restrictive license.

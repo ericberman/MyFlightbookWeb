@@ -1502,7 +1502,7 @@ WHERE
         /// </summary>
         /// <param name="rgac"></param>
         /// <returns></returns>
-        private int GetNewVersion(IEnumerable<Aircraft> rgac)
+        private static int GetNewVersion(IEnumerable<Aircraft> rgac)
         {
             int max = 0;
             foreach (Aircraft ac in rgac)
@@ -1677,7 +1677,7 @@ WHERE
             return ml;
         }
 
-        private void AddToArrayIfNotNull(List<MaintenanceLog> al, MaintenanceLog ml)
+        private static void AddToArrayIfNotNull(List<MaintenanceLog> al, MaintenanceLog ml)
         {
             if (ml != null)
                 al.Add(ml);

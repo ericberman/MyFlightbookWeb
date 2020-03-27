@@ -285,7 +285,7 @@ namespace MyFlightbook.ImportFlights
              * CAFRS is the army reporting system, and it imports more or less directly, but instead of having 
              * separate columns for things like night or PIC, they have a column for flight conditions and a column for role
              */
-            private void AddCrossFilledPropertyWithID(LogbookEntry le, int idPropType, List<CustomFlightProperty> lstProps)
+            private static void AddCrossFilledPropertyWithID(LogbookEntry le, int idPropType, List<CustomFlightProperty> lstProps)
             {
                 if (le == null || lstProps == null || le.TotalFlightTime == 0)
                     return;
@@ -386,19 +386,19 @@ namespace MyFlightbook.ImportFlights
                 }
             }
 
-            private void CrossFillPIC(LogbookEntryBase le)
+            private static void CrossFillPIC(LogbookEntryBase le)
             {
                 if (le.PIC == 0)
                     le.PIC = le.TotalFlightTime;
             }
 
-            private void CrossFillSIC(LogbookEntryBase le)
+            private static void CrossFillSIC(LogbookEntryBase le)
             {
                 if (le.SIC == 0)
                     le.SIC = le.TotalFlightTime;
             }
 
-            private void CrossFillCFI(LogbookEntryBase le)
+            private static void CrossFillCFI(LogbookEntryBase le)
             {
                 if (le.CFI == 0)
                     le.CFI = le.TotalFlightTime;

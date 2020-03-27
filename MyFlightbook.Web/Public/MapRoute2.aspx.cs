@@ -110,7 +110,7 @@ public partial class MapRoute : System.Web.UI.Page
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));
-        METAR.METARs = new ADDSService().LatestMETARSForAirports(txtAirports.Text);
+        METAR.METARs = ADDSService.LatestMETARSForAirports(txtAirports.Text);
         btnMetars.Visible = false;
     }
 

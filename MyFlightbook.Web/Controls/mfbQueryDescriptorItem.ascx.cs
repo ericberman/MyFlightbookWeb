@@ -34,7 +34,7 @@ public partial class Controls_mfbQueryDescriptorItem : System.Web.UI.UserControl
         set { hdnPropName.Value = value; }
     }
 
-    public event EventHandler<FilterItemClicked> DeleteItemClicked = null;
+    public event EventHandler<FilterItemClickedEventArgs> DeleteItemClicked = null;
     #endregion
 
     protected void Page_Load(object sender, EventArgs e)
@@ -44,7 +44,7 @@ public partial class Controls_mfbQueryDescriptorItem : System.Web.UI.UserControl
 
     protected void btnDelete_Click(object sender, ImageClickEventArgs e)
     {
-        FilterItemClicked fic = new FilterItemClicked(new QueryFilterItem(Title, Description, PropName));
+        FilterItemClickedEventArgs fic = new FilterItemClickedEventArgs(new QueryFilterItem(Title, Description, PropName));
         DeleteItemClicked?.Invoke(this, fic);
     }
 }

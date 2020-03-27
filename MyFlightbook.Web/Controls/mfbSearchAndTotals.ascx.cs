@@ -88,7 +88,7 @@ public partial class Controls_mfbSearchAndTotals : System.Web.UI.UserControl
         mfbQueryDescriptor1.DataBind();
     }
 
-    protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClicked fic)
+    protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
     {
         if (fic == null)
             throw new ArgumentNullException(nameof(fic));

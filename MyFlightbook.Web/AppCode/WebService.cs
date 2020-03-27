@@ -163,7 +163,7 @@ namespace MyFlightbook
         private const long TicksPerSecond = (1000 * 10000);
 
         private static string[] rgszAuthorizedService = null;
-        private string[] AuthorizedServices
+        private static string[] AuthorizedServices
         {
             get
             {

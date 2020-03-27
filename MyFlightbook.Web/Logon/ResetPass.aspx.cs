@@ -71,7 +71,7 @@ public partial class ResetPass : System.Web.UI.Page
         }
     }
 
-    private void CheckStatus(PasswordResetRequest prr)
+    private static void CheckStatus(PasswordResetRequest prr)
     {
         if (prr == null)
             throw new ArgumentNullException(nameof(prr));

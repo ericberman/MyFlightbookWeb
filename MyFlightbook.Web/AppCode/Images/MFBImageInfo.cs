@@ -751,7 +751,7 @@ namespace MyFlightbook.Image
                         if (IsLocal)
                             File.Delete(szLocalPath);
                         else
-                            new AWSS3ImageManager().DeleteImageOnS3(this);
+                            AWSS3ImageManager.DeleteImageOnS3(this);
                     }
                 }
                 catch (Exception ex)
@@ -801,7 +801,7 @@ namespace MyFlightbook.Image
                     rgfi[0].MoveTo(szDirDest + FullImageFile);
             }
             else
-                new AWSS3ImageManager().MoveImageOnS3(s3KeyOld, S3Key);
+                AWSS3ImageManager.MoveImageOnS3(s3KeyOld, S3Key);
 
             rgfi = diSrc.GetFiles(ThumbnailFile);
             if (rgfi != null && rgfi.Length > 0)
@@ -1804,7 +1804,7 @@ namespace MyFlightbook.Image
         /// </summary>
         /// <param name="ex">The exception</param>
         /// <returns>A serialized exception string.</returns>
-        private string WrapAmazonS3Exception(AmazonS3Exception ex)
+        private static string WrapAmazonS3Exception(AmazonS3Exception ex)
         {
             StringBuilder sb = new StringBuilder();
             if (ex.Data != null)
@@ -1820,7 +1820,7 @@ namespace MyFlightbook.Image
         /// </summary>
         /// <param name="szSrc">Source path (key)</param>
         /// <param name="szDst">Destination path (key)</param>
-        public void MoveImageOnS3(string szSrc, string szDst)
+        public static void MoveImageOnS3(string szSrc, string szDst)
         {
             try
             {
@@ -1853,7 +1853,7 @@ namespace MyFlightbook.Image
         /// Deletes the image from S3.  The actual operation happens asynchronously; the result is not captured.
         /// </summary>
         /// <param name="mfbii">The image to delete</param>
-        public void DeleteImageOnS3(MFBImageInfo mfbii)
+        public static void DeleteImageOnS3(MFBImageInfo mfbii)
         {
             if (mfbii == null)
                 return;

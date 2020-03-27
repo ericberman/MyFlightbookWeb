@@ -83,7 +83,7 @@ public partial class Controls_mfbMaintainAircraft : System.Web.UI.UserControl
         mfbDeadlines1.ForceRefresh();
     }
 
-    private void SetTextForDate(Label lbl, DateTime dt)
+    private static void SetTextForDate(Label lbl, DateTime dt)
     {
         if (dt.CompareTo(DateTime.MinValue) == 0)
         {

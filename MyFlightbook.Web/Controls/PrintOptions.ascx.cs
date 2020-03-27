@@ -109,7 +109,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
         pnlOptionalColumns.Visible = pl.SupportsOptionalColumns;
     }
 
-    private void AddOptionalColumnForValue(string value, Collection<OptionalColumn> lst)
+    private static void AddOptionalColumnForValue(string value, Collection<OptionalColumn> lst)
     {
         if (String.IsNullOrEmpty(value))
             return;

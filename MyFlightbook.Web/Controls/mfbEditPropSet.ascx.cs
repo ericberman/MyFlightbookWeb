@@ -248,7 +248,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         cmbPropsToAdd.DataBind();
     }
 
-    private string IDForPropType(CustomPropertyType cpt)
+    private static string IDForPropType(CustomPropertyType cpt)
     {
         return String.Format(CultureInfo.InvariantCulture, "editProp{0}", cpt.PropTypeID);
     }

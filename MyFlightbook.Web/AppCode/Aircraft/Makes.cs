@@ -1077,7 +1077,7 @@ FROM models
         /// <param name="szMatchField">The DB query field against which to match</param>
         /// <param name="lstTerms">The list of WHERE terms to which to add</param>
         /// <param name="lstParams">The list of MySQLParameters to which to add</param>
-        private void AddQueryTerm(string szQ, string szParamName, string szMatchField, List<string> lstTerms, List<MySqlParameter> lstParams)
+        private static void AddQueryTerm(string szQ, string szParamName, string szMatchField, List<string> lstTerms, List<MySqlParameter> lstParams)
         {
             if (String.IsNullOrEmpty(szQ))
                 return;

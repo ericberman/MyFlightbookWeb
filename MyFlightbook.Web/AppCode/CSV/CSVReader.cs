@@ -191,7 +191,7 @@ namespace JouniHeikniemi.Tools.Text
         /// <param name="data">The row's data</param>
         /// <param name="startFrom">The index at which to begin searching</param>
         /// <returns>The index of the next naked double-quote mark.  If one isn't found, it returns -1</returns>
-        private int NextNakedDoubleQuote(string data, int startFrom)
+        private static int NextNakedDoubleQuote(string data, int startFrom)
         {
 
             int i = startFrom - 1;

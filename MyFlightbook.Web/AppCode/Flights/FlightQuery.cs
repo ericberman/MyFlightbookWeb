@@ -562,11 +562,11 @@ namespace MyFlightbook
                 fqNew.ModelName = null;
             if (fqNew.CatClasses == null || fqNew.CatClasses.Count == 0)
                 fqNew.CatClasses = null;
-            if (fqNew.AircraftIDList == null || fqNew.AircraftIDList.Count() == 0)
+            if (fqNew.AircraftIDList == null || !fqNew.AircraftIDList.Any())
                 fqNew.AircraftIDList = null;
             if (fqNew.AirportList == null || fqNew.AirportList.Count == 0)
                 fqNew.AirportList = null;
-            if (fqNew.MakeIDList == null || fqNew.MakeIDList.Count() == 0)
+            if (fqNew.MakeIDList == null || !fqNew.MakeIDList.Any())
                 fqNew.MakeIDList = null;
             if (fqNew.TypeNames == null || fqNew.TypeNames.Count == 0)
                 fqNew.TypeNames = null;
@@ -627,7 +627,7 @@ namespace MyFlightbook
         [NonSerialized]
         private List<MySqlParameter> m_rgParams = null;
 
-        private DateTime dtStartOfYear { get { return new DateTime(DateTime.Now.Year, 1, 1); } }
+        private static DateTime dtStartOfYear { get { return new DateTime(DateTime.Now.Year, 1, 1); } }
 
         private const string szBreak = "\r\n";
 
@@ -749,7 +749,7 @@ namespace MyFlightbook
         /// <param name="szClause">The clause to add</param>
         /// <param name="f">True to add it, false to do nothing</param>
         /// <param name="conjunction">Conjunction to use (default to "ALL" (AND))</param>
-        private void AddClause(StringBuilder sb, string szClause, Boolean f = true, GroupConjunction conjunction = GroupConjunction.All)
+        private static void AddClause(StringBuilder sb, string szClause, Boolean f = true, GroupConjunction conjunction = GroupConjunction.All)
         {
             if (f && !String.IsNullOrEmpty(szClause))
             {
@@ -762,7 +762,7 @@ namespace MyFlightbook
             }
         }
 
-        private void AppendIfChecked(StringBuilder sb, Boolean f, string sz)
+        private static void AppendIfChecked(StringBuilder sb, Boolean f, string sz)
         {
             if (f)
             {
@@ -1565,11 +1565,12 @@ namespace MyFlightbook
         }
     }
 
-    public class FilterItemClicked : EventArgs
+    public class FilterItemClickedEventArgs
+        : EventArgs
     {
         public QueryFilterItem FilterItem { get; set; }
 
-        public FilterItemClicked(QueryFilterItem qfi = null)
+        public FilterItemClickedEventArgs(QueryFilterItem qfi = null)
             : base()
         {
             FilterItem = qfi ?? new QueryFilterItem();

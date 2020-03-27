@@ -6,7 +6,7 @@ using MyFlightbook.SocialMedia;
 
 /******************************************************
  * 
- * Copyright (c) 2012-2015 MyFlightbook LLC
+ * Copyright (c) 2012-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,7 +18,7 @@ public partial class Controls_mfbGooglePlus : System.Web.UI.UserControl
 
     }
 
-    public Uri AuthURL
+    public static Uri AuthURL
     {
         get 
         {
