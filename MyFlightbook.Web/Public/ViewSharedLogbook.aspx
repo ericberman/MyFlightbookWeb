@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" CodeBehind="ViewSharedLogbook.aspx.cs" Inherits="MyFlightbook.Web.Public.ViewSharedLogbook" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" CodeBehind="ViewSharedLogbook.aspx.cs" Inherits="ViewSharedLogbook" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="~/Controls/mfbLogbook.ascx" TagPrefix="uc1" TagName="mfbLogbook" %>
 <%@ Register Src="~/Controls/mfbCurrency.ascx" TagPrefix="uc1" TagName="mfbCurrency" %>
@@ -13,11 +13,6 @@
 <%@ Register Src="~/Controls/mfbBadgeSet.ascx" TagPrefix="uc1" TagName="mfbBadgeSet" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
 <%@ Register Src="~/Controls/mfbGoogleMapManager.ascx" TagPrefix="uc1" TagName="mfbGoogleMapManager" %>
-
-
-
-
-
 <asp:Content id="Content2" contentplaceholderid="cpPageTitle" runat="Server">
     <asp:Label ID="lblHeader" runat="server"></asp:Label>
 </asp:Content>
