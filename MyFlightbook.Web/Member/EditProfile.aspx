@@ -887,6 +887,7 @@
                     <td style="width: 5em; text-align: center; font-weight:bold;">US$15</td>
                     <td style="width: 5em; text-align: center; font-weight:bold;">US$25</td>
                     <td style="width: 5em; text-align: center; font-weight:bold;">US$40</td>
+                    <td style="width: 5em; text-align: center; font-weight:bold;">US$75</td>
                     <td style="width: 5em; text-align: center; font-weight:bold;">US$100</td>
                 </tr>
                 <asp:Repeater ID="rptAvailableGratuities" runat="server">
@@ -898,6 +899,7 @@
                             <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 15 ? "●" : string.Empty %></td>
                             <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 25 ? "●" : string.Empty %></td>
                             <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 40 ? "●" : string.Empty %></td>
+                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 75 ? "●" : string.Empty %></td>
                             <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 100 ? "●" : string.Empty %></td>
                         </tr>
                     </ItemTemplate>

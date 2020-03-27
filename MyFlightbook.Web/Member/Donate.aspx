@@ -16,20 +16,20 @@
         <input type="hidden" name="hosted_button_id" value="YH8NJZL5W9HTU" />
         <table>
         <tr><td><input type="hidden" name="on0" value="Donation Levels:" />Donation Levels:</td></tr><tr><td><select name="os0">
-            <option value="'Overnight parking fees'">US$10 - Overnight parking fees</option>
-            <option value="'Twice around the pattern'">US$15 - Twice around the pattern</option>
-            <option value="'Shockingly little avgas'">US$25 - Shockingly little avgas</option>
-            <option value="'An hour of instruction'">US$40 - An hour of instruction</option>
-            <option value="'Hundred Dollar Hamburger'">US$100 - Hundred Dollar Hamburger</option>
+	        <option value="'Overnight parking fees'">US$10 - Overnight parking fees</option>
+	        <option value="'Twice around the pattern'">US$15 - Twice around the pattern</option>
+	        <option value="'Shockingly little avgas'">US$25 - Shockingly little avgas</option>
+	        <option value="'An hour of instruction'">US$40 - 1 (1/2?) hour of instruction</option>
+	        <option value="'VFR Eastbound'">US$75 - VFR Eastbound</option>
+	        <option value="'Hundred Dollar Hamburger'">US$100 - Hundred Dollar Hamburger</option>
         </select> </td></tr>
         </table>
-        <input type="hidden" name="custom" value="<%=Page.User.Identity.Name %>" />
+		<input type="hidden" name="custom" value="<%=Page.User.Identity.Name %>" />
         <input type="hidden" name="on1" value="ProductID" />
         <input type="hidden" name="os1" value="MFBDonation" />
         <input type="hidden" name="currency_code" value="USD" />
         <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" />
         <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1" />
-	</div>
     </form>
 </body>
 </html>
