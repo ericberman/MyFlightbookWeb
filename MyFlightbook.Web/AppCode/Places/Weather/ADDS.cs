@@ -351,7 +351,6 @@ namespace MyFlightbook.Weather.ADDS
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             // allows for validation of SSL conversations
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
             try
             {

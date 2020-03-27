@@ -1045,9 +1045,7 @@ ORDER BY dateEarned ASC ";
             // Issue #511: https://stackoverflow.com/questions/2859790/the-request-was-aborted-could-not-create-ssl-tls-secure-channel
             // Need to set security protocol BEFORE WebRequest.Create, not after.
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            // allows for validation of SSL conversations
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
+    
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(new Uri(fSandbox ? strSandbox : strLive));
 
             //Set values for the request back
