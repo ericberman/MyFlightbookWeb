@@ -152,8 +152,8 @@ namespace MyFlightbook.Mapping
         {
             StringBuilder sb = new StringBuilder(String.Format(CultureInfo.InvariantCulture, "https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&key={0}&size={1}x{2}", HttpUtility.UrlEncode(szMapKey), width, height));
 
-            bool fHasRoute = Airports != null && Airports.Count() > 0;
-            bool fHasPath = Path != null && Path.Count() > 0 && ShowRoute;
+            bool fHasRoute = Airports != null && Airports.Any();
+            bool fHasPath = Path != null && Path.Any() && ShowRoute;
 
             if (!String.IsNullOrEmpty(StaticMapAdditionalParams))
                 sb.AppendFormat(CultureInfo.InvariantCulture, "&{0}", StaticMapAdditionalParams);
@@ -224,7 +224,7 @@ namespace MyFlightbook.Mapping
         }
         #endregion
 
-        private string MapTypeToString(GMap_MapType mp)
+        private static string MapTypeToString(GMap_MapType mp)
         {
             switch (mp)
             {
@@ -327,7 +327,7 @@ namespace MyFlightbook.Mapping
         private string ProcessPath()
         {
             StringBuilder sbPath = new StringBuilder();
-            if (Path != null && Path.Count() > 0)
+            if (Path != null && Path.Any())
             {
                 if (BoundingBox == null)
                     BoundingBox = new LatLongBox(Path.ElementAt(0));
@@ -367,7 +367,7 @@ namespace MyFlightbook.Mapping
             StringBuilder sbInitMap = new StringBuilder();
 
             // If there is a path, define a variable to hold it now.
-            if (Path != null && Path.Count() > 0)
+            if (Path != null && Path.Any())
                 sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "var {0} = [{1}];\r\n", PathVarName, szPath);
 
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "var {0} = AddMap(MFBNewMapOptions({{", mapID);
@@ -394,7 +394,7 @@ namespace MyFlightbook.Mapping
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "maxLong: {0}, ", BoundingBox.LongMax);
 
             // pass in the variable that points to the path array (defined above).
-            if (Path != null && Path.Count() > 0)
+            if (Path != null && Path.Any())
                 sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "pathArray: {0}, ", PathVarName);
 
             sbInitMap.AppendFormat(CultureInfo.InvariantCulture, "fAutoZoom: {0}", fAutoZoom ? 1 : 0);

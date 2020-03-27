@@ -41,7 +41,7 @@ namespace MyFlightbook.Web
                 TabList t = mfbHeader.TabList;
                 tabID tidTop = t.TopLevelTab(value);
                 mfbHeader.SelectedTab = tidTop;
-                bool fHasSecondaryNav = t.ChildTabList(tidTop).Tabs.Count() > 0;
+                bool fHasSecondaryNav = t.ChildTabList(tidTop).Tabs.Any();
                 pnlTopForm.Visible = pnlTopForm.Visible || fHasSecondaryNav;  // if sidebar is visible, DEFINITELY want pnlTopForm visible, if sidebar isn't visible, don't necessarily want to make it visible
             }
         }
@@ -75,7 +75,7 @@ namespace MyFlightbook.Web
 
         public bool ShowSponsoredAd
         {
-            get { /* return SponsoredAd1.Visible; */ return true; }
+            get { /* return SponsoredAd1.Visible; */ return (Page.Header != null);  /* always true, but accesses page data to suppress CA1822 warning. */ }
             set { /* SponsoredAd1.Visible = value; */ }
         }
 

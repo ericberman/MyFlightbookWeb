@@ -305,7 +305,7 @@ namespace MyFlightbook.ImportFlights
             /// </summary>
             /// <param name="szTail">Assumed already upper case</param>
             /// <returns></returns>
-            private string CAFRSAdjustTail(LogbookEntry le, string szTail, List<CustomFlightProperty> lstProps)
+            private static string CAFRSAdjustTail(LogbookEntry le, string szTail, List<CustomFlightProperty> lstProps)
             {
                 if (String.IsNullOrEmpty(szTail) || le == null || lstProps == null)
                     return szTail;
@@ -324,7 +324,7 @@ namespace MyFlightbook.ImportFlights
                 return szTail;
             }
 
-            private void SetCAFRSFlightCondition(LogbookEntry le, string szFlightConditions, List<CustomFlightProperty> lstProps)
+            private static void SetCAFRSFlightCondition(LogbookEntry le, string szFlightConditions, List<CustomFlightProperty> lstProps)
             {
                 if (String.IsNullOrEmpty(szFlightConditions) || le == null || le.TotalFlightTime == 0)
                     return;
@@ -357,7 +357,7 @@ namespace MyFlightbook.ImportFlights
                 }
             }
 
-            private void SetCAFRSMissionRole(LogbookEntry le, string szMission, List<CustomFlightProperty> lstProps)
+            private static void SetCAFRSMissionRole(LogbookEntry le, string szMission, List<CustomFlightProperty> lstProps)
             {
                 if (String.IsNullOrEmpty(szMission) || le == null || le.TotalFlightTime == 0)
                     return;
@@ -405,7 +405,7 @@ namespace MyFlightbook.ImportFlights
             }
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-            private void SetCAFRSPilotRole(LogbookEntry le, string szPilotRole, List<CustomFlightProperty> lstProps)
+            private static void SetCAFRSPilotRole(LogbookEntry le, string szPilotRole, List<CustomFlightProperty> lstProps)
             {
                 if (String.IsNullOrEmpty(szPilotRole) || le == null || le.TotalFlightTime == 0)
                     return;

@@ -647,7 +647,7 @@ namespace MyFlightbook.FlightCurrency
         /// <param name="cNightLandings">FS Night Landings</param>
         /// <param name="cApproaches">Approaches</param>
         /// <returns>Human readable description</returns>
-        private string SubDescFromLandings(int cLandings, int cDayLandings, int cNightLandings, int cApproaches)
+        private static string SubDescFromLandings(int cLandings, int cDayLandings, int cNightLandings, int cApproaches)
         {
             string szLandings = (cLandings == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, cLandings.ToString("#,##0", CultureInfo.CurrentCulture), (cLandings == 1) ? Resources.Totals.Landing : Resources.Totals.Landings);
             string szFSDayLandings = (cDayLandings == 0) ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, cDayLandings.ToString("#,##0", CultureInfo.CurrentCulture), Resources.Totals.DayLanding);
