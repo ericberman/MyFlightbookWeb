@@ -775,6 +775,11 @@ namespace MyFlightbook.Telemetry
         public TelemetryDataTable ParsedData { get; set; }
 
         /// <summary>
+        /// Any aircraft tail number that was found.
+        /// </summary>
+        public string TailNumber { get; set; }
+
+        /// <summary>
         /// Any summary parsing error 
         /// </summary>
         public string ErrorString { get; set; }

@@ -27,6 +27,74 @@ namespace MyFlightbook.Telemetry
         }
 
         #region CSV Reading Utilities
+        #region Fix broken CSV
+
+        static private readonly Regex rGarminLog = new Regex("^(?<line1>#airframe_info,.*)\\n?(?<header1>.+)\\n?(?<header2>.+)\\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        static private readonly Regex rGarminAc = new Regex("(?:aircraft_ident=\"(?<aircraftid>[^\"]+)\")", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private string FixedGarminData(string flightData)
+        {
+            if (String.IsNullOrEmpty(flightData))
+                return flightData;
+
+            MatchCollection mc = rGarminLog.Matches(flightData);
+            if (mc.Count != 1)
+                return flightData;
+
+            MatchCollection mcTail = rGarminAc.Matches(mc[0].Groups["line1"].Value);
+            
+            if (mcTail.Count == 1)
+                TailNumber = mcTail[0].Groups["aircraftid"].Value;
+
+            string szTwoLineHeader = String.Format(CultureInfo.InvariantCulture, "{0}\r\n{1}", mc[0].Groups["header1"].Value, mc[0].Groups["header2"].Value);
+
+            string szMergedHeader;
+            MemoryStream ms = null;
+            try
+            {
+                ms = new MemoryStream(Encoding.UTF8.GetBytes(szTwoLineHeader));
+                using (CSVReader csvr = new CSVReader(ms))
+                {
+                    ms = null;
+
+                    string[] rgHeader1 = csvr.GetCSVLine();
+
+                    if (rgHeader1 == null)
+                        return flightData;
+
+                    string[] rgHeader2 = csvr.GetCSVLine();
+
+                    if (rgHeader2 == null || rgHeader1.Length != rgHeader2.Length)
+                        return flightData;
+
+                    string[] rgMerged = new string[rgHeader1.Length];
+                    for (int i = 0; i < rgMerged.Length; i++)
+                        rgMerged[i] = String.Format(CultureInfo.InvariantCulture, "{0} {1}", rgHeader1[i].Trim(), rgHeader2[i].Trim());
+
+                    szMergedHeader = String.Join(",", rgMerged);
+                }
+            }
+            finally
+            {
+                if (ms != null)
+                    ms.Dispose();
+            }
+
+            // Rename key fields:
+            szMergedHeader = szMergedHeader.Replace("Date (yyyy-mm-dd) Lcl Date", "UTC Date")
+                        .Replace("UTC Time (hh:mm:ss) UTC Time", "UTC Time")
+                        .Replace("Latitude (deg) Latitude", "LAT")
+                        .Replace("Longitude (deg) Longitude", "LON")
+                        .Replace("GPS Altitude (ft) AltGPS", "ALTGPS")
+                        .Replace("GPS Ground Speed (kt) GndSpd", "GND SPEED")
+                        .Replace("Magnetic Heading (deg) HDG", "HDG")
+                        .Replace("Indicated Airspeed (kt) IAS", "IAS");
+
+            return rGarminLog.Replace(flightData, szMergedHeader + "\r\n");
+        }
+
+        static private readonly Regex rBrokenTelemetryHeader = new Regex("^LAT,LON,PALT,SPEED,HERROR,DATE,COMMENT[\r\n]+[0-9]{1,2},[0-9]+,[0-9]{1,3},[0-9]+,[0-9]+,[0-9]+,[0-9],[0-9]+,[0-9],.*,.*[\r\n]", RegexOptions.Compiled);
+
         /// <summary>
         /// We have some telemetry in the system from non-US iPhone/Androids that use commas a separators AND local locale with a comma as the decimal separator.
         /// In this case, we can look at the first line to determine it and fix it up.
@@ -37,9 +105,8 @@ namespace MyFlightbook.Telemetry
         {
             // Android:   LAT,LON,PALT,SPEED,HERROR,DATE,COMMENT\r\n
             // MFBIphone: LAT,LON,PALT,SPEED,HERROR,DATE,COMMENT\r\n
-            Regex r = new Regex("^LAT,LON,PALT,SPEED,HERROR,DATE,COMMENT[\r\n]+[0-9]{1,2},[0-9]+,[0-9]{1,3},[0-9]+,[0-9]+,[0-9]+,[0-9],[0-9]+,[0-9],.*,.*[\r\n]", RegexOptions.Compiled);
-            if (!r.IsMatch(flightData))
-                return flightData;
+            if (!rBrokenTelemetryHeader.IsMatch(flightData))
+                return FixedGarminData(flightData);
 
             StringBuilder sbNew = new StringBuilder();
             MemoryStream ms = null;
@@ -104,6 +171,7 @@ namespace MyFlightbook.Telemetry
             }
             return rgszRow;
         }
+        #endregion
 
         /// <summary>
         /// provides state and context for parsing CSV files
