@@ -13,6 +13,7 @@
         <li><asp:HyperLink ID="lnkImgDebug" runat="server" Font-Bold="true" NavigateUrl="~/PlayPen/ImgDbg.aspx">Image Debugger</asp:HyperLink> - See metadata about images.</li>
         <li><asp:HyperLink ID="lnkMergeFlights" runat="server" Font-Bold="true" NavigateUrl="~/PlayPen/MergeFlights.aspx">Merge Flights</asp:HyperLink> - Merge multiple flights into one.  USE WITH CARE - THIS ACTS ON YOUR LOGBOOK DATA!!!!</li>
         <li><asp:HyperLink ID="lnkMergeTelemetry" runat="server" Font-Bold="true" NavigateUrl="~/PlayPen/MergeTelemetry.aspx">Merge Telemetry</asp:HyperLink> - Merge multiple telemetry files into one.</li>
+        <li><asp:HyperLink ID="lnkImportFromTelemetry" runat="server" Font-Bold="true" NavigateUrl="~/PlayPen/BulkImportFromTelemetry.aspx">Bulk Create Flights from Telemetry</asp:HyperLink> - Load multiple telemetry files and create pending flights from each one.</li>
         <li><asp:HyperLink ID="lnkOAuthTest" runat="server" Font-Bold="true" NavigateUrl="~/PlayPen/oAuthClientTest.aspx">oAuth Client Tester</asp:HyperLink> - Tool for testing oAuth access to MyFlightbook; see the <asp:HyperLink ID="lnkDev" NavigateUrl="~/Public/Developer.aspx" runat="server">Developer</asp:HyperLink> page for more information.</li>
     </ul>
 </asp:Content>

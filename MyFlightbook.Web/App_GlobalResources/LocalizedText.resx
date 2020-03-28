@@ -1698,4 +1698,16 @@
   <data name="SearchTipsToolTip" xml:space="preserve">
     <value>See the FAQ for search tips</value>
   </data>
+  <data name="BulkCreateFlightsFromTelemetryTitle" xml:space="preserve">
+    <value>Create Flights From Telemetry</value>
+  </data>
+  <data name="BulkCreateFlightsFromTelemetryTitleDesc1" xml:space="preserve">
+    <value>This will create individual flights based on the telemetry files (GPX, CSV, KML, etc.) that you upload.</value>
+  </data>
+  <data name="BulkCreateFlightsFromTelemetryTitleDesc2" xml:space="preserve">
+    <value>You can find the resulting flights in your pending flights list, where you can review them, add any missing information (like aircraft), and save them to your logbook</value>
+  </data>
+  <data name="BulkCreateFlightsFromTelemetryTitleFinish" xml:space="preserve">
+    <value>Create Flights</value>
+  </data>
 </root>

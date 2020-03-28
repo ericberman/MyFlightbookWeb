@@ -624,6 +624,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Flights From Telemetry.
+        /// </summary>
+        internal static string BulkCreateFlightsFromTelemetryTitle {
+            get {
+                return ResourceManager.GetString("BulkCreateFlightsFromTelemetryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This will create individual flights based on the telemetry files (GPX, CSV, KML, etc.) that you upload..
+        /// </summary>
+        internal static string BulkCreateFlightsFromTelemetryTitleDesc1 {
+            get {
+                return ResourceManager.GetString("BulkCreateFlightsFromTelemetryTitleDesc1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can find the resulting flights in your pending flights list, where you can review them, add any missing information (like aircraft), and save them to your logbook.
+        /// </summary>
+        internal static string BulkCreateFlightsFromTelemetryTitleDesc2 {
+            get {
+                return ResourceManager.GetString("BulkCreateFlightsFromTelemetryTitleDesc2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Flights.
+        /// </summary>
+        internal static string BulkCreateFlightsFromTelemetryTitleFinish {
+            get {
+                return ResourceManager.GetString("BulkCreateFlightsFromTelemetryTitleFinish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string Cancel {

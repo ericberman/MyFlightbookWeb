@@ -950,6 +950,11 @@ namespace MyFlightbook.Telemetry
         public SpeedUnitTypes SpeedUnits { get; set; }
 
         /// <summary>
+        /// A tail number, if found in the telemetry.
+        /// </summary>
+        public string TailNumber { get; set; }
+
+        /// <summary>
         /// Cached distance, in nautical miles.  If it doesn't have a value, call GetPathDistance()
         /// </summary>
         public double? PathDistance { get; set; }
@@ -1310,6 +1315,7 @@ namespace MyFlightbook.Telemetry
                 fResult = tp.Parse(flightData);
                 SpeedUnits = tp.SpeedUnits;
                 AltitudeUnits = tp.AltitudeUnits;
+                TailNumber = tp.TailNumber;
 
                 m_szError = tp.ErrorString;
             }
