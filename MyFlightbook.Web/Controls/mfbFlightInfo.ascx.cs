@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -112,19 +111,6 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
     {
         if (!Page.IsPostBack)
         {
-            AutoFillOptions afo = new AutoFillOptions(Request.Cookies);
-
-            foreach (int speed in AutoFillOptions.DefaultSpeeds)
-            {
-                ListItem li = new ListItem(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.KnotsTemplate, speed), speed.ToString(CultureInfo.InvariantCulture)) { Selected = (speed == afo.TakeOffSpeed) };
-                rblTakeOffSpeed.Items.Add(li);
-            }
-            ckIncludeHeliports.Checked = afo.IncludeHeliports;
-            ckEstimateNight.Checked = afo.AutoSynthesizePath;
-            ckRoundNearest10th.Checked = afo.RoundToTenth;
-            rblNightCriteria.SelectedValue = afo.Night.ToString();
-            rblNightLandingCriteria.SelectedValue = afo.NightLanding.ToString();
-
             lblEngine.Text = Resources.LogbookEntry.FieldEngineUTC.IndicateUTCOrCustomTimeZone(UserTimeZone);
             lblFlight.Text = Resources.LogbookEntry.FieldFlightUTC.IndicateUTCOrCustomTimeZone(UserTimeZone);
             if (UserTimeZone.Id.CompareCurrentCultureIgnoreCase(TimeZoneInfo.Utc.Id) == 0)
@@ -208,28 +194,13 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
     {
         if (this.AutoFill != null)
         {
-            int takeoffSpeed = Convert.ToInt32(rblTakeOffSpeed.SelectedValue, CultureInfo.InvariantCulture);
-            AutoFillOptions afo = new AutoFillOptions()
-            {
-                TimeZoneOffset = mfbTimeZone1.TimeZoneOffset,
-                TakeOffSpeed = takeoffSpeed,
-                LandingSpeed = AutoFillOptions.BestLandingSpeedForTakeoffSpeed(takeoffSpeed),
-                IncludeHeliports = ckIncludeHeliports.Checked,
-                AutoSynthesizePath = ckEstimateNight.Checked,
-                Night = (AutoFillOptions.NightCritera) Enum.Parse(typeof(AutoFillOptions.NightCritera), rblNightCriteria.SelectedValue, true),
-                NightLanding = (AutoFillOptions.NightLandingCriteria)Enum.Parse(typeof(AutoFillOptions.NightLandingCriteria), rblNightLandingCriteria.SelectedValue, true),
-                RoundToTenth = ckRoundNearest10th.Checked,
-                IgnoreErrors = true
-            };
-
-            afo.ToCookies(Response.Cookies);
-
             string szTelemetry = Telemetry;
             // Load from the DB if needed
             if (String.IsNullOrEmpty(szTelemetry) && !LogbookEntry.IsNewFlightID(FlightID))
                 szTelemetry = new LogbookEntry(FlightID, Page.User.Identity.Name, LogbookEntry.LoadTelemetryOption.LoadAll).FlightData;
 
-            this.AutoFill(this, new AutofillEventArgs(afo, szTelemetry));
+            afOptions.TimeZoneOffset = mfbTimeZone1.TimeZoneOffset;
+            this.AutoFill(this, new AutofillEventArgs(afOptions.Options, szTelemetry));
         }
     }
 }

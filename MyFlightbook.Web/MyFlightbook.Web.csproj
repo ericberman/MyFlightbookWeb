@@ -318,6 +318,7 @@
     <Content Include="Controls\adminStats.ascx" />
     <Content Include="Controls\AircraftControls\AircraftList.ascx" />
     <Content Include="Controls\AircraftControls\SelectMake.ascx" />
+    <Content Include="Controls\AutofillOptionsChooser.ascx" />
     <Content Include="Controls\ChecklistControls\ChecklistItem.ascx" />
     <Content Include="Controls\ClubControls\ClubAircraftSchedule.ascx" />
     <Content Include="Controls\ClubControls\FlyingReport.ascx" />
@@ -663,6 +664,7 @@
     <Content Include="Member\Training.aspx" />
     <Content Include="NavLinks.xml" />
     <Content Include="OAuth\oAuthToken.aspx" />
+    <Content Include="PlayPen\BulkImportFromTelemetry.aspx" />
     <Content Include="PlayPen\Checklist.aspx" />
     <Content Include="PlayPen\DayNight.aspx" />
     <Content Include="PlayPen\Default.aspx" />
@@ -1103,6 +1105,13 @@
     </Compile>
     <Compile Include="Controls\AircraftControls\SelectMake.ascx.designer.cs">
       <DependentUpon>SelectMake.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AutofillOptionsChooser.ascx.cs">
+      <DependentUpon>AutofillOptionsChooser.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\AutofillOptionsChooser.ascx.designer.cs">
+      <DependentUpon>AutofillOptionsChooser.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\ChecklistControls\ChecklistItem.ascx.cs">
       <DependentUpon>ChecklistItem.ascx</DependentUpon>
@@ -2219,6 +2228,13 @@
     </Compile>
     <Compile Include="OAuth\oAuthToken.aspx.designer.cs">
       <DependentUpon>oAuthToken.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PlayPen\BulkImportFromTelemetry.aspx.cs">
+      <DependentUpon>BulkImportFromTelemetry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PlayPen\BulkImportFromTelemetry.aspx.designer.cs">
+      <DependentUpon>BulkImportFromTelemetry.aspx</DependentUpon>
     </Compile>
     <Compile Include="PlayPen\Checklist.aspx.cs">
       <DependentUpon>Checklist.aspx</DependentUpon>

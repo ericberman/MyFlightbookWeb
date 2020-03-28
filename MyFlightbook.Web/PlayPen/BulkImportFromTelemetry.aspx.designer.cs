@@ -9,89 +9,98 @@
 
 
 
-public partial class PlayPen_Default
+public partial class BulkImportFromTelemetry
 {
 
     /// <summary>
-    /// lnkChecklist control.
+    /// lblTitle control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkChecklist;
+    protected global::System.Web.UI.WebControls.Label lblTitle;
 
     /// <summary>
-    /// lnkDayNight control.
+    /// lblBulkImportPrompt1 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkDayNight;
+    protected global::System.Web.UI.WebControls.Label lblBulkImportPrompt1;
 
     /// <summary>
-    /// lnkICalConvert control.
+    /// lblBulkImportPrompt2 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkICalConvert;
+    protected global::System.Web.UI.WebControls.Label lblBulkImportPrompt2;
 
     /// <summary>
-    /// lnkImgDebug control.
+    /// wzFlightsFromTelemetry control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkImgDebug;
+    protected global::System.Web.UI.WebControls.Wizard wzFlightsFromTelemetry;
 
     /// <summary>
-    /// lnkMergeFlights control.
+    /// WizardStep1 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkMergeFlights;
+    protected global::System.Web.UI.WebControls.WizardStep WizardStep1;
 
     /// <summary>
-    /// lnkMergeTelemetry control.
+    /// TimeZone control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkMergeTelemetry;
+    protected global::Controls_ClubControls_TimeZone TimeZone;
 
     /// <summary>
-    /// lnkImportFromTelemetry control.
+    /// AutofillOptionsChooser control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkImportFromTelemetry;
+    protected global::AutofillOptionsChooser AutofillOptionsChooser;
 
     /// <summary>
-    /// lnkOAuthTest control.
+    /// WizardStep2 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkOAuthTest;
+    protected global::System.Web.UI.WebControls.WizardStep WizardStep2;
 
     /// <summary>
-    /// lnkDev control.
+    /// afuUpload control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkDev;
+    protected global::AjaxControlToolkit.AjaxFileUpload afuUpload;
+
+    /// <summary>
+    /// myThrobber control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image myThrobber;
 
     /// <summary>
     /// Master property.
