@@ -424,7 +424,11 @@ namespace MyFlightbook.Lint
                 dutyEnd = cfpDutyEnd.DateValue;
             }
             else if (cfpDutyStart != null)
+            {
                 dutyStart = cfpDutyStart.DateValue;
+                if (cfpDutyEnd == null)
+                    dutyEnd = null; // we have a start of the duty period that isn't closed in the same flight - leave the duty end unspecified.
+            }
 
             if (cfpFlightDutyEnd != null)
             {
@@ -432,7 +436,11 @@ namespace MyFlightbook.Lint
                 flightDutyEnd = cfpFlightDutyEnd.DateValue;
             }
             else if (cfpFlightDutyStart != null)
+            {
                 flightDutyStart = cfpFlightDutyStart.DateValue;
+                if (cfpFlightDutyEnd == null)
+                    flightDutyEnd = null;// we have a start of the duty period that isn't closed in the same flight - leave the duty end unspecified.
+            }
         }
 
         private void CheckSequentialFlightIssues(LogbookEntryBase le)
@@ -456,14 +464,17 @@ namespace MyFlightbook.Lint
             CustomFlightProperty cfpDutyEnd = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropDutyEnd];
             CustomFlightProperty cfpFlightDutyEnd = le.CustomProperties[CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd];
 
+            // Starting a new duty period or flight duty period while a prior duty period is open
             AddConditionalIssue(dutyStart != null && dutyStart.HasValue && cfpDutyStart != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewDutyStart);
             AddConditionalIssue(flightDutyStart != null && flightDutyStart.HasValue && cfpFlightDutyStart != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewFlightDutyStart);
 
+            // Starting a new duty period or flight duty period prior to the close of the prior one.
             AddConditionalIssue(dutyEnd != null && dutyEnd.HasValue && cfpDutyStart != null && cfpDutyStart.DateValue.CompareTo(dutyEnd.Value) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningDutyStartPriorToPreviousDutyEnd);
             AddConditionalIssue(flightDutyEnd != null && flightDutyEnd.HasValue && cfpFlightDutyStart != null && cfpFlightDutyStart.DateValue.CompareTo(flightDutyEnd.Value) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightDutyStartPriorToPreviousFlightDutyEnd);
 
-            AddConditionalIssue(dutyEnd != null && cfpDutyStart == null && cfpDutyEnd != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewDutyEndNoStart);
-            AddConditionalIssue(flightDutyEnd != null && cfpFlightDutyStart == null && cfpFlightDutyEnd != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewFlightDutyEndNoStart);
+			// Ending a duty period or flight duty period that has no corresponding start.
+            AddConditionalIssue(dutyStart == null && cfpDutyStart == null && cfpDutyEnd != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewDutyEndNoStart);
+            AddConditionalIssue(flightDutyStart == null && cfpFlightDutyStart == null && cfpFlightDutyEnd != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewFlightDutyEndNoStart);
 
             UpdateDutyPeriods(cfpDutyStart, cfpFlightDutyStart, cfpDutyEnd, cfpFlightDutyEnd);
         }
