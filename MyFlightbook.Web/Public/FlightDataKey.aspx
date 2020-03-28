@@ -4,11 +4,11 @@
     <asp:Label ID="lblHeader" runat="server" Text="<%$ Resources:FlightData, FlightDataHeader %>"></asp:Label>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cpTopForm" Runat="Server">
-    <% =Branding.ReBrand(Resources.FlightData.FlightDataKey) %>
-    <div class="detailsSection">
+    <div class="detailsSection" style="float:right; max-width: 250px;">
         <asp:Localize ID="locImport" runat="server" Text="<%$ Resources:LogbookEntry, BulkImportPrompt %>"></asp:Localize>
         <asp:HyperLink ID="lnkBulkImport" NavigateUrl="~/Member/ImportTelemetry.aspx" runat="server" Text="<%$ Resources:LogbookEntry, BulkImportLink %>"></asp:HyperLink>
     </div>
+    <% =Branding.ReBrand(Resources.FlightData.FlightDataKey) %>
     <asp:GridView ID="gvKnownColumns" runat="server" CellPadding="3" AutoGenerateColumns="false" GridLines="None" ShowFooter="false" ShowHeader="true">
         <Columns>
             <asp:BoundField DataField="Column" HeaderText="<%$ Resources:FlightData, headerColumnName %>" ItemStyle-VerticalAlign="Top" HeaderStyle-HorizontalAlign="Left" ItemStyle-Font-Bold="true" />

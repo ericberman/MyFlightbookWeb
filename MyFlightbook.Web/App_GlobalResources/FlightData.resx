@@ -171,7 +171,7 @@
     <value>Please let us know if you have data not listed here</value>
   </data>
   <data name="FlightDataHeader" xml:space="preserve">
-    <value>Uploading data for your flight.</value>
+    <value>Telemetry Data Description</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="FlightDataKey" type="System.Resources.ResXFileRef, System.Windows.Forms">

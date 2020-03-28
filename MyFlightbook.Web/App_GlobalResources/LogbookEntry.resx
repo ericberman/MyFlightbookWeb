@@ -794,10 +794,10 @@
     <value>◄</value>
   </data>
   <data name="BulkImportLink" xml:space="preserve">
-    <value>Import Telemetry</value>
+    <value>Upload Telemetry to Existing Flights</value>
   </data>
   <data name="BulkImportPrompt" xml:space="preserve">
-    <value>Got data from other sources that you'd like to attach to a flights?</value>
+    <value>Got telemetry that you'd like to attach to your flights?</value>
   </data>
   <data name="FlightDetailsDesc" xml:space="preserve">
     <value>View details for your flight, including telemetry (if present).</value>

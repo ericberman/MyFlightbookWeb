@@ -5,7 +5,7 @@
     <ul>
         <li><a href="http://en.wikipedia.org/wiki/Kml" Target="_blank">KML</a></li>
         <li><a href="http://en.wikipedia.org/wiki/GPS_eXchange_Format" target="_blank">GPX</a></li>
-		<li><a href="http://carrier.csi.cam.ac.uk/forsterlewis/soaring/igc_file_format/igc_format_2008.html" target="_blank">IGC</a></li>
+		<li><a href="https://aerofiles.readthedocs.io/en/latest/guide/igc-writing.html" target="_blank">IGC</a></li>
 		<li><a href="http://www.gpsinformation.org/dale/nmea.htm" target="_blank">NMEA</a></li>
     </ul>
     <p>Or, you can update pretty much any data you like in <a href="http://en.wikipedia.org/wiki/Comma-separated_values" target="new">CSV format</a></p>

@@ -268,7 +268,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uploading data for your flight..
+        ///   Looks up a localized string similar to Telemetry Data Description.
         /// </summary>
         internal static string FlightDataHeader {
             get {

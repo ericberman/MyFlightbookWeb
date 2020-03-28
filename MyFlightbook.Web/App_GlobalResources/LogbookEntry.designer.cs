@@ -115,7 +115,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import Telemetry.
+        ///   Looks up a localized string similar to Upload Telemetry to Existing Flights.
         /// </summary>
         internal static string BulkImportLink {
             get {
@@ -124,7 +124,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Got data from other sources that you&apos;d like to attach to a flights?.
+        ///   Looks up a localized string similar to Got telemetry that you&apos;d like to attach to your flights?.
         /// </summary>
         internal static string BulkImportPrompt {
             get {
