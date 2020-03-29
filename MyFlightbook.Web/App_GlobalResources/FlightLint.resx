@@ -365,6 +365,9 @@
   <data name="warningTimesSimPlusIMCGreaterThanTotal" xml:space="preserve">
     <value>More simulated and actual IMC time recorded than total time.</value>
   </data>
+  <data name="warningTimesSuspectTime" xml:space="preserve">
+    <value>Flight includes a time ({0}) that is...a bit in the future.  Is it valid?</value>
+  </data>
   <data name="warningTimesXCGreaterThanTotal" xml:space="preserve">
     <value>More cross-country time recorded than total time.</value>
   </data>

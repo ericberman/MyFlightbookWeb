@@ -799,6 +799,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight includes a time ({0}) that is...a bit in the future.  Is it valid?.
+        /// </summary>
+        internal static string warningTimesSuspectTime {
+            get {
+                return ResourceManager.GetString("warningTimesSuspectTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to More cross-country time recorded than total time..
         /// </summary>
         internal static string warningTimesXCGreaterThanTotal {

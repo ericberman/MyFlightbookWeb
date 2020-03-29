@@ -454,6 +454,7 @@ namespace MyFlightbook.Lint
             AddConditionalIssue(previousFlight.FlightEnd.HasValue() && le.FlightStart.HasValue() && previousFlight.FlightEnd.CompareTo(le.FlightStart) > 0,
                 LintOptions.DateTimeIssues, Resources.FlightLint.warningPreviousFlightEndsAfterStart);
 
+            CustomFlightProperty cfpBlockIn = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn];
             CustomFlightProperty cfpBlockOut = le.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut];
             AddConditionalIssue(cfpBlockOut != null && previousFlight.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockIn) && cfpBlockOut.DateValue.CompareTo(previousFlight.CustomProperties[CustomPropertyType.KnownProperties.IDBlockIn].DateValue) < 0,
                 LintOptions.DateTimeIssues, Resources.FlightLint.warningPreviousFlightBlockEndAfterStart);
@@ -475,6 +476,14 @@ namespace MyFlightbook.Lint
 			// Ending a duty period or flight duty period that has no corresponding start.
             AddConditionalIssue(dutyStart == null && cfpDutyStart == null && cfpDutyEnd != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewDutyEndNoStart);
             AddConditionalIssue(flightDutyStart == null && cfpFlightDutyStart == null && cfpFlightDutyEnd != null, LintOptions.DateTimeIssues, Resources.FlightLint.warningNewFlightDutyEndNoStart);
+
+            DateTime bogusDate = le.FlightStart.LaterDate(le.FlightEnd)
+                .LaterDate(le.EngineStart).LaterDate(le.EngineEnd)
+                .LaterDate(cfpBlockIn == null ? DateTime.MinValue : cfpBlockIn.DateValue).LaterDate(cfpBlockOut == null ? DateTime.MinValue : cfpBlockOut.DateValue)
+                .LaterDate(cfpDutyStart == null ? DateTime.MinValue : cfpDutyStart.DateValue).LaterDate(cfpDutyEnd == null ? DateTime.MinValue : cfpDutyEnd.DateValue)
+                .LaterDate(cfpFlightDutyStart == null ? DateTime.MinValue : cfpFlightDutyStart.DateValue).LaterDate(cfpFlightDutyEnd == null ? DateTime.MinValue : cfpFlightDutyEnd.DateValue);
+            AddConditionalIssue(bogusDate.CompareTo(DateTime.UtcNow.AddDays(5)) > 0, LintOptions.DateTimeIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningTimesSuspectTime, bogusDate.UTCDateFormatString()));
+                
 
             UpdateDutyPeriods(cfpDutyStart, cfpFlightDutyStart, cfpDutyEnd, cfpFlightDutyEnd);
         }
