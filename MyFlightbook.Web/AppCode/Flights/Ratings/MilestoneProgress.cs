@@ -385,6 +385,7 @@ namespace MyFlightbook.MilestoneProgress
         /// </summary>
         /// <param name="ccid">The category/class</param>
         /// <returns>True if it applies to the rating</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         protected bool CatClassMatchesRatingSought(CategoryClass.CatClassID ccid)
         {
             switch (RatingSought)

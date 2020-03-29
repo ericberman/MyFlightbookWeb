@@ -1,7 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
@@ -791,6 +790,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         /// <summary>
         /// Generates a new flightquery object representing flights that match this custom currency
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public FlightQuery Query
         {
             get
@@ -942,6 +942,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             get { return System.Web.HttpUtility.UrlEncode(Query.ToBase64CompressedJSONString()); }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         private bool CheckMatchesCriteria(ExaminerFlightRow cfr)
         {
             // quickly see if we can ignore this.
@@ -1003,6 +1004,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         /// Looks at the events in the flight for custom currency computations.
         /// </summary>
         /// <param name="cfr">The flight row to examine</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {

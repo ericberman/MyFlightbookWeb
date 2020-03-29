@@ -2387,21 +2387,17 @@ namespace MyFlightbook
             }
         }
 
-        /// <summary>
-        /// Performs final tasks after autofill.  Specifically does auto-cross country, closes off the last landing (if needed, and adds a night landing if it was at night)
-        /// </summary>
-        /// <param name="opt">The autofill options</param>
-        public void AutoFillFinish(AutoFillOptions opt)
+        #region AutofillFinish Helpers
+        private void AutofillFinishXCTime(AirportList al, double threshold)
         {
-            if (opt == null)
-                throw new ArgumentNullException(nameof(opt));
-            AirportList al = new AirportList(Route);
             if (TotalFlightTime > 0)
             {
-                if (al.MaxDistanceForRoute() > opt.CrossCountryThreshold)
+                if (al.MaxDistanceForRoute() > threshold)
                     CrossCountry = TotalFlightTime;
             }
-
+        }
+        private void AutofillFinishAirports(AirportList al)
+        {
             airport[] rgap = al.GetNormalizedAirports();
             if (String.IsNullOrEmpty(FlightData) && TotalFlightTime > 0 && rgap.Length > 1)
             {
@@ -2418,15 +2414,18 @@ namespace MyFlightbook
                         NightLandings = 1;
                 }
             }
+        }
 
+        private void AutofillFinishInstruction()
+        {
             // Issue #411: check for ground instruction given or received.
             if ((Dual > 0 && CFI == 0) || (CFI > 0 && Dual == 0)) // no point if we can't tell whether it's given or received...
             {
-                CustomFlightProperty cfpLessonStart = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropLessonStart);
-                CustomFlightProperty cfpLessonEnd = CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropLessonEnd);
+                CustomFlightProperty cfpLessonStart = CustomProperties[CustomPropertyType.KnownProperties.IDPropLessonStart];
+                CustomFlightProperty cfpLessonEnd = CustomProperties[CustomPropertyType.KnownProperties.IDPropLessonEnd];
 
                 CustomPropertyType.KnownProperties idTargetID = (Dual > 0) ? CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived : CustomPropertyType.KnownProperties.IDPropGroundInstructionGiven;
-                CustomFlightProperty cfpTarget = CustomProperties.GetEventWithTypeID(idTargetID);
+                CustomFlightProperty cfpTarget = CustomProperties[idTargetID];
 
                 if (cfpTarget == null && cfpLessonStart != null && cfpLessonEnd != null && cfpLessonEnd.DateValue.CompareTo(cfpLessonStart.DateValue) > 0)
                 {
@@ -2440,6 +2439,22 @@ namespace MyFlightbook
                     CustomProperties.Add(CustomFlightProperty.PropertyWithValue(idTargetID, (decimal)tsGroundTraining.TotalHours));
                 }
             }
+        }
+        #endregion
+
+        /// <summary>
+        /// Performs final tasks after autofill.  Specifically does auto-cross country, closes off the last landing (if needed, and adds a night landing if it was at night)
+        /// </summary>
+        /// <param name="opt">The autofill options</param>
+        public void AutoFillFinish(AutoFillOptions opt)
+        {
+            if (opt == null)
+                throw new ArgumentNullException(nameof(opt));
+
+            AirportList al = new AirportList(Route);
+            AutofillFinishXCTime(al, opt.CrossCountryThreshold);
+            AutofillFinishAirports(al);
+            AutofillFinishInstruction();
         }
         #endregion
     }
@@ -3474,6 +3489,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="columnIndex">The index of the optional column</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public decimal OptionalColumnValue(int columnIndex)
         {
             if (OptionalColumns == null || columnIndex < 0 || columnIndex >= OptionalColumns.Count)

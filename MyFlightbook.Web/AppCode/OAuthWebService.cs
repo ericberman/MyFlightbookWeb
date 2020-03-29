@@ -183,6 +183,7 @@ namespace OAuthAuthorizationServer.Services
         /// </summary>
         /// <param name="service"></param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         protected MFBOAuthScope ScopeForService()
         {
             switch (ServiceCall)
@@ -389,6 +390,7 @@ namespace OAuthAuthorizationServer.Services
         /// Executes the requested service, writing any result to the specified output stream
         /// </summary>
         /// <param name="s">The output stream to which to write</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public void Execute(Stream s)
         {
             if (s == null)
