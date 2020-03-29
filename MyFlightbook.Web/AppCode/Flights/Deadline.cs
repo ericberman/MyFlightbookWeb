@@ -16,7 +16,7 @@ namespace MyFlightbook.FlightCurrency
     /// Custom Deadlines class
     /// </summary>
     [Serializable]
-    public class DeadlineCurrency : IComparable
+    public class DeadlineCurrency : IComparable, IEquatable<DeadlineCurrency>
     {
         public enum RegenUnit { None, Days, CalendarMonths, Hours };
         public enum DeadlineMode { Calendar, Hours };
@@ -190,7 +190,7 @@ namespace MyFlightbook.FlightCurrency
         protected DeadlineCurrency(MySqlDataReader dr) : this()
         {
             if (dr == null)
-                throw new ArgumentNullException("dr");
+                throw new ArgumentNullException(nameof(dr));
             ID = Convert.ToInt32(dr["idDeadlines"], CultureInfo.InvariantCulture);
             Username = (string) util.ReadNullableField(dr, "username", null);
             Name = (string)dr["Name"];
@@ -429,7 +429,7 @@ GROUP BY d.iddeadlines";
         public string DifferenceDescription(DeadlineCurrency dcOriginal)
         {
             if (dcOriginal == null)
-                throw new ArgumentNullException("dcOriginal");
+                throw new ArgumentNullException(nameof(dcOriginal));
             if (UsesHours && !dcOriginal.AircraftHours.EqualsToPrecision(AircraftHours))
                 return String.Format(CultureInfo.CurrentCulture, Resources.Currency.DeadlineChangedHours, Name, dcOriginal.AircraftHours, AircraftHours);
             if (!UsesHours && dcOriginal.Expiration.CompareTo(Expiration) != 0)
@@ -437,6 +437,8 @@ GROUP BY d.iddeadlines";
             return string.Empty;
         }
 
+        #endregion
+        #region IComparable
         public int CompareTo(object obj)
         {
             if (obj == null)
@@ -447,6 +449,91 @@ GROUP BY d.iddeadlines";
                 return DisplayName.CompareCurrentCultureIgnoreCase(dc.DisplayName);
             else
                 return AircraftID.CompareTo(dc.AircraftID);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as DeadlineCurrency);
+        }
+
+        public bool Equals(DeadlineCurrency other)
+        {
+            return other != null &&
+                   ID == other.ID &&
+                   Username == other.Username &&
+                   Name == other.Name &&
+                   Expiration == other.Expiration &&
+                   RegenSpan == other.RegenSpan &&
+                   RegenType == other.RegenType &&
+                   ErrorString == other.ErrorString &&
+                   RegenDescription == other.RegenDescription &&
+                   ExpirationDisplay == other.ExpirationDisplay &&
+                   RegenPrompt == other.RegenPrompt &&
+                   DisplayName == other.DisplayName &&
+                   AircraftID == other.AircraftID &&
+                   TailNumber == other.TailNumber &&
+                   AircraftHours == other.AircraftHours &&
+                   Mode == other.Mode &&
+                   UsesHours == other.UsesHours &&
+                   IsSharedAircraftDeadline == other.IsSharedAircraftDeadline &&
+                   HasAssociatedAircraft == other.HasAssociatedAircraft;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = -2016528824;
+                hashCode = hashCode * -1521134295 + ID.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Username);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+                hashCode = hashCode * -1521134295 + Expiration.GetHashCode();
+                hashCode = hashCode * -1521134295 + RegenSpan.GetHashCode();
+                hashCode = hashCode * -1521134295 + RegenType.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ErrorString);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(RegenDescription);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ExpirationDisplay);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(RegenPrompt);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DisplayName);
+                hashCode = hashCode * -1521134295 + AircraftID.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TailNumber);
+                hashCode = hashCode * -1521134295 + AircraftHours.GetHashCode();
+                hashCode = hashCode * -1521134295 + Mode.GetHashCode();
+                hashCode = hashCode * -1521134295 + UsesHours.GetHashCode();
+                hashCode = hashCode * -1521134295 + IsSharedAircraftDeadline.GetHashCode();
+                hashCode = hashCode * -1521134295 + HasAssociatedAircraft.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(DeadlineCurrency left, DeadlineCurrency right)
+        {
+            return EqualityComparer<DeadlineCurrency>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(DeadlineCurrency left, DeadlineCurrency right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(DeadlineCurrency left, DeadlineCurrency right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(DeadlineCurrency left, DeadlineCurrency right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(DeadlineCurrency left, DeadlineCurrency right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(DeadlineCurrency left, DeadlineCurrency right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
 
