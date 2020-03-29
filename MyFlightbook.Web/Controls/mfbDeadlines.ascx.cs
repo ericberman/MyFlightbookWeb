@@ -237,7 +237,6 @@ public partial class Controls_mfbDeadlines : UserControl
     protected void ResetDeadlineForm()
     {
         ckDeadlineUseHours.Checked = false;
-        AircraftID = AircraftID;    // will cause cmbDeadline to hide/show as needed.
         cmbDeadlineAircraft.SelectedValue = (AircraftID > 0) ? AircraftID.ToString(CultureInfo.InvariantCulture) : string.Empty;
         SetNewDeadlineMode(false);
         txtDeadlineName.Text = string.Empty;

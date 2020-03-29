@@ -184,7 +184,7 @@ public partial class Controls_AircraftControls_SelectMake : System.Web.UI.UserCo
     protected void btnChangeModelTweak_Click(object sender, EventArgs e)
     {
         EditMode = MakeEditMode.Edit;
-        SelectedModelID = SelectedModelID; // not quite sure why I need to do this, but otherwise the manufacturer dropdown reverts.
+        SelectedModelID = int.TryParse(cmbMakeModel.SelectedValue, out int modelID) ? modelID : MakeModel.UnknownModel; // not quite sure why I need to do this, but otherwise the manufacturer dropdown reverts.
     }
 
     protected void btnChangeModelClone_Click(object sender, EventArgs e)

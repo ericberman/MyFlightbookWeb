@@ -230,6 +230,6 @@ public partial class Controls_mfbDecimalEdit : System.Web.UI.UserControl
         if (em != null)
             EditingMode = (EditMode)em;
         else
-            EditingMode = EditingMode; // force the watermark/filter to update appropriately.
+            EditingMode = m_EditMode; // force the watermark/filter to update appropriately.
     }
 }
