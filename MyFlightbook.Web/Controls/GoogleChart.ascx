@@ -4,14 +4,18 @@
 <script>
       var chart<%=ID %>;
       var data<%=ID %>;
-      function drawChart<%=ID %>() {
+    function drawChart<%=ID %>() {
         var data = new google.visualization.DataTable();
         data<%=ID %> = data;
         data.addColumn('<%=XDataTypeString %>', '<%=XLabel %>');
         data.addColumn('<%=YDataTypeString %>', '<%=YLabel %>');
         <% if (HasY2) { %>
-            data.addColumn('<%=Y2DataTypeString %>', '<% =Y2Label %>');
-        <% } %>
+        data.addColumn('<%=Y2DataTypeString %>', '<% =Y2Label %>');
+        <% }
+        if (ShowAverage) { %> 
+        data.addColumn('<% =AverageDataTypeString %>', '<% =AverageLabel %>');
+        <% }%>
+
         data.addRows([
             <%= Data %>
         ]);
@@ -29,9 +33,10 @@
           legend: {position: '<% =LegendType %>' },
           <% if (HasY2) { %>
             vAxes: [{title: '<%= YLabel %>' }, {title: '<%= Y2Label %>'}],
-            series:{0:{targetAxisIndex:0}, 1:{targetAxisIndex:1, type:'<%=Chart2TypeString %>'}},
+            series: { 0: { targetAxisIndex: 0 }, 1: { targetAxisIndex: 1, type: '<%=Chart2TypeString %>' }, 2: { targetAxisIndex: 0, type: 'line' } },
           <% } else { %>
-            vAxis: {title: '<%=YLabel %>'},
+            vAxis: { title: '<%=YLabel %>' },
+            series: { 1: {type: 'line' }},
           <% } %>
           hAxis: {title: '<%=XLabel %>', 
             titleTextStyle: { color: 'black', fontName: 'Arial', fontSize: 10},

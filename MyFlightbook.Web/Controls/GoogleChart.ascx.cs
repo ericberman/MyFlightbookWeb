@@ -1,10 +1,8 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Charting;
-using MyFlightbook.Telemetry;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -73,6 +71,10 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
         }
     }
 
+    public bool ShowAverage { get; set; }
+
+    public double AverageValue { get; set; }
+
     public int Width
     {
         get { return m_Width; }
@@ -111,6 +113,9 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
     public string XLabel { get; set; }
     public string YLabel { get; set; }
     public string Y2Label { get; set; }
+    public string AverageFormatString { get; set; }
+
+    protected string AverageLabel { get { return String.Format(System.Globalization.CultureInfo.CurrentCulture, AverageFormatString, AverageValue); } }
     public string Title { get; set; }
 
     /// <summary>
@@ -153,10 +158,11 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
         {
             List<string> lst = new List<string>();
             for (int i = 0; i < XVals.Count; i++)
-                lst.Add(String.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}, {1}{2}]", 
+                lst.Add(String.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}, {1}{2}{3}]", 
                     GoogleChart.FormatObjectForTypeJS(XVals[i], XDataType),
                     YVals[i],
-                    (i < Y2Vals.Count) ? String.Format(System.Globalization.CultureInfo.InvariantCulture, ", {0}", Y2Vals[i]) : ""));
+                    (i < Y2Vals.Count) ? String.Format(System.Globalization.CultureInfo.InvariantCulture, ", {0}", Y2Vals[i]) : string.Empty,
+                    ShowAverage ? String.Format(System.Globalization.CultureInfo.InvariantCulture, ", {0}", AverageValue) : string.Empty));
 
             return String.Join(", ", lst.ToArray());
         }
@@ -190,6 +196,11 @@ public partial class Controls_GoogleChart : System.Web.UI.UserControl
     protected string Y2DataTypeString
     {
         get { return Y2DataType.ToString(); }
+    }
+
+    protected static string AverageDataTypeString
+    {
+        get { return GoogleColumnDataType.number.ToString(); }
     }
 
     protected string XDataFormat

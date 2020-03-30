@@ -8,6 +8,7 @@
     <asp:Label ID="lblGroupBy" runat="server" Text="<%$ Resources:LocalizedText, ChartTotalsGroupPrompt %>"></asp:Label>
     <asp:DropDownList ID="cmbGrouping" runat="server" AutoPostBack="true" DataTextField="DisplayName" DataValueField="DisplayName" OnSelectedIndexChanged="cmbGrouping_SelectedIndexChanged">
     </asp:DropDownList>
+    <asp:CheckBox ID="ckIncludeAverage" runat="server" Text="<%$ Resources:LocalizedText, AnalysisShowAverages %>" OnCheckedChanged="ckIncludeAverage_CheckedChanged" AutoPostBack="true" />
     <div style="float:right">
         <asp:LinkButton ID="lnkDownloadCSV" runat="server" OnClick="lnkDownloadCSV_Click" style="vertical-align:middle">
             <asp:Image ID="imgDownloadCSV" ImageUrl="~/images/download.png" runat="server" style="padding-right: 5px; vertical-align:middle" />
@@ -16,7 +17,7 @@
         </asp:LinkButton>
     </div>
     <asp:Panel ID="pnlChart" runat="server">
-        <uc3:GoogleChart ID="gcTrends" Width="750" Height="340" ChartType="ColumnChart" Chart2Type="line" SlantAngle="90" LegendType="bottom" XDataType="date" YDataType="number" Y2DataType="number" runat="server" />
+        <uc3:GoogleChart ID="gcTrends" Width="750" Height="340" AverageFormatString="<%$ Resources:LocalizedText, AnalysisAverageFormatString %>" ChartType="ColumnChart" Chart2Type="line" SlantAngle="90" LegendType="bottom" XDataType="date" YDataType="number" Y2DataType="number" runat="server" />
         <p>
             <asp:Literal ID="Literal2" runat="server" 
                 Text="<%$ Resources:LocalizedText, ChartTotalsMouseHint1 %>" />

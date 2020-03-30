@@ -58,6 +58,15 @@ public partial class Controls_mfbChartTotals
     protected global::System.Web.UI.WebControls.DropDownList cmbGrouping;
 
     /// <summary>
+    /// ckIncludeAverage control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.CheckBox ckIncludeAverage;
+
+    /// <summary>
     /// lnkDownloadCSV control.
     /// </summary>
     /// <remarks>

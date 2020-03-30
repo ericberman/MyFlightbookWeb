@@ -735,7 +735,7 @@
     <value>Change Query...</value>
   </data>
   <data name="ChartTotalsHeader" xml:space="preserve">
-    <value>See your flying trends by:</value>
+    <value>View:</value>
   </data>
   <data name="NumberOfFlights" xml:space="preserve">
     <value>{0:#,##0} flights</value>
@@ -1709,5 +1709,11 @@
   </data>
   <data name="BulkCreateFlightsFromTelemetryTitleFinish" xml:space="preserve">
     <value>Create Flights</value>
+  </data>
+  <data name="AnalysisAverageFormatString" xml:space="preserve">
+    <value>Average: {0:#,##0.#}</value>
+  </data>
+  <data name="AnalysisShowAverages" xml:space="preserve">
+    <value>Include Average</value>
   </data>
 </root>

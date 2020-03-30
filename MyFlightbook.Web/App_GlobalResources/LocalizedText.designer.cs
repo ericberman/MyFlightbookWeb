@@ -438,6 +438,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Average: {0:#,##0.#}.
+        /// </summary>
+        internal static string AnalysisAverageFormatString {
+            get {
+                return ResourceManager.GetString("AnalysisAverageFormatString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include Average.
+        /// </summary>
+        internal static string AnalysisShowAverages {
+            get {
+                return ResourceManager.GetString("AnalysisShowAverages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This aircraft has been the subject of frequent back-and-forth edits among pilots, so it has been locked down by the site administrator.  Please check if an alternative version of the aircraft is already listed (below), or else use the &quot;Contact Us&quot; link and we can make things right..
         /// </summary>
         internal static string AnswerWhyCantEditLockedAircraft {
@@ -823,7 +841,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to See your flying trends by:.
+        ///   Looks up a localized string similar to View:.
         /// </summary>
         internal static string ChartTotalsHeader {
             get {

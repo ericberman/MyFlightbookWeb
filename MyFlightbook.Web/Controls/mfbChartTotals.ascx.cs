@@ -81,15 +81,23 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
 
         HistogramableValue hv = SelectedFieldToGraph;
 
+        int count = 0;
+        double average = 0;
+
         gcTrends.Clear();
         foreach (Bucket b in buckets)
         {
             gcTrends.XVals.Add(b.OrdinalValue);
             gcTrends.YVals.Add(b.Values[hv.DataField]);
+            average += b.Values[hv.DataField];
+            count++;
 
             if (b.HasRunningTotals)
                 gcTrends.Y2Vals.Add(b.RunningTotals[hv.DataField]);
         }
+
+        if (gcTrends.ShowAverage = (ckIncludeAverage.Checked && count > 0))
+            gcTrends.AverageValue = average / count;
 
         string szLabel = "{0}";
         {
@@ -192,5 +200,10 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         Response.Write('\uFEFF');   // UTF-8 BOM.
         Response.Write(gvRawData.CSVFromData());
         Response.End();
+    }
+
+    protected void ckIncludeAverage_CheckedChanged(object sender, EventArgs e)
+    {
+        Refresh();
     }
 }
