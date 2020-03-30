@@ -129,19 +129,8 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         }
     }
 
-    protected void InitializeRestriction()
+    private void InitPassedQuery(string szFQParam)
     {
-        string szSearchParam = util.GetStringParam(Request, "s");
-        string szFQParam = util.GetStringParam(Request, "fq");
-        string szAirportParam = util.GetStringParam(Request, "ap");
-        int month = util.GetIntParam(Request, "m", -1);
-        int year = util.GetIntParam(Request, "y", -1);
-        int day = util.GetIntParam(Request, "d", -1);
-        int week = util.GetIntParam(Request, "w", -1);
-        string szReqTail = util.GetStringParam(Request, "tn");
-        string szReqModel = util.GetStringParam(Request, "mn");
-        string szReqICAO = util.GetStringParam(Request, "icao");
-
         if (!String.IsNullOrEmpty(szFQParam))
         {
             try
@@ -152,15 +141,11 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         }
         else
             Restriction = mfbSearchForm1.Restriction = new FlightQuery(Page.User.Identity.Name);
+    }
 
-        if (!String.IsNullOrEmpty(szSearchParam))
-            Restriction.GeneralText = szSearchParam;
-        if (!String.IsNullOrEmpty(szAirportParam))
-        {
-            Restriction.AirportList.Clear();
-            Restriction.AddAirports(MyFlightbook.Airports.AirportList.NormalizeAirportList(szAirportParam));
-        }
 
+    private void InitDateParams(int year, int month, int week, int day)
+    {
         if (year > 1900)
         {
             if (month >= 0 && month < 12 && year > 1900)
@@ -178,7 +163,10 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
                 Restriction.DateMax = new DateTime(year, 12, 31);
             }
         }
+    }
 
+    private void InitAircraftModelRestriction(string szReqTail, string szReqModel, string szReqICAO)
+    {
         if (!String.IsNullOrEmpty(szReqTail) || !String.IsNullOrEmpty(szReqModel) || !String.IsNullOrEmpty(szReqICAO))
         {
             UserAircraft ua = new UserAircraft(Restriction.UserName);
@@ -191,7 +179,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
                     lstac.Add(ac);
 
                 MakeModel mm = MakeModel.GetModel(ac.ModelID);
-                if (!lstmm.Contains(mm.MakeModelID) && 
+                if (!lstmm.Contains(mm.MakeModelID) &&
                     ((!String.IsNullOrEmpty(szReqModel) && mm.Model.CompareCurrentCultureIgnoreCase(szReqModel) == 0) ||
                     (!String.IsNullOrEmpty(szReqICAO) && mm.FamilyName.CompareCurrentCultureIgnoreCase(szReqICAO) == 0)))
                     lstmm.Add(mm.MakeModelID);
@@ -207,6 +195,26 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
                 Restriction.AddModels(lstmm);
             }
         }
+    }
+
+    protected void InitializeRestriction()
+    {
+        string szSearchParam = util.GetStringParam(Request, "s");
+        string szAirportParam = util.GetStringParam(Request, "ap");
+
+        InitPassedQuery(util.GetStringParam(Request, "fq"));
+
+        if (!String.IsNullOrEmpty(szSearchParam))
+            Restriction.GeneralText = szSearchParam;
+        if (!String.IsNullOrEmpty(szAirportParam))
+        {
+            Restriction.AirportList.Clear();
+            Restriction.AddAirports(MyFlightbook.Airports.AirportList.NormalizeAirportList(szAirportParam));
+        }
+
+        InitDateParams(util.GetIntParam(Request, "y", -1), util.GetIntParam(Request, "m", -1), util.GetIntParam(Request, "w", -1), util.GetIntParam(Request, "d", -1));
+
+        InitAircraftModelRestriction(util.GetStringParam(Request, "tn"), util.GetStringParam(Request, "mn"), util.GetStringParam(Request, "icao"));
 
         Refresh();
     }

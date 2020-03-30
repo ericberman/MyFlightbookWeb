@@ -1452,6 +1452,147 @@ namespace MyFlightbook.Image
             return result;
         }
 
+        #region InitfileHelpers
+        private void InitFileS3Mp4(MFBPostedFile myFile)
+        {
+            if (String.IsNullOrEmpty(myFile.TempFileName) || !File.Exists(myFile.TempFileName))
+                return;
+
+            string szBucket = AWSConfiguration.CurrentS3Bucket;  // bind this now - in a separate thread (below) it defaults to main, not debug.
+            string szPipelineID = LocalConfig.SettingForKey(AWSConfiguration.UseDebugBucket ? "ETSPipelineIDDebug" : Branding.CurrentBrand.AWSETSPipelineConfigKey);  // bind this as well, same reason
+            new Thread(new ThreadStart(() => { new AWSS3ImageManager().UploadVideo(myFile.TempFileName, myFile.ContentType, szBucket, szPipelineID, this); })).Start();
+        }
+
+        private void InitFileJPG(MFBPostedFile myFile, string szComment, LatLong ll)
+        {
+            string szTempFile = null;
+            try
+            {
+                // Create a file with a unique name - use current time for uniqueness
+                DateTime dt = DateTime.Now;
+                string szFileName = String.Format(CultureInfo.InvariantCulture, "{0}-{1}{2}{3}", dt.ToString("yyyyMMddHHmmssff", CultureInfo.InvariantCulture), myFile.ContentLength.ToString(CultureInfo.InvariantCulture), szNewS3KeySuffix, FileExtensions.JPG);
+                ThumbnailFile = MFBImageInfo.ThumbnailPrefix + szFileName;
+
+                using (Stream s = myFile.GetInputStream())
+                {
+                    // Resize the image if needed, and then create a thumbnail of it and write that too:
+                    using (System.Drawing.Image image = DrawingCompatibleImageFromStream(s, out szTempFile))
+                    {
+                        // rotate the image, if necessary
+                        Info inf = InfoFromImage(image);
+
+                        // save the comment
+                        inf.ImageDescription = szComment;
+
+                        // update the location
+                        if (ll == null) // no geotag is specified - initialize location from the underlying image.
+                        {
+                            if (inf.HasGeotag)
+                                Location = new LatLong(inf.Latitude, inf.Longitude);
+                        }
+                        else
+                        {
+                            // A specific geotag is provided: geotag the image.
+                            Location = ll;
+                            inf.Latitude = ll.Latitude;
+                            inf.Longitude = ll.Longitude;
+                        }
+
+                        if (Location != null && !Location.IsValid)
+                            Location = null;
+
+                        // save the full-sized image
+                        Bitmap bmp;
+
+                        using (bmp = BitmapFromImage(inf.Image, MaxImgHeight, MaxImgWidth))
+                        {
+                            Width = bmp.Width;
+                            Height = bmp.Height;
+
+                            // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
+                            foreach (PropertyItem pi in inf.Image.PropertyItems)
+                                bmp.SetPropertyItem(pi);
+
+                            string szPathFullImage = PhysicalPathFull;
+                            bmp.Save(szPathFullImage, ImageFormat.Jpeg);
+                        }
+
+                        using (bmp = BitmapFromImage(inf.Image, ThumbnailHeight, ThumbnailWidth))
+                        {
+                            WidthThumbnail = bmp.Width;
+                            HeightThumbnail = bmp.Height;
+
+                            // copy the properties here too.
+                            foreach (PropertyItem pi in inf.Image.PropertyItems)
+                                bmp.SetPropertyItem(pi);
+                            bmp.Save(PhysicalPathThumbnail, ImageFormat.Jpeg);
+                        }
+
+                        // if we got here, everything is hunky-dory.  Cache it!
+                        if (HttpRuntime.Cache != null)
+                            HttpRuntime.Cache[CacheKey] = this;
+
+                        // Save it in the DB - we do this BEFORE moving to S3 to avoid a race condition
+                        // that could arise when MoveImageToS3 attempts to update the record to show that it is no longer local.
+                        // We need the record to be present so that the update works.
+                        ToDB();
+
+                        // Move this up to S3.  Note that if we're debugging, it will go into the debug bucket.
+                        if (AWSConfiguration.UseS3)
+                            new AWSS3ImageManager().MoveImageToS3(false, this);
+                    }
+                }
+            }
+            catch (Exception ex) when (!(ex is OutOfMemoryException)) { } // nothing to do here; fail silently.
+            finally
+            {
+                // clean up a temp file, if one was created; can only do this AFTER the image that used it has been disposed (above).
+                if (!String.IsNullOrEmpty(szTempFile) && File.Exists(szTempFile))
+                    File.Delete(szTempFile);
+
+                myFile.CleanUp();
+            }
+        }
+
+        private void InitFilePDF(MFBPostedFile myFile)
+        {
+            // just save the file as-is; we virtualize the thumbanil.
+            string szFilename = Path.GetFileName(myFile.FileName);
+            if (Comment.Length > 0)
+            {
+                string szCleaned = Regex.Replace(Comment, @"[^a-zA-Z0-9]", string.Empty);
+                Regex r = new Regex("[a-zA-Z0-9]+");
+                if (szCleaned.Length > 0 && r.IsMatch(szCleaned))
+                    szFilename = szCleaned + FileExtensions.PDF;
+            }
+            else
+                Comment = Path.GetFileNameWithoutExtension(szFilename);
+
+            szFilename = Path.GetFileNameWithoutExtension(szFilename) + szNewS3KeySuffix + FileExtensions.PDF;
+
+            ThumbnailFile = szFilename;
+            WidthThumbnail = HeightThumbnail = 100;
+            string szFullPhysicalPath = HostingEnvironment.MapPath(VirtualPath + szFilename);
+
+            using (FileStream fsDst = File.OpenWrite(szFullPhysicalPath))
+            {
+                using (Stream src = myFile.GetInputStream())
+                {
+                    src.Seek(0, SeekOrigin.Begin);
+                    src.CopyTo(fsDst);
+                }
+            }
+            myFile.CleanUp();
+
+            // Save it in the DB - do this BEFORE moving to S3 to avoid a race condition (see above).
+            ToDB();
+
+            // We do this SYNCHRONOUSLY because the name of the thumbnail will change in the process.
+            if (AWSConfiguration.UseS3)
+                new AWSS3ImageManager().MoveImageToS3(true, this);
+        }
+        #endregion
+
         private void InitWithFile(MFBPostedFile myFile, string szComment, LatLong ll)
         {
             if (myFile == null || myFile.ContentLength == 0 || String.IsNullOrEmpty(Key) || Class == ImageClass.Unknown || VirtualPath.Length <= 1)
@@ -1471,141 +1612,13 @@ namespace MyFlightbook.Image
             switch (this.ImageType)
             {
                 case ImageFileType.S3VideoMP4:
-                    {
-                        if (String.IsNullOrEmpty(myFile.TempFileName) || !File.Exists(myFile.TempFileName))
-                            return;
-
-                        string szBucket = AWSConfiguration.CurrentS3Bucket;  // bind this now - in a separate thread (below) it defaults to main, not debug.
-                        string szPipelineID = LocalConfig.SettingForKey(AWSConfiguration.UseDebugBucket ? "ETSPipelineIDDebug" : Branding.CurrentBrand.AWSETSPipelineConfigKey);  // bind this as well, same reason
-                        new Thread(new ThreadStart(() => { new AWSS3ImageManager().UploadVideo(myFile.TempFileName, myFile.ContentType, szBucket, szPipelineID, this); })).Start();
-                    }
+                    InitFileS3Mp4(myFile);
                     break;
                 case ImageFileType.JPEG:
-                    {
-                        string szTempFile = null;
-                        try
-                        {
-                            // Create a file with a unique name - use current time for uniqueness
-                            DateTime dt = DateTime.Now;
-                            string szFileName = String.Format(CultureInfo.InvariantCulture, "{0}-{1}{2}{3}", dt.ToString("yyyyMMddHHmmssff", CultureInfo.InvariantCulture), myFile.ContentLength.ToString(CultureInfo.InvariantCulture), szNewS3KeySuffix, FileExtensions.JPG);
-                            ThumbnailFile = MFBImageInfo.ThumbnailPrefix + szFileName;
-
-                            using (Stream s = myFile.GetInputStream())
-                            {
-                                // Resize the image if needed, and then create a thumbnail of it and write that too:
-                                using (System.Drawing.Image image = DrawingCompatibleImageFromStream(s, out szTempFile))
-                                {
-                                    // rotate the image, if necessary
-                                    Info inf = InfoFromImage(image);
-
-                                    // save the comment
-                                    inf.ImageDescription = szComment;
-
-                                    // update the location
-                                    if (ll == null) // no geotag is specified - initialize location from the underlying image.
-                                    {
-                                        if (inf.HasGeotag)
-                                            Location = new LatLong(inf.Latitude, inf.Longitude);
-                                    }
-                                    else
-                                    {
-                                        // A specific geotag is provided: geotag the image.
-                                        Location = ll;
-                                        inf.Latitude = ll.Latitude;
-                                        inf.Longitude = ll.Longitude;
-                                    }
-
-                                    if (Location != null && !Location.IsValid)
-                                        Location = null;
-
-                                    // save the full-sized image
-                                    Bitmap bmp;
-
-                                    using (bmp = BitmapFromImage(inf.Image, MaxImgHeight, MaxImgWidth))
-                                    {
-                                        Width = bmp.Width;
-                                        Height = bmp.Height;
-
-                                        // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
-                                        foreach (PropertyItem pi in inf.Image.PropertyItems)
-                                            bmp.SetPropertyItem(pi);
-
-                                        string szPathFullImage = PhysicalPathFull;
-                                        bmp.Save(szPathFullImage, ImageFormat.Jpeg);
-                                    }
-
-                                    using (bmp = BitmapFromImage(inf.Image, ThumbnailHeight, ThumbnailWidth))
-                                    {
-                                        WidthThumbnail = bmp.Width;
-                                        HeightThumbnail = bmp.Height;
-
-                                        // copy the properties here too.
-                                        foreach (PropertyItem pi in inf.Image.PropertyItems)
-                                            bmp.SetPropertyItem(pi);
-                                        bmp.Save(PhysicalPathThumbnail, ImageFormat.Jpeg);
-                                    }
-
-                                    // if we got here, everything is hunky-dory.  Cache it!
-                                    if (HttpRuntime.Cache != null)
-                                        HttpRuntime.Cache[CacheKey] = this;
-
-                                    // Save it in the DB - we do this BEFORE moving to S3 to avoid a race condition
-                                    // that could arise when MoveImageToS3 attempts to update the record to show that it is no longer local.
-                                    // We need the record to be present so that the update works.
-                                    ToDB();
-
-                                    // Move this up to S3.  Note that if we're debugging, it will go into the debug bucket.
-                                    if (AWSConfiguration.UseS3)
-                                        new AWSS3ImageManager().MoveImageToS3(false, this);
-                                }
-                            }
-                        }
-                        catch (Exception ex) when (!(ex is OutOfMemoryException)) { } // nothing to do here; fail silently.
-                        finally
-                        {
-                            // clean up a temp file, if one was created; can only do this AFTER the image that used it has been disposed (above).
-                            if (!String.IsNullOrEmpty(szTempFile) && File.Exists(szTempFile))
-                                File.Delete(szTempFile);
-
-                            myFile.CleanUp();
-                        }
-                    }
+                    InitFileJPG(myFile, szComment, ll);
                     break;
                 case ImageFileType.PDF:
-                    // just save the file as-is; we virtualize the thumbanil.
-                    string szFilename = Path.GetFileName(myFile.FileName);
-                    if (Comment.Length > 0)
-                    {
-                        string szCleaned = Regex.Replace(Comment, @"[^a-zA-Z0-9]", string.Empty);
-                        Regex r = new Regex("[a-zA-Z0-9]+");
-                        if (szCleaned.Length > 0 && r.IsMatch(szCleaned))
-                            szFilename = szCleaned + FileExtensions.PDF;
-                    }
-                    else
-                        Comment = Path.GetFileNameWithoutExtension(szFilename);
-
-                    szFilename = Path.GetFileNameWithoutExtension(szFilename) + szNewS3KeySuffix + FileExtensions.PDF;
-
-                    ThumbnailFile = szFilename;
-                    WidthThumbnail = HeightThumbnail = 100;
-                    string szFullPhysicalPath = HostingEnvironment.MapPath(VirtualPath + szFilename);
-
-                    using (FileStream fsDst = File.OpenWrite(szFullPhysicalPath))
-                    {
-                        using (Stream src = myFile.GetInputStream())
-                        {
-                            src.Seek(0, SeekOrigin.Begin);
-                            src.CopyTo(fsDst);
-                        }
-                    }
-                    myFile.CleanUp();
-
-                    // Save it in the DB - do this BEFORE moving to S3 to avoid a race condition (see above).
-                    ToDB();
-
-                    // We do this SYNCHRONOUSLY because the name of the thumbnail will change in the process.
-                    if (AWSConfiguration.UseS3)
-                        new AWSS3ImageManager().MoveImageToS3(true, this);
+                    InitFilePDF(myFile);
                     break;
                 case ImageFileType.S3PDF:
                     throw new MyFlightbookException("Cannot upload an S3PDF file; this should never happen.  S3PDF files are created from uploaded PDF files");

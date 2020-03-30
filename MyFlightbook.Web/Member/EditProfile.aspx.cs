@@ -37,61 +37,31 @@ public partial class Member_EditProfile : System.Web.UI.Page
     }
 
     #region Page Lifecycle, setup
-    private tabID SetUpSidebar()
+
+    private static tabID HandleUnknownSidebar(string szPref)
     {
-        tabID sidebarTab = tabID.tabUnknown;
-
-        string szPrefPath = String.IsNullOrWhiteSpace(Request.PathInfo) ? string.Empty : Request.PathInfo.Substring(1);
-        string[] rgPrefPath = szPrefPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-        string szPref = util.GetStringParam(Request, "pref");
-
-        if (rgPrefPath.Length > 0 && !String.IsNullOrEmpty(rgPrefPath[0]) && Enum.TryParse<tabID>(rgPrefPath[0], out tabID tid))
-            sidebarTab = tid;
-
-        if (sidebarTab == tabID.tabUnknown && !String.IsNullOrEmpty(szPref))
+        // have a less fragile way of linking.
+        switch (szPref)
         {
-            // Backwards compatibility - redirect if using the szPref method 
-            if (Enum.TryParse<tabID>(szPref, out tabID tid2))
-            {
-                sidebarTab = tid2;
-
-                // Redirect now using PathInfo scheme
-                string szNew = Request.Url.PathAndQuery.Replace(".aspx", String.Format(CultureInfo.InvariantCulture, ".aspx/{0}", szPref)).Replace(String.Format(CultureInfo.InvariantCulture, "pref={0}", szPref), string.Empty).Replace("?&", "?");
-                Response.Redirect(szNew, true);
-                return sidebarTab;
-            }
+            default:
+            case "name":
+                return tabID.pftName;
+            case "pass":
+                return tabID.pftPass;
+            case "qa":
+                return tabID.pftQA;
+            case "pref":
+            case "email":
+                return tabID.pftPrefs;
+            case "pilotinfo":
+                return tabID.pftPilotInfo;
+            case "instruction":
+                return tabID.instEndorsements;
         }
+    }
 
-        if (sidebarTab == tabID.tabUnknown)
-        {
-            // have a less fragile way of linking.
-            switch (szPref)
-            {
-                default:
-                case "name":
-                    sidebarTab = tabID.pftName;
-                    break;
-                case "pass":
-                    sidebarTab = tabID.pftPass;
-                    break;
-                case "qa":
-                    sidebarTab = tabID.pftQA;
-                    break;
-                case "pref":
-                case "email":
-                    sidebarTab = tabID.pftPrefs;
-                    break;
-                case "pilotinfo":
-                    sidebarTab = tabID.pftPilotInfo;
-                    break;
-                case "instruction":
-                    sidebarTab = tabID.instEndorsements;
-                    break;
-            }
-        }
-
-        this.Master.SelectedTab = sidebarTab;
-
+    private void SetSidebarTab(tabID sidebarTab, string szPref)
+    {
         switch (sidebarTab)
         {
             case tabID.pftAccount:
@@ -119,6 +89,39 @@ public partial class Member_EditProfile : System.Web.UI.Page
                 mvProfile.SetActiveView(vwDonate);
                 break;
         }
+    }
+
+    private tabID SetUpSidebar()
+    {
+        tabID sidebarTab = tabID.tabUnknown;
+
+        string szPrefPath = String.IsNullOrWhiteSpace(Request.PathInfo) ? string.Empty : Request.PathInfo.Substring(1);
+        string[] rgPrefPath = szPrefPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+        string szPref = util.GetStringParam(Request, "pref");
+
+        if (rgPrefPath.Length > 0 && !String.IsNullOrEmpty(rgPrefPath[0]) && Enum.TryParse<tabID>(rgPrefPath[0], out tabID tid))
+            sidebarTab = tid;
+
+        if (sidebarTab == tabID.tabUnknown && !String.IsNullOrEmpty(szPref))
+        {
+            // Backwards compatibility - redirect if using the szPref method 
+            if (Enum.TryParse<tabID>(szPref, out tabID tid2))
+            {
+                sidebarTab = tid2;
+
+                // Redirect now using PathInfo scheme
+                string szNew = Request.Url.PathAndQuery.Replace(".aspx", String.Format(CultureInfo.InvariantCulture, ".aspx/{0}", szPref)).Replace(String.Format(CultureInfo.InvariantCulture, "pref={0}", szPref), string.Empty).Replace("?&", "?");
+                Response.Redirect(szNew, true);
+                return sidebarTab;
+            }
+        }
+
+        if (sidebarTab == tabID.tabUnknown)
+            sidebarTab = HandleUnknownSidebar(szPref);
+
+        this.Master.SelectedTab = sidebarTab;
+
+        SetSidebarTab(sidebarTab, szPref);
 
         return sidebarTab;
     }

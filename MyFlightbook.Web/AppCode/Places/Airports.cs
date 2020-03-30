@@ -250,21 +250,11 @@ namespace MyFlightbook.Airports
         }
 
         #region Getting visited airports
-        /// <summary>
-        /// Returns a set of visited airports matching the specified flight query
-        /// </summary>
-        /// <param name="fq">The flight query</param>
-        /// <returns>A set of visited airports</returns>
-        public static VisitedAirport[] VisitedAirportsForQuery(FlightQuery fq)
+        private static Dictionary<string, VisitedAirport> PopulateAirports(DBHelperCommandArgs commandArgs)
         {
-            if (fq == null)
-                throw new ArgumentNullException(nameof(fq));
-            if (String.IsNullOrEmpty(fq.UserName))
-                throw new ArgumentNullException(nameof(fq));
-
             Dictionary<string, VisitedAirport> dictVA = new Dictionary<string, VisitedAirport>();
 
-            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq, 0, -1, true));
+            DBHelper dbh = new DBHelper(commandArgs);
 
             dbh.ReadRows(
                 (comm) => { },
@@ -302,25 +292,11 @@ namespace MyFlightbook.Airports
                     }
                 });
 
-            // We now have a hashtable of visited airports.  We need to initialize the airport element in each of these.
-            string[] rgCodes = new string[dictVA.Keys.Count];
-            dictVA.Keys.CopyTo(rgCodes, 0);
-            string szAll = String.Join(" ", rgCodes);
+            return dictVA;
+        }
 
-            // do a single db hit to get all of the airport information
-            // Rebuild the airport list based on ONLY those airports that returned a result
-
-            // Build a dictionary of found airports from which we can build our visited airports
-            Dictionary<string, airport> dictAirportResults = new Dictionary<string, airport>();
-            Array.ForEach<airport>(new AirportList(szAll).GetAirportList(), (ap) => 
-                {
-                    if (ap.IsPort)
-                        dictAirportResults[ap.Code] = ap;
-                });
-
-            // We now have a list of all visited airports as the user typed them (in dictVA), and of all airports (in dictAirportResults)
-            // We need to match the two up.
-            // Initialize any airports we found
+        private static void MatchUpVisitedAirports(Dictionary<string, VisitedAirport> dictVA, Dictionary<string, airport> dictAirportResults)
+        {
             foreach (string szCode in dictVA.Keys)
             {
                 VisitedAirport va = dictVA[szCode];
@@ -350,6 +326,42 @@ namespace MyFlightbook.Airports
                 if (!String.IsNullOrEmpty(szKey))
                     va.Airport = dictAirportResults[szKey];
             }
+        }
+
+        /// <summary>
+        /// Returns a set of visited airports matching the specified flight query
+        /// </summary>
+        /// <param name="fq">The flight query</param>
+        /// <returns>A set of visited airports</returns>
+        public static VisitedAirport[] VisitedAirportsForQuery(FlightQuery fq)
+        {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+            if (String.IsNullOrEmpty(fq.UserName))
+                throw new ArgumentNullException(nameof(fq));
+
+            Dictionary<string, VisitedAirport> dictVA = PopulateAirports(LogbookEntry.QueryCommand(fq, 0, -1, true));
+
+            // We now have a hashtable of visited airports.  We need to initialize the airport element in each of these.
+            string[] rgCodes = new string[dictVA.Keys.Count];
+            dictVA.Keys.CopyTo(rgCodes, 0);
+            string szAll = String.Join(" ", rgCodes);
+
+            // do a single db hit to get all of the airport information
+            // Rebuild the airport list based on ONLY those airports that returned a result
+
+            // Build a dictionary of found airports from which we can build our visited airports
+            Dictionary<string, airport> dictAirportResults = new Dictionary<string, airport>();
+            Array.ForEach<airport>(new AirportList(szAll).GetAirportList(), (ap) => 
+                {
+                    if (ap.IsPort)
+                        dictAirportResults[ap.Code] = ap;
+                });
+
+            // We now have a list of all visited airports as the user typed them (in dictVA), and of all airports (in dictAirportResults)
+            // We need to match the two up.
+            // Initialize any airports we found
+            MatchUpVisitedAirports(dictVA, dictAirportResults);
 
             /*
              * Need to de-dupe by location:
