@@ -25,7 +25,7 @@ namespace MyFlightbook.FlightCurrency
     /// Bitflags for various currency options which can be selected by the user.
     /// </summary>
     [FlagsAttribute]
-    public enum CurrencyOptionFlag
+    public enum CurrencyOptionFlags
     {
         flagPerModelCurrency = 0x0001,
         flagArmyMDSCurrency = 0x0002,

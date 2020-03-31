@@ -32,7 +32,7 @@ namespace MyFlightbook
     public static class ProfileRoles
     {
         [FlagsAttribute]
-        public enum UserRole
+        public enum UserRoles
         {
             None = 0x0000,
             Support = 0x0001,
@@ -43,43 +43,43 @@ namespace MyFlightbook
         };
 
         #region Bitmasks for roles
-        public const uint maskCanManageData = ((uint)UserRole.SiteAdmin | (uint)UserRole.DataManager);
-        public const uint maskCanReport = ((uint)UserRole.SiteAdmin | (uint)UserRole.Reporter);
-        public const uint maskSiteAdminOnly = (uint)UserRole.SiteAdmin;
-        public const uint maskCanManageMoney = ((uint)UserRole.SiteAdmin | (uint)UserRole.Accountant);
-        public const uint maskCanSupport = ((uint)UserRole.SiteAdmin | (uint)UserRole.Support | (uint)UserRole.DataManager); // reporters cannot support
-        public const uint maskCanContact = ((uint)UserRole.SiteAdmin | (uint)UserRole.Support);
+        public const uint maskCanManageData = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.DataManager);
+        public const uint maskCanReport = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.Reporter);
+        public const uint maskSiteAdminOnly = (uint)UserRoles.SiteAdmin;
+        public const uint maskCanManageMoney = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.Accountant);
+        public const uint maskCanSupport = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.Support | (uint)UserRoles.DataManager); // reporters cannot support
+        public const uint maskCanContact = ((uint)UserRoles.SiteAdmin | (uint)UserRoles.Support);
         #endregion
 
         #region Helper routines for roles
-        static public bool CanSupport(UserRole r)
+        static public bool CanSupport(UserRoles r)
         {
             return ((uint)r & maskCanSupport) != 0;
         }
 
-        static public bool CanManageData(UserRole r)
+        static public bool CanManageData(UserRoles r)
         {
             return ((uint)r & maskCanManageData) != 0;
         }
 
-        static public bool CanReport(UserRole r)
+        static public bool CanReport(UserRoles r)
         {
             return ((uint)r & maskCanReport) != 0;
         }
 
-        static public bool CanManageMoney(UserRole r)
+        static public bool CanManageMoney(UserRoles r)
         {
             return ((uint)r & maskCanManageMoney) != 0;
         }
 
-        static public bool CanDoSomeAdmin(UserRole r)
+        static public bool CanDoSomeAdmin(UserRoles r)
         {
-            return r != UserRole.None;
+            return r != UserRoles.None;
         }
 
-        static public bool CanDoAllAdmin(UserRole r)
+        static public bool CanDoAllAdmin(UserRoles r)
         {
-            return r == UserRole.SiteAdmin;
+            return r == UserRoles.SiteAdmin;
         }
         #endregion
 
@@ -172,7 +172,7 @@ namespace MyFlightbook
         {
             this.Certificate = this.Email = this.FirstName = this.LastName = this.OriginalPKID = this.OriginalEmail = this.PKID =
                 this.SecurityQuestion = this.UserName = this.License = this.Address = string.Empty;
-            Role = ProfileRoles.UserRole.None;
+            Role = ProfileRoles.UserRoles.None;
             BlacklistedProperties = new List<int>();
             CreationDate = LastActivity = LastLogon = LastPasswordChange = 
             LastBFRInternal = LastMedical = CertificateExpiration = EnglishProficiencyExpiration = LastEmailDate = DateTime.MinValue;
@@ -190,7 +190,7 @@ namespace MyFlightbook
         /// <summary>
         /// The role for the user
         /// </summary>
-        public ProfileRoles.UserRole Role { get; set; }
+        public ProfileRoles.UserRoles Role { get; set; }
 
         /// <summary>
         /// Does this user have access to at least one admin role?
@@ -237,14 +237,14 @@ namespace MyFlightbook
         /// <summary>
         /// Bitflag for which currencies the user does/does not want
         /// </summary>
-        public CurrencyOptionFlag CurrencyFlags { get; set; }
+        public CurrencyOptionFlags CurrencyFlags { get; set; }
 
-        private void setCurrencyFlag(CurrencyOptionFlag cof, bool value)
+        private void setCurrencyFlag(CurrencyOptionFlags cof, bool value)
         {
-            CurrencyFlags = (CurrencyOptionFlag)((value) ? (((uint)CurrencyFlags) | (uint)cof) : (((uint)CurrencyFlags) & ~(uint)cof));
+            CurrencyFlags = (CurrencyOptionFlags)((value) ? (((uint)CurrencyFlags) | (uint)cof) : (((uint)CurrencyFlags) & ~(uint)cof));
         }
 
-        private bool hasFlag(CurrencyOptionFlag cof)
+        private bool hasFlag(CurrencyOptionFlags cof)
         {
             return ((uint)CurrencyFlags & (uint)cof) != 0;
         }
@@ -254,8 +254,8 @@ namespace MyFlightbook
         /// </summary>
         public Boolean UsesArmyCurrency
         {
-            get { return hasFlag(CurrencyOptionFlag.flagArmyMDSCurrency); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagArmyMDSCurrency, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagArmyMDSCurrency); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagArmyMDSCurrency, value); }
         }
 
         /// <summary>
@@ -263,8 +263,8 @@ namespace MyFlightbook
         /// </summary>
         public Boolean UsesPerModelCurrency
         {
-            get { return hasFlag(CurrencyOptionFlag.flagPerModelCurrency); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagPerModelCurrency, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagPerModelCurrency); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagPerModelCurrency, value); }
         }
 
         /// <summary>
@@ -272,8 +272,8 @@ namespace MyFlightbook
         /// </summary>
         private Boolean UsesPerModelTotals
         {
-            get { return hasFlag(CurrencyOptionFlag.flagShowTotalsPerModel); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagShowTotalsPerModel, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagShowTotalsPerModel); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagShowTotalsPerModel, value); }
         }
 
         /// <summary>
@@ -281,8 +281,8 @@ namespace MyFlightbook
         /// </summary>
         private Boolean UsesPerFamilyTotals
         {
-            get { return hasFlag(CurrencyOptionFlag.flagsShowTotalsPerFamily); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagsShowTotalsPerFamily, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagsShowTotalsPerFamily); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagsShowTotalsPerFamily, value); }
         }
 
         /// <summary>
@@ -316,8 +316,8 @@ namespace MyFlightbook
         /// </summary>
         public Boolean SuppressModelFeatureTotals
         {
-            get { return hasFlag(CurrencyOptionFlag.flagSuppressModelFeatureTotals); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagSuppressModelFeatureTotals, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagSuppressModelFeatureTotals); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagSuppressModelFeatureTotals, value); }
         }
 
         /// <summary>
@@ -325,8 +325,8 @@ namespace MyFlightbook
         /// </summary>
         public Boolean UsesFAR117DutyTime
         {
-            get { return hasFlag(CurrencyOptionFlag.flagFAR117DutyTimeCurrency); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagFAR117DutyTimeCurrency, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagFAR117DutyTimeCurrency); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagFAR117DutyTimeCurrency, value); }
         }
 
         /// <summary>
@@ -334,8 +334,8 @@ namespace MyFlightbook
         /// </summary>
         public Boolean UsesFAR117DutyTimeAllFlights
         {
-            get { return hasFlag(CurrencyOptionFlag.flagFAR117IncludeAllFlights); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagFAR117IncludeAllFlights, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagFAR117IncludeAllFlights); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagFAR117IncludeAllFlights, value); }
         }
 
         /// <summary>
@@ -343,26 +343,26 @@ namespace MyFlightbook
         /// </summary>
         public Boolean UsesFAR135DutyTime
         {
-            get { return hasFlag(CurrencyOptionFlag.flagFAR135DutyTimeCurrency); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagFAR135DutyTimeCurrency, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagFAR135DutyTimeCurrency); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagFAR135DutyTimeCurrency, value); }
         }
 
         public Boolean UsesFAR13529xCurrency
         {
-            get { return hasFlag(CurrencyOptionFlag.flagUseFAR135_29xStatus); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagUseFAR135_29xStatus, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagUseFAR135_29xStatus); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagUseFAR135_29xStatus, value); }
         }
 
         public Boolean UsesFAR13526xCurrency
         {
-            get { return hasFlag(CurrencyOptionFlag.flagUseFAR135_26xStatus); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagUseFAR135_26xStatus, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagUseFAR135_26xStatus); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagUseFAR135_26xStatus, value); }
         }
 
         public Boolean UsesFAR61217Currency
         {
-            get { return hasFlag(CurrencyOptionFlag.flagUseFAR61217); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagUseFAR61217, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagUseFAR61217); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagUseFAR61217, value); }
         }
 
         /// <summary>
@@ -370,8 +370,8 @@ namespace MyFlightbook
         /// </summary>
         public Boolean UsesICAOMedical
         {
-            get { return hasFlag(CurrencyOptionFlag.flagUseEASAMedical); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagUseEASAMedical, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagUseEASAMedical); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagUseEASAMedical, value); }
         }
 
         /// <summary>
@@ -379,8 +379,8 @@ namespace MyFlightbook
         /// </summary>
         public Boolean UsesLooseIFRCurrency
         {
-            get { return hasFlag(CurrencyOptionFlag.flagUseLooseIFRCurrency); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagUseLooseIFRCurrency, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagUseLooseIFRCurrency); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagUseLooseIFRCurrency, value); }
         }
 
         /// <summary>
@@ -388,8 +388,8 @@ namespace MyFlightbook
         /// </summary>
         public Boolean UseCanadianCurrencyRules
         {
-            get { return hasFlag(CurrencyOptionFlag.flagUseCanadianCurrencyRules); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagUseCanadianCurrencyRules, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagUseCanadianCurrencyRules); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagUseCanadianCurrencyRules, value); }
         }
 
         /// <summary>
@@ -397,8 +397,8 @@ namespace MyFlightbook
         /// </summary>
         public Boolean UsesLAPLCurrency
         {
-            get { return hasFlag(CurrencyOptionFlag.flagUseLAPLCurrency); }
-            set { setCurrencyFlag(CurrencyOptionFlag.flagUseLAPLCurrency, value); }
+            get { return hasFlag(CurrencyOptionFlags.flagUseLAPLCurrency); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagUseLAPLCurrency, value); }
         }
 
         /// <summary>
@@ -408,12 +408,12 @@ namespace MyFlightbook
         {
             get
             {
-                return (CurrencyExpiration.Expiration)(((uint)CurrencyFlags & (uint)CurrencyOptionFlag.flagCurrencyExpirationMask) >> 4);
+                return (CurrencyExpiration.Expiration)(((uint)CurrencyFlags & (uint)CurrencyOptionFlags.flagCurrencyExpirationMask) >> 4);
             }
             set
             {
                 uint newMask = (uint)value << 4;
-                CurrencyFlags = (CurrencyOptionFlag)(((uint)CurrencyFlags & ~(uint)CurrencyOptionFlag.flagCurrencyExpirationMask) | newMask);
+                CurrencyFlags = (CurrencyOptionFlags)(((uint)CurrencyFlags & ~(uint)CurrencyOptionFlags.flagCurrencyExpirationMask) | newMask);
             }
         }
 
@@ -585,7 +585,7 @@ namespace MyFlightbook
 
                 if (available.Contains(DefaultCloudStorage))
                     return DefaultCloudStorage;
-                else if (available.Count() > 0)
+                else if (available.Any())
                     return available[0];
                 else 
                     return StorageID.None;
@@ -833,7 +833,7 @@ namespace MyFlightbook
                 License = util.ReadNullableField(dr, "License", string.Empty).ToString();
                 Certificate = util.ReadNullableField(dr, "CertificateNumber", "").ToString();
                 CertificateExpiration = Convert.ToDateTime(util.ReadNullableField(dr, "CFIExpiration", DateTime.MinValue), CultureInfo.InvariantCulture);
-                CurrencyFlags = (CurrencyOptionFlag)Convert.ToUInt32(dr["CurrencyFlags"], CultureInfo.InvariantCulture);
+                CurrencyFlags = (CurrencyOptionFlags)Convert.ToUInt32(dr["CurrencyFlags"], CultureInfo.InvariantCulture);
                 SecurityQuestion = dr["PasswordQuestion"].ToString();
 
                 Subscriptions = (UInt32)Convert.ToInt32(dr["EmailSubscriptions"], CultureInfo.InvariantCulture);
@@ -842,8 +842,8 @@ namespace MyFlightbook
                 AchievementStatus = (Achievement.ComputeStatus)Convert.ToInt16(dr["AchievementStatus"], CultureInfo.InvariantCulture);
 
                 // IsAdmin may not always be present; default to false if not.  This is a bit of a hack.
-                ProfileRoles.UserRole r = Role = ProfileRoles.UserRole.None;
-                if (Enum.TryParse<ProfileRoles.UserRole>(util.ReadNullableField(dr, "Role", ProfileRoles.UserRole.None.ToString()).ToString(), out r))
+                ProfileRoles.UserRoles r = Role = ProfileRoles.UserRoles.None;
+                if (Enum.TryParse<ProfileRoles.UserRoles>(util.ReadNullableField(dr, "Role", ProfileRoles.UserRoles.None.ToString()).ToString(), out r))
                     Role = r;
 
                 PreferredTimeZoneID = (string) util.ReadNullableField(dr, "timezone", null);

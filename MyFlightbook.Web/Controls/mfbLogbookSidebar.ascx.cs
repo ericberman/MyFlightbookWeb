@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 /******************************************************
  * 
- * Copyright (c) 2019-2018 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -36,7 +36,7 @@ public partial class Controls_mfbLogbookSidebar : System.Web.UI.UserControl
         if (this.TabList == null)
             return;
 
-        ProfileRoles.UserRole userRole = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).Role;
+        ProfileRoles.UserRoles userRole = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).Role;
 
         plcSidebar.Controls.Clear();
 

@@ -262,7 +262,7 @@ namespace MyFlightbook
         /// <summary>
         /// Roles to which the tab is restricted; empty for everybody
         /// </summary>
-        public List<ProfileRoles.UserRole> Roles { get; }
+        public List<ProfileRoles.UserRoles> Roles { get; }
 
         /// <summary>
         /// Any child tabs
@@ -279,7 +279,7 @@ namespace MyFlightbook
             Children = new List<TabItem>();
             Link = string.Empty;
             ID = tabID.tabUnknown;
-            Roles = new List<ProfileRoles.UserRole>();
+            Roles = new List<ProfileRoles.UserRoles>();
         }
 
         /// <summary>
@@ -296,7 +296,7 @@ namespace MyFlightbook
             {
                 string[] rgRoles = szRoles.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string sz in rgRoles)
-                    Roles.Add((ProfileRoles.UserRole)Enum.Parse(typeof(ProfileRoles.UserRole), sz));
+                    Roles.Add((ProfileRoles.UserRoles)Enum.Parse(typeof(ProfileRoles.UserRoles), sz));
             }
         }
         #endregion

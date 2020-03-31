@@ -9,7 +9,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2019 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -51,7 +51,7 @@ public partial class XMLNav : System.Web.UI.UserControl
     public event EventHandler<TabBoundEventArgs> TabItemBound = null;
     #endregion
 
-    private ProfileRoles.UserRole m_userRole;
+    private ProfileRoles.UserRoles m_userRole;
     private HtmlTextWriter m_tw;
 
     void WriteTabs(IEnumerable<TabItem> lst, int level = 0)
