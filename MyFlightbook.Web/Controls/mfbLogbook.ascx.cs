@@ -687,7 +687,107 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         BindData();
     }
 
-    public void gvFlightLogs_RowDataBound(Object sender, GridViewRowEventArgs e)
+    #region Gridview RowDatabound Helpers
+    private void SetUpContextMenuForRow(LogbookEntryDisplay le, GridViewRow row)
+    {
+        // Wire up the drop-menu.  We have to do this here because it is an iNamingContainer and can't access the gridviewrow
+        Controls_mfbFlightContextMenu cm = (Controls_mfbFlightContextMenu)row.FindControl("popmenu1").FindControl("mfbFlightContextMenu");
+
+        string szEditContext = EditContextParams;
+
+        cm.EditTargetFormatString = (EditPageUrlFormatString == null) ? string.Empty : (EditPageUrlFormatString + (String.IsNullOrEmpty(szEditContext) ? string.Empty : (EditPageUrlFormatString.Contains("?") ? "&" : "?" + szEditContext)));
+        cm.Flight = le;
+    }
+
+    private void SetUpBadgesForRow(LogbookEntryDisplay le, GridViewRow row)
+    {
+        if (Pilot != null && Pilot.AchievementStatus == Achievement.ComputeStatus.UpToDate)
+        {
+            Repeater rptBadges = (Repeater)row.FindControl("rptBadges");
+            if (CachedBadgesByFlight.ContainsKey(le.FlightID))
+            {
+                IEnumerable<Badge> badges = CachedBadgesByFlight[le.FlightID];
+                if (badges != null)
+                {
+                    rptBadges.DataSource = badges;
+                    rptBadges.DataBind();
+                }
+            }
+        }
+    }
+
+    private void SetUpSelectionForRow(LogbookEntryDisplay le, GridViewRow row)
+    {
+        if (IsInSelectMode && IsViewingOwnFlights)
+        {
+            ((CheckBox)row.FindControl("ckSelected")).Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:toggleSelectedFlight('{0}');", le.FlightID);
+            BoundItems.Add(le.FlightID);
+        }
+    }
+
+    private void SetUpImagesForRow(LogbookEntryDisplay le, GridViewRow row)
+    {
+        // Bind to images.
+        Controls_mfbImageList mfbIl = (Controls_mfbImageList)row.FindControl("mfbilFlights");
+        if (!SuppressImages)
+        {
+            // Flight images
+            mfbIl.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
+            mfbIl.Refresh();
+
+            // wire up images
+            if (mfbIl.Images.ImageArray.Count > 0 || le.Videos.Count > 0)
+                row.FindControl("pnlImagesHover").Visible = true;
+            else
+                row.FindControl("pnlFlightImages").Visible = false;
+
+            Aircraft ac = AircraftForUser.Find(a => a.AircraftID == le.AircraftID);
+            string szInstTypeDescription = ac == null ? string.Empty : AircraftInstance.ShortNameForInstanceType(ac.InstanceType);
+            ((Label)row.FindControl("lblInstanceTypeDesc")).Text = szInstTypeDescription;
+
+            // And aircraft
+            // for efficiency, see if we've already done this tail number; re-use if already done
+            if (!m_dictAircraftHoverIDs.ContainsKey(le.AircraftID))
+            {
+                if (ac != null)
+                    mfbilAircraft.DefaultImage = ac.DefaultImage;
+
+                mfbilAircraft.Key = le.AircraftID.ToString(CultureInfo.InvariantCulture);
+                mfbilAircraft.Refresh();
+
+                // cache the attributes string - there's a bit of computation involved in it.
+                string szAttributes = ((Label)row.FindControl("lblModelAttributes")).Text.EscapeHTML();
+
+                // and the image table.
+                m_dictAircraftHoverIDs[le.AircraftID] = szInstTypeDescription + " " + szAttributes + mfbilAircraft.AsHTMLTable();
+            }
+
+            row.FindControl("plcTail").Controls.Add(new LiteralControl(m_dictAircraftHoverIDs[le.AircraftID]));
+        }
+    }
+
+    private void SetStyleForRow(LogbookEntryDisplay le, GridViewRow row)
+    {
+        HtmlGenericControl divDate = (HtmlGenericControl)row.FindControl("divDateAndRoute");
+        switch (le.RowType)
+        {
+            case LogbookEntryDisplay.LogbookRowType.Flight:
+                if (le.IsPageBreak)
+                    row.CssClass += " pageBreakRow";
+                break;
+            case LogbookEntryDisplay.LogbookRowType.RunningTotal:
+                row.CssClass = "runningTotalRow";
+                divDate.Visible = false;
+                break;
+            case LogbookEntryDisplay.LogbookRowType.Subtotal:
+                row.CssClass = (le.IsPageBreak) ? "subtotalRowPageBreak" : "subtotalRow";
+                divDate.Visible = false;
+                break;
+        }
+    }
+    #endregion
+
+    protected void gvFlightLogs_RowDataBound(Object sender, GridViewRowEventArgs e)
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));
@@ -703,89 +803,11 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         {
             LogbookEntryDisplay le = (LogbookEntryDisplay) e.Row.DataItem;
 
-            // Wire up the drop-menu.  We have to do this here because it is an iNamingContainer and can't access the gridviewrow
-            Controls_mfbFlightContextMenu cm = (Controls_mfbFlightContextMenu)e.Row.FindControl("popmenu1").FindControl("mfbFlightContextMenu");
-
-            string szEditContext = EditContextParams;
-
-            cm.EditTargetFormatString = (EditPageUrlFormatString == null) ? string.Empty : (EditPageUrlFormatString + (String.IsNullOrEmpty(szEditContext) ? string.Empty : (EditPageUrlFormatString.Contains("?") ? "&" : "?" + szEditContext)));
-            cm.Flight = le;
-
-            if (Pilot != null && Pilot.AchievementStatus == MyFlightbook.Achievements.Achievement.ComputeStatus.UpToDate)
-            {
-                Repeater rptBadges = (Repeater)e.Row.FindControl("rptBadges");
-                if (CachedBadgesByFlight.ContainsKey(le.FlightID))
-                {
-                    IEnumerable<Badge> badges = CachedBadgesByFlight[le.FlightID];
-                    if (badges != null)
-                    {
-                        rptBadges.DataSource = badges;
-                        rptBadges.DataBind();
-                    }
-                }
-            }
-
-            if (IsInSelectMode && IsViewingOwnFlights)
-            {
-                ((CheckBox)e.Row.FindControl("ckSelected")).Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:toggleSelectedFlight('{0}');", le.FlightID);
-                BoundItems.Add(le.FlightID);
-            }
-
-            // Bind to images.
-            Controls_mfbImageList mfbIl = (Controls_mfbImageList)e.Row.FindControl("mfbilFlights");
-            if (!SuppressImages)
-            {
-                // Flight images
-                mfbIl.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
-                mfbIl.Refresh();
-
-                // wire up images
-                if (mfbIl.Images.ImageArray.Count > 0 || le.Videos.Count() > 0)
-                    e.Row.FindControl("pnlImagesHover").Visible = true;
-                else
-                    e.Row.FindControl("pnlFlightImages").Visible = false;
-
-                Aircraft ac = AircraftForUser.Find(a => a.AircraftID == le.AircraftID);
-                string szInstTypeDescription = ac == null ? string.Empty : AircraftInstance.ShortNameForInstanceType(ac.InstanceType);
-                ((Label)e.Row.FindControl("lblInstanceTypeDesc")).Text = szInstTypeDescription;
-
-                // And aircraft
-                // for efficiency, see if we've already done this tail number; re-use if already done
-                if (!m_dictAircraftHoverIDs.ContainsKey(le.AircraftID))
-                {
-                    if (ac != null)
-                        mfbilAircraft.DefaultImage = ac.DefaultImage;
-
-                    mfbilAircraft.Key = le.AircraftID.ToString(CultureInfo.InvariantCulture);
-                    mfbilAircraft.Refresh();
-
-                    // cache the attributes string - there's a bit of computation involved in it.
-                    string szAttributes = ((Label)e.Row.FindControl("lblModelAttributes")).Text.EscapeHTML();
-
-                    // and the image table.
-                    m_dictAircraftHoverIDs[le.AircraftID] = szInstTypeDescription + " " + szAttributes + mfbilAircraft.AsHTMLTable();
-                }
-
-                e.Row.FindControl("plcTail").Controls.Add(new LiteralControl(m_dictAircraftHoverIDs[le.AircraftID]));
-            }
-
-            // Set style for the row
-            HtmlGenericControl divDate = (HtmlGenericControl)e.Row.FindControl("divDateAndRoute");
-            switch (le.RowType)
-            {
-                case LogbookEntryDisplay.LogbookRowType.Flight:
-                    if (le.IsPageBreak)
-                        e.Row.CssClass = e.Row.CssClass + " pageBreakRow";
-                    break;
-                case LogbookEntryDisplay.LogbookRowType.RunningTotal:
-                    e.Row.CssClass = "runningTotalRow";
-                    divDate.Visible = false;
-                    break;
-                case LogbookEntryDisplay.LogbookRowType.Subtotal:
-                    e.Row.CssClass = (le.IsPageBreak) ? "subtotalRowPageBreak" : "subtotalRow";
-                    divDate.Visible = false;
-                    break;
-            }
+            SetUpContextMenuForRow(le, e.Row);
+            SetUpBadgesForRow(le, e.Row);
+            SetUpSelectionForRow(le, e.Row);
+            SetUpImagesForRow(le, e.Row);
+            SetStyleForRow(le, e.Row);
         }
     }
 
@@ -884,7 +906,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
             DeleteFlight(idFlight);
 
         IsInSelectMode = false;
-        if (SelectedItems.Count() == 0)
+        if (!SelectedItems.Any())
             BindData();
         SelectedItems = null;
     }
