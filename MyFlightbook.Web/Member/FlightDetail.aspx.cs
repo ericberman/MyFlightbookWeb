@@ -246,6 +246,30 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         return false;
     }
 
+    protected void SetUpMaps()
+    {
+        // Set up any maps.
+        mfbGoogleMapManager1.Map.Airports = RoutesList.Result;
+        mfbGoogleMapManager1.ShowMarkers = true;
+        mfbGoogleMapManager1.Map.PathVarName = PathLatLongArrayID;
+        mfbGoogleMapManager1.Map.Path = m_fd.GetPath();
+        if (m_fd.HasLatLongInfo && m_fd.Data.Rows.Count > 1)
+        {
+            cmbFormat.Items[(int)DownloadFormat.KML].Enabled = true;
+            cmbFormat.Items[(int)DownloadFormat.GPX].Enabled = true;
+            mfbGoogleMapManager1.Mode = MyFlightbook.Mapping.GMap_Mode.Dynamic;
+            pnlMapControls.Visible = true;
+        }
+        else
+        {
+            cmbFormat.Items[(int)DownloadFormat.KML].Enabled = false;
+            cmbFormat.Items[(int)DownloadFormat.GPX].Enabled = false;
+            mfbGoogleMapManager1.Mode = MyFlightbook.Mapping.GMap_Mode.Static;
+            pnlMapControls.Visible = false;
+        }
+        lnkZoomToFit.NavigateUrl = mfbGoogleMapManager1.ZoomToFitScript;
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.tabLogbook;
@@ -341,26 +365,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         if (!m_fd.HasDateTime)
             lnkSendCloudAhoy.Visible = false;
 
-        // Set up any maps.
-        mfbGoogleMapManager1.Map.Airports = RoutesList.Result;
-        mfbGoogleMapManager1.ShowMarkers = true;
-        mfbGoogleMapManager1.Map.PathVarName = PathLatLongArrayID;
-        mfbGoogleMapManager1.Map.Path = m_fd.GetPath();
-        if (m_fd.HasLatLongInfo && m_fd.Data.Rows.Count > 1)
-        {
-            cmbFormat.Items[(int)DownloadFormat.KML].Enabled = true;
-            cmbFormat.Items[(int)DownloadFormat.GPX].Enabled = true;
-            mfbGoogleMapManager1.Mode = MyFlightbook.Mapping.GMap_Mode.Dynamic;
-            pnlMapControls.Visible = true;
-        }
-        else
-        {
-            cmbFormat.Items[(int)DownloadFormat.KML].Enabled = false;
-            cmbFormat.Items[(int)DownloadFormat.GPX].Enabled = false;
-            mfbGoogleMapManager1.Mode = MyFlightbook.Mapping.GMap_Mode.Static;
-            pnlMapControls.Visible = false;
-        }
-        lnkZoomToFit.NavigateUrl = mfbGoogleMapManager1.ZoomToFitScript;
+        SetUpMaps();
 
         if (!IsPostBack)
         {

@@ -240,6 +240,76 @@ namespace MyFlightbook.MilestoneProgress
             miMinSoloSubNightLandings = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CommMinNightLandings, szCatClass), ResolvedFAR("(4)(ii)"), Resources.MilestoneProgress.CommSoloNote, MilestoneItem.MilestoneType.Count, 10);
         }
 
+        private void ExamineSimFlight(ExaminerFlightRow cfr, bool fCatClassMatches)
+        {
+            if (cfr.fIsCertifiedIFR)
+            {
+                if (cfr.fIsFTD || cfr.fIsFullMotion)
+                    miMinPoweredInCategory.AddTrainingEvent(cfr.Total, AllowedOverallSimTime, true);
+                // Helicopters and gyroplanes allow IFR training in a sim.
+                if (IFRTrainingCanBeInSim && fCatClassMatches)
+                    miMintrainingSimIMC.AddEvent(Math.Min(cfr.Dual, cfr.IMCSim));
+            }
+        }
+
+        private bool IsComplexForRating(ExaminerFlightRow cfr, CategoryClass cc)
+        {
+            switch (RatingSought)
+            {
+                default:
+                    return false;
+                case RatingType.CommercialASEL:
+                    // can be complex OR turbine, can be AMEL or ASEL
+                    return (cc.IdCatClass == CategoryClass.CatClassID.ASEL || cc.IdCatClass == CategoryClass.CatClassID.AMEL) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr));
+                case RatingType.CommercialAMEL:
+                    // can be complex OR turbine, MUST be multi-engine airplane.  TAA doesn't matter
+                    return IsComplexOrTurbine(cfr) && (cc.IdCatClass == CategoryClass.CatClassID.AMEL || cc.IdCatClass == CategoryClass.CatClassID.AMES);
+                case RatingType.CommercialASES:
+                    return (cc.IdCatClass == CategoryClass.CatClassID.ASES || cc.IdCatClass == CategoryClass.CatClassID.AMES) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr));
+                case RatingType.CommercialAMES:
+                    // Must be complex - turbine is not sufficient, MUST match catclass.
+                    return cfr.fIsComplex && cc.IdCatClass == CategoryClass.CatClassID.AMES;
+            }
+        }
+
+        private void CheckXCTraining(ExaminerFlightRow cfr, double distFromStart)
+        {
+            if (cfr.Dual > 0)
+            {
+                // (3)(iii)
+                if ((cfr.XC - cfr.Night) >= 2.0M && distFromStart > _minDistanceXCTraining)
+                    miMinXCCategory.MatchFlightEvent(cfr);
+
+                // (3)(iv)
+                if (Math.Min(cfr.XC, cfr.Night) >= 2.0M && distFromStart > _minDistanceXCTraining)
+                    miMinXCCategoryNight.MatchFlightEvent(cfr);
+
+                // (3)(v)
+                if (DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0)
+                    miMinTestPrep.AddEvent(cfr.Dual);
+            }
+        }
+
+        private bool MeetsLongXCCriteria(ExaminerFlightRow cfr, AirportList al, double distFromStart)
+        {
+            if (cfr.XC > 0 && cfr.cLandingsThisFlight >= 3 && al.GetNormalizedAirports().Length >= 3)
+            {
+                switch (RatingSought)
+                {
+                    case RatingType.CommercialHelicopter:
+                        return al.MaxSegmentForRoute() > 50.0 && distFromStart >= 50.0;
+                    case RatingType.CommercialAMEL:
+                    case RatingType.CommercialAMES:
+                    case RatingType.CommercialASEL:
+                    case RatingType.CommercialASES:
+                        return al.DistanceForRoute() > 300 && (al.GetNormalizedAirports()[0].IsHawaiian ? al.MaxSegmentForRoute() >= 150 : distFromStart >= 250);
+                    default:
+                        return false;
+                }
+            }
+            return false;
+        }
+
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
@@ -249,14 +319,7 @@ namespace MyFlightbook.MilestoneProgress
 
             if (!cfr.fIsRealAircraft)
             {
-                if (cfr.fIsCertifiedIFR)
-                {
-                    if (cfr.fIsFTD || cfr.fIsFullMotion)
-                        miMinPoweredInCategory.AddTrainingEvent(cfr.Total, AllowedOverallSimTime, true);
-                    // Helicopters and gyroplanes allow IFR training in a sim.
-                    if (IFRTrainingCanBeInSim && fCatClassMatches)
-                        miMintrainingSimIMC.AddEvent(Math.Min(cfr.Dual, cfr.IMCSim));
-                }
+                ExamineSimFlight(cfr, fCatClassMatches);
                 return;
             }
 
@@ -281,21 +344,12 @@ namespace MyFlightbook.MilestoneProgress
             int nightTakeoffs = 0;
             if (fCatClassMatches)
             {
-                cfr.FlightProps.ForEachEvent(pf =>
-                {
-                    if (pf.PropertyType.IsSolo)
-                        soloTime += pf.DecValue;
-                    if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropInstructorOnBoard && !pf.IsDefaultValue)
-                        fInstructorOnBoard = true;    // instructor-on-board time only counts if you are acting as PIC
-                    if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutiesOfPIC && !pf.IsDefaultValue)
-                        dutiesOfPICTime += pf.DecValue;
-                    if (pf.PropertyType.IsNightTakeOff)
-                        nightTakeoffs += pf.IntValue;
-                    if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropLandingToweredNight)
-                        cNightLandingsAtToweredAirport += pf.IntValue;
-                    if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffToweredNight)
-                        cNightTakefoffsAtToweredAirport += pf.IntValue;
-                });
+                soloTime = cfr.FlightProps.TotalTimeForPredicate(fp => fp.PropertyType.IsSolo);
+                fInstructorOnBoard = cfr.FlightProps[CustomPropertyType.KnownProperties.IDPropInstructorOnBoard] != null; // instructor-on-board time only counts if you are acting as PIC
+                dutiesOfPICTime = cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropDutiesOfPIC);
+                nightTakeoffs = cfr.FlightProps.TotalCountForPredicate(fp => fp.PropertyType.IsNightTakeOff);
+                cNightLandingsAtToweredAirport = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropLandingToweredNight);
+                cNightTakefoffsAtToweredAirport = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropTakeoffToweredNight);
             }
 
             if (fInstructorOnBoard)
@@ -318,17 +372,13 @@ namespace MyFlightbook.MilestoneProgress
 
             miPICMin.AddEvent(PIC);
             miPICMin.AddEvent(PICSubst);
+            miPICMinXC.AddEvent(PICXC);
+            miPICMinXC.AddEvent(PICSubstXC);
 
             if (fIsInCategory)
             {
                 miPICMinCategory.AddEvent(PIC);
                 miPICMinCategory.AddEvent(PICSubst);
-            }
-
-            miPICMinXC.AddEvent(PICXC);
-            miPICMinXC.AddEvent(PICSubstXC);
-            if (fIsInCategory)
-            {
                 miPICMinXCCategory.AddEvent(PICXC);
                 miPICMinXCCategory.AddEvent(PICSubstXC);
             }
@@ -340,26 +390,8 @@ namespace MyFlightbook.MilestoneProgress
             miMintrainingSimIMC.AddEvent(Math.Min(cfr.Dual, cfr.IMCSim));
 
             // (3)(ii) - complex training: complex or turbine
-            bool fIsComplex = false;
+            bool fIsComplex = IsComplexForRating(cfr, cc);
 
-            switch (RatingSought)
-            {
-                case RatingType.CommercialASEL:
-                    // can be complex OR turbine, can be AMEL or ASEL
-                    fIsComplex = (cc.IdCatClass == CategoryClass.CatClassID.ASEL || cc.IdCatClass == CategoryClass.CatClassID.AMEL) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr));
-                    break;
-                case RatingType.CommercialAMEL:
-                    // can be complex OR turbine, MUST be multi-engine airplane.  TAA doesn't matter
-                    fIsComplex = IsComplexOrTurbine(cfr) && (cc.IdCatClass == CategoryClass.CatClassID.AMEL || cc.IdCatClass == CategoryClass.CatClassID.AMES);
-                    break;
-                case RatingType.CommercialASES:
-                    fIsComplex = (cc.IdCatClass == CategoryClass.CatClassID.ASES || cc.IdCatClass == CategoryClass.CatClassID.AMES) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr)); 
-                    break;
-                case RatingType.CommercialAMES:
-                    // Must be complex - turbine is not sufficient, MUST match catclass.
-                    fIsComplex = cfr.fIsComplex && cc.IdCatClass == CategoryClass.CatClassID.AMES;
-                    break;
-            }
             // Comp
             if (fIsComplex)
                 miMinTrainingComplex.AddEvent(cfr.Dual);
@@ -370,20 +402,7 @@ namespace MyFlightbook.MilestoneProgress
 
                 AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
                 double distFromStart = al.MaxDistanceFromStartingAirport();
-                if (cfr.Dual > 0)
-                {
-                    // (3)(iii)
-                    if ((cfr.XC - cfr.Night) >= 2.0M && distFromStart > _minDistanceXCTraining)
-                        miMinXCCategory.MatchFlightEvent(cfr);
-
-                    // (3)(iv)
-                    if (Math.Min(cfr.XC, cfr.Night) >= 2.0M && distFromStart > _minDistanceXCTraining)
-                        miMinXCCategoryNight.MatchFlightEvent(cfr);
-
-                    // (3)(v)
-                    if (DateTime.Now.AddCalendarMonths(-2).CompareTo(cfr.dtFlight) <= 0)
-                        miMinTestPrep.AddEvent(cfr.Dual);
-                }
+                CheckXCTraining(cfr, distFromStart);
 
                 // (4)
                 // Solo time for section 4 is defined as EITHER solo time OR duties of PIC time with an authorized instructor on board.  We computed the latter above
@@ -396,30 +415,12 @@ namespace MyFlightbook.MilestoneProgress
                     miMinSoloSubCategory.AddEvent(substituteSolo);
 
                     // (4)(i) - Long solo cross-country
-                    if (cfr.XC > 0 && cfr.cLandingsThisFlight >= 3 && al.GetNormalizedAirports().Count() >= 3)
+                    if (MeetsLongXCCriteria(cfr, al, distFromStart))
                     {
-                        bool fMeetsReqs = false;
-                        switch (RatingSought)
-                        {
-                            case RatingType.CommercialHelicopter:
-                                fMeetsReqs = al.MaxSegmentForRoute() > 50.0 && distFromStart >= 50.0;
-                                break;
-                            case RatingType.CommercialAMEL:
-                            case RatingType.CommercialAMES:
-                            case RatingType.CommercialASEL:
-                            case RatingType.CommercialASES:
-                                fMeetsReqs = al.DistanceForRoute() > 300 && (al.GetNormalizedAirports()[0].IsHawaiian ? al.MaxSegmentForRoute() >= 150 : distFromStart >= 250);
-                                break;
-                            default:
-                                break;
-                        }
-                        if (fMeetsReqs)
-                        {
-                            if (soloTime > 0)
-                                miMinSoloXC.MatchFlightEvent(cfr);
-                            if (substituteSolo > 0)
-                                miMinSoloSubXC.MatchFlightEvent(cfr);
-                        }
+                        if (soloTime > 0)
+                            miMinSoloXC.MatchFlightEvent(cfr);
+                        if (substituteSolo > 0)
+                            miMinSoloSubXC.MatchFlightEvent(cfr);
                     }
 
                     // (4)(ii)
@@ -1067,6 +1068,21 @@ namespace MyFlightbook.MilestoneProgress
                 szBaseSoloFAR + "(3)", Branding.ReBrand(Resources.MilestoneProgress.Part141ControltowerWarning), MilestoneItem.MilestoneType.Count, _minSoloNightLandings);
         }
 
+        private bool IsComplexForRating(ExaminerFlightRow cfr)
+        {
+            switch (RatingSought)
+            {
+                case RatingType.Commercial141AirplaneSingleEngineLand:
+                    return cfr.fIsRealAircraft && (cfr.idCatClassOverride == CategoryClass.CatClassID.ASEL || cfr.idCatClassOverride == CategoryClass.CatClassID.AMEL) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr));
+                case RatingType.Commercial141AirplaneSingleEngineSea:
+                    return cfr.fIsRealAircraft && (cfr.idCatClassOverride == CategoryClass.CatClassID.ASES || cfr.idCatClassOverride == CategoryClass.CatClassID.AMES) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr));
+                case RatingType.Commercial141AirplaneMultiEngineLand:
+                case RatingType.Commercial141AirplaneMultiEngineSea:
+                    return cfr.fIsRealAircraft && (cfr.idCatClassOverride == CategoryClass.CatClassID.AMEL || cfr.idCatClassOverride == CategoryClass.CatClassID.AMES) && IsComplexOrTurbine(cfr);
+            }
+            return false;
+        }
+
         public override void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)
@@ -1082,21 +1098,7 @@ namespace MyFlightbook.MilestoneProgress
             if (cfr.fIsCertifiedIFR)
                 miInstrumentTraining.AddEvent(IMCTraining);
 
-            bool fIsComplex = false;
-            switch (RatingSought)
-            {
-                case RatingType.Commercial141AirplaneSingleEngineLand:
-                    fIsComplex = cfr.fIsRealAircraft && (cfr.idCatClassOverride == CategoryClass.CatClassID.ASEL || cfr.idCatClassOverride == CategoryClass.CatClassID.AMEL) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr));
-                    break;
-                case RatingType.Commercial141AirplaneSingleEngineSea:
-                    fIsComplex = cfr.fIsRealAircraft && (cfr.idCatClassOverride == CategoryClass.CatClassID.ASES || cfr.idCatClassOverride == CategoryClass.CatClassID.AMES) && ((AllowTAAForComplex && cfr.fIsTAA) || IsComplexOrTurbine(cfr));
-                    break;
-                case RatingType.Commercial141AirplaneMultiEngineLand:
-                case RatingType.Commercial141AirplaneMultiEngineSea:
-                    fIsComplex = cfr.fIsRealAircraft && (cfr.idCatClassOverride == CategoryClass.CatClassID.AMEL || cfr.idCatClassOverride == CategoryClass.CatClassID.AMES) && IsComplexOrTurbine(cfr);
-                    break;
-            }
-            if (fIsComplex)
+            if (IsComplexForRating(cfr))
                 miComplexTurbineTraining.AddEvent(cfr.Dual);
 
             // Ignore anything that remains is not in the appropriate cat/class or not in a real aircraft
@@ -1107,6 +1109,7 @@ namespace MyFlightbook.MilestoneProgress
 
             AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
             double distFromStart = al.MaxDistanceFromStartingAirport();
+
             decimal DualXC = Math.Min(cfr.XC, cfr.Dual);
             if ((DualXC - cfr.Night) >= _minTimeXCDayFlight && distFromStart >= _minDistXCDayFlight)
                 miDayXCFlight.MatchFlightEvent(cfr);
@@ -1117,25 +1120,11 @@ namespace MyFlightbook.MilestoneProgress
                 miTestPrep.AddEvent(cfr.Dual);
 
             // Derive properties for solo time
-            decimal soloTime = 0.0M;
-            decimal instructorOnBoardTime = 0.0M;
-            bool fInstructorOnBoard = false;
-            decimal dutiesOfPICTime = 0.0M;
-            int nightTakeoffs = 0;
-            cfr.FlightProps.ForEachEvent(pf =>
-            {
-                if (pf.PropertyType.IsSolo)
-                    soloTime += pf.DecValue;
-                if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropInstructorOnBoard && !pf.IsDefaultValue)
-                    fInstructorOnBoard = true;    // instructor-on-board time only counts if you are acting as PIC
-                if (pf.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropDutiesOfPIC && !pf.IsDefaultValue)
-                    dutiesOfPICTime += pf.DecValue;
-                if (pf.PropertyType.IsNightTakeOff)
-                    nightTakeoffs += pf.IntValue;
-            });
-
-            if (fInstructorOnBoard)
-                instructorOnBoardTime = Math.Max(Math.Min(dutiesOfPICTime, cfr.Total - cfr.Dual), 0);    // dual received does NOT count as duties of PIC time here
+            decimal soloTime = cfr.FlightProps.TotalTimeForPredicate(pf => pf.PropertyType.IsSolo);
+            bool fInstructorOnBoard = cfr.FlightProps[CustomPropertyType.KnownProperties.IDPropInstructorOnBoard] != null;
+            decimal dutiesOfPICTime = cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropDutiesOfPIC);
+            decimal instructorOnBoardTime = fInstructorOnBoard ? Math.Max(Math.Min(dutiesOfPICTime, cfr.Total - cfr.Dual), 0) : 0.0M;    // dual received does NOT count as duties of PIC time here
+            int nightTakeoffs = cfr.FlightProps.TotalCountForPredicate(pf => pf.PropertyType.IsNightTakeOff);
 
             decimal effectiveSoloTime = soloTime + instructorOnBoardTime;
 
@@ -1143,24 +1132,34 @@ namespace MyFlightbook.MilestoneProgress
             {
                 miSoloTime.AddEvent(effectiveSoloTime);
 
-                if (cfr.XC > 0 && cfr.cLandingsThisFlight >= 3)
-                {
-                    double distLongestSegment = al.MaxSegmentForRoute();
+                MatchCrossCountry(cfr, al, distFromStart);
 
-                    // for airplanes, solo XC must meet the distance threshold on any segment.  For helicopter, must be from start.
-                    double dist = RatingSought == RatingType.Commercial141Helicopter ? distFromStart : distLongestSegment;
+                MatchNightVFR(cfr, nightTakeoffs);
+            }
+        }
 
-                    airport[] rgap = al.GetNormalizedAirports();
-                    if (rgap.Length >= 3 && dist > (rgap[0].IsHawaiian ? _minSoloXCDistanceHawaii : _minSoloXCDistance))
-                        miSoloXCFlight.MatchFlightEvent(cfr);
-                }
+        private void MatchCrossCountry(ExaminerFlightRow cfr, AirportList al, double distFromStart)
+        {
+            if (cfr.XC > 0 && cfr.cLandingsThisFlight >= 3)
+            {
+                double distLongestSegment = al.MaxSegmentForRoute();
 
-                if (cfr.Night > 0 && cfr.IMC == 0)      // exclude flights with IMC because it is supposed to be VFR conditions.
-                {
-                    miSoloNight.AddEvent(cfr.Night);
-                    miSoloNightLandings.AddEvent(cfr.cFullStopNightLandings);
-                    miSoloNightTakeoffs.AddEvent(nightTakeoffs);
-                }
+                // for airplanes, solo XC must meet the distance threshold on any segment.  For helicopter, must be from start.
+                double dist = RatingSought == RatingType.Commercial141Helicopter ? distFromStart : distLongestSegment;
+
+                airport[] rgap = al.GetNormalizedAirports();
+                if (rgap.Length >= 3 && dist > (rgap[0].IsHawaiian ? _minSoloXCDistanceHawaii : _minSoloXCDistance))
+                    miSoloXCFlight.MatchFlightEvent(cfr);
+            }
+        }
+
+        private void MatchNightVFR(ExaminerFlightRow cfr, int nightTakeoffs)
+        {
+            if (cfr.Night > 0 && cfr.IMC == 0)      // exclude flights with IMC because it is supposed to be VFR conditions.
+            {
+                miSoloNight.AddEvent(cfr.Night);
+                miSoloNightLandings.AddEvent(cfr.cFullStopNightLandings);
+                miSoloNightTakeoffs.AddEvent(nightTakeoffs);
             }
         }
 

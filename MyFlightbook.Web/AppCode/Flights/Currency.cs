@@ -266,7 +266,7 @@ namespace MyFlightbook.FlightCurrency
 
             IEnumerable<CurrencyStatusItem> expiringItems = NeedsNotification(priorItems, newItems);
 
-            if (expiringItems.Count() > 0)
+            if (expiringItems.Any())
             {
                 pf.AssociatedData[AssociatedDataKeyCachedCurrencies] = newItems;
                 pf.AssociatedData[AssociatedDateKeyExpiringCurrencies] = expiringItems;
@@ -286,13 +286,13 @@ namespace MyFlightbook.FlightCurrency
             if (rgcsi2 == null)
                 throw new ArgumentNullException(nameof(rgcsi2));
 
-            if (rgcsi2.Count() == 0)
+            if (!rgcsi2.Any())
                 return Array.Empty<CurrencyStatusItem>();
 
             List<CurrencyStatusItem> lstResult = new List<CurrencyStatusItem>(rgcsi2).FindAll(csi => csi.Status != CurrencyState.OK && csi.Status != CurrencyState.NoDate);
 
             // quick short circuit - if there's nothing in the previous items, just return the current ones that aren't OK.
-            if (rgcsi1 == null || rgcsi1.Count() == 0)
+            if (rgcsi1 == null || !rgcsi1.Any())
                 return lstResult;
 
             Dictionary<string, CurrencyStatusItem> dict2 = new Dictionary<string, CurrencyStatusItem>();
@@ -718,6 +718,360 @@ namespace MyFlightbook.FlightCurrency
         #endregion
 
         #region Computing flight currency for a specified user - the big kahuna
+        private class ComputeCurrencyContext
+        {
+            public Profile pf { get; set; }
+
+            // Each of the following dictionaries enables segregation of currency by category
+            public Dictionary<string, ICurrencyExaminer> dictFlightCurrency { get; set; } = new Dictionary<string, ICurrencyExaminer>();   // Flight currency per 61.57(a), striped by category/class/type.  Also does night and tailwheel
+            public Dictionary<string, ArmyMDSCurrency> dictArmyCurrency { get; set; } = new Dictionary<string, ArmyMDSCurrency>();     // Flight currency per AR 95-1
+            public Dictionary<string, CurrencyExaminer> dictIFRCurrency { get; set; } = new Dictionary<string, CurrencyExaminer>();      // IFR currency per 61.57(c)(1) or 61.57(c)(2) (Real airplane or certified flight simulator
+            public Dictionary<string, PIC6158Currency> dictPICProficiencyChecks { get; set; } = new Dictionary<string, PIC6158Currency>();     // PIC Proficiency checks
+            public Dictionary<string, SIC6155Currency> dictSICProficiencyChecks { get; set; } = new Dictionary<string, SIC6155Currency>();   // 61.55 SIC Proficiency checks
+            public bool fHasIR { get; set; } = false;    // for EASA currency, don't bother reporting night currency if user holds an instrument rating (defined as having seen an IPC/instrument checkride.
+
+            public GliderIFRCurrency gliderIFR { get; set; } = new GliderIFRCurrency(); // IFR currency in a glider.
+
+            public NVCurrency nvCurrencyHeli { get; set; } = new NVCurrency(CategoryClass.CatClassID.Helicopter);
+            public NVCurrency nvCurrencyNonHeli { get; set; } = new NVCurrency(CategoryClass.CatClassID.ASEL);
+
+            // PIC Proficiency check in ANY aircraft
+            public PIC6158Currency fcPICPCInAny { get; set; } = new PIC6158Currency(1, 12, true, "61.58(a) - PIC Check in ANY type-rated aircraft");
+
+            public bool fIncludeFAR117 { get; set; }
+
+            public bool fUses61217 { get; set; }
+            public FAR61217Currency fc61217 { get; set; } = new FAR61217Currency();
+
+            // Get any customcurrency objects for the user
+            public IEnumerable<CustomCurrency> rgCustomCurrency { get; set; }
+
+            public FAR117Currency fcFAR117 { get; set; }
+            public FAR195ACurrency fcFAR195 { get; set; }
+            public UASCurrency fcUAS { get; set; } = new UASCurrency();
+
+            public IEnumerable<SFAR73Currency> sFAR73Currencies { get; set; } = SFAR73Currency.SFAR73Currencies;
+
+            public decimal totalTime { get; set; } = 0.0M;
+            public decimal picTime { get; set;} = 0.0M;
+
+            public ComputeCurrencyContext(string szUser)
+            {
+                if (szUser == null)
+                    throw new ArgumentNullException(nameof(szUser));
+
+                pf = Profile.GetUser(szUser);
+
+                fIncludeFAR117 = pf.UsesFAR117DutyTime;
+                fUses61217 = pf.UsesFAR61217Currency;
+
+                // Get any customcurrency objects for the user
+                rgCustomCurrency = CustomCurrency.CustomCurrenciesForUser(szUser);
+
+                fcFAR117 = new FAR117Currency(pf.UsesFAR117DutyTimeAllFlights, pf.UsesHHMM);
+                fcFAR195 = new FAR195ACurrency(pf.UsesHHMM);
+            }
+        }
+
+        #region Examine a flight for currency
+        private static void ExamineFlightInContext(ExaminerFlightRow cfr, ComputeCurrencyContext ccc)
+        {
+
+            // keep running totals of PIC and Total time.
+            ccc.totalTime += cfr.Total;
+            ccc.picTime += cfr.PIC;
+
+            if (cfr.FlightProps.FindEvent(cfp => cfp.PropertyType.IsIPC) != null)
+                ccc.fHasIR = true;
+
+            // do any custom currencies first because we may short-circuit everything else if this is unmanned
+            foreach (CustomCurrency cc in ccc.rgCustomCurrency)
+                cc.ExamineFlight(cfr);
+
+            // And UAS events
+            ccc.fcUAS.ExamineFlight(cfr);
+
+            // If this is not a manned aircraft, then nothing below applies (nothing in 61.57)
+            if (!CategoryClass.IsManned(cfr.idCatClassOverride))
+                return;
+
+            ExamineFlightInContextCategoryClass(cfr, ccc);
+
+            ExamineFlightInContext13526x(cfr, ccc);
+
+            ExamineFlightInContextArmy951(cfr, ccc);
+
+            // SFAR 73 currencies
+            foreach (FlightCurrency fc in ccc.sFAR73Currencies)
+                fc.ExamineFlight(cfr);
+
+            // get glider IFR currency events.
+            ccc.gliderIFR.ExamineFlight(cfr);
+
+            ExamineFlightInContextIFR(cfr, ccc);
+
+            ExamineFlightInContextRemaining(cfr, ccc);
+        }
+
+        private static void ExamineFlightInContextCategoryClass(ExaminerFlightRow cfr, ComputeCurrencyContext ccc)
+        {
+            // If the user is using FAA-style currency:
+            // currency in a type-rated aircraft should apply to a non-type-rated aircraft.  So, if the catclasstype differs from the catclass
+            // (i.e., requires a type rating), then we need to do two passes - one for the type-rated catclass, one for the generic catclass.
+            // If the user is using per-model currency: we should name the "type" to be the catclasstype
+            List<string> lstCatClasses = new List<string>();
+            Boolean fFlightInTypeRatedAircraft = cfr.szType.Length > 0;
+            if (ccc.pf.UsesPerModelCurrency)
+                lstCatClasses.Add(String.Format(CultureInfo.InvariantCulture, "{0} ({1})", cfr.szFamily, cfr.szCatClassType));
+            else
+            {
+                lstCatClasses.Add(cfr.szCatClassType);
+                if (fFlightInTypeRatedAircraft)
+                    lstCatClasses.Add(cfr.szCatClassBase);
+            }
+
+            foreach (string szCatClass in lstCatClasses)
+            {
+                // determine if this pass is for type currency.
+                bool fIsTypeRatedCategory = szCatClass.CompareOrdinal(cfr.szCatClassBase) != 0 && szCatClass.CompareOrdinal(cfr.szCatClassType) == 0;
+
+                // SIC proficiency
+                if (fIsTypeRatedCategory)
+                {
+                    if (!ccc.dictSICProficiencyChecks.ContainsKey(szCatClass))
+                        ccc.dictSICProficiencyChecks.Add(szCatClass, new SIC6155Currency(String.Format(CultureInfo.CurrentCulture, Resources.Currency.SIC6155CurrencyName, szCatClass), cfr.szType));
+                    ccc.dictSICProficiencyChecks[szCatClass].ExamineFlight(cfr);
+                }
+
+                // Night, tailwheel, and basic passenger carrying
+                if ((cfr.cLandingsThisFlight > 0 || cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropertyType.IsNightTakeOff) > 0 || ccc.pf.UseCanadianCurrencyRules || fIsTypeRatedCategory) && (cfr.fIsCertifiedLanding || cfr.fIsFullMotion))
+                {
+                    if (!ccc.dictFlightCurrency.ContainsKey(szCatClass))
+                    {
+                        string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", szCatClass, Resources.Currency.Passengers);
+                        ccc.dictFlightCurrency.Add(szCatClass, ccc.pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new PassengerCurrencyCanada(szName) : (ccc.pf.UsesLAPLCurrency ? (ICurrencyExaminer)EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName) : (ICurrencyExaminer)new PassengerCurrency(szName)));
+                    }
+
+                    ccc.dictFlightCurrency[szCatClass].ExamineFlight(cfr);
+
+                    if (CategoryClass.IsAirplane(cfr.idCatClassOverride) && cfr.fTailwheel && (cfr.cFullStopLandings + cfr.cFullStopNightLandings > 0))
+                    {
+                        string szKey = szCatClass + "TAILWHEEL";
+                        if (!ccc.dictFlightCurrency.ContainsKey(szKey))
+                        {
+                            TailwheelCurrency fcTailwheel = new TailwheelCurrency(szCatClass + " - " + Resources.Currency.Tailwheel);
+                            ccc.dictFlightCurrency.Add(szKey, fcTailwheel);
+                        }
+                        ccc.dictFlightCurrency[szKey].ExamineFlight(cfr);
+                    }
+
+                    // for 61.57(e), we need to look at all flights, regardless of whether they have night flight, in computing currency
+                    string szNightKey = szCatClass + "NIGHT";
+                    if (!ccc.dictFlightCurrency.ContainsKey(szNightKey))
+                    {
+                        string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", szCatClass, Resources.Currency.Night);
+                        ccc.dictFlightCurrency.Add(szNightKey, ccc.pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new NightCurrencyCanada(szName) : (ccc.pf.UsesLAPLCurrency ? (ICurrencyExaminer)new EASAPPLNightPassengerCurrency(szName) : (ICurrencyExaminer)new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty)));
+                    }
+
+                    ccc.dictFlightCurrency[szNightKey].ExamineFlight(cfr);
+                }
+
+                ExamineLAPLCurrency(cfr, ccc);
+
+                ExamineFAR13529x(cfr, ccc, szCatClass);
+            } // foreach catclass
+        }
+
+        private static void ExamineLAPLCurrency(ExaminerFlightRow cfr, ComputeCurrencyContext ccc)
+        {
+            if (ccc.pf.UsesLAPLCurrency)
+            {
+                string szKey = LAPLBase.KeyForLAPL(cfr);
+                if (!string.IsNullOrEmpty(szKey))
+                {
+                    if (!ccc.dictFlightCurrency.ContainsKey(szKey))
+                        ccc.dictFlightCurrency.Add(szKey, LAPLBase.LAPLACurrencyForCategoryClass(cfr));
+                    ccc.dictFlightCurrency[szKey].ExamineFlight(cfr);
+                }
+            }
+        }
+
+        private static void ExamineFAR13529x(ExaminerFlightRow cfr, ComputeCurrencyContext ccc, string szCatClass)
+        {
+            if (ccc.pf.UsesFAR13529xCurrency)
+            {
+                const string szKey293a = "135.293(a)";    // not striped by cat/class!!
+                string szKey293b = szCatClass + "135.293(b)";
+                string szKey297a = szCatClass + "135.297(a)";
+                string szKey299 = szCatClass + "135.299(a)";
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey293a))
+                    ccc.dictFlightCurrency.Add(szKey293a, new Part135_293a(Resources.Currency.Part135293aTitle));
+                ccc.dictFlightCurrency[szKey293a].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey293b))
+                    ccc.dictFlightCurrency.Add(szKey293b, new Part135_293b(szCatClass, Resources.Currency.Part135293bTitle));
+                ccc.dictFlightCurrency[szKey293b].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey297a))
+                    ccc.dictFlightCurrency.Add(szKey297a, new Part135_297a(szCatClass, Resources.Currency.Part135297aTitle));
+                ccc.dictFlightCurrency[szKey297a].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey299))
+                    ccc.dictFlightCurrency.Add(szKey299, new Part135_299a(szCatClass, Resources.Currency.Part135299aTitle));
+                ccc.dictFlightCurrency[szKey299].ExamineFlight(cfr);
+            }
+        }
+
+        private static void ExamineFlightInContext13526x(ExaminerFlightRow cfr, ComputeCurrencyContext ccc)
+        {
+            if (ccc.pf.UsesFAR13526xCurrency)
+            {
+                const string szKey267a1 = "135.267(a)(1)";
+                const string szKey267a2 = "135.267(a)(2)";
+                const string szKey267a3 = "135.267(a)(3)";
+                const string szKey265a1 = "135.265(a)(1)";
+                const string szKey265a2 = "135.265(a)(2)";
+                const string szKey265a3 = "135.265(a)(3)";
+                const string szKey267b1 = "135.267(b)(1)";
+                const string szKey267b2 = "135.267(b)(2)";
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey267a1))
+                    ccc.dictFlightCurrency.Add(szKey267a1, new Part135_267a1());
+                ccc.dictFlightCurrency[szKey267a1].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey267a2))
+                    ccc.dictFlightCurrency.Add(szKey267a2, new Part135_267a2());
+                ccc.dictFlightCurrency[szKey267a2].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey267a3))
+                    ccc.dictFlightCurrency.Add(szKey267a3, new Part135_267a3());
+                ccc.dictFlightCurrency[szKey267a3].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey265a1))
+                    ccc.dictFlightCurrency.Add(szKey265a1, new Part135_265a1());
+                ccc.dictFlightCurrency[szKey265a1].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey265a2))
+                    ccc.dictFlightCurrency.Add(szKey265a2, new Part135_265a2());
+                ccc.dictFlightCurrency[szKey265a2].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey265a3))
+                    ccc.dictFlightCurrency.Add(szKey265a3, new Part135_265a3());
+                ccc.dictFlightCurrency[szKey265a3].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey267b1))
+                    ccc.dictFlightCurrency.Add(szKey267b1, new Part135_267B1Currency(ccc.pf.UsesHHMM));
+                ccc.dictFlightCurrency[szKey267b1].ExamineFlight(cfr);
+
+                if (!ccc.dictFlightCurrency.ContainsKey(szKey267b2))
+                    ccc.dictFlightCurrency.Add(szKey267b2, new Part135_267B2Currency(ccc.pf.UsesHHMM));
+                ccc.dictFlightCurrency[szKey267b2].ExamineFlight(cfr);
+            }
+        }
+
+        private static void ExamineFlightInContextArmy951(ExaminerFlightRow cfr, ComputeCurrencyContext ccc)
+        {
+            // Army 95-1 currency
+            if (cfr.szArmyMDS.Length > 0 && cfr.Total > 0)
+            {
+                const string szKeyPrefix = "95-1: ";
+                // basic 
+                if (!ccc.dictArmyCurrency.ContainsKey(cfr.szArmyMDS))
+                    ccc.dictArmyCurrency.Add(cfr.szArmyMDS, new ArmyMDSCurrency(szKeyPrefix + cfr.szArmyMDS));
+
+                if (cfr.fIsRealAircraft)
+                    ccc.dictArmyCurrency[cfr.szArmyMDS].AddRecentFlightEvents(cfr.dtFlight, 1);
+
+                // NV - is striped by MDS, but "similar" aircraft are allowed, so we use family to group all of the *H-60* blackhawks. 
+                // E.g., UH-60M and HH-60A/L are different for plain currency but the same for NV currency
+                string szKeyNV = (String.IsNullOrEmpty(cfr.szFamily) ? cfr.szArmyMDS : cfr.szFamily) + " - " + Resources.Currency.NightVision;
+
+                decimal nvTime = 0.0M;
+                bool fIsNVProficiencyCheck = false;
+                cfr.FlightProps.ForEachEvent((pfe) =>
+                {
+                    if (pfe.PropertyType.IsNightVisionAnything && pfe.PropertyType.Type == CFPPropertyType.cfpDecimal)
+                        nvTime += pfe.DecValue;
+                    if (pfe.PropertyType.IsNightVisionProficiencyCheck)
+                        fIsNVProficiencyCheck = true;
+                });
+
+                if (nvTime > 0.0M || fIsNVProficiencyCheck)
+                {
+                    if (!ccc.dictArmyCurrency.ContainsKey(szKeyNV))
+                        ccc.dictArmyCurrency.Add(szKeyNV, new ArmyMDSNVCurrency(szKeyPrefix + szKeyNV));
+                    ArmyMDSCurrency c = ccc.dictArmyCurrency[szKeyNV];
+                    c.AddRecentFlightEvents(cfr.dtFlight, nvTime);
+                    if (fIsNVProficiencyCheck)
+                        c.AddRecentFlightEvents(cfr.dtFlight, c.RequiredEvents);
+                }
+            }
+        }
+
+        private static void ExamineFlightInContextIFR(ExaminerFlightRow cfr, ComputeCurrencyContext ccc)
+        {
+            // IFR currency is more complex.
+            if (!cfr.fIsGlider)
+            {
+                // SFAR 73: currency in an R22 or R44 requires that all parts of 61.57 be done in an R22 or R44.
+                // see http://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFAR.nsf/0/C039C8820E83B2F4862578940053960F?OpenDocument&Highlight=sfar%2073
+                // we handle this for regular currency by treating these as type-rated aircraft.
+                // But for instrument we need to do the same thing as above with type-rated: IFR events in an R22/R44 contribute to BOTH R22/R44 currency AND Helicopter currency,
+                // but IFR events in a helicopter do NOT contribute to R22/R44 IFR currency.
+                List<string> lstIFRCategories = new List<string>() { cfr.szCategory };
+
+                /*
+                 * Per discussion with Kersten Brändle <kersten.braendle@hotmail.com>, it appears that SFAR restriction doesn't apply to instrument, for two reasons:
+                 * a) the SFAR restriction (d) says 
+                 *      "No person may act as pilot in command of a Robinson model R-22 or R-44 helicopter carrying passengers unless the pilot in command
+                 *      has met the recency of flight experience requirements of Sec. 61.57",
+                 *    so it's about passenger carrying.  That will be the limiting factor, not instrument certification, and
+                 * b) apparantly R22/R44 are never IFR certified anyhow.
+                 *    
+                 * 
+                if (cfr.fIsR22)
+                    lstIFRCategories.Add(String.Format("{0} (R22)", cfr.szCategory));
+                if (cfr.fIsR44)
+                    lstIFRCategories.Add(String.Format("{0} (R44)", cfr.szCategory));
+                 * */
+
+                foreach (string szIFRCat in lstIFRCategories)
+                {
+                    if (!ccc.dictIFRCurrency.ContainsKey(szIFRCat))
+                        ccc.dictIFRCurrency[szIFRCat] = ccc.pf.UseCanadianCurrencyRules ? (CurrencyExaminer)new InstrumentCurrencyCanada() : (CurrencyExaminer)new InstrumentCurrency(ccc.pf.UsesLooseIFRCurrency);
+
+                    ccc.dictIFRCurrency[szIFRCat].ExamineFlight(cfr);
+                }
+            } // if is not a glider.
+        }
+
+        private static void ExamineFlightInContextRemaining(ExaminerFlightRow cfr, ComputeCurrencyContext ccc)
+        {
+            // 61.58 - Pilot proficiency checks
+            if (!String.IsNullOrEmpty(cfr.szType))
+            {
+                ccc.fcPICPCInAny.ExamineFlight(cfr);
+                if (!ccc.dictPICProficiencyChecks.ContainsKey(cfr.szType))
+                    ccc.dictPICProficiencyChecks[cfr.szType] = new PIC6158Currency(1, 24, true, String.Format(CultureInfo.CurrentCulture, "61.58(b) - PIC Check in this {0}", cfr.szType));
+                ccc.dictPICProficiencyChecks[cfr.szType].ExamineFlight(cfr);
+            }
+
+            // FAR 117 - Pilot rest/duty periods
+            if (ccc.fIncludeFAR117)
+                ccc.fcFAR117.ExamineFlight(cfr);
+
+            // Always do FAR 195 and 61.217
+            ccc.fcFAR195.ExamineFlight(cfr);
+            if (ccc.fUses61217)
+                ccc.fc61217.ExamineFlight(cfr);
+
+            // Night vision
+            ccc.nvCurrencyNonHeli.ExamineFlight(cfr);
+            ccc.nvCurrencyHeli.ExamineFlight(cfr);
+        }
+        #endregion
+
         /// <summary>
         /// Computes flying-based currency for a specified user.
         /// </summary>
@@ -728,39 +1082,7 @@ namespace MyFlightbook.FlightCurrency
             if (String.IsNullOrEmpty(szUser))
                 return Array.Empty<CurrencyStatusItem>();
 
-            Profile pf = Profile.GetUser(szUser);
-
-            // Each of the following dictionaries enables segregation of currency by category
-            Dictionary<string, ICurrencyExaminer> dictFlightCurrency = new Dictionary<string, ICurrencyExaminer>();   // Flight currency per 61.57(a), striped by category/class/type.  Also does night and tailwheel
-            Dictionary<string, ArmyMDSCurrency> dictArmyCurrency = new Dictionary<string, ArmyMDSCurrency>();     // Flight currency per AR 95-1
-            Dictionary<string, CurrencyExaminer> dictIFRCurrency = new Dictionary<string, CurrencyExaminer>();      // IFR currency per 61.57(c)(1) or 61.57(c)(2) (Real airplane or certified flight simulator
-            Dictionary<string, PIC6158Currency> dictPICProficiencyChecks = new Dictionary<string, PIC6158Currency>();     // PIC Proficiency checks
-            Dictionary<string, SIC6155Currency> dictSICProficiencyChecks = new Dictionary<string, SIC6155Currency>();   // 61.55 SIC Proficiency checks
-            bool fHasIR = false;    // for EASA currency, don't bother reporting night currency if user holds an instrument rating (defined as having seen an IPC/instrument checkride.
-
-            GliderIFRCurrency gliderIFR = new GliderIFRCurrency(); // IFR currency in a glider.
-
-            NVCurrency nvCurrencyHeli = new NVCurrency(CategoryClass.CatClassID.Helicopter);
-            NVCurrency nvCurrencyNonHeli = new NVCurrency(CategoryClass.CatClassID.ASEL);
-
-            // PIC Proficiency check in ANY aircraft
-            PIC6158Currency fcPICPCInAny = new PIC6158Currency(1, 12, true, "61.58(a) - PIC Check in ANY type-rated aircraft");
-
-            bool fIncludeFAR117 = pf.UsesFAR117DutyTime;
-
-            bool fUses61217 = pf.UsesFAR61217Currency;
-            FAR61217Currency fc61217 = new FAR61217Currency();
-
-            // Get any customcurrency objects for the user
-            IEnumerable<CustomCurrency> rgCustomCurrency = CustomCurrency.CustomCurrenciesForUser(szUser);
-
-            FAR117Currency fcFAR117 = new FAR117Currency(pf.UsesFAR117DutyTimeAllFlights, pf.UsesHHMM);
-            FAR195ACurrency fcFAR195 = new FAR195ACurrency(pf.UsesHHMM);
-            UASCurrency fcUAS = new UASCurrency();
-            IEnumerable<FlightCurrency> sFAR73Currencies = SFAR73Currency.SFAR73Currencies;
-
-            decimal totalTime = 0.0M;
-            decimal picTime = 0.0M;
+            ComputeCurrencyContext ccc = new ComputeCurrencyContext(szUser);
 
             DBHelper dbh = new DBHelper(CurrencyQuery(CurrencyQueryDirection.Descending));
             dbh.ReadRows(
@@ -769,278 +1091,17 @@ namespace MyFlightbook.FlightCurrency
                     comm.Parameters.AddWithValue("UserName", szUser);
                     comm.Parameters.AddWithValue("langID", System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
                 },
-                (dr) =>
-                {
-                    ExaminerFlightRow cfr = new ExaminerFlightRow(dr);
-
-                    // keep running totals of PIC and Total time.
-                    totalTime += cfr.Total;
-                    picTime += cfr.PIC;
-
-                    if (cfr.FlightProps.FindEvent(cfp => cfp.PropertyType.IsIPC) != null)
-                        fHasIR = true;
-
-                    // do any custom currencies first because we may short-circuit everything else if this is unmanned
-                    foreach (CustomCurrency cc in rgCustomCurrency)
-                        cc.ExamineFlight(cfr);
-
-                    // And UAS events
-                    fcUAS.ExamineFlight(cfr);
-
-                    // If this is not a manned aircraft, then nothing below applies (nothing in 61.57)
-                    if (!CategoryClass.IsManned(cfr.idCatClassOverride))
-                        return;
-
-                    // If the user is using FAA-style currency:
-                    // currency in a type-rated aircraft should apply to a non-type-rated aircraft.  So, if the catclasstype differs from the catclass
-                    // (i.e., requires a type rating), then we need to do two passes - one for the type-rated catclass, one for the generic catclass.
-                    // If the user is using per-model currency: we should name the "type" to be the catclasstype
-                    List<string> lstCatClasses = new List<string>();
-                    Boolean fFlightInTypeRatedAircraft = cfr.szType.Length > 0;
-                    if (pf.UsesPerModelCurrency)
-                        lstCatClasses.Add(String.Format(CultureInfo.InvariantCulture, "{0} ({1})", cfr.szFamily, cfr.szCatClassType));
-                    else
-                    {
-                        lstCatClasses.Add(cfr.szCatClassType);
-                        if (fFlightInTypeRatedAircraft)
-                            lstCatClasses.Add(cfr.szCatClassBase);
-                    }
-
-                    foreach (string szCatClass in lstCatClasses)
-                    {
-                        // determine if this pass is for type currency.
-                        bool fIsTypeRatedCategory = szCatClass.CompareOrdinal(cfr.szCatClassBase) != 0 && szCatClass.CompareOrdinal(cfr.szCatClassType) == 0;
-
-                        // SIC proficiency
-                        if (fIsTypeRatedCategory)
-                        {
-                            if (!dictSICProficiencyChecks.ContainsKey(szCatClass))
-                                dictSICProficiencyChecks.Add(szCatClass, new SIC6155Currency(String.Format(CultureInfo.CurrentCulture, Resources.Currency.SIC6155CurrencyName, szCatClass), cfr.szType));
-                            dictSICProficiencyChecks[szCatClass].ExamineFlight(cfr);
-                        }
-
-                        // Night, tailwheel, and basic passenger carrying
-                        if ((cfr.cLandingsThisFlight > 0 || cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropertyType.IsNightTakeOff) > 0 || pf.UseCanadianCurrencyRules || fIsTypeRatedCategory) && (cfr.fIsCertifiedLanding || cfr.fIsFullMotion))
-                        {
-                            if (!dictFlightCurrency.ContainsKey(szCatClass))
-                            {
-                                string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", szCatClass, Resources.Currency.Passengers);
-                                dictFlightCurrency.Add(szCatClass, pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new PassengerCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName) : (ICurrencyExaminer)new PassengerCurrency(szName)));
-                            }
-
-                            dictFlightCurrency[szCatClass].ExamineFlight(cfr);
-
-                            if (CategoryClass.IsAirplane(cfr.idCatClassOverride) && cfr.fTailwheel && (cfr.cFullStopLandings + cfr.cFullStopNightLandings > 0))
-                            {
-                                string szKey = szCatClass + "TAILWHEEL";
-                                if (!dictFlightCurrency.ContainsKey(szKey))
-                                {
-                                    TailwheelCurrency fcTailwheel = new TailwheelCurrency(szCatClass + " - " + Resources.Currency.Tailwheel);
-                                    dictFlightCurrency.Add(szKey, fcTailwheel);
-                                }
-                                dictFlightCurrency[szKey].ExamineFlight(cfr);
-                            }
-
-                            // for 61.57(e), we need to look at all flights, regardless of whether they have night flight, in computing currency
-                            string szNightKey = szCatClass + "NIGHT";
-                            if (!dictFlightCurrency.ContainsKey(szNightKey))
-                            {
-                                string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", szCatClass, Resources.Currency.Night);
-                                dictFlightCurrency.Add(szNightKey, pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new NightCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)new EASAPPLNightPassengerCurrency(szName) : (ICurrencyExaminer)new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty)));
-                            }
-
-                            dictFlightCurrency[szNightKey].ExamineFlight(cfr);
-                        }
-
-                        if (pf.UsesLAPLCurrency)
-                        {
-                            string szKey = LAPLBase.KeyForLAPL(cfr);
-                            if (!string.IsNullOrEmpty(szKey))
-                            {
-                                if (!dictFlightCurrency.ContainsKey(szKey))
-                                    dictFlightCurrency.Add(szKey, LAPLBase.LAPLACurrencyForCategoryClass(cfr));
-                                dictFlightCurrency[szKey].ExamineFlight(cfr);
-                            }
-                        }
-
-                        if (pf.UsesFAR13529xCurrency)
-                        {
-                            string szKey293a = "135.293(a)";    // not striped by cat/class!!
-                            string szKey293b = szCatClass + "135.293(b)";
-                            string szKey297a = szCatClass + "135.297(a)";
-                            string szKey299 = szCatClass + "135.299(a)";
-
-                            if (!dictFlightCurrency.ContainsKey(szKey293a))
-                                dictFlightCurrency.Add(szKey293a, new Part135_293a(Resources.Currency.Part135293aTitle));
-                            dictFlightCurrency[szKey293a].ExamineFlight(cfr);
-
-                            if (!dictFlightCurrency.ContainsKey(szKey293b))
-                                dictFlightCurrency.Add(szKey293b, new Part135_293b(szCatClass, Resources.Currency.Part135293bTitle));
-                            dictFlightCurrency[szKey293b].ExamineFlight(cfr);
-
-                            if (!dictFlightCurrency.ContainsKey(szKey297a))
-                                dictFlightCurrency.Add(szKey297a, new Part135_297a(szCatClass, Resources.Currency.Part135297aTitle));
-                            dictFlightCurrency[szKey297a].ExamineFlight(cfr);
-
-                            if (!dictFlightCurrency.ContainsKey(szKey299))
-                                dictFlightCurrency.Add(szKey299, new Part135_299a(szCatClass, Resources.Currency.Part135299aTitle));
-                            dictFlightCurrency[szKey299].ExamineFlight(cfr);
-                        }
-                    } // foreach catclass
-
-                    if (pf.UsesFAR13526xCurrency)
-                    {
-                        const string szKey267a1 = "135.267(a)(1)";
-                        const string szKey267a2 = "135.267(a)(2)";
-                        const string szKey267a3 = "135.267(a)(3)";
-                        const string szKey265a1 = "135.265(a)(1)";
-                        const string szKey265a2 = "135.265(a)(2)";
-                        const string szKey265a3 = "135.265(a)(3)";
-                        const string szKey267b1 = "135.267(b)(1)";
-                        const string szKey267b2 = "135.267(b)(2)";
-
-                        if (!dictFlightCurrency.ContainsKey(szKey267a1))
-                            dictFlightCurrency.Add(szKey267a1, new Part135_267a1());
-                        dictFlightCurrency[szKey267a1].ExamineFlight(cfr);
-
-                        if (!dictFlightCurrency.ContainsKey(szKey267a2))
-                            dictFlightCurrency.Add(szKey267a2, new Part135_267a2());
-                        dictFlightCurrency[szKey267a2].ExamineFlight(cfr);
-
-                        if (!dictFlightCurrency.ContainsKey(szKey267a3))
-                            dictFlightCurrency.Add(szKey267a3, new Part135_267a3());
-                        dictFlightCurrency[szKey267a3].ExamineFlight(cfr);
-
-                        if (!dictFlightCurrency.ContainsKey(szKey265a1))
-                            dictFlightCurrency.Add(szKey265a1, new Part135_265a1());
-                        dictFlightCurrency[szKey265a1].ExamineFlight(cfr);
-
-                        if (!dictFlightCurrency.ContainsKey(szKey265a2))
-                            dictFlightCurrency.Add(szKey265a2, new Part135_265a2());
-                        dictFlightCurrency[szKey265a2].ExamineFlight(cfr);
-
-                        if (!dictFlightCurrency.ContainsKey(szKey265a3))
-                            dictFlightCurrency.Add(szKey265a3, new Part135_265a3());
-                        dictFlightCurrency[szKey265a3].ExamineFlight(cfr);
-
-                        if (!dictFlightCurrency.ContainsKey(szKey267b1))
-                            dictFlightCurrency.Add(szKey267b1, new Part135_267B1Currency(pf.UsesHHMM));
-                        dictFlightCurrency[szKey267b1].ExamineFlight(cfr);
-
-                        if (!dictFlightCurrency.ContainsKey(szKey267b2))
-                            dictFlightCurrency.Add(szKey267b2, new Part135_267B2Currency(pf.UsesHHMM));
-                        dictFlightCurrency[szKey267b2].ExamineFlight(cfr);
-                    }
-
-                    // Army 95-1 currency
-                    if (cfr.szArmyMDS.Length > 0 && cfr.Total > 0)
-                    {
-                        const string szKeyPrefix = "95-1: ";
-                        // basic 
-                        if (!dictArmyCurrency.ContainsKey(cfr.szArmyMDS))
-                            dictArmyCurrency.Add(cfr.szArmyMDS, new ArmyMDSCurrency(szKeyPrefix + cfr.szArmyMDS));
-
-                        if (cfr.fIsRealAircraft)
-                            dictArmyCurrency[cfr.szArmyMDS].AddRecentFlightEvents(cfr.dtFlight, 1);
-
-                        // NV - is striped by MDS, but "similar" aircraft are allowed, so we use family to group all of the *H-60* blackhawks. 
-                        // E.g., UH-60M and HH-60A/L are different for plain currency but the same for NV currency
-                        string szKeyNV = (String.IsNullOrEmpty(cfr.szFamily) ? cfr.szArmyMDS : cfr.szFamily) + " - " + Resources.Currency.NightVision;
-
-                        decimal nvTime = 0.0M;
-                        bool fIsNVProficiencyCheck = false;
-                        cfr.FlightProps.ForEachEvent((pfe) =>
-                        {
-                            if (pfe.PropertyType.IsNightVisionAnything && pfe.PropertyType.Type == CFPPropertyType.cfpDecimal)
-                                nvTime += pfe.DecValue;
-                            if (pfe.PropertyType.IsNightVisionProficiencyCheck)
-                                fIsNVProficiencyCheck = true;
-                        });
-
-                        if (nvTime > 0.0M || fIsNVProficiencyCheck)
-                        {
-                            if (!dictArmyCurrency.ContainsKey(szKeyNV))
-                                dictArmyCurrency.Add(szKeyNV, new ArmyMDSNVCurrency(szKeyPrefix + szKeyNV));
-                            ArmyMDSCurrency c = dictArmyCurrency[szKeyNV];
-                            c.AddRecentFlightEvents(cfr.dtFlight, nvTime);
-                            if (fIsNVProficiencyCheck)
-                                c.AddRecentFlightEvents(cfr.dtFlight, c.RequiredEvents);
-                        }
-                    }
-
-                    // SFAR 73 currencies
-                    foreach (FlightCurrency fc in sFAR73Currencies)
-                        fc.ExamineFlight(cfr);
-
-                    // get glider IFR currency events.
-                    gliderIFR.ExamineFlight(cfr);
-
-                    // IFR currency is more complex.
-                    if (!cfr.fIsGlider)
-                    {
-                        // SFAR 73: currency in an R22 or R44 requires that all parts of 61.57 be done in an R22 or R44.
-                        // see http://rgl.faa.gov/Regulatory_and_Guidance_Library/rgFAR.nsf/0/C039C8820E83B2F4862578940053960F?OpenDocument&Highlight=sfar%2073
-                        // we handle this for regular currency by treating these as type-rated aircraft.
-                        // But for instrument we need to do the same thing as above with type-rated: IFR events in an R22/R44 contribute to BOTH R22/R44 currency AND Helicopter currency,
-                        // but IFR events in a helicopter do NOT contribute to R22/R44 IFR currency.
-                        List<string> lstIFRCategories = new List<string>() { cfr.szCategory };
-
-                        /*
-                         * Per discussion with Kersten Brändle <kersten.braendle@hotmail.com>, it appears that SFAR restriction doesn't apply to instrument, for two reasons:
-                         * a) the SFAR restriction (d) says 
-                         *      "No person may act as pilot in command of a Robinson model R-22 or R-44 helicopter carrying passengers unless the pilot in command
-                         *      has met the recency of flight experience requirements of Sec. 61.57",
-                         *    so it's about passenger carrying.  That will be the limiting factor, not instrument certification, and
-                         * b) apparantly R22/R44 are never IFR certified anyhow.
-                         *    
-                         * 
-                        if (cfr.fIsR22)
-                            lstIFRCategories.Add(String.Format("{0} (R22)", cfr.szCategory));
-                        if (cfr.fIsR44)
-                            lstIFRCategories.Add(String.Format("{0} (R44)", cfr.szCategory));
-                         * */
-
-                        foreach (string szIFRCat in lstIFRCategories)
-                        {
-                            if (!dictIFRCurrency.ContainsKey(szIFRCat))
-                                dictIFRCurrency[szIFRCat] = pf.UseCanadianCurrencyRules ? (CurrencyExaminer)new InstrumentCurrencyCanada() : (CurrencyExaminer)new InstrumentCurrency(pf.UsesLooseIFRCurrency);
-
-                            dictIFRCurrency[szIFRCat].ExamineFlight(cfr);
-                        }
-                    } // if is not a glider.
-
-                    // 61.58 - Pilot proficiency checks
-                    if (!String.IsNullOrEmpty(cfr.szType))
-                    {
-                        fcPICPCInAny.ExamineFlight(cfr);
-                        if (!dictPICProficiencyChecks.ContainsKey(cfr.szType))
-                            dictPICProficiencyChecks[cfr.szType] = new PIC6158Currency(1, 24, true, String.Format(CultureInfo.CurrentCulture, "61.58(b) - PIC Check in this {0}", cfr.szType));
-                        dictPICProficiencyChecks[cfr.szType].ExamineFlight(cfr);
-                    }
-
-                    // FAR 117 - Pilot rest/duty periods
-                    if (fIncludeFAR117)
-                        fcFAR117.ExamineFlight(cfr);
-
-                    // Always do FAR 195 and 61.217
-                    fcFAR195.ExamineFlight(cfr);
-                    if (fUses61217)
-                        fc61217.ExamineFlight(cfr);
-
-                    // Night vision
-                    nvCurrencyNonHeli.ExamineFlight(cfr);
-                    nvCurrencyHeli.ExamineFlight(cfr);
-                });
+                (dr) => { ExamineFlightInContext(new ExaminerFlightRow(dr), ccc); });
 
             if (dbh.LastError.Length > 0)
                 throw new MyFlightbookException("Exception computing currency: " + dbh.LastError);
 
-            if (pf.UsesLAPLCurrency && fHasIR)  // remove night currency reporting if you have an instrument rating
+            if (ccc.pf.UsesLAPLCurrency && ccc.fHasIR)  // remove night currency reporting if you have an instrument rating
             {
-                List<string> keys = new List<string>(dictFlightCurrency.Keys);
+                List<string> keys = new List<string>(ccc.dictFlightCurrency.Keys);
                 foreach (string szKey in keys)
-                    if (dictFlightCurrency[szKey] is EASAPPLNightPassengerCurrency)
-                        dictFlightCurrency.Remove(szKey);
+                    if (ccc.dictFlightCurrency[szKey] is EASAPPLNightPassengerCurrency)
+                        ccc.dictFlightCurrency.Remove(szKey);
             }
 
             // Now build the currencystatusitem list.
@@ -1049,110 +1110,149 @@ namespace MyFlightbook.FlightCurrency
             List<CurrencyStatusItem> arcs = new List<CurrencyStatusItem>();
 
             // Get the latest date for expired 
-            DateTime dtCutoff = CurrencyExpiration.CutoffDate(pf.CurrencyExpiration);
+            DateTime dtCutoff = CurrencyExpiration.CutoffDate(ccc.pf.CurrencyExpiration);
 
-            foreach (string sz in SortedKeys(dictFlightCurrency.Keys))
+            AddCatClassChecks(arcs, ccc, dtCutoff);
+            AddIFRChecks(arcs, ccc, dtCutoff);
+            AddGliderChecks(arcs, ccc, dtCutoff);
+
+            // Now NV:
+            AddNVChecks(arcs, ccc, dtCutoff);
+
+            // Army currency
+            AddArmy951Checks(arcs, ccc, dtCutoff);
+
+            AddSICChecks(arcs, ccc, dtCutoff);
+            AddPICProficiencyChecks(arcs, ccc, dtCutoff);
+
+            AddFAR117Currencies(arcs, ccc);
+
+            // FAR 195(a)
+            AddIfCurrent(arcs, ccc.fcFAR195, DateTime.MinValue);
+            AddIfCurrent(arcs, ccc.fc61217, DateTime.MinValue, new CurrencyStatusItem(ccc.fc61217.DisplayName, ccc.fc61217.StatusDisplay, ccc.fc61217.CurrentState, string.Empty));
+
+            // UAS's
+            ccc.fcUAS.Finalize(ccc.totalTime, ccc.picTime);
+            AddIfCurrent(arcs, ccc.fcUAS, dtCutoff);
+
+            // Finally add in any custom currencies
+            AddCustomCurrencies(arcs, ccc, dtCutoff);
+
+            // And any flight reviews from SFAR 73 (i.e., not picked up by profile events):
+            AddSFAR73Currencies(arcs, ccc, dtCutoff);
+
+            return arcs;
+        }
+
+        #region Building the list of resulting currencies
+        private static void AddCatClassChecks(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc, DateTime dtCutoff)
+        {
+            foreach (string sz in SortedKeys(ccc.dictFlightCurrency.Keys))
             {
-                ICurrencyExaminer fc = dictFlightCurrency[sz];
-                fc.Finalize(totalTime, picTime);    // in case the currency needs totals.  Currently only true of night currency
+                ICurrencyExaminer fc = ccc.dictFlightCurrency[sz];
+                fc.Finalize(ccc.totalTime, ccc.picTime);    // in case the currency needs totals.  Currently only true of night currency
 
                 // don't bother with ones where you've never been current, add the rest to our list of currency objects
-                if (fc.HasBeenCurrent && fc.ExpirationDate.CompareTo(dtCutoff) > 0)
-                    arcs.Add(new CurrencyStatusItem(fc.DisplayName, fc.StatusDisplay, fc.CurrentState, fc.DiscrepancyString));
+                AddIfCurrent(arcs, fc, dtCutoff);
             }
+        }
 
+        private static void AddIFRChecks(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc, DateTime dtCutoff)
+        {
             // Then IFR:
             // IFR is composite and only by category.  No need to display instrument currency if you've never been current.
-            foreach (string key in SortedKeys(dictIFRCurrency.Keys))
+            foreach (string key in SortedKeys(ccc.dictIFRCurrency.Keys))
             {
-                CurrencyExaminer fcIFR = dictIFRCurrency[key];
-
-                if (fcIFR.HasBeenCurrent && fcIFR.ExpirationDate.CompareTo(dtCutoff) > 0)
-                    arcs.Add(new CurrencyStatusItem(Resources.Currency.IFR + " - " + key.ToString(CultureInfo.CurrentCulture), fcIFR.StatusDisplay, fcIFR.CurrentState, fcIFR.DiscrepancyString));
+                CurrencyExaminer fcIFR = ccc.dictIFRCurrency[key];
+                AddIfCurrent(arcs, fcIFR, dtCutoff, new CurrencyStatusItem(Resources.Currency.IFR + " - " + key.ToString(CultureInfo.CurrentCulture), fcIFR.StatusDisplay, fcIFR.CurrentState, fcIFR.DiscrepancyString));
             }
+        }
 
+        private static void AddGliderChecks(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc, DateTime dtCutoff)
+        {
             const string szCategoryGlider = "Glider";
 
             // Glider IFR currency is it's own thing too.  Because ASEL can enable glider IFR currency, we need to
             // only show IFR currency if you have ever also been current for landings in a glider.
-            CurrencyExaminer fcGlider = dictFlightCurrency.ContainsKey(szCategoryGlider) ? (CurrencyExaminer)dictFlightCurrency[szCategoryGlider] : null;
-            if (fcGlider != null && fcGlider.HasBeenCurrent && gliderIFR.HasBeenCurrent && fcGlider.ExpirationDate.CompareTo(dtCutoff) > 0 && gliderIFR.ExpirationDate.CompareTo(dtCutoff) > 0)
+            CurrencyExaminer fcGlider = ccc.dictFlightCurrency.ContainsKey(szCategoryGlider) ? (CurrencyExaminer)ccc.dictFlightCurrency[szCategoryGlider] : null;
+            if (fcGlider != null && fcGlider.HasBeenCurrent && ccc.gliderIFR.HasBeenCurrent && fcGlider.ExpirationDate.CompareTo(dtCutoff) > 0 && ccc.gliderIFR.ExpirationDate.CompareTo(dtCutoff) > 0)
             {
-                string szPrivilege = gliderIFR.Privilege;
-                arcs.Add(new CurrencyStatusItem(Resources.Currency.IFRGlider + (szPrivilege.Length > 0 ? " - " + szPrivilege : string.Empty), gliderIFR.StatusDisplay, gliderIFR.CurrentState, gliderIFR.DiscrepancyString));
+                string szPrivilege = ccc.gliderIFR.Privilege;
+                arcs.Add(new CurrencyStatusItem(Resources.Currency.IFRGlider + (szPrivilege.Length > 0 ? " - " + szPrivilege : string.Empty), ccc.gliderIFR.StatusDisplay, ccc.gliderIFR.CurrentState, ccc.gliderIFR.DiscrepancyString));
             }
+        }
 
-            // Now NV:
-            List<FlightCurrency> lstNV = new List<FlightCurrency>(nvCurrencyNonHeli.CurrencyEvents);
-            lstNV.AddRange(nvCurrencyHeli.CurrencyEvents);
-            lstNV.ForEach((ce) =>
-            {
-                if (ce.HasBeenCurrent && ce.ExpirationDate.CompareTo(dtCutoff) > 0)
-                    arcs.Add(new CurrencyStatusItem(ce.DisplayName, ce.StatusDisplay, ce.CurrentState, ce.DiscrepancyString));
-            });
+        private static void AddNVChecks(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc, DateTime dtCutoff)
+        {
+            List<FlightCurrency> lstNV = new List<FlightCurrency>(ccc.nvCurrencyNonHeli.CurrencyEvents);
+            lstNV.AddRange(ccc.nvCurrencyHeli.CurrencyEvents);
+            lstNV.ForEach((ce) => { AddIfCurrent(arcs, ce, dtCutoff); });
+        }
 
-            // Army currency
-            if (pf.UsesArmyCurrency)
+        private static void AddArmy951Checks(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc, DateTime dtCutoff)
+        {
+            if (ccc.pf.UsesArmyCurrency)
             {
-                foreach (string sz in SortedKeys(dictArmyCurrency.Keys))
-                {
-                    FlightCurrency fc = dictArmyCurrency[sz];
-                    if (fc.HasBeenCurrent && fc.ExpirationDate.CompareTo(dtCutoff) > 0)
-                        arcs.Add(new CurrencyStatusItem(fc.DisplayName, fc.StatusDisplay, fc.CurrentState, fc.DiscrepancyString));
-                }
+                foreach (string sz in SortedKeys(ccc.dictArmyCurrency.Keys))
+                    AddIfCurrent(arcs, ccc.dictArmyCurrency[sz], dtCutoff);
             }
+        }
 
-            foreach (string sz in SortedKeys(dictSICProficiencyChecks.Keys))
+        private static void AddSICChecks(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc, DateTime dtCutoff)
+        {
+            foreach (string sz in SortedKeys(ccc.dictSICProficiencyChecks.Keys))
             {
-                SIC6155Currency sicCurr = dictSICProficiencyChecks[sz];
-                sicCurr.Finalize(totalTime, picTime);
-                if (sicCurr.HasBeenCurrent && sicCurr.ExpirationDate.CompareTo(dtCutoff) > 0)
-                    arcs.Add(new CurrencyStatusItem(sicCurr.DisplayName, sicCurr.StatusDisplay, sicCurr.CurrentState, sicCurr.DiscrepancyString));
+                SIC6155Currency sicCurr = ccc.dictSICProficiencyChecks[sz];
+                sicCurr.Finalize(ccc.totalTime, ccc.picTime);
+                AddIfCurrent(arcs, sicCurr, dtCutoff);
             }
+        }
 
+        private static void AddPICProficiencyChecks(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc, DateTime dtCutoff)
+        {
             // PIC Proficiency checks
-            fcPICPCInAny.Finalize(totalTime, picTime);
-            foreach (string szKey in SortedKeys(dictPICProficiencyChecks.Keys))
+            ccc.fcPICPCInAny.Finalize(ccc.totalTime, ccc.picTime);
+            foreach (string szKey in SortedKeys(ccc.dictPICProficiencyChecks.Keys))
             {
-                PIC6158Currency fcInType = dictPICProficiencyChecks[szKey];
-                fcInType.Finalize(totalTime, picTime);
-                PIC6158Currency fcComputed = fcInType.AND(fcPICPCInAny);
+                PIC6158Currency fcInType = ccc.dictPICProficiencyChecks[szKey];
+                fcInType.Finalize(ccc.totalTime, ccc.picTime);
+                PIC6158Currency fcComputed = fcInType.AND(ccc.fcPICPCInAny);
 
-                if (fcComputed.HasBeenCurrent && fcComputed.ExpirationDate.CompareTo(dtCutoff) > 0)
-                    arcs.Add(new CurrencyStatusItem(String.Format(CultureInfo.CurrentCulture, Resources.Currency.NextPICProficiencyCheck, szKey), fcComputed.StatusDisplay, fcComputed.CurrentState, string.Empty));
+                AddIfCurrent(arcs, fcComputed, dtCutoff, new CurrencyStatusItem(String.Format(CultureInfo.CurrentCulture, Resources.Currency.NextPICProficiencyCheck, szKey), fcComputed.StatusDisplay, fcComputed.CurrentState, string.Empty));
             }
+        }
 
+        private static void AddFAR117Currencies(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc)
+        {
             // FAR 117 status
-            foreach (CurrencyStatusItem csi in fcFAR117.Status)
+            foreach (CurrencyStatusItem csi in ccc.fcFAR117.Status)
                 arcs.Add(csi);
+        }
 
-            // FAR 195(a)
-            if (fcFAR195.HasBeenCurrent)
-                arcs.Add(new CurrencyStatusItem(fcFAR195.DisplayName, fcFAR195.StatusDisplay, fcFAR195.CurrentState, fcFAR195.DiscrepancyString));
-            if (fUses61217 && fc61217.HasBeenCurrent)
-                arcs.Add(new CurrencyStatusItem(fc61217.DisplayName, fc61217.StatusDisplay, fc61217.CurrentState, string.Empty));
-
-            // UAS's
-            fcUAS.Finalize(totalTime, picTime);
-            if (fcUAS.HasBeenCurrent && fcUAS.ExpirationDate.CompareTo(dtCutoff) > 0)
-                arcs.Add(new CurrencyStatusItem(fcUAS.DisplayName, fcUAS.StatusDisplay, fcUAS.CurrentState, fcUAS.DiscrepancyString));
-
-            // Finally add in any custom currencies
-            foreach (CustomCurrency cc in rgCustomCurrency)
+        private static void AddCustomCurrencies(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc, DateTime dtCutoff)
+        {
+            foreach (CustomCurrency cc in ccc.rgCustomCurrency)
             {
                 if (cc.HasBeenCurrent && (!cc.ExpirationDate.HasValue() || cc.ExpirationDate.CompareTo(dtCutoff) > 0))
                     arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString) { Query = cc.Query, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.CustomCurrency });
             }
+        }
 
-            // And any flight reviews from SFAR 73 (i.e., not picked up by profile events):
-            foreach (FlightCurrency fc in sFAR73Currencies)
+        private static void AddSFAR73Currencies(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc, DateTime dtCutoff)
+        {
+            foreach (FlightCurrency fc in ccc.sFAR73Currencies)
             {
                 if (fc.HasBeenCurrent & (fc.ExpirationDate.HasValue() || fc.ExpirationDate.CompareTo(dtCutoff) > 0))
                     arcs.Add(new CurrencyStatusItem(fc.DisplayName, fc.StatusDisplay, fc.CurrentState, fc.DiscrepancyString) { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.FlightReview });
             }
-
-            return arcs;
         }
+
+        private static void AddIfCurrent(IList<CurrencyStatusItem> lst, ICurrencyExaminer fc, DateTime dtCutoff, CurrencyStatusItem csi = null)
+        {
+            if (fc.HasBeenCurrent && fc.ExpirationDate.CompareTo(dtCutoff) > 0)
+                lst.Add(csi ?? new CurrencyStatusItem(fc.DisplayName, fc.StatusDisplay, fc.CurrentState, fc.DiscrepancyString));
+        }
+        #endregion
 
         /// <summary>
         /// Sort keys from a dictionary helper routine
