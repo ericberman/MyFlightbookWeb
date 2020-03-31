@@ -313,6 +313,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check this flight.
+        /// </summary>
+        internal static string TitleCheckThisFlightShort {
+            get {
+                return ResourceManager.GetString("TitleCheckThisFlightShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airplane landed at heliport: {0}.
         /// </summary>
         internal static string warningAirportAirplaneAtHeliport {

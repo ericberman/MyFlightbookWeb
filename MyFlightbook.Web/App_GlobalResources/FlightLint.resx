@@ -201,6 +201,9 @@
   <data name="TitleCheckThisFlight" xml:space="preserve">
     <value>Check this flight for possible issues</value>
   </data>
+  <data name="TitleCheckThisFlightShort" xml:space="preserve">
+    <value>Check this flight</value>
+  </data>
   <data name="warningAirportAirplaneAtHeliport" xml:space="preserve">
     <value>Airplane landed at heliport: {0}</value>
   </data>

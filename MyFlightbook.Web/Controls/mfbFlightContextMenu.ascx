@@ -41,4 +41,11 @@
         <asp:Label ID="lblSendFlight" runat="server" Text="<%$ Resources:LogbookEntry, SendFlight %>"></asp:Label>
     </asp:LinkButton>
 </div>
+<div style="line-height: 26px;">
+    <asp:HyperLink ID="lnkCheck" runat="server">
+        <asp:Image ID="iChk" runat="server" style="padding-right: 4px;" ImageUrl="~/images/CheckFlights.png" Width="20px" ImageAlign="AbsMiddle" />
+        <asp:Label ID="lChk" runat="server" Text="<%$ Resources:FlightLint, TitleCheckThisFlightShort %>"></asp:Label>
+    </asp:HyperLink>
+</div>
+
 <asp:HiddenField ID="hdnID" runat="server" />

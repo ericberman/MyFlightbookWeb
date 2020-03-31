@@ -356,6 +356,13 @@
                     </EmptyDataTemplate>
                 </asp:GridView>
             </asp:Panel>
+            <script>
+                <% if (!IsPostBack && util.GetIntParam(Request, "Chk", 0) != 0) { %>
+                $(document).ready(function () {
+                    document.getElementById('<% = imgCheckFlights.ClientID %>').click();
+                });
+                <% } %>
+            </script>
         </ContentTemplate>
     </asp:UpdatePanel>
     <asp:Panel ID="pnlSubmit" runat="server" CssClass="fullblock" meta:resourcekey="pnlSubmitResource1">

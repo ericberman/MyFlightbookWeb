@@ -202,6 +202,33 @@ public partial class Controls_mfbFlightContextMenu
     protected global::System.Web.UI.WebControls.Label lblSendFlight;
 
     /// <summary>
+    /// lnkCheck control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkCheck;
+
+    /// <summary>
+    /// iChk control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image iChk;
+
+    /// <summary>
+    /// lChk control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lChk;
+
+    /// <summary>
     /// hdnID control.
     /// </summary>
     /// <remarks>
