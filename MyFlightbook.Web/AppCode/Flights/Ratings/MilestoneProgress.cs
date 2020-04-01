@@ -13,7 +13,7 @@ using System.Text;
  *
 *******************************************************/
 
-namespace MyFlightbook.MilestoneProgress
+namespace MyFlightbook.RatingsProgress
 {
     [Serializable]
     public class MilestoneItem

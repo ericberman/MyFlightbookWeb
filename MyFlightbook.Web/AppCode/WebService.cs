@@ -128,7 +128,7 @@ namespace MyFlightbook
                 case MFBImageInfo.ImageClass.BasicMed:
                     {
                         int idBME = Convert.ToInt32(mfbii.Key, CultureInfo.InvariantCulture);
-                        List<MyFlightbook.Basicmed.BasicMedEvent> lst = new List<Basicmed.BasicMedEvent>(Basicmed.BasicMedEvent.EventsForUser(szuser));
+                        List<MyFlightbook.BasicmedTools.BasicMedEvent> lst = new List<BasicmedTools.BasicMedEvent>(BasicmedTools.BasicMedEvent.EventsForUser(szuser));
                         if (!lst.Exists(bme => bme.ID == idBME))
                             throw new UnauthorizedAccessException();
                     }

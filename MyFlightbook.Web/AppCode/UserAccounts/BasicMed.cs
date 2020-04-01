@@ -13,7 +13,7 @@ using System.IO;
  *
 *******************************************************/
 
-namespace MyFlightbook.Basicmed
+namespace MyFlightbook.BasicmedTools
 {
     /// <summary>
     /// Provides support for compliance with BasicMed, which goes into effect on May 1 2017.

@@ -7,7 +7,7 @@
  *
 *******************************************************/
 
-namespace MyFlightbook.Solar
+namespace MyFlightbook.SolarTools
 {
     // Code below adapted from http://www.srrb.noaa.gov/highlights/sunrise/sunrise.html and http://www.srrb.noaa.gov/highlights/sunrise/calcdetails.html
     public class SunriseSunsetTimes

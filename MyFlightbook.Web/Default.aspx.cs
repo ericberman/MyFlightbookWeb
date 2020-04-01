@@ -1,5 +1,5 @@
 using MyFlightbook;
-using MyFlightbook.FlightStats;
+using MyFlightbook.FlightStatistics;
 using MyFlightbook.Image;
 using MyFlightbook.SocialMedia;
 using System;

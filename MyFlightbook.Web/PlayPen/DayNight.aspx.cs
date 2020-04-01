@@ -2,7 +2,7 @@
 using MyFlightbook.Airports;
 using MyFlightbook.Geography;
 using MyFlightbook.Mapping;
-using MyFlightbook.Solar;
+using MyFlightbook.SolarTools;
 using System;
 using System.Globalization;
 using System.Web.UI.WebControls;

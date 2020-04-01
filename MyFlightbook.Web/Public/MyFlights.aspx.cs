@@ -1,6 +1,6 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Encryptors;
-using MyFlightbook.FlightStats;
+using MyFlightbook.FlightStatistics;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

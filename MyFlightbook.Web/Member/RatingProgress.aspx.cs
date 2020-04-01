@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using MyFlightbook;
 using MyFlightbook.Instruction;
-using MyFlightbook.MilestoneProgress;
+using MyFlightbook.RatingsProgress;
 
 /******************************************************
  * 

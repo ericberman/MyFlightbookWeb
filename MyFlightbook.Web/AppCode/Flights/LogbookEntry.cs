@@ -1527,7 +1527,7 @@ namespace MyFlightbook
                 vid.Commit();
             }
 
-            FlightStats.FlightStats.RefreshForFlight(this);
+            FlightStatistics.FlightStats.RefreshForFlight(this);
 
             // Flights have changed, so aircraft stats are invalid.
             new UserAircraft(User).FlushStatsForUser();
@@ -2408,8 +2408,8 @@ namespace MyFlightbook
                 // if only one landing is specified, and the flight-end time is known, and it is night, add a night landing.
                 if (rgap.Length == 2 && Landings == 1 && NightLandings == 0 && FlightEnd.HasValue())
                 {
-                    MyFlightbook.Geography.LatLong ll = rgap[1].LatLong;
-                    MyFlightbook.Solar.SunriseSunsetTimes sst = new MyFlightbook.Solar.SunriseSunsetTimes(FlightEnd, ll.Latitude, ll.Longitude);
+                    Geography.LatLong ll = rgap[1].LatLong;
+                    MyFlightbook.SolarTools.SunriseSunsetTimes sst = new MyFlightbook.SolarTools.SunriseSunsetTimes(FlightEnd, ll.Latitude, ll.Longitude);
                     if (sst.IsFAANight)
                         NightLandings = 1;
                 }

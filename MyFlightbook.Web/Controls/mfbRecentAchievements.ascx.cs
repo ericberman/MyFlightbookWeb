@@ -1,6 +1,6 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Achievements;
-using MyFlightbook.MilestoneProgress;
+using MyFlightbook.RatingsProgress;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -160,7 +160,7 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
         rptRecentAchievements.DataSource = c;
         rptRecentAchievements.DataBind();
 
-        AchievementCount = c.Count();
+        AchievementCount = c.Count;
 
         Summary = String.Format(CultureInfo.CurrentCulture, fIncludeBadges ? Resources.Achievements.RecentAchievementsTitle : Resources.Achievements.RecentStatsTitle, ra.StartDate, ra.EndDate);
 
@@ -174,7 +174,7 @@ public partial class Controls_mfbRecentAchievements : System.Web.UI.UserControl
             rptRecentlyearnedBadges.DataBind();
         }
 
-        pnlStatsAndAchievements.Visible = (lstBadges != null && lstBadges.Count > 0) || (c != null && c.Count() > 0);
+        pnlStatsAndAchievements.Visible = (lstBadges != null && lstBadges.Count > 0) || (c != null && c.Count > 0);
         if (ShowCalendar)
             RefreshCalendar(ra);
 

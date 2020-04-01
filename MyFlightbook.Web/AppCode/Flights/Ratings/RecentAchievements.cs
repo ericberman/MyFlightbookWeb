@@ -14,7 +14,7 @@ using System.Web;
  *
 *******************************************************/
 
-namespace MyFlightbook.MilestoneProgress
+namespace MyFlightbook.RatingsProgress
 {
     public class RecentAchievementMilestone : MilestoneItem
     {
@@ -230,8 +230,8 @@ namespace MyFlightbook.MilestoneProgress
                 miModels.MatchingEventText = (DistinctModels.Count == DistinctICAO.Count) ? String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsDistinctModels, DistinctModels.Count) :
                 String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsDistinctModelsAndFamilies, DistinctModels.Count, DistinctICAO.Count);
 
-                miAirports.Progress = Airports.Count();
-                miAirports.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsAirportsVisited, Airports.Count());
+                miAirports.Progress = Airports.Count;
+                miAirports.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.Achievements.RecentAchievementsAirportsVisited, Airports.Count);
                 miAirports.Query = miFlyingDates.Query; // both use the entire time period.
 
                 List<MilestoneItem> l = new List<MilestoneItem>()

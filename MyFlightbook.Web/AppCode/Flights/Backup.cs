@@ -1,4 +1,4 @@
-﻿using MyFlightbook.Basicmed;
+﻿using MyFlightbook.BasicmedTools;
 using MyFlightbook.CloudStorage;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;

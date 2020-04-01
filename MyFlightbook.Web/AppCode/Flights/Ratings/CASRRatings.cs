@@ -12,7 +12,7 @@ using System.Globalization;
  *
 *******************************************************/
 
-namespace MyFlightbook.MilestoneProgress
+namespace MyFlightbook.RatingsProgress
 {
     #region Australian CASR Licensing - see https://www.comlaw.gov.au/Details/F2015C00762/Html/Volume_2#_Toc429575457). In this document go to volume 2, subsection 61 is everything on licences etc. The first part is mainly definitions . Subsections 61.g-z are where you can get all the info for requirements and restrictions for all the ratings/licences for Australia.
     [Serializable]

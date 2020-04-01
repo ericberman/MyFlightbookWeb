@@ -1,5 +1,5 @@
 ﻿using MyFlightbook;
-using MyFlightbook.Basicmed;
+using MyFlightbook.BasicmedTools;
 using System;
 using System.Globalization;
 using System.Linq;

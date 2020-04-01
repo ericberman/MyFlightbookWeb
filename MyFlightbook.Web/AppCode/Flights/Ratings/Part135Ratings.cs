@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
  *
 *******************************************************/
 
-namespace MyFlightbook.MilestoneProgress
+namespace MyFlightbook.RatingsProgress
 {
     /// <summary>
     /// PArt 135 Milestones

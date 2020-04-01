@@ -10,7 +10,7 @@ using System.Web;
  *
 *******************************************************/
 
-namespace MyFlightbook.FlightStats
+namespace MyFlightbook.FlightStatistics
 {
     [Serializable]
     public class FlightStats

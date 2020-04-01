@@ -12,7 +12,7 @@ using System.Globalization;
  *
 *******************************************************/
 
-namespace MyFlightbook.MilestoneProgress
+namespace MyFlightbook.RatingsProgress
 {
     /// <summary>
     /// Private pilot milestones

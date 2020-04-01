@@ -1,7 +1,7 @@
 ﻿using MyFlightbook.Airports;
 using MyFlightbook.CSV;
 using MyFlightbook.Geography;
-using MyFlightbook.Solar;
+using MyFlightbook.SolarTools;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections;

@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
  *
 *******************************************************/
 
-namespace MyFlightbook.StartingFlight
+namespace MyFlightbook.StartingFlights
 {
     /// <summary>
     /// Summary description for StartingTotals

@@ -11,7 +11,7 @@ using System.Globalization;
  *
 *******************************************************/
 
-namespace MyFlightbook.MilestoneProgress
+namespace MyFlightbook.RatingsProgress
 {
     /// <summary>
     /// Commercial rating milestones

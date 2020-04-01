@@ -1,6 +1,7 @@
 ﻿using Andri.Web;
 using DotNetOpenAuth.OAuth2;
 using MyFlightbook.Achievements;
+using MyFlightbook.BasicmedTools;
 using MyFlightbook.CloudStorage;
 using MyFlightbook.Encryptors;
 using MyFlightbook.Currency;
@@ -1155,7 +1156,7 @@ namespace MyFlightbook
             List<CurrencyStatusItem> rgCS = new List<CurrencyStatusItem>();
 
             CurrencyStatusItem csMedical = NextMedical.HasValue() ? StatusForDate(NextMedical, Resources.Currency.NextMedical, CurrencyStatusItem.CurrencyGroups.Medical) : null;
-            CurrencyStatusItem csBasicMed = new Basicmed.BasicMed(UserName).Status;
+            CurrencyStatusItem csBasicMed = new BasicMed(UserName).Status;
 
             /* Scenarios for combining regular medical and basicmed.
              * 
@@ -1551,7 +1552,7 @@ namespace MyFlightbook
                 mfbii.DeleteImage();
 
             // Delete basicmed records
-            foreach (Basicmed.BasicMedEvent bme in Basicmed.BasicMedEvent.EventsForUser(mu.UserName))
+            foreach (BasicMedEvent bme in BasicMedEvent.EventsForUser(mu.UserName))
                 bme.Delete();
 
             // Delete from any clubs
