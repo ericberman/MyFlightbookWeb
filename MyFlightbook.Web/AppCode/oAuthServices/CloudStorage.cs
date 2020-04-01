@@ -409,9 +409,6 @@ namespace MyFlightbook.CloudStorage
 
             ms.Seek(0, SeekOrigin.Begin);   // write out the whole stream.  UploadAsync appears to pick up from the current location, which is the end-of-file after writing to a ZIP.
 
-            string szResult = string.Empty;
-            HttpResponseMessage response = null;
-
             using (HttpClient httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
@@ -441,49 +438,57 @@ namespace MyFlightbook.CloudStorage
                 if (String.IsNullOrEmpty(idExisting) && !String.IsNullOrEmpty(RootFolderID))
                     dictMeta["parents"] = new List<string>() { RootFolderID };
 
-                // Create the form.  The form itself needs the authtoken header
-                using (MultipartContent form = new MultipartContent("related"))
+                return await SendForm(httpClient, ms, dictMeta, szMimeType, idExisting).ConfigureAwait(false);
+            }
+        }
+
+        private static async Task<GoogleDriveResultDictionary> SendForm(HttpClient httpClient, Stream ms, Dictionary<string, object> dictMeta, string szMimeType, string idExisting)
+        {
+            string szResult = string.Empty;
+            HttpResponseMessage response = null;
+
+            // Create the form.  The form itself needs the authtoken header
+            using (MultipartContent form = new MultipartContent("related"))
+            {
+                // Next add the metadata - it is in Json format
+                string szJSonMeta = JsonConvert.SerializeObject(dictMeta);
+                using (StringContent metadata = new StringContent(szJSonMeta, System.Text.Encoding.UTF8))
                 {
-                    // Next add the metadata - it is in Json format
-                    string szJSonMeta = JsonConvert.SerializeObject(dictMeta);
-                    using (StringContent metadata = new StringContent(szJSonMeta, System.Text.Encoding.UTF8))
+                    metadata.Headers.ContentType = new MediaTypeHeaderValue("application/json") { CharSet = "UTF-8" };
+                    form.Add(metadata);
+
+                    // Finally, add the body, with its appropriate mime type.
+                    using (StreamContent body = new StreamContent(ms))
                     {
-                        metadata.Headers.ContentType = new MediaTypeHeaderValue("application/json") { CharSet = "UTF-8" };
-                        form.Add(metadata);
+                        body.Headers.ContentType = new MediaTypeHeaderValue(szMimeType);
+                        form.Add(body);
 
-                        // Finally, add the body, with its appropriate mime type.
-                        using (StreamContent body = new StreamContent(ms))
+                        try
                         {
-                            body.Headers.ContentType = new MediaTypeHeaderValue(szMimeType);
-                            form.Add(body);
+                            response = (String.IsNullOrEmpty(idExisting)) ?
+                                await httpClient.PostAsync(new Uri(szURLUploadEndpoint), form).ConfigureAwait(false) :
+                                await httpClient.PatchAsync(new Uri(String.Format(CultureInfo.InvariantCulture, szURLUpdateEndpointTemplate, idExisting)), form, false).ConfigureAwait(false);
+                            szResult = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            response.EnsureSuccessStatusCode();
+                            return (String.IsNullOrEmpty(szResult)) ? null : JsonConvert.DeserializeObject<GoogleDriveResultDictionary>(szResult);
+                        }
+                        catch (HttpRequestException ex)
+                        {
+                            if (response == null)
+                                throw new MyFlightbookException("Unknown error in GoogleDrive.PutFile", ex);
 
-                            try
-                            {
-                                response = (String.IsNullOrEmpty(idExisting)) ?
-                                    await httpClient.PostAsync(new Uri(szURLUploadEndpoint), form).ConfigureAwait(false) :
-                                    await httpClient.PatchAsync(new Uri(String.Format(CultureInfo.InvariantCulture, szURLUpdateEndpointTemplate, idExisting)), form, false).ConfigureAwait(false);
-                                szResult = response.Content.ReadAsStringAsync().Result;
-                                response.EnsureSuccessStatusCode();
-                                return (String.IsNullOrEmpty(szResult)) ? null : JsonConvert.DeserializeObject<GoogleDriveResultDictionary>(szResult);
-                            }
-                            catch (HttpRequestException ex)
-                            {
-                                if (response == null)
-                                    throw new MyFlightbookException("Unknown error in GoogleDrive.PutFile", ex);
+                            Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
+                            GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
 
-                                Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
-                                GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
-
-                                if (gde != null && gde.code == 403 && gde.errors != null && gde.errors.Count > 0 && gde.errors[0].reason != null && gde.errors[0].reason.CompareCurrentCultureIgnoreCase("storageQuotaExceeded") == 0)
-                                    throw new MyFlightbookException(Resources.LocalizedText.GoogleDriveOutOfSpace);
-                                else
-                                    throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
-                            }
-                            finally
-                            {
-                                if (response != null)
-                                    response.Dispose();
-                            }
+                            if (gde != null && gde.code == 403 && gde.errors != null && gde.errors.Count > 0 && gde.errors[0].reason != null && gde.errors[0].reason.CompareCurrentCultureIgnoreCase("storageQuotaExceeded") == 0)
+                                throw new MyFlightbookException(Resources.LocalizedText.GoogleDriveOutOfSpace);
+                            else
+                                throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
+                        }
+                        finally
+                        {
+                            if (response != null)
+                                response.Dispose();
                         }
                     }
                 }
@@ -719,7 +724,8 @@ namespace MyFlightbook.CloudStorage
                         response = await httpClient.PostAsync(builder.Uri, sc).ConfigureAwait(false);
                         szResult = response.Content.ReadAsStringAsync().Result;
                         response.EnsureSuccessStatusCode();
-                        return JsonConvert.DeserializeObject<OneDriveSession>(szResult);
+                        // Deserialize (below) should never return null because EnsureSuccessStatusCode should throw an exception if there's an issue, but this suppresses a warning about uninstantiated OneDriveSession
+                        return JsonConvert.DeserializeObject<OneDriveSession>(szResult) ?? new OneDriveSession();   
                     }
                     catch (HttpRequestException ex)
                     {

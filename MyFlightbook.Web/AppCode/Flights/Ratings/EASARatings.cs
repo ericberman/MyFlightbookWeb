@@ -22,10 +22,18 @@ namespace MyFlightbook.MilestoneProgress
         public LAPLMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupLAPL;
-            Milestones = new Collection<MilestoneProgress> {
+        }
+
+        public override Collection<MilestoneProgress> Milestones
+        {
+            get
+            {
+                return new Collection<MilestoneProgress> {
                 new EASALAPLAirplane(),
                 new EASALAPLHelicopter(),
-                new EASALAPLSailplane() };
+                new EASALAPLSailplane()
+                };
+            }
         }
     }
 

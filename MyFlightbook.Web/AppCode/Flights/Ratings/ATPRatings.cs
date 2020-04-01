@@ -21,7 +21,13 @@ namespace MyFlightbook.MilestoneProgress
         public ATPMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupATP;
-            Milestones = new Collection<MilestoneProgress> {
+        }
+
+        public override Collection<MilestoneProgress> Milestones
+        {
+            get
+            {
+                return new Collection<MilestoneProgress> {
                 new ATPAirplaneASEL(),
                 new ATPAirplaneASES(),
                 new ATPAirplaneAMEL(),
@@ -38,7 +44,8 @@ namespace MyFlightbook.MilestoneProgress
                 new ATPPoweredLift(),
                 new ATPCanadaAirplane(),
                 new ATPCanadaHelicopter()
-            };
+                };
+            }
         }
     }
 

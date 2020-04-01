@@ -23,7 +23,13 @@ namespace MyFlightbook.MilestoneProgress
         public PrivatePilotMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupPrivatePilot;
-            List<MilestoneProgress> lst = new List<MilestoneProgress>() {
+        }
+
+        public override Collection<MilestoneProgress> Milestones
+        {
+            get
+            {
+                List<MilestoneProgress> lst = new List<MilestoneProgress>() {
                     new PPL61109A(),
                     new PPL61109B(),
                     new PPL61109C(),
@@ -42,10 +48,11 @@ namespace MyFlightbook.MilestoneProgress
                     new EASAPPLNightAirplane(),
                     };
 
-            lst.AddRange(CAPrivatePilot.AvailableRatings);
-            lst.AddRange(SAPPLBase.AvailableRatings);
-            lst.AddRange(CASRLicenseBase.AvailableRatings);
-            Milestones = new Collection<MilestoneProgress>(lst);
+                lst.AddRange(CAPrivatePilot.AvailableRatings);
+                lst.AddRange(SAPPLBase.AvailableRatings);
+                lst.AddRange(CASRLicenseBase.AvailableRatings);
+                return new Collection<MilestoneProgress>(lst);
+            }
         }
     }
 

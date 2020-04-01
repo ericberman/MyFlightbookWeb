@@ -22,7 +22,13 @@ namespace MyFlightbook.MilestoneProgress
         public RecreationalMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupRecreational;
-            Milestones = new Collection<MilestoneProgress> {
+        }
+
+        public override Collection<MilestoneProgress> Milestones
+        {
+            get
+            {
+                return new Collection<MilestoneProgress> {
                     new RP6199ASEL(),
                     new RP6199ASES(),
                     new RP6199AMEL(),
@@ -31,7 +37,9 @@ namespace MyFlightbook.MilestoneProgress
                     new RP6199Helicopter(),
                     new RP6199Gyroplane(),
                     new RP6199GasBalloon(),
-                    new RP6199HotAirBalloon()};
+                    new RP6199HotAirBalloon()
+                };
+            }
         }
     }
 

@@ -399,7 +399,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
             return;
 
         IEnumerable<Club> lstClubs = Club.ClubsForAircraft(m_ac.AircraftID, Page.User.Identity.Name);
-        if (lstClubs.Count() > 0)
+        if (lstClubs.Any())
         {
             rowClubSchedules.Visible = true;
             rptSchedules.DataSource = lstClubs;

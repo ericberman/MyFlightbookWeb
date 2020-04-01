@@ -22,7 +22,12 @@ namespace MyFlightbook.MilestoneProgress
         public DPEMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupDPE;
-            Milestones = new Collection<MilestoneProgress> {
+        }
+
+        public override Collection<MilestoneProgress> Milestones
+        {
+            get {
+                return new Collection<MilestoneProgress> {
                 new DPEASELPPL(),
                 new DPEAMELPPL(),
                 new DPEASESPPL(),
@@ -36,7 +41,8 @@ namespace MyFlightbook.MilestoneProgress
                 new DPECommAMES(),
                 new DPECommHelicopter(),
                 new DPECommGlider()
-            };
+                };
+            }
         }
     }
 

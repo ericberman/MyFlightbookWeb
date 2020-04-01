@@ -23,11 +23,17 @@ namespace MyFlightbook.MilestoneProgress
         public Part135Milestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroup135;
-            Milestones = new Collection<MilestoneProgress>
+        }
+
+        public override Collection<MilestoneProgress> Milestones
+        {
+            get
             {
+                return new Collection<MilestoneProgress> {
                 new Part135243b(),
                 new Part135243c()
-            };
+                };
+            }
         }
 
         /// <summary>

@@ -22,10 +22,18 @@ namespace MyFlightbook.MilestoneProgress
         public SportsMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupSportPilot;
-            Milestones = new Collection<MilestoneProgress> {
+        }
+
+        public override Collection<MilestoneProgress> Milestones
+        {
+            get
+            {
+                return new Collection<MilestoneProgress> {
                 new SportPilotAirplane(),
                 new SportPilotGlider(),
-                new SportPilotGyroplane() };
+                new SportPilotGyroplane()
+                };
+            }
         }
     }
 

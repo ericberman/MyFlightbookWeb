@@ -12,7 +12,7 @@ using System.Web;
  *
 *******************************************************/
 
-namespace MyFlightbook.SponsoredAd
+namespace MyFlightbook.SponsoredAds
 {
     /// <summary>
     /// Summary description for SponsoredAd

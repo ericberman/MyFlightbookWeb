@@ -21,7 +21,13 @@ namespace MyFlightbook.MilestoneProgress
         public CFIMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupCFI;
-            Milestones = new Collection<MilestoneProgress> {
+        }
+
+        public override Collection<MilestoneProgress> Milestones
+        {
+            get
+            {
+                return new Collection<MilestoneProgress> {
                 new CFIASEL(),
                 new CFIASES(),
                 new CFIAMEL(),
@@ -29,7 +35,8 @@ namespace MyFlightbook.MilestoneProgress
                 new CFIGlider(),
                 new CFIHelicopter(),
                 new CFISportASEL()
-            };
+                };
+            }
         }
     }
 

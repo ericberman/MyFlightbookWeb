@@ -1,4 +1,4 @@
-﻿using MyFlightbook.SponsoredAd;
+﻿using MyFlightbook.SponsoredAds;
 using System;
 using System.Globalization;
 

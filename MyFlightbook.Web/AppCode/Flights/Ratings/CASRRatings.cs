@@ -45,8 +45,6 @@ namespace MyFlightbook.MilestoneProgress
 
         protected CategoryClass.CatClassID requiredCategory { get; set; }
 
-        protected Collection<MilestoneItem> m_milestones { get; set; }
-
         protected void Init()
         {
             InitRequiredParams();
@@ -59,16 +57,6 @@ namespace MyFlightbook.MilestoneProgress
             BaseFAR = szBaseFAR;
             RatingSought = rt;
             CategoryRestriction = szCategoryName;
-
-            m_milestones = new Collection<MilestoneItem>();
-        }
-
-        public override Collection<MilestoneItem> Milestones
-        {
-            get
-            {
-                return m_milestones;
-            }
         }
 
         /// <summary>
@@ -181,13 +169,16 @@ namespace MyFlightbook.MilestoneProgress
             miSoloLongCrossCountry = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CASRPPLSoloLongCrossCountry, CategoryRestriction, reqXCDistance, fXCLandingsMustBeFullStop ? Resources.MilestoneProgress.CASRFullStopLandings : Resources.MilestoneProgress.CASRLandings), ResolvedFAR("(3)"), string.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miDualInstrumentTime = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CASRPPLDualIFR, reqDualInstrumentTime), ResolvedFAR("(1)(e)"), string.Empty, MilestoneItem.MilestoneType.Time, reqDualInstrumentTime);
             miDualInstrumentTimeInCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CASRPPLDualIFRInCategory, CategoryRestriction), ResolvedFAR("(1)(f)"), string.Empty, MilestoneItem.MilestoneType.Time, reqDualInstrumentTimeInCategory);
-
-            m_milestones = new Collection<MilestoneItem>() { miAeronauticalExperience, miPilotTime, miTimeInCategory, miSoloTimeInCategory, miSoloXCTimeInCategory, miSoloLongCrossCountry, miDualInstrumentTime, miDualInstrumentTimeInCategory };
         }
 
         protected CASRPrivatePilot(string szBaseFar, string szTitle, RatingType rt, string szCategory) : base(szBaseFar, szTitle, rt, szCategory)
         {
             Init();
+        }
+
+        public override Collection<MilestoneItem> Milestones
+        {
+            get { return new Collection<MilestoneItem>() { miAeronauticalExperience, miPilotTime, miTimeInCategory, miSoloTimeInCategory, miSoloXCTimeInCategory, miSoloLongCrossCountry, miDualInstrumentTime, miDualInstrumentTimeInCategory }; }
         }
     }
 
@@ -264,8 +255,11 @@ namespace MyFlightbook.MilestoneProgress
             miSoloLongCrossCountry = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CASRPPLSoloLongCrossCountry, CategoryRestriction, reqXCDistance, fXCLandingsMustBeFullStop ? Resources.MilestoneProgress.CASRFullStopLandings : Resources.MilestoneProgress.CASRLandings), ResolvedFAR("(3)"), string.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
             miDualInstrumentTime = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CASRPPLDualIFR, reqDualInstrumentTime), ResolvedFAR("(1)(d)"), string.Empty, MilestoneItem.MilestoneType.Time, reqDualInstrumentTime);
             miDualInstrumentTimeInCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CASRPPLDualIFRInCategory, CategoryRestriction), ResolvedFAR("(1)(e)"), string.Empty, MilestoneItem.MilestoneType.Time, reqDualInstrumentTimeInCategory);
+        }
 
-            m_milestones = new Collection<MilestoneItem>() { miAeronauticalExperience, miTimeInCategory, miSoloTimeInCategory, miSoloXCTimeInCategory, miSoloLongCrossCountry, miDualInstrumentTime, miDualInstrumentTimeInCategory };
+        public override Collection<MilestoneItem> Milestones
+        {
+            get { return new Collection<MilestoneItem>() { miAeronauticalExperience, miTimeInCategory, miSoloTimeInCategory, miSoloXCTimeInCategory, miSoloLongCrossCountry, miDualInstrumentTime, miDualInstrumentTimeInCategory }; }
         }
 
         public CASRPrivatePilotHelicopterApprovedTraining() : base("61.H.2 - 61.530", Resources.MilestoneProgress.TitleCASRPPLHeliTraining, RatingType.CASRHelicopterWithCourse, Resources.MilestoneProgress.CASRCategoryHelicopter)
@@ -300,8 +294,11 @@ namespace MyFlightbook.MilestoneProgress
             miInstrumentInCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CASRCommIFRInCategory, reqIFRTimeInCategory, CategoryRestriction), ResolvedFAR("(1)(e)"), string.Empty, MilestoneItem.MilestoneType.Time, reqIFRTimeInCategory);
             miSoloLongCrossCountry.FARRef = ResolvedFAR("(3)");
             miSoloLongCrossCountry.Title = String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.CASRCommLongCrossCountry, CategoryRestriction, reqXCDistance, fXCLandingsMustBeFullStop ? Resources.MilestoneProgress.CASRFullStopLandings : Resources.MilestoneProgress.CASRLandings);
+        }
 
-            m_milestones = new Collection<MilestoneItem>() { miAeronauticalExperience, miTimeInCategory, miPICTime, miPICXCTime, miSoloLongCrossCountry, miInstrumentTime, miInstrumentInCategory };
+        public override Collection<MilestoneItem> Milestones
+        {
+            get { return new Collection<MilestoneItem>() { miAeronauticalExperience, miTimeInCategory, miPICTime, miPICXCTime, miSoloLongCrossCountry, miInstrumentTime, miInstrumentInCategory }; }
         }
 
         protected override void InitRequiredParams()
@@ -371,8 +368,11 @@ namespace MyFlightbook.MilestoneProgress
         protected override void SetUpMilestones()
         {
             base.SetUpMilestones();
+        }
 
-            m_milestones = new Collection<MilestoneItem>() { miAeronauticalExperience, miPilotTime, miPICTime, miPICXCTime, miSoloLongCrossCountry, miInstrumentTime, miInstrumentInCategory };
+        public override Collection<MilestoneItem> Milestones
+        {
+            get { return new Collection<MilestoneItem>() { miAeronauticalExperience, miPilotTime, miPICTime, miPICXCTime, miSoloLongCrossCountry, miInstrumentTime, miInstrumentInCategory }; }
         }
 
         public CASRCommAirplaneNoApprovedTraining() : base("61.I.3 - 61.610", Resources.MilestoneProgress.TitleCASRCommAirplaneNoTraining, RatingType.CASRCommAirplaneWithoutCourse, Resources.MilestoneProgress.CASRCategoryAirplane) { }
@@ -425,8 +425,11 @@ namespace MyFlightbook.MilestoneProgress
             miPICXCTime.FARRef = ResolvedFAR("(1)(d)");
             miInstrumentTime.FARRef = ResolvedFAR("(1)(e)");
             miInstrumentInCategory.FARRef = ResolvedFAR("(1)(f)");
+        }
 
-            m_milestones = new Collection<MilestoneItem>() { miAeronauticalExperience, miPilotTime, miTimeInCategory, miPICTime, miPICXCTime, miSoloLongCrossCountry, miInstrumentTime, miInstrumentInCategory };
+        public override Collection<MilestoneItem> Milestones
+        {
+            get { return new Collection<MilestoneItem>() { miAeronauticalExperience, miPilotTime, miTimeInCategory, miPICTime, miPICXCTime, miSoloLongCrossCountry, miInstrumentTime, miInstrumentInCategory }; }
         }
 
         public CASRCommHelicopterNoApprovedTraining() : base("61.I.3 - 61.615", Resources.MilestoneProgress.TitleCASRCommHeliNoTraining, RatingType.CASRCommHelicopterWithoutCourse, Resources.MilestoneProgress.CASRCategoryHelicopter) { }

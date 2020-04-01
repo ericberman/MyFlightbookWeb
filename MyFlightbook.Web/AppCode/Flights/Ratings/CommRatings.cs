@@ -3,7 +3,6 @@ using MyFlightbook.Currency;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
 
 /******************************************************
  * 
@@ -23,7 +22,11 @@ namespace MyFlightbook.MilestoneProgress
         public CommercialMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupCommercial;
-            Milestones = new Collection<MilestoneProgress> {
+        }
+
+        public override Collection<MilestoneProgress> Milestones
+        {
+            get { return new Collection<MilestoneProgress> {
                 new Comm61129ASEL(),
                 new Comm61129ASES(),
                 new Comm61129AMEL(),
@@ -43,6 +46,7 @@ namespace MyFlightbook.MilestoneProgress
                 new CASRCommHelicopterApprovedTraining(),
                 new CASRCommHelicopterNoApprovedTraining()
                 };
+            }
         }
     }
 

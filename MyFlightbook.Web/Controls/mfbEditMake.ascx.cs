@@ -289,8 +289,7 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
             MakeID = Model.MakeModelID;
 
             ClearDupes();
-            if (MakeUpdated != null)
-                MakeUpdated(sender, e);
+            MakeUpdated?.Invoke(sender, e);
         }
         catch (MyFlightbookException ex)
         {
@@ -302,7 +301,7 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
     {
         modalPopupDupes.Hide();
         pnlDupesFound.Style["display"] = "none";
-        gvDupes.DataSource = new MakeModel[0];
+        gvDupes.DataSource = Array.Empty<MakeModel>();
         gvDupes.DataBind();
     }
 
@@ -312,8 +311,7 @@ public partial class Controls_mfbEditMake : System.Web.UI.UserControl
         {
             MakeID = Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture);
             ClearDupes();
-            if (MakeUpdated != null)
-                MakeUpdated(sender, e);
+            MakeUpdated?.Invoke(sender, e);
         }
     }
 

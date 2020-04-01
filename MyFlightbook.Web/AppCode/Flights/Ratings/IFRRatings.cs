@@ -23,12 +23,20 @@ namespace MyFlightbook.MilestoneProgress
         public InstrumentMilestones()
         {
             GroupName = Resources.MilestoneProgress.RatingGroupInstrument;
-            Milestones = new Collection<MilestoneProgress> {
+        }
+
+        public override Collection<MilestoneProgress> Milestones
+        {
+            get
+            {
+                return new Collection<MilestoneProgress> {
                     new IFR6165D(),
                     new IFR6165E(),
                     new IFR6165F(),
                     new IFR141CAirplane(),
-                    new IFR141CHelicopter() };
+                    new IFR141CHelicopter()
+                };
+            }
         }
     }
 
