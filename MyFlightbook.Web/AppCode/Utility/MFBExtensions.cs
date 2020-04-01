@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MyFlightbook.Currency;
+using Newtonsoft.Json;
 using System;
 using System.Globalization;
 using System.IO;
@@ -861,7 +862,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="cs"></param>
         /// <returns></returns>
-        public static bool IsCurrent(this FlightCurrency.CurrencyState cs) { return cs != FlightCurrency.CurrencyState.NotCurrent; }
+        public static bool IsCurrent(this CurrencyState cs) { return cs != CurrencyState.NotCurrent; }
 
         /// <summary>
         /// Indicates whether a particular column type can be graphed.

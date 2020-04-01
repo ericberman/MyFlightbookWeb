@@ -3,7 +3,7 @@ using DotNetOpenAuth.OAuth2;
 using MyFlightbook.Achievements;
 using MyFlightbook.CloudStorage;
 using MyFlightbook.Encryptors;
-using MyFlightbook.FlightCurrency;
+using MyFlightbook.Currency;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
 using MySql.Data.MySqlClient;

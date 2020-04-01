@@ -159,7 +159,7 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="<%$ Resources:Currency, deadlinesHeaderDeadlines %>">
                             <ItemTemplate>
-                                <asp:Label ID="lblDeadlines" runat="server" Text='<%# MyFlightbook.FlightCurrency.DeadlineCurrency.CoalescedDeadlinesForAircraft(Page.User.Identity.Name, (int) Eval("AircraftID")) %>' />
+                                <asp:Label ID="lblDeadlines" runat="server" Text='<%# MyFlightbook.Currency.DeadlineCurrency.CoalescedDeadlinesForAircraft(Page.User.Identity.Name, (int) Eval("AircraftID")) %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Frequently Used">

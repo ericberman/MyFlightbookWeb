@@ -1,4 +1,5 @@
 ﻿using MyFlightbook.CloudStorage;
+using MyFlightbook.Currency;
 using MyFlightbook.Payments;
 using System;
 using System.Collections.Generic;
@@ -215,7 +216,7 @@ namespace MyFlightbook.Subscriptions
                 if (pf == null)
                     continue;
 
-                IEnumerable<FlightCurrency.CurrencyStatusItem> expiringCurrencies = FlightCurrency.CurrencyStatusItem.CheckForExpiringCurrencies(eg.State, eg.Username, out string newState);
+                IEnumerable<CurrencyStatusItem> expiringCurrencies = CurrencyStatusItem.CheckForExpiringCurrencies(eg.State, eg.Username, out string newState);
                 if (newState.CompareOrdinal(eg.State) != 0)
                 {
                     eg.State = newState;

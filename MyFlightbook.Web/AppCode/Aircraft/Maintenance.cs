@@ -1,4 +1,4 @@
-﻿using MyFlightbook.FlightCurrency;
+﻿using MyFlightbook.Currency;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections;

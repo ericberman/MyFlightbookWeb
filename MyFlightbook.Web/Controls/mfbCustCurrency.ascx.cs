@@ -1,5 +1,5 @@
 ﻿using MyFlightbook;
-using MyFlightbook.FlightCurrency;
+using MyFlightbook.Currency;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

@@ -10,7 +10,7 @@
             <ItemTemplate>
                 <asp:Repeater ID="rptPilotStatus" runat="server">
                     <ItemTemplate>
-                        <div><asp:Label ID="lblTitle" runat="server" CssClass="currencylabel" Text='<%# Eval("Attribute") %>'></asp:Label>: <asp:Label ID="lblStatus" runat="server" CssClass='<%# CSSForItem((MyFlightbook.FlightCurrency.CurrencyState) Eval("Status")) %>' Text='<%# Eval("Value") %>'></asp:Label></div>
+                        <div><asp:Label ID="lblTitle" runat="server" CssClass="currencylabel" Text='<%# Eval("Attribute") %>'></asp:Label>: <asp:Label ID="lblStatus" runat="server" CssClass='<%# CSSForItem((MyFlightbook.Currency.CurrencyState) Eval("Status")) %>' Text='<%# Eval("Value") %>'></asp:Label></div>
                     </ItemTemplate>
                 </asp:Repeater>
             </ItemTemplate>

@@ -8,7 +8,7 @@ using System.Globalization;
  *
 *******************************************************/
 
-namespace MyFlightbook.FlightCurrency
+namespace MyFlightbook.Currency
 {
     #region Part 135.29x classes
     public class Part135_293a : FlightCurrency

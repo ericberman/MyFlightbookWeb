@@ -10,7 +10,7 @@ using System.Globalization;
  *
 *******************************************************/
 
-namespace MyFlightbook.FlightCurrency
+namespace MyFlightbook.Currency
 {
     /// <summary>
     /// Custom Deadlines class

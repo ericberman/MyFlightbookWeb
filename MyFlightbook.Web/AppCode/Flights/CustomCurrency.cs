@@ -13,7 +13,7 @@ using System.Text;
  *
 *******************************************************/
 
-namespace MyFlightbook.FlightCurrency
+namespace MyFlightbook.Currency
 {
     public enum CustomCurrencyTimespanType
     {

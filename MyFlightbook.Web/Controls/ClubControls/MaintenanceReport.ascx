@@ -96,7 +96,7 @@
         </asp:TemplateField>
         <asp:TemplateField HeaderText="<%$ Resources:Currency, deadlinesHeaderDeadlines %>" ItemStyle-VerticalAlign="Top">
             <ItemTemplate>
-                <asp:Label ID="lblDeadlines" runat="server" Text='<%# MyFlightbook.FlightCurrency.DeadlineCurrency.CoalescedDeadlinesForAircraft(null, (int) Eval("AircraftID")) %>' />
+                <asp:Label ID="lblDeadlines" runat="server" Text='<%# MyFlightbook.Currency.DeadlineCurrency.CoalescedDeadlinesForAircraft(null, (int) Eval("AircraftID")) %>' />
             </ItemTemplate>
         </asp:TemplateField>
         <asp:TemplateField HeaderText="<%$ Resources:Club, ReportHeaderNotes %>" ItemStyle-VerticalAlign="Top">

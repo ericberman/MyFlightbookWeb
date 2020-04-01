@@ -1,5 +1,5 @@
 ﻿using MyFlightbook.Airports;
-using MyFlightbook.FlightCurrency;
+using MyFlightbook.Currency;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;

@@ -14,7 +14,7 @@ using System.Linq;
  *
 *******************************************************/
 
-namespace MyFlightbook.FlightCurrency
+namespace MyFlightbook.Currency
 {
     public enum TotalsGroup { None, CategoryClass, ICAO, Model, Capabilities, CoreFields, Properties, Total }
 

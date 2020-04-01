@@ -1,6 +1,6 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Clubs;
-using MyFlightbook.FlightCurrency;
+using MyFlightbook.Currency;
 using System;
 using System.Web.UI.WebControls;
 

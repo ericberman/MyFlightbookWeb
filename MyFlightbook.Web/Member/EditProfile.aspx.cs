@@ -1,6 +1,6 @@
 using MyFlightbook;
 using MyFlightbook.CloudStorage;
-using MyFlightbook.FlightCurrency;
+using MyFlightbook.Currency;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.Payments;
 using System;

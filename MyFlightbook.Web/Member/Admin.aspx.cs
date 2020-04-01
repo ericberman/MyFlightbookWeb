@@ -223,7 +223,7 @@ public partial class Member_Admin : System.Web.UI.Page
         {
             comm.Parameters.AddWithValue("newID", idModelToMergeInto);
             comm.Parameters.AddWithValue("oldID", idModelToDelete);
-            comm.Parameters.AddWithValue("modelsType", (int)MyFlightbook.FlightCurrency.CustomCurrency.CurrencyRefType.Models);
+            comm.Parameters.AddWithValue("modelsType", (int)MyFlightbook.Currency.CustomCurrency.CurrencyRefType.Models);
         });
 
         // Then delete the old model
@@ -250,7 +250,7 @@ public partial class Member_Admin : System.Web.UI.Page
             dbh.DoNonQuery((comm) =>
             {
                 comm.Parameters.AddWithValue("idmodel", idModel);
-                comm.Parameters.AddWithValue("modelsType", (int)MyFlightbook.FlightCurrency.CustomCurrency.CurrencyRefType.Models);
+                comm.Parameters.AddWithValue("modelsType", (int)MyFlightbook.Currency.CustomCurrency.CurrencyRefType.Models);
             });
         }
     }

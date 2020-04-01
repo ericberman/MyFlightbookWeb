@@ -1,5 +1,5 @@
 using MyFlightbook.Airports;
-using MyFlightbook.FlightCurrency;
+using MyFlightbook.Currency;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;

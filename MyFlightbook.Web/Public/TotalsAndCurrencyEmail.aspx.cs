@@ -1,6 +1,6 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Encryptors;
-using MyFlightbook.FlightCurrency;
+using MyFlightbook.Currency;
 using MyFlightbook.Payments;
 using MyFlightbook.Subscriptions;
 using System;

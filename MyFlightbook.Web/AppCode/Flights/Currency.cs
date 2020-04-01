@@ -14,7 +14,7 @@ using System.Web;
  *
 *******************************************************/
 
-namespace MyFlightbook.FlightCurrency
+namespace MyFlightbook.Currency
 {
     /// <summary>
     /// Status for currency

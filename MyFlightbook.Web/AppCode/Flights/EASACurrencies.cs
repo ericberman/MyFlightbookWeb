@@ -8,7 +8,7 @@ using System.Globalization;
  *
 *******************************************************/
 
-namespace MyFlightbook.FlightCurrency
+namespace MyFlightbook.Currency
 {
     #region EASA PPL
     /// <summary>

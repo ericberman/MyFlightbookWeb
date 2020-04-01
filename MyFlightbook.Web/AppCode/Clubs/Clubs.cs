@@ -1,5 +1,5 @@
 ﻿using MyFlightbook.Airports;
-using MyFlightbook.FlightCurrency;
+using MyFlightbook.Currency;
 using MyFlightbook.Schedule;
 using MySql.Data.MySqlClient;
 using System;

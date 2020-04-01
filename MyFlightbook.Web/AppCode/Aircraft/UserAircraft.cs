@@ -1,4 +1,4 @@
-﻿using MyFlightbook.FlightCurrency;
+﻿using MyFlightbook.Currency;
 using Newtonsoft.Json;
 using System;
 using System.Collections;

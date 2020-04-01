@@ -7,7 +7,7 @@
  *
 *******************************************************/
 
-namespace MyFlightbook.FlightCurrency
+namespace MyFlightbook.Currency
 {
     public class FlightExperienceCanada : IFlightExaminer
     {

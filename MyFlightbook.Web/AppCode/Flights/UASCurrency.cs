@@ -7,7 +7,7 @@
  *
 *******************************************************/
 
-namespace MyFlightbook.FlightCurrency
+namespace MyFlightbook.Currency
 {
     /// <summary>
     /// Support for 107.65 currency (UAS)
