@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -88,7 +87,8 @@ namespace MyFlightbook
         /// <summary>
         /// Properties to search - AND?  OR? NOT?  Default is OR ("ANY")
         /// </summary>
-        public GroupConjunction PropertiesConjunction { get; set; }
+        [System.ComponentModel.DefaultValue(GroupConjunction.Any)]
+        public GroupConjunction PropertiesConjunction { get; set; } = GroupConjunction.Any;
 
         /// <summary>
         /// The user for whom flights are being found
@@ -110,7 +110,8 @@ namespace MyFlightbook
         /// <summary>
         /// Flight Characteristics - AND?  OR?  NOT?  Default is AND ("ALL")
         /// </summary>
-        public GroupConjunction FlightCharacteristicsConjunction { get; set; }
+        [System.ComponentModel.DefaultValue(GroupConjunction.All)]
+        public GroupConjunction FlightCharacteristicsConjunction { get; set; } = GroupConjunction.All;
 
         /// <summary>
         /// Matching flights have nighttime landings
@@ -716,9 +717,6 @@ namespace MyFlightbook
             m_rgParams = new List<MySqlParameter>();
             CatClasses = new HashSet<CategoryClass>();
             PropertyTypes = new HashSet<CustomPropertyType>();
-
-            FlightCharacteristicsConjunction = GroupConjunction.All;
-            PropertiesConjunction = GroupConjunction.Any;
 
             EngineType = EngineTypeRestriction.AllEngines;
             AircraftInstanceTypes = AircraftInstanceRestriction.AllAircraft;
