@@ -853,11 +853,11 @@
     <Compile Include="AppCode\CSV\CSVWriter.cs" />
     <Compile Include="AppCode\Flights\Achievement.cs" />
     <Compile Include="AppCode\Flights\Backup.cs" />
-    <Compile Include="AppCode\Flights\CanadaCurrency.cs" />
-    <Compile Include="AppCode\Flights\Currency.cs" />
-    <Compile Include="AppCode\Flights\CustomCurrency.cs" />
-    <Compile Include="AppCode\Flights\Deadline.cs" />
-    <Compile Include="AppCode\Flights\EASACurrencies.cs" />
+    <Compile Include="AppCode\Flights\Currency\CanadaCurrency.cs" />
+    <Compile Include="AppCode\Flights\Currency\Currency.cs" />
+    <Compile Include="AppCode\Flights\Currency\CustomCurrency.cs" />
+    <Compile Include="AppCode\Flights\Currency\Deadline.cs" />
+    <Compile Include="AppCode\Flights\Currency\EASACurrencies.cs" />
     <Compile Include="AppCode\Flights\FlightLint.cs" />
     <Compile Include="AppCode\Flights\FlightQuery.cs" />
     <Compile Include="AppCode\Flights\FlightStats.cs" />
