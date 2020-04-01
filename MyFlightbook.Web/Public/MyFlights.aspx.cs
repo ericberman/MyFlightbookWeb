@@ -32,7 +32,7 @@ public partial class Public_MyFlights : System.Web.UI.Page
     {
         // We have no Page, so things like Page_Load don't get called.
         // We fix this by faking a page and calling Server.Execute on it.  This sets up the form and - more importantly - causes Page_load to be called on loaded controls.
-        using (Page p = new Page())
+        using (Page p = new FormlessPage())
         {
             p.Controls.Add(new HtmlForm());
             using (StringWriter sw = new StringWriter(CultureInfo.CurrentCulture))

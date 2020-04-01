@@ -40,33 +40,6 @@ public partial class Controls_mfbPublicFlightItem
     protected global::System.Web.UI.WebControls.Label lblDetails;
 
     /// <summary>
-    /// lblModel control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblModel;
-
-    /// <summary>
-    /// lblCatClass control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblCatClass;
-
-    /// <summary>
-    /// mfbILAircraft control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_mfbImageList mfbILAircraft;
-
-    /// <summary>
     /// lnkFlight control.
     /// </summary>
     /// <remarks>
@@ -94,11 +67,47 @@ public partial class Controls_mfbPublicFlightItem
     protected global::System.Web.UI.WebControls.Label lblComments;
 
     /// <summary>
-    /// mfbIlFlight control.
+    /// lnkFullAc control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbImageList mfbIlFlight;
+    protected global::System.Web.UI.WebControls.HyperLink lnkFullAc;
+
+    /// <summary>
+    /// imgAc control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgAc;
+
+    /// <summary>
+    /// lblModel control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblModel;
+
+    /// <summary>
+    /// lblCatClass control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblCatClass;
+
+    /// <summary>
+    /// rptFlightImages control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Repeater rptFlightImages;
 }
