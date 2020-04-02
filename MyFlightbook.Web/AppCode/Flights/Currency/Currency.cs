@@ -1351,6 +1351,8 @@ namespace MyFlightbook.Currency
                 }
                 else 
                     csi.Query = csi.Query ?? fc.Query;
+                if (csi.Query != null && csi.CurrencyGroup == CurrencyStatusItem.CurrencyGroups.None)
+                    csi.CurrencyGroup = CurrencyStatusItem.CurrencyGroups.FlightExperience;
                 lst.Add(csi);
             }
         }
