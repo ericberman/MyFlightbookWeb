@@ -181,19 +181,6 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
             BorderColor = System.Drawing.Color.Black;
         }
     }
-
-    protected class EndorsementRequiredField : RequiredFieldValidator
-    {
-        public EndorsementRequiredField(string id, string targetID, string msg) : base()
-        {
-            ID = id;
-            ControlToValidate = targetID;
-            ErrorMessage = msg;
-
-            CssClass = "error";
-            Display = ValidatorDisplay.Dynamic;
-        }
-    }
     #endregion
 
     protected void NewTextBox(Control parent, string id, string szDefault, Boolean fMultiline, Boolean fRequired, string szName)
@@ -214,7 +201,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
 
         // no validations for preview mode
         if (fRequired && !PreviewMode)
-            plcValidations.Controls.Add(new EndorsementRequiredField("val" + id, tb.ID, String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EditEndorsementRequiredField, szName)));
+            plcValidations.Controls.Add(new RequiredFieldValidator() { ID = "val" + id, ControlToValidate = tb.ID, ErrorMessage =String.Format(CultureInfo.CurrentCulture, Resources.SignOff.EditEndorsementRequiredField, szName), CssClass="error", Display = ValidatorDisplay.Dynamic});
     }
 
     protected void UpdateFormForTemplate(int id, bool fResetTitle)
