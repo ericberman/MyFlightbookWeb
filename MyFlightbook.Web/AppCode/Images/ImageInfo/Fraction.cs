@@ -111,6 +111,11 @@ namespace gma.Drawing.ImageInfo
             return (double)f.num / f.den;
    		}
 
+        public double ToDouble()
+        {
+            return (double)num / den;
+        }
+
         public static implicit operator FractionStruct(Fraction f)
         {
             if (f == null)
@@ -121,5 +126,13 @@ namespace gma.Drawing.ImageInfo
             fs.den = f.Denumerator;
             return fs;
         }
-	}
+
+        public FractionStruct ToFractionStruct()
+        {
+            FractionStruct fs;
+            fs.num = Numerator;
+            fs.den = Denumerator;
+            return fs;
+        }
+    }
 }
