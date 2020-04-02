@@ -222,7 +222,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         pnlImageNote.Visible = mfbIl.Images.ImageArray.Count > 0;
     }
 
-    protected void mfbIl_MakeDefault(object sender, MFBImageInfoEvent e)
+    protected void mfbIl_MakeDefault(object sender, MFBImageInfoEventArgs e)
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));

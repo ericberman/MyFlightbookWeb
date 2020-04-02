@@ -21,8 +21,8 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
 
     public enum GeoLinkType { None, ZoomOnLocalMap, ZoomOnGoogleMaps };
 
-    public event System.EventHandler<MFBImageInfoEvent> ImageDeleted = null;
-    public event System.EventHandler<MFBImageInfoEvent> ImageMadeDefault = null;
+    public event System.EventHandler<MFBImageInfoEventArgs> ImageDeleted = null;
+    public event System.EventHandler<MFBImageInfoEventArgs> ImageMadeDefault = null;
 
     /// <summary>
     /// Gets/sets the image which can be edited.
@@ -171,7 +171,7 @@ function EditComment(idStatic, idEdit) {
     protected void lnkMakeDefault_Click(object sender, ImageClickEventArgs e)
     {
         if (mfbii != null && ImageMadeDefault != null)
-            ImageMadeDefault(this, new MFBImageInfoEvent(mfbii));
+            ImageMadeDefault(this, new MFBImageInfoEventArgs(mfbii));
     }
 
     protected void DeleteImage(object sender, EventArgs e)
@@ -179,7 +179,7 @@ function EditComment(idStatic, idEdit) {
         if (mfbii != null)
         {
             // Notify of the deletion before actually deleting it...
-            ImageDeleted?.Invoke(sender, new MFBImageInfoEvent(mfbii));
+            ImageDeleted?.Invoke(sender, new MFBImageInfoEventArgs(mfbii));
             // ...then delete it
             mfbii.DeleteImage();
         }

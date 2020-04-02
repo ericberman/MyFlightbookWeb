@@ -20,7 +20,7 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
     private ImageList m_imgList;
     private Controls_mfbEditableImage.GeoLinkType m_LinkType = Controls_mfbEditableImage.GeoLinkType.None;
 
-    public event EventHandler<MFBImageInfoEvent> MakeDefault = null;
+    public event EventHandler<MFBImageInfoEventArgs> MakeDefault = null;
 
     #region properties
     /// <summary>
@@ -128,7 +128,7 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
     /// </summary>
     /// <param name="sender">The object that was clicked (a LinkButton)</param>
     /// <param name="e">Standard event args for the click</param>
-    public void HandleDeleteClick(object sender, MFBImageInfoEvent e)
+    public void HandleDeleteClick(object sender, MFBImageInfoEventArgs e)
     {
         // Remove the image from the list; faster than refreshing and works for pending images too.
         if (e == null)
@@ -221,7 +221,7 @@ public partial class Controls_mfbImageList : System.Web.UI.UserControl
         c.ID = "img" + e.Item.ItemIndex.ToString(CultureInfo.InvariantCulture);
     }
 
-    protected void mfbEI_ImageMadeDefault(object sender, MFBImageInfoEvent e)
+    protected void mfbEI_ImageMadeDefault(object sender, MFBImageInfoEventArgs e)
     {
         if (e != null && MakeDefault != null)
             MakeDefault(this, e);
