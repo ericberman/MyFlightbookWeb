@@ -38,6 +38,8 @@ namespace MyFlightbook.Currency
 
         public string StatusDisplay { get { return m_fcResult.StatusDisplay; } }
 
+        public FlightQuery Query { get; set; }
+
         public void ExamineFlight(ExaminerFlightRow cfr)
         {
             if (cfr == null)

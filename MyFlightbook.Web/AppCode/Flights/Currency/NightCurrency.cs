@@ -52,6 +52,14 @@ namespace MyFlightbook.Currency
         public NightCurrency(string szName) : base(RequiredLandings, TimeSpan, false, szName)
         {
             NightTakeoffCurrency = new FlightCurrency(RequiredTakeoffs, TimeSpan, false, szName);
+
+            Query = new FlightQuery()
+            {
+                DateRange = FlightQuery.DateRanges.Trailing90,
+                HasNightLandings = true,
+                PropertiesConjunction = GroupConjunction.None
+            };
+            Query.PropertyTypes.Add(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropPilotMonitoring));
         }
 
         public NightCurrency(string szName, string szType) : this(szName)

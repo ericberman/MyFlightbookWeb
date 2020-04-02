@@ -56,6 +56,8 @@ namespace MyFlightbook.Currency
             ExpirationSpan = 6;
             RequiredEvents = Discrepancy = 5;
             fcCanada = new FlightExperienceCanada();
+
+            Query = null;
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)
@@ -93,6 +95,8 @@ namespace MyFlightbook.Currency
             this.RequiredEvents = this.Discrepancy = RequiredLandingsCanada;
             NightTakeoffCurrency.RequiredEvents = NightTakeoffCurrency.Discrepancy = RequiredTakeoffsCanada;
             fcCanada = new FlightExperienceCanada();
+
+            Query = null;
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)

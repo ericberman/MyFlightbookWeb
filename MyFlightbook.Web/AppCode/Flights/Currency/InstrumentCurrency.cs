@@ -196,9 +196,16 @@ namespace MyFlightbook.Currency
         }
         #endregion
 
-        public InstrumentCurrency(bool fUseLoose6157c4)
+        public InstrumentCurrency()
         {
-            m_fUseLoose6157c4 = fUseLoose6157c4;
+            Query = new FlightQuery()
+            {
+                FlightCharacteristicsConjunction = GroupConjunction.Any,
+                HasApproaches = true,
+                HasHolds = true,
+                DateRange = FlightQuery.DateRanges.Custom,
+                DateMin = DateTime.Now.Date.AddCalendarMonths(-6)
+            };
         }
 
         /// <summary>
@@ -240,6 +247,18 @@ namespace MyFlightbook.Currency
 
             m_csCurrent = fcIFR.CurrentState;
             m_dtExpiration = fcIFR.ExpirationDate;
+
+            if (fcIPCOrCheckride.IsCurrent() && fcIPCOrCheckride.ExpirationDate.CompareTo(m_dtExpiration) >= 0)
+            {
+                Query.HasHolds = Query.HasApproaches = false;
+                Query.PropertiesConjunction = GroupConjunction.Any;
+                Query.PropertyTypes.Clear();
+                foreach (CustomPropertyType cpt in CustomPropertyType.GetCustomPropertyTypes())
+                {
+                    if (cpt.IsIPC)
+                        Query.PropertyTypes.Add(cpt);
+                }
+            }
 
             if (m_csCurrent == CurrencyState.NotCurrent)
             {
@@ -343,9 +362,10 @@ namespace MyFlightbook.Currency
             {
                 // add any IPC or IPC equivalents
                 if (pfe.PropertyType.IsIPC)
+                {
                     AddIPC(cfr.dtFlight);
-                if (pfe.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropCheckrideIFR)
                     fSeenCheckride = true;
+                }
             });
 
             // add any potentially relevant IFR currency events.
@@ -357,6 +377,7 @@ namespace MyFlightbook.Currency
                 if (cfr.cHolds > 0)
                     AddHolds(cfr.dtFlight, cfr.cHolds);
             }
+            /*
             // Other IFR currency events for ATD's
             else if (cfr.fIsATD)
             {
@@ -386,6 +407,7 @@ namespace MyFlightbook.Currency
             }
 
             fcComboApproach6Month.AddRecentFlightEvents(cfr.dtFlight, cfr.cApproaches);
+            */
         }
         #endregion
     }

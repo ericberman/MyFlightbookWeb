@@ -791,7 +791,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         /// Generates a new flightquery object representing flights that match this custom currency
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        public FlightQuery Query
+        public override FlightQuery Query
         {
             get
             {

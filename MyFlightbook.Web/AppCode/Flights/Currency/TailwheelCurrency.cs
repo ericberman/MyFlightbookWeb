@@ -20,6 +20,16 @@ namespace MyFlightbook.Currency
         /// <param name="szName">the name for the currency</param>
         public TailwheelCurrency(string szName) : base(3, 90, false, szName)
         {
+            Query = new FlightQuery()
+            {
+                DateRange = FlightQuery.DateRanges.Trailing90,
+                HasNightLandings = true,
+                HasFullStopLandings = true,
+                FlightCharacteristicsConjunction = GroupConjunction.Any,
+                IsTailwheel = true,
+                PropertiesConjunction = GroupConjunction.None
+            };
+            Query.PropertyTypes.Add(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropPilotMonitoring));
         }
 
         public override void ExamineFlight(ExaminerFlightRow cfr)

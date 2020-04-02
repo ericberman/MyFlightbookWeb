@@ -184,6 +184,8 @@ namespace MyFlightbook.Currency
             get { return String.Format(CultureInfo.CurrentCulture, StatusFormat, StatusSoFar); }
         }
 
+        public FlightQuery Query { get; set; }
+
         public virtual void Finalize(decimal totalTime, decimal picTime) { }
         #endregion
     }
