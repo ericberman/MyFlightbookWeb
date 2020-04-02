@@ -577,6 +577,11 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
         pnlTrainingDeviceTypes.Visible = fIsNew && !fRealAircraft;
 
+        AdjustForRealOrAnonymous(fRealAircraft, fIsAnonymous, fHasModelSpecified, cc);
+    }
+
+    private void AdjustForRealOrAnonymous(bool fRealAircraft, bool fIsAnonymous, bool fHasModelSpecified, CountryCodePrefix cc)
+    {
         if (fRealAircraft)
         {
             if (fIsAnonymous)

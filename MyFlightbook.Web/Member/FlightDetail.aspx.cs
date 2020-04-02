@@ -270,6 +270,30 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         lnkZoomToFit.NavigateUrl = mfbGoogleMapManager1.ZoomToFitScript;
     }
 
+    protected void SetUpDownload(LogbookEntryDisplay led)
+    {
+        if (led == null)
+            throw new ArgumentNullException(nameof(led));
+        if (Viewer.CloudAhoyToken == null || Viewer.CloudAhoyToken.AccessToken == null)
+            lnkSendCloudAhoy.Visible = false;
+
+        lblOriginalFormat.Text = DataSourceType.DataSourceTypeFromFileType(led.Telemetry.TelemetryType).DisplayName;
+
+        // allow selection of units if units are not implicitly known.
+        switch (led.Telemetry.TelemetryType)
+        {
+            case DataSourceType.FileType.GPX:
+            case DataSourceType.FileType.KML:
+            case DataSourceType.FileType.NMEA:
+            case DataSourceType.FileType.IGC:
+                cmbAltUnits.Enabled = cmbSpeedUnits.Enabled = false;
+                break;
+            default:
+                cmbAltUnits.Enabled = cmbSpeedUnits.Enabled = true;
+                break;
+        }
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.tabLogbook;
@@ -313,24 +337,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
                 UpdateChart();
                 UpdateRestriction();
 
-                if (Viewer.CloudAhoyToken == null || Viewer.CloudAhoyToken.AccessToken == null)
-                    lnkSendCloudAhoy.Visible = false;
-
-                lblOriginalFormat.Text = DataSourceType.DataSourceTypeFromFileType(led.Telemetry.TelemetryType).DisplayName;
-
-                // allow selection of units if units are not implicitly known.
-                switch (led.Telemetry.TelemetryType)
-                {
-                    case DataSourceType.FileType.GPX:
-                    case DataSourceType.FileType.KML:
-                    case DataSourceType.FileType.NMEA:
-                    case DataSourceType.FileType.IGC:
-                        cmbAltUnits.Enabled = cmbSpeedUnits.Enabled = false;
-                        break;
-                    default:
-                        cmbAltUnits.Enabled = cmbSpeedUnits.Enabled = true;
-                        break;
-                }
+                SetUpDownload(led);
 
                 // shouldn't happen but sometimes does: GetUserAircraftByID returns null.  Not quite sure why.
                 Aircraft ac = (new UserAircraft(led.User).GetUserAircraftByID(led.AircraftID)) ?? new Aircraft(led.AircraftID);

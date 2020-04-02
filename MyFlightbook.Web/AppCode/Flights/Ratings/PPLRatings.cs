@@ -325,6 +325,11 @@ namespace MyFlightbook.RatingsProgress
                     miMinTestPrep.AddEvent(cfr.Dual);
             }
 
+            ExamineSoloFlight(cfr, soloTime, al);
+        }
+
+        private void ExamineSoloFlight(ExaminerFlightRow cfr, decimal soloTime, AirportList al)
+        {
             // 61.109(a)(5), (c)(4) - Solo XC requirements MUST BE in a single-engine aircraft
             // 61.109(b)(5) - Solo XC requirements must simply be in an airplane
             // 61.109(e)(5) - Solo time may be in powered lift OR airplane
