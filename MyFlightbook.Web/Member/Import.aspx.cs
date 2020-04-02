@@ -249,67 +249,80 @@ public partial class Member_Import : System.Web.UI.Page
         // issue #280: some files have \r\r\n as line separators!
         rgb = Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(rgb).Replace("\r\r\n", "\r\n"));
 
+        pnlConverted.Visible = pnlAudit.Visible = false;
+        lblAudit.Text = string.Empty;
+
+        CSVAnalyzer.CSVStatus result = CSVAnalyzer.CSVStatus.OK;
+
         // Validate the file
         ExternalFormatImporter efi = ExternalFormatImporter.GetImporter(rgb);
         if (efi != null)
         {
-            rgb = efi.PreProcess(rgb);
-            IsPendingOnly = efi.IsPendingOnly;
+            try
+            {
+                rgb = efi.PreProcess(rgb);
+                IsPendingOnly = efi.IsPendingOnly;
+            }
+            catch (Exception ex) when (ex is MyFlightbookException || ex is MyFlightbookValidationException)
+            {
+                result = CSVAnalyzer.CSVStatus.Broken;
+                lblAudit.Text = ex.Message;
+            }
         }
 
-        pnlConverted.Visible = pnlAudit.Visible = false;
-        lblAudit.Text = string.Empty;
-
-        CSVAnalyzer csvAnalyzer;
-        using (System.Data.DataTable dt = new System.Data.DataTable() { Locale = CultureInfo.CurrentCulture })
+        if (result != CSVAnalyzer.CSVStatus.Broken)
         {
-            using (MemoryStream ms = new MemoryStream(rgb))
+            using (System.Data.DataTable dt = new System.Data.DataTable() { Locale = CultureInfo.CurrentCulture })
             {
-                csvAnalyzer = new CSVAnalyzer(ms, dt);
-            }
-            CSVAnalyzer.CSVStatus result = csvAnalyzer.Status;
-            hdnAuditState.Value = result.ToString();
-
-            if (result != CSVAnalyzer.CSVStatus.Broken)
-            {
-                string szCSV = null;
-                if (efi == null)    // was already CSV - only update it if it was fixed (vs. broken)
+                CSVAnalyzer csvAnalyzer;
+                using (MemoryStream ms = new MemoryStream(rgb))
                 {
-                    if (result == CSVAnalyzer.CSVStatus.Fixed)
-                        szCSV = csvAnalyzer.DataAsCSV;
+                    csvAnalyzer = new CSVAnalyzer(ms, dt);
                 }
-                else  // But if it was converted, ALWAYS update the CSV.
-                    szCSV = efi.CSVFromDataTable(csvAnalyzer.Data);
+                result = csvAnalyzer.Status;
+                hdnAuditState.Value = result.ToString();
 
-                if (szCSV != null)
-                    CurrentCSVSource = rgb = System.Text.Encoding.UTF8.GetBytes(szCSV);
-
-                // And show conversion, if it was converted
-                if (efi != null)
+                if (result != CSVAnalyzer.CSVStatus.Broken)
                 {
-                    lblFileWasConverted.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.importLabelFileWasConverted, efi.Name);
-                    pnlConverted.Visible = true;
+                    string szCSV = null;
+                    if (efi == null)    // was already CSV - only update it if it was fixed (vs. broken)
+                    {
+                        if (result == CSVAnalyzer.CSVStatus.Fixed)
+                            szCSV = csvAnalyzer.DataAsCSV;
+                    }
+                    else  // But if it was converted, ALWAYS update the CSV.
+                        szCSV = efi.CSVFromDataTable(csvAnalyzer.Data);
+
+                    if (szCSV != null)
+                        CurrentCSVSource = rgb = System.Text.Encoding.UTF8.GetBytes(szCSV);
+
+                    // And show conversion, if it was converted
+                    if (efi != null)
+                    {
+                        lblFileWasConverted.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.importLabelFileWasConverted, efi.Name);
+                        pnlConverted.Visible = true;
+                    }
                 }
-            }
 
-            pnlAudit.Visible = (result != CSVAnalyzer.CSVStatus.OK);
-            lblAudit.Text = csvAnalyzer.Audit;
-
-            if (result == CSVAnalyzer.CSVStatus.Broken)
-            {
-                lblAudit.CssClass = "error";
-                ExpandoAudit.ExpandoControl.Collapsed = false;
-                ExpandoAudit.ExpandoControl.ClientState = "false";
+                lblAudit.Text = csvAnalyzer.Audit;
             }
-            else
-            {
-                lblAudit.CssClass = string.Empty;
-                ExpandoAudit.ExpandoControl.Collapsed = true;
-                ExpandoAudit.ExpandoControl.ClientState = "true";
-            }
-
-            pnlAudit.Visible = pnlConverted.Visible || !String.IsNullOrEmpty(lblAudit.Text);
         }
+
+        pnlAudit.Visible = (result != CSVAnalyzer.CSVStatus.OK);
+        if (result == CSVAnalyzer.CSVStatus.Broken)
+        {
+            lblAudit.CssClass = "error";
+            ExpandoAudit.ExpandoControl.Collapsed = false;
+            ExpandoAudit.ExpandoControl.ClientState = "false";
+        }
+        else
+        {
+            lblAudit.CssClass = string.Empty;
+            ExpandoAudit.ExpandoControl.Collapsed = true;
+            ExpandoAudit.ExpandoControl.ClientState = "true";
+        }
+
+        pnlAudit.Visible = pnlConverted.Visible || !String.IsNullOrEmpty(lblAudit.Text);
 
         ErrorContext.Clear();
         CSVImporter csvimporter = CurrentImporter = new CSVImporter(mfbImportAircraft1.ModelMapping);
