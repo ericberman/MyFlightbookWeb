@@ -581,8 +581,7 @@ namespace MyFlightbook
                 {
                     CustomPropertyType cpt = new CustomPropertyType();
                     util.CopyObject(cptSrc, cpt);
-                    cpt.Description = cpt.FormatString = null;
-                    cpt.PreviousValues = null;
+                    cpt.StripUnnededFields();
                     fqNew.PropertyTypes.Add(cpt);
                 }
             }

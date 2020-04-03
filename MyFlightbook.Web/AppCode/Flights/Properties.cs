@@ -242,7 +242,7 @@ namespace MyFlightbook
         /// <summary>
         /// For string properties, contains previously used values
         /// </summary>
-        public Collection<string> PreviousValues { get; set; }
+        public Collection<string> PreviousValues { get; private set; }
 
         #region Attributes from flags
         /// <summary>
@@ -590,6 +590,15 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
                 HttpRuntime.Cache.Remove(szAppCacheKey);
                 HttpRuntime.Cache.Remove(szAppCacheDictKey);
             }
+        }
+
+        /// <summary>
+        /// Helper routine for customproperty types that aren't being shown to the user.  Cuts down on serialization size.
+        /// </summary>
+        public void StripUnnededFields()
+        {
+            Description = FormatString = SortKey = null;
+            PreviousValues = null;
         }
 
         private static Dictionary<int, CustomPropertyType> PropTypeDictionary
