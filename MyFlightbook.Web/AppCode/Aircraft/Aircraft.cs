@@ -2262,7 +2262,6 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         {
             TailNumber = ModelGiven = NormalizedModelGiven = string.Empty;
             BestMatchAircraft = null;
-            MatchingModels = null;
             SuggestedModel = SpecifiedModel = null;
             State = AircraftImportMatchRow.MatchState.UnMatched;
             ID = -1;
@@ -2331,7 +2330,16 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
         /// <summary>
         /// A set of potential models which match
         /// </summary>
-        public Collection<MakeModel> MatchingModels { get; set; }
+        public Collection<MakeModel> MatchingModels { get; } = new Collection<MakeModel>();
+
+        public void SetMatchingModels(IEnumerable<MakeModel> rgmm)
+        {
+            MatchingModels.Clear();
+            if (rgmm == null)
+                return;
+            foreach (MakeModel mm in rgmm)
+                MatchingModels.Add(mm);
+        }
 
         /// <summary>
         /// The model that was suggested automatically by the system
@@ -2743,7 +2751,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
                 if (mr.BestMatchAircraft == null && mr.TailNumber.CompareCurrentCultureIgnoreCase(CountryCodePrefix.szSimPrefix) == 0)
                 {
                     // See if we have a sim in the user's profile that matches one of the models; if so, re-use that.
-                    mr.MatchingModels = MakeModel.MatchingMakes(makes, mr.NormalizedModelGiven);
+                    mr.SetMatchingModels(MakeModel.MatchingMakes(makes, mr.NormalizedModelGiven));
                     if (mr.MatchingModels.Count > 0)
                     {
                         if ((mr.BestMatchAircraft = lstUserAircraft.Find(ac => (mr.MatchingModels.FirstOrDefault(mm => mm.MakeModelID == ac.ModelID) != null))) != null)
@@ -2797,7 +2805,7 @@ OR (REPLACE(aircraft.tailnumber, '-', '') IN ('{5}'))";
 
                 if (!String.IsNullOrEmpty(mr.ModelGiven))
                 {
-                    mr.MatchingModels = MakeModel.MatchingMakes(makes, mr.NormalizedModelGiven);
+                    mr.SetMatchingModels(MakeModel.MatchingMakes(makes, mr.NormalizedModelGiven));
                     if (mr.MatchingModels.Count > 0)
                     {
                         mr.SuggestedModel = mr.SpecifiedModel = mr.MatchingModels[0];

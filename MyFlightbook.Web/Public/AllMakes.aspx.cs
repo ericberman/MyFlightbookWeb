@@ -43,6 +43,56 @@ public partial class Public_AllMakes : Page
         }
     }
 
+    private void ShowBasePage()
+    {
+        List<Manufacturer> lst = new List<Manufacturer>(Manufacturer.CachedManufacturers());
+        lst.RemoveAll(man => man.AllowedTypes != AllowedAircraftTypes.Any);
+        gvManufacturers.DataSource = lst;
+        gvManufacturers.DataBind();
+    }
+
+    private void ShowModelsForManufacturer(int idMan)
+    {
+        // specific manufacturer - show their models
+        // No images, just for performance
+        if (ModelsByManufacturer.ContainsKey(idMan))
+        {
+            gvMakes.DataSource = ModelsByManufacturer[idMan];
+            gvMakes.DataBind();
+        }
+        else
+            throw new System.Web.HttpException(404, "Not found");
+    }
+
+    private void ShowAircraftForModel(int idMan, int idModel)
+    {
+        if (!ModelsByManufacturer.ContainsKey(idMan))
+            throw new System.Web.HttpException(404, "Not found");
+
+        MakeModel m = ModelsByManufacturer[idMan].Find(mm => mm.MakeModelID == idModel);
+
+        if (m == null)
+            throw new System.Web.HttpException(404, "Not found");
+
+        rptAttributes.DataSource = m.AttributeList();
+        rptAttributes.DataBind();
+        lblModel.Text = System.Web.HttpUtility.HtmlEncode(m.DisplayName);
+
+        List<Aircraft> lst = new List<Aircraft>();
+        // UserAircraft.GetAircraftForUser is pretty heavyweight, especially for models witha  lot of aircraft like C-152.
+        // We just don't need that much detail, since we're just binding images by ID and tailnumbers
+        DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT idaircraft, tailnumber FROM aircraft WHERE idmodel=?modelid AND tailnumber NOT LIKE '{0}%' AND instanceType=1 ORDER BY tailnumber ASC", CountryCodePrefix.szAnonPrefix));
+        dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("modelid", idModel); },
+            (dr) =>
+            {
+                int idaircraft = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture);
+                string tailnumber = (string)dr["tailnumber"];
+                lst.Add(new Aircraft() { AircraftID = idaircraft, TailNumber = tailnumber });
+            });
+        gvAircraft.DataSource = lst;
+        gvAircraft.DataBind();
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         // This page is for search engines by default.
@@ -70,57 +120,13 @@ public partial class Public_AllMakes : Page
                 switch (clevels)
                 {
                     case 0: // base page - show manufacturers
-                        {
-                            List<Manufacturer> lst = new List<Manufacturer>(Manufacturer.CachedManufacturers());
-                            lst.RemoveAll(man => man.AllowedTypes != AllowedAircraftTypes.Any);
-                            gvManufacturers.DataSource = lst;
-                            gvManufacturers.DataBind();
-                        }
+                        ShowBasePage();
                         break;
-                    case 1: // specific manufacturer - show their models
-                            // No images, just for performance
-                        {
-                            int idMan = Convert.ToInt32(rgIds[0], CultureInfo.InvariantCulture);
-                            if (ModelsByManufacturer.ContainsKey(idMan))
-                            {
-                                gvMakes.DataSource = ModelsByManufacturer[idMan];
-                                gvMakes.DataBind();
-                            }
-                            else
-                                throw new System.Web.HttpException(404, "Not found");
-                        }
+                    case 1:
+                        ShowModelsForManufacturer(Convert.ToInt32(rgIds[0], CultureInfo.InvariantCulture));
                         break;
                     case 2: // specific model - show all aircraft
-                        {
-                            int idMan = Convert.ToInt32(rgIds[0], CultureInfo.InvariantCulture);
-                            int idModel = Convert.ToInt32(rgIds[1], CultureInfo.InvariantCulture);
-
-                            if (!ModelsByManufacturer.ContainsKey(idMan))
-                                throw new System.Web.HttpException(404, "Not found");
-
-                            MakeModel m = ModelsByManufacturer[idMan].Find(mm => mm.MakeModelID == idModel);
-
-                            if (m == null)
-                                throw new System.Web.HttpException(404, "Not found");
-
-                            rptAttributes.DataSource = m.AttributeList();
-                            rptAttributes.DataBind();
-                            lblModel.Text = System.Web.HttpUtility.HtmlEncode(m.DisplayName);
-
-                            List<Aircraft> lst = new List<Aircraft>();
-                            // UserAircraft.GetAircraftForUser is pretty heavyweight, especially for models witha  lot of aircraft like C-152.
-                            // We just don't need that much detail, since we're just binding images by ID and tailnumbers
-                            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT idaircraft, tailnumber FROM aircraft WHERE idmodel=?modelid AND tailnumber NOT LIKE '{0}%' AND instanceType=1 ORDER BY tailnumber ASC", CountryCodePrefix.szAnonPrefix));
-                            dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("modelid", idModel); },
-                                (dr) =>
-                                {
-                                    int idaircraft = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture);
-                                    string tailnumber = (string)dr["tailnumber"];
-                                    lst.Add(new Aircraft() { AircraftID = idaircraft, TailNumber = tailnumber });
-                                });
-                            gvAircraft.DataSource = lst;
-                            gvAircraft.DataBind();
-                        }
+                        ShowAircraftForModel(Convert.ToInt32(rgIds[0], CultureInfo.InvariantCulture), Convert.ToInt32(rgIds[1], CultureInfo.InvariantCulture));
                         break;
                 }
             }

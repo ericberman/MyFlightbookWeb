@@ -59,7 +59,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
             result = AirportList.ListsFromRoutes(le.Route);
             MfbGoogleMap1.Map.Airports = result.Result;
             MfbGoogleMap1.Map.ShowRoute = ckShowRoute.Checked;
-            MfbGoogleMap1.Map.AutofillOnPanZoom = (result.Result.Count() == 0);
+            MfbGoogleMap1.Map.AutofillOnPanZoom = (result.Result.Count == 0);
             MfbGoogleMap1.Map.AllowDupeMarkers = false;
             lnkZoomOut.NavigateUrl = MfbGoogleMap1.ZoomToFitScript;
             lnkZoomOut.Visible = !result.MasterList.LatLongBox().IsEmpty;
@@ -105,14 +105,55 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
         pnlDistance.Visible = lblDistance.Text.Length > 0;
     }
 
+    private void SetComponentsDisplay(string szComponents)
+    {
+        // display only selected components, if necessary
+        if (!String.IsNullOrEmpty(szComponents))
+        {
+            // turn off the header/footer to display only the requested components
+            this.Master.HasFooter = this.Master.HasHeader = false;
+            FullPageBottom.Visible = FullPageTop.Visible = false;
+
+            divImages.Visible = pnlFB.Visible = pnlDetails.Visible = divMap.Visible = mfbAirportServices1.Visible = lnkShowMapOnly.Visible = imgsliderFlights.Visible = mfbVideoEntry1.Visible = false;
+
+            ShowComponents(szComponents.Split(','));
+        }
+    }
+
+    private void SetImages(LogbookEntryBase le)
+    {
+        if (this.Master.IsMobileSession())
+            mfbIlAirplane.Columns = mfbIlFlight.Columns = 1;
+
+        mfbIlFlight.Key = hdnID.Value;
+        mfbIlFlight.Refresh();
+
+        mfbIlAirplane.Key = le.AircraftID.ToString(CultureInfo.InvariantCulture);
+        mfbIlAirplane.AltText = le.TailNumDisplay;
+
+        UserAircraft ua = new UserAircraft(le.User);
+        Aircraft ac = ua.GetUserAircraftByID(le.AircraftID) ?? new Aircraft(le.AircraftID);
+        mfbIlAirplane.DefaultImage = ac.DefaultImage;
+        mfbIlAirplane.Refresh();
+
+        List<MFBImageInfo> lst = new List<MFBImageInfo>(mfbIlFlight.Images.ImageArray);
+        lst.AddRange(mfbIlAirplane.Images.ImageArray);
+        imgsliderFlights.Images = lst;
+        imgsliderFlights.Visible = lst.Count > 0;
+
+        mfbVideoEntry1.Videos.Clear();
+        foreach (VideoRef vid in le.Videos)
+            mfbVideoEntry1.Videos.Add(vid);
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
             string szRedirect = string.Empty;
 
-            int id = util.GetIntParam(Request, "id", LogbookEntry.idFlightNone);
             string szComponents = util.GetStringParam(Request, szParamComponents);
+            int id = util.GetIntParam(Request, "id", LogbookEntry.idFlightNone);
 
             if (id != -1)
             {
@@ -133,17 +174,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
                 if (!le.fIsPublic && (String.Compare(le.User, User.Identity.Name, StringComparison.OrdinalIgnoreCase) != 0)) // not public and this isn't the owner...
                     szRedirect = "~/public/MapRoute2.aspx?sm=1&Airports=" + HttpUtility.UrlEncode(le.Route);
 
-                // display only selected components, if necessary
-                if (!String.IsNullOrEmpty(szComponents))
-                {
-                    // turn off the header/footer to display only the requested components
-                    this.Master.HasFooter = this.Master.HasHeader = false;
-                    FullPageBottom.Visible = FullPageTop.Visible = false;
-
-                    divImages.Visible = pnlFB.Visible = pnlDetails.Visible = divMap.Visible = mfbAirportServices1.Visible = lnkShowMapOnly.Visible = imgsliderFlights.Visible = mfbVideoEntry1.Visible = false;
-
-                    ShowComponents(szComponents.Split(','));
-                }
+                SetComponentsDisplay(szComponents);
 
                 lblComments.Text = le.Comment.Linkify();
 
@@ -160,37 +191,16 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
 
                 lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithDash, le.Date.ToShortDateString(), le.TailNumDisplay);
 
-                if (this.Master.IsMobileSession())
-                    mfbIlAirplane.Columns = mfbIlFlight.Columns = 1;
-
-                mfbIlFlight.Key = hdnID.Value;
-                mfbIlFlight.Refresh();
-
-                mfbIlAirplane.Key = le.AircraftID.ToString(CultureInfo.InvariantCulture);
-                mfbIlAirplane.AltText = le.TailNumDisplay;
-
-                UserAircraft ua = new UserAircraft(le.User);
-                Aircraft ac = ua.GetUserAircraftByID(le.AircraftID) ?? new Aircraft(le.AircraftID);
-                mfbIlAirplane.DefaultImage = ac.DefaultImage;
-                mfbIlAirplane.Refresh();
-
-                List<MFBImageInfo> lst = new List<MFBImageInfo>(mfbIlFlight.Images.ImageArray);
-                lst.AddRange(mfbIlAirplane.Images.ImageArray);
-                imgsliderFlights.Images = lst;
-                imgsliderFlights.Visible = lst.Count > 0;
+                SetImages(le);
 
                 string szDescription = le.SocialMediaComment.Length > 0 ? le.SocialMediaComment : Resources.LogbookEntry.PublicFlightHeader;
                 this.Master.Title = szDescription;
                 this.Master.AddMeta("description", szDescription);
                 mfbMiniFacebook.FlightEntry = le;
 
-                lblError.Text = "";
+                lblError.Text = string.Empty;
 
                 this.Master.SelectedTab = tabID.tabHome;
-
-                mfbVideoEntry1.Videos.Clear();
-                foreach (VideoRef vid in le.Videos)
-                    mfbVideoEntry1.Videos.Add(vid);
 
                 ShowMap(le);
             }
