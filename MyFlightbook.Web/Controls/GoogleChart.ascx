@@ -46,6 +46,14 @@
             showTextEvery: <%=TickSpacing %>}
         };
 
+        var oneDay = (24 * 60 * 60 * 1000);
+        var dateRange = data.getColumnRange(0);
+        if (data.getNumberOfRows() === 1) {
+            dateRange.min = new Date(dateRange.min.getTime() - oneDay);
+            dateRange.max = new Date(dateRange.max.getTime() + oneDay);
+            options["hAxis"]["viewWindow"] = dateRange;
+        }
+
         chart<%=ID %> = new google.visualization.<%=ChartTypeString %>(document.getElementById('<%=pnlChart.ClientID %>'));
         google.visualization.events.removeAllListeners(chart<%=ID %>);
 

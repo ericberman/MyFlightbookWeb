@@ -128,6 +128,11 @@ namespace MyFlightbook.Histogram
         /// The running totals for the Y-axis for this bucket, if appropriate
         /// </summary>
         public IDictionary<string, double> RunningTotals { get; private set; }
+
+        /// <summary>
+        /// True to exclude this bucket from average (e.g., if it is a month bucket that only exists to align to January)
+        /// </summary>
+        public bool ExcludeFromAverage { get; set; } = false;
         #endregion
 
         #region Object creation
@@ -678,14 +683,21 @@ namespace MyFlightbook.Histogram
 
             ComputeDateRange(items);
 
-            // Align to 1st of the month, and optionallyi to January/December.
+            // Align to 1st of the month, and optionally to January/December.
             DateTime _dtMin = new DateTime(MinDate.Year, AlignStartToJanuary ? 1 : MinDate.Month, 1);
             DateTime _dtMax = new DateTime(MaxDate.Year, AlignEndToDecember ? 12 : MaxDate.Month, 1);
+
+            DateTime dtEarliestMonthWithData = new DateTime(MinDate.Year, MinDate.Month, 1);
+            DateTime dtLatestMonthWithData = new DateTime(MaxDate.Year, MaxDate.Month, 1).AddMonths(1).AddDays(-1);
 
             // Now create the buckets
             DateTime dt = _dtMin;
             do {
-                dict[dt] = new Bucket((DateTime) KeyForValue(dt), dt.ToString(DateFormat, CultureInfo.CurrentCulture), columns);
+                dict[dt] = new Bucket((DateTime)KeyForValue(dt), dt.ToString(DateFormat, CultureInfo.CurrentCulture), columns)
+                {
+                    ExcludeFromAverage = (dt.CompareTo(dtEarliestMonthWithData) < 0 || dt.CompareTo(dtLatestMonthWithData) > 0)
+                };
+
                 dt = dt.AddMonths(1);
             } while (dt.CompareTo(_dtMax) <= 0);
 

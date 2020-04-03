@@ -89,8 +89,11 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         {
             gcTrends.XVals.Add(gcTrends.XDataType == GoogleColumnDataType.@string ? b.DisplayName : b.OrdinalValue);
             gcTrends.YVals.Add(b.Values[hv.DataField]);
-            average += b.Values[hv.DataField];
-            count++;
+            if (!b.ExcludeFromAverage)
+            {
+                average += b.Values[hv.DataField];
+                count++;
+            }
 
             if (b.HasRunningTotals)
                 gcTrends.Y2Vals.Add(b.RunningTotals[hv.DataField]);
