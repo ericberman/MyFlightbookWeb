@@ -236,7 +236,10 @@ namespace MyFlightbook.Telemetry
                     pc.fHasNakedDate = true;
                 if (kc.Type == KnownColumnTypes.ctNakedTime)
                     pc.fHasNakedTime = true;
-                ParsedData.Columns.Add(new DataColumn(kc.ColumnHeaderName, KnownColumn.ColumnDataType(kc.Type)));
+                DataColumn dc = new DataColumn(kc.ColumnHeaderName, KnownColumn.ColumnDataType(kc.Type));
+                ParsedData.Columns.Add(dc);
+                if (kc.Type == KnownColumnTypes.ctNakedUTCDate || kc.Type == KnownColumnTypes.ctNakedUTCTime || kc.Type == KnownColumnTypes.ctUnixTimeStamp || kc.ColumnHeaderName.CompareCurrentCultureIgnoreCase(KnownColumnNames.UTCDateTime) == 0)
+                    dc.DateTimeMode = DataSetDateTime.Utc;
             }
 
             pc.fDeriveDateTime = pc.fHasNakedTime && pc.fHasNakedDate && !ParsedData.HasDateTime;
