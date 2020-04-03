@@ -64,6 +64,53 @@ public partial class Member_PrintView : System.Web.UI.Page
     protected bool SuppressFooter { get; set; }
     #endregion
 
+    private void InitializeRestriction()
+    {
+        string szFQParam = util.GetStringParam(Request, "fq");
+        if (!String.IsNullOrEmpty(szFQParam))
+        {
+            mfbSearchForm1.Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
+            Master.HasFooter = Master.HasHeader = false;
+            if (!mfbSearchForm1.Restriction.IsDefault)
+                TabContainer1.ActiveTab = tpFilter;
+            lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", szFQParam);
+        }
+    }
+
+    private void HandlePDFErr()
+    {
+        if (util.GetIntParam(Request, "pdfErr", 0) != 0)
+            lblErr.Text = Resources.LocalizedText.PDFGenerationFailed;
+    }
+
+    private void InitializePrintOptions()
+    {
+        string szOptionsParam = util.GetStringParam(Request, "po");
+        if (!String.IsNullOrEmpty(szOptionsParam))
+            PrintOptions1.Options = JsonConvert.DeserializeObject<PrintingOptions>(Convert.FromBase64String(szOptionsParam).Uncompress());
+    }
+
+    private void InitializeTitleAndQueryDescriptor()
+    {
+        Master.Title = lblUserName.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
+        mfbQueryDescriptor.DataSource = mfbTotalSummary1.CustomRestriction = mfbSearchForm1.Restriction;
+        mfbQueryDescriptor.DataBind();
+        mfbTotalSummary1.DataBind();
+    }
+
+    private void InitializeEndorsements()
+    {
+        // Set up endorsements
+        mfbEndorsementList.Student = CurrentUser.UserName;
+        int cEndorsements = mfbEndorsementList.RefreshEndorsements();
+        ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, CurrentUser.UserName);
+        il.Refresh(fIncludeDocs: false, fIncludeVids: false);
+        cEndorsements += il.ImageArray.Count;
+        rptImages.DataSource = il.ImageArray;
+        rptImages.DataBind();
+        ckEndorsements.Checked = ckIncludeEndorsementImages.Checked = pnlEndorsements.Visible = (cEndorsements > 0);
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         // wire up the logbook to the current user
@@ -82,37 +129,15 @@ public partial class Member_PrintView : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            string szFQParam = util.GetStringParam(Request, "fq");
-            if (!String.IsNullOrEmpty(szFQParam))
-            {
-                mfbSearchForm1.Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
-                Master.HasFooter = Master.HasHeader = false;
-                if (!mfbSearchForm1.Restriction.IsDefault)
-                    TabContainer1.ActiveTab = tpFilter;
-                lnkReturnToFlights.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx?fq={0}", szFQParam);
-            }
+            InitializeRestriction();
 
-            if (util.GetIntParam(Request, "pdfErr", 0) != 0)
-                lblErr.Text = Resources.LocalizedText.PDFGenerationFailed;
+            HandlePDFErr();
 
-            string szOptionsParam = util.GetStringParam(Request, "po");
-            if (!String.IsNullOrEmpty(szOptionsParam))
-                PrintOptions1.Options = JsonConvert.DeserializeObject<PrintingOptions>(Convert.FromBase64String(szOptionsParam).Uncompress());
+            InitializePrintOptions();
 
-            Master.Title = lblUserName.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
-            mfbQueryDescriptor.DataSource = mfbTotalSummary1.CustomRestriction = mfbSearchForm1.Restriction;
-            mfbQueryDescriptor.DataBind();
-            mfbTotalSummary1.DataBind();
+            InitializeTitleAndQueryDescriptor();
 
-            // Set up endorsements
-            mfbEndorsementList.Student = CurrentUser.UserName;
-            int cEndorsements = mfbEndorsementList.RefreshEndorsements();
-            ImageList il = new ImageList(MFBImageInfo.ImageClass.Endorsement, CurrentUser.UserName);
-            il.Refresh(fIncludeDocs: false, fIncludeVids: false);
-            cEndorsements += il.ImageArray.Count();
-            rptImages.DataSource = il.ImageArray;
-            rptImages.DataBind();
-            ckEndorsements.Checked = ckIncludeEndorsementImages.Checked = pnlEndorsements.Visible = (cEndorsements > 0);
+            InitializeEndorsements();
 
             RefreshLogbookData();
         }
