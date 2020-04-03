@@ -3644,6 +3644,7 @@ namespace MyFlightbook
                 new YearMonthBucketManager(szBaseHref),
                 new WeeklyBucketManager(szBaseHref),
                 new DailyBucketManager(szBaseHref),
+                new DayOfWeekBucketManager(),
                 new StringBucketManager("TAILNUMBER", Resources.LogbookEntry.FieldTail, szBaseHref) { SearchParam = "tn" },
                 new StringBucketManager("MODEL", Resources.Aircraft.ViewAircraftModel, szBaseHref) {SearchParam = "mn" },
                 new StringBucketManager("ICAO", Resources.Aircraft.ViewAircraftICAO, szBaseHref) {SearchParam = "icao" }

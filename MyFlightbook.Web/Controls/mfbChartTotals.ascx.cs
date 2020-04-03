@@ -87,7 +87,7 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
         gcTrends.Clear();
         foreach (Bucket b in buckets)
         {
-            gcTrends.XVals.Add(b.OrdinalValue);
+            gcTrends.XVals.Add(gcTrends.XDataType == GoogleColumnDataType.@string ? b.DisplayName : b.OrdinalValue);
             gcTrends.YVals.Add(b.Values[hv.DataField]);
             average += b.Values[hv.DataField];
             count++;

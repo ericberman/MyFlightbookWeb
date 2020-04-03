@@ -1716,4 +1716,7 @@
   <data name="AnalysisShowAverages" xml:space="preserve">
     <value>Include Average</value>
   </data>
+  <data name="ChartTotalsGroupDayOfWeek" xml:space="preserve">
+    <value>Day of Week</value>
+  </data>
 </root>

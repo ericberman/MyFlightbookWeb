@@ -536,6 +536,34 @@ namespace MyFlightbook.Histogram
         }
     }
 
+    public class DayOfWeekBucketManager : BucketManager
+    {
+        public DayOfWeekBucketManager() : base()
+        {
+            DisplayName = Resources.LocalizedText.ChartTotalsGroupDayOfWeek;
+            BucketSelectorName = "Date";
+        }
+
+        public override bool SupportsRunningTotals { get { return false; } }
+
+        protected override IDictionary<IComparable, Bucket> BucketsForData(IEnumerable<IHistogramable> items, IEnumerable<HistogramableValue> columns)
+        {
+            Dictionary<IComparable, Bucket> d = new Dictionary<IComparable, Bucket>();
+            for (int day = 0; day < 7; day++)
+                d[day] = new Bucket(day, DateTimeFormatInfo.CurrentInfo.GetDayName((DayOfWeek)day), columns);
+            return d;
+        }
+
+        protected override IComparable KeyForValue(IComparable o)
+        {
+            if (o is int day)
+                return day;
+            else if (o is DateTime dt)
+                return (int) dt.DayOfWeek;
+            return null;
+        }
+    }
+
     /// <summary>
     /// BucketManager for days (e.g., "May 5 2016") data
     /// </summary>

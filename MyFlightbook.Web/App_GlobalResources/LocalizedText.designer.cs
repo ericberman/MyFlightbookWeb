@@ -805,6 +805,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Day of Week.
+        /// </summary>
+        internal static string ChartTotalsGroupDayOfWeek {
+            get {
+                return ResourceManager.GetString("ChartTotalsGroupDayOfWeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Month.
         /// </summary>
         internal static string ChartTotalsGroupMonth {
