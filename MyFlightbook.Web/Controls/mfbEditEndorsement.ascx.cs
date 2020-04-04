@@ -333,8 +333,8 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
                     break;
                 case EndorsementMode.StudentPullAdHoc:
                     endorsement = new Endorsement(string.Empty) { CFICachedName = txtCFI.Text, CFICertificate = txtCFICert.Text, CFIExpirationDate = mfbDateCertExpiration.Date };
-                    endorsement.DigitizedSig = mfbScribbleSignature.Base64Data();
-                    if (endorsement.DigitizedSig == null)
+                    endorsement.SetDigitizedSig(mfbScribbleSignature.Base64Data());
+                    if (endorsement.GetDigitizedSig() == null)
                         return;
                     break;
                 case EndorsementMode.StudentPullAuthenticated:

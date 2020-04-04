@@ -76,14 +76,27 @@ namespace MyFlightbook.Instruction
             get { return StudentType == StudentTypes.External; }
         }
 
+        private byte[] digitizedSig;
+
         /// <summary>
         /// A scribble-signature for a digitized sig
         /// </summary>
-        public byte[] DigitizedSig { get; set; }
+        public byte[] GetDigitizedSig()
+        {
+            return digitizedSig;
+        }
+
+        /// <summary>
+        /// A scribble-signature for a digitized sig
+        /// </summary>
+        public void SetDigitizedSig(byte[] value)
+        {
+            digitizedSig = value;
+        }
 
         public string DigitizedSigLink
         {
-            get { return ScribbleImage.DataLinkForByteArray(DigitizedSig); }
+            get { return ScribbleImage.DataLinkForByteArray(GetDigitizedSig()); }
         }
 
         /// <summary>
@@ -91,7 +104,7 @@ namespace MyFlightbook.Instruction
         /// </summary>
         public bool IsAdHocEndorsement
         {
-            get { return String.IsNullOrEmpty(InstructorName) && DigitizedSig != null && DigitizedSig.Length > 0; }
+            get { return String.IsNullOrEmpty(InstructorName) && GetDigitizedSig() != null && GetDigitizedSig().Length > 0; }
         }
 
         /// <summary>
@@ -203,11 +216,12 @@ namespace MyFlightbook.Instruction
             if (!(dr["FileSize"] is DBNull))
             {
                 int FileSize = Convert.ToInt32(dr["FileSize"], CultureInfo.InvariantCulture);
-                DigitizedSig = new byte[FileSize];
-                dr.GetBytes(dr.GetOrdinal("DigitizedSignature"), 0, DigitizedSig, 0, FileSize);
+                byte[] rgb = new byte[FileSize];
+                dr.GetBytes(dr.GetOrdinal("DigitizedSignature"), 0, rgb, 0, FileSize);
+                SetDigitizedSig(rgb);
             }
             else
-                DigitizedSig = null;
+                SetDigitizedSig(null);
         }
         #endregion
 
@@ -216,7 +230,7 @@ namespace MyFlightbook.Instruction
             if (StudentName.Length == 0)
                 throw new MyFlightbookException(Resources.SignOff.errNoStudent);
 
-            if (DigitizedSig == null || DigitizedSig.Length == 0)
+            if (GetDigitizedSig() == null || GetDigitizedSig().Length == 0)
             {
                 // Not an ad-hoc endorsement: requires a valid instructor name and a valid expiration date
                 if (String.IsNullOrWhiteSpace(InstructorName))
@@ -265,7 +279,7 @@ namespace MyFlightbook.Instruction
                 cmd.Parameters.AddWithValue("title", Title);
                 cmd.Parameters.AddWithValue("farref", FARReference);
                 cmd.Parameters.AddWithValue("cfifullname", IsAdHocEndorsement ? CFICachedName : Profile.GetUser(InstructorName).UserFullName);
-                cmd.Parameters.AddWithValue("digsig", IsAdHocEndorsement ? DigitizedSig : null);
+                cmd.Parameters.AddWithValue("digsig", IsAdHocEndorsement ? GetDigitizedSig() : null);
             });
 
             if (dbh.LastError.Length > 0)
