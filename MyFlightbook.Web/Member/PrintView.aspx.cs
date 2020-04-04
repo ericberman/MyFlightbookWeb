@@ -4,10 +4,8 @@ using MyFlightbook.Printing;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.UI;
@@ -169,64 +167,12 @@ public partial class Member_PrintView : System.Web.UI.Page
 
     protected void RefreshLogbookData()
     {
-        MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
-        PrintingOptions printingOptions = PrintOptions1.Options;
-        mvLayouts.ActiveViewIndex = (int) printingOptions.Layout;
-        List<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, fAsc: true), pf.UserName, string.Empty, SortDirection.Ascending, pf.UsesHHMM, pf.UsesUTCDateOfFlight);
-
-        IPrintingTemplate pt = ActiveTemplate;
-
-        PrintLayout pl = PrintLayout.LayoutForType(printingOptions.Layout, CurrentUser);
-
-        // Exclude both excluded properties and properties that have been moved to their own columns
-        HashSet<int> lstPropsToExclude = new HashSet<int>(printingOptions.ExcludedPropertyIDs);
-        HashSet<int> lstPropsInOwnColumns = new HashSet<int>();
-        foreach (OptionalColumn oc in printingOptions.OptionalColumns)
-        {
-            if (oc.ColumnType == OptionalColumnType.CustomProp)
-                lstPropsInOwnColumns.Add(oc.IDPropType);
-        }
-        string szPropSeparator = printingOptions.PropertySeparatorText;
-
-        // set up properties per flight, and compute rough lineheight
-        foreach (LogbookEntryDisplay led in lstFlights)
-        {
-            // Fix up properties according to the printing options
-            List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
-
-            // And fix up model as well.
-            switch (printingOptions.DisplayMode) {
-                case PrintingOptions.ModelDisplayMode.Full:
-                    break;
-                case PrintingOptions.ModelDisplayMode.Short:
-                    led.ModelDisplay = led.ShortModelName;
-                    break;
-                case PrintingOptions.ModelDisplayMode.ICAO:
-                    led.ModelDisplay = led.FamilyName;
-                    break;
-            }
-
-
-            // Remove from the total property set all explicitly excluded properties...
-            lstProps.RemoveAll(cfp => lstPropsToExclude.Contains(cfp.PropTypeID));
-
-            // ...and then additionally exclude from the display any that's in its own column to avoid redundancy.
-            lstProps.RemoveAll(cfp => lstPropsInOwnColumns.Contains(cfp.PropTypeID));
-            led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, pf.UsesHHMM, szPropSeparator);
-
-            if (printingOptions.IncludeImages)
-                led.PopulateImages(true);
-
-            if (!printingOptions.IncludeSignatures)
-                led.CFISignatureState = LogbookEntryBase.SignatureState.None;
-            led.RowHeight = pl.RowHeight(led);
-        }
-
-        Master.PrintingCSS = pl.CSSPath.ToAbsoluteURL(Request).ToString();
-
-        pt.BindPages(LogbookPrintedPage.Paginate(lstFlights, printingOptions), CurrentUser, printingOptions, !SuppressFooter);
-
+        mvLayouts.ActiveViewIndex = (int)PrintOptions1.Options.Layout;
         pnlResults.Visible = true;
+
+        IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, fAsc: true), CurrentUser.UserName, string.Empty, SortDirection.Ascending, CurrentUser.UsesHHMM, CurrentUser.UsesUTCDateOfFlight);
+        PrintLayout pl = LogbookPrintedPage.LayoutLogbook(CurrentUser, lstFlights, ActiveTemplate, PrintOptions1.Options, SuppressFooter);
+        Master.PrintingCSS = pl.CSSPath.ToAbsoluteURL(Request).ToString();
     }
 
     protected void PrintOptions1_OptionsChanged(object sender, PrintingOptionsEventArgs e)
@@ -264,61 +210,31 @@ public partial class Member_PrintView : System.Web.UI.Page
                 {
                     base.Render(htwOut);
                 }
-
-                string szTempPath = Path.GetTempPath();
-                string szFileRoot = Guid.NewGuid().ToString();
-                string szOutputHtm = szTempPath + szFileRoot + ".htm";
-                string szOutputPDF = szTempPath + szFileRoot + ".pdf";
-
-                File.WriteAllText(szOutputHtm, sbOut.ToString());
-
-                const string szWkTextApp = "c:\\program files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe";  // TODO: this needs to be in a config file
-                string szArgs = PageOptions.WKHtmlToPDFArguments(szOutputHtm, szOutputPDF);
-
-                Process p = null;
-                using (p = new Process())
-                {
-                    try
-                    {
-                        p.StartInfo = new ProcessStartInfo(szWkTextApp, szArgs) { UseShellExecute = true }; // for some reason, wkhtmltopdf runs better in shell exec than without.
-
-                        p.Start();
-
-                        bool fResult = p.WaitForExit(120000);   // wait up to 2 minutes
-
-                        if (!fResult || !File.Exists(szOutputPDF))
-                        {
-                                util.NotifyAdminEvent("Error saving PDF", String.Format(CultureInfo.CurrentCulture, "User: {0}\r\nOptions:\r\n{1}\r\n\r\nQuery:{2}\r\n",
-                                    CurrentUser.UserName,
-                                    JsonConvert.SerializeObject(PageOptions),
-                                    JsonConvert.SerializeObject(PrintOptions1.Options)), ProfileRoles.maskSiteAdminOnly);
-
-                                Response.Redirect(Request.Url.PathAndQuery + (Request.Url.PathAndQuery.Contains("?") ? "&" : "?") + "pdfErr=1");
-                        }
-                        else
-                        {
-                            Page.Response.Clear();
-                            Page.Response.ContentType = "application/pdf";
-                            Response.AddHeader("content-disposition", String.Format(CultureInfo.CurrentCulture, @"attachment;filename=""{0}.pdf""", CurrentUser.UserFullName));
-                            Response.WriteFile(szOutputPDF);
-                            Page.Response.Flush();
-
-                            // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
-                            Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                            HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
-                        }
-                    }
-                    catch (MyFlightbookException) { throw; }
-                    finally
-                    {
-                        File.Delete(szOutputHtm);
-                        File.Delete(szOutputPDF);
-
-                        if (p != null && !p.HasExited)
-                            p.Kill();
-                    }
-                }
             }
+
+            PDFRenderer.RenderFile(sbOut.ToString(),
+                PageOptions,
+                () => // onError
+                {
+                    util.NotifyAdminEvent("Error saving PDF", String.Format(CultureInfo.CurrentCulture, "User: {0}\r\nOptions:\r\n{1}\r\n\r\nQuery:{2}\r\n",
+                        CurrentUser.UserName,
+                        JsonConvert.SerializeObject(PageOptions),
+                        JsonConvert.SerializeObject(PrintOptions1.Options)), ProfileRoles.maskSiteAdminOnly);
+
+                    Response.Redirect(Request.Url.PathAndQuery + (Request.Url.PathAndQuery.Contains("?") ? "&" : "?") + "pdfErr=1");
+                }, 
+                (szOutputPDF) => // onSuccess
+                {
+                    Page.Response.Clear();
+                    Page.Response.ContentType = "application/pdf";
+                    Response.AddHeader("content-disposition", String.Format(CultureInfo.CurrentCulture, @"attachment;filename=""{0}.pdf""", CurrentUser.UserFullName));
+                    Response.WriteFile(szOutputPDF);
+                    Page.Response.Flush();
+
+                    // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
+                    Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
+                    HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
+                });
         }
         else
             base.Render(writer);

@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Globalization;
 using System.Linq;
 
@@ -455,6 +457,63 @@ namespace MyFlightbook.Printing
         }
     }
 
+    /// <summary>
+    /// Renders the specified HTML to a PDF file on disk.
+    /// </summary>
+    public static class PDFRenderer
+    {
+        /// <summary>
+        /// Renders the specified HTML to a PDF file on the disk.  FILE IS DELETED AT END OF THE CALL, SO DO WHAT YOU NEED IN THE ONSUCCESS CALL
+        /// </summary>
+        /// <param name="szHTML">The HTML to render</param>
+        /// <param name="pdfOptions">The options controlling the rendering</param>
+        /// <param name="onError">Action (no parameters) called if things fail.  Unfortunately, we can't report useful errors</param>
+        /// <param name="onSuccess">Action called on success; single parameter is the filename of the PDF</param>
+        static public void RenderFile(string szHTML, PDFOptions pdfOptions, Action onError, Action<string> onSuccess)
+        {
+            if (szHTML == null)
+                throw new ArgumentNullException(nameof(szHTML));
+            if (pdfOptions == null)
+                throw new ArgumentNullException(nameof(pdfOptions));
+
+            string szTempPath = Path.GetTempPath();
+            string szFileRoot = Guid.NewGuid().ToString();
+            string szOutputHtm = szTempPath + szFileRoot + ".htm";
+            string szOutputPDF = szTempPath + szFileRoot + ".pdf";
+
+            string szArgs = pdfOptions.WKHtmlToPDFArguments(szOutputHtm, szOutputPDF);
+
+            File.WriteAllText(szOutputHtm, szHTML);
+
+            const string szWkTextApp = "c:\\program files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe";  // TODO: this needs to be in a config file
+
+            using (Process p = new Process())
+            {
+                try
+                {
+                    p.StartInfo = new ProcessStartInfo(szWkTextApp, szArgs) { UseShellExecute = true }; // for some reason, wkhtmltopdf runs better in shell exec than without.
+
+                    p.Start();
+
+                    bool fResult = p.WaitForExit(120000);   // wait up to 2 minutes
+
+                    if (!fResult || !File.Exists(szOutputPDF))
+                        onError?.Invoke();
+                    else
+                        onSuccess?.Invoke(szOutputPDF);
+                }
+                finally
+                {
+                    File.Delete(szOutputHtm);
+                    File.Delete(szOutputPDF);
+
+                    if (p != null && !p.HasExited)
+                        p.Kill();
+                }
+            }
+        }
+    }
+
     public class PrintingOptionsEventArgs : EventArgs
     {
         public PrintingOptions Options { get; set; }
@@ -707,6 +766,69 @@ namespace MyFlightbook.Printing
                 ledAll.AddFrom(led);
             ledAll.CatClassDisplay = Resources.LogbookEntry.PrintTotalsAllCatClass;
             d[Resources.LogbookEntry.PrintTotalsAllCatClass] = ledAll;
+        }
+
+        public static PrintLayout LayoutLogbook(Profile pf, IList<LogbookEntryDisplay> lstFlights, IPrintingTemplate pt, PrintingOptions printingOptions, bool fSuppressFooter)
+        {
+            if (pf == null)
+                throw new ArgumentNullException(nameof(pf));
+            if (pt == null)
+                throw new ArgumentNullException(nameof(pt));
+            if (printingOptions == null)
+                throw new ArgumentNullException(nameof(printingOptions));
+            if (lstFlights == null)
+                throw new ArgumentNullException(nameof(lstFlights));
+
+            PrintLayout pl = PrintLayout.LayoutForType(printingOptions.Layout, pf);
+
+            // Exclude both excluded properties and properties that have been moved to their own columns
+            HashSet<int> lstPropsToExclude = new HashSet<int>(printingOptions.ExcludedPropertyIDs);
+            HashSet<int> lstPropsInOwnColumns = new HashSet<int>();
+            foreach (OptionalColumn oc in printingOptions.OptionalColumns)
+            {
+                if (oc.ColumnType == OptionalColumnType.CustomProp)
+                    lstPropsInOwnColumns.Add(oc.IDPropType);
+            }
+            string szPropSeparator = printingOptions.PropertySeparatorText;
+
+            // set up properties per flight, and compute rough lineheight
+            foreach (LogbookEntryDisplay led in lstFlights)
+            {
+                // Fix up properties according to the printing options
+                List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
+
+                // And fix up model as well.
+                switch (printingOptions.DisplayMode)
+                {
+                    case PrintingOptions.ModelDisplayMode.Full:
+                        break;
+                    case PrintingOptions.ModelDisplayMode.Short:
+                        led.ModelDisplay = led.ShortModelName;
+                        break;
+                    case PrintingOptions.ModelDisplayMode.ICAO:
+                        led.ModelDisplay = led.FamilyName;
+                        break;
+                }
+
+
+                // Remove from the total property set all explicitly excluded properties...
+                lstProps.RemoveAll(cfp => lstPropsToExclude.Contains(cfp.PropTypeID));
+
+                // ...and then additionally exclude from the display any that's in its own column to avoid redundancy.
+                lstProps.RemoveAll(cfp => lstPropsInOwnColumns.Contains(cfp.PropTypeID));
+                led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, pf.UsesHHMM, szPropSeparator);
+
+                if (printingOptions.IncludeImages)
+                    led.PopulateImages(true);
+
+                if (!printingOptions.IncludeSignatures)
+                    led.CFISignatureState = LogbookEntryBase.SignatureState.None;
+                led.RowHeight = pl.RowHeight(led);
+            }
+
+            pt.BindPages(LogbookPrintedPage.Paginate(lstFlights, printingOptions), pf, printingOptions, !fSuppressFooter);
+
+            return pl;
         }
     }
 }
