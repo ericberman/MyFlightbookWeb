@@ -391,7 +391,7 @@ namespace MyFlightbook.Weather.ADDS
 
         private string wx_stringField;
 
-        private Collection<sky_condition> sky_conditionField;
+        private readonly Collection<sky_condition> sky_conditionField = new Collection<sky_condition>();
 
         private string flight_categoryField;
 
@@ -787,10 +787,6 @@ namespace MyFlightbook.Weather.ADDS
             get
             {
                 return this.sky_conditionField;
-            }
-            set
-            {
-                this.sky_conditionField = value;
             }
         }
 

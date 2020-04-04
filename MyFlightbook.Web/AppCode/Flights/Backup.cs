@@ -222,10 +222,13 @@ namespace MyFlightbook
                     (dr) =>
                     {
                         LogbookEntry le = new LogbookEntry(dr, szUser, LogbookEntry.LoadTelemetryOption.LoadAll);
-                        le.FlightImages = (dImages.ContainsKey(le.FlightID)) ? dImages[le.FlightID] : new Collection<MFBImageInfo>();
+                        le.FlightImages.Clear();
+                        IEnumerable<MFBImageInfo> rgmfbii = (dImages.ContainsKey(le.FlightID)) ? dImages[le.FlightID] : new Collection<MFBImageInfo>();
+                        foreach (MFBImageInfo mfbii in rgmfbii)
+                            le.FlightImages.Add(mfbii);
 
-                                    // skip any flights here that don't have images, videos, or telemetry
-                                    if (le.FlightImages.Count > 0 || le.Videos.Any() || le.HasFlightData)
+                        // skip any flights here that don't have images, videos, or telemetry
+                        if (le.FlightImages.Count > 0 || le.Videos.Any() || le.HasFlightData)
                             WriteFlightInfo(tw, zip, le);
                         iRow++;
                     });

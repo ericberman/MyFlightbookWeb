@@ -300,10 +300,23 @@ namespace MyFlightbook
         /// </summary>
         public CustomPropertyCollection CustomProperties { get; set; }
 
+        #region images
         /// <summary>
         /// Images associated with the flight.  For efficiency, this MUST BE EXPLICITLY POPULATED AND SET.
         /// </summary>
-        public Collection<MFBImageInfo> FlightImages { get; set; }
+        public Collection<MFBImageInfo> FlightImages { get; private set; } = new Collection<MFBImageInfo>();
+
+        /// <summary>
+        /// Fill FlightImages with images from the flight.
+        /// <param name="fOnlyImages">Indicates if only images should be returned (i.e., no PDF or movie)</param>
+        /// </summary>
+        public void PopulateImages(bool fOnlyImages = false)
+        {
+            ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, FlightID.ToString(CultureInfo.InvariantCulture));
+            il.Refresh(true, null, !fOnlyImages);
+            FlightImages = il.ImageArray;
+        }
+        #endregion
 
         /// <summary>
         /// Videos associated with the flight.
@@ -2202,19 +2215,6 @@ namespace MyFlightbook
             : this()
         {
             InitFromDataReader(dr, szUser, lto);
-        }
-        #endregion
-
-        #region images
-        /// <summary>
-        /// Fill FlightImages with images from the flight.
-        /// <param name="fOnlyImages">Indicates if only images should be returned (i.e., no PDF or movie)</param>
-        /// </summary>
-        public void PopulateImages(bool fOnlyImages = false)
-        {
-            ImageList il = new ImageList(MFBImageInfo.ImageClass.Flight, FlightID.ToString(CultureInfo.InvariantCulture));
-            il.Refresh(true, null, !fOnlyImages);
-            FlightImages = il.ImageArray;
         }
         #endregion
 
