@@ -191,7 +191,7 @@ namespace MyFlightbook.Currency
         [DataMember]
         public FlightQuery Query { get; set; }
         #endregion
-        
+
         #region Constructors
         /// <summary>
         /// Creates a currency status item in-place
@@ -675,6 +675,70 @@ namespace MyFlightbook.Currency
             fcFAR117 = new FAR117Currency(pf.UsesFAR117DutyTimeAllFlights, pf.UsesHHMM);
             fcFAR195 = new FAR195ACurrency(pf.UsesHHMM);
         }
+
+        public ICurrencyExaminer SICProficiencyCurrencyExaminer(CatClassContext catclasscontext, ExaminerFlightRow cfr)
+        {
+            if (!dictSICProficiencyChecks.ContainsKey(catclasscontext.Name))
+            {
+                SIC6155Currency curr = new SIC6155Currency(String.Format(CultureInfo.CurrentCulture, Resources.Currency.SIC6155CurrencyName, catclasscontext.Name), cfr.szType);
+                dictSICProficiencyChecks.Add(catclasscontext.Name, curr);
+                catclasscontext.AddContextToQuery(curr.Query, pf.UserName);
+            }
+            return dictSICProficiencyChecks[catclasscontext.Name];
+        }
+
+        public ICurrencyExaminer PassengerCurrencyExaminer(CatClassContext catclasscontext, ExaminerFlightRow cfr)
+        {
+            if (!dictFlightCurrency.ContainsKey(catclasscontext.Name))
+            {
+                string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", catclasscontext.Name, Resources.Currency.Passengers);
+                ICurrencyExaminer curr = pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new PassengerCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName) : (ICurrencyExaminer)new PassengerCurrency(szName));
+                catclasscontext.AddContextToQuery(curr.Query, pf.UserName);
+                dictFlightCurrency.Add(catclasscontext.Name, curr);
+            }
+            return dictFlightCurrency[catclasscontext.Name];
+        }
+
+        public ICurrencyExaminer TailwheelCurrencyExaminer(CatClassContext catclasscontext)
+        {
+            string szKey = catclasscontext.Name + "TAILWHEEL";
+            if (!dictFlightCurrency.ContainsKey(szKey))
+            {
+                TailwheelCurrency fcTailwheel = new TailwheelCurrency(catclasscontext.Name + " - " + Resources.Currency.Tailwheel);
+                catclasscontext.AddContextToQuery(fcTailwheel.Query, pf.UserName);
+                dictFlightCurrency.Add(szKey, fcTailwheel);
+            }
+            return dictFlightCurrency[szKey];
+        }
+
+        public ICurrencyExaminer NightCurrencyExaminer(CatClassContext catclasscontext, ExaminerFlightRow cfr, bool fIsTypeRatedCategory)
+        {
+            string szNightKey = catclasscontext.Name + "NIGHT";
+            if (!dictFlightCurrency.ContainsKey(szNightKey))
+            {
+                string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", catclasscontext.Name, Resources.Currency.Night);
+                ICurrencyExaminer curr = pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new NightCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)new EASAPPLNightPassengerCurrency(szName) : (ICurrencyExaminer)new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty));
+                catclasscontext.AddContextToQuery(curr.Query, pf.UserName);
+                dictFlightCurrency.Add(szNightKey, curr);
+            }
+            return dictFlightCurrency[szNightKey];
+        }
+
+        public ICurrencyExaminer LAPLCurrencyExaminer(CatClassContext catClassContext, ExaminerFlightRow cfr)
+        {
+            string szKey = LAPLBase.KeyForLAPL(cfr);
+            if (!string.IsNullOrEmpty(szKey))
+            {
+                if (!dictFlightCurrency.ContainsKey(szKey))
+                {
+                    LAPLBase curr = LAPLBase.LAPLACurrencyForCategoryClass(cfr);
+                    catClassContext.AddContextToQuery(curr.Query, pf.UserName);
+                    dictFlightCurrency.Add(szKey, curr);
+                }
+                return dictFlightCurrency[szKey];
+            }
+            return null;
+        }
     }
 
     /// <summary>
@@ -887,7 +951,7 @@ namespace MyFlightbook.Currency
             List<CatClassContext> lstCatClasses = new List<CatClassContext>();
             Boolean fFlightInTypeRatedAircraft = cfr.szType.Length > 0;
             if (ccc.pf.UsesPerModelCurrency)
-                lstCatClasses.Add(new CatClassContext(String.Format(CultureInfo.InvariantCulture, "{0} ({1})", cfr.szFamily, cfr.szCatClassType), CategoryClass.CategoryClassFromID(cfr.idCatClassOverride), cfr.szType, szICAO:cfr.szFamily));
+                lstCatClasses.Add(new CatClassContext(String.Format(CultureInfo.InvariantCulture, "{0} ({1})", cfr.szFamily, cfr.szCatClassType), CategoryClass.CategoryClassFromID(cfr.idCatClassOverride), cfr.szType, szICAO: cfr.szFamily));
             else
             {
                 lstCatClasses.Add(new CatClassContext(cfr.szCatClassType, CategoryClass.CategoryClassFromID(cfr.idCatClassOverride), cfr.szType));
@@ -902,52 +966,18 @@ namespace MyFlightbook.Currency
 
                 // SIC proficiency
                 if (fIsTypeRatedCategory)
-                {
-                    if (!ccc.dictSICProficiencyChecks.ContainsKey(catclasscontext.Name))
-                    {
-                        SIC6155Currency curr = new SIC6155Currency(String.Format(CultureInfo.CurrentCulture, Resources.Currency.SIC6155CurrencyName, catclasscontext), cfr.szType);
-                        ccc.dictSICProficiencyChecks.Add(catclasscontext.Name, curr);
-                        catclasscontext.AddContextToQuery(curr.Query, ccc.pf.UserName);
-                    }
-                    ccc.dictSICProficiencyChecks[catclasscontext.Name].ExamineFlight(cfr);
-                }
+                    ccc.SICProficiencyCurrencyExaminer(catclasscontext, cfr).ExamineFlight(cfr);
 
                 // Night, tailwheel, and basic passenger carrying
                 if ((cfr.cLandingsThisFlight > 0 || cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropertyType.IsNightTakeOff) > 0 || ccc.pf.UseCanadianCurrencyRules || fIsTypeRatedCategory) && (cfr.fIsCertifiedLanding || cfr.fIsFullMotion))
                 {
-                    if (!ccc.dictFlightCurrency.ContainsKey(catclasscontext.Name))
-                    {
-                        string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", catclasscontext.Name, Resources.Currency.Passengers);
-                        ICurrencyExaminer curr = ccc.pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new PassengerCurrencyCanada(szName) : (ccc.pf.UsesLAPLCurrency ? (ICurrencyExaminer)EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName) : (ICurrencyExaminer)new PassengerCurrency(szName));
-                        catclasscontext.AddContextToQuery(curr.Query, ccc.pf.UserName);
-                        ccc.dictFlightCurrency.Add(catclasscontext.Name, curr);
-                    }
-
-                    ccc.dictFlightCurrency[catclasscontext.Name].ExamineFlight(cfr);
+                    ccc.PassengerCurrencyExaminer(catclasscontext, cfr).ExamineFlight(cfr);
 
                     if (CategoryClass.IsAirplane(cfr.idCatClassOverride) && cfr.fTailwheel && (cfr.cFullStopLandings + cfr.cFullStopNightLandings > 0))
-                    {
-                        string szKey = catclasscontext.Name + "TAILWHEEL";
-                        if (!ccc.dictFlightCurrency.ContainsKey(szKey))
-                        {
-                            TailwheelCurrency fcTailwheel = new TailwheelCurrency(catclasscontext.Name + " - " + Resources.Currency.Tailwheel);
-                            catclasscontext.AddContextToQuery(fcTailwheel.Query, ccc.pf.UserName);
-                            ccc.dictFlightCurrency.Add(szKey, fcTailwheel);
-                        }
-                        ccc.dictFlightCurrency[szKey].ExamineFlight(cfr);
-                    }
+                        ccc.TailwheelCurrencyExaminer(catclasscontext).ExamineFlight(cfr);
 
                     // for 61.57(e), we need to look at all flights, regardless of whether they have night flight, in computing currency
-                    string szNightKey = catclasscontext.Name + "NIGHT";
-                    if (!ccc.dictFlightCurrency.ContainsKey(szNightKey))
-                    {
-                        string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", catclasscontext.Name, Resources.Currency.Night);
-                        ICurrencyExaminer curr = ccc.pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new NightCurrencyCanada(szName) : (ccc.pf.UsesLAPLCurrency ? (ICurrencyExaminer)new EASAPPLNightPassengerCurrency(szName) : (ICurrencyExaminer)new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty));
-                        catclasscontext.AddContextToQuery(curr.Query, ccc.pf.UserName);
-                        ccc.dictFlightCurrency.Add(szNightKey, curr);
-                    }
-
-                    ccc.dictFlightCurrency[szNightKey].ExamineFlight(cfr);
+                    ccc.NightCurrencyExaminer(catclasscontext, cfr, fIsTypeRatedCategory).ExamineFlight(cfr);
                 }
 
                 ExamineLAPLCurrency(cfr, ccc, catclasscontext);
@@ -959,19 +989,7 @@ namespace MyFlightbook.Currency
         private static void ExamineLAPLCurrency(ExaminerFlightRow cfr, ComputeCurrencyContext ccc, CatClassContext catClassContext)
         {
             if (ccc.pf.UsesLAPLCurrency)
-            {
-                string szKey = LAPLBase.KeyForLAPL(cfr);
-                if (!string.IsNullOrEmpty(szKey))
-                {
-                    if (!ccc.dictFlightCurrency.ContainsKey(szKey))
-                    {
-                        LAPLBase curr = LAPLBase.LAPLACurrencyForCategoryClass(cfr);
-                        catClassContext.AddContextToQuery(curr.Query, ccc.pf.UserName);
-                        ccc.dictFlightCurrency.Add(szKey, curr);
-                    }
-                    ccc.dictFlightCurrency[szKey].ExamineFlight(cfr);
-                }
-            }
+                ccc.LAPLCurrencyExaminer(catClassContext, cfr)?.ExamineFlight(cfr);
         }
 
         private static void ExamineFAR13529x(ExaminerFlightRow cfr, ComputeCurrencyContext ccc, CatClassContext catClassContext)
@@ -1349,7 +1367,7 @@ namespace MyFlightbook.Currency
                     if (fc.Query != null)
                         csi.Query = fc.Query;
                 }
-                else 
+                else
                     csi.Query = csi.Query ?? fc.Query;
                 if (csi.Query != null && csi.CurrencyGroup == CurrencyStatusItem.CurrencyGroups.None)
                     csi.CurrencyGroup = CurrencyStatusItem.CurrencyGroups.FlightExperience;
