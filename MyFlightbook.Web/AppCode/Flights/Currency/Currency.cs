@@ -622,6 +622,119 @@ namespace MyFlightbook.Currency
         }
     }
 
+    internal class ComputeCurrencyContext
+    {
+        public Profile pf { get; set; }
+
+        // Each of the following dictionaries enables segregation of currency by category
+        public Dictionary<string, ICurrencyExaminer> dictFlightCurrency { get; set; } = new Dictionary<string, ICurrencyExaminer>();   // Flight currency per 61.57(a), striped by category/class/type.  Also does night and tailwheel
+        public Dictionary<string, ArmyMDSCurrency> dictArmyCurrency { get; set; } = new Dictionary<string, ArmyMDSCurrency>();     // Flight currency per AR 95-1
+        public Dictionary<string, CurrencyExaminer> dictIFRCurrency { get; set; } = new Dictionary<string, CurrencyExaminer>();      // IFR currency per 61.57(c)(1) or 61.57(c)(2) (Real airplane or certified flight simulator
+        public Dictionary<string, PIC6158Currency> dictPICProficiencyChecks { get; set; } = new Dictionary<string, PIC6158Currency>();     // PIC Proficiency checks
+        public Dictionary<string, SIC6155Currency> dictSICProficiencyChecks { get; set; } = new Dictionary<string, SIC6155Currency>();   // 61.55 SIC Proficiency checks
+        public bool fHasIR { get; set; } = false;    // for EASA currency, don't bother reporting night currency if user holds an instrument rating (defined as having seen an IPC/instrument checkride.
+
+        public GliderIFRCurrency gliderIFR { get; set; } = new GliderIFRCurrency(); // IFR currency in a glider.
+
+        public NVCurrency nvCurrencyHeli { get; set; } = new NVCurrency(CategoryClass.CatClassID.Helicopter);
+        public NVCurrency nvCurrencyNonHeli { get; set; } = new NVCurrency(CategoryClass.CatClassID.ASEL);
+
+        // PIC Proficiency check in ANY aircraft
+        public PIC6158Currency fcPICPCInAny { get; set; } = new PIC6158Currency(1, 12, true, "61.58(a) - PIC Check in ANY type-rated aircraft");
+
+        public bool fIncludeFAR117 { get; set; }
+
+        public bool fUses61217 { get; set; }
+        public FAR61217Currency fc61217 { get; set; } = new FAR61217Currency();
+
+        // Get any customcurrency objects for the user
+        public IEnumerable<CustomCurrency> rgCustomCurrency { get; set; }
+
+        public FAR117Currency fcFAR117 { get; set; }
+        public FAR195ACurrency fcFAR195 { get; set; }
+        public UASCurrency fcUAS { get; set; } = new UASCurrency();
+
+        public IEnumerable<SFAR73Currency> sFAR73Currencies { get; set; } = SFAR73Currency.SFAR73Currencies;
+
+        public decimal totalTime { get; set; } = 0.0M;
+        public decimal picTime { get; set; } = 0.0M;
+
+        public ComputeCurrencyContext(string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
+
+            pf = Profile.GetUser(szUser);
+
+            fIncludeFAR117 = pf.UsesFAR117DutyTime;
+            fUses61217 = pf.UsesFAR61217Currency;
+
+            // Get any customcurrency objects for the user
+            rgCustomCurrency = CustomCurrency.CustomCurrenciesForUser(szUser);
+
+            fcFAR117 = new FAR117Currency(pf.UsesFAR117DutyTimeAllFlights, pf.UsesHHMM);
+            fcFAR195 = new FAR195ACurrency(pf.UsesHHMM);
+        }
+    }
+
+    /// <summary>
+    /// Used to stripe currency by category/class/(type), or by ICAO
+    /// </summary>
+    internal class CatClassContext
+    {
+        #region properties
+        public string Name { get; set; }
+        public string ICAO { get; set; }
+        public CategoryClass CatClass { get; set; }
+        public string TypeName { get; set; }
+
+        public string Category { get; set; }
+        #endregion
+
+        public CatClassContext(string szName, CategoryClass cc = null, string szType = null, string szcategory = null, string szICAO = null)
+        {
+            Name = szName;
+            CatClass = cc;
+            TypeName = szType;
+            Category = szcategory;
+            ICAO = szICAO;
+        }
+
+        public void AddContextToQuery(FlightQuery fq, string szUser)
+        {
+            if (fq == null)
+                return;
+
+            fq.UserName = szUser;
+
+            if (!String.IsNullOrWhiteSpace(ICAO))
+                fq.ModelName = String.Format(CultureInfo.InvariantCulture, "ICAO:{0}", ICAO);
+            if (CatClass != null)
+            {
+                fq.CatClasses.Clear();
+                fq.CatClasses.Add(CatClass);
+            }
+
+            if (!String.IsNullOrWhiteSpace(Category))
+            {
+                foreach (CategoryClass cc in CategoryClass.CategoryClasses())
+                    if (cc.Category.CompareCurrentCultureIgnoreCase(Category) == 0)
+                        fq.CatClasses.Add(cc);
+            }
+
+            if (!String.IsNullOrWhiteSpace(TypeName))
+            {
+                fq.TypeNames.Clear();
+                fq.TypeNames.Add(TypeName);
+            }
+        }
+
+        public override string ToString()
+        {
+            return String.Format(CultureInfo.CurrentCulture, "{0} - {1} {2} {3} {4}", Name, CatClass, TypeName, ICAO, Category);
+        }
+    }
+
     /// <summary>
     /// Abstract base class for the FlightExaminer objects that comprise currency computations.
     /// This has one useful static method, though - ComputeCurrency, which computes all flying-based currency 
@@ -725,119 +838,6 @@ namespace MyFlightbook.Currency
         public virtual FlightQuery Query { get; set; }
 
         #region Computing flight currency for a specified user - the big kahuna
-        private class ComputeCurrencyContext
-        {
-            public Profile pf { get; set; }
-
-            // Each of the following dictionaries enables segregation of currency by category
-            public Dictionary<string, ICurrencyExaminer> dictFlightCurrency { get; set; } = new Dictionary<string, ICurrencyExaminer>();   // Flight currency per 61.57(a), striped by category/class/type.  Also does night and tailwheel
-            public Dictionary<string, ArmyMDSCurrency> dictArmyCurrency { get; set; } = new Dictionary<string, ArmyMDSCurrency>();     // Flight currency per AR 95-1
-            public Dictionary<string, CurrencyExaminer> dictIFRCurrency { get; set; } = new Dictionary<string, CurrencyExaminer>();      // IFR currency per 61.57(c)(1) or 61.57(c)(2) (Real airplane or certified flight simulator
-            public Dictionary<string, PIC6158Currency> dictPICProficiencyChecks { get; set; } = new Dictionary<string, PIC6158Currency>();     // PIC Proficiency checks
-            public Dictionary<string, SIC6155Currency> dictSICProficiencyChecks { get; set; } = new Dictionary<string, SIC6155Currency>();   // 61.55 SIC Proficiency checks
-            public bool fHasIR { get; set; } = false;    // for EASA currency, don't bother reporting night currency if user holds an instrument rating (defined as having seen an IPC/instrument checkride.
-
-            public GliderIFRCurrency gliderIFR { get; set; } = new GliderIFRCurrency(); // IFR currency in a glider.
-
-            public NVCurrency nvCurrencyHeli { get; set; } = new NVCurrency(CategoryClass.CatClassID.Helicopter);
-            public NVCurrency nvCurrencyNonHeli { get; set; } = new NVCurrency(CategoryClass.CatClassID.ASEL);
-
-            // PIC Proficiency check in ANY aircraft
-            public PIC6158Currency fcPICPCInAny { get; set; } = new PIC6158Currency(1, 12, true, "61.58(a) - PIC Check in ANY type-rated aircraft");
-
-            public bool fIncludeFAR117 { get; set; }
-
-            public bool fUses61217 { get; set; }
-            public FAR61217Currency fc61217 { get; set; } = new FAR61217Currency();
-
-            // Get any customcurrency objects for the user
-            public IEnumerable<CustomCurrency> rgCustomCurrency { get; set; }
-
-            public FAR117Currency fcFAR117 { get; set; }
-            public FAR195ACurrency fcFAR195 { get; set; }
-            public UASCurrency fcUAS { get; set; } = new UASCurrency();
-
-            public IEnumerable<SFAR73Currency> sFAR73Currencies { get; set; } = SFAR73Currency.SFAR73Currencies;
-
-            public decimal totalTime { get; set; } = 0.0M;
-            public decimal picTime { get; set;} = 0.0M;
-
-            public ComputeCurrencyContext(string szUser)
-            {
-                if (szUser == null)
-                    throw new ArgumentNullException(nameof(szUser));
-
-                pf = Profile.GetUser(szUser);
-
-                fIncludeFAR117 = pf.UsesFAR117DutyTime;
-                fUses61217 = pf.UsesFAR61217Currency;
-
-                // Get any customcurrency objects for the user
-                rgCustomCurrency = CustomCurrency.CustomCurrenciesForUser(szUser);
-
-                fcFAR117 = new FAR117Currency(pf.UsesFAR117DutyTimeAllFlights, pf.UsesHHMM);
-                fcFAR195 = new FAR195ACurrency(pf.UsesHHMM);
-            }
-        }
-
-        /// <summary>
-        /// Used to stripe currency by category/class/(type), or by ICAO
-        /// </summary>
-        private class CatClassContext
-        {
-            #region properties
-            public string Name { get; set; }
-            public string ICAO { get; set; }
-            public CategoryClass CatClass { get; set; }
-            public string TypeName { get; set; }
-
-            public string Category { get; set; }
-            #endregion
-
-            public CatClassContext(string szName, CategoryClass cc = null, string szType = null, string szcategory = null, string szICAO = null)
-            {
-                Name = szName;
-                CatClass = cc;
-                TypeName = szType;
-                Category = szcategory;
-                ICAO = szICAO;
-            }
-
-            public void AddContextToQuery(FlightQuery fq, string szUser)
-            {
-                if (fq == null)
-                    return;
-
-                fq.UserName = szUser;
-
-                if (!String.IsNullOrWhiteSpace(ICAO))
-                    fq.ModelName = String.Format(CultureInfo.InvariantCulture, "ICAO:{0}", ICAO);
-                if (CatClass != null)
-                {
-                    fq.CatClasses.Clear();
-                    fq.CatClasses.Add(CatClass);
-                }
-
-                if (!String.IsNullOrWhiteSpace(Category))
-                {
-                    foreach (CategoryClass cc in CategoryClass.CategoryClasses())
-                        if (cc.Category.CompareCurrentCultureIgnoreCase(Category) == 0)
-                            fq.CatClasses.Add(cc);
-                }
-
-                if (!String.IsNullOrWhiteSpace(TypeName))
-                {
-                    fq.TypeNames.Clear();
-                    fq.TypeNames.Add(TypeName);
-                }
-            }
-
-            public override string ToString()
-            {
-                return String.Format(CultureInfo.CurrentCulture, "{0} - {1} {2} {3} {4}", Name, CatClass, TypeName, ICAO, Category);
-            }
-        }
-
         #region Examine a flight for currency
         private static void ExamineFlightInContext(ExaminerFlightRow cfr, ComputeCurrencyContext ccc)
         {
