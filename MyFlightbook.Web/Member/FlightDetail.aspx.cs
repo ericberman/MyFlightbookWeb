@@ -270,7 +270,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         lnkZoomToFit.NavigateUrl = mfbGoogleMapManager1.ZoomToFitScript;
     }
 
-    protected void SetUpDownload(LogbookEntryDisplay led)
+    protected void SetUpDownload(LogbookEntryBase led)
     {
         if (led == null)
             throw new ArgumentNullException(nameof(led));
