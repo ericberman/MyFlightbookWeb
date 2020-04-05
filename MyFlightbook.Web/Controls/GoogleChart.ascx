@@ -20,7 +20,15 @@
             <%= Data %>
         ]);
 
-        var options = {
+        <% if (XDataType == MyFlightbook.Charting.GoogleColumnDataType.date || XDataType == MyFlightbook.Charting.GoogleColumnDataType.datetime) { %>
+        // format first column
+        var format = new google.visualization.DateFormat({
+            pattern: "<% =XDataFormat %>"
+        });
+        format.format(data, 0);
+        <% } %>
+
+    var options = {
           chartArea:{left:80,top:10,width:'80%',height:'70%'},
           backgroundColor: 'transparent',
           width: <%= Width %>, height: <%= Height %>,
@@ -42,7 +50,7 @@
             titleTextStyle: { color: 'black', fontName: 'Arial', fontSize: 10},
             slantedTextAngle: <%=SlantAngle %>, 
             slantedText: <%=UseSlantedTextString %>, 
-            format: '<%=XDataFormat %>', 
+            format: "<%=XDataFormat %>", 
             showTextEvery: <%=TickSpacing %>}
         };
 

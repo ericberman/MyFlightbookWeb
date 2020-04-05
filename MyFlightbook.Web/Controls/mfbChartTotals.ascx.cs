@@ -157,7 +157,7 @@ public partial class Controls_mfbChartTotals : System.Web.UI.UserControl
 
         if (bm is DateBucketManager datebm)
         {
-            gcTrends.XDatePattern = datebm.DateFormat;
+            gcTrends.XDatePattern = (bm is WeeklyBucketManager) ? String.Format(CultureInfo.InvariantCulture, Resources.LocalizedText.ChartFormatWeekOf, datebm.DateFormat) : datebm.DateFormat;
             gcTrends.XDataType = GoogleColumnDataType.date;
         }
         else

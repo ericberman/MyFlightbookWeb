@@ -1719,4 +1719,7 @@
   <data name="ChartTotalsGroupDayOfWeek" xml:space="preserve">
     <value>Day of Week</value>
   </data>
+  <data name="ChartFormatWeekOf" xml:space="preserve">
+    <value>'Week of' {0}</value>
+  </data>
 </root>

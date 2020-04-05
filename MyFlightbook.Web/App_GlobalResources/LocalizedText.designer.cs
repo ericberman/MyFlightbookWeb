@@ -742,6 +742,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;Week of&apos; {0}.
+        /// </summary>
+        internal static string ChartFormatWeekOf {
+            get {
+                return ResourceManager.GetString("ChartFormatWeekOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Maximum {0}: {1:#,##0.0}.
         /// </summary>
         internal static string ChartMaxX {
