@@ -216,12 +216,12 @@
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/Admin.aspx?t=admAircraft</Link>
+        <Link>~/Admin/AdminAircraft.aspx</Link>
         <ID>admAircraft</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/Admin.aspx?t=admImages</Link>
+        <Link>~/Admin/AdminImgs.aspx</Link>
         <ID>admImages</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
@@ -231,27 +231,27 @@
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/Admin.aspx?t=admProperties</Link>
+        <Link>~/Admin/AdminProperties.aspx</Link>
         <ID>admProperties</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/Admin.aspx?t=admEndorsements</Link>
+        <Link>~/Admin/AdminEndorsements.aspx</Link>
         <ID>admEndorsements</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Member/FAQEdit.aspx</Link>
+        <Link>~/Admin/FAQEdit.aspx</Link>
         <ID>admFAQ</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/Admin.aspx?t=admAchievements</Link>
+        <Link>~/Admin/AdminAchievements.aspx</Link>
         <ID>admAchievements</ID>
         <Roles>SiteAdmin,DataManager</Roles>
       </Item>
       <Item>
-        <Link>~/Admin/Admin.aspx?t=admDonations</Link>
+        <Link>~/Admin/AdminPayments.aspx</Link>
         <ID>admDonations</ID>
         <Roles>SiteAdmin,Accountant</Roles>
       </Item>

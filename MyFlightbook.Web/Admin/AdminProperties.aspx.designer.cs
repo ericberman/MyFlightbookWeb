@@ -11,143 +11,125 @@ namespace MyFlightbook.Web.Admin
 {
 
 
-    public partial class Member_AdminImages
+    public partial class AdminProperties
     {
 
         /// <summary>
-        /// updatePanelMigrate control.
+        /// lblCustomProperties control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel updatePanelMigrate;
+        protected global::System.Web.UI.WebControls.Label lblCustomProperties;
 
         /// <summary>
-        /// txtLimitMB control.
+        /// lblCustomPropsText control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLimitMB;
+        protected global::System.Web.UI.WebControls.Label lblCustomPropsText;
 
         /// <summary>
-        /// txtLimitFiles control.
+        /// pnlAddProp control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLimitFiles;
+        protected global::System.Web.UI.WebControls.Panel pnlAddProp;
 
         /// <summary>
-        /// btnMigrateImages control.
+        /// txtCustomPropTitle control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnMigrateImages;
+        protected global::System.Web.UI.WebControls.TextBox txtCustomPropTitle;
 
         /// <summary>
-        /// lblMigrateResults control.
+        /// txtCustomPropFormat control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMigrateResults;
+        protected global::System.Web.UI.WebControls.TextBox txtCustomPropFormat;
 
         /// <summary>
-        /// UpdateProgress1 control.
+        /// txtCustomPropDesc control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdateProgress UpdateProgress1;
+        protected global::System.Web.UI.WebControls.TextBox txtCustomPropDesc;
 
         /// <summary>
-        /// hdnImageCount control.
+        /// cmbCustomPropType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnImageCount;
+        protected global::System.Web.UI.WebControls.DropDownList cmbCustomPropType;
 
         /// <summary>
-        /// hdnCurrentOffset control.
+        /// lblFlags control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnCurrentOffset;
+        protected global::System.Web.UI.WebControls.Label lblFlags;
 
         /// <summary>
-        /// btnPrevRange control.
+        /// CheckBoxList1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPrevRange;
+        protected global::System.Web.UI.WebControls.CheckBoxList CheckBoxList1;
 
         /// <summary>
-        /// lblCurrentImageRange control.
+        /// btnNewCustomProp control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCurrentImageRange;
+        protected global::System.Web.UI.WebControls.Button btnNewCustomProp;
 
         /// <summary>
-        /// btnNextRange control.
+        /// sqlCustomProps control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNextRange;
+        protected global::System.Web.UI.WebControls.SqlDataSource sqlCustomProps;
 
         /// <summary>
-        /// gvImages control.
+        /// UpdatePanel1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvImages;
+        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
 
         /// <summary>
-        /// btnPrev2 control.
+        /// gvCustomProps control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPrev2;
-
-        /// <summary>
-        /// lblCurrentImageRange2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCurrentImageRange2;
-
-        /// <summary>
-        /// btnNext2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNext2;
+        protected global::System.Web.UI.WebControls.GridView gvCustomProps;
 
         /// <summary>
         /// Master property.

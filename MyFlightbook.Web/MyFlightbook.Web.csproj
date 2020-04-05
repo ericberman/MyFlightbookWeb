@@ -38,6 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\myFlightbook rules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -260,6 +261,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Admin\AdminAchievements.aspx" />
+    <Content Include="Admin\AdminAircraft.aspx" />
+    <Content Include="Admin\AdminEndorsements.aspx" />
+    <Content Include="Admin\AdminImgs.aspx" />
+    <Content Include="Admin\AdminPayments.aspx" />
+    <Content Include="Admin\AdminProperties.aspx" />
     <Content Include="AppCode\Clubs\DayPilotLICENSE.txt" />
     <Content Include="AppCode\oAuthServices\MS-PL LICENSE for DotNetOpenAuth.txt" />
     <Content Include="App_Data\connection.config" />
@@ -633,7 +640,7 @@
     <Content Include="Member\EditMake.aspx" />
     <Content Include="Member\EditProfile.aspx" />
     <Content Include="Member\EndorseStudent.aspx" />
-    <Content Include="Member\FAQEdit.aspx" />
+    <Content Include="Admin\FAQEdit.aspx" />
     <Content Include="Member\FBPost.aspx" />
     <Content Include="Member\FindFlights.aspx" />
     <Content Include="Member\FlightAnalysis.aspx" />
@@ -838,6 +845,51 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\AdminAchievements.aspx.cs">
+      <DependentUpon>AdminAchievements.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\AdminAchievements.aspx.designer.cs">
+      <DependentUpon>AdminAchievements.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AdminAircraft.aspx.cs">
+      <DependentUpon>AdminAircraft.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\AdminAircraft.aspx.designer.cs">
+      <DependentUpon>AdminAircraft.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AdminEndorsements.aspx.cs">
+      <DependentUpon>AdminEndorsements.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\AdminEndorsements.aspx.designer.cs">
+      <DependentUpon>AdminEndorsements.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AdminImgs.aspx.cs">
+      <DependentUpon>AdminImgs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\AdminImgs.aspx.designer.cs">
+      <DependentUpon>AdminImgs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AdminPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\AdminPayments.aspx.cs">
+      <DependentUpon>AdminPayments.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\AdminPayments.aspx.designer.cs">
+      <DependentUpon>AdminPayments.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AdminProperties.aspx.cs">
+      <DependentUpon>AdminProperties.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\AdminProperties.aspx.designer.cs">
+      <DependentUpon>AdminProperties.aspx</DependentUpon>
+    </Compile>
     <Compile Include="AppCode\Aircraft\Aircraft.cs" />
     <Compile Include="AppCode\Aircraft\CategoryClass.cs" />
     <Compile Include="AppCode\Aircraft\Checklist.cs" />
@@ -2026,11 +2078,11 @@
     <Compile Include="Member\EndorseStudent.aspx.designer.cs">
       <DependentUpon>EndorseStudent.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\FAQEdit.aspx.cs">
+    <Compile Include="Admin\FAQEdit.aspx.cs">
       <DependentUpon>FAQEdit.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Member\FAQEdit.aspx.designer.cs">
+    <Compile Include="Admin\FAQEdit.aspx.designer.cs">
       <DependentUpon>FAQEdit.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\FBPost.aspx.cs">

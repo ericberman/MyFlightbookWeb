@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="Stats.aspx.cs" Inherits="Member_Stats" Title="Statistics" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="Stats.aspx.cs" Inherits="MyFlightbook.Web.Admin.Member_Stats" Title="Statistics" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register src="../Controls/adminStats.ascx" tagname="adminStats" tagprefix="uc1" %>

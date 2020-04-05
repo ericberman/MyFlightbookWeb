@@ -11,143 +11,125 @@ namespace MyFlightbook.Web.Admin
 {
 
 
-    public partial class Member_AdminImages
+    public partial class AdminAchievements
     {
 
         /// <summary>
-        /// updatePanelMigrate control.
+        /// btnInvalidateUserAchievements control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel updatePanelMigrate;
+        protected global::System.Web.UI.WebControls.Button btnInvalidateUserAchievements;
 
         /// <summary>
-        /// txtLimitMB control.
+        /// txtAirportAchievementName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLimitMB;
+        protected global::System.Web.UI.WebControls.TextBox txtAirportAchievementName;
 
         /// <summary>
-        /// txtLimitFiles control.
+        /// ckBinaryAchievement control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLimitFiles;
+        protected global::System.Web.UI.WebControls.CheckBox ckBinaryAchievement;
 
         /// <summary>
-        /// btnMigrateImages control.
+        /// mfbDecEditBronze control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnMigrateImages;
+        protected global::Controls_mfbDecimalEdit mfbDecEditBronze;
 
         /// <summary>
-        /// lblMigrateResults control.
+        /// mfbDecEditSilver control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMigrateResults;
+        protected global::Controls_mfbDecimalEdit mfbDecEditSilver;
 
         /// <summary>
-        /// UpdateProgress1 control.
+        /// mfbDecEditGold control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdateProgress UpdateProgress1;
+        protected global::Controls_mfbDecimalEdit mfbDecEditGold;
 
         /// <summary>
-        /// hdnImageCount control.
+        /// mfbDecEditPlatinum control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnImageCount;
+        protected global::Controls_mfbDecimalEdit mfbDecEditPlatinum;
 
         /// <summary>
-        /// hdnCurrentOffset control.
+        /// txtOverlay control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnCurrentOffset;
+        protected global::System.Web.UI.WebControls.TextBox txtOverlay;
 
         /// <summary>
-        /// btnPrevRange control.
+        /// txtAirportAchievementList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPrevRange;
+        protected global::System.Web.UI.WebControls.TextBox txtAirportAchievementList;
 
         /// <summary>
-        /// lblCurrentImageRange control.
+        /// btnAddAirportAchievement control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCurrentImageRange;
+        protected global::System.Web.UI.WebControls.Button btnAddAirportAchievement;
 
         /// <summary>
-        /// btnNextRange control.
+        /// sqlDSAirportAchievements control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNextRange;
+        protected global::System.Web.UI.WebControls.SqlDataSource sqlDSAirportAchievements;
 
         /// <summary>
-        /// gvImages control.
+        /// UpdatePanel2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvImages;
+        protected global::System.Web.UI.UpdatePanel UpdatePanel2;
 
         /// <summary>
-        /// btnPrev2 control.
+        /// gvAirportAchievements control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPrev2;
-
-        /// <summary>
-        /// lblCurrentImageRange2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCurrentImageRange2;
-
-        /// <summary>
-        /// btnNext2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNext2;
+        protected global::System.Web.UI.WebControls.GridView gvAirportAchievements;
 
         /// <summary>
         /// Master property.

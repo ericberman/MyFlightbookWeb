@@ -1,9 +1,9 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" Codebehind="FAQEdit.aspx.cs" Inherits="Member_FAQEdit" ValidateRequest="false" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" Title="Edit FAQ" AutoEventWireup="true" Codebehind="FAQEdit.aspx.cs" Inherits="MyFlightbook.Web.Admin.Member_FAQEdit" ValidateRequest="false" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <%@ Register src="../Controls/mfbHtmlEdit.ascx" tagname="mfbHtmlEdit" tagprefix="uc1" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="cpPageTitle" Runat="Server">
-    Edit FAQ
+    Admin - Edit FAQ
 </asp:Content>
 <asp:Content ID="Content3" runat="server" ContentPlaceHolderID="cpTopForm">
     <asp:Panel ID="Panel2" runat="server">

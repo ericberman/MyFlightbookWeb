@@ -7,148 +7,151 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-
-
-public partial class Member_Stats
+namespace MyFlightbook.Web.Admin
 {
 
-    /// <summary>
-    /// adminStats1 control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_adminStats adminStats1;
 
-    /// <summary>
-    /// sqlUserActivity control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.SqlDataSource sqlUserActivity;
-
-    /// <summary>
-    /// gcUserActivity control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_GoogleChart gcUserActivity;
-
-    /// <summary>
-    /// cmbNewUserAge control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.DropDownList cmbNewUserAge;
-
-    /// <summary>
-    /// gcFlightsPerUser control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_GoogleChart gcFlightsPerUser;
-
-    /// <summary>
-    /// lblShowFlightsPerUser control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblShowFlightsPerUser;
-
-    /// <summary>
-    /// pnlFlightPerUser control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlFlightPerUser;
-
-    /// <summary>
-    /// gvFlightPerUser control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.GridView gvFlightPerUser;
-
-    /// <summary>
-    /// cpeFlightsPerUser control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.CollapsiblePanelExtender cpeFlightsPerUser;
-
-    /// <summary>
-    /// gcFlightsOnSite control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_GoogleChart gcFlightsOnSite;
-
-    /// <summary>
-    /// lblShowFlightsData control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblShowFlightsData;
-
-    /// <summary>
-    /// pnlShowFlightsData control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlShowFlightsData;
-
-    /// <summary>
-    /// gvFlightsData control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.GridView gvFlightsData;
-
-    /// <summary>
-    /// cpeFlightsOnSite control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.CollapsiblePanelExtender cpeFlightsOnSite;
-
-    /// <summary>
-    /// Master property.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated property.
-    /// </remarks>
-    public new MyFlightbook.Web.MasterPage Master
+    public partial class Member_Stats
     {
-        get
+
+        /// <summary>
+        /// adminStats1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_adminStats adminStats1;
+
+        /// <summary>
+        /// sqlUserActivity control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.SqlDataSource sqlUserActivity;
+
+        /// <summary>
+        /// gcUserActivity control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_GoogleChart gcUserActivity;
+
+        /// <summary>
+        /// cmbNewUserAge control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cmbNewUserAge;
+
+        /// <summary>
+        /// gcFlightsPerUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_GoogleChart gcFlightsPerUser;
+
+        /// <summary>
+        /// lblShowFlightsPerUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblShowFlightsPerUser;
+
+        /// <summary>
+        /// pnlFlightPerUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlFlightPerUser;
+
+        /// <summary>
+        /// gvFlightPerUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvFlightPerUser;
+
+        /// <summary>
+        /// cpeFlightsPerUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.CollapsiblePanelExtender cpeFlightsPerUser;
+
+        /// <summary>
+        /// gcFlightsOnSite control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_GoogleChart gcFlightsOnSite;
+
+        /// <summary>
+        /// lblShowFlightsData control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblShowFlightsData;
+
+        /// <summary>
+        /// pnlShowFlightsData control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlShowFlightsData;
+
+        /// <summary>
+        /// gvFlightsData control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvFlightsData;
+
+        /// <summary>
+        /// cpeFlightsOnSite control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.CollapsiblePanelExtender cpeFlightsOnSite;
+
+        /// <summary>
+        /// Master property.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated property.
+        /// </remarks>
+        public new MyFlightbook.Web.MasterPage Master
         {
-            return ((MyFlightbook.Web.MasterPage)(base.Master));
+            get
+            {
+                return ((MyFlightbook.Web.MasterPage)(base.Master));
+            }
         }
     }
 }
