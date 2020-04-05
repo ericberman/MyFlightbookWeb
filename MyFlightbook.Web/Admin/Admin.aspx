@@ -631,7 +631,7 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
             <table>
                 <tr>
                     <td>
-                        <asp:HyperLink ID="lnkFlightImages" NavigateUrl="~/Member/AdminImages.aspx?r=Flight" Target="_blank" runat="server">Review Flight Images</asp:HyperLink>
+                        <asp:HyperLink ID="lnkFlightImages" NavigateUrl="~/Admin/AdminImages.aspx?r=Flight" Target="_blank" runat="server">Review Flight Images</asp:HyperLink>
                     </td>
                     <td>
                         <asp:Button ID="btnSyncFlight" runat="server" Text="Sync Flight Images to DB" 
@@ -643,7 +643,7 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                 </tr>
                 <tr>
                     <td>
-                        <asp:HyperLink ID="lnkAircraftImages" NavigateUrl="~/Member/AdminImages.aspx?r=Aircraft" Target="_blank" runat="server">Review Aircraft Images</asp:HyperLink>
+                        <asp:HyperLink ID="lnkAircraftImages" NavigateUrl="~/Admin/AdminImages.aspx?r=Aircraft" Target="_blank" runat="server">Review Aircraft Images</asp:HyperLink>
                     </td>
                     <td>
                         <asp:Button ID="btnSyncAircraftImages" runat="server" 
@@ -655,7 +655,7 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                 </tr>
                 <tr>
                     <td>
-                        <asp:HyperLink ID="lnkEndorsementImages" NavigateUrl="~/Member/AdminImages.aspx?r=Endorsement" Target="_blank" runat="server">Review Endorsements</asp:HyperLink>
+                        <asp:HyperLink ID="lnkEndorsementImages" NavigateUrl="~/Admin/AdminImages.aspx?r=Endorsement" Target="_blank" runat="server">Review Endorsements</asp:HyperLink>
                     </td>
                     <td>
                         <asp:Button ID="btnSyncEndorsements" runat="server" 
@@ -667,7 +667,7 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                 </tr>
                 <tr>
                     <td>
-                        <asp:HyperLink ID="lnkOfflineEndorsementImages" NavigateUrl="~/Member/AdminImages.aspx?r=OfflineEndorsement" Target="_blank" runat="server">Review Offline Endorsements</asp:HyperLink>
+                        <asp:HyperLink ID="lnkOfflineEndorsementImages" NavigateUrl="~/Admin/AdminImages.aspx?r=OfflineEndorsement" Target="_blank" runat="server">Review Offline Endorsements</asp:HyperLink>
                     </td>
                     <td>
                         <asp:Button ID="btnSyncOfflineEndorsements" runat="server" Text="Sync Offline Endorsements to DB" OnClick="btnSyncOfflineEndorsements_Click" />
@@ -678,7 +678,7 @@ ORDER BY tailnumber ASC"></asp:SqlDataSource>
                 </tr>
                 <tr>
                     <td>
-                        <asp:HyperLink ID="lnkBasicMedImages" NavigateUrl="~/Member/AdminImages.aspx?r=Endorsement" Target="_blank" runat="server">Review BasicMed</asp:HyperLink>
+                        <asp:HyperLink ID="lnkBasicMedImages" NavigateUrl="~/Admin/AdminImages.aspx?r=Endorsement" Target="_blank" runat="server">Review BasicMed</asp:HyperLink>
                     </td>
                     <td>
                         <asp:Button ID="btnSyncBasicMed" runat="server" 

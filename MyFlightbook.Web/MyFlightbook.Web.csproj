@@ -617,9 +617,9 @@
     <Content Include="Member\ACSchedule.aspx" />
     <Content Include="Member\AddEndorsement.aspx" />
     <Content Include="Member\AddRelationship.aspx" />
-    <Content Include="Member\Admin.aspx" />
-    <Content Include="Member\AdminImages.aspx" />
-    <Content Include="Member\AdminTelemetry.aspx" />
+    <Content Include="Admin\Admin.aspx" />
+    <Content Include="Admin\AdminImages.aspx" />
+    <Content Include="Admin\AdminTelemetry.aspx" />
     <Content Include="Member\Aircraft.aspx" />
     <Content Include="Member\Airports.aspx" />
     <Content Include="Member\BrowseTemplates.aspx" />
@@ -659,7 +659,7 @@
     <Content Include="Member\SearchTotals.aspx" />
     <Content Include="Member\SignFlight.aspx" />
     <Content Include="Member\StartingTotals.aspx" />
-    <Content Include="Member\Stats.aspx" />
+    <Content Include="Admin\Stats.aspx" />
     <Content Include="Member\StudentLogbook.aspx" />
     <Content Include="Member\Totals.aspx" />
     <Content Include="Member\Training.aspx" />
@@ -1914,25 +1914,25 @@
     <Compile Include="Member\AddRelationship.aspx.designer.cs">
       <DependentUpon>AddRelationship.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\Admin.aspx.cs">
+    <Compile Include="Admin\Admin.aspx.cs">
       <DependentUpon>Admin.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Member\Admin.aspx.designer.cs">
+    <Compile Include="Admin\Admin.aspx.designer.cs">
       <DependentUpon>Admin.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\AdminImages.aspx.cs">
+    <Compile Include="Admin\AdminImages.aspx.cs">
       <DependentUpon>AdminImages.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Member\AdminImages.aspx.designer.cs">
+    <Compile Include="Admin\AdminImages.aspx.designer.cs">
       <DependentUpon>AdminImages.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\AdminTelemetry.aspx.cs">
+    <Compile Include="Admin\AdminTelemetry.aspx.cs">
       <DependentUpon>AdminTelemetry.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Member\AdminTelemetry.aspx.designer.cs">
+    <Compile Include="Admin\AdminTelemetry.aspx.designer.cs">
       <DependentUpon>AdminTelemetry.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\Aircraft.aspx.cs">
@@ -2208,11 +2208,11 @@
     <Compile Include="Member\StartingTotals.aspx.designer.cs">
       <DependentUpon>StartingTotals.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Member\Stats.aspx.cs">
+    <Compile Include="Admin\Stats.aspx.cs">
       <DependentUpon>Stats.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Member\Stats.aspx.designer.cs">
+    <Compile Include="Admin\Stats.aspx.designer.cs">
       <DependentUpon>Stats.aspx</DependentUpon>
     </Compile>
     <Compile Include="Member\StudentLogbook.aspx.cs">
@@ -2633,6 +2633,7 @@
     <Content Include="Public\MyFlightbook backup.xls" />
     <Content Include="Public\Web.config" />
     <Content Include="LICENSE" />
+    <Content Include="Admin\Web.Config" />
     <None Include="packages.config" />
     <None Include="SecuritySwitch-v4.xsd">
       <SubType>Designer</SubType>
