@@ -227,7 +227,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                             <asp:TemplateField HeaderText="Aircraft">
                                 <ItemTemplate>
                                     <div>
-                                        <a href='EditAircraft.aspx?id=<%# Eval("AircraftID") %>&amp;a=1'
+                                        <a href='../Member/EditAircraft.aspx?id=<%# Eval("AircraftID") %>&amp;a=1'
                                             target="_blank"><%# Eval("TailNumber") %></a>
                                     </div>
                                     <div><%# MakeModel.GetModel((int) Eval("ModelID")).DisplayName %></div>
@@ -255,7 +255,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                                 SortExpression="AircraftID" />
                             <asp:TemplateField HeaderText="Aircraft" SortExpression="TailNumber">
                                 <ItemTemplate>
-                                    <a href='EditAircraft.aspx?id=<%# Eval("AircraftID") %>&amp;a=1'
+                                    <a href='../Member/EditAircraft.aspx?id=<%# Eval("AircraftID") %>&amp;a=1'
                                         target="_blank"><%# Eval("TailNumber") %></a>
                                 </ItemTemplate>
                             </asp:TemplateField>
@@ -286,7 +286,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Tailnumber">
                                 <ItemTemplate>
-                                    <a href='EditAircraft.aspx?id=<%# Eval("idAircraft") %>&amp;a=1'
+                                    <a href='../Member/EditAircraft.aspx?id=<%# Eval("idAircraft") %>&amp;a=1'
                                         target="_blank"><%# Eval("TailNumber") %></a>
                                 </ItemTemplate>
                             </asp:TemplateField>
@@ -323,7 +323,7 @@ ORDER BY NormalTail ASC, numUsers DESC, idaircraft ASC"></asp:SqlDataSource>
                         <Columns>
                             <asp:TemplateField HeaderText="Tailnumber">
                                 <ItemTemplate>
-                                    <a href='EditAircraft.aspx?id=<%# Eval("AircraftID") %>&amp;a=1&amp;gencandidate=1'
+                                    <a href='../Member/EditAircraft.aspx?id=<%# Eval("AircraftID") %>&amp;a=1&amp;gencandidate=1'
                                         target="_blank"><%# Eval("TailNumber") %></a>
                                 </ItemTemplate>
                             </asp:TemplateField>
