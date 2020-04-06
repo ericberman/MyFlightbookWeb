@@ -14,11 +14,11 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Member_RequestSigs : System.Web.UI.Page
+public partial class Member_RequestSigs : MyFlightbook.Web.WizardPage.MFBWizardPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        wzRequestSigs.PreRender += new EventHandler(wzRequestSigs_PreRender);
+        InitWizard(wzRequestSigs);
         this.Master.SelectedTab = tabID.instSignFlights;
         if (!IsPostBack)
         {
@@ -31,32 +31,6 @@ public partial class Member_RequestSigs : System.Web.UI.Page
             lblSignatureDisclaimer.Text = Branding.ReBrand(Resources.SignOff.SignedFlightDisclaimer);
         }
     }
-
-    #region WizardStyling
-    // Thanks to http://weblogs.asp.net/grantbarrington/archive/2009/08/11/styling-the-asp-net-wizard-control-to-have-the-steps-across-the-top.aspx for how to do this.
-    protected void wzRequestSigs_PreRender(object sender, EventArgs e)
-    {
-        Repeater SideBarList = wzRequestSigs.FindControl("HeaderContainer").FindControl("SideBarList") as Repeater;
-
-        SideBarList.DataSource = wzRequestSigs.WizardSteps;
-        SideBarList.DataBind();
-    }
-
-    public string GetClassForWizardStep(object wizardStep)
-    {
-        if (!(wizardStep is WizardStep step))
-            return string.Empty;
-
-        int stepIndex = wzRequestSigs.WizardSteps.IndexOf(step);
-
-        if (stepIndex < wzRequestSigs.ActiveStepIndex)
-            return "wizStepCompleted";
-        else if (stepIndex > wzRequestSigs.ActiveStepIndex)
-            return "wizStepFuture";
-        else
-            return "wizStepInProgress";
-    }
-    #endregion
 
     protected void RefreshFlightsList(string[] rgFlightIds)
     {

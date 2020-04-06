@@ -35,19 +35,19 @@
                     <asp:Label ID="lblHeterogeneousAircraft" runat="server" CssClass="error" EnableViewState="false" Text="You can only merge flights that have the same aircraft" Visible="false"></asp:Label>
                 </div>
                 <asp:Panel ID="pnlFlights" ScrollBars="Auto" Height="200" runat="server">
-                    <table cellpadding="4">
+                    <table>
                         <asp:Repeater ID="rptSelectedFlights" runat="server" >
                             <ItemTemplate>
                                 <tr style="vertical-align:top">
-                                    <td>
+                                    <td style="padding: 5px">
                                         <asp:CheckBox ID="ckFlight" runat="server" />
                                         <asp:HiddenField ID="hdnFlightID" runat="server" Value='<%# Eval("FlightID") %>' />
                                     </td>
-                                    <td>
+                                    <td style="padding: 5px">
                                         <div style="font-weight:bold"><%# ((DateTime) Eval("Date")).ToShortDateString() %></div>
                                         <div><%# Eval("TailNumDisplay") %></div>
                                     </td>
-                                    <td>
+                                    <td style="padding: 5px">
                                         <div><span style="font-style:italic"><%# Eval("Route") %></span> <%# Eval("Comment") %></div>
                                     </td>
                                 </tr>

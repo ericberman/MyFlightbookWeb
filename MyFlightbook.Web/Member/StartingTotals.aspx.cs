@@ -13,7 +13,7 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Member_StartingTotals : System.Web.UI.Page
+public partial class Member_StartingTotals : MyFlightbook.Web.WizardPage.MFBWizardPage
 {
     Collection<StartingFlight> m_lstStartingFlights = null;
     const string szKeyStartingFlights = "startingFlightsViewState";
@@ -156,32 +156,6 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     }
     #endregion
 
-    #region WizardStyling
-    // Thanks to http://weblogs.asp.net/grantbarrington/archive/2009/08/11/styling-the-asp-net-wizard-control-to-have-the-steps-across-the-top.aspx for how to do this.
-    protected void wizStartingTotals_PreRender(object sender, EventArgs e)
-    {
-        Repeater SideBarList = wizStartingTotals.FindControl("HeaderContainer").FindControl("SideBarList") as Repeater;
-
-        SideBarList.DataSource = wizStartingTotals.WizardSteps;
-        SideBarList.DataBind();
-    }
-
-    public string GetClassForWizardStep(object wizardStep)
-    {
-        if (!(wizardStep is WizardStep step))
-            return string.Empty;
-
-        int stepIndex = wizStartingTotals.WizardSteps.IndexOf(step);
-
-        if (stepIndex < wizStartingTotals.ActiveStepIndex)
-            return "wizStepCompleted";
-        else if (stepIndex > wizStartingTotals.ActiveStepIndex)
-            return "wizStepFuture";
-        else
-            return "wizStepInProgress";
-    }
-    #endregion
-
     protected static string IDForCell(int row, int column)
     {
         return String.Format(CultureInfo.InvariantCulture, "decR{0}C{1}", row, column);
@@ -190,8 +164,7 @@ public partial class Member_StartingTotals : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.lbtStartingTotals;
-
-        wizStartingTotals.PreRender +=new EventHandler(wizStartingTotals_PreRender);
+        InitWizard(wizStartingTotals);
 
         if (!IsPostBack)
         {

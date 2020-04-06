@@ -12,35 +12,12 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class PlayPen_MergeFlights : System.Web.UI.Page
+public partial class PlayPen_MergeFlights : MyFlightbook.Web.WizardPage.MFBWizardPage
 {
-    public string GetClassForWizardStep(object wizardStep)
-    {
-        if (!(wizardStep is WizardStep step))
-            return string.Empty;
-
-        int stepIndex = wzMerge.WizardSteps.IndexOf(step);
-
-        if (stepIndex < wzMerge.ActiveStepIndex)
-            return "wizStepCompleted";
-        else if (stepIndex > wzMerge.ActiveStepIndex)
-            return "wizStepFuture";
-        else
-            return "wizStepInProgress";
-    }
-
-    protected void wzMerges_PreRender(object sender, EventArgs e)
-    {
-        Repeater SideBarList = wzMerge.FindControl("HeaderContainer").FindControl("SideBarList") as Repeater;
-
-        SideBarList.DataSource = wzMerge.WizardSteps;
-        SideBarList.DataBind();
-    }
-
     protected void Page_Load(object sender, EventArgs e)
     {
+        InitWizard(wzMerge);
         Master.SelectedTab = tabID.lbtImport;
-        wzMerge.PreRender += new EventHandler(wzMerges_PreRender);
 
         if (!Page.User.Identity.IsAuthenticated)
             Response.Redirect("~/Default.aspx");
@@ -93,7 +70,7 @@ public partial class PlayPen_MergeFlights : System.Web.UI.Page
         {
             if (ViewState[vsSelectedFlights] == null)
             {
-                if (SelectedFlightIDs.Count() == 0)
+                if (SelectedFlightIDs.Count == 0)
                     return new List<LogbookEntryDisplay>();
                 DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(Query));
                 Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);

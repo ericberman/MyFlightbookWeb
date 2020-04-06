@@ -14,7 +14,7 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Member_ImpAircraft : System.Web.UI.Page
+public partial class Member_ImpAircraft : MyFlightbook.Web.WizardPage.MFBWizardPage
 {
     private const string szvsMatchesKey = "vsMatchesKey";
     private const string szvsCSVRawText = "vsCSVRaw";
@@ -63,40 +63,13 @@ public partial class Member_ImpAircraft : System.Web.UI.Page
         mvAircraftToImport.Visible = wzImportAircraft.ActiveStepIndex > 0;
         mvAircraftToImport.SetActiveView(wzImportAircraft.ActiveStepIndex == 1 ? vwMatchExisting : vwNoMatch);
     }
-
-    #region WizardStyling
-    // Thanks to http://weblogs.asp.net/grantbarrington/archive/2009/08/11/styling-the-asp-net-wizard-control-to-have-the-steps-across-the-top.aspx for how to do this.
-    protected void wzImportAircraft_PreRender(object sender, EventArgs e)
-    {
-        Repeater SideBarList = wzImportAircraft.FindControl("HeaderContainer").FindControl("SideBarList") as Repeater;
-
-        SideBarList.DataSource = wzImportAircraft.WizardSteps;
-        SideBarList.DataBind();
-    }
-
-    public string GetClassForWizardStep(object wizardStep)
-    {
-        if (!(wizardStep is WizardStep step))
-            return string.Empty;
-
-        int stepIndex = wzImportAircraft.WizardSteps.IndexOf(step);
-
-        if (stepIndex < wzImportAircraft.ActiveStepIndex)
-            return "wizStepCompleted";
-        else if (stepIndex > wzImportAircraft.ActiveStepIndex)
-            return "wizStepFuture";
-        else
-            return "wizStepInProgress";
-    }
-    #endregion
     #endregion
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        wzImportAircraft.PreRender += new EventHandler(wzImportAircraft_PreRender);
-
         this.Master.SelectedTab = tabID.actImportAircraft;
         this.Title = Master.Title = (string)GetLocalResourceObject("PageResource1.Title");
+        InitWizard(wzImportAircraft);
 
         if (IsPostBack)
         {

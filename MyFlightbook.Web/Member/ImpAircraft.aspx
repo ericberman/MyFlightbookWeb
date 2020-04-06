@@ -65,22 +65,22 @@
                 <p><asp:Localize ID="locSamplePrompt" runat="server" 
                         Text="A sample CSV table to import a Cessna 172 and a Boeing 777 might look like this:" 
                         meta:resourcekey="locSamplePromptResource1"></asp:Localize></p>
-                <table style="margin-left:auto; margin-right: auto;" cellpadding="5px">
+                <table style="margin-left:auto; margin-right: auto;">
                     <tr>
-                        <td>
+                        <td style="padding: 5px">
                             <asp:Localize ID="locExcelView" runat="server" Text="In Excel:" meta:resourcekey="locExcelViewResource1"></asp:Localize></td>
-                        <td>
+                        <td style="padding: 5px">
                             <asp:Localize ID="Localize2" runat="server" Text="In a text editor" meta:resourcekey="Localize2Resource1"></asp:Localize></td>
                     </tr>
                     <tr>
-                        <td><asp:Image ID="imgSample" ImageUrl="~/images/AircraftImportSample.png" ToolTip="Image of sample import sheet in Excel" runat="server" meta:resourcekey="imgSampleResource1" /></td>
-                        <td>
+                        <td style="padding: 5px"><asp:Image ID="imgSample" ImageUrl="~/images/AircraftImportSample.png" ToolTip="Image of sample import sheet in Excel" runat="server" meta:resourcekey="imgSampleResource1" /></td>
+                        <td style="padding: 5px">
                             <pre>
 Tail Number,Model
 N12345,C172
 N6789,B777
 ...
-                    </pre>
+                            </pre>
                         </td>
                     </tr>
                 </table>

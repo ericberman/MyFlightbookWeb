@@ -1003,6 +1003,9 @@
     <Compile Include="AppCode\Utility\Histogram.cs" />
     <Compile Include="AppCode\Utility\LocalConfig.cs" />
     <Compile Include="AppCode\Utility\MFBExtensions.cs" />
+    <Compile Include="AppCode\Utility\MFBWizardPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="AppCode\Utility\Payment.cs" />
     <Compile Include="AppCode\Utility\ShareKey.cs" />
     <Compile Include="AppCode\Utility\SponsoredAd.cs" />

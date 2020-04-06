@@ -26,13 +26,13 @@
             </div>
         </HeaderTemplate>
         <WizardSteps>
-            <asp:WizardStep ID="WizardStep1" runat="server" Title="LOC Step 1: Choose Settings">
+            <asp:WizardStep ID="WizardStep1" runat="server" Title="Step 1: Choose Settings">
                 <div style="margin-left: auto; margin-right:auto; width:400px;">
                     <p><uc1:TimeZone runat="server" ID="TimeZone" /></p>
                     <div><uc1:AutofillOptionsChooser runat="server" id="AutofillOptionsChooser" /></div>
                 </div>
             </asp:WizardStep>
-            <asp:WizardStep ID="WizardStep2" runat="server" Title="LOC Step 2: Upload telemetry">
+            <asp:WizardStep ID="WizardStep2" runat="server" Title="Step 2: Upload telemetry">
                 <asp:AjaxFileUpload ID="afuUpload" runat="server" CssClass="mfbDefault" Width="400px" style="margin-left:auto; margin-right:auto;"
                         ThrobberID="myThrobber" MaximumNumberOfFiles="20" OnUploadComplete="afuUpload_UploadComplete" />
                 <asp:Image ID="myThrobber" ImageUrl="~/images/ajax-loader.gif" runat="server" style="display:None" />

@@ -17,38 +17,12 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Member_Import : System.Web.UI.Page
+public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
 {
     protected bool UseHHMM { get; set;}
     private const string szKeyVSCSVImporter = "viewStateKeyCSVImporter";
     private const string szKeyVSCSVData = "viewStateCSVData";
     private const string szKeyVSPendingOnly = "viewstatePendingOnly";
-
-    #region WizardStyling
-    // Thanks to http://weblogs.asp.net/grantbarrington/archive/2009/08/11/styling-the-asp-net-wizard-control-to-have-the-steps-across-the-top.aspx for how to do this.
-    protected void wzImportFlights_PreRender(object sender, EventArgs e)
-    {
-        Repeater SideBarList = wzImportFlights.FindControl("HeaderContainer").FindControl("SideBarList") as Repeater;
-
-        SideBarList.DataSource = wzImportFlights.WizardSteps;
-        SideBarList.DataBind();
-    }
-
-    public string GetClassForWizardStep(object wizardStep)
-    {
-        if (!(wizardStep is WizardStep step))
-            return string.Empty;
-
-        int stepIndex = wzImportFlights.WizardSteps.IndexOf(step);
-
-        if (stepIndex < wzImportFlights.ActiveStepIndex)
-            return "wizStepCompleted";
-        else if (stepIndex > wzImportFlights.ActiveStepIndex)
-            return "wizStepFuture";
-        else
-            return "wizStepInProgress";
-    }
-    #endregion
 
     protected bool IsPendingOnly
     {
@@ -95,8 +69,7 @@ public partial class Member_Import : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Master.SelectedTab = tabID.lbtImport;
-
-        wzImportFlights.PreRender += new EventHandler(wzImportFlights_PreRender);
+        InitWizard(wzImportFlights);
 
         Title = (string)GetLocalResourceObject("PageResource1.Title");
         Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
