@@ -1,12 +1,9 @@
 using MyFlightbook;
 using MyFlightbook.ImportFlights;
 using MyFlightbook.OAuth.CloudAhoy;
-using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -106,7 +103,7 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
         if (e == null)
             throw new ArgumentNullException(nameof(e));
 
-        LogbookEntry le = (LogbookEntry)e.Item.DataItem;
+        LogbookEntryBase le = (LogbookEntryBase)e.Item.DataItem;
 
         PlaceHolder plc = (PlaceHolder)e.Item.FindControl("plcAdditional");
         // throw the less used properties into the final column
@@ -154,11 +151,7 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
         }
     }
 
-    protected static void AddSuccessRow(LogbookEntry le, int iRow)
-    {
-        if (le == null)
-            throw new ArgumentNullException(nameof(le));
-    }
+    protected static void AddSuccessRow(LogbookEntryBase le, int iRow) { }
 
     protected void AddErrorRow(LogbookEntryBase le, string szContext, int iRow)
     {
@@ -182,16 +175,13 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
             return;
         }
 
-        Stream s = fuPreview.FileContent;
         plcErrorList.Controls.Clear();
 
         ViewState[szKeyVSCSVImporter] = null;
 
-        if (s.Length > 0)
+        if (fuPreview.FileBytes.Length > 0)
         {
-            byte[] rgb = new byte[s.Length];
-            s.Read(rgb, 0, (int) s.Length);
-            CurrentCSVSource = rgb;
+            CurrentCSVSource = fuPreview.FileBytes;
             PreviewData();
         }
         else
@@ -217,70 +207,22 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
             return;
         }
 
-        // issue #280: some files have \r\r\n as line separators!
-        rgb = Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(rgb).Replace("\r\r\n", "\r\n"));
-
         pnlConverted.Visible = pnlAudit.Visible = false;
-        lblAudit.Text = string.Empty;
 
-        CSVAnalyzer.CSVStatus result = CSVAnalyzer.CSVStatus.OK;
+        ExternalFormatConvertResults results = ExternalFormatConvertResults.ConvertToCSV(rgb);
+        lblAudit.Text = results.AuditResult;
+        hdnAuditState.Value = results.ResultString;
+        CurrentCSVSource = results.GetConvertedBytes();
+        IsPendingOnly = results.IsPendingOnly;
 
-        // Validate the file
-        ExternalFormatImporter efi = ExternalFormatImporter.GetImporter(rgb);
-        if (efi != null)
+        if (!String.IsNullOrEmpty(results.ConvertedName))
         {
-            try
-            {
-                rgb = efi.PreProcess(rgb);
-                IsPendingOnly = efi.IsPendingOnly;
-            }
-            catch (Exception ex) when (ex is MyFlightbookException || ex is MyFlightbookValidationException)
-            {
-                result = CSVAnalyzer.CSVStatus.Broken;
-                lblAudit.Text = ex.Message;
-            }
+            lblFileWasConverted.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.importLabelFileWasConverted, results.ConvertedName);
+            pnlConverted.Visible = true;
         }
 
-        if (result != CSVAnalyzer.CSVStatus.Broken)
-        {
-            using (System.Data.DataTable dt = new System.Data.DataTable() { Locale = CultureInfo.CurrentCulture })
-            {
-                CSVAnalyzer csvAnalyzer;
-                using (MemoryStream ms = new MemoryStream(rgb))
-                {
-                    csvAnalyzer = new CSVAnalyzer(ms, dt);
-                }
-                result = csvAnalyzer.Status;
-                hdnAuditState.Value = result.ToString();
-
-                if (result != CSVAnalyzer.CSVStatus.Broken)
-                {
-                    string szCSV = null;
-                    if (efi == null)    // was already CSV - only update it if it was fixed (vs. broken)
-                    {
-                        if (result == CSVAnalyzer.CSVStatus.Fixed)
-                            szCSV = csvAnalyzer.DataAsCSV;
-                    }
-                    else  // But if it was converted, ALWAYS update the CSV.
-                        szCSV = efi.CSVFromDataTable(csvAnalyzer.Data);
-
-                    if (szCSV != null)
-                        CurrentCSVSource = rgb = System.Text.Encoding.UTF8.GetBytes(szCSV);
-
-                    // And show conversion, if it was converted
-                    if (efi != null)
-                    {
-                        lblFileWasConverted.Text = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.importLabelFileWasConverted, efi.Name);
-                        pnlConverted.Visible = true;
-                    }
-                }
-
-                lblAudit.Text = csvAnalyzer.Audit;
-            }
-        }
-
-        pnlAudit.Visible = (result != CSVAnalyzer.CSVStatus.OK);
-        if (result == CSVAnalyzer.CSVStatus.Broken)
+        pnlAudit.Visible = (results.IsFixedOrBroken);
+        if (results.IsBroken)
         {
             lblAudit.CssClass = "error";
             ExpandoAudit.ExpandoControl.Collapsed = false;
@@ -297,9 +239,7 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
 
         ErrorContext.Clear();
         CSVImporter csvimporter = CurrentImporter = new CSVImporter(mfbImportAircraft1.ModelMapping);
-        AutoFillOptions afo = ckAutofill.Checked ? new AutoFillOptions(Request.Cookies) { IncludeHeliports = true } : null;
-        using (MemoryStream ms2 = new MemoryStream(rgb))
-            csvimporter.FInitFromStream(ms2, User.Identity.Name, AddSuccessRow, AddErrorRow, afo);
+        csvimporter.InitWithBytes(rgb, User.Identity.Name, AddSuccessRow, AddErrorRow, ckAutofill.Checked);
 
         if (csvimporter.FlightsToImport == null)
         {
@@ -399,7 +339,7 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
             lstResults.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportFlightsWithErrors, cFlightsWithErrors));
         rptImportResults.DataSource = lstResults;
         rptImportResults.DataBind();
-        MyFlightbook.Profile.GetUser(Page.User.Identity.Name).SetAchievementStatus(MyFlightbook.Achievements.Achievement.ComputeStatus.NeedsComputing);
+        Profile.GetUser(Page.User.Identity.Name).SetAchievementStatus();
         mvPreviewResults.SetActiveView(vwImportResults);
         wzImportFlights.Visible = false;
         pnlImportSuccessful.Visible = true;
@@ -426,26 +366,16 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
     {
         const string szHeaders = @"Date,Tail Number,Approaches,Hold,Landings,FS Night Landings,FS Day Landings,X-Country,Night,IMC,Simulated Instrument,Ground Simulator,Dual Received,CFI,SIC,PIC,Total Flight Time,Route,Comments";
 
-        Response.Clear();
-        Response.ContentType = "text/csv";
-        // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
-        string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", Branding.CurrentBrand.AppName);
-        Response.AddHeader("Content-Disposition", szDisposition);
-        Response.Write(szHeaders.Replace(",", CultureInfo.CurrentCulture.TextInfo.ListSeparator));
-        Response.End();
+        Response.DownloadToFile(szHeaders.Replace(",", CultureInfo.CurrentCulture.TextInfo.ListSeparator), "text/csv", Branding.CurrentBrand.AppName, "csv");
     }
 
     protected void btnDownloadConverted_Click(object sender, EventArgs e)
     {
-        Response.Clear();
-        Response.ContentType = "text/csv";
         // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
-        string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
-        string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}{1}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""), hdnAuditState.Value);
-        Response.AddHeader("Content-Disposition", szDisposition);
-        Response.BinaryWrite(System.Text.Encoding.UTF8.GetPreamble());
-        Response.Write(System.Text.Encoding.UTF8.GetString(CurrentCSVSource));
-        Response.End();
+        Response.DownloadToFile(CurrentCSVSource, 
+            "text/csv",
+            String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}{3}", Branding.CurrentBrand.AppName, Profile.GetUser(Page.User.Identity.Name).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), hdnAuditState.Value).Replace(" ", "-"),
+            "csv");
     }
 
     protected void btnNewFile_Click(object sender, EventArgs e)

@@ -1286,7 +1286,7 @@ namespace MyFlightbook
         /// Sets the achievement status, saving to the DB if it has changed and if it is not "In Progress" (which by definition is a temporary state)
         /// </summary>
         /// <param name="stat"></param>
-        public void SetAchievementStatus(Achievement.ComputeStatus stat)
+        public void SetAchievementStatus(Achievement.ComputeStatus stat = Achievement.ComputeStatus.NeedsComputing)
         {
             lock (achievementLock)
             {

@@ -984,7 +984,7 @@ namespace MyFlightbook.ImportFlights
         /// <param name="rowOK">Delegate called for a row that does not have an error.  Has the entry and the row index</param>
         /// <param name="afo">If not null, contains the options for performing autofill on flights.</param>
         /// <returns>false for an error (look at "ErrorString" for information).</returns>
-        public bool FInitFromStream(Stream fileContent, string szUser, Action<LogbookEntry, int> rowOK, Action<LogbookEntry, string, int> rowHasError, AutoFillOptions afo)
+        public bool FInitFromStream(Stream fileContent, string szUser, Action<LogbookEntryBase, int> rowOK, Action<LogbookEntryBase, string, int> rowHasError, AutoFillOptions afo)
         {
             using (CSVReader csvr = new CSVReader(fileContent))
             {
@@ -1106,6 +1106,15 @@ namespace MyFlightbook.ImportFlights
 
             EventRecorder.UpdateCount(EventRecorder.MFBCountID.ImportedFlight, cFlightsImported);
             return true;
+        }
+
+        public bool InitWithBytes(byte[] rgb, string szUser, Action<LogbookEntryBase, int> rowOK, Action<LogbookEntryBase, string, int> rowHasError, bool fAutofill)
+        {
+            AutoFillOptions afo = fAutofill ? new AutoFillOptions(System.Web.HttpContext.Current?.Request?.Cookies) { IncludeHeliports = true } : null;
+            using (MemoryStream ms2 = new MemoryStream(rgb))
+            {
+                return FInitFromStream(ms2, szUser, rowOK, rowHasError, afo);
+            }
         }
     }
 }

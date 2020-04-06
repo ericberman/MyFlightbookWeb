@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Text;
 
@@ -156,6 +157,94 @@ namespace MyFlightbook.ImportFlights
         }
         #endregion
         #endregion
+    }
+
+    public class ExternalFormatConvertResults
+    {
+        public string ResultString { get { return InputStatus.ToString(); } }
+
+        private CSVAnalyzer.CSVStatus InputStatus { get; set; }
+
+        public string AuditResult { get; private set; }
+
+        private byte[] _newRGB;
+
+        public byte[] GetConvertedBytes() { return _newRGB; }
+
+        public bool IsFixed { get { return InputStatus == CSVAnalyzer.CSVStatus.Fixed; } }
+
+        public bool IsBroken { get { return InputStatus == CSVAnalyzer.CSVStatus.Broken; } }
+
+        public bool IsOK { get { return InputStatus != CSVAnalyzer.CSVStatus.Broken; } }
+
+        public bool IsFixedOrBroken { get { return InputStatus != CSVAnalyzer.CSVStatus.OK; } }
+
+        public bool IsPendingOnly { get; private set; }
+
+        public string ConvertedName { get; private set; }
+
+        public static ExternalFormatConvertResults ConvertToCSV(byte[] rgb)
+        {
+            ExternalFormatConvertResults result = new ExternalFormatConvertResults
+            {
+                // issue #280: some files have \r\r\n as line separators!
+                _newRGB = Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(rgb).Replace("\r\r\n", "\r\n")),
+
+                InputStatus = CSVAnalyzer.CSVStatus.OK
+            };
+
+            // Validate the file
+            ExternalFormatImporter efi = ExternalFormatImporter.GetImporter(rgb);
+            if (efi != null)
+            {
+                try
+                {
+                    rgb = efi.PreProcess(rgb);
+                    result.IsPendingOnly = efi.IsPendingOnly;
+                }
+                catch (Exception ex) when (ex is MyFlightbookException || ex is MyFlightbookValidationException)
+                {
+                    result.InputStatus = CSVAnalyzer.CSVStatus.Broken;
+                    result.AuditResult = ex.Message;
+                }
+            }
+
+            if (result.InputStatus != CSVAnalyzer.CSVStatus.Broken)
+            {
+                using (DataTable dt = new DataTable() { Locale = CultureInfo.CurrentCulture })
+                {
+                    CSVAnalyzer csvAnalyzer;
+                    using (MemoryStream ms = new MemoryStream(rgb))
+                    {
+                        csvAnalyzer = new CSVAnalyzer(ms, dt);
+                    }
+                    result.InputStatus = csvAnalyzer.Status;
+
+                    if (result.InputStatus != CSVAnalyzer.CSVStatus.Broken)
+                    {
+                        string szCSV = null;
+                        if (efi == null)    // was already CSV - only update it if it was fixed (vs. broken)
+                        {
+                            if (result.InputStatus == CSVAnalyzer.CSVStatus.Fixed)
+                                szCSV = csvAnalyzer.DataAsCSV;
+                        }
+                        else  // But if it was converted, ALWAYS update the CSV.
+                            szCSV = efi.CSVFromDataTable(csvAnalyzer.Data);
+
+                        if (szCSV != null)
+                            result._newRGB = rgb = Encoding.UTF8.GetBytes(szCSV);
+
+                        // And show conversion, if it was converted
+                        if (efi != null)
+                            result.ConvertedName = efi.Name;
+                    }
+
+                    result.AuditResult = csvAnalyzer.Audit;
+                }
+            }
+
+            return result;
+        }
     }
 
     public abstract class ExternalFormatImporter
