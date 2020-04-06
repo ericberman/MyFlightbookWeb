@@ -15,6 +15,8 @@ public partial class Controls_PrintingLayouts_layoutEASAFCL : System.Web.UI.User
 {
     protected MyFlightbook.Profile CurrentUser { get; set; }
 
+    protected PrintingOptions Options { get; set; }
+
     protected bool ShowFooter { get; set; }
 
     #region IPrintingTemplate
@@ -22,6 +24,7 @@ public partial class Controls_PrintingLayouts_layoutEASAFCL : System.Web.UI.User
     {
         ShowFooter = showFooter;
         CurrentUser = user;
+        Options = options;
         rptPages.DataSource = lst;
         rptPages.DataBind();
     }
@@ -35,6 +38,15 @@ public partial class Controls_PrintingLayouts_layoutEASAFCL : System.Web.UI.User
             throw new ArgumentNullException(nameof(e));
 
         LogbookPrintedPage lep = (LogbookPrintedPage)e.Item.DataItem;
+
+        HashSet<int> hsRedundantProps = new HashSet<int>() { (int)CustomPropertyType.KnownProperties.IDPropNameOfPIC };
+        hsRedundantProps.UnionWith(Options.ExcludedPropertyIDs);
+        foreach (LogbookEntryDisplay led in lep.Flights)
+        {
+            List<CustomFlightProperty> lstProps = new List<CustomFlightProperty>(led.CustomProperties);
+            lstProps.RemoveAll(cfp => hsRedundantProps.Contains(cfp.PropTypeID));
+            led.CustPropertyDisplay = CustomFlightProperty.PropListDisplay(lstProps, CurrentUser.UsesHHMM, Options.PropertySeparatorText);
+        }
 
         Repeater rpt = (Repeater)e.Item.FindControl("rptFlight");
         rpt.DataSource = lep.Flights;
