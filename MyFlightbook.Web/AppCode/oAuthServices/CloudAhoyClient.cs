@@ -204,5 +204,33 @@ namespace MyFlightbook.OAuth.CloudAhoy
                 }
             }
         }
+
+        /// <summary>
+        /// Imports cloudahoy flights for the specified user between the specified dates
+        /// </summary>
+        /// <param name="szUsername">The user for whom to import flights</param>
+        /// <param name="fSandbox">True to use the sandbox</param>
+        /// <param name="dtStart">Optional start date</param>
+        /// <param name="dtEnd">Optional end date</param>
+        /// <returns>Error message if failure, else empty string for success</returns>
+        public async static Task<string> ImportCloudAhoyFlights(string szUsername, bool fSandbox, DateTime? dtStart, DateTime? dtEnd)
+        {
+            Profile pf = Profile.GetUser(szUsername);
+            CloudAhoyClient client = new CloudAhoyClient(fSandbox) { AuthState = pf.CloudAhoyToken };
+            try
+            {
+                IEnumerable<CloudAhoyFlight> rgcaf = await client.GetFlights(szUsername, dtStart, dtEnd).ConfigureAwait(false);
+                foreach (CloudAhoyFlight caf in rgcaf)
+                {
+                    if (caf.ToLogbookEntry() is PendingFlight pendingflight)
+                        pendingflight.Commit();
+                }
+                return string.Empty;
+            }
+            catch (Exception ex) when (ex is MyFlightbookException || ex is MyFlightbookValidationException)
+            {
+                return ex.Message;
+            }
+        }
     }
 }

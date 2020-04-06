@@ -1,13 +1,11 @@
 using MyFlightbook;
 using MyFlightbook.ImportFlights;
-using MyFlightbook.ImportFlights.CloudAhoy;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.Telemetry;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -172,8 +170,8 @@ public partial class Member_Import : System.Web.UI.Page
 
         if (!le.IsNewFlight && CurrentImporter != null && CurrentImporter.OriginalFlightsToModify.ContainsKey(le.FlightID))
         {
-            IEnumerable<PropertyDelta> lst = CurrentImporter.OriginalFlightsToModify[le.FlightID].CompareTo(le, UseHHMM);
-            if (lst.Any())
+            List<PropertyDelta> lst = new List<PropertyDelta>(CurrentImporter.OriginalFlightsToModify[le.FlightID].CompareTo(le, UseHHMM));
+            if (lst.Count > 0)
             {
                 e.Item.FindControl("pnlDiffs").Visible = true;
                 Repeater diffs = (Repeater)e.Item.FindControl("rptDiffs");
@@ -487,8 +485,6 @@ public partial class Member_Import : System.Web.UI.Page
 
     protected async void btnImportCloudAhoy_Click(object sender, EventArgs e)
     {
-        Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-        CloudAhoyClient client = new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)) { AuthState = pf.CloudAhoyToken };
         DateTime? dtStart = null;
         if (mfbCloudAhoyStartDate.Date.HasValue())
             dtStart = mfbCloudAhoyStartDate.Date;
@@ -496,27 +492,16 @@ public partial class Member_Import : System.Web.UI.Page
         if (mfbCloudAhoyEndDate.Date.HasValue())
             dtEnd =  mfbCloudAhoyEndDate.Date;
 
-        try
+        string szResult = await CloudAhoyClient.ImportCloudAhoyFlights(Page.User.Identity.Name, !Branding.CurrentBrand.MatchesHost(Request.Url.Host), dtStart, dtEnd).ConfigureAwait(true);
+        if (String.IsNullOrEmpty(szResult))
         {
-            IEnumerable<CloudAhoyFlight> rgcaf = await client.GetFlights(User.Identity.Name, dtStart, dtEnd).ConfigureAwait(false);
-            foreach (CloudAhoyFlight caf in rgcaf)
-            {
-                if (caf.ToLogbookEntry() is PendingFlight pendingflight)
-                    pendingflight.Commit();
-            }
             // Avoid a "Thread was being aborted" (ThreadAbortException).
             Response.Redirect("~/Member/ReviewPendingFlights.aspx", false);
             Context.ApplicationInstance.CompleteRequest();
         }
-        catch (MyFlightbookException ex)
+        else
         {
-            // Cloudahoy is sending back HTML
-            lblCloudAhoyErr.Text = ex.Message;
-            popupCloudAhoy.Show();
-        }
-        catch (MyFlightbookValidationException ex)
-        {
-            lblCloudAhoyErr.Text = ex.Message;
+            lblCloudAhoyErr.Text = szResult;
             popupCloudAhoy.Show();
         }
     }
