@@ -60,13 +60,6 @@ public partial class AutofillOptionsChooser : System.Web.UI.UserControl
     {
         if (!IsPostBack)
         {
-            List<ListItem> lst = new List<ListItem>();
-            foreach (int speed in AutoFillOptions.DefaultSpeeds)
-                lst.Add(new ListItem(String.Format(CultureInfo.CurrentCulture, Resources.FlightData.KnotsTemplate, speed), speed.ToString(CultureInfo.InvariantCulture)));
-
-            rblTakeOffSpeed.DataSource = lst;
-            rblTakeOffSpeed.DataBind();
-
             Options = new AutoFillOptions(Request.Cookies);
         }
     }

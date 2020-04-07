@@ -6,7 +6,7 @@
             <tr>
                 <td colspan="2">
                     <div><asp:Label ID="lblTOSpeed" runat="server" Text="<%$ Resources:LocalizedText, AutofillOptionTakeoffSpeed %>" /></div>
-                    <asp:RadioButtonList ID="rblTakeOffSpeed" RepeatColumns="2" runat="server"></asp:RadioButtonList>
+                    <asp:RadioButtonList ID="rblTakeOffSpeed" DataValueField="Value" DataTextField="Text" RepeatColumns="2" runat="server"></asp:RadioButtonList>
                 </td>
             </tr>
             <tr>
