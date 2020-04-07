@@ -905,6 +905,7 @@
     <Compile Include="AppCode\CSV\CSVReader.cs" />
     <Compile Include="AppCode\CSV\CSVWriter.cs" />
     <Compile Include="AppCode\Flights\Achievement.cs" />
+    <Compile Include="AppCode\Flights\ApproachDescription.cs" />
     <Compile Include="AppCode\Flights\Backup.cs" />
     <Compile Include="AppCode\Flights\Currency\ArmyMDSCurrency.cs" />
     <Compile Include="AppCode\Flights\Currency\CanadaCurrency.cs" />
@@ -940,9 +941,11 @@
     <Compile Include="AppCode\Flights\Import\TASC.cs" />
     <Compile Include="AppCode\Flights\LogbookEntry.cs" />
     <Compile Include="AppCode\Flights\Currency\Part135Currency.cs" />
+    <Compile Include="AppCode\Flights\OptionalColumn.cs" />
     <Compile Include="AppCode\Flights\PendingFlight.cs" />
     <Compile Include="AppCode\Flights\Printing.cs" />
     <Compile Include="AppCode\Flights\Properties.cs" />
+    <Compile Include="AppCode\Flights\PropertyDelta.cs" />
     <Compile Include="AppCode\Flights\PropertyTemplate.cs" />
     <Compile Include="AppCode\Flights\Ratings\ATPRatings.cs" />
     <Compile Include="AppCode\Flights\Ratings\CASRRatings.cs" />
