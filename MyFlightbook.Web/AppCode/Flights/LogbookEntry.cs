@@ -254,6 +254,8 @@ namespace MyFlightbook
         /// <summary>
         /// Indicates whether or not this flight has a data stream associated with it.
         /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public Boolean HasFlightData { get; protected set; }
 
         /// <summary>
