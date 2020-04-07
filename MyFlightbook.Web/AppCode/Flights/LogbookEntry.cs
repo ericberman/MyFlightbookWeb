@@ -35,13 +35,10 @@ namespace MyFlightbook
         public const int idFlightNew = -1;
         public const int idFlightNone = -1;
 
-        private int idAircraft;
-        private String szError;
-        private DateTime dtFlightStart;
-        private DateTime dtFlightEnd;
-        private DateTime dtEngineStart;
-        private DateTime dtEngineEnd;
-        private Boolean fHasDataStream;
+        private DateTime dtFlightStart = DateTime.MinValue;
+        private DateTime dtFlightEnd = DateTime.MinValue;
+        private DateTime dtEngineStart = DateTime.MinValue;
+        private DateTime dtEngineEnd = DateTime.MinValue;
 
         public enum SignatureState { None, Valid, Invalid }
 
@@ -57,16 +54,12 @@ namespace MyFlightbook
         /// <summary>
         /// User who took the flight
         /// </summary>
-        public String User { get; set; }
+        public String User { get; set; } = string.Empty;
 
         /// <summary>
         /// ID of aircraft used in the flight
         /// </summary>
-        public int AircraftID
-        {
-            get { return idAircraft; }
-            set { if (value > 0) idAircraft = value; }
-        }
+        public int AircraftID { get; set; } = Aircraft.idAircraftUnknown;
 
         /// <summary>
         /// The cat/class for the flight, which overrides the one specified in the model
@@ -161,12 +154,12 @@ namespace MyFlightbook
         /// <summary>
         /// Route of the flight
         /// </summary>
-        public String Route { get; set; }
+        public String Route { get; set; } = string.Empty;
 
         /// <summary>
         /// Any comments about the flight
         /// </summary>
-        public String Comment { get; set; }
+        public String Comment { get; set; } = string.Empty;
 
         /// <summary>
         /// Share flight details with everyone?
@@ -176,30 +169,21 @@ namespace MyFlightbook
         /// <summary>
         /// Date of the flight
         /// </summary>
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
 
         /// <summary>
         /// An error message for the last operation that failed
         /// </summary>
-        public String ErrorString
-        {
-            get { return szError; }
-            set { szError = value; }
-        }
+        public String ErrorString { get; set; } = string.Empty;
 
         public enum ErrorCode { None, Unknown, NotFound, NotOwned, InvalidUser, InvalidAircraft, NegativeTime, NegativeCount, InvalidHobbs, InvalidEngine, InvalidFlight, InvalidDate, InvalidLandings, InvalidApproaches, InvalidNightTakeoffs, DataTooLong, MissingNight }
 
-        private ErrorCode m_lastErr = ErrorCode.None;
         /// <summary>
         /// Error code for last error
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public ErrorCode LastError
-        {
-            get { return m_lastErr; }
-            set { m_lastErr = value; }
-        }
+        public ErrorCode LastError { get; set; } = ErrorCode.None;
 
         /// <summary>
         /// ID of the flight.  You shouldn't set this.
@@ -255,25 +239,22 @@ namespace MyFlightbook
         /// <summary>
         /// Display name of the model type; this cannot be persisted via logbook entry
         /// </summary>
-        public string ModelDisplay { get; set; }
+        public string ModelDisplay { get; set; } = string.Empty;
 
         /// <summary>
         /// Tailnumber of the airplane; this cannot be persisted via a logbook entry (it's a property of the airplane)
         /// </summary>
-        public string TailNumDisplay { get; set; }
+        public string TailNumDisplay { get; set; } = string.Empty;
 
         /// <summary>
         /// Human readable string for Category/class (and type, if relevant); this cannot be persisted via a logbook entry (it's a property of the airplane)
         /// </summary>
-        public string CatClassDisplay { get; set; }
+        public string CatClassDisplay { get; set; } = string.Empty;
 
         /// <summary>
         /// Indicates whether or not this flight has a data stream associated with it.
         /// </summary>
-        public Boolean HasFlightData
-        {
-            get { return fHasDataStream; }
-        }
+        public Boolean HasFlightData { get; protected set; }
 
         /// <summary>
         /// Flight data for the flight.
@@ -284,7 +265,7 @@ namespace MyFlightbook
             set
             {
                 Telemetry = new TelemetryReference() { RawData = value, FlightID = this.FlightID }; // don't parse!
-                fHasDataStream = !String.IsNullOrEmpty(value);
+                HasFlightData = !String.IsNullOrEmpty(value);
             }
         }
 
@@ -293,12 +274,12 @@ namespace MyFlightbook
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [Newtonsoft.Json.JsonIgnore]
-        public TelemetryReference Telemetry { get; set; }
+        public TelemetryReference Telemetry { get; set; } = new TelemetryReference();
 
         /// <summary>
         /// Custom properties for the entry.  
         /// </summary>
-        public CustomPropertyCollection CustomProperties { get; set; }
+        public CustomPropertyCollection CustomProperties { get; set; } = new CustomPropertyCollection();
 
         #region images
         /// <summary>
@@ -321,7 +302,7 @@ namespace MyFlightbook
         /// <summary>
         /// Videos associated with the flight.
         /// </summary>
-        public Collection<VideoRef> Videos { get; private set; }
+        public Collection<VideoRef> Videos { get; private set; } = new Collection<VideoRef>();
 
         #region Signature properties
         /// <summary>
@@ -372,7 +353,7 @@ namespace MyFlightbook
         /// <summary>
         /// State of the current signature
         /// </summary>
-        public SignatureState CFISignatureState { get; set; }
+        public SignatureState CFISignatureState { get; set; } = SignatureState.None;
 
         /// <summary>
         /// Digitized PNG of the signature.  Not read by default; call LoadDigitalSig to get it.
@@ -662,7 +643,7 @@ namespace MyFlightbook
         /// <returns>The encrypted signature.</returns>
         public string ComputeSignatureHash()
         {
-            string szSigHash = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}{3}", CFIUsername ?? (CFIEmail ?? ""), CFICertificate, CFIExpiration.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), CFISignatureDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+            string szSigHash = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}{3}", CFIUsername ?? (CFIEmail ?? string.Empty), CFICertificate, CFIExpiration.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), CFISignatureDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             string szSig = (new UserEncryptor(User)).Encrypt(szSigHash);
             return szSig.Substring(0, Math.Min(255, szSig.Length));
         }
@@ -707,7 +688,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="szCFIUsername">The CFI's username</param>
         /// <param name="err">The resulting error message</param>
-        /// <returns>True if the pilot is authorized; else, false.  szError contains the message</returns>
+        /// <returns>True if the pilot is authorized; else, false.  ErrorString contains the message</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "1#")]
         public bool CanSignThisFlight(string szCFIUsername, out string err)
         {
@@ -1078,29 +1059,29 @@ namespace MyFlightbook
         {
             if (CrossCountry < 0 || Nighttime < 0 || IMC < 0 || SimulatedIFR < 0 || GroundSim < 0 || Dual < 0 || PIC < 0 || TotalFlightTime < 0 || CFI < 0 || SIC < 0)
             {
-                m_lastErr = ErrorCode.NegativeTime;
-                szError = Resources.LogbookEntry.errInvalidTime;
+                LastError = ErrorCode.NegativeTime;
+                ErrorString = Resources.LogbookEntry.errInvalidTime;
                 return false;
             }
 
             if (Landings < 0 || NightLandings < 0 || FullStopLandings < 0 || Approaches < 0)
             {
-                m_lastErr = ErrorCode.NegativeCount;
-                szError = Resources.LogbookEntry.errCantBeNegativeCount;
+                LastError = ErrorCode.NegativeCount;
+                ErrorString = Resources.LogbookEntry.errCantBeNegativeCount;
                 return false;
             }
 
             if (HobbsEnd < 0 || HobbsStart < 0)
             {
-                m_lastErr = ErrorCode.InvalidHobbs;
-                szError = Resources.LogbookEntry.errHobbsTimesNegative;
+                LastError = ErrorCode.InvalidHobbs;
+                ErrorString = Resources.LogbookEntry.errHobbsTimesNegative;
                 return false;
             }
 
             if (HobbsStart > 0 && HobbsEnd > 0 && (HobbsEnd < HobbsStart))
             {
-                m_lastErr = ErrorCode.InvalidHobbs;
-                szError = Resources.LogbookEntry.errInvalidHobbs;
+                LastError = ErrorCode.InvalidHobbs;
+                ErrorString = Resources.LogbookEntry.errInvalidHobbs;
                 return false;
             }
 
@@ -1110,22 +1091,22 @@ namespace MyFlightbook
 
             if (FullStopLandings + NightLandings > Landings)
             {
-                m_lastErr = ErrorCode.InvalidLandings;
-                szError = Resources.LogbookEntry.errTooManyFSLandings;
+                LastError = ErrorCode.InvalidLandings;
+                ErrorString = Resources.LogbookEntry.errTooManyFSLandings;
                 return false;
             }
 
             if (Comment.Length > 13000)
             {
-                m_lastErr = ErrorCode.DataTooLong;
-                szError = Resources.LogbookEntry.errCommentsTooLong;
+                LastError = ErrorCode.DataTooLong;
+                ErrorString = Resources.LogbookEntry.errCommentsTooLong;
                 return false;
             }
 
             if (Route.Length > 128)
             {
-                m_lastErr = ErrorCode.DataTooLong;
-                szError = Resources.LogbookEntry.errRouteTooLong;
+                LastError = ErrorCode.DataTooLong;
+                ErrorString = Resources.LogbookEntry.errRouteTooLong;
                 return false;
             }
 
@@ -1136,29 +1117,29 @@ namespace MyFlightbook
         {
             if (DateTime.Compare(dtEngineStart, dtEngineEnd) > 0 && dtEngineStart.HasValue() && dtEngineEnd.HasValue())
             {
-                m_lastErr = ErrorCode.InvalidEngine;
-                szError = Resources.LogbookEntry.errInvalidEngineTimes;
+                LastError = ErrorCode.InvalidEngine;
+                ErrorString = Resources.LogbookEntry.errInvalidEngineTimes;
                 return false;
             }
 
             if (DateTime.Compare(dtFlightStart, dtFlightEnd) > 0 && dtFlightStart.HasValue() && dtFlightEnd.HasValue())
             {
-                m_lastErr = ErrorCode.InvalidFlight;
-                szError = Resources.LogbookEntry.errInvalidFlightTimes;
+                LastError = ErrorCode.InvalidFlight;
+                ErrorString = Resources.LogbookEntry.errInvalidFlightTimes;
                 return false;
             }
 
             if (Date.Year < 1900)
             {
-                m_lastErr = ErrorCode.InvalidDate;
-                szError = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errInvalidFlightDateEarly, Date.ToShortDateString());
+                LastError = ErrorCode.InvalidDate;
+                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errInvalidFlightDateEarly, Date.ToShortDateString());
                 return false;
             }
 
             if (DateTime.Compare(Date, DateTime.Now.AddDays(2)) > 0)
             {
-                m_lastErr = ErrorCode.InvalidDate;
-                szError = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errInvalidFlightDateFuture, Date.ToShortDateString());
+                LastError = ErrorCode.InvalidDate;
+                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errInvalidFlightDateFuture, Date.ToShortDateString());
                 return false;
             }
 
@@ -1190,8 +1171,8 @@ namespace MyFlightbook
 
             if (cApproachProperties > Approaches)
             {
-                m_lastErr = ErrorCode.InvalidApproaches;
-                szError = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errApproachPropertiesExceedApproachCount, Approaches, cApproachProperties);
+                LastError = ErrorCode.InvalidApproaches;
+                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errApproachPropertiesExceedApproachCount, Approaches, cApproachProperties);
                 return false;
             }
 
@@ -1204,8 +1185,8 @@ namespace MyFlightbook
 
             if (cNightTakeoffs < cDescribedNightTakeoffs)
             {
-                m_lastErr = ErrorCode.InvalidNightTakeoffs;
-                szError = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errNightTakeoffPropertiesExceedNightTakeoffCount, cNightTakeoffs, cDescribedNightTakeoffs);
+                LastError = ErrorCode.InvalidNightTakeoffs;
+                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errNightTakeoffPropertiesExceedNightTakeoffCount, cNightTakeoffs, cDescribedNightTakeoffs);
                 return false;
             }
 
@@ -1253,10 +1234,10 @@ namespace MyFlightbook
         /// <returns></returns>
         private bool ValidateAircraft()
         {
-            if (idAircraft < 0)
+            if (AircraftID < 0)
             {
-                m_lastErr = ErrorCode.InvalidAircraft;
-                szError = Resources.LogbookEntry.errInvalidAircraft;
+                LastError = ErrorCode.InvalidAircraft;
+                ErrorString = Resources.LogbookEntry.errInvalidAircraft;
                 return false;
             }
 
@@ -1265,15 +1246,15 @@ namespace MyFlightbook
             Aircraft ac = ua.GetUserAircraftByID(this.AircraftID);
             if (ac == null)
             {
-                m_lastErr = ErrorCode.InvalidAircraft;
-                szError = Resources.LogbookEntry.errInvalidAircraft;
+                LastError = ErrorCode.InvalidAircraft;
+                ErrorString = Resources.LogbookEntry.errInvalidAircraft;
                 return false;
             }
 
             if (NightLandings > 0 && Nighttime == 0.0M && ac.InstanceType == AircraftInstanceTypes.RealAircraft)
             {
-                m_lastErr = ErrorCode.MissingNight;
-                szError = Resources.LogbookEntry.errNoNightFlight;
+                LastError = ErrorCode.MissingNight;
+                ErrorString = Resources.LogbookEntry.errNoNightFlight;
                 return false;
             }
 
@@ -1290,8 +1271,8 @@ namespace MyFlightbook
         {
             if (String.IsNullOrEmpty(User))
             {
-                m_lastErr = ErrorCode.InvalidUser;
-                szError = Resources.LogbookEntry.errInvalidUser;
+                LastError = ErrorCode.InvalidUser;
+                ErrorString = Resources.LogbookEntry.errInvalidUser;
                 return false;
             }
 
@@ -1305,7 +1286,6 @@ namespace MyFlightbook
         #region Object Creation
         protected LogbookEntryBase()
         {
-            InitObject();
         }
         #endregion
 
@@ -1392,7 +1372,7 @@ namespace MyFlightbook
         public virtual bool FCommit(bool fUpdateFlightData = false, bool fUpdateSignature = false)
         {
             Boolean fResult = false;
-            szError = "";
+            ErrorString = string.Empty;
 
             if (!IsValid())
                 return fResult;
@@ -1495,7 +1475,7 @@ namespace MyFlightbook
                 });
             if (dbh.LastError.Length > 0)
             {
-                szError += "Exception: " + dbh.LastError;
+                ErrorString += "Exception: " + dbh.LastError;
                 return false;
             }
 
@@ -1545,36 +1525,11 @@ namespace MyFlightbook
             // Flights have changed, so aircraft stats are invalid.
             new UserAircraft(User).FlushStatsForUser();
 
-            return (szError.Length == 0);
+            return (ErrorString.Length == 0);
         }
         #endregion
 
         #region Initialization
-        /// <summary>
-        /// Initializes the LogbookEntry object
-        /// </summary>
-        private void InitObject()
-        {
-            FlightID = LogbookEntry.idFlightNew; // Assume this is a new entry
-            Date = DateTime.Now;    //today
-            User = String.Empty;
-            CrossCountry = Nighttime = IMC = SimulatedIFR = GroundSim = Dual = PIC = TotalFlightTime = CFI = SIC = 0.0M;
-            idAircraft = Aircraft.idAircraftUnknown;
-            Approaches = Landings = NightLandings = FullStopLandings = 0;
-            fHoldingProcedures = fIsPublic = false;
-            Comment = Route = szError = String.Empty;
-            m_lastErr = ErrorCode.None;
-            dtEngineStart = dtEngineEnd = dtFlightStart = dtFlightEnd = DateTime.MinValue;
-            HobbsStart = HobbsEnd = 0.0M;
-            fHasDataStream = false;
-            CatClassOverride = 0;
-            CatClassDisplay = ModelDisplay = TailNumDisplay = String.Empty;
-            CFISignatureState = SignatureState.None;
-            CustomProperties = new CustomPropertyCollection();
-            Videos = new Collection<VideoRef>();
-            Telemetry = new TelemetryReference();
-        }
-
         /// <summary>
         /// Given a row in a result set, initializes a logbook entry from the row.  You have to provide the expected username for this to work (weak security)
         /// </summary>
@@ -1592,7 +1547,7 @@ namespace MyFlightbook
                     FlightID = Convert.ToInt32(dr["idFlight"], CultureInfo.InvariantCulture);
                     User = dr["username"].ToString();
                     Date = Convert.ToDateTime(dr["date"], CultureInfo.InvariantCulture);
-                    idAircraft = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture);
+                    AircraftID = Convert.ToInt32(dr["idaircraft"], CultureInfo.InvariantCulture);
                     CatClassOverride = Convert.ToInt32(dr["idCatClassOverride"], CultureInfo.InvariantCulture);
                     Approaches = Convert.ToInt32(dr["cInstrumentApproaches"], CultureInfo.InvariantCulture);
                     Landings = Convert.ToInt32(dr["cLandings"], CultureInfo.InvariantCulture);
@@ -1612,10 +1567,10 @@ namespace MyFlightbook
                     Comment = util.ReadNullableString(dr, "Comments");
                     Route = util.ReadNullableString(dr, "Route");
                     fIsPublic = Convert.ToBoolean(dr["fPublic"], CultureInfo.InvariantCulture);
-                    fHasDataStream = (Convert.ToInt32(dr["FlightDataLength"], CultureInfo.InvariantCulture) > 0);
+                    HasFlightData = (Convert.ToInt32(dr["FlightDataLength"], CultureInfo.InvariantCulture) > 0);
                     Telemetry = new TelemetryReference(dr);   // will check for DBNull
 
-                    if (fHasDataStream && lto != LoadTelemetryOption.None)
+                    if (HasFlightData && lto != LoadTelemetryOption.None)
                     {
                         string szData = dr["FlightData"].ToString();
                         if (String.IsNullOrEmpty(szData) && lto == LoadTelemetryOption.LoadAll)
@@ -1654,7 +1609,7 @@ namespace MyFlightbook
                     HasDigitizedSig = Convert.ToBoolean(dr["HasDigitizedSignature"], CultureInfo.InvariantCulture);
 
                     // Get descriptor fields.  These are read but never written
-                    ModelDisplay = util.ReadNullableField(dr, "ModelDisplay", "").ToString();
+                    ModelDisplay = util.ReadNullableField(dr, "ModelDisplay", string.Empty).ToString();
                     CatClassDisplay = util.ReadNullableField(dr, "CatClassDisplay", string.Empty).ToString();
                     TailNumDisplay = util.ReadNullableField(dr, "TailNumberdisplay", string.Empty).ToString();
 
@@ -1669,8 +1624,8 @@ namespace MyFlightbook
                 }
                 else
                 {
-                    m_lastErr = ErrorCode.NotOwned;
-                    szError = String.Format(CultureInfo.InvariantCulture, "User {0} does not have access to this object (flight {1}).", szUser, dr["idFlight"]);
+                    LastError = ErrorCode.NotOwned;
+                    ErrorString = String.Format(CultureInfo.InvariantCulture, "User {0} does not have access to this object (flight {1}).", szUser, dr["idFlight"]);
                     return false;
                 }
             }
@@ -1769,10 +1724,10 @@ namespace MyFlightbook
                         fResult = InitFromDataReader(dr, szUserName, lto);
                         additionalInit?.Invoke(dr);
                     }))
-                    szError += dbh.LastError;
+                    ErrorString += dbh.LastError;
 
                 if (!fRowFound)
-                    m_lastErr = ErrorCode.NotFound;
+                    LastError = ErrorCode.NotFound;
             }
             else
                 fResult = true; // always succeed for a new flight
