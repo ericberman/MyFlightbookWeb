@@ -30,7 +30,7 @@ namespace MyFlightbook
     /// Represents a logbook entry, including validation.  Supports retrieval from the database, updates, and entry of new rows
     /// </summary>
     [Serializable]
-    public abstract class LogbookEntryBase
+    public abstract class LogbookEntryCore
     {
         public const int idFlightNew = -1;
         public const int idFlightNone = -1;
@@ -48,7 +48,7 @@ namespace MyFlightbook
         ///  - MetadataOrDB = load any metadata OR load raw data if it's in the DB.  (If telemetry only, don't bother loading from the file)
         ///  - LoadAll - actually load the telemetry.
         /// </summary>
-        public enum LoadTelemetryOption { None, MetadataOrDB, LoadAll}
+        public enum LoadTelemetryOption { None, MetadataOrDB, LoadAll }
 
         #region Properties
         /// <summary>
@@ -306,6 +306,377 @@ namespace MyFlightbook
         /// </summary>
         public Collection<VideoRef> Videos { get; private set; } = new Collection<VideoRef>();
 
+        #region Display
+        /// <summary>
+        /// Quick & Dirty display string
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public string DisplayString
+        {
+            get { return this.ToString(); }
+        }
+
+        public override string ToString()
+        {
+            return String.Format(CultureInfo.CurrentCulture, "{0:d}: {1}{2} {3}", this.Date, String.IsNullOrEmpty(this.TailNumDisplay) ? String.Empty : String.Format(CultureInfo.CurrentCulture, "({0}) ", this.TailNumDisplay), this.Comment, this.Route);
+        }
+
+        /// <summary>
+        /// Displays just date, tail, and route (no comments)
+        /// </summary>
+        /// <returns>A string with just date, tail, and route.</returns>
+        public string ToShortString()
+        {
+            return String.Format(CultureInfo.CurrentCulture, "{0:d}: {1}{2}", this.Date, String.IsNullOrEmpty(this.TailNumDisplay) ? String.Empty : String.Format(CultureInfo.CurrentCulture, "({0}) ", this.TailNumDisplay), this.Route);
+        }
+        #endregion
+
+        // These are overridden in child classes; declared here so that we don't have to expose LogbookEntryBase serializable
+        public virtual string SendFlightLink { get; set; }
+        public virtual string SocialMediaLink { get; set; }
+        #endregion
+
+        public Boolean IsNewFlight
+        {
+            get { return IsNewFlightID(FlightID); }
+        }
+
+        public static Boolean IsNewFlightID(int idFlight)
+        {
+            return idFlight == LogbookEntry.idFlightNew || idFlight == LogbookEntry.idFlightNone || idFlight < 0;
+        }
+
+        #region Comparison
+        private bool HasEqualDates(LogbookEntryBase le)
+        {
+            return Date.Year == le.Date.Year &&
+                Date.Month == le.Date.Month &&
+                Date.Day == le.Date.Day &&
+                DateTime.Compare(EngineEnd, le.EngineEnd) == 0 &&
+                DateTime.Compare(EngineStart, le.EngineStart) == 0 &&
+                DateTime.Compare(FlightEnd, le.FlightEnd) == 0 &&
+                DateTime.Compare(FlightStart, le.FlightStart) == 0;
+        }
+
+        private bool HasEqualStrings(LogbookEntryBase le)
+        {
+            return String.Compare(Comment, le.Comment, StringComparison.CurrentCultureIgnoreCase) == 0 &&
+                   String.Compare(this.Route, le.Route, StringComparison.CurrentCultureIgnoreCase) == 0 &&
+                   String.Compare(this.User, le.User, StringComparison.OrdinalIgnoreCase) == 0;
+        }
+
+        private bool HasEqualFields(LogbookEntryBase le)
+        {
+            return Approaches == le.Approaches &&
+                CatClassOverride == le.CatClassOverride &&
+                CFI.EqualsToPrecision(le.CFI) &&
+                CrossCountry.EqualsToPrecision(le.CrossCountry) &&
+                Dual.EqualsToPrecision(le.Dual) &&
+                fHoldingProcedures == le.fHoldingProcedures &&
+                FullStopLandings == le.FullStopLandings &&
+                GroundSim.EqualsToPrecision(le.GroundSim) &&
+                HobbsEnd.EqualsToPrecision(le.HobbsEnd) &&
+                HobbsStart.EqualsToPrecision(le.HobbsStart) &&
+                IMC.EqualsToPrecision(le.IMC) &&
+                Landings == le.Landings &&
+                NightLandings == le.NightLandings &&
+                Nighttime.EqualsToPrecision(le.Nighttime) &&
+                PIC.EqualsToPrecision(le.PIC) &&
+                SIC.EqualsToPrecision(le.SIC) &&
+                SimulatedIFR.EqualsToPrecision(le.SimulatedIFR) &&
+                TotalFlightTime.EqualsToPrecision(le.TotalFlightTime);
+        }
+
+        /// <summary>
+        /// Determines if this is semantically the same as another LogbookEntry object.
+        /// </summary>
+        /// <param name="le">The LogbookEntry to compare</param>
+        /// <returns>true if they are semantically the same</returns>
+        public bool IsEqualTo(LogbookEntryBase le)
+        {
+            // If both are null, or both are same instance, return true.
+            if (ReferenceEquals(this, le))
+                return true;
+
+            // if both are null, they are equal
+            if (this == null && le == null)
+                return true;
+
+            // if one is null and the other is not, they are not equal
+            if ((this == null) ^ (le == null))
+                return false;
+
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));  // shouldn't ever happen at this point!  But we suppress a warning...
+
+            // OK, now we're to the case where both are non-null but different references.
+            // See if the main properties are equal.
+            if (AircraftID != le.AircraftID ||
+                !HasEqualFields(le) ||
+                !HasEqualStrings(le) ||
+                !HasEqualDates(le))
+                return false;
+
+            if (this.CustomProperties.Count != le.CustomProperties.Count)
+                return false;
+
+            foreach (CustomFlightProperty cfp1 in this.CustomProperties)
+            {
+                // find the matching property in le
+                CustomFlightProperty cfp2 = null;
+                foreach (CustomFlightProperty cfp in le.CustomProperties)
+                    if (cfp.PropTypeID == cfp1.PropTypeID)
+                    {
+                        cfp2 = cfp;
+                        break;
+                    }
+
+                if (cfp2 == null || cfp2.ValueString.CompareCurrentCultureIgnoreCase(cfp1.ValueString) != 0)
+                    return false;
+            }
+
+            // Ignore images, etc.
+
+            return true;
+        }
+        #endregion
+
+        #region Validation
+        private bool ValidateMainFields()
+        {
+            if (CrossCountry < 0 || Nighttime < 0 || IMC < 0 || SimulatedIFR < 0 || GroundSim < 0 || Dual < 0 || PIC < 0 || TotalFlightTime < 0 || CFI < 0 || SIC < 0)
+            {
+                LastError = ErrorCode.NegativeTime;
+                ErrorString = Resources.LogbookEntry.errInvalidTime;
+                return false;
+            }
+
+            if (Landings < 0 || NightLandings < 0 || FullStopLandings < 0 || Approaches < 0)
+            {
+                LastError = ErrorCode.NegativeCount;
+                ErrorString = Resources.LogbookEntry.errCantBeNegativeCount;
+                return false;
+            }
+
+            if (HobbsEnd < 0 || HobbsStart < 0)
+            {
+                LastError = ErrorCode.InvalidHobbs;
+                ErrorString = Resources.LogbookEntry.errHobbsTimesNegative;
+                return false;
+            }
+
+            if (HobbsStart > 0 && HobbsEnd > 0 && (HobbsEnd < HobbsStart))
+            {
+                LastError = ErrorCode.InvalidHobbs;
+                ErrorString = Resources.LogbookEntry.errInvalidHobbs;
+                return false;
+            }
+
+            // If FS landings are specified, but no general landings, then set the general landings
+            if (Landings == 0 && (FullStopLandings + NightLandings) > 0)
+                Landings = FullStopLandings + NightLandings;
+
+            if (FullStopLandings + NightLandings > Landings)
+            {
+                LastError = ErrorCode.InvalidLandings;
+                ErrorString = Resources.LogbookEntry.errTooManyFSLandings;
+                return false;
+            }
+
+            if (Comment.Length > 13000)
+            {
+                LastError = ErrorCode.DataTooLong;
+                ErrorString = Resources.LogbookEntry.errCommentsTooLong;
+                return false;
+            }
+
+            if (Route.Length > 128)
+            {
+                LastError = ErrorCode.DataTooLong;
+                ErrorString = Resources.LogbookEntry.errRouteTooLong;
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ValidateDateTimeFields()
+        {
+            if (DateTime.Compare(dtEngineStart, dtEngineEnd) > 0 && dtEngineStart.HasValue() && dtEngineEnd.HasValue())
+            {
+                LastError = ErrorCode.InvalidEngine;
+                ErrorString = Resources.LogbookEntry.errInvalidEngineTimes;
+                return false;
+            }
+
+            if (DateTime.Compare(dtFlightStart, dtFlightEnd) > 0 && dtFlightStart.HasValue() && dtFlightEnd.HasValue())
+            {
+                LastError = ErrorCode.InvalidFlight;
+                ErrorString = Resources.LogbookEntry.errInvalidFlightTimes;
+                return false;
+            }
+
+            if (Date.Year < 1900)
+            {
+                LastError = ErrorCode.InvalidDate;
+                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errInvalidFlightDateEarly, Date.ToShortDateString());
+                return false;
+            }
+
+            if (DateTime.Compare(Date, DateTime.Now.AddDays(2)) > 0)
+            {
+                LastError = ErrorCode.InvalidDate;
+                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errInvalidFlightDateFuture, Date.ToShortDateString());
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ValidateApproaches()
+        {
+            // sum up total approaches in properties and night takeoffs
+            int cApproachProperties = 0;
+            int cNightTakeoffs = 0, cDescribedNightTakeoffs = 0;
+            CustomFlightProperty cfpNightTakeoffs = null;
+            foreach (CustomFlightProperty cfp in CustomProperties)
+            {
+                if (cfp.PropertyType.IsApproach)
+                    cApproachProperties += cfp.IntValue;
+                else if (cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff)
+                {
+                    cfpNightTakeoffs = cfp;
+                    cNightTakeoffs = cfp.IntValue;
+                }
+                else if (cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffToweredNight || cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffUntoweredNight)
+                    cDescribedNightTakeoffs += cfp.IntValue;
+            }
+
+            // No approach count specified - just set it as a convenience (as we did above for landings); otherwise, be conservative and report an error.
+            if (Approaches == 0 && cApproachProperties > 0)
+                Approaches = cApproachProperties;
+
+            if (cApproachProperties > Approaches)
+            {
+                LastError = ErrorCode.InvalidApproaches;
+                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errApproachPropertiesExceedApproachCount, Approaches, cApproachProperties);
+                return false;
+            }
+
+            // do the same for night takeoffs
+            if (cfpNightTakeoffs == null && cNightTakeoffs == 0 && cDescribedNightTakeoffs > 0)
+            {
+                cNightTakeoffs = cDescribedNightTakeoffs;
+                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, cNightTakeoffs));
+            }
+
+            if (cNightTakeoffs < cDescribedNightTakeoffs)
+            {
+                LastError = ErrorCode.InvalidNightTakeoffs;
+                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errNightTakeoffPropertiesExceedNightTakeoffCount, cNightTakeoffs, cDescribedNightTakeoffs);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Performs auto-fill based on the pilot role specified in the aircraft.
+        /// </summary>
+        /// <param name="ac"></param>
+        public void AutofillForAircraft(Aircraft ac)
+        {
+            if (ac == null)
+                throw new ArgumentNullException(nameof(ac));
+
+            if (IsNewFlight)
+            {
+                switch (ac.RoleForPilot)
+                {
+                    default:
+                    case Aircraft.PilotRole.None:
+                        break;
+                    case Aircraft.PilotRole.CFI:
+                        if (CFI == 0)
+                            CFI = TotalFlightTime;
+                        break;
+                    case Aircraft.PilotRole.PIC:
+                        if (PIC == 0)
+                            PIC = TotalFlightTime;
+                        break;
+                    case Aircraft.PilotRole.SIC:
+                        if (SIC == 0)
+                            SIC = TotalFlightTime;
+                        break;
+                }
+
+                if (ac.CopyPICNameWithCrossfill && !CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropNameOfPIC))
+                    CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfPIC, Profile.GetUser(User).UserFullName));
+            }
+        }
+
+        /// <summary>
+        /// Validates the aircraft for the flight.  THIS PERFORMS AUTOFILL based on aircraft preferences, so it can modify the flight.
+        /// </summary>
+        /// <returns></returns>
+        private bool ValidateAircraft()
+        {
+            if (AircraftID < 0)
+            {
+                LastError = ErrorCode.InvalidAircraft;
+                ErrorString = Resources.LogbookEntry.errInvalidAircraft;
+                return false;
+            }
+
+            // Check that the aircraft is actually known for the user and, if flags are set, auto-set CFI/PIC/SIC
+            UserAircraft ua = new UserAircraft(User);
+            Aircraft ac = ua.GetUserAircraftByID(this.AircraftID);
+            if (ac == null)
+            {
+                LastError = ErrorCode.InvalidAircraft;
+                ErrorString = Resources.LogbookEntry.errInvalidAircraft;
+                return false;
+            }
+
+            if (NightLandings > 0 && Nighttime == 0.0M && ac.InstanceType == AircraftInstanceTypes.RealAircraft)
+            {
+                LastError = ErrorCode.MissingNight;
+                ErrorString = Resources.LogbookEntry.errNoNightFlight;
+                return false;
+            }
+
+            AutofillForAircraft(ac);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Verify that this logbook row is valid.  Calls ValidateAircraft, which can modify the flight (by performing autofill)
+        /// </summary>
+        /// <returns>True if it is OK, false if not</returns>
+        public Boolean IsValid()
+        {
+            if (String.IsNullOrEmpty(User))
+            {
+                LastError = ErrorCode.InvalidUser;
+                ErrorString = Resources.LogbookEntry.errInvalidUser;
+                return false;
+            }
+
+            return ValidateMainFields() &&
+                ValidateDateTimeFields() &&
+                ValidateApproaches() &&
+                ValidateAircraft();
+        }
+        #endregion
+
+        protected LogbookEntryCore() { }
+    }
+
+    [Serializable]
+    public abstract class LogbookEntryBase : LogbookEntryCore
+    {
+        #region SignedFlight Properties
         #region Signature properties
         /// <summary>
         /// The hash of the flight that was signed.  This must equal the newly computed hash of the flight in order for the signature to be valid.
@@ -368,21 +739,8 @@ namespace MyFlightbook
         /// Does this have a digitized sig?
         /// </summary>
         public bool HasDigitizedSig { get; set; }
-
-        /// <summary>
-        /// Quick & Dirty display string
-        /// </summary>
-        [Newtonsoft.Json.JsonIgnore]
-        public string DisplayString
-        {
-            get { return this.ToString(); }
-        }
-
         #endregion
 
-        // These are overridden in child classes; declared here so that we don't have to expose LogbookEntryBase serializable
-        public virtual string SendFlightLink { get; set; }
-        public virtual string SocialMediaLink { get; set; }
         #endregion
 
         #region SignedFlights
@@ -877,111 +1235,6 @@ namespace MyFlightbook
         #endregion
         #endregion
 
-        public Boolean IsNewFlight
-        {
-            get { return IsNewFlightID(FlightID); }
-        }
-
-        public static Boolean IsNewFlightID(int idFlight)
-        {
-            return idFlight == LogbookEntry.idFlightNew || idFlight == LogbookEntry.idFlightNone || idFlight < 0;
-        }
-
-        #region Comparison
-        private bool HasEqualDates(LogbookEntryBase le)
-        {
-            return Date.Year == le.Date.Year &&
-                Date.Month == le.Date.Month &&
-                Date.Day == le.Date.Day &&
-                DateTime.Compare(EngineEnd, le.EngineEnd) == 0 &&
-                DateTime.Compare(EngineStart, le.EngineStart) == 0 &&
-                DateTime.Compare(FlightEnd, le.FlightEnd) == 0 &&
-                DateTime.Compare(FlightStart, le.FlightStart) == 0;
-        }
-
-        private bool HasEqualStrings(LogbookEntryBase le)
-        {
-            return String.Compare(Comment, le.Comment, StringComparison.CurrentCultureIgnoreCase) == 0 && 
-                   String.Compare(this.Route, le.Route, StringComparison.CurrentCultureIgnoreCase) == 0 &&
-                   String.Compare(this.User, le.User, StringComparison.OrdinalIgnoreCase) == 0;
-        }
-
-        private bool HasEqualFields(LogbookEntryBase le)
-        {
-            return Approaches == le.Approaches &&
-                CatClassOverride == le.CatClassOverride &&
-                CFI.EqualsToPrecision(le.CFI) &&
-                CrossCountry.EqualsToPrecision(le.CrossCountry) &&
-                Dual.EqualsToPrecision(le.Dual) &&
-                fHoldingProcedures == le.fHoldingProcedures &&
-                FullStopLandings == le.FullStopLandings &&
-                GroundSim.EqualsToPrecision(le.GroundSim) &&
-                HobbsEnd.EqualsToPrecision(le.HobbsEnd) &&
-                HobbsStart.EqualsToPrecision(le.HobbsStart) &&
-                IMC.EqualsToPrecision(le.IMC) &&
-                Landings == le.Landings &&
-                NightLandings == le.NightLandings &&
-                Nighttime.EqualsToPrecision(le.Nighttime) &&
-                PIC.EqualsToPrecision(le.PIC) &&
-                SIC.EqualsToPrecision(le.SIC) &&
-                SimulatedIFR.EqualsToPrecision(le.SimulatedIFR) &&
-                TotalFlightTime.EqualsToPrecision(le.TotalFlightTime);
-        }
-
-        /// <summary>
-        /// Determines if this is semantically the same as another LogbookEntry object.
-        /// </summary>
-        /// <param name="le">The LogbookEntry to compare</param>
-        /// <returns>true if they are semantically the same</returns>
-        public bool IsEqualTo(LogbookEntryBase le)
-        {
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(this, le))
-                return true;
-
-            // if both are null, they are equal
-            if (this == null && le == null)
-                return true;
-
-            // if one is null and the other is not, they are not equal
-            if ((this == null) ^ (le == null))
-                return false;
-
-            if (le == null)
-                throw new ArgumentNullException(nameof(le));  // shouldn't ever happen at this point!  But we suppress a warning...
-
-            // OK, now we're to the case where both are non-null but different references.
-            // See if the main properties are equal.
-            if (AircraftID != le.AircraftID ||
-                !HasEqualFields(le) || 
-                !HasEqualStrings(le) || 
-                !HasEqualDates(le))
-                return false;
-
-            if (this.CustomProperties.Count != le.CustomProperties.Count)
-                return false;
-
-            foreach (CustomFlightProperty cfp1 in this.CustomProperties)
-            {
-                // find the matching property in le
-                CustomFlightProperty cfp2 = null;
-                foreach (CustomFlightProperty cfp in le.CustomProperties)
-                    if (cfp.PropTypeID == cfp1.PropTypeID)
-                    {
-                        cfp2 = cfp;
-                        break;
-                    }
-
-                if (cfp2 == null || cfp2.ValueString.CompareCurrentCultureIgnoreCase(cfp1.ValueString) != 0)
-                    return false;
-            }
-
-            // Ignore images, etc.
-
-            return true;
-        }
-        #endregion
-
         /// <summary>
         /// Clones the current flight as a new flight
         /// </summary>
@@ -1056,237 +1309,8 @@ namespace MyFlightbook
             return comm;
         }
 
-        #region Validation
-        private bool ValidateMainFields()
-        {
-            if (CrossCountry < 0 || Nighttime < 0 || IMC < 0 || SimulatedIFR < 0 || GroundSim < 0 || Dual < 0 || PIC < 0 || TotalFlightTime < 0 || CFI < 0 || SIC < 0)
-            {
-                LastError = ErrorCode.NegativeTime;
-                ErrorString = Resources.LogbookEntry.errInvalidTime;
-                return false;
-            }
-
-            if (Landings < 0 || NightLandings < 0 || FullStopLandings < 0 || Approaches < 0)
-            {
-                LastError = ErrorCode.NegativeCount;
-                ErrorString = Resources.LogbookEntry.errCantBeNegativeCount;
-                return false;
-            }
-
-            if (HobbsEnd < 0 || HobbsStart < 0)
-            {
-                LastError = ErrorCode.InvalidHobbs;
-                ErrorString = Resources.LogbookEntry.errHobbsTimesNegative;
-                return false;
-            }
-
-            if (HobbsStart > 0 && HobbsEnd > 0 && (HobbsEnd < HobbsStart))
-            {
-                LastError = ErrorCode.InvalidHobbs;
-                ErrorString = Resources.LogbookEntry.errInvalidHobbs;
-                return false;
-            }
-
-            // If FS landings are specified, but no general landings, then set the general landings
-            if (Landings == 0 && (FullStopLandings + NightLandings) > 0)
-                Landings = FullStopLandings + NightLandings;
-
-            if (FullStopLandings + NightLandings > Landings)
-            {
-                LastError = ErrorCode.InvalidLandings;
-                ErrorString = Resources.LogbookEntry.errTooManyFSLandings;
-                return false;
-            }
-
-            if (Comment.Length > 13000)
-            {
-                LastError = ErrorCode.DataTooLong;
-                ErrorString = Resources.LogbookEntry.errCommentsTooLong;
-                return false;
-            }
-
-            if (Route.Length > 128)
-            {
-                LastError = ErrorCode.DataTooLong;
-                ErrorString = Resources.LogbookEntry.errRouteTooLong;
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool ValidateDateTimeFields()
-        {
-            if (DateTime.Compare(dtEngineStart, dtEngineEnd) > 0 && dtEngineStart.HasValue() && dtEngineEnd.HasValue())
-            {
-                LastError = ErrorCode.InvalidEngine;
-                ErrorString = Resources.LogbookEntry.errInvalidEngineTimes;
-                return false;
-            }
-
-            if (DateTime.Compare(dtFlightStart, dtFlightEnd) > 0 && dtFlightStart.HasValue() && dtFlightEnd.HasValue())
-            {
-                LastError = ErrorCode.InvalidFlight;
-                ErrorString = Resources.LogbookEntry.errInvalidFlightTimes;
-                return false;
-            }
-
-            if (Date.Year < 1900)
-            {
-                LastError = ErrorCode.InvalidDate;
-                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errInvalidFlightDateEarly, Date.ToShortDateString());
-                return false;
-            }
-
-            if (DateTime.Compare(Date, DateTime.Now.AddDays(2)) > 0)
-            {
-                LastError = ErrorCode.InvalidDate;
-                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errInvalidFlightDateFuture, Date.ToShortDateString());
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool ValidateApproaches()
-        {
-            // sum up total approaches in properties and night takeoffs
-            int cApproachProperties = 0;
-            int cNightTakeoffs = 0, cDescribedNightTakeoffs = 0;
-            CustomFlightProperty cfpNightTakeoffs = null;
-            foreach (CustomFlightProperty cfp in CustomProperties)
-            {
-                if (cfp.PropertyType.IsApproach)
-                    cApproachProperties += cfp.IntValue;
-                else if (cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff)
-                {
-                    cfpNightTakeoffs = cfp;
-                    cNightTakeoffs = cfp.IntValue;
-                }
-                else if (cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffToweredNight || cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTakeoffUntoweredNight)
-                    cDescribedNightTakeoffs += cfp.IntValue;
-            }
-
-            // No approach count specified - just set it as a convenience (as we did above for landings); otherwise, be conservative and report an error.
-            if (Approaches == 0 && cApproachProperties > 0)
-                Approaches = cApproachProperties;
-
-            if (cApproachProperties > Approaches)
-            {
-                LastError = ErrorCode.InvalidApproaches;
-                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errApproachPropertiesExceedApproachCount, Approaches, cApproachProperties);
-                return false;
-            }
-
-            // do the same for night takeoffs
-            if (cfpNightTakeoffs == null && cNightTakeoffs == 0 && cDescribedNightTakeoffs > 0)
-            {
-                cNightTakeoffs = cDescribedNightTakeoffs;
-                CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNightTakeoff, cNightTakeoffs));
-            }
-
-            if (cNightTakeoffs < cDescribedNightTakeoffs)
-            {
-                LastError = ErrorCode.InvalidNightTakeoffs;
-                ErrorString = String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errNightTakeoffPropertiesExceedNightTakeoffCount, cNightTakeoffs, cDescribedNightTakeoffs);
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Performs auto-fill based on the pilot role specified in the aircraft.
-        /// </summary>
-        /// <param name="ac"></param>
-        public void AutofillForAircraft(Aircraft ac)
-        {
-            if (ac == null)
-                throw new ArgumentNullException(nameof(ac));
-
-            if (IsNewFlight)
-            {
-                switch (ac.RoleForPilot)
-                {
-                    default:
-                    case Aircraft.PilotRole.None:
-                        break;
-                    case Aircraft.PilotRole.CFI:
-                        if (CFI == 0)
-                            CFI = TotalFlightTime;
-                        break;
-                    case Aircraft.PilotRole.PIC:
-                        if (PIC == 0)
-                            PIC = TotalFlightTime;
-                        break;
-                    case Aircraft.PilotRole.SIC:
-                        if (SIC == 0)
-                            SIC = TotalFlightTime;
-                        break;
-                }
-
-                if (ac.CopyPICNameWithCrossfill && !CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropNameOfPIC))
-                    CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropNameOfPIC, Profile.GetUser(User).UserFullName));
-            }
-        }
-
-        /// <summary>
-        /// Validates the aircraft for the flight.  THIS PERFORMS AUTOFILL based on aircraft preferences, so it can modify the flight.
-        /// </summary>
-        /// <returns></returns>
-        private bool ValidateAircraft()
-        {
-            if (AircraftID < 0)
-            {
-                LastError = ErrorCode.InvalidAircraft;
-                ErrorString = Resources.LogbookEntry.errInvalidAircraft;
-                return false;
-            }
-
-            // Check that the aircraft is actually known for the user and, if flags are set, auto-set CFI/PIC/SIC
-            UserAircraft ua = new UserAircraft(User);
-            Aircraft ac = ua.GetUserAircraftByID(this.AircraftID);
-            if (ac == null)
-            {
-                LastError = ErrorCode.InvalidAircraft;
-                ErrorString = Resources.LogbookEntry.errInvalidAircraft;
-                return false;
-            }
-
-            if (NightLandings > 0 && Nighttime == 0.0M && ac.InstanceType == AircraftInstanceTypes.RealAircraft)
-            {
-                LastError = ErrorCode.MissingNight;
-                ErrorString = Resources.LogbookEntry.errNoNightFlight;
-                return false;
-            }
-
-            AutofillForAircraft(ac);
-
-            return true;
-        }
-
-        /// <summary>
-        /// Verify that this logbook row is valid.  Calls ValidateAircraft, which can modify the flight (by performing autofill)
-        /// </summary>
-        /// <returns>True if it is OK, false if not</returns>
-        public Boolean IsValid()
-        {
-            if (String.IsNullOrEmpty(User))
-            {
-                LastError = ErrorCode.InvalidUser;
-                ErrorString = Resources.LogbookEntry.errInvalidUser;
-                return false;
-            }
-
-            return ValidateMainFields() &&
-                ValidateDateTimeFields() &&
-                ValidateApproaches() &&
-                ValidateAircraft();
-        }
-        #endregion
-
         #region Object Creation
-        protected LogbookEntryBase()
+        protected LogbookEntryBase() : base()
         {
         }
         #endregion
@@ -1361,8 +1385,6 @@ namespace MyFlightbook
                 comm.Parameters.AddWithValue("user", szUser);
             });
         }
-
-        public const int MaxTelemetrySize = 300000;
 
         /// <summary>
         /// Commits this entry to the database.  This overwrites the existing entry if it was initially loaded from the DB, otherwise it is a new entry
@@ -1592,10 +1614,10 @@ namespace MyFlightbook
 
                     HobbsStart = Convert.ToDecimal(util.ReadNullableField(dr, "hobbsStart", 0.0M), CultureInfo.InvariantCulture);
                     HobbsEnd = Convert.ToDecimal(util.ReadNullableField(dr, "hobbsEnd", 0.0M), CultureInfo.InvariantCulture);
-                    dtEngineStart = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtEngineStart", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
-                    dtEngineEnd = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtEngineEnd", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
-                    dtFlightStart = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtFlightStart", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
-                    dtFlightEnd = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtFlightEnd", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
+                    EngineStart = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtEngineStart", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
+                    EngineEnd = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtEngineEnd", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
+                    FlightStart = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtFlightStart", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
+                    FlightEnd = DateTime.SpecifyKind(Convert.ToDateTime(util.ReadNullableField(dr, "dtFlightEnd", DateTime.MinValue), CultureInfo.InvariantCulture), DateTimeKind.Utc);
 
                     // Signature fields
                     FlightHash = (string)util.ReadNullableField(dr, "FlightHash", null);
@@ -1620,7 +1642,12 @@ namespace MyFlightbook
 
                     string szVids = dr["FlightVids"].ToString();
                     if (!String.IsNullOrEmpty(szVids))
-                        Videos = Newtonsoft.Json.JsonConvert.DeserializeObject<Collection<VideoRef>>(szVids);
+                    {
+                        IEnumerable<VideoRef> rgvr = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<VideoRef>>(szVids);
+                        Videos.Clear();
+                        foreach (VideoRef vr in rgvr)
+                            Videos.Add(vr);
+                    }
 
                     return true;
                 }
@@ -1785,268 +1812,7 @@ namespace MyFlightbook
                 dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("id", FlightID); });
             }
         }
-
-        /// <summary>
-        /// Returns the distances and average speed flown on this flight
-        /// </summary>
-        /// <param name="PathDistance">The pre-computed TELEMETRY distance in NM, if known (performance imprevement), or null</param>
-        /// <returns></returns>
-        public string GetPathDistanceDescription(double? PathDistance)
-        {
-            if (!PathDistance.HasValue && !String.IsNullOrEmpty(FlightData))
-            {
-                using (FlightData fd = new FlightData())
-                {
-                    fd.ParseFlightData(FlightData);
-                    if (fd.HasLatLongInfo)
-                        PathDistance = fd.ComputePathDistance();
-                }
-            }
-
-            MyFlightbook.Airports.AirportList al = new MyFlightbook.Airports.AirportList(Route);
-            double dRoute = al.DistanceForRoute();
-            double dMaxSegment = al.MaxSegmentForRoute();
-            double dMaxDistanceFromStart = al.MaxDistanceFromStartingAirport();
-            double dPath = PathDistance ?? 0.0;
-
-            double time = (FlightStart.HasValue() && FlightEnd.HasValue()) ? FlightEnd.Subtract(FlightStart).TotalHours : (double) TotalFlightTime;
-
-            List<string> lst = new List<string>();
-
-            if (dRoute + dPath > 0)
-            {
-                if (time > 0)
-                    lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightAverageSpeed, Math.Max(dPath, dRoute) / time));
-
-                if (dPath > 0)
-                    lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistancePathOnly, dPath));
-
-                if (dRoute > 0)
-                {
-                    lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceRouteOnly, dRoute));
-
-                    if (al.GetNormalizedAirports().Length > 2)
-                    {
-                        lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceLongestSegment, dMaxSegment));
-                        if (dMaxSegment != dMaxDistanceFromStart)
-                            lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceFurthestFromDeparture, dMaxDistanceFromStart));
-
-                        // Find the farthest airports from one another.
-                        Dictionary<string, airport> dictGroupedAirports = new Dictionary<string, airport>();
-                        // Group ports (no navaids, ad-hoc fixes, etc.) geographically
-                        foreach (airport ap in al.UniqueAirports)
-                            if (ap.IsPort)
-                                dictGroupedAirports[String.Format(CultureInfo.InvariantCulture, "{0:#.#00}{1:#.#00}", ap.LatLong.Latitude, ap.LatLong.Longitude)] = ap;
-
-                        List<airport> uniques = new List<airport>(dictGroupedAirports.Values);
-                        if (uniques.Count > 2)
-                        {
-                            airport ap1 = null, ap2 = null;
-                            double maxDist = 0;
-
-                            for (int i = 0; i < uniques.Count; i++)
-                            {
-                                for (int j = i + 1; j < uniques.Count; j++)
-                                {
-                                    double dist = uniques[i].DistanceFromAirport(uniques[j]);
-                                    if (dist > maxDist)
-                                    {
-                                        maxDist = dist;
-                                        ap1 = uniques[i];
-                                        ap2 = uniques[j];
-                                    }
-                                }
-                            }
-
-                            if (ap1 != null && ap2 != null && maxDist > 0)
-                                lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceFurthestPoints, ap1.Code, ap2.Code, maxDist));
-                        }
-                    }
-                }
-
-                return String.Join(Resources.LocalizedText.LocalizedSpace, lst);
-            }
-            return string.Empty;
-        }
         #endregion
-
-        #region subtotals (for printing, mostly)
-        /// <summary>
-        /// Adds totals of core time, landing, and approach values from one logbookentry object to this one; MODIFIES THE TARGET OBJECT (this)
-        /// Does addition via rounding method in the database (rounding to nearest minutes)
-        /// </summary>
-        /// <param name="le1"></param>
-        public virtual void AddFrom(LogbookEntry le)
-        {
-            if (le == null)
-                throw new ArgumentNullException(nameof(le));
-
-            Approaches += le.Approaches;
-
-            Landings += le.Landings;
-            NightLandings += le.NightLandings;
-            FullStopLandings += le.FullStopLandings;
-
-            CrossCountry = CrossCountry.AddMinutes(le.CrossCountry);
-            Dual = Dual.AddMinutes(le.Dual);
-            GroundSim = GroundSim.AddMinutes(le.GroundSim);
-            IMC = IMC.AddMinutes(le.IMC);
-            SimulatedIFR = SimulatedIFR.AddMinutes(le.SimulatedIFR);
-            Nighttime = Nighttime.AddMinutes(le.Nighttime);
-            CFI = CFI.AddMinutes(le.CFI);
-            SIC = SIC.AddMinutes(le.SIC);
-            PIC = PIC.AddMinutes(le.PIC);
-            TotalFlightTime = TotalFlightTime.AddMinutes(le.TotalFlightTime);
-        }
-
-        private static void MergeProperty(CustomFlightProperty cfpExisting, CustomFlightProperty cfp)
-        {
-            if (cfpExisting == null || cfp == null || cfp.PropertyType == null)
-                return;
-
-            switch (cfp.PropertyType.Type)
-            {
-                default:
-                case CFPPropertyType.cfpBoolean:
-                    break;
-                case CFPPropertyType.cfpCurrency:
-                    cfpExisting.DecValue = cfp.DecValue;
-                    break;
-                case CFPPropertyType.cfpDate:
-                case CFPPropertyType.cfpDateTime:
-                    switch (cfp.PropertyType.PropTypeID)
-                    {
-                        case (int)CustomPropertyType.KnownProperties.IDBlockOut:
-                        case (int)CustomPropertyType.KnownProperties.IDPropTachStart:
-                        case (int)CustomPropertyType.KnownProperties.IDPropDutyStart:
-                        case (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart:
-                            cfpExisting.DateValue = cfp.DateValue.EarlierDate(cfpExisting.DateValue);
-                            break;
-                        case (int)CustomPropertyType.KnownProperties.IDBlockIn:
-                        case (int)CustomPropertyType.KnownProperties.IDPropTachEnd:
-                        case (int)CustomPropertyType.KnownProperties.IDPropDutyEnd:
-                        case (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd:
-                            cfpExisting.DateValue = cfp.DateValue.LaterDate(cfpExisting.DateValue);
-                            break;
-                    }
-                    break;
-                case CFPPropertyType.cfpDecimal:
-                    if (cfp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
-                        cfpExisting.DecValue = Math.Min(cfpExisting.DecValue, cfp.DecValue);
-                    else if (cfp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachEnd)
-                        cfpExisting.DecValue = Math.Max(cfpExisting.DecValue, cfp.DecValue);
-                    else if (cfp.PropertyType.IsNoSum)
-                        cfpExisting.DecValue = cfp.DecValue;
-                    else
-                        cfpExisting.DecValue += cfp.DecValue;
-                    break;
-                case CFPPropertyType.cfpInteger:
-                    if (cfp.PropertyType.IsNoSum)
-                        cfpExisting.IntValue = cfp.IntValue;
-                    else
-                        cfpExisting.IntValue += cfp.IntValue;
-                    break;
-                case CFPPropertyType.cfpString:
-                    cfpExisting.TextValue = cfp.TextValue;
-                    break;
-            }
-        }
-
-        private void MergePropertiesFrom(List<CustomFlightProperty> lstCfpThis, LogbookEntry le)
-        {
-            if (le == null)
-                return;
-            // Merge properties, being smart on tach, block, duty, and flight duty time.
-            if (le.CustomProperties != null)
-            {
-                foreach (CustomFlightProperty cfp in le.CustomProperties)
-                {
-                    CustomFlightProperty cfpExisting = lstCfpThis.FirstOrDefault(fp => fp.PropTypeID == cfp.PropTypeID);
-                    if (cfpExisting == null)
-                    {
-                        cfp.FlightID = FlightID;
-                        lstCfpThis.Add(cfp);
-                    }
-                    else
-                        MergeProperty(cfpExisting, cfp);
-                }
-            }
-        }
-
-        private void MergeImagesFrom(LogbookEntry le)
-        {
-            if (le.FlightImages != null)
-            {
-                foreach (MFBImageInfo mfbii in le.FlightImages)
-                    mfbii.MoveImage(FlightID.ToString(CultureInfo.InvariantCulture));
-            }
-        }
-
-        /// <summary>
-        /// Merges this flight with a set of other flights.  All flights should have telemetry and images populated.
-        /// THIS IS DESTRUCTIVE - the other flights will be deleted!!!
-        /// </summary>
-        /// <param name="lst">The enumerable of other flights with which to merge</param>
-        public void MergeFrom(IEnumerable<LogbookEntry> lst)
-        {
-            if (lst == null || !lst.Any())
-                return;
-
-            List<CustomFlightProperty> lstCfpThis = new List<CustomFlightProperty>(CustomProperties);
-
-            List<TelemetryReference> lstPaths = new List<TelemetryReference>();
-
-            if (HasFlightData)
-                lstPaths.Add(Telemetry);
-
-            foreach (LogbookEntry le in lst)
-            {
-                AddFrom(le);
-                Comment = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Comment, le.Comment);
-                string[] newAirports = Regex.Split(le.Route, "\\W", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                foreach (string airport in newAirports)
-                    if (!Route.TrimEnd().EndsWith(airport, StringComparison.CurrentCultureIgnoreCase))
-                        Route = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Route, airport);
-                HobbsStart = (HobbsStart == 0.0M || le.HobbsStart == 0.0M) ? Math.Max(HobbsStart, le.HobbsStart) : Math.Min(HobbsStart, le.HobbsStart);
-                HobbsEnd = Math.Max(this.HobbsEnd, le.HobbsEnd);
-                EngineStart = (!EngineStart.HasValue() || !le.EngineStart.HasValue()) ? EngineStart.LaterDate(le.EngineStart) : EngineStart.EarlierDate(le.EngineStart);
-                EngineEnd = EngineEnd.LaterDate(le.EngineEnd);
-                FlightStart = (!FlightStart.HasValue() || !le.FlightStart.HasValue()) ? FlightStart.LaterDate(le.FlightStart) : FlightStart.EarlierDate(le.FlightStart);
-                FlightEnd = FlightEnd.LaterDate(le.FlightEnd);
-
-                MergePropertiesFrom(lstCfpThis, le);
-                MergeImagesFrom(le);
-                if (le.HasFlightData)
-                    lstPaths.Add(le.Telemetry);
-            }
-
-            CustomProperties.SetItems(lstCfpThis);
-            TelemetryReference tr = TelemetryReference.MergedTelemetry(lstPaths, FlightID);
-            if (tr != null)
-                FlightData = tr.RawData;
-
-            // Commit this flight
-            ((LogbookEntry) this).FCommit(true, false);
-
-            // And delete the input flights
-            foreach (LogbookEntry le in lst)
-                LogbookEntry.FDeleteEntry(le.FlightID, le.User);
-        }
-        #endregion
-
-        public override string ToString()
-        {
-            return String.Format(CultureInfo.CurrentCulture, "{0:d}: {1}{2} {3}", this.Date, String.IsNullOrEmpty(this.TailNumDisplay) ? String.Empty : String.Format(CultureInfo.CurrentCulture, "({0}) ", this.TailNumDisplay), this.Comment, this.Route);
-        }
-
-        /// <summary>
-        /// Displays just date, tail, and route (no comments)
-        /// </summary>
-        /// <returns>A string with just date, tail, and route.</returns>
-        public string ToShortString()
-        {
-            return String.Format(CultureInfo.CurrentCulture, "{0:d}: {1}{2}", this.Date, String.IsNullOrEmpty(this.TailNumDisplay) ? String.Empty : String.Format(CultureInfo.CurrentCulture, "({0}) ", this.TailNumDisplay), this.Route);
-        }
     }
 
     [Serializable]
@@ -2414,6 +2180,253 @@ namespace MyFlightbook
             AutofillFinishInstruction();
         }
         #endregion
+
+        #region subtotals (for printing, mostly)
+        /// <summary>
+        /// Adds totals of core time, landing, and approach values from one logbookentry object to this one; MODIFIES THE TARGET OBJECT (this)
+        /// Does addition via rounding method in the database (rounding to nearest minutes)
+        /// </summary>
+        /// <param name="le1"></param>
+        public virtual void AddFrom(LogbookEntry le)
+        {
+            if (le == null)
+                throw new ArgumentNullException(nameof(le));
+
+            Approaches += le.Approaches;
+
+            Landings += le.Landings;
+            NightLandings += le.NightLandings;
+            FullStopLandings += le.FullStopLandings;
+
+            CrossCountry = CrossCountry.AddMinutes(le.CrossCountry);
+            Dual = Dual.AddMinutes(le.Dual);
+            GroundSim = GroundSim.AddMinutes(le.GroundSim);
+            IMC = IMC.AddMinutes(le.IMC);
+            SimulatedIFR = SimulatedIFR.AddMinutes(le.SimulatedIFR);
+            Nighttime = Nighttime.AddMinutes(le.Nighttime);
+            CFI = CFI.AddMinutes(le.CFI);
+            SIC = SIC.AddMinutes(le.SIC);
+            PIC = PIC.AddMinutes(le.PIC);
+            TotalFlightTime = TotalFlightTime.AddMinutes(le.TotalFlightTime);
+        }
+
+        private static void MergeProperty(CustomFlightProperty cfpExisting, CustomFlightProperty cfp)
+        {
+            if (cfpExisting == null || cfp == null || cfp.PropertyType == null)
+                return;
+
+            switch (cfp.PropertyType.Type)
+            {
+                default:
+                case CFPPropertyType.cfpBoolean:
+                    break;
+                case CFPPropertyType.cfpCurrency:
+                    cfpExisting.DecValue = cfp.DecValue;
+                    break;
+                case CFPPropertyType.cfpDate:
+                case CFPPropertyType.cfpDateTime:
+                    switch (cfp.PropertyType.PropTypeID)
+                    {
+                        case (int)CustomPropertyType.KnownProperties.IDBlockOut:
+                        case (int)CustomPropertyType.KnownProperties.IDPropTachStart:
+                        case (int)CustomPropertyType.KnownProperties.IDPropDutyStart:
+                        case (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart:
+                            cfpExisting.DateValue = cfp.DateValue.EarlierDate(cfpExisting.DateValue);
+                            break;
+                        case (int)CustomPropertyType.KnownProperties.IDBlockIn:
+                        case (int)CustomPropertyType.KnownProperties.IDPropTachEnd:
+                        case (int)CustomPropertyType.KnownProperties.IDPropDutyEnd:
+                        case (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd:
+                            cfpExisting.DateValue = cfp.DateValue.LaterDate(cfpExisting.DateValue);
+                            break;
+                    }
+                    break;
+                case CFPPropertyType.cfpDecimal:
+                    if (cfp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachStart)
+                        cfpExisting.DecValue = Math.Min(cfpExisting.DecValue, cfp.DecValue);
+                    else if (cfp.PropertyType.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropTachEnd)
+                        cfpExisting.DecValue = Math.Max(cfpExisting.DecValue, cfp.DecValue);
+                    else if (cfp.PropertyType.IsNoSum)
+                        cfpExisting.DecValue = cfp.DecValue;
+                    else
+                        cfpExisting.DecValue += cfp.DecValue;
+                    break;
+                case CFPPropertyType.cfpInteger:
+                    if (cfp.PropertyType.IsNoSum)
+                        cfpExisting.IntValue = cfp.IntValue;
+                    else
+                        cfpExisting.IntValue += cfp.IntValue;
+                    break;
+                case CFPPropertyType.cfpString:
+                    cfpExisting.TextValue = cfp.TextValue;
+                    break;
+            }
+        }
+
+        private void MergePropertiesFrom(List<CustomFlightProperty> lstCfpThis, LogbookEntry le)
+        {
+            if (le == null)
+                return;
+            // Merge properties, being smart on tach, block, duty, and flight duty time.
+            if (le.CustomProperties != null)
+            {
+                foreach (CustomFlightProperty cfp in le.CustomProperties)
+                {
+                    CustomFlightProperty cfpExisting = lstCfpThis.FirstOrDefault(fp => fp.PropTypeID == cfp.PropTypeID);
+                    if (cfpExisting == null)
+                    {
+                        cfp.FlightID = FlightID;
+                        lstCfpThis.Add(cfp);
+                    }
+                    else
+                        MergeProperty(cfpExisting, cfp);
+                }
+            }
+        }
+
+        private void MergeImagesFrom(LogbookEntry le)
+        {
+            if (le.FlightImages != null)
+            {
+                foreach (MFBImageInfo mfbii in le.FlightImages)
+                    mfbii.MoveImage(FlightID.ToString(CultureInfo.InvariantCulture));
+            }
+        }
+
+        /// <summary>
+        /// Merges this flight with a set of other flights.  All flights should have telemetry and images populated.
+        /// THIS IS DESTRUCTIVE - the other flights will be deleted!!!
+        /// </summary>
+        /// <param name="lst">The enumerable of other flights with which to merge</param>
+        public void MergeFrom(IEnumerable<LogbookEntry> lst)
+        {
+            if (lst == null || !lst.Any())
+                return;
+
+            List<CustomFlightProperty> lstCfpThis = new List<CustomFlightProperty>(CustomProperties);
+
+            List<TelemetryReference> lstPaths = new List<TelemetryReference>();
+
+            if (HasFlightData)
+                lstPaths.Add(Telemetry);
+
+            foreach (LogbookEntry le in lst)
+            {
+                AddFrom(le);
+                Comment = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Comment, le.Comment);
+                string[] newAirports = Regex.Split(le.Route, "\\W", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                foreach (string airport in newAirports)
+                    if (!Route.TrimEnd().EndsWith(airport, StringComparison.CurrentCultureIgnoreCase))
+                        Route = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, Route, airport);
+                HobbsStart = (HobbsStart == 0.0M || le.HobbsStart == 0.0M) ? Math.Max(HobbsStart, le.HobbsStart) : Math.Min(HobbsStart, le.HobbsStart);
+                HobbsEnd = Math.Max(this.HobbsEnd, le.HobbsEnd);
+                EngineStart = (!EngineStart.HasValue() || !le.EngineStart.HasValue()) ? EngineStart.LaterDate(le.EngineStart) : EngineStart.EarlierDate(le.EngineStart);
+                EngineEnd = EngineEnd.LaterDate(le.EngineEnd);
+                FlightStart = (!FlightStart.HasValue() || !le.FlightStart.HasValue()) ? FlightStart.LaterDate(le.FlightStart) : FlightStart.EarlierDate(le.FlightStart);
+                FlightEnd = FlightEnd.LaterDate(le.FlightEnd);
+
+                MergePropertiesFrom(lstCfpThis, le);
+                MergeImagesFrom(le);
+                if (le.HasFlightData)
+                    lstPaths.Add(le.Telemetry);
+            }
+
+            CustomProperties.SetItems(lstCfpThis);
+            TelemetryReference tr = TelemetryReference.MergedTelemetry(lstPaths, FlightID);
+            if (tr != null)
+                FlightData = tr.RawData;
+
+            // Commit this flight
+            ((LogbookEntry)this).FCommit(true, false);
+
+            // And delete the input flights
+            foreach (LogbookEntry le in lst)
+                LogbookEntry.FDeleteEntry(le.FlightID, le.User);
+        }
+        #endregion
+
+        /// <summary>
+        /// Returns the distances and average speed flown on this flight
+        /// </summary>
+        /// <param name="PathDistance">The pre-computed TELEMETRY distance in NM, if known (performance imprevement), or null</param>
+        /// <returns></returns>
+        public string GetPathDistanceDescription(double? PathDistance)
+        {
+            if (!PathDistance.HasValue && !String.IsNullOrEmpty(FlightData))
+            {
+                using (FlightData fd = new FlightData())
+                {
+                    fd.ParseFlightData(FlightData);
+                    if (fd.HasLatLongInfo)
+                        PathDistance = fd.ComputePathDistance();
+                }
+            }
+
+            MyFlightbook.Airports.AirportList al = new MyFlightbook.Airports.AirportList(Route);
+            double dRoute = al.DistanceForRoute();
+            double dMaxSegment = al.MaxSegmentForRoute();
+            double dMaxDistanceFromStart = al.MaxDistanceFromStartingAirport();
+            double dPath = PathDistance ?? 0.0;
+
+            double time = (FlightStart.HasValue() && FlightEnd.HasValue()) ? FlightEnd.Subtract(FlightStart).TotalHours : (double)TotalFlightTime;
+
+            List<string> lst = new List<string>();
+
+            if (dRoute + dPath > 0)
+            {
+                if (time > 0)
+                    lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightAverageSpeed, Math.Max(dPath, dRoute) / time));
+
+                if (dPath > 0)
+                    lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistancePathOnly, dPath));
+
+                if (dRoute > 0)
+                {
+                    lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceRouteOnly, dRoute));
+
+                    if (al.GetNormalizedAirports().Length > 2)
+                    {
+                        lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceLongestSegment, dMaxSegment));
+                        if (dMaxSegment != dMaxDistanceFromStart)
+                            lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceFurthestFromDeparture, dMaxDistanceFromStart));
+
+                        // Find the farthest airports from one another.
+                        Dictionary<string, airport> dictGroupedAirports = new Dictionary<string, airport>();
+                        // Group ports (no navaids, ad-hoc fixes, etc.) geographically
+                        foreach (airport ap in al.UniqueAirports)
+                            if (ap.IsPort)
+                                dictGroupedAirports[String.Format(CultureInfo.InvariantCulture, "{0:#.#00}{1:#.#00}", ap.LatLong.Latitude, ap.LatLong.Longitude)] = ap;
+
+                        List<airport> uniques = new List<airport>(dictGroupedAirports.Values);
+                        if (uniques.Count > 2)
+                        {
+                            airport ap1 = null, ap2 = null;
+                            double maxDist = 0;
+
+                            for (int i = 0; i < uniques.Count; i++)
+                            {
+                                for (int j = i + 1; j < uniques.Count; j++)
+                                {
+                                    double dist = uniques[i].DistanceFromAirport(uniques[j]);
+                                    if (dist > maxDist)
+                                    {
+                                        maxDist = dist;
+                                        ap1 = uniques[i];
+                                        ap2 = uniques[j];
+                                    }
+                                }
+                            }
+
+                            if (ap1 != null && ap2 != null && maxDist > 0)
+                                lst.Add(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.FlightDistanceFurthestPoints, ap1.Code, ap2.Code, maxDist));
+                        }
+                    }
+                }
+
+                return String.Join(Resources.LocalizedText.LocalizedSpace, lst);
+            }
+            return string.Empty;
+        }
     }
 
     /// <summary>
