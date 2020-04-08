@@ -2,6 +2,7 @@
 using System.IO;
 using HtmlAgilityPack;
 using MyFlightbook.ImportFlights.CloudAhoy;
+using MyFlightbook.Telemetry;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -230,6 +231,43 @@ namespace MyFlightbook.OAuth.CloudAhoy
             catch (Exception ex) when (ex is MyFlightbookException || ex is MyFlightbookValidationException)
             {
                 return ex.Message;
+            }
+        }
+
+        public async static Task<bool> PushCloudAhoyFlight(string szUsername, LogbookEntryBase flight, FlightData fd, bool fSandbox)
+        {
+            if (szUsername == null)
+                throw new ArgumentNullException(nameof(szUsername));
+            if (flight == null)
+                throw new ArgumentNullException(nameof(flight));
+            if (fd == null)
+                throw new ArgumentNullException(nameof(fd));
+
+            Profile pf = Profile.GetUser(szUsername);
+            CloudAhoyClient client = new CloudAhoyClient(fSandbox) { AuthState = pf.CloudAhoyToken };
+            MemoryStream ms = null;
+            try
+            {
+                switch (flight.Telemetry.TelemetryType)
+                {
+                    default:
+                        ms = new MemoryStream();
+                        fd.WriteGPXData(ms);
+                        break;
+                    case DataSourceType.FileType.GPX:
+                    case DataSourceType.FileType.KML:
+                        ms = new MemoryStream(Encoding.UTF8.GetBytes(flight.Telemetry.RawData));
+                        break;
+                }
+
+                ms.Seek(0, SeekOrigin.Begin);
+                await client.PutStream(ms, flight).ConfigureAwait(false);
+                return true;
+            }
+            finally
+            {
+                if (ms != null)
+                    ms.Dispose();
             }
         }
     }
