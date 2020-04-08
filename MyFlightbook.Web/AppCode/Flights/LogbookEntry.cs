@@ -188,7 +188,7 @@ namespace MyFlightbook
         /// <summary>
         /// ID of the flight.  You shouldn't set this.
         /// </summary>
-        public Int32 FlightID { get; set; }
+        public Int32 FlightID { get; set; } = idFlightNew;
 
         /// <summary>
         /// UTC time that the flight started
