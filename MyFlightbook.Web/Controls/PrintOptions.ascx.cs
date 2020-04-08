@@ -142,7 +142,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
 
             MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
             List<CustomPropertyType> rgcptUser = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.Name));
-            rgcptUser.RemoveAll(cpt => !cpt.IsFavorite || pf.BlacklistedProperties.Contains(cpt.PropTypeID));
+            rgcptUser.RemoveAll(cpt => !cpt.IsFavorite && !pf.BlacklistedProperties.Contains(cpt.PropTypeID));
             List<CustomPropertyType> rgcptUserOptionalColumns = rgcptUser.FindAll(cpt => (cpt.Type == CFPPropertyType.cfpDecimal || cpt.Type == CFPPropertyType.cfpInteger) && !cpt.IsNoSum);
             rgcptUser.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
             cklProperties.DataSource = rgcptUser;
