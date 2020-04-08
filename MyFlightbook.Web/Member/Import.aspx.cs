@@ -103,7 +103,7 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
         if (e == null)
             throw new ArgumentNullException(nameof(e));
 
-        LogbookEntryBase le = (LogbookEntryBase)e.Item.DataItem;
+        LogbookEntryCore le = (LogbookEntryCore)e.Item.DataItem;
 
         PlaceHolder plc = (PlaceHolder)e.Item.FindControl("plcAdditional");
         // throw the less used properties into the final column
@@ -151,14 +151,14 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
         }
     }
 
-    protected static void AddSuccessRow(LogbookEntryBase le, int iRow) { }
+    protected static void AddSuccessRow(LogbookEntryCore le, int iRow) { }
 
-    protected void AddErrorRow(LogbookEntryBase le, string szContext, int iRow)
+    protected void AddErrorRow(LogbookEntryCore le, string szContext, int iRow)
     {
         if (le == null)
             throw new ArgumentNullException(nameof(le));
 
-        if (IsPendingOnly && le.LastError != LogbookEntryBase.ErrorCode.None)   // ignore errors if the importer is only pending flights and the error is a logbook validation error (no tail, future date, night, etc.)
+        if (IsPendingOnly && le.LastError != LogbookEntryCore.ErrorCode.None)   // ignore errors if the importer is only pending flights and the error is a logbook validation error (no tail, future date, night, etc.)
             return;
 
         // if we're here, we are *either* not pending only *or* we didn't have a logbookentry validation error (e.g., could be malformed row)

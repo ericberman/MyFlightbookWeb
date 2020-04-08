@@ -78,7 +78,7 @@ public partial class Member_StartingTotals : MyFlightbook.Web.WizardPage.MFBWiza
     /// <param name="sfc">the column to read</param>
     /// <param name="sf">The starting flight</param>
     /// <returns>The appropriate column value</returns>
-    protected static Decimal GetValueForColumn(StartingFlightColumn sfc, LogbookEntryBase sf)
+    protected static Decimal GetValueForColumn(StartingFlightColumn sfc, LogbookEntryCore sf)
     {
         if (sf == null)
             throw new ArgumentNullException(nameof(sf));
@@ -102,7 +102,7 @@ public partial class Member_StartingTotals : MyFlightbook.Web.WizardPage.MFBWiza
     /// <param name="sfc">The column to read</param>
     /// <param name="sf">The target starting flight</param>
     /// <param name="value">The value</param>
-    protected static void SetValueForColumn(StartingFlightColumn sfc, LogbookEntryBase sf, Decimal value)
+    protected static void SetValueForColumn(StartingFlightColumn sfc, LogbookEntryCore sf, Decimal value)
     {
         if (sf == null)
             throw new ArgumentNullException(nameof(sf));
@@ -128,7 +128,7 @@ public partial class Member_StartingTotals : MyFlightbook.Web.WizardPage.MFBWiza
     /// </summary>
     /// <param name="sf">The starting flight from which to initialize</param>
     /// <param name="iRow">The row</param>
-    protected void ToRow(LogbookEntryBase sf, int iRow)
+    protected void ToRow(LogbookEntryCore sf, int iRow)
     {
         int iCol = 0;
         foreach (StartingFlightColumn sfc in Enum.GetValues(typeof(StartingFlightColumn)))
@@ -144,7 +144,7 @@ public partial class Member_StartingTotals : MyFlightbook.Web.WizardPage.MFBWiza
     /// </summary>
     /// <param name="sf">The starting flight</param>
     /// <param name="iRow">The row</param>
-    protected void FromRow(LogbookEntryBase sf, int iRow)
+    protected void FromRow(LogbookEntryCore sf, int iRow)
     {
         int iCol = 0;
         foreach (StartingFlightColumn sfc in Enum.GetValues(typeof(StartingFlightColumn)))

@@ -41,7 +41,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
             tail = remarks = string.Empty;
         }
 
-        public CloudAhoyPostFileMetaData(LogbookEntryBase le) : this()
+        public CloudAhoyPostFileMetaData(LogbookEntryCore le) : this()
         {
             if (le == null)
                 throw new ArgumentNullException(nameof(le));
@@ -94,7 +94,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
         /// </summary>
         /// <param name="s">The KML or GPX stream</param>
         /// <param name="le">The parent flight (for metadata)</param>
-        public async Task<bool> PutStream(Stream s, LogbookEntryBase le)
+        public async Task<bool> PutStream(Stream s, LogbookEntryCore le)
         {
             if (s == null)
                 throw new ArgumentNullException(nameof(s));
@@ -234,7 +234,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
             }
         }
 
-        public async static Task<bool> PushCloudAhoyFlight(string szUsername, LogbookEntryBase flight, FlightData fd, bool fSandbox)
+        public async static Task<bool> PushCloudAhoyFlight(string szUsername, LogbookEntryCore flight, FlightData fd, bool fSandbox)
         {
             if (szUsername == null)
                 throw new ArgumentNullException(nameof(szUsername));

@@ -185,7 +185,7 @@ namespace MyFlightbook.ImportFlights
             dt.Columns.Add(new DataColumn(colPublic[0], typeof(string)));
         }
 
-        public static void WriteEntryToDataTable(LogbookEntryBase le, DataTable dt)
+        public static void WriteEntryToDataTable(LogbookEntryCore le, DataTable dt)
         {
             if (dt == null)
                 throw new ArgumentNullException(nameof(dt));
@@ -386,19 +386,19 @@ namespace MyFlightbook.ImportFlights
                 }
             }
 
-            private static void CrossFillPIC(LogbookEntryBase le)
+            private static void CrossFillPIC(LogbookEntryCore le)
             {
                 if (le.PIC == 0)
                     le.PIC = le.TotalFlightTime;
             }
 
-            private static void CrossFillSIC(LogbookEntryBase le)
+            private static void CrossFillSIC(LogbookEntryCore le)
             {
                 if (le.SIC == 0)
                     le.SIC = le.TotalFlightTime;
             }
 
-            private static void CrossFillCFI(LogbookEntryBase le)
+            private static void CrossFillCFI(LogbookEntryCore le)
             {
                 if (le.CFI == 0)
                     le.CFI = le.TotalFlightTime;
@@ -617,7 +617,7 @@ namespace MyFlightbook.ImportFlights
 
                         if (!fFoundAnonOrSim)
                         {
-                            le.LastError = LogbookEntryBase.ErrorCode.InvalidAircraft;
+                            le.LastError = LogbookEntryCore.ErrorCode.InvalidAircraft;
                             throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportUnknownAircraft, szTail));
                         }
                     }
@@ -657,14 +657,14 @@ namespace MyFlightbook.ImportFlights
 
                 if (m_cm.iColTail >= m_rgszRow.Length)
                 {
-                    le.LastError = LogbookEntryBase.ErrorCode.InvalidAircraft;
+                    le.LastError = LogbookEntryCore.ErrorCode.InvalidAircraft;
                     throw new MyFlightbookException(Resources.LogbookEntry.errImportNoTail);
                 }
                 if (m_cm.iColTotal >= m_rgszRow.Length)
                     throw new MyFlightbookException(Resources.LogbookEntry.errImportNoTotal);
                 if (m_cm.iColDate >= m_rgszRow.Length)
                 {
-                    le.LastError = LogbookEntryBase.ErrorCode.InvalidDate;
+                    le.LastError = LogbookEntryCore.ErrorCode.InvalidDate;
                     throw new MyFlightbookException(Resources.LogbookEntry.errImportNoDate);
                 }
 
@@ -680,7 +680,7 @@ namespace MyFlightbook.ImportFlights
                         le.Date = dtFlight;
                     else
                     {
-                        le.LastError = LogbookEntryBase.ErrorCode.InvalidDate;
+                        le.LastError = LogbookEntryCore.ErrorCode.InvalidDate;
                         throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportCannotReadDate, m_rgszRow[m_cm.iColDate]));
                     }
                 }
@@ -688,7 +688,7 @@ namespace MyFlightbook.ImportFlights
                 le.TotalFlightTime = GetMappedDecimal(m_cm.iColTotal);
                 if (le.TotalFlightTime < 0.0M)
                 {
-                    le.LastError = LogbookEntryBase.ErrorCode.NegativeTime;
+                    le.LastError = LogbookEntryCore.ErrorCode.NegativeTime;
                     throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.errImportCannotReadTotalTime, le.TotalFlightTime));
                 }
 
@@ -984,7 +984,7 @@ namespace MyFlightbook.ImportFlights
         /// <param name="rowOK">Delegate called for a row that does not have an error.  Has the entry and the row index</param>
         /// <param name="afo">If not null, contains the options for performing autofill on flights.</param>
         /// <returns>false for an error (look at "ErrorString" for information).</returns>
-        public bool FInitFromStream(Stream fileContent, string szUser, Action<LogbookEntryBase, int> rowOK, Action<LogbookEntryBase, string, int> rowHasError, AutoFillOptions afo)
+        public bool FInitFromStream(Stream fileContent, string szUser, Action<LogbookEntryCore, int> rowOK, Action<LogbookEntryCore, string, int> rowHasError, AutoFillOptions afo)
         {
             using (CSVReader csvr = new CSVReader(fileContent))
             {
@@ -1108,7 +1108,7 @@ namespace MyFlightbook.ImportFlights
             return true;
         }
 
-        public bool InitWithBytes(byte[] rgb, string szUser, Action<LogbookEntryBase, int> rowOK, Action<LogbookEntryBase, string, int> rowHasError, bool fAutofill)
+        public bool InitWithBytes(byte[] rgb, string szUser, Action<LogbookEntryCore, int> rowOK, Action<LogbookEntryCore, string, int> rowHasError, bool fAutofill)
         {
             AutoFillOptions afo = fAutofill ? new AutoFillOptions(System.Web.HttpContext.Current?.Request?.Cookies) { IncludeHeliports = true } : null;
             using (MemoryStream ms2 = new MemoryStream(rgb))
