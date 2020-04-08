@@ -21,11 +21,13 @@ public partial class Public_ViewSig : System.Web.UI.Page
             };
             le.LoadDigitalSig();
 
-            if (le.DigitizedSignature != null && le.DigitizedSignature.Length > 0)
+            byte[] sig = le.GetDigitizedSignature();
+
+            if (sig != null && sig.Length > 0)
             {
                 Response.ContentType = "image/png";
                 Response.Clear();
-                Response.BinaryWrite(le.DigitizedSignature);
+                Response.BinaryWrite(sig);
                 Response.End();
             }
         }

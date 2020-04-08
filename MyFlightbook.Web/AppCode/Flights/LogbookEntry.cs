@@ -731,9 +731,9 @@ namespace MyFlightbook
         /// <summary>
         /// Digitized PNG of the signature.  Not read by default; call LoadDigitalSig to get it.
         /// </summary>
-#pragma warning disable CA1819 // Properties should not return arrays
-        public byte[] DigitizedSignature { get; set; }
-#pragma warning restore CA1819 // Properties should not return arrays
+        private byte[] DigitizedSignature { get; set; }
+
+        public byte[] GetDigitizedSignature() { return DigitizedSignature; }
 
         /// <summary>
         /// Does this have a digitized sig?
