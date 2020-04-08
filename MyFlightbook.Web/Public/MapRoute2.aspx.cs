@@ -1,7 +1,6 @@
 using MyFlightbook;
-using MyFlightbook.Mapping;
 using MyFlightbook.Airports;
-using MyFlightbook.Weather.ADDS;
+using MyFlightbook.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -89,7 +88,7 @@ public partial class MapRoute : System.Web.UI.Page
     private void SetAirportsInMap(IEnumerable<AirportList> lst)
     {
         MfbGoogleMapManager1.Map.Airports = lst ?? throw new ArgumentNullException(nameof(lst));
-        MfbGoogleMapManager1.Map.AutofillOnPanZoom = (lst.Count() == 0);
+        MfbGoogleMapManager1.Map.AutofillOnPanZoom = (!lst.Any());
         lnkZoomOut.NavigateUrl = MfbGoogleMapManager1.ZoomToFitScript;
     }
 
@@ -110,7 +109,7 @@ public partial class MapRoute : System.Web.UI.Page
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));
-        METAR.METARs = ADDSService.LatestMETARSForAirports(txtAirports.Text);
+        METAR.RefreshForRoute(txtAirports.Text);
         btnMetars.Visible = false;
     }
 

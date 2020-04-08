@@ -7,7 +7,6 @@ using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.Telemetry;
-using MyFlightbook.Weather.ADDS;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -706,7 +705,8 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         if (e == null)
             throw new ArgumentNullException(nameof(e));
         Controls_METAR m = (Controls_METAR)fmvLE.FindControl("METARDisplay");
-        m.METARs = ADDSService.LatestMETARSForAirports(CurrentFlight.Route);
+        m.RefreshForRoute(CurrentFlight.Route);
+        fmvLE.FindControl("btnMetars").Visible = false;
     }
 
     protected void mfbFlightContextMenu_DeleteFlight(object sender, LogbookEventArgs e)

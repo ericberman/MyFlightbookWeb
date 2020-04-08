@@ -81,6 +81,14 @@ public partial class Controls_METAR : System.Web.UI.UserControl
 
     }
 
+    public void RefreshForRoute(string szRoute)
+    {
+        if (szRoute == null)
+            throw new ArgumentNullException(nameof(szRoute));
+
+        METARs = ADDSService.LatestMETARSForAirports(szRoute);
+    }
+
     protected void gvMetar_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e == null)
