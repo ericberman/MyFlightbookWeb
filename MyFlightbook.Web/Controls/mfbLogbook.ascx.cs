@@ -414,34 +414,19 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     protected bool IsCompact
     {
         get { return m_isCompact; }
-        set
-        {
-            m_isCompact = value;
-            Response.Cookies[szCookieCompact].Value = value.ToString(CultureInfo.InvariantCulture);
-            Response.Cookies[szCookieCompact].Expires = DateTime.Now.AddYears(20);
-        }
+        set { Viewer.SetPreferenceForKey(szCookieCompact, m_isCompact = value, value == false); }
     }
 
     protected bool ShowImagesInline
     {
         get { return m_showImagesInline; }
-        set
-        {
-            m_showImagesInline = value;
-            Response.Cookies[szCookieImages].Value = value.ToString(CultureInfo.InvariantCulture);
-            Response.Cookies[szCookieImages].Expires = DateTime.Now.AddYears(20);
-        }
+        set { Viewer.SetPreferenceForKey(szCookieImages, m_showImagesInline = value, value == false); }
     }
 
     protected int FlightsPerPage
     {
         get { return gvFlightLogs.PageSize; }
-        set
-        {
-            gvFlightLogs.PageSize = value;
-            Response.Cookies[szCookiesFlightsPerPage].Value = value.ToString(CultureInfo.InvariantCulture);
-            Response.Cookies[szCookiesFlightsPerPage].Expires = DateTime.Now.AddYears(20);
-        }
+        set { Viewer.SetPreferenceForKey(szCookiesFlightsPerPage, gvFlightLogs.PageSize = value, value == 0 || value == 25); }
     }
     #endregion
     #endregion
@@ -500,24 +485,21 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
 
     protected void Page_Init(object sender, EventArgs e)
     {
-        // Page Size: 
-        // - If cookie is not present, use 25
-        // - If cookie is present, use its value
-        // - Still can be overridden by "pageSize" URL parameter
-        HttpCookie cookie = Request.Cookies[szCookiesFlightsPerPage];
-        if (cookie != null && int.TryParse(cookie.Value, out int cFlights) && cFlights > 0)
-            gvFlightLogs.PageSize = cFlights;
-        else
-            cFlights = 25;
+        // Set display options
+        // Compact and inline images default to cookies, if not explicitly set in database; otherwise
+        // Pagesize only uses database
+        m_isCompact = Viewer.PreferenceExists(szCookieCompact) ? Viewer.GetPreferenceForKey<bool>(szCookieCompact) : (Request.Cookies[szCookieCompact] != null && bool.TryParse(Request.Cookies[szCookieCompact].Value, out bool f) && f);
+        m_showImagesInline = Viewer.PreferenceExists(szCookieCompact) ? Viewer.GetPreferenceForKey<bool>(szCookieImages) : (Request.Cookies[szCookieImages] != null && bool.TryParse(Request.Cookies[szCookieImages].Value, out bool f2) && f2);
 
-        gvFlightLogs.PageSize = util.GetIntParam(Request, "pageSize", cFlights);
+        // Clear the cookies so that from now one we will only use the database preference
+        if (Request.Cookies[szCookieCompact] != null)
+            IsCompact = m_isCompact;    // force save to profile
+        if (Request.Cookies[szCookieImages] != null)
+            ShowImagesInline = m_showImagesInline; // force save to profile
+        Response.Cookies[szCookieCompact].Expires = Response.Cookies[szCookieImages].Expires = Response.Cookies[szCookiesFlightsPerPage].Expires = DateTime.Now.AddDays(-1);
 
-        cookie = Request.Cookies[szCookieCompact];
-        if (cookie != null && bool.TryParse(cookie.Value, out bool f))
-            m_isCompact = f;
-        cookie = Request.Cookies[szCookieImages];
-        if (cookie != null && bool.TryParse(cookie.Value, out f))
-            m_showImagesInline = f;
+        int defPageSize = (int)Viewer.GetPreferenceForKey<int>(szCookiesFlightsPerPage);
+        gvFlightLogs.PageSize = (defPageSize == 0) ? 25 : defPageSize;
     }
 
     protected void Page_Load(object sender, EventArgs e)

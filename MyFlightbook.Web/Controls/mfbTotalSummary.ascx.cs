@@ -42,12 +42,12 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
     {
         get
         {
-            return !(Request.Cookies[szCookieDefaultTotalsMode] != null && Request.Cookies[szCookieDefaultTotalsMode].Value.CompareCurrentCultureIgnoreCase(szFlatCookieValue) == 0);
+            string szPref = Profile.GetUser(Page.User.Identity.Name).GetPreferenceForKey<string>(szCookieDefaultTotalsMode) ?? string.Empty;
+            return szPref.CompareCurrentCultureIgnoreCase(szFlatCookieValue) != 0;
         }
         set
         {
-            Response.Cookies[szCookieDefaultTotalsMode].Value = (value) ? string.Empty : szFlatCookieValue;
-            Response.Cookies[szCookieDefaultTotalsMode].Expires = DateTime.Now.AddYears(20);
+            Profile.GetUser(Page.User.Identity.Name).SetPreferenceForKey(szCookieDefaultTotalsMode, value ? null : szFlatCookieValue);
         }
     }
 
@@ -76,7 +76,7 @@ public partial class Controls_mfbTotalSummary : System.Web.UI.UserControl
         IEnumerable<TotalsItemCollection> tic = TotalsItemCollection.AsGroups(ut.Totals);
         rptGroups.DataSource = tic;
         rptGroups.DataBind();
-        lblNoTotals.Visible = tic.Count() == 0;
+        lblNoTotals.Visible = !tic.Any();
         gvTotals.DataSource = ut.Totals;
         gvTotals.DataBind();
     }

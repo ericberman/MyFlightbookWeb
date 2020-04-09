@@ -796,13 +796,14 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="szKey"></param>
         /// <param name="o"></param>
+        /// <param name="fClear">True to clear (remove) the preference</param>
         /// <returns>True for success</returns>
-        public bool SetPreferenceForKey(string szKey, object o)
+        public bool SetPreferenceForKey(string szKey, object o, bool fClear = false)
         {
             if (string.IsNullOrWhiteSpace(szKey))
                 throw new ArgumentNullException(nameof(szKey));
 
-            if (o == null)
+            if (o == null || fClear)
             {
                 if (PersistedPrefs.ContainsKey(szKey))
                     PersistedPrefs.Remove(szKey);
@@ -814,6 +815,16 @@ namespace MyFlightbook
             }
 
             return FCommit();
+        }
+
+        /// <summary>
+        /// Determines if the preference exists
+        /// </summary>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        public bool PreferenceExists(string szKey)
+        {
+            return (!String.IsNullOrEmpty(szKey) && PersistedPrefs.ContainsKey(szKey));
         }
 
         /// <summary>
