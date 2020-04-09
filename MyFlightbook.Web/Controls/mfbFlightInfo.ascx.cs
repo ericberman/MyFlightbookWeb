@@ -201,6 +201,7 @@ public partial class Controls_mfbFlightInfo : System.Web.UI.UserControl
 
             afOptions.TimeZoneOffset = mfbTimeZone1.TimeZoneOffset;
             this.AutoFill(this, new AutofillEventArgs(afOptions.Options, szTelemetry));
+            afOptions.Options.SaveForUser(Page.User.Identity.Name);
         }
     }
 }

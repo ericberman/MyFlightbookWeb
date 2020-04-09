@@ -1110,7 +1110,10 @@ namespace MyFlightbook.ImportFlights
 
         public bool InitWithBytes(byte[] rgb, string szUser, Action<LogbookEntryCore, int> rowOK, Action<LogbookEntryCore, string, int> rowHasError, bool fAutofill)
         {
-            AutoFillOptions afo = fAutofill ? new AutoFillOptions(System.Web.HttpContext.Current?.Request?.Cookies) { IncludeHeliports = true } : null;
+            AutoFillOptions afo = fAutofill ? AutoFillOptions.DefaultOptionsForUser(szUser) : null;
+            if (afo != null)
+                afo.IncludeHeliports = true;
+
             using (MemoryStream ms2 = new MemoryStream(rgb))
             {
                 return FInitFromStream(ms2, szUser, rowOK, rowHasError, afo);

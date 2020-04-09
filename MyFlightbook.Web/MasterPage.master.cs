@@ -185,9 +185,13 @@ namespace MyFlightbook.Web
                     SetMobile(false);
 
                 bool fResetCookieAccept = util.GetIntParam(Request, "declinecookie", 0) != 0;
-                bool fCookiesAccepted = Request.Cookies[MFBConstants.keyCookiePrivacy] != null;
+                bool fCookiesAccepted = Request.Cookies[MFBConstants.keyCookiePrivacy] != null || (Page.User.Identity.IsAuthenticated && Profile.GetUser(Page.User.Identity.Name).GetPreferenceForKey<bool>(MFBConstants.keyCookiePrivacy));
                 if (fResetCookieAccept && fCookiesAccepted)
+                {
                     Response.Cookies[MFBConstants.keyCookiePrivacy].Expires = DateTime.Now.AddDays(-1);
+                    if (Page.User.Identity.IsAuthenticated)
+                        Profile.GetUser(Page.User.Identity.Name).SetPreferenceForKey(MFBConstants.keyCookiePrivacy, false);
+                }
                 pnlCookies.Visible = !fCookiesAccepted || fResetCookieAccept;
                 lnkPrivacy.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName);
 
@@ -249,6 +253,8 @@ namespace MyFlightbook.Web
         protected void btnAcceptCookies_Click(object sender, EventArgs e)
         {
             pnlCookies.Visible = false;
+            if (Page.User.Identity.IsAuthenticated)
+                Profile.GetUser(Page.User.Identity.Name).SetPreferenceForKey(MFBConstants.keyCookiePrivacy, true);
             Response.Cookies[MFBConstants.keyCookiePrivacy].Value = "yes";
             Response.Cookies[MFBConstants.keyCookiePrivacy].Expires = DateTime.Now.AddYears(100);
         }
