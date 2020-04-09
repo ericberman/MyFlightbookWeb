@@ -239,7 +239,6 @@ namespace MyFlightbook.Currency
             lst.AddRange(MaintenanceLog.AircraftInspectionWarningsForUser(szUser, lstWithAircraft));
             lst.AddRange(DeadlineCurrency.CurrencyForDeadlines(lstNoAircraft));
             lst.AddRange(Profile.GetUser(szUser).WarningsForUser());
-            lst.Sort();
             return lst;
         }
 
@@ -1258,7 +1257,7 @@ namespace MyFlightbook.Currency
                 fc.Finalize(ccc.totalTime, ccc.picTime);    // in case the currency needs totals.  Currently only true of night currency
 
                 // don't bother with ones where you've never been current, add the rest to our list of currency objects
-                AddIfCurrent(arcs, fc, dtCutoff);
+                AddIfCurrent(arcs, fc, dtCutoff, defaultGroup:CurrencyStatusItem.CurrencyGroups.FlightExperience);
             }
         }
 
@@ -1269,7 +1268,7 @@ namespace MyFlightbook.Currency
             foreach (string key in SortedKeys(ccc.dictIFRCurrency.Keys))
             {
                 CurrencyExaminer fcIFR = ccc.dictIFRCurrency[key];
-                AddIfCurrent(arcs, fcIFR, dtCutoff, new CurrencyStatusItem(Resources.Currency.IFR + " - " + key.ToString(CultureInfo.CurrentCulture), fcIFR.StatusDisplay, fcIFR.CurrentState, fcIFR.DiscrepancyString));
+                AddIfCurrent(arcs, fcIFR, dtCutoff, new CurrencyStatusItem(Resources.Currency.IFR + " - " + key.ToString(CultureInfo.CurrentCulture), fcIFR.StatusDisplay, fcIFR.CurrentState, fcIFR.DiscrepancyString), defaultGroup: CurrencyStatusItem.CurrencyGroups.FlightExperience);
             }
         }
 
@@ -1283,7 +1282,7 @@ namespace MyFlightbook.Currency
             if (fcGlider != null && fcGlider.HasBeenCurrent && ccc.gliderIFR.HasBeenCurrent && fcGlider.ExpirationDate.CompareTo(dtCutoff) > 0 && ccc.gliderIFR.ExpirationDate.CompareTo(dtCutoff) > 0)
             {
                 string szPrivilege = ccc.gliderIFR.Privilege;
-                arcs.Add(new CurrencyStatusItem(Resources.Currency.IFRGlider + (szPrivilege.Length > 0 ? " - " + szPrivilege : string.Empty), ccc.gliderIFR.StatusDisplay, ccc.gliderIFR.CurrentState, ccc.gliderIFR.DiscrepancyString));
+                arcs.Add(new CurrencyStatusItem(Resources.Currency.IFRGlider + (szPrivilege.Length > 0 ? " - " + szPrivilege : string.Empty), ccc.gliderIFR.StatusDisplay, ccc.gliderIFR.CurrentState, ccc.gliderIFR.DiscrepancyString) { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.FlightExperience });
             }
         }
 
@@ -1291,7 +1290,7 @@ namespace MyFlightbook.Currency
         {
             List<FlightCurrency> lstNV = new List<FlightCurrency>(ccc.nvCurrencyNonHeli.CurrencyEvents);
             lstNV.AddRange(ccc.nvCurrencyHeli.CurrencyEvents);
-            lstNV.ForEach((ce) => { AddIfCurrent(arcs, ce, dtCutoff); });
+            lstNV.ForEach((ce) => { AddIfCurrent(arcs, ce, dtCutoff, defaultGroup: CurrencyStatusItem.CurrencyGroups.FlightExperience); });
         }
 
         private static void AddArmy951Checks(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc, DateTime dtCutoff)
@@ -1299,7 +1298,7 @@ namespace MyFlightbook.Currency
             if (ccc.pf.UsesArmyCurrency)
             {
                 foreach (string sz in SortedKeys(ccc.dictArmyCurrency.Keys))
-                    AddIfCurrent(arcs, ccc.dictArmyCurrency[sz], dtCutoff);
+                    AddIfCurrent(arcs, ccc.dictArmyCurrency[sz], dtCutoff, defaultGroup: CurrencyStatusItem.CurrencyGroups.FlightExperience);
             }
         }
 
@@ -1309,7 +1308,7 @@ namespace MyFlightbook.Currency
             {
                 SIC6155Currency sicCurr = ccc.dictSICProficiencyChecks[sz];
                 sicCurr.Finalize(ccc.totalTime, ccc.picTime);
-                AddIfCurrent(arcs, sicCurr, dtCutoff);
+                AddIfCurrent(arcs, sicCurr, dtCutoff, defaultGroup: CurrencyStatusItem.CurrencyGroups.FlightReview);
             }
         }
 
@@ -1328,7 +1327,7 @@ namespace MyFlightbook.Currency
                     if (cpt.IsPICProficiencyCheck6158)
                         fcComputed.Query.PropertyTypes.Add(cpt);
 
-                AddIfCurrent(arcs, fcComputed, dtCutoff, new CurrencyStatusItem(String.Format(CultureInfo.CurrentCulture, Resources.Currency.NextPICProficiencyCheck, szKey), fcComputed.StatusDisplay, fcComputed.CurrentState, string.Empty));
+                AddIfCurrent(arcs, fcComputed, dtCutoff, new CurrencyStatusItem(String.Format(CultureInfo.CurrentCulture, Resources.Currency.NextPICProficiencyCheck, szKey), fcComputed.StatusDisplay, fcComputed.CurrentState, string.Empty) { CurrencyGroup = CurrencyStatusItem.CurrencyGroups.FlightReview });
             }
         }
 
@@ -1357,13 +1356,13 @@ namespace MyFlightbook.Currency
             }
         }
 
-        private static void AddIfCurrent(IList<CurrencyStatusItem> lst, ICurrencyExaminer fc, DateTime dtCutoff, CurrencyStatusItem csi = null)
+        private static void AddIfCurrent(IList<CurrencyStatusItem> lst, ICurrencyExaminer fc, DateTime dtCutoff, CurrencyStatusItem csi = null, CurrencyStatusItem.CurrencyGroups defaultGroup = CurrencyStatusItem.CurrencyGroups.None)
         {
             if (fc.HasBeenCurrent && fc.ExpirationDate.CompareTo(dtCutoff) > 0)
             {
                 if (csi == null)
                 {
-                    csi = new CurrencyStatusItem(fc.DisplayName, fc.StatusDisplay, fc.CurrentState, fc.DiscrepancyString);
+                    csi = new CurrencyStatusItem(fc.DisplayName, fc.StatusDisplay, fc.CurrentState, fc.DiscrepancyString) { CurrencyGroup = defaultGroup };
                     if (fc.Query != null)
                         csi.Query = fc.Query;
                 }

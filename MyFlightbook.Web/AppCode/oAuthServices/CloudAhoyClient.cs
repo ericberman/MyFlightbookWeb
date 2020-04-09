@@ -2,6 +2,7 @@
 using System.IO;
 using HtmlAgilityPack;
 using MyFlightbook.ImportFlights.CloudAhoy;
+using MyFlightbook.Telemetry;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
             tail = remarks = string.Empty;
         }
 
-        public CloudAhoyPostFileMetaData(LogbookEntryBase le) : this()
+        public CloudAhoyPostFileMetaData(LogbookEntryCore le) : this()
         {
             if (le == null)
                 throw new ArgumentNullException(nameof(le));
@@ -93,7 +94,7 @@ namespace MyFlightbook.OAuth.CloudAhoy
         /// </summary>
         /// <param name="s">The KML or GPX stream</param>
         /// <param name="le">The parent flight (for metadata)</param>
-        public async Task<bool> PutStream(Stream s, LogbookEntryBase le)
+        public async Task<bool> PutStream(Stream s, LogbookEntryCore le)
         {
             if (s == null)
                 throw new ArgumentNullException(nameof(s));
@@ -230,6 +231,43 @@ namespace MyFlightbook.OAuth.CloudAhoy
             catch (Exception ex) when (ex is MyFlightbookException || ex is MyFlightbookValidationException)
             {
                 return ex.Message;
+            }
+        }
+
+        public async static Task<bool> PushCloudAhoyFlight(string szUsername, LogbookEntryCore flight, FlightData fd, bool fSandbox)
+        {
+            if (szUsername == null)
+                throw new ArgumentNullException(nameof(szUsername));
+            if (flight == null)
+                throw new ArgumentNullException(nameof(flight));
+            if (fd == null)
+                throw new ArgumentNullException(nameof(fd));
+
+            Profile pf = Profile.GetUser(szUsername);
+            CloudAhoyClient client = new CloudAhoyClient(fSandbox) { AuthState = pf.CloudAhoyToken };
+            MemoryStream ms = null;
+            try
+            {
+                switch (flight.Telemetry.TelemetryType)
+                {
+                    default:
+                        ms = new MemoryStream();
+                        fd.WriteGPXData(ms);
+                        break;
+                    case DataSourceType.FileType.GPX:
+                    case DataSourceType.FileType.KML:
+                        ms = new MemoryStream(Encoding.UTF8.GetBytes(flight.Telemetry.RawData));
+                        break;
+                }
+
+                ms.Seek(0, SeekOrigin.Begin);
+                await client.PutStream(ms, flight).ConfigureAwait(false);
+                return true;
+            }
+            finally
+            {
+                if (ms != null)
+                    ms.Dispose();
             }
         }
     }

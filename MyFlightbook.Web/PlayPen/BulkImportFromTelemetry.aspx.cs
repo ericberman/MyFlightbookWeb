@@ -21,6 +21,9 @@ public partial class BulkImportFromTelemetry : MyFlightbook.Web.WizardPage.MFBWi
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (!Page.User.Identity.IsAuthenticated)
+            throw new UnauthorizedAccessException("You must be signed in to view this page.");
+
         InitWizard(wzFlightsFromTelemetry);
         if (IsPostBack)
         {
@@ -29,7 +32,9 @@ public partial class BulkImportFromTelemetry : MyFlightbook.Web.WizardPage.MFBWi
         }
         else
         {
-            Session[SessionKeyOpt] = new AutoFillOptions(Request.Cookies);
+            AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(Page.User.Identity.Name);
+            afo.SaveForUser(Page.User.Identity.Name);
+            Session[SessionKeyOpt] = afo;
         }
     }
 

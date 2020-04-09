@@ -120,7 +120,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
         }
     }
 
-    private void SetImages(LogbookEntryBase le)
+    private void SetImages(LogbookEntryCore le)
     {
         if (this.Master.IsMobileSession())
             mfbIlAirplane.Columns = mfbIlFlight.Columns = 1;

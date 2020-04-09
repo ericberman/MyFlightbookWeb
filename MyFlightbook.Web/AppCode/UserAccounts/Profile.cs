@@ -174,11 +174,8 @@ namespace MyFlightbook
             this.Certificate = this.Email = this.FirstName = this.LastName = this.OriginalPKID = this.OriginalEmail = this.PKID =
                 this.SecurityQuestion = this.UserName = this.License = this.Address = string.Empty;
             Role = ProfileRoles.UserRoles.None;
-            BlacklistedProperties = new List<int>();
             CreationDate = LastActivity = LastLogon = LastPasswordChange = 
             LastBFRInternal = LastMedical = CertificateExpiration = EnglishProficiencyExpiration = LastEmailDate = DateTime.MinValue;
-            AssociatedData = new Dictionary<string, object>();
-            BlacklistedProperties = new List<int>();
         }
         #endregion
 
@@ -682,18 +679,12 @@ namespace MyFlightbook
         /// <summary>
         /// List of properties ID's that the user has blacklisted from the previously-used list.
         /// </summary>
-        public List<int> BlacklistedProperties { get; private set; }
-
-        private Achievement.ComputeStatus m_AchievementStatus = Achievement.ComputeStatus.Never;
+        public List<int> BlacklistedProperties { get; private set; } = new List<int>();
 
         /// <summary>
         /// Current status of achievement computation for the user.  
         /// </summary>
-        public Achievement.ComputeStatus AchievementStatus
-        {
-            get { return m_AchievementStatus; }
-            set { m_AchievementStatus = value; }
-        }
+        public Achievement.ComputeStatus AchievementStatus { get; set; } = Achievement.ComputeStatus.Never;
 
         /// <summary>
         /// What time zone do they prefer for date/time?  CAN BE NULL!
@@ -720,7 +711,7 @@ namespace MyFlightbook
         /// <summary>
         /// Convenience dictionary of associated data for other that want to piggy back on Profile caching.
         /// </summary>
-        public IDictionary<string, object> AssociatedData { get; private set; }
+        public IDictionary<string, object> AssociatedData { get; private set; } = new Dictionary<string, object>();
         #endregion
 
         /// <summary>
@@ -772,10 +763,14 @@ namespace MyFlightbook
     [Serializable]
     public abstract class PersistedProfile : ProfileBase
     {
-        protected PersistedProfile() : base()
-        {
+        protected PersistedProfile() : base() { }
 
-        }
+        #region Properties
+        /// <summary>
+        /// Convenience dictionary of preferences that is saved to the database
+        /// </summary>
+        protected IDictionary<string, object> PersistedPrefs { get; private set; } = new Dictionary<string, object>();
+        #endregion
 
         /// <summary>
         /// De-serializes an AuthorizationState from a JSON string, null if the string is null
@@ -794,6 +789,66 @@ namespace MyFlightbook
 
             return JsonConvert.DeserializeObject<AuthorizationState>(sz);
         }
+
+        #region Persisted Preferences
+        /// <summary>
+        /// Sets the specified object for persistence AND commits the object.  Removes the preference if the object is null.
+        /// </summary>
+        /// <param name="szKey"></param>
+        /// <param name="o"></param>
+        /// <returns>True for success</returns>
+        public bool SetPreferenceForKey(string szKey, object o)
+        {
+            if (string.IsNullOrWhiteSpace(szKey))
+                throw new ArgumentNullException(nameof(szKey));
+
+            if (o == null)
+            {
+                if (PersistedPrefs.ContainsKey(szKey))
+                    PersistedPrefs.Remove(szKey);
+                else
+                    return false;
+            } else
+            {
+                PersistedPrefs[szKey] = o;
+            }
+
+            return FCommit();
+        }
+
+        /// <summary>
+        /// Retrieves the specified object (or default, if not found), casting to the specified type.  A bit slower than the non-generic version because it does an extra serialize/deserialize
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        public T GetPreferenceForKey<T>(string szKey)
+        {
+            if (string.IsNullOrWhiteSpace(szKey))
+                throw new ArgumentNullException(nameof(szKey));
+
+            if (PersistedPrefs.TryGetValue(szKey, out object o))
+            {
+                // By default, objects deserialized to dynamic.  So re-serialize it and cast.
+                return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(o));
+            }
+            else
+                return default;
+        }
+
+        /// <summary>
+        /// Faster alternative to retrive the specified object (or default, if not found), but the return type is "dynamic", so you have to know what you're doing with the result.
+        /// </summary>
+        /// <param name="szKey"></param>
+        /// <returns></returns>
+        public dynamic GetPreferenceForKey(string szKey)
+        {
+            if (string.IsNullOrWhiteSpace(szKey))
+                throw new ArgumentNullException(nameof(szKey));
+
+            return PersistedPrefs.TryGetValue(szKey, out object o) ? o : default;
+        }
+        #endregion
 
         #region Database and caching
         protected void InitFromDataReader(MySqlDataReader dr)
@@ -851,6 +906,11 @@ namespace MyFlightbook
 
                 string szBlacklist = util.ReadNullableString(dr, "PropertyBlackList");
                 BlacklistedProperties.AddRange(szBlacklist.ToInts());
+
+                PersistedPrefs.Clear();
+                string szPersistedPrefs = util.ReadNullableString(dr, "prefs");
+                if (!String.IsNullOrEmpty(szPersistedPrefs))
+                    PersistedPrefs = (Dictionary<string, object>) JsonConvert.DeserializeObject<Dictionary<string, object>>(szPersistedPrefs);
             }
             catch (Exception ex)
             {
@@ -907,7 +967,8 @@ namespace MyFlightbook
             szQ = @"UPDATE users SET Email=?Email, FirstName=?FirstName, LastName=?LastName, Address=?address, 
             DropboxAccessToken=?dropboxAccesstoken, OnedriveAccessToken=?onedrive, GoogleDriveAccessToken=?gdrive, ICloudAccessToken=?icloud, DefaultCloudDriveID=?defcloud, OverwriteDropbox=?overwriteCloud, CloudAhoyAccessToken=?cloudAhoy,
             LastBFR = ?LastBFR, LastMedical=?LastMedical, MonthsToMedical=?MonthsToMedical, IsInstructor=?IsInstructor, UsesSIC=?UsesSIC, UsesHHMM=?UsesHHMM, UsesUTCDates=?useUTCDates, License=?license, CertificateNumber=?cert, CFIExpiration=?cfiExp, 
-            CurrencyFlags=?currencyFlags, ShowTimes=?showTimes, EnglishProficiencyExpiration=?engProfExpiration, EmailSubscriptions=?subscriptions, LastEmail=?lastemail, AchievementStatus=?achievementstatus, PropertyBlackList=?blacklist, timezone=?prefTimeZone
+            CurrencyFlags=?currencyFlags, ShowTimes=?showTimes, EnglishProficiencyExpiration=?engProfExpiration, EmailSubscriptions=?subscriptions, LastEmail=?lastemail, AchievementStatus=?achievementstatus, PropertyBlackList=?blacklist, timezone=?prefTimeZone,
+            prefs=?prefs
             WHERE PKID = ?PKID";
 
             string szErr = "";
@@ -944,6 +1005,7 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("lastemail", LastEmailDate);
                     comm.Parameters.AddWithValue("achievementstatus", (int)AchievementStatus);
                     comm.Parameters.AddWithValue("blacklist", String.Join(",", BlacklistedProperties));
+                    comm.Parameters.AddWithValue("prefs", JsonConvert.SerializeObject(PersistedPrefs));
                     comm.Parameters.AddWithValue("prefTimeZone", String.IsNullOrEmpty(PreferredTimeZoneID) || PreferredTimeZoneID.CompareCurrentCultureIgnoreCase("UTC") == 0 ? null : PreferredTimeZoneID);
                 });
             if (dbh.LastError.Length == 0)

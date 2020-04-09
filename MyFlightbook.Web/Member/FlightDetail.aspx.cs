@@ -7,14 +7,11 @@ using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.Telemetry;
-using MyFlightbook.Weather.ADDS;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.IO;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -47,16 +44,10 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         return String.Format(CultureInfo.InvariantCulture, "{0}/{1}", TargetPage, idFlight);
     }
 
-    private string m_szDefaultPage = "~/Member/LogbookNew.aspx";
-
     /// <summary>
     /// The URL to which edited flights should go
     /// </summary>
-    public string TargetPage
-    {
-        get { return m_szDefaultPage; }
-        set { m_szDefaultPage = value; }
-    }
+    public string TargetPage { get; set; } = "~/Member/LogbookNew.aspx";
 
     private int CurrentFlightID
     {
@@ -233,14 +224,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         // for debugging, have a download option that skips all the rest
         if (util.GetIntParam(Request, "d", 0) != 0 && !String.IsNullOrEmpty(CurrentFlight.FlightData))
         {
-            Response.Clear();
-            Response.ContentType = "application/octet-stream";
-            // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
-            string szFilename = String.Format(CultureInfo.InvariantCulture, "Data{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
-            string szDisposition = String.Format(CultureInfo.InvariantCulture, "inline;filename={0}.csv", System.Text.RegularExpressions.Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
-            Response.AddHeader("Content-Disposition", szDisposition);
-            Response.Write(CurrentFlight.FlightData);
-            Response.End();
+            Response.DownloadToFile(CurrentFlight.FlightData, "application/octet-stream", String.Format(CultureInfo.InvariantCulture, "Data{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-"), "csv");
             return true;
         }
         return false;
@@ -574,35 +558,13 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         m_fd.SpeedUnits = (FlightData.SpeedUnitTypes)Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture);
         m_fd.FlightID = CurrentFlightID;
 
-        CloudAhoyClient client = new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)) { AuthState = Viewer.CloudAhoyToken };
-
-        MemoryStream ms = null;
         try
         {
-            switch (CurrentFlight.Telemetry.TelemetryType)
-            {
-                default:
-                    ms = new MemoryStream();
-                    m_fd.WriteGPXData(ms);
-                    break;
-                case DataSourceType.FileType.GPX:
-                case DataSourceType.FileType.KML:
-                    ms = new MemoryStream(Encoding.UTF8.GetBytes(CurrentFlight.Telemetry.RawData));
-                    break;
-            }
-
-            ms.Seek(0, SeekOrigin.Begin);
-            await client.PutStream(ms, CurrentFlight).ConfigureAwait(false);
-            pnlCloudAhoySuccess.Visible = true;
+            pnlCloudAhoySuccess.Visible = await CloudAhoyClient.PushCloudAhoyFlight(Page.User.Identity.Name, CurrentFlight, m_fd, !Branding.CurrentBrand.MatchesHost(Request.Url.Host)).ConfigureAwait(false);
         }
         catch (MyFlightbookException ex)
         {
             lblCloudAhoyErr.Text = ex.Message;
-        }
-        finally
-        {
-            if (ms != null)
-                ms.Dispose();
         }
     }
 
@@ -621,7 +583,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
 
                 DataRow drow = m_fd.Data.Rows[iRow];
 
-                StringBuilder sbDesc = new StringBuilder();
+                List<string> lstDesc = new List<string>();
 
                 double lat = 0.0, lon = 0.0;
 
@@ -651,12 +613,12 @@ public partial class Member_FlightDetail : System.Web.UI.Page
                         {
                             string sz = o.ToString(); ;
                             if (!String.IsNullOrEmpty(sz))
-                                sbDesc.AppendFormat(CultureInfo.InvariantCulture, "{0}: {1}<br />", dc.ColumnName, sz);
+                                lstDesc.Add(String.Format(CultureInfo.InvariantCulture, "{0}: {1}<br />", dc.ColumnName, sz));
                         }
                     }
                 }
 
-                i.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:dropPin(new google.maps.LatLng({0}, {1}), '{2}');", lat, lon, sbDesc.ToString());
+                i.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:dropPin(new google.maps.LatLng({0}, {1}), '{2}');", lat, lon, String.Join("<br />", lstDesc));
                 h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:getMfbMap().gmap.setCenter(new google.maps.LatLng({0}, {1}));getMfbMap().gmap.setZoom(14);", lat, lon);
                 i.ToolTip = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.GraphDropPinTip, (new LatLong(lat, lon)).ToString());
             }
@@ -743,7 +705,8 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         if (e == null)
             throw new ArgumentNullException(nameof(e));
         Controls_METAR m = (Controls_METAR)fmvLE.FindControl("METARDisplay");
-        m.METARs = ADDSService.LatestMETARSForAirports(CurrentFlight.Route);
+        m.RefreshForRoute(CurrentFlight.Route);
+        fmvLE.FindControl("btnMetars").Visible = false;
     }
 
     protected void mfbFlightContextMenu_DeleteFlight(object sender, LogbookEventArgs e)

@@ -47,7 +47,7 @@ namespace MyFlightbook.FlightStatistics
         /// Updates recent flights for the specified flight, removing it if it is no longer public
         /// </summary>
         /// <param name="le"></param>
-        public static void RefreshForFlight(LogbookEntryBase le)
+        public static void RefreshForFlight(LogbookEntryCore le)
         {
             if (le == null)
                 throw new ArgumentNullException(nameof(le));

@@ -26,7 +26,7 @@ namespace MyFlightbook.SocialMedia
         /// <param name="le">The flight to be shared</param>
         /// <param name="szHost">Hostname (if not provided, uses current brand)</param>
         /// <returns></returns>
-        public static Uri ShareFlightUri(LogbookEntryBase le, string szHost = null)
+        public static Uri ShareFlightUri(LogbookEntryCore le, string szHost = null)
         {
             if (le == null)
                 throw new ArgumentNullException(nameof(le));

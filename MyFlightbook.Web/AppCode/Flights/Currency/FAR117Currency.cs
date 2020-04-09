@@ -402,6 +402,10 @@ namespace MyFlightbook.Currency
                         String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, DateTime.UtcNow.Subtract(currentRestPeriodStart).TotalHours.FormatDecimal(UseHHMM, true)),
                         CurrencyState.OK, string.Empty));
                 }
+
+                foreach (CurrencyStatusItem csi in lst)
+                    csi.CurrencyGroup = CurrencyStatusItem.CurrencyGroups.FlightExperience;
+
                 return lst;
             }
         }

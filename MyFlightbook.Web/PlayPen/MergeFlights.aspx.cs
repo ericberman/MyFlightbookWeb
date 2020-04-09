@@ -111,7 +111,7 @@ public partial class PlayPen_MergeFlights : MyFlightbook.Web.WizardPage.MFBWizar
         dbh.ReadRows((comm) => { },
             (dr) =>
             {
-                LogbookEntry le = new LogbookEntry(dr, Query.UserName, LogbookEntryBase.LoadTelemetryOption.LoadAll); // Note: this has no telemetry
+                LogbookEntry le = new LogbookEntry(dr, Query.UserName, LogbookEntryCore.LoadTelemetryOption.LoadAll); // Note: this has no telemetry
                 le.PopulateImages();
                 lst.Add(le);
             });

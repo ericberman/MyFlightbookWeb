@@ -73,7 +73,7 @@ public partial class Member_FlightAnalysis : System.Web.UI.Page
     /// Loads the data for the specified flight, parsing the CSV file, and thus initializing m_fd.  This is cached, so it's OK to call multiple times.
     /// </summary>
     /// <param name="idFlight">ID of the flight with data to load</param>
-    protected void LoadData(LogbookEntryBase le)
+    protected void LoadData(LogbookEntryCore le)
     {
         if (le == null)
             throw new ArgumentNullException(nameof(le));

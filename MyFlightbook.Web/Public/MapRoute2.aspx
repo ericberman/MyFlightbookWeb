@@ -20,8 +20,12 @@
         <asp:UpdatePanel ID="pnlShowMeters" runat="server">
             <ContentTemplate>
                 <asp:Panel ID="pnlMetars" runat="server">
-                    <asp:LinkButton ID="btnMetars" runat="server" Text="<%$ Resources:Weather, GetMETARSPrompt %>" OnClick="btnMetars_Click" Visible="true" />
-                    <uc1:METAR runat="server" ID="METAR" />
+                    <asp:UpdatePanel ID="upd1" runat="server">
+                        <ContentTemplate>
+                            <asp:LinkButton ID="btnMetars" runat="server" Text="<%$ Resources:Weather, GetMETARSPrompt %>" OnClick="btnMetars_Click" Visible="true" />
+                            <uc1:METAR runat="server" ID="METAR" />
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </asp:Panel>
             </ContentTemplate>
         </asp:UpdatePanel>

@@ -188,7 +188,7 @@ namespace MyFlightbook
         /// <summary>
         /// ID of the flight.  You shouldn't set this.
         /// </summary>
-        public Int32 FlightID { get; set; }
+        public Int32 FlightID { get; set; } = idFlightNew;
 
         /// <summary>
         /// UTC time that the flight started
@@ -347,7 +347,7 @@ namespace MyFlightbook
         }
 
         #region Comparison
-        private bool HasEqualDates(LogbookEntryBase le)
+        private bool HasEqualDates(LogbookEntryCore le)
         {
             return Date.Year == le.Date.Year &&
                 Date.Month == le.Date.Month &&
@@ -358,14 +358,14 @@ namespace MyFlightbook
                 DateTime.Compare(FlightStart, le.FlightStart) == 0;
         }
 
-        private bool HasEqualStrings(LogbookEntryBase le)
+        private bool HasEqualStrings(LogbookEntryCore le)
         {
             return String.Compare(Comment, le.Comment, StringComparison.CurrentCultureIgnoreCase) == 0 &&
                    String.Compare(this.Route, le.Route, StringComparison.CurrentCultureIgnoreCase) == 0 &&
                    String.Compare(this.User, le.User, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        private bool HasEqualFields(LogbookEntryBase le)
+        private bool HasEqualFields(LogbookEntryCore le)
         {
             return Approaches == le.Approaches &&
                 CatClassOverride == le.CatClassOverride &&
@@ -392,7 +392,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="le">The LogbookEntry to compare</param>
         /// <returns>true if they are semantically the same</returns>
-        public bool IsEqualTo(LogbookEntryBase le)
+        public bool IsEqualTo(LogbookEntryCore le)
         {
             // If both are null, or both are same instance, return true.
             if (ReferenceEquals(this, le))
@@ -731,9 +731,9 @@ namespace MyFlightbook
         /// <summary>
         /// Digitized PNG of the signature.  Not read by default; call LoadDigitalSig to get it.
         /// </summary>
-#pragma warning disable CA1819 // Properties should not return arrays
-        public byte[] DigitizedSignature { get; set; }
-#pragma warning restore CA1819 // Properties should not return arrays
+        private byte[] DigitizedSignature { get; set; }
+
+        public byte[] GetDigitizedSignature() { return DigitizedSignature; }
 
         /// <summary>
         /// Does this have a digitized sig?
@@ -1947,7 +1947,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="le"></param>
         /// <returns></returns>
-        public IEnumerable<PropertyDelta> CompareTo(LogbookEntryBase le, bool fUseHHMM)
+        public IEnumerable<PropertyDelta> CompareTo(LogbookEntryCore le, bool fUseHHMM)
         {
             if (le == null)
                 return null;
@@ -2707,7 +2707,7 @@ namespace MyFlightbook
         /// </summary>
         public bool UseUTCDates { get; set; }
 
-        public static string LandingDisplayForFlight(LogbookEntryBase le)
+        public static string LandingDisplayForFlight(LogbookEntryCore le)
         {
             if (le == null)
                 return string.Empty;

@@ -1,6 +1,5 @@
 ﻿using MyFlightbook.Telemetry;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Web.UI.WebControls;
 
@@ -36,7 +35,6 @@ public partial class AutofillOptionsChooser : System.Web.UI.UserControl
                 IgnoreErrors = true
             };
 
-            afo.ToCookies(Response.Cookies);
             return afo;
         }
         set
@@ -60,7 +58,8 @@ public partial class AutofillOptionsChooser : System.Web.UI.UserControl
     {
         if (!IsPostBack)
         {
-            Options = new AutoFillOptions(Request.Cookies);
+            Options = AutoFillOptions.DefaultOptionsForUser(Page.User.Identity.Name);
+            Options.TimeZoneOffset = TimeZoneOffset;
         }
     }
 }

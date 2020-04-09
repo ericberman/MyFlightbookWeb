@@ -316,8 +316,13 @@ namespace MyFlightbook.Telemetry
             AutoSynthesizePath = true;
         }
 
-        public AutoFillOptions(HttpCookieCollection cookies) : this()
+        /// <summary>
+        /// Obsolete - fall back for using cookies when user preferences aren't available
+        /// </summary>
+        /// <param name="cookies"></param>
+        private AutoFillOptions(HttpCookieCollection cookies) : this()
         {
+            // TODO: Mark this method with [Obsolete].
             if (cookies != null)
             {
                 if (cookies[keyCookieSpeed] == null || !int.TryParse(cookies[keyCookieSpeed].Value, out int defaultSpeed))
@@ -346,27 +351,26 @@ namespace MyFlightbook.Telemetry
                 NightLanding = nightLandingCriteria;
             }
         }
-        #endregion
 
-        public void ToCookies(HttpCookieCollection cookies)
+        private const string szKeyPersistedPrefAutoFill = "DefaultAutofillOptions";
+
+        public static AutoFillOptions DefaultOptionsForUser(string szUserName)
         {
-            if (cookies == null)
-                throw new ArgumentNullException(nameof(cookies));
+            if (String.IsNullOrEmpty(szUserName))
+                throw new ArgumentNullException(nameof(szUserName));
 
-            cookies[keyCookieSpeed].Value = TakeOffSpeed.ToString(CultureInfo.InvariantCulture);
-            cookies[keyCookieHeliport].Value = IncludeHeliports.ToString(CultureInfo.InvariantCulture);
-            cookies[keyCookieEstimateNight].Value = AutoSynthesizePath.ToString(CultureInfo.InvariantCulture);
-            cookies[keyCookieNightDef].Value = Night.ToString();
-            cookies[keyCookieNightLandingDef].Value = NightLanding.ToString();
-            cookies[keyCookieRoundToTenth].Value = RoundToTenth.ToString(CultureInfo.InvariantCulture);
-
-            cookies[keyCookieSpeed].Expires =
-                cookies[keyCookieHeliport].Expires =
-                cookies[keyCookieEstimateNight].Expires =
-                cookies[keyCookieNightDef].Expires =
-                cookies[keyCookieNightLandingDef].Expires =
-                    DateTime.Now.AddYears(10);
+            return Profile.GetUser(szUserName).GetPreferenceForKey<AutoFillOptions>(szKeyPersistedPrefAutoFill) ?? (HttpContext.Current?.Request?.Cookies == null ? new AutoFillOptions() : new AutoFillOptions(HttpContext.Current?.Request?.Cookies));
         }
+
+        public void SaveForUser(string szUserName)
+        {
+            if (String.IsNullOrEmpty(szUserName))
+                throw new ArgumentNullException(nameof(szUserName));
+
+            PersistedProfile pf = Profile.GetUser(szUserName);
+            pf.SetPreferenceForKey(szKeyPersistedPrefAutoFill, this);
+        }
+        #endregion
 
         #region Properties
         /// <summary>

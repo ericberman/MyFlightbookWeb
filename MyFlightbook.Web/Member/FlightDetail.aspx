@@ -107,30 +107,30 @@
                     <asp:FormView ID="fmvLE" runat="server" OnDataBound="fmvLE_DataBound" Width="100%" meta:resourcekey="fmvLEResource1">
                         <ItemTemplate>
                             <div class="detailsSection">
-                                <table cellpadding="3px;">
+                                <table>
                                     <tr>
-                                        <td style="font-weight: bold"><% = Resources.LogbookEntry.FieldApproaches %></td>
-                                        <td style="min-width: 1cm"><%# Eval("Approaches").FormatInt() %></td>
-                                        <td style="font-weight: bold"><% = Resources.LogbookEntry.FieldHold %></td>
-                                        <td style="min-width: 1cm"><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
-                                        <td style="font-weight: bold"><% = Resources.LogbookEntry.FieldLanding %></td>
-                                        <td style="min-width: 1cm"><%# Eval("Landings").FormatInt() %></td>
-                                        <td style="font-weight: bold"><% = Resources.LogbookEntry.FieldDayLandings %></td>
-                                        <td style="min-width: 1cm"><%# Eval("FullStopLandings").FormatInt() %></td>
-                                        <td style="font-weight: bold"><% = Resources.LogbookEntry.FieldNightLandings %></td>
-                                        <td style="min-width: 1cm"><%# Eval("NightLandings").FormatInt() %></td>
+                                        <td style="padding: 3px; font-weight: bold"><% = Resources.LogbookEntry.FieldApproaches %></td>
+                                        <td style="padding: 3px; min-width: 1cm"><%# Eval("Approaches").FormatInt() %></td>
+                                        <td style="padding: 3px; font-weight: bold"><% = Resources.LogbookEntry.FieldHold %></td>
+                                        <td style="padding: 3px; min-width: 1cm"><%# Eval("fHoldingProcedures").FormatBoolean() %></td>
+                                        <td style="padding: 3px; font-weight: bold"><% = Resources.LogbookEntry.FieldLanding %></td>
+                                        <td style="padding: 3px; min-width: 1cm"><%# Eval("Landings").FormatInt() %></td>
+                                        <td style="padding: 3px; font-weight: bold"><% = Resources.LogbookEntry.FieldDayLandings %></td>
+                                        <td style="padding: 3px; min-width: 1cm"><%# Eval("FullStopLandings").FormatInt() %></td>
+                                        <td style="padding: 3px; font-weight: bold"><% = Resources.LogbookEntry.FieldNightLandings %></td>
+                                        <td style="padding: 3px; min-width: 1cm"><%# Eval("NightLandings").FormatInt() %></td>
                                     </tr>
                                     <tr>
-                                        <td style="font-weight: bold"><% = Resources.LogbookEntry.FieldXCountry %></td>
-                                        <td><%# Eval("CrossCountry").FormatDecimal(Viewer.UsesHHMM)%></td>
-                                        <td style="font-weight: bold"><% = Resources.LogbookEntry.FieldNight %></td>
-                                        <td><%# Eval("Nighttime").FormatDecimal(Viewer.UsesHHMM)%></td>
-                                        <td style="font-weight: bold"><% = Resources.Totals.SimIMC %></td>
-                                        <td><%# Eval("SimulatedIFR").FormatDecimal(Viewer.UsesHHMM)%></td>
-                                        <td style="font-weight: bold"><% = Resources.LogbookEntry.FieldIMC %></td>
-                                        <td><%# Eval("IMC").FormatDecimal(Viewer.UsesHHMM)%></td>
-                                        <td style="font-weight: bold"><% = Resources.Totals.Ground %></td>
-                                        <td><%# Eval("GroundSim").FormatDecimal(Viewer.UsesHHMM)%></td>
+                                        <td style="padding: 3px; font-weight: bold"><% = Resources.LogbookEntry.FieldXCountry %></td>
+                                        <td style="padding: 3px"><%# Eval("CrossCountry").FormatDecimal(Viewer.UsesHHMM)%></td>
+                                        <td style="padding: 3px; font-weight: bold"><% = Resources.LogbookEntry.FieldNight %></td>
+                                        <td style="padding: 3px"><%# Eval("Nighttime").FormatDecimal(Viewer.UsesHHMM)%></td>
+                                        <td style="padding: 3px; font-weight: bold"><% = Resources.Totals.SimIMC %></td>
+                                        <td style="padding: 3px"><%# Eval("SimulatedIFR").FormatDecimal(Viewer.UsesHHMM)%></td>
+                                        <td style="padding: 3px; font-weight: bold"><% = Resources.LogbookEntry.FieldIMC %></td>
+                                        <td style="padding: 3px"><%# Eval("IMC").FormatDecimal(Viewer.UsesHHMM)%></td>
+                                        <td style="padding: 3px; font-weight: bold"><% = Resources.Totals.Ground %></td>
+                                        <td style="padding: 3px"><%# Eval("GroundSim").FormatDecimal(Viewer.UsesHHMM)%></td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight: bold"><% = Resources.LogbookEntry.FieldDual %></td>
@@ -162,8 +162,12 @@
                                 <uc5:mfbAirportServices runat="server" ID="mfbAirportServices1" ShowZoom="true" ShowInfo="true" ShowMetar="true" />
                                 <p><%# ((LogbookEntryDisplay) Container.DataItem).GetPathDistanceDescription(DataForFlight.ComputePathDistance()) %></p>
                                 <asp:Panel ID="pnlMetars" runat="server">
-                                    <asp:Button ID="btnMetars" runat="server" Text="<%$ Resources:Weather, GetMETARSPrompt %>" OnClick="btnMetars_Click" />
-                                    <uc1:METAR runat="server" ID="METARDisplay" />
+                                    <asp:UpdatePanel ID="updp1" runat="server">
+                                        <ContentTemplate>
+                                            <asp:Button ID="btnMetars" runat="server" Text="<%$ Resources:Weather, GetMETARSPrompt %>" OnClick="btnMetars_Click" />
+                                            <uc1:METAR runat="server" ID="METARDisplay" />
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
                                 </asp:Panel>
                             </asp:Panel>
                             <div style="text-align:center">
@@ -183,14 +187,14 @@
                 <Content>
                     <asp:FormView ID="fmvAircraft" runat="server" Width="100%" OnDataBound="fmvAircraft_DataBound" meta:resourcekey="fmvAircraftResource1">
                         <ItemTemplate>
-                            <table cellpadding="5px">
+                            <table>
                                 <tr>
-                                    <td>
+                                    <td style="padding: 3px">
                                         <uc1:mfbHoverImageList runat="server" ID="mfbHoverImageList" ImageListKey='<%# Eval("AircraftID") %>'
                                             ImageListAltText='<%# Eval("TailNumber") %>' MaxWidth="150px" ImageListDefaultImage='<%# Eval("DefaultImage") %>'
                                             ImageListDefaultLink='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", Eval("AircraftID")) %>' ImageClass="Aircraft" CssClass="activeRow" />
                                     </td>
-                                    <td>
+                                    <td style="padding: 3px">
                                         <asp:Panel ID="pnlAircraftID" runat="server" meta:resourcekey="pnlAircraftIDResource1">
                                             <div>
                                                 <asp:HyperLink ID="lnkEditAircraft" Font-Size="Larger" Font-Bold="True" runat="server" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", Eval("AircraftID")) %>' meta:resourcekey="lnkEditAircraftResource1" Text='<%# Eval("DisplayTailNumber") %>'></asp:HyperLink>
