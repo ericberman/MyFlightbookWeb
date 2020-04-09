@@ -1,20 +1,15 @@
-﻿using Amazon;
-using Amazon.ElasticTranscoder.Model;
-using Amazon.S3;
-using Amazon.S3.Model;
-using AWSNotifications;
+﻿using AWSNotifications;
 using gma.Drawing.ImageInfo;
+using ImageMagick;
 using MyFlightbook.Geography;
 using Newtonsoft.Json;
 using System;
-using ImageMagick;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -22,7 +17,6 @@ using System.Threading;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.UI;
-
 
 /******************************************************
  * 
@@ -57,9 +51,10 @@ namespace MyFlightbook.Image
     /// The object is defined by a combination of a virtual path (where it is relative to
     /// the root of the application) and a thumbnail filename; the full-filename is derived from
     /// that.  You can get the URL to the thumbnail and to the full filename.
+    /// 
+    /// This is the base class for MFBImageInfo
     /// </summary>
-    [Serializable]
-    public class MFBImageInfo : IComparable
+    public abstract class MFBImageInfoBase : IComparable
     {
         /// <summary>
         /// What type of image is this?  JPEG or PDF
@@ -81,16 +76,6 @@ namespace MyFlightbook.Image
 
         public const string ThumbnailPrefix = "t_";
         public const string ThumbnailPrefixVideo = "v_";
-        internal const string szNewS3KeySuffix = "_";
-
-        public const int ThumbnailWidth = 150;
-        public const int ThumbnailHeight = 150;
-        public const int MaxImgHeight = 1600;
-        public const int MaxImgWidth = 1600;
-
-        private readonly System.Object lockObject = new System.Object();
-        private readonly static System.Object videoLockObject = new System.Object();
-        private readonly static System.Object idempotencyLock = new System.Object();
 
         #region Properties
         /// <summary>
@@ -321,7 +306,7 @@ namespace MyFlightbook.Image
         /// <summary>
         /// Returns the mapped physical path for the virtual directory
         /// </summary>
-        private string PhysicalPath
+        protected string PhysicalPath
         {
             get { return HostingEnvironment.MapPath(VirtualPath); }
         }
@@ -337,11 +322,204 @@ namespace MyFlightbook.Image
         /// <summary>
         /// Returns a unique key for this image for caching
         /// </summary>
-        private string CacheKey
+        protected string CacheKey
         {
             get { return PrimaryKey; }
         }
+
+        /// <summary>
+        /// Primary key for the object - useful as a hash tag
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public string PrimaryKey
+        {
+            get { return MFBImageInfo.PrimaryKeyForValues(this.Class, this.Key, this.ThumbnailFile); }
+        }
         #endregion
+
+        /// <summary>
+        /// Return the base path (virtual) for a particular class of images
+        /// </summary>
+        /// <param name="ic">The ImageClass</param>
+        /// <returns>Virtual directory, null if not found.</returns>
+        public static string BasePathFromClass(ImageClass ic)
+        {
+            switch (ic)
+            {
+                default:
+                case ImageClass.Unknown:
+                    return null;
+                case ImageClass.Aircraft:
+                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["AircraftPixDir"]);
+                case ImageClass.Endorsement:
+                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"]);
+                case ImageClass.OfflineEndorsement:
+                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"]);
+                case ImageClass.Flight:
+                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["FlightsPixDir"]);
+                case ImageClass.BasicMed:
+                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"]);
+            }
+        }
+
+        /// <summary>
+        /// Tries to extract the imageclass from a virtual path - required for legacy support
+        /// </summary>
+        /// <param name="szVirtPath">The virtual path</param>
+        /// <returns>The best-guess image class</returns>
+        public static ImageClass ClassFromVirtPath(string szVirtPath)
+        {
+            if (String.IsNullOrEmpty(szVirtPath))
+                return ImageClass.Unknown;
+
+            if (szVirtPath.EndsWith("//", StringComparison.OrdinalIgnoreCase) && szVirtPath.Length > 2)
+                szVirtPath = szVirtPath.Substring(0, szVirtPath.Length - 1);
+            szVirtPath = szVirtPath.ToUpperInvariant();
+
+            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["AircraftPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
+                return ImageClass.Aircraft;
+            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["FlightsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
+                return ImageClass.Flight;
+            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
+                return ImageClass.Endorsement;
+            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
+                return ImageClass.OfflineEndorsement;
+            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"]), StringComparison.OrdinalIgnoreCase) == 0)
+                return ImageClass.BasicMed;
+
+            // No exact match - try looking for other clues
+            if (szVirtPath.Contains("AIRCRAFT"))
+                return ImageClass.Aircraft;
+            if (szVirtPath.Contains("FLIGHTS"))
+                return ImageClass.Flight;
+            if (szVirtPath.Contains("ENDORSEMENTS"))
+                return ImageClass.Endorsement;
+
+            return ImageClass.Unknown;
+
+        }
+
+        #region IComparable
+        /// <summary>
+        /// Sorts MFBImageInfoBase objects.  Puts images before all other documents, subsorts by filename (== timestamp for images)
+        /// </summary>
+        /// <param name="o">Object being compared to.</param>
+        /// <returns></returns>
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+
+            MFBImageInfoBase mfbii = obj as MFBImageInfoBase;
+
+            if (this.ImageType == mfbii.ImageType)
+                return this.FullImageFile.CompareOrdinalIgnoreCase(mfbii.FullImageFile);
+            else
+                return this.ImageType == ImageFileType.JPEG ? -1 : 1;
+        }
+
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj is null || !(obj is MFBImageInfoBase))
+            {
+                return false;
+            }
+
+            return CompareTo(obj) == 0;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = -750829556;
+                hashCode = hashCode * -1521134295 + ImageType.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Comment);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(VirtualPath);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
+                hashCode = hashCode * -1521134295 + Class.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ThumbnailFile);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FullImageFile);
+                hashCode = hashCode * -1521134295 + EqualityComparer<LatLong>.Default.GetHashCode(Location);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLFullImage);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLThumbnail);
+                hashCode = hashCode * -1521134295 + EqualityComparer<Uri>.Default.GetHashCode(UriS3VideoThumbnail);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImage);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathThumbnail);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(S3Key);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImageS3);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathThumbnail);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathFull);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPath);
+                hashCode = hashCode * -1521134295 + IsLocal.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CacheKey);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PrimaryKey);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(MFBImageInfoBase left, MFBImageInfoBase right)
+        {
+            return EqualityComparer<MFBImageInfoBase>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(MFBImageInfoBase left, MFBImageInfoBase right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(MFBImageInfoBase left, MFBImageInfoBase right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(MFBImageInfoBase left, MFBImageInfoBase right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(MFBImageInfoBase left, MFBImageInfoBase right)
+        {
+            return left is object && left != null && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(MFBImageInfoBase left, MFBImageInfoBase right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// MFBImageInfo wraps an image or PDF file.  It has the following characteristics:
+    ///  - A thumbnail file and a full-image file.  (For PDFs, this is one and the same)
+    ///  - An optional comment
+    ///  - An optional latitude/longitude (geotag).
+    ///  
+    /// The object is defined by a combination of a virtual path (where it is relative to
+    /// the root of the application) and a thumbnail filename; the full-filename is derived from
+    /// that.  You can get the URL to the thumbnail and to the full filename.
+    /// </summary>
+    [Serializable]
+    public class MFBImageInfo : MFBImageInfoBase
+    {
+        internal const string szNewS3KeySuffix = "_";
+
+        public const int ThumbnailWidth = 150;
+        public const int ThumbnailHeight = 150;
+        public const int MaxImgHeight = 1600;
+        public const int MaxImgWidth = 1600;
+
+        private readonly System.Object lockObject = new System.Object();
+        private readonly static System.Object videoLockObject = new System.Object();
+        private readonly static System.Object idempotencyLock = new System.Object();
 
         #region Static Utility Functions
         /// <summary>
@@ -420,68 +598,6 @@ namespace MyFlightbook.Image
             else if (ImageType == ImageFileType.JPEG && ThumbnailFile.StartsWith(ThumbnailPrefixVideo, StringComparison.OrdinalIgnoreCase))
                 ImageType = ImageFileType.S3VideoMP4;
         }
-
-        /// <summary>
-        /// Return the base path (virtual) for a particular class of images
-        /// </summary>
-        /// <param name="ic">The ImageClass</param>
-        /// <returns>Virtual directory, null if not found.</returns>
-        public static string BasePathFromClass(ImageClass ic)
-        {
-            switch (ic)
-            {
-                default:
-                case ImageClass.Unknown:
-                    return null;
-                case ImageClass.Aircraft:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["AircraftPixDir"]);
-                case ImageClass.Endorsement:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"]);
-                case ImageClass.OfflineEndorsement:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"]);
-                case ImageClass.Flight:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["FlightsPixDir"]);
-                case ImageClass.BasicMed:
-                    return VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"]);
-            }
-        }
-
-        /// <summary>
-        /// Tries to extract the imageclass from a virtual path - required for legacy support
-        /// </summary>
-        /// <param name="szVirtPath">The virtual path</param>
-        /// <returns>The best-guess image class</returns>
-        public static ImageClass ClassFromVirtPath(string szVirtPath)
-        {
-            if (String.IsNullOrEmpty(szVirtPath))
-                return ImageClass.Unknown;
-
-            if (szVirtPath.EndsWith("//", StringComparison.OrdinalIgnoreCase) && szVirtPath.Length > 2)
-                szVirtPath = szVirtPath.Substring(0, szVirtPath.Length - 1);
-            szVirtPath = szVirtPath.ToUpperInvariant();
-
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["AircraftPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
-                return ImageClass.Aircraft;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["FlightsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
-                return ImageClass.Flight;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["EndorsementsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
-                return ImageClass.Endorsement;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["OfflineEndorsementsPixDir"]), StringComparison.OrdinalIgnoreCase) == 0)
-                return ImageClass.OfflineEndorsement;
-            if (String.Compare(szVirtPath, VirtualPathUtility.ToAbsolute(ConfigurationManager.AppSettings["BasicMedDir"]), StringComparison.OrdinalIgnoreCase) == 0)
-                return ImageClass.BasicMed;
-
-            // No exact match - try looking for other clues
-            if (szVirtPath.Contains("AIRCRAFT"))
-                return ImageClass.Aircraft;
-            if (szVirtPath.Contains("FLIGHTS"))
-                return ImageClass.Flight;
-            if (szVirtPath.Contains("ENDORSEMENTS"))
-                return ImageClass.Endorsement;
-
-            return ImageClass.Unknown;
-
-        }
         #endregion
 
         /// <summary>
@@ -551,102 +667,6 @@ namespace MyFlightbook.Image
                     inf.Image.Dispose();
             }
         }
-
-        #region IComparable
-        /// <summary>
-        /// Sorts MFBImageInfo objects.  Puts images before all other documents, subsorts by filename (== timestamp for images)
-        /// </summary>
-        /// <param name="o">Object being compared to.</param>
-        /// <returns></returns>
-        public int CompareTo(object obj)
-        {
-            if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
-
-            MFBImageInfo mfbii = obj as MFBImageInfo;
-
-            if (this.ImageType == mfbii.ImageType)
-                return this.FullImageFile.CompareOrdinalIgnoreCase(mfbii.FullImageFile);
-            else
-                return this.ImageType == ImageFileType.JPEG ? -1 : 1;
-        }
-
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj is null || !(obj is MFBImageInfo))
-            {
-                return false;
-            }
-
-            return CompareTo(obj) == 0;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = -750829556;
-                hashCode = hashCode * -1521134295 + ImageType.GetHashCode();
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Comment);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(VirtualPath);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
-                hashCode = hashCode * -1521134295 + Class.GetHashCode();
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ThumbnailFile);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FullImageFile);
-                hashCode = hashCode * -1521134295 + EqualityComparer<LatLong>.Default.GetHashCode(Location);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLFullImage);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLThumbnail);
-                hashCode = hashCode * -1521134295 + EqualityComparer<Uri>.Default.GetHashCode(UriS3VideoThumbnail);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImage);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathThumbnail);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(S3Key);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PathFullImageS3);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathThumbnail);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPathFull);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PhysicalPath);
-                hashCode = hashCode * -1521134295 + IsLocal.GetHashCode();
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CacheKey);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PrimaryKey);
-                return hashCode;
-            }
-        }
-
-        public static bool operator ==(MFBImageInfo left, MFBImageInfo right)
-        {
-            return EqualityComparer<MFBImageInfo>.Default.Equals(left, right);
-        }
-
-        public static bool operator !=(MFBImageInfo left, MFBImageInfo right)
-        {
-            return !(left == right);
-        }
-
-        public static bool operator <(MFBImageInfo left, MFBImageInfo right)
-        {
-            return left is null ? right is object : left.CompareTo(right) < 0;
-        }
-
-        public static bool operator <=(MFBImageInfo left, MFBImageInfo right)
-        {
-            return left is null || left.CompareTo(right) <= 0;
-        }
-
-        public static bool operator >(MFBImageInfo left, MFBImageInfo right)
-        {
-            return left is object && left != null && left.CompareTo(right) > 0;
-        }
-
-        public static bool operator >=(MFBImageInfo left, MFBImageInfo right)
-        {
-            return left is null ? right is null : left.CompareTo(right) >= 0;
-        }
-        #endregion
 
         /// <summary>
         /// Resolves a link to the full image usable by a browser (assumes Key/Class/Thumb are all set)
@@ -1036,16 +1056,6 @@ namespace MyFlightbook.Image
             mfbii.HeightThumbnail = Convert.ToInt32(dr["ThumbHeight"], CultureInfo.InvariantCulture);
             mfbii.ImageType = (MFBImageInfo.ImageFileType)Convert.ToInt32(dr["ImageType"], CultureInfo.InvariantCulture);
             return mfbii;
-        }
-
-        /// <summary>
-        /// Primary key for the object - useful as a hash tag
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnore]
-        [Newtonsoft.Json.JsonIgnore]
-        public string PrimaryKey
-        {
-            get { return MFBImageInfo.PrimaryKeyForValues(this.Class, this.Key, this.ThumbnailFile); }
         }
 
         /// <summary>
@@ -1734,1022 +1744,6 @@ namespace MyFlightbook.Image
         #endregion
     }
 
-    #region Amazon S3 Support
-    /// <summary>
-    /// Encapsulates configuration information about how MyFlightbook uses Amazon AWS S3
-    /// </summary>
-    public static class AWSConfiguration
-    {
-        public const string S3BucketName = "mfbimages";
-        public const string S3BucketNameDebug = "mfbdebug";
-
-        #region Properties
-        public static bool UseS3 { get { return String.Compare(LocalConfig.SettingForKey("UseAWSS3"), "yes", StringComparison.OrdinalIgnoreCase) == 0; } }
-
-        private static string AWSAccessKey { get { return LocalConfig.SettingForKey("AWSAccessKey"); } }
-
-        private static string AWSSecretKey { get { return LocalConfig.SettingForKey("AWSSecretKey"); } }
-
-        /// <summary>
-        /// Should we use the debug bucket?  We do this if the current host name doesn't equal the branding host name.
-        /// </summary>
-        public static bool UseDebugBucket
-        {
-            get
-            {
-                if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.Url != null && HttpContext.Current.Request.Url.Host != null &&
-                    Branding.CurrentBrand != null && Branding.CurrentBrand.HostName != null)
-                    return !Branding.CurrentBrand.MatchesHost(HttpContext.Current.Request.Url.Host);
-                else
-                    return false;
-            }
-        }
-
-        /// <summary>
-        /// The name of the current S3 bucket to use.
-        /// </summary>
-        public static string CurrentS3Bucket
-        {
-            get { return UseDebugBucket ? S3BucketNameDebug : Branding.CurrentBrand.AWSBucket; }
-        }
-
-        /// <summary>
-        /// Gets the URL prefix for the physical image.
-        /// </summary>
-        public static string AmazonS3Prefix
-        {
-            get { return String.Format(CultureInfo.InvariantCulture, "https://s3.amazonaws.com/{0}/", CurrentS3Bucket); }
-        }
-        #endregion
-
-        /// <summary>
-        /// returns a new Amazon S3 client
-        /// </summary>
-        /// <returns>The S3 client</returns>
-        public static IAmazonS3 S3Client()
-        {
-            AWSConfigs.S3Config.UseSignatureVersion4 = true;
-            return AWSClientFactory.CreateAmazonS3Client(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
-        }
-
-        public static Amazon.ElasticTranscoder.IAmazonElasticTranscoder ElasticTranscoderClient()
-        {
-            AWSConfigs.S3Config.UseSignatureVersion4 = true;
-            return AWSClientFactory.CreateAmazonElasticTranscoderClient(AWSAccessKey, AWSSecretKey, RegionEndpoint.USEast1);
-        }
-    }
-
-    /// <summary>
-    /// Manages movement of images/videos to/from the S3 server.
-    /// </summary>
-    public class AWSS3ImageManager
-    {
-        private const string ContentTypeJPEG = "image/jpeg";
-        private const string ContentTypePDF = "application/pdf";
-        private readonly object lockObject = new object();
-
-        #region Constructors
-        public AWSS3ImageManager() { }
-        #endregion
-
-        /// <summary>
-        /// Serialize an AmazonS3 exception, including the data dictionary
-        /// </summary>
-        /// <param name="ex">The exception</param>
-        /// <returns>A serialized exception string.</returns>
-        private static string WrapAmazonS3Exception(AmazonS3Exception ex)
-        {
-            StringBuilder sb = new StringBuilder();
-            if (ex.Data != null)
-            {
-                foreach (object key in ex.Data.Keys)
-                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0} : {1}\r\n", key.ToString(), ex.Data[key].ToString());
-            }
-            return String.Format(CultureInfo.InvariantCulture, "Error moving file on S3: Message:{0}\r\nHelp:\r\n{1}\r\nData:\r\n{2}", ex.Message, ex.HelpLink ?? string.Empty, sb.ToString());
-        }
-
-        /// <summary>
-        /// Moves an image (well, any object, really) from one key to another
-        /// </summary>
-        /// <param name="szSrc">Source path (key)</param>
-        /// <param name="szDst">Destination path (key)</param>
-        public static void MoveImageOnS3(string szSrc, string szDst)
-        {
-            try
-            {
-                using (IAmazonS3 s3 = AWSConfiguration.S3Client())
-                {
-                    CopyObjectRequest cor = new CopyObjectRequest();
-                    DeleteObjectRequest dor = new DeleteObjectRequest();
-                    cor.SourceBucket = cor.DestinationBucket = dor.BucketName = AWSConfiguration.CurrentS3Bucket;
-                    cor.DestinationKey = szDst;
-                    cor.SourceKey = dor.Key = szSrc;
-                    cor.CannedACL = S3CannedACL.PublicRead;
-                    cor.StorageClass = S3StorageClass.Standard; // vs. reduced
-
-                    s3.CopyObject(cor);
-                    s3.DeleteObject(dor);
-                }
-            }
-            catch (AmazonS3Exception ex)
-            {
-                util.NotifyAdminEvent("Error moving image on S3", String.Format(CultureInfo.InvariantCulture, "Error moving from key\r\n{0}to\r\n{1}\r\n\r\n{2}", szSrc, szDst, WrapAmazonS3Exception(ex)), ProfileRoles.maskSiteAdminOnly);
-                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error moving file on S3: Request address:{0}, Message:{1}", WrapAmazonS3Exception(ex), ex.Message));
-            }
-            catch (Exception ex)
-            {
-                throw new MyFlightbookException("Unknown error moving image on S3: " + ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Deletes the image from S3.  The actual operation happens asynchronously; the result is not captured.
-        /// </summary>
-        /// <param name="mfbii">The image to delete</param>
-        public static void DeleteImageOnS3(MFBImageInfo mfbii)
-        {
-            if (mfbii == null)
-                return;
-
-            try
-            {
-                DeleteObjectRequest dor = new DeleteObjectRequest()
-                {
-                    BucketName = AWSConfiguration.CurrentS3Bucket,
-                    Key = mfbii.S3Key
-                };
-
-                new Thread(new ThreadStart(() =>
-                {
-                    try
-                    {
-                        using (IAmazonS3 s3 = AWSConfiguration.S3Client())
-                        {
-                            s3.DeleteObject(dor);
-                            if (mfbii.ImageType == MFBImageInfo.ImageFileType.S3VideoMP4)
-                            {
-                                // Delete the thumbnail too.
-                                string szs3Key = mfbii.S3Key;
-                                dor.Key = szs3Key.Replace(Path.GetFileName(szs3Key), MFBImageInfo.ThumbnailPrefixVideo + Path.GetFileNameWithoutExtension(szs3Key) + "00001" + FileExtensions.JPG);
-                                s3.DeleteObject(dor);
-                            }
-                        }
-                    }
-                    catch (Exception ex) when (ex is AmazonS3Exception) { }
-                }
-                )).Start();
-            }
-            catch (AmazonS3Exception ex)
-            {
-                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error deleting file on S3: {0}", WrapAmazonS3Exception(ex)), ex.InnerException);
-            }
-            catch (Exception ex)
-            {
-                throw new MyFlightbookException("Unknown error deleting image on S3: " + ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Moves the image to Amazon
-        /// </summary>
-        /// <param name="por"></param>
-        /// <param name="mfbii">The object to move.</param>
-        public void MoveByRequest(PutObjectRequest por, MFBImageInfo mfbii)
-        {
-            if (mfbii == null)
-                throw new ArgumentNullException(nameof(mfbii));
-            if (por == null)
-                throw new ArgumentNullException(nameof(por));
-            lock (lockObject)
-            {
-                try
-                {
-                    using (IAmazonS3 s3 = AWSConfiguration.S3Client())
-                    {
-                        PutObjectResponse s3r = null;
-                        using (por.InputStream)
-                        {
-                            s3r = s3.PutObject(por);
-                        }
-                        if (s3r != null)
-                        {
-                            switch (mfbii.ImageType)
-                            {
-                                case MFBImageInfo.ImageFileType.JPEG:
-                                    File.Delete(mfbii.PhysicalPathFull);
-                                    break;
-                                case MFBImageInfo.ImageFileType.PDF:
-                                    {
-                                        try
-                                        {
-                                            if (String.IsNullOrEmpty(mfbii.Comment))
-                                                mfbii.Comment = mfbii.ThumbnailFile;
-                                            mfbii.ImageType = MFBImageInfo.ImageFileType.S3PDF;
-                                            mfbii.RenameLocalFile(mfbii.ThumbnailFile.Replace(FileExtensions.PDF, FileExtensions.S3PDF));
-
-                                            // Write the comment to the resulting file.
-                                            using (FileStream fs = File.OpenWrite(mfbii.PhysicalPathThumbnail))
-                                            {
-                                                fs.SetLength(0);
-                                                byte[] rgBytes = Encoding.UTF8.GetBytes(mfbii.Comment.ToCharArray());
-                                                fs.Write(rgBytes, 0, rgBytes.Length);
-                                            }
-                                        }
-                                        catch (Exception ex) when (ex is UnauthorizedAccessException || ex is FileNotFoundException || ex is IOException)
-                                        {
-                                            mfbii.ImageType = MFBImageInfo.ImageFileType.PDF;
-                                        }
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            // ALWAYS update the db
-                            mfbii.UpdateDBLocation(false);
-                        }
-                    }
-                }
-                catch (AmazonS3Exception ex)
-                {
-                    throw new MyFlightbookException(WrapAmazonS3Exception(ex), ex);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Moves the full-size image to the current bucket.  Actual move is done on a background thread, and the local file is deleted IF the operation is successful.
-        /// <param name="fSynchronous">true if the call should be made synchronously; otherwise, the call returns immediately and the move is done on a background thread</param>
-        /// <param name="mfbii">The image to move</param>
-        /// </summary>
-        public void MoveImageToS3(bool fSynchronous, MFBImageInfo mfbii)
-        {
-            if (mfbii == null)
-                return;
-
-            try
-            {
-                PutObjectRequest por = new PutObjectRequest()
-                {
-                    BucketName = AWSConfiguration.CurrentS3Bucket,
-                    ContentType = mfbii.ImageType == MFBImageInfo.ImageFileType.JPEG ? ContentTypeJPEG : ContentTypePDF,
-                    AutoCloseStream = true,
-                    InputStream = new FileStream(mfbii.PhysicalPathFull, FileMode.Open, FileAccess.Read),
-                    Key = mfbii.S3Key,
-                    CannedACL = S3CannedACL.PublicRead,
-                    StorageClass = S3StorageClass.Standard // vs. reduced
-                };
-
-                if (fSynchronous)
-                    MoveByRequest(por, mfbii);
-                else
-                    new Thread(new ThreadStart(() => { MoveByRequest(por, mfbii); })).Start();
-            }
-            catch (AmazonS3Exception ex)
-            {
-                throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Error moving file to S3: {0}", WrapAmazonS3Exception(ex)), ex.InnerException);
-            }
-            catch (Exception ex)
-            {
-                throw new MyFlightbookException("Unknown error moving image to S3: " + ex.Message);
-            }
-        }
-        #endregion
-
-        #region Video Support
-        /// <summary>
-        /// Uploads a video for transcoding.  Deletes the source file named in szFileName
-        /// </summary>
-        /// <param name="szFileName">Filename of the input stream</param>
-        /// <param name="szContentType">Content type of the video file</param>
-        /// <param name="szBucket">Bucket to use.  Specified as a parameter because CurrentBucket might return the wrong value when called on a background thread</param>
-        /// <param name="szPipelineID">PipelineID from amazon</param>
-        /// <param name="mfbii">The MFBImageInfo that encapsulates the video</param>
-        public void UploadVideo(string szFileName, string szContentType, string szBucket, string szPipelineID, MFBImageInfo mfbii)
-        {
-            if (mfbii == null)
-                throw new ArgumentNullException(nameof(mfbii));
-
-            using (var etsClient = AWSConfiguration.ElasticTranscoderClient())
-            {
-                string szGuid = Guid.NewGuid() + MFBImageInfo.szNewS3KeySuffix;
-                string szBasePath = mfbii.VirtualPath.StartsWith("/", StringComparison.Ordinal) ? mfbii.VirtualPath.Substring(1) : mfbii.VirtualPath;
-                string szBaseFile = String.Format(CultureInfo.InvariantCulture, "{0}{1}", szBasePath, szGuid);
-
-                PutObjectRequest por = new PutObjectRequest()
-                {
-                    BucketName = szBucket,
-                    ContentType = szContentType,
-                    AutoCloseStream = true,
-                    InputStream = new FileStream(szFileName, FileMode.Open, FileAccess.Read),
-                    Key = szBaseFile + FileExtensions.VidInProgress,
-                    CannedACL = S3CannedACL.PublicRead,
-                    StorageClass = S3StorageClass.Standard // vs. reduced
-                };
-
-                lock (lockObject)
-                {
-                    try
-                    {
-                        using (por.InputStream)
-                        {
-                            using (IAmazonS3 s3 = AWSConfiguration.S3Client())
-                                s3.PutObject(por);
-                            File.Delete(szFileName);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        util.NotifyAdminEvent("Error putting video file", ex.Message, ProfileRoles.maskSiteAdminOnly);
-                        throw;
-                    }
-                }
-
-                var job = etsClient.CreateJob(new CreateJobRequest()
-                {
-                    PipelineId = szPipelineID,
-                    Input = new JobInput()
-                    {
-                        AspectRatio = "auto",
-                        Container = "auto",
-                        FrameRate = "auto",
-                        Interlaced = "auto",
-                        Resolution = "auto",
-                        Key = por.Key,
-                    },
-                    Output = new CreateJobOutput()
-                    {
-                        ThumbnailPattern = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}{3}", szBasePath, MFBImageInfo.ThumbnailPrefixVideo, szGuid, "{count}"),
-                        Rotate = "auto",
-                        // Generic 720p: Go to http://docs.aws.amazon.com/elastictranscoder/latest/developerguide/create-job.html#PresetId to see a list of some
-                        // of the support presets or call the ListPresets operation to get the full list of available presets
-                        // PresetId = "1351620000000-000010",
-                        PresetId = "1423799228749-hsj7ba",
-                        Key = szBaseFile + FileExtensions.MP4
-                    }
-                });
-                if (job != null)
-                    new PendingVideo(szGuid, job.Job.Id, mfbii.Comment, mfbii.Class, mfbii.Key, szBucket).Commit();
-            }
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// Utility Admin functions for AWS S3 images
-    /// </summary>
-    public class AWSImageManagerAdmin : AWSS3ImageManager
-    {
-        /// <summary>
-        /// ADMIN ONLY - Remove images from S3 LIVE BUCKET that are orphaned (no reference from live site)
-        /// </summary>
-        /// <param name="ic"></param>
-        /// <param name="handleS3Object"></param>
-        public static void ADMINDeleteS3Orphans(MFBImageInfo.ImageClass ic, Action<long, long, long, long> onSummary, Action onS3EnumDone, Func<string, int, bool> onDelete)
-        {
-                string szBasePath = MFBImageInfo.BasePathFromClass(ic);
-                if (szBasePath.StartsWith("/", StringComparison.InvariantCultureIgnoreCase))
-                    szBasePath = szBasePath.Substring(1);
-
-                Regex r = new Regex(String.Format(CultureInfo.InvariantCulture, "{0}(.*)/(.*)(\\.jpg|\\.jpeg|\\.pdf|\\.s3pdf|\\.mp4)", szBasePath), RegexOptions.IgnoreCase);
-
-                long cBytesToFree = 0;
-                long cBytesOnS3 = 0;
-                long cFilesOnS3 = 0;
-                long cOrphansFound = 0;
-
-            using (IAmazonS3 s3 = AWSConfiguration.S3Client())
-            {
-                ListObjectsRequest request = new ListObjectsRequest() { BucketName = AWSConfiguration.S3BucketName, Prefix = szBasePath };
-
-                /*
-                 * Need to get the files from S3 FIRST, otherwise there is a race condition
-                 * I.e., if we get files from the DB, then get files from S3, a file could be added to the db AFTER our query
-                 * but BEFORE we retrieve it from the S3 listing, and we will thus treat it as an orphan and delete it.
-                 * But since the file is put into the DB before being moved to S3, if we get all the S3 files and THEN
-                 * get the DB references, we will always have a subset of the valid S3 files, which prevents a false positive 
-                 * orphan identification.
-                 */
-
-                List<S3Object> lstS3Objects = new List<S3Object>();
-                // Get the list of S3 objects
-                do
-                {
-                    ListObjectsResponse response = s3.ListObjects(request);
-
-                    cFilesOnS3 += response.S3Objects.Count;
-                    foreach (S3Object o in response.S3Objects)
-                    {
-                        cBytesOnS3 += o.Size;
-                        lstS3Objects.Add(o);
-                    }
-
-                    // If response is truncated, set the marker to get the next 
-                    // set of keys.
-                    if (response.IsTruncated)
-                        request.Marker = response.NextMarker;
-                    else
-                        request = null;
-                } while (request != null);
-
-                onS3EnumDone?.Invoke();
-
-                // Now get all of the images in the class and do orphan detection
-                Dictionary<string, MFBImageInfo> dictDBResults = MFBImageInfo.AllImagesForClass(ic);
-
-                long cOrphansLikely = Math.Max(lstS3Objects.Count - dictDBResults.Keys.Count, 1);
-                Regex rGuid = new Regex(String.Format(CultureInfo.InvariantCulture, "^({0})?([^_]*).*", MFBImageInfo.ThumbnailPrefixVideo), RegexOptions.Compiled);  // for use below in extracting GUIDs from video thumbnail and video file names.
-                lstS3Objects.ForEach((o) =>
-                {
-                    Match m = r.Match(o.Key);
-                    if (m.Groups.Count < 3)
-                        return;
-
-                    string szKey = m.Groups[1].Value;
-                    string szName = m.Groups[2].Value;
-                    string szExt = m.Groups[3].Value;
-
-                    bool fPDF = (String.Compare(szExt, FileExtensions.PDF, StringComparison.InvariantCultureIgnoreCase) == 0);
-                    bool fVid = (String.Compare(szExt, FileExtensions.MP4, StringComparison.InvariantCultureIgnoreCase) == 0);
-                    bool fVidThumb = Regex.IsMatch(szExt, FileExtensions.RegExpImageFileExtensions) && szName.StartsWith(MFBImageInfo.ThumbnailPrefixVideo, StringComparison.InvariantCultureIgnoreCase);
-                    bool fJpg = (String.Compare(szExt, FileExtensions.JPG, StringComparison.InvariantCultureIgnoreCase) == 0 || String.Compare(szExt, FileExtensions.JPEG, StringComparison.InvariantCultureIgnoreCase) == 0);
-
-                    string szThumb = string.Empty;
-                    if (fPDF)
-                        szThumb = szName + FileExtensions.S3PDF;
-                    else if (fVid || fVidThumb)
-                    {
-                            // This is a bit of a hack, but we have two files on the server for a video, neither of which precisely matches what's in the database.
-                            // The video file is {guid}.mp4 or {guid}_.mp4, the thumbnail on S3 is v_{guid}_0001.jpg.
-                            // So we grab the GUID and see if we have a database entry matching that guid.
-                            Match mGuid = rGuid.Match(szName);
-                        szThumb = (mGuid.Groups.Count >= 3) ? mGuid.Groups[2].Value : szName + szExt;
-                        string szMatchKey = dictDBResults.Keys.FirstOrDefault(skey => skey.Contains(szThumb));
-                        if (!String.IsNullOrEmpty(szMatchKey))  // leave it in the dictionary - don't remove it - because we may yet hit the Mp4 or the JPG.
-                                return;
-                    }
-                    else if (fJpg)
-                        szThumb = MFBImageInfo.ThumbnailPrefix + szName + szExt;
-
-                    string szPrimary = MFBImageInfo.PrimaryKeyForValues(ic, szKey, szThumb);
-
-                        // if it is found, super - remove it from the dictionary (for performance) and return
-                        if (dictDBResults.ContainsKey(szPrimary))
-                        dictDBResults.Remove(szPrimary);
-                    else
-                    {
-                        cOrphansFound++;
-                        cBytesToFree += o.Size;
-                        if (onDelete(o.Key, (int)((100 * cOrphansFound) / cOrphansLikely)))
-                        {
-                                // Make sure that the item 
-                                DeleteObjectRequest dor = new DeleteObjectRequest() { BucketName = AWSConfiguration.S3BucketName, Key = o.Key };
-                            s3.DeleteObject(dor);
-                        }
-                    }
-                });
-
-                onSummary?.Invoke(cFilesOnS3, cBytesOnS3, cOrphansFound, cBytesToFree);
-            }
-        }
-
-        /// <summary>
-        /// ADMIN ONLY - Removes images from the debug bucket
-        /// </summary>
-        public static void ADMINCleanUpDebug()
-        {
-            using (IAmazonS3 s3 = AWSConfiguration.S3Client())
-            {
-                ListObjectsRequest request = new ListObjectsRequest() { BucketName = AWSConfiguration.S3BucketNameDebug };
-
-                do
-                {
-                    ListObjectsResponse response = s3.ListObjects(request);
-
-                    foreach (S3Object o in response.S3Objects)
-                    {
-                        DeleteObjectRequest dor = new DeleteObjectRequest() { BucketName = AWSConfiguration.S3BucketNameDebug, Key = o.Key };
-                        s3.DeleteObject(dor);
-                    }
-
-                    // If response is truncated, set the marker to get the next 
-                    // set of keys.
-                    if (response.IsTruncated)
-                    {
-                        request.Marker = response.NextMarker;
-                    }
-                    else
-                    {
-                        request = null;
-                    }
-                } while (request != null);
-            }
-        }
-
-        /// <summary>
-        /// ADMIN Migrates the full image file to S3, returns the number of bytes moved.
-        /// </summary>
-        /// <param name="mfbii">The image to move</param>
-        /// <returns>The # of bytes moved, if any, -1 for failure</returns>
-        public int ADMINMigrateToS3(MFBImageInfo mfbii)
-        {
-            int cBytes = 0;
-
-            if (mfbii == null || !AWSConfiguration.UseS3)
-                return -1;
-
-            string szPathFull = mfbii.PhysicalPathFull;
-            if (mfbii.IsLocal)
-            {
-                if (mfbii.ImageType == MFBImageInfo.ImageFileType.JPEG)
-                    mfbii.Update(); // write the meta-data to both thumbnail & full file
-
-                FileInfo fi = new FileInfo(szPathFull);
-                cBytes += (Int32)fi.Length;
-                MoveImageToS3(true, mfbii);
-
-                return cBytes;
-            }
-
-            return -1;
-        }
-    }
-
-
-    #region Pending videos and images
-    /// <summary>
-    /// A video that has been submitted to Amazon for transcoding and is awaiting a response
-    /// </summary>
-    public class PendingVideo
-    {
-        #region Properties
-        /// <summary>
-        /// The GUID that is the basis for the filename
-        /// </summary>
-        public string GUID { get; set; }
-
-        /// <summary>
-        /// The AWS-assigned jobID
-        /// </summary>
-        public string JobID { get; set; }
-
-        /// <summary>
-        /// The user-provided comment
-        /// </summary>
-        public string Comment { get; set; }
-
-        /// <summary>
-        /// Date/time of submission
-        /// </summary>
-        public DateTime SubmissionTime { get; set; }
-
-        /// <summary>
-        /// The class of the pending video
-        /// </summary>
-        public MFBImageInfo.ImageClass Class { get; set; }
-
-        /// <summary>
-        /// The key for the pending video
-        /// </summary>
-        public string Key { get; set; }
-
-        /// <summary>
-        /// Which bucket is this pending video in?
-        /// </summary>
-        public string Bucket { get; set; }
-        #endregion
-
-        #region Constructors
-        public PendingVideo(string guid, string jobID, string comment, MFBImageInfo.ImageClass ic, string key, string bucket)
-        {
-            GUID = guid;
-            JobID = jobID;
-            Comment = comment;
-            Class = ic;
-            Key = key;
-            Bucket = bucket;
-            SubmissionTime = DateTime.Now;
-        }
-
-        public PendingVideo(string jobID)
-        {
-            JobID = Comment = GUID = string.Empty;
-            DBHelper dbh = new DBHelper("SELECT *  FROM pendingvideos WHERE jobID=?j");
-            dbh.ReadRow((comm) => { comm.Parameters.AddWithValue("j", jobID); },
-                (dr) =>
-                {
-                    GUID = (string)dr["guid"];
-                    JobID = (string)dr["jobID"];
-                    Comment = (string)dr["Comment"];
-                    Class = (MFBImageInfo.ImageClass)Convert.ToInt32(dr["virtPathID"], CultureInfo.InvariantCulture);
-                    Key = (string)dr["imagekey"];
-                    Bucket = (string)dr["Bucket"];
-                    SubmissionTime = DateTime.SpecifyKind(Convert.ToDateTime(dr["Submitted"], CultureInfo.InvariantCulture), DateTimeKind.Utc);
-                });
-        }
-        #endregion
-
-        public void Commit()
-        {
-            DBHelper dbh = new DBHelper("REPLACE INTO pendingvideos SET jobID=?j, guid=?g, Comment=?c, imagekey=?k, virtPathID=?v, Bucket=?b, Submitted=UTC_TIMESTAMP()");
-            dbh.DoNonQuery((comm) =>
-            {
-                comm.Parameters.AddWithValue("j", JobID);
-                comm.Parameters.AddWithValue("g", GUID);
-                comm.Parameters.AddWithValue("c", Comment);
-                comm.Parameters.AddWithValue("k", Key);
-                comm.Parameters.AddWithValue("v", (int)Class);
-                comm.Parameters.AddWithValue("b", Bucket);
-            });
-        }
-
-        public void Delete()
-        {
-            DBHelper dbh = new DBHelper("DELETE FROM pendingvideos WHERE jobID=?j");
-            dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("j", JobID); });
-        }
-
-        /// <summary>
-        /// Filename for the thumbnail file
-        /// </summary>
-        public string ThumbnailFileName
-        {
-            get { return String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", MFBImageInfo.ThumbnailPrefixVideo, GUID, FileExtensions.JPG); }
-        }
-
-        /// <summary>
-        /// Width of the thumbnail
-        /// </summary>
-        public int ThumbWidth { get; set; }
-
-        /// <summary>
-        /// Height of the thumbnail
-        /// </summary>
-        public int ThumbHeight { get; set; }
-
-        /// <summary>
-        /// Creates the thumbnail from a completed video process.  Sets the width/height in the process.
-        /// </summary>
-        /// <param name="szBasePath">The base path for the video object</param>
-        /// <param name="szPhysicalPath">The filename to use for the resulting thumbnail image</param>
-        public void InitThumbnail(string szBasePath, string szPhysicalPath)
-        {
-            if (szBasePath == null)
-                throw new ArgumentNullException(nameof(szBasePath));
-
-            string szThumbFile = String.Format(CultureInfo.InvariantCulture, "{0}{1}00001{2}", MFBImageInfo.ThumbnailPrefixVideo, GUID, FileExtensions.JPG);
-
-            if (szBasePath.StartsWith("/", StringComparison.Ordinal))
-                szBasePath = szBasePath.Substring(1);
-            string srcFile = szBasePath + szThumbFile;
-            // Copy the thumbnail over
-            using (IAmazonS3 s3 = AWSConfiguration.S3Client())
-            {
-                GetObjectResponse gor = s3.GetObject(new GetObjectRequest() { BucketName = Bucket, Key = srcFile });
-                if (gor != null && gor.ResponseStream != null)
-                {
-                    using (gor.ResponseStream)
-                    {
-                        using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(gor.ResponseStream))
-                        {
-                            Info inf = MFBImageInfo.InfoFromImage(image);
-
-                            // save the thumbnail locally.
-                            using (inf.Image)
-                            {
-
-                                inf.ImageDescription = Comment;
-
-                                Bitmap bmp = MFBImageInfo.BitmapFromImage(inf.Image, MFBImageInfo.ThumbnailHeight, MFBImageInfo.ThumbnailWidth);
-                                ThumbWidth = bmp.Width;
-                                ThumbHeight = bmp.Height;
-
-                                using (bmp)
-                                {
-                                    // get all properties of the original image and copy them to the new image.  This should include the annotation (above)
-                                    foreach (PropertyItem pi in inf.Image.PropertyItems)
-                                        bmp.SetPropertyItem(pi);
-
-                                    bmp.Save(szPhysicalPath, ImageFormat.Jpeg);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // clean up the folder on S3 - anything that has the GUID but not .mp4 in it or the thumbnail in it.  (Save space!)  i.e., delete excess thumbnails and the source video file.
-                List<S3Object> lstS3Objects = new List<S3Object>();
-                ListObjectsRequest loRequest = new ListObjectsRequest() { BucketName = Bucket, Prefix = szBasePath };
-                // Get the list of S3 objects
-                do
-                {
-                    ListObjectsResponse response = s3.ListObjects(loRequest);
-                    foreach (S3Object o in response.S3Objects)
-                    {
-                        if (o.Key.Contains(GUID) && !o.Key.Contains(FileExtensions.MP4) && !o.Key.Contains(szThumbFile))
-                            lstS3Objects.Add(o);
-                    }
-
-                    // If response is truncated, set the marker to get the next 
-                    // set of keys.
-                    if (response.IsTruncated)
-                        loRequest.Marker = response.NextMarker;
-                    else
-                        loRequest = null;
-                } while (loRequest != null);
-
-                lstS3Objects.ForEach((o) =>
-                {
-                    s3.DeleteObject(new DeleteObjectRequest() { BucketName = Bucket, Key = o.Key });
-                });
-            }
-        }
-    }
-
-    /// <summary>
-    /// MFBImageInfo that has NOT YET been persisted
-    /// </summary>
-    [Serializable]
-    public class MFBPendingImage : MFBImageInfo
-    {
-        #region properties
-        /// <summary>
-        /// The MFBPostedFile containing the pending file to upload
-        /// </summary>
-        public MFBPostedFile PostedFile { get; set; }
-
-        /// <summary>
-        /// Is this valid?  (I.e., has the posted file been deleted)
-        /// </summary>
-        public bool IsValid
-        {
-            get { return PostedFile != null; }
-        }
-
-        /// <summary>
-        /// The key by which to access this object in the session
-        /// </summary>
-        public string SessionKey { get; set; }
-
-        public override string URLThumbnail
-        {
-            get
-            {
-                if (!IsValid)
-                    return string.Empty;
-
-                if (ImageType == ImageFileType.JPEG)
-                    return String.Format(CultureInfo.InvariantCulture, "~/Public/PendingImg.aspx?i={0}", HttpUtility.UrlEncode(SessionKey));
-                else if (ImageType == ImageFileType.S3VideoMP4)
-                    return "~/images/pendingvideo.png";
-                else
-                    return base.URLThumbnail;
-            }
-            set
-            {
-                base.URLThumbnail = value;
-            }
-        }
-
-        public override string URLFullImage
-        {
-            get
-            {
-                if (!IsValid)
-                    return string.Empty;
-
-                if (ImageType == ImageFileType.JPEG)
-                    return String.Format(CultureInfo.InvariantCulture, "~/Public/PendingImg.aspx?i={0}&full=1", HttpUtility.UrlEncode(SessionKey));
-                else if (ImageType == ImageFileType.S3VideoMP4)
-                    return string.Empty;    // nothing to click on, at least not yet.
-
-                return base.URLFullImage;
-            }
-            set
-            {
-                base.URLFullImage = value;
-            }
-        }
-        #endregion
-
-        #region object creation
-        protected void Init()
-        {
-            PostedFile = null;
-        }
-
-        public MFBPendingImage()
-            : base()
-        {
-            Init();
-        }
-
-        public MFBPendingImage(MFBPostedFile mfbpf, string szSessKey)
-            : base()
-        {
-            Init();
-            PostedFile = mfbpf ?? throw new ArgumentNullException(nameof(mfbpf));
-            ImageType = ImageTypeFromFile(mfbpf);
-            ThumbnailFile = MFBImageInfo.ThumbnailPrefix + mfbpf.FileID;
-            SessionKey = szSessKey;
-        }
-        #endregion
-
-        /// <summary>
-        /// Persists the pending image, returning the resulting MFBImageInfo object.
-        /// </summary>
-        /// <returns>The newly created MFBImageInfo object</returns>
-        public MFBImageInfo Commit(MFBImageInfo.ImageClass ic, string szKey)
-        {
-            return new MFBImageInfo(ic, szKey, PostedFile, Comment, Location);
-        }
-
-        /// <summary>
-        /// Doesn't really delete (since nothing has been persisted), but removes the object from memory and invalidates it.
-        /// </summary>
-        public override void DeleteImage()
-        {
-            PostedFile?.CleanUp();
-            PostedFile = null;
-            ThumbnailFile = string.Empty;
-            if (SessionKey != null && HttpContext.Current != null && HttpContext.Current.Session != null)
-                HttpContext.Current.Session[SessionKey] = null;
-        }
-
-        public override void UpdateAnnotation(string szText)
-        {
-            Comment = szText;
-        }
-    }
-    #endregion
-
-    /// <summary>
-    /// Pseudo HTTPPostedFile, since I can't create those.
-    /// </summary>
-    [Serializable]
-    public class MFBPostedFile
-    {
-        #region Constructors
-        public MFBPostedFile()
-        {
-        }
-
-        public MFBPostedFile(HttpPostedFile pf) : this()
-        {
-            if (pf == null)
-                throw new ArgumentNullException(nameof(pf));
-            WriteStreamToTempFile(pf.InputStream);
-            FileID = FileName = pf.FileName;
-
-            ContentType = pf.ContentType;
-            ContentLength = pf.ContentLength;
-        }
-
-        public MFBPostedFile(AjaxControlToolkit.AjaxFileUploadEventArgs e) : this()
-        {
-            if (e == null)
-                throw new ArgumentNullException(nameof(e));
-
-            using (Stream s = e.GetStreamContents())
-                WriteStreamToTempFile(s);
-
-            FileID = e.FileId;
-            FileName = e.FileName;
-
-            ContentType = e.ContentType;
-            ContentLength = e.FileSize;
-        }
-
-        ~MFBPostedFile()
-        {
-            // We can't make MFBPostedFile be disposable because we hold it indefinitely in the session
-            // But we're not holding anything open either. 
-            // So on object deletion, clean up any temp files.
-            CleanUp();
-        }
-
-        private void WriteStreamToTempFile(Stream s)
-        {
-            TempFileName = Path.GetTempFileName();
-            using (FileStream fs = File.OpenWrite(TempFileName))
-            {
-                s.Seek(0, SeekOrigin.Begin);
-                s.CopyTo(fs);
-            }
-        }
-        #endregion
-
-        #region properties
-        /// <summary>
-        /// File name for the file
-        /// </summary>
-        public string FileName { get; set; }
-
-        /// <summary>
-        /// MIME content type for the file
-        /// </summary>
-        public string ContentType { get; set; }
-
-        /// <summary>
-        /// The length of the file
-        /// </summary>
-        public int ContentLength { get; set; }
-
-        /// <summary>
-        /// The name of the temp file to which the data has been written, so that we're not holding a potentially huge file in memory.
-        /// The file can be safely deleted at any time.
-        /// </summary>
-        public string TempFileName { get; private set; }
-
-        /// <summary>
-        /// The unique ID provided by the AJAX file upload control
-        /// </summary>
-        public string FileID { get; set; }
-
-        private byte[] m_ThumbBytes = null;
-
-        /// <summary>
-        /// Returns the bytes of the posted file, converted if needed from HEIC.
-        /// </summary>
-        public byte[] CompatibleContentData()
-        {
-            if (TempFileName == null)
-                return null;
-
-            using (FileStream fs = File.OpenRead(TempFileName))
-            {
-                // Check for HEIC
-                try
-                {
-                    using (System.Drawing.Image img = System.Drawing.Image.FromStream(fs))
-                    {
-                        // If we got here then the content is Drawing Compatible - i.e., not HEIC; just return contentdata
-                        fs.Seek(0, SeekOrigin.Begin);
-                        byte[] rgb = new byte[fs.Length];
-                        fs.Read(rgb, 0, rgb.Length);
-                        return rgb;
-                    }
-                }
-                catch (Exception ex) when (ex is ArgumentException)
-                {
-                    return MFBImageInfo.ConvertStreamToJPG(fs);
-                }
-            }
-        }
-        
-        /// <summary>
-        /// The stream of the thumbnail file - computed once and cached in ThumbnailData
-        /// </summary>
-        public byte[] ThumbnailBytes()
-        {
-            if (m_ThumbBytes != null)
-                return m_ThumbBytes;
-
-            using (Stream s = GetInputStream())
-            {
-                string szTempFile = null;
-                try
-                {
-                    using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(s, out szTempFile))
-                    {
-                        Info inf = MFBImageInfo.InfoFromImage(image);
-                        using (Bitmap bmp = MFBImageInfo.BitmapFromImage(inf.Image, MFBImageInfo.ThumbnailHeight, MFBImageInfo.ThumbnailWidth))
-                        {
-                            using (MemoryStream sOut = new MemoryStream())
-                            {
-                                bmp.Save(sOut, ImageFormat.Jpeg);
-                                m_ThumbBytes = sOut.ToArray();
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    if (!String.IsNullOrEmpty(szTempFile) && File.Exists(szTempFile))
-                        File.Delete(szTempFile);
-                }
-            }
-            return m_ThumbBytes;
-        }
-
-        /// <summary>
-        /// Returns a stream to the underlying data.
-        /// MUST BE DISPOSED BY CALLER
-        /// </summary>
-        /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public Stream GetInputStream()
-        {
-            return File.OpenRead(TempFileName);
-        }
-
-        public void CleanUp()
-        {
-            if (!String.IsNullOrEmpty(TempFileName) && File.Exists(TempFileName))
-                File.Delete(TempFileName);
-        }
-        #endregion
-    }
-
     public class MFBImageInfoEventArgs : EventArgs
     {
         public MFBImageInfo Image { get; set; }
@@ -2764,77 +1758,5 @@ namespace MyFlightbook.Image
     public class MFBImageCollection : List<MFBImageInfo>
     {
 
-    }
-
-    /// <summary>
-    /// Encapsulates utilities for scribbled PNG signatures, including presentation as a data: URL
-    /// </summary>
-    public static class ScribbleImage
-    {
-        private const string DataURLPrefix = "data:image/png;base64,";
-
-        /// <summary>
-        /// Returns a data:... URL for the specified byte array
-        /// </summary>
-        /// <param name="rgb">The byte array</param>
-        /// <returns>A url which can be used in-line for images</returns>
-        public static string DataLinkForByteArray(byte[] rgb)
-        {
-            if (rgb == null)
-                return string.Empty;
-
-            return DataURLPrefix + Convert.ToBase64String(rgb);
-        }
-
-        /// <summary>
-        /// Validates that the specified data URL is well formed and contains data
-        /// </summary>
-        /// <param name="szLink"></param>
-        /// <returns></returns>
-        public static bool IsValidDataURL(string szLink)
-        {
-            if (String.IsNullOrWhiteSpace(szLink))
-                return false;
-
-            if (!szLink.StartsWith(DataURLPrefix, StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            return szLink.Length > DataURLPrefix.Length;
-        }
-
-        /// <summary>
-        /// Retrieves the bytes from a data: URL
-        /// </summary>
-        /// <param name="szLink">The data: URL</param>
-        /// <returns>The bytes of the PNG.</returns>
-        public static byte[] FromDataLinkURL(string szLink)
-        {
-            if (szLink == null)
-                return Array.Empty<byte>();
-
-            string szSigB64 = szLink.Substring(ScribbleImage.DataURLPrefix.Length);
-            byte[] rgbSignature = Convert.FromBase64CharArray(szSigB64.ToCharArray(), 0, szSigB64.Length);
-
-            if (rgbSignature.Length > 10000) // this may not be compressed (e.g., from Android) - compress it.
-            {
-                using (Stream st = new MemoryStream(rgbSignature))
-                {
-                    using (Stream stDst = new MemoryStream())
-                    {
-                        // This is a PNG, so no need to handle temp files/conversion.
-                        using (System.Drawing.Image image = MFBImageInfo.DrawingCompatibleImageFromStream(st))
-                        {
-                            image.Save(stDst, System.Drawing.Imaging.ImageFormat.Png);
-                            rgbSignature = new byte[stDst.Length];
-                            stDst.Position = 0;
-                            stDst.Read(rgbSignature, 0, (int)stDst.Length);
-                        }
-                    }
-                }
-            }
-
-            return rgbSignature;
-
-        }
     }
 }

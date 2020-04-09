@@ -967,12 +967,17 @@
     <Compile Include="AppCode\Flights\Totals.cs" />
     <Compile Include="AppCode\Flights\UASCurrency.cs" />
     <Compile Include="AppCode\GlobalSuppressions.cs" />
+    <Compile Include="AppCode\Images\AWSSupport.cs" />
     <Compile Include="AppCode\Images\ImageInfo\Constants.cs" />
     <Compile Include="AppCode\Images\ImageInfo\Fraction.cs" />
     <Compile Include="AppCode\Images\ImageInfo\Info.cs" />
     <Compile Include="AppCode\Images\ImageInfo\PropertyTag.cs" />
     <Compile Include="AppCode\Images\ImageList.cs" />
     <Compile Include="AppCode\Images\MFBImageInfo.cs" />
+    <Compile Include="AppCode\Images\MFBPendingImage.cs" />
+    <Compile Include="AppCode\Images\MFBPostedFile.cs" />
+    <Compile Include="AppCode\Images\PendingVideo.cs" />
+    <Compile Include="AppCode\Images\ScribbleImage.cs" />
     <Compile Include="AppCode\Images\Video.cs" />
     <Compile Include="AppCode\oAuthServices\AWSNotifications.cs" />
     <Compile Include="AppCode\oAuthServices\CloudAhoyClient.cs" />
