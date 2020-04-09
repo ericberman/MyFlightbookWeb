@@ -54,6 +54,7 @@ namespace MyFlightbook.Image
     /// 
     /// This is the base class for MFBImageInfo
     /// </summary>
+    [Serializable]
     public abstract class MFBImageInfoBase : IComparable
     {
         /// <summary>
