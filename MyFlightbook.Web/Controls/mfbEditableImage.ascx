@@ -2,9 +2,7 @@
 
 <div>
     <asp:Literal ID="litVideoOpenTag" runat="server"></asp:Literal>
-    <asp:HyperLink ID="lnkFullPicture" runat="server" Target="_blank">
-        <asp:Image ID="img" runat="server" />
-    </asp:HyperLink>
+    <asp:Image ID="img" runat="server" />
     <asp:Literal ID="litVideoCloseTag" runat="server"></asp:Literal>
     <div style="display:inline-block; vertical-align:top; margin-left: -3px; background-color: #DDDDDD; border-bottom-right-radius: 8px; border-top-right-radius: 8px;" runat="server" id="divActions">
         <div runat="server" id="divDel"><asp:ImageButton ID="lnkDelete" CssClass="ilToolbarItem" ImageUrl="~/images/x.gif" runat="server" Visible="false" ToolTip="<%$ Resources:LocalizedText, EditableImageDelete %>" AlternateText="<%$ Resources:LocalizedText, EditableImageDelete %>" OnClick="DeleteImage" style="padding: 4px;" /></div>

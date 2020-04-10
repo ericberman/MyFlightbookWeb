@@ -70,6 +70,48 @@
         </asp:Panel>
         <asp:AlwaysVisibleControlExtender runat="server" ID="avceCookies" TargetControlID="pnlCookies" HorizontalSide="Center" VerticalSide="Bottom" VerticalOffset="5" />
         <uc4:GoogleAnalytics ID="GoogleAnalytics1" runat="server" />
+        <asp:Panel ID="pnlViewImg" runat="server" style="display:none;">
+            <asp:ImageButton ID="btnClose" runat="server" style="position: absolute; top: 15px; right: 15px; z-index: 3" ImageUrl="~/images/closeimg.png" />
+            <asp:Image ID="imgImgToView" runat="server" />
+        </asp:Panel>
+        <asp:Button ID="btnDummy" runat="server" style="display:none;" />
+        <asp:ModalPopupExtender ID="mpeImg" BackgroundCssClass="modalBackground" TargetControlID="btnDummy" BehaviorID="mpeVwImg" runat="server" PopupControlID="pnlViewImg" CancelControlID="btnClose"></asp:ModalPopupExtender>
+        <script>
+            function viewMFBImg(src) {
+                var img = document.getElementById('<% =imgImgToView.ClientID %>');
+                img.src = src;
+            }
+
+            function showMFBImg() {
+                var maxFactor = 0.95;
+                var img = document.getElementById('<% =imgImgToView.ClientID %>');
+                var xRatio = img.naturalWidth / window.innerWidth;
+                var yRatio = img.naturalHeight / window.innerHeight;
+                var maxRatio = (xRatio > yRatio) ? xRatio : yRatio;
+                if (maxRatio > maxFactor) {
+                    img.width = maxFactor * (img.naturalWidth / maxRatio);
+                    img.height = maxFactor * (img.naturalHeight / maxRatio);
+                }
+                else {
+                    img.width = img.naturalWidth;
+                    img.height = img.naturalHeight;
+                }
+                $find("mpeVwImg").show();
+            }
+
+            function dismissImg(e) {
+                if (e && e.keyCode == Sys.UI.Key.esc) {
+                    document.getElementById('<% =pnlViewImg.ClientID %>').style.display = 'none';
+                    $find("mpeVwImg").hide();
+                }
+            }
+
+            function pageLoad(sender, args) {
+                if (!args.get_isPartialLoad()) {
+                    $addHandler(document, "keydown", dismissImg);
+                }
+            }
+        </script>
     </form>
 </body>
 </html>

@@ -241,6 +241,8 @@ namespace MyFlightbook.Web
                 metaFormat.Visible = true;
                 metaViewport.Visible = !SuppressMobileViewport;
             }
+
+            imgImgToView.Attributes["onload"] = "javascript:showMFBImg()";
         }
 
         protected void btnStopImpersonating_Click(object sender, EventArgs e)

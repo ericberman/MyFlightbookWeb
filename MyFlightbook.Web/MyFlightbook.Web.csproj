@@ -517,6 +517,7 @@
     <Content Include="images\Chrome64x64.png" />
     <Content Include="images\circleslash.png" />
     <Content Include="images\Clip.png" />
+    <Content Include="images\closeimg.png" />
     <Content Include="images\cloudahoy-sm.png" />
     <Content Include="images\CloudAhoyTrans.png" />
     <Content Include="images\collapse.png" />
