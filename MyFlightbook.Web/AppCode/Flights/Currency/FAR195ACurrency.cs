@@ -62,6 +62,11 @@ namespace MyFlightbook.Currency
             get { return totalInstruction > 0; }
         }
 
+        public override DateTime ExpirationDate
+        {
+            get { return (HasBeenCurrent) ? DateTime.UtcNow : DateTime.MinValue; }
+        }
+
         public override string DiscrepancyString
         {
             get
