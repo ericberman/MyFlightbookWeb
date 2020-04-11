@@ -91,25 +91,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, MyFlightbook.Profile.GetUser(HttpContext.Current.User.Identity.Name).PreferredTimeZone).UTCDateFormatString();
     }
     #endregion
-
-    /// <summary>
-    /// Catches injection errors (e.g., a &lt; in places it's not allowed)
-    /// </summary>
-    /// <param name="e"></param>
-    protected override void OnError(EventArgs e)
-    {
-        Exception ex = Server.GetLastError();
-
-        if (ex.GetType() == typeof(HttpRequestValidationException))
-        {
-            Context.ClearError();
-            Response.Redirect("~/SecurityError.aspx");
-            Response.End();
-        }
-        else
-            base.OnError(e);
-    }
-
+ 
     private const string szParamIDFlight = "idFlight";
 
     public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }

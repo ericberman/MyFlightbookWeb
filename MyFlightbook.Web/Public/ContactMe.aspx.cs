@@ -16,20 +16,6 @@ using System.Web.UI;
 
 public partial class Public_ContactMe : System.Web.UI.Page
 {
-    protected override void OnError(EventArgs e)
-    {
-        Exception ex = Server.GetLastError();
-
-        if (ex.GetType() == typeof(HttpRequestValidationException))
-        {
-            Context.ClearError();
-            Response.Redirect("~/SecurityError.aspx");
-            Response.End();
-        }
-        else
-            base.OnError(e);
-    }
-
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)

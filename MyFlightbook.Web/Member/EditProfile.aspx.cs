@@ -18,22 +18,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
 {
     private Profile m_pf = null;
 
-    protected override void OnError(EventArgs e)
-    {
-        Exception ex = Server.GetLastError();
-
-        if (ex.GetType() == typeof(HttpRequestValidationException))
-        {
-            Context.ClearError();
-            Response.Redirect("~/SecurityError.aspx");
-            Response.End();
-        }
-        else
-            base.OnError(e);
-    }
-
     #region Page Lifecycle, setup
-
     private static tabID HandleUnknownSidebar(string szPref)
     {
         // have a less fragile way of linking.

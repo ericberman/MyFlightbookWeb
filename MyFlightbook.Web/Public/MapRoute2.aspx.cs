@@ -18,20 +18,6 @@ using System.Web.UI.WebControls;
 
 public partial class MapRoute : System.Web.UI.Page
 {
-    protected override void OnError(EventArgs e)
-    {
-        Exception ex = Server.GetLastError();
-
-        if (ex.GetType() == typeof(HttpRequestValidationException))
-        {
-            Context.ClearError();
-            Response.Redirect("~/SecurityError.aspx");
-            Response.End();
-        }
-        else
-            base.OnError(e);
-    }
-
     protected void Page_Load(object sender, EventArgs e)
     {
         this.Master.SelectedTab = tabID.mptRoute;
@@ -58,7 +44,6 @@ public partial class MapRoute : System.Web.UI.Page
 
             btnOptimizeRoute.Visible = (util.GetStringParam(Request, "tsp").Length > 0);
         }
-
 
         string szDescription = txtAirports.Text.Length > 0 ? txtAirports.Text : lblPageHeader.Text;
         this.Master.AddMeta("description", szDescription);

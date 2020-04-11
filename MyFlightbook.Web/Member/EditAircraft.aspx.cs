@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -46,20 +45,6 @@ public partial class Member_EditAircraft : System.Web.UI.Page
     }
 
     #endregion
-
-    protected override void OnError(EventArgs e)
-    {
-        Exception ex = Server.GetLastError();
-
-        if (ex.GetType() == typeof(HttpRequestValidationException))
-        {
-            Context.ClearError();
-            Response.Redirect("~/SecurityError.aspx");
-            Response.End();
-        }
-        else
-            base.OnError(e);
-    }
 
     protected bool AdminMode
     {

@@ -16,20 +16,6 @@ using System.Web.UI;
 
 public partial class EditMake : System.Web.UI.Page
 {
-    protected override void OnError(EventArgs e)
-    {
-        Exception ex = Server.GetLastError();
-
-        if (ex.GetType() == typeof(HttpRequestValidationException))
-        {
-            Context.ClearError();
-            Response.Redirect("~/SecurityError.aspx");
-            Response.End();
-        }
-        else
-            base.OnError(e);
-    }
-
     protected IEnumerable<Aircraft> AircraftWithModel(int idModel)
     {
         Aircraft[] rgac = (new UserAircraft(User.Identity.Name)).GetAircraftForUser();
@@ -93,7 +79,7 @@ public partial class EditMake : System.Web.UI.Page
                         lstAttribs.Add(new LinkedString(sz));
                 }
 
-                if (rgac.Count() > 0)
+                if (rgac.Any())
                 {
                     lstAttribs.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.Makes.MakeStatsAircraftCount, rgac.Count())));
 
@@ -126,7 +112,7 @@ public partial class EditMake : System.Web.UI.Page
             }
         }
 
-        mvInstances.SetActiveView(rgac.Count() == 0 ? vwSampleImages : vwAircraft);
+        mvInstances.SetActiveView(!rgac.Any() ? vwSampleImages : vwAircraft);
 
         mfbImageList.Images = new ImageList(SampleImages.ToArray());
         mfbImageList.Refresh(false);

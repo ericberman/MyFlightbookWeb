@@ -49,6 +49,14 @@ namespace MyFlightbook.Web
             StringBuilder ErrorMessage = new StringBuilder();
             Exception myError = Server.GetLastError();
 
+            if (myError is HttpRequestValidationException)
+            {
+                Context.ClearError();
+                Response.Redirect("~/SecurityError.aspx");
+                Response.End();
+                return;
+            }
+
             if (Context.Request.IsLocal)
                 return;
 

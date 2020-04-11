@@ -6,7 +6,7 @@ using MyFlightbook.SocialMedia;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2017 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -16,20 +16,6 @@ public partial class _Default : System.Web.UI.Page
 
     private const string szParamIDFlight = "idFlight";
     private const string szParamSearch = "s";
-
-    protected override void OnError(EventArgs e)
-    {
-        Exception ex = Server.GetLastError();
-
-        if (ex.GetType() == typeof(HttpRequestValidationException))
-        {
-            Context.ClearError();
-            Response.Redirect("~/SecurityError.aspx");
-            Response.End();
-        }
-        else
-            base.OnError(e);
-    }
 
     protected void Page_Load(object sender, EventArgs e)
     {
