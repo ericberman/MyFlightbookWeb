@@ -12,7 +12,7 @@ using System.Web.UI;
 
 namespace MyFlightbook.Web
 {
-    public class Global : System.Web.HttpApplication
+    public class MFBGlobal : HttpApplication
     {
        protected void Application_Start(object sender, EventArgs e)
         {
