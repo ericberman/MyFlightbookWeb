@@ -1,3 +1,4 @@
+using JouniHeikniemi.Tools.Text;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
@@ -1448,6 +1449,185 @@ namespace MyFlightbook.Airports
             if (!FCommit(fAdmin:true))
                 throw new MyFlightbookException("Error merging airport: " + ErrorText);
         }
+
+        /// <summary>
+        /// Deletes the specified user airport, updating the routes in their flights as needed.
+        /// </summary>
+        /// <param name="szCode">The airport code to replace</param>
+        /// <param name="szReplacement">The replacement code to which it should be mapped</param>
+        /// <param name="szUser">The username - they MUST own the airport</param>
+        /// <param name="szType">Airport type</param>
+        public static void DeleteUserAirport(string szCode, string szReplacement, string szUser, string szType)
+        {
+            if (String.IsNullOrWhiteSpace(szCode))
+                throw new ArgumentOutOfRangeException(nameof(szCode));
+            if (String.IsNullOrWhiteSpace(szReplacement))
+                throw new ArgumentOutOfRangeException(nameof(szReplacement));
+            if (String.IsNullOrWhiteSpace(szUser))
+                throw new ArgumentOutOfRangeException(nameof(szUser));
+            if (String.IsNullOrWhiteSpace(szType))
+                throw new ArgumentOutOfRangeException(nameof(szType));
+
+            airport apToDelete = new airport(szCode, "(None)", 0, 0, szType, string.Empty, 0, szUser);
+
+            List<airport> lst = new List<airport>(airport.AirportsForUser(szUser, false));
+            if (lst.FirstOrDefault(ap => ap.Code.CompareCurrentCultureIgnoreCase(szCode) == 0 && ap.FacilityTypeCode.CompareCurrentCultureIgnoreCase(szType) == 0) == null)
+                throw new UnauthorizedAccessException(String.Format(CultureInfo.CurrentCulture, "Airport {0} (type {1}) not found for user", szCode, szType));
+
+            if (apToDelete.FDelete(true))
+            {
+                if (!String.IsNullOrEmpty(szUser))
+                {
+                    DBHelper dbh = new DBHelper("UPDATE flights SET route=REPLACE(route, ?idDelete, ?idMap) WHERE username=?user AND route LIKE CONCAT('%', ?idDelete, '%')");
+                    if (!dbh.DoNonQuery((comm) =>
+                    {
+                        comm.Parameters.AddWithValue("idDelete", szCode);
+                        comm.Parameters.AddWithValue("idMap", szReplacement);
+                        comm.Parameters.AddWithValue("user", szUser);
+                    }))
+                        throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error mapping from {0} to {1} in flights for user {2}: {3}", szCode, szReplacement, szUser, dbh.LastError));
+                }
+            }
+            else
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error deleting airport {0}: {1}", apToDelete.Code, apToDelete.ErrorText));
+        }
+
+        public static int BulkImportAirports(Stream s)
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
+            int cAirportsAdded = 0;
+
+            Dictionary<int, int> columnMap = new Dictionary<int, int>();
+            const int iColID = 0;
+            const int iColName = 1;
+            const int iColType = 2;
+            const int iColSourceUserName = 3;
+            const int iColLat = 4;
+            const int iColLon = 5;
+            const int iColPreferred = 6;
+
+            using (CSVReader csvReader = new CSVReader(s))
+            {
+                try
+                {
+                    string[] rgheaders = csvReader.GetCSVLine(true);
+
+                    for (int i = 0; i < rgheaders.Length; i++)
+                    {
+                        switch (rgheaders[i].ToUpperInvariant())
+                        {
+                            case "AIRPORTID":
+                                columnMap[iColID] = i;
+                                break;
+                            case "FACILITYNAME":
+                                columnMap[iColName] = i;
+                                break;
+                            case "TYPE":
+                                columnMap[iColType] = i;
+                                break;
+                            case "SOURCEUSERNAME":
+                                columnMap[iColSourceUserName] = i;
+                                break;
+                            case "LATITUDE":
+                                columnMap[iColLat] = i;
+                                break;
+                            case "LONGITUDE":
+                                columnMap[iColLon] = i;
+                                break;
+                            case "PREFERRED":
+                                columnMap[iColPreferred] = i;
+                                break;
+                        }
+                    }
+
+                    if (!columnMap.ContainsKey(iColID) || !columnMap.ContainsKey(iColName) || !columnMap.ContainsKey(iColType) || !columnMap.ContainsKey(iColLat) || !columnMap.ContainsKey(iColLon))
+                        throw new MyFlightbookValidationException("File doesn't have all required columns.");
+
+                    bool fHasPreferred = columnMap.ContainsKey(iColPreferred);
+                    bool fHasUser = columnMap.ContainsKey(iColSourceUserName);
+
+                    string[] rgCols;
+                    while ((rgCols = csvReader.GetCSVLine()) != null)
+                    {
+                        AdminAirport ap = new AdminAirport()
+                        {
+                            Code = rgCols[columnMap[iColID]],
+                            Name = rgCols[columnMap[iColName]],
+                            LatLong = new LatLong(Convert.ToDouble(rgCols[columnMap[iColLat]], CultureInfo.CurrentCulture), Convert.ToDouble(rgCols[columnMap[iColLon]], CultureInfo.CurrentCulture)),
+                            FacilityTypeCode = rgCols[columnMap[iColType]],
+                            UserName = fHasUser ? rgCols[columnMap[iColSourceUserName]] : string.Empty
+                        };
+
+                        if (!ap.FCommit(true, true))
+                            throw new MyFlightbookException(ap.ErrorText);
+
+                        ++cAirportsAdded;
+
+                        if (fHasPreferred && !String.IsNullOrEmpty(rgCols[columnMap[iColPreferred]]) && Int32.TryParse(rgCols[columnMap[iColPreferred]], NumberStyles.Integer, CultureInfo.CurrentCulture, out int preferred) && preferred != 0)
+                            ap.SetPreferred(true);
+                    }
+
+                }
+                catch (Exception ex) when (ex is CSVReaderInvalidCSVException || ex is MyFlightbookException)
+                {
+                    throw new MyFlightbookException(ex.Message, ex);
+                }
+
+                return cAirportsAdded;
+            }
+        }
+    }
+
+    internal class ImportAirportContext
+    {
+        public int iColFAA { get; set; } = -1;
+        public int iColICAO { get; set; } = -1;
+        public int iColIATA { get; set; } = -1;
+        public int iColName { get; set; } = -1;
+        public int iColLatitude { get; set; } = -1;
+        public int iColLongitude { get; set; } = -1;
+        public int iColLatLong { get; set; } = -1;
+        public int iColType { get; set; } = -1;
+
+        public ImportAirportContext()
+        {
+        }
+
+        public void InitFromHeader(string[] rgCols)
+        {
+            if (rgCols == null)
+                throw new ArgumentNullException(nameof(rgCols));
+
+            for (int i = 0; i < rgCols.Length; i++)
+            {
+                string sz = rgCols[i];
+                if (String.Compare(sz, "FAA", StringComparison.OrdinalIgnoreCase) == 0)
+                    iColFAA = i;
+                if (String.Compare(sz, "ICAO", StringComparison.OrdinalIgnoreCase) == 0)
+                    iColICAO = i;
+                if (String.Compare(sz, "IATA", StringComparison.OrdinalIgnoreCase) == 0)
+                    iColIATA = i;
+                if (String.Compare(sz, "Name", StringComparison.OrdinalIgnoreCase) == 0)
+                    iColName = i;
+                if (String.Compare(sz, "Latitude", StringComparison.OrdinalIgnoreCase) == 0)
+                    iColLatitude = i;
+                if (String.Compare(sz, "Longitude", StringComparison.OrdinalIgnoreCase) == 0)
+                    iColLongitude = i;
+                if (String.Compare(sz, "LatLong", StringComparison.OrdinalIgnoreCase) == 0)
+                    iColLatLong = i;
+                if (String.Compare(sz, "Type", StringComparison.OrdinalIgnoreCase) == 0)
+                    iColType = i;
+            }
+
+            if (iColFAA == -1 && iColIATA == -1 && iColICAO == -1)
+                throw new MyFlightbookException("No airportid codes found");
+            if (iColName == -1)
+                throw new MyFlightbookException("No name column found");
+            if (iColLatLong == -1 && iColLatitude == -1 && iColLongitude == -1)
+                throw new MyFlightbookException("No position found");
+        }
     }
 
     /// <summary>
@@ -1583,6 +1763,83 @@ namespace MyFlightbook.Airports
                 return MatchStatus.InDBWrongLocation;
             }
             return MatchStatus.InDB;
+        }
+
+        private static string GetCol(string[] rgsz, int icol)
+        {
+            if (icol < 0 || icol > rgsz.Length)
+                return string.Empty;
+            return rgsz[icol];
+        }
+
+        public static IEnumerable<airportImportCandidate> Candidates(Stream s)
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
+            ImportAirportContext ic = new ImportAirportContext();
+
+            List<airportImportCandidate> lst = new List<airportImportCandidate>();
+
+            using (CSVReader csvReader = new CSVReader(s))
+            {
+                ic.InitFromHeader(csvReader.GetCSVLine(true));
+
+                string[] rgCols = null;
+
+                while ((rgCols = csvReader.GetCSVLine()) != null)
+                {
+                    airportImportCandidate aic = new airportImportCandidate()
+                    {
+                        FAA = GetCol(rgCols, ic.iColFAA).Replace("-", ""),
+                        IATA = GetCol(rgCols, ic.iColIATA).Replace("-", ""),
+                        ICAO = GetCol(rgCols, ic.iColICAO).Replace("-", ""),
+                        Name = GetCol(rgCols, ic.iColName),
+                        FacilityTypeCode = GetCol(rgCols, ic.iColType)
+                    };
+                    if (String.IsNullOrEmpty(aic.FacilityTypeCode))
+                        aic.FacilityTypeCode = "A";     // default to airport
+                    aic.Name = GetCol(rgCols, ic.iColName);
+                    aic.Code = "(TBD)";
+                    string szLat = GetCol(rgCols, ic.iColLatitude);
+                    string szLon = GetCol(rgCols, ic.iColLongitude);
+                    string szLatLong = GetCol(rgCols, ic.iColLatLong);
+                    aic.LatLong = null;
+
+                    if (!String.IsNullOrEmpty(szLatLong))
+                    {
+                        // see if it is decimal; if so, we'll fall through.
+                        if (Regex.IsMatch(szLatLong, "[NEWS]", RegexOptions.IgnoreCase))
+                            aic.LatLong = DMSAngle.LatLonFromDMSString(GetCol(rgCols, ic.iColLatLong));
+                        else
+                        {
+                            string[] rgsz = szLatLong.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (rgsz.Length == 2)
+                            {
+                                szLat = rgsz[0];
+                                szLon = rgsz[1];
+                            }
+                        }
+                    }
+                    if (aic.LatLong == null)
+                    {
+                        aic.LatLong = new LatLong();
+                        if (double.TryParse(szLat, out double d))
+                            aic.LatLong.Latitude = d;
+                        else
+                            aic.LatLong.Latitude = new DMSAngle(szLat).Value;
+
+                        if (double.TryParse(szLon, out d))
+                            aic.LatLong.Longitude = d;
+                        else
+                            aic.LatLong.Longitude = new DMSAngle(szLon).Value;
+                    }
+
+                    lst.Add(aic);
+                }
+
+                return lst;
+            }
         }
     }
 

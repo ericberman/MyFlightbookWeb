@@ -178,6 +178,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Airports and Navigation Aids.
+        /// </summary>
+        internal static string EditAirportsTitle {
+            get {
+                return ResourceManager.GetString("EditAirportsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airport &apos;{0}&apos; is built-in and cannot be edited..
         /// </summary>
         internal static string errBuiltInAirport {

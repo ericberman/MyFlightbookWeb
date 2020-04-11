@@ -256,4 +256,7 @@
   <data name="visitedAirportTitle" xml:space="preserve">
     <value>Visited Airports</value>
   </data>
+  <data name="EditAirportsTitle" xml:space="preserve">
+    <value>Edit Airports and Navigation Aids</value>
+  </data>
 </root>

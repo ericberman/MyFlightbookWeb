@@ -1,5 +1,4 @@
-﻿using JouniHeikniemi.Tools.Text;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Airports;
 using MyFlightbook.Geography;
 using MyFlightbook.Mapping;
@@ -21,7 +20,7 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Member_EditAirports : System.Web.UI.Page
+public partial class Member_EditAirports : Page
 {
     #region Webservices
     private static void CheckAdmin()
@@ -42,25 +41,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
     public static void DeleteDupeUserAirport(string idDelete, string idMap, string szUser, string szType)
     {
         CheckAdmin();
-
-        airport apToDelete = new airport(idDelete, "(None)", 0, 0, szType, string.Empty, 0, szUser);
-
-        if (apToDelete.FDelete(true))
-        {
-            if (!String.IsNullOrEmpty(szUser))
-            {
-                DBHelper dbh = new DBHelper("UPDATE flights SET route=REPLACE(route, ?idDelete, ?idMap) WHERE username=?user AND route LIKE CONCAT('%', ?idDelete, '%')");
-                if (!dbh.DoNonQuery((comm) =>
-                {
-                    comm.Parameters.AddWithValue("idDelete", idDelete);
-                    comm.Parameters.AddWithValue("idMap", idMap);
-                    comm.Parameters.AddWithValue("user", szUser);
-                }))
-                    throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error mapping from {0} to {1} in flights for user {2}: {3}", idDelete, idMap, szUser, dbh.LastError));
-            }
-        }
-        else
-            throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error deleting airport {0}: {1}", apToDelete.Code, apToDelete.ErrorText));
+        AdminAirport.DeleteUserAirport(idDelete, idMap, szUser, szType);
     }
 
     /// <summary>
@@ -119,7 +100,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         this.Master.SelectedTab = tabID.mptAddAirports;
-        Title = (string)GetLocalResourceObject("PageResource2.Title");
+        Title = Resources.Airports.EditAirportsTitle;
 
         if (!IsPostBack)
             initForm();
@@ -201,7 +182,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
             pnlMyAirports.Visible = true;
             gvMyAirports.DataSource = m_rgAirportsForUser;
             gvMyAirports.DataBind();
-            if (m_rgAirportsForUser.Count() > 30)
+            if (m_rgAirportsForUser.Length > 30)
             {
                 pnlMyAirports.ScrollBars = ScrollBars.Vertical;
                 pnlMyAirports.Height = Unit.Pixel(400);
@@ -271,7 +252,7 @@ public partial class Member_EditAirports : System.Web.UI.Page
             return;
         }
 
-        lblErr.Text = "";
+        lblErr.Text = string.Empty;
 
         if (ap.FCommit(fAdmin, fAdmin))
         {
@@ -312,13 +293,6 @@ public partial class Member_EditAirports : System.Web.UI.Page
         get { return (List<airportImportCandidate>) (ViewState[szVSKeyListToImport] ?? (ViewState[szVSKeyListToImport] = new List<airportImportCandidate>()));}
     }
 
-    private string GetCol(string[] rgsz, int icol)
-    {
-        if (icol < 0 || icol > rgsz.Length)
-            return string.Empty;
-        return rgsz[icol];
-    }
-
     protected static void UpdateCandidateStatus(List<airportImportCandidate> lst)
     {
         if (lst == null)
@@ -335,64 +309,6 @@ public partial class Member_EditAirports : System.Web.UI.Page
         lst.ForEach((aic) => { aic.CheckStatus(al); });
     }
 
-    protected class ImportContext
-    {
-        public int iColFAA  { get; set; }
-        public int iColICAO  { get; set; }
-        public int iColIATA  { get; set; }
-        public int iColName  { get; set; }
-        public int iColLatitude  { get; set; }
-        public int iColLongitude  { get; set; }
-        public int iColLatLong  { get; set; }
-        public int iColType  { get; set; }
-
-        public ImportContext()
-        {
-            iColFAA = -1;
-            iColICAO = -1;
-            iColIATA = -1;
-            iColName = -1;
-            iColLatitude = -1;
-            iColLongitude = -1;
-            iColLatLong = -1;
-            iColType = -1;
-        }
-
-        public void InitFromHeader(string[] rgCols)
-        {
-            if (rgCols == null)
-                throw new ArgumentNullException(nameof(rgCols));
-
-            for (int i = 0; i < rgCols.Length; i++)
-            {
-                string sz = rgCols[i];
-                if (String.Compare(sz, "FAA", StringComparison.OrdinalIgnoreCase) == 0)
-                    iColFAA = i;
-                if (String.Compare(sz, "ICAO", StringComparison.OrdinalIgnoreCase) == 0)
-                    iColICAO = i;
-                if (String.Compare(sz, "IATA", StringComparison.OrdinalIgnoreCase) == 0)
-                    iColIATA = i;
-                if (String.Compare(sz, "Name", StringComparison.OrdinalIgnoreCase) == 0)
-                    iColName = i;
-                if (String.Compare(sz, "Latitude", StringComparison.OrdinalIgnoreCase) == 0)
-                    iColLatitude = i;
-                if (String.Compare(sz, "Longitude", StringComparison.OrdinalIgnoreCase) == 0)
-                    iColLongitude = i;
-                if (String.Compare(sz, "LatLong", StringComparison.OrdinalIgnoreCase) == 0)
-                    iColLatLong = i;
-                if (String.Compare(sz, "Type", StringComparison.OrdinalIgnoreCase) == 0)
-                    iColType = i;
-            }
-
-            if (iColFAA == -1 && iColIATA == -1 && iColICAO == -1)
-                throw new MyFlightbookException("No airportid codes found");
-            if (iColName == -1)
-                throw new MyFlightbookException("No name column found");
-            if (iColLatLong == -1 && iColLatitude == -1 && iColLongitude == -1)
-                throw new MyFlightbookException("No position found");
-        }
-    }
-
     protected void btnImport_Click(object sender, EventArgs e)
     {
         if (!fileUploadAirportList.HasFile)
@@ -404,84 +320,27 @@ public partial class Member_EditAirports : System.Web.UI.Page
             gvMyAirports.DataBind();
         }
 
-        ImportContext ic = new ImportContext();
+        List<airportImportCandidate> lst = ImportedAirportCandidates;
+        lst.Clear();
 
-        using (CSVReader csvReader = new CSVReader(fileUploadAirportList.FileContent))
+        try
         {
-            try
-            {
-                ic.InitFromHeader(csvReader.GetCSVLine(true));
-            }
-            catch (Exception ex) when (ex is CSVReaderInvalidCSVException || ex is MyFlightbookException)
-            {
-                lblUploadErr.Text = HttpUtility.HtmlEncode(ex.Message);
-                return;
-            }
-
-            List<airportImportCandidate> lst = ImportedAirportCandidates;
-            lst.Clear();
-            string[] rgCols = null;
-
-            while ((rgCols = csvReader.GetCSVLine()) != null)
-            {
-                airportImportCandidate aic = new airportImportCandidate()
-                {
-                    FAA = GetCol(rgCols, ic.iColFAA).Replace("-", ""),
-                    IATA = GetCol(rgCols, ic.iColIATA).Replace("-", ""),
-                    ICAO = GetCol(rgCols, ic.iColICAO).Replace("-", ""),
-                    Name = GetCol(rgCols, ic.iColName),
-                    FacilityTypeCode = GetCol(rgCols, ic.iColType)
-                };
-                if (String.IsNullOrEmpty(aic.FacilityTypeCode))
-                    aic.FacilityTypeCode = "A";     // default to airport
-                aic.Name = GetCol(rgCols, ic.iColName);
-                aic.Code = "(TBD)";
-                string szLat = GetCol(rgCols, ic.iColLatitude);
-                string szLon = GetCol(rgCols, ic.iColLongitude);
-                string szLatLong = GetCol(rgCols, ic.iColLatLong);
-                aic.LatLong = null;
-
-                if (!String.IsNullOrEmpty(szLatLong))
-                {
-                    // see if it is decimal; if so, we'll fall through.
-                    if (Regex.IsMatch(szLatLong, "[NEWS]", RegexOptions.IgnoreCase))
-                        aic.LatLong = DMSAngle.LatLonFromDMSString(GetCol(rgCols, ic.iColLatLong));
-                    else
-                    {
-                        string[] rgsz = szLatLong.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                        if (rgsz.Length == 2)
-                        {
-                            szLat = rgsz[0];
-                            szLon = rgsz[1];
-                        }
-                    }
-                }
-                if (aic.LatLong == null)
-                {
-                    aic.LatLong = new LatLong();
-                    if (double.TryParse(szLat, out double d))
-                        aic.LatLong.Latitude = d;
-                    else
-                        aic.LatLong.Latitude = new DMSAngle(szLat).Value;
-
-                    if (double.TryParse(szLon, out d))
-                        aic.LatLong.Longitude = d;
-                    else
-                        aic.LatLong.Longitude = new DMSAngle(szLon).Value;
-                }
-
-                lst.Add(aic);
-            }
-
-            UpdateCandidateStatus(lst);
-
-            bool fHideKHack = util.GetIntParam(Request, "khack", 0) == 0;
-            lst.RemoveAll(aic => aic.IsOK || (fHideKHack && aic.IsKHack));
-
-            gvImportResults.DataSource = lst;
-            gvImportResults.DataBind();
-            pnlImportResults.Visible = true;
+            lst.AddRange(airportImportCandidate.Candidates(fileUploadAirportList.FileContent));
         }
+        catch (Exception ex) when (ex is MyFlightbookException)
+        {
+            lblUploadErr.Text = HttpUtility.HtmlEncode(ex.Message);
+            return;
+        }
+
+        UpdateCandidateStatus(lst);
+
+        bool fHideKHack = util.GetIntParam(Request, "khack", 0) == 0;
+        lst.RemoveAll(aic => aic.IsOK || (fHideKHack && aic.IsKHack));
+
+        gvImportResults.DataSource = lst;
+        gvImportResults.DataBind();
+        pnlImportResults.Visible = true;
     }
 
     protected void btnBulkImport_Click(object sender, EventArgs e)
@@ -489,82 +348,14 @@ public partial class Member_EditAirports : System.Web.UI.Page
         if (!fileUploadAirportList.HasFile)
             return;
 
-        Dictionary<int, int> columnMap = new Dictionary<int, int>();
-        const int iColID = 0;
-        const int iColName = 1;
-        const int iColType = 2;
-        const int iColSourceUserName = 3;
-        const int iColLat = 4;
-        const int iColLon = 5;
-        const int iColPreferred = 6;
-
-        using (CSVReader csvReader = new CSVReader(fileUploadAirportList.FileContent))
+        try
         {
-            try
-            {
-                string[] rgheaders = csvReader.GetCSVLine(true);
-
-                for (int i = 0; i < rgheaders.Length; i++)
-                {
-                    switch (rgheaders[i].ToUpperInvariant())
-                    {
-                        case "AIRPORTID":
-                            columnMap[iColID] = i;
-                            break;
-                        case "FACILITYNAME":
-                            columnMap[iColName] = i;
-                            break;
-                        case "TYPE":
-                            columnMap[iColType] = i;
-                            break;
-                        case "SOURCEUSERNAME":
-                            columnMap[iColSourceUserName] = i;
-                            break;
-                        case "LATITUDE":
-                            columnMap[iColLat] = i;
-                            break;
-                        case "LONGITUDE":
-                            columnMap[iColLon] = i;
-                            break;
-                        case "PREFERRED":
-                            columnMap[iColPreferred] = i;
-                            break;
-                    }
-                }
-
-                if (!columnMap.ContainsKey(iColID) || !columnMap.ContainsKey(iColName) || !columnMap.ContainsKey(iColType) || !columnMap.ContainsKey(iColLat) || !columnMap.ContainsKey(iColLon))
-                    throw new MyFlightbookValidationException("File doesn't have all required columns.");
-
-                bool fHasPreferred = columnMap.ContainsKey(iColPreferred);
-                bool fHasUser = columnMap.ContainsKey(iColSourceUserName);
-
-                int cAirportsAdded = 0;
-                string[] rgCols;
-                while ((rgCols = csvReader.GetCSVLine()) != null)
-                {
-                    AdminAirport ap = new AdminAirport()
-                    {
-                        Code = rgCols[columnMap[iColID]],
-                        Name = rgCols[columnMap[iColName]],
-                        LatLong = new LatLong(Convert.ToDouble(rgCols[columnMap[iColLat]], CultureInfo.CurrentCulture), Convert.ToDouble(rgCols[columnMap[iColLon]], CultureInfo.CurrentCulture)),
-                        FacilityTypeCode = rgCols[columnMap[iColType]],
-                        UserName = fHasUser ? rgCols[columnMap[iColSourceUserName]] : string.Empty
-                    };
-
-                    if (!ap.FCommit(true, true))
-                        throw new MyFlightbookException(ap.ErrorText);
-
-                    lblBulkImportResults.Text = String.Format(CultureInfo.CurrentCulture, "{0} airports added", ++cAirportsAdded);
-
-                    if (fHasPreferred && !String.IsNullOrEmpty(rgCols[columnMap[iColPreferred]]) && Int32.TryParse(rgCols[columnMap[iColPreferred]], NumberStyles.Integer, CultureInfo.CurrentCulture, out int preferred) && preferred != 0)
-                        ap.SetPreferred(true);
-                }
-
-            }
-            catch (Exception ex) when (ex is CSVReaderInvalidCSVException || ex is MyFlightbookException)
-            {
-                lblUploadErr.Text = HttpUtility.HtmlEncode(ex.Message);
-            }
+            int cAirportsAdded = AdminAirport.BulkImportAirports(fileUploadAirportList.FileContent);
+            lblBulkImportResults.Text = String.Format(CultureInfo.CurrentCulture, "{0} airports added", cAirportsAdded);
+        }
+        catch (MyFlightbookException ex)
+        {
+            lblUploadErr.Text = HttpUtility.HtmlEncode(ex.Message);
         }
     }
 
