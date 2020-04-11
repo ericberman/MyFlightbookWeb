@@ -1,13 +1,9 @@
 using MyFlightbook;
-using MyFlightbook.CloudStorage;
 using MyFlightbook.Currency;
-using MyFlightbook.OAuth.CloudAhoy;
-using MyFlightbook.Payments;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
-using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -141,67 +137,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
         accordianAccount.SelectedIndex = (sidebarTab == tabID.pftQA) ? 2 : (sidebarTab == tabID.pftPass ? 1 : 0);
     }
 
-    private void InitPilotInfo()
-    {
-        dateMedical.Date = m_pf.LastMedical;
-        dateMedical.TextControl.ValidationGroup = "valPilotInfo";
-        cmbMonthsMedical.SelectedValue = m_pf.MonthsToMedical.ToString(CultureInfo.CurrentCulture);
-        rblMedicalDurationType.SelectedIndex = m_pf.UsesICAOMedical ? 1 : 0;
-        txtCertificate.Text = m_pf.Certificate;
-        txtLicense.Text = m_pf.License;
-        mfbTypeInDateCFIExpiration.Date = m_pf.CertificateExpiration;
-        mfbDateEnglishCheck.Date = m_pf.EnglishProficiencyExpiration;
-        UpdateNextMedical(m_pf);
-        BasicMedManager.RefreshBasicMedEvents();
-
-        gvIPC.DataSource = ProfileEvent.GetIPCEvents(User.Identity.Name);
-        gvIPC.DataBind();
-
-        MyFlightbook.Achievements.UserRatings ur = new MyFlightbook.Achievements.UserRatings(m_pf.UserName);
-        gvRatings.DataSource = ur.Licenses;
-        gvRatings.DataBind();
-
-        ProfileEvent[] rgpfeBFR = ProfileEvent.GetBFREvents(User.Identity.Name, m_pf.LastBFREvent);
-
-        gvBFR.DataSource = rgpfeBFR;
-        gvBFR.DataBind();
-
-        if (rgpfeBFR.Length > 0) // we have at least one BFR event, so the last one should be the most recent.
-        {
-            lblNextBFR.Text = Profile.NextBFR(rgpfeBFR[rgpfeBFR.Length - 1].Date).ToShortDateString();
-            pnlNextBFR.Visible = true;
-        }
-
-        string szPane = Request["pane"];
-        if (!String.IsNullOrEmpty(szPane))
-        {
-            for (int i = 0; i < accordianPilotInfo.Panes.Count; i++)
-            {
-                switch (szPane)
-                {
-                    case "medical":
-                        if (accordianPilotInfo.Panes[i] == acpMedical)
-                            accordianPilotInfo.SelectedIndex = i;
-                        break;
-                    case "certificates":
-                        if (accordianPilotInfo.Panes[i] == acpCertificates)
-                            accordianPilotInfo.SelectedIndex = i;
-                        break;
-                    case "flightreview":
-                        if (accordianPilotInfo.Panes[i] == acpFlightReviews)
-                            accordianPilotInfo.SelectedIndex = i;
-                        break;
-                    case "ipc":
-                        if (accordianPilotInfo.Panes[i] == acpIPCs)
-                            accordianPilotInfo.SelectedIndex = i;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    }
-
     private void InitFeaturePrefs()
     {
         ckShowTimes.Checked = m_pf.DisplayTimesByDefault;
@@ -239,65 +174,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
         imgCopyMyFlights.OnClientClick = String.Format(CultureInfo.InvariantCulture, "javascript:copyClipboard(null, '{0}', true, '{1}');return false;", lnkMyFlights.ClientID, lblMyFlightsCopied.ClientID);
     }
 
-    private void InitCloudProviders()
-    {
-        List<StorageID> lstCloud = new List<StorageID>(m_pf.AvailableCloudProviders);
-        StorageID defaultStorage = m_pf.BestCloudStorage;
-        foreach (StorageID sid in lstCloud)
-            cmbDefaultCloud.Items.Add(new ListItem(CloudStorageBase.CloudStorageName(sid), sid.ToString()) { Selected = defaultStorage == sid });
-        pnlDefaultCloud.Visible = lstCloud.Count > 1;   // only show a choice if more than one cloud provider is set up
-
-        mvDropBoxState.SetActiveView(lstCloud.Contains(StorageID.Dropbox) ? vwDeAuthDropbox : vwAuthDropBox);
-        mvGDriveState.SetActiveView(lstCloud.Contains(StorageID.GoogleDrive) ? vwDeAuthGDrive : vwAuthGDrive);
-        mvOneDriveState.SetActiveView(lstCloud.Contains(StorageID.OneDrive) ? vwDeAuthOneDrive : vwAuthOneDrive);
-
-        locAboutCloudStorage.Text = Branding.ReBrand(Resources.Profile.AboutCloudStorage);
-        lnkAuthDropbox.Text = Branding.ReBrand(Resources.Profile.AuthorizeDropbox);
-        lnkDeAuthDropbox.Text = Branding.ReBrand(Resources.Profile.DeAuthDropbox);
-        locDropboxIsAuthed.Text = Branding.ReBrand(Resources.Profile.DropboxIsAuthed);
-        lnkAuthorizeGDrive.Text = Branding.ReBrand(Resources.Profile.AuthorizeGDrive);
-        lnkDeAuthGDrive.Text = Branding.ReBrand(Resources.Profile.DeAuthGDrive);
-        locGoogleDriveIsAuthed.Text = Branding.ReBrand(Resources.Profile.GDriveIsAuthed);
-        lnkAuthorizeOneDrive.Text = Branding.ReBrand(Resources.Profile.AuthorizeOneDrive);
-        lnkDeAuthOneDrive.Text = Branding.ReBrand(Resources.Profile.DeAuthOneDrive);
-        locOneDriveIsAuthed.Text = Branding.ReBrand(Resources.Profile.OneDriveIsAuthed);
-
-        mvCloudAhoy.SetActiveView(m_pf.CloudAhoyToken == null ? vwAuthCloudAhoy : vwDeAuthCloudAhoy);
-        lnkAuthCloudAhoy.Text = Branding.ReBrand(Resources.Profile.AuthorizeCloudAhoy);
-        lnkDeAuthCloudAhoy.Text = Branding.ReBrand(Resources.Profile.DeAuthCloudAhoy);
-        locCloudAhoyIsAuthed.Text = Branding.ReBrand(Resources.Profile.CloudAhoyIsAuthed);
-
-        rblCloudBackupAppendDate.SelectedValue = m_pf.OverwriteCloudBackup.ToString(CultureInfo.InvariantCulture);
-    }
-
-    private void HandleOAuthRedirect()
-    {
-        if (!String.IsNullOrEmpty(Request.Params[MFBDropbox.szParamDropboxAuth])) // redirect from Dropbox oAuth request.
-        {
-            m_pf.DropboxAccessToken = new MFBDropbox().ConvertToken(Request).AccessToken;
-            m_pf.FCommit();
-
-            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=backup", Request.Path));
-        }
-        if (!String.IsNullOrEmpty(Request.Params[GoogleDrive.szParamGDriveAuth])) // redirect from GDrive oAuth request.
-        {
-            if (String.IsNullOrEmpty(util.GetStringParam(Request, "error")))
-            {
-                m_pf.GoogleDriveAccessToken = new GoogleDrive().ConvertToken(Request);
-                m_pf.FCommit();
-            }
-
-            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=backup", Request.Path));
-        }
-        if (!String.IsNullOrEmpty(Request.Params[OneDrive.szParam1DriveAuth])) // redirect from OneDrive oAuth request.
-        {
-            m_pf.OneDriveAccessToken = (DotNetOpenAuth.OAuth2.AuthorizationState)Session[OneDrive.TokenSessionKey];
-            m_pf.FCommit();
-
-            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=backup", Request.Path));
-        }
-    }
-
     private void InitDeadlinesAndCurrencies()
     {
         // Custom Currencies.
@@ -319,9 +195,8 @@ public partial class Member_EditProfile : System.Web.UI.Page
         InitSocialNetworking();
 
         // Set up status of cloud providers and ability to pick a default.
-        InitCloudProviders();
-
-        HandleOAuthRedirect();
+        mfbCloudStorage.InitCloudProviders();
+        mfbCloudStorage.HandleOAuthRedirect();
 
         acpoAuthApps.Visible = oAuthAuthorizationManager.Refresh();
 
@@ -367,28 +242,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
         InitDeadlinesAndCurrencies();
     }
 
-    private void InitDonations()
-    {
-        List<Gratuity> lstKnownGratuities = new List<Gratuity>(Gratuity.KnownGratuities);
-        lstKnownGratuities.Sort((g1, g2) => { return g1.Threshold.CompareTo(g2.Threshold); });
-        rptAvailableGratuities.DataSource = lstKnownGratuities;
-        rptAvailableGratuities.DataBind();
-
-        pnlPaypalCanceled.Visible = util.GetStringParam(Request, "pp").CompareCurrentCultureIgnoreCase("canceled") == 0;
-        pnlPaypalSuccess.Visible = util.GetStringParam(Request, "pp").CompareCurrentCultureIgnoreCase("success") == 0;
-        lblDonatePrompt.Text = Branding.ReBrand(Resources.LocalizedText.DonatePrompt);
-        gvDonations.DataSource = Payment.RecordsForUser(User.Identity.Name);
-        gvDonations.DataBind();
-
-        List<EarnedGratuity> lst = EarnedGratuity.GratuitiesForUser(User.Identity.Name, Gratuity.GratuityTypes.Unknown);
-        lst.RemoveAll(eg => eg.CurrentStatus == EarnedGratuity.EarnedGratuityStatus.Expired);
-        if (pnlEarnedGratuities.Visible = (lst.Count > 0))
-        {
-            rptEarnedGratuities.DataSource = lst;
-            rptEarnedGratuities.DataBind();
-        }
-    }
-
     protected void Page_Load(object sender, EventArgs e)
     {
         m_pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
@@ -407,10 +260,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            // Set pilot info validation group
-            util.SetValidationGroup(mfbTypeInDateCFIExpiration, btnUpdatePilotInfo.ValidationGroup);
-            util.SetValidationGroup(dateMedical, btnUpdatePilotInfo.ValidationGroup);
-
             // Set up per-section information
             switch (sidebarTab)
             {
@@ -422,7 +271,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
                     break;
 
                 case tabID.pftPilotInfo:
-                    InitPilotInfo();
+                    mfbPilotInfo.InitPilotInfo();
                     break;
 
                 case tabID.pftPrefs:
@@ -430,7 +279,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
                     break;
 
                 case tabID.pftDonate:
-                    InitDonations();
+                    mfbDonate.InitDonations();
                     break;
             }
         }
@@ -485,26 +334,11 @@ public partial class Member_EditProfile : System.Web.UI.Page
     {
         try
         {
-            if (CurrentPassword.Text.Length == 0 || !Membership.ValidateUser(User.Identity.Name, CurrentPassword.Text))
-                throw new MyFlightbookException(Resources.Profile.errBadPasswordToChange);
             if (NewPassword.Text != ConfirmNewPassword.Text) // should never happen - validation should have caught this.
                 throw new MyFlightbookException(Resources.Profile.errPasswordsDontMatch);
-            UserEntity.ValidatePassword(NewPassword.Text);  // will throw an exception if length, etc. is wrong.
-            if (!Membership.Provider.ChangePassword(Page.User.Identity.Name, CurrentPassword.Text, NewPassword.Text))
-                throw new MyFlightbookException(Resources.Profile.errChangePasswordFailed);
-
-            util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.PasswordChangedSubject, Branding.CurrentBrand.AppName),
-                Branding.ReBrand(Resources.EmailTemplates.PasswordChanged),
-                new System.Net.Mail.MailAddress(m_pf.Email, m_pf.UserFullName), false, false);
+            m_pf.ChangePassword(CurrentPassword.Text, NewPassword.Text);
         }
         catch (MyFlightbookException ex)
-        {
-            lblPassChanged.Visible = true;
-            lblPassChanged.Text = ex.Message;
-            lblPassChanged.CssClass = "error";
-            return false;
-        }
-        catch (UserEntityException ex)
         {
             lblPassChanged.Visible = true;
             lblPassChanged.Text = ex.Message;
@@ -535,24 +369,8 @@ public partial class Member_EditProfile : System.Web.UI.Page
     {
         try
         {
-            // see if we need to change question too.
-            if ((txtQuestion.Text.Length > 0) ^ (txtAnswer.Text.Length > 0))
-                throw new MyFlightbookException(Resources.Profile.errNeedBothQandA);
-
-            if (txtQuestion.Text.Length == 0 || txtAnswer.Text.Length == 0) // should have been caught
-                throw new MyFlightbookException(Resources.Profile.errPleaseTypeNewQandA);
-
-            if (!Membership.Provider.ValidateUser(Page.User.Identity.Name, txtPassQA.Text))
-                throw new MyFlightbookException(Resources.Profile.errIncorrectPassword);
-
-            // change both password and question/answer
-            if (!Membership.Provider.ChangePasswordQuestionAndAnswer(Page.User.Identity.Name, txtPassQA.Text, txtQuestion.Text, txtAnswer.Text))
-                throw new MyFlightbookException(Resources.Profile.errChangeQandAFailed);
-
-            m_pf.SecurityQuestion = txtQuestion.Text;
+            m_pf.ChangeQAndA(txtPassQA.Text, txtQuestion.Text, txtAnswer.Text);
             lblQAChangeSuccess.Visible = true;
-            m_pf.FCommit(); // update the cache
-
         }
         catch (MyFlightbookException ex)
         {
@@ -566,12 +384,9 @@ public partial class Member_EditProfile : System.Web.UI.Page
     #region Account closure and bulk delete
     protected void btnDeleteFlights_Click(object sender, EventArgs e)
     {
-        MembershipUser mu = Membership.GetUser(Page.User.Identity.Name, false);
-        if (mu == null)
-            return;
         try
         {
-            ProfileAdmin.DeleteForUser(mu, ProfileAdmin.DeleteLevel.OnlyFlights);
+            ProfileAdmin.DeleteFlightsForUser(Page.User.Identity.Name);
             lblDeleteFlightsCompleted.Visible = true;
         }
         catch (MyFlightbookException ex) { lblDeleteErr.Text = ex.Message; }
@@ -579,13 +394,9 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     protected void btnCloseAccount_Click(object sender, EventArgs e)
     {
-        MembershipUser mu = Membership.GetUser(Page.User.Identity.Name, false);
-        if (mu == null)
-            return;
         try
         {
-            ProfileAdmin.DeleteForUser(mu, ProfileAdmin.DeleteLevel.EntireUser);
-            FormsAuthentication.SignOut();
+            ProfileAdmin.DeleteEntireUser(Page.User.Identity.Name);
             Response.Redirect("~");
         }
         catch (MyFlightbookException ex) { lblDeleteErr.Text = ex.Message; }
@@ -645,81 +456,10 @@ public partial class Member_EditProfile : System.Web.UI.Page
         }
     }
 
-    #region Deadlines
-    #endregion
-
-    #region Cloud Storage
-    protected void lnkAuthDropbox_Click(object sender, EventArgs e)
-    {
-        new MFBDropbox().Authorize(Request, ResolveUrl("~/Member/EditProfile.aspx/pftPrefs"), MFBDropbox.szParamDropboxAuth);
-    }
-
-    protected void lnkDeAuthDropbox_Click(object sender, EventArgs e)
-    {
-        m_pf.DropboxAccessToken = null;
-        m_pf.FCommit();
-        mvDropBoxState.SetActiveView(vwAuthDropBox);
-    }
-
-    protected void lnkAuthorizeOneDrive_Click(object sender, EventArgs e)
-    {
-        Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/OneDriveRedir.aspx")));
-        new OneDrive().Authorize(uri);
-    }
-
-    protected void lnkDeAuthOneDrive_Click(object sender, EventArgs e)
-    {
-        m_pf.OneDriveAccessToken = null;
-        m_pf.FCommit();
-        mvOneDriveState.SetActiveView(vwAuthOneDrive);
-    }
-
-    protected void lnkAuthorizeGDrive_Click(object sender, EventArgs e)
-    {
-        new GoogleDrive().Authorize(Request, Request.Url.AbsolutePath, GoogleDrive.szParamGDriveAuth);
-    }
-
-    protected void lnkDeAuthGDrive_Click(object sender, EventArgs e)
-    {
-        m_pf.GoogleDriveAccessToken = null;
-        m_pf.FCommit();
-        mvGDriveState.SetActiveView(vwAuthGDrive);
-    }
-
-    protected void cmbDefaultCloud_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        if (Enum.TryParse<StorageID>(cmbDefaultCloud.SelectedValue, out StorageID sid))
-        {
-            m_pf.DefaultCloudStorage = sid;
-            m_pf.FCommit();
-        }
-    }
-
-    protected void rblCloudBackupAppendDate_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        m_pf.OverwriteCloudBackup = Convert.ToBoolean(rblCloudBackupAppendDate.SelectedValue, CultureInfo.InvariantCulture);
-        m_pf.FCommit();
-    }
-    #endregion // Social Networking
-
-    #region CloudAhoy
-    protected void lnkAuthCloudAhoy_Click(object sender, EventArgs e)
-    {
-        new CloudAhoyClient(!Branding.CurrentBrand.MatchesHost(Request.Url.Host)).Authorize(new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}{1}", Request.Url.Host, VirtualPathUtility.ToAbsolute("~/public/CloudAhoyRedir.aspx"))));
-    }
-
-    protected void lnkDeAuthCloudAhoy_Click(object sender, EventArgs e)
-    {
-        m_pf.CloudAhoyToken = null;
-        m_pf.FCommit();
-        mvCloudAhoy.SetActiveView(vwAuthCloudAhoy);
-    }
-    #endregion
-
     #region Property Blacklist
     protected void UpdateBlacklist(bool fForceDB = false)
     {
-        rptUsedProps.DataSource = Array.FindAll(CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.Name, fForceDB), cpt => cpt.IsFavorite);
+        rptUsedProps.DataSource = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.Name, fForceDB)).FindAll(cpt => cpt.IsFavorite);
         rptUsedProps.DataBind();
         List<CustomPropertyType> lstBlacklist = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(m_pf.BlacklistedProperties));
         lstBlacklist.Sort((cpt1, cpt2) => { return cpt1.SortKey.CompareCurrentCultureIgnoreCase(cpt2.SortKey); });
@@ -768,90 +508,4 @@ public partial class Member_EditProfile : System.Web.UI.Page
     #endregion
 
     #endregion // Preferences
-
-    #region Pilot Information
-    protected Boolean FCommitPilotInfo()
-    {
-        m_pf.License = txtLicense.Text;
-        m_pf.Certificate = txtCertificate.Text;
-        if (m_pf.Certificate.Length > 30)
-            m_pf.Certificate = m_pf.Certificate.Substring(0, 30);
-        m_pf.CertificateExpiration = mfbTypeInDateCFIExpiration.Date;
-        m_pf.EnglishProficiencyExpiration = mfbDateEnglishCheck.Date;
-
-        try
-        {
-            m_pf.FCommit();
-        }
-        catch (MyFlightbookException ex)
-        {
-            lblPilotInfoUpdated.Visible = true;
-            lblPilotInfoUpdated.Text = ex.Message;
-            lblPilotInfoUpdated.CssClass = "error";
-            return false;
-        }
-
-        return true;
-    }
-
-    protected bool FCommitMedicalInfo()
-    {
-        Page.Validate("valPilotInfo");
-        if (!IsValid)
-            return false;
-
-        m_pf.LastMedical = dateMedical.Date;
-        m_pf.MonthsToMedical = Convert.ToInt32(cmbMonthsMedical.SelectedValue, CultureInfo.InvariantCulture);
-        m_pf.UsesICAOMedical = rblMedicalDurationType.SelectedIndex > 0;
-
-        try
-        {
-            m_pf.FCommit();
-        }
-        catch (MyFlightbookException ex)
-        {
-            lblMedicalInfo.Visible = true;
-            lblMedicalInfo.Text = ex.Message;
-            lblMedicalInfo.CssClass = "error";
-            return false;
-        }
-
-        return true;
-    }
-
-    protected void btnUpdatePilotInfo_Click(object sender, EventArgs e)
-    {
-        if (FCommitPilotInfo())
-        {
-            lblPilotInfoUpdated.Visible = true;
-        }
-    }
-
-    protected void btnUpdateMedical_Click(object sender, EventArgs e)
-    {
-        if (FCommitMedicalInfo())
-        {
-            lblMedicalInfo.Visible = true;
-            UpdateNextMedical(m_pf);
-        }
-    }
-
-    private void UpdateNextMedical(Profile pf)
-    {
-        if (pf.LastMedical.CompareTo(DateTime.MinValue) != 0)
-        {
-            lblNextMedical.Text = pf.NextMedical.ToShortDateString();
-            pnlNextMedical.Visible = true;
-        }
-        else
-            pnlNextMedical.Visible = false;
-    }
-
-    public void DurationIsValid(object source, ServerValidateEventArgs args)
-    {
-        if (args == null)
-            throw new ArgumentNullException(nameof(args));
-        args.IsValid = (dateMedical.Date == DateTime.MinValue || cmbMonthsMedical.SelectedValue != "0");
-    }
-    #endregion
 }

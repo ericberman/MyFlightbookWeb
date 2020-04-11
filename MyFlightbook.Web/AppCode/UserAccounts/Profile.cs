@@ -1330,6 +1330,69 @@ namespace MyFlightbook
                 util.NotifyUser(Resources.Profile.EmailChangedSubjectLine, szBody, new MailAddress(Email, UserFullName), false, false);
             }
         }
+
+        /// <summary>
+        /// Change the security question/answer for the user.
+        /// </summary>
+        /// <param name="szPass">The user's current password</param>
+        /// <param name="szNewQ">The proposed new question</param>
+        /// <param name="szNewA">The proposed new answer</param>
+        public void ChangeQAndA(string szPass, string szNewQ, string szNewA)
+        {
+            if (szPass == null)
+                throw new ArgumentNullException(nameof(szPass));
+            if (szNewQ == null)
+                throw new ArgumentNullException(nameof(szNewQ));
+            if (szNewA == null)
+                throw new ArgumentNullException(nameof(szNewA));
+            // see if we need to change question too.
+            if ((szNewQ.Length > 0) ^ (szNewA.Length > 0))
+                throw new MyFlightbookException(Resources.Profile.errNeedBothQandA);
+
+            if (szNewQ.Length == 0 || szNewA.Length == 0)
+                throw new MyFlightbookException(Resources.Profile.errPleaseTypeNewQandA);
+
+            if (!Membership.Provider.ValidateUser(UserName, szPass))
+                throw new MyFlightbookException(Resources.Profile.errIncorrectPassword);
+
+            // change both password and question/answer
+            if (!Membership.Provider.ChangePasswordQuestionAndAnswer(UserName, szPass, szNewQ, szNewA))
+                throw new MyFlightbookException(Resources.Profile.errChangeQandAFailed);
+
+            SecurityQuestion = szNewQ;
+            FCommit(); // update the cache
+        }
+
+        /// <summary>
+        /// Changes the password.
+        /// </summary>
+        /// <param name="szOld">The previous password - must match</param>
+        /// <param name="szNew">The proposed new password</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="MyFlightbookException"></exception>
+        public void ChangePassword(string szOld, string szNew)
+        {
+            try
+            {
+                if (szOld == null)
+                    throw new ArgumentNullException(nameof(szOld));
+                if (szNew == null)
+                    throw new ArgumentNullException(nameof(szNew));
+
+                if (szOld.Length == 0 || !Membership.ValidateUser(UserName, szOld))
+                    throw new MyFlightbookException(Resources.Profile.errBadPasswordToChange);
+                UserEntity.ValidatePassword(szNew);  // will throw an exception if length, etc. is wrong.
+                if (!Membership.Provider.ChangePassword(UserName, szOld, szNew))
+                    throw new MyFlightbookException(Resources.Profile.errChangePasswordFailed);
+
+                util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.PasswordChangedSubject, Branding.CurrentBrand.AppName),
+                    Branding.ReBrand(Resources.EmailTemplates.PasswordChanged), new MailAddress(Email, UserFullName), false, false);
+            }
+            catch (UserEntityException ex)
+            {
+                throw new MyFlightbookException(ex.Message, ex);
+            }
+        }
         #endregion
 
         #region Achievements
@@ -1563,6 +1626,29 @@ namespace MyFlightbook
             {
                 throw new MyFlightbookException(String.Format(CultureInfo.InvariantCulture, "Exception deleting for user ({0}): {1}", dl.ToString(), ex.Message), ex);
             }
+        }
+
+        public static void DeleteForUser(string szUser, DeleteLevel dl)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
+
+            MembershipUser mu = Membership.GetUser(szUser, false);
+            if (mu == null)
+                return;
+
+            DeleteForUser(mu, dl);
+        }
+
+        public static void DeleteFlightsForUser(string szUser)
+        {
+            DeleteForUser(szUser, DeleteLevel.OnlyFlights);
+        }
+
+        public static void DeleteEntireUser(string szUser)
+        {
+            DeleteForUser(szUser, DeleteLevel.EntireUser);
+            FormsAuthentication.SignOut();
         }
 
         /// <summary>

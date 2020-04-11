@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CloudAhoyName" xml:space="preserve">
+    <value>CloudAhoy</value>
+  </data>
+  <data name="CloudStorageDropboxName" xml:space="preserve">
+    <value>Dropbox</value>
+  </data>
+  <data name="CloudStorageGoogleDriveName" xml:space="preserve">
+    <value>GoogleDrive</value>
+  </data>
+  <data name="CloudStorageHeader" xml:space="preserve">
+    <value>Cloud Backup</value>
+  </data>
+  <data name="CloudStorageOneDriveName" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="DonateCrypto" xml:space="preserve">
+    <value>Prefer cryptocurrency?  MyFlightbook now accepts Bitcoin and Ethereum</value>
+  </data>
+  <data name="DonateCryptoContact" xml:space="preserve">
+    <value>Contact us for details.</value>
+  </data>
+  <data name="DonateHeader" xml:space="preserve">
+    <value>Donations</value>
+  </data>
+  <data name="DonateNoDonations" xml:space="preserve">
+    <value>You have not made any donations.</value>
+  </data>
+  <data name="DonateThankYou" xml:space="preserve">
+    <value>Thank-you for your support!</value>
+  </data>
+  <data name="DonationHistoryHeader" xml:space="preserve">
+    <value>Your donation history</value>
+  </data>
+  <data name="PaymentCancelled" xml:space="preserve">
+    <value>Your payment was canceled.</value>
+  </data>
+  <data name="PaymentSuccess" xml:space="preserve">
+    <value>Thank-you - your payment has been successfully applied!</value>
+  </data>
+  <data name="PilotInfoBFRNotes" xml:space="preserve">
+    <value>When you enter a flight, you can attach a variety of properties such as flight reviews or checkrides.  Most - but not all - checkrides count as reviews.</value>
+  </data>
+  <data name="PilotInfoBFRs" xml:space="preserve">
+    <value>Flight Reviews or Checkrides</value>
+  </data>
+  <data name="PilotInfoCertificateCFIWatermark" xml:space="preserve">
+    <value>Instructor #</value>
+  </data>
+  <data name="PilotInfoCertificatePrompt" xml:space="preserve">
+    <value>Certificate (License) #</value>
+  </data>
+  <data name="PilotInfoCertificateWatermark" xml:space="preserve">
+    <value>Certificate #</value>
+  </data>
+  <data name="PilotInfoCFIExpiration" xml:space="preserve">
+    <value>Expiration</value>
+  </data>
+  <data name="PilotInfoCFIExpirationNote" xml:space="preserve">
+    <value>(Only necessary if you want to have records of student endorsements)</value>
+  </data>
+  <data name="PilotInfoEnglishProficiencyExpiration" xml:space="preserve">
+    <value>English Proficiency Check Expiration</value>
+  </data>
+  <data name="PilotInfoHeader" xml:space="preserve">
+    <value>Pilot Information</value>
+  </data>
+  <data name="PilotInfoInstructorCertificatePrompt" xml:space="preserve">
+    <value>CFI (or CFII / GI / DPE / etc.) Certificate #</value>
+  </data>
+  <data name="PilotInfoIPCHeader" xml:space="preserve">
+    <value>Instrument Proficiency Checks</value>
+  </data>
+  <data name="PilotInfoIPCHelp" xml:space="preserve">
+    <value>When you enter a flight, attach a property for an IPC or an Instrument Checkride and it will count towards your instrument currency.</value>
+  </data>
+  <data name="PilotInfoIPCNoneFound" xml:space="preserve">
+    <value>(No Instrument Proficiency Checks were found)</value>
+  </data>
+  <data name="PilotInfoLastMedical" xml:space="preserve">
+    <value>Date of Last Medical</value>
+  </data>
+  <data name="PilotInfoLicenseFinePrint" xml:space="preserve">
+    <value>(Only used when printing your logbook)</value>
+  </data>
+  <data name="PilotInfoMedical12Months" xml:space="preserve">
+    <value>12 Months</value>
+  </data>
+  <data name="PilotInfoMedical24Months" xml:space="preserve">
+    <value>24 Months</value>
+  </data>
+  <data name="PilotInfoMedical36Months" xml:space="preserve">
+    <value>36 Months</value>
+  </data>
+  <data name="PilotInfoMedical48Months" xml:space="preserve">
+    <value>48 Months</value>
+  </data>
+  <data name="PilotInfoMedical60Months" xml:space="preserve">
+    <value>60 Months</value>
+  </data>
+  <data name="PilotInfoMedical6Months" xml:space="preserve">
+    <value>6 Months</value>
+  </data>
+  <data name="PilotInfoMedicalDuration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="PilotInfoMedicalDurationRequired" xml:space="preserve">
+    <value>Please specify the duration of your medical.</value>
+  </data>
+  <data name="PilotInfoMedicalFAARules" xml:space="preserve">
+    <value>Use FAA rules (calendar months)</value>
+  </data>
+  <data name="PilotInfoMedicalICAORules" xml:space="preserve">
+    <value>Use ICAO rules (day for day)</value>
+  </data>
+  <data name="PilotInfoMedicalUnspecified" xml:space="preserve">
+    <value>(Unspecified)</value>
+  </data>
+  <data name="PilotInfoNoBFRFound" xml:space="preserve">
+    <value>(No flight reviews or checkrides found)</value>
+  </data>
+  <data name="PilotInfoNoCheckrides" xml:space="preserve">
+    <value>(No checkrides found)</value>
+  </data>
+  <data name="PilotInfoRatings" xml:space="preserve">
+    <value>Ratings</value>
+  </data>
+  <data name="PilotInfoRatingsPrompt" xml:space="preserve">
+    <value>These are your ratings, as determined from checkrides in your logbook. As such, the list may be incomplete.</value>
+  </data>
+</root>

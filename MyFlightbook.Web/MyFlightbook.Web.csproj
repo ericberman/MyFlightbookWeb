@@ -38,7 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\myFlightbook rules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -349,12 +349,15 @@
     <Content Include="Controls\mfbBadgeSet.ascx" />
     <Content Include="Controls\mfbBasicMedManager.ascx" />
     <Content Include="Controls\mfbChartTotals.ascx" />
+    <Content Include="Controls\Prefs\mfbCloudAhoy.ascx" />
     <Content Include="Controls\mfbCurrency.ascx" />
     <Content Include="Controls\mfbCustCurrency.ascx" />
     <Content Include="Controls\mfbCustomCurrencyList.ascx" />
     <Content Include="Controls\mfbDateTime.ascx" />
     <Content Include="Controls\mfbDeadlines.ascx" />
     <Content Include="Controls\mfbDecimalEdit.ascx" />
+    <Content Include="Controls\Prefs\mfbCloudStorage.ascx" />
+    <Content Include="Controls\Prefs\mfbDonate.ascx" />
     <Content Include="Controls\mfbDownload.ascx" />
     <Content Include="Controls\mfbEditableImage.ascx" />
     <Content Include="Controls\mfbEditAircraft.ascx" />
@@ -414,6 +417,7 @@
     <Content Include="Controls\mfbVideoEntry.ascx" />
     <Content Include="Controls\oAuthAuthorizationManager.ascx" />
     <Content Include="Controls\popmenu.ascx" />
+    <Content Include="Controls\Prefs\mfbPilotInfo.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutCanada.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutCASA.ascx" />
     <Content Include="Controls\PrintingLayouts\layoutEASAFCL.ascx" />
@@ -1067,6 +1071,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FlightData.resx</DependentUpon>
     </Compile>
+    <Compile Include="App_GlobalResources\Preferences.designer.cs">
+      <DependentUpon>Preferences.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="App_GlobalResources\FlightLint.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1346,6 +1355,13 @@
     <Compile Include="Controls\mfbChartTotals.ascx.designer.cs">
       <DependentUpon>mfbChartTotals.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Prefs\mfbCloudAhoy.ascx.cs">
+      <DependentUpon>mfbCloudAhoy.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Prefs\mfbCloudAhoy.ascx.designer.cs">
+      <DependentUpon>mfbCloudAhoy.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\mfbCurrency.ascx.cs">
       <DependentUpon>mfbCurrency.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1387,6 +1403,20 @@
     </Compile>
     <Compile Include="Controls\mfbDecimalEdit.ascx.designer.cs">
       <DependentUpon>mfbDecimalEdit.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Prefs\mfbCloudStorage.ascx.cs">
+      <DependentUpon>mfbCloudStorage.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Prefs\mfbCloudStorage.ascx.designer.cs">
+      <DependentUpon>mfbCloudStorage.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Prefs\mfbDonate.ascx.cs">
+      <DependentUpon>mfbDonate.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Prefs\mfbDonate.ascx.designer.cs">
+      <DependentUpon>mfbDonate.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\mfbDownload.ascx.cs">
       <DependentUpon>mfbDownload.ascx</DependentUpon>
@@ -1800,6 +1830,13 @@
     </Compile>
     <Compile Include="Controls\popmenu.ascx.designer.cs">
       <DependentUpon>popmenu.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Prefs\mfbPilotInfo.ascx.cs">
+      <DependentUpon>mfbPilotInfo.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\Prefs\mfbPilotInfo.ascx.designer.cs">
+      <DependentUpon>mfbPilotInfo.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\PrintingLayouts\layoutCanada.ascx.cs">
       <DependentUpon>layoutCanada.ascx</DependentUpon>
@@ -2893,6 +2930,12 @@
     <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetFramework.CSharp.Analyzers.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_GlobalResources\Preferences.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>Preferences.designer.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

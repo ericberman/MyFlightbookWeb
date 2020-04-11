@@ -2,7 +2,6 @@
     Codebehind="EditProfile.aspx.cs" Inherits="Member_EditProfile" Title="Edit Profile" culture="auto" meta:resourcekey="PageResource1" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
-<%@ Register Src="../Controls/mfbTypeInDate.ascx" TagName="mfbTypeInDate" TagPrefix="uc2" %>
 <%@ Register src="../Controls/mfbEndorsementList.ascx" tagname="mfbEndorsementList" tagprefix="uc6" %>
 <%@ Register src="../Controls/mfbMultiFileUpload.ascx" tagname="mfbMultiFileUpload" tagprefix="uc7" %>
 <%@ Register src="../Controls/mfbImageList.ascx" tagname="mfbImageList" tagprefix="uc8" %>
@@ -13,12 +12,14 @@
 <%@ Register Src="~/Controls/oAuthAuthorizationManager.ascx" TagPrefix="uc1" TagName="oAuthAuthorizationManager" %>
 <%@ Register Src="~/Controls/mfbSubscriptionManager.ascx" TagPrefix="uc1" TagName="mfbSubscriptionManager" %>
 <%@ Register Src="~/Controls/mfbCustomCurrencyList.ascx" TagPrefix="uc1" TagName="mfbCustomCurrencyList" %>
-<%@ Register Src="~/Controls/mfbBasicMedManager.ascx" TagPrefix="uc1" TagName="mfbBasicMedManager" %>
 <%@ Register Src="~/Controls/mfbEditPropTemplate.ascx" TagPrefix="uc1" TagName="mfbEditPropTemplate" %>
 <%@ Register Src="~/Controls/ClubControls/TimeZone.ascx" TagPrefix="uc1" TagName="TimeZone" %>
 <%@ Register Src="~/Controls/mfbShareKeys.ascx" TagPrefix="uc1" TagName="mfbShareKeys" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
-
+<%@ Register Src="~/Controls/Prefs/mfbDonate.ascx" TagPrefix="uc1" TagName="mfbDonate" %>
+<%@ Register Src="~/Controls/Prefs/mfbCloudAhoy.ascx" TagPrefix="uc1" TagName="mfbCloudAhoy" %>
+<%@ Register Src="~/Controls/Prefs/mfbCloudStorage.ascx" TagPrefix="uc1" TagName="mfbCloudStorage" %>
+<%@ Register Src="~/Controls/Prefs/mfbPilotInfo.ascx" TagPrefix="uc1" TagName="mfbPilotInfo" %>
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -529,112 +530,18 @@
                     </cc1:AccordionPane>
                     <cc1:AccordionPane ID="acpBackup" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpBackupResource1">
                         <Header>
-                            <asp:Localize ID="locCloudStorage" runat="server" Text="Cloud Backup" 
-                                meta:resourceKey="locCloudStorageResource1"></asp:Localize>
+                            <asp:Localize ID="locCloudStorage" runat="server" Text="<%$ Resources:Preferences, CloudStorageHeader %>" />
                         </Header>
                         <Content>
-                            <div class="prefSectionRow">
-                                <p><asp:Localize ID="locAboutCloudStorage" runat="server" meta:resourcekey="locAboutCloudStorageResource1"></asp:Localize></p>
-                                <table>
-                                    <tr style="vertical-align:top">
-                                        <td style="width:180px">
-                                            <!-- This comes from https://www.dropbox.com/developers/reference/branding, per their guidelines -->
-                                            <asp:Image ID="DropboxLogo" 
-                                                ImageUrl="~/images/dropbox-logos_dropbox-logotype-blue.png" runat="server" 
-                                                AlternateText="Dropbox" meta:resourcekey="DropboxLogoResource1" Width="180px" />
-                                        </td>
-                                        <td>
-                                            <asp:MultiView ID="mvDropBoxState" runat="server">
-                                                <asp:View ID="vwAuthDropBox" runat="server">
-                                                    <p><asp:LinkButton ID="lnkAuthDropbox" runat="server" 
-                                                        onclick="lnkAuthDropbox_Click" meta:resourceKey="lnkAuthDropboxResource1"></asp:LinkButton></p>
-                                                </asp:View>
-                                                <asp:View ID="vwDeAuthDropbox" runat="server">
-                                                    <p><asp:Localize ID="locDropboxIsAuthed" 
-                                                        runat="server" meta:resourcekey="locDropboxIsAuthedResource1"></asp:Localize></p>
-                                                    <p>
-                                                    <asp:LinkButton ID="lnkDeAuthDropbox" runat="server" 
-                                                        onclick="lnkDeAuthDropbox_Click" 
-                                                        meta:resourceKey="lnkDeAuthDropboxResource1"></asp:LinkButton></p>
-                                                </asp:View>
-                                            </asp:MultiView>
-                                        </td>
-                                    </tr>
-                                    <tr style="vertical-align:top" runat="server" id="rowGDrive">
-                                        <td style="width:180px">
-                                            <!-- This comes from https://developers.google.com/drive/v2/web/branding, per their guidelines -->
-                                            <asp:Image ID="GDriveLogo" 
-                                                ImageUrl="~/images/google-drive-logo-lockup.png" runat="server" 
-                                                AlternateText="GoogleDrive" Width="180px" />
-                                        </td>
-                                        <td>
-                                            <asp:MultiView ID="mvGDriveState" runat="server">
-                                                <asp:View ID="vwAuthGDrive" runat="server">
-                                                    <p><asp:LinkButton ID="lnkAuthorizeGDrive" runat="server" OnClick="lnkAuthorizeGDrive_Click"></asp:LinkButton></p>
-                                                </asp:View>
-                                                <asp:View ID="vwDeAuthGDrive" runat="server">
-                                                    <p><asp:Localize ID="locGoogleDriveIsAuthed" 
-                                                        runat="server"></asp:Localize></p>
-                                                    <p><asp:LinkButton ID="lnkDeAuthGDrive" runat="server" OnClick="lnkDeAuthGDrive_Click"></asp:LinkButton></p>
-                                                </asp:View>
-                                            </asp:MultiView>
-                                        </td>
-                                    </tr>
-                                    <tr style="vertical-align:top" runat="server" id="rowOneDrive">
-                                        <td style="width:180px">
-                                            <!-- This comes from https://msdn.microsoft.com/en-us/onedrive/dn673556.aspx, per their guidelines -->
-                                            <asp:Image ID="Image3" 
-                                                ImageUrl="~/images/OneDrive_rgb_Blue2728.png" runat="server" 
-                                                AlternateText="OneDrive" Width="180px" />
-                                        </td>
-                                        <td>
-                                            <asp:MultiView ID="mvOneDriveState" runat="server">
-                                                <asp:View ID="vwAuthOneDrive" runat="server">
-                                                    <p><asp:LinkButton ID="lnkAuthorizeOneDrive" runat="server" OnClick="lnkAuthorizeOneDrive_Click"></asp:LinkButton></p>
-                                                </asp:View>
-                                                <asp:View ID="vwDeAuthOneDrive" runat="server">
-                                                    <p><asp:Localize ID="locOneDriveIsAuthed" 
-                                                        runat="server"></asp:Localize></p>
-                                                    <p><asp:LinkButton ID="lnkDeAuthOneDrive" runat="server" OnClick="lnkDeAuthOneDrive_Click"></asp:LinkButton></p>
-                                                </asp:View>
-                                            </asp:MultiView>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <asp:RadioButtonList ID="rblCloudBackupAppendDate" runat="server" AutoPostBack="true" OnSelectedIndexChanged="rblCloudBackupAppendDate_SelectedIndexChanged">
-                                <asp:ListItem Selected="True" Value="False" Text="<%$ Resources:LocalizedText, CloudStorageAppendDate %>"></asp:ListItem>
-                                <asp:ListItem Value="True" Text="<%$ Resources:LocalizedText, CloudStorageOverwrite %>"></asp:ListItem>
-                            </asp:RadioButtonList>
-                            <asp:Panel ID="pnlDefaultCloud" Visible="False" runat="server" meta:resourceKey="pnlDefaultCloudResource1">
-                                <hr />
-                                <asp:Label ID="lblPickDefault" runat="server" Text="<%$ Resources:LocalizedText, CloudStoragePickDefault %>" meta:resourceKey="lblPickDefaultResource1"></asp:Label>
-                                <asp:DropDownList ID="cmbDefaultCloud" AutoPostBack="True" OnSelectedIndexChanged="cmbDefaultCloud_SelectedIndexChanged" runat="server" meta:resourceKey="cmbDefaultCloudResource1">
-                                </asp:DropDownList>
-                            </asp:Panel>
+                            <uc1:mfbCloudStorage runat="server" id="mfbCloudStorage" />
                         </Content>
                     </cc1:AccordionPane>
                     <cc1:AccordionPane ID="acpCloudAhoy" runat="server" meta:resourcekey="acpCloudAhoyResource1">
                         <Header>
-                            <asp:Localize ID="locCloudAhoy" runat="server" Text="CloudAhoy" meta:resourcekey="locCloudAhoyResource1" />
+                            <asp:Localize ID="locCloudAhoy" runat="server" Text="<%$ Resources:Preferences, CloudAhoyName %>" />
                         </Header>
                         <Content>
-                            <table>
-                                <tr>
-                                    <td><asp:Image ID="imgCloudAhoy" runat="server" ImageUrl="~/images/CloudAhoyTrans.png" AlternateText="CloudAhoy" ToolTip="CloudAhoy" /></td>
-                                    <td>
-                                        <asp:MultiView ID="mvCloudAhoy" runat="server">
-                                            <asp:View ID="vwAuthCloudAhoy" runat="server">
-                                                <p><asp:LinkButton ID="lnkAuthCloudAhoy" runat="server" OnClick="lnkAuthCloudAhoy_Click" meta:resourcekey="lnkAuthCloudAhoyResource1"></asp:LinkButton></p>
-                                            </asp:View>
-                                            <asp:View ID="vwDeAuthCloudAhoy" runat="server">
-                                                <p><asp:Localize ID="locCloudAhoyIsAuthed" runat="server" meta:resourcekey="locCloudAhoyIsAuthedResource1"></asp:Localize></p>
-                                                <p><asp:LinkButton ID="lnkDeAuthCloudAhoy" runat="server" OnClick="lnkDeAuthCloudAhoy_Click" meta:resourcekey="lnkDeAuthCloudAhoyResource1"></asp:LinkButton></p>
-                                            </asp:View>
-                                        </asp:MultiView>
-                                    </td>
-                                </tr>
-                            </table>
+                            <uc1:mfbCloudAhoy runat="server" id="mfbCloudAhoy" />
                         </Content>
                     </cc1:AccordionPane>
                     <cc1:AccordionPane ID="acpoAuthApps" runat="server" Visible="False" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpoAuthAppsResource1">
@@ -652,294 +559,12 @@
         </asp:View>
         <asp:View runat="server" ID="vwPilotInfo">
             <h2>
-                <asp:Localize ID="locPilotHeader" runat="server" meta:resourcekey="locPilotHeaderResource1" Text="Pilot Information"></asp:Localize>
+                <asp:Localize ID="locPilotHeader" runat="server" Text="<%$ Resources:Preferences, PilotInfoHeader %>" />
             </h2>
-            <cc1:Accordion ID="accordianPilotInfo" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" meta:resourcekey="accordianPrefsResource1" TransitionDuration="250">
-                <Panes>
-                    <cc1:AccordionPane runat="server" ID="acpMedical" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpMedicalResource1" >
-                        <Header>
-                            <asp:Localize ID="locHeaderMedical" runat="server" Text="<%$ Resources:Profile, ProfilePilotInfoMedical %>"></asp:Localize>
-                        </Header>
-                        <Content>
-                            <asp:Panel ID="pnlMedical" runat="server" DefaultButton="btnUpdateMedical" meta:resourcekey="pnlMedicalResource1">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <asp:Localize ID="locLastMedicalPrompt" runat="server"
-                                                Text="Date of Last Medical" meta:resourcekey="locLastMedicalPromptResource1"></asp:Localize></td>
-                                        <td>
-                                            <uc2:mfbTypeInDate ID="dateMedical" runat="server" DefaultType="None" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <asp:Localize ID="locMedicalDurationPrompt" runat="server"
-                                                Text="Duration"
-                                                meta:resourcekey="locMedicalDurationPromptResource1"></asp:Localize></td>
-                                        <td>
-                                            <asp:DropDownList ID="cmbMonthsMedical" runat="server"
-                                                ValidationGroup="valPilotInfo"
-                                                meta:resourcekey="cmbMonthsMedicalResource1">
-                                                <asp:ListItem Selected="True" Value="0" Text="(Unspecified)"
-                                                    meta:resourcekey="ListItemResource11"></asp:ListItem>
-                                                <asp:ListItem Value="6" Text="6 Months" meta:resourcekey="ListItemResource12"></asp:ListItem>
-                                                <asp:ListItem Value="12" Text="12 Months" meta:resourcekey="ListItemResource13"></asp:ListItem>
-                                                <asp:ListItem Value="24" Text="24 Months" meta:resourcekey="ListItemResource14"></asp:ListItem>
-                                                <asp:ListItem Value="36" Text="36 Months" meta:resourcekey="ListItemResource15"></asp:ListItem>
-                                                <asp:ListItem Value="48" Text="48 Months" meta:resourcekey="ListItemResource16"></asp:ListItem>
-                                                <asp:ListItem Value="60" Text="60 Months" meta:resourcekey="ListItemResource17"></asp:ListItem>
-                                            </asp:DropDownList>
-                                            <asp:CustomValidator ID="CustomValidator1" runat="server"
-                                                ErrorMessage="Please specify the duration of your medical."
-                                                ControlToValidate="cmbMonthsMedical" CssClass="error"
-                                                OnServerValidate="DurationIsValid" ValidationGroup="valPilotInfo"
-                                                meta:resourcekey="CustomValidator1Resource1"></asp:CustomValidator>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>
-                                            <asp:RadioButtonList ID="rblMedicalDurationType" runat="server" meta:resourcekey="rblMedicalDurationTypeResource1">
-                                                <asp:ListItem Value="0" Text="Use FAA rules (calendar months)" meta:resourcekey="ListItemResource7" Selected="True"></asp:ListItem>
-                                                <asp:ListItem Value="1" Text="Use ICAO rules (day for day)" meta:resourcekey="ListItemResource8"></asp:ListItem>
-                                            </asp:RadioButtonList></td>
-                                    </tr>
-                                </table>
-
-                                <asp:Panel ID="pnlNextMedical" runat="server" Visible="False" 
-                                    meta:resourcekey="pnlNextMedicalResource1"><br />
-                                    <asp:Localize ID="locNextMedicalDuePrompt" runat="server" Text="<%$ Resources:Currency, NextMedical %>"></asp:Localize>
-                                    <asp:Label ID="lblNextMedical" runat="server" Style="font-weight: bold;" 
-                                        meta:resourcekey="lblNextMedicalResource1"></asp:Label>.<br /><br /></asp:Panel>
-                                <div>
-                                    <asp:Button ID="btnUpdateMedical" runat="server"  
-                                        Text="<%$ Resources:Profile, ProfilePilotInfoMedicalUpdate %>" ValidationGroup="valMedical" 
-                                        onclick="btnUpdateMedical_Click" meta:resourcekey="btnUpdateMedicalResource1" />
-                                </div>
-                                <div>
-                                    <asp:Label ID="lblMedicalInfo" runat="server" CssClass="success" EnableViewState="False"
-                                        Text="<%$ Resources:Profile, ProfilePilotInfoMedicalUpdated %>" Visible="False" meta:resourcekey="lblMedicalInfoResource1"></asp:Label>
-                                </div>
-                                <div>
-                                    <uc1:mfbBasicMedManager runat="server" id="BasicMedManager" />
-                                </div>
-                            </asp:Panel>
-                        </Content>
-                    </cc1:AccordionPane>
-                    <cc1:AccordionPane runat="server" ID="acpCertificates" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpCertificatesResource1" >
-                        <Header>
-                            <asp:Localize ID="locheaderCertificates" runat="server" Text="<%$ Resources:Profile, ProfilePilotInfoCertificates %>"></asp:Localize>
-                        </Header>
-                        <Content>
-                            <asp:Panel ID="pnlCertificates" runat="server" DefaultButton="btnUpdatePilotInfo" meta:resourcekey="pnlCertificatesResource1">
-                                <h3>
-                                    <asp:Localize ID="locRatings" runat="server" Text="Ratings" meta:resourcekey="locRatingsResource1"></asp:Localize></h3>
-                                <p>
-                                    <asp:Localize ID="locRatingsPrompt" runat="server" Text="These are your ratings, as determined from checkrides in your logbook. As such, the list may be incomplete." meta:resourcekey="locRatingsPromptResource1"></asp:Localize></p>
-                                <div>
-                                    <asp:GridView ID="gvRatings" CellPadding="4" runat="server" GridLines="None" AutoGenerateColumns="False" ShowHeader="False" meta:resourcekey="gvRatingsResource1">
-                                        <Columns>
-                                            <asp:BoundField DataField="LicenseName" meta:resourcekey="BoundFieldResource3" >
-                                            <ItemStyle Font-Bold="True" VerticalAlign="Top" />
-                                            </asp:BoundField>
-                                            <asp:TemplateField meta:resourcekey="TemplateFieldResource6">
-                                                <ItemTemplate>
-                                                    <asp:Repeater ID="rptPrivs" runat="server" DataSource='<%# Eval("Privileges") %>'>
-                                                        <ItemTemplate>
-                                                            <div><%# Container.DataItem %></div>
-                                                        </ItemTemplate>
-                                                    </asp:Repeater>
-                                                </ItemTemplate>
-                                                <ItemStyle VerticalAlign="Top" />
-                                            </asp:TemplateField>
-                                        </Columns>
-                                        <EmptyDataTemplate>
-                                            <asp:Localize ID="locNoRatingsFound" runat="server" Text="(No checkrides found)" meta:resourcekey="locNoRatingsFoundResource1"></asp:Localize>
-                                        </EmptyDataTemplate>
-                                    </asp:GridView>
-                                </div>
-                                <h3>
-                                    <asp:Localize ID="locLicenseHeader" runat="server" Text="Certificate (License) #" meta:resourcekey="locLicenseHeaderResource1"></asp:Localize>
-                                </h3>
-                                <div>
-                                    <asp:TextBox ID="txtLicense" dir="auto" runat="server" ValidationGroup="valPilotInfo" meta:resourcekey="txtLicenseResource1"></asp:TextBox>
-                                    <cc1:TextBoxWatermarkExtender ID="wmeLicense" WatermarkCssClass="watermark" WatermarkText="License #" TargetControlID="txtLicense" runat="server" BehaviorID="wmeLicense" />
-                                    <br />
-                                    <asp:Label ID="lblLicenseFineprint" runat="server" CssClass="fineprint" 
-                                        Text="(Only used when printing your logbook)" meta:resourcekey="lblLicenseFineprintResource1"></asp:Label>
-                                </div>
-                                <h3>
-                                    <asp:Localize ID="locCertPrompt" runat="server" Text="CFI (or CFII / GI / DPE / etc.) Certificate #" 
-                                        meta:resourcekey="locCertPromptResource1"></asp:Localize>
-                                </h3>
-                                <div>
-                                    <asp:TextBox ID="txtCertificate" dir="auto" runat="server" ValidationGroup="valPilotInfo" 
-                                        meta:resourcekey="txtCertificateResource1"></asp:TextBox> &nbsp;
-                                    <cc1:TextBoxWatermarkExtender ID="wmeCertificate" WatermarkCssClass="watermark" WatermarkText="Instructor #" TargetControlID="txtCertificate" runat="server" BehaviorID="wmeCertificate" />
-                                    <asp:Localize ID="locExpiration" runat="server" Text="Expiration" meta:resourcekey="locExpirationResource1"></asp:Localize>
-                                    <uc2:mfbTypeInDate ID="mfbTypeInDateCFIExpiration" runat="server" DefaultType="None" />
-                                    <br />
-                                    <asp:Label ID="lblCertFineprint" runat="server" CssClass="fineprint" 
-                                        Text="(Only necessary if you want to have records of student endorsements)" 
-                                        meta:resourcekey="lblCertFineprintResource1"></asp:Label>
-                                </div>
-                                <h3>
-                                    <asp:Localize ID="locLangProficiency" runat="server" Text="English Proficiency Check Expiration"
-                                        meta:resourcekey="locLangProficiencyResource1"></asp:Localize>
-                                </h3>
-                                <div>
-                                    <uc2:mfbTypeInDate ID="mfbDateEnglishCheck" runat="server" DefaultType="None" />
-                                </div>
-                                <div>
-                                    <br />
-                                    <asp:Button ID="btnUpdatePilotInfo" runat="server"  
-                                        Text="<%$ Resources:Profile, ProfilePilotInfoCertificatesUpdate %>" ValidationGroup="valPilotInfo" 
-                                        onclick="btnUpdatePilotInfo_Click" meta:resourcekey="btnUpdatePilotInfoResource1" />
-                                    <br />
-                                    <asp:Label ID="lblPilotInfoUpdated" runat="server" CssClass="success" EnableViewState="False"
-                                        Text="<%$ Resources:Profile, ProfilePilotInfoCertificatesUpdated %>" Visible="False" meta:resourcekey="lblPilotInfoUpdatedResource1" />
-                                    <br />
-                                </div>
-                            </asp:Panel>
-                        </Content>
-                    </cc1:AccordionPane>
-                    <cc1:AccordionPane runat="server" ID="acpFlightReviews" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpFlightReviewsResource1">
-                        <Header>
-                            <asp:Localize ID="locBFRPrompt" runat="server" Text="Flight Reviews or Checkrides" meta:resourcekey="locBFRPromptResource1"></asp:Localize>
-                        </Header>
-                        <Content>
-                            <p><asp:Label ID="lblBFRHelpText" runat="server" 
-                                Text="When you enter a flight, you can attach a variety of properties such as flight reviews or checkrides.  Most - but not all - checkrides count as reviews." 
-                                meta:resourcekey="lblBFRHelpTextResource1"></asp:Label></p>
-                            <asp:GridView ID="gvBFR" runat="server" AutoGenerateColumns="False" 
-                                GridLines="None" ShowHeader="False" CellPadding="5"
-                                meta:resourcekey="gvBFRResource1">
-                                <Columns>
-                                    <asp:HyperLinkField DataNavigateUrlFields="FlightID" DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}" DataTextField="Date" DataTextFormatString="{0:d}" meta:resourcekey="HyperLinkFieldResource3" />
-                                    <asp:BoundField DataField="DisplayString" meta:resourcekey="BoundFieldResource2" />
-                                </Columns>
-                                <EmptyDataTemplate>
-                                    <p><asp:Localize ID="locNoBFRFound" runat="server" Text="(No flight reviews or checkrides found)" meta:resourcekey="locNoBFRFoundResource1"></asp:Localize></p>
-                                </EmptyDataTemplate>
-                            </asp:GridView>
-                            <asp:Panel ID="pnlNextBFR" runat="server" Visible="False" 
-                                meta:resourcekey="pnlNextBFRResource1">
-                                <asp:Localize ID="locNextBFRDue" runat="server" Text="<%$ Resources:Currency, NextFlightReview %>"></asp:Localize>
-                                <asp:Label ID="lblNextBFR" runat="server" style="font-weight: bold;" 
-                                    meta:resourcekey="lblNextBFRResource1"></asp:Label>.<br /><br />
-                            </asp:Panel>
-                        </Content>
-                    </cc1:AccordionPane>
-                    <cc1:AccordionPane runat="server" ID="acpIPCs" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpIPCsResource1">
-                        <Header>
-                            <asp:Localize ID="locIPCPrompt" runat="server" Text="Instrument Proficiency Checks"  meta:resourcekey="locIPCPromptResource1"></asp:Localize>
-                        </Header>
-                        <Content>
-                            <p><asp:Label ID="lblIPCHelpText" runat="server" 
-                                Text="When you enter a flight, attach a property for an IPC or an Instrument Checkride and it will count towards your instrument currency." 
-                                meta:resourcekey="lblIPCHelpTextResource1"></asp:Label></p>
-                            <asp:GridView ID="gvIPC" runat="server" AutoGenerateColumns="False" 
-                                GridLines="None" ShowHeader="False" CellPadding="5"
-                                meta:resourcekey="gvIPCResource1">
-                                <Columns>
-                                    <asp:HyperLinkField DataNavigateUrlFields="FlightID" 
-                                        DataNavigateUrlFormatString="~/Member/LogbookNew.aspx/{0}" 
-                                        DataTextField="Date" DataTextFormatString="{0:d}" 
-                                        meta:resourcekey="HyperLinkFieldResource1" />
-                                    <asp:BoundField DataField="DisplayString" DataFormatString="{0}" 
-                                        meta:resourcekey="BoundFieldResource4" />
-                                </Columns>
-                                <EmptyDataTemplate>
-                                    <p><asp:Localize ID="Localize1" runat="server" Text="(No Instrument Proficiency Checks were found)" meta:resourcekey="Localize1Resource1"></asp:Localize></p>
-                                </EmptyDataTemplate>
-                            </asp:GridView>
-                        </Content>
-                    </cc1:AccordionPane>
-                </Panes>
-            </cc1:Accordion>
+            <uc1:mfbPilotInfo runat="server" id="mfbPilotInfo" />
         </asp:View>
         <asp:View ID="vwDonate" runat="server">
-            <h2><asp:Label ID="lblDonateHeader" runat="server" Text="Donations" 
-                    meta:resourcekey="lblDonateHeaderResource1"></asp:Label> </h2>
-            <asp:Panel ID="pnlPaypalSuccess" runat="server" Visible="False" 
-                EnableViewState="False" meta:resourcekey="pnlPaypalSuccessResource1">
-                <asp:Label ID="Label1" runat="server" 
-                    Text="Thank-you - your payment has been successfully applied!" Font-Bold="True" 
-                    CssClass="success" meta:resourcekey="Label1Resource1"></asp:Label>
-            </asp:Panel>
-            <asp:Panel ID="pnlPaypalCanceled" runat="server" Visible="False" 
-                EnableViewState="False" meta:resourcekey="pnlPaypalCanceledResource1">
-                <asp:Label ID="Label2" runat="server" Text="Your payment was canceled." 
-                    CssClass="error" meta:resourcekey="Label2Resource1"></asp:Label>
-            </asp:Panel>
-            <p>
-                <asp:Label ID="lblDonatePrompt" runat="server" 
-                    meta:resourcekey="lblDonatePromptResource1"></asp:Label>
-            </p>
-            <p>
-                <asp:Label ID="lblDonatePromptGratuity" runat="server" 
-                    Text="<%$ Resources:LocalizedText, DonatePromptGratuity %>" meta:resourcekey="lblDonatePromptGratuityResource8"></asp:Label>
-            </p>
-            <table style="border-spacing: 0px; border-collapse: collapse;">
-                <tr>
-                    <td></td>
-                    <td style="width: 5em; text-align: center; font-weight:bold;">US$10</td>
-                    <td style="width: 5em; text-align: center; font-weight:bold;">US$15</td>
-                    <td style="width: 5em; text-align: center; font-weight:bold;">US$25</td>
-                    <td style="width: 5em; text-align: center; font-weight:bold;">US$40</td>
-                    <td style="width: 5em; text-align: center; font-weight:bold;">US$75</td>
-                    <td style="width: 5em; text-align: center; font-weight:bold;">US$100</td>
-                </tr>
-                <asp:Repeater ID="rptAvailableGratuities" runat="server">
-                    <ItemTemplate>
-                        <tr>
-                            <td style="max-width: 250px; text-align:left; padding: 3px; border-bottom: 1px solid gray;"><%# Eval("Name") %>&nbsp;<uc1:mfbTooltip runat="server" ID="mfbTooltip" BodyContent='<%# Eval("Description") %>' />
-                            </td>
-                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 10 ? "●" : string.Empty %></td>
-                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 15 ? "●" : string.Empty %></td>
-                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 25 ? "●" : string.Empty %></td>
-                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 40 ? "●" : string.Empty %></td>
-                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 75 ? "●" : string.Empty %></td>
-                            <td style="border: 1px solid gray; padding: 3px; text-align:center;"><%# ((decimal)(Eval("Threshold"))) <= 100 ? "●" : string.Empty %></td>
-                        </tr>
-                    </ItemTemplate>
-                </asp:Repeater>
-            </table>
-            <div>&nbsp;</div>
-            <iframe id="iframeDonate" src="../Donate.aspx" style="border:none;" width="300" height="120"></iframe>
-            <div><asp:Label ID="lblDonateCrypto" runat="server" Text="Prefer cryptocurrency?  MyFlightbook now accepts Bitcoin and Ethereum" meta:resourcekey="lblDonateCryptoResource1"></asp:Label> <asp:HyperLink ID="lnkContact" runat="server" Text="Contact us for details." NavigateUrl="~/Public/ContactMe.aspx" meta:resourcekey="lnkContactResource1"></asp:HyperLink></div>
-            <h2><asp:Label ID="lblDonationHistory" runat="server" Text="Your donation history"
-                    meta:resourcekey="lblDonationHistoryResource1" ></asp:Label>
-            </h2>
-            <asp:Panel ID="pnlEarnedGratuities" runat="server" CssClass="callout" meta:resourcekey="pnlFreeDropboxGratuityResource1" Visible="False">
-                <asp:Label ID="lblThankYou" runat="server" Font-Bold="True" meta:resourcekey="lblThankYouResource1" Text="Thank-you for your support!"></asp:Label>
-                <br />
-                <asp:Localize ID="locEarnedGratuities" runat="server" Text="<%$ Resources:LocalizedText, GratuityEarnedHeader %>"></asp:Localize>
-                <ul>
-                    <asp:Repeater ID="rptEarnedGratuities" runat="server">
-                        <ItemTemplate>
-                            <li><%# Eval("ThankYou") %></li>
-                        </ItemTemplate>
-                    </asp:Repeater>
-                </ul>
-            </asp:Panel>
-            <asp:GridView ID="gvDonations" runat="server" CellPadding="4" 
-                ShowHeader="False" AutoGenerateColumns="False" GridLines="None" meta:resourcekey="gvDonationsResource1">
-                <Columns>
-                    <asp:BoundField DataField="TimeStamp" DataFormatString="{0:d}" 
-                        meta:resourcekey="BoundFieldResource7" >
-                        <ItemStyle Font-Bold="True" />
-                        </asp:BoundField>
-                    <asp:BoundField DataField="Amount" DataFormatString="US${0}" 
-                        meta:resourcekey="BoundFieldResource8" />
-                        <asp:BoundField DataField="Notes" meta:resourcekey="BoundFieldResource9" />
-                </Columns>
-                <EmptyDataTemplate>
-                    <p><asp:Label ID="lblNoDonations" runat="server" 
-                            Text="You have not made any donations." 
-                            meta:resourcekey="lblNoDonationsResource1"></asp:Label></p>
-                </EmptyDataTemplate>
-            </asp:GridView>
+            <uc1:mfbDonate runat="server" id="mfbDonate" />
         </asp:View>
     </asp:MultiView>
 </asp:Content>
