@@ -357,7 +357,7 @@ namespace MyFlightbook.Telemetry
         public static AutoFillOptions DefaultOptionsForUser(string szUserName)
         {
             if (String.IsNullOrEmpty(szUserName))
-                throw new ArgumentNullException(nameof(szUserName));
+                return new AutoFillOptions();
 
             return Profile.GetUser(szUserName).GetPreferenceForKey<AutoFillOptions>(szKeyPersistedPrefAutoFill) ?? (HttpContext.Current?.Request?.Cookies == null ? new AutoFillOptions() : new AutoFillOptions(HttpContext.Current?.Request?.Cookies));
         }
