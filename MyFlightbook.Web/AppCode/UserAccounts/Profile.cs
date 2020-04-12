@@ -769,23 +769,13 @@ namespace MyFlightbook
         /// <summary>
         /// Strictly for serialization - gets/sets persistedprefs as a JSON string.  Gets around serialization of JObject
         /// </summary>
-        protected string PersistedPrefsAsJSon
-        {
-            get { return JsonConvert.SerializeObject(PersistedPrefs); }
-            set
-            {
-                if (value == null)
-                    PersistedPrefs.Clear();
-                else
-                    PersistedPrefs = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
-            }
-        }
+        protected string PersistedPrefsAsJSon { get; set; }        
 
         /// <summary>
         /// Convenience dictionary of preferences that is saved to the database
         /// </summary>
-        [System.Xml.Serialization.XmlIgnore]
-        protected IDictionary<string, object> PersistedPrefs { get; private set; } = new Dictionary<string, object>();
+        [NonSerialized]
+        private IDictionary<string, object> m_persistedPrefs = new Dictionary<string, object>();
         #endregion
 
         /// <summary>
@@ -821,13 +811,13 @@ namespace MyFlightbook
 
             if (o == null || fClear)
             {
-                if (PersistedPrefs.ContainsKey(szKey))
-                    PersistedPrefs.Remove(szKey);
+                if (m_persistedPrefs.ContainsKey(szKey))
+                    m_persistedPrefs.Remove(szKey);
                 else
                     return false;
             } else
             {
-                PersistedPrefs[szKey] = o;
+                m_persistedPrefs[szKey] = o;
             }
 
             return FCommit();
@@ -840,7 +830,7 @@ namespace MyFlightbook
         /// <returns></returns>
         public bool PreferenceExists(string szKey)
         {
-            return (!String.IsNullOrEmpty(szKey) && PersistedPrefs.ContainsKey(szKey));
+            return (!String.IsNullOrEmpty(szKey) && m_persistedPrefs.ContainsKey(szKey));
         }
 
         /// <summary>
@@ -854,7 +844,7 @@ namespace MyFlightbook
             if (string.IsNullOrWhiteSpace(szKey))
                 throw new ArgumentNullException(nameof(szKey));
 
-            if (PersistedPrefs.TryGetValue(szKey, out object o))
+            if (m_persistedPrefs.TryGetValue(szKey, out object o))
             {
                 // By default, objects deserialized to dynamic.  So re-serialize it and cast.
                 return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(o));
@@ -873,7 +863,7 @@ namespace MyFlightbook
             if (string.IsNullOrWhiteSpace(szKey))
                 throw new ArgumentNullException(nameof(szKey));
 
-            return PersistedPrefs.TryGetValue(szKey, out object o) ? o : default;
+            return m_persistedPrefs.TryGetValue(szKey, out object o) ? o : default;
         }
         #endregion
 
@@ -934,10 +924,10 @@ namespace MyFlightbook
                 string szBlacklist = util.ReadNullableString(dr, "PropertyBlackList");
                 BlacklistedProperties.AddRange(szBlacklist.ToInts());
 
-                PersistedPrefs.Clear();
-                string szPersistedPrefs = util.ReadNullableString(dr, "prefs");
-                if (!String.IsNullOrEmpty(szPersistedPrefs))
-                    PersistedPrefs = (Dictionary<string, object>) JsonConvert.DeserializeObject<Dictionary<string, object>>(szPersistedPrefs);
+                m_persistedPrefs.Clear();
+                PersistedPrefsAsJSon = util.ReadNullableString(dr, "prefs");
+                if (!String.IsNullOrEmpty(PersistedPrefsAsJSon))
+                    m_persistedPrefs = (Dictionary<string, object>) JsonConvert.DeserializeObject<Dictionary<string, object>>(PersistedPrefsAsJSon);
             }
             catch (Exception ex)
             {
@@ -1032,7 +1022,7 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("lastemail", LastEmailDate);
                     comm.Parameters.AddWithValue("achievementstatus", (int)AchievementStatus);
                     comm.Parameters.AddWithValue("blacklist", String.Join(",", BlacklistedProperties));
-                    comm.Parameters.AddWithValue("prefs", JsonConvert.SerializeObject(PersistedPrefs));
+                    comm.Parameters.AddWithValue("prefs", PersistedPrefsAsJSon = JsonConvert.SerializeObject(m_persistedPrefs));
                     comm.Parameters.AddWithValue("prefTimeZone", String.IsNullOrEmpty(PreferredTimeZoneID) || PreferredTimeZoneID.CompareCurrentCultureIgnoreCase("UTC") == 0 ? null : PreferredTimeZoneID);
                 });
             if (dbh.LastError.Length == 0)
