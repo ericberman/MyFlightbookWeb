@@ -767,8 +767,24 @@ namespace MyFlightbook
 
         #region Properties
         /// <summary>
+        /// Strictly for serialization - gets/sets persistedprefs as a JSON string.  Gets around serialization of JObject
+        /// </summary>
+        protected string PersistedPrefsAsJSon
+        {
+            get { return JsonConvert.SerializeObject(PersistedPrefs); }
+            set
+            {
+                if (value == null)
+                    PersistedPrefs.Clear();
+                else
+                    PersistedPrefs = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
+            }
+        }
+
+        /// <summary>
         /// Convenience dictionary of preferences that is saved to the database
         /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
         protected IDictionary<string, object> PersistedPrefs { get; private set; } = new Dictionary<string, object>();
         #endregion
 
