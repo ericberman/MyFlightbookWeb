@@ -298,48 +298,54 @@ namespace MyFlightbook.Printing
         /// <summary>
         /// Number of flights to print; less than or = 0 for continuous
         /// </summary>
-        public int FlightsPerPage { get; set; }
+        public int FlightsPerPage { get; set; } = 15;
 
         /// <summary>
         /// Include images when printing?
         /// </summary>
-        public bool IncludeImages { get; set; }
+        public bool IncludeImages { get; set; } = false;
 
         /// <summary>
         /// Include signatures when printing?
         /// </summary>
-        public bool IncludeSignatures { get; set; }
+        public bool IncludeSignatures { get; set; } = true;
 
         /// <summary>
         /// Start a new page when encountering a month boundary (non-continuous only)
         /// </summary>
-        public bool BreakAtMonthBoundary { get; set; }
+        public bool BreakAtMonthBoundary { get; set; } = false;
 
         /// <summary>
         /// Layout to use
         /// </summary>
-        public PrintLayoutType Layout { get; set; }
+        public PrintLayoutType Layout { get; set; } = PrintLayoutType.Native;
 
         /// <summary>
         /// Properties to exclude from printing
         /// </summary>
-        public Collection<int> ExcludedPropertyIDs { get; private set; }
+        public Collection<int> ExcludedPropertyIDs { get; private set; } = new Collection<int>();
 
         /// <summary>
         /// How do we want to display model names?
         /// </summary>
-        public ModelDisplayMode DisplayMode { get; set; }
+        public ModelDisplayMode DisplayMode { get; set; } = ModelDisplayMode.Full;
 
         /// <summary>
         /// Character to use to separate properties in print layout
         /// </summary>
-        public PropertySeparatorType PropertySeparator { get; set; }
+        public PropertySeparatorType PropertySeparator { get; set; } = PropertySeparatorType.Space;
 
         /// <summary>
         /// If true, pull forward totals from previous pages (conserves space on the page); just shows this page and running total.  True by defalt.
         /// </summary>
         [System.ComponentModel.DefaultValue(true)]
-        public bool IncludePullForwardTotals { get; set; }
+        public bool IncludePullForwardTotals { get; set; } = true;
+
+        /// <summary>
+        /// If true, stripes subtotals by category/class
+        /// </summary>
+        [System.ComponentModel.DefaultValue(true)]
+        public bool StripeSubtotalsByCategoryClass { get; set; } = true;
 
         /// <summary>
         /// Returns the text to use to separate properties (based on PropertySeparator)
@@ -363,22 +369,10 @@ namespace MyFlightbook.Printing
             }
         }
 
-        public Collection<OptionalColumn> OptionalColumns { get; private set; }
+        public Collection<OptionalColumn> OptionalColumns { get; private set; } = new Collection<OptionalColumn>();
         #endregion
 
-        public PrintingOptions()
-        {
-            FlightsPerPage = 15;    // default
-            IncludeImages = false;
-            IncludePullForwardTotals = true;
-            IncludeSignatures = true;
-            BreakAtMonthBoundary = false;
-            DisplayMode = ModelDisplayMode.Full;
-            Layout = PrintLayoutType.Native;
-            ExcludedPropertyIDs = new Collection<int>();
-            PropertySeparator = PropertySeparatorType.Space;
-            OptionalColumns = new Collection<OptionalColumn>();
-        }
+        public PrintingOptions() { }
     }
 
     /// <summary>
@@ -749,6 +743,13 @@ namespace MyFlightbook.Printing
                 foreach (LogbookEntryDisplay lep in lpp.RunningTotals.Values)
                     lep.Index = iTotal++;
 
+                if (!po.StripeSubtotalsByCategoryClass)
+                {
+                    RemoveStripedSubtotals(lpp.TotalsThisPage);
+                    RemoveStripedSubtotals(lpp.TotalsPreviousPages);
+                    RemoveStripedSubtotals(lpp.RunningTotals);
+                }
+
                 if (!po.IncludePullForwardTotals)
                     lpp.TotalsPreviousPages.Clear();
             }
@@ -766,6 +767,20 @@ namespace MyFlightbook.Printing
                 ledAll.AddFrom(led);
             ledAll.CatClassDisplay = Resources.LogbookEntry.PrintTotalsAllCatClass;
             d[Resources.LogbookEntry.PrintTotalsAllCatClass] = ledAll;
+        }
+
+        /// <summary>
+        /// If we have a subtotal group that is striped (e.g., "ASEL", "AMEL", "[All]"), removes everything but the "[All]" group
+        /// </summary>
+        /// <param name="d"></param>
+        private static void RemoveStripedSubtotals(IDictionary<string, LogbookEntryDisplay> d)
+        {
+            if (d == null || d.Count <= 1 || !d.ContainsKey(Resources.LogbookEntry.PrintTotalsAllCatClass))
+                return;
+
+            LogbookEntryDisplay led = d[Resources.LogbookEntry.PrintTotalsAllCatClass];
+            d.Clear();
+            d[Resources.LogbookEntry.PrintTotalsAllCatClass] = led;
         }
 
         public static PrintLayout LayoutLogbook(Profile pf, IList<LogbookEntryDisplay> lstFlights, IPrintingTemplate pt, PrintingOptions printingOptions, bool fSuppressFooter)

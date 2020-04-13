@@ -3757,6 +3757,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Break down subtotals by category/class.
+        /// </summary>
+        internal static string PrintViewSubtotalsByCategoryClass {
+            get {
+                return ResourceManager.GetString("PrintViewSubtotalsByCategoryClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Printing Information.
         /// </summary>
         internal static string PrintViewTabCompat {

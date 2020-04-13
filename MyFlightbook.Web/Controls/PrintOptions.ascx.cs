@@ -57,6 +57,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
                 m_options.OptionalColumns.Add(oc);
 
             m_options.IncludePullForwardTotals = ckPullForwardTotals.Checked;
+            m_options.StripeSubtotalsByCategoryClass = ckSeparateCategoryClass.Checked;
 
             m_options.DisplayMode = (PrintingOptions.ModelDisplayMode)rblModelDisplay.SelectedIndex;
 
@@ -91,6 +92,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
 
             ckPullForwardTotals.Checked = value.IncludePullForwardTotals;
             ckPullForwardTotals.Visible = m_options.FlightsPerPage > 0;
+            ckSeparateCategoryClass.Checked = m_options.StripeSubtotalsByCategoryClass;
 
             rblModelDisplay.SelectedIndex = (int)value.DisplayMode;
 
@@ -259,6 +261,11 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
     }
 
     protected void ckPullForwardTotals_CheckedChanged(object sender, EventArgs e)
+    {
+        NotifyDelegate();
+    }
+
+    protected void ckSeparateCategoryClass_CheckedChanged(object sender, EventArgs e)
     {
         NotifyDelegate();
     }
