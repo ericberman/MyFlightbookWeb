@@ -1601,6 +1601,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FAR 117: Current duty time.
+        /// </summary>
+        internal static string FAR117CurrentDutyPeriod {
+            get {
+                return ResourceManager.GetString("FAR117CurrentDutyPeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FAR 117: Current rest period.
         /// </summary>
         internal static string FAR117CurrentRest {

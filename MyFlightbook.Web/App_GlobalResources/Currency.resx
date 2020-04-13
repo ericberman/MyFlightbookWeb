@@ -962,4 +962,7 @@
   <data name="SIC6155ShortTakeoff" xml:space="preserve">
     <value>(Short by one takeoff)</value>
   </data>
+  <data name="FAR117CurrentDutyPeriod" xml:space="preserve">
+    <value>FAR 117: Current duty time</value>
+  </data>
 </root>

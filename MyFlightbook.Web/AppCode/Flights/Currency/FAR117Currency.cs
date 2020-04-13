@@ -20,6 +20,8 @@ namespace MyFlightbook.Currency
 
         protected bool IsMostRecentFlight { get; set; }
 
+        public List<CurrencyPeriod> DutyPeriods { get; private set; } = new List<CurrencyPeriod>();
+
         /// <summary>
         /// Which duty time attributes were specified on a flight?
         /// </summary>
@@ -190,25 +192,14 @@ namespace MyFlightbook.Currency
         private DateTime dtLastDutyStart;
         private bool HasSeenProperDutyPeriod;
         private readonly bool fIncludeAllFlights;
-        private readonly List<CurrencyPeriod> lstDutyPeriods = new List<CurrencyPeriod>();
+
+        private DateTime dtLatestDutyStart = DateTime.MinValue, dtLatestDutyEnd = DateTime.MinValue;
 
         // Useful dates we don't want to continuously recompute
         private readonly DateTime dt168HoursAgo;
         private readonly DateTime dt672HoursAgo;
         private readonly DateTime dt365DaysAgo;
         #endregion
-
-        public static bool IsFAR117Property(CustomFlightProperty pfe)
-        {
-            if (pfe == null)
-                throw new ArgumentNullException(nameof(pfe));
-
-            int typeID = pfe.PropTypeID;
-            return typeID == (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd ||
-                   typeID == (int)CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart ||
-                   typeID == (int)CustomPropertyType.KnownProperties.IDPropDutyEnd ||
-                   typeID == (int)CustomPropertyType.KnownProperties.IDPropDutyStart;
-        }
 
         public FAR117Currency(bool includeAllFlights = true, bool fUseHHMM = false)
         {
@@ -303,6 +294,14 @@ namespace MyFlightbook.Currency
             DateTime dtDutyStart = edp.FlightDutyStart;
             DateTime dtDutyEnd = edp.FlightDutyEnd;
 
+            // Determine the latest duty start/end that we see so that we can determine if we're in a duty period.
+            dtLatestDutyStart = dtLatestDutyStart.LaterDate(edp.AdditionalDutyStart.HasValue ? dtDutyStart.EarlierDate(edp.AdditionalDutyStart.Value) : dtDutyStart);
+            // Duty end may have been truncated at "now", so look to see if it was specified:
+            if (edp.FPDutyEnd != null)
+                dtLatestDutyEnd = dtLatestDutyEnd.LaterDate(edp.FPDutyEnd.DateValue);
+            if (edp.AdditionalDutyEnd.HasValue)
+                dtLatestDutyEnd = dtLatestDutyEnd.LaterDate(edp.AdditionalDutyEnd.Value);
+
             // Add in flight times if 
             // (a) we include all flights OR
             // (b) we don't include all flights but we have a currently active duty period, OR
@@ -341,8 +340,8 @@ namespace MyFlightbook.Currency
 
             // merge this period with other currency periods.
             CurrencyPeriod cp = new CurrencyPeriod(dtDutyStart, dtDutyEnd);
-            if (lstDutyPeriods.Count == 0 || !lstDutyPeriods[lstDutyPeriods.Count - 1].MergeWith(cp))
-                lstDutyPeriods.Add(cp);
+            if (DutyPeriods.Count == 0 || !DutyPeriods[DutyPeriods.Count - 1].MergeWith(cp))
+                DutyPeriods.Add(cp);
 
             // Do a rest computation, using the earlier of dutystart/FDP start and later of duty end/FDP end
             UpdateRest(edp.AdditionalDutyStart.HasValue ? dtDutyStart.EarlierDate(edp.AdditionalDutyStart.Value) : dtDutyStart,
@@ -360,7 +359,7 @@ namespace MyFlightbook.Currency
                     // merge up all of the time spans
                     TimeSpan tsDutyTime11723c1 = TimeSpan.Zero, tsDutyTime11723c2 = TimeSpan.Zero;
 
-                    foreach (CurrencyPeriod cp in lstDutyPeriods)
+                    foreach (CurrencyPeriod cp in DutyPeriods)
                     {
                         // 117.23(c)(1) - 60 hours of flight duty time in 168 consecutive hours
                         if (cp.EndDate.CompareTo(dt168HoursAgo) > 0)
@@ -396,6 +395,17 @@ namespace MyFlightbook.Currency
                         String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursLongestRest.FormatDecimal(UseHHMM, true)),
                         (hoursLongestRest > 56) ? CurrencyState.OK : ((hoursLongestRest > 30) ? CurrencyState.GettingClose : CurrencyState.NotCurrent),
                         string.Empty));
+
+                    /*
+                     * Issue #577: If not currently in a rest period, show how long you've been in your duty period
+                     * You are in a duty period if:
+                     * a) The most recent duty start or flight duty start is greater than the most recent duty end/flight duty end OR
+                     * b) The most recent duty end/flight duty end is at least 5 minutes later than UtcNow
+                    */
+                    if (dtLatestDutyStart.HasValue() && dtLatestDutyStart.CompareTo(dtLatestDutyEnd) > 0 || dtLatestDutyEnd.Subtract(DateTime.UtcNow).TotalMinutes > 5)
+                        lst.Add(new CurrencyStatusItem(Resources.Currency.FAR117CurrentDutyPeriod,
+                            String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, DateTime.UtcNow.Subtract(dtLatestDutyStart).TotalHours.FormatDecimal(UseHHMM, true)),
+                            CurrencyState.OK, string.Empty));
 
                     // Finally, report on current rest period
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR117CurrentRest,
