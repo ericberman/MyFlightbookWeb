@@ -155,7 +155,7 @@ public partial class Public_Clubs : System.Web.UI.Page
         }
     }
 
-    protected void vcNew_ClubChanged(object sender, ClubChangedEventsArgs e)
+    protected void vcNew_ClubChanged(object sender, ClubChangedEventArgs e)
     {
         if (e == null || e.EventClub == null)
             throw new ArgumentNullException(nameof(e));

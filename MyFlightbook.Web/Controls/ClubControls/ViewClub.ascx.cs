@@ -29,9 +29,9 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
 
     public bool LinkToDetails { get; set; }
 
-    public event System.EventHandler<ClubChangedEventsArgs> ClubChanged = null;
-    public event System.EventHandler<ClubChangedEventsArgs> ClubChangeCanceled = null;
-    public event System.EventHandler<ClubChangedEventsArgs> ClubDeleted = null;
+    public event System.EventHandler<ClubChangedEventArgs> ClubChanged = null;
+    public event System.EventHandler<ClubChangedEventArgs> ClubChangeCanceled = null;
+    public event System.EventHandler<ClubChangedEventArgs> ClubDeleted = null;
 
     public bool ShowCancel { get; set; }
     public bool ShowDelete { get; set; }
@@ -116,7 +116,7 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
                 c.Creator = Page.User.Identity.Name;
             if (c.FCommit())
             {
-                ClubChanged?.Invoke(this, new ClubChangedEventsArgs(ActiveClub));
+                ClubChanged?.Invoke(this, new ClubChangedEventArgs(ActiveClub));
                 this.ActiveClub = c;
             }
             else
@@ -128,14 +128,14 @@ public partial class Controls_ClubControls_ViewClub : System.Web.UI.UserControl
     {
         fvClub.ChangeMode(FormViewMode.ReadOnly);
         Refresh();
-        ClubChangeCanceled?.Invoke(sender, new ClubChangedEventsArgs(ActiveClub));
+        ClubChangeCanceled?.Invoke(sender, new ClubChangedEventArgs(ActiveClub));
     }
 
     protected void btnDelete_Click(object sender, EventArgs e)
     {
         fvClub.ChangeMode(FormViewMode.ReadOnly);
         Refresh();
-        ClubDeleted?.Invoke(sender, new ClubChangedEventsArgs(ActiveClub));
+        ClubDeleted?.Invoke(sender, new ClubChangedEventArgs(ActiveClub));
     }
 
     protected void fvClub_ModeChanging(object sender, FormViewModeEventArgs e)

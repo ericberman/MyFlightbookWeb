@@ -1363,7 +1363,7 @@ namespace MyFlightbook.Clubs
             if (lst == null)
                 lst = AircraftForClub(idclub);
 
-            if (lst.Count() == 0)
+            if (!lst.Any())
                 return;
 
             DBHelper dbh = new DBHelper(@"SELECT ca.idaircraft, MAX(f.hobbsend) AS MaxHobbs, MAX(fp.decvalue) AS MaxTach
@@ -1388,16 +1388,16 @@ GROUP BY idaircraft");
         #endregion
     }
 
-    public class ClubChangedEventsArgs : EventArgs
+    public class ClubChangedEventArgs : EventArgs
     {
         public Club EventClub { get; set; }
 
-        public ClubChangedEventsArgs() : base()
+        public ClubChangedEventArgs() : base()
         {
             EventClub = null;
         }
 
-        public ClubChangedEventsArgs(Club c) : base()
+        public ClubChangedEventArgs(Club c) : base()
         {
             EventClub = c;
         }
