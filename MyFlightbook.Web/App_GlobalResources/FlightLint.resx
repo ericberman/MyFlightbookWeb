@@ -398,4 +398,7 @@
   <data name="warningXCTimeDistanceNotEqualXC" xml:space="preserve">
     <value>Flight includes a property indicating time with a particular distance of cross-country flight, but this doesn't match the total cross-country time logged on the flight.</value>
   </data>
+  <data name="warningXCTimeFoundButNoRole" xml:space="preserve">
+    <value>Flight indicates cross-country time, but no PIC, SIC, CFI, or Dual was indicated.</value>
+  </data>
 </root>

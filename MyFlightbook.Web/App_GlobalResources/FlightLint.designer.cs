@@ -896,5 +896,14 @@ namespace Resources {
                 return ResourceManager.GetString("warningXCTimeDistanceNotEqualXC", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight indicates cross-country time, but no PIC, SIC, CFI, or Dual was indicated..
+        /// </summary>
+        internal static string warningXCTimeFoundButNoRole {
+            get {
+                return ResourceManager.GetString("warningXCTimeFoundButNoRole", resourceCulture);
+            }
+        }
     }
 }
