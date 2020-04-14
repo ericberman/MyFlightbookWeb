@@ -12,6 +12,253 @@ using System.Globalization;
 namespace MyFlightbook.Currency
 {
     /// <summary>
+    /// Which duty time attributes were specified on a flight?
+    /// </summary>
+    public enum DutySpecification { None, Both, Start, End };
+    
+    /// <summary>
+    /// Represents an effective duty period, which can be explicit (specified by duty periods) or inferred (just the 24-hour period)
+    /// </summary>
+    public class EffectiveDutyPeriod
+    {
+        #region properties
+        /// <summary>
+        /// Start of the flight duty period
+        /// </summary>
+        public DateTime FlightDutyStart { get; set; }
+
+        /// <summary>
+        /// End of the flight duty period
+        /// </summary>
+        public DateTime FlightDutyEnd { get; set; }
+
+        public DateTime? AdditionalDutyStart { get; set; }
+
+        public DateTime? AdditionalDutyEnd { get; set; }
+
+        /// <summary>
+        /// If present, holds the flight property for duty start that was found
+        /// </summary>
+        public CustomFlightProperty FPDutyStart { get; set; }
+
+        /// <summary>
+        /// If present, holds the flight property for duty end that was found.
+        /// </summary>
+        public CustomFlightProperty FPDutyEnd { get; set; }
+
+        public bool HasAdditionalDuty
+        {
+            get { return AdditionalDutyEnd.HasValue && AdditionalDutyStart.HasValue; }
+        }
+
+        /// <summary>
+        /// Was this explicit or inferred?
+        /// </summary>
+        public DutySpecification Specification { get; set; }
+
+        /// <summary>
+        /// What is the effective start of non-rest for this duty period (earlier of flight duty start and duty start)
+        /// </summary>
+        public DateTime EffectiveDutyStart { get { return AdditionalDutyStart.HasValue ? FlightDutyStart.EarlierDate(AdditionalDutyStart.Value) : FlightDutyStart; } }
+
+        /// <summary>
+        /// What is the effective end of non-rest for this duty period (earlier of flight duty end and duty end)
+        /// </summary>
+        public DateTime EffectiveDutyEnd { get { return AdditionalDutyEnd.HasValue ? FlightDutyEnd.LaterDate(AdditionalDutyEnd.Value) : FlightDutyEnd; } }
+
+        /// <summary>
+        /// How many hours of non-rest time does this duty period represent (= EffectiveDutyStart to EffectiveDutyEnd).
+        /// </summary>
+        public double NonRestTime { get { return EffectiveDutyEnd.Subtract(EffectiveDutyStart).TotalHours; } }
+
+        /// <summary>
+        /// How many hours of flight duty time does this represent (= flightdutyend minus flightdutystart)
+        /// </summary>
+        public double ElapsedFlightDuty { get { return FlightDutyEnd.Subtract(FlightDutyStart).TotalHours; } }
+
+        /// <summary>
+        /// Field that can optionally hold reset time since an adjacent effective duty period
+        /// </summary>
+        public double RestSince { get; set; }
+        #endregion
+
+        public override string ToString()
+        {
+            return String.Format(CultureInfo.CurrentCulture, "{0}-{1} ({2})", EffectiveDutyStart.UTCFormattedStringOrEmpty(false), EffectiveDutyEnd.UTCFormattedStringOrEmpty(false), Specification.ToString());
+        }
+
+        #region constructors
+        /// <summary>
+        /// Constructor for a new EffectivedutyPeriod
+        /// </summary>
+        /// <param name="dutyStart">UTC Datetime of duty period start</param>
+        /// <param name="dutyEnd">UTC Datetime of duty period end</param>
+        /// <param name="specification">What exactly was specified?</param>
+        public EffectiveDutyPeriod()
+        {
+            FlightDutyStart = FlightDutyEnd = DateTime.MinValue;
+            AdditionalDutyEnd = AdditionalDutyStart = null;
+            Specification = DutySpecification.None;
+            FPDutyEnd = FPDutyStart = null;
+        }
+
+        /// <summary>
+        /// Computes an effective duty period for the flight.
+        /// If Duty Start/End properties are present and logical, those are used.
+        /// If not, Duty is computed as the date of flight (in UTC!) from 00:00 to 23:59.
+        /// </summary>
+        /// <param name="cfr">The flight to examine</param>
+        /// <param name="fInferDutyEnd">True if we should infer the duty end to be "Now".  E.g., if this is the most recent flight in the logbook and it only has a start time</param>
+        public EffectiveDutyPeriod(ExaminerFlightRow cfr, bool fInferDutyEnd = false) : this()
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            CustomFlightProperty pfeFlightDutyStart = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart);
+            CustomFlightProperty pfeFlightDutyEnd = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd);
+            CustomFlightProperty pfeAdditionalDutyStart = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyStart);
+            CustomFlightProperty pfeAdditionalDutyEnd = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyEnd);
+
+            if (pfeFlightDutyStart != null)
+                FPDutyStart = pfeFlightDutyStart;
+            if (pfeFlightDutyEnd != null)
+                FPDutyEnd = pfeFlightDutyEnd;
+            if (pfeAdditionalDutyStart != null)
+                AdditionalDutyStart = pfeAdditionalDutyStart.DateValue;
+            if (pfeAdditionalDutyEnd != null)
+                AdditionalDutyEnd = pfeAdditionalDutyEnd.DateValue;
+
+            // if we have duty start/end values, then this is a true duty range.
+            if (FPDutyStart != null && FPDutyEnd != null && FPDutyEnd.DateValue.CompareTo(FPDutyStart.DateValue) >= 0)
+            {
+                FlightDutyStart = FPDutyStart.DateValue;
+                FlightDutyEnd = FPDutyEnd.DateValue.EarlierDate(DateTime.UtcNow);
+                Specification = DutySpecification.Both;
+                return;
+            }
+            else if (FPDutyEnd != null && FPDutyStart == null)
+                Specification = DutySpecification.End;
+            else if (FPDutyEnd == null && FPDutyStart != null)
+            {
+                Specification = DutySpecification.Start;
+
+                // Issue #406: if we have an open duty start on the user's most recent flight, then infer a duty end of right now.
+                // Otherwise, we can fall through (below) and block off the whole day.
+                if (fInferDutyEnd)
+                {
+                    FlightDutyStart = FPDutyStart.DateValue;
+                    FlightDutyEnd = DateTime.UtcNow.AddSeconds(-20);  // Subtract a few seconds to close off the duty period but without looking like we're currently in a rest period.
+                    return;
+                }
+            }
+
+            // OK, we didn't have both duty properties, or they weren't consistent (e.g., start later than end)
+            // Just block off the whole day for the duty, since we can't be certain when it began/end
+            DateTime dt = cfr.dtFlight;
+            FlightDutyEnd = (FlightDutyStart = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, DateTimeKind.Utc)).AddDays(1.0);
+        }
+        #endregion
+
+        /// <summary>
+        /// Returns the timespan since the specified date that overlaps the nettime.  E.g., if you have 2.5 hours of CFI time and need to know how much of that fell in the window since
+        /// the start of the period (dtStart), this returns the amount of the 2.5 hours that falls within the window
+        /// To figure out how much of the time (e.g., CFI time) could contribute to the 8-hour limit within 24 hours, we need to figure out the most conservative 
+        /// start to the 24 hour period, as follows
+        /// a) Call EffectiveDuty.This sets dtDutyStart, dtDutyEnd to either their specified values OR to the 24 hour midnight-to-midnight range.  This provides a starting point.  (Done in the constructor)
+        /// b) If a flight start or an engine start is specified, use the later of those(or the duty time), since it's only flight time that is limited.  
+        /// Since engine should precede flight, doing a "LaterDate" call should prefer flightstart over enginestart, which is what we want.If dutytime is later still, then this is a no-op.
+        /// c) If not flight/engine start is specified and a flight end is specified, subtract off the CFI time from that and use that as the start time, if it's later than what emerged from (b).
+        /// Don't do this, though, if we had start times.
+        /// d) Otherwise, use an engine time(if specified).  But don't do this if we had flight-end.
+        /// Regardless, pull the effective END of duty time in by the end-of-flight time, if specified, or the engine end, if specified.This limits the end time.
+        /// We've now got as late a start time as possible and as early an end-time as possible.  
+        /// Caller will Contribute MIN(netTime, duty-time window) towards the limit.
+        /// </summary>
+        /// <param name="dtStart">Start of the period</param>
+        /// <param name="netTime">Max time that could be within the period</param>
+        /// <param name="cfr">The flight row that specifies a potential duty period</param>
+        /// <returns></returns>
+        public TimeSpan TimeSince(DateTime dtStart, double netTime, ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            DateTime dtDutyStart = FlightDutyStart;
+            DateTime dtDutyEnd = FlightDutyEnd;
+
+            if (cfr.dtFlightStart.HasValue() || cfr.dtEngineStart.HasValue())
+                dtDutyStart = dtDutyStart.LaterDate(cfr.dtFlightStart).LaterDate(cfr.dtEngineStart);
+            else if (cfr.dtFlightEnd.HasValue())
+                dtDutyStart = dtDutyStart.LaterDate(cfr.dtFlightEnd.AddHours(-netTime));
+            else if (cfr.dtEngineEnd.HasValue())    // don't do engine if we have a flight end
+                dtDutyStart = dtDutyStart.LaterDate(cfr.dtEngineEnd.AddHours(-netTime));
+
+            if (cfr.dtFlightEnd.HasValue())
+                dtDutyEnd = dtDutyEnd.EarlierDate(cfr.dtFlightEnd);
+            else if (cfr.dtEngineEnd.HasValue())
+                dtDutyEnd = dtDutyEnd.EarlierDate(cfr.dtEngineEnd);
+
+            return dtDutyEnd.Subtract(dtDutyStart.LaterDate(dtStart));
+        }
+
+        /// <summary>
+        /// Returns the net amount of time for this effective duty period that occurs since the specified UTC DateTime and UTCNow.
+        /// </summary>
+        /// <param name="dtStart">The specified earliest date</param>
+        /// <returns></returns>
+        public TimeSpan DutyTimeSince(DateTime dtStart)
+        {
+            return DateTime.UtcNow.EarlierDate(EffectiveDutyEnd).Subtract(EffectiveDutyStart.LaterDate(dtStart));
+        }
+
+        /// <summary>
+        /// Returns the net amount of flight duty time for this effective duty period that occurs since the specified UTC DateTime and UTCNow.
+        /// </summary>
+        /// <param name="dtStart">The specified earliest date</param>
+        /// <returns></returns>
+        public TimeSpan FlightDutyTimeSince(DateTime dtStart)
+        {
+            return DateTime.UtcNow.EarlierDate(FlightDutyEnd).Subtract(FlightDutyStart.LaterDate(dtStart));
+        }
+
+        #region Day-oriented rest and duty time computations
+        /// <summary>
+        /// Computes the duty time for duty periods in the specified timespan looking back from UtcNow
+        /// </summary>
+        /// <param name="ts">Timespan to look back</param>
+        /// <param name="lst">Set of effective duty periods to consider</param>
+        /// <returns>The total duty time.</returns>
+        public static decimal DutyTimeSince(TimeSpan ts, IEnumerable<EffectiveDutyPeriod> lst)
+        {
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+
+            DateTime dtMin = DateTime.UtcNow.Subtract(ts);
+
+            double totalDuty = 0;
+            foreach (EffectiveDutyPeriod edp in lst)
+                totalDuty += Math.Max(0, edp.DutyTimeSince(dtMin).TotalHours);
+
+            return (decimal)totalDuty;
+        }
+
+        public static decimal FlightDutyTimeSince(TimeSpan ts, IEnumerable<EffectiveDutyPeriod> lst)
+        {
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+
+            DateTime dtMin = DateTime.UtcNow.Subtract(ts);
+
+            double totalDuty = 0;
+            foreach (EffectiveDutyPeriod edp in lst)
+                totalDuty += Math.Max(0, edp.FlightDutyTimeSince(dtMin).TotalHours);
+
+            return (decimal)totalDuty;
+        }
+        #endregion
+    }
+
+    /// <summary>
     /// Computes FAR 117 Currency (duty period/rest time for part 121 commercial operations)
     /// </summary>
     public class FAR117Currency : FlightCurrency
@@ -20,168 +267,11 @@ namespace MyFlightbook.Currency
 
         protected bool IsMostRecentFlight { get; set; }
 
-        public List<CurrencyPeriod> DutyPeriods { get; private set; } = new List<CurrencyPeriod>();
+        protected List<CurrencyPeriod> DutyPeriods { get; private set; } = new List<CurrencyPeriod>();
 
-        /// <summary>
-        /// Which duty time attributes were specified on a flight?
-        /// </summary>
-        protected enum DutySpecification { None, Both, Start, End };
+        private readonly List<EffectiveDutyPeriod> m_effectiveDutyPeriods = new List<EffectiveDutyPeriod>();
 
-        /// <summary>
-        /// Represents an effective duty period, which can be explicit (specified by duty periods) or inferred (just the 24-hour period)
-        /// </summary>
-        protected class EffectiveDutyPeriod
-        {
-            #region properties
-            /// <summary>
-            /// Start of the flight duty period
-            /// </summary>
-            public DateTime FlightDutyStart { get; set; }
-
-            /// <summary>
-            /// End of the flight duty period
-            /// </summary>
-            public DateTime FlightDutyEnd { get; set; }
-
-            public DateTime? AdditionalDutyStart { get; set; }
-
-            public DateTime? AdditionalDutyEnd { get; set; }
-
-            /// <summary>
-            /// If present, holds the flight property for duty start that was found
-            /// </summary>
-            public CustomFlightProperty FPDutyStart { get; set; }
-
-            /// <summary>
-            /// If present, holds the flight property for duty end that was found.
-            /// </summary>
-            public CustomFlightProperty FPDutyEnd { get; set; }
-
-            public bool HasAdditionalDuty
-            {
-                get { return AdditionalDutyEnd.HasValue && AdditionalDutyStart.HasValue; }
-            }
-
-            /// <summary>
-            /// Was this explicit or inferred?
-            /// </summary>
-            public DutySpecification Specification { get; set; }
-            #endregion
-
-            #region constructors
-            /// <summary>
-            /// Constructor for a new EffectivedutyPeriod
-            /// </summary>
-            /// <param name="dutyStart">UTC Datetime of duty period start</param>
-            /// <param name="dutyEnd">UTC Datetime of duty period end</param>
-            /// <param name="specification">What exactly was specified?</param>
-            public EffectiveDutyPeriod()
-            {
-                FlightDutyStart = FlightDutyEnd = DateTime.MinValue;
-                AdditionalDutyEnd = AdditionalDutyStart = null;
-                Specification = DutySpecification.None;
-                FPDutyEnd = FPDutyStart = null;
-            }
-
-            /// <summary>
-            /// Computes an effective duty period for the flight.
-            /// If Duty Start/End properties are present and logical, those are used.
-            /// If not, Duty is computed as the date of flight (in UTC!) from 00:00 to 23:59.
-            /// </summary>
-            /// <param name="cfr">The flight to examine</param>
-            /// <param name="fInferDutyEnd">True if we should infer the duty end to be "Now".  E.g., if this is the most recent flight in the logbook and it only has a start time</param>
-            public EffectiveDutyPeriod(ExaminerFlightRow cfr, bool fInferDutyEnd = false) : this()
-            {
-                if (cfr == null)
-                    throw new ArgumentNullException(nameof(cfr));
-
-                CustomFlightProperty pfeFlightDutyStart = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeStart);
-                CustomFlightProperty pfeFlightDutyEnd = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropFlightDutyTimeEnd);
-                CustomFlightProperty pfeAdditionalDutyStart = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyStart);
-                CustomFlightProperty pfeAdditionalDutyEnd = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropDutyEnd);
-
-                if (pfeFlightDutyStart != null)
-                    FPDutyStart = pfeFlightDutyStart;
-                if (pfeFlightDutyEnd != null)
-                    FPDutyEnd = pfeFlightDutyEnd;
-                if (pfeAdditionalDutyStart != null)
-                    AdditionalDutyStart = pfeAdditionalDutyStart.DateValue;
-                if (pfeAdditionalDutyEnd != null)
-                    AdditionalDutyEnd = pfeAdditionalDutyEnd.DateValue;
-
-                // if we have duty start/end values, then this is a true duty range.
-                if (FPDutyStart != null && FPDutyEnd != null && FPDutyEnd.DateValue.CompareTo(FPDutyStart.DateValue) >= 0)
-                {
-                    FlightDutyStart = FPDutyStart.DateValue;
-                    FlightDutyEnd = FPDutyEnd.DateValue.EarlierDate(DateTime.UtcNow);
-                    Specification = DutySpecification.Both;
-                    return;
-                }
-                else if (FPDutyEnd != null && FPDutyStart == null)
-                    Specification = DutySpecification.End;
-                else if (FPDutyEnd == null && FPDutyStart != null)
-                {
-                    Specification = DutySpecification.Start;
-
-                    // Issue #406: if we have an open duty start on the user's most recent flight, then infer a duty end of right now.
-                    // Otherwise, we can fall through (below) and block off the whole day.
-                    if (fInferDutyEnd)
-                    {
-                        FlightDutyStart = FPDutyStart.DateValue;
-                        FlightDutyEnd = DateTime.UtcNow.AddSeconds(-20);  // Subtract a few seconds to close off the duty period but without looking like we're currently in a rest period.
-                        return;
-                    }
-                }
-
-                // OK, we didn't have both duty properties, or they weren't consistent (e.g., start later than end)
-                // Just block off the whole day for the duty, since we can't be certain when it began/end
-                DateTime dt = cfr.dtFlight;
-                FlightDutyEnd = (FlightDutyStart = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0, DateTimeKind.Utc)).AddDays(1.0);
-            }
-            #endregion
-
-            /// <summary>
-            /// Returns the timespan since the specified date that overlaps the nettime.  E.g., if you have 2.5 hours of CFI time and need to know how much of that fell in the window since
-            /// the start of the period (dtStart), this returns the amount of the 2.5 hours that falls within the window
-            /// To figure out how much of the time (e.g., CFI time) could contribute to the 8-hour limit within 24 hours, we need to figure out the most conservative 
-            /// start to the 24 hour period, as follows
-            /// a) Call EffectiveDuty.This sets dtDutyStart, dtDutyEnd to either their specified values OR to the 24 hour midnight-to-midnight range.  This provides a starting point.  (Done in the constructor)
-            /// b) If a flight start or an engine start is specified, use the later of those(or the duty time), since it's only flight time that is limited.  
-            /// Since engine should precede flight, doing a "LaterDate" call should prefer flightstart over enginestart, which is what we want.If dutytime is later still, then this is a no-op.
-            /// c) If not flight/engine start is specified and a flight end is specified, subtract off the CFI time from that and use that as the start time, if it's later than what emerged from (b).
-            /// Don't do this, though, if we had start times.
-            /// d) Otherwise, use an engine time(if specified).  But don't do this if we had flight-end.
-            /// Regardless, pull the effective END of duty time in by the end-of-flight time, if specified, or the engine end, if specified.This limits the end time.
-            /// We've now got as late a start time as possible and as early an end-time as possible.  
-            /// Caller will Contribute MIN(netTime, duty-time window) towards the limit.
-            /// </summary>
-            /// <param name="dtStart">Start of the period</param>
-            /// <param name="netTime">Max time that could be within the period</param>
-            /// <param name="cfr">The flight row that specifies a potential duty period</param>
-            /// <returns></returns>
-            public TimeSpan TimeSince(DateTime dtStart, double netTime, ExaminerFlightRow cfr)
-            {
-                if (cfr == null)
-                    throw new ArgumentNullException(nameof(cfr));
-
-                DateTime dtDutyStart = FlightDutyStart;
-                DateTime dtDutyEnd = FlightDutyEnd;
-
-                if (cfr.dtFlightStart.HasValue() || cfr.dtEngineStart.HasValue())
-                    dtDutyStart = dtDutyStart.LaterDate(cfr.dtFlightStart).LaterDate(cfr.dtEngineStart);
-                else if (cfr.dtFlightEnd.HasValue())
-                    dtDutyStart = dtDutyStart.LaterDate(cfr.dtFlightEnd.AddHours(-netTime));
-                else if (cfr.dtEngineEnd.HasValue())    // don't do engine if we have a flight end
-                    dtDutyStart = dtDutyStart.LaterDate(cfr.dtEngineEnd.AddHours(-netTime));
-
-                if (cfr.dtFlightEnd.HasValue())
-                    dtDutyEnd = dtDutyEnd.EarlierDate(cfr.dtFlightEnd);
-                else if (cfr.dtEngineEnd.HasValue())
-                    dtDutyEnd = dtDutyEnd.EarlierDate(cfr.dtEngineEnd);
-
-                return dtDutyEnd.Subtract(dtDutyStart.LaterDate(dtStart));
-            }
-        }
+        public IEnumerable<EffectiveDutyPeriod> EffectiveDutyPeriods { get { return m_effectiveDutyPeriods; } }
 
         #region local variables
         private DateTime currentRestPeriodStart;
@@ -324,16 +414,21 @@ namespace MyFlightbook.Currency
                         UpdateRest(edp.AdditionalDutyStart.Value, edp.AdditionalDutyEnd.Value);
                     return;
                 }
+                else if (edp.Specification == DutySpecification.Both)
+                    m_effectiveDutyPeriods.Add(edp);
                 else if (m_edpCurrent == null && edp.Specification == DutySpecification.End) // we've found the end of a duty period - open up an active duty period
                     m_edpCurrent = edp;
                 else if (m_edpCurrent != null && edp.FPDutyStart != null)
                 {
                     edp.AdditionalDutyEnd = m_edpCurrent.AdditionalDutyEnd; // be sure to capture any additional duty time from the END of FDP, recorded in a flight we saw previously.
-                    dtDutyEnd = m_edpCurrent.FPDutyEnd.DateValue;
-                    dtDutyStart = edp.FPDutyStart.DateValue;
+                    dtDutyEnd = m_edpCurrent.FlightDutyEnd = m_edpCurrent.FPDutyEnd.DateValue;
+                    dtDutyStart = m_edpCurrent.FlightDutyStart = edp.FPDutyStart.DateValue;
+                    m_effectiveDutyPeriods.Add(m_edpCurrent);
                     m_edpCurrent = null;
                 }
             }
+            else
+                m_effectiveDutyPeriods.Add(edp);
 
             if (!fIncludeAllFlights && m_edpCurrent != null)
                 return;

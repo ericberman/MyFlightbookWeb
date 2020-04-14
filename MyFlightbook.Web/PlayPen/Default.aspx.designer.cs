@@ -76,6 +76,15 @@ public partial class PlayPen_Default
     protected global::System.Web.UI.WebControls.HyperLink lnkImportFromTelemetry;
 
     /// <summary>
+    /// lnkAnalyzeDutyPeriods control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkAnalyzeDutyPeriods;
+
+    /// <summary>
     /// lnkOAuthTest control.
     /// </summary>
     /// <remarks>
