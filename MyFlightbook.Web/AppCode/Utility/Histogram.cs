@@ -324,6 +324,7 @@ namespace MyFlightbook.Histogram
                 case HistogramValueTypes.Time:
                     return String.Format(CultureInfo.CurrentCulture, "{0:#,##0.0#}", o);
                 case HistogramValueTypes.Integer:
+                    return String.Format(CultureInfo.CurrentCulture, "{0:#,##0}", o);
                 default:
                     return o.ToString();
             }
