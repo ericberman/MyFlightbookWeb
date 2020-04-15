@@ -254,15 +254,17 @@ namespace MyFlightbook.Currency
 
     #region 135.267(b)
     /// <summary>
-    /// 61.195(a) - can't have more than 8 hours of instruction within 24 hours.
+    /// Limits on flying within the preceding 8 or 10 hours
     /// </summary>
-    public abstract class Part135_267BBase : FAR117Currency
+    public abstract class Part135_267BBase : FlightCurrency
     {
         private readonly DateTime dt24HoursAgo = DateTime.UtcNow.AddHours(-24);
         private double TotalFlying = 0.0;
 
         protected double MaxFlying { get; set; }
         protected double GettingClose { get; set; }
+
+        protected bool UseHHMM { get; set; }
 
         protected Part135_267BBase(string szTitle, double maxFlying, double gettingClose, bool fUseHHMM)
         {

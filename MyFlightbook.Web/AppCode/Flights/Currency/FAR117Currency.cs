@@ -15,7 +15,7 @@ namespace MyFlightbook.Currency
     /// Which duty time attributes were specified on a flight?
     /// </summary>
     public enum DutySpecification { None, Both, Start, End };
-    
+
     /// <summary>
     /// Represents an effective duty period, which can be explicit (specified by duty periods) or inferred (just the 24-hour period)
     /// </summary>
@@ -137,8 +137,11 @@ namespace MyFlightbook.Currency
                 return;
             }
             else if (FPDutyEnd != null && FPDutyStart == null)
+            {
+                FlightDutyEnd = FPDutyEnd.DateValue;
                 Specification = DutySpecification.End;
-            else if (FPDutyEnd == null && FPDutyStart != null)
+            }
+            else if ((FPDutyEnd == null && FPDutyStart != null) || AdditionalDutyStart != null)
             {
                 Specification = DutySpecification.Start;
 
@@ -146,8 +149,14 @@ namespace MyFlightbook.Currency
                 // Otherwise, we can fall through (below) and block off the whole day.
                 if (fInferDutyEnd)
                 {
-                    FlightDutyStart = FPDutyStart.DateValue;
-                    FlightDutyEnd = DateTime.UtcNow.AddSeconds(-20);  // Subtract a few seconds to close off the duty period but without looking like we're currently in a rest period.
+                    if (AdditionalDutyEnd == null)
+                        AdditionalDutyEnd = DateTime.UtcNow.AddSeconds(10);
+
+                    if (FPDutyStart != null)
+                    {
+                        FlightDutyStart = FPDutyStart.DateValue;
+                        FlightDutyEnd = DateTime.UtcNow.AddSeconds(10);  // Add a few seconds from now, so it doesn't look like we're in a rest period.
+                    }
                     return;
                 }
             }
@@ -258,52 +267,117 @@ namespace MyFlightbook.Currency
         #endregion
     }
 
-    /// <summary>
-    /// Computes FAR 117 Currency (duty period/rest time for part 121 commercial operations)
-    /// </summary>
-    public class FAR117Currency : FlightCurrency
+    public class DutyPeriodExaminer : FlightCurrency
     {
-        protected bool UseHHMM { get; set; }
-
-        protected bool IsMostRecentFlight { get; set; }
-
-        protected List<CurrencyPeriod> DutyPeriods { get; private set; } = new List<CurrencyPeriod>();
-
         private readonly List<EffectiveDutyPeriod> m_effectiveDutyPeriods = new List<EffectiveDutyPeriod>();
+        private EffectiveDutyPeriod m_edpCurrent;
+
+        /// <summary>
+        /// Are all flights included, or only those between valid duty start/end periods?
+        /// </summary>
+        protected bool IncludeAllFlights { get; }
+
+        /// <summary>
+        /// If we've never seen a duty period, don't report any 117 currencies.
+        /// </summary>
+        protected bool HasSeenProperDutyPeriod { get; set; }
+
+        /// <summary>
+        /// The EDP produced for the most recently examined flight.
+        /// </summary>
+        protected EffectiveDutyPeriod CurrentEDP { get; set; }
+
+        /// <summary>
+        /// True if there is an in-progress EDP (i.e., that hasn't had one end closed yet)
+        /// </summary>
+        protected bool HasIndeterminateEDP { get { return m_edpCurrent != null; } }
 
         public IEnumerable<EffectiveDutyPeriod> EffectiveDutyPeriods { get { return m_effectiveDutyPeriods; } }
 
+        public override void Finalize(decimal totalTime, decimal picTime)
+        {
+            // Fill in Rest Since
+            DateTime dtLastStart = DateTime.UtcNow;
+            foreach (EffectiveDutyPeriod edp in EffectiveDutyPeriods)
+            {
+                edp.RestSince = Math.Max(0, dtLastStart.Subtract(edp.EffectiveDutyEnd).TotalHours);
+                dtLastStart = edp.EffectiveDutyStart;
+            }
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            EffectiveDutyPeriod edp = CurrentEDP = new EffectiveDutyPeriod(cfr, !HasSeenProperDutyPeriod);
+
+            // If we haven't yet seen the start of an open duty period, don't compute the rest yet (need to know the close off point), 
+            // so store the end of the duty period in m_edpCurrent and leave the computation to a subsequent flight.
+            // OR, if we have an open duty period (m_edpCurrent isn't null) and this one can close it off, then we can do so.
+            // OR, if we have an open duty period and this one doesn't close it off, continue to a subsequent flight.
+            // Of course, if we're including all flights, then we ALWAYS process this flight using effective (computed) times.
+            if (!IncludeAllFlights)
+            {
+                // if neither start nor end duty times were specified, return; no more processing to do on this flight
+                if (edp.Specification == DutySpecification.None)
+                    return;
+                // If it's fully specified, there's nothing to do but to record the duty period
+                // OR if we haven't seen a proper duty period yet AND we don't have a current open edp (we shouldn't) AND this indicates a start duty/flightduty, add it to the duty period.
+                else if (edp.Specification == DutySpecification.Both || (!HasSeenProperDutyPeriod && m_edpCurrent == null && (edp.FPDutyStart != null || edp.AdditionalDutyStart.HasValue)))
+                    m_effectiveDutyPeriods.Add(edp);
+                // Otherwise, if we have just the end of a duty period, open up the active duty period.
+                else if (m_edpCurrent == null && edp.Specification == DutySpecification.End) // we've found the end of a duty period - open up an active duty period
+                    m_edpCurrent = edp;
+                // Otherwise, we've found a start of a period - we can close it off.
+                else if (m_edpCurrent != null && edp.FPDutyStart != null)
+                {
+                    edp.AdditionalDutyEnd = m_edpCurrent.AdditionalDutyEnd; // be sure to capture any additional duty time from the END of FDP, recorded in a flight we saw previously.
+                    m_edpCurrent.FlightDutyEnd = m_edpCurrent.FPDutyEnd.DateValue;
+                    m_edpCurrent.FlightDutyStart = edp.FPDutyStart.DateValue;
+                    m_effectiveDutyPeriods.Add(m_edpCurrent);
+                    m_edpCurrent.Specification = DutySpecification.Both;
+                    CurrentEDP = m_edpCurrent;  // we'll return this whole EDP.
+                    m_edpCurrent = null;
+                }
+            }
+            else
+                m_effectiveDutyPeriods.Add(edp);
+
+            HasSeenProperDutyPeriod = HasSeenProperDutyPeriod || edp.Specification != DutySpecification.None;
+        }
+
+        public DutyPeriodExaminer(bool includeAllFlights) : base()
+        {
+            IncludeAllFlights = includeAllFlights;
+            m_edpCurrent = null;
+        }
+    }
+
+    /// <summary>
+    /// Computes FAR 117 Currency (duty period/rest time for part 121 commercial operations)
+    /// </summary>
+    public class FAR117Currency : DutyPeriodExaminer
+    {
+        protected bool UseHHMM { get; set; }
+
+        protected List<CurrencyPeriod> DutyPeriods { get; private set; } = new List<CurrencyPeriod>();
+
         #region local variables
-        private DateTime currentRestPeriodStart;
-        private EffectiveDutyPeriod m_edpCurrent;
-        private TimeSpan tsLongestRest11725b;
-        private decimal hoursFlightTime11723b1;
-        private decimal hoursFlightTime11723b2;
-        private DateTime dtLastDutyStart;
-        private bool HasSeenProperDutyPeriod;
-        private readonly bool fIncludeAllFlights;
+        private DateTime currentRestPeriodStart = DateTime.MinValue;
+        private TimeSpan tsLongestRest11725b = TimeSpan.Zero;
+        private decimal hoursFlightTime11723b1 = 0.0M;
+        private decimal hoursFlightTime11723b2 = 0.0M;
+        private DateTime dtLastDutyStart = DateTime.MinValue;
 
         private DateTime dtLatestDutyStart = DateTime.MinValue, dtLatestDutyEnd = DateTime.MinValue;
 
         // Useful dates we don't want to continuously recompute
-        private readonly DateTime dt168HoursAgo;
-        private readonly DateTime dt672HoursAgo;
-        private readonly DateTime dt365DaysAgo;
+        private readonly DateTime dt168HoursAgo = DateTime.UtcNow.AddHours(-168);
+        private readonly DateTime dt672HoursAgo = DateTime.UtcNow.AddHours(-672);
+        private readonly DateTime dt365DaysAgo = DateTime.UtcNow.AddDays(-365).Date;
         #endregion
 
-        public FAR117Currency(bool includeAllFlights = true, bool fUseHHMM = false)
+        public FAR117Currency(bool includeAllFlights = true, bool fUseHHMM = false) : base(includeAllFlights)
         {
-            dtLastDutyStart = currentRestPeriodStart = DateTime.MinValue;
-            hoursFlightTime11723b1 = hoursFlightTime11723b2 = 0;
-            tsLongestRest11725b = TimeSpan.Zero;
-            fIncludeAllFlights = includeAllFlights;
-            IsMostRecentFlight = true;  // we haven't examined any flights yet.
-            m_edpCurrent = null;
             UseHHMM = fUseHHMM;
-
-            dt168HoursAgo = DateTime.UtcNow.AddHours(-168);
-            dt672HoursAgo = DateTime.UtcNow.AddHours(-672);
-            dt365DaysAgo = DateTime.UtcNow.AddDays(-365).Date;
         }
 
         private void UpdateRest(DateTime dtDutyStart, DateTime dtDutyEnd)
@@ -377,9 +451,9 @@ namespace MyFlightbook.Currency
             if (cfr == null)
                 throw new ArgumentNullException(nameof(cfr));
 
-            EffectiveDutyPeriod edp = new EffectiveDutyPeriod(cfr, IsMostRecentFlight);
-            IsMostRecentFlight = false; // no more inferring duty end!
-            HasSeenProperDutyPeriod = HasSeenProperDutyPeriod || edp.Specification != DutySpecification.None;
+            base.ExamineFlight(cfr);    // will set CurrentEDP
+
+            EffectiveDutyPeriod edp = CurrentEDP;
 
             DateTime dtDutyStart = edp.FlightDutyStart;
             DateTime dtDutyEnd = edp.FlightDutyEnd;
@@ -396,42 +470,14 @@ namespace MyFlightbook.Currency
             // (a) we include all flights OR
             // (b) we don't include all flights but we have a currently active duty period, OR
             // (c) this flight has some duty period specified
-            if (fIncludeAllFlights || m_edpCurrent != null || edp.Specification != DutySpecification.None)
+            if (IncludeAllFlights || HasIndeterminateEDP || edp.Specification != DutySpecification.None)
                 Add11723BTime(cfr, dtDutyEnd);
 
-            // If we haven't yet seen the start of an open duty period, don't compute the rest yet (need to know the close off point), 
-            // so store the end of the duty period in m_edpCurrent and leave the computation to a subsequent flight.
-            // OR, if we have an open duty period (m_edpCurrent isn't null) and this one can close it off, then we can do so.
-            // OR, if we have an open duty period and this one doesn't close it off, continue to a subsequent flight.
-            // Of course, if we're including all flights, then we ALWAYS process this flight using effective (computed) times.
-            if (!fIncludeAllFlights)
-            {
-                // if neither start nor end duty times were specified, return; no more processing to do on this flight other than rest period computation.
-                if (edp.Specification == DutySpecification.None)
-                {
-                    // Handle any additional duty processing
-                    if (edp.HasAdditionalDuty)
-                        UpdateRest(edp.AdditionalDutyStart.Value, edp.AdditionalDutyEnd.Value);
-                    return;
-                }
-                else if (edp.Specification == DutySpecification.Both)
-                    m_effectiveDutyPeriods.Add(edp);
-                else if (m_edpCurrent == null && edp.Specification == DutySpecification.End) // we've found the end of a duty period - open up an active duty period
-                    m_edpCurrent = edp;
-                else if (m_edpCurrent != null && edp.FPDutyStart != null)
-                {
-                    edp.AdditionalDutyEnd = m_edpCurrent.AdditionalDutyEnd; // be sure to capture any additional duty time from the END of FDP, recorded in a flight we saw previously.
-                    dtDutyEnd = m_edpCurrent.FlightDutyEnd = m_edpCurrent.FPDutyEnd.DateValue;
-                    dtDutyStart = m_edpCurrent.FlightDutyStart = edp.FPDutyStart.DateValue;
-                    m_effectiveDutyPeriods.Add(m_edpCurrent);
-                    m_edpCurrent = null;
-                }
-            }
-            else
-                m_effectiveDutyPeriods.Add(edp);
-
-            if (!fIncludeAllFlights && m_edpCurrent != null)
+            if (!IncludeAllFlights && HasIndeterminateEDP)
                 return;
+
+            if (edp.Specification == DutySpecification.None && edp.HasAdditionalDuty)
+                UpdateRest(edp.AdditionalDutyStart.Value, edp.AdditionalDutyEnd.Value);
 
             // merge this period with other currency periods.
             CurrencyPeriod cp = new CurrencyPeriod(dtDutyStart, dtDutyEnd);
@@ -495,9 +541,9 @@ namespace MyFlightbook.Currency
                      * Issue #577: If not currently in a rest period, show how long you've been in your duty period
                      * You are in a duty period if:
                      * a) The most recent duty start or flight duty start is greater than the most recent duty end/flight duty end OR
-                     * b) The most recent duty end/flight duty end is at least 5 minutes later than UtcNow
+                     * b) The most recent duty end/flight duty end is later than UtcNow
                     */
-                    if (dtLatestDutyStart.HasValue() && dtLatestDutyStart.CompareTo(dtLatestDutyEnd) > 0 || dtLatestDutyEnd.Subtract(DateTime.UtcNow).TotalMinutes > 5)
+                    if (dtLatestDutyStart.HasValue() && dtLatestDutyStart.CompareTo(dtLatestDutyEnd) > 0 || dtLatestDutyEnd.Subtract(DateTime.UtcNow).Seconds >= 0)
                         lst.Add(new CurrencyStatusItem(Resources.Currency.FAR117CurrentDutyPeriod,
                             String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, DateTime.UtcNow.Subtract(dtLatestDutyStart).TotalHours.FormatDecimal(UseHHMM, true)),
                             CurrencyState.OK, string.Empty));

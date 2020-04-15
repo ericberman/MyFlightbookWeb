@@ -1334,6 +1334,7 @@ namespace MyFlightbook.Currency
         private static void AddFAR117Currencies(IList<CurrencyStatusItem> arcs, ComputeCurrencyContext ccc)
         {
             // FAR 117 status
+            ccc.fcFAR117.Finalize(ccc.totalTime, ccc.picTime);
             foreach (CurrencyStatusItem csi in ccc.fcFAR117.Status)
                 arcs.Add(csi);
         }
@@ -1342,6 +1343,7 @@ namespace MyFlightbook.Currency
         {
             foreach (CustomCurrency cc in ccc.rgCustomCurrency)
             {
+                cc.Finalize(ccc.totalTime, ccc.picTime);
                 if (cc.HasBeenCurrent && (!cc.ExpirationDate.HasValue() || cc.ExpirationDate.CompareTo(dtCutoff) > 0))
                     arcs.Add(new CurrencyStatusItem(cc.DisplayName, cc.StatusDisplay, cc.CurrentState, cc.DiscrepancyString) { Query = cc.Query, CurrencyGroup = CurrencyStatusItem.CurrencyGroups.CustomCurrency });
             }
