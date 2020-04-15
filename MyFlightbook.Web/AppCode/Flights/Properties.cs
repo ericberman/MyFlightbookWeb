@@ -847,7 +847,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
                     case CFPPropertyType.cfpDate:
                         return DateValue.ToShortDateString();
                     case CFPPropertyType.cfpDateTime:
-                        return DateValue.ToShortDateString() + Resources.LocalizedText.LocalizedSpace + DateValue.ToShortTimeString();
+                        return DateValue.UTCFormattedStringOrEmpty(false);
                     case CFPPropertyType.cfpDecimal:
                         return DecValue.ToString("#,##0.0#", CultureInfo.CurrentCulture);
                     case CFPPropertyType.cfpCurrency:
