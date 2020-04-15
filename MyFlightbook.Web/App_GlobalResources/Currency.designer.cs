@@ -364,6 +364,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0:#,##0.##} of {1:#,##0.##} {2}.
+        /// </summary>
+        internal static string CustomCurrencyDutyPeriodStatus {
+            get {
+                return ResourceManager.GetString("CustomCurrencyDutyPeriodStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         internal static string CustomCurrencyEditTooltip {
@@ -508,11 +517,47 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to duty hour.
+        /// </summary>
+        internal static string CustomCurrencyEventDutyHour {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventDutyHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to duty hours.
+        /// </summary>
+        internal static string CustomCurrencyEventDutyHours {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventDutyHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to flight.
         /// </summary>
         internal static string CustomCurrencyEventFlight {
             get {
                 return ResourceManager.GetString("CustomCurrencyEventFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to flight duty hour.
+        /// </summary>
+        internal static string CustomCurrencyEventFlightDutyHour {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventFlightDutyHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to flight duty hours.
+        /// </summary>
+        internal static string CustomCurrencyEventFlightDutyHours {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventFlightDutyHours", resourceCulture);
             }
         }
         
@@ -886,6 +931,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to rest hour.
+        /// </summary>
+        internal static string CustomCurrencyEventRestHour {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventRestHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to rest hours.
+        /// </summary>
+        internal static string CustomCurrencyEventRestHours {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventRestHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hour of ground simulator.
         /// </summary>
         internal static string CustomCurrencyEventSimulatorHour {
@@ -1138,7 +1201,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} of {1} {2} remaining.
+        ///   Looks up a localized string similar to {0:#,##0.#} of {1:#,##0.##} {2} remaining.
         /// </summary>
         internal static string CustomCurrencyStatusLimitOK {
             get {

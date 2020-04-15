@@ -810,7 +810,7 @@
     <value>Met or exceeded until {0}</value>
   </data>
   <data name="CustomCurrencyStatusLimitOK" xml:space="preserve">
-    <value>{0} of {1} {2} remaining</value>
+    <value>{0:#,##0.#} of {1:#,##0.##} {2} remaining</value>
   </data>
   <data name="errCustomCurrencyInvalidEventCount" xml:space="preserve">
     <value>Please provide a number of events between 1 and 2000</value>
@@ -964,5 +964,27 @@
   </data>
   <data name="FAR117CurrentDutyPeriod" xml:space="preserve">
     <value>FAR 117: Current duty time</value>
+  </data>
+  <data name="CustomCurrencyDutyPeriodStatus" xml:space="preserve">
+    <value>{0:#,##0.##} of {1:#,##0.##} {2}</value>
+    <comment>E.g., "3.2 of 10 duty hours"</comment>
+  </data>
+  <data name="CustomCurrencyEventDutyHour" xml:space="preserve">
+    <value>duty hour</value>
+  </data>
+  <data name="CustomCurrencyEventDutyHours" xml:space="preserve">
+    <value>duty hours</value>
+  </data>
+  <data name="CustomCurrencyEventFlightDutyHour" xml:space="preserve">
+    <value>flight duty hour</value>
+  </data>
+  <data name="CustomCurrencyEventFlightDutyHours" xml:space="preserve">
+    <value>flight duty hours</value>
+  </data>
+  <data name="CustomCurrencyEventRestHour" xml:space="preserve">
+    <value>rest hour</value>
+  </data>
+  <data name="CustomCurrencyEventRestHours" xml:space="preserve">
+    <value>rest hours</value>
   </data>
 </root>

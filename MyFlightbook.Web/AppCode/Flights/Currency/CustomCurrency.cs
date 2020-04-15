@@ -241,7 +241,10 @@ namespace MyFlightbook.Currency
                         { CustomCurrency.CustomCurrencyEventType.GliderTow, new string[] {Resources.Currency.CustomCurrencyEventGliderTow, Resources.Currency.CustomCurrencyEventGliderTows } },
                         { CustomCurrency.CustomCurrencyEventType.IPC, new string[] {Resources.Currency.CustomCurrencyEventIPC, Resources.Currency.CustomCurrencyEventIPC } },
                         { CustomCurrency.CustomCurrencyEventType.FlightReview, new string[] {Resources.Currency.CustomCurrencyEventFlightReview, Resources.Currency.CustomCurrencyEventFlightReview } },
-                        { CustomCurrency.CustomCurrencyEventType.NightLandingAny, new string[] {Resources.Currency.CustomCurrencyEventNightLandingAny, Resources.Currency.CustomCurrencyEventNightLandingsAny } }
+                        { CustomCurrency.CustomCurrencyEventType.NightLandingAny, new string[] {Resources.Currency.CustomCurrencyEventNightLandingAny, Resources.Currency.CustomCurrencyEventNightLandingsAny } },
+                        { CustomCurrency.CustomCurrencyEventType.RestTime, new string[] {Resources.Currency.CustomCurrencyEventRestHour, Resources.Currency.CustomCurrencyEventRestHours } },
+                        { CustomCurrency.CustomCurrencyEventType.DutyTime, new string[] { Resources.Currency.CustomCurrencyEventDutyHour, Resources.Currency.CustomCurrencyEventDutyHours } },
+                        { CustomCurrency.CustomCurrencyEventType.FlightDutyTime, new string[] {Resources.Currency.CustomCurrencyEventFlightDutyHour, Resources.Currency.CustomCurrencyEventFlightDutyHours } },
                     };
             }
 
@@ -270,7 +273,6 @@ namespace MyFlightbook.Currency
             return (rgsz == null || rgsz.Length < 2) ? ccet.ToString() : rgsz[1];
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public static bool IsIntegerOnly(this CustomCurrency.CustomCurrencyEventType ccet)
         {
             switch (ccet)
@@ -296,6 +298,7 @@ namespace MyFlightbook.Currency
                 case CustomCurrency.CustomCurrencyEventType.IPC:
                 case CustomCurrency.CustomCurrencyEventType.FlightReview:
                     return true;
+                    /*
                 case CustomCurrency.CustomCurrencyEventType.TotalHours:
                 case CustomCurrency.CustomCurrencyEventType.Hours:
                 case CustomCurrency.CustomCurrencyEventType.IFRHours:
@@ -307,9 +310,30 @@ namespace MyFlightbook.Currency
                 case CustomCurrency.CustomCurrencyEventType.NVFLIR:
                 case CustomCurrency.CustomCurrencyEventType.NightFlight:
                 case CustomCurrency.CustomCurrencyEventType.HoursDual:
+                case CustomCurrency.CustomCurrencyEventType.RestTime:
+                case CustomCurrency.CustomCurrencyEventType.DutyTime:
+                case CustomCurrency.CustomCurrencyEventType.FlightDutyTime:
+                */
                 default:
                     return false;
             }
+        }
+
+        /// <summary>
+        /// Is this custom currency type something that depends on duty time calculations?
+        /// </summary>
+        /// <param name="ccet"></param>
+        /// <returns></returns>
+        public static bool IsDutyTimeEvent(this CustomCurrency.CustomCurrencyEventType ccet)
+        {
+            switch (ccet)
+            {
+                case CustomCurrency.CustomCurrencyEventType.DutyTime:
+                case CustomCurrency.CustomCurrencyEventType.FlightDutyTime:
+                case CustomCurrency.CustomCurrencyEventType.RestTime:
+                    return true;
+            }
+            return false;
         }
         #endregion
     }
@@ -355,7 +379,10 @@ namespace MyFlightbook.Currency
             GliderTow = 27,
             IPC = 28,
             FlightReview = 29,
-            NightLandingAny = 30
+            NightLandingAny = 30,
+            RestTime = 31,
+            DutyTime = 32,
+            FlightDutyTime = 33,
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1, Properties = 2 };
@@ -527,6 +554,25 @@ namespace MyFlightbook.Currency
         /// have a date when you've filled up and THEN you have an expiration date
         /// </summary>
         public LimitType CurrencyLimitType { get; set; }
+
+        /// <summary>
+        /// Local state dictionary for additional data as needed.
+        /// </summary>
+        protected Dictionary<string, object> AdditionalState { get; } = new Dictionary<string, object>();
+        #endregion
+
+        #region specific required state objects
+        protected const string szStateKeyDutyPeriodExaminer = "dutyPeriod";
+
+        protected DutyPeriodExaminer _DutyPeriodExaminer
+        {
+            get
+            {
+                if (!AdditionalState.ContainsKey(szStateKeyDutyPeriodExaminer))
+                    AdditionalState[szStateKeyDutyPeriodExaminer] = new DutyPeriodExaminer(Profile.GetUser(UserName).UsesFAR117DutyTimeAllFlights);
+                return (DutyPeriodExaminer)AdditionalState[szStateKeyDutyPeriodExaminer];
+            }
+        }
         #endregion
 
         static public IEnumerable<CustomCurrency> CustomCurrenciesForUser(string szUser)
@@ -555,6 +601,14 @@ namespace MyFlightbook.Currency
                     else
                         cs = CurrencyState.NotCurrent;
                 }
+                else if (EventType.IsDutyTimeEvent())
+                {
+                    double ratio = (double) (NumEvents / RequiredEvents);
+                    if (CurrencyLimitType == LimitType.Minimum)
+                        return (ratio > 1.15) ? CurrencyState.OK : (ratio >= 1.0 ? CurrencyState.GettingClose : CurrencyState.NotCurrent);
+                    else
+                        return (ratio > 1.0) ? CurrencyState.NotCurrent : (ratio > 0.85 ? CurrencyState.GettingClose : CurrencyState.OK);
+                }
                 else
                     cs = base.CurrentState;
 
@@ -582,6 +636,10 @@ namespace MyFlightbook.Currency
         {
             get
             {
+                // short-circuit dutytime events; these are simply amounts relative to a limit
+                if (EventType.IsDutyTimeEvent())
+                    return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDutyPeriodStatus, NumEvents, RequiredEvents, EventTypeLabel(RequiredEvents, EventType));
+
                 switch (CurrencyLimitType)
                 {
                     case LimitType.Minimum:
@@ -605,7 +663,7 @@ namespace MyFlightbook.Currency
         {
             get
             {
-                return TimespanType.IsAligned() || CurrencyLimitType == LimitType.Maximum || base.HasBeenCurrent;
+                return TimespanType.IsAligned() || CurrencyLimitType == LimitType.Maximum || EventType.IsDutyTimeEvent() || base.HasBeenCurrent;
             }
         }
 
@@ -915,6 +973,10 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         fq.HasNight = true;
                         fq.HasLandings = true;
                         break;
+                    case CustomCurrencyEventType.FlightDutyTime:
+                    case CustomCurrencyEventType.DutyTime:
+                    case CustomCurrencyEventType.RestTime:
+                        break;
                     default:
                         throw new InvalidOperationException("Unknown event type: " + EventType.ToString() + " in ToQuery()");
                 }
@@ -1149,6 +1211,41 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     if ((cfp = cfr.FlightProps.FindEvent(fp => fp.PropertyType.IsIPC)) != null)
                         AddRecentFlightEvents(cfr.dtFlight, 1);
                     break;
+                case CustomCurrencyEventType.DutyTime:
+                case CustomCurrencyEventType.FlightDutyTime:
+                case CustomCurrencyEventType.RestTime:
+                    _DutyPeriodExaminer.ExamineFlight(cfr);
+                    break;
+            }
+        }
+
+        public override void Finalize(decimal totalTime, decimal picTime)
+        {
+            base.Finalize(totalTime, picTime);
+
+            if (EventType.IsDutyTimeEvent())
+            {
+                TimeSpan ts = DateTime.UtcNow.Subtract(EarliestDate);
+                if (!TimespanType.IsAligned())
+                    ts = new TimeSpan(ts.Days, 0, 0, 0);
+
+                switch (EventType)
+                {
+                    case CustomCurrencyEventType.DutyTime:
+                        _DutyPeriodExaminer.Finalize(totalTime, picTime);
+                        AddRecentFlightEvents(DateTime.Now, EffectiveDutyPeriod.DutyTimeSince(ts, _DutyPeriodExaminer.EffectiveDutyPeriods));
+                        break;
+                    case CustomCurrencyEventType.FlightDutyTime:
+                        _DutyPeriodExaminer.Finalize(totalTime, picTime);
+                        AddRecentFlightEvents(DateTime.Now, EffectiveDutyPeriod.FlightDutyTimeSince(ts, _DutyPeriodExaminer.EffectiveDutyPeriods));
+                        break;
+                    case CustomCurrencyEventType.RestTime:
+                        AddRecentFlightEvents(DateTime.Now, ((decimal)ts.TotalHours) - EffectiveDutyPeriod.DutyTimeSince(ts, _DutyPeriodExaminer.EffectiveDutyPeriods));
+                        _DutyPeriodExaminer.Finalize(totalTime, picTime);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
