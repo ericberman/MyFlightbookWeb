@@ -59,12 +59,12 @@ namespace MyFlightbook.Currency
         /// <summary>
         /// What is the effective start of non-rest for this duty period (earlier of flight duty start and duty start)
         /// </summary>
-        public DateTime EffectiveDutyStart { get { return AdditionalDutyStart.HasValue ? FlightDutyStart.EarlierDate(AdditionalDutyStart.Value) : FlightDutyStart; } }
+        public DateTime EffectiveDutyStart { get { return FlightDutyStart.HasValue() ? (AdditionalDutyStart.HasValue ? FlightDutyStart.EarlierDate(AdditionalDutyStart.Value) : FlightDutyStart) : (AdditionalDutyStart ?? DateTime.MinValue); } }
 
         /// <summary>
         /// What is the effective end of non-rest for this duty period (earlier of flight duty end and duty end)
         /// </summary>
-        public DateTime EffectiveDutyEnd { get { return AdditionalDutyEnd.HasValue ? FlightDutyEnd.LaterDate(AdditionalDutyEnd.Value) : FlightDutyEnd; } }
+        public DateTime EffectiveDutyEnd { get { return FlightDutyEnd.HasValue() ? (AdditionalDutyEnd.HasValue ? FlightDutyEnd.LaterDate(AdditionalDutyEnd.Value) : FlightDutyEnd) : (AdditionalDutyEnd ?? DateTime.MinValue); } }
 
         /// <summary>
         /// How many hours of non-rest time does this duty period represent (= EffectiveDutyStart to EffectiveDutyEnd).
@@ -140,6 +140,12 @@ namespace MyFlightbook.Currency
             {
                 FlightDutyEnd = FPDutyEnd.DateValue;
                 Specification = DutySpecification.End;
+            }
+            else if (FPDutyStart == null && FPDutyEnd == null && AdditionalDutyEnd != null && AdditionalDutyStart != null)
+            {
+                // e.g., deadhead - duty time (so non-rest), but no flight-duty time. 
+                Specification = DutySpecification.Both;
+                return;
             }
             else if ((FPDutyEnd == null && FPDutyStart != null) || AdditionalDutyStart != null)
             {
@@ -485,8 +491,7 @@ namespace MyFlightbook.Currency
                 DutyPeriods.Add(cp);
 
             // Do a rest computation, using the earlier of dutystart/FDP start and later of duty end/FDP end
-            UpdateRest(edp.AdditionalDutyStart.HasValue ? dtDutyStart.EarlierDate(edp.AdditionalDutyStart.Value) : dtDutyStart,
-                       edp.AdditionalDutyEnd.HasValue ? dtDutyEnd.LaterDate(edp.AdditionalDutyEnd.Value) : dtDutyEnd);
+            UpdateRest(edp.EffectiveDutyStart, edp.EffectiveDutyEnd);
         }
 
         public IEnumerable<CurrencyStatusItem> Status

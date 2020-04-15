@@ -39,17 +39,16 @@ namespace MyFlightbook.Web.PlayPen
             dpe.Finalize(0, 0);
 
             TimeSpan ts = new TimeSpan(decDayTimeSpan.IntValue, 0, 0, 0);
-            DateTime dtStart = DateTime.UtcNow.Subtract(ts);
-            lblCutoffDate.Text = String.Format(CultureInfo.CurrentCulture, "Starting date/time: {0}", dtStart.UTCDateFormatString(false));
+            lblCutoffDate.Text = DateTime.UtcNow.Subtract(ts).UTCDateFormatString(false);
 
             IEnumerable<EffectiveDutyPeriod> effectiveDutyPeriods = dpe.EffectiveDutyPeriods;
 
             decimal dutyTime = EffectiveDutyPeriod.DutyTimeSince(ts, effectiveDutyPeriods);
             decimal flightdutyTime = EffectiveDutyPeriod.FlightDutyTimeSince(ts, effectiveDutyPeriods);
             decimal rest = (decimal) ((decimal) ts.TotalHours - dutyTime);
-            lblTotalFlightDuty.Text = String.Format(CultureInfo.CurrentCulture, "Total Flight Duty: {0:#,##0.0}hrs ({1})", flightdutyTime, flightdutyTime.ToHHMM());
-            lblTotalDuty.Text = String.Format(CultureInfo.CurrentCulture, "Total Duty (non-rest): {0:#,##0.0}hrs ({1})", dutyTime, dutyTime.ToHHMM());
-            lblTotalRest.Text = String.Format(CultureInfo.CurrentCulture, "Total Rest: {0:#,##0.0}hrs ({1})", rest, rest.ToHHMM());
+            lblTotalFlightDuty.Text = String.Format(CultureInfo.CurrentCulture, "{0:#,##0.0}hrs ({1})", flightdutyTime, flightdutyTime.ToHHMM());
+            lblTotalDuty.Text = String.Format(CultureInfo.CurrentCulture, "{0:#,##0.0}hrs ({1})", dutyTime, dutyTime.ToHHMM());
+            lblTotalRest.Text = String.Format(CultureInfo.CurrentCulture, "{0:#,##0.0}hrs ({1})", rest, rest.ToHHMM());
 
             gvDutyPeriods.DataSource = dpe.EffectiveDutyPeriods;
             gvDutyPeriods.DataBind();
