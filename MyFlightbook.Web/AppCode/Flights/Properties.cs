@@ -109,6 +109,7 @@ namespace MyFlightbook
             IDPropLandingTowered = 245,
             IDPropMaintTestPilot = 249,
             IDPropImminentDanger = 250,
+            IDPropDeadhead = 255,
             IDPropFlightEngineerTime = 257,
             IDPropCAP91Checkride = 258,
             IDPropNameOfExaminer = 260,         // Not flagged as a known property
@@ -154,6 +155,7 @@ namespace MyFlightbook
             IDPropDutyStart = 608,
             IDPropDutyEnd = 609,
             IDPropNightRating = 623,
+            IDPropSequence = 630,
             IDPropXCMoreThan100nm = 665,
             IDPropLessonStart = 668,
             IDPropLessonEnd = 669,

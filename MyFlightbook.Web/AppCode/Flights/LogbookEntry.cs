@@ -439,6 +439,40 @@ namespace MyFlightbook
 
             return true;
         }
+
+        public static int CompareFlights(LogbookEntryCore l1, LogbookEntryCore l2, string szSortExpr, SortDirection sd)
+        {
+            if (l1 == null)
+                throw new ArgumentNullException(nameof(l1));
+            if (l2 == null)
+                throw new ArgumentNullException(nameof(l2));
+
+            int dir = (sd == SortDirection.Ascending ? 1 : -1);
+            int comp = dir * ((IComparable)l1.GetType().GetProperty(szSortExpr).GetValue(l1)).CompareTo(((IComparable)l2.GetType().GetProperty(szSortExpr).GetValue(l2)));
+
+            if (comp == 0)  // subsort by date.
+            {
+                // by date first
+                comp = dir * l1.Date.CompareTo(l2.Date);
+
+                if (comp == 0 && (l1.FlightStart.HasValue() || l2.FlightStart.HasValue()))
+                    comp = dir * l1.FlightStart.CompareTo(l2.FlightStart);
+
+                if (comp == 0 && (l1.EngineStart.HasValue() || l2.EngineStart.HasValue()))
+                    comp = dir * l1.EngineStart.CompareTo(l2.EngineStart);
+
+                // Add in block time, if present.  This is NOT done at the database level!
+                if (comp == 0 && l1.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockOut) && l2.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockOut))
+                    comp = dir * l1.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut].DateValue.CompareTo(l2.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut].DateValue);
+
+                if (comp == 0)
+                    comp = dir * l1.HobbsStart.CompareTo(l2.HobbsStart);
+
+                if (comp == 0)
+                    comp = dir * l1.FlightID.CompareTo(l2.FlightID);
+            }
+            return comp;
+        }
         #endregion
 
         #region Validation
@@ -3080,34 +3114,7 @@ namespace MyFlightbook
             if (lst == null)
                 throw new ArgumentNullException(nameof(lst));
 
-            lst.Sort((l1, l2) =>
-            {
-                int dir = (sd == SortDirection.Ascending ? 1 : -1);
-                int comp = dir * ((IComparable)l1.GetType().GetProperty(szSortExpr).GetValue(l1)).CompareTo(((IComparable)l2.GetType().GetProperty(szSortExpr).GetValue(l2)));
-
-                if (comp == 0)  // subsort by date.
-                {
-                    // by date first
-                    comp = dir * l1.Date.CompareTo(l2.Date);
-
-                    if (comp == 0 && (l1.FlightStart.HasValue() || l2.FlightStart.HasValue()))
-                        comp = dir * l1.FlightStart.CompareTo(l2.FlightStart);
-
-                    if (comp == 0 && (l1.EngineStart.HasValue() || l2.EngineStart.HasValue()))
-                        comp = dir * l1.EngineStart.CompareTo(l2.EngineStart);
-
-                    // Add in block time, if present.  This is NOT done at the database level!
-                    if (comp == 0 && l1.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockOut) && l2.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDBlockOut))
-                        comp = dir * l1.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut].DateValue.CompareTo(l2.CustomProperties[CustomPropertyType.KnownProperties.IDBlockOut].DateValue);
-
-                    if (comp == 0)
-                        comp = dir * l1.HobbsStart.CompareTo(l2.HobbsStart);
-
-                    if (comp == 0)
-                        comp = dir * l1.FlightID.CompareTo(l2.FlightID);
-                }
-                return comp;
-            });
+            lst.Sort((l1, l2) => { return CompareFlights(l1, l2, szSortExpr, sd); });
             return lst;
         }
 

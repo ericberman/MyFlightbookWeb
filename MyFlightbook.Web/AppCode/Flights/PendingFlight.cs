@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -84,6 +84,9 @@ namespace MyFlightbook
             DBHelper dbh = new DBHelper("SELECT * FROM pendingflights WHERE username=?user");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
                 (dr) => { lst.Add(new PendingFlight(dr)); });
+
+            // Sort by date, desc
+            lst.Sort((l1, l2) => { return LogbookEntryCore.CompareFlights(l1, l2, "Date", System.Web.UI.WebControls.SortDirection.Descending); });
             return lst;
         }
 
@@ -100,7 +103,7 @@ namespace MyFlightbook
         static public void DeletePendingFlightsForUser(string szUser)
         {
             if (String.IsNullOrEmpty(szUser))
-                throw new ArgumentNullException("szUser");
+                throw new ArgumentNullException(nameof(szUser));
             DBHelper dbh = new DBHelper("DELETE FROM pendingflights WHERE username=?uname");
             dbh.DoNonQuery((comm) => { comm.Parameters.AddWithValue("uname", szUser); });
         }

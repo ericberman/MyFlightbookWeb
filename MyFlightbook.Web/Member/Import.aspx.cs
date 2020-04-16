@@ -213,7 +213,7 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
         lblAudit.Text = results.AuditResult;
         hdnAuditState.Value = results.ResultString;
         CurrentCSVSource = results.GetConvertedBytes();
-        IsPendingOnly = results.IsPendingOnly;
+        IsPendingOnly = IsPendingOnly || results.IsPendingOnly; // results can change between first preview and import, so if it's true anywhere along the way, preserve that.
 
         if (!String.IsNullOrEmpty(results.ConvertedName))
         {
@@ -320,7 +320,8 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
                         PendingFlight pf = new PendingFlight(le) { User = User.Identity.Name };
                         pf.Commit();
                         lnkPending.Visible = true;
-                        AddTextRow(plcProgress, String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportRowAddedPending, le.ToString(), le.ErrorString), "error");
+                        if (!IsPendingOnly)
+                            AddTextRow(plcProgress, String.Format(CultureInfo.CurrentCulture, Resources.LogbookEntry.ImportRowAddedPending, le.ToString(), le.ErrorString), "error");
                         cFlightsWithErrors++;
                     }
                 }, 

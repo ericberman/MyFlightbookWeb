@@ -935,6 +935,7 @@
     <Compile Include="AppCode\Flights\FlightLint.cs" />
     <Compile Include="AppCode\Flights\FlightQuery.cs" />
     <Compile Include="AppCode\Flights\FlightStats.cs" />
+    <Compile Include="AppCode\Flights\Import\AAScheduler.cs" />
     <Compile Include="AppCode\Flights\Import\CloudAhoyFlight.cs" />
     <Compile Include="AppCode\Flights\Import\CrewLog.cs" />
     <Compile Include="AppCode\Flights\Import\CrewTrac.cs" />
