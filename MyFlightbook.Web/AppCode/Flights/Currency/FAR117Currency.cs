@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 /******************************************************
  * 
@@ -270,6 +271,28 @@ namespace MyFlightbook.Currency
 
             return (decimal)totalDuty;
         }
+
+        public static double LongestRestSince(TimeSpan ts, IEnumerable<EffectiveDutyPeriod> lst)
+        {
+            if (lst == null)
+                throw new ArgumentNullException(nameof(lst));
+
+            DateTime dtMin = DateTime.UtcNow.Subtract(ts);
+
+            double maxRest = 0.0;
+
+            foreach (EffectiveDutyPeriod edp in lst)
+            {
+                if (edp.EffectiveDutyEnd.CompareTo(dtMin) < 0)
+                    maxRest += edp.RestSince;
+                else
+                {
+                    maxRest += edp.RestSince - (dtMin.Subtract(edp.EffectiveDutyEnd)).TotalHours;
+                    break;
+                }
+            }
+            return maxRest;
+        }
         #endregion
     }
 
@@ -364,19 +387,11 @@ namespace MyFlightbook.Currency
     {
         protected bool UseHHMM { get; set; }
 
-        protected List<CurrencyPeriod> DutyPeriods { get; private set; } = new List<CurrencyPeriod>();
-
         #region local variables
-        private DateTime currentRestPeriodStart = DateTime.MinValue;
-        private TimeSpan tsLongestRest11725b = TimeSpan.Zero;
         private decimal hoursFlightTime11723b1 = 0.0M;
         private decimal hoursFlightTime11723b2 = 0.0M;
-        private DateTime dtLastDutyStart = DateTime.MinValue;
-
-        private DateTime dtLatestDutyStart = DateTime.MinValue, dtLatestDutyEnd = DateTime.MinValue;
 
         // Useful dates we don't want to continuously recompute
-        private readonly DateTime dt168HoursAgo = DateTime.UtcNow.AddHours(-168);
         private readonly DateTime dt672HoursAgo = DateTime.UtcNow.AddHours(-672);
         private readonly DateTime dt365DaysAgo = DateTime.UtcNow.AddDays(-365).Date;
         #endregion
@@ -384,28 +399,6 @@ namespace MyFlightbook.Currency
         public FAR117Currency(bool includeAllFlights = true, bool fUseHHMM = false) : base(includeAllFlights)
         {
             UseHHMM = fUseHHMM;
-        }
-
-        private void UpdateRest(DateTime dtDutyStart, DateTime dtDutyEnd)
-        {
-            if (dtDutyStart.CompareTo(dtDutyEnd) > 0)
-                return; // invalid duty period
-
-            // Are we in a rest period?
-            bool fInRest = DateTime.UtcNow.CompareTo(dtDutyEnd) > 0;
-
-            // Compute the start of the current rest period from the end of the latest duty period
-            currentRestPeriodStart = (fInRest) ? dtDutyEnd.LaterDate(currentRestPeriodStart) : DateTime.UtcNow;
-
-            // 117.25(b) - when was our last 30-hour rest period?
-            if ((tsLongestRest11725b.TotalSeconds < 1) && fInRest)  // don't compare to timespan.zero because there could be a few fractions of a second.
-                tsLongestRest11725b = DateTime.UtcNow.Subtract(currentRestPeriodStart);
-            else if (dtLastDutyStart.CompareTo(dtDutyEnd) > 0 && dtLastDutyStart.CompareTo(dt168HoursAgo) > 0)
-            {
-                TimeSpan tsThisRestPeriod = dtLastDutyStart.Subtract(dt168HoursAgo.LaterDate(dtDutyEnd));
-                tsLongestRest11725b = tsLongestRest11725b.CompareTo(tsThisRestPeriod) > 0 ? tsLongestRest11725b : tsThisRestPeriod;
-            }
-            dtLastDutyStart = dtDutyStart;
         }
 
         private void Add11723BTime(ExaminerFlightRow cfr, DateTime dtDutyEnd)
@@ -461,37 +454,12 @@ namespace MyFlightbook.Currency
 
             EffectiveDutyPeriod edp = CurrentEDP;
 
-            DateTime dtDutyStart = edp.FlightDutyStart;
-            DateTime dtDutyEnd = edp.FlightDutyEnd;
-
-            // Determine the latest duty start/end that we see so that we can determine if we're in a duty period.
-            dtLatestDutyStart = dtLatestDutyStart.LaterDate(edp.AdditionalDutyStart.HasValue ? dtDutyStart.EarlierDate(edp.AdditionalDutyStart.Value) : dtDutyStart);
-            // Duty end may have been truncated at "now", so look to see if it was specified:
-            if (edp.FPDutyEnd != null)
-                dtLatestDutyEnd = dtLatestDutyEnd.LaterDate(edp.FPDutyEnd.DateValue);
-            if (edp.AdditionalDutyEnd.HasValue)
-                dtLatestDutyEnd = dtLatestDutyEnd.LaterDate(edp.AdditionalDutyEnd.Value);
-
             // Add in flight times if 
             // (a) we include all flights OR
             // (b) we don't include all flights but we have a currently active duty period, OR
             // (c) this flight has some duty period specified
             if (IncludeAllFlights || HasIndeterminateEDP || edp.Specification != DutySpecification.None)
-                Add11723BTime(cfr, dtDutyEnd);
-
-            if (!IncludeAllFlights && HasIndeterminateEDP)
-                return;
-
-            if (edp.Specification == DutySpecification.None && edp.HasAdditionalDuty)
-                UpdateRest(edp.AdditionalDutyStart.Value, edp.AdditionalDutyEnd.Value);
-
-            // merge this period with other currency periods.
-            CurrencyPeriod cp = new CurrencyPeriod(dtDutyStart, dtDutyEnd);
-            if (DutyPeriods.Count == 0 || !DutyPeriods[DutyPeriods.Count - 1].MergeWith(cp))
-                DutyPeriods.Add(cp);
-
-            // Do a rest computation, using the earlier of dutystart/FDP start and later of duty end/FDP end
-            UpdateRest(edp.EffectiveDutyStart, edp.EffectiveDutyEnd);
+                Add11723BTime(cfr, edp.FlightDutyEnd);
         }
 
         public IEnumerable<CurrencyStatusItem> Status
@@ -503,17 +471,6 @@ namespace MyFlightbook.Currency
                 if (HasSeenProperDutyPeriod)
                 {
                     // merge up all of the time spans
-                    TimeSpan tsDutyTime11723c1 = TimeSpan.Zero, tsDutyTime11723c2 = TimeSpan.Zero;
-
-                    foreach (CurrencyPeriod cp in DutyPeriods)
-                    {
-                        // 117.23(c)(1) - 60 hours of flight duty time in 168 consecutive hours
-                        if (cp.EndDate.CompareTo(dt168HoursAgo) > 0)
-                            tsDutyTime11723c1 = tsDutyTime11723c1.Add(cp.EndDate.Subtract(dt168HoursAgo.LaterDate(cp.StartDate)));
-                        // 117.23(c)(2) - 190 hours in the prior 672 hours
-                        if (cp.EndDate.CompareTo(dt672HoursAgo) > 0)
-                            tsDutyTime11723c2 = tsDutyTime11723c2.Add(cp.EndDate.Subtract(dt672HoursAgo.LaterDate(cp.StartDate)));
-                    }
 
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723b1,
                         String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursFlightTime11723b1.FormatDecimal(UseHHMM, true)),
@@ -525,18 +482,20 @@ namespace MyFlightbook.Currency
                         (hoursFlightTime11723b2 > 1000) ? CurrencyState.NotCurrent : ((hoursFlightTime11723b2 > 900) ? CurrencyState.GettingClose : CurrencyState.OK),
                         (hoursFlightTime11723b2 > 1000) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (hoursFlightTime11723b2 - 1000).FormatDecimal(UseHHMM, true)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (1000 - hoursFlightTime11723b2).FormatDecimal(UseHHMM, true))));
 
+                    decimal dutyTime11723c1 = EffectiveDutyPeriod.FlightDutyTimeSince(new TimeSpan(168, 0, 0), EffectiveDutyPeriods);
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723c1,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, tsDutyTime11723c1.TotalHours.FormatDecimal(UseHHMM, true)),
-                        (tsDutyTime11723c1.TotalHours > 60) ? CurrencyState.NotCurrent : ((tsDutyTime11723c1.TotalHours > 50) ? CurrencyState.GettingClose : CurrencyState.OK),
-                        (tsDutyTime11723c1.TotalHours > 60) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (tsDutyTime11723c1.TotalHours - 60).FormatDecimal(UseHHMM)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (60 - tsDutyTime11723c1.TotalHours).FormatDecimal(UseHHMM))));
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, dutyTime11723c1.FormatDecimal(UseHHMM, true)),
+                        (dutyTime11723c1 > 60) ? CurrencyState.NotCurrent : ((dutyTime11723c1 > 50) ? CurrencyState.GettingClose : CurrencyState.OK),
+                        (dutyTime11723c1 > 60) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (dutyTime11723c1 - 60).FormatDecimal(UseHHMM)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (60 - dutyTime11723c1).FormatDecimal(UseHHMM))));
 
+                    decimal dutyTime11723c2 = EffectiveDutyPeriod.FlightDutyTimeSince(new TimeSpan(672, 0, 0), EffectiveDutyPeriods);
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11723c2,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, tsDutyTime11723c2.TotalHours.FormatDecimal(UseHHMM, true)),
-                        (tsDutyTime11723c2.TotalHours > 190) ? CurrencyState.NotCurrent : ((tsDutyTime11723c2.TotalHours > 150) ? CurrencyState.GettingClose : CurrencyState.OK),
-                        (tsDutyTime11723c2.TotalHours > 190) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (tsDutyTime11723c2.TotalHours - 190).FormatDecimal(UseHHMM, true)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (190 - tsDutyTime11723c2.TotalHours).FormatDecimal(UseHHMM, true))));
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, dutyTime11723c2.FormatDecimal(UseHHMM, true)),
+                        (dutyTime11723c2 > 190) ? CurrencyState.NotCurrent : ((dutyTime11723c2 > 150) ? CurrencyState.GettingClose : CurrencyState.OK),
+                        (dutyTime11723c2 > 190) ? String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursOver, (dutyTime11723c2 - 190).FormatDecimal(UseHHMM, true)) : String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursAvailable, (190 - dutyTime11723c2).FormatDecimal(UseHHMM, true))));
 
                     // 25b - need a 30-hour rest period within the prior 168 hours
-                    double hoursLongestRest = Math.Min(tsLongestRest11725b.TotalHours, 168.0);
+                    double hoursLongestRest = Math.Min(EffectiveDutyPeriod.LongestRestSince(new TimeSpan(168, 0, 0), EffectiveDutyPeriods), 168.0);
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR11725b,
                         String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, hoursLongestRest.FormatDecimal(UseHHMM, true)),
                         (hoursLongestRest > 56) ? CurrencyState.OK : ((hoursLongestRest > 30) ? CurrencyState.GettingClose : CurrencyState.NotCurrent),
@@ -548,14 +507,17 @@ namespace MyFlightbook.Currency
                      * a) The most recent duty start or flight duty start is greater than the most recent duty end/flight duty end OR
                      * b) The most recent duty end/flight duty end is later than UtcNow
                     */
-                    if (dtLatestDutyStart.HasValue() && dtLatestDutyStart.CompareTo(dtLatestDutyEnd) > 0 || dtLatestDutyEnd.Subtract(DateTime.UtcNow).Seconds >= 0)
+                    EffectiveDutyPeriod edpMostRecent = EffectiveDutyPeriods.ElementAt(0);
+                    bool fInDuty = edpMostRecent.EffectiveDutyEnd.CompareTo(DateTime.UtcNow.AddSeconds(-20)) > 0;
+
+                    if (fInDuty)
                         lst.Add(new CurrencyStatusItem(Resources.Currency.FAR117CurrentDutyPeriod,
-                            String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, DateTime.UtcNow.Subtract(dtLatestDutyStart).TotalHours.FormatDecimal(UseHHMM, true)),
+                            String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, DateTime.UtcNow.Subtract(edpMostRecent.EffectiveDutyStart).TotalHours.FormatDecimal(UseHHMM, true)),
                             CurrencyState.OK, string.Empty));
 
                     // Finally, report on current rest period
                     lst.Add(new CurrencyStatusItem(Resources.Currency.FAR117CurrentRest,
-                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, DateTime.UtcNow.Subtract(currentRestPeriodStart).TotalHours.FormatDecimal(UseHHMM, true)),
+                        String.Format(CultureInfo.CurrentCulture, Resources.Currency.FAR117HoursTemplate, Math.Max(0, DateTime.UtcNow.Subtract(edpMostRecent.EffectiveDutyEnd).TotalHours).FormatDecimal(UseHHMM, true)),
                         CurrencyState.OK, string.Empty));
                 }
 
