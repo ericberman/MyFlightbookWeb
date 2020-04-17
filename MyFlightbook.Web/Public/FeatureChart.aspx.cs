@@ -7,7 +7,7 @@
  *
 *******************************************************/
 
-namespace MyFlightbook.Web.Public
+namespace MyFlightbook.Web.PublicPages
 {
     public partial class FeatureChart : System.Web.UI.Page
     {

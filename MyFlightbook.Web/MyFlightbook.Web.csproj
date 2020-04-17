@@ -543,8 +543,6 @@
     <Content Include="images\EdgeInvert48x48.png" />
     <Content Include="images\EdgeInvert64x64.png" />
     <Content Include="images\expand.png" />
-    <Content Include="images\facebookicon.gif" />
-    <Content Include="images\facebooklogo.png" />
     <Content Include="images\favorite.png" />
     <Content Include="images\favoritefilled.png" />
     <Content Include="images\favoritefilledsm.png" />
@@ -553,6 +551,9 @@
     <Content Include="images\Firefox48x48.png" />
     <Content Include="images\Firefox64x64.png" />
     <Content Include="images\flight.png" />
+    <Content Include="images\f_logo_20.png" />
+    <Content Include="images\f_logo_32.png" />
+    <Content Include="images\f_logo_48.png" />
     <Content Include="images\google-drive-logo-lockup.png" />
     <Content Include="images\google-play-badge.png" />
     <Content Include="images\icon1024x1024.png" />
@@ -614,10 +615,10 @@
     <Content Include="images\startingtotals.png" />
     <Content Include="images\TabBarGradient.gif" />
     <Content Include="images\tower.png" />
-    <Content Include="images\twitter.gif" />
-    <Content Include="images\twitter.png" />
     <Content Include="images\twitter20x20.png" />
-    <Content Include="images\twitter_logo_header.png" />
+    <Content Include="images\twitter_round_20.png" />
+    <Content Include="images\twitter_round_32.png" />
+    <Content Include="images\twitter_round_48.png" />
     <Content Include="images\update.png" />
     <Content Include="images\windvector.png" />
     <Content Include="images\x.gif" />

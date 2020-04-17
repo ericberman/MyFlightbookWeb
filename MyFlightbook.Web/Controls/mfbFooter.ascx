@@ -1,8 +1,7 @@
 <%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbFooter.ascx.cs" Inherits="Controls_mfbFooter" %>
 <%@ Register Src="RSSCurrency.ascx" TagName="RSSCurrency" TagPrefix="uc1" %>
 <div class="footerContainer">
-    <asp:Panel ID="pnlClassic" runat="server" Width="100%"
-        meta:resourcekey="pnlClassicResource1">
+    <asp:Panel ID="pnlClassic" runat="server" Width="100%" meta:resourcekey="pnlClassicResource1">
         <hr />
         <div class="footerItem">
             <ul>
@@ -31,23 +30,26 @@
                 <li><asp:HyperLink ID="lnkPDA" NavigateUrl="~/DefaultMini.aspx" runat="server" 
                 Text="Mobile Access" meta:resourcekey="lnkPDAResource1"></asp:HyperLink></li>
             </ul>
-            <div style="margin-top:3px; margin-bottom:6px;" id="divSSLSeal" runat="server"><span id="siteseal"><script async src="https://seal.godaddy.com/getSeal?sealID=MbSEyzG679EfYseNolHmMeTjb9SSTum9qZBBZbXTqqb8vBPbEJNZtpY0EX4b"></script></span></div>        </div>
+            <div style="margin-top:3px; margin-bottom:6px;" id="divSSLSeal" runat="server">
+                <span id="siteseal"><script async src="https://seal.godaddy.com/getSeal?sealID=MbSEyzG679EfYseNolHmMeTjb9SSTum9qZBBZbXTqqb8vBPbEJNZtpY0EX4b"></script></span>
+            </div>        
+        </div>
         <div class="footerItem">
             <ul>
-                <li id="cellFacebook" runat="server">
+                <li id="cellFacebook" runat="server" style="padding:2px;">
                     <asp:HyperLink ID="lnkFacebook" Target="_blank" runat="server">
-                        <div style="display:inline-block; width: 40px; text-align:center;"><asp:Image ID="imgFacebook" runat="server"
-                        ImageUrl="~/images/facebookicon.gif" AlternateText="Facebook" 
-                        ToolTip="Facebook" meta:resourcekey="imgFacebookResource1" /></div>
-                        <asp:Label ID="lblFollowFacebook" runat="server"></asp:Label>
+                        <asp:Image ID="imgFacebook" runat="server" style="vertical-align:middle"
+                        ImageUrl="~/images/f_logo_20.png" AlternateText="Facebook" 
+                        ToolTip="Facebook" meta:resourcekey="imgFacebookResource1" />&nbsp;
+                        <asp:Label ID="lblFollowFacebook" runat="server" style="vertical-align:middle"></asp:Label>
                     </asp:HyperLink>
                 </li>
-                <li id="cellTwitter" runat="server">
+                <li id="cellTwitter" runat="server" style="padding:2px;">
                     <asp:HyperLink ID="lnkTwitter" runat="server" Target="_blank">
-                        <div style="display:inline-block; width: 40px; text-align:center;"><asp:Image ID="imgTwitter" runat="server" Height="16px" Width="16px" 
-                            ImageUrl="~/images/twitter20x20.png" AlternateText="Twitter" 
-                            ToolTip="Twitter" meta:resourcekey="imgTwitterResource1" /></div>
-                        <asp:Label ID="lblFollowTwitter" runat="server"></asp:Label>
+                        <asp:Image ID="imgTwitter" runat="server" style="vertical-align:middle"
+                            ImageUrl="~/images/twitter_round_20.png" AlternateText="Twitter" 
+                            ToolTip="Twitter" meta:resourcekey="imgTwitterResource1" />&nbsp;
+                        <asp:Label ID="lblFollowTwitter" runat="server" style="vertical-align:middle"></asp:Label>
                     </asp:HyperLink>
                 </li>
                 <li><uc1:RSSCurrency ID="RSSCurrency1" runat="server" /></li>

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="FeatureChart.aspx.cs" MasterPageFile="~/MasterPage.master" Inherits="MyFlightbook.Web.Public.FeatureChart" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="FeatureChart.aspx.cs" MasterPageFile="~/MasterPage.master" Inherits="MyFlightbook.Web.PublicPages.FeatureChart" %>
 
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" runat="server">

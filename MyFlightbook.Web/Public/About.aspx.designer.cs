@@ -7,12 +7,21 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MyFlightbook.Web.Public
+namespace MyFlightbook.Web.PublicPages
 {
 
 
     public partial class About
     {
+
+        /// <summary>
+        /// imgLogo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgLogo;
 
         /// <summary>
         /// lnkFeatures control.
