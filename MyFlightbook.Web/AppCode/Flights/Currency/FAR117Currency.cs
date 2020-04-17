@@ -279,15 +279,18 @@ namespace MyFlightbook.Currency
 
             DateTime dtMin = DateTime.UtcNow.Subtract(ts);
 
+            if (!lst.Any()) // no duty periods found - entire period is rest
+                return ts.TotalHours;
+
             double maxRest = 0.0;
 
             foreach (EffectiveDutyPeriod edp in lst)
             {
-                if (edp.EffectiveDutyEnd.CompareTo(dtMin) < 0)
-                    maxRest += edp.RestSince;
+                if (edp.EffectiveDutyEnd.CompareTo(dtMin) >= 0)
+                    maxRest = Math.Max(maxRest, edp.RestSince);
                 else
                 {
-                    maxRest += edp.RestSince - (dtMin.Subtract(edp.EffectiveDutyEnd)).TotalHours;
+                    maxRest = Math.Max(maxRest, edp.RestSince - (dtMin.Subtract(edp.EffectiveDutyEnd)).TotalHours);
                     break;
                 }
             }
