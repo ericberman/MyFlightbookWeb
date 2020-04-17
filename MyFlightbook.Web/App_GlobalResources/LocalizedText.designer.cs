@@ -2191,6 +2191,41 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feature Summary.
+        /// </summary>
+        internal static string FeaturesHeader {
+            get {
+                return ResourceManager.GetString("FeaturesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;table class=&quot;featureTable&quot;&gt;
+        ///    &lt;tr class=&quot;appHeader&quot;&gt;
+        ///        &lt;td colspan=&quot;3&quot;&gt;&lt;/td&gt;
+        ///        &lt;td class=&quot;feature&quot; style=&quot;font-style:italic; font-size:small;&quot;&gt;Compare to...&lt;/td&gt;
+        ///    &lt;/tr&gt;
+        ///    &lt;tr class=&quot;appHeader&quot;&gt;
+        ///        &lt;td class=&quot;feature&quot;&gt;&lt;/td&gt;
+        ///        &lt;td class=&quot;feature&quot;&gt;&lt;/td&gt;
+        ///        &lt;td class=&quot;feature&quot;&gt;
+        ///            %APP_NAME%
+        ///        &lt;/td&gt;
+        ///        &lt;td class=&quot;feature&quot;&gt;
+        ///            ForeFlight
+        ///        &lt;/td&gt;
+        ///    &lt;/tr&gt;
+        ///    &lt;tr&gt;
+        ///        &lt;td class=&quot;spacerColumn&quot;&gt;&lt;/td&gt;
+        ///        &lt;td class=&quot;feat [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string FeatureTable {
+            get {
+                return ResourceManager.GetString("FeatureTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Another....
         /// </summary>
         internal static string FileUploadAddAnother {

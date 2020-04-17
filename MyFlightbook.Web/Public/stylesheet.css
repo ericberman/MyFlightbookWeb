@@ -1300,11 +1300,13 @@ table.dataDescription thead tr td
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box; /* Firefox, other Gecko */
     box-sizing: border-box; /* Opera/IE 8+ */
-    width: 100%;
-    max-width: 100%;
+    max-width: 70%;
     color: white;
     font-family: open_sans, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    margin: 0px;
+    border-radius: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
 }
 
 .welcomeHeader p {
@@ -1337,6 +1339,20 @@ table.dataDescription thead tr td
     margin-left: 6px;
     margin-right: 6px;
     display: inline-block;
+}
+
+#homePagePromo.welcomeHeader li:first-child:before {
+    content: none;
+}
+
+#homePagePromo.welcomeHeader a, #homePagePromo.welcomeHeader a:visited {
+    color: white;
+    font-size: larger;
+    text-align:center;
+}
+
+#homePagePromo.welcomeHeader a:hover {
+    text-decoration:none;
 }
 
 

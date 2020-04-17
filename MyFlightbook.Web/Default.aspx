@@ -13,7 +13,11 @@
 </asp:Content>
 <asp:content id="Content1" contentplaceholderid="cpMain" runat="Server">
     <asp:Panel ID="pnlWelcome" runat="server">
-        <div id="homePagePromo" class="welcomeHeader"><% =Branding.ReBrand(Resources.Profile.NewAccountPromo) %></div>
+        <div id="homePagePromo" class="welcomeHeader">
+            <asp:HyperLink ID="lnkFeature" runat="server" NavigateUrl="~/Public/FeatureChart.aspx">
+                <% =Branding.ReBrand(Resources.Profile.NewAccountPromo) %>
+            </asp:HyperLink>
+        </div>
     </asp:Panel>
     <table style="width:100%">
         <tr style="vertical-align:top">

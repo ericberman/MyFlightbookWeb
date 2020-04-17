@@ -39,6 +39,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\myFlightbook rules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -310,6 +311,7 @@
     <Content Include="App_GlobalResources\Content.en\Email\TelemetryTooLarge.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\Welcomeemail.txt" />
     <Content Include="App_GlobalResources\Content.en\Email\Welcomeemailhtm.txt" />
+    <Content Include="App_GlobalResources\Content.en\FeatureTable.htm" />
     <Content Include="App_GlobalResources\Content.en\FlightDataKey.txt" />
     <Content Include="App_GlobalResources\Content.en\ImportTableDescription.txt" />
     <Content Include="App_GlobalResources\Content.en\mapnavaidtip.htm" />
@@ -745,6 +747,7 @@
     <Content Include="Public\Developer.aspx" />
     <Content Include="Public\Export.aspx" />
     <Content Include="Public\FAQ.aspx" />
+    <Content Include="Public\FeatureChart.aspx" />
     <Content Include="Public\FindAirport.aspx" />
     <Content Include="Public\FlightDataKey.aspx" />
     <Content Include="Public\Game.aspx" />
@@ -2522,6 +2525,13 @@
     </Compile>
     <Compile Include="Public\FAQ.aspx.designer.cs">
       <DependentUpon>FAQ.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\FeatureChart.aspx.cs">
+      <DependentUpon>FeatureChart.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\FeatureChart.aspx.designer.cs">
+      <DependentUpon>FeatureChart.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\FindAirport.aspx.cs">
       <DependentUpon>FindAirport.aspx</DependentUpon>

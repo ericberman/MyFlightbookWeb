@@ -1725,4 +1725,10 @@
   <data name="PrintViewSubtotalsByCategoryClass" xml:space="preserve">
     <value>Break down subtotals by category/class</value>
   </data>
+  <data name="FeaturesHeader" xml:space="preserve">
+    <value>Feature Summary</value>
+  </data>
+  <data name="FeatureTable" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\featuretable.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
 </root>

@@ -31,6 +31,15 @@ public partial class Public_Home
     protected global::System.Web.UI.WebControls.Panel pnlWelcome;
 
     /// <summary>
+    /// lnkFeature control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkFeature;
+
+    /// <summary>
     /// rptFeatures control.
     /// </summary>
     /// <remarks>
