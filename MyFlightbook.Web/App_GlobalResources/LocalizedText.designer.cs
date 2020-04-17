@@ -61,6 +61,45 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;%APP_NAME% is an open-source product of a passion for aviation meeting a need for a free online logbook.&lt;/p&gt;
+        ///&lt;p&gt;We believe that every pilot should be using an electronic logbook, and that aviation is expensive enough that the logbook shouldn&apos;t be adding to the burden.  Your data is your data, and you should be able to 
+        ///    access it from anywhere at any time.  %APP_NAME% is meant to be a way of giving back to the pilot community.&lt;/p&gt;
+        ///&lt;p&gt;%APP_NAME% is not trying to be a commercial poduct.  As such, it  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string About {
+            get {
+                return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact Us.
+        /// </summary>
+        internal static string AboutContact {
+            get {
+                return ResourceManager.GetString("AboutContact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About %APP_NAME%.
+        /// </summary>
+        internal static string AboutTitle {
+            get {
+                return ResourceManager.GetString("AboutTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more about what %APP_NAME% can do!.
+        /// </summary>
+        internal static string AboutViewFeatures {
+            get {
+                return ResourceManager.GetString("AboutViewFeatures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;In case you forget your password, please provide a security question and answer.&lt;/p&gt;
         ///&lt;p&gt;A good security question is something that:&lt;/p&gt;
         ///&lt;ul&gt;

@@ -1731,4 +1731,16 @@
   <data name="FeatureTable" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>content.en\featuretable.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="About" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\about.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="AboutContact" xml:space="preserve">
+    <value>Contact Us</value>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>About %APP_NAME%</value>
+  </data>
+  <data name="AboutViewFeatures" xml:space="preserve">
+    <value>Learn more about what %APP_NAME% can do!</value>
+  </data>
 </root>

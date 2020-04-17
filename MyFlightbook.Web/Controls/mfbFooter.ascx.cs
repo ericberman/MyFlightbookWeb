@@ -4,7 +4,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2007-2018 MyFlightbook LLC
+ * Copyright (c) 2007-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -30,6 +30,7 @@ public partial class Controls_mfbFooter : System.Web.UI.UserControl
             divSSLSeal.Visible = Request.IsSecureConnection;
             lblFollowFacebook.Text = Branding.ReBrand(Resources.LocalizedText.FollowOnFacebook);
             lblFollowTwitter.Text = Branding.ReBrand(Resources.LocalizedText.FollowOnTwitter);
+            lnkAbout.Text = Branding.ReBrand(Resources.LocalizedText.AboutTitle);
         }
     }
 }

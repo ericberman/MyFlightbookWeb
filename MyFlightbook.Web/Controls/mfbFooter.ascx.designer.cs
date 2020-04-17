@@ -22,6 +22,15 @@ public partial class Controls_mfbFooter
     protected global::System.Web.UI.WebControls.Panel pnlClassic;
 
     /// <summary>
+    /// lnkAbout control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkAbout;
+
+    /// <summary>
     /// lnkPrivacy control.
     /// </summary>
     /// <remarks>

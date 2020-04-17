@@ -6,6 +6,7 @@
         <hr />
         <div class="footerItem">
             <ul>
+                <li><asp:HyperLink ID="lnkAbout" runat="server" NavigateUrl="~/Public/About.aspx"></asp:HyperLink></li>
                 <li><asp:HyperLink ID="lnkPrivacy" NavigateUrl="~/Public/Privacy.aspx"
                 runat="server" Text="Privacy policy" meta:resourcekey="lnkPrivacyResource1"></asp:HyperLink></li>
                 <li><asp:HyperLink ID="HyperLink1" NavigateUrl="~/Public/TandC.aspx" runat="server" 
@@ -16,7 +17,7 @@
         <div class="footerItem">
             <ul>
                 <li><asp:HyperLink ID="lnkContact" NavigateUrl="~/Public/ContactMe.aspx" 
-                runat="server" Text="Contact Us" meta:resourcekey="lnkContactResource1"></asp:HyperLink></li>
+                runat="server" Text="<%$ Resources:LocalizedText, AboutContact %>"></asp:HyperLink></li>
                 <li><asp:HyperLink ID="lnkFAQ" runat="server" NavigateUrl="~/Public/FAQ.aspx" 
                     Text="FAQ" meta:resourcekey="lnkFAQResource1"></asp:HyperLink></li>
                 <li id="cellVideos" runat="server">
@@ -30,7 +31,7 @@
                 <li><asp:HyperLink ID="lnkPDA" NavigateUrl="~/DefaultMini.aspx" runat="server" 
                 Text="Mobile Access" meta:resourcekey="lnkPDAResource1"></asp:HyperLink></li>
             </ul>
-            <div style="margin-top:3px; margin-bottom:6px;" ID="divSSLSeal" runat="server"><span id="siteseal"><script async src="https://seal.godaddy.com/getSeal?sealID=MbSEyzG679EfYseNolHmMeTjb9SSTum9qZBBZbXTqqb8vBPbEJNZtpY0EX4b"></script></span></div>        </div>
+            <div style="margin-top:3px; margin-bottom:6px;" id="divSSLSeal" runat="server"><span id="siteseal"><script async src="https://seal.godaddy.com/getSeal?sealID=MbSEyzG679EfYseNolHmMeTjb9SSTum9qZBBZbXTqqb8vBPbEJNZtpY0EX4b"></script></span></div>        </div>
         <div class="footerItem">
             <ul>
                 <li id="cellFacebook" runat="server">
