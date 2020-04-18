@@ -56,3 +56,7 @@ p, div, h2, h3, topTab, a.topTab, a.topTab:visited, #menu-bar .topTab, #menu-bar
 .modalpopup {
     background-color: #e8e8e8;
 }
+
+.highlightedFeature {
+    background-color: #444444;
+}
