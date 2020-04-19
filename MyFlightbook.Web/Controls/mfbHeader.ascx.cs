@@ -1,4 +1,5 @@
 ﻿using MyFlightbook;
+using MyFlightbook.Schedule;
 using System;
 using System.Globalization;
 
@@ -51,6 +52,8 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
                     mvXSell.SetActiveView(vwW7Phone);
             }
 
+            mvCrossSellOrEvents.SetActiveView(vwMobileCrossSell);
+
             mvLoginStatus.SetActiveView(Page.User.Identity.IsAuthenticated ? vwSignedIn : vwNotSignedIn);
             if (Page.User.Identity.IsAuthenticated)
             {
@@ -60,6 +63,24 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
                 lblLastLogin.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastLogonShort, pf.LastLogon);
                 lblLastActivity.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastActivityShort, pf.LastActivity);
                 itemLastActivity.Visible = pf.LastActivity.Date.CompareTo(pf.LastLogon.Date) != 0;
+
+                // see if we need to show an upcoming event; we repurpose a known GUID for this.  
+                // If it's in the database AND in the future, we show it.
+                // Since header is loaded on every page load, cache it, using a dummy expired one if there was none.
+                ScheduledEvent se = (ScheduledEvent)Cache["upcomingWebinar"];
+                if (se == null)
+                {
+                    se = ScheduledEvent.AppointmentByID("00000000-fe32-5932-bef8-000000000001", TimeZoneInfo.Utc);
+                    if (se == null)
+                        se = new ScheduledEvent() { EndUtc = DateTime.Now.AddDays(-2) };
+                    Cache.Add("upcomingWebinar", se, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 30, 0), System.Web.Caching.CacheItemPriority.Default, null);
+                }
+                if (se != null && DateTime.UtcNow.CompareTo(se.EndUtc) < 0)
+                {
+                    lblDate.Text = se.EndUtc.ToShortDateString();
+                    mvCrossSellOrEvents.SetActiveView(vwUpcomingEvent);
+                    lblWebinarDetails.Text = se.Body.Linkify(true);
+                }
             }
         }
     }

@@ -211,6 +211,24 @@ public partial class Controls_mfbHeader
     protected global::System.Web.UI.WebControls.HyperLink lnkDonate;
 
     /// <summary>
+    /// mvCrossSellOrEvents control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.MultiView mvCrossSellOrEvents;
+
+    /// <summary>
+    /// vwMobileCrossSell control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwMobileCrossSell;
+
+    /// <summary>
     /// imgSmartphone control.
     /// </summary>
     /// <remarks>
@@ -308,6 +326,69 @@ public partial class Controls_mfbHeader
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.HyperLink lnkDownloadWindowsPhone;
+
+    /// <summary>
+    /// vwUpcomingEvent control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwUpcomingEvent;
+
+    /// <summary>
+    /// pnlWebinar control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlWebinar;
+
+    /// <summary>
+    /// lblDate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblDate;
+
+    /// <summary>
+    /// pnlWebinarDetails control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlWebinarDetails;
+
+    /// <summary>
+    /// lblWebinarDetails control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblWebinarDetails;
+
+    /// <summary>
+    /// btnDismiss control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnDismiss;
+
+    /// <summary>
+    /// mpeEvent control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.ModalPopupExtender mpeEvent;
 
     /// <summary>
     /// XMLNav1 control.

@@ -43,24 +43,39 @@
                 </asp:Panel>
             </div>
             <div id="headerMiddleContainer">
-                <div id="headerMobileCrossSell">
-                    <asp:Image ID="imgSmartphone" ImageUrl="~/images/Smartphone.png" runat="server" style="vertical-align:middle" GenerateEmptyAlternateText="true" />
-                    <asp:MultiView ID="mvXSell" runat="server" ActiveViewIndex="0">
-                        <asp:View runat="server" ID="vwGeneric">
-                            <asp:HyperLink ID="lnkDownload" NavigateUrl="~/Public/MobileApps.aspx" runat="server"></asp:HyperLink>,
-                            <asp:Localize ID="Localize5" Text="<%$ Resources:LocalizedText, HeaderDownloadIsFree %>" runat="server"></asp:Localize> 
-                        </asp:View>
-                        <asp:View runat="server" ID="vwIOS">
-                            <asp:HyperLink ID="lnkDownloadIPhone" NavigateUrl="~/Public/MobileApps.aspx?p=0" runat="server" Text=""></asp:HyperLink>.
-                        </asp:View>
-                        <asp:View runat="server" ID="vwDroid">
-                            <asp:HyperLink ID="lnkDownloadAndroid" NavigateUrl="~/Public/MobileApps.aspx?p=2" runat="server" Text=""></asp:HyperLink>.
-                        </asp:View>
-                        <asp:View runat="server" ID="vwW7Phone">
-                            <asp:HyperLink ID="lnkDownloadWindowsPhone" NavigateUrl="~/Public/MobileApps.aspx?p=3" runat="server" Text=""></asp:HyperLink>.
-                        </asp:View>
-                    </asp:MultiView>
-                </div>
+                <asp:MultiView ID="mvCrossSellOrEvents" runat="server">
+                    <asp:View ID="vwMobileCrossSell" runat="server">
+                        <div id="headerMobileCrossSell">
+                            <asp:Image ID="imgSmartphone" ImageUrl="~/images/Smartphone.png" runat="server" style="vertical-align:middle" GenerateEmptyAlternateText="true" />
+                            <asp:MultiView ID="mvXSell" runat="server" ActiveViewIndex="0">
+                                <asp:View runat="server" ID="vwGeneric">
+                                    <asp:HyperLink ID="lnkDownload" NavigateUrl="~/Public/MobileApps.aspx" runat="server"></asp:HyperLink>,
+                                    <asp:Localize ID="Localize5" Text="<%$ Resources:LocalizedText, HeaderDownloadIsFree %>" runat="server"></asp:Localize> 
+                                </asp:View>
+                                <asp:View runat="server" ID="vwIOS">
+                                    <asp:HyperLink ID="lnkDownloadIPhone" NavigateUrl="~/Public/MobileApps.aspx?p=0" runat="server" Text=""></asp:HyperLink>.
+                                </asp:View>
+                                <asp:View runat="server" ID="vwDroid">
+                                    <asp:HyperLink ID="lnkDownloadAndroid" NavigateUrl="~/Public/MobileApps.aspx?p=2" runat="server" Text=""></asp:HyperLink>.
+                                </asp:View>
+                                <asp:View runat="server" ID="vwW7Phone">
+                                    <asp:HyperLink ID="lnkDownloadWindowsPhone" NavigateUrl="~/Public/MobileApps.aspx?p=3" runat="server" Text=""></asp:HyperLink>.
+                                </asp:View>
+                            </asp:MultiView>
+                        </div>
+                    </asp:View>
+                    <asp:View ID="vwUpcomingEvent" runat="server">
+                        <asp:Panel ID="pnlWebinar" runat="server" style="text-align:center; font-weight:bold; font-size: larger; padding: 3px; line-height: 40px">Please join our upcoming webinar on <asp:Label ID="lblDate" runat="server"></asp:Label>! Click for details.</asp:Panel>
+                        <asp:Panel ID="pnlWebinarDetails" runat="server" CssClass="modalpopup" style="display:none;" DefaultButton="btnDismiss">
+                            <div style="text-align:left">
+                                <asp:Label ID="lblWebinarDetails" style="white-space:pre-line" runat="server"></asp:Label>
+                            </div>
+                            <div style="text-align:center"><asp:Button ID="btnDismiss" runat="server" Text="Close" /></div>
+                        </asp:Panel>
+                        <cc1:ModalPopupExtender ID="mpeEvent" BackgroundCssClass="modalBackground" CancelControlID="btnDismiss" TargetControlID="pnlWebinar" PopupControlID="pnlWebinarDetails" runat="server"></cc1:ModalPopupExtender>
+                    </asp:View>
+                </asp:MultiView>
+
                 <div id="headerMenuContainer">
                     <uc2:XMLNav ID="XMLNav1" runat="server" XmlSrc="~/NavLinks.xml" SelectedItem="tabHome" MenuStyle="HoverPop" />
                 </div>
