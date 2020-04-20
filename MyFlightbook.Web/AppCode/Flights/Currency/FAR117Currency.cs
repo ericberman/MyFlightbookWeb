@@ -304,6 +304,7 @@ namespace MyFlightbook.Currency
         private readonly List<EffectiveDutyPeriod> m_effectiveDutyPeriods = new List<EffectiveDutyPeriod>();
         private EffectiveDutyPeriod m_edpCurrent;
 
+        #region properties
         /// <summary>
         /// Are all flights included, or only those between valid duty start/end periods?
         /// </summary>
@@ -325,6 +326,25 @@ namespace MyFlightbook.Currency
         protected bool HasIndeterminateEDP { get { return m_edpCurrent != null; } }
 
         public IEnumerable<EffectiveDutyPeriod> EffectiveDutyPeriods { get { return m_effectiveDutyPeriods; } }
+        #endregion
+
+        /// <summary>
+        /// Adds a duty period to the list of dutyperiods, checking for duplicates (but not overlap!)  Handles multiple flights when IncludeAllFlights is checked.
+        /// </summary>
+        /// <param name="edp"></param>
+        protected void AddDutyPeriodToList(EffectiveDutyPeriod edp)
+        {
+            if (edp == null)
+                throw new ArgumentNullException(nameof(edp));
+
+            if (m_effectiveDutyPeriods.Any())
+            {
+                EffectiveDutyPeriod edpLatest = m_effectiveDutyPeriods[m_effectiveDutyPeriods.Count - 1];
+                if (edp.EffectiveDutyEnd.CompareTo(edpLatest.EffectiveDutyEnd) == 0 && edp.EffectiveDutyStart.CompareTo(edpLatest.EffectiveDutyStart) == 0)
+                    return;
+            }
+            m_effectiveDutyPeriods.Add(edp);
+        }
 
         public override void Finalize(decimal totalTime, decimal picTime)
         {
@@ -354,7 +374,7 @@ namespace MyFlightbook.Currency
                 // If it's fully specified, there's nothing to do but to record the duty period
                 // OR if we haven't seen a proper duty period yet AND we don't have a current open edp (we shouldn't) AND this indicates a start duty/flightduty, add it to the duty period.
                 else if (edp.Specification == DutySpecification.Both || (!HasSeenProperDutyPeriod && m_edpCurrent == null && (edp.FPDutyStart != null || edp.AdditionalDutyStart.HasValue)))
-                    m_effectiveDutyPeriods.Add(edp);
+                    AddDutyPeriodToList(edp);
                 // Otherwise, if we have just the end of a duty period, open up the active duty period.
                 else if (m_edpCurrent == null && edp.Specification == DutySpecification.End) // we've found the end of a duty period - open up an active duty period
                     m_edpCurrent = edp;
@@ -364,14 +384,14 @@ namespace MyFlightbook.Currency
                     edp.AdditionalDutyEnd = m_edpCurrent.AdditionalDutyEnd; // be sure to capture any additional duty time from the END of FDP, recorded in a flight we saw previously.
                     m_edpCurrent.FlightDutyEnd = m_edpCurrent.FPDutyEnd.DateValue;
                     m_edpCurrent.FlightDutyStart = edp.FPDutyStart.DateValue;
-                    m_effectiveDutyPeriods.Add(m_edpCurrent);
+                    AddDutyPeriodToList(m_edpCurrent);
                     m_edpCurrent.Specification = DutySpecification.Both;
                     CurrentEDP = m_edpCurrent;  // we'll return this whole EDP.
                     m_edpCurrent = null;
                 }
             }
             else
-                m_effectiveDutyPeriods.Add(edp);
+                AddDutyPeriodToList(edp);
 
             HasSeenProperDutyPeriod = HasSeenProperDutyPeriod || edp.Specification != DutySpecification.None;
         }
