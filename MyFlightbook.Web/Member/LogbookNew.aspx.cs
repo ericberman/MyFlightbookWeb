@@ -1,6 +1,5 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Printing;
-using MyFlightbook.SocialMedia;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -377,25 +376,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
     /// <returns></returns>
     private string SanitizedQuery
     {
-        get
-        {
-            System.Collections.Specialized.NameValueCollection dictParams = new System.Collections.Specialized.NameValueCollection();
-            foreach (string szKey in Request.QueryString.Keys)
-                dictParams[szKey] = Request.QueryString[szKey];
-
-            // Issue #458: clone and reverse are getting duplicated and the & is getting url encoded, so even edits look like clones
-            dictParams.Remove("Clone");
-            dictParams.Remove("Reverse");
-
-            if (dictParams.Count == 0)
-                return string.Empty;
-
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            foreach (string szkey in dictParams)
-                sb.AppendFormat(CultureInfo.InvariantCulture, "{0}{1}={2}", sb.Length == 0 ? "?" : "&", szkey, HttpUtility.UrlEncode(dictParams[szkey]));
-
-            return sb.ToString();
-        }
+        get { return Request.QueryStringWithoutParams(new string[] { "Clone", "Reverse", "Chk" }); }
     }
 
     protected void mfbEditFlight1_FlightUpdated(object sender, LogbookEventArgs e)
@@ -406,9 +387,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         // if we had been editing a flight do a redirect so we have a clean URL
         // OR if there are pending redirects, do them.
         // Otherwise, just clean the page.
-        if (Request[szParamIDFlight] != null || SocialNetworkAuthorization.RedirectList.Count > 0)
-            Response.Redirect(SocialNetworkAuthorization.PopRedirect(Master.IsMobileSession() ? SocialNetworkAuthorization.DefaultRedirPageMini : SocialNetworkAuthorization.DefaultRedirPage));
-        else if (e.IDNextFlight != LogbookEntry.idFlightNone)
+        if (e.IDNextFlight != LogbookEntry.idFlightNone)
             Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}{1}", e.IDNextFlight, SanitizedQuery), true);
         else
             Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", SanitizedQuery), true);

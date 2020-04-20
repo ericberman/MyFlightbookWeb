@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.Currency;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
@@ -793,6 +794,39 @@ namespace MyFlightbook
         #endregion
 
         #region HttpRequest and HttpClient Extensions
+        /// <summary>
+        /// Returns a querystring (including theleading "?") foor the original URL, minus the specified parameters.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="paramsToRemove"></param>
+        /// <returns></returns>
+        public static string QueryStringWithoutParams(this HttpRequest request, IEnumerable<string> paramsToRemove)
+        {
+            if (paramsToRemove == null)
+                throw new ArgumentNullException(nameof(paramsToRemove));
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            Dictionary<string, string> dictParams = new Dictionary<string, string>();
+            foreach (string szKey in request.QueryString.Keys)
+                dictParams[szKey] = request.QueryString[szKey];
+
+            foreach (string sz in paramsToRemove)
+            {
+                if (dictParams.ContainsKey(sz))
+                    dictParams.Remove(sz);
+            }
+
+            if (dictParams.Count == 0)
+                return string.Empty;
+
+            List<string> urlparams = new List<string>();
+            foreach (string szkey in dictParams.Keys)
+                urlparams.Add(String.Format(CultureInfo.InvariantCulture, "{0}={1}", szkey, HttpUtility.UrlEncode(dictParams[szkey])));
+
+            return urlparams.Count == 0 ? string.Empty : String.Format(CultureInfo.InvariantCulture, "?{0}", String.Join("&", urlparams));
+        }
+
         /// <summary>
         /// Determines if this is a known mobile device.  Tablets are NOT considered mobile; use IsMobileDeviceOrTablet
         /// </summary>
