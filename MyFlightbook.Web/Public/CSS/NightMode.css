@@ -33,6 +33,31 @@ p, div, h2, h3, topTab, a.topTab, a.topTab:visited, #menu-bar .topTab, #menu-bar
     background-color: #AAAAAA;
 }
 
+.accordionMenuControllerUnselected {
+    background-color: #777777;
+}
+
+.accordionMenuControllerSelected {
+    background-color: #AAAAAA;
+    color:#222222;
+}
+
+.accordionMenuContent {
+    background-color: #555555;
+}
+
+.currencyok {
+    color:lawngreen;
+}
+
+.currencynearlydue {
+    color:dodgerblue;
+}
+
+.currencynodate {
+    color: #d8d8d8;
+}
+
 .draggableItem {
     background-color: darkgray;
 }
