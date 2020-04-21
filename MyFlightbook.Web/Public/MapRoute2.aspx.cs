@@ -29,7 +29,7 @@ public partial class MapRoute : System.Web.UI.Page
         {
             if (!String.IsNullOrEmpty(Request.QueryString["Airports"]))
             {
-                txtAirports.Text = HttpUtility.HtmlEncode(Request.QueryString["Airports"]);
+                txtAirports.Text = HttpUtility.HtmlEncode(Request.QueryString["Airports"]).Replace("&gt;", ">").Replace("&#10;", "\r\n").Replace("&#13;", " ");
                 txtAirports.Rows = Math.Min(Math.Max((txtAirports.Text.Length / 70) + 1, 1), 6);
                 mfbAirportServices1.GoogleMapID = MfbGoogleMapManager1.MapID;
             }
