@@ -2,13 +2,10 @@ using MyFlightbook.Airports;
 using MyFlightbook.Currency;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
-using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.Web;
@@ -220,38 +217,10 @@ namespace MyFlightbook
                 return rgsz[0];
             }
             else
-                return "";
+                return string.Empty;
         }
 
-        public MFBWebService()
-        {
-
-            //Uncomment the following line if using designed components 
-            //InitializeComponent(); 
-        }
-
-        /*
-        /// <summary>
-        /// Returns a list of airports, given an input of airport codes (3- and 4- letter acronyms).
-        /// Each airport contains airport name, code, and latitude/longitude.  The list is NOT deduped, and
-        /// airports are returned in the order in which they are passed.  I.e., this is suitable for a route.
-        /// </summary>
-        /// <param name="szAirports">A delimited string containing airport codes.  Any non-alphanumeric character is a separater.  
-        /// Anything that is not a 3- or 4- letter code, or which is not found, is simply ignored.
-        /// </param>
-        /// <returns>An array of airports - each one contains the airport code, name, and latitude/longitude</returns>
-        [WebMethod]
-        [OperationContract]
-        [WebGet(UriTemplate = "~/Airports/{szAirports}", ResponseFormat = WebMessageFormat.Xml)]
-        public airport[] ResolveAirports(string szAirports)
-        {
-            EventRecorder.WriteEvent(EventRecorder.MFBEventID.ObsoleteAPI, "Unknown", "Obsolete API: ResolveAirports");
-            if (ShuntState.IsShunted)
-                throw new MyFlightbookException(ShuntState.ShuntMessage);
-            AirportList apl = new AirportList(szAirports);
-            return apl.GetNormalizedAirports();
-        }
-        */
+        public MFBWebService() { }
 
         /// <summary>
         /// Returns a list of the aircraft that the specified user flies, including the tailnumber, summary, and aircraft ID.
@@ -615,27 +584,8 @@ namespace MyFlightbook
 
             fq.CustomRestriction = string.Empty;    // sanity check for security
             util.UnescapeObject(fq);    // fix for iPhone HTML encoding issues.
-            List<LogbookEntry> lstLe = new List<LogbookEntry>();
 
-            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq, offset, maxCount));
-            dbh.ReadRows(
-                (comm) =>
-                { },
-                (dr) =>
-                {
-                    LogbookEntry le = new LogbookEntry(dr, fq.UserName)
-                    {
-                        // Note: this has no telemetry
-                        // don't even bother sending this field down the wire.
-                        FlightData = null
-                    }; 
-
-                    le.PopulateImages();
-                    lstLe.Add(le);
-                }
-            );
-
-            return lstLe.ToArray();
+            return LogbookEntry.GetFlightsForUser(fq, offset, maxCount).ToArray();
         }
 
         /// <summary>
@@ -889,37 +839,13 @@ namespace MyFlightbook
         public string FlightPathForFlightGPX(string szAuthUserToken, int idFlight)
         {
             string szUser = GetEncryptedUser(szAuthUserToken);
-            string szResult = null;
             if (szUser.Length > 0)
             {
                 LogbookEntry le = new LogbookEntry();
                 if (le.FLoadFromDB(idFlight, szUser, LogbookEntry.LoadTelemetryOption.LoadAll) && le.Telemetry.HasPath)
-                {
-                    using (FlightData fd = new FlightData())
-                    {
-                        MemoryStream ms = null;
-                        try
-                        {
-                            ms = new MemoryStream();
-                            using (StreamReader sr = new StreamReader(ms))
-                            {
-                                ms = null;  // for CA2202
-                                MemoryStream bs = sr.BaseStream as MemoryStream;
-                                if (fd.ParseFlightData(le.FlightData) && fd.HasLatLongInfo)
-                                fd.WriteGPXData(bs);
-                                bs.Seek(0, SeekOrigin.Begin);
-                                szResult = sr.ReadToEnd();
-                            }
-                        }
-                        finally
-                        {
-                            if (ms != null)
-                                ms.Dispose();
-                        }
-                    }
-                }
+                    return le.TelemetryAsGPX();
             }
-            return szResult;
+            return null;
         }
 
         /// <summary>
@@ -1315,28 +1241,14 @@ namespace MyFlightbook
         }
         #endregion
         #region Autocomplete
-        private const string keyColumn = "ColumnKey";
-
-        public static string[] GetKeysFromDB(string szQ, string prefixText)
-        {
-            ArrayList al = new ArrayList();
-            DBHelper dbo = new DBHelper(szQ);
-
-            if (dbo.ReadRows(
-                (comm) => { comm.Parameters.AddWithValue("prefix", prefixText); },
-                (dr) => { al.Add(dr[keyColumn].ToString()); }))
-                return (string[])al.ToArray(typeof(string));
-            return Array.Empty<string>();
-        }
-
         private string[] DoSuggestion(string szQ, string prefixText, int count)
         {
             if (String.IsNullOrEmpty(prefixText) || string.IsNullOrEmpty(szQ) || prefixText.Length <= 2)
                 return Array.Empty<string>();
 
-            string[] rgsz = GetKeysFromDB(String.Format(CultureInfo.InvariantCulture,szQ, keyColumn, count), prefixText);
+            string[] rgsz = util.GetKeysFromDB(String.Format(CultureInfo.InvariantCulture,szQ, util.keyColumn, count), prefixText);
 
-            ArrayList responses = new ArrayList(count);
+            List<string> responses = new List<string>(count);
 
             int i = 0;
             while (responses.Count < count && i < rgsz.Length)
@@ -1346,7 +1258,7 @@ namespace MyFlightbook
                 i++;
             }
 
-            return (string[])responses.ToArray(typeof(string));
+            return responses.ToArray();
         }
 
         [System.Web.Services.WebMethod]

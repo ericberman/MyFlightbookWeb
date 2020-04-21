@@ -1975,6 +1975,40 @@ namespace MyFlightbook
         }
         #endregion
 
+        /// <summary>
+        /// Gets the flights for a user (mostly used for webservice)
+        /// </summary>
+        /// <param name="fq"></param>
+        /// <param name="offset"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        public static IEnumerable<LogbookEntry> GetFlightsForUser(FlightQuery fq, int offset, int maxCount)
+        {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+
+            List<LogbookEntry> lstLe = new List<LogbookEntry>();
+            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq, offset, maxCount));
+            dbh.ReadRows(
+                (comm) =>
+                { },
+                (dr) =>
+                {
+                    LogbookEntry le = new LogbookEntry(dr, fq.UserName)
+                    {
+                        // Note: this has no telemetry
+                        // don't even bother sending this field down the wire.
+                        FlightData = null
+                    };
+
+                    le.PopulateImages();
+                    lstLe.Add(le);
+                }
+            );
+
+            return lstLe;
+        }
+
         #region Comparison
         /// <summary>
         /// Get the differences between this and another entry, which is considered the NEW entry
@@ -2379,6 +2413,7 @@ namespace MyFlightbook
         }
         #endregion
 
+        #region Telemetry support
         /// <summary>
         /// Returns the distances and average speed flown on this flight
         /// </summary>
@@ -2461,6 +2496,36 @@ namespace MyFlightbook
             }
             return string.Empty;
         }
+
+        public string TelemetryAsGPX()
+        {
+            if (String.IsNullOrEmpty(FlightData))
+                return string.Empty;
+
+            using (FlightData fd = new FlightData())
+            {
+                MemoryStream ms = null;
+                try
+                {
+                    ms = new MemoryStream();
+                    using (StreamReader sr = new StreamReader(ms))
+                    {
+                        ms = null;  // for CA2202
+                        MemoryStream bs = sr.BaseStream as MemoryStream;
+                        if (fd.ParseFlightData(FlightData) && fd.HasLatLongInfo)
+                            fd.WriteGPXData(bs);
+                        bs.Seek(0, SeekOrigin.Begin);
+                        return sr.ReadToEnd();
+                    }
+                }
+                finally
+                {
+                    if (ms != null)
+                        ms.Dispose();
+                }
+            }
+        }
+        #endregion
     }
 
 

@@ -525,6 +525,29 @@ namespace MyFlightbook
                 return o.ToString();
         }
         #endregion
+
+        public const string keyColumn = "ColumnKey";
+
+        /// <summary>
+        /// Retrieves completions for a specified prefix, using the given database query.  MUST have a parameter named "?prefix" and MUST have a result column called "ColumnKey" (=util.keyColumn)
+        /// </summary>
+        /// <param name="szQ">The database query</param>
+        /// <param name="prefixText">The prefix</param>
+        /// <returns>An array of results with the specified prefix</returns>
+        public static string[] GetKeysFromDB(string szQ, string prefixText)
+        {
+            if (String.IsNullOrEmpty(szQ) || prefixText == null)
+                return Array.Empty<string>();
+
+            List<string> al = new List<string>();
+            DBHelper dbo = new DBHelper(szQ);
+
+            if (dbo.ReadRows(
+                (comm) => { comm.Parameters.AddWithValue("prefix", prefixText); },
+                (dr) => { al.Add(dr[keyColumn].ToString()); }))
+                return al.ToArray();
+            return Array.Empty<string>();
+        }
     }
 
     // Hack from http://stackoverflow.com/questions/976524/issues-rendering-usercontrol-using-server-execute-in-an-asmx-web-service
