@@ -84,7 +84,7 @@ namespace MyFlightbook.ImportFlights
         */
         private readonly static string[] colFlightID = { "Flight ID" };
         private readonly static string[] colDate = { "Date", "FLT_DATE", "Date Flown" };
-        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Reg" };
+        private readonly static string[] colTail = { "Tail Number", "Registration", "Tail", "Ident", "SERIAL_NUM", "ACFT", "Aircraft ID", "Reg", "AIRCRAFT REGISTRATION" };
         private readonly static string[] colAircraftID = { "Aircraft ID" };
         private readonly static string[] colTotal = { "Total Flight Time", "Total Time", "TotalDuration", "Total Duration", "Flt Time", "Block", "HRS", "TIME FLOWN", "FltTime", "Total" };
         private readonly static string[] colApproaches = { "Approaches", "NumApproaches", "Inst App (D/N)", "Inst App", "IAP", "APPROACHES & TYPE" };
@@ -141,8 +141,8 @@ namespace MyFlightbook.ImportFlights
             {"Tachometer End", new string[] {"Tachometer End", "Tach In"}},
             {"Tachometer Start", new string[] {"Tachometer Start", "Tach Out"}},
             {"Flight Number", new string[] {"Flight Number", "Flight" } },
-            {"Block Out Time", new string[] {"Block Out Time", "Block Out", "Off Block", "DepTime", "off_block" } },
-            {"Block In Time", new string[] {"Block In Time", "Block In", "On Block", "ArrTime", "on_block" } },
+            {"Block Out Time", new string[] {"Block Out Time", "Block Out", "Off Block", "DepTime", "Departure Time", "off_block" } },
+            {"Block In Time", new string[] {"Block In Time", "Block In", "On Block", "ArrTime", "Arrival Time", "on_block" } },
             {"Flight Attendant Name(s)", new string[] { "Flight Attendant Name(s)", "Flight Attendant" } },
             {"Number of Passengers", new string[] {"Number of Passengers", "PAX" } },
             {"Student Name", new string[] {"Student Name", "Student"}}

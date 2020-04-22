@@ -241,7 +241,7 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
         CSVImporter csvimporter = CurrentImporter = new CSVImporter(mfbImportAircraft1.ModelMapping);
         csvimporter.InitWithBytes(rgb, User.Identity.Name, AddSuccessRow, AddErrorRow, ckAutofill.Checked);
 
-        if (csvimporter.FlightsToImport == null)
+        if (csvimporter.FlightsToImport == null || !String.IsNullOrEmpty(csvimporter.ErrorMessage))
         {
             lblFileRequired.Text = csvimporter.ErrorMessage;
             SetWizardStep(wsUpload);
