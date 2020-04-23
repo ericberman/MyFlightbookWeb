@@ -239,7 +239,7 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
 
         ErrorContext.Clear();
         CSVImporter csvimporter = CurrentImporter = new CSVImporter(mfbImportAircraft1.ModelMapping);
-        csvimporter.InitWithBytes(rgb, User.Identity.Name, AddSuccessRow, AddErrorRow, ckAutofill.Checked);
+        csvimporter.InitWithBytes(CurrentCSVSource, User.Identity.Name, AddSuccessRow, AddErrorRow, ckAutofill.Checked);
 
         if (csvimporter.FlightsToImport == null || !String.IsNullOrEmpty(csvimporter.ErrorMessage))
         {
