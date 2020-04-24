@@ -2831,11 +2831,11 @@ namespace MyFlightbook
             if (HobbsStart > 0 || HobbsEnd > 0)
             {
                 if (HobbsStart > 0.0M && HobbsEnd > 0.0M)
-                    return String.Format(CultureInfo.CurrentCulture, "{3}: {0:#,#.0} {4} {1:#,#.0} ({2:#,#.0})", HobbsStart, HobbsEnd, HobbsEnd - HobbsStart, Resources.LogbookEntry.Hobbs, Resources.LogbookEntry.RangeSeparator);
+                    return String.Format(CultureInfo.CurrentCulture, "{3}: {0:#,#.0#} {4} {1:#,#.0#} ({2:#,#.0#})", HobbsStart, HobbsEnd, HobbsEnd - HobbsStart, Resources.LogbookEntry.Hobbs, Resources.LogbookEntry.RangeSeparator);
                 else if (HobbsStart > 0.0M)
-                    return String.Format(CultureInfo.CurrentCulture, "{1}: {0:#,#.0}", HobbsStart, Resources.LogbookEntry.HobbsStart);
+                    return String.Format(CultureInfo.CurrentCulture, "{1}: {0:#,#.0#}", HobbsStart, Resources.LogbookEntry.HobbsStart);
                 else
-                    return String.Format(CultureInfo.CurrentCulture, "{1}: {0:#,#.0}", HobbsEnd, Resources.LogbookEntry.HobbsEnd);
+                    return String.Format(CultureInfo.CurrentCulture, "{1}: {0:#,#.0#}", HobbsEnd, Resources.LogbookEntry.HobbsEnd);
             }
             else
                 return string.Empty;
