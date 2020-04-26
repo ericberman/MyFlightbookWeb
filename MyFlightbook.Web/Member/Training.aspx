@@ -9,8 +9,7 @@
 <%@ Register src="../Controls/AccountQuestions.ascx" tagname="AccountQuestions" tagprefix="uc4" %>
 <%@ Register Src="~/Controls/mfbMultiFileUpload.ascx" TagPrefix="uc2" TagName="mfbMultiFileUpload" %>
 <%@ Register Src="~/Controls/mfbImageList.ascx" TagPrefix="uc2" TagName="mfbImageList" %>
-
-
+<%@ Register Src="~/Controls/mfbScribbleSignature.ascx" TagPrefix="uc2" TagName="mfbScribbleSignature" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cpPageTitle" Runat="Server">
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -151,7 +150,9 @@
                         </asp:TemplateField>
                     </Columns>
                     <EmptyDataTemplate>
-                        <%# Branding.ReBrand(Resources.LocalizedText.StudentsMemberNoneFound) %>
+                        <ul>
+                            <li style="font-weight:bold;"><%# Branding.ReBrand(Resources.LocalizedText.StudentsMemberNoneFound) %></li>
+                        </ul>
                     </EmptyDataTemplate>
             </asp:GridView>
             <asp:Panel ID="pnlViewAllEndorsements" runat="server" meta:resourcekey="pnlViewAllEndorsementsResource1" >
@@ -159,16 +160,17 @@
             </asp:Panel>
             <asp:Panel ID="pnlAddStudent" runat="server" DefaultButton="btnAddStudent" meta:resourcekey="pnlAddStudentResource1" 
                 >
-                <br />
+                <p>
                 <asp:Localize ID="locAddStudentPrmopt" runat="server" 
                     Text="If you have a student and would like to track the endorsements you give to them,
                 enter the student&#39;s email address below. They will confirm that they know you." meta:resourcekey="locAddStudentPrmoptResource1" 
                     ></asp:Localize>
                 <br />
-                <asp:Label ID="lblEmailDisclaimer" Font-Bold="True" runat="server" 
+                <asp:Label ID="lblEmailDisclaimer" runat="server" 
                     Text="This e-mail address will NOT be stored or used for any other purpose." meta:resourcekey="lblEmailDisclaimerResource1" 
                     ></asp:Label>
-                <br />
+                </p>
+                <p>
                 <asp:TextBox runat="server" ID="txtStudentEmail" TextMode="Email"
                             AutoCompleteType="Email" ValidationGroup="vgAddStudent" meta:resourcekey="txtStudentEmailResource1" 
                              />
@@ -186,10 +188,32 @@
                     ValidationGroup="vgAddStudent" Display="Dynamic" 
                     ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" meta:resourcekey="RegularExpressionValidator3Resource1" 
                     ></asp:RegularExpressionValidator>
-                <br />
+                </p>
+                <div>
                 <asp:Label ID="lblAddStudentSuccess" runat="server" EnableViewState="False" meta:resourcekey="lblAddStudentSuccessResource1" 
                     ></asp:Label>
-                <br />
+                </div>
+            </asp:Panel>
+            <asp:Panel ID="pnlSignature" runat="server" style="margin-top: 6pt; margin-bottom: 18pt;">
+                <h2><% =Resources.LocalizedText.StudentSigningDefaultScribbleHeader %></h2>
+                <p><% =Resources.LocalizedText.StudentSigningDefaultScribblePrompt %></p>
+                <asp:MultiView ID="mvDefaultSig" runat="server">
+                    <asp:View ID="vwCurrentSig" runat="server">
+                        <img runat="server" id="imgCurrSig" src="~/images/signature.png" />
+                        <div><asp:LinkButton ID="lnkEditDefaultSig" runat="server" Text="<%$ Resources:LocalizedText, StudentSigningDefaultScribbleEdit %>" OnClick="lnkEditDefaultSig_Click"></asp:LinkButton></div>
+                    </asp:View>
+                    <asp:View ID="vwNewSig" runat="server">
+                        <div style="display:inline-block;">
+                            <uc2:mfbScribbleSignature runat="server" Enabled="false" ColorRef="#888888" ID="mfbScribbleSignature" ShowCancel="true" ShowSave="true" OnSaveClicked="btnSaveDefaultSig_Click" OnCancelClicked="btnCancel_Click" />
+                        </div>
+                        <div style="display:inline-block; vertical-align:top; padding: 4px;">
+                            <asp:Image ID="imgStamp" ImageUrl="~/images/rubberstamp.png" runat="server" ToolTip="<%$ Resources:LocalizedText, StudentSigningDefaultScribbleIcon %>" />
+                        </div>
+                        <div style="display:inline-block; vertical-align:top; max-width:300px; padding: 4px">
+                            <% =Resources.LocalizedText.StudentSigningDefaultScribblePrompt2 %>
+                        </div>
+                    </asp:View>
+                </asp:MultiView>
             </asp:Panel>
             <h2><% =Branding.ReBrand(Resources.LocalizedText.StudentsNonMemberPrompt) %></h2>
             <p><% =Branding.ReBrand(Resources.LocalizedText.StudentsNonMemberDescription) %></p>

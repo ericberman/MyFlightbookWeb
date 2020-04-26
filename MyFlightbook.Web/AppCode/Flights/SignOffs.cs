@@ -104,8 +104,10 @@ namespace MyFlightbook.Instruction
         /// </summary>
         public bool IsAdHocEndorsement
         {
-            get { return String.IsNullOrEmpty(InstructorName) && GetDigitizedSig() != null && GetDigitizedSig().Length > 0; }
+            get { return String.IsNullOrEmpty(InstructorName) && HasDigitizedSig; }
         }
+
+        public bool HasDigitizedSig { get { return digitizedSig != null && digitizedSig.Length > 0; } }
 
         /// <summary>
         /// Username of the instructor
@@ -213,15 +215,21 @@ namespace MyFlightbook.Instruction
             FARReference = dr["FARRef"].ToString();
             CFICachedName = util.ReadNullableString(dr, "CFIFullName");
 
+            byte[] rgb;
+
             if (!(dr["FileSize"] is DBNull))
             {
                 int FileSize = Convert.ToInt32(dr["FileSize"], CultureInfo.InvariantCulture);
-                byte[] rgb = new byte[FileSize];
+                rgb = new byte[FileSize];
                 dr.GetBytes(dr.GetOrdinal("DigitizedSignature"), 0, rgb, 0, FileSize);
-                SetDigitizedSig(rgb);
             }
             else
-                SetDigitizedSig(null);
+                rgb = CFIStudentMap.DefaultScribbleForInstructor(InstructorName);
+
+            if (rgb != null && rgb.Length == 0)
+                rgb = null;
+
+            SetDigitizedSig(rgb);
         }
         #endregion
 
@@ -912,5 +920,65 @@ namespace MyFlightbook.Instruction
             LoadInstructors();
         }
         #endregion
+
+        private const string PrefKeyInstructorScribble = "DefaultCFIScribble";
+
+        /// <summary>
+        /// Gets the default scribble (if any) for the specified user
+        /// </summary>
+        /// <param name="pf"></param>
+        /// <returns></returns>
+        public static byte[] DefaultScribbleForInstructor(Profile pf)
+        {
+            if (pf == null)
+                throw new ArgumentNullException(nameof(pf));
+
+            if (!pf.PreferenceExists(PrefKeyInstructorScribble))
+                return Array.Empty<byte>();
+
+            return Convert.FromBase64String(pf.GetPreferenceForKey<string>(PrefKeyInstructorScribble));
+        }
+
+        /// <summary>
+        /// Gets the default scribble (if any) for the specified user
+        /// </summary>
+        /// <param name="pf"></param>
+        /// <returns></returns>
+        public static byte[] DefaultScribbleForInstructor(string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
+
+            return DefaultScribbleForInstructor(Profile.GetUser(szUser));
+        }
+
+        /// <summary>
+        /// Checks if the given instructor has a default signature.
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <returns></returns>
+        public static bool InstructorHasDefaultScribble(string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
+
+            return Profile.GetUser(szUser).PreferenceExists(PrefKeyInstructorScribble);
+        }
+
+        /// <summary>
+        /// Sets the default signature for the specified user.  Clears it if null/empty
+        /// </summary>
+        /// <param name="pf"></param>
+        /// <returns></returns>
+        public static void SetDefaultScribbleForInstructor(Profile pf, byte[] rgb)
+        {
+            if (pf == null)
+                throw new ArgumentNullException(nameof(pf));
+
+            if (rgb == null || rgb.Length == 0)
+                pf.SetPreferenceForKey(PrefKeyInstructorScribble, null, true);
+            else
+                pf.SetPreferenceForKey(PrefKeyInstructorScribble, Convert.ToBase64String(rgb));
+        }
     }
 }

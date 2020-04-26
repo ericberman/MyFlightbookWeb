@@ -14,7 +14,7 @@
                 <tr><td><asp:Label Font-Bold="true" ID="Literal3" runat="server" Text="<%$ Resources:SignOff, EditEndorsementInstructorPrompt %>"></asp:Label></td><td><%# Eval("CFIDisplayName") %></td></tr>
                 <tr><td><asp:Label Font-Bold="true" ID="Literal4" runat="server" Text="<%$ Resources:SignOff, EditEndorsementCFIPrompt %>"></asp:Label></td><td><%# Eval("CFICertificate") %></td></tr>
                 <tr><td><asp:Label Font-Bold="true" ID="Literal5" runat="server" Text="<%$ Resources:SignOff, EditEndorsementExpirationPrompt %>"></asp:Label></td><td><%# ((DateTime) Eval("CFIExpirationDate")).HasValue() ? ((DateTime) Eval("CFIExpirationDate")).ToShortDateString() : Resources.SignOff.EndorsementNoDate %></td></tr>
-                <tr runat="server" visible='<%# Eval("IsAdHocEndorsement") %>'>
+                <tr runat="server" visible='<%# Eval("HasDigitizedSig") %>'>
                     <td colspan="2">
                         <img src='<%# Eval("DigitizedSigLink") %>' />
                     </td>

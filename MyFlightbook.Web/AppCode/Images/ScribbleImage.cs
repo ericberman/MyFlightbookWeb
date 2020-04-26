@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 
-
 /******************************************************
  * 
  * Copyright (c) 2008-2020 MyFlightbook LLC
@@ -54,7 +53,7 @@ namespace MyFlightbook.Image
         /// <returns>The bytes of the PNG.</returns>
         public static byte[] FromDataLinkURL(string szLink)
         {
-            if (szLink == null)
+            if (String.IsNullOrEmpty(szLink))
                 return Array.Empty<byte>();
 
             string szSigB64 = szLink.Substring(ScribbleImage.DataURLPrefix.Length);

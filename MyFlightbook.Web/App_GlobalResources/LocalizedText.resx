@@ -1743,4 +1743,28 @@
   <data name="AboutViewFeatures" xml:space="preserve">
     <value>Learn more about what %APP_NAME% can do!</value>
   </data>
+  <data name="StudentSigningDefaultScribbleAdd" xml:space="preserve">
+    <value>Add Scribble</value>
+  </data>
+  <data name="StudentSigningDefaultScribbleCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="StudentSigningDefaultScribbleEdit" xml:space="preserve">
+    <value>Change Scribble</value>
+  </data>
+  <data name="StudentSigningDefaultScribbleHeader" xml:space="preserve">
+    <value>Default Scribble (Optional)</value>
+  </data>
+  <data name="StudentSigningDefaultScribbleIcon" xml:space="preserve">
+    <value>This indicates that the signature has been digitally signed and so a "stock" scribble is being displayed</value>
+  </data>
+  <data name="StudentSigningDefaultScribblePrompt" xml:space="preserve">
+    <value>When you sign a flight or issue an endorsement to a student listed above, it is digitally validated (signed), so there is no need for a scribble.  But if you provide one here, it will be displayed next to such flights and endorsements.</value>
+  </data>
+  <data name="StudentSigningDefaultScribblePrompt2" xml:space="preserve">
+    <value>This icon indicates when a default scribble is displayed for flights or endorsements that were validated digitally (i.e., that didn't require a scribble).</value>
+  </data>
+  <data name="StudentSigningDefaultScribbleSaveSig" xml:space="preserve">
+    <value>Save</value>
+  </data>
 </root>

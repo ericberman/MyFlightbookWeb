@@ -781,7 +781,7 @@ namespace MyFlightbook
 
         public void LoadDigitalSig()
         {
-            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT DigitizedSignature, LENGTH(DigitizedSignature) AS FileSize FROM flights WHERE idFlight={0}", FlightID));
+            DBHelper dbh = new DBHelper(String.Format(CultureInfo.InvariantCulture, "SELECT DigitizedSignature, LENGTH(DigitizedSignature) AS FileSize, CFIUsername FROM flights WHERE idFlight={0}", FlightID));
             int FileSize = 0;
             dbh.ReadRow((comm) => { }, (dr) =>
             {
@@ -791,10 +791,12 @@ namespace MyFlightbook
                     DigitizedSignature = new byte[FileSize];
                     dr.GetBytes(dr.GetOrdinal("DigitizedSignature"), 0, DigitizedSignature, 0, FileSize);
                 }
-                else
+                else 
                 {
-                    FileSize = 0;
-                    DigitizedSignature = Array.Empty<byte>();
+                    // See if the CFI has a default signature and use that if available.  Will return Array.Empty if none found.
+                    string szCFIUser = (string)dr["CFIUsername"];
+                    DigitizedSignature = CFIStudentMap.DefaultScribbleForInstructor(szCFIUser);
+                    FileSize = DigitizedSignature.Length;
                 }
             });
         }
@@ -1664,7 +1666,7 @@ namespace MyFlightbook
                     CFIEmail = (string)util.ReadNullableField(dr, "CFIEmail", null);
                     CFIName = (string)util.ReadNullableField(dr, "CFIName", null);
                     CFISignatureState = (SignatureState)Convert.ToInt32(dr["SignatureState"], CultureInfo.InvariantCulture);
-                    HasDigitizedSig = Convert.ToBoolean(dr["HasDigitizedSignature"], CultureInfo.InvariantCulture);
+                    HasDigitizedSig = Convert.ToBoolean(dr["HasDigitizedSignature"], CultureInfo.InvariantCulture) || (CFISignatureState != SignatureState.None && !String.IsNullOrEmpty(CFIUsername) && CFIStudentMap.InstructorHasDefaultScribble(CFIUsername));
 
                     // Get descriptor fields.  These are read but never written
                     ModelDisplay = util.ReadNullableField(dr, "ModelDisplay", string.Empty).ToString();

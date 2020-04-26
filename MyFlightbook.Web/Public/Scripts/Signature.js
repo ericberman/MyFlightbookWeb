@@ -14,13 +14,26 @@
     "use strict";
 
     ns.SignatureControl = function (options) {
-        var label = options && options.label || "Signature",
-            cWidth = options && options.width || "300px",
-            cHeight = options && options.height || "300px",
-            imgDataControlId = options && options.imgDataControlId || "",
-            btnClearId,
+        var imgDataControlId = options && options.imgDataControlId || "",
+            imgColor = options && options.strokeColor || '#0000ff',
+            imgWaterMark = options && options.watermarkHREF || '',
+            imgWaterMarkX = options && options.watermarkX || 0,
+            imgWaterMarkY = options && options.watermarkY || 0,
+            btnClearId = options && options.clearControlId || '',
             canvas,
             ctx;
+
+        function setWaterMark() {
+            if (imgWaterMark !== '') {
+                var base_image = new Image();
+                base_image.src = imgWaterMark;
+                base_image.onload = function () {
+                    canvas = document.getElementById("signatureCanvas");
+                    ctx = canvas.getContext("2d");
+                    ctx.drawImage(base_image, imgWaterMarkX, imgWaterMarkY);
+               }
+            }
+        }
 
         function initControl() {
             createControlElements();
@@ -31,7 +44,8 @@
             canvas.addEventListener("mousedown", mouseDown, false);
             canvas.addEventListener("mouseup", mouseUp, false);
             ctx = canvas.getContext("2d");
-            ctx.strokeStyle = '#0000ff';
+            setWaterMark();
+            ctx.strokeStyle = imgColor;
             ctx.lineWidth = 2;
         }
 
@@ -85,12 +99,13 @@
         }
 
         function wireButtonEvents() {
-            var btnClear = document.getElementById("btnClear");
+            var btnClear = document.getElementById(btnClearId);
             btnClear.addEventListener("click", function () {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 var hdnControl = document.getElementById(imgDataControlId);
                 if (hdnControl)
                     hdnControl.value = "";
+                setWaterMark();
             }, false);
         }
 

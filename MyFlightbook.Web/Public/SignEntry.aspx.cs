@@ -105,7 +105,7 @@ public partial class Public_SignEntry : System.Web.UI.Page
                 Dictionary<string, LogbookEntry> d = PreviouslySignedAdhocFlights;
 
                 // If no instructors, and no previously signed flights, assume ad-hoc and go straight to accept terms.
-                if (sm.Instructors.Count() == 0 && d.Keys.Count == 0)
+                if (!sm.Instructors.Any() && d.Keys.Count == 0)
                 {
                     mfbSignFlight.SigningMode = Controls_mfbSignFlight.SignMode.AdHoc;
                     mfbSignFlight.CFIProfile = null;

@@ -61,10 +61,14 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;p&gt;%APP_NAME% is an open-source product of a passion for aviation meeting a need for a free online logbook.&lt;/p&gt;
-        ///&lt;p&gt;We believe that every pilot should be using an electronic logbook, and that aviation is expensive enough that the logbook shouldn&apos;t be adding to the burden.  Your data is your data, and you should be able to 
-        ///    access it from anywhere at any time.  %APP_NAME% is meant to be a way of giving back to the pilot community.&lt;/p&gt;
-        ///&lt;p&gt;%APP_NAME% is not trying to be a commercial poduct.  As such, it  [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to &lt;p&gt;%APP_NAME% is an open-source product of a passion for aviation meeting a need for a free online logbook; it is meant to be a way of giving back to the pilot community.&lt;/p&gt;
+        ///&lt;p&gt;We believe:&lt;/p&gt;
+        ///&lt;ul&gt;
+        ///    &lt;li&gt;Every pilot should be using an electronic logbook&lt;/li&gt;
+        ///    &lt;li&gt;Aviation is expensive enough; your logbook shouldn&apos;t add to the burden&lt;/li&gt;
+        ///    &lt;li&gt;Your data is YOUR data&lt;/li&gt;
+        ///    &lt;li&gt;You should have access to your data from anywhere, at any time&lt;/li&gt;
+        ///    &lt;li&gt;%APP_NAME% should be the best purpose-b [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string About {
             get {
@@ -2242,7 +2246,7 @@ namespace Resources {
         ///   Looks up a localized string similar to &lt;table class=&quot;featureTable&quot;&gt;
         ///    &lt;tr class=&quot;appHeader&quot;&gt;
         ///        &lt;td colspan=&quot;3&quot;&gt;&lt;/td&gt;
-        ///        &lt;td class=&quot;feature&quot; style=&quot;font-style:italic; font-size:small;&quot;&gt;Compare to...&lt;/td&gt;
+        ///        &lt;td class=&quot;feature&quot; style=&quot;font-style:italic; font-size:small; border-bottom: 2px solid gray;&quot; colspan=&quot;2&quot;&gt;Compare to...&lt;/td&gt;
         ///    &lt;/tr&gt;
         ///    &lt;tr class=&quot;appHeader&quot;&gt;
         ///        &lt;td class=&quot;feature&quot;&gt;&lt;/td&gt;
@@ -2253,10 +2257,8 @@ namespace Resources {
         ///        &lt;td class=&quot;feature&quot;&gt;
         ///            ForeFlight
         ///        &lt;/td&gt;
-        ///    &lt;/tr&gt;
-        ///    &lt;tr&gt;
-        ///        &lt;td class=&quot;spacerColumn&quot;&gt;&lt;/td&gt;
-        ///        &lt;td class=&quot;feat [rest of string was truncated]&quot;;.
+        ///        &lt;td class=&quot;feature&quot;&gt;
+        ///            [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FeatureTable {
             get {
@@ -4447,6 +4449,78 @@ namespace Resources {
         internal static string StudentEndorsementAltText {
             get {
                 return ResourceManager.GetString("StudentEndorsementAltText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Scribble.
+        /// </summary>
+        internal static string StudentSigningDefaultScribbleAdd {
+            get {
+                return ResourceManager.GetString("StudentSigningDefaultScribbleAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string StudentSigningDefaultScribbleCancel {
+            get {
+                return ResourceManager.GetString("StudentSigningDefaultScribbleCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Scribble.
+        /// </summary>
+        internal static string StudentSigningDefaultScribbleEdit {
+            get {
+                return ResourceManager.GetString("StudentSigningDefaultScribbleEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default Scribble (Optional).
+        /// </summary>
+        internal static string StudentSigningDefaultScribbleHeader {
+            get {
+                return ResourceManager.GetString("StudentSigningDefaultScribbleHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This indicates that the signature has been digitally signed and so a &quot;stock&quot; scribble is being displayed.
+        /// </summary>
+        internal static string StudentSigningDefaultScribbleIcon {
+            get {
+                return ResourceManager.GetString("StudentSigningDefaultScribbleIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you sign a flight or issue an endorsement to a student listed above, it is digitally validated (signed), so there is no need for a scribble.  But if you provide one here, it will be displayed next to such flights and endorsements..
+        /// </summary>
+        internal static string StudentSigningDefaultScribblePrompt {
+            get {
+                return ResourceManager.GetString("StudentSigningDefaultScribblePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This icon indicates when a default scribble is displayed for flights or endorsements that were validated digitally (i.e., that didn&apos;t require a scribble)..
+        /// </summary>
+        internal static string StudentSigningDefaultScribblePrompt2 {
+            get {
+                return ResourceManager.GetString("StudentSigningDefaultScribblePrompt2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        internal static string StudentSigningDefaultScribbleSaveSig {
+            get {
+                return ResourceManager.GetString("StudentSigningDefaultScribbleSaveSig", resourceCulture);
             }
         }
         

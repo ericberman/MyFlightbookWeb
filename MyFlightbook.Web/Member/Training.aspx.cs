@@ -1,4 +1,5 @@
 ﻿using MyFlightbook;
+using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using System;
 using System.Collections.Generic;
@@ -92,11 +93,7 @@ public partial class Member_Training : System.Web.UI.Page
                     RefreshFlightsToBeSigned();
                     break;
                 case tabID.instStudents:
-                    if (Request.IsMobileDevice())
-                        mfbIlOfflineEndorsements.Columns = 1;
-                    mfuOfflineEndorsements.Class = MyFlightbook.Image.MFBImageInfo.ImageClass.OfflineEndorsement;
-                    mfbIlOfflineEndorsements.Key = Page.User.Identity.Name;
-                    mfbIlOfflineEndorsements.Refresh();
+                    SetUpStudents();
                     break;
             }
         }
@@ -115,6 +112,26 @@ public partial class Member_Training : System.Web.UI.Page
         }
     }
 
+    protected void SetUpStudents()
+    {
+        if (Request.IsMobileDevice())
+            mfbIlOfflineEndorsements.Columns = 1;
+        mfuOfflineEndorsements.Class = MyFlightbook.Image.MFBImageInfo.ImageClass.OfflineEndorsement;
+        mfbIlOfflineEndorsements.Key = Page.User.Identity.Name;
+        mfbIlOfflineEndorsements.Refresh();
+        byte[] rgbDefaultScribble = CFIStudentMap.DefaultScribbleForInstructor(m_pf);
+        mvDefaultSig.SetActiveView(vwCurrentSig);
+        if (rgbDefaultScribble == null || rgbDefaultScribble.Length == 0)
+        {
+            lnkEditDefaultSig.Text = Resources.LocalizedText.StudentSigningDefaultScribbleAdd;
+            imgCurrSig.Src = string.Empty;
+        }
+        else
+            imgCurrSig.Src = ScribbleImage.DataLinkForByteArray(rgbDefaultScribble);
+
+        mfbScribbleSignature.WatermarkRef = ResolveClientUrl("~/images/rubberstamp.png");
+    }
+
     protected override void OnLoadComplete(EventArgs e)
     {
         // show an upload control in case the user switched from ajax to legacy upload
@@ -123,13 +140,34 @@ public partial class Member_Training : System.Web.UI.Page
         base.OnLoadComplete(e);
     }
 
-
     #region Endorsements students and instructors
+    #region Default Signature
+    protected void lnkEditDefaultSig_Click(object sender, EventArgs e)
+    {
+        mvDefaultSig.SetActiveView(vwNewSig);
+    }
+
+    protected void btnSaveDefaultSig_Click(object sender, EventArgs e)
+    {
+        byte[] rgbSig = mfbScribbleSignature.Base64Data();
+        CFIStudentMap.SetDefaultScribbleForInstructor(m_pf, rgbSig);
+        imgCurrSig.Src = ScribbleImage.DataLinkForByteArray(rgbSig);
+        imgCurrSig.Visible = (rgbSig.Length != 0);
+        lnkEditDefaultSig.Text = (rgbSig.Length == 0) ? Resources.LocalizedText.StudentSigningDefaultScribbleAdd : Resources.LocalizedText.StudentSigningDefaultScribbleEdit;
+        mvDefaultSig.SetActiveView(vwCurrentSig);
+    }
+
+    protected void btnCancel_Click(object sender, EventArgs e)
+    {
+        mvDefaultSig.SetActiveView(vwCurrentSig);
+    }
+    #endregion
+
     protected void RefreshStudentsAndInstructors()
     {
         gvInstructors.DataSource = m_sm.Instructors;
         gvStudents.DataSource = m_sm.Students;
-        pnlViewAllEndorsements.Visible = m_sm.Students.Count() > 0;
+        pnlViewAllEndorsements.Visible = m_sm.Students.Any();
         gvInstructors.DataBind();
         gvStudents.DataBind();
     }
@@ -336,4 +374,5 @@ public partial class Member_Training : System.Web.UI.Page
         gvInstructors.DataBind();
     }
     #endregion
+
 }

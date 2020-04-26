@@ -597,6 +597,7 @@
     <Content Include="images\pushpinsm.png" />
     <Content Include="images\resizehandle.png" />
     <Content Include="images\rightarrow.png" />
+    <Content Include="images\rubberstamp.png" />
     <Content Include="images\ruler.png" />
     <Content Include="images\Safari32x32.png" />
     <Content Include="images\Safari48x48.png" />

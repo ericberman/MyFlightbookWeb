@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 /******************************************************
  * 
- * Copyright (c) 2015-2018 MyFlightbook LLC
+ * Copyright (c) 2015-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -19,7 +19,7 @@ public partial class Controls_mfbEndorsement : System.Web.UI.UserControl, IEndor
     public void SetEndorsement(Endorsement e)
     {
         if (e == null)
-            throw new ArgumentNullException("e");
+            throw new ArgumentNullException(nameof(e));
         FormView1.DataSource = new List<Endorsement> { e };
         FormView1.DataBind();
     }

@@ -13,6 +13,24 @@ public partial class Controls_mfbScribbleSignature
 {
 
     /// <summary>
+    /// btnSave control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnSave;
+
+    /// <summary>
+    /// btnCancel control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnCancel;
+
+    /// <summary>
     /// hdnSigData control.
     /// </summary>
     /// <remarks>
@@ -20,6 +38,24 @@ public partial class Controls_mfbScribbleSignature
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.HiddenField hdnSigData;
+
+    /// <summary>
+    /// hdnWM control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HiddenField hdnWM;
+
+    /// <summary>
+    /// hdnColor control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HiddenField hdnColor;
 
     /// <summary>
     /// valSignature control.

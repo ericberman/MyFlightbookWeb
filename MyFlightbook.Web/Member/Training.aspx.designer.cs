@@ -292,6 +292,78 @@ public partial class Member_Training
     protected global::System.Web.UI.WebControls.Label lblAddStudentSuccess;
 
     /// <summary>
+    /// pnlSignature control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlSignature;
+
+    /// <summary>
+    /// mvDefaultSig control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.MultiView mvDefaultSig;
+
+    /// <summary>
+    /// vwCurrentSig control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwCurrentSig;
+
+    /// <summary>
+    /// imgCurrSig control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.HtmlControls.HtmlImage imgCurrSig;
+
+    /// <summary>
+    /// lnkEditDefaultSig control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.LinkButton lnkEditDefaultSig;
+
+    /// <summary>
+    /// vwNewSig control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwNewSig;
+
+    /// <summary>
+    /// mfbScribbleSignature control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbScribbleSignature mfbScribbleSignature;
+
+    /// <summary>
+    /// imgStamp control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgStamp;
+
+    /// <summary>
     /// lnkAddOfflineEndorsement control.
     /// </summary>
     /// <remarks>

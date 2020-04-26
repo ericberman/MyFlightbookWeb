@@ -13,10 +13,37 @@ using System.Web.UI.WebControls;
 
 public partial class Controls_mfbScribbleSignature : System.Web.UI.UserControl
 {
+    public event EventHandler SaveClicked;
+    public event EventHandler CancelClicked;
+
     public bool Enabled
     {
         get { return valSignature.Enabled; }
         set { valSignature.Enabled = value; }
+    }
+
+    public bool ShowSave
+    {
+        get { return btnSave.Visible; }
+        set { btnSave.Visible = value; }
+    }
+
+    public bool ShowCancel
+    {
+        get { return btnCancel.Visible; }
+        set { btnCancel.Visible = value; }
+    }
+
+    public string WatermarkRef
+    {
+        get { return hdnWM.Value; }
+        set { hdnWM.Value = value ?? string.Empty; }
+    }
+
+    public string ColorRef
+    {
+        get { return hdnColor.Value; }
+        set { hdnColor.Value = value ?? "#0000ff"; }
     }
 
     public byte[] Base64Data()
@@ -37,7 +64,7 @@ public partial class Controls_mfbScribbleSignature : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Page.ClientScript.RegisterClientScriptInclude("signatureScript", ResolveClientUrl("~/public/Scripts/signature.js?v=2"));
+        Page.ClientScript.RegisterClientScriptInclude("signatureScript", ResolveClientUrl("~/public/Scripts/signature.js?v=3"));
         Page.ClientScript.RegisterClientScriptInclude("dataURL", ResolveClientUrl("~/public/Scripts/todataurl-png.js"));
     }
 
@@ -48,5 +75,15 @@ public partial class Controls_mfbScribbleSignature : System.Web.UI.UserControl
 
         if (Enabled && !ScribbleImage.IsValidDataURL(hdnSigData.Value))
             args.IsValid = false;
+    }
+
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        SaveClicked?.Invoke(sender, e);
+    }
+
+    protected void btnCancel_Click(object sender, EventArgs e)
+    {
+        CancelClicked?.Invoke(sender, e);
     }
 }
