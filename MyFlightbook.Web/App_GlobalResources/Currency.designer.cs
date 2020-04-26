@@ -1448,7 +1448,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (Short by {0} hour(s) per 61.57(c)(6)(i)(A) and {1} hour(s) per 61.57(c)(6)(ii)(B).
+        ///   Looks up a localized string similar to (Short by {0} hour(s) per 61.57(c)(3)(i)(A) and {1} hour(s) per 61.57(c)(3)(ii)(B).
         /// </summary>
         internal static string DiscrepancyTemplateGliderIFRPassengers {
             get {

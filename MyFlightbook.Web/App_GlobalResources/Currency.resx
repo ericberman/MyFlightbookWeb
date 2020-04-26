@@ -329,7 +329,7 @@
     <value>IMC Hours (simulated or real)</value>
   </data>
   <data name="DiscrepancyTemplateGliderIFRPassengers" xml:space="preserve">
-    <value>(Short by {0} hour(s) per 61.57(c)(6)(i)(A) and {1} hour(s) per 61.57(c)(6)(ii)(B)</value>
+    <value>(Short by {0} hour(s) per 61.57(c)(3)(i)(A) and {1} hour(s) per 61.57(c)(3)(ii)(B)</value>
     <comment>Template for what you're short by for glider IFR.</comment>
   </data>
   <data name="IPCMayBeRequired" xml:space="preserve">
