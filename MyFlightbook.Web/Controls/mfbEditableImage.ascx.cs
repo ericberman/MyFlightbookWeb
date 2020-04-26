@@ -99,7 +99,7 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
         img.Height = (mfbii.HeightThumbnail == 0) ? Unit.Empty : mfbii.HeightThumbnail;
         img.AlternateText = (AltText.Length == 0) ? mfbii.Comment : AltText;
         img.Attributes["title"] = (AltText.Length == 0) ? mfbii.Comment : AltText; // for firefox compat
-        img.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:viewMFBImg('{0}');", ResolveClientUrl(mfbii.URLFullImage));
+        img.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, mfbii.ImageType == MFBImageInfoBase.ImageFileType.PDF || mfbii.ImageType == MFBImageInfoBase.ImageFileType.S3PDF ? "javascript:window.location = '{0}';" : "javascript:viewMFBImg('{0}');", ResolveClientUrl(mfbii.URLFullImage));
         txtComments.Text = mfbii.Comment;
         lblComments.Text = mfbii.Comment.EscapeHTML();
 
