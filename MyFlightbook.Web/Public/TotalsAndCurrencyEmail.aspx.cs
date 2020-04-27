@@ -118,6 +118,7 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
             // And set HHMM mode explicitly (since not otherwise going to be set in totals
             mfbTotalSummary.UseHHMM = mfbTotalSummaryYTD.UseHHMM = pf.UsesHHMM;
 
+            lblCurrency.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailCurrencyHeader, DateTime.Now.ToLongDateString());
             if (fMonthlySummary)
             {
                 bool fAnnual = (DateTime.Now.Month == 1);  // if it's January, show prior year; else show YTD
@@ -146,7 +147,6 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
             else
             {
                 lblIntroHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailWeeklyMailIntro, Branding.CurrentBrand.AppName);
-                lblCurrency.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailCurrencyHeader, DateTime.Now.ToLongDateString());
                 lblTotal.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailTotalsHeader, DateTime.Now.ToLongDateString());
 
                 if (fHasTotals)
