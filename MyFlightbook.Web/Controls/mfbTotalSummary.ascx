@@ -39,8 +39,8 @@
                 <div class="header"><%# Eval("GroupName") %></div>
                 <asp:Repeater ID="rptItems" runat="server" DataSource='<%# Eval("Items") %>'>
                     <ItemTemplate>
-                        <div style="display:inline-block; vertical-align:top; width:230px; padding: 3px;">
-                            <div style="vertical-align:top; text-align:right; font-weight:bold; float:right; margin-left:2px; margin-right: 6px;">
+                        <div class="totalsBox">
+                            <div class="totalsValue">
                                 <%# ((MyFlightbook.Currency.TotalsItem) Container.DataItem).ValueString(UseHHMM) %>
                             </div>
                             <div>

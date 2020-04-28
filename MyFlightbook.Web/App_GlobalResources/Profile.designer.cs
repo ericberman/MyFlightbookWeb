@@ -682,6 +682,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last 7 days.
+        /// </summary>
+        internal static string EmailWeeklyTotalsLabel {
+            get {
+                return ResourceManager.GetString("EmailWeeklyTotalsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can issue an endorsement to a student, or record an endorsement that you have given to a student off-line.
         /// </summary>
         internal static string EndorsementDisclaimer {

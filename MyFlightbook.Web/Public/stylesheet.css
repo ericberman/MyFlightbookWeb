@@ -363,6 +363,63 @@ H4
     page-break-after: always;
 }
 
+/* Grouped Totals */
+.totalsBox {
+    display: inline-block;
+    vertical-align: top;
+    width: 230px;
+    padding: 3px;
+}
+
+.totalsValue {
+    vertical-align: top;
+    text-align: right;
+    font-weight: bold;
+    float: right;
+    margin-left: 2px;
+    margin-right: 6px;
+}
+
+.totalsByTimeTable {
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.totalsByTimeCell {
+    vertical-align: top;
+    text-align: right;
+    font-weight: bold;
+    width: 8em;
+    padding: 3px;
+    border-right: 1px solid lightgray;
+}
+
+td.totalsGroupHeaderCell {
+    text-align:center;
+    margin-top: 8px;
+    font-weight:bold;
+    border-bottom: 1px solid gray;
+}
+
+td.totalsByTimeCell:nth-child(even) {
+    background-color: #EFEFEF;
+}
+
+.totalsDescription {
+
+}
+
+.totalsDateRange {
+    font-weight: bold;
+    text-align: center;
+    border-right: 1px solid lightgray;
+}
+
+td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even) {
+    background-color: #EFEFEF;
+}
+
 /* Autocomplete AJAX */
 .AutoExtender {
     font-weight: normal;

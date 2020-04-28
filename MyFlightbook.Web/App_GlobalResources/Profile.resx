@@ -533,4 +533,7 @@
   <data name="EmailCurrencyExpiringMailSubject" xml:space="preserve">
     <value>You have flying currency that has expired or is expiring soon</value>
   </data>
+  <data name="EmailWeeklyTotalsLabel" xml:space="preserve">
+    <value>Last 7 days</value>
+  </data>
 </root>

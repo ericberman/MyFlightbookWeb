@@ -184,40 +184,13 @@ public partial class Public_TotalsAndCurrencyEmail
     protected global::System.Web.UI.WebControls.Label lblTotal;
 
     /// <summary>
-    /// mfbTotalSummary control.
+    /// mfbTotalsByTimePeriod control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbTotalSummary mfbTotalSummary;
-
-    /// <summary>
-    /// pnlYTD control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlYTD;
-
-    /// <summary>
-    /// lblYTD control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblYTD;
-
-    /// <summary>
-    /// mfbTotalSummaryYTD control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_mfbTotalSummary mfbTotalSummaryYTD;
+    protected global::MyFlightbook.Web.Controls.mfbTotalsByTimePeriod mfbTotalsByTimePeriod;
 
     /// <summary>
     /// lblRecentAchievementsTitle control.

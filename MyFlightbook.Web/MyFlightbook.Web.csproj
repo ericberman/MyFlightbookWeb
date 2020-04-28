@@ -352,6 +352,7 @@
     <Content Include="Controls\mfbBadgeSet.ascx" />
     <Content Include="Controls\mfbBasicMedManager.ascx" />
     <Content Include="Controls\mfbChartTotals.ascx" />
+    <Content Include="Controls\mfbTotalsByTimePeriod.ascx" />
     <Content Include="Controls\Prefs\mfbCloudAhoy.ascx" />
     <Content Include="Controls\mfbCurrency.ascx" />
     <Content Include="Controls\mfbCustCurrency.ascx" />
@@ -1363,6 +1364,13 @@
     </Compile>
     <Compile Include="Controls\mfbChartTotals.ascx.designer.cs">
       <DependentUpon>mfbChartTotals.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\mfbTotalsByTimePeriod.ascx.cs">
+      <DependentUpon>mfbTotalsByTimePeriod.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\mfbTotalsByTimePeriod.ascx.designer.cs">
+      <DependentUpon>mfbTotalsByTimePeriod.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\Prefs\mfbCloudAhoy.ascx.cs">
       <DependentUpon>mfbCloudAhoy.ascx</DependentUpon>

@@ -33,6 +33,8 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
         lblSuccess.Visible = true;
     }
 
+    protected string Username { get; set; }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         // see if this is coming from the local machine - reject anything that isn't.
@@ -42,11 +44,11 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            cssRef.Href = "~/Public/Stylesheet.css?v=20".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
+            cssRef.Href = "~/Public/Stylesheet.css?v=21".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
             baseRef.Attributes["href"] = "~/Public/".ToAbsoluteURL(Request.Url.Scheme, Branding.CurrentBrand.HostName, Request.Url.Port).ToString();
 
             string szAuthKey = util.GetStringParam(Request, "k");
-            string szUser = util.GetStringParam(Request, "u");
+            Username = util.GetStringParam(Request, "u");
             string szParam = util.GetStringParam(Request, "p");
 
             // This page is public, so that it doesn't require any authentication, making it easy to set up a scheduled task.
@@ -57,13 +59,25 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
             if (String.IsNullOrEmpty(szAuthKey))
                 KickOffRun();
             else
-                SetUpCurrencyAndTotalsForUser(szAuthKey, szUser, szParam);
+                SetUpCurrencyAndTotalsForUser(szAuthKey, szParam);
         }
     }
 
+    /// <summary>
+    /// Ensures that the authorization is valid by ensuring that the passed authtoken is no more than 10 seconds old.
+    /// We are already protected against requests coming from outside of this machine.
+    /// If k=local (i.e., the authkey is the word "local") AND we are authenticated, then we bypass the username and use the authenticated username
+    /// Otherwise, we check that k hasn't aged and throw an error if so (prevent replay attacks).
+    /// </summary>
+    /// <param name="szAuthKey"></param>
     protected void ValidateAuthorization(string szAuthKey)
     {
-        if (szAuthKey.CompareCurrentCultureIgnoreCase("local") != 0 || !Page.User.Identity.IsAuthenticated)
+        bool fLocal = szAuthKey.CompareCurrentCultureIgnoreCase("local") == 0;
+        if (fLocal && Page.User.Identity.IsAuthenticated)
+        {
+            Username = Page.User.Identity.Name; // Use the authenticated account; ignore any passed username
+        }
+        else 
         {
             AdminAuthEncryptor enc = new AdminAuthEncryptor();
             string szDate = enc.Decrypt(szAuthKey);
@@ -74,12 +88,13 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
         }
     }
 
-    protected void SetUpCurrencyAndTotalsForUser(string szAuthKey, string szUser, string szParam)
+    protected void SetUpCurrencyAndTotalsForUser(string szAuthKey, string szParam)
     {
         try
         {
             ValidateAuthorization(szAuthKey);
-            Profile pf = MyFlightbook.Profile.GetUser(szUser);
+
+            Profile pf = MyFlightbook.Profile.GetUser(Username);
             EmailSubscriptionManager em = new EmailSubscriptionManager(pf.Subscriptions);
 
             IEnumerable<CurrencyStatusItem> rgExpiringCurrencies = null;
@@ -99,63 +114,39 @@ public partial class Public_TotalsAndCurrencyEmail : System.Web.UI.Page
             bool fMonthlySummary = (String.Compare(szParam, "monthly", StringComparison.OrdinalIgnoreCase) == 0);
 
             if (!fHasCurrency && !fHasTotals && !fMonthlySummary)
-                throw new MyFlightbookException("Email requested but no subscriptions found! User =" + szUser);
+                throw new MyFlightbookException("Email requested but no subscriptions found! User =" + Username);
 
             if (fMonthlySummary && !fHasMonthly)
-                throw new MyFlightbookException("Monthly email requested but user does not subscribe to monthly email.  User = " + szUser);
+                throw new MyFlightbookException("Monthly email requested but user does not subscribe to monthly email.  User = " + Username);
 
             // Donation solicitation: thank-them if they've made a donation within the previous 12 months, else solicit.
             lblThankyou.Text = Branding.ReBrand(Resources.LocalizedText.DonateThankYouTitle);
             lblSolicitDonation.Text = Branding.ReBrand(Resources.LocalizedText.DonatePrompt);
             lnkDonateNow.Text = Branding.ReBrand(Resources.LocalizedText.DonateSolicitation);
             lnkDonateNow.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}{1}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx/pftDonate"));
-            mvDonations.SetActiveView(Payment.TotalPaidSinceDate(DateTime.Now.AddYears(-1), szUser) > 0 ? vwThankyou : vwPleaseGive);
+            mvDonations.SetActiveView(Payment.TotalPaidSinceDate(DateTime.Now.AddYears(-1), Username) > 0 ? vwThankyou : vwPleaseGive);
 
             // Fix up the unsubscribe link.
             lnkUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}{1}/{2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Member/EditProfile.aspx"), tabID.pftPrefs.ToString());
-            lnkQuickUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public/Unsubscribe.aspx"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(szUser)));
+            lnkQuickUnsubscribe.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "http://{0}{1}?u={2}", Branding.CurrentBrand.HostName, VirtualPathUtility.ToAbsolute("~/Public/Unsubscribe.aspx"), HttpUtility.UrlEncode(new UserAccessEncryptor().Encrypt(Username)));
 
-            // And set HHMM mode explicitly (since not otherwise going to be set in totals
-            mfbTotalSummary.UseHHMM = mfbTotalSummaryYTD.UseHHMM = pf.UsesHHMM;
+            bool fAnnual = (DateTime.Now.Month == 1 && DateTime.Now.Day == 1);  // if it's January 1, show prior year; else show YTD
+            mfbTotalsByTimePeriod.BindTotalsForUser(Username, !fMonthlySummary, !fMonthlySummary, true, true, !fAnnual);
+
+            if (fAnnual)
+                mfbRecentAchievements.Refresh(Username, new DateTime(DateTime.Now.Year - 1, 1, 1), new DateTime(DateTime.Now.Year - 1, 12, 31), true);
+            else
+                mfbRecentAchievements.Refresh(Username, new DateTime(DateTime.Now.Year, 1, 1), DateTime.Now, true);
+
+            lblRecentAchievementsTitle.Text = mfbRecentAchievements.Summary;
+            lblRecentAchievementsTitle.Visible = mfbRecentAchievements.AchievementCount > 0;
 
             lblCurrency.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailCurrencyHeader, DateTime.Now.ToLongDateString());
-            if (fMonthlySummary)
-            {
-                bool fAnnual = (DateTime.Now.Month == 1);  // if it's January, show prior year; else show YTD
-                lblIntroHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailMonthlyMailIntro, Branding.CurrentBrand.AppName);
-                DateTime dtPriorMonth = DateTime.Now.AddMonths(-1);
-                lblTotal.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailTotalsPriorMonthHeader, dtPriorMonth.ToString("MMMM", CultureInfo.CurrentCulture), dtPriorMonth.Year);
-                lblYTD.Text = fAnnual ? String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailTotalsPriorYearHeader, DateTime.Now.Year - 1) : String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailTotalsYTDHeader, DateTime.Now.Year);
-                pnlTotals.Visible = pnlYTD.Visible = true;
 
-                mfbTotalSummary.Username = mfbTotalSummaryYTD.Username = pf.UserName;
+            pnlTotals.Visible = fHasTotals || fMonthlySummary;
+            lblTotal.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailTotalsHeader, DateTime.Now.ToLongDateString());
 
-                FlightQuery fqPriorMonth = new FlightQuery(pf.UserName) { DateRange = FlightQuery.DateRanges.PrevMonth };
-                mfbTotalSummary.CustomRestriction = fqPriorMonth;
-
-                FlightQuery fqYTD = new FlightQuery(pf.UserName) { DateRange = fAnnual ? FlightQuery.DateRanges.PrevYear : FlightQuery.DateRanges.YTD };
-                mfbTotalSummaryYTD.CustomRestriction = fqYTD;
-
-                if (fAnnual)
-                    mfbRecentAchievements.Refresh(szUser, new DateTime(DateTime.Now.Year - 1, 1, 1), new DateTime(DateTime.Now.Year - 1, 12, 31), true);
-                else
-                    mfbRecentAchievements.Refresh(szUser, new DateTime(DateTime.Now.Year, 1, 1), DateTime.Now, true);
-
-                lblRecentAchievementsTitle.Text = mfbRecentAchievements.Summary;
-                lblRecentAchievementsTitle.Visible = mfbRecentAchievements.AchievementCount > 0;
-            }
-            else
-            {
-                lblIntroHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailWeeklyMailIntro, Branding.CurrentBrand.AppName);
-                lblTotal.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.EmailTotalsHeader, DateTime.Now.ToLongDateString());
-
-                if (fHasTotals)
-                {
-                    mfbTotalSummary.Username = pf.UserName;
-                    mfbTotalSummary.CustomRestriction = new FlightQuery(pf.UserName);
-                    pnlTotals.Visible = true;
-                }
-            }
+            lblIntroHeader.Text = String.Format(CultureInfo.CurrentCulture, fMonthlySummary ? Resources.Profile.EmailMonthlyMailIntro : Resources.Profile.EmailWeeklyMailIntro, Branding.CurrentBrand.AppName);
 
             if (fHasCurrency || fMonthlySummary)
             {
