@@ -18,8 +18,8 @@ FROM flights f
 INNER JOIN clubmembers cm ON f.username = cm.username
 INNER JOIN users u ON u.username=cm.username
 INNER JOIN clubs c ON c.idclub=cm.idclub
-INNER JOIN clubaircraft ca ON ca.idaircraft=f.idaircraft
-INNER JOIN aircraft ac ON ca.idaircraft=ac.idaircraft
+INNER JOIN clubaircraft ca ON (ca.idaircraft=f.idaircraft AND c.idclub=ca.idclub)
+INNER JOIN aircraft ac ON (ca.idaircraft=ac.idaircraft AND c.idclub=ca.idclub)
 LEFT JOIN flightproperties fp on (fp.idflight=f.idflight AND fp.idproptype=95)
 LEFT JOIN flightproperties fp2 on (fp2.idflight=f.idflight AND fp2.idproptype=96)
 LEFT JOIN flightproperties fp3 on (fp3.idflight=f.idflight AND fp3.idproptype=365)
