@@ -15,6 +15,24 @@ namespace MyFlightbook.Web.PublicPages
     {
 
         /// <summary>
+        /// imgLogo2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgLogo2;
+
+        /// <summary>
+        /// lnkContact control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkContact;
+
+        /// <summary>
         /// imgLogo control.
         /// </summary>
         /// <remarks>
@@ -33,15 +51,6 @@ namespace MyFlightbook.Web.PublicPages
         protected global::System.Web.UI.WebControls.HyperLink lnkFeatures;
 
         /// <summary>
-        /// lnkFacebook control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkFacebook;
-
-        /// <summary>
         /// imgFacebook control.
         /// </summary>
         /// <remarks>
@@ -49,6 +58,15 @@ namespace MyFlightbook.Web.PublicPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgFacebook;
+
+        /// <summary>
+        /// lnkFacebook control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkFacebook;
 
         /// <summary>
         /// lblFollowFacebook control.
@@ -60,15 +78,6 @@ namespace MyFlightbook.Web.PublicPages
         protected global::System.Web.UI.WebControls.Label lblFollowFacebook;
 
         /// <summary>
-        /// lnkTwitter control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkTwitter;
-
-        /// <summary>
         /// imgTwitter control.
         /// </summary>
         /// <remarks>
@@ -76,6 +85,15 @@ namespace MyFlightbook.Web.PublicPages
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgTwitter;
+
+        /// <summary>
+        /// lnkTwitter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkTwitter;
 
         /// <summary>
         /// lblFollowTwitter control.
@@ -87,13 +105,31 @@ namespace MyFlightbook.Web.PublicPages
         protected global::System.Web.UI.WebControls.Label lblFollowTwitter;
 
         /// <summary>
-        /// lnkContact control.
+        /// locRecentStats control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkContact;
+        protected global::System.Web.UI.WebControls.Label locRecentStats;
+
+        /// <summary>
+        /// rptStats control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptStats;
+
+        /// <summary>
+        /// lblRecentFlightsStats control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lblRecentFlightsStats;
 
         /// <summary>
         /// Master property.

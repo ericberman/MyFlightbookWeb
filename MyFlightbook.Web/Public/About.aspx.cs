@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MyFlightbook.FlightStatistics;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 /******************************************************
  * 
@@ -20,6 +23,20 @@ namespace MyFlightbook.Web.PublicPages
                 lnkTwitter.Visible = !String.IsNullOrEmpty(lnkTwitter.NavigateUrl = Branding.CurrentBrand.TwitterFeed);
                 lblFollowFacebook.Text = Branding.ReBrand(Resources.LocalizedText.FollowOnFacebook);
                 lblFollowTwitter.Text = Branding.ReBrand(Resources.LocalizedText.FollowOnTwitter);
+
+                FlightStats fs = FlightStats.GetFlightStats();
+                lblRecentFlightsStats.Text = fs.ToString();
+
+                locRecentStats.Text = Branding.ReBrand(Resources.LocalizedText.DefaultPageRecentStats);
+                List<string> lstStats = new List<string>()
+                {
+                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsFlights, fs.NumFlightsTotal),
+                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageRecentStatsAircraft, fs.NumAircraft),
+                String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPagerecentStatsModels, fs.NumModels)
+                };
+
+                rptStats.DataSource = lstStats;
+                rptStats.DataBind();
             }
         }
     }
