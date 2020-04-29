@@ -22,31 +22,67 @@ public partial class Member_8710Form
     protected global::System.Web.UI.WebControls.Label lblUserName;
 
     /// <summary>
-    /// mvQuery control.
+    /// mfbAccordionProxyExtender control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.MultiView mvQuery;
+    protected global::Controls_mfbAccordionProxyExtender mfbAccordionProxyExtender;
 
     /// <summary>
-    /// vwTotals control.
+    /// pnlAcc control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.View vwTotals;
+    protected global::System.Web.UI.WebControls.Panel pnlAcc;
 
     /// <summary>
-    /// loc8710DiclaimerHeader control.
+    /// apcFilter control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Localize loc8710DiclaimerHeader;
+    protected global::Controls_mfbAccordionProxyControl apcFilter;
+
+    /// <summary>
+    /// apc8710 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbAccordionProxyControl apc8710;
+
+    /// <summary>
+    /// apcModelRollup control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbAccordionProxyControl apcModelRollup;
+
+    /// <summary>
+    /// apcTimeRollup control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbAccordionProxyControl apcTimeRollup;
+
+    /// <summary>
+    /// pnlFilter control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlFilter;
 
     /// <summary>
     /// mfbQueryDescriptor1 control.
@@ -58,40 +94,49 @@ public partial class Member_8710Form
     protected global::Controls_mfbQueryDescriptor mfbQueryDescriptor1;
 
     /// <summary>
-    /// btnEditQuery control.
+    /// hdnLastViewedPaneIndex control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnEditQuery;
+    protected global::System.Web.UI.WebControls.HiddenField hdnLastViewedPaneIndex;
 
     /// <summary>
-    /// rblReport control.
+    /// accReports control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.RadioButtonList rblReport;
+    protected global::AjaxControlToolkit.Accordion accReports;
 
     /// <summary>
-    /// mvReport control.
+    /// acpFilter control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.MultiView mvReport;
+    protected global::AjaxControlToolkit.AccordionPane acpFilter;
 
     /// <summary>
-    /// vw8710 control.
+    /// mfbSearchForm1 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.View vw8710;
+    protected global::Controls_mfbSearchForm mfbSearchForm1;
+
+    /// <summary>
+    /// acp8710 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.AccordionPane acp8710;
 
     /// <summary>
     /// gv8710 control.
@@ -139,13 +184,13 @@ public partial class Member_8710Form
     protected global::System.Web.UI.WebControls.Localize loc8710Footnote3;
 
     /// <summary>
-    /// vwRollup control.
+    /// acpModel control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.View vwRollup;
+    protected global::AjaxControlToolkit.AccordionPane acpModel;
 
     /// <summary>
     /// gvRollup control.
@@ -157,22 +202,22 @@ public partial class Member_8710Form
     protected global::System.Web.UI.WebControls.GridView gvRollup;
 
     /// <summary>
-    /// vwQueryForm control.
+    /// acpByTime control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.View vwQueryForm;
+    protected global::AjaxControlToolkit.AccordionPane acpByTime;
 
     /// <summary>
-    /// mfbSearchForm1 control.
+    /// mfbTotalsByTimePeriod control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::Controls_mfbSearchForm mfbSearchForm1;
+    protected global::MyFlightbook.Web.Controls.mfbTotalsByTimePeriod mfbTotalsByTimePeriod;
 
     /// <summary>
     /// MfbLogbook1 control.

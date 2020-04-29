@@ -270,4 +270,85 @@
     <value>Flights with "{0}"</value>
     <comment>{0} is the name of the property</comment>
   </data>
+  <data name="8710ClassTotals" xml:space="preserve">
+    <value>ClassTotals</value>
+  </data>
+  <data name="8710Footnote1" xml:space="preserve">
+    <value>To determine the amount of time where two fields are used, the minimum of the two fields is used.  For example, night PIC for a flight is the smaller of the amount of PIC or Night flying that is logged.</value>
+  </data>
+  <data name="8710Footnote2" xml:space="preserve">
+    <value>Instrument time comprises both actual and simulated instrument time.</value>
+  </data>
+  <data name="8710Footnote3" xml:space="preserve">
+    <value>If a flight has night-time take-offs/landings and PIC (SIC) time, then it is assumed that those landings are done while acting as PIC (SIC).</value>
+  </data>
+  <data name="8710InstructionReceived" xml:space="preserve">
+    <value>Instruc-&lt;br /&gt;tion&lt;br /&gt;Received</value>
+  </data>
+  <data name="8710Instrument" xml:space="preserve">
+    <value>Instru-&lt;br /&gt;ment</value>
+  </data>
+  <data name="8710NightDual" xml:space="preserve">
+    <value>Night&lt;br /&gt;Instruc-&lt;br /&gt;tion&lt;br /&gt;Received</value>
+  </data>
+  <data name="8710NightPICSIC" xml:space="preserve">
+    <value>Night PIC/SIC</value>
+  </data>
+  <data name="8710NightPICTakeoffLanding" xml:space="preserve">
+    <value>Night&lt;br /&gt;Take-off/&lt;br /&gt;Landing PIC/SIC</value>
+  </data>
+  <data name="8710NightTakeoffLandings" xml:space="preserve">
+    <value>Night&lt;br /&gt;Take-off/&lt;br /&gt;Landings</value>
+  </data>
+  <data name="8710Notes" xml:space="preserve">
+    <value>Notes:</value>
+  </data>
+  <data name="8710NumberOf" xml:space="preserve">
+    <value># of...</value>
+  </data>
+  <data name="8710PICAndSIC" xml:space="preserve">
+    <value>PIC&lt;br /&gt;and&lt;br /&gt;SIC</value>
+  </data>
+  <data name="8710Solo" xml:space="preserve">
+    <value>Solo</value>
+  </data>
+  <data name="8710XCDual" xml:space="preserve">
+    <value>Cross&lt;br /&gt;Country&lt;br /&gt;Instruc-&lt;br /&gt;tion&lt;br /&gt;Received</value>
+  </data>
+  <data name="8710XCPICSIC" xml:space="preserve">
+    <value>Cross&lt;br /&gt;Country&lt;br /&gt;PIC/SIC</value>
+  </data>
+  <data name="8710XCSolo" xml:space="preserve">
+    <value>Cross&lt;br /&gt;Country&lt;br /&gt;Solo</value>
+  </data>
+  <data name="CommonReports8710" xml:space="preserve">
+    <value>8710 (IACRA)</value>
+  </data>
+  <data name="CommonReportsAirline" xml:space="preserve">
+    <value>By Model</value>
+  </data>
+  <data name="CommonReportsByTime" xml:space="preserve">
+    <value>By Time</value>
+  </data>
+  <data name="CommonReportsDisclaimer" xml:space="preserve">
+    <value>Totals are computed using the criteria below:</value>
+  </data>
+  <data name="RollupApproach" xml:space="preserve">
+    <value>Apprch&lt;br /&gt;(All/6/12)&lt;br /&gt;Month</value>
+  </data>
+  <data name="RollupJetPICSIC" xml:space="preserve">
+    <value>Jet&lt;br /&gt;(PIC/SIC)</value>
+  </data>
+  <data name="RollupMultiPICSIC" xml:space="preserve">
+    <value>Multi&lt;br  /&gt;(PIC/SIC)</value>
+  </data>
+  <data name="RollupPICSIC" xml:space="preserve">
+    <value>(PIC/SIC)</value>
+  </data>
+  <data name="RollupPICSICTurboprop" xml:space="preserve">
+    <value>TurboProp&lt;br /&gt;(PIC/SIC)</value>
+  </data>
+  <data name="RollupTotalByPeriod" xml:space="preserve">
+    <value>Total&lt;br /&gt;(All/12/24)&lt;br /&gt;Month</value>
+  </data>
 </root>

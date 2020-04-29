@@ -1,88 +1,100 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
-    Codebehind="8710Form.aspx.cs" Inherits="Member_8710Form" culture="auto" meta:resourcekey="PageResource1" %>
+    Codebehind="8710Form.aspx.cs" Inherits="Member_8710Form" culture="auto" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <%@ Register Src="../Controls/mfbLogbook.ascx" TagName="mfbLogbook" TagPrefix="uc6" %>
 <%@ Register src="../Controls/mfbSearchAndTotals.ascx" tagname="mfbSearchAndTotals" tagprefix="uc1" %>
 <%@ Register src="../Controls/mfbSearchForm.ascx" tagname="mfbSearchForm" tagprefix="uc2" %>
 <%@ Register src="../Controls/mfbQueryDescriptor.ascx" tagname="mfbQueryDescriptor" tagprefix="uc3" %>
-<asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><asp:Label ID="lblUserName" runat="server" 
-            meta:resourcekey="lblUserNameResource1"></asp:Label>
+<%@ Register Src="~/Controls/mfbTotalsByTimePeriod.ascx" TagPrefix="uc1" TagName="mfbTotalsByTimePeriod" %>
+<%@ Register Src="~/Controls/mfbAccordionProxyControl.ascx" TagPrefix="uc1" TagName="mfbAccordionProxyControl" %>
+<%@ Register Src="~/Controls/mfbAccordionProxyExtender.ascx" TagPrefix="uc1" TagName="mfbAccordionProxyExtender" %>
+
+<asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server"><asp:Label ID="lblUserName" runat="server"></asp:Label>
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
-    <asp:MultiView ID="mvQuery" runat="server" ActiveViewIndex="0">
-        <asp:View ID="vwTotals" runat="server">
-            <p class="header"><asp:Localize ID="loc8710DiclaimerHeader" runat="server" 
-                    Text="Totals are computed using the criteria below:" 
-                    meta:resourcekey="loc8710DiclaimerHeaderResource1"></asp:Localize></p>
-            <uc3:mfbQueryDescriptor ID="mfbQueryDescriptor1" runat="server" ShowEmptyFilter="true" OnQueryUpdated="mfbQueryDescriptor1_QueryUpdated" />
-            <p class="noprint">
-                <asp:Button ID="btnEditQuery" runat="server" onclick="btnEditQuery_Click" 
-                    Text="Change Query" meta:resourcekey="btnEditQueryResource1" />
-            </p>    
-            <div>
-                <asp:RadioButtonList ID="rblReport" runat="server" AutoPostBack="True" RepeatDirection="Horizontal" OnSelectedIndexChanged="rblReport_SelectedIndexChanged" meta:resourcekey="rblReportResource1">
-                    <asp:ListItem Value="0" Text="8710 (IACRA) Report" Selected="True" meta:resourcekey="ListItemResource1"></asp:ListItem>
-                    <asp:ListItem Value="1" Text="Rollup by model" meta:resourcekey="ListItemResource2"></asp:ListItem>
-                </asp:RadioButtonList>
-            </div>
-            <asp:MultiView ID="mvReport" runat="server" ActiveViewIndex="0">
-                <asp:View ID="vw8710" runat="server">
-                    <asp:GridView ID="gv8710" runat="server" Font-Size="8pt" CellPadding="0" OnRowDataBound="gv8710_RowDataBound"
-                        AutoGenerateColumns="False" meta:resourcekey="gv8710Resource1">
+    <uc1:mfbAccordionProxyExtender runat="server" AccordionControlID="accReports" id="mfbAccordionProxyExtender" HeaderProxyIDs="apcFilter,apc8710,apcModelRollup,apcTimeRollup" />
+    <asp:Panel ID="pnlAcc" runat="server" CssClass="accordionMenuContainer">
+        <uc1:mfbAccordionProxyControl runat="server" id="apcFilter" LabelText="<%$ Resources:LocalizedText, LogTabFilter %>" />
+        <uc1:mfbAccordionProxyControl runat="server" id="apc8710" LabelText="<%$ Resources:Totals, CommonReports8710 %>"/>
+        <uc1:mfbAccordionProxyControl runat="server" id="apcModelRollup" LabelText="<%$ Resources:Totals, CommonReportsAirline %>"/>
+        <uc1:mfbAccordionProxyControl runat="server" id="apcTimeRollup" LabelText="<%$ Resources:Totals, CommonReportsByTime %>"/>
+    </asp:Panel>
+    <asp:Panel ID="pnlFilter" runat="server" CssClass="filterApplied" Visible="false" >
+        <div style="display:inline-block;"><%=Resources.LocalizedText.ResultsFiltered %></div>
+        <uc3:mfbQueryDescriptor ID="mfbQueryDescriptor1" runat="server" ShowEmptyFilter="true" OnQueryUpdated="mfbQueryDescriptor1_QueryUpdated" />
+    </asp:Panel>
+    <asp:HiddenField ID="hdnLastViewedPaneIndex" runat="server" />
+    <script>
+        function onAccordionPaneShown(idx) {
+            if (idx != 0)
+                document.getElementById("<% =hdnLastViewedPaneIndex.ClientID %>").value = idx;
+        }
+    </script>
+    <ajaxToolkit:Accordion ID="accReports" SelectedIndex="1" RequireOpenedPane="false" runat="server" HeaderCssClass="accordionMenuHeader" HeaderSelectedCssClass="accordionMenuHeaderSelected" ContentCssClass="accordionMenuContent" TransitionDuration="250">
+        <Panes>
+            <ajaxToolkit:AccordionPane ID="acpFilter" runat="server">
+                <Content>
+                    <div style="margin-left:auto; margin-right:auto;">
+                        <uc2:mfbSearchForm ID="mfbSearchForm1" InitialCollapseState="True" runat="server" OnQuerySubmitted="ShowResults" OnReset="ClearForm" />
+                    </div>
+                </Content>
+            </ajaxToolkit:AccordionPane>
+            <ajaxToolkit:AccordionPane ID="acp8710" runat="server">
+                <Content>
+                    <asp:GridView ID="gv8710" runat="server" Font-Size="8pt" CellPadding="0" GridLines="None" OnRowDataBound="gv8710_RowDataBound"
+                    AutoGenerateColumns="False" style="margin-left:auto; margin-right:auto; margin-top: 10px; margin-bottom: 10px;">
                         <Columns>
-                            <asp:BoundField DataField="Category" meta:resourcekey="BoundFieldResource1">
+                            <asp:BoundField DataField="Category">
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Center"></ItemStyle>
                             </asp:BoundField>
-                            <asp:TemplateField HeaderText="Total" meta:resourcekey="TemplateFieldResource1">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, Total %>">
                                 <ItemTemplate>
                                     <%# Eval("TotalTime").FormatDecimal(UseHHMM) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Instruc-<br />tion<br />Received" 
-                                meta:resourcekey="TemplateFieldResource2">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, 8710InstructionReceived %>">
                                 <ItemTemplate>
                                     <%# Eval("InstructionReceived").FormatDecimal(UseHHMM)%>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Solo" meta:resourcekey="TemplateFieldResource3">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, 8710Solo %>">
                                 <ItemTemplate>
                                     <%# Eval("SoloTime").FormatDecimal(UseHHMM)%>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="PIC<br />and<br />SIC" 
-                                meta:resourcekey="TemplateFieldResource4">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, 8710PICAndSIC %>">
                                 <ItemTemplate>
-                                    <table cellpadding="3px" cellspacing="0" style="width: 100%; font-size:8pt">
+                                    <table style="width: 100%; font-size:8pt; border-spacing:0px">
                                         <tr>
-                                            <td style="border-bottom: 1px solid black;">
-                                                <asp:Localize ID="locPICMain" runat="server" Text="PIC" meta:resourcekey="locPICMainResource1"></asp:Localize></td>
-                                            <td style="border-bottom: 1px solid black;"><%# Eval("PIC").FormatDecimal(UseHHMM)%>
+                                            <td style="border-bottom: 1px solid black; padding: 3px">
+                                                <asp:Localize ID="locPICMain" runat="server" Text="<%$ Resources:Totals, PIC %>" /></td>
+                                            <td style="border-bottom: 1px solid black; padding:3px"><%# Eval("PIC").FormatDecimal(UseHHMM)%>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                <asp:Localize ID="locSICHeaderPIC" runat="server" Text="SIC" meta:resourcekey="locSICHeaderPICResource1"></asp:Localize>
+                                            <td style="padding: 3px">
+                                                <asp:Localize ID="locSICHeaderPIC" runat="server" Text="<%$ Resources:Totals, SIC %>" />
                                             </td>
-                                            <td>
+                                            <td style="padding: 3px">
                                                 <%# Eval("SIC").FormatDecimal(UseHHMM)%>
                                             </td>
                                         </tr>
                                     </table>
                                 </ItemTemplate>
+                                <ItemStyle CssClass="PaddedCell" />
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField meta:resourcekey="TemplateFieldResource5">
+                            <asp:TemplateField>
                                 <HeaderTemplate>
                                     <asp:Localize ID="locCrossCountryDualHeader" runat="server" 
-                                        meta:resourcekey="locCrossCountryDualHeaderResource1" 
-                                        Text="Cross&lt;br /&gt;Country&lt;br /&gt;Instruc-&lt;br /&gt;tion&lt;br /&gt;Received"></asp:Localize><span class="FootNote">1</span>
+                                        Text="<%$ Resources:Totals, 8710XCDual %>" /><span class="FootNote">1</span>
                                 </HeaderTemplate>
                                 <ItemTemplate>
                                     <%# Eval("CrossCountryDual").FormatDecimal(UseHHMM)%>
@@ -90,11 +102,10 @@
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField meta:resourcekey="TemplateFieldResource6">
+                            <asp:TemplateField>
                                 <HeaderTemplate>
                                     <asp:Localize ID="locXCSoloHeader" runat="server" 
-                                        meta:resourcekey="locXCSoloHeaderResource1" 
-                                        Text="Cross&lt;br /&gt;Country&lt;br /&gt;Solo"></asp:Localize><span class="FootNote">1</span>
+                                        Text="<%$ Resources:Totals, 8710XCSolo %>" /><span class="FootNote">1</span>
                                 </HeaderTemplate>
                                 <ItemTemplate>
                                     <%# Eval("CrossCountrySolo").FormatDecimal(UseHHMM)%>
@@ -102,35 +113,33 @@
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField meta:resourcekey="TemplateFieldResource7" >
+                            <asp:TemplateField>
                                 <HeaderTemplate>
                                     <asp:Localize ID="locXCPICHeader" runat="server" 
-                                        Text="Cross&lt;br /&gt;Country&lt;br /&gt;PIC/SIC" 
-                                        meta:resourcekey="locXCPICHeaderResource1"></asp:Localize><span class="FootNote">1</span>
+                                        Text="<%$ Resources:Totals, 8710XCPICSIC %>" /><span class="FootNote">1</span>
                                 </HeaderTemplate>
                                 <ItemTemplate>
-                                    <table cellpadding="3px" cellspacing="0" style="width: 100%; font-size:8pt">
+                                    <table style="border-spacing:0; width: 100%; font-size:8pt">
                                         <tr>
-                                            <td style="border-bottom: 1px solid black;">
-                                                <asp:Localize ID="locPICHeader" runat="server" Text="PIC" 
-                                                    meta:resourcekey="locPICHeaderResource1"></asp:Localize></td>
-                                             <td style="border-bottom: 1px solid black;"><%# Eval("CrossCountryPIC").FormatDecimal(UseHHMM)%>
+                                            <td style="border-bottom: 1px solid black; padding: 3px">
+                                                <asp:Localize ID="locPICHeader" runat="server" Text="<%$ Resources:Totals, PIC %>" /></td>
+                                                <td style="border-bottom: 1px solid black; padding: 3px"><%# Eval("CrossCountryPIC").FormatDecimal(UseHHMM)%>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                <asp:Localize ID="locSICHeaderXCPIC" runat="server" Text="SIC" meta:resourcekey="locSICHeaderXCPICResource1"></asp:Localize></td>
-                                            <td><%# Eval("CrossCountrySIC").FormatDecimal(UseHHMM)%>
+                                            <td style="padding: 3px">
+                                                <asp:Localize ID="locSICHeaderXCPIC" runat="server" Text="<%$ Resources:Totals, SIC %>" /></td>
+                                            <td style="padding: 3px"><%# Eval("CrossCountrySIC").FormatDecimal(UseHHMM)%>
                                             </td>
                                         </tr>
                                     </table>
                                 </ItemTemplate>
+                                <ItemStyle CssClass="PaddedCell" />
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField meta:resourcekey="TemplateFieldResource8">
+                            <asp:TemplateField>
                                 <HeaderTemplate>
-                                    <asp:Localize ID="locInstrumentHeader" runat="server" Text="Instru-&lt;br /&gt;ment" 
-                                        meta:resourcekey="locInstrumentHeaderResource1"></asp:Localize><span class="FootNote">2</span>
+                                    <asp:Localize ID="locInstrumentHeader" runat="server" Text="<%$ Resources:Totals, 8710Instrument %>" /><span class="FootNote">2</span>
                                 </HeaderTemplate>
                                 <ItemTemplate>
                                     <%# Eval("InstrumentTime").FormatDecimal(UseHHMM)%>
@@ -138,11 +147,10 @@
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField meta:resourcekey="TemplateFieldResource9">
+                            <asp:TemplateField>
                                 <HeaderTemplate>
                                     <asp:Localize ID="locNightDual" runat="server" 
-                                        Text="Night&lt;br /&gt;Instruc-&lt;br /&gt;tion&lt;br /&gt;Received" 
-                                        meta:resourcekey="locNightDualResource1"></asp:Localize><span class="FootNote">1</span>
+                                        Text="<%$ Resources:Totals, 8710NightDual %>"></asp:Localize><span class="FootNote">1</span>
                                 </HeaderTemplate>
                                 <ItemTemplate>
                                     <%# Eval("NightDual").FormatDecimal(UseHHMM)%>
@@ -150,73 +158,69 @@
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Night<br />Take-off/<br />Landings" 
-                                meta:resourcekey="TemplateFieldResource10">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, 8710NightTakeoffLandings %>">
                                 <ItemTemplate>
                                     <%# Eval("NightTakeoffs") %>
                                     /
                                     <%# Eval("NightLandings") %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
-                                <ItemStyle HorizontalAlign="Center" />
+                                <ItemStyle CssClass="PaddedCell" HorizontalAlign="Center" />
                             </asp:TemplateField>
-                            <asp:TemplateField meta:resourcekey="TemplateFieldResource11">
+                            <asp:TemplateField>
                                 <HeaderTemplate><asp:Localize ID="locNightPICHeader" runat="server" 
-                                        Text="Night PIC/SIC" meta:resourcekey="locNightPICHeaderResource1"></asp:Localize><span class="FootNote">1</span>
+                                        Text="<%$ Resources:Totals, 8710NightPICSIC %>" /><span class="FootNote">1</span>
                                 </HeaderTemplate>
                                 <ItemTemplate>
-                                    <table cellpadding="3px" cellspacing="0" style="width: 100%; font-size:8pt">
+                                    <table style="width: 100%; font-size:8pt; border-spacing: 0px;">
                                         <tr>
-                                            <td style="border-bottom: 1px solid black;">
-                                                <asp:Localize ID="locPICNight" runat="server" Text="PIC" 
-                                                    meta:resourcekey="locPICNightResource1"></asp:Localize>
+                                            <td style="border-bottom: 1px solid black; padding: 3px">
+                                                <asp:Localize ID="locPICNight" runat="server" Text="<%$ Resources:Totals, PIC %>"></asp:Localize>
                                             </td>
-                                            <td style="border-bottom: 1px solid black;">
+                                            <td style="border-bottom: 1px solid black; padding: 3px">
                                                 <%# Eval("NightPIC").FormatDecimal(UseHHMM)%>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                <asp:Localize ID="locSICNight" runat="server" Text="SIC" 
-                                                    meta:resourcekey="locSICNightResource1"></asp:Localize>
+                                            <td style="padding: 3px">
+                                                <asp:Localize ID="locSICNight" runat="server" Text="<%$ Resources:Totals, SIC %>"></asp:Localize>
                                             </td>
-                                            <td>
+                                            <td style="padding: 3px">
                                                 <%# Eval("NightSIC").FormatDecimal(UseHHMM)%>       
                                             </td>
                                         </tr>
                                     </table>
                                 </ItemTemplate>
+                                <ItemStyle CssClass="PaddedCell" />
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField meta:resourcekey="TemplateFieldResource12">
+                            <asp:TemplateField>
                                 <HeaderTemplate><asp:Localize ID="locNightTakeoffLandingHeader" runat="server" 
-                                        Text="Night&lt;br /&gt;Take-off/&lt;br /&gt;Landing PIC/SIC" 
-                                        meta:resourcekey="locNightTakeoffLandingHeaderResource1"></asp:Localize><span class="FootNote">3</span></HeaderTemplate>
+                                        Text="<%$ Resources:Totals, 8710NightPICTakeoffLanding %>"></asp:Localize><span class="FootNote">3</span></HeaderTemplate>
                                 <ItemTemplate>
-                                    <table cellpadding="3px" cellspacing="0" style="width: 100%; font-size:8pt">
+                                    <table style="width: 100%; font-size:8pt; border-spacing: 0px">
                                         <tr>
-                                            <td style="border-bottom: 1px solid black;">
-                                                <asp:Localize ID="locNightLandingPIC" runat="server" Text="PIC" 
-                                                    meta:resourcekey="locNightLandingPICResource1"></asp:Localize>
+                                            <td style="border-bottom: 1px solid black;padding: 3px">
+                                                <asp:Localize ID="locNightLandingPIC" runat="server" Text="<%$ Resources:Totals, PIC %>"></asp:Localize>
                                             </td>
-                                            <td style="border-bottom: 1px solid black;">
+                                            <td style="border-bottom: 1px solid black;padding: 3px">
                                                 <%# Eval("NightPICTakeoffs") %>&nbsp;/&nbsp;<%# Eval("NightPICLandings") %></td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                <asp:Localize ID="locNightLandingSIC" runat="server" Text="SIC" 
-                                                    meta:resourcekey="locNightLandingSICResource1"></asp:Localize>
+                                            <td style="padding: 3px">
+                                                <asp:Localize ID="locNightLandingSIC" runat="server" Text="<%$ Resources:Totals, SIC %>"></asp:Localize>
                                             </td>
-                                            <td>
+                                            <td style="padding: 3px">
                                                 <%# Eval("NightSICTakeoffs") %>&nbsp;/&nbsp;<%# Eval("NightSICLandings") %></td>
                                         </tr>
                                     </table>
                                 </ItemTemplate>
+                                <ItemStyle CssClass="PaddedCell" />
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField meta:resourcekey="TemplateFieldResource13" HeaderText="Class Totals">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, 8710ClassTotals %>">
                                 <ItemTemplate>
-                                    <asp:Panel ID="pnlClassTotals" runat="server" Visible="False" style="width:100%;" meta:resourcekey="pnlClassTotalsResource1">
+                                    <asp:Panel ID="pnlClassTotals" runat="server" Visible="False" style="width:100%;">
                                         <table style="border-collapse:collapse; width: 100%; font-size:smaller">
                                             <tr>
                                                 <td style="border-right: 1px solid darkgray;"></td>
@@ -237,9 +241,10 @@
                                         </table>
                                     </asp:Panel>
                                 </ItemTemplate>
+                                <HeaderStyle CssClass="PaddedCell" />
+                                <ItemStyle CssClass="PaddedCell" />
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="# of..." 
-                                meta:resourcekey="BoundFieldResource2">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, 8710NumberOf %>">
                                 <ItemTemplate>
                                     <div><%# (Convert.ToInt32(Eval("NumberOfFlights")) > 0) ? String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText._8710NumberFlights, Eval("NumberOfFlights")) : string.Empty %></div>
                                     <div><%# (Convert.ToInt32(Eval("AeroTows")) > 0) ? String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.GliderAeroTows, Eval("AeroTows")) : string.Empty %></div>
@@ -251,149 +256,147 @@
                             </asp:TemplateField>
                         </Columns>
                         <EmptyDataTemplate>
-                            <p><asp:Label ID="lblNoMatchingFlights" CssClass="error" runat="server" Text="<%$ Resources:LocalizedText, errNoMatchingFlightsFound %>" meta:resourcekey="lblNoMatchingFlightsResource1"></asp:Label></p>
+                            <p><asp:Label ID="lblNoMatchingFlights" CssClass="error" runat="server" Text="<%$ Resources:LocalizedText, errNoMatchingFlightsFound %>" /></p>
                         </EmptyDataTemplate>
                     </asp:GridView>                    
-                    <p><asp:Localize ID="loc8710Notes" runat="server" Text="Notes:" 
-                            meta:resourcekey="loc8710NotesResource1"></asp:Localize></p>
+                    <p><asp:Localize ID="loc8710Notes" runat="server" Text="<%$ Resources:Totals, 8710Notes %>"></asp:Localize></p>
                     <p><span class="FootNote">1</span><asp:Localize ID="loc8710Footnote1" 
-                            runat="server" 
-                            Text="To determine the amount of time where two fields are used, the minimum of the two fields is used.  For example, night PIC for a flight is the smaller of the amount of PIC or Night flying that is logged." 
-                            meta:resourcekey="loc8710Footnote1Resource1"></asp:Localize></p>
+                            runat="server" Text="<%$ Resources:Totals, 8710Footnote1 %>" /></p>
                     <p><span class="FootNote">2</span><asp:Localize ID="loc8710Footnote2" 
-                            runat="server" 
-                            Text="Instrument time comprises both actual and simulated instrument time." 
-                            meta:resourcekey="loc8710Footnote2Resource1"></asp:Localize></p>
+                            runat="server"  Text="<%$ Resources:Totals, 8710Footnote2 %>" /></p>
                     <p><span class="FootNote">3</span><asp:Localize ID="loc8710Footnote3" 
-                            runat="server" 
-                            Text="If a flight has night-time take-offs/landings and PIC (SIC) time, then it is assumed that those landings are done while acting as PIC (SIC)." 
-                            meta:resourcekey="loc8710Footnote3Resource1"></asp:Localize></p>
-                </asp:View>
-                <asp:View ID="vwRollup" runat="server">
-                    <asp:GridView ID="gvRollup" runat="server" AutoGenerateColumns="False" Font-Size="8pt" CellPadding="0" meta:resourcekey="gvRollupResource1">
+                            runat="server" Text="<%$ Resources:Totals, 8710Footnote3 %>" /></p>
+                </Content>
+            </ajaxToolkit:AccordionPane>
+            <ajaxToolkit:AccordionPane ID="acpModel" runat="server">
+                <Content>
+                    <asp:GridView ID="gvRollup" runat="server" AutoGenerateColumns="False" GridLines="None" Font-Size="8pt" CellPadding="0" style="margin-left:auto; margin-right:auto; margin-top: 10px; margin-bottom: 10px;">
                         <Columns>
-                            <asp:TemplateField meta:resourcekey="TemplateFieldResource15">
+                            <asp:TemplateField>
                                 <ItemTemplate>
                                     <%# ModelDisplay(Container.DataItem) %>
                                 </ItemTemplate>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Center"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldDual %>" meta:resourcekey="TemplateFieldResource17">
+                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldDual %>">
                                 <ItemTemplate>
                                     <%# Eval("DualReceived").FormatDecimal(UseHHMM) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText ="Flight<br />Eng." meta:resourcekey="TemplateFieldResource21">
+                            <asp:TemplateField HeaderText ="Flight<br />Eng.">
                                 <ItemTemplate>
                                     <%# Eval("flightengineer").FormatDecimal(UseHHMM) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText ="Military" meta:resourcekey="TemplateFieldResource22">
+                            <asp:TemplateField HeaderText ="Military">
                                 <ItemTemplate>
                                     <%# Eval("MilTime").FormatDecimal(UseHHMM) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldCFI %>" meta:resourcekey="TemplateFieldResource23">
+                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldCFI %>">
                                 <ItemTemplate>
                                     <%# Eval("CFI").FormatDecimal(UseHHMM) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldNight %>" meta:resourcekey="TemplateFieldResource24">
+                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldNight %>">
                                 <ItemTemplate>
                                     <%# Eval("Night").FormatDecimal(UseHHMM) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldIMC %>" meta:resourcekey="TemplateFieldResource25">
+                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldIMC %>">
                                 <ItemTemplate>
                                     <%# Eval("IMC").FormatDecimal(UseHHMM) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldSimIMC %>" meta:resourcekey="TemplateFieldResource26">
+                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldSimIMC %>">
                                 <ItemTemplate>
                                     <%# Eval("SimIMC").FormatDecimal(UseHHMM) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldXCountry %>" meta:resourcekey="TemplateFieldResource27">
+                            <asp:TemplateField HeaderText ="<%$ Resources:LogbookEntry, FieldXCountry %>">
                                 <ItemTemplate>
                                     <%# Eval("XC").FormatDecimal(UseHHMM) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldLanding %>" meta:resourcekey="TemplateFieldResource29">
+                            <asp:TemplateField HeaderText="<%$ Resources:LogbookEntry, FieldLanding %>">
                                 <ItemTemplate>
                                     <%# Eval("landings").FormatInt() %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Apprch<br />(All/6/12)<br />Month" meta:resourcekey="TemplateFieldResource30">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, RollupApproach %>">
                                 <ItemTemplate>
                                     <%# FormatMultiInt(" / ", Eval("approaches"), Eval("_6MonthApproaches"), Eval("_12MonthApproaches")) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="(PIC/SIC)" meta:resourcekey="TemplateFieldResource16">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, RollupPICSIC %>">
                                 <ItemTemplate>
                                     <%# FormatMultiDecimal(UseHHMM, " / ", Eval("PIC"), Eval("SIC")) %>
                                 </ItemTemplate>
+                                <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="TurboProp<br />(PIC/SIC)" meta:resourcekey="TemplateFieldResource18">
+                            <asp:TemplateField HeaderText="<%$ Resources: Totals, RollupPICSICTurboprop %>">
                                 <ItemTemplate>
                                     <%# FormatMultiDecimal(UseHHMM, " / ", Eval("TurboPropPIC"), Eval("TurboPropSIC")) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Jet<br />(PIC/SIC)" meta:resourcekey="TemplateFieldResource19">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, RollupJetPICSIC %>">
                                 <ItemTemplate>
                                     <%# FormatMultiDecimal(UseHHMM, " / ", Eval("JetPIC"), Eval("JetSIC")) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Multi<br />(PIC/SIC)" meta:resourcekey="TemplateFieldResource20">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, RollupMultiPICSIC %>">
                                 <ItemTemplate>
                                     <%# FormatMultiDecimal(UseHHMM, " / ", Eval("MultiPIC"), Eval("MultiSIC")) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Total<br />(All//12/24)<br />Month" meta:resourcekey="TemplateFieldResource28">
+                            <asp:TemplateField HeaderText="<%$ Resources:Totals, RollupTotalByPeriod %>">
                                 <ItemTemplate>
                                     <%# FormatMultiDecimal(UseHHMM, " / ", Eval("Total"), Eval("_12MonthTotal"), Eval("_24MonthTotal")) %>
                                 </ItemTemplate>
                                 <HeaderStyle CssClass="PaddedCell"></HeaderStyle>
                                 <ItemStyle CssClass="PaddedCell" HorizontalAlign="Right"></ItemStyle>
                             </asp:TemplateField>
-                            <asp:BoundField HeaderText="Last Flight" DataField="LastFlight" DataFormatString="{0:d}" meta:resourcekey="BoundFieldResource5" >
-                            <ItemStyle CssClass="PaddedCell" HorizontalAlign="Center" />
+                            <asp:BoundField HeaderText="Last Flight" DataField="LastFlight" HeaderStyle-CssClass="PaddedCell" DataFormatString="{0:d}">
+                                <ItemStyle CssClass="PaddedCell" HorizontalAlign="Center" />
                             </asp:BoundField>
                         </Columns>
                     </asp:GridView>
-                </asp:View>
-            </asp:MultiView>    
-        </asp:View>
-        <asp:View ID="vwQueryForm" runat="server">
-            <uc2:mfbSearchForm ID="mfbSearchForm1" runat="server" OnQuerySubmitted="ShowResults" OnReset="ClearForm" InitialCollapseState="true" />
-        </asp:View>
-    </asp:MultiView>
+                </Content>
+            </ajaxToolkit:AccordionPane>
+            <ajaxToolkit:AccordionPane ID="acpByTime" runat="server">
+                <Content>
+                    <uc1:mfbTotalsByTimePeriod runat="server" ID="mfbTotalsByTimePeriod" />
+                </Content>
+            </ajaxToolkit:AccordionPane>
+        </Panes>
+    </ajaxToolkit:Accordion>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">
     <uc6:mfbLogbook ID="MfbLogbook1" runat="server" />

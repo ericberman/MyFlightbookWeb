@@ -886,7 +886,7 @@
     <value>Achievements for {0}</value>
   </data>
   <data name="_8710FormForUserHeader" xml:space="preserve">
-    <value>8710 Form for {0}</value>
+    <value>Reports for {0}</value>
   </data>
   <data name="gratuityCloudStorageExpired" xml:space="preserve">
     <value>Your nightly cloud storage backups from %APP_NAME% have ended</value>

@@ -180,6 +180,9 @@
   <data name="ImportAircraft" xml:space="preserve">
     <value>Import</value>
   </data>
+  <data name="Instruction8710" xml:space="preserve">
+    <value>8710 / IACRA</value>
+  </data>
   <data name="InstructionAchievements" xml:space="preserve">
     <value>Achievements</value>
   </data>
@@ -192,14 +195,17 @@
   <data name="InstructionProgress" xml:space="preserve">
     <value>Ratings Progress</value>
   </data>
+  <data name="InstructionRollupModel" xml:space="preserve">
+    <value>Rollup by Model</value>
+  </data>
+  <data name="InstructionRollupTime" xml:space="preserve">
+    <value>Rollup by Time</value>
+  </data>
   <data name="InstructionSignedFlights" xml:space="preserve">
     <value>Request Signatures</value>
   </data>
   <data name="InstructionStudents" xml:space="preserve">
     <value>Students</value>
-  </data>
-  <data name="Logbook8710" xml:space="preserve">
-    <value>8710 / IACRA</value>
   </data>
   <data name="LogbookAdd" xml:space="preserve">
     <value>Add Flights</value>

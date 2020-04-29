@@ -29,7 +29,7 @@ public partial class Member_8710Form : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        this.Master.SelectedTab = tabID.lbt8710;
+        this.Master.SelectedTab = tabID.inst8710;
         Master.SuppressMobileViewport = true;
 
         Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
@@ -41,10 +41,33 @@ public partial class Member_8710Form : System.Web.UI.Page
             RefreshFormData();
             MfbLogbook1.Visible = !this.Master.IsMobileSession();
             Master.ShowSponsoredAd = false;
+
+            string szPath = (Request.PathInfo.Length > 0 && Request.PathInfo.StartsWith("/", StringComparison.OrdinalIgnoreCase)) ? Request.PathInfo.Substring(1) : string.Empty;
+            switch (szPath.ToUpperInvariant())
+            {
+                default:
+                case "8710":
+                    accReports.SelectedIndex = 1;
+                    break;
+                case "MODEL":
+                    accReports.SelectedIndex = 2;
+                    break;
+                case "TIME":
+                    accReports.SelectedIndex = 3;
+                    break;
+            }
         }
+
+        // rollup by time has no viewstate so must be refreshed by time
+        RefreshTimePeriodRollup();
     }
 
     private Dictionary<string, List<ClassTotal>> ClassTotals { get; set; }
+
+    protected void RefreshTimePeriodRollup()
+    {
+        mfbTotalsByTimePeriod.BindTotalsForUser(Page.User.Identity.Name, false, DateTime.Now.Day > 1, true, true, DateTime.Now.Day > 1 || DateTime.Now.Month > 1, mfbSearchForm1.Restriction);
+    }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
     protected void RefreshFormData()
@@ -67,8 +90,6 @@ public partial class Member_8710Form : System.Web.UI.Page
 
         if (fq != null)
         {
-            args.AddWithValue("localecode", System.Globalization.CultureInfo.CurrentCulture.Name.Replace("-", "_"));
-            args.AddWithValue("shortDate", DBHelper.CSharpDateFormatToMySQLDateFormat());
             foreach (MySqlParameter p in fq.QueryParameters())
                 args.Parameters.Add(p);
         }
@@ -139,13 +160,13 @@ public partial class Member_8710Form : System.Web.UI.Page
                         comm.Connection.Close();
                 }
             }
+        }
 
-            UpdateDescription();
-            if (!this.Master.IsMobileSession())
-            {
-                MfbLogbook1.Restriction = fq;
-                MfbLogbook1.RefreshData();
-            }
+        UpdateDescription();
+        if (!this.Master.IsMobileSession())
+        {
+            MfbLogbook1.Restriction = fq;
+            MfbLogbook1.RefreshData();
         }
     }
 
@@ -163,20 +184,22 @@ public partial class Member_8710Form : System.Web.UI.Page
         if (fqe == null)
             throw new ArgumentNullException(nameof(fqe));
         mfbSearchForm1.Restriction = fqe.Query;
-        mvQuery.ActiveViewIndex = 0; // go back to the results.
         UpdateDescription();
         RefreshFormData();
-    }
+        RefreshTimePeriodRollup();
 
-    protected void btnEditQuery_Click(object sender, EventArgs e)
-    {
-        mvQuery.ActiveViewIndex = 1;
+        if (Int32.TryParse(hdnLastViewedPaneIndex.Value, out int idxLast))
+            accReports.SelectedIndex = idxLast;
     }
 
     protected void UpdateDescription()
     {
-        mfbQueryDescriptor1.DataSource = mfbSearchForm1.Restriction;
+        bool fRestrictionIsDefault = mfbSearchForm1.Restriction.IsDefault;
+        mfbQueryDescriptor1.DataSource = fRestrictionIsDefault ? null : mfbSearchForm1.Restriction;
         mfbQueryDescriptor1.DataBind();
+        pnlFilter.Visible = !fRestrictionIsDefault;
+        apcFilter.LabelControl.Font.Bold = !fRestrictionIsDefault;
+        apcFilter.IsEnhanced = !fRestrictionIsDefault;
     }
 
     protected void mfbQueryDescriptor1_QueryUpdated(object sender, FilterItemClickedEventArgs fic)
@@ -251,10 +274,5 @@ public partial class Member_8710Form : System.Web.UI.Page
         }
 
         return fHasValue ? String.Join(separator, lst) : string.Empty;
-    }
-
-    protected void rblReport_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        mvReport.ActiveViewIndex = rblReport.SelectedIndex;
     }
 }

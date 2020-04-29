@@ -4959,7 +4959,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 8710 Form for {0}.
+        ///   Looks up a localized string similar to Reports for {0}.
         /// </summary>
         internal static string _8710FormForUserHeader {
             get {

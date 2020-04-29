@@ -34,7 +34,6 @@ namespace MyFlightbook
         lbtTotals,
         lbtCurrency,
         lbtTrends,
-        lbt8710,
         lbtDownload,
         lbtImport,
         lbtStartingTotals,
@@ -56,6 +55,9 @@ namespace MyFlightbook
         instSignFlights,
         instStudents,
         instInstructors,
+        inst8710,
+        instModelRollup,
+        instTimeRollup,
         instProgressTowardsMilestones,
         instAchievements,
 
@@ -126,8 +128,6 @@ namespace MyFlightbook
                     return Resources.Tabs.LogbookCurrency;
                 case tabID.lbtTrends:
                     return Resources.Tabs.LogbookAnalysis;
-                case tabID.lbt8710:
-                    return Resources.Tabs.Logbook8710;
                 case tabID.lbtDownload:
                     return Resources.Tabs.LogbookDownload;
                 case tabID.lbtImport:
@@ -170,6 +170,12 @@ namespace MyFlightbook
                     return Resources.Tabs.InstructionProgress;
                 case tabID.instAchievements:
                     return Resources.Tabs.InstructionAchievements;
+                case tabID.inst8710:
+                    return Resources.Tabs.Instruction8710;
+                case tabID.instModelRollup:
+                    return Resources.Tabs.InstructionRollupModel;
+                case tabID.instTimeRollup:
+                    return Resources.Tabs.InstructionRollupTime;
 
                 // Map
                 case tabID.mptRoute:

@@ -98,7 +98,7 @@ namespace MyFlightbook.Web.Controls
             p.Controls.Add(l);
         }
 
-        public void BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate)
+        public void BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate, FlightQuery fqSupplied = null)
         {
             if (String.IsNullOrEmpty(szUser))
                 throw new ArgumentNullException(nameof(szUser));
@@ -107,11 +107,16 @@ namespace MyFlightbook.Web.Controls
             UseHHMM = pf.UsesHHMM;
 
             // Get All time totals.  This will also give us the entire space of totals items
-            FlightQuery fq = new FlightQuery(szUser);
+            FlightQuery fq = fqSupplied == null ? new FlightQuery() : new FlightQuery(fqSupplied);
             UserTotals ut = new UserTotals(szUser, fq, true);
             ut.DataBind();
 
             IEnumerable<TotalsItemCollection> allTotals = TotalsItemCollection.AsGroups(ut.Totals);
+
+            // if the supplied query has a date range, then don't do any of the subsequent queries; the date range overrides.
+            bool fSuppliedQueryHasDates = fqSupplied != null && fqSupplied.DateRange != FlightQuery.DateRanges.AllTime;
+            if (fSuppliedQueryHasDates)
+                fLast7Days = fMonthToDate = fPreviousMonth = fPreviousYear = fYearToDate = false;
 
             // Get grouped totals for each of the requested time periods.
             fq.DateRange = FlightQuery.DateRanges.ThisMonth;
@@ -131,9 +136,9 @@ namespace MyFlightbook.Web.Controls
 
             // Determine which columns we'll show
             ColumnCount = 2;   // All time is always shown, as are its labels (in adjacent table column)
-            if (fMonthToDate)   // Always show month to date (if not excluded; e.g., on 1st of month).
+            if (fLast7Days &= dLast7.Any())
                 ColumnCount++;
-            if (fLast7Days)     // Always show last 7 days (if not excluded)
+            if (fMonthToDate &= dMonthToDate.Any())
                 ColumnCount++;
             if (fPreviousMonth &= dPrevMonth.Any())
                 ColumnCount++;
@@ -158,7 +163,7 @@ namespace MyFlightbook.Web.Controls
                 tblTotals.Rows.Add(trHeader);
                 const string cssDateRange = "totalsDateRange";
                 AddTextCellToRow(trHeader, string.Empty, true); // no header above the total description itself.
-                AddTextCellToRow(trHeader, Resources.FlightQuery.DatesAll, true, cssDateRange);
+                AddTextCellToRow(trHeader, fSuppliedQueryHasDates ? string.Empty : Resources.FlightQuery.DatesAll, true, cssDateRange);
                 AddTextCellToRow(trHeader, Resources.Profile.EmailWeeklyTotalsLabel, fLast7Days, cssDateRange);
                 AddTextCellToRow(trHeader, Resources.FlightQuery.DatesThisMonth, fMonthToDate, cssDateRange);
                 AddTextCellToRow(trHeader, szPreviousMonth, fPreviousMonth, cssDateRange);

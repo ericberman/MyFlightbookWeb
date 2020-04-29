@@ -1017,9 +1017,14 @@ a img
 }
 
 /* 8710 Form */
-.PaddedCell
-{
-    padding:3px;
+.PaddedCell {
+    padding: 3px;
+    border-bottom: 1px solid lightgray;
+    border-right: 1px solid lightgray;
+}
+
+.PaddedCell:nth-child(even) {
+    background-color: #EFEFEF;
 }
 
 .FootNote

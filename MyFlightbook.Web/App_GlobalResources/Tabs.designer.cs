@@ -250,6 +250,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 8710 / IACRA.
+        /// </summary>
+        internal static string Instruction8710 {
+            get {
+                return ResourceManager.GetString("Instruction8710", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Achievements.
         /// </summary>
         internal static string InstructionAchievements {
@@ -286,6 +295,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rollup by Model.
+        /// </summary>
+        internal static string InstructionRollupModel {
+            get {
+                return ResourceManager.GetString("InstructionRollupModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rollup by Time.
+        /// </summary>
+        internal static string InstructionRollupTime {
+            get {
+                return ResourceManager.GetString("InstructionRollupTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request Signatures.
         /// </summary>
         internal static string InstructionSignedFlights {
@@ -300,15 +327,6 @@ namespace Resources {
         internal static string InstructionStudents {
             get {
                 return ResourceManager.GetString("InstructionStudents", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 8710 / IACRA.
-        /// </summary>
-        internal static string Logbook8710 {
-            get {
-                return ResourceManager.GetString("Logbook8710", resourceCulture);
             }
         }
         

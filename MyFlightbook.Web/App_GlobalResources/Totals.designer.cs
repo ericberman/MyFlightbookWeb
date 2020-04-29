@@ -88,6 +88,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 8710 (IACRA).
+        /// </summary>
+        internal static string CommonReports8710 {
+            get {
+                return ResourceManager.GetString("CommonReports8710", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By Model.
+        /// </summary>
+        internal static string CommonReportsAirline {
+            get {
+                return ResourceManager.GetString("CommonReportsAirline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By Time.
+        /// </summary>
+        internal static string CommonReportsByTime {
+            get {
+                return ResourceManager.GetString("CommonReportsByTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Totals are computed using the criteria below:.
+        /// </summary>
+        internal static string CommonReportsDisclaimer {
+            get {
+                return ResourceManager.GetString("CommonReportsDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Complex.
         /// </summary>
         internal static string Complex {
@@ -286,6 +322,60 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apprch&lt;br /&gt;(All/6/12)&lt;br /&gt;Month.
+        /// </summary>
+        internal static string RollupApproach {
+            get {
+                return ResourceManager.GetString("RollupApproach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jet&lt;br /&gt;(PIC/SIC).
+        /// </summary>
+        internal static string RollupJetPICSIC {
+            get {
+                return ResourceManager.GetString("RollupJetPICSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multi&lt;br  /&gt;(PIC/SIC).
+        /// </summary>
+        internal static string RollupMultiPICSIC {
+            get {
+                return ResourceManager.GetString("RollupMultiPICSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (PIC/SIC).
+        /// </summary>
+        internal static string RollupPICSIC {
+            get {
+                return ResourceManager.GetString("RollupPICSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TurboProp&lt;br /&gt;(PIC/SIC).
+        /// </summary>
+        internal static string RollupPICSICTurboprop {
+            get {
+                return ResourceManager.GetString("RollupPICSICTurboprop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total&lt;br /&gt;(All/12/24)&lt;br /&gt;Month.
+        /// </summary>
+        internal static string RollupTotalByPeriod {
+            get {
+                return ResourceManager.GetString("RollupTotalByPeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SIC.
         /// </summary>
         internal static string SIC {
@@ -435,6 +525,159 @@ namespace Resources {
         internal static string Turbine {
             get {
                 return ResourceManager.GetString("Turbine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ClassTotals.
+        /// </summary>
+        internal static string _8710ClassTotals {
+            get {
+                return ResourceManager.GetString("8710ClassTotals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To determine the amount of time where two fields are used, the minimum of the two fields is used.  For example, night PIC for a flight is the smaller of the amount of PIC or Night flying that is logged..
+        /// </summary>
+        internal static string _8710Footnote1 {
+            get {
+                return ResourceManager.GetString("8710Footnote1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instrument time comprises both actual and simulated instrument time..
+        /// </summary>
+        internal static string _8710Footnote2 {
+            get {
+                return ResourceManager.GetString("8710Footnote2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If a flight has night-time take-offs/landings and PIC (SIC) time, then it is assumed that those landings are done while acting as PIC (SIC)..
+        /// </summary>
+        internal static string _8710Footnote3 {
+            get {
+                return ResourceManager.GetString("8710Footnote3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instruc-&lt;br /&gt;tion&lt;br /&gt;Received.
+        /// </summary>
+        internal static string _8710InstructionReceived {
+            get {
+                return ResourceManager.GetString("8710InstructionReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instru-&lt;br /&gt;ment.
+        /// </summary>
+        internal static string _8710Instrument {
+            get {
+                return ResourceManager.GetString("8710Instrument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Night&lt;br /&gt;Instruc-&lt;br /&gt;tion&lt;br /&gt;Received.
+        /// </summary>
+        internal static string _8710NightDual {
+            get {
+                return ResourceManager.GetString("8710NightDual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Night PIC/SIC.
+        /// </summary>
+        internal static string _8710NightPICSIC {
+            get {
+                return ResourceManager.GetString("8710NightPICSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Night&lt;br /&gt;Take-off/&lt;br /&gt;Landing PIC/SIC.
+        /// </summary>
+        internal static string _8710NightPICTakeoffLanding {
+            get {
+                return ResourceManager.GetString("8710NightPICTakeoffLanding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Night&lt;br /&gt;Take-off/&lt;br /&gt;Landings.
+        /// </summary>
+        internal static string _8710NightTakeoffLandings {
+            get {
+                return ResourceManager.GetString("8710NightTakeoffLandings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes:.
+        /// </summary>
+        internal static string _8710Notes {
+            get {
+                return ResourceManager.GetString("8710Notes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to # of....
+        /// </summary>
+        internal static string _8710NumberOf {
+            get {
+                return ResourceManager.GetString("8710NumberOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIC&lt;br /&gt;and&lt;br /&gt;SIC.
+        /// </summary>
+        internal static string _8710PICAndSIC {
+            get {
+                return ResourceManager.GetString("8710PICAndSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Solo.
+        /// </summary>
+        internal static string _8710Solo {
+            get {
+                return ResourceManager.GetString("8710Solo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cross&lt;br /&gt;Country&lt;br /&gt;Instruc-&lt;br /&gt;tion&lt;br /&gt;Received.
+        /// </summary>
+        internal static string _8710XCDual {
+            get {
+                return ResourceManager.GetString("8710XCDual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cross&lt;br /&gt;Country&lt;br /&gt;PIC/SIC.
+        /// </summary>
+        internal static string _8710XCPICSIC {
+            get {
+                return ResourceManager.GetString("8710XCPICSIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cross&lt;br /&gt;Country&lt;br /&gt;Solo.
+        /// </summary>
+        internal static string _8710XCSolo {
+            get {
+                return ResourceManager.GetString("8710XCSolo", resourceCulture);
             }
         }
     }
