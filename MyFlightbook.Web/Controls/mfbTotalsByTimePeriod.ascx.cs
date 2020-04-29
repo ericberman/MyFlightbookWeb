@@ -91,6 +91,11 @@ namespace MyFlightbook.Web.Controls
                                                     Branding.CurrentBrand.HostName,
                                                     ResolveUrl("~/Member/LogbookNew.aspx?fq=" + HttpUtility.UrlEncode(ti.Query.ToBase64CompressedJSONString())))
                 });
+
+            Panel p = new Panel();
+            tc.Controls.Add(p);
+            Label l = new Label() { CssClass = "fineprint", Text = ti.SubDescription };
+            p.Controls.Add(l);
         }
 
         public void BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate)
