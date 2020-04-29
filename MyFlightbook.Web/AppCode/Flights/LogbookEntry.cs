@@ -1694,6 +1694,10 @@ namespace MyFlightbook
                     return false;
                 }
             }
+            catch (Exception ex) when (ex is NullReferenceException)
+            {
+                throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Null Reference initializing Logbook from DR: \r\n{0}\r\n\r\n{1}", ex.Message, ex.StackTrace));
+            }
             catch (Exception ex)
             {
                 throw new MyFlightbookException("Exception initializing Logbook Entry from DR: " + ex.Message, ex);
