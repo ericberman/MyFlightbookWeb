@@ -95,6 +95,8 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
 
     public enum FlightsTab { None, Add, Search, Totals, Currency, Analysis, Printing, More }
 
+    private const string keySessLastNewFlight = "sessNewFlightID";
+
     private const string keyVSRestriction = "vsCurrentRestriction";
     protected FlightQuery Restriction 
     {
@@ -265,9 +267,13 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
 
             string szTitle = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
             lblUserName.Text = Master.Title = szTitle;
-        }
-        else
-        {
+
+            // See if we just entered a new flight and scroll to it as needed
+            if (Session[keySessLastNewFlight] != null)
+            {
+                mfbLogbook1.ScrollToFlight((int)Session[keySessLastNewFlight]);
+                Session[keySessLastNewFlight] = null;
+            }
         }
     }
 
@@ -390,7 +396,12 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         if (e.IDNextFlight != LogbookEntry.idFlightNone)
             Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx/{0}{1}", e.IDNextFlight, SanitizedQuery), true);
         else
+        {
+            // If this is a new flight, put its assigned ID into the session so that we can scroll to it.
+            if (IsNewFlight)
+                Session[keySessLastNewFlight] = e.FlightID;
             Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/LogbookNew.aspx{0}", SanitizedQuery), true);
+        }
     }
 
     protected void mfbEditFlight1_FlightEditCanceled(object sender, EventArgs e)

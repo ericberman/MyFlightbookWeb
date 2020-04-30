@@ -283,6 +283,21 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
             idPrev = lst[index + 1].FlightID;
     }
 
+    /// <summary>
+    /// Ensure that the specified flight is in view, if it is in the list of flights.
+    /// </summary>
+    /// <param name="idFlight"></param>
+    public void ScrollToFlight(int idFlight)
+    {
+        if (!(Data is List<LogbookEntryDisplay> lst))
+            return;
+
+        int index = lst.FindIndex(led => led.FlightID == idFlight);
+
+        if (index >= 0 && index < lst.Count)
+            gvFlightLogs.PageIndex = (index / gvFlightLogs.PageSize);
+    }
+
     protected MyFlightbook.Profile Pilot
     {
         get { return m_pfPilot ?? (m_pfPilot = MyFlightbook.Profile.GetUser(this.User)); }
