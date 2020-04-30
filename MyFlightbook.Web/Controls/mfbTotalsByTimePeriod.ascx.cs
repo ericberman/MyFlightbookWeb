@@ -107,7 +107,7 @@ namespace MyFlightbook.Web.Controls
             UseHHMM = pf.UsesHHMM;
 
             // Get All time totals.  This will also give us the entire space of totals items
-            FlightQuery fq = fqSupplied == null ? new FlightQuery() : new FlightQuery(fqSupplied);
+            FlightQuery fq = fqSupplied == null ? new FlightQuery(szUser) : new FlightQuery(fqSupplied);
             UserTotals ut = new UserTotals(szUser, fq, true);
             ut.DataBind();
 
