@@ -16,21 +16,15 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Controls_mfbLogbook : System.Web.UI.UserControl
+public partial class Controls_MFBLogbookBase : UserControl
 {
     const string szFQViewStateKeyPrefix = "FQ";
     const string szKeyLastSortExpr = "LastSort";
     const string szKeylastSortDir = "LastSortDir";
-    const string szKeyAllowsPaging = "allowsPaging";
-    const string szKeyMiniMode = "minimode";
-    private Boolean m_fMiniMode = false;
     private MyFlightbook.Profile m_pfPilot = null;
     private MyFlightbook.Profile m_pfUser = null;
-    private readonly Dictionary<int, string> m_dictAircraftHoverIDs = new Dictionary<int,string>();
 
-    #region Properties
-    public event EventHandler<LogbookEventArgs> ItemDeleted = null; 
-
+    #region Properties that DON'T Depend on controls on the page
     private string RestrictionVSKey { get { return szFQViewStateKeyPrefix + ID; } }
 
     /// <summary>
@@ -47,16 +41,16 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         set { ViewState[RestrictionVSKey] = value; }
     }
 
-    public IEnumerable<LogbookEntryDisplay> DirectData { get; set; }
-
+    private const string szViewStateSuppressImages = "vsSI";
     /// <summary>
     /// True for this to be "print view": suppresses images
     /// </summary>
     public Boolean SuppressImages 
     {
-        get { return !String.IsNullOrEmpty((string) ViewState["vsSI"]); }
-        set { ViewState["vsSI"] = value ? value.ToString(CultureInfo.InvariantCulture) : string.Empty; }
+        get { return !String.IsNullOrEmpty((string) ViewState[szViewStateSuppressImages]); }
+        set { ViewState[szViewStateSuppressImages] = value ? value.ToString(CultureInfo.InvariantCulture) : string.Empty; }
     }
+    public IEnumerable<LogbookEntryDisplay> DirectData { get; set; }
 
     private const string keyVSUser = "logbookUser";
     /// <summary>
@@ -64,9 +58,303 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     /// </summary>
     public string User
     {
-        get { return (string) ViewState[keyVSUser]; }
+        get { return (string)ViewState[keyVSUser]; }
         set { ViewState[keyVSUser] = value; }
     }
+
+    /// <summary>
+    /// cached for performance
+    /// </summary>
+    protected List<Aircraft> AircraftForUser { get; } = new List<Aircraft>();
+
+    protected Boolean HasPrevSort
+    {
+        get { return ViewState[szKeylastSortDir + ID] != null && ViewState[szKeyLastSortExpr + ID] != null; }
+    }
+
+    public string LastSortExpr
+    {
+        get
+        {
+            object o = ViewState[szKeyLastSortExpr + ID];
+            return (o == null) ? string.Empty : o.ToString();
+        }
+        set { ViewState[szKeyLastSortExpr + ID] = value; }
+    }
+
+    public SortDirection LastSortDir
+    {
+        get
+        {
+            object o = ViewState[szKeylastSortDir + ID];
+            return (o == null) ? SortDirection.Descending : (SortDirection)o;
+        }
+        set { ViewState[szKeylastSortDir + ID] = value; }
+    }
+
+    #region URL templates for clickable items.
+    // backing variables for where to go when clicking date, paper clip, or menu items
+    private string m_szDetailsPageTemplate = "~/Member/FlightDetail.aspx/{0}";
+    private string m_szEditPageTemplate = "~/member/LogbookNew.aspx/{0}";
+    private string m_szAnalysisPageTemplate = "~/member/FlightDetail.aspx/{0}?tabID=Chart";
+    private string m_szPublicRouteTemplate = "~/Public/ViewPublicFlight.aspx/{0}";
+
+    /// <summary>
+    /// The URL for details page, ID of the flight replaces {0}
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification = "this is a format string and thus is a string, not a URI")]
+    public string DetailsPageUrlFormatString
+    {
+        get { return m_szDetailsPageTemplate; }
+        set { m_szDetailsPageTemplate = value; }
+    }
+
+    /// <summary>
+    /// URL template to edit the flight; ID of the flight replaces {0}
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification = "this is a format string and thus is a string, not a URI")]
+    public string EditPageUrlFormatString
+    {
+        get { return m_szEditPageTemplate; }
+        set { m_szEditPageTemplate = value; }
+    }
+
+    /// <summary>
+    /// URL template for flight analysis; ID of the flight replaces {0}
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification = "this is a format string and thus is a string, not a URI")]
+    public string AnalysisPageUrlFormatString
+    {
+        get { return m_szAnalysisPageTemplate; }
+        set { m_szAnalysisPageTemplate = value; }
+    }
+
+    /// <summary>
+    /// URL Template for public page; ID of the flight replaces {0}
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification = "this is a format string and thus is a string, not a URI")]
+    public string PublicPageUrlFormatString
+    {
+        get { return m_szPublicRouteTemplate; }
+        set { m_szPublicRouteTemplate = value; }
+    }
+
+    /// <summary>
+    /// parameter string to append to the URL for edit/target/analysis
+    /// </summary>
+    public string DetailsParam { get; set; }
+    #endregion
+
+
+    protected MyFlightbook.Profile Pilot
+    {
+        get { return m_pfPilot ?? (m_pfPilot = MyFlightbook.Profile.GetUser(this.User)); }
+    }
+
+    protected MyFlightbook.Profile Viewer
+    {
+        get { return m_pfUser ?? (m_pfUser = MyFlightbook.Profile.GetUser(Page.User.Identity.Name)); }
+    }
+
+    protected bool IsViewingOwnFlights
+    {
+        get { return String.Compare(Page.User.Identity.Name, this.User, StringComparison.Ordinal) == 0; }
+    }
+
+    public bool IsReadOnly { get; set; }
+
+    #region Data
+    protected bool CacheFlushed { get; set; }
+
+    /// <summary>
+    /// Avoid redundant binding by checking in Page_Load if we've already bound by some other event.  Still can find ourselves binding twice here and there, but shouldn't happen by simply loading the page.
+    /// </summary>
+    protected bool HasBeenBound { get; set; }
+
+    /// <summary>
+    /// key to access the logbook data within the session state
+    /// </summary>
+    protected string CacheKey
+    {
+        get
+        {
+            return Page.User.Identity.Name + "mfbLogbookAscx";
+        }
+    }
+
+    protected void FlushCache()
+    {
+        Cache.Remove(CacheKey);
+        CacheFlushed = true;
+    }
+
+    /// <summary>
+    /// Caches flights striped by query and user.  So we'll cache all recent queries for this user, flushCache can will simultaneously flush ALL cached results for this user.
+    /// I.e., each user has ONE cache object, which contains MULTIPLE results, striped by query.
+    /// </summary>
+    protected IEnumerable<LogbookEntryDisplay> CachedData
+    {
+        get
+        {
+            Dictionary<string, IEnumerable<LogbookEntryDisplay>> cachedValues = (Dictionary<string, IEnumerable<LogbookEntryDisplay>>)Cache[CacheKey];
+            if (cachedValues != null)
+            {
+                string key = Restriction.ToJSONString();
+                return (cachedValues.ContainsKey(key)) ? cachedValues[key] : null;
+            }
+            return null;
+        }
+        set
+        {
+            Dictionary<string, IEnumerable<LogbookEntryDisplay>> cachedValues = (Dictionary<string, IEnumerable<LogbookEntryDisplay>>)Cache[CacheKey];
+            if (cachedValues == null)
+                cachedValues = new Dictionary<string, IEnumerable<LogbookEntryDisplay>>();
+            cachedValues[Restriction.ToJSONString()] = value;
+            Cache.Add(CacheKey, cachedValues, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 10, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+        }
+    }
+
+    /// <summary>
+    /// Returns the data, from the cache or via database call if cache misses, or DirectData if that's what's available
+    /// </summary>
+    public IEnumerable<LogbookEntryDisplay> Data
+    {
+        get
+        {
+            if (DirectData != null)
+                return DirectData;
+
+            IEnumerable<LogbookEntryDisplay> lst = CachedData;
+            if (lst == null)
+            {
+                if (String.IsNullOrEmpty(this.User))
+                    this.User = Page.User.Identity.Name;
+
+                MyFlightbook.Profile pfUser = MyFlightbook.Profile.GetUser(this.User);
+
+                lst = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(Restriction), this.User, LastSortExpr, LastSortDir, Viewer.UsesHHMM, pfUser.UsesUTCDateOfFlight);
+                CachedData = lst;
+            }
+            return lst;
+        }
+    }
+    #endregion
+
+    #region Paths for editing, cloning, reversing
+    protected string DetailsPath(object idFlight)
+    {
+        return String.Format(CultureInfo.InvariantCulture, DetailsPageUrlFormatString, idFlight) + (String.IsNullOrEmpty(DetailsParam) ? string.Empty : "?" + DetailsParam);
+    }
+
+    protected string AnalyzePath(object idFlight)
+    {
+        return String.Format(CultureInfo.InvariantCulture, AnalysisPageUrlFormatString, idFlight);
+    }
+
+    protected string PublicPath(object idFlight)
+    {
+        return String.Format(CultureInfo.InvariantCulture, PublicPageUrlFormatString, idFlight);
+    }
+    #endregion
+    #endregion
+
+    /// <summary>
+    /// Parameters to add to edit link to preserve context on return.
+    /// </summary>
+    protected string EditContextParams(int PageIndex)
+    {
+        System.Collections.Specialized.NameValueCollection dictParams = new System.Collections.Specialized.NameValueCollection();
+        // Add the existing keys first - since we may overwrite them below!
+        foreach (string szKey in Request.QueryString.Keys)
+            dictParams[szKey] = Request.QueryString[szKey];
+
+        // Issue #458: clone and reverse are getting duplicated and the & is getting url encoded, so even edits look like clones
+        dictParams.Remove("Clone");
+        dictParams.Remove("Reverse");
+
+        if (!Restriction.IsDefault)
+            dictParams["fq"] = Restriction.ToBase64CompressedJSONString();
+        if (HasPrevSort)
+        {
+            if (!String.IsNullOrEmpty(LastSortExpr))
+                dictParams["se"] = LastSortExpr;
+            if (LastSortDir != SortDirection.Descending || !String.IsNullOrEmpty(LastSortExpr))
+                dictParams["so"] = LastSortDir.ToString();
+        }
+        if (PageIndex != 0)
+            dictParams["pg"] = PageIndex.ToString(CultureInfo.InvariantCulture);
+
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        foreach (string szkey in dictParams)
+            sb.AppendFormat(CultureInfo.InvariantCulture, "{0}{1}={2}", sb.Length == 0 ? string.Empty : "&", szkey, HttpUtility.UrlEncode(dictParams[szkey]));
+
+        return sb.ToString();
+    }
+
+    #region Badges
+    private Dictionary<int, List<Badge>> m_cachedBadges = null;
+
+    private Dictionary<int, List<Badge>> CachedBadgesByFlight
+    {
+        get
+        {
+            if (m_cachedBadges != null)
+                return m_cachedBadges;
+
+            // Set up cache of badges.
+            m_cachedBadges = new Dictionary<int, List<Badge>>();
+
+            IEnumerable<Badge> cachedBadges = Pilot.CachedBadges;
+            if (cachedBadges != null)
+            {
+                foreach (Badge b in cachedBadges)
+                {
+                    if (b.IDFlightEarned == LogbookEntry.idFlightNone)
+                        continue;
+                    if (m_cachedBadges.TryGetValue(b.IDFlightEarned, out List<Badge> lst))
+                        lst.Add(b);
+                    else
+                        m_cachedBadges[b.IDFlightEarned] = new List<Badge>() { b };
+                }
+            }
+            return m_cachedBadges;
+        }
+    }
+
+    protected void SetUpBadgesForRow(LogbookEntryDisplay le, GridViewRow row)
+    {
+        if (row == null)
+            throw new ArgumentNullException(nameof(row));
+        if (le == null)
+            throw new ArgumentNullException(nameof(le));
+
+        if (Pilot != null && Pilot.AchievementStatus == Achievement.ComputeStatus.UpToDate)
+        {
+            Repeater rptBadges = (Repeater)row.FindControl("rptBadges");
+            if (CachedBadgesByFlight.ContainsKey(le.FlightID))
+            {
+                IEnumerable<Badge> badges = CachedBadgesByFlight[le.FlightID];
+                if (badges != null)
+                {
+                    rptBadges.DataSource = badges;
+                    rptBadges.DataBind();
+                }
+            }
+        }
+    }
+    #endregion
+}
+
+public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
+{
+    const string szKeyAllowsPaging = "allowsPaging";
+    const string szKeyMiniMode = "minimode";
+    private Boolean m_fMiniMode = false;
+    private readonly Dictionary<int, string> m_dictAircraftHoverIDs = new Dictionary<int,string>();
+
+    #region Properties
+    public event EventHandler<LogbookEventArgs> ItemDeleted = null;
 
     /// <summary>
     /// Display in mini (mobile) mode?
@@ -99,13 +387,6 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         set { ViewState[szKeyAllowsPaging] = gvFlightLogs.AllowPaging = value; }
     }
 
-    #region URL templates for clickable items.
-    // backing variables for where to go when clicking date, paper clip, or menu items
-    private string m_szDetailsPageTemplate = "~/Member/FlightDetail.aspx/{0}";
-    private string m_szEditPageTemplate = "~/member/LogbookNew.aspx/{0}";
-    private string m_szAnalysisPageTemplate = "~/member/FlightDetail.aspx/{0}?tabID=Chart";
-    private string m_szPublicRouteTemplate = "~/Public/ViewPublicFlight.aspx/{0}";
-
     /// <summary>
     /// Path to which flights should be sent.
     /// </summary>
@@ -114,50 +395,6 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         get { return mfbSendFlight.SendPageTarget; }
         set { mfbSendFlight.SendPageTarget = value; }
     }
-
-    /// <summary>
-    /// The URL for details page, ID of the flight replaces {0}
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification = "this is a format string and thus is a string, not a URI")]
-    public string DetailsPageUrlFormatString {
-        get { return m_szDetailsPageTemplate; }
-        set { m_szDetailsPageTemplate = value; }
-    }
-
-    /// <summary>
-    /// URL template to edit the flight; ID of the flight replaces {0}
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification = "this is a format string and thus is a string, not a URI")]
-    public string EditPageUrlFormatString
-    {
-        get { return m_szEditPageTemplate; }
-        set { m_szEditPageTemplate = value; }
-    }
-
-    /// <summary>
-    /// URL template for flight analysis; ID of the flight replaces {0}
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification = "this is a format string and thus is a string, not a URI")]
-    public string AnalysisPageUrlFormatString
-    {
-        get { return m_szAnalysisPageTemplate; }
-        set { m_szAnalysisPageTemplate = value; }
-    }
-
-    /// <summary>
-    /// URL Template for public page; ID of the flight replaces {0}
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Scope = "member", Justification ="this is a format string and thus is a string, not a URI")]
-    public string PublicPageUrlFormatString
-    {
-        get { return m_szPublicRouteTemplate; }
-        set { m_szPublicRouteTemplate = value; }
-    }
-
-    /// <summary>
-    /// parameter string to append to the URL for edit/target/analysis
-    /// </summary>
-    public string DetailsParam { get; set; }
 
     protected bool IsInSelectMode
     {
@@ -193,74 +430,6 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
     }
 
     protected HashSet<int> BoundItems { get; private set; }
-    #endregion
-
-    #region Protected/Private Properties
-    /// <summary>
-    /// cached for performance
-    /// </summary>
-    protected List<Aircraft> AircraftForUser { get; private set; }
-
-    protected Boolean HasPrevSort
-    {
-        get { return ViewState[szKeylastSortDir + ID] != null && ViewState[szKeyLastSortExpr + ID] != null; }
-    }
-
-    public string LastSortExpr
-    {
-        get 
-        { 
-            object o = ViewState[szKeyLastSortExpr + ID];
-            return (o == null) ? string.Empty : o.ToString();
-        }
-        set { ViewState[szKeyLastSortExpr + ID] = value; }
-    }
-
-    public SortDirection LastSortDir
-    {
-        get { 
-            object o = ViewState[szKeylastSortDir + ID];
-            return (o == null) ? SortDirection.Descending : (SortDirection)o;
-        }
-        set { ViewState[szKeylastSortDir + ID] = value; }
-    }
-
-    /// <summary>
-    /// Parameters to add to edit link to preserve context on return.
-    /// </summary>
-    protected string EditContextParams
-    {
-        get
-        {
-            System.Collections.Specialized.NameValueCollection dictParams = new System.Collections.Specialized.NameValueCollection();
-            // Add the existing keys first - since we may overwrite them below!
-            foreach (string szKey in Request.QueryString.Keys)
-                dictParams[szKey] = Request.QueryString[szKey];
-
-            // Issue #458: clone and reverse are getting duplicated and the & is getting url encoded, so even edits look like clones
-            dictParams.Remove("Clone");
-            dictParams.Remove("Reverse");
-
-            if (!Restriction.IsDefault)
-                dictParams["fq"] = Restriction.ToBase64CompressedJSONString();
-            if (HasPrevSort)
-            {
-                if (!String.IsNullOrEmpty(LastSortExpr))
-                    dictParams["se"] = LastSortExpr;
-                if (LastSortDir != SortDirection.Descending || !String.IsNullOrEmpty(LastSortExpr))
-                    dictParams["so"] = LastSortDir.ToString();
-            }
-            if (gvFlightLogs.PageIndex != 0)
-                dictParams["pg"] = gvFlightLogs.PageIndex.ToString(CultureInfo.InvariantCulture);
-
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-            foreach (string szkey in dictParams)
-                sb.AppendFormat(CultureInfo.InvariantCulture, "{0}{1}={2}", sb.Length == 0 ? string.Empty : "&", szkey, HttpUtility.UrlEncode(dictParams[szkey]));
-
-            return sb.ToString();
-        }
-    }
 
     /// <summary>
     /// Finds the ID's of the flights immediately adjacent to the specified flight ID in the list (given its current sort order and restriction)
@@ -297,126 +466,6 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         if (index >= 0 && index < lst.Count)
             gvFlightLogs.PageIndex = (index / gvFlightLogs.PageSize);
     }
-
-    protected MyFlightbook.Profile Pilot
-    {
-        get { return m_pfPilot ?? (m_pfPilot = MyFlightbook.Profile.GetUser(this.User)); }
-    }
-
-    protected MyFlightbook.Profile Viewer
-    {
-        get { return m_pfUser ?? (m_pfUser = MyFlightbook.Profile.GetUser(Page.User.Identity.Name)); }
-    }
-
-    protected bool IsViewingOwnFlights
-    {
-        get { return String.Compare(Page.User.Identity.Name, this.User, StringComparison.Ordinal) == 0; }
-    }
-
-    public bool IsReadOnly { get; set; }
-
-    protected bool CacheFlushed { get; set; }
-
-    /// <summary>
-    /// Avoid redundant binding by checking in Page_Load if we've already bound by some other event.  Still can find ourselves binding twice here and there, but shouldn't happen by simply loading the page.
-    /// </summary>
-    protected bool HasBeenBound { get; set; }
-
-    /// <summary>
-    /// key to access the logbook data within the session state
-    /// </summary>
-    protected string CacheKey
-    {
-        get
-        {
-            return Page.User.Identity.Name + "mfbLogbookAscx";
-        }
-    }
-
-    protected void FlushCache()
-    {
-        Cache.Remove(CacheKey);
-        CacheFlushed = true;
-    }
-
-    /// <summary>
-    /// Caches flights striped by query and user.  So we'll cache all recent queries for this user, flushCache can will simultaneously flush ALL cached results for this user.
-    /// I.e., each user has ONE cache object, which contains MULTIPLE results, striped by query.
-    /// </summary>
-    private IEnumerable<LogbookEntryDisplay> CachedData
-    {
-        get { 
-            Dictionary<string, IEnumerable<LogbookEntryDisplay>> cachedValues = (Dictionary<string, IEnumerable<LogbookEntryDisplay>>) Cache[CacheKey]; 
-            if (cachedValues != null)
-            {
-                string key = Restriction.ToJSONString();
-                return (cachedValues.ContainsKey(key)) ? cachedValues[key] : null;
-            }
-            return null;
-        }
-        set 
-        {
-            Dictionary<string, IEnumerable<LogbookEntryDisplay>> cachedValues = (Dictionary<string, IEnumerable<LogbookEntryDisplay>>)Cache[CacheKey];
-            if (cachedValues == null)
-                cachedValues = new Dictionary<string, IEnumerable<LogbookEntryDisplay>>();
-            cachedValues[Restriction.ToJSONString()] = value;
-            Cache.Add(CacheKey, cachedValues, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, 10, 0), System.Web.Caching.CacheItemPriority.Normal, null); 
-        }
-    }
-
-    /// <summary>
-    /// Returns the data, from the cache or via database call if cache misses, or DirectData if that's what's available
-    /// </summary>
-    public IEnumerable<LogbookEntryDisplay> Data
-    {
-        get
-        {
-            if (DirectData != null)
-                return DirectData;
-
-            IEnumerable<LogbookEntryDisplay> lst = CachedData;
-            if (lst == null)
-            {
-                if (String.IsNullOrEmpty(this.User))
-                    this.User = Page.User.Identity.Name;
-
-                MyFlightbook.Profile pfUser = MyFlightbook.Profile.GetUser(this.User);
-
-                lst = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(Restriction), this.User, LastSortExpr, LastSortDir, Viewer.UsesHHMM, pfUser.UsesUTCDateOfFlight);
-                CachedData = lst;
-            }
-            return lst;
-        }
-    }
-
-    private Dictionary<int, List<Badge>> m_cachedBadges = null;
-
-    private Dictionary<int, List<Badge>> CachedBadgesByFlight {
-        get
-        {
-            if (m_cachedBadges != null)
-                return m_cachedBadges;
-
-            // Set up cache of badges.
-            m_cachedBadges = new Dictionary<int, List<Badge>>();
-
-            IEnumerable<Badge> cachedBadges = Pilot.CachedBadges;
-            if (cachedBadges != null)
-            {
-                foreach (Badge b in cachedBadges)
-                {
-                    if (b.IDFlightEarned == LogbookEntry.idFlightNone)
-                        continue;
-                    if (m_cachedBadges.TryGetValue(b.IDFlightEarned, out List<Badge> lst))
-                        lst.Add(b);
-                    else
-                        m_cachedBadges[b.IDFlightEarned] = new List<Badge>() { b };
-                }
-            }
-            return m_cachedBadges;
-        }
-    }
-    #endregion
 
     #region Display Options
     const string szCookieCompact = "mfbLogbookDisplayCompact";
@@ -471,7 +520,8 @@ public partial class Controls_mfbLogbook : System.Web.UI.UserControl
         if (lst != null)
             gvFlightLogs.DataSource = lst;
 
-        AircraftForUser = new List<Aircraft>(new UserAircraft(User).GetAircraftForUser());
+        AircraftForUser.Clear();
+        AircraftForUser.AddRange(new UserAircraft(User).GetAircraftForUser());
         BoundItems = new HashSet<int>();
         gvFlightLogs.DataBind();
         HasBeenBound = true;
@@ -614,23 +664,6 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
     }
     #endregion
 
-    #region Paths for editing, cloning, reversing
-    protected string DetailsPath(object idFlight)
-    {
-        return String.Format(CultureInfo.InvariantCulture, DetailsPageUrlFormatString, idFlight) + (String.IsNullOrEmpty(DetailsParam) ? string.Empty : "?" + DetailsParam);
-    }
-
-    protected string AnalyzePath(object idFlight)
-    {
-        return String.Format(CultureInfo.InvariantCulture, AnalysisPageUrlFormatString, idFlight);
-    }
-
-    protected string PublicPath(object idFlight)
-    {
-        return String.Format(CultureInfo.InvariantCulture, PublicPageUrlFormatString, idFlight);
-    }
-    #endregion
-
     protected void SortGridview(GridView gv, List<LogbookEntryDisplay> lst)
     {
         if (!String.IsNullOrEmpty(LastSortExpr))
@@ -690,27 +723,10 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         // Wire up the drop-menu.  We have to do this here because it is an iNamingContainer and can't access the gridviewrow
         Controls_mfbFlightContextMenu cm = (Controls_mfbFlightContextMenu)row.FindControl("popmenu1").FindControl("mfbFlightContextMenu");
 
-        string szEditContext = EditContextParams;
+        string szEditContext = EditContextParams(gvFlightLogs.PageIndex);
 
         cm.EditTargetFormatString = (EditPageUrlFormatString == null) ? string.Empty : (EditPageUrlFormatString + (String.IsNullOrEmpty(szEditContext) ? string.Empty : (EditPageUrlFormatString.Contains("?") ? "&" : "?" + szEditContext)));
         cm.Flight = le;
-    }
-
-    private void SetUpBadgesForRow(LogbookEntryDisplay le, GridViewRow row)
-    {
-        if (Pilot != null && Pilot.AchievementStatus == Achievement.ComputeStatus.UpToDate)
-        {
-            Repeater rptBadges = (Repeater)row.FindControl("rptBadges");
-            if (CachedBadgesByFlight.ContainsKey(le.FlightID))
-            {
-                IEnumerable<Badge> badges = CachedBadgesByFlight[le.FlightID];
-                if (badges != null)
-                {
-                    rptBadges.DataSource = badges;
-                    rptBadges.DataBind();
-                }
-            }
-        }
     }
 
     private void SetUpSelectionForRow(LogbookEntryDisplay le, GridViewRow row)
