@@ -1,11 +1,8 @@
 using MyFlightbook;
 using MyFlightbook.Image;
-using MyFlightbook.Lint;
-using MyFlightbook.Payments;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -20,16 +17,130 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
+public partial class Controls_mfbEditFlightBase : UserControl
+{
+    #region Cookie stuff
+    const string keyCookieExpandFSLandings = "FSLandingsExpanded";
+    const string keyCookieLastEndingHobbs = "LastHobbs";
+
+    /// <summary>
+    /// If we're setting up a new flight and last flight had an ending hobbs, initialize with that
+    /// clear the cookie, if present, regardless.
+    /// </summary>
+    protected void InitializeHobbs(LogbookEntryBase le)
+    {
+        if (le == null)
+            throw new ArgumentNullException(nameof(le));
+        HttpCookie c = Request.Cookies[keyCookieLastEndingHobbs];
+        if (c != null)
+        {
+            if (le.IsNewFlight)
+            {
+                if (decimal.TryParse(c.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal hobbsEnd))
+                    le.HobbsStart = hobbsEnd;
+            }
+            Response.Cookies[keyCookieLastEndingHobbs].Expires = DateTime.Now.AddDays(-1);   // clear it.
+        }
+    }
+
+    protected void SetLastHobbs(decimal d)
+    {
+        Response.Cookies.Add(new HttpCookie(keyCookieLastEndingHobbs, d.ToString(CultureInfo.InvariantCulture)));
+    }
+
+    protected bool ShouldExpandLandings
+    {
+        get { return (Request.Cookies[keyCookieExpandFSLandings] != null && Request.Cookies[keyCookieExpandFSLandings].Value.CompareOrdinalIgnoreCase("y") == 0); }
+        set
+        {
+            string szVal = value ? string.Empty : "y";
+            Request.Cookies.Add(new HttpCookie(keyCookieExpandFSLandings, szVal));
+            Response.Cookies[keyCookieExpandFSLandings].Value = szVal;
+        }
+    }
+    #endregion
+
+    #region EarnedGratuities
+    /// <summary>
+    /// Can the user add videos?
+    /// </summary>
+    protected static bool CanDoVideo(string szUser)
+    {
+        if (szUser == null)
+            throw new ArgumentNullException(nameof(szUser));
+        return MyFlightbook.Payments.EarnedGratuity.UserQualifies(szUser, MyFlightbook.Payments.Gratuity.GratuityTypes.Videos);
+    }
+    #endregion
+
+    #region Templates
+    protected void SetTemplatesForAircraft(Aircraft ac, Controls_mfbEditPropSet editPropSet)
+    {
+        if (ac == null)
+            return;
+
+        if (editPropSet == null)
+            throw new ArgumentNullException(nameof(editPropSet));
+
+        editPropSet.RemoveAllTemplates();
+        IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name, false);
+
+        HashSet<PropertyTemplate> aircraftTemplates = new HashSet<PropertyTemplate>();
+        foreach (int id in ac.DefaultTemplates)
+        {
+            PropertyTemplate pt = rgpt.FirstOrDefault(pt1 => pt1.ID == id);
+            if (pt != null)
+                aircraftTemplates.Add(pt);
+        }
+
+        HashSet<PropertyTemplate> defaultTemplates = new HashSet<PropertyTemplate>(UserPropertyTemplate.DefaultTemplatesForUser(Page.User.Identity.Name));
+        // if the aircraft has valid templates specified, use those
+        if (aircraftTemplates.Count > 0)
+            editPropSet.AddTemplates(aircraftTemplates);
+        else if (defaultTemplates.Count > 0)
+            editPropSet.AddTemplates(defaultTemplates);
+        else
+            editPropSet.AddTemplate(new MRUPropertyTemplate(Page.User.Identity.Name));
+
+        editPropSet.RemoveTemplate((int)KnownTemplateIDs.ID_ANON);
+        editPropSet.RemoveTemplate((int)KnownTemplateIDs.ID_SIM);
+
+        if (ac.InstanceType == AircraftInstanceTypes.RealAircraft)
+        {
+            if (ac.IsAnonymous)
+                editPropSet.AddTemplate(new AnonymousPropertyTemplate());
+        }
+        else
+            editPropSet.AddTemplate(new SimPropertyTemplate());
+
+        editPropSet.Refresh();
+    }
+    #endregion
+
+    #region FlightLint
+    protected static void CheckFlight(Control container, GridView gv, LogbookEntryBase le)
+    {
+        if (container == null)
+            throw new ArgumentNullException(nameof(container));
+        if (gv == null)
+            throw new ArgumentNullException(nameof(gv));
+        if (le == null)
+            throw new ArgumentNullException(nameof(le));
+
+        gv.DataSource = new MyFlightbook.Lint.FlightLint().CheckFlights(new LogbookEntryBase[] { le }, le.User, MyFlightbook.Lint.FlightLint.DefaultOptionsForLocale);
+        gv.DataBind();
+        container.Visible = true;
+    }
+    #endregion
+}
+
+public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
 {
 
-    private ArrayList m_rgTailwheelAircraft = new ArrayList();
+    private List<int> m_rgTailwheelAircraft = new List<int>();
 
     const string keyLastEntryDate = "LastEntryDate";
     const string keyTailwheelList = "TailwheelListForUser";
     const string keySessionInProgress = "InProgressFlight";
-    const string keyCookieExpandFSLandings = "FSLandingsExpanded";
-    const string keyCookieLastEndingHobbs = "LastHobbs";
     const string keyVSFlightUser = "VSFlightUser";
     const string szValGroupEdit = "vgEditFlight";
 
@@ -150,7 +261,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
             le.Date = (DateTime)Session[keyLastEntryDate];
 
         // see if we have a pending in-progress flight
-        if (FlightID == LogbookEntry.idFlightNew && Session[keySessionInProgress] != null)
+        if (FlightID == LogbookEntryCore.idFlightNew && Session[keySessionInProgress] != null)
             le = (LogbookEntry)Session[keySessionInProgress];
         Session[keySessionInProgress] = null; // clear it out regardless.
 
@@ -162,24 +273,13 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         // If this is a shared flight, initialize from that.
         le = SharedFlight(le);
 
-        // If we're setting up a new flight and last flight had an ending hobbs, initialize with that
-        // clear the cookie, if present, regardless.
-        HttpCookie c = Request.Cookies[keyCookieLastEndingHobbs];
-        if (c != null)
-        {
-            if (le.IsNewFlight)
-            {
-                if (decimal.TryParse(c.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal hobbsEnd))
-                    le.HobbsStart = hobbsEnd;
-            }
-            Response.Cookies[keyCookieLastEndingHobbs].Expires = DateTime.Now.AddDays(-1);   // clear it.
-        }
+        InitializeHobbs(le);
 
         SetUpAircraftForFlight(le);
 
         InitFormFromLogbookEntry(le);
 
-        bool fCanDoVideo = EarnedGratuity.UserQualifies(Page.User.Identity.Name, Gratuity.GratuityTypes.Videos);
+        bool fCanDoVideo = CanDoVideo(Page.User.Identity.Name);
         mfbMFUFlightImages.IncludeVideos = fCanDoVideo;
         mfbVideoEntry1.CanAddVideos = fCanDoVideo;
         mfbVideoEntry1.FlightID = le.FlightID;
@@ -210,7 +310,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         cpeLandingDetails.Collapsed = !(le.NightLandings + le.FullStopLandings > 0 ||
                                        le.Nighttime > 0.0M ||
                                        m_rgTailwheelAircraft.Contains(le.AircraftID) ||
-                                       (Request.Cookies[keyCookieExpandFSLandings] != null && Request.Cookies[keyCookieExpandFSLandings].Value.CompareOrdinalIgnoreCase("y") == 0)
+                                       ShouldExpandLandings
                                        );
         cpeLandingDetails.ClientState = cpeLandingDetails.Collapsed ? "true" : "false";
     }
@@ -338,7 +438,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
     {
         if (Session[keyTailwheelList] != null && cmbAircraft.Items.Count > 0) // we've already initialized...
         {
-            m_rgTailwheelAircraft = (ArrayList)Session[keyTailwheelList];
+            m_rgTailwheelAircraft = (List<int>)Session[keyTailwheelList];
             return;
         }
 
@@ -486,41 +586,11 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         Aircraft ac = ua.GetUserAircraftByID(idAircraft);
         if (ac != null)
         {
-            mfbEditPropSet1.RemoveAllTemplates();
-            IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name, false);
-
-            HashSet<PropertyTemplate> aircraftTemplates = new HashSet<PropertyTemplate>();
-            foreach (int id in ac.DefaultTemplates)
-            {
-                PropertyTemplate pt = rgpt.FirstOrDefault(pt1 => pt1.ID == id);
-                if (pt != null)
-                    aircraftTemplates.Add(pt);
-            }
-
-            HashSet<PropertyTemplate> defaultTemplates = new HashSet<PropertyTemplate>(UserPropertyTemplate.DefaultTemplatesForUser(Page.User.Identity.Name));
-            // if the aircraft has valid templates specified, use those
-            if (aircraftTemplates.Count > 0)
-                mfbEditPropSet1.AddTemplates(aircraftTemplates);
-            else if (defaultTemplates.Count > 0)
-                mfbEditPropSet1.AddTemplates(defaultTemplates);
-            else
-                mfbEditPropSet1.AddTemplate(new MRUPropertyTemplate(Page.User.Identity.Name));
-
-            mfbEditPropSet1.RemoveTemplate((int)KnownTemplateIDs.ID_ANON);
-            mfbEditPropSet1.RemoveTemplate((int)KnownTemplateIDs.ID_SIM);
+            SetTemplatesForAircraft(ac, mfbEditPropSet1);
 
             // Expand for tailwheel
             if (ac.IsTailwheel)
                 cpeLandingDetails.ClientState = "false";
-            if (ac.InstanceType == AircraftInstanceTypes.RealAircraft)
-            {
-                if (ac.IsAnonymous)
-                    mfbEditPropSet1.AddTemplate(new AnonymousPropertyTemplate());
-            }
-            else
-                mfbEditPropSet1.AddTemplate(new SimPropertyTemplate());
-
-            mfbEditPropSet1.Refresh();
         }
     }
 
@@ -602,7 +672,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
         {
             // if a new flight and hobbs > 0, save it for the next flight
             if (le.IsNewFlight && le.HobbsEnd > 0)
-                Response.Cookies.Add(new HttpCookie(keyCookieLastEndingHobbs, le.HobbsEnd.ToString(CultureInfo.InvariantCulture)));
+                SetLastHobbs(le.HobbsEnd);
 
             le.FlightData = mfbFlightInfo1.Telemetry;
 
@@ -641,7 +711,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
     protected void CommitFlight(object sender, int nextFlightToEdit)
     {
         // Save the state of the full-stop landings expansion
-        Request.Cookies.Add(new HttpCookie(keyCookieExpandFSLandings, Convert.ToBoolean(cpeLandingDetails.ClientState, CultureInfo.InvariantCulture) ? string.Empty : "y"));
+        ShouldExpandLandings = Convert.ToBoolean(cpeLandingDetails.ClientState, CultureInfo.InvariantCulture);
 
         Page.Validate(szValGroupEdit);
         int idResult = CommitChanges();
@@ -791,9 +861,7 @@ public partial class Controls_mfbEditFlight : System.Web.UI.UserControl
 
         if (!le.IsNewFlight)
             le.CFISignatureState = new LogbookEntry(le.FlightID, le.User).CFISignatureState;
-        gvFlightLint.DataSource = new FlightLint().CheckFlights(new LogbookEntryBase[] { le }, le.User, FlightLint.DefaultOptionsForLocale);
-        gvFlightLint.DataBind();
-        pnlFlightLint.Visible = true;
+        CheckFlight(pnlFlightLint, gvFlightLint, le);
     }
 }
 
