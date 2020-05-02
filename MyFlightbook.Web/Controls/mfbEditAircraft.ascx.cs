@@ -1,11 +1,8 @@
 using MyFlightbook;
-using MyFlightbook.Clubs;
 using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -16,6 +13,172 @@ using System.Web.UI.WebControls;
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
+
+/// <summary>
+/// base class to simplify class coupling for mfbEditAircraft; handles a lot of the stuff that either 
+/// (a) doesn't require direct access to controls on the page, or 
+/// (b) doesn't really directly relate to aircraft
+/// </summary>
+public partial class Controls_mfbEditAircraftBase : UserControl
+{
+    private const string szKeyVSAircraftStats = "AircraftStats";
+    private const string szKeyVSAdminMode = "AdminMode";
+
+    /// <summary>
+    /// Returns whether or not we are in admin mode.  In admin mode, we can edit airplanes but don't add/remove to the user's list.
+    /// </summary>
+    public bool AdminMode
+    {
+        get { return Convert.ToBoolean(ViewState[szKeyVSAdminMode] ?? false, CultureInfo.CurrentCulture); }
+        set { ViewState[szKeyVSAdminMode] = value; }
+    }
+
+    #region Schedule stuff
+    /// <summary>
+    /// Displays any club schedules for this aircraft
+    /// <paramref name="ac">The aircraft</paramref>
+    /// <paramref name="rowClubSchedules">The row to show/hide if there are clubs found</paramref>
+    /// <paramref name="rptSchedules">The repeater control for any clubs</paramref>
+    /// <paramref name="setOwner">An action to take if the club has an owner name prepend policy</paramref>
+    /// </summary>
+    protected void SetUpSchedules(Aircraft ac, Repeater rptSchedules, System.Web.UI.HtmlControls.HtmlControl rowClubSchedules, Action<string> setOwner)
+    {
+        if (ac == null)
+            throw new ArgumentNullException(nameof(ac));
+
+        if (!Page.User.Identity.IsAuthenticated || ac.IsNew)
+            return;
+
+        if (rptSchedules == null)
+            throw new ArgumentNullException(nameof(rptSchedules));
+        if (rowClubSchedules == null)
+            throw new ArgumentNullException(nameof(rowClubSchedules));
+
+        List<MyFlightbook.Clubs.Club> lstClubs = new List<MyFlightbook.Clubs.Club>(MyFlightbook.Clubs.Club.ClubsForAircraft(ac.AircraftID, Page.User.Identity.Name));
+        if (lstClubs.Count > 0)
+        {
+            rowClubSchedules.Visible = true;
+            rptSchedules.DataSource = lstClubs;
+            rptSchedules.DataBind();
+
+            // If *any* club has policy PrependsScheduleWithOwnerName, set the default text for it
+            foreach (MyFlightbook.Clubs.Club c in lstClubs)
+            {
+                if (c.PrependsScheduleWithOwnerName)
+                {
+                    setOwner?.Invoke(Profile.GetUser(Page.User.Identity.Name).UserFullName);
+                    break;
+                }
+            }
+        }
+    }
+
+    protected static void BindSchedules(RepeaterItemEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+        Controls_mfbResourceSchedule sched = (Controls_mfbResourceSchedule)e.Item.FindControl("schedAircraft");
+        Controls_SchedSummary summ = (Controls_SchedSummary)sched.SubNavContainer.Controls[0].FindControl("schedSummary");
+        summ.Refresh();
+    }
+    #endregion
+
+    protected void RedirectForId(int aircraftID)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder("~/Member/EditAircraft.aspx?id=" + aircraftID.ToString(CultureInfo.InvariantCulture));
+        foreach (var key in Request.QueryString.AllKeys)
+        {
+            if (key.CompareCurrentCultureIgnoreCase("id") == 0)
+                continue;
+            sb.AppendFormat(CultureInfo.InvariantCulture, "&{0}={1}", key, HttpUtility.UrlEncode(Request.QueryString[key]));
+        }
+        Response.Redirect(sb.ToString());
+    }
+
+    #region Aircraft Stats
+    /// <summary>
+    /// Stats for this aircraft
+    /// </summary>
+    protected AircraftStats Stats
+    {
+        get { return (AircraftStats)ViewState[szKeyVSAircraftStats]; }
+        set { ViewState[szKeyVSAircraftStats] = value; }
+    }
+
+    protected bool CanMakeImageDefault { get { return Stats != null && Stats.Users > 1; } }
+
+    protected bool IsOnlyUserOfAircraft { get { return Stats != null && Stats.Users == 1; } }
+
+    /// <summary>
+    /// Display the statistics for this aircraft
+    /// </summary>
+    protected IEnumerable<LinkedString> StatsForUser(Aircraft ac)
+    {
+        if (ac == null)
+            throw new ArgumentNullException(nameof(ac));
+
+        if (ac.IsNew)
+            return Array.Empty<LinkedString>(); // nothing to add for a new aircraft
+
+        List<LinkedString> lst = new List<LinkedString>();
+
+        Stats = new AircraftStats(Page.User.Identity.Name, ac.AircraftID);
+        // Add overall stats
+        lst.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftUserStats, Stats.Users, Stats.Flights)));
+        // And add personal stats
+        lst.Add(Stats.UserStatsDisplay);
+
+        if (AdminMode && util.GetStringParam(Request, "listUsers").Length > 0)
+            lst.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, "Users = {0}", String.Join(", ", Stats.UserNames))));
+
+        return lst;
+    }
+    #endregion
+
+    #region Maintenance
+    protected bool ShouldShowMaintenance(int aircraftID)
+    {
+        MaintenanceLog[] rgml = MaintenanceLog.ChangesByAircraftID(aircraftID);
+        if (rgml != null)
+        {
+            foreach (MaintenanceLog ml in rgml)
+            {
+                if (ml.User.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    protected static void SetValidationGroup(Control c, string szGroup)
+    {
+        util.SetValidationGroup(c, szGroup);
+    }
+    #endregion
+
+    #region Admin
+    protected void MergeClone(Aircraft ac, Aircraft acClone)
+    {
+        if (ac == null)
+            throw new ArgumentNullException(nameof(ac));
+        if (acClone == null)
+            throw new ArgumentNullException(nameof(acClone));
+
+        if (!acClone.IsNew)
+        {
+            AircraftUtility.AdminMergeDupeAircraft(ac, acClone);
+            Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", ac.AircraftID));
+        }
+    }
+    #endregion
+
+    protected static void RefreshImages(Control c)
+    {
+        Controls_mfbHoverImageList il = c as Controls_mfbHoverImageList;
+        if (c != null)
+            il.Refresh();
+    }
+}
 
 /*
  * Some testing notes:
@@ -43,23 +206,13 @@ And a few action scenarios to test (preserve existing behavior):
  
  * */
 
-public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
+public partial class Controls_mfbEditAircraft : Controls_mfbEditAircraftBase
 {
     private const string szKeyVSAircraftInProgress = "AircraftInProgress";
-    private const string szKeyVSAircraftStats = "AircraftStats";
 
     public event System.EventHandler AircraftUpdated = null;
 
     #region Properties
-    /// <summary>
-    /// Returns whether or not we are in admin mode.  In admin mode, we can edit airplanes but don't add/remove to the user's list.
-    /// </summary>
-    public bool AdminMode
-    {
-        get { return Convert.ToBoolean(hdnAdminMode.Value, CultureInfo.CurrentCulture); }
-        set { hdnAdminMode.Value = value.ToString(CultureInfo.InvariantCulture); }
-    }
-
     /// <summary>
     /// The ID of the aircraft being edited
     /// </summary>
@@ -112,15 +265,6 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
                     break;
             }
         }
-    }
-
-    /// <summary>
-    /// Stats for this aircraft
-    /// </summary>
-    protected AircraftStats Stats
-    {
-        get { return (AircraftStats)ViewState[szKeyVSAircraftStats]; }
-        set { ViewState[szKeyVSAircraftStats] = value; }
     }
 
     /// <summary>
@@ -196,7 +340,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         }
 
         SyncTailToCountry();
-        util.SetValidationGroup(mfbMaintainAircraft, "EditAircraft");
+        SetValidationGroup(mfbMaintainAircraft, "EditAircraft");
     }
     #endregion
 
@@ -216,7 +360,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         mfbIl.AltText = txtTail.Text;
         mfbIl.ImageClass = MFBImageInfo.ImageClass.Aircraft;
         mfbIl.Key = m_ac.AircraftID.ToString(CultureInfo.InvariantCulture);
-        mfbIl.CanMakeDefault = Stats != null && Stats.Users > 1;
+        mfbIl.CanMakeDefault = CanMakeImageDefault;
         mfbIl.DefaultImage = m_ac.DefaultImage;
         mfbIl.Refresh();
         pnlImageNote.Visible = mfbIl.Images.ImageArray.Count > 0;
@@ -277,31 +421,6 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
     #region Data <-> Form binding
     #region Helper methods for existing aircraft
-    /// <summary>
-    /// Display the statistics for this aircraft
-    /// </summary>
-    protected IEnumerable<LinkedString> StatsForUser
-    {
-        get
-        {
-            if (m_ac.IsNew)
-                return Array.Empty<LinkedString>(); // nothing to add for a new aircraft
-
-            List<LinkedString> lst = new List<LinkedString>();
-
-            Stats = new AircraftStats(Page.User.Identity.Name, m_ac.AircraftID);
-            // Add overall stats
-            lst.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.EditAircraftUserStats, Stats.Users, Stats.Flights)));
-            // And add personal stats
-            lst.Add(Stats.UserStatsDisplay);
-
-            if (AdminMode && util.GetStringParam(Request, "listUsers").Length > 0)
-                lst.Add(new LinkedString(String.Format(CultureInfo.CurrentCulture, "Users = {0}", String.Join(", ", Stats.UserNames))));
-
-            return lst;
-        }
-    }
-
     /// <summary>
     /// find the longest country prefix that matches for this aircraft
     /// </summary>
@@ -379,42 +498,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         mfbMaintainAircraft.AircraftID = m_ac.AircraftID;
         mfbMaintainAircraft.InitForm();
 
-        MaintenanceLog[] rgml = MaintenanceLog.ChangesByAircraftID(m_ac.AircraftID);
-        if (rgml != null)
-        {
-            foreach (MaintenanceLog ml in rgml)
-            {
-                if (ml.User.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) == 0)
-                    expandoMaintenance.ExpandoControl.Collapsed = false;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Displays any club schedules for this aircraft
-    /// </summary>
-    protected void SetUpSchedules()
-    {
-        if (!Page.User.Identity.IsAuthenticated || m_ac.IsNew)
-            return;
-
-        IEnumerable<Club> lstClubs = Club.ClubsForAircraft(m_ac.AircraftID, Page.User.Identity.Name);
-        if (lstClubs.Any())
-        {
-            rowClubSchedules.Visible = true;
-            rptSchedules.DataSource = lstClubs;
-            rptSchedules.DataBind();
-
-            // If *any* club has policy PrependsScheduleWithOwnerName, set the default text for it
-            foreach (Club c in lstClubs)
-            {
-                if (c.PrependsScheduleWithOwnerName)
-                {
-                    mfbEditAppt1.DefaultTitle = MyFlightbook.Profile.GetUser(Page.User.Identity.Name).UserFullName;
-                    break;
-                }
-            }
-        }
+        expandoMaintenance.ExpandoControl.Collapsed = !ShouldShowMaintenance(m_ac.AircraftID);
     }
 
     /// <summary>
@@ -461,7 +545,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         if (!fIsNew)
         {
             lstAttrib.Add(new LinkedString(rbTrainingDevice.Checked ? rblTrainingDevices.SelectedItem.Text : (rbRealRegistered.Checked ? lblRealRegistered.Text : lblAnonymous.Text)));
-            lstAttrib.AddRange(StatsForUser);
+            lstAttrib.AddRange(StatsForUser(m_ac));
         }
         SelectMake1.AircraftAttributes = lstAttrib;
         SelectMake1.SelectedModelID = m_ac.ModelID;
@@ -476,7 +560,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
         SetUpAlternativeVersions();
 
-        SetUpSchedules();
+        SetUpSchedules(m_ac, rptSchedules, rowClubSchedules, (string sz) => { mfbEditAppt1.DefaultTitle = sz; });
 
         bool fIsKnown = AdminMode || (!fIsNew && (new UserAircraft(Page.User.Identity.Name)).GetUserAircraftByID(m_ac.AircraftID) != null);
 
@@ -486,7 +570,7 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         // Editing automatically enabled IF new aircraft OR real, registered, unlocked, single user.
         // Editing offered (with confirmation) if real, registered, (unlocked or admin), multiple-user
         // Otherwise, no editing
-        if (fIsNew || (fCanEdit && Stats.Users == 1))
+        if (fIsNew || (fCanEdit && IsOnlyUserOfAircraft))
             SelectMake1.EditMode = Controls_AircraftControls_SelectMake.MakeEditMode.Edit; 
         else if (fCanEdit && !fIsLocked)
             SelectMake1.EditMode = Controls_AircraftControls_SelectMake.MakeEditMode.EditWithConfirm;
@@ -519,13 +603,13 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
     {
         MakeModel mm = MakeModel.GetModel(m_ac.ModelID);
 
-        Boolean fRealAircraft = IsRealAircraft;
+        bool fRealAircraft = IsRealAircraft;
         CountryCodePrefix cc = CountryCodePrefix.BestMatchCountryCode(m_ac.TailNumber);
 
-        Boolean fIsNew = m_ac.IsNew;
-        Boolean fHasModelSpecified = (m_ac.ModelID > 0);
+        bool fIsNew = m_ac.IsNew;
+        bool fHasModelSpecified = (m_ac.ModelID > 0);
 
-        Boolean fIsAnonymous = rbRealAnonymous.Checked;
+        bool fIsAnonymous = rbRealAnonymous.Checked;
 
         rbRealRegistered.Enabled = rbRealAnonymous.Enabled = true;
         switch (mm.AllowedTypes)
@@ -750,20 +834,8 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
 
     protected void lnkPopulateAircraft_Click(object sender, EventArgs e)
     {
-        if (!String.IsNullOrEmpty(txtTail.Text))
-        {
-            if (int.TryParse(hdnSelectedAircraftID.Value, out int aircraftID))
-            {
-                StringBuilder sb = new StringBuilder("~/Member/EditAircraft.aspx?id=" + aircraftID.ToString(CultureInfo.InvariantCulture));
-                foreach (var key in Request.QueryString.AllKeys)
-                {
-                    if (key.CompareCurrentCultureIgnoreCase("id") == 0)
-                        continue;
-                    sb.AppendFormat(CultureInfo.InvariantCulture, "&{0}={1}", key, System.Web.HttpUtility.UrlEncode(Request.QueryString[key]));
-                }
-                Response.Redirect(sb.ToString());
-            }
-        }
+        if (!String.IsNullOrEmpty(txtTail.Text)&& int.TryParse(hdnSelectedAircraftID.Value, out int aircraftID))
+            RedirectForId(aircraftID);
     }
     #endregion
 
@@ -803,31 +875,21 @@ public partial class Controls_mfbEditAircraft : System.Web.UI.UserControl
         else if (e.CommandName.CompareCurrentCultureIgnoreCase("_merge") == 0)
         {
             Aircraft acClone = new Aircraft(Convert.ToInt32(e.CommandArgument, CultureInfo.InvariantCulture));
-            if (!acClone.IsNew)
-            {
-                AircraftUtility.AdminMergeDupeAircraft(m_ac, acClone);
-                Response.Redirect(String.Format(CultureInfo.InvariantCulture, "~/Member/EditAircraft.aspx?id={0}", m_ac.AircraftID));
-            }
+            MergeClone(m_ac, acClone);
         }
     }
 
     protected void gvAlternativeVersions_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         if (e != null && e.Row.RowType == DataControlRowType.DataRow)
-        {
-            ((Controls_mfbHoverImageList)e.Row.FindControl("mfbHoverThumb")).Refresh();
-        }
+            RefreshImages(e.Row.FindControl("mfbHoverThumb"));
     }
     #endregion
 
     #region Schedules
     protected void rptSchedules_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
-        if (e == null)
-            throw new ArgumentNullException(nameof(e));
-        Controls_mfbResourceSchedule sched = (Controls_mfbResourceSchedule)e.Item.FindControl("schedAircraft");
-        Controls_SchedSummary summ = (Controls_SchedSummary)sched.SubNavContainer.Controls[0].FindControl("schedSummary");
-        summ.Refresh();
+        BindSchedules(e);
     }
     #endregion
 

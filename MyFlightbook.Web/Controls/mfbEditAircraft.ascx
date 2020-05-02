@@ -16,7 +16,6 @@
 <%@ Register src="../Controls/mfbATDFTD.ascx" tagname="mfbATDFTD" tagprefix="uc2" %>
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
 <asp:Panel ID="pnlEditAircraft" runat="server" DefaultButton="btnAddAircraft">
-    <asp:HiddenField ID="hdnAdminMode" runat="server" Value="false" />
     <asp:Panel runat="server" ID="pnlLockedExplanation" CssClass="callout" Visible="False">
         <p>
             <asp:Label ID="lblWhyNoEditQ" runat="server" Font-Bold="True"
