@@ -1,13 +1,9 @@
 ﻿using MyFlightbook;
-using MyFlightbook.Achievements;
 using MyFlightbook.Airports;
 using MyFlightbook.Charting;
 using MyFlightbook.Geography;
 using MyFlightbook.Image;
-using MyFlightbook.Instruction;
-using MyFlightbook.OAuth.CloudAhoy;
 using MyFlightbook.Telemetry;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -23,12 +19,419 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Member_FlightDetail : System.Web.UI.Page
+/// <summary>
+/// Base class to reduce class coupling in Member_FlightDetail
+/// </summary>
+public partial class Member_FlightDetailBase : Page
 {
-    private enum DownloadFormat { Original, CSV, KML, GPX };
+    protected enum DownloadFormat { Original, CSV, KML, GPX };
 
-    public enum DetailsTab { Flight, Aircraft, Chart, Data, Download }
+    private enum DetailsTab { Flight, Aircraft, Chart, Data, Download }
 
+    #region some properties that don't rely on page controls
+    private readonly FlightData m_fd = new FlightData();
+    protected FlightData DataForFlight
+    {
+        get { return m_fd; }
+    }
+
+    private const string szKeyVSRestriction = "viewstateRestrictionKey";
+    protected FlightQuery Restriction
+    {
+        get { return (FlightQuery)ViewState[szKeyVSRestriction]; }
+        set { ViewState[szKeyVSRestriction] = value; }
+    }
+
+    protected string LinkForFlight(int idFlight)
+    {
+        return String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}{1}", idFlight, Restriction == null || Restriction.IsDefault ? string.Empty : "?fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString()));
+    }
+    #endregion
+
+    #region Mapping
+    private const string szkeyVSAirportListResult = "szkeyVSALR";
+    protected ListsFromRoutesResults RoutesList(string szRoute)
+    {
+        if (szRoute == null)
+            throw new ArgumentNullException(nameof(szRoute));
+
+        ListsFromRoutesResults lfrr = (ListsFromRoutesResults)ViewState[szkeyVSAirportListResult];
+        if (lfrr == null)
+            ViewState[szkeyVSAirportListResult] = lfrr = AirportList.ListsFromRoutes(szRoute);
+        return lfrr;
+    }
+
+    /// <summary>
+    /// Sets up the specified map manager
+    /// </summary>
+    /// <param name="mapMgr"></param>
+    /// <param name="szRoute"></param>
+    /// <param name="PathLatLongArrayID"></param>
+    /// <returns>True if the data has latlong info and more than one row of data (i.e., is dynamic and can be downloaded</returns>
+    protected bool SetUpMapManager(Controls_mfbGoogleMapMgr mapMgr, string szRoute, string PathLatLongArrayID)
+    {
+        if (mapMgr == null)
+            throw new ArgumentNullException(nameof(mapMgr));
+        if (szRoute == null)
+            throw new ArgumentNullException(szRoute);
+
+        mapMgr.Map.Airports = RoutesList(szRoute).Result;
+        mapMgr.ShowMarkers = true;
+        mapMgr.Map.PathVarName = PathLatLongArrayID;
+        mapMgr.Map.Path = DataForFlight.GetPath();
+        bool result = DataForFlight.HasLatLongInfo && DataForFlight.Data.Rows.Count > 1;
+        mapMgr.Mode = result ? MyFlightbook.Mapping.GMap_Mode.Dynamic : MyFlightbook.Mapping.GMap_Mode.Static;
+        return result;
+    }
+    #endregion
+
+    #region Data types
+    protected static string FormatNameForTelemetry(LogbookEntryCore led)
+    {
+        if (led == null)
+            throw new ArgumentNullException(nameof(led));
+
+        return DataSourceType.DataSourceTypeFromFileType(led.Telemetry.TelemetryType).DisplayName;
+    }
+
+    protected static bool CanSpecifyUnitsForTelemetry(LogbookEntryCore led)
+    {
+        if (led == null)
+            throw new ArgumentNullException(nameof(led));
+        switch (led.Telemetry.TelemetryType)
+        {
+            case DataSourceType.FileType.GPX:
+            case DataSourceType.FileType.KML:
+            case DataSourceType.FileType.NMEA:
+            case DataSourceType.FileType.IGC:
+                return false;
+            default:
+                return true;
+        }
+    }
+    #endregion
+
+    #region databinding various stuff in the form
+    protected static void BindImages(Control c, LogbookEntry le, Controls_mfbGoogleMapMgr mapMgr)
+    {
+        if (!(c is Controls_mfbImageList mfbilFlight))
+            throw new ArgumentNullException(nameof(c));
+        if (le == null)
+            throw new ArgumentNullException(nameof(le));
+        if (mapMgr == null)
+            throw new ArgumentNullException(nameof(mapMgr));
+
+        mfbilFlight.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
+        mfbilFlight.Refresh();
+        mapMgr.Map.Images = mfbilFlight.Images.ImageArray;
+    }
+
+    protected static void BindVideoEntries(Control c, LogbookEntry le)
+    {
+        if (!(c is Controls_mfbVideoEntry ve))
+            throw new ArgumentNullException(nameof(c));
+        if (le == null)
+            throw new ArgumentNullException(nameof(le));
+
+        ve.Videos.Clear();
+        foreach (VideoRef vr in le.Videos)
+            ve.Videos.Add(vr);
+    }
+
+    protected void BindAirportServices(Control c, Controls_mfbGoogleMapMgr mapMgr, string szRoute)
+    {
+        if (!(c is Controls_mfbAirportServices aptsvc))
+            throw new ArgumentNullException(nameof(c));
+        if (mapMgr == null)
+            throw new ArgumentNullException(nameof(mapMgr));
+        if (szRoute == null)
+            throw new ArgumentNullException(nameof(szRoute));
+
+        aptsvc.GoogleMapID = mapMgr.MapID;
+        aptsvc.AddZoomLink = (mapMgr.Mode == MyFlightbook.Mapping.GMap_Mode.Dynamic);
+        aptsvc.SetAirports(RoutesList(szRoute).MasterList.GetNormalizedAirports());
+    }
+
+    protected static void BindSignature(Control c, LogbookEntryDisplay le)
+    {
+        if (!(c is Controls_mfbSignature sig))
+            throw new ArgumentNullException(nameof(c));
+        sig.Flight = le ?? throw new ArgumentNullException(nameof(le));
+    }
+
+    protected static void BindBadges(Profile pf, int idFlight, Control c)
+    {
+        if (pf == null)
+            throw new ArgumentNullException(nameof(pf));
+        if (!(c is Repeater rptBadges))
+            throw new ArgumentNullException(nameof(c));
+
+        IEnumerable<MyFlightbook.Achievements.Badge> cached = pf.CachedBadges;
+        List<MyFlightbook.Achievements.Badge> badges = (cached == null ? null : new List<MyFlightbook.Achievements.Badge>(cached));
+        if (badges != null)
+        {
+            rptBadges.DataSource = MyFlightbook.Achievements.BadgeSet.BadgeSetsFromBadges(badges.FindAll(b => b.IDFlightEarned == idFlight));
+            rptBadges.DataBind();
+        }
+    }
+    #endregion
+
+    #region RawData Row Binding
+    protected static void BindRawDataRow(FlightData fd, int iRow, Control cPin, Control cZoom)
+    {
+        if (fd == null)
+            throw new ArgumentNullException(nameof(fd));
+        if (!(cPin is Image i))
+            throw new ArgumentNullException(nameof(cPin));
+        if (!(cZoom is HyperLink h))
+            throw new ArgumentNullException(nameof(cZoom));
+
+        if (fd.HasLatLongInfo)
+        {
+            DataRow drow = fd.Data.Rows[iRow];
+
+            List<string> lstDesc = new List<string>();
+
+            double lat = 0.0, lon = 0.0;
+
+            foreach (DataColumn dc in fd.Data.Columns)
+            {
+                bool fLat = (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.LAT) == 0);
+                bool fLon = (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.LON) == 0);
+                bool fPos = (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.POS) == 0);
+
+                if (fLat)
+                    lat = Convert.ToDouble(drow[KnownColumnNames.LAT], CultureInfo.InvariantCulture);
+
+                if (fLon)
+                    lon = Convert.ToDouble(drow[KnownColumnNames.LON], CultureInfo.InvariantCulture);
+
+                if (fPos)
+                {
+                    LatLong ll = (LatLong)drow[KnownColumnNames.POS];
+                    lat = ll.Latitude;
+                    lon = ll.Longitude;
+                }
+
+                if (!(fLat || fLon || fPos))
+                {
+                    object o = drow[dc.ColumnName];
+                    if (o != null)
+                    {
+                        string sz = o.ToString(); ;
+                        if (!String.IsNullOrEmpty(sz))
+                            lstDesc.Add(String.Format(CultureInfo.InvariantCulture, "{0}: {1}<br />", dc.ColumnName, sz));
+                    }
+                }
+            }
+
+            i.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:dropPin(new google.maps.LatLng({0}, {1}), '{2}');", lat, lon, String.Join("<br />", lstDesc));
+            h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:getMfbMap().gmap.setCenter(new google.maps.LatLng({0}, {1}));getMfbMap().gmap.setZoom(14);", lat, lon);
+            i.ToolTip = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.GraphDropPinTip, (new LatLong(lat, lon)).ToString());
+        }
+        else
+            i.Visible = h.Visible = false;
+    }
+    #endregion
+
+    #region Download
+    protected void DownloadData(LogbookEntry le, FlightData m_fd, int altUnits, int speedUnits, int format)
+    {
+        if (m_fd == null)
+            throw new ArgumentNullException(nameof(m_fd));
+        if (le == null)
+            throw new ArgumentNullException(nameof(le));
+
+        m_fd.AltitudeUnits = (FlightData.AltitudeUnitTypes)altUnits;
+        m_fd.SpeedUnits = (FlightData.SpeedUnitTypes)speedUnits;
+        m_fd.FlightID = le.FlightID;
+
+        DataSourceType dst = null;
+        Action writeData = null;
+
+        switch ((DownloadFormat)format)
+        {
+            case DownloadFormat.Original:
+                string szData = le.FlightData;
+                dst = DataSourceType.BestGuessTypeFromText(szData);
+                writeData = () => { Response.Write(szData); };
+                break;
+            case DownloadFormat.CSV:
+                dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.CSV);
+                writeData = () => { MyFlightbook.CSV.CsvWriter.WriteToStream(Response.Output, m_fd.Data, true, true); };
+                break;
+            case DownloadFormat.KML:
+                dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.KML);
+                writeData = () => { m_fd.WriteKMLData(Response.OutputStream); };
+                break;
+            case DownloadFormat.GPX:
+                dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.GPX);
+                writeData = () => { m_fd.WriteGPXData(Response.OutputStream); };
+                break;
+        }
+
+        if (dst != null && writeData != null)
+        {
+            Response.Clear();
+            Response.ContentType = dst.Mimetype;
+            Response.AddHeader("Content-Disposition", String.Format(CultureInfo.CurrentCulture, "attachment;filename=FlightData{0}.{1}", m_fd.FlightID, dst.DefaultExtension));
+            writeData();
+            Response.End();
+        }
+    }
+    #endregion
+
+    #region CloudAhoy
+    protected static async System.Threading.Tasks.Task<bool> PushToCloudahoy(string szUser, LogbookEntry le, FlightData fd, int altUnits, int speedUnits, bool fSandbox)
+    {
+        if (fd == null)
+            throw new ArgumentNullException(nameof(fd));
+
+        fd.AltitudeUnits = (FlightData.AltitudeUnitTypes)altUnits;
+        fd.SpeedUnits = (FlightData.SpeedUnitTypes)speedUnits;
+
+        return await MyFlightbook.OAuth.CloudAhoy.CloudAhoyClient.PushCloudAhoyFlight(szUser, le, fd, fSandbox).ConfigureAwait(false);
+    }
+    #endregion
+
+    #region Charting
+    protected static void UpdateChart(TelemetryDataTable tdt, Controls_GoogleChart gcData, FlightData fd, string PathLatLongArrayID, ListItem xAxis, ListItem yAxis1, ListItem yAxis2, out decimal max, out decimal min, out decimal max2, out decimal min2)
+    {
+        max = decimal.MinValue;
+        min = decimal.MaxValue;
+        max2 = decimal.MinValue;
+        min2 = decimal.MaxValue;
+
+        if (tdt == null)
+            return;
+
+        if (gcData == null)
+            throw new ArgumentNullException(nameof(gcData));
+
+        if (yAxis1 == null || yAxis2 == null || xAxis == null)
+        {
+            gcData.Visible = false;
+            return;
+        }
+
+        gcData.XLabel = xAxis.Text;
+        gcData.YLabel = yAxis1.Text;
+        gcData.Y2Label = yAxis2.Text;
+
+        gcData.Clear();
+
+        gcData.XDataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(xAxis.Value).Type);
+        gcData.YDataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(yAxis1.Value).Type);
+        gcData.Y2DataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(yAxis2.Value).Type);
+
+        if (fd == null)
+            throw new ArgumentNullException(nameof(fd));
+
+        if (fd.HasLatLongInfo)
+            gcData.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "dropPin({0}[selectedItem.row], xvalue + ': ' + ((selectedItem.column == 1) ? '{1}' : '{2}') + ' = ' + value);", PathLatLongArrayID, yAxis1, yAxis2);
+
+        foreach (DataRow dr in tdt.Rows)
+        {
+            gcData.XVals.Add(dr[xAxis.Value]);
+
+            if (!String.IsNullOrEmpty(yAxis1.Value))
+            {
+                object o = dr[yAxis1.Value];
+                gcData.YVals.Add(o);
+                if (gcData.YDataType == GoogleColumnDataType.number)
+                {
+                    decimal d = Convert.ToDecimal(o, CultureInfo.InvariantCulture);
+                    max = Math.Max(max, d);
+                    min = Math.Min(min, d);
+                }
+            }
+            if (yAxis2.Value.Length > 0 && yAxis2 != yAxis1)
+            {
+                object o = dr[yAxis2.Value];
+                gcData.Y2Vals.Add(o);
+                if (gcData.Y2DataType == GoogleColumnDataType.number)
+                {
+                    decimal d = Convert.ToDecimal(o, CultureInfo.InvariantCulture);
+                    max2 = Math.Max(max2, d);
+                    min2 = Math.Min(min2, d);
+                }
+            }
+        }
+        gcData.TickSpacing = 1; // Math.Max(1, m_fd.Data.Rows.Count / 20);
+    }
+    #endregion
+
+    protected static void BindAircraftImages(Control c)
+    {
+        if (!(c is Controls_mfbHoverImageList hil))
+            throw new ArgumentNullException(nameof(c));
+        hil.Refresh();
+    }
+
+    protected static void BindMetars(Control c, string szRoute)
+    {
+        if (szRoute == null)
+            throw new ArgumentNullException(nameof(szRoute));
+        if (!(c is Controls_METAR m))
+            throw new ArgumentNullException(nameof(c));
+        m.RefreshForRoute(szRoute);
+    }
+
+    /// <summary>
+    /// Checks to see if the viewer is an instructor of the owner of the flight; throws an exception if not.
+    /// </summary>
+    /// <param name="szFlightOwner">The owner of the flight</param>
+    protected static void CheckCanViewFlight(string szFlightOwner, string szViewer)
+    {
+        if (szFlightOwner == null)
+            throw new ArgumentNullException(nameof(szFlightOwner));
+        if (szViewer == null)
+            throw new ArgumentNullException(nameof(szViewer));
+
+        MyFlightbook.Instruction.CFIStudentMap sm = new MyFlightbook.Instruction.CFIStudentMap(szViewer);
+        InstructorStudent student = MyFlightbook.Instruction.CFIStudentMap.GetInstructorStudent(sm.Students, szFlightOwner);
+        if (student == null || !student.CanViewLogbook)
+            throw new MyFlightbookException(Resources.SignOff.ViewStudentLogbookUnauthorized);
+    }
+
+    #region Page Initialization
+    protected int GetRequestedTabIndex()
+    {
+        return (Enum.TryParse<DetailsTab>(util.GetStringParam(Request, "tabID"), out DetailsTab dtRequested)) ? (int)dtRequested : DefaultTabIndex;
+    }
+
+    protected static bool TabIndexRequiresFlightData(int iTab)
+    {
+        DetailsTab dt = (DetailsTab)iTab;
+        return dt != DetailsTab.Flight && dt != DetailsTab.Aircraft;
+    }
+
+    protected static int DefaultTabIndex { get { return (int)DetailsTab.Flight; } }
+
+    protected void InitPassedRestriction()
+    {
+        string szFQParam = util.GetStringParam(Request, "fq");
+        if (!String.IsNullOrEmpty(szFQParam))
+        {
+            try
+            {
+                Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
+                Restriction.Refresh();
+            }
+            catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is Newtonsoft.Json.JsonSerializationException || ex is Newtonsoft.Json.JsonException) { }
+        }
+    }
+
+    protected int InitRequestedFlightID()
+    {
+        return (Request.PathInfo.Length > 0 && Int32.TryParse(Request.PathInfo.Substring(1), NumberStyles.Integer, CultureInfo.InvariantCulture, out int idflight)) ? idflight : LogbookEntryCore.idFlightNone;
+    }
+    #endregion
+
+}
+
+public partial class Member_FlightDetail : Member_FlightDetailBase
+{
     const string PathLatLongArrayID = "rgll";
 
     #region properties
@@ -74,12 +477,6 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         set { ViewState[KeyCacheFlight] = value; }
     }
 
-    private readonly FlightData m_fd = new FlightData();
-    protected FlightData DataForFlight
-    {
-        get { return m_fd; }
-    }
-
     /// <summary>
     /// Returns the current flight data.  Cached in the session object, initialized from the database on a cache miss.
     /// </summary>
@@ -89,41 +486,17 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         {
             LogbookEntryDisplay led = CurrentFlight;
 
-            if (m_fd.NeedsComputing)
+            if (DataForFlight.NeedsComputing)
             {
-                if (!m_fd.ParseFlightData(led.FlightData) && (lblErr.Text = m_fd.ErrorString.Replace("\r\n", "<br />")).Length > 0)
+                if (!DataForFlight.ParseFlightData(led.FlightData) && (lblErr.Text = DataForFlight.ErrorString.Replace("\r\n", "<br />")).Length > 0)
                     pnlErrors.Visible = true;
             }
-            return m_fd.Data;
+            return DataForFlight.Data;
         }
-    }
-
-    private const string szkeyVSAirportListResult = "szkeyVSALR";
-    protected ListsFromRoutesResults RoutesList
-    {
-        get
-        {
-            ListsFromRoutesResults lfrr = (ListsFromRoutesResults)ViewState[szkeyVSAirportListResult];
-            if (lfrr == null)
-                ViewState[szkeyVSAirportListResult] = lfrr = AirportList.ListsFromRoutes(CurrentFlight.Route);
-            return lfrr;
-        }
-    }
-
-    private const string szKeyVSRestriction = "viewstateRestrictionKey";
-    protected FlightQuery Restriction
-    {
-        get { return (FlightQuery)ViewState[szKeyVSRestriction]; }
-        set { ViewState[szKeyVSRestriction] = value; }
     }
     #endregion
 
     #region Flight selection
-    private string LinkForFlight(int idFlight)
-    {
-        return String.Format(CultureInfo.InvariantCulture, "~/Member/FlightDetail.aspx/{0}{1}", idFlight, Restriction == null || Restriction.IsDefault ? string.Empty : "?fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString()));
-    }
-
     protected void lnkPreviousFlight_Click(object sender, EventArgs e)
     {
         if (!String.IsNullOrEmpty(hdnPrevID.Value))
@@ -151,22 +524,19 @@ public partial class Member_FlightDetail : System.Web.UI.Page
 
     private LogbookEntryDisplay LoadFlight(int idFlight)
     {
+        bool fIsAdmin = (util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanSupport);
+
         // Check to see if the requested flight belongs to the current user, or if they're authorized.
         // It's an extra database hit (or more, if viewing a student flight), but will let us figure out next/previous
         string szFlightOwner = LogbookEntry.OwnerForFlight(idFlight);
         if (String.IsNullOrEmpty(szFlightOwner))
             throw new MyFlightbookException(Resources.LogbookEntry.errNoSuchFlight);
 
-        bool fIsAdmin = (util.GetIntParam(Request, "a", 0) != 0 && MyFlightbook.Profile.GetUser(Page.User.Identity.Name).CanSupport);
-
         // Check that you own the flight, or are admin.  If not either of these, check to see if you are authorized
         if (String.Compare(szFlightOwner, Page.User.Identity.Name, StringComparison.OrdinalIgnoreCase) != 0 && !fIsAdmin)
         {
             // check for authorized by student
-            CFIStudentMap sm = new CFIStudentMap(Page.User.Identity.Name);
-            InstructorStudent student = CFIStudentMap.GetInstructorStudent(sm.Students, szFlightOwner);
-            if (student == null || !student.CanViewLogbook)
-                throw new MyFlightbookException(Resources.SignOff.ViewStudentLogbookUnauthorized);
+            CheckCanViewFlight(szFlightOwner, Page.User.Identity.Name);
 
             // At this point, we're viewing a student's flight.  Change the return link.
             mvReturn.SetActiveView(vwReturnStudent);
@@ -233,24 +603,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
     protected void SetUpMaps()
     {
         // Set up any maps.
-        mfbGoogleMapManager1.Map.Airports = RoutesList.Result;
-        mfbGoogleMapManager1.ShowMarkers = true;
-        mfbGoogleMapManager1.Map.PathVarName = PathLatLongArrayID;
-        mfbGoogleMapManager1.Map.Path = m_fd.GetPath();
-        if (m_fd.HasLatLongInfo && m_fd.Data.Rows.Count > 1)
-        {
-            cmbFormat.Items[(int)DownloadFormat.KML].Enabled = true;
-            cmbFormat.Items[(int)DownloadFormat.GPX].Enabled = true;
-            mfbGoogleMapManager1.Mode = MyFlightbook.Mapping.GMap_Mode.Dynamic;
-            pnlMapControls.Visible = true;
-        }
-        else
-        {
-            cmbFormat.Items[(int)DownloadFormat.KML].Enabled = false;
-            cmbFormat.Items[(int)DownloadFormat.GPX].Enabled = false;
-            mfbGoogleMapManager1.Mode = MyFlightbook.Mapping.GMap_Mode.Static;
-            pnlMapControls.Visible = false;
-        }
+        cmbFormat.Items[(int) DownloadFormat.KML].Enabled = cmbFormat.Items[(int) DownloadFormat.GPX].Enabled = pnlMapControls.Visible = SetUpMapManager(mfbGoogleMapManager1, CurrentFlight.Route, PathLatLongArrayID);
         lnkZoomToFit.NavigateUrl = mfbGoogleMapManager1.ZoomToFitScript;
     }
 
@@ -261,21 +614,10 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         if (Viewer.CloudAhoyToken == null || Viewer.CloudAhoyToken.AccessToken == null)
             lnkSendCloudAhoy.Visible = false;
 
-        lblOriginalFormat.Text = DataSourceType.DataSourceTypeFromFileType(led.Telemetry.TelemetryType).DisplayName;
+        lblOriginalFormat.Text = FormatNameForTelemetry(led);
 
         // allow selection of units if units are not implicitly known.
-        switch (led.Telemetry.TelemetryType)
-        {
-            case DataSourceType.FileType.GPX:
-            case DataSourceType.FileType.KML:
-            case DataSourceType.FileType.NMEA:
-            case DataSourceType.FileType.IGC:
-                cmbAltUnits.Enabled = cmbSpeedUnits.Enabled = false;
-                break;
-            default:
-                cmbAltUnits.Enabled = cmbSpeedUnits.Enabled = true;
-                break;
-        }
+        cmbAltUnits.Enabled = cmbSpeedUnits.Enabled = CanSpecifyUnitsForTelemetry(led);
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -286,35 +628,15 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         {
             try
             {
-
-                if (Request.PathInfo.Length > 0)
-                {
-                    if (Int32.TryParse(Request.PathInfo.Substring(1), NumberStyles.Integer, CultureInfo.InvariantCulture, out int idflight))
-                        CurrentFlightID = idflight;
-                    else
-                        CurrentFlightID = LogbookEntry.idFlightNone;
-                }
-                if (CurrentFlightID == LogbookEntry.idFlightNone)
+                CurrentFlightID = InitRequestedFlightID();
+                if (CurrentFlightID == LogbookEntryCore.idFlightNone)
                     throw new MyFlightbookException("No valid ID passed");
 
-                string szFQParam = util.GetStringParam(Request, "fq");
-                if (!String.IsNullOrEmpty(szFQParam))
-                {
-                    try
-                    {
-                        Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
-                        Restriction.Refresh();
-                    }
-                    catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is JsonSerializationException || ex is JsonException) { }
-                }
+                InitPassedRestriction();
 
-                DetailsTab dtRequested = DetailsTab.Flight;
-                if (Enum.TryParse<DetailsTab>(util.GetStringParam(Request, "tabID"), out dtRequested))
-                {
-                    int iTab = (int)dtRequested;
-                    if (AccordionCtrl.Panes[iTab].Visible)
-                        AccordionCtrl.SelectedIndex = iTab;
-                }
+                int iTab = GetRequestedTabIndex();
+                if (AccordionCtrl.Panes[iTab].Visible)
+                    AccordionCtrl.SelectedIndex = iTab;
 
                 LogbookEntryDisplay led = CurrentFlight = LoadFlight(CurrentFlightID);
                 SetUpChart(TelemetryData);
@@ -328,8 +650,8 @@ public partial class Member_FlightDetail : System.Web.UI.Page
                 fmvAircraft.DataSource = new Aircraft[] { ac };
                 fmvAircraft.DataBind();
 
-                if (String.IsNullOrEmpty(CurrentFlight.FlightData) && dtRequested != DetailsTab.Aircraft && dtRequested != DetailsTab.Flight)
-                    AccordionCtrl.SelectedIndex = (int)DetailsTab.Flight;
+                if (String.IsNullOrEmpty(CurrentFlight.FlightData) && TabIndexRequiresFlightData(iTab))
+                    AccordionCtrl.SelectedIndex = DefaultTabIndex;
             }
             catch (MyFlightbookException ex)
             {
@@ -343,7 +665,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         }
         else
         {
-            m_fd.Data = TelemetryData;
+            DataForFlight.Data = TelemetryData;
             UpdateChart();
         }
 
@@ -351,9 +673,9 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             mfbFlightContextMenu.EditTargetFormatString = mfbFlightContextMenu.EditTargetFormatString + "?fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString());
         mfbFlightContextMenu.Flight = CurrentFlight;
 
-        cmbAltUnits.SelectedValue = ((int) m_fd.AltitudeUnits).ToString(CultureInfo.InvariantCulture);
-        cmbSpeedUnits.SelectedValue = ((int)m_fd.SpeedUnits).ToString(CultureInfo.InvariantCulture);
-        if (!m_fd.HasDateTime)
+        cmbAltUnits.SelectedValue = ((int)DataForFlight.AltitudeUnits).ToString(CultureInfo.InvariantCulture);
+        cmbSpeedUnits.SelectedValue = ((int)DataForFlight.SpeedUnits).ToString(CultureInfo.InvariantCulture);
+        if (!DataForFlight.HasDateTime)
             lnkSendCloudAhoy.Visible = false;
 
         SetUpMaps();
@@ -422,62 +744,11 @@ public partial class Member_FlightDetail : System.Web.UI.Page
 
     protected void UpdateChart()
     {
-        decimal max = decimal.MinValue;
-        decimal min = decimal.MaxValue;
-        decimal max2 = decimal.MinValue;
-        decimal min2 = decimal.MaxValue;
-
         TelemetryDataTable tdt = TelemetryData;
         if (tdt == null)
             return;
 
-        gcData.XLabel = (cmbXAxis.SelectedItem == null) ? "" : cmbXAxis.SelectedItem.Text;
-        gcData.YLabel = (cmbYAxis1.SelectedItem == null) ? "" : cmbYAxis1.SelectedItem.Text;
-        gcData.Y2Label = (cmbYAxis2.SelectedIndex == 0 || cmbYAxis2 == null) ? "" : cmbYAxis2.SelectedItem.Text;
-
-        gcData.Clear();
-
-        gcData.XDataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbXAxis.SelectedValue).Type);
-        gcData.YDataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis1.SelectedValue).Type);
-        gcData.Y2DataType = GoogleChart.GoogleTypeFromKnownColumnType(KnownColumn.GetKnownColumn(cmbYAxis2.SelectedValue).Type);
-
-        if (cmbYAxis1.SelectedItem == null || cmbYAxis2.SelectedItem == null)
-        {
-            gcData.Visible = false;
-            return;
-        }
-
-        if (m_fd.HasLatLongInfo)
-            gcData.ClickHandlerJS = String.Format(CultureInfo.InvariantCulture, "dropPin({0}[selectedItem.row], xvalue + ': ' + ((selectedItem.column == 1) ? '{1}' : '{2}') + ' = ' + value);", PathLatLongArrayID, cmbYAxis1.SelectedItem.Text, cmbYAxis2.SelectedItem.Text);
-
-        foreach (DataRow dr in tdt.Rows)
-        {
-            gcData.XVals.Add(dr[cmbXAxis.SelectedValue]);
-
-            if (!String.IsNullOrEmpty(cmbYAxis1.SelectedValue))
-            {
-                object o = dr[cmbYAxis1.SelectedValue];
-                gcData.YVals.Add(o);
-                if (gcData.YDataType == GoogleColumnDataType.number)
-                {
-                    decimal d = Convert.ToDecimal(o, CultureInfo.InvariantCulture);
-                    max = Math.Max(max, d);
-                    min = Math.Min(min, d);
-                }
-            }
-            if (cmbYAxis2.SelectedValue.Length > 0 && cmbYAxis2.SelectedValue != cmbYAxis1.SelectedValue)
-            {
-                object o = dr[cmbYAxis2.SelectedValue];
-                gcData.Y2Vals.Add(o);
-                if (gcData.Y2DataType == GoogleColumnDataType.number)
-                {
-                    decimal d = Convert.ToDecimal(o, CultureInfo.InvariantCulture);
-                    max2 = Math.Max(max2, d);
-                    min2 = Math.Min(min2, d);
-                }
-            }
-        }
-        gcData.TickSpacing = 1; // Math.Max(1, m_fd.Data.Rows.Count / 20);
+        UpdateChart(tdt, gcData, DataForFlight, PathLatLongArrayID, cmbXAxis.SelectedItem, cmbYAxis1.SelectedItem, cmbYAxis2.SelectedItem, out decimal max, out decimal min, out decimal max2, out decimal min2);
 
         // Clear out the grid.
         gvData.DataSource = null;
@@ -514,53 +785,16 @@ public partial class Member_FlightDetail : System.Web.UI.Page
 
     protected void btnDownload_Click(object sender, EventArgs e)
     {
-        m_fd.AltitudeUnits = (FlightData.AltitudeUnitTypes)Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture);
-        m_fd.SpeedUnits = (FlightData.SpeedUnitTypes)Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture);
-        m_fd.FlightID = CurrentFlightID;
-
-        DataSourceType dst = null;
-        Action writeData = null;
-
-        switch ((DownloadFormat)cmbFormat.SelectedIndex)
-        {
-            case DownloadFormat.Original:
-                string szData = CurrentFlight.FlightData;
-                dst = DataSourceType.BestGuessTypeFromText(szData);
-                writeData = () => { Response.Write(szData); };
-                break;
-            case DownloadFormat.CSV:
-                dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.CSV);
-                writeData = () => { MyFlightbook.CSV.CsvWriter.WriteToStream(Response.Output, m_fd.Data, true, true); };
-                break;
-            case DownloadFormat.KML:
-                dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.KML);
-                writeData = () => { m_fd.WriteKMLData(Response.OutputStream); };
-                break;
-            case DownloadFormat.GPX:
-                dst = DataSourceType.DataSourceTypeFromFileType(DataSourceType.FileType.GPX);
-                writeData = () => { m_fd.WriteGPXData(Response.OutputStream); };
-                break;
-        }
-
-        if (dst != null && writeData != null)
-        {
-            Response.Clear();
-            Response.ContentType = dst.Mimetype;
-            Response.AddHeader("Content-Disposition", String.Format(CultureInfo.CurrentCulture, "attachment;filename=FlightData{0}.{1}", m_fd.FlightID, dst.DefaultExtension));
-            writeData();
-            Response.End();
-        }
+        DownloadData(CurrentFlight, DataForFlight, Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture), Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture), cmbFormat.SelectedIndex);
     }
 
     protected async void lnkSendCloudAhoy_Click(object sender, EventArgs e)
     {
-        m_fd.AltitudeUnits = (FlightData.AltitudeUnitTypes)Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture);
-        m_fd.SpeedUnits = (FlightData.SpeedUnitTypes)Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture);
-        m_fd.FlightID = CurrentFlightID;
+        DataForFlight.FlightID = CurrentFlightID;
 
         try
         {
-            pnlCloudAhoySuccess.Visible = await CloudAhoyClient.PushCloudAhoyFlight(Page.User.Identity.Name, CurrentFlight, m_fd, !Branding.CurrentBrand.MatchesHost(Request.Url.Host)).ConfigureAwait(false);
+            pnlCloudAhoySuccess.Visible = await PushToCloudahoy(Page.User.Identity.Name, CurrentFlight, DataForFlight, Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture), Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture), !Branding.CurrentBrand.MatchesHost(Request.Url.Host)).ConfigureAwait(false);
         }
         catch (MyFlightbookException ex)
         {
@@ -574,57 +808,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         if (e == null)
             throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            Image i = (Image)e.Row.FindControl("imgPin");
-            HyperLink h = (HyperLink)e.Row.FindControl("lnkZoom");
-            if (m_fd.HasLatLongInfo)
-            {
-                int iRow = e.Row.DataItemIndex;
-
-                DataRow drow = m_fd.Data.Rows[iRow];
-
-                List<string> lstDesc = new List<string>();
-
-                double lat = 0.0, lon = 0.0;
-
-                foreach (DataColumn dc in m_fd.Data.Columns)
-                {
-                    bool fLat = (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.LAT) == 0);
-                    bool fLon = (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.LON) == 0);
-                    bool fPos = (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.POS) == 0);
-
-                    if (fLat)
-                        lat = Convert.ToDouble(drow[KnownColumnNames.LAT], CultureInfo.InvariantCulture);
-
-                    if (fLon)
-                        lon = Convert.ToDouble(drow[KnownColumnNames.LON], CultureInfo.InvariantCulture);
-
-                    if (fPos)
-                    {
-                        LatLong ll = (LatLong)drow[KnownColumnNames.POS];
-                        lat = ll.Latitude;
-                        lon = ll.Longitude;
-                    }
-
-                    if (!(fLat || fLon || fPos))
-                    {
-                        object o = drow[dc.ColumnName];
-                        if (o != null)
-                        {
-                            string sz = o.ToString(); ;
-                            if (!String.IsNullOrEmpty(sz))
-                                lstDesc.Add(String.Format(CultureInfo.InvariantCulture, "{0}: {1}<br />", dc.ColumnName, sz));
-                        }
-                    }
-                }
-
-                i.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:dropPin(new google.maps.LatLng({0}, {1}), '{2}');", lat, lon, String.Join("<br />", lstDesc));
-                h.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:getMfbMap().gmap.setCenter(new google.maps.LatLng({0}, {1}));getMfbMap().gmap.setZoom(14);", lat, lon);
-                i.ToolTip = String.Format(CultureInfo.CurrentCulture, Resources.FlightData.GraphDropPinTip, (new LatLong(lat, lon)).ToString());
-            }
-            else
-                i.Visible = h.Visible = false;
-        }
+            BindRawDataRow(DataForFlight, e.Row.DataItemIndex, e.Row.FindControl("imgPin"), e.Row.FindControl("lnkZoom"));
     }
 
     protected void apcRaw_ControlClicked(object sender, EventArgs e)
@@ -662,31 +846,15 @@ public partial class Member_FlightDetail : System.Web.UI.Page
             throw new InvalidCastException("Sender is not a formview!");
 
         LogbookEntryDisplay le = (LogbookEntryDisplay)fv.DataItem;
-        Controls_mfbImageList mfbilFlight = (Controls_mfbImageList)fv.FindControl("mfbilFlight");
-        mfbilFlight.Key = le.FlightID.ToString(CultureInfo.InvariantCulture);
-        mfbilFlight.Refresh();
-        mfbGoogleMapManager1.Map.Images = mfbilFlight.Images.ImageArray;
+        BindImages(fv.FindControl("mfbilFlight"), le, mfbGoogleMapManager1);
 
-        Controls_mfbVideoEntry ve = (Controls_mfbVideoEntry)fv.FindControl("mfbVideoEntry1");
-        ve.Videos.Clear();
-        foreach (VideoRef vr in le.Videos)
-            ve.Videos.Add(vr);
+        BindVideoEntries(fv.FindControl("mfbVideoEntry1"), le);
 
-        Controls_mfbAirportServices aptSvc = (Controls_mfbAirportServices)fv.FindControl("mfbAirportServices1");
-        aptSvc.GoogleMapID = mfbGoogleMapManager1.MapID;
-        aptSvc.AddZoomLink = (mfbGoogleMapManager1.Mode == MyFlightbook.Mapping.GMap_Mode.Dynamic);
-        aptSvc.SetAirports(RoutesList.MasterList.GetNormalizedAirports());
+        BindAirportServices(fv.FindControl("mfbAirportServices1"), mfbGoogleMapManager1, CurrentFlight.Route);
 
-        ((Controls_mfbSignature)fv.FindControl("mfbSignature")).Flight = le;
+        BindSignature(fv.FindControl("mfbSignature"), le);
 
-        IEnumerable<Badge> cached = Viewer.CachedBadges;
-        List<Badge> badges = (cached == null ? null : new List<Badge>(cached));
-        if (badges != null)
-        {
-            Repeater rptBadges = (Repeater)fv.FindControl("rptBadges");
-            rptBadges.DataSource = BadgeSet.BadgeSetsFromBadges(badges.FindAll(b => b.IDFlightEarned == le.FlightID));
-            rptBadges.DataBind();
-        }
+        BindBadges(Viewer, le.FlightID, fv.FindControl("rptBadges"));
     }
 
     protected void fmvAircraft_DataBound(object sender, EventArgs e)
@@ -695,8 +863,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
         if (sender == null)
             throw new ArgumentNullException(nameof(sender));
         FormView fv = sender as FormView;
-        Controls_mfbHoverImageList hil = (Controls_mfbHoverImageList)fv.FindControl("mfbHoverImageList");
-        hil.Refresh();
+        BindAircraftImages(fv.FindControl("mfbHoverImageList"));
     }
     #endregion
 
@@ -704,8 +871,7 @@ public partial class Member_FlightDetail : System.Web.UI.Page
     {
         if (e == null)
             throw new ArgumentNullException(nameof(e));
-        Controls_METAR m = (Controls_METAR)fmvLE.FindControl("METARDisplay");
-        m.RefreshForRoute(CurrentFlight.Route);
+        BindMetars(fmvLE.FindControl("METARDisplay"), CurrentFlight.Route);
         fmvLE.FindControl("btnMetars").Visible = false;
     }
 

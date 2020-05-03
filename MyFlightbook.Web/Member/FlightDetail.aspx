@@ -157,7 +157,7 @@
                             <asp:Panel ID="pnlSignature" CssClass="detailsSection" runat="server" Visible='<%# ((LogbookEntry.SignatureState) Eval("CFISignatureState")) != LogbookEntry.SignatureState.None %>' meta:resourcekey="pnlSignatureResource1">
                                 <uc1:mfbSignature runat="server" ID="mfbSignature" />
                             </asp:Panel>
-                            <asp:Panel ID="pnlRoute" runat="server" Visible="<%# RoutesList.MasterList.GetNormalizedAirports().Length > 0 %>" CssClass="detailsSection" meta:resourcekey="pnlRouteResource1">
+                            <asp:Panel ID="pnlRoute" runat="server" Visible="<%# RoutesList(CurrentFlight.Route).MasterList.GetNormalizedAirports().Length > 0 %>" CssClass="detailsSection" meta:resourcekey="pnlRouteResource1">
                                 <h3><%# Eval("Route").ToString().ToUpper() %></h3>
                                 <uc5:mfbAirportServices runat="server" ID="mfbAirportServices1" ShowZoom="true" ShowInfo="true" ShowMetar="true" />
                                 <p><%# ((LogbookEntryDisplay) Container.DataItem).GetPathDistanceDescription(DataForFlight.ComputePathDistance()) %></p>
