@@ -29,11 +29,7 @@ public partial class Member_FlightDetailBase : Page
     private enum DetailsTab { Flight, Aircraft, Chart, Data, Download }
 
     #region some properties that don't rely on page controls
-    private readonly FlightData m_fd = new FlightData();
-    protected FlightData DataForFlight
-    {
-        get { return m_fd; }
-    }
+    protected FlightData DataForFlight { get; set; }
 
     private const string szKeyVSRestriction = "viewstateRestrictionKey";
     protected FlightQuery Restriction
@@ -624,68 +620,74 @@ public partial class Member_FlightDetail : Member_FlightDetailBase
     {
         Master.SelectedTab = tabID.tabLogbook;
 
-        if (!IsPostBack)
+        using (DataForFlight = new FlightData())
         {
-            try
+            if (!IsPostBack)
             {
-                CurrentFlightID = InitRequestedFlightID();
-                if (CurrentFlightID == LogbookEntryCore.idFlightNone)
-                    throw new MyFlightbookException("No valid ID passed");
+                try
+                {
+                    CurrentFlightID = InitRequestedFlightID();
+                    if (CurrentFlightID == LogbookEntryCore.idFlightNone)
+                        throw new MyFlightbookException("No valid ID passed");
 
-                InitPassedRestriction();
+                    InitPassedRestriction();
 
-                int iTab = GetRequestedTabIndex();
-                if (AccordionCtrl.Panes[iTab].Visible)
-                    AccordionCtrl.SelectedIndex = iTab;
+                    int iTab = GetRequestedTabIndex();
+                    if (AccordionCtrl.Panes[iTab].Visible)
+                        AccordionCtrl.SelectedIndex = iTab;
 
-                LogbookEntryDisplay led = CurrentFlight = LoadFlight(CurrentFlightID);
-                SetUpChart(TelemetryData);
+                    LogbookEntryDisplay led = CurrentFlight = LoadFlight(CurrentFlightID);
+                    SetUpChart(TelemetryData);
+                    UpdateChart();
+                    UpdateRestriction();
+
+                    SetUpDownload(led);
+
+                    // shouldn't happen but sometimes does: GetUserAircraftByID returns null.  Not quite sure why.
+                    Aircraft ac = (new UserAircraft(led.User).GetUserAircraftByID(led.AircraftID)) ?? new Aircraft(led.AircraftID);
+                    fmvAircraft.DataSource = new Aircraft[] { ac };
+                    fmvAircraft.DataBind();
+
+                    if (String.IsNullOrEmpty(CurrentFlight.FlightData) && TabIndexRequiresFlightData(iTab))
+                        AccordionCtrl.SelectedIndex = DefaultTabIndex;
+                }
+                catch (MyFlightbookException ex)
+                {
+                    lblPageErr.Text = ex.Message;
+                    AccordionCtrl.Visible = mfbGoogleMapManager1.Visible = pnlMap.Visible = pnlAccordionMenuContainer.Visible = pnlFlightDesc.Visible = false;
+                    return;
+                }
+
+                if (DoDirectDownload())
+                    return;
+            }
+            else
+            {
+                DataForFlight.Data = TelemetryData;
                 UpdateChart();
-                UpdateRestriction();
-
-                SetUpDownload(led);
-
-                // shouldn't happen but sometimes does: GetUserAircraftByID returns null.  Not quite sure why.
-                Aircraft ac = (new UserAircraft(led.User).GetUserAircraftByID(led.AircraftID)) ?? new Aircraft(led.AircraftID);
-                fmvAircraft.DataSource = new Aircraft[] { ac };
-                fmvAircraft.DataBind();
-
-                if (String.IsNullOrEmpty(CurrentFlight.FlightData) && TabIndexRequiresFlightData(iTab))
-                    AccordionCtrl.SelectedIndex = DefaultTabIndex;
             }
-            catch (MyFlightbookException ex)
+
+            if (Restriction != null && !Restriction.IsDefault)
+                mfbFlightContextMenu.EditTargetFormatString = mfbFlightContextMenu.EditTargetFormatString + "?fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString());
+            mfbFlightContextMenu.Flight = CurrentFlight;
+
+            cmbAltUnits.SelectedValue = ((int)DataForFlight.AltitudeUnits).ToString(CultureInfo.InvariantCulture);
+            cmbSpeedUnits.SelectedValue = ((int)DataForFlight.SpeedUnits).ToString(CultureInfo.InvariantCulture);
+            if (!DataForFlight.HasDateTime)
+                lnkSendCloudAhoy.Visible = false;
+
+            SetUpMaps();
+
+            if (!IsPostBack)
             {
-                lblPageErr.Text = ex.Message;
-                AccordionCtrl.Visible = mfbGoogleMapManager1.Visible = pnlMap.Visible = pnlAccordionMenuContainer.Visible = pnlFlightDesc.Visible = false;
-                return;
+                // Bind details - this will bind everything else.
+                fmvLE.DataSource = new LogbookEntryDisplay[] { CurrentFlight };
+                fmvLE.DataBind();
             }
-
-            if (DoDirectDownload())
-                return;
-        }
-        else
-        {
-            DataForFlight.Data = TelemetryData;
-            UpdateChart();
         }
 
-        if (Restriction != null && !Restriction.IsDefault)
-            mfbFlightContextMenu.EditTargetFormatString = mfbFlightContextMenu.EditTargetFormatString + "?fq=" + HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString());
-        mfbFlightContextMenu.Flight = CurrentFlight;
-
-        cmbAltUnits.SelectedValue = ((int)DataForFlight.AltitudeUnits).ToString(CultureInfo.InvariantCulture);
-        cmbSpeedUnits.SelectedValue = ((int)DataForFlight.SpeedUnits).ToString(CultureInfo.InvariantCulture);
-        if (!DataForFlight.HasDateTime)
-            lnkSendCloudAhoy.Visible = false;
-
-        SetUpMaps();
-
-        if (!IsPostBack)
-        {
-            // Bind details - this will bind everything else.
-            fmvLE.DataSource = new LogbookEntryDisplay[] { CurrentFlight };
-            fmvLE.DataBind();
-        }
+        // DataForFlight is disposed - set it to null!!
+        DataForFlight = null;
     }
 
     #region chart management
@@ -766,17 +768,17 @@ public partial class Member_FlightDetail : Member_FlightDetailBase
 
     protected void cmbYAxis1_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UpdateChart();
+        // Nothing to do - done in Page_Load
     }
 
     protected void cmbYAxis2_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UpdateChart();
+        // Nothing to do - done in Page_Load
     }
 
     protected void cmbXAxis_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UpdateChart();
+        // Nothing to do - done in Page_Load
     }
     #endregion
 
@@ -785,20 +787,26 @@ public partial class Member_FlightDetail : Member_FlightDetailBase
 
     protected void btnDownload_Click(object sender, EventArgs e)
     {
-        DownloadData(CurrentFlight, DataForFlight, Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture), Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture), cmbFormat.SelectedIndex);
+        using (FlightData fd = new FlightData() { FlightID = CurrentFlightID })
+        {
+            fd.ParseFlightData(CurrentFlight.FlightData);
+            DownloadData(CurrentFlight, fd, Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture), Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture), cmbFormat.SelectedIndex);
+        }
     }
 
     protected async void lnkSendCloudAhoy_Click(object sender, EventArgs e)
     {
-        DataForFlight.FlightID = CurrentFlightID;
-
-        try
+        using (FlightData fd = new FlightData() { FlightID = CurrentFlightID })
         {
-            pnlCloudAhoySuccess.Visible = await PushToCloudahoy(Page.User.Identity.Name, CurrentFlight, DataForFlight, Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture), Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture), !Branding.CurrentBrand.MatchesHost(Request.Url.Host)).ConfigureAwait(false);
-        }
-        catch (MyFlightbookException ex)
-        {
-            lblCloudAhoyErr.Text = ex.Message;
+            try
+            {
+                fd.ParseFlightData(CurrentFlight.FlightData);
+                pnlCloudAhoySuccess.Visible = await PushToCloudahoy(Page.User.Identity.Name, CurrentFlight, fd, Convert.ToInt32(cmbAltUnits.SelectedValue, CultureInfo.InvariantCulture), Convert.ToInt32(cmbSpeedUnits.SelectedValue, CultureInfo.InvariantCulture), !Branding.CurrentBrand.MatchesHost(Request.Url.Host)).ConfigureAwait(false);
+            }
+            catch (MyFlightbookException ex)
+            {
+                lblCloudAhoyErr.Text = ex.Message;
+            }
         }
     }
 
@@ -813,25 +821,29 @@ public partial class Member_FlightDetail : Member_FlightDetailBase
 
     protected void apcRaw_ControlClicked(object sender, EventArgs e)
     {
-        apcRaw.LazyLoad = false;
-        int idx = mfbAccordionProxyExtender.IndexForProxyID(apcRaw.ID);
-        mfbAccordionProxyExtender.SetJavascriptForControl(apcRaw, true, idx);
-        AccordionCtrl.SelectedIndex = idx;
-
-        TelemetryDataTable tdt = TelemetryData;
-
-        // see if we need to hide the "Position" column
-        bool fHasPositionColumn = false;
-        foreach (DataColumn dc in tdt.Columns)
+        using (DataForFlight = new FlightData())
         {
-            if (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.POS) == 0)
-                fHasPositionColumn = true;
-        }
-        if (!fHasPositionColumn)
-            gvData.Columns.RemoveAt(1);
+            apcRaw.LazyLoad = false;
+            int idx = mfbAccordionProxyExtender.IndexForProxyID(apcRaw.ID);
+            mfbAccordionProxyExtender.SetJavascriptForControl(apcRaw, true, idx);
+            AccordionCtrl.SelectedIndex = idx;
 
-        gvData.DataSource = tdt;
-        gvData.DataBind();
+            TelemetryDataTable tdt = TelemetryData;
+
+            // see if we need to hide the "Position" column
+            bool fHasPositionColumn = false;
+            foreach (DataColumn dc in tdt.Columns)
+            {
+                if (dc.ColumnName.CompareOrdinalIgnoreCase(KnownColumnNames.POS) == 0)
+                    fHasPositionColumn = true;
+            }
+            if (!fHasPositionColumn)
+                gvData.Columns.RemoveAt(1);
+
+            gvData.DataSource = tdt;
+            gvData.DataBind();
+        }
+        DataForFlight = null;
     }
     #endregion
 

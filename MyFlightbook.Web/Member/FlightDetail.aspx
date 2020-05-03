@@ -241,14 +241,12 @@
                         <br />
                         <uc2:GoogleChart ID="gcData" SlantAngle="0" LegendType="bottom" Width="800" Height="500" runat="server" />
                     </div>
-                    <div>
-                        <asp:Label ID="lblMinY" runat="server" meta:resourcekey="lblMinYResource1"></asp:Label></div>
-                    <div>
-                        <asp:Label ID="lblMaxY" runat="server" meta:resourcekey="lblMaxYResource1"></asp:Label></div>
-                    <div>
-                        <asp:Label ID="lblMinY2" runat="server" meta:resourcekey="lblMinY2Resource1"></asp:Label></div>
-                    <div>
-                        <asp:Label ID="lblMaxY2" runat="server" meta:resourcekey="lblMaxY2Resource1"></asp:Label></div>
+                    <div style="text-align:center;">
+                        <asp:Label ID="lblMinY" runat="server" meta:resourcekey="lblMinYResource1"></asp:Label>
+                        <asp:Label ID="lblMaxY" runat="server" meta:resourcekey="lblMaxYResource1"></asp:Label>
+                        <asp:Label ID="lblMinY2" runat="server" meta:resourcekey="lblMinY2Resource1"></asp:Label>
+                        <asp:Label ID="lblMaxY2" runat="server" meta:resourcekey="lblMaxY2Resource1"></asp:Label>
+                    </div>
                 </Content>
             </ajaxToolkit:AccordionPane>
             <ajaxToolkit:AccordionPane runat="server" ID="acpRaw" meta:resourcekey="acpRawResource1">

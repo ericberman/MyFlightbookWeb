@@ -794,7 +794,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maximum {0}: {1:#,##0.0}.
+        ///   Looks up a localized string similar to ● Maximum {0}: {1:#,##0.0}.
         /// </summary>
         internal static string ChartMaxX {
             get {
@@ -803,7 +803,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimum {0}: {1:#,##0.0}.
+        ///   Looks up a localized string similar to ● Minimum {0}: {1:#,##0.0}.
         /// </summary>
         internal static string ChartMinX {
             get {

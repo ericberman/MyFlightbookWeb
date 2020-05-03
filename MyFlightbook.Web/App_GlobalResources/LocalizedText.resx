@@ -1296,11 +1296,11 @@
     <value>Flights:&amp;nbsp;{0}</value>
   </data>
   <data name="ChartMaxX" xml:space="preserve">
-    <value>Maximum {0}: {1:#,##0.0}</value>
+    <value>● Maximum {0}: {1:#,##0.0}</value>
     <comment>e.g., "Maximum Altitude: 1,340"</comment>
   </data>
   <data name="ChartMinX" xml:space="preserve">
-    <value>Minimum {0}: {1:#,##0.0}</value>
+    <value>● Minimum {0}: {1:#,##0.0}</value>
   </data>
   <data name="ChartTotalsGroundSim" xml:space="preserve">
     <value>Ground Sim.</value>

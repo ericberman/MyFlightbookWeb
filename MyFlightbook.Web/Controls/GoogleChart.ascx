@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="GoogleChart.ascx.cs" Inherits="Controls_GoogleChart" %>
-<asp:Panel ID="pnlChart" runat="server">
+<asp:Panel ID="pnlChart" runat="server" style="display: inline-block; margin: 0 auto !important;">
 </asp:Panel>
 <script>
       var chart<%=ID %>;
