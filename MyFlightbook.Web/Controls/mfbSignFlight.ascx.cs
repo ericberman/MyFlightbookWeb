@@ -349,7 +349,12 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     // Copy the flight to the CFI's logbook if needed.
                     // We modify a new copy of the flight; this avoids modifying this.Flight, but ensures we get every property
                     if (ckCopyFlight.Checked)
+                    {
+                        // Issue #593 Load any telemetry, if necessary
+                        LogbookEntry le = new LogbookEntry(Flight.FlightID, Flight.User, LogbookEntryCore.LoadTelemetryOption.LoadAll);
+                        Flight.FlightData = le.FlightData;
                         CopyToInstructor(Flight.Clone());
+                    }
 
                     Response.Cookies[szKeyCookieCopy].Value = ckCopyFlight.Checked.ToString(CultureInfo.InvariantCulture);
                     Response.Cookies[szKeyCookieCopy].Expires = DateTime.Now.AddYears(10);
