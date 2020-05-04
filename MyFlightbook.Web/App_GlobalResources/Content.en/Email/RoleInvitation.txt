@@ -1,8 +1,6 @@
-﻿<% Requestor %> has invited you to be their <% Role %> on %APP_NAME% (http://%APP_URL%), a free online logbook for pilots.
+﻿<% Requestor %> has invited you to be their <% Role %> on [%APP_NAME%](https://%APP_URL%), a free online logbook for pilots.
 
-If you know <% Requestor %>, please confirm this by visiting:
-
-<% ConfirmRoleLink %>
+If you know <% Requestor %>, please confirm this by visiting [this page](<% ConfirmRoleLink %>).
 
 Thank-you
 
