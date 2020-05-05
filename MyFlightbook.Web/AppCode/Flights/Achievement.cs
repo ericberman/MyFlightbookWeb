@@ -190,7 +190,7 @@ namespace MyFlightbook.Achievements
         /// <summary>
         /// Anything to show?
         /// </summary>
-        public bool HasBadges { get { return Badges != null && Badges.Count() > 0; } }
+        public bool HasBadges { get { return Badges != null && Badges.Any(); } }
         #endregion
 
         public BadgeSet(Badge.BadgeCategory category, IEnumerable<Badge> badges)

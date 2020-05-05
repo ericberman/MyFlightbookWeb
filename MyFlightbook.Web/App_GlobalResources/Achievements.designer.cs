@@ -673,7 +673,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} days from {1:d} to {2:d}.
+        ///   Looks up a localized string similar to {0:#,##0} days from {1:d} to {2:d}.
         /// </summary>
         internal static string RecentAchievementFlyingStreak {
             get {
@@ -745,7 +745,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}.
+        ///   Looks up a localized string similar to {0:#,##0}.
         /// </summary>
         internal static string RecentAchievementsAirportsVisited {
             get {
@@ -772,7 +772,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} .
+        ///   Looks up a localized string similar to {0:#,##0}.
         /// </summary>
         internal static string RecentAchievementsDistinctAircraft {
             get {
@@ -790,7 +790,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}.
+        ///   Looks up a localized string similar to {0:#,##0}.
         /// </summary>
         internal static string RecentAchievementsDistinctModels {
             get {
@@ -799,7 +799,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} (comprising {1} families of models).
+        ///   Looks up a localized string similar to {0:#,##0} (comprising {1:#,##0} families of models).
         /// </summary>
         internal static string RecentAchievementsDistinctModelsAndFamilies {
             get {
@@ -826,7 +826,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} days out of {1:#,##0} ({2:#0.0}% of days in period).
+        ///   Looks up a localized string similar to {0:#,##0} days out of {1:#,##0} ({2:#0.0}% of days in period).
         /// </summary>
         internal static string RecentAchievementsFlyingDayCount {
             get {
@@ -862,7 +862,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} hours on {1:d}.
+        ///   Looks up a localized string similar to {0:#,##0.0} hours on {1:d}.
         /// </summary>
         internal static string RecentAchievementsLongestFlight {
             get {
@@ -880,7 +880,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} days from {1:d} to {2:d}.
+        ///   Looks up a localized string similar to {0:#,##0} days from {1:d} to {2:d}.
         /// </summary>
         internal static string RecentAchievementsNoFlyingStreak {
             get {

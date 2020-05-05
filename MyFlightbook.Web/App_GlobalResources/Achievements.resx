@@ -298,7 +298,7 @@
     <value>Single-Engine</value>
   </data>
   <data name="RecentAchievementFlyingStreak" xml:space="preserve">
-    <value>{0} days from {1:d} to {2:d}</value>
+    <value>{0:#,##0} days from {1:d} to {2:d}</value>
   </data>
   <data name="RecentAchievementMostFlightsInDay" xml:space="preserve">
     <value>{0} flights on {1:d}</value>
@@ -307,25 +307,25 @@
     <value>{0} airports on {1:d}</value>
   </data>
   <data name="RecentAchievementsAirportsVisited" xml:space="preserve">
-    <value>{0}</value>
+    <value>{0:#,##0}</value>
   </data>
   <data name="RecentAchievementsDistinctAircraft" xml:space="preserve">
-    <value>{0} </value>
+    <value>{0:#,##0}</value>
   </data>
   <data name="RecentAchievementsDistinctModels" xml:space="preserve">
-    <value>{0}</value>
+    <value>{0:#,##0}</value>
   </data>
   <data name="RecentAchievementsDistinctModelsAndFamilies" xml:space="preserve">
-    <value>{0} (comprising {1} families of models)</value>
+    <value>{0:#,##0} (comprising {1:#,##0} families of models)</value>
   </data>
   <data name="RecentAchievementsFlyingDayCount" xml:space="preserve">
-    <value>{0} days out of {1:#,##0} ({2:#0.0}% of days in period)</value>
+    <value>{0:#,##0} days out of {1:#,##0} ({2:#0.0}% of days in period)</value>
   </data>
   <data name="RecentAchievementsFurthestFlight" xml:space="preserve">
     <value>{0:#,##0.0}nm on {1:d}</value>
   </data>
   <data name="RecentAchievementsLongestFlight" xml:space="preserve">
-    <value>{0} hours on {1:d}</value>
+    <value>{0:#,##0.0} hours on {1:d}</value>
   </data>
   <data name="RecentAchievementFlyingStreakTitle" xml:space="preserve">
     <value>Longest streak of consecutive flying days:</value>
@@ -397,7 +397,7 @@
     <value>Most landings on a single day:</value>
   </data>
   <data name="RecentAchievementsNoFlyingStreak" xml:space="preserve">
-    <value>{0} days from {1:d} to {2:d}</value>
+    <value>{0:#,##0} days from {1:d} to {2:d}</value>
   </data>
   <data name="RecentAchievementsNoFlyingStreakTitle" xml:space="preserve">
     <value>Longest streak of consecutive NON-flying days:</value>

@@ -217,7 +217,7 @@ namespace MyFlightbook.RatingsProgress
                     dtNoFlyStart = Convert.ToDateTime(szKey, CultureInfo.InvariantCulture).AddDays(1);
                 }
 
-                miFlightCount.MatchingEventText = ((int) miFlightCount.Progress).ToString(CultureInfo.CurrentCulture);
+                miFlightCount.MatchingEventText = ((int) miFlightCount.Progress).ToString("#,##0", CultureInfo.CurrentCulture);
 
                 miFlyingDates.Progress = FlightDates.Count;
                 int DaysInPeriod = EndDate.Subtract(StartDate).Days + 1;
