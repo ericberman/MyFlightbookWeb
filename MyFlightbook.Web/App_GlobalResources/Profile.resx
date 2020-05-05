@@ -536,4 +536,13 @@
   <data name="EmailWeeklyTotalsLabel" xml:space="preserve">
     <value>Last 7 days</value>
   </data>
+  <data name="ProfileBulkDeleteAircraft" xml:space="preserve">
+    <value>Delete my unused aircraft</value>
+  </data>
+  <data name="ProfileBulkDeleteAircraftDeleted" xml:space="preserve">
+    <value>{0} aircraft deleted.</value>
+  </data>
+  <data name="ProfileBulkDeleteAircraftPrompt" xml:space="preserve">
+    <value>Delete all unused aircraft from my account</value>
+  </data>
 </root>

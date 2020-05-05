@@ -1527,6 +1527,32 @@ namespace MyFlightbook
             return mp.GetUser(szUserToReset, false);
         }
 
+        /// <summary>
+        /// Delete all unused aircraft for the specified user
+        /// </summary>
+        /// <param name="szUser">The user's username</param>
+        /// <returns>The number of aircraft deleted</returns>
+        public static int DeleteUnusedAircraftForUser(string szUser)
+        {
+            if (szUser == null)
+                throw new ArgumentNullException(nameof(szUser));
+            UserAircraft ua = new UserAircraft(szUser);
+
+            int i = 0;
+            IEnumerable<Aircraft> lst = ua.GetAircraftForUser();
+            foreach (Aircraft ac in lst)
+            {
+                try
+                {
+                    // FDeleteAircraftForUser throws a MyFlightbookException if the aircraft is in use.
+                    ua.FDeleteAircraftforUser(ac.AircraftID);
+                    i++;
+                }
+                catch (MyFlightbookException) { }
+            }
+            return i;
+        }
+
         public enum DeleteLevel {
             /// <summary>
             /// Deletes flights for the user (and their images, telemetry, and associated badges)

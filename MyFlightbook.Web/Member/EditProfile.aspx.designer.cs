@@ -598,6 +598,24 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Localize locHeadDeletion;
 
     /// <summary>
+    /// locDeleteUnusedAircraft control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locDeleteUnusedAircraft;
+
+    /// <summary>
+    /// btnDeleteUnusedAircraft control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnDeleteUnusedAircraft;
+
+    /// <summary>
     /// locDeleteFlights control.
     /// </summary>
     /// <remarks>

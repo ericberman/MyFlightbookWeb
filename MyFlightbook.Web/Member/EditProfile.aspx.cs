@@ -386,6 +386,13 @@ public partial class Member_EditProfile : System.Web.UI.Page
         }
         catch (MyFlightbookException ex) { lblDeleteErr.Text = ex.Message; }
     }
+
+    protected void btnDeleteUnusedAircraft_Click(object sender, EventArgs e)
+    {
+        int i = ProfileAdmin.DeleteUnusedAircraftForUser(Page.User.Identity.Name);
+        lblDeleteErr.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileBulkDeleteAircraftDeleted, i);
+        lblDeleteErr.CssClass = "success";
+    }
     #endregion
 
     #region Preferences

@@ -247,6 +247,8 @@
                             <asp:Localize ID="locHeadDeletion" runat="server" Text="<%$ Resources:Profile, ProfileDeleteHeader %>"></asp:Localize>
                         </Header>
                         <Content>
+                            <p><asp:Localize ID="locDeleteUnusedAircraft" runat="server" Text="<%$ Resources:Profile, ProfileBulkDeleteAircraftPrompt %>"></asp:Localize></p>
+                            <div><asp:Button ID="btnDeleteUnusedAircraft" Font-Bold="true" ForeColor="Red" runat="server" Text="<%$ Resources:Profile, ProfileBulkDeleteAircraft %>" OnClick="btnDeleteUnusedAircraft_Click" /></div>
                             <p><asp:Localize ID="locDeleteFlights" runat="server" Text="<%$ Resources:Profile, ProfileBulkDeleteFlightsPrompt %>"></asp:Localize></p>
                             <div><asp:Button ID="btnDeleteFlights" Font-Bold="true" ForeColor="Red" runat="server" Text="<%$ Resources:Profile, ProfileBulkDeleteFlights %>" OnClick="btnDeleteFlights_Click" /></div>
                             <div><asp:Label ID="lblDeleteFlightsCompleted" runat="server" Text="<%$ Resources:Profile, ProfileDeleteFlightsCompleted %>" CssClass="success" Font-Bold="true" Visible="false" EnableViewState="false"></asp:Label></div>

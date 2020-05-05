@@ -1072,6 +1072,33 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete my unused aircraft.
+        /// </summary>
+        internal static string ProfileBulkDeleteAircraft {
+            get {
+                return ResourceManager.GetString("ProfileBulkDeleteAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} aircraft deleted..
+        /// </summary>
+        internal static string ProfileBulkDeleteAircraftDeleted {
+            get {
+                return ResourceManager.GetString("ProfileBulkDeleteAircraftDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete all unused aircraft from my account.
+        /// </summary>
+        internal static string ProfileBulkDeleteAircraftPrompt {
+            get {
+                return ResourceManager.GetString("ProfileBulkDeleteAircraftPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete ALL of your flights?  This CANNOT be undone!.
         /// </summary>
         internal static string ProfileBulkDeleteConfirm {
