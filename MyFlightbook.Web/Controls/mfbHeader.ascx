@@ -65,7 +65,9 @@
                         </div>
                     </asp:View>
                     <asp:View ID="vwUpcomingEvent" runat="server">
-                        <asp:Panel ID="pnlWebinar" runat="server" style="text-align:center; font-weight:bold; font-size: larger; padding: 3px; line-height: 40px">Please join our upcoming webinar on <asp:Label ID="lblDate" runat="server"></asp:Label>! Click for details.</asp:Panel>
+                        <asp:Panel ID="pnlWebinar" runat="server" style="height: 32px; text-align:center; padding: 5px; margin-top: 4px; margin-bottom: 4px; background-color:#E8E8E8; border-radius: 5px;">
+                            <span style="vertical-align:middle"><asp:Literal ID="litWebinar" runat="server"></asp:Literal> <asp:HyperLink ID="lnkDetails" runat="server">Details</asp:HyperLink></span>
+                        </asp:Panel>
                         <asp:Panel ID="pnlWebinarDetails" runat="server" CssClass="modalpopup" style="display:none;" DefaultButton="btnDismiss">
                             <div style="text-align:left">
                                 <asp:Label ID="lblWebinarDetails" style="white-space:pre-line" runat="server"></asp:Label>

@@ -77,7 +77,8 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
                 }
                 if (se != null && DateTime.UtcNow.CompareTo(se.EndUtc) < 0)
                 {
-                    lblDate.Text = se.EndUtc.ToShortDateString();
+                    string[] rgLines = se.Body.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    litWebinar.Text = String.Format(CultureInfo.CurrentCulture, "Join \"{0}\" on {1}", (rgLines == null || rgLines.Length == 0) ? string.Empty : rgLines[0], se.EndUtc.ToShortDateString()).Linkify();
                     mvCrossSellOrEvents.SetActiveView(vwUpcomingEvent);
                     lblWebinarDetails.Text = se.Body.Linkify(true);
                 }

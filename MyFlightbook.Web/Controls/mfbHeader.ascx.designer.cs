@@ -346,13 +346,22 @@ public partial class Controls_mfbHeader
     protected global::System.Web.UI.WebControls.Panel pnlWebinar;
 
     /// <summary>
-    /// lblDate control.
+    /// litWebinar control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblDate;
+    protected global::System.Web.UI.WebControls.Literal litWebinar;
+
+    /// <summary>
+    /// lnkDetails control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkDetails;
 
     /// <summary>
     /// pnlWebinarDetails control.
