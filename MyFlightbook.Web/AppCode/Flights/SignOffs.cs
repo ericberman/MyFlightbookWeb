@@ -966,7 +966,8 @@ namespace MyFlightbook.Instruction
             if (szUser == null)
                 throw new ArgumentNullException(nameof(szUser));
 
-            return Profile.GetUser(szUser).PreferenceExists(PrefKeyInstructorScribble);
+            Profile pf = Profile.GetUser(szUser);
+            return pf != null && pf.PreferenceExists(PrefKeyInstructorScribble);
         }
 
         /// <summary>

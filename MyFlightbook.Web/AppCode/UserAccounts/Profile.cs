@@ -1123,7 +1123,8 @@ namespace MyFlightbook
             if (pf == null)
             {
                 LoadUserFromDB(name, (dr) => { pf = new Profile(dr); });
-                CacheProfile(pf);
+                if (pf != null)
+                    CacheProfile(pf);
             }
             return pf;
         }
