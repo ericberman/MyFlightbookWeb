@@ -68,21 +68,12 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
         Master.SelectedTab = tabID.lbtImport;
         InitWizard(wzImportFlights);
 
-        Title = (string)GetLocalResourceObject("PageResource1.Title");
+        Title = Resources.LogbookEntry.ImportFlightsPageTitle;
         Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
         UseHHMM = pf.UsesHHMM;
 
         if (!IsPostBack)
-        {
             pnlCloudAhoy.Visible = pf.CloudAhoyToken != null && pf.CloudAhoyToken.AccessToken != null;
-            List<FAQItem> lst = new List<FAQItem>(FAQItem.CachedFAQItems);
-            FAQItem fi = lst.Find(f => f.idFAQ == 44);
-            if (fi != null)
-            {
-                lblTipsHeader.Text = fi.Question;
-                litTipsFAQ.Text = fi.Answer;
-            }
-        }
     }
 
     protected static void AddTextRow(Control parent, string sz, string szClass = "")
@@ -361,6 +352,7 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
         }
 
         mvContent.ActiveViewIndex = wzImportFlights.ActiveStepIndex;    // keep bottom half and top half in sync
+        pnl3rdPartyServices.Visible = wzImportFlights.ActiveStep == wsCreateFile;
     }
 
     protected void lnkDefaultTemplate_Click(object sender, EventArgs e)

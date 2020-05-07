@@ -4,7 +4,6 @@
 <%@ Register src="Controls/mfbHeader.ascx" tagname="mfbHeader" tagprefix="uc2" %>
 <%@ Register src="Controls/mfbLogbookSidebar.ascx" tagname="mfbLogbookSidebar" tagprefix="uc3" %>
 <%@ Register src="Controls/GoogleAnalytics.ascx" tagname="GoogleAnalytics" tagprefix="uc4" %>
-<%@ Register src="Controls/SponsoredAd.ascx" tagname="SponsoredAd" tagprefix="uc5" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">

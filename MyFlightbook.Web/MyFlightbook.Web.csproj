@@ -314,6 +314,7 @@
     <Content Include="App_GlobalResources\Content.en\About.htm" />
     <Content Include="App_GlobalResources\Content.en\FeatureTable.htm" />
     <Content Include="App_GlobalResources\Content.en\FlightDataKey.txt" />
+    <Content Include="App_GlobalResources\Content.en\ImportOverview.htm" />
     <Content Include="App_GlobalResources\Content.en\ImportTableDescription.txt" />
     <Content Include="App_GlobalResources\Content.en\mapnavaidtip.htm" />
     <Content Include="App_GlobalResources\Content.en\MobileAppPromo.txt" />
@@ -446,6 +447,8 @@
     <Content Include="images\1536 full.png" />
     <Content Include="images\1536 with white.png" />
     <Content Include="images\1536xparent.png" />
+    <Content Include="images\SponsoredAds\Aculog1800x1200.png" />
+    <Content Include="images\SponsoredAds\Aculog208x60.png" />
     <Content Include="images\add.png" />
     <Content Include="images\addgoogle.gif" />
     <Content Include="images\AircraftImportSample.png" />
@@ -2928,9 +2931,6 @@
     <Content Include="Member\App_LocalResources\EditProfile.aspx.resx" />
     <Content Include="Member\App_LocalResources\FlightDetail.aspx.resx" />
     <Content Include="Member\App_LocalResources\ImpAircraft.aspx.resx" />
-    <Content Include="Member\App_LocalResources\Import.aspx.resx">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Member\App_LocalResources\Logbook.aspx.resx" />
     <Content Include="Member\App_LocalResources\makes.aspx.resx">
       <SubType>Designer</SubType>

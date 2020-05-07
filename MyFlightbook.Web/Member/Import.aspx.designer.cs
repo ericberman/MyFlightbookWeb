@@ -40,184 +40,13 @@ public partial class Member_Import
     protected global::System.Web.UI.WebControls.WizardStep wsCreateFile;
 
     /// <summary>
-    /// pnlCloudAhoy control.
+    /// imgCSV control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlCloudAhoy;
-
-    /// <summary>
-    /// imgCloudAhoy control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Image imgCloudAhoy;
-
-    /// <summary>
-    /// lblCloudAhoyPrompt control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblCloudAhoyPrompt;
-
-    /// <summary>
-    /// lnkImportCloudAhoy control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.LinkButton lnkImportCloudAhoy;
-
-    /// <summary>
-    /// popupCloudAhoy control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::AjaxControlToolkit.ModalPopupExtender popupCloudAhoy;
-
-    /// <summary>
-    /// pnlModalCloudAhoy control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlModalCloudAhoy;
-
-    /// <summary>
-    /// lblCloudAhoyPromptDates control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblCloudAhoyPromptDates;
-
-    /// <summary>
-    /// lblCAFrom control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblCAFrom;
-
-    /// <summary>
-    /// lblOptionalStart control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblOptionalStart;
-
-    /// <summary>
-    /// mfbCloudAhoyStartDate control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_mfbTypeInDate mfbCloudAhoyStartDate;
-
-    /// <summary>
-    /// lblCATo control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblCATo;
-
-    /// <summary>
-    /// lblOptionalEnd control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblOptionalEnd;
-
-    /// <summary>
-    /// mfbCloudAhoyEndDate control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::Controls_mfbTypeInDate mfbCloudAhoyEndDate;
-
-    /// <summary>
-    /// lblCloudAhoyErr control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblCloudAhoyErr;
-
-    /// <summary>
-    /// btnImportCloudAhoy control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnImportCloudAhoy;
-
-    /// <summary>
-    /// btnCancel control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnCancel;
-
-    /// <summary>
-    /// lblNewDirectImport control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblNewDirectImport;
-
-    /// <summary>
-    /// lblDirectImport control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblDirectImport;
-
-    /// <summary>
-    /// locStep1DescSpreadsheet control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Localize locStep1DescSpreadsheet;
-
-    /// <summary>
-    /// lnkImportTable control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkImportTable;
+    protected global::System.Web.UI.WebControls.Image imgCSV;
 
     /// <summary>
     /// lnkDefaultTemplate control.
@@ -229,22 +58,58 @@ public partial class Member_Import
     protected global::System.Web.UI.WebControls.LinkButton lnkDefaultTemplate;
 
     /// <summary>
-    /// lblTipsHeader control.
+    /// imgColumns control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblTipsHeader;
+    protected global::System.Web.UI.WebControls.Image imgColumns;
 
     /// <summary>
-    /// litTipsFAQ control.
+    /// lnkImportTable control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Literal litTipsFAQ;
+    protected global::System.Web.UI.WebControls.HyperLink lnkImportTable;
+
+    /// <summary>
+    /// imgTips control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgTips;
+
+    /// <summary>
+    /// lnkFAQTips control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkFAQTips;
+
+    /// <summary>
+    /// imgTips2 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgTips2;
+
+    /// <summary>
+    /// lnkBlogTips control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkBlogTips;
 
     /// <summary>
     /// wsUpload control.
@@ -409,6 +274,15 @@ public partial class Member_Import
     protected global::Controls_Expando ExpandoAudit;
 
     /// <summary>
+    /// locAuditHeader control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locAuditHeader;
+
+    /// <summary>
     /// pnlConverted control.
     /// </summary>
     /// <remarks>
@@ -551,6 +425,168 @@ public partial class Member_Import
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.PlaceHolder plcErrorList;
+
+    /// <summary>
+    /// pnl3rdPartyServices control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnl3rdPartyServices;
+
+    /// <summary>
+    /// pnlCloudAhoy control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlCloudAhoy;
+
+    /// <summary>
+    /// imgCloudAhoy control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgCloudAhoy;
+
+    /// <summary>
+    /// lnkImportCloudAhoy control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.LinkButton lnkImportCloudAhoy;
+
+    /// <summary>
+    /// popupCloudAhoy control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.ModalPopupExtender popupCloudAhoy;
+
+    /// <summary>
+    /// pnlModalCloudAhoy control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlModalCloudAhoy;
+
+    /// <summary>
+    /// lblCloudAhoyPromptDates control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblCloudAhoyPromptDates;
+
+    /// <summary>
+    /// lblCAFrom control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblCAFrom;
+
+    /// <summary>
+    /// lblOptionalStart control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblOptionalStart;
+
+    /// <summary>
+    /// mfbCloudAhoyStartDate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbTypeInDate mfbCloudAhoyStartDate;
+
+    /// <summary>
+    /// lblCATo control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblCATo;
+
+    /// <summary>
+    /// lblOptionalEnd control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblOptionalEnd;
+
+    /// <summary>
+    /// mfbCloudAhoyEndDate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbTypeInDate mfbCloudAhoyEndDate;
+
+    /// <summary>
+    /// lblCloudAhoyErr control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblCloudAhoyErr;
+
+    /// <summary>
+    /// btnImportCloudAhoy control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnImportCloudAhoy;
+
+    /// <summary>
+    /// btnCancel control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnCancel;
+
+    /// <summary>
+    /// pnlAcuLog control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlAcuLog;
+
+    /// <summary>
+    /// SponsoredAd control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_SponsoredAd SponsoredAd;
 
     /// <summary>
     /// pnlImportSuccessful control.

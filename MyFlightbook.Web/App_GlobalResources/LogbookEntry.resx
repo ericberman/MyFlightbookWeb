@@ -1181,4 +1181,121 @@ Proceed with import?</value>
   <data name="TemplateCopyTemplate" xml:space="preserve">
     <value>{0} - Copy</value>
   </data>
+  <data name="ImportAculogHeader" xml:space="preserve">
+    <value>Need paper logbooks transcribed?</value>
+  </data>
+  <data name="ImportAculogPromo" xml:space="preserve">
+    <value>%APP_NAME% has partnered with *AcuLog* for professional and reliable transcription services.</value>
+  </data>
+  <data name="ImportBlogLink" xml:space="preserve">
+    <value>Read an in-depth description of importing in the blog</value>
+  </data>
+  <data name="ImportCloudAhoyDatePrompt" xml:space="preserve">
+    <value>Import CloudAhoy flights between:</value>
+  </data>
+  <data name="ImportCloudAhoyEnd" xml:space="preserve">
+    <value>End Date:</value>
+  </data>
+  <data name="ImportCloudAhoyImport" xml:space="preserve">
+    <value>Import flights from CloudAhoy</value>
+  </data>
+  <data name="ImportCloudAhoyOptional" xml:space="preserve">
+    <value>(Optional)</value>
+  </data>
+  <data name="ImportCloudAhoyStart" xml:space="preserve">
+    <value>Start Date:</value>
+  </data>
+  <data name="ImportColumnDescriptions" xml:space="preserve">
+    <value>Description of columns (field names) for CSV file</value>
+  </data>
+  <data name="ImportErrNoFlightsFound" xml:space="preserve">
+    <value>No flights were found to import!</value>
+  </data>
+  <data name="ImportFAQTipsLink" xml:space="preserve">
+    <value>Read more tips in the FAQ</value>
+  </data>
+  <data name="ImportFlightsPageTitle" xml:space="preserve">
+    <value>Import Flights</value>
+  </data>
+  <data name="ImportHeader" xml:space="preserve">
+    <value>Import Flights</value>
+  </data>
+  <data name="ImportIconNewFlight" xml:space="preserve">
+    <value>Flight will be ADDED - be sure it's not already present, or it will be a duplicate!</value>
+  </data>
+  <data name="ImportIconUpdatedFlight" xml:space="preserve">
+    <value>Flight to import matches an existing flight in your logbook and the existing flight will be updated.</value>
+  </data>
+  <data name="ImportOverview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>content.en\importoverview.htm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ImportPrepDesc1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImportStartingTemplate" xml:space="preserve">
+    <value>Download a starting CSV File Template</value>
+  </data>
+  <data name="ImportSuccessful" xml:space="preserve">
+    <value>Import complete - results are shown below</value>
+  </data>
+  <data name="ImportUploadNewFile" xml:space="preserve">
+    <value>Upload a new file</value>
+  </data>
+  <data name="ImportViewImportedFlights" xml:space="preserve">
+    <value>View my flights</value>
+  </data>
+  <data name="ImportViewImportedFlightsPending" xml:space="preserve">
+    <value>Review pending flights</value>
+  </data>
+  <data name="ImportWizardAllAircraftFound" xml:space="preserve">
+    <value>All flight aircraft were found in your account!  You can proceed to preview.</value>
+  </data>
+  <data name="ImportWizardAutofillNote" xml:space="preserve">
+    <value>All flight/engine times must be UTC for night computation to work.</value>
+  </data>
+  <data name="ImportWizardAutofillPrompt" xml:space="preserve">
+    <value>Try to autofill fields like night and cross-country, if not already provided.</value>
+  </data>
+  <data name="ImportWizardFinishButton" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="ImportWizardImportant" xml:space="preserve">
+    <value>Important:</value>
+  </data>
+  <data name="ImportWizardMissingAircraft" xml:space="preserve">
+    <value>The following aircraft are referenced by some of your flights, but are not yet in your account:</value>
+  </data>
+  <data name="ImportWizardOnlyClickOnce" xml:space="preserve">
+    <value>Only click once to import!</value>
+  </data>
+  <data name="ImportWizardPreviewHeader" xml:space="preserve">
+    <value>When you are ready, you can import your data.</value>
+  </data>
+  <data name="ImportWizardStep1" xml:space="preserve">
+    <value>1. Prepare your data for import</value>
+  </data>
+  <data name="ImportWizardStep2" xml:space="preserve">
+    <value>2. Upload your file</value>
+  </data>
+  <data name="ImportWizardStep3" xml:space="preserve">
+    <value>3. Review missing aircraft</value>
+  </data>
+  <data name="ImportWizardStep4" xml:space="preserve">
+    <value>4. Preview</value>
+  </data>
+  <data name="ImportWizardUpdateVsNew" xml:space="preserve">
+    <value>Use the icons below to determine whether a flight is going to be updated, or if a new flight is going to be created.</value>
+  </data>
+  <data name="ImportWizardUploadFilePrompt" xml:space="preserve">
+    <value>Select a file to preview:</value>
+  </data>
+  <data name="ImportWizardUploadPrompt" xml:space="preserve">
+    <value>Upload your file and you can see a preview of what the import will look like 
+                    without actually importing any data. This is a great way to troubleshoot. 
+                    Your data will be scanned and any issues will be shown to you. You can 
+                    then fix the issues prior to actually importing the data.</value>
+  </data>
+  <data name="ImportWizardBeginButton" xml:space="preserve">
+    <value>Proceed to Upload...</value>
+  </data>
 </root>

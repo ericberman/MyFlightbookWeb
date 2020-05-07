@@ -1096,6 +1096,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Need paper logbooks transcribed?.
+        /// </summary>
+        internal static string ImportAculogHeader {
+            get {
+                return ResourceManager.GetString("ImportAculogHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %APP_NAME% has partnered with *AcuLog* for professional and reliable transcription services..
+        /// </summary>
+        internal static string ImportAculogPromo {
+            get {
+                return ResourceManager.GetString("ImportAculogPromo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This flight will be ADDED to your logbook..
         /// </summary>
         internal static string ImportAddTooltip {
@@ -1114,6 +1132,78 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Read an in-depth description of importing in the blog.
+        /// </summary>
+        internal static string ImportBlogLink {
+            get {
+                return ResourceManager.GetString("ImportBlogLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import CloudAhoy flights between:.
+        /// </summary>
+        internal static string ImportCloudAhoyDatePrompt {
+            get {
+                return ResourceManager.GetString("ImportCloudAhoyDatePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End Date:.
+        /// </summary>
+        internal static string ImportCloudAhoyEnd {
+            get {
+                return ResourceManager.GetString("ImportCloudAhoyEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import flights from CloudAhoy.
+        /// </summary>
+        internal static string ImportCloudAhoyImport {
+            get {
+                return ResourceManager.GetString("ImportCloudAhoyImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Optional).
+        /// </summary>
+        internal static string ImportCloudAhoyOptional {
+            get {
+                return ResourceManager.GetString("ImportCloudAhoyOptional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Date:.
+        /// </summary>
+        internal static string ImportCloudAhoyStart {
+            get {
+                return ResourceManager.GetString("ImportCloudAhoyStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description of columns (field names) for CSV file.
+        /// </summary>
+        internal static string ImportColumnDescriptions {
+            get {
+                return ResourceManager.GetString("ImportColumnDescriptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No flights were found to import!.
+        /// </summary>
+        internal static string ImportErrNoFlightsFound {
+            get {
+                return ResourceManager.GetString("ImportErrNoFlightsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Some flights have errors.
         ///
         ///If you proceed, flights with errors will be imported into your &quot;pending flights&quot; for review while those without errors will be imported into your logbook.  
@@ -1127,11 +1217,29 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Read more tips in the FAQ.
+        /// </summary>
+        internal static string ImportFAQTipsLink {
+            get {
+                return ResourceManager.GetString("ImportFAQTipsLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} flight(s) added.
         /// </summary>
         internal static string ImportFlightsAdded {
             get {
                 return ResourceManager.GetString("ImportFlightsAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Flights.
+        /// </summary>
+        internal static string ImportFlightsPageTitle {
+            get {
+                return ResourceManager.GetString("ImportFlightsPageTitle", resourceCulture);
             }
         }
         
@@ -1150,6 +1258,33 @@ namespace Resources {
         internal static string ImportFlightsWithErrors {
             get {
                 return ResourceManager.GetString("ImportFlightsWithErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Flights.
+        /// </summary>
+        internal static string ImportHeader {
+            get {
+                return ResourceManager.GetString("ImportHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight will be ADDED - be sure it&apos;s not already present, or it will be a duplicate!.
+        /// </summary>
+        internal static string ImportIconNewFlight {
+            get {
+                return ResourceManager.GetString("ImportIconNewFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight to import matches an existing flight in your logbook and the existing flight will be updated..
+        /// </summary>
+        internal static string ImportIconUpdatedFlight {
+            get {
+                return ResourceManager.GetString("ImportIconUpdatedFlight", resourceCulture);
             }
         }
         
@@ -1177,6 +1312,30 @@ namespace Resources {
         internal static string ImportNotSuccessful {
             get {
                 return ResourceManager.GetString("ImportNotSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;
+        ///    %APP_NAME% can import flights, whether from a spreadsheet that you create or as an export from other logbook programs.  But regardless of the source,
+        ///    it must be in the form of a &lt;a href=&apos;http://en.wikipedia.org/wiki/Comma-separated_values&apos; target=&apos;_blank\&apos;&gt;CSV&lt;/a&gt; (spreadsheet) file.
+        ///&lt;/p&gt;
+        ///&lt;p&gt;
+        ///    The first row of the table (spreadsheet) must be the set of headers that identify which column is which; each subsequent row of the spreadsheet represents
+        ///    a flight that you&amp;apos;d like to impo [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ImportOverview {
+            get {
+                return ResourceManager.GetString("ImportOverview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string ImportPrepDesc1 {
+            get {
+                return ResourceManager.GetString("ImportPrepDesc1", resourceCulture);
             }
         }
         
@@ -1222,6 +1381,24 @@ namespace Resources {
         internal static string ImportRowUpdated {
             get {
                 return ResourceManager.GetString("ImportRowUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download a starting CSV File Template.
+        /// </summary>
+        internal static string ImportStartingTemplate {
+            get {
+                return ResourceManager.GetString("ImportStartingTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import complete - results are shown below.
+        /// </summary>
+        internal static string ImportSuccessful {
+            get {
+                return ResourceManager.GetString("ImportSuccessful", resourceCulture);
             }
         }
         
@@ -1304,6 +1481,180 @@ namespace Resources {
         internal static string ImportUpdateTooltip {
             get {
                 return ResourceManager.GetString("ImportUpdateTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload a new file.
+        /// </summary>
+        internal static string ImportUploadNewFile {
+            get {
+                return ResourceManager.GetString("ImportUploadNewFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View my flights.
+        /// </summary>
+        internal static string ImportViewImportedFlights {
+            get {
+                return ResourceManager.GetString("ImportViewImportedFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review pending flights.
+        /// </summary>
+        internal static string ImportViewImportedFlightsPending {
+            get {
+                return ResourceManager.GetString("ImportViewImportedFlightsPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All flight aircraft were found in your account!  You can proceed to preview..
+        /// </summary>
+        internal static string ImportWizardAllAircraftFound {
+            get {
+                return ResourceManager.GetString("ImportWizardAllAircraftFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All flight/engine times must be UTC for night computation to work..
+        /// </summary>
+        internal static string ImportWizardAutofillNote {
+            get {
+                return ResourceManager.GetString("ImportWizardAutofillNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try to autofill fields like night and cross-country, if not already provided..
+        /// </summary>
+        internal static string ImportWizardAutofillPrompt {
+            get {
+                return ResourceManager.GetString("ImportWizardAutofillPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proceed to Upload....
+        /// </summary>
+        internal static string ImportWizardBeginButton {
+            get {
+                return ResourceManager.GetString("ImportWizardBeginButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        internal static string ImportWizardFinishButton {
+            get {
+                return ResourceManager.GetString("ImportWizardFinishButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Important:.
+        /// </summary>
+        internal static string ImportWizardImportant {
+            get {
+                return ResourceManager.GetString("ImportWizardImportant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following aircraft are referenced by some of your flights, but are not yet in your account:.
+        /// </summary>
+        internal static string ImportWizardMissingAircraft {
+            get {
+                return ResourceManager.GetString("ImportWizardMissingAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only click once to import!.
+        /// </summary>
+        internal static string ImportWizardOnlyClickOnce {
+            get {
+                return ResourceManager.GetString("ImportWizardOnlyClickOnce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you are ready, you can import your data..
+        /// </summary>
+        internal static string ImportWizardPreviewHeader {
+            get {
+                return ResourceManager.GetString("ImportWizardPreviewHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Prepare your data for import.
+        /// </summary>
+        internal static string ImportWizardStep1 {
+            get {
+                return ResourceManager.GetString("ImportWizardStep1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2. Upload your file.
+        /// </summary>
+        internal static string ImportWizardStep2 {
+            get {
+                return ResourceManager.GetString("ImportWizardStep2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3. Review missing aircraft.
+        /// </summary>
+        internal static string ImportWizardStep3 {
+            get {
+                return ResourceManager.GetString("ImportWizardStep3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4. Preview.
+        /// </summary>
+        internal static string ImportWizardStep4 {
+            get {
+                return ResourceManager.GetString("ImportWizardStep4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the icons below to determine whether a flight is going to be updated, or if a new flight is going to be created..
+        /// </summary>
+        internal static string ImportWizardUpdateVsNew {
+            get {
+                return ResourceManager.GetString("ImportWizardUpdateVsNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a file to preview:.
+        /// </summary>
+        internal static string ImportWizardUploadFilePrompt {
+            get {
+                return ResourceManager.GetString("ImportWizardUploadFilePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload your file and you can see a preview of what the import will look like 
+        ///                    without actually importing any data. This is a great way to troubleshoot. 
+        ///                    Your data will be scanned and any issues will be shown to you. You can 
+        ///                    then fix the issues prior to actually importing the data..
+        /// </summary>
+        internal static string ImportWizardUploadPrompt {
+            get {
+                return ResourceManager.GetString("ImportWizardUploadPrompt", resourceCulture);
             }
         }
         
