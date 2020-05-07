@@ -934,10 +934,7 @@ namespace MyFlightbook.Instruction
         /// <returns></returns>
         public static byte[] DefaultScribbleForInstructor(Profile pf)
         {
-            if (pf == null)
-                throw new ArgumentNullException(nameof(pf));
-
-            if (!pf.PreferenceExists(PrefKeyInstructorScribble))
+            if (pf == null || !pf.PreferenceExists(PrefKeyInstructorScribble))
                 return Array.Empty<byte>();
 
             return Convert.FromBase64String(pf.GetPreferenceForKey<string>(PrefKeyInstructorScribble));

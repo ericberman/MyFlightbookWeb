@@ -794,9 +794,12 @@ namespace MyFlightbook
                 else 
                 {
                     // See if the CFI has a default signature and use that if available.  Will return Array.Empty if none found.
-                    string szCFIUser = (string)dr["CFIUsername"];
-                    DigitizedSignature = CFIStudentMap.DefaultScribbleForInstructor(szCFIUser);
-                    FileSize = DigitizedSignature.Length;
+                    string szCFIUser = (string) util.ReadNullableField(dr, "CFIUsername", string.Empty);
+                    if (!String.IsNullOrEmpty(szCFIUser))
+                    {
+                        DigitizedSignature = CFIStudentMap.DefaultScribbleForInstructor(szCFIUser);
+                        FileSize = DigitizedSignature.Length;
+                    }
                 }
             });
         }
@@ -846,8 +849,7 @@ namespace MyFlightbook
 
             return szSig;
         }
-
-        public static LogbookEntry LogbookEntryFromHash(string szHash)
+                public static LogbookEntry LogbookEntryFromHash(string szHash)
         {
             if (String.IsNullOrEmpty(szHash))
                 throw new ArgumentNullException(nameof(szHash));
