@@ -60,6 +60,15 @@ namespace MyFlightbook.Web.Member
         protected global::System.Web.UI.WebControls.Panel pnlMainForm;
 
         /// <summary>
+        /// ckAll control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox ckAll;
+
+        /// <summary>
         /// ckSim control.
         /// </summary>
         /// <remarks>

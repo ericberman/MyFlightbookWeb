@@ -94,5 +94,10 @@ namespace MyFlightbook.Web.Member
             Response.Cookies[szCookieLastCheck].Value = DateTime.Now.YMDString();
             Response.Cookies[szCookieLastCheck].Expires = DateTime.Now.AddYears(5);
         }
+
+        protected void ckAll_CheckedChanged(object sender, EventArgs e)
+        {
+            ckAirports.Checked = ckDateTime.Checked = ckIFR.Checked = ckMisc.Checked = ckPICSICDualMath.Checked = ckSim.Checked = ckTimes.Checked = ckXC.Checked = ckAll.Checked;
+        }
     }
 }

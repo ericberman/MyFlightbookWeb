@@ -15,6 +15,7 @@
     <p><asp:Label ID="lblCheckFlightsCategories" runat="server"></asp:Label></p>
     <asp:Panel ID="pnlMainForm" runat="server" DefaultButton="btnCheckAll">
         <div style="margin-left: 3em;">
+            <div><asp:CheckBox ID="ckAll" runat="server" AutoPostBack="true" OnCheckedChanged="ckAll_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></div>
             <div><asp:CheckBox ID="ckSim" runat="server" Text="<%$ Resources:FlightLint, LintCategorySim %>" Checked="true" /><uc1:mfbtooltip runat="server" id="mfbTooltip" BodyContent="<%$ Resources:FlightLint, LintCategorySimTip %>" /></div>
             <div><asp:CheckBox ID="ckIFR" runat="server" Text="<%$ Resources:FlightLint, LintCategoryIFR %>" Checked="true" /><uc1:mfbtooltip runat="server" id="mfbTooltip1" BodyContent="<%$ Resources:FlightLint, LintCategoryIFRTip %>" /></div>
             <div><asp:CheckBox ID="ckAirports" runat="server" Text="<%$ Resources:FlightLint, LintCategoryAirports %>" Checked="true" /><uc1:mfbtooltip runat="server" id="mfbTooltip2" BodyContent="<%$ Resources:FlightLint, LintCategoryAirportsTip %>" /></div>
