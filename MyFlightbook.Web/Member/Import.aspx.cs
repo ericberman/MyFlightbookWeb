@@ -393,7 +393,7 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
 
     protected void lnkDefaultTemplate_Click(object sender, EventArgs e)
     {
-        const string szHeaders = @"Date,Tail Number,Approaches,Hold,Landings,FS Night Landings,FS Day Landings,X-Country,Night,IMC,Simulated Instrument,Ground Simulator,Dual Received,CFI,SIC,PIC,Total Flight Time,Route,Comments";
+        const string szHeaders = @"Date,Tail Number,Model,Approaches,Hold,Landings,FS Night Landings,FS Day Landings,X-Country,Night,IMC,Simulated Instrument,Ground Simulator,Dual Received,CFI,SIC,PIC,Total Flight Time,Route,Comments";
 
         Response.DownloadToFile(szHeaders.Replace(",", CultureInfo.CurrentCulture.TextInfo.ListSeparator), "text/csv", Branding.CurrentBrand.AppName, "csv");
     }
