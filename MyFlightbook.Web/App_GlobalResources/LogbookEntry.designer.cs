@@ -1096,7 +1096,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Need paper logbooks transcribed?.
+        ///   Looks up a localized string similar to Need paper logbooks transcribed or audited?.
         /// </summary>
         internal static string ImportAculogHeader {
             get {
@@ -1317,12 +1317,12 @@ namespace Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;
-        ///    %APP_NAME% can import flights, whether from a spreadsheet that you create or as an export from other logbook programs.  But regardless of the source,
-        ///    it must be in the form of a &lt;a href=&apos;http://en.wikipedia.org/wiki/Comma-separated_values&apos; target=&apos;_blank\&apos;&gt;CSV&lt;/a&gt; (spreadsheet) file.
-        ///&lt;/p&gt;
+        ///    %APP_NAME% can import flights, whether from a spreadsheet that you create or as an export from other logbook programs. &lt;/p&gt;
         ///&lt;p&gt;
-        ///    The first row of the table (spreadsheet) must be the set of headers that identify which column is which; each subsequent row of the spreadsheet represents
-        ///    a flight that you&amp;apos;d like to impo [rest of string was truncated]&quot;;.
+        ///    Your file it &lt;span style=&quot;font-weight:bold&quot;&gt;must&lt;/span&gt; be in the form of a &lt;a href=&apos;http://en.wikipedia.org/wiki/Comma-separated_values&apos; style=&quot;font-weight:bold;&quot; target=&apos;_blank\&apos;&gt;CSV&lt;/a&gt; (spreadsheet) file.
+        ///&lt;/p&gt;
+        ///&lt;ul&gt;
+        ///    &lt;li&gt;The &lt;span style=&quot;font-weight:bold&quot;&gt;first&lt;/span&gt; row of the table (spreadsheet) must be the set of headers that identify which column is whi [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ImportOverview {
             get {
@@ -1647,10 +1647,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Upload your file and you can see a preview of what the import will look like 
-        ///                    without actually importing any data. This is a great way to troubleshoot. 
-        ///                    Your data will be scanned and any issues will be shown to you. You can 
-        ///                    then fix the issues prior to actually importing the data..
+        ///   Looks up a localized string similar to Upload your file and your data will be scanned and any issues shown to you, so that you can fix them prior to actually importing anything..
         /// </summary>
         internal static string ImportWizardUploadPrompt {
             get {

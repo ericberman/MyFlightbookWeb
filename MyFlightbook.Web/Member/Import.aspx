@@ -5,7 +5,7 @@
 <%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
 <%@ Register Src="~/Controls/mfbTypeInDate.ascx" TagPrefix="uc1" TagName="mfbTypeInDate" %>
 <%@ Register Src="~/Controls/SponsoredAd.ascx" TagPrefix="uc1" TagName="SponsoredAd" %>
-
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Localize ID="locHeader" runat="server" Text="<%$ Resources:LogbookEntry, ImportHeader %>" />
 </asp:Content>
@@ -30,10 +30,10 @@
             <asp:WizardStep ID="wsCreateFile" runat="server" Title="<%$ Resources:LogbookEntry, ImportWizardStep1 %>" >
                 <div>
                     <div>
-                        <% =Branding.ReBrand(Resources.LogbookEntry.ImportOverview) %>
+                        <% =Branding.ReBrand(Resources.LogbookEntry.ImportOverview).Replace("%SAMPLEREF%", "~/images/flightimportsample.png".ToAbsoluteURL(Request).ToString()) %>
                     </div>
                     <table>
-                        <tr><td style="text-align:center;"><asp:Image ID="imgCSV" runat="server" ImageUrl="~/images/csvicon_med.png" /></td><td><asp:LinkButton ID="lnkDefaultTemplate" runat="server" Font-Bold="True" 
+                        <tr><td style="text-align:center;"><asp:Image ID="imgCSV" runat="server" ImageUrl="~/images/csvicon_sm.png" /></td><td><asp:LinkButton ID="lnkDefaultTemplate" runat="server" Font-Bold="True" 
                                 OnClick="lnkDefaultTemplate_Click"
                                 Text="<%$ Resources:LogbookEntry, ImportStartingTemplate %>" /></td></tr>
                         <tr><td style="text-align:center;"><asp:Image ID="imgColumns" runat="server" ImageUrl="~/images/rightarrow.png" /></td><td><asp:HyperLink ID="lnkImportTable" runat="server" Font-Bold="True" 
@@ -48,13 +48,19 @@
                 <p>
                     <asp:Localize ID="locStep3Desc1" runat="server" Text="<%$ Resources:LogbookEntry, ImportWizardUploadPrompt %>" />
                 </p>
-                <p>
-                    <asp:Localize ID="locPreviewPrompt" runat="server" 
-                        Text="<%$ Resources:LogbookEntry, ImportWizardUploadFilePrompt %>" />
-                    <br />
-                    <asp:FileUpload ID="fuPreview" runat="server" 
-                         />
-                </p>
+                <div>
+                    <asp:AjaxFileUpload ID="AjaxFileUpload1" runat="server" CssClass="mfbDefault" AllowedFileTypes="csv,txt" AutoStartUpload="true"
+                        ThrobberID="myThrobber" MaximumNumberOfFiles="1" ClearFileListAfterUpload="true" OnClientUploadCompleteAll="ajaxFileUploadAttachments_UploadComplete" OnUploadComplete="AjaxFileUpload1_UploadComplete" />
+                    <asp:Image ID="myThrobber" ImageUrl="~/images/ajax-loader.gif" runat="server" style="display:None" />
+                    <script>
+                        function ajaxFileUploadAttachments_UploadComplete(sender, e) {
+                            document.getElementById('<% =myThrobber.ClientID %>').style.display = "block";
+                            document.getElementById('<% =IDNext %>').disabled = document.getElementById('<% =IDPrev %>').disabled = true;
+                            document.getElementById('<% =btnForceRefresh.ClientID %>').click();
+                        }
+                    </script>
+                    <asp:Button ID="btnForceRefresh" runat="server" Text="(Refresh)" OnClick="btnForceRefresh_Click" style="display:none" />
+                </div>
                 <div>
                     <table>
                         <tr style="vertical-align:top">
@@ -132,8 +138,8 @@
         </StartNavigationTemplate>
         <StepNavigationTemplate>
             <div style="text-align:center">
-                <asp:Button CommandName="MovePrevious" Runat="server" Text="<%$ Resources:LocalizedText, PreviousPrompt %>" />
-                <asp:Button CommandName="MoveNext" Runat="server" Text="<%$ Resources:LocalizedText, NextPrompt %>" />
+                <asp:Button CommandName="MovePrevious" ID="btnPrev" Runat="server" Text="<%$ Resources:LocalizedText, PreviousPrompt %>" />
+                <asp:Button CommandName="MoveNext" ID="btnNext" Runat="server" Text="<%$ Resources:LocalizedText, NextPrompt %>" />
             </div>
         </StepNavigationTemplate>
         <FinishNavigationTemplate>

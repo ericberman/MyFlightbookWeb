@@ -1182,7 +1182,7 @@ Proceed with import?</value>
     <value>{0} - Copy</value>
   </data>
   <data name="ImportAculogHeader" xml:space="preserve">
-    <value>Need paper logbooks transcribed?</value>
+    <value>Need paper logbooks transcribed or audited?</value>
   </data>
   <data name="ImportAculogPromo" xml:space="preserve">
     <value>%APP_NAME% has partnered with *AcuLog* for professional and reliable transcription services.</value>
@@ -1290,10 +1290,7 @@ Proceed with import?</value>
     <value>Select a file to preview:</value>
   </data>
   <data name="ImportWizardUploadPrompt" xml:space="preserve">
-    <value>Upload your file and you can see a preview of what the import will look like 
-                    without actually importing any data. This is a great way to troubleshoot. 
-                    Your data will be scanned and any issues will be shown to you. You can 
-                    then fix the issues prior to actually importing the data.</value>
+    <value>Upload your file and your data will be scanned and any issues shown to you, so that you can fix them prior to actually importing anything.</value>
   </data>
   <data name="ImportWizardBeginButton" xml:space="preserve">
     <value>Proceed to Upload...</value>

@@ -130,22 +130,31 @@ public partial class Member_Import
     protected global::System.Web.UI.WebControls.Localize locStep3Desc1;
 
     /// <summary>
-    /// locPreviewPrompt control.
+    /// AjaxFileUpload1 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Localize locPreviewPrompt;
+    protected global::AjaxControlToolkit.AjaxFileUpload AjaxFileUpload1;
 
     /// <summary>
-    /// fuPreview control.
+    /// myThrobber control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.FileUpload fuPreview;
+    protected global::System.Web.UI.WebControls.Image myThrobber;
+
+    /// <summary>
+    /// btnForceRefresh control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnForceRefresh;
 
     /// <summary>
     /// ckAutofill control.

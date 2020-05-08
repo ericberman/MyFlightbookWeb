@@ -42,6 +42,10 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
         }
     }
 
+    protected string IDNext { get { return wzImportFlights.FindControl("StepNavigationTemplateContainerID$btnNext").ClientID; } }
+
+    protected string IDPrev { get { return wzImportFlights.FindControl("StepNavigationTemplateContainerID$btnPrev").ClientID; } }
+
     /// <summary>
     /// The uploaded data
     /// </summary>
@@ -159,20 +163,13 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
 
     protected void UploadData()
     {
-        if (!fuPreview.HasFile && CurrentCSVSource != null && CurrentCSVSource.Length > 0)
-        {
-            // re-parse it.
-            PreviewData();
-            return;
-        }
-
         plcErrorList.Controls.Clear();
 
         ViewState[szKeyVSCSVImporter] = null;
 
-        if (fuPreview.FileBytes.Length > 0)
+        if (CurrentCSVSource != null && CurrentCSVSource.Length > 0)
         {
-            CurrentCSVSource = fuPreview.FileBytes;
+            // re-parse it.
             PreviewData();
         }
         else
@@ -181,6 +178,45 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
             SetWizardStep(wsUpload);
         }
     }
+
+    const string szSessFile = "mfbImportFile";
+
+    protected void AjaxFileUpload1_UploadComplete(object sender, AjaxControlToolkit.AjaxFileUploadEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        if (e.State != AjaxControlToolkit.AjaxFileUploadState.Success)
+        {
+            lblFileRequired.Text = Resources.LogbookEntry.errImportInvalidCSVFile;
+            SetWizardStep(wsUpload);
+            return;
+        }
+
+        Session[szSessFile] = e.GetContents();
+
+        e.DeleteTemporaryData();
+
+        // Now we wait for the force refresh
+    }
+
+    protected void btnForceRefresh_Click(object sender, EventArgs e)
+    {
+        if (Session[szSessFile] != null)
+        {
+            CurrentImporter = null;
+            CurrentCSVSource = (byte[]) Session[szSessFile];
+            Session[szSessFile] = null;
+
+            SetWizardStep(wsMissingAircraft);
+            PreviewData();
+        } else
+        {
+            lblFileRequired.Text = Resources.LogbookEntry.errImportInvalidCSVFile;
+            SetWizardStep(wsUpload);
+        }
+    }
+
 
     protected void PreviewData()
     {
