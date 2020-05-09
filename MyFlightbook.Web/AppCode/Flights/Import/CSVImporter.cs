@@ -73,7 +73,7 @@ namespace MyFlightbook.ImportFlights
         /// <summary>
         /// A set of mappings between a user-supplied name for a model (e.g., "Cheyenne") and the model to which it was ultimately assigned (e.g., "PA31")
         /// </summary>
-        public IDictionary<string, MakeModel> ModelNameMappings { get; private set; }
+        public IReadOnlyDictionary<string, MakeModel> ModelNameMappings { get; private set; }
         #endregion
 
         //  TODO: Pull these out of here so that we can reference them from externalformat.
@@ -810,7 +810,7 @@ namespace MyFlightbook.ImportFlights
             {
                 get { return _dictAircraft; }
             }
-            public IDictionary<string, MakeModel> ModelMapping { get; set; }
+            public IReadOnlyDictionary<string, MakeModel> ModelMapping { get; set; }
 
             public string User { get; set; }
 
@@ -968,7 +968,7 @@ namespace MyFlightbook.ImportFlights
             ModelNameMappings = new Dictionary<string, MakeModel>();
         }
 
-        public CSVImporter(IDictionary<string, MakeModel> mappings) : this()
+        public CSVImporter(IReadOnlyDictionary<string, MakeModel> mappings) : this()
         {
             if (mappings != null)
                 ModelNameMappings = mappings;

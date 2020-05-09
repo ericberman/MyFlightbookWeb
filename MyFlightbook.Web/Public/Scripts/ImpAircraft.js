@@ -39,6 +39,8 @@ function addNewAircraft(d) {
     params.szTail = mr.BestMatchAircraft.TailNumber;
     var ddlInst = document.getElementById(d["cmbInstance"]);
     params.instanceType = ddlInst.options[ddlInst.selectedIndex].value;
+    params.szModelGiven = document.getElementById(d["lblGivenModel"]).innerText;
+    params.szJsonMapping = document.getElementById(d["idMap"]).value;
     var idPopup = d["progressID"];
     $find(idPopup).show();
     $.ajax(
@@ -59,6 +61,10 @@ function addNewAircraft(d) {
                 $find(idPopup).hide();
                 document.getElementById(d["btnAdd"]).style.display = 'none';
                 document.getElementById(d["lblAllGood"]).style.display = 'block';
+
+                // update the model mapping
+                if (response.d)
+                    document.getElementById(d["idMap"]).value = response.d;
             }
         });
 }

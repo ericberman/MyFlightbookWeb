@@ -18,7 +18,6 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
 {
     #region Properties
     private const string szvsMatchRowsKey = "vsMatchRowsKey";
-    private const string szvsModelMapping = "vsModelMappingDict";
 
     public IEnumerable<AircraftImportMatchRow> CandidatesForImport
     {
@@ -31,14 +30,21 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
         }
     }
 
-    public  IDictionary<string, MakeModel> ModelMapping
+    /// <summary>
+    /// Returns a read-only mapping of models.
+    /// </summary>
+    public IReadOnlyDictionary<string, MakeModel> ModelMapping
     {
-        get
+        get { return (String.IsNullOrEmpty(hdnModelMap.Value)) ? new Dictionary<string, MakeModel>() : JsonConvert.DeserializeObject<Dictionary<string, MakeModel>>(hdnModelMap.Value); }
+        set { hdnModelMap.Value = (value == null) ? string.Empty : JsonConvert.SerializeObject(value); }
+    }
+
+    public void AddModelMapping(string key, MakeModel m)
+    {
+        if (!String.IsNullOrEmpty(key) && m != null && ModelMapping is Dictionary<string, MakeModel> d)
         {
-            Dictionary<string, MakeModel> d = (Dictionary<string, MakeModel>)ViewState[szvsModelMapping];
-            if (d == null)
-                ViewState[szvsModelMapping] = d = new Dictionary<string, MakeModel>();
-            return d;
+            d[key] = m;
+            ModelMapping = d;
         }
     }
     #endregion
@@ -47,7 +53,7 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
     {
         Page.ClientScript.RegisterClientScriptInclude("jquery1", ResolveClientUrl("https://code.jquery.com/jquery-1.10.1.min.js"));
         Page.ClientScript.RegisterClientScriptInclude("jquery2", ResolveClientUrl("~/public/Scripts/jquery.json-2.4.min.js"));
-        Page.ClientScript.RegisterClientScriptInclude("MFBAircraftImportScript", ResolveClientUrl("~/Public/Scripts/ImpAircraft.js?v=1"));
+        Page.ClientScript.RegisterClientScriptInclude("MFBAircraftImportScript", ResolveClientUrl("~/Public/Scripts/ImpAircraft.js?v=2"));
         if (IsPostBack)
         {
             // fix up the state of any aircraft that might have been added asynchronously (i.e., via web service call, in which case the viewstate is out of date)
@@ -117,6 +123,8 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
                 { "btnAdd", btnAddThis.ClientID },      // ID of the "Add this" button
                 { "pnlStaticMake", pnlStaticMake.ClientID },    // ID of the static view of the model/instance type to import
                 { "pnlEditMake", pnlEditMake.ClientID },    // ID of the edit view to import
+                { "idMap", hdnModelMap.ClientID },      // The ID of the hidden control with a mapping of given model to a specified model
+                { "lblGivenModel", e.Row.FindControl("lblGivenModel").ClientID }, // ID of the label with the model as provided by the user.
                 { "matchRow", mr }                      // The match row with any additional context
             };
             AjaxControlToolkit.AutoCompleteExtender autoCompleteExtender = (AjaxControlToolkit.AutoCompleteExtender)e.Row.FindControl("autocompleteModel");
@@ -188,7 +196,7 @@ public partial class Controls_mfbImportAircraft : System.Web.UI.UserControl
             AircraftImportMatchRow mr = CandidatesForImport.FirstOrDefault<AircraftImportMatchRow>(mr2 => mr2.ID == idRow);
             mr.BestMatchAircraft.Commit(Page.User.Identity.Name);
 
-            ModelMapping[mr.ModelGiven] = MakeModel.GetModel(mr.BestMatchAircraft.ModelID);   // remember the mapping.
+            AddModelMapping(mr.ModelGiven, MakeModel.GetModel(mr.BestMatchAircraft.ModelID));   // remember the mapping.
 
             // hack, but the commit above can result in the instance type being cleared out, so restore it.
             if (String.IsNullOrEmpty(mr.BestMatchAircraft.InstanceTypeDescription))

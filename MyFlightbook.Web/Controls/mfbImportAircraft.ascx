@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbImportAircraft.ascx.cs" Inherits="Controls_mfbImportAircraft" %>
+<asp:HiddenField ID="hdnModelMap" runat="server" />
 <asp:GridView ID="gvAircraftCandidates" runat="server" AutoGenerateColumns="False"
     OnRowDataBound="gvAircraftCandidates_RowDataBound" OnRowCommand="gvAircraftCandidates_RowCommand" 
     GridLines="None" CellPadding="5" meta:resourcekey="gvAircraftCandidatesResource1">

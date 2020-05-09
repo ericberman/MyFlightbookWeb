@@ -34,13 +34,15 @@ public partial class Member_ImpAircraftService : System.Web.UI.Page
     }
 
     [WebMethod(EnableSession = true)]
-    public static void AddNewAircraft(string szTail, int idModel, int instanceType)
+    public static string AddNewAircraft(string szTail, int idModel, int instanceType, string szModelGiven, string szJsonMapping)
     {
         if (!HttpContext.Current.User.Identity.IsAuthenticated || String.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
             throw new MyFlightbookException("Unauthenticated call to add new aircraft");
 
         if (string.IsNullOrEmpty(szTail))
             throw new ArgumentException("Missing tail in AddNewAircraft");
+
+        Dictionary<string, MakeModel> dModelMapping = String.IsNullOrEmpty(szJsonMapping) ? new Dictionary<string, MakeModel>() : JsonConvert.DeserializeObject<Dictionary<string, MakeModel>>(szJsonMapping);
 
         string szCurrentUser = HttpContext.Current.User.Identity.Name;
 
@@ -63,9 +65,14 @@ public partial class Member_ImpAircraftService : System.Web.UI.Page
 
             ua.FAddAircraftForUser(ac);
             ua.InvalidateCache();
+
+            if (!String.IsNullOrEmpty(szModelGiven))
+                dModelMapping[szModelGiven] = MakeModel.GetModel(idModel);
         }
         else
             throw new MyFlightbookValidationException(ac.ErrorString);
+
+        return JsonConvert.SerializeObject(dModelMapping);
     }
 
     [WebMethod(EnableSession = true)]
