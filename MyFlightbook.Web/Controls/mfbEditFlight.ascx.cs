@@ -20,7 +20,6 @@ using System.Web.UI.WebControls;
 public partial class Controls_mfbEditFlightBase : UserControl
 {
     #region Cookie stuff
-    const string keyCookieExpandFSLandings = "FSLandingsExpanded";
     const string keyCookieLastEndingHobbs = "LastHobbs";
 
     /// <summary>
