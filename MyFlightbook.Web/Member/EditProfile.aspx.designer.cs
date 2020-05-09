@@ -805,6 +805,24 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Label lblFieldsToShow;
 
     /// <summary>
+    /// ckTrackCFITime control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.CheckBox ckTrackCFITime;
+
+    /// <summary>
+    /// ckSIC control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.CheckBox ckSIC;
+
+    /// <summary>
     /// ckShowTimes control.
     /// </summary>
     /// <remarks>
