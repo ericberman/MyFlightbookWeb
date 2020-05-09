@@ -209,7 +209,6 @@ public partial class Member_Import : MyFlightbook.Web.WizardPage.MFBWizardPage
             Session[szSessFile] = null;
 
             SetWizardStep(wsMissingAircraft);
-            PreviewData();
         } else
         {
             lblFileRequired.Text = Resources.LogbookEntry.errImportInvalidCSVFile;
