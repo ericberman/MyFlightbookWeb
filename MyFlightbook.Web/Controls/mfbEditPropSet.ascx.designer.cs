@@ -31,6 +31,24 @@ public partial class Controls_mfbEditPropSet
     protected global::System.Web.UI.WebControls.Label lblAddPrompt;
 
     /// <summary>
+    /// lnkContactMe control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkContactMe;
+
+    /// <summary>
+    /// lblContactUsRemainder control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblContactUsRemainder;
+
+    /// <summary>
     /// imgSearch control.
     /// </summary>
     /// <remarks>
@@ -92,24 +110,6 @@ public partial class Controls_mfbEditPropSet
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_mfbSelectTemplates mfbSelectTemplates;
-
-    /// <summary>
-    /// lnkContactMe control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkContactMe;
-
-    /// <summary>
-    /// lblContactUsRemainder control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblContactUsRemainder;
 
     /// <summary>
     /// pnlProps control.

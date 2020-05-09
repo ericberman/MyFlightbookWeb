@@ -1,11 +1,11 @@
-﻿    <%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEditProp.ascx.cs" Inherits="Controls_mfbEditProp" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbEditProp.ascx.cs" Inherits="Controls_mfbEditProp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register src="mfbDateTime.ascx" tagname="mfbDateTime" tagprefix="uc1" %>
 <%@ Register src="mfbDecimalEdit.ascx" tagname="mfbDecimalEdit" tagprefix="uc2" %>
 <%@ Register src="mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc4" %>
 <%@ Register src="mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc3" %>
 <div class="propItemFlow">
-    <asp:Label ID="lblPropName" runat="server" EnableViewState="false"></asp:Label> <uc3:mfbTooltip ID="mfbTooltip" runat="server" EnableViewState="false" />
+    <asp:Label ID="lblPropName" runat="server" CssClass="itemlabel" EnableViewState="false"></asp:Label> <uc3:mfbTooltip ID="mfbTooltip" runat="server" EnableViewState="false" />
     <br />
     <asp:MultiView ID="mvProp" runat="server">
         <asp:View ID="vwDecimal" runat="server">

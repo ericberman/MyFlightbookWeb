@@ -6,6 +6,8 @@
 <%@ Register src="mfbTimeZone.ascx" tagname="mfbTimeZone" tagprefix="uc1" %>
 <%@ Register src="popmenu.ascx" tagname="popmenu" tagprefix="uc4" %>
 <%@ Register Src="~/Controls/AutofillOptionsChooser.ascx" TagPrefix="uc1" TagName="AutofillOptionsChooser" %>
+<%@ Register Src="~/Controls/mfbTooltip.ascx" TagPrefix="uc1" TagName="mfbTooltip" %>
+
 
 <asp:Panel ID="pnlFlightInfo" runat="server">
     <asp:Panel ID="pnlHobbs" runat="server" CssClass="flightinfoitem">
@@ -17,7 +19,7 @@
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblHobbsStart" runat="server" Text="<%$ Resources:LogbookEntry, ShortStart %>"></asp:Label>
+                    <asp:Label ID="lblHobbsStart" CssClass="itemlabel" runat="server" Text="<%$ Resources:LogbookEntry, ShortStart %>"></asp:Label>
                 </td>
                 <td>
                     <uc3:mfbDecimalEdit ID="decHobbsStart" runat="server" Width="70" />
@@ -26,7 +28,7 @@
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblHobbsEnd" runat="server" Text="<%$ Resources:LogbookEntry, ShortEnd %>"></asp:Label>
+                    <asp:Label ID="lblHobbsEnd" runat="server" CssClass="itemlabel" Text="<%$ Resources:LogbookEntry, ShortEnd %>"></asp:Label>
                 </td>
                 <td>
                     <uc3:mfbDecimalEdit ID="decHobbsEnd" runat="server" Width="70" />
@@ -43,7 +45,7 @@
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblEngineStart" runat="server" Text="<%$ Resources:LogbookEntry, ShortStart %>"></asp:Label>
+                    <asp:Label ID="lblEngineStart" CssClass="itemlabel" runat="server" Text="<%$ Resources:LogbookEntry, ShortStart %>"></asp:Label>
                 </td>
                 <td>
                     <uc2:mfbDateTime ID="mfbEngineStart" runat="server" />&nbsp;&nbsp;&nbsp;
@@ -51,7 +53,7 @@
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblEngineEnd" runat="server" Text="<%$ Resources:LogbookEntry, ShortEnd %>"></asp:Label>
+                    <asp:Label ID="lblEngineEnd" CssClass="itemlabel" runat="server" Text="<%$ Resources:LogbookEntry, ShortEnd %>"></asp:Label>
                 </td>
                 <td>
                     <uc2:mfbDateTime ID="mfbEngineEnd" runat="server" />
@@ -68,7 +70,7 @@
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblFlightStart" runat="server" Text="<%$ Resources:LogbookEntry, ShortStart %>"></asp:Label>
+                    <asp:Label ID="lblFlightStart" CssClass="itemlabel" runat="server" Text="<%$ Resources:LogbookEntry, ShortStart %>"></asp:Label>
                 </td>
                 <td>
                     <uc2:mfbDateTime ID="mfbFlightStart" runat="server" />&nbsp;&nbsp;&nbsp;
@@ -76,7 +78,7 @@
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblFlightEnd" runat="server" Text="<%$ Resources:LogbookEntry, ShortEnd %>"></asp:Label>
+                    <asp:Label ID="lblFlightEnd" CssClass="itemlabel" runat="server" Text="<%$ Resources:LogbookEntry, ShortEnd %>"></asp:Label>
                 </td>
                 <td>
                     <uc2:mfbDateTime ID="mfbFlightEnd" runat="server" />
@@ -125,8 +127,8 @@
         <table>
             <tr class="itemlabel">
                 <td style="max-width: 600px">
-                    <asp:Label ID="lblAutoFill" Font-Bold="True" runat="server" Text="<%$ Resources:LogbookEntry, AutoFillPrompt %>"></asp:Label><br />
-                    <asp:Label ID="lblAutoFillDesc" runat="server" Text="<%$ Resources:LogbookEntry, AutoFillDescription %>"></asp:Label>
+                    <asp:Label ID="lblAutoFill" Font-Bold="True" runat="server" Text="<%$ Resources:LogbookEntry, AutoFillPrompt %>"></asp:Label>
+                    <uc1:mfbtooltip runat="server" id="mfbTooltip" BodyContent="<%$ Resources:LogbookEntry, AutoFillDescription %>" />
                 </td>
                 <td><asp:Button ID="btnAutoFill" runat="server" onclick="onAutofill" 
                         Text="<%$ Resources:LogbookEntry, AutoFill %>"></asp:Button></td>

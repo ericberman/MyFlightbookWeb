@@ -328,13 +328,13 @@ public partial class Controls_mfbFlightInfo
     protected global::System.Web.UI.WebControls.Label lblAutoFill;
 
     /// <summary>
-    /// lblAutoFillDesc control.
+    /// mfbTooltip control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblAutoFillDesc;
+    protected global::Controls_mfbTooltip mfbTooltip;
 
     /// <summary>
     /// btnAutoFill control.

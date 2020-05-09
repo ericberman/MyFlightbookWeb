@@ -457,7 +457,7 @@
     <value>Contact us</value>
   </data>
   <data name="NewPropertyPrompt2" xml:space="preserve">
-    <value>if there are additional properties you'd like to see.</value>
+    <value>about additional properties</value>
   </data>
   <data name="RepeatFlight" xml:space="preserve">
     <value>Repeat this flight</value>
@@ -887,7 +887,7 @@
     <value>Auto Fill</value>
   </data>
   <data name="AutoFillDescription" xml:space="preserve">
-    <value>Auto-fill fills in missing information that can be determined from your route of flight, the times provided above, and any optional telemetry file you provide above.</value>
+    <value>Fills in missing information that can be determined from your route of flight, the times provided above, and any optional telemetry file you provide above.</value>
   </data>
   <data name="AutoFillPrompt" xml:space="preserve">
     <value>Auto-fill</value>
@@ -1294,5 +1294,11 @@ Proceed with import?</value>
   </data>
   <data name="ImportWizardBeginButton" xml:space="preserve">
     <value>Proceed to Upload...</value>
+  </data>
+  <data name="HeaderApproachesLandings" xml:space="preserve">
+    <value>Landings and Approaches</value>
+  </data>
+  <data name="HeaderTimes" xml:space="preserve">
+    <value>Times</value>
   </data>
 </root>
