@@ -47,17 +47,6 @@ public partial class Controls_mfbEditFlightBase : UserControl
     {
         Response.Cookies.Add(new HttpCookie(keyCookieLastEndingHobbs, d.ToString(CultureInfo.InvariantCulture)));
     }
-
-    protected bool ShouldExpandLandings
-    {
-        get { return (Request.Cookies[keyCookieExpandFSLandings] != null && Request.Cookies[keyCookieExpandFSLandings].Value.CompareOrdinalIgnoreCase("y") == 0); }
-        set
-        {
-            string szVal = value ? string.Empty : "y";
-            Request.Cookies.Add(new HttpCookie(keyCookieExpandFSLandings, szVal));
-            Response.Cookies[keyCookieExpandFSLandings].Value = szVal;
-        }
-    }
     #endregion
 
     #region EarnedGratuities
@@ -305,16 +294,6 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
         lnkUpdatePrev.Text = Resources.LocalizedText.EditFlightAddFlightPrev;
     }
 
-    private void AutoExpandLandings(LogbookEntry le)
-    {
-        cpeLandingDetails.Collapsed = !(le.NightLandings + le.FullStopLandings > 0 ||
-                                       le.Nighttime > 0.0M ||
-                                       m_rgTailwheelAircraft.Contains(le.AircraftID) ||
-                                       ShouldExpandLandings
-                                       );
-        cpeLandingDetails.ClientState = cpeLandingDetails.Collapsed ? "true" : "false";
-    }
-
     // Save on some view state by loading this up on each page load.
     protected void Page_Init(object sender, EventArgs e)
     {
@@ -481,7 +460,6 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
 
             if (idAircraftOrigin != le.AircraftID)
                 SetTemplatesForAircraft(le.AircraftID);
-            cpeFlightDetails.Collapsed = !CurrentUser.DisplayTimesByDefault;
         }
         else
         {
@@ -505,8 +483,6 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
             le.FlightStart.HasValue() ||
             le.FlightEnd.HasValue() ||
             le.HasFlightData);
-
-        AutoExpandLandings(le);
     }
 
     /// <summary>
@@ -574,10 +550,6 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
         }
         else
             mfbEditPropSet1.SetFlightProperties(le.CustomProperties);
-
-        Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
-        divCFI.Visible = pf.IsInstructor;
-        divSIC.Visible = pf.TracksSecondInCommandTime;
     }
 
     protected void SetTemplatesForAircraft(int idAircraft)
@@ -587,10 +559,6 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
         if (ac != null)
         {
             SetTemplatesForAircraft(ac, mfbEditPropSet1);
-
-            // Expand for tailwheel
-            if (ac.IsTailwheel)
-                cpeLandingDetails.ClientState = "false";
         }
     }
 
@@ -710,9 +678,6 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
 
     protected void CommitFlight(object sender, int nextFlightToEdit)
     {
-        // Save the state of the full-stop landings expansion
-        ShouldExpandLandings = Convert.ToBoolean(cpeLandingDetails.ClientState, CultureInfo.InvariantCulture);
-
         Page.Validate(szValGroupEdit);
         int idResult = CommitChanges();
         if (idResult >= 0)
@@ -821,7 +786,6 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
             fd.AutoFill(le, e.Options);
         }
         InitFormFromLogbookEntry(le);
-        AutoExpandLandings(le);
     }
 
     protected void btnCancel_Click(object sender, EventArgs e)

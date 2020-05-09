@@ -97,7 +97,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto-fill fills in missing information that can be determined from your route of flight, the times provided above, and any optional telemetry file you provide above..
+        ///   Looks up a localized string similar to Fills in missing information that can be determined from your route of flight, the times provided above, and any optional telemetry file you provide above..
         /// </summary>
         internal static string AutoFillDescription {
             get {
@@ -1033,6 +1033,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Landings and Approaches.
+        /// </summary>
+        internal static string HeaderApproachesLandings {
+            get {
+                return ResourceManager.GetString("HeaderApproachesLandings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Images for this flight.
         /// </summary>
         internal static string HeaderImagesForFlight {
@@ -1047,6 +1056,15 @@ namespace Resources {
         internal static string HeaderImagesVideosForFlight {
             get {
                 return ResourceManager.GetString("HeaderImagesVideosForFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Times.
+        /// </summary>
+        internal static string HeaderTimes {
+            get {
+                return ResourceManager.GetString("HeaderTimes", resourceCulture);
             }
         }
         
@@ -1872,7 +1890,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to if there are additional properties you&apos;d like to see..
+        ///   Looks up a localized string similar to about additional properties.
         /// </summary>
         internal static string NewPropertyPrompt2 {
             get {

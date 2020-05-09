@@ -66,6 +66,10 @@ p, div, h2, h3, topTab, a.topTab, a.topTab:visited, #menu-bar .topTab, #menu-bar
     background-color: #263238;
 }
 
+.header, .itemlabel {
+    color: #d8d8d8;
+}
+
 .headerBase, .headerBase a, .headerBase a:hover {
     color: white;
 }

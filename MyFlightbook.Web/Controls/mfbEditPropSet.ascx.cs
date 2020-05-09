@@ -261,8 +261,6 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         ep.CrossFillSourceClientID = CrossFillSourceClientID;
         ep.ID = IDForPropType(cfp.PropertyType);
         ep.FlightProperty = cfp;
-
-        pnlProps.CssClass = (plcHolderProps.Controls.Count > 10) ? "propItemContainerOverflow" : "propItemContainer";
     }
 
     /// <summary>

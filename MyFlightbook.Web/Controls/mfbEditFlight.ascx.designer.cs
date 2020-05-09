@@ -22,15 +22,6 @@ public partial class Controls_mfbEditFlight
     protected global::System.Web.UI.WebControls.Panel pnlContainer;
 
     /// <summary>
-    /// pnlFlightInfo control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlFlightInfo;
-
-    /// <summary>
     /// lblSectionGeneralInfo control.
     /// </summary>
     /// <remarks>
@@ -193,22 +184,13 @@ public partial class Controls_mfbEditFlight
     protected global::System.Web.UI.WebControls.TextBox txtComments;
 
     /// <summary>
-    /// pnlFlightTimes control.
+    /// locLandingsHeader control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlFlightTimes;
-
-    /// <summary>
-    /// locTimesHeader control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Localize locTimesHeader;
+    protected global::System.Web.UI.WebControls.Localize locLandingsHeader;
 
     /// <summary>
     /// Label11 control.
@@ -256,15 +238,6 @@ public partial class Controls_mfbEditFlight
     protected global::System.Web.UI.WebControls.Label Label12;
 
     /// <summary>
-    /// lblShowLandingDetails control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblShowLandingDetails;
-
-    /// <summary>
     /// intLandings control.
     /// </summary>
     /// <remarks>
@@ -281,15 +254,6 @@ public partial class Controls_mfbEditFlight
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.CustomValidator valCheckFullStop;
-
-    /// <summary>
-    /// pnlLandingDetails control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlLandingDetails;
 
     /// <summary>
     /// Label13 control.
@@ -328,13 +292,13 @@ public partial class Controls_mfbEditFlight
     protected global::Controls_mfbDecimalEdit intNightLandings;
 
     /// <summary>
-    /// cpeLandingDetails control.
+    /// locTimesHeader control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::AjaxControlToolkit.CollapsiblePanelExtender cpeLandingDetails;
+    protected global::System.Web.UI.WebControls.Localize locTimesHeader;
 
     /// <summary>
     /// Label15 control.
@@ -445,15 +409,6 @@ public partial class Controls_mfbEditFlight
     protected global::Controls_mfbDecimalEdit decDual;
 
     /// <summary>
-    /// divCFI control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.HtmlControls.HtmlGenericControl divCFI;
-
-    /// <summary>
     /// Label21 control.
     /// </summary>
     /// <remarks>
@@ -470,15 +425,6 @@ public partial class Controls_mfbEditFlight
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_mfbDecimalEdit decCFI;
-
-    /// <summary>
-    /// divSIC control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSIC;
 
     /// <summary>
     /// Label22 control.

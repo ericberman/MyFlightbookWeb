@@ -24,7 +24,14 @@
             </Triggers>
             <ContentTemplate>
                 <div style="margin-bottom: 3px;">
-                    <div><asp:Label ID="lblAddPrompt" runat="server" Text="<%$ Resources:LogbookEntry, propAdditionalPropertiesPrompt %>"></asp:Label></div>
+                    <div>
+                        <asp:Label ID="lblAddPrompt" runat="server" CssClass="itemlabel" Text="<%$ Resources:LogbookEntry, propAdditionalPropertiesPrompt %>"></asp:Label>
+                        <span class="fineprint">(<asp:HyperLink ID="lnkContactMe" 
+                            NavigateUrl="~/Public/ContactMe.aspx" Target="_blank" runat="server" 
+                            Text="<%$ Resources:LogbookEntry, NewPropertyPrompt1 %>"></asp:HyperLink>
+                        <asp:Label ID="lblContactUsRemainder" runat="server" 
+                            Text="<%$ Resources:LogbookEntry, NewPropertyPrompt2 %>"></asp:Label>)</span>
+                    </div>
                     <table>
                         <tr style="vertical-align:top">
                             <td>
@@ -51,11 +58,6 @@
                             <td>
                         </tr>
                     </table>
-                    <div class="fineprint">(<asp:HyperLink ID="lnkContactMe" 
-                        NavigateUrl="~/Public/ContactMe.aspx" Target="_blank" runat="server" 
-                        Text="<%$ Resources:LogbookEntry, NewPropertyPrompt1 %>"></asp:HyperLink>
-                    <asp:Label ID="lblContactUsRemainder" runat="server" 
-                        Text="<%$ Resources:LogbookEntry, NewPropertyPrompt2 %>"></asp:Label>)</div>
                 </div>
                 <asp:Panel ID="pnlProps" runat="server" CssClass="propItemContainer" ScrollBars="Auto">
                     <asp:PlaceHolder ID="plcHolderProps" runat="server">

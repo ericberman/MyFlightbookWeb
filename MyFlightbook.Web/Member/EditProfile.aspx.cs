@@ -125,8 +125,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
     private void InitFeaturePrefs()
     {
         ckShowTimes.Checked = m_pf.DisplayTimesByDefault;
-        ckSIC.Checked = m_pf.TracksSecondInCommandTime;
-        ckTrackCFITime.Checked = m_pf.IsInstructor;
         ckUseArmyCurrency.Checked = m_pf.UsesArmyCurrency;
         ckUse117DutyTime.Checked = m_pf.UsesFAR117DutyTime;
         rbl117Rules.SelectedIndex = m_pf.UsesFAR117DutyTimeAllFlights ? 1 : 0;
@@ -399,8 +397,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
     protected void btnUpdateLocalPrefs_Click(object sender, EventArgs e)
     {
         m_pf.DisplayTimesByDefault = ckShowTimes.Checked;
-        m_pf.TracksSecondInCommandTime = ckSIC.Checked;
-        m_pf.IsInstructor = ckTrackCFITime.Checked;
         m_pf.UsesHHMM = (rblTimeEntryPreference.SelectedIndex > 0);
         m_pf.UsesUTCDateOfFlight = (rblDateEntryPreferences.SelectedIndex > 0);
         m_pf.PreferredTimeZoneID = prefTimeZone.SelectedTimeZoneId;

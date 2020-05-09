@@ -8,19 +8,6 @@ h1 {
     font-size:10pt;
 }
 
-/* Overrides for logbook entry to enable a vertical layout */
-.itemtimeleft
-{
-    clear:both;
-    width: 300px;
-}
-
-/* item on the right of a left-right layout */
-.itemtimeright
-{
-    clear:both;
-}
-
 /* Basic info about the flight */
 .flightinfoblock
 {
@@ -55,47 +42,6 @@ h1 {
 .fullblock
 {
     width:auto;
-}
-
-.itemdata
-{
-    display: inline;
-    clear:both;
-    font-size:8pt;
-}
-
-/* item labels in both left and right times */
-.itemtimeleft .itemlabel, .itemtimeright .itemlabel, .flightinfoblock .itemlabel, .itemtime .itemlabel
-{
-    /* display: inline; */
-    float: left;
-    text-align: right;
-    width: 100px;
-    padding-right: 5px;
-    vertical-align: baseline;
-}
-
-/* flight-info items */
-.flightinfoitem
-{
-    float: none;
-}
-
-/* PropertyEditing*/
-.propItemFlow
-{
-    width: 280px;
-}
-
-.propItemContainer
-{
-    width: 310px;
-}
-
-.propItemContainerOverflow
-{
-    width: 310px;
-    height: 175px;
 }
 
 /* Header */

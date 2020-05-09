@@ -105,6 +105,12 @@ H4
     margin-right: auto;
 }
 
+input[type=text],input[type=password], input[type=number],input[type=email] {
+    border-radius: 5px;
+    border: 1px solid #a0a0a0;
+    padding: 2px;
+}
+
 /* Header */
 #headerBar
 {
@@ -160,14 +166,15 @@ H4
 }
 
 /* Data entry form */
-.header
-{
+.header {
     font-weight: bold;
-    border-bottom: black 1px solid;
+    color: #263238;
+    border-bottom: 1px solid darkgray;
+    margin-bottom: 2px;
 }
-.itemlabel
-{
+.itemlabel {
     font-size: 9pt;
+    color: /* #00bcd4 */ #263238;
 }
 
 .logbookForm
@@ -908,45 +915,32 @@ a img
 
 /* Edit Flight */
 /* item on the left of a left-right layout */
-.itemtimeleft
-{
-    display: inline;
-    float: left;
-    clear: left;
+.itemtimeleft, .itemtimeright {
+    display: inline-block;
     vertical-align: bottom;
     width: 150px;
-    padding: 3px;
-}
-
-/* item on the right of a left-right layout */
-.itemtimeright
-{
-    display: inline;
-    float: left;
-    clear: right;
-    vertical-align: bottom;
-    padding: 3px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 /* item with no particular left/right layout */
 .itemtime
 {
     padding: 3px;
+    display: inline-block;
+    width: 250px;
+    vertical-align: top;
 }
 
 /* Basic info about the flight */
 .flightinfoblock
 {
-    float: left;
-    clear: left;
     padding: 3px;
 }
 
 /* the various times for the flight */
 .timesblock
 {
-    float: left;
-    clear: right;
     padding: 3px;
 }
 
@@ -959,11 +953,9 @@ a img
 }
 
 /* item labels in both left and right times */
-.itemtimeleft .itemlabel, .itemtimeright .itemlabel, .flightinfoblock .itemlabel
-{
+.itemtimeleft .itemlabel, .itemtimeright .itemlabel, .flightinfoblock .itemlabel {
     padding: 0px, 0px, 0px, 0px;
     display: block;
-    clear: both;
 }
 
 /* flight-info items */
@@ -976,18 +968,18 @@ a img
 .propItemFlow
 {
     display:inline-block;
-    vertical-align:middle;
-    width: 280px;
-    height: 37px;
+    vertical-align:bottom;
+    width: 150px;
     padding-top: 1px;
     padding-bottom: 2px;
+    margin-left: 5px; margin-right: 5px;
 }
 
 .propItemContainer
 {
-    width: 600px;
     padding: 3px;
     border-style: none;
+    max-height: 200px;
 }
 
 .propItemContainerOverflow

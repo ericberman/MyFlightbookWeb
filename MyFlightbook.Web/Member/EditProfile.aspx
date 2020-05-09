@@ -298,19 +298,7 @@
                                 </asp:RadioButtonList>
                                 <div><asp:Label ID="lblFieldsToShow" runat="server" Font-Bold="True" Text="Show the following for flights:" meta:resourcekey="lblFieldsToShowResource2"></asp:Label></div>
                                 <table> <!-- table here is to match layout of radiobuttonlist above -->
-                                    <tr>
-                                        <td>
-                                            <asp:CheckBox ID="ckTrackCFITime" runat="server" Text="CFI Time" 
-                                                ValidationGroup="valPrefs" meta:resourcekey="ckTrackCFITimeResource1" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <asp:CheckBox ID="ckSIC" runat="server" Text="Second in Command (SIC) time" 
-                                                ValidationGroup="valPrefs" meta:resourcekey="ckSICResource1" />
-                                        </td>
-                                    </tr>
-                                    <tr>
+                                     <tr>
                                         <td>
                                             <asp:CheckBox ID="ckShowTimes" runat="server" 
                                                 Text="Hobbs time, flight times, and engine times for flights" 
