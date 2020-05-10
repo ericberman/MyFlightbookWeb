@@ -193,7 +193,7 @@
     <value>Only check flights since: </value>
   </data>
   <data name="SummaryFlightsFound" xml:space="preserve">
-    <value>{0} flight(s) checked; {1} had issues.</value>
+    <value>{0:#,##0} flight(s) checked; {1:#,##0} had issues.</value>
   </data>
   <data name="TitleCheckFlights" xml:space="preserve">
     <value>Check Flights</value>

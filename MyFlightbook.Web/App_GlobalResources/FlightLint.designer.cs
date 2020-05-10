@@ -286,7 +286,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} flight(s) checked; {1} had issues..
+        ///   Looks up a localized string similar to {0:#,##0} flight(s) checked; {1:#,##0} had issues..
         /// </summary>
         internal static string SummaryFlightsFound {
             get {

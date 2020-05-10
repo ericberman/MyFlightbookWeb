@@ -38,7 +38,7 @@
                                     <span style="font-weight:normal"><uc5:mfbTooltip ID="mfbTooltip1" runat="server" BodyContent="<%$ Resources:Airports, vistedAirportsCountTip %>" /></span>
                                 </HeaderTemplate>
                                 <ItemTemplate>
-                                    <%# Eval("NumberOfVisits") %>
+                                    <%# ((int) Eval("NumberOfVisits")).ToString("#,##0") %>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:BoundField DataField="EarliestVisitDate" DataFormatString="{0:d}" HeaderText="<%$ Resources:Airports, airportEarliestVisit %>" SortExpression="EarliestVisitDate" />
