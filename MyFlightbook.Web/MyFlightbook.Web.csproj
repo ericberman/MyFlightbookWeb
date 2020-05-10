@@ -618,6 +618,8 @@
     <Content Include="images\Smartphone.png" />
     <Content Include="images\SponsoredAds\goldmethod-150.jpg" />
     <Content Include="images\SponsoredAds\goldsealflight.jpg" />
+    <Content Include="images\SponsoredAds\ProsoftBinders.jpg" />
+    <Content Include="images\SponsoredAds\ProsoftBinders_1.jpg" />
     <Content Include="images\startingtotals.png" />
     <Content Include="images\TabBarGradient.gif" />
     <Content Include="images\tower.png" />
