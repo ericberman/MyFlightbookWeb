@@ -17,6 +17,8 @@
 <%@ Register Src="~/Controls/PrintingLayouts/layoutPortrait.ascx" TagPrefix="uc1" TagName="layoutPortrait" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutCanada.ascx" TagPrefix="uc1" TagName="layoutCanada" %>
 <%@ Register Src="~/Controls/PrintingLayouts/layoutCASA.ascx" TagPrefix="uc1" TagName="layoutCASA" %>
+<%@ Register Src="~/Controls/SponsoredAd.ascx" TagPrefix="uc1" TagName="SponsoredAd" %>
+
 
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
@@ -89,6 +91,10 @@
             </ajaxToolkit:TabPanel>
             <ajaxToolkit:TabPanel ID="tpPDF" runat="server" HeaderText="<%$ Resources:LocalizedText, DownloadAsPDFTabHeader %>">
                 <ContentTemplate>
+                    <div style="float:right; width: 170px;">
+                        <div style="text-align:center;">For professional printing and binding, <%= Branding.CurrentBrand.AppName %> has partnered with ProSoft</div>
+                        <uc1:SponsoredAd runat="server" id="SponsoredAd" SponsoredAdID="3" />
+                    </div>
                     <table>
                         <tr>
                             <td>
