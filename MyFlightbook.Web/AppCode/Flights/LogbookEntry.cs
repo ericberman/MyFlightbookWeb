@@ -632,7 +632,12 @@ namespace MyFlightbook
                         break;
                     case Aircraft.PilotRole.CFI:
                         if (CFI == 0)
+                        {
                             CFI = TotalFlightTime;
+                            // Issue #600: Cross-fill of CFI should ALSO do PIC time
+                            if (PIC == 0)
+                                PIC = TotalFlightTime;
+                        }
                         break;
                     case Aircraft.PilotRole.PIC:
                         if (PIC == 0)
