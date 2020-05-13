@@ -169,7 +169,7 @@ public partial class Member_Airports : System.Web.UI.Page
     protected void btnEstimateDistance_Click(object sender, EventArgs e)
     {
         lblErr.Text = string.Empty;
-        double distance = VisitedAirport.DistanceFlownByUser(mfbSearchForm1.Restriction, out string szErr);
+        double distance = VisitedAirport.DistanceFlownByUser(mfbSearchForm1.Restriction, util.GetIntParam(Request, "df", 0) != 0, out string szErr);
 
         if (String.IsNullOrEmpty(szErr))
         {

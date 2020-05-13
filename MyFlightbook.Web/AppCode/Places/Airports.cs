@@ -472,32 +472,33 @@ namespace MyFlightbook.Airports
         /// </summary>
         /// <param name="dbh">Query that returns the relevant flights</param>
         /// <param name="action">Action that takes flight data, route, date, and comments.  DO NOT dispose of the FlightData - it's owned by THIS.</param>
-        private static void LookAtAllFlights(DBHelper dbh, Action<TelemetryReference, string, DateTime, string> action)
+        /// <returns>Any error string, empty or null for no error</returns>
+        private static string LookAtAllFlights(FlightQuery fq, LogbookEntryCore.LoadTelemetryOption lto, Action<LogbookEntry> action)
         {
+            if (fq == null)
+                throw new ArgumentNullException(nameof(fq));
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq, lto: lto));
             dbh.ReadRows(
                 (comm) => { },
                 (dr) =>
                 {
-                    object o = dr["Route"];
-                    string szRoute = (string)(o == System.DBNull.Value ? "" : o);
-                    o = dr["FlightData"];
-                    string szData = (string)(o == System.DBNull.Value ? "" : o);
-                    TelemetryReference tr = new TelemetryReference(dr) { RawData = szData };
-
-                    if (tr.HasPath && String.IsNullOrEmpty(szData))
-                        szData = tr.LoadData();
-
-                    action(tr, szRoute, Convert.ToDateTime(dr["Date"], CultureInfo.InvariantCulture), dr["Comments"].ToString());
+                    LogbookEntry le = new LogbookEntry(dr, fq.UserName, lto);
+                    action(le);
                 });
+            return dbh.LastError;
         }
 
         /// <summary>
         /// Estimates the total distance flown by the user for the subset of flights described by the query
         /// </summary>
         /// <param name="fq">The flight query</param>
+        /// <param name="fAutofillDistanceFlown">True to autofill the distance flown property if not found.</param>
         /// <param name="error">Any error</param>
         /// <returns>Distance flown, in nm</returns>
-        public static double DistanceFlownByUser(FlightQuery fq, out string error)
+        public static double DistanceFlownByUser(FlightQuery fq, bool fAutofillDistanceFlown, out string error)
         {
             if (fq == null)
                 throw new ArgumentNullException(nameof(fq));
@@ -509,21 +510,29 @@ namespace MyFlightbook.Airports
             // Get the master airport list
             AirportList alMaster = AllFlightsAndNavaids(fq);
 
-            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq, lto:LogbookEntry.LoadTelemetryOption.MetadataOrDB));
-            LookAtAllFlights(
-                dbh,
-                (TelemetryReference tr, string szRoute, DateTime dt, string szComment) =>
+            error = LookAtAllFlights(
+                fq,
+                LogbookEntryCore.LoadTelemetryOption.MetadataOrDB,
+                (le) =>
                 {
-                    double dPath = tr.Distance();
+                    double distThisFlight = 0;
 
                     // If the trajectory had a distance, use it; otherwise, use airport-to-airport.
+                    double dPath = le.Telemetry.Distance();
                     if (dPath > 0)
-                        distance += dPath;
-                    else if (!String.IsNullOrEmpty(szRoute))
-                        distance += alMaster.CloneSubset(szRoute).DistanceForRoute();
+                        distThisFlight = dPath;
+                    else if (!String.IsNullOrEmpty(le.Route))
+                        distThisFlight = alMaster.CloneSubset(le.Route).DistanceForRoute();
+
+                    distance += distThisFlight;
+
+                    if (fAutofillDistanceFlown && distThisFlight > 0 && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDistanceFlown))
+                    {
+                        le.CustomProperties.Add(CustomFlightProperty.PropertyWithValue(CustomPropertyType.KnownProperties.IDPropDistanceFlown, (decimal)distThisFlight));
+                        le.FCommit();
+                    }
                 });
 
-            error = dbh.LastError;
             return distance;
         }
 
@@ -548,25 +557,25 @@ namespace MyFlightbook.Airports
             // Get the master airport list
             AirportList alMaster = AllFlightsAndNavaids(fq);
 
-            DBHelper dbh = new DBHelper(LogbookEntry.QueryCommand(fq, lto:LogbookEntry.LoadTelemetryOption.LoadAll));
             using (KMLWriter kw = new KMLWriter(s))
             {
                 kw.BeginKML();
 
-                LookAtAllFlights(
-                    dbh,
-                    (TelemetryReference tr, string szRoute, DateTime dt, string szComment) =>
+                error = LookAtAllFlights(
+                    fq,
+                    LogbookEntryCore.LoadTelemetryOption.LoadAll,
+                    (le) =>
                     {
-                        if (tr.HasPath)
+                        if (le.Telemetry.HasPath)
                         {
                             using (FlightData fd = new FlightData())
                             {
                                 try
                                 {
-                                    fd.ParseFlightData(tr.RawData);
+                                    fd.ParseFlightData(le.Telemetry.RawData);
                                     if (fd.HasLatLongInfo)
                                     {
-                                        kw.AddPath(fd.GetTrajectory(), String.Format(CultureInfo.CurrentCulture, "{0:d} - {1}", dt, szComment), fd.SpeedFactor);
+                                        kw.AddPath(fd.GetTrajectory(), String.Format(CultureInfo.CurrentCulture, "{0:d} - {1}", le.Date, le.Comment), fd.SpeedFactor);
                                         return;
                                     }
                                 }
@@ -574,13 +583,11 @@ namespace MyFlightbook.Airports
                             }
                         }
                         // No path was found above.
-                        AirportList al = alMaster.CloneSubset(szRoute);
-                        kw.AddRoute(al.GetNormalizedAirports(), String.Format(CultureInfo.CurrentCulture, "{0:d} - {1}", dt, szRoute));
+                        AirportList al = alMaster.CloneSubset(le.Route);
+                        kw.AddRoute(al.GetNormalizedAirports(), String.Format(CultureInfo.CurrentCulture, "{0:d} - {1}", le.Date, le.Route));
                     });
                 kw.EndKML();
             }
-
-            error = dbh.LastError;
         }
         #endregion
     }

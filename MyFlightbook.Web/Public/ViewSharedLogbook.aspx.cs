@@ -312,7 +312,7 @@ public partial class ViewSharedLogbook : System.Web.UI.Page
     protected void btnEstimateDistance_Click(object sender, EventArgs e)
     {
         lblErr.Text = string.Empty;
-        double distance = VisitedAirport.DistanceFlownByUser(Restriction, out string szErr);
+        double distance = VisitedAirport.DistanceFlownByUser(Restriction, false, out string szErr);
 
         if (String.IsNullOrEmpty(szErr))
         {

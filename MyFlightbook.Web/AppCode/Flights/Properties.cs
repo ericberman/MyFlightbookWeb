@@ -94,6 +94,7 @@ namespace MyFlightbook
             IDBlockIn = 186,
             IDBlockOut = 187,
             IDPropCFIITime = 192,
+            IDPropDistanceFlown = 196,
             IDPropGroundInstructionGiven = 198,
             IDPropGliderTow = 202,              // Not flagged as a known property
             IDPropHover = 204,
