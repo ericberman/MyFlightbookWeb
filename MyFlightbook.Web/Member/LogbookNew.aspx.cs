@@ -1,4 +1,5 @@
-﻿using MyFlightbook;
+﻿using Amazon.AWSSupport.Model;
+using MyFlightbook;
 using MyFlightbook.Printing;
 using Newtonsoft.Json;
 using System;
@@ -148,7 +149,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
         }
     }
 
-    private void InitAircraftModelRestriction(string szReqTail, string szReqModel, string szReqICAO)
+    private void InitAircraftModelRestriction(string szReqTail, string szReqModel, string szReqICAO, string szcc)
     {
         if (!String.IsNullOrEmpty(szReqTail) || !String.IsNullOrEmpty(szReqModel) || !String.IsNullOrEmpty(szReqICAO))
         {
@@ -178,6 +179,12 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
                 Restriction.AddModels(lstmm);
             }
         }
+        if (!String.IsNullOrEmpty(szcc))
+        {
+            foreach (CategoryClass cc in CategoryClass.CategoryClasses())
+                if (cc.CatClass.CompareCurrentCultureIgnoreCase(szcc) == 0)
+                    Restriction.AddCatClass(cc);
+        }
     }
 
     protected void InitializeRestriction()
@@ -197,7 +204,7 @@ ORDER BY f.date DESC LIMIT 10) tach", (int) CustomPropertyType.KnownProperties.I
 
         InitDateParams(util.GetIntParam(Request, "y", -1), util.GetIntParam(Request, "m", -1), util.GetIntParam(Request, "w", -1), util.GetIntParam(Request, "d", -1));
 
-        InitAircraftModelRestriction(util.GetStringParam(Request, "tn"), util.GetStringParam(Request, "mn"), util.GetStringParam(Request, "icao"));
+        InitAircraftModelRestriction(util.GetStringParam(Request, "tn"), util.GetStringParam(Request, "mn"), util.GetStringParam(Request, "icao"), util.GetStringParam(Request, "cc"));
 
         Refresh();
     }

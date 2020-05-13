@@ -3478,7 +3478,8 @@ namespace MyFlightbook
                 new DayOfWeekBucketManager(),
                 new StringBucketManager("TAILNUMBER", Resources.LogbookEntry.FieldTail, szBaseHref) { SearchParam = "tn" },
                 new StringBucketManager("MODEL", Resources.Aircraft.ViewAircraftModel, szBaseHref) {SearchParam = "mn" },
-                new StringBucketManager("ICAO", Resources.Aircraft.ViewAircraftICAO, szBaseHref) {SearchParam = "icao" }
+                new StringBucketManager("ICAO", Resources.Aircraft.ViewAircraftICAO, szBaseHref) {SearchParam = "icao" },
+                new StringBucketManager("CATEGORYCLASS", Resources.Aircraft.ViewAircraftCategoryClass, szBaseHref) {SearchParam = "cc"}
             };
 
             IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes(szUser);
@@ -3536,6 +3537,8 @@ namespace MyFlightbook
                     return MakeModel.GetModel(ModelID).Model.ToUpper(CultureInfo.CurrentCulture);
                 case "ICAO":
                     return MakeModel.GetModel(ModelID).FamilyName.ToUpper(CultureInfo.CurrentCulture);
+                case "CATEGORYCLASS":
+                    return MakeModel.GetModel(ModelID).CategoryClassDisplay.ToUpper(CultureInfo.CurrentCulture);
                 default:
                     if (Int32.TryParse(bucketSelectorName, out int idPropType))
                     {
