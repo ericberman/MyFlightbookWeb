@@ -16,7 +16,7 @@
     <link rel="icon" href="/favicon.ico?v2" /> 
     <link href="apple-icon-goes-here" runat="server" id="lnkAppleIcon" rel="apple-touch-icon" />
     <link href="mainstylgoeshere" runat="server" id="cssMain" rel="stylesheet" type="text/css" />
-    <link rel="Stylesheet" type="text/css" runat="server" id="cssNight" visible="false" href="~/Public/CSS/NightMode.css?v=5kj3h2" />
+    <link rel="Stylesheet" type="text/css" runat="server" id="cssNight" visible="false" href="~/Public/CSS/NightMode.css?v=5432j5" />
     <link href="brandedstylegoeshere" rel="Stylesheet" type="text/css" runat="server" id="cssBranded" visible="false" />
     <link href="mobilestylegoeshere" rel="stylesheet" type="text/css" runat="server" id="cssMobile" visible="false" />
     <link rel="Stylesheet" type="text/css" runat="server" id="cssPrinting" visible="false" />

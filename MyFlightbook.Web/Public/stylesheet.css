@@ -407,6 +407,7 @@ td.totalsGroupHeaderCell {
     margin-top: 8px;
     font-weight:bold;
     border-bottom: 1px solid gray;
+    border-top: 1px solid gray;
 }
 
 td.totalsByTimeCell:nth-child(even) {
@@ -1013,6 +1014,11 @@ a img
     padding: 3px;
     border-bottom: 1px solid lightgray;
     border-right: 1px solid lightgray;
+    border-top: 1px solid lightgray;
+}
+
+.PaddedCell:first-child {
+    border-top:none;
 }
 
 .PaddedCell:nth-child(even) {

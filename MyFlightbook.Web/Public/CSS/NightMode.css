@@ -89,3 +89,7 @@ p, div, h2, h3, topTab, a.topTab, a.topTab:visited, #menu-bar .topTab, #menu-bar
 .highlightedFeature {
     background-color: #444444;
 }
+
+td.totalsByTimeCell:nth-child(even), td.totalsByTimeCell:nth-child(even), td.totalsDateRange:nth-child(even), .PaddedCell:nth-child(even) {
+    background-color: #263238;
+}
