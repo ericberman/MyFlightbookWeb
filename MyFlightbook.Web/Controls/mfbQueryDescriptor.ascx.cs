@@ -35,7 +35,7 @@ public partial class Controls_mfbQueryDescriptor : System.Web.UI.UserControl
         rptItems.DataSource = src;
         rptItems.DataBind();
 
-        rptItems.Visible = (src.Count() > 0);
+        rptItems.Visible = (src.Count > 0);
         pnlNoFilter.Visible = ShowEmptyFilter && !rptItems.Visible;
     }
 

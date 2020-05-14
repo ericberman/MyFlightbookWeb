@@ -159,7 +159,7 @@ public partial class Member_ClubDetails : System.Web.UI.Page
         SchedulePreferences.DefaultScheduleMode = sdm;
 
         IEnumerable<ClubAircraft> lstAc = CurrentClub.MemberAircraft;
-        if (lstAc.Count() == 0)
+        if (!lstAc.Any())
         {
             mvClubAircraft.SetActiveView(vwNoAircraft);
             divCalendar.Visible = false;

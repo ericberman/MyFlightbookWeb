@@ -1177,7 +1177,7 @@ namespace MyFlightbook.Geography
         /// <returns>True if the point is contained.</returns>
         public virtual bool ContainsLocation(LatLong ll)
         {
-            if (ll == null || BoundingPolygon == null || BoundingPolygon.Count() == 0)
+            if (ll == null || BoundingPolygon == null || !BoundingPolygon.Any())
                 return false;
 
             int i, j;

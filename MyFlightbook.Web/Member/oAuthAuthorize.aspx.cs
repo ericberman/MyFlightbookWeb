@@ -50,7 +50,7 @@ public partial class Secure_oAuthAuthorize : System.Web.UI.Page
                 // See if there are any scopes that are requested that are not allowed.
 
                 IEnumerable<string> lstScopes = MFBOauthServer.ScopeDescriptions(requestedScopes);
-                mvScopesRequested.SetActiveView(lstScopes.Count() == 0 ? vwNoScopes : vwRequestedScopes);
+                mvScopesRequested.SetActiveView(!lstScopes.Any() ? vwNoScopes : vwRequestedScopes);
                 rptPermissions.DataSource = lstScopes;
                 rptPermissions.DataBind();
 

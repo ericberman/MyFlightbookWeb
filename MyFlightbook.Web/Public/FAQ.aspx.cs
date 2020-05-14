@@ -56,7 +56,7 @@ public partial class Public_FAQ : System.Web.UI.Page
         else
         {
             results = FAQGroup.CategorizedFAQItemsContainingWords(mfbSearchbox.SearchText);
-            if (results.Count() == 0)
+            if (!results.Any())
             {
                 lblErr.Text = Resources.LocalizedText.FAQSearchNoResults;
                 results = FAQGroup.CategorizedFAQs;

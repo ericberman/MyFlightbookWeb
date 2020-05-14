@@ -95,7 +95,7 @@ public partial class XMLNav : System.Web.UI.UserControl
             m_tw.InnerWriter.Write(ti.Text);
             m_tw.RenderEndTag(); // Anchor tag
 
-            if (this.MenuStyle == HoverStyle.HoverPop && ti.Children != null && ti.Children.Count() > 0 && !fHideChildren)
+            if (this.MenuStyle == HoverStyle.HoverPop && ti.Children != null && ti.Children.Any() && !fHideChildren)
             {
                 m_tw.RenderBeginTag(HtmlTextWriterTag.Ul);
                 WriteTabs(ti.Children, level + 1);

@@ -198,7 +198,7 @@ namespace MyFlightbook.Web.Admin
             }
         }
 
-        private string NormalizeModelName(string sz)
+        private static string NormalizeModelName(string sz)
         {
             return sz.Replace(" ", "").Replace("-", "");
         }

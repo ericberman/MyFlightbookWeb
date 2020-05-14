@@ -359,7 +359,7 @@ public partial class Member_EditAirports : Page
         }
     }
 
-    private void PopulateAirport(Control plc, airport ap, airportImportCandidate.MatchStatus ms, airport aicBase)
+    private static void PopulateAirport(Control plc, airport ap, airportImportCandidate.MatchStatus ms, airport aicBase)
     {
         if (ap == null)
             return;
@@ -392,7 +392,7 @@ public partial class Member_EditAirports : Page
             p.Controls.Add(new LiteralControl(String.Format(CultureInfo.InvariantCulture, "{0}<br />", ap.UserName)));
     }
 
-    private void SetUpImportButtons(Control row, airportImportCandidate aic, bool fAllowBlast)
+    private static void SetUpImportButtons(Control row, airportImportCandidate aic, bool fAllowBlast)
     {
         ((Button)row.FindControl("btnAddFAA")).Visible = !String.IsNullOrEmpty(aic.FAA) && (fAllowBlast || aic.FAAMatch == null);
         ((Button)row.FindControl("btnAddIATA")).Visible = !String.IsNullOrEmpty(aic.IATA) && (fAllowBlast || aic.IATAMatch == null);

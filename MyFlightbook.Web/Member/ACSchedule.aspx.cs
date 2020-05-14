@@ -36,7 +36,7 @@ public partial class Member_ACSchedule : System.Web.UI.Page
                 Aircraft ac = new Aircraft(AircraftID);
                 lblTailNumber.Text = lblTailNumber2.Text = lblTailNumber3.Text = ac.DisplayTailnumber;
                 IEnumerable<Club> lstClubsForAircraft;
-                if (lstClubsForUserInAircraft.Count() > 0)
+                if (lstClubsForUserInAircraft.Any())
                 {
                     mvStatus.SetActiveView(vwMember);
                     rptSchedules.DataSource = lstClubsForUserInAircraft;

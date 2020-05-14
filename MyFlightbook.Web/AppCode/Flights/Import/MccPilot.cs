@@ -103,12 +103,12 @@ namespace MyFlightbook.ImportFlights
             return String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, name, String.IsNullOrWhiteSpace(phone_email) ? string.Empty : String.Format(CultureInfo.CurrentCulture, " ({0})", phone_email)).Trim();
         }
 
-        private decimal FromMinutes(int minutes)
+        private static decimal FromMinutes(int minutes)
         {
             return Math.Round(((decimal) minutes) / 60.0M, 2);
         }
 
-        private DateTime DateOrEmpty(DateTime dt)
+        private static DateTime DateOrEmpty(DateTime dt)
         {
             return (dt.Hour == 0 && dt.Minute == 0) ? DateTime.MinValue : dt;
         }

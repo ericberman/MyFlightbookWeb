@@ -221,7 +221,7 @@ public partial class Controls_AircraftControls_AircraftList : System.Web.UI.User
 
         Controls_mfbSelectTemplates selectTemplates = sender as Controls_mfbSelectTemplates;
         // Hide the pop menu if only automatic templates are available
-        if (selectTemplates.GroupedTemplates.Count() == 0)
+        if (!selectTemplates.GroupedTemplates.Any())
             selectTemplates.NamingContainer.FindControl("pnlTemplates").Visible = false;
     }
 

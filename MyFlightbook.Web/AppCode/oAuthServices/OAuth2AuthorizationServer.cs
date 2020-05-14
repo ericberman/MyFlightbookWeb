@@ -285,7 +285,7 @@ namespace OAuthAuthorizationServer.Code
         /// </summary>
         /// <param name="callback">The Uri to test</param>
         /// <returns>True if it's in the allowed list</returns>
-        bool IsDeveloperCallback(Uri callback)
+        static bool IsDeveloperCallback(Uri callback)
         {
             string szDomains = LocalConfig.SettingForKey("DebugDomains");
             string[] rgDomains = szDomains.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -526,7 +526,7 @@ namespace OAuthAuthorizationServer.Code
         {
             if (authorization == null)
                 throw new ArgumentNullException(nameof(authorization));
-            return this.IsAuthorizationValid(authorization.Scope, authorization.ClientIdentifier, authorization.UtcIssued, authorization.User);
+            return IsAuthorizationValid(authorization.Scope, authorization.ClientIdentifier, authorization.UtcIssued, authorization.User);
         }
 
         public AutomatedUserAuthorizationCheckResponse CheckAuthorizeResourceOwnerCredentialGrant(string userName, string password, IAccessTokenRequest accessRequest)
@@ -662,7 +662,7 @@ namespace OAuthAuthorizationServer.Code
             return rsa;
         }
 
-        private bool IsAuthorizationValid(HashSet<string> requestedScopes, string clientIdentifier, DateTime issuedUtc, string username)
+        private static bool IsAuthorizationValid(HashSet<string> requestedScopes, string clientIdentifier, DateTime issuedUtc, string username)
         {
             // If db precision exceeds token time precision (which is common), the following query would
             // often disregard a token that is minted immediately after the authorization record is stored in the db.

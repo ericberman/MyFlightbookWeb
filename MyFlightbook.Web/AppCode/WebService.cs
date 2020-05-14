@@ -482,7 +482,7 @@ namespace MyFlightbook
         /// <summary>
         /// Updates the culture for the duration of the request
         /// </summary>
-        private void SetCultureForRequest()
+        private static void SetCultureForRequest()
         {
             if (HttpContext.Current != null && HttpContext.Current.Request != null && HttpContext.Current.Request.UserLanguages != null && HttpContext.Current.Request.UserLanguages.Length > 0)
                 util.SetCulture(HttpContext.Current.Request.UserLanguages[0]);
@@ -671,7 +671,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="le"></param>
         /// <param name="szUser"></param>
-        private void PrepareFlightForSubmission(LogbookEntry le, string szUser)
+        private static void PrepareFlightForSubmission(LogbookEntry le, string szUser)
         {
             // clean up user name in case an email address is passed in.
             if (le.User.Contains("@"))
@@ -733,7 +733,7 @@ namespace MyFlightbook
         /// Handles any tasks to be done after a successful commit of a flight
         /// </summary>
         /// <param name="le"></param>
-        private void AfterFlightCommitTasks(LogbookEntry le)
+        private static void AfterFlightCommitTasks(LogbookEntry le)
         {
             Profile pf = Profile.GetUser(le.User);
 
@@ -1175,7 +1175,7 @@ namespace MyFlightbook
         /// Determines if the calling referrer is authorized to call us
         /// </summary>
         /// <returns></returns>
-        private bool IsValidCaller()
+        private static bool IsValidCaller()
         {
             if (HttpContext.Current == null || HttpContext.Current.Request == null)
                 return false;
@@ -1241,7 +1241,7 @@ namespace MyFlightbook
         }
         #endregion
         #region Autocomplete
-        private string[] DoSuggestion(string szQ, string prefixText, int count)
+        private static string[] DoSuggestion(string szQ, string prefixText, int count)
         {
             if (String.IsNullOrEmpty(prefixText) || string.IsNullOrEmpty(szQ) || prefixText.Length <= 2)
                 return Array.Empty<string>();

@@ -32,7 +32,7 @@ public partial class Member_ReviewPendingFlights : System.Web.UI.Page
         set
         {
             ViewState[szVSKeyFlights] = value;
-            lnkDeleteAll.Visible = (value != null && value.Count() > 0);
+            lnkDeleteAll.Visible = (value != null && value.Any());
         }
     }
 

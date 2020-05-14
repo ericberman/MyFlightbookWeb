@@ -27,7 +27,7 @@ public partial class Controls_imageSlider : System.Web.UI.UserControl
         {
             rptImages.DataSource = value;
             rptImages.DataBind();
-            pnlSlider.Visible = value != null && value.Count() > 0;
+            pnlSlider.Visible = value != null && value.Any();
         }
     }
     #endregion

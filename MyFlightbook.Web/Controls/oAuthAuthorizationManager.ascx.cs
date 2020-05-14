@@ -24,7 +24,7 @@ public partial class Controls_oAuthAuthorizationManager : System.Web.UI.UserCont
         IEnumerable<MFBOauthClientAuth> lstAuths = MFBOauthClientAuth.GrantedAuthsForUser(Page.User.Identity.Name);
         gvOAuthClients.DataSource = lstAuths;
         gvOAuthClients.DataBind();
-        return lstAuths.Count() > 0;
+        return lstAuths.Any();
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -49,7 +49,7 @@ public partial class Controls_oAuthAuthorizationManager : System.Web.UI.UserCont
             if (oauth.Scope != null)
             {
                 IEnumerable<string> lstScopes = MFBOauthServer.ScopeDescriptions(MFBOauthServer.ScopesFromString(oauth.Scope));
-                ((MultiView)e.Row.FindControl("mvScopesRequested")).SetActiveView(lstScopes.Count() == 0 ? ((View)e.Row.FindControl("vwNoScopes")) : ((View)e.Row.FindControl("vwRequestedScopes")));
+                ((MultiView)e.Row.FindControl("mvScopesRequested")).SetActiveView(!lstScopes.Any() ? ((View)e.Row.FindControl("vwNoScopes")) : ((View)e.Row.FindControl("vwRequestedScopes")));
                 Repeater rpt = (Repeater)e.Row.FindControl("rptPermissions");
                 rpt.DataSource = lstScopes;
                 rpt.DataBind();

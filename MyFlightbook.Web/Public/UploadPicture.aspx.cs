@@ -22,8 +22,10 @@ public partial class Public_UploadPicture : UploadImagePage
         if (idFlight <= 0)
             throw new MyFlightbookException(Resources.WebService.errInvalidFlight);
 
-        LogbookEntry le = new LogbookEntry();
-        le.FlightID = idFlight;
+        LogbookEntry le = new LogbookEntry
+        {
+            FlightID = idFlight
+        };
         if (!le.FLoadFromDB(le.FlightID, szUser, LogbookEntry.LoadTelemetryOption.None))
             throw new MyFlightbookException(Resources.WebService.errFlightDoesntExist);
         if (le.User != szUser)
