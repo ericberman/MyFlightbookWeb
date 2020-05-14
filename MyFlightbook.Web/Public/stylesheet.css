@@ -402,16 +402,32 @@ input[type=text],input[type=password], input[type=number],input[type=email] {
     border-right: 1px solid lightgray;
 }
 
-td.totalsGroupHeaderCell {
-    text-align:center;
+tr.totalsGroupHeaderRow {
+    text-align: center;
     margin-top: 8px;
-    font-weight:bold;
-    border-bottom: 1px solid gray;
-    border-top: 1px solid gray;
+    font-weight: bold;
+    border-bottom: 1px solid lightgray;
+    border-top: 1px solid lightgray;
+}
+
+tr.totalsGroupHeaderRow:first-child {
+    border-top: none;
+}
+
+tr.totalsGroupRow td {
+    vertical-align:top;
+}
+
+tr.totalsGroupRow:last-child {
+    border-bottom: 1px solid lightgray;
 }
 
 td.totalsByTimeCell:nth-child(even) {
     background-color: #EFEFEF;
+}
+
+td.totalsByTimeCell:first-child {
+    border-left: 1px solid lightgray;
 }
 
 .totalsDescription {
@@ -1012,13 +1028,7 @@ a img
 /* 8710 Form */
 .PaddedCell {
     padding: 3px;
-    border-bottom: 1px solid lightgray;
-    border-right: 1px solid lightgray;
-    border-top: 1px solid lightgray;
-}
-
-.PaddedCell:first-child {
-    border-top:none;
+    border: 1px solid lightgray;
 }
 
 .PaddedCell:nth-child(even) {

@@ -154,9 +154,9 @@ namespace MyFlightbook.Web.Controls
 
             foreach (TotalsItemCollection tic in allTotals)
             {
-                TableRow trGroup = new TableRow();
+                TableRow trGroup = new TableRow() { CssClass = "totalsGroupHeaderRow" };
                 tblTotals.Rows.Add(trGroup);
-                TableCell tcGroup = new TableCell() { ColumnSpan = ColumnCount, Text = tic.GroupName, CssClass = "totalsGroupHeaderCell" };
+                TableCell tcGroup = new TableCell() { ColumnSpan = ColumnCount, Text = tic.GroupName };
                 trGroup.Cells.Add(tcGroup);
 
                 TableRow trHeader = new TableRow();
@@ -172,7 +172,7 @@ namespace MyFlightbook.Web.Controls
 
                 foreach (TotalsItem ti in tic.Items)
                 {
-                    TableRow tr = new TableRow();
+                    TableRow tr = new TableRow() { CssClass = "totalsGroupRow" };
                     tblTotals.Rows.Add(tr);
 
                     // Add the description
