@@ -1499,6 +1499,112 @@ namespace MyFlightbook.Airports
                 throw new MyFlightbookException(String.Format(CultureInfo.CurrentCulture, "Error deleting airport {0}: {1}", apToDelete.Code, apToDelete.ErrorText));
         }
 
+        private static int BackfillOldCodes(int iColOldCode, int iColCurrentCode, CSVReader csvr)
+        {
+            int cAirports = 0;
+            string szSelect = String.Format(CultureInfo.InvariantCulture,
+                    "{0} {1}",
+                    airport.DefaultSelectStatement("0.0"),
+                    @"INNER JOIN (SELECT * FROM airports WHERE airportid=?idTarget AND type in ('A', 'S', 'H')) aptarget 
+                        ON airports.type=aptarget.type AND abs(airports.latitude - aptarget.latitude) < .02 and abs(airports.longitude - aptarget.longitude) < 0.02 
+                        ORDER BY airports.preferred DESC, LENGTH(airports.AirportID) DESC");
+            DBHelper dbh = new DBHelper(szSelect);
+            StringBuilder sb = new StringBuilder();
+
+            string[] rgCols;
+            while ((rgCols = csvr.GetCSVLine()) != null)
+            {
+                string szOld = rgCols[iColOldCode];
+                string szCurrent = rgCols[iColCurrentCode];
+
+                if (String.IsNullOrEmpty(szOld) || String.IsNullOrEmpty(szCurrent))
+                {
+                    sb.AppendFormat(CultureInfo.CurrentCulture, "Skipping row: {0} {1} (one or both is empty)", szOld, szCurrent);
+                    continue;
+                }
+
+                bool fHasPreferred = false;
+
+                // Get everything close to the "current airport"
+                List<AdminAirport> lstApExisting = new List<AdminAirport>();
+                dbh.ReadRows((comm) => { comm.Parameters.Clear(); comm.Parameters.AddWithValue("idTarget", szCurrent); },
+                    (dr) => { 
+                        lstApExisting.Add(new AdminAirport(dr));
+                        fHasPreferred = fHasPreferred || Convert.ToInt32(dr["preferred"], CultureInfo.InvariantCulture) != 0;
+                    });
+
+                // if the "current" airport isn't in the system, then we don't have enough information to even do anything
+                // And if the "old" airport is in the system, there's nothing to do
+                if (lstApExisting.Count == 0 || lstApExisting.Exists(ap => ap.Code.CompareCurrentCultureIgnoreCase(szOld) == 0))
+                    continue;
+
+                // verify that the code we want to add doesn't exist in any form - e.g., may not have been found above due to it being in some other location
+                if (airport.AirportsMatchingCodes(new string[] { szOld }).Any())
+                    continue;
+
+                // Make sure at least one of the "current" airports is marked as preferred.
+                if (!fHasPreferred)
+                    lstApExisting[0].SetPreferred(true);
+
+                // Now copy that airport 
+                sb.AppendFormat(CultureInfo.CurrentCulture, "Adding '{0}' as an alias for '{1}' ({2})", szOld, lstApExisting[0].Code, lstApExisting[0].Name);
+                airport apOld = lstApExisting[0];
+                apOld.Code = szOld;
+                apOld.Name += " (Obsolete)";
+                apOld.FCommit(true, true);
+                cAirports++;
+            }
+
+            return cAirports;
+        }
+
+        const int iColID = 0;
+        const int iColName = 1;
+        const int iColType = 2;
+        const int iColSourceUserName = 3;
+        const int iColLat = 4;
+        const int iColLon = 5;
+        const int iColPreferred = 6;
+        const int iColOldCode = 7;
+        const int iColCurrentCode = 8;
+
+        private static void MapColumnHeader(string[] rgheaders, Dictionary<int, int> columnMap)
+        {
+            for (int i = 0; i < rgheaders.Length; i++)
+            {
+                switch (rgheaders[i].ToUpperInvariant())
+                {
+                    case "AIRPORTID":
+                        columnMap[iColID] = i;
+                        break;
+                    case "FACILITYNAME":
+                        columnMap[iColName] = i;
+                        break;
+                    case "TYPE":
+                        columnMap[iColType] = i;
+                        break;
+                    case "SOURCEUSERNAME":
+                        columnMap[iColSourceUserName] = i;
+                        break;
+                    case "LATITUDE":
+                        columnMap[iColLat] = i;
+                        break;
+                    case "LONGITUDE":
+                        columnMap[iColLon] = i;
+                        break;
+                    case "PREFERRED":
+                        columnMap[iColPreferred] = i;
+                        break;
+                    case "OLDCODE":
+                        columnMap[iColOldCode] = i;
+                        break;
+                    case "CURRENTCODE":
+                        columnMap[iColCurrentCode] = i;
+                        break;
+                }
+            }
+        }
+
         public static int BulkImportAirports(Stream s)
         {
             if (s == null)
@@ -1507,47 +1613,17 @@ namespace MyFlightbook.Airports
             int cAirportsAdded = 0;
 
             Dictionary<int, int> columnMap = new Dictionary<int, int>();
-            const int iColID = 0;
-            const int iColName = 1;
-            const int iColType = 2;
-            const int iColSourceUserName = 3;
-            const int iColLat = 4;
-            const int iColLon = 5;
-            const int iColPreferred = 6;
 
             using (CSVReader csvReader = new CSVReader(s))
             {
                 try
                 {
                     string[] rgheaders = csvReader.GetCSVLine(true);
+                    MapColumnHeader(rgheaders, columnMap);
 
-                    for (int i = 0; i < rgheaders.Length; i++)
-                    {
-                        switch (rgheaders[i].ToUpperInvariant())
-                        {
-                            case "AIRPORTID":
-                                columnMap[iColID] = i;
-                                break;
-                            case "FACILITYNAME":
-                                columnMap[iColName] = i;
-                                break;
-                            case "TYPE":
-                                columnMap[iColType] = i;
-                                break;
-                            case "SOURCEUSERNAME":
-                                columnMap[iColSourceUserName] = i;
-                                break;
-                            case "LATITUDE":
-                                columnMap[iColLat] = i;
-                                break;
-                            case "LONGITUDE":
-                                columnMap[iColLon] = i;
-                                break;
-                            case "PREFERRED":
-                                columnMap[iColPreferred] = i;
-                                break;
-                        }
-                    }
+                    // Look for just backfilling of old codes: oldcode column and currentcode column
+                    if (columnMap.ContainsKey(iColOldCode) && columnMap.ContainsKey(iColCurrentCode))
+                        return BackfillOldCodes(columnMap[iColOldCode], columnMap[iColCurrentCode], csvReader);
 
                     if (!columnMap.ContainsKey(iColID) || !columnMap.ContainsKey(iColName) || !columnMap.ContainsKey(iColType) || !columnMap.ContainsKey(iColLat) || !columnMap.ContainsKey(iColLon))
                         throw new MyFlightbookValidationException("File doesn't have all required columns.");
