@@ -14,7 +14,7 @@ public partial class Public_ImportTable : System.Web.UI.Page
 {
     private const int cColumnsOfProps = 4;
 
-    private void AddProp(CustomPropertyType cpt, TableRow tr)
+    private static void AddProp(CustomPropertyType cpt, TableRow tr)
     {
         string szUnit = string.Empty;
         switch (cpt.Type)

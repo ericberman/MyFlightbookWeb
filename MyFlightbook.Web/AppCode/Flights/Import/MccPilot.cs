@@ -91,7 +91,7 @@ namespace MyFlightbook.ImportFlights
 
         public MccPilot(DataRow dr) : base(dr) { }
 
-        private string FormattedPilotInfo(string name, string phone, string email, string ID)
+        private static string FormattedPilotInfo(string name, string phone, string email, string ID)
         {
             if (String.IsNullOrEmpty(name))
                 return string.Empty;

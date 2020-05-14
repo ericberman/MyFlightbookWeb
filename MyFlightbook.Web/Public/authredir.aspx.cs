@@ -15,7 +15,7 @@ using System.Web.UI;
 public partial class Public_authredir : System.Web.UI.Page
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-    private string RedirForDest(string szDest, List<string> lstParams)
+    private static string RedirForDest(string szDest, List<string> lstParams)
     {
         switch (szDest.ToUpperInvariant())
         {

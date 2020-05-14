@@ -167,7 +167,7 @@ namespace OAuthAuthorizationServer.Services
         /// </summary>
         /// <param name="szRequest"></param>
         /// <returns></returns>
-        private OAuthServiceID ServiceFromString(string szRequest)
+        private static OAuthServiceID ServiceFromString(string szRequest)
         {
             if (szRequest.StartsWith("/", StringComparison.CurrentCultureIgnoreCase))
                 szRequest = szRequest.Substring(1);

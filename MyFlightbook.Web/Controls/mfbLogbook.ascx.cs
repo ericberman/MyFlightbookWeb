@@ -501,7 +501,7 @@ public partial class Controls_mfbLogbook : Controls_MFBLogbookBase
     /// <param name="gv">Gridview</param>
     /// <param name="szColName">Header text</param>
     /// <returns>column id, or -1</returns>
-    private int FindColumn(GridView gv, string szColName)
+    private static int FindColumn(GridView gv, string szColName)
     {
         int i = gv.Columns.Count;
         while (--i >= 0)
@@ -779,7 +779,7 @@ f1.dtFlightEnd <=> f2.dtFlightEnd)) ";
         }
     }
 
-    private void SetStyleForRow(LogbookEntryDisplay le, GridViewRow row)
+    private static void SetStyleForRow(LogbookEntryDisplay le, GridViewRow row)
     {
         HtmlGenericControl divDate = (HtmlGenericControl)row.FindControl("divDateAndRoute");
         switch (le.RowType)

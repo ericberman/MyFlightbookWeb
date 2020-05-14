@@ -175,7 +175,7 @@ namespace MyFlightbook
         /// </summary>
         /// <param name="szAppToken"></param>
         /// <returns></returns>
-        private Boolean IsAuthorizedService(string szAppToken)
+        private static Boolean IsAuthorizedService(string szAppToken)
         {
             if (ShuntState.IsShunted)
                 throw new MyFlightbookException(ShuntState.ShuntMessage);
@@ -394,7 +394,7 @@ namespace MyFlightbook
         /// <param name="ac">The aircraft to update</param>
         /// <param name="fUpdateFlags">True if we want to update the flags for the user as well</param>
         /// <param name="fUpdateNotes">True to update the public/private notes</param>
-        private void UpdateMaintenanceForAircraftWithFlagsInternal(string szAuthUserToken, Aircraft ac, bool fUpdateFlags = false, bool fUpdateNotes = false)
+        private static void UpdateMaintenanceForAircraftWithFlagsInternal(string szAuthUserToken, Aircraft ac, bool fUpdateFlags = false, bool fUpdateNotes = false)
         {
             if (szAuthUserToken == null)
                 throw new MyFlightbookException(Resources.WebService.errBadAuth);

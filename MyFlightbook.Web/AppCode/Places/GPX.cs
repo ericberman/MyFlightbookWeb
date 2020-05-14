@@ -43,7 +43,7 @@ namespace MyFlightbook.Telemetry
             public IEnumerable<XElement> elements { get; set; }
         }
 
-        private GPXPathRoot FindRoot(XDocument xml)
+        private static GPXPathRoot FindRoot(XDocument xml)
         {
             if (xml == null)
                 return null;

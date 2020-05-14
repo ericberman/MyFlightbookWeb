@@ -148,7 +148,7 @@ namespace MyFlightbook.Telemetry
             return sbNew.ToString();
         }
 
-        private string[] FixRowHack(string[] rgszRow, string[] rgszHeader)
+        private static string[] FixRowHack(string[] rgszRow, string[] rgszHeader)
         {
             /*
              *  Handle a bug where we have some older versions of mobile apps that record telemetry

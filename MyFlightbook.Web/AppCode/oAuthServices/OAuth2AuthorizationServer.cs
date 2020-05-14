@@ -61,7 +61,7 @@ namespace OAuthAuthorizationServer.Code
         {
         }
 
-        CryptoKey keyFromDataReader(MySqlDataReader dr)
+        static CryptoKey keyFromDataReader(MySqlDataReader dr)
         {
             return new CryptoKey(Convert.FromBase64String(Convert.ToString(dr["keyData"], CultureInfo.InvariantCulture)), DateTime.SpecifyKind(Convert.ToDateTime(dr["ExpiresUtc"], CultureInfo.InvariantCulture), DateTimeKind.Utc));
         }
@@ -678,7 +678,7 @@ namespace OAuthAuthorizationServer.Code
                                           auth.User.OpenIDClaimedIdentifier == username
                                       select auth.Scope;
             */
-            if (lst.Count() == 0)
+            if (!lst.Any())
             {
                 // No granted authorizations prior to the issuance of this token, so it must have been revoked.
                 // Even if later authorizations restore this client's ability to call in, we can't allow

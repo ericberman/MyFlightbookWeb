@@ -162,7 +162,7 @@ namespace Andri.Web
         // A helper function to retrieve config values from the configuration file.
         //
 
-        private string GetConfigValue(string configValue, string defaultValue)
+        private static string GetConfigValue(string configValue, string defaultValue)
         {
             if (String.IsNullOrEmpty(configValue))
                 return defaultValue;

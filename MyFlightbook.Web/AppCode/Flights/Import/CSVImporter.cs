@@ -840,7 +840,7 @@ namespace MyFlightbook.ImportFlights
                 return -1;
             }
 
-            private Dictionary<string, Aircraft> DictAircraftForUser(string szUser)
+            private static Dictionary<string, Aircraft> DictAircraftForUser(string szUser)
             {
                 Dictionary<string, Aircraft> dictReturn = new Dictionary<string, Aircraft>();
 

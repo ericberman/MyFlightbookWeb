@@ -19,7 +19,7 @@ namespace MyFlightbook.Web.Admin
 {
     public partial class Member_Admin : AdminPage
     {
-        private bool IsAuthorizedForTab(tabID sidebarTab, Profile pf)
+        private static bool IsAuthorizedForTab(tabID sidebarTab, Profile pf)
         {
             switch (sidebarTab)
             {

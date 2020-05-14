@@ -155,7 +155,7 @@ namespace MyFlightbook.ImportFlights
             return String.IsNullOrWhiteSpace(sz) && sz.CompareCurrentCultureIgnoreCase("-") != 0;
         }
 
-        private bool IsEmptyCSVRow(IEnumerable<string> rgsz)
+        private static bool IsEmptyCSVRow(IEnumerable<string> rgsz)
         {
             foreach (string sz in rgsz)
             {
