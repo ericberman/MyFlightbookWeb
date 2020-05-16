@@ -268,7 +268,13 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
         switch (SelectedAction)
         {
             case OAuthServiceID.addFlight:
-                postParams.Add("flight", txtFlightToAdd.Text);
+                if (cmbFlightFormat.SelectedIndex == 0)
+                {
+                    postParams.Add("po", "{}");
+                    postParams.Add("le", txtFlightToAdd.Text);
+                }
+                else
+                    postParams.Add("flight", txtFlightToAdd.Text);
                 postParams.Add("format", cmbFlightFormat.SelectedValue);
                 break;
             case OAuthServiceID.totals:
