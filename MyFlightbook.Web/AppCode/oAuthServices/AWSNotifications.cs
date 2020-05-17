@@ -113,7 +113,10 @@ namespace AWSNotifications
                 {
                     RSACryptoServiceProvider MyRSACryptoServiceProvider = (RSACryptoServiceProvider)MyX509Certificate2.PublicKey.Key;
 
+#pragma warning disable CA5350 // Do Not Use Weak Cryptographic Algorithms
+                    // this only works with SHA1...
                     using (SHA1Managed MySHA1Managed = new SHA1Managed())
+#pragma warning restore CA5350 // Do Not Use Weak Cryptographic Algorithms
                     {
                         byte[] HashBytes = MySHA1Managed.ComputeHash(Encoding.UTF8.GetBytes(szStringToValidate));
 
