@@ -89,7 +89,7 @@
                         <asp:ListItem Value="AddAircraftForUser" Text="Add Aircraft"></asp:ListItem>
                         <asp:ListItem Value="AircraftForUser" Text="Aircraft for user"></asp:ListItem>
                         <asp:ListItem Value="MakesAndModels" Text="Makes / Models"></asp:ListItem>
-                        <asp:ListItem Value="addFlight" Text="Add flight (POST only)"></asp:ListItem>
+                        <asp:ListItem Value="CommitFlightWithOptions" Text="Add flight (POST only)"></asp:ListItem>
                         <asp:ListItem Value="FlightsWithQueryAndOffset" Text="View flights (POST only)"></asp:ListItem>
                         <asp:ListItem Value="FlightPathForFlight" Text="Flight Path for flight"></asp:ListItem>
                         <asp:ListItem Value="FlightPathForFlightGPX" Text="Flight Path (GPX) for flight"></asp:ListItem>

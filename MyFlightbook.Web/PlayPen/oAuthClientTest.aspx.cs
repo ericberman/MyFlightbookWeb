@@ -267,6 +267,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
 
         switch (SelectedAction)
         {
+            case OAuthServiceID.CommitFlightWithOptions:
             case OAuthServiceID.addFlight:
                 if (cmbFlightFormat.SelectedIndex == 0)
                 {
@@ -414,6 +415,7 @@ public partial class Public_oAuthClientTest : System.Web.UI.Page
     {
         switch (SelectedAction)
         {
+            case OAuthServiceID.CommitFlightWithOptions:
             case OAuthServiceID.addFlight:
                 mvService.SetActiveView(vwAddFlight);
                 break;
