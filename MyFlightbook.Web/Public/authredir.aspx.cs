@@ -42,6 +42,10 @@ public partial class Public_authredir : System.Web.UI.Page
                 return "~/Member/Training.aspx/instInstructors";
             case "8710":
                 return "~/Member/8710Form.aspx";
+            case "MODELROLLUP":
+                return "~/Member/8710Form.aspx/Model";
+            case "TIMEROLLUP":
+                return "~/Member/8710Form.aspx/Time";
             case "AIRCRAFTEDIT":
                 return "~/Member/EditAircraft.aspx";
             case "AIRCRAFTSCHEDULE":
