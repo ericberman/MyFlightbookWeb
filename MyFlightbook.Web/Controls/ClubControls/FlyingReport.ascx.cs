@@ -71,9 +71,21 @@ public partial class Controls_ClubControls_FlyingReport : System.Web.UI.UserCont
                 lstIds.Add(Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture));
         }
 
-        VisitedAirport.AllFlightsAsKML(new FlightQuery(), s, out string szErr, lstIds);
-        if (!String.IsNullOrEmpty(szErr))
-            throw new MyFlightbookException("Error writing KML to stream: " + szErr);
+
+        if (lstIds.Count == 0)
+        {
+            using (MyFlightbook.Telemetry.KMLWriter kw = new MyFlightbook.Telemetry.KMLWriter(s))
+            {
+                kw.BeginKML();
+                kw.EndKML();
+            }
+        }
+        else
+        {
+            VisitedAirport.AllFlightsAsKML(new FlightQuery(), s, out string szErr, lstIds);
+            if (!String.IsNullOrEmpty(szErr))
+                throw new MyFlightbookException("Error writing KML to stream: " + szErr);
+        }
     }
 
     public void Refresh(int ClubID, DateTime dateStart, DateTime dateEnd)
