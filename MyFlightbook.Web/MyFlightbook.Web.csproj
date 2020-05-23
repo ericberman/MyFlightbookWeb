@@ -2777,8 +2777,6 @@
     <Content Include="App_Data\debug.config" />
     <Content Include="App_Data\email.config" />
     <Content Include="PlayPen\Web.config" />
-    <Content Include="Private\MyFlightbook Admin Tools.pptx" />
-    <Content Include="Private\Ribbons Source.pptx" />
     <Content Include="Private\Web.Config" />
     <Content Include="Public\AndroidImages\MyFlightbook Android Feature Graphic.xcf" />
     <Content Include="Public\bxslider\LICENSE.md" />
