@@ -196,6 +196,7 @@ namespace MyFlightbook
             public const UInt32 cfpFlagKnownProperty = 0x01000000; // Generic "known property" to pull in for currency, ratings progress.
             public const UInt32 cfpFlagNoAutoComplete = 0x02000000; // no autocomplete for this property
             public const UInt32 cfpFlagAllCaps = 0x04000000;    // convert any value for this property to all caps.
+            public const UInt32 cfpFlagIsLanding = 0x08000000;
         };
 
         private const string szAppCacheKey = "keyCustomPropertyTypes";
@@ -291,6 +292,15 @@ namespace MyFlightbook
         public Boolean IsApproach
         {
             get { return ((Flags & CFPPropertyFlag.cfpFlagIsApproach) != CFPPropertyFlag.cfpFlagNone); }
+        }
+
+        /// <summary>
+        /// Is this property a landing that contributes to total landings?
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public Boolean IsLanding
+        {
+            get { return ((Flags & CFPPropertyFlag.cfpFlagIsLanding) != CFPPropertyFlag.cfpFlagNone); }
         }
 
         /// <summary>
@@ -549,6 +559,7 @@ WHERE idPropType = {0} ORDER BY Title ASC", id));
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagGliderInstrumentManeuversPassengers, "Glider instrument maneuvers with passengers;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagIPC, "IPC;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagIsApproach, "Approach;");
+            AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagIsLanding, "Landing;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagNightTakeOff, "Night Takeoff;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagNightVisionDepartureAndArrival, "Night vision departure/arrival;");
             AppendIfFlagged(sb, cfp, CFPPropertyFlag.cfpFlagNightVisionHover, "Night vision hover;");

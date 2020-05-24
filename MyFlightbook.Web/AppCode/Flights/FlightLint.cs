@@ -509,6 +509,10 @@ namespace MyFlightbook.Lint
                 }
             }
 
+            int maxDescribedLandings = 0;
+            le.CustomProperties.ForEachEvent((cfp) => { if (cfp.PropertyType.IsLanding) maxDescribedLandings = Math.Max(maxDescribedLandings, cfp.IntValue); });
+            AddConditionalIssue(maxDescribedLandings > le.Landings, LintOptions.MiscIssues, String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.warningMoreDescribedLandingsThanTotal, le.Landings));
+
             AddConditionalIssue(le.Dual > 0 && !le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropInstructorName) && le.CFISignatureState == LogbookEntryBase.SignatureState.None, LintOptions.MiscIssues, Resources.FlightLint.warningDualLoggedButNoCFIName);
 
             LogbookEntryBase leDefault = new LogbookEntry() { Date = le.Date, AircraftID = le.AircraftID, User = le.User };

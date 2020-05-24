@@ -290,6 +290,9 @@
   <data name="warningMiscMultipleRedundantCheckrides" xml:space="preserve">
     <value>The property {0} is indicated on multiple flights, but should generally only ever happen once.  E.g., you only ever take one Private Pilot Checkride, but later you might add new category/class privileges.  </value>
   </data>
+  <data name="warningMoreDescribedLandingsThanTotal" xml:space="preserve">
+    <value>Flight indicates a total of {0:#,##0} landings, but some described subsets of those landings exceeed {0:#,##0}!</value>
+  </data>
   <data name="warningNewDutyEndNoStart" xml:space="preserve">
     <value>Duty period end found with no corresponding start</value>
   </data>

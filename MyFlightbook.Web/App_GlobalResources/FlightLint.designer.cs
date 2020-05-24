@@ -574,6 +574,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flight indicates a total of {0:#,##0} landings, but some described subsets of those landings exceeed {0:#,##0}!.
+        /// </summary>
+        internal static string warningMoreDescribedLandingsThanTotal {
+            get {
+                return ResourceManager.GetString("warningMoreDescribedLandingsThanTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duty period end found with no corresponding start.
         /// </summary>
         internal static string warningNewDutyEndNoStart {

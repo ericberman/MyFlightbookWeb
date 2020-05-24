@@ -55,6 +55,7 @@
                         <asp:ListItem Text="Glider - Instrument Maneuvers" Value="1024"></asp:ListItem>
                         <asp:ListItem Text="Glider - Instrument Maneuvers for passengers" Value="2048"></asp:ListItem>                    
                         <asp:ListItem Text="Is an approach" Value="4096"></asp:ListItem>                    
+                        <asp:ListItem Text="Is a landing" Value="134217728"></asp:ListItem>
                         <asp:ListItem Text="Don't add to totals" Value="8192"></asp:ListItem>                    
                         <asp:ListItem Text="Night-time Takeoff" Value="16384"></asp:ListItem>
                         <asp:ListItem Text="PIC Proficiency Check" Value="65536"></asp:ListItem>
