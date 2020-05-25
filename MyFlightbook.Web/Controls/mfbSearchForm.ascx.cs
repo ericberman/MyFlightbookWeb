@@ -76,6 +76,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         set
         {
             cpeCatClass.Collapsed = cpeAircraftChars.Collapsed = cpeAirplanes.Collapsed = cpeAirports.Collapsed = cpeMakes.Collapsed = cpeFlightCharacteristics.Collapsed = value;
+            cpeCatClass.ClientState = cpeAircraftChars.ClientState = cpeAirplanes.ClientState = cpeAirports.ClientState = cpeMakes.ClientState = cpeFlightCharacteristics.ClientState = value.ToString(CultureInfo.InvariantCulture);
 
             if (value)
             {
@@ -193,6 +194,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         rblFlightDistance.SelectedValue = ((int) m_fq.Distance).ToString(CultureInfo.InvariantCulture);
 
         cpeAirports.Collapsed = m_fq.AirportList.Count == 0 && m_fq.Distance == FlightQuery.FlightDistance.AllFlights;
+        cpeAirports.ClientState = cpeAirports.Collapsed.ToString(CultureInfo.InvariantCulture);
     }
 
     private void FlightCharacteristicsToForm()
@@ -224,6 +226,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
             ckXC.Checked || ckSimIMC.Checked || ckIMC.Checked || ckNight.Checked || ckPublic.Checked ||
             ckAnyLandings.Checked || ckAnyInstrument.Checked || ckGroundSim.Checked || ckTotal.Checked ||
             ckDual.Checked || ckCFI.Checked || ckSIC.Checked || ckPIC.Checked || ckIsSigned.Checked);
+        cpeFlightCharacteristics.ClientState = cpeFlightCharacteristics.Collapsed.ToString(CultureInfo.InvariantCulture);
 
         cmbFlightCharsConjunction.SelectedValue = m_fq.FlightCharacteristicsConjunction.ToString();
     }
@@ -234,6 +237,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         foreach (ListItem li in cklAircraft.Items)
             if (li.Selected = lst.Exists(ac => ac.AircraftID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)))
                 cpeAirplanes.Collapsed = false;
+        cpeAirplanes.ClientState = cpeAirplanes.Collapsed.ToString(CultureInfo.InvariantCulture);
     }
 
     private void ModelsToForm()
@@ -242,6 +246,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         foreach (ListItem li in cklMakes.Items)
             if (li.Selected = lst.Exists(mm => mm.MakeModelID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)))
                 cpeMakes.Collapsed = false;
+        cpeMakes.ClientState = cpeMakes.Collapsed.ToString(CultureInfo.InvariantCulture);
         txtModelNameText.Text = m_fq.ModelName;
     }
 
@@ -252,6 +257,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         foreach (ListItem li in cklCatClass.Items)
             if (li.Selected = lst.Exists(cc => cc.IdCatClass == (CategoryClass.CatClassID)Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)))
                 cpeCatClass.Collapsed = false;
+        cpeCatClass.ClientState = cpeCatClass.Collapsed.ToString(CultureInfo.InvariantCulture);
     }
 
     private void AircraftCharacteristicsToForm()
@@ -303,14 +309,14 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         cpeAircraftChars.Collapsed = !(ckTailwheel.Checked || ckHighPerf.Checked || ckGlass.Checked || ckTAA.Checked || ckMotorGlider.Checked || ckMultiEngineHeli.Checked ||
             ckComplex.Checked || ckRetract.Checked || ckProp.Checked || ckCowl.Checked ||
             m_fq.EngineType != FlightQuery.EngineTypeRestriction.AllEngines || m_fq.AircraftInstanceTypes != FlightQuery.AircraftInstanceRestriction.AllAircraft);
+        cpeAircraftChars.ClientState = cpeAircraftChars.Collapsed.ToString(CultureInfo.InvariantCulture);
     }
 
     private void CustomPropertiesToForm()
     {
         List<CustomPropertyType> lst = new List<CustomPropertyType>(m_fq.PropertyTypes);
         foreach (ListItem li in cklCustomProps.Items)
-            if (li.Selected = lst.Exists(cpt => cpt.PropTypeID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture)))
-                cpeCustomProps.Collapsed = false;
+            li.Selected = lst.Exists(cpt => cpt.PropTypeID == Convert.ToInt32(li.Value, CultureInfo.InvariantCulture));
 
         cmbPropertiesConjunction.SelectedValue = m_fq.PropertiesConjunction.ToString();
     }
@@ -362,6 +368,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         {
             txtAirports.Text = value ?? throw new ArgumentNullException(nameof(value));
             cpeAirports.Collapsed = (value.Length == 0);
+            cpeAirports.ClientState = cpeAirports.Collapsed.ToString(CultureInfo.InvariantCulture);
             GetFlightQuery(); 
         }
     }
@@ -429,7 +436,7 @@ public partial class Controls_mfbSearchForm : System.Web.UI.UserControl
         al.RemoveAll(cpt => !cpt.IsFavorite);
 
         if (al.Count == 0)
-            pnlCustomProps.Visible = CustomPropsHeader.Visible = false;
+            pnlCustomProps.Visible = false;
         else
         {
             cklCustomProps.DataSource = al;

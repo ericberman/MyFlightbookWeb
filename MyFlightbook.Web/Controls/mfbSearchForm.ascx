@@ -65,6 +65,168 @@
                     <asp:TextBox ID="txtRestrict" runat="server" Width="50%" 
                         meta:resourcekey="txtRestrictResource1"></asp:TextBox>
                 </asp:Panel>
+                <p class="header" runat="server" id="AirportsHeader"><asp:Localize ID="locAirports" 
+                        runat="server" Text="Flight visited any of these airports" 
+                        meta:resourcekey="locAirportsResource1"></asp:Localize> 
+                    <asp:Label ID="lblAirportsLabel" runat="server" 
+                        meta:resourcekey="lblAirportsLabelResource1"></asp:Label>:</p>
+                <asp:Panel ID="pnlAirports" runat="server" style="overflow:hidden" 
+                    meta:resourcekey="pnlAirportsResource1">
+                        <asp:TextBox ID="txtAirports" runat="server" Width="50%" 
+                            meta:resourcekey="txtAirportsResource1"></asp:TextBox>
+                        <br />
+                        <asp:RadioButtonList ID="rblFlightDistance" runat="server" 
+                            RepeatDirection="Horizontal" meta:resourcekey="rblFlightDistanceResource1">
+                            <asp:ListItem Selected="True" Value="0" Text="All Flights" 
+                                meta:resourcekey="ListItemResource1"></asp:ListItem>
+                            <asp:ListItem Value="1" Text="Local Flights Only" 
+                                meta:resourcekey="ListItemResource2"></asp:ListItem>
+                            <asp:ListItem Value="2" Text="Non-Local Flights" 
+                                meta:resourcekey="ListItemResource3"></asp:ListItem>
+                        </asp:RadioButtonList>
+                </asp:Panel>
+                <p class="header" runat="server" id="AirplanesHeader">
+                    <asp:Localize ID="locAircraft" runat="server" 
+                        Text="Flight was in one of these aircraft:" 
+                        meta:resourcekey="locAircraftResource1"></asp:Localize>
+                         <asp:Label ID="lblAirplaneLabel" runat="server" 
+                        meta:resourcekey="lblAirplaneLabelResource1"></asp:Label>:</p>
+                <asp:Panel ID="pnlAirplanes" runat="server" style="overflow:hidden" 
+                    meta:resourcekey="pnlAirplanesResource1">
+                    <asp:UpdatePanel ID="updpanelAircraft" runat="server">
+                        <ContentTemplate>
+                            <asp:CheckBoxList ID="cklAircraft" runat="server"
+                                           DataTextField="DisplayTailNumber" DataValueField="AircraftID" 
+                                RepeatColumns="6" RepeatDirection="Horizontal" 
+                                meta:resourcekey="cklAircraftResource1">
+                            </asp:CheckBoxList>
+                            <asp:Panel ID="pnlShowAllAircraft" runat="server">
+                                <asp:LinkButton ID="lnkShowAllAircraft" runat="server" Text="Show All Aircraft" meta:resourcekey="lnkShowAllAircraft1" OnClick="lnkShowAllAircraft_Click"></asp:LinkButton>
+                            </asp:Panel>
+                            <table>
+                                <tr>
+                                    <td><asp:CheckBox ID="ckAllAircraft" runat="server" AutoPostBack="true" OnCheckedChanged="ckAllAircraft_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></td>
+                                </tr>
+                            </table>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </asp:Panel>
+                <p class="header" runat="server" id="AircraftCharsHeader">
+                    <asp:Localize ID="locAircraftCharacteristics" runat="server" 
+                        Text="Flight aircraft had these characteristics" 
+                        meta:resourcekey="locAircraftCharacteristicsResource1"></asp:Localize> 
+                    <asp:Label ID="lblAircraftCharsLabel" runat="server" 
+                        meta:resourcekey="lblAircraftCharsLabelResource1"></asp:Label>:</p>
+                <asp:Panel ID="pnlAircraftType" runat="server" style="overflow:hidden" 
+                    meta:resourcekey="pnlAircraftTypeResource1">
+                    <div style="display:inline-block; vertical-align:top;">
+                        <div><asp:CheckBox ID="ckTailwheel" runat="server" Text="Tailwheel" 
+                                       meta:resourcekey="ckTailwheelResource1" /></div>
+                        <div><asp:CheckBox ID="ckHighPerf" runat="server" Text="High Performance" 
+                                       meta:resourcekey="ckHighPerfResource1" /></div>
+                        <div><asp:CheckBox ID="ckGlass" runat="server" Text="Glass Cockpit" 
+                                       meta:resourcekey="ckGlassResource1" /></div>
+                        <div>
+                            <asp:CheckBox ID="ckTAA" runat="server" Text="TAA" 
+                                       meta:resourcekey="ckTAA1" />
+                            <uc2:mfbTooltip runat="server" ID="mfbTooltip">
+                                <TooltipBody><%=Resources.Makes.TAADefinition %></TooltipBody>
+                            </uc2:mfbTooltip>
+                        </div>
+                        <div><asp:CheckBox ID="ckMotorGlider" runat="server" 
+                                       Text="<%$ Resources:FlightQuery, AircraftFeatureMotorGlider %>" 
+                                       meta:resourcekey="ckMotorGliderResource1" /></div>
+                        <div><asp:CheckBox ID="ckMultiEngineHeli" runat="server" 
+                                       Text="<%$ Resources:FlightQuery, AircraftFeatureMultiEngineHelicopter %>" meta:resourcekey="ckMultiEngineHeliResource1" /></div>
+                    </div>
+                    <div style="display:inline-block; vertical-align:top;">
+                        <div><asp:CheckBox ID="ckComplex" runat="server" 
+                                       Text="Complex" meta:resourcekey="ckComplexResource1" /></div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;
+                                   <asp:CheckBox ID="ckRetract" runat="server" Text="Retractable gear" 
+                                       meta:resourcekey="ckRetractResource1" /></div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <asp:CheckBox ID="ckProp" runat="server" Text="Constant speed prop" 
+                                       meta:resourceKey="ckPropResource2" /></div>
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;
+                                   <asp:CheckBox ID="ckCowl" runat="server" Text="Flaps" 
+                                       meta:resourcekey="ckCowlResource1" /></div>
+                    </div>
+                    <div style="display:inline-block; vertical-align:top;">
+                        <div><asp:RadioButton ID="rbEngineAny" GroupName="EngineGroup" Text="Any Engine" 
+                                       Checked="True" runat="server" meta:resourcekey="rbEngineAnyResource1" /></div>
+                        <div><asp:RadioButton ID="rbEnginePiston" GroupName="EngineGroup" Text="Piston" 
+                                       runat="server" meta:resourcekey="rbEnginePistonResource1" /></div>
+                        <div><asp:RadioButton ID="rbEngineTurboprop" GroupName="EngineGroup" 
+                                       Text="TurboProp" runat="server" meta:resourcekey="rbEngineTurbopropResource1" /></div>
+                        <div><asp:RadioButton ID="rbEngineJet" GroupName="EngineGroup" Text="Jet" 
+                                       runat="server" meta:resourcekey="rbEngineJetResource1" /></div>
+                        <div><asp:RadioButton ID="rbEngineTurbine" runat="server" GroupName="EngineGroup" 
+                                       Text="Turbine (Any)" meta:resourcekey="rbEngineTurbineResource1" /></div>
+                        <div><asp:RadioButton ID="rbEngineElectric" runat="server" GroupName="EngineGroup" 
+                                       Text="Electric" meta:resourcekey="rbEngineElectricResource1" /></div>
+                    </div>
+                    <div style="display:inline-block; vertical-align:top;">
+                        <div><asp:RadioButton ID="rbInstanceAny" GroupName="InstanceGroup" 
+                                       Text="All aircraft" Checked="True" runat="server" 
+                                       meta:resourcekey="rbInstanceAnyResource1" /></div>
+                        <div><asp:RadioButton ID="rbInstanceReal" GroupName="InstanceGroup" 
+                                       Text="Real Aircraft" runat="server" 
+                                       meta:resourcekey="rbInstanceRealResource1" /></div>
+                        <div><asp:RadioButton ID="rbInstanceTrainingDevices" GroupName="InstanceGroup" 
+                                       Text="Training Device (FTD/ATD/FFS)" runat="server" 
+                                       meta:resourcekey="rbInstanceTrainingDevicesResource1" /></div>
+                    </div>
+                </asp:Panel>
+                <p class="header" runat="server" id="MakesHeader">
+                    <asp:Localize ID="locMakes"
+                        runat="server" Text="Flight was in one of these models:"
+                        meta:resourcekey="locMakesResource1"></asp:Localize>
+                    <asp:Label ID="lblMakesLabel" runat="server"
+                        meta:resourcekey="lblMakesLabelResource1"></asp:Label>
+                </p>
+                <asp:Panel ID="pnlMakes" runat="server" Style="overflow: hidden"
+                    meta:resourcekey="pnlMakesResource1">
+                    <asp:UpdatePanel ID="updpanelMakes" runat="server">
+                        <ContentTemplate>
+                            <asp:CheckBoxList ID="cklMakes" runat="server"
+                                DataTextField="DisplayName" DataValueField="MakeModelID"
+                                RepeatColumns="3" RepeatDirection="Horizontal"
+                                meta:resourcekey="cklMakesResource1">
+                            </asp:CheckBoxList>
+                            <table>
+                                <tr>
+                                    <td><asp:CheckBox ID="ckAllMakes" runat="server" AutoPostBack="true" OnCheckedChanged="ckAllMakes_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></td>
+                                </tr>
+                            </table>
+                            <div>
+                                <asp:Label ID="Label1" runat="server" meta:resourcekey="Label1Resource1" Text="Model contains:"></asp:Label>
+                                <asp:TextBox ID="txtModelNameText" runat="server" meta:resourcekey="txtModelNameTextResource1"></asp:TextBox>
+                            </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </asp:Panel>
+                <p class="header" runat="server" id="CatClassHeader"><asp:Localize ID="locCatClass" 
+                        runat="server" Text="Flight was in one of these categories/classes:" 
+                        meta:resourcekey="locCatClassResource1"></asp:Localize> 
+                    <asp:Label ID="lblCatClass" runat="server" 
+                        meta:resourcekey="lblCatClassResource1"></asp:Label>:</p>
+                <asp:Panel ID="pnlCatClass" runat="server" style="overflow:hidden" 
+                    meta:resourcekey="pnlCatClassResource1">
+                    <asp:UpdatePanel ID="updpanelCatClass" runat="server">
+                        <ContentTemplate>
+                            <asp:CheckBoxList ID="cklCatClass" DataValueField="IDCatClassAsInt" 
+                                DataTextField="CatClass" runat="server" RepeatColumns="4" 
+                                RepeatDirection="Horizontal" meta:resourcekey="cklCatClassResource1">
+                            </asp:CheckBoxList>
+                            <table>
+                                <tr>
+                                    <td><asp:CheckBox ID="ckAllCatClass" runat="server" AutoPostBack="true" OnCheckedChanged="ckAllCatClass_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></td>
+                                </tr>
+                            </table>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </asp:Panel>
                 <p class="header" runat="server" id="FlightCharsHeader">
                     <asp:Localize ID="locFlightCharacteristics" runat="server" 
                         Text="Flight had the following characteristics:" 
@@ -177,190 +339,23 @@
                             </td>
                         </tr>
                     </table>
-                </asp:Panel>
-                <p class="header" runat="server" id="AirportsHeader"><asp:Localize ID="locAirports" 
-                        runat="server" Text="Flight visited any of these airports" 
-                        meta:resourcekey="locAirportsResource1"></asp:Localize> 
-                    <asp:Label ID="lblAirportsLabel" runat="server" 
-                        meta:resourcekey="lblAirportsLabelResource1"></asp:Label>:</p>
-                <asp:Panel ID="pnlAirports" runat="server" style="overflow:hidden" 
-                    meta:resourcekey="pnlAirportsResource1">
-                        <asp:TextBox ID="txtAirports" runat="server" Width="50%" 
-                            meta:resourcekey="txtAirportsResource1"></asp:TextBox>
-                        <br />
-                        <asp:RadioButtonList ID="rblFlightDistance" runat="server" 
-                            RepeatDirection="Horizontal" meta:resourcekey="rblFlightDistanceResource1">
-                            <asp:ListItem Selected="True" Value="0" Text="All Flights" 
-                                meta:resourcekey="ListItemResource1"></asp:ListItem>
-                            <asp:ListItem Value="1" Text="Local Flights Only" 
-                                meta:resourcekey="ListItemResource2"></asp:ListItem>
-                            <asp:ListItem Value="2" Text="Non-Local Flights" 
-                                meta:resourcekey="ListItemResource3"></asp:ListItem>
-                        </asp:RadioButtonList>
-                </asp:Panel>
-                <p class="header" runat="server" id="AirplanesHeader">
-                    <asp:Localize ID="locAircraft" runat="server" 
-                        Text="Flight was in one of these aircraft:" 
-                        meta:resourcekey="locAircraftResource1"></asp:Localize>
-                         <asp:Label ID="lblAirplaneLabel" runat="server" 
-                        meta:resourcekey="lblAirplaneLabelResource1"></asp:Label>:</p>
-                <asp:Panel ID="pnlAirplanes" runat="server" style="overflow:hidden" 
-                    meta:resourcekey="pnlAirplanesResource1">
-                    <asp:UpdatePanel ID="updpanelAircraft" runat="server">
-                        <ContentTemplate>
-                            <asp:CheckBoxList ID="cklAircraft" runat="server"
-                                           DataTextField="DisplayTailNumber" DataValueField="AircraftID" 
-                                RepeatColumns="6" RepeatDirection="Horizontal" 
-                                meta:resourcekey="cklAircraftResource1">
-                            </asp:CheckBoxList>
-                            <asp:Panel ID="pnlShowAllAircraft" runat="server">
-                                <asp:LinkButton ID="lnkShowAllAircraft" runat="server" Text="Show All Aircraft" meta:resourcekey="lnkShowAllAircraft1" OnClick="lnkShowAllAircraft_Click"></asp:LinkButton>
-                            </asp:Panel>
-                            <table>
-                                <tr>
-                                    <td><asp:CheckBox ID="ckAllAircraft" runat="server" AutoPostBack="true" OnCheckedChanged="ckAllAircraft_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></td>
-                                </tr>
-                            </table>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
-                </asp:Panel>
-                <p class="header" runat="server" id="MakesHeader">
-                    <asp:Localize ID="locMakes"
-                        runat="server" Text="Flight was in one of these models:"
-                        meta:resourcekey="locMakesResource1"></asp:Localize>
-                    <asp:Label ID="lblMakesLabel" runat="server"
-                        meta:resourcekey="lblMakesLabelResource1"></asp:Label>
-                </p>
-                <asp:Panel ID="pnlMakes" runat="server" Style="overflow: hidden"
-                    meta:resourcekey="pnlMakesResource1">
-                    <asp:UpdatePanel ID="updpanelMakes" runat="server">
-                        <ContentTemplate>
-                            <asp:CheckBoxList ID="cklMakes" runat="server"
-                                DataTextField="DisplayName" DataValueField="MakeModelID"
-                                RepeatColumns="3" RepeatDirection="Horizontal"
-                                meta:resourcekey="cklMakesResource1">
-                            </asp:CheckBoxList>
-                            <table>
-                                <tr>
-                                    <td><asp:CheckBox ID="ckAllMakes" runat="server" AutoPostBack="true" OnCheckedChanged="ckAllMakes_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></td>
-                                </tr>
-                            </table>
-                            <div>
-                                <asp:Label ID="Label1" runat="server" meta:resourcekey="Label1Resource1" Text="Model contains:"></asp:Label>
-                                <asp:TextBox ID="txtModelNameText" runat="server" meta:resourcekey="txtModelNameTextResource1"></asp:TextBox>
-                            </div>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
-                </asp:Panel>
-                <p class="header" runat="server" id="CatClassHeader"><asp:Localize ID="locCatClass" 
-                        runat="server" Text="Flight was in one of these categories/classes:" 
-                        meta:resourcekey="locCatClassResource1"></asp:Localize> 
-                    <asp:Label ID="lblCatClass" runat="server" 
-                        meta:resourcekey="lblCatClassResource1"></asp:Label>:</p>
-                <asp:Panel ID="pnlCatClass" runat="server" style="overflow:hidden" 
-                    meta:resourcekey="pnlCatClassResource1">
-                    <asp:UpdatePanel ID="updpanelCatClass" runat="server">
-                        <ContentTemplate>
-                            <asp:CheckBoxList ID="cklCatClass" DataValueField="IDCatClassAsInt" 
-                                DataTextField="CatClass" runat="server" RepeatColumns="4" 
-                                RepeatDirection="Horizontal" meta:resourcekey="cklCatClassResource1">
-                            </asp:CheckBoxList>
-                            <table>
-                                <tr>
-                                    <td><asp:CheckBox ID="ckAllCatClass" runat="server" AutoPostBack="true" OnCheckedChanged="ckAllCatClass_CheckedChanged" Text="<%$ Resources:LocalizedText, SelectAll %>" /></td>
-                                </tr>
-                            </table>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
-                </asp:Panel>
-                <p class="header" runat="server" id="AircraftCharsHeader">
-                    <asp:Localize ID="locAircraftCharacteristics" runat="server" 
-                        Text="Flight aircraft had these characteristics" 
-                        meta:resourcekey="locAircraftCharacteristicsResource1"></asp:Localize> 
-                    <asp:Label ID="lblAircraftCharsLabel" runat="server" 
-                        meta:resourcekey="lblAircraftCharsLabelResource1"></asp:Label>:</p>
-                <asp:Panel ID="pnlAircraftType" runat="server" style="overflow:hidden" 
-                    meta:resourcekey="pnlAircraftTypeResource1">
-                    <div style="display:inline-block; vertical-align:top;">
-                        <div><asp:CheckBox ID="ckTailwheel" runat="server" Text="Tailwheel" 
-                                       meta:resourcekey="ckTailwheelResource1" /></div>
-                        <div><asp:CheckBox ID="ckHighPerf" runat="server" Text="High Performance" 
-                                       meta:resourcekey="ckHighPerfResource1" /></div>
-                        <div><asp:CheckBox ID="ckGlass" runat="server" Text="Glass Cockpit" 
-                                       meta:resourcekey="ckGlassResource1" /></div>
-                        <div>
-                            <asp:CheckBox ID="ckTAA" runat="server" Text="TAA" 
-                                       meta:resourcekey="ckTAA1" />
-                            <uc2:mfbTooltip runat="server" ID="mfbTooltip">
-                                <TooltipBody><%=Resources.Makes.TAADefinition %></TooltipBody>
-                            </uc2:mfbTooltip>
-                        </div>
-                        <div><asp:CheckBox ID="ckMotorGlider" runat="server" 
-                                       Text="<%$ Resources:FlightQuery, AircraftFeatureMotorGlider %>" 
-                                       meta:resourcekey="ckMotorGliderResource1" /></div>
-                        <div><asp:CheckBox ID="ckMultiEngineHeli" runat="server" 
-                                       Text="<%$ Resources:FlightQuery, AircraftFeatureMultiEngineHelicopter %>" meta:resourcekey="ckMultiEngineHeliResource1" /></div>
-                    </div>
-                    <div style="display:inline-block; vertical-align:top;">
-                        <div><asp:CheckBox ID="ckComplex" runat="server" 
-                                       Text="Complex" meta:resourcekey="ckComplexResource1" /></div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;
-                                   <asp:CheckBox ID="ckRetract" runat="server" Text="Retractable gear" 
-                                       meta:resourcekey="ckRetractResource1" /></div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <asp:CheckBox ID="ckProp" runat="server" Text="Constant speed prop" 
-                                       meta:resourceKey="ckPropResource2" /></div>
-                        <div>&nbsp;&nbsp;&nbsp;&nbsp;
-                                   <asp:CheckBox ID="ckCowl" runat="server" Text="Flaps" 
-                                       meta:resourcekey="ckCowlResource1" /></div>
-                    </div>
-                    <div style="display:inline-block; vertical-align:top;">
-                        <div><asp:RadioButton ID="rbEngineAny" GroupName="EngineGroup" Text="Any Engine" 
-                                       Checked="True" runat="server" meta:resourcekey="rbEngineAnyResource1" /></div>
-                        <div><asp:RadioButton ID="rbEnginePiston" GroupName="EngineGroup" Text="Piston" 
-                                       runat="server" meta:resourcekey="rbEnginePistonResource1" /></div>
-                        <div><asp:RadioButton ID="rbEngineTurboprop" GroupName="EngineGroup" 
-                                       Text="TurboProp" runat="server" meta:resourcekey="rbEngineTurbopropResource1" /></div>
-                        <div><asp:RadioButton ID="rbEngineJet" GroupName="EngineGroup" Text="Jet" 
-                                       runat="server" meta:resourcekey="rbEngineJetResource1" /></div>
-                        <div><asp:RadioButton ID="rbEngineTurbine" runat="server" GroupName="EngineGroup" 
-                                       Text="Turbine (Any)" meta:resourcekey="rbEngineTurbineResource1" /></div>
-                        <div><asp:RadioButton ID="rbEngineElectric" runat="server" GroupName="EngineGroup" 
-                                       Text="Electric" meta:resourcekey="rbEngineElectricResource1" /></div>
-                    </div>
-                    <div style="display:inline-block; vertical-align:top;">
-                        <div><asp:RadioButton ID="rbInstanceAny" GroupName="InstanceGroup" 
-                                       Text="All aircraft" Checked="True" runat="server" 
-                                       meta:resourcekey="rbInstanceAnyResource1" /></div>
-                        <div><asp:RadioButton ID="rbInstanceReal" GroupName="InstanceGroup" 
-                                       Text="Real Aircraft" runat="server" 
-                                       meta:resourcekey="rbInstanceRealResource1" /></div>
-                        <div><asp:RadioButton ID="rbInstanceTrainingDevices" GroupName="InstanceGroup" 
-                                       Text="Training Device (FTD/ATD/FFS)" runat="server" 
-                                       meta:resourcekey="rbInstanceTrainingDevicesResource1" /></div>
-                    </div>
-                </asp:Panel>
-                <p class="header" runat="server" id="CustomPropsHeader"><asp:Localize ID="locProps" 
-                        runat="server" Text="Flight had these properties:" 
-                        meta:resourcekey="locPropsResource1"></asp:Localize> 
-                    <asp:Label ID="lblCustomPropsLabel" runat="server" 
-                        meta:resourcekey="lblCustomPropsLabelResource1"></asp:Label>:</p>
-                <asp:Panel ID="pnlCustomProps" runat="server" style="overflow:hidden" 
-                    meta:resourcekey="pnlCustomPropsResource1">
-                    <asp:Panel ID="pnlPropsConjunction" runat="server">
-                        <asp:Localize ID="locConjPromptProps1" runat="server" Text="<%$ Resources:FlightQuery, ConjunctionPrompt1 %>"></asp:Localize>
-                        <asp:DropDownList ID="cmbPropertiesConjunction" runat="server">
-                            <asp:ListItem Text="<%$ Resources:FlightQuery, ConjunctionAll %>" Value="All"></asp:ListItem>
-                            <asp:ListItem Selected="True" Text="<%$ Resources:FlightQuery, ConjunctionAny %>" Value="Any"></asp:ListItem>
-                            <asp:ListItem Text="<%$ Resources:FlightQuery, ConjunctionNone %>" Value="None"></asp:ListItem>
-                        </asp:DropDownList>
-                        <asp:Localize ID="locConjPromptProps2" runat="server" Text="<%$ Resources:FlightQuery, ConjunctionPrompt2 %>"></asp:Localize>
-                    </asp:Panel>
+                    <asp:Panel ID="pnlCustomProps" runat="server" style="overflow:hidden" 
+                        meta:resourcekey="pnlCustomPropsResource1">
+                        <asp:Panel ID="pnlPropsConjunction" runat="server">
+                            <asp:Localize ID="locConjPromptProps1" runat="server" Text="<%$ Resources:FlightQuery, ConjunctionPrompt1 %>"></asp:Localize>
+                            <asp:DropDownList ID="cmbPropertiesConjunction" runat="server">
+                                <asp:ListItem Text="<%$ Resources:FlightQuery, ConjunctionAll %>" Value="All"></asp:ListItem>
+                                <asp:ListItem Selected="True" Text="<%$ Resources:FlightQuery, ConjunctionAny %>" Value="Any"></asp:ListItem>
+                                <asp:ListItem Text="<%$ Resources:FlightQuery, ConjunctionNone %>" Value="None"></asp:ListItem>
+                            </asp:DropDownList>
+                            <asp:Localize ID="locConjPromptProps2" runat="server" Text="<%$ Resources:FlightQuery, ConjunctionPrompt2 %>"></asp:Localize>
+                        </asp:Panel>
 
-                    <asp:CheckBoxList ID="cklCustomProps" DataValueField="PropTypeID" 
-                        DataTextField="Title" runat="server" RepeatColumns="4" 
-                        RepeatDirection="Horizontal" meta:resourcekey="cklCustomPropsResource1">
-                    </asp:CheckBoxList>
+                        <asp:CheckBoxList ID="cklCustomProps" DataValueField="PropTypeID" 
+                            DataTextField="Title" runat="server" RepeatColumns="4" 
+                            RepeatDirection="Horizontal" meta:resourcekey="cklCustomPropsResource1">
+                        </asp:CheckBoxList>
+                    </asp:Panel>
                 </asp:Panel>
             </td>
         </tr>
@@ -440,10 +435,4 @@
     Collapsed="True" 
     CollapsedText="<%$ Resources:LocalizedText, ClickToShow %>" ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>"
     TextLabelID="lblCatClass" BehaviorID="ctl00_cpeCatClass">
-</cc1:CollapsiblePanelExtender>
-<cc1:CollapsiblePanelExtender ID="cpeCustomProps" runat="server" TargetControlID="pnlCustomProps"
-    CollapsedSize="0" ExpandControlID="CustomPropsHeader" CollapseControlID="CustomPropsHeader"
-    Collapsed="True" 
-    CollapsedText="<%$ Resources:LocalizedText, ClickToShow %>" ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>"
-    TextLabelID="lblCustomPropsLabel" BehaviorID="ctl00_cpeCustomProps">
 </cc1:CollapsiblePanelExtender>
