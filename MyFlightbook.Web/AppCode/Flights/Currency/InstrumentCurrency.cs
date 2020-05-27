@@ -204,7 +204,8 @@ namespace MyFlightbook.Currency
                 HasApproaches = true,
                 HasHolds = true,
                 DateRange = FlightQuery.DateRanges.Custom,
-                DateMin = DateTime.Now.Date.AddCalendarMonths(-6)
+                DateMin = DateTime.Now.Date.AddCalendarMonths(-6),
+                DateMax = DateTime.Now.Date.AddCalendarMonths(0)
             };
         }
 
