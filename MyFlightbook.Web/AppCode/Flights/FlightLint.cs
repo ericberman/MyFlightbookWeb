@@ -31,6 +31,7 @@ namespace MyFlightbook.Lint
         MiscIssues = 0x8000
     }
 
+    [Serializable]
     public class FlightIssue
     {
         #region Properties
@@ -52,6 +53,7 @@ namespace MyFlightbook.Lint
         }
     }
 
+    [Serializable]
     public class FlightWithIssues
     {
         #region Properties

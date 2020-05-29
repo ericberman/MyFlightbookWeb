@@ -33,6 +33,24 @@ namespace MyFlightbook.Web.Member
         protected global::System.Web.UI.WebControls.Label lblTitleCheckFlights;
 
         /// <summary>
+        /// mvCheckFlight control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.MultiView mvCheckFlight;
+
+        /// <summary>
+        /// vwIssues control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwIssues;
+
+        /// <summary>
         /// lblCheckFlightsDescription control.
         /// </summary>
         /// <remarks>
@@ -310,6 +328,24 @@ namespace MyFlightbook.Web.Member
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvFlights;
+
+        /// <summary>
+        /// vwEdit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwEdit;
+
+        /// <summary>
+        /// mfbEditFlight control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Controls_mfbEditFlight mfbEditFlight;
 
         /// <summary>
         /// Master property.

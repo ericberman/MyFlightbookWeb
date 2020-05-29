@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Windows.Forms.VisualStyles;
 
 /******************************************************
  * 
@@ -18,6 +19,14 @@ namespace MyFlightbook.Web.Member
     public partial class CheckFlights : System.Web.UI.Page
     {
         protected const string szCookieLastCheck = "cookieLastCheck";
+
+        private const string szVsFlightIssues = "vsFlightIssues"; 
+
+        private IEnumerable<FlightWithIssues> CheckedFlights
+        {
+            get { return (IEnumerable<FlightWithIssues>)ViewState[szVsFlightIssues]; }
+            set { ViewState[szVsFlightIssues] = value; }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -72,6 +81,13 @@ namespace MyFlightbook.Web.Member
             ckXC.Checked = (options & (UInt32)LintOptions.XCIssues) != 0;
         }
 
+        protected void BindFlights(IEnumerable<FlightWithIssues> rgf)
+        {
+            gvFlights.DataSource = CheckedFlights = rgf;
+            gvFlights.DataBind();
+            lblSummary.Text = String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.SummaryFlightsFound, rgf.Count(), CheckedFlights.Count());
+        }
+
         protected void btnCheckAll_Click(object sender, EventArgs e)
         {
             UInt32 selectedOptions = SelectedOptions;
@@ -85,11 +101,7 @@ namespace MyFlightbook.Web.Member
             DBHelperCommandArgs dbhq = LogbookEntryBase.QueryCommand(fq, fAsc:true);
             IEnumerable<LogbookEntryBase> rgle = LogbookEntryDisplay.GetFlightsForQuery(dbhq, Page.User.Identity.Name, "Date", SortDirection.Ascending, false, false);
 
-            FlightLint fl = new FlightLint();
-            IEnumerable<FlightWithIssues> flightsWithIssues = fl.CheckFlights(rgle, Page.User.Identity.Name, selectedOptions, mfbDateLastCheck.Date);
-            gvFlights.DataSource = flightsWithIssues;
-            gvFlights.DataBind();
-            lblSummary.Text = String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.SummaryFlightsFound, rgle.Count(), flightsWithIssues.Count());
+            BindFlights(new FlightLint().CheckFlights(rgle, Page.User.Identity.Name, selectedOptions, mfbDateLastCheck.Date));
 
             Response.Cookies[szCookieLastCheck].Value = DateTime.Now.YMDString();
             Response.Cookies[szCookieLastCheck].Expires = DateTime.Now.AddYears(5);
@@ -98,6 +110,46 @@ namespace MyFlightbook.Web.Member
         protected void ckAll_CheckedChanged(object sender, EventArgs e)
         {
             ckAirports.Checked = ckDateTime.Checked = ckIFR.Checked = ckMisc.Checked = ckPICSICDualMath.Checked = ckSim.Checked = ckTimes.Checked = ckXC.Checked = ckAll.Checked;
+        }
+
+        protected void mfbEditFlight_FlightEditCanceled(object sender, EventArgs e)
+        {
+            mvCheckFlight.SetActiveView(vwIssues);
+        }
+
+        protected void mfbEditFlight_FlightUpdated(object sender, LogbookEventArgs e)
+        {
+            mvCheckFlight.SetActiveView(vwIssues);
+
+            // Recheck the flight that was updated.
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+
+            LogbookEntryBase le = new LogbookEntry(e.FlightID, Page.User.Identity.Name);
+            IEnumerable<FlightWithIssues> updated = new FlightLint().CheckFlights(new LogbookEntryBase[] { le }, Page.User.Identity.Name, SelectedOptions);
+
+            List<FlightWithIssues> lst = new List<FlightWithIssues>(CheckedFlights);
+            int index = lst.FindIndex(fwi => fwi.Flight.FlightID == e.FlightID);
+            if (updated.Any())
+                lst[index] = updated.ElementAt(0);
+            else
+                lst.RemoveAt(index);
+
+            BindFlights(lst);
+        }
+
+        protected void lnkEditFlight_Click(object sender, EventArgs e)
+        {
+            if (e == null)
+                throw new ArgumentNullException(nameof(e));
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender));
+            LinkButton lb = sender as LinkButton;
+            if (Int32.TryParse(lb.CommandArgument, NumberStyles.Integer, CultureInfo.InvariantCulture, out int idflight))
+            {
+                mvCheckFlight.SetActiveView(vwEdit);
+                mfbEditFlight.SetUpNewOrEdit(idflight);
+            }
         }
     }
 }
