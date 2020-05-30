@@ -7,7 +7,7 @@
 <%@ Register src="../Controls/ClubControls/SchedSummary.ascx" tagname="SchedSummary" tagprefix="uc3" %>
 <%@ Register src="../Controls/ClubControls/TimeZone.ascx" tagname="TimeZone" tagprefix="uc4" %>
 <%@ Register src="../Controls/popmenu.ascx" tagname="popmenu" tagprefix="uc5" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
+<asp:Content ID="Content1" ContentPlaceHolderID="cpTopForm" Runat="Server">
     <script src='<%= ResolveUrl("~/public/Scripts/daypilot-all.min.js?v=20200102") %>'></script>
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
@@ -59,22 +59,34 @@
                         updateDate(new DayPilot.Date());
                     }
                 }
+
+                function incrementDay(i) {
+                    clubNavControl.select(clubNavControl.selectionDay.addDays(i));
+                }
+
+                function nextDay() {
+                    incrementDay(1);
+                }
+
+                function prevDay() {
+                    incrementDay(-1);
+                }
             </script>
-            <asp:Panel ID="pnlChangeDatePop" Width="100%" runat="server" meta:resourcekey="pnlChangeDatePopResource1">
-                <div style="padding:2px; width:100%; background-color:lightgray; line-height: 30px; height:30px; z-index:100; position:fixed; top: 0px; text-align:center;">
-                    <asp:Label ID="lblTailNumber" Font-Bold="True" runat="server" meta:resourcekey="lblTailNumberResource1"></asp:Label> - 
-                    <asp:Image ID="imgCalendar" runat="server" ImageUrl="~/images/CalendarPopup.png" style="display:inline-block; vertical-align:middle;" meta:resourcekey="imgCalendarResource1" />
-                    <asp:Label ID="lblDate" runat="server" Font-Bold="True" style="vertical-align:middle; display:inline-block; line-height:normal;" meta:resourcekey="lblDateResource1"></asp:Label>
-                </div>
+            <asp:Panel ID="pnlChangeDatePop" runat="server" meta:resourcekey="pnlChangeDatePopResource1" style="padding:2px; width:100%; background-color:lightgray; line-height: 30px; z-index:100; height:30px; position:fixed; top: 0px; left: 0px; text-align:center;">
+                <span style="font-family:Arial;font-size:16pt; margin-left: 1em; margin-right: 1em; vertical-align:middle; float:left;" onclick="prevDay();">◄</span>
+                <asp:Label ID="lblTailNumber" Font-Bold="True" Font-Size="Larger" style="vertical-align:middle" runat="server" meta:resourcekey="lblTailNumberResource1"></asp:Label> - 
+                <asp:Label ID="lblDatePicker" runat="server">
+                    <asp:Image ID="imgCalendar" runat="server" ImageUrl="~/images/CalendarPopup.png" style="display:inline-block; margin-right: 5px; vertical-align:middle;" meta:resourcekey="imgCalendarResource1" />
+                    <asp:Label ID="lblDate" runat="server" Font-Bold="True" style="display:inline-block; line-height:normal; vertical-align:middle" meta:resourcekey="lblDateResource1"></asp:Label>
+                </asp:Label>
+                <span style="font-family:Arial;font-size:16pt; margin-left: 1em; margin-right: 1em; float:right; vertical-align:middle" onclick="nextDay();">►</span>
             </asp:Panel>
-            <asp:Panel ID="pnlChangeDate" runat="server" HorizontalAlign="Center" CssClass="modalpopup" style="display:none;" BackColor="White" meta:resourcekey="pnlChangeDateResource1">
-                <span style="text-size-adjust: 125%">
-                    <asp:Panel ID="pnlDateSelector" runat="server" meta:resourcekey="pnlDateSelectorResource1"></asp:Panel>
-                </span>
+            <asp:Panel ID="pnlChangeDate" runat="server" HorizontalAlign="Center" CssClass="modalpopup" style="display:none; text-size-adjust: 125%" BackColor="White" meta:resourcekey="pnlChangeDateResource1">
+                <asp:Panel ID="pnlDateSelector" runat="server" style="margin-left: auto; margin-right: auto;" meta:resourcekey="pnlDateSelectorResource1"></asp:Panel>
             </asp:Panel>
             <cc1:CollapsiblePanelExtender ID="cpeDate" runat="server"
                 ExpandedText="<%$ Resources:LocalizedText, ClickToHide %>" CollapsedText ="<%$ Resources:LocalizedText, ClickToShow %>"
-                ExpandControlID="pnlChangeDatePop" CollapseControlID="pnlChangeDatePop" BehaviorID="cpeDate"
+                ExpandControlID="lblDatePicker" CollapseControlID="lblDatePicker" BehaviorID="cpeDate"
                 Collapsed="true" TargetControlID="pnlChangeDate" TextLabelID="lblShowHide">
             </cc1:CollapsiblePanelExtender>
             <div style="margin-top: 50px;">
