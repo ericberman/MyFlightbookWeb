@@ -108,7 +108,7 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
                             gvFlightLogs.DataSource = dsFlights;
 
                             // Get the list of property types used by this user to create additional columns
-                            comm.CommandText = "SELECT DISTINCT cpt.Title FROM custompropertytypes cpt INNER JOIN flightproperties fp ON fp.idPropType=cpt.idPropType INNER JOIN flights f ON f.idFlight=fp.idFlight WHERE f.username=?uName";
+                            comm.CommandText = "SELECT DISTINCT cpt.Title FROM custompropertytypes cpt INNER JOIN flightproperties fp ON fp.idPropType=cpt.idPropType INNER JOIN flights f ON f.idFlight=fp.idFlight WHERE f.username=?uName ORDER BY cpt.Title ASC";
                             // parameters should still be valid
 
                             Hashtable htProps = new Hashtable(); // maps titles to the relevant column in the gridview
