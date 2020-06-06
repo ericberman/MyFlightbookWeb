@@ -1322,10 +1322,6 @@ namespace MyFlightbook
                 throw new ArgumentNullException(nameof(fq));
             DBHelperCommandArgs comm = new DBHelperCommandArgs();
 
-            // Add the current locale
-            comm.AddWithValue("localecode", System.Globalization.CultureInfo.CurrentCulture.Name.Replace("-", "_"));
-            comm.AddWithValue("shortDate", DBHelper.CSharpDateFormatToMySQLDateFormat());
-
             // And any query parameters
             fq.Refresh();
             foreach (MySqlParameter p in fq.QueryParameters())
