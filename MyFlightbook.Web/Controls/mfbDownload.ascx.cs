@@ -1,12 +1,9 @@
 ﻿using MyFlightbook;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Text;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 /******************************************************
@@ -54,6 +51,13 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
     /// </summary>
     public string OrderString { get; set; }
 
+    /// <summary>
+    /// Returns the column to use for the specified integer-cast custompropertytype.
+    /// </summary>
+    protected Dictionary<int, int> PropertyColumnMap { get; } = new Dictionary<int, int>();
+
+    protected Dictionary<int, Aircraft> AircraftForUser { get; } = new Dictionary<int, Aircraft>();
+
     protected static string FormatTimeSpan(object o1, object o2)
     {
         if (!(o1 is DateTime && o2 is DateTime))
@@ -75,12 +79,18 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
     {
         if (User.Length > 0)
         {
+            IEnumerable<Aircraft> rgac = new UserAircraft(User).GetAircraftForUser();
+            AircraftForUser.Clear();
+            foreach (Aircraft ac in rgac)
+                AircraftForUser[ac.AircraftID] = ac;
+
+            IEnumerable<LogbookEntryDisplay> rgle = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntryDisplay.QueryCommand(Restriction), User, "Date", SortDirection.Descending, false, false);
+            gvFlightLogs.DataSource = rgle;
+
             // See whether or not to show catclassoverride column
             bool fShowAltCatClass = false;
-            DBHelper dbh = new DBHelper("SELECT COALESCE(MAX(idCatClassOverride), 0) AS useAltCatClass FROM flights f WHERE f.username=?user");
-            dbh.ReadRow(
-                (comm) => { comm.Parameters.AddWithValue("user", User); },
-                (dr) => { fShowAltCatClass = Convert.ToInt32(dr["useAltCatClass"], CultureInfo.InvariantCulture) > 0; });
+            foreach (LogbookEntryDisplay le in rgle)
+                fShowAltCatClass |= le.IsOverridden;
 
             if (!fShowAltCatClass)
             {
@@ -92,106 +102,65 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
                     }
             }
 
-            using (MySqlCommand comm = new MySqlCommand())
+            // Generate the set of properties used by the user
+            int cColumns = gvFlightLogs.Columns.Count;
+            PropertyColumnMap.Clear();
+            HashSet<CustomPropertyType> hscpt = new HashSet<CustomPropertyType>();
+            foreach (LogbookEntryBase le in rgle)
             {
-                DBHelper.InitCommandObject(comm, LogbookEntry.QueryCommand(Restriction));
-                comm.CommandTimeout = 80; // use a longer timeout - this could be slow.  
-
-                try
+                foreach (CustomFlightProperty cfp in le.CustomProperties)
                 {
-                    using (MySqlDataAdapter da = new MySqlDataAdapter(comm))
-                    {
-                        using (DataSet dsFlights = new DataSet())
-                        {
-                            dsFlights.Locale = CultureInfo.CurrentCulture;
-                            da.Fill(dsFlights);
-                            gvFlightLogs.DataSource = dsFlights;
-
-                            // Get the list of property types used by this user to create additional columns
-                            comm.CommandText = "SELECT DISTINCT cpt.Title FROM custompropertytypes cpt INNER JOIN flightproperties fp ON fp.idPropType=cpt.idPropType INNER JOIN flights f ON f.idFlight=fp.idFlight WHERE f.username=?uName ORDER BY cpt.Title ASC";
-                            // parameters should still be valid
-
-                            Hashtable htProps = new Hashtable(); // maps titles to the relevant column in the gridview
-                            int cColumns = gvFlightLogs.Columns.Count;
-                            using (DataSet dsProps = new DataSet())
-                            {
-                                dsProps.Locale = CultureInfo.CurrentCulture;
-                                da.Fill(dsProps);
-
-                                // add a new column for each property and store the column number in the hashtable (keyed by title)
-                                foreach (DataRow dr in dsProps.Tables[0].Rows)
-                                {
-                                    htProps[dr.ItemArray[0]] = cColumns++;
-                                    BoundField bf = new BoundField()
-                                    {
-                                        HeaderText = dr.ItemArray[0].ToString(),
-                                        HtmlEncode = false,
-                                        DataField = "",
-                                        DataFormatString = ""
-                                    };
-                                    gvFlightLogs.Columns.Add(bf);
-                                }
-                            }
-
-                            if (OrderString != null && OrderString.Length > 0)
-                            {
-                                char[] delimit = { ',' };
-                                string[] rgszCols = OrderString.Split(delimit);
-                                ArrayList alCols = new ArrayList();
-
-                                // identify the requested front columns
-                                foreach (string szcol in rgszCols)
-                                {
-                                    if (int.TryParse(szcol, NumberStyles.Integer, CultureInfo.InvariantCulture, out int col))
-                                    {
-                                        if (col < gvFlightLogs.Columns.Count)
-                                            alCols.Add(col);
-                                    }
-                                }
-
-                                int[] rgCols = (int[])alCols.ToArray(typeof(int));
-
-                                // pull those columns to the left; this creates a duplicate column and shifts everything right by one...
-                                int iCol = 0;
-                                for (iCol = 0; iCol < rgCols.Length; iCol++)
-                                    gvFlightLogs.Columns.Insert(iCol, gvFlightLogs.Columns[rgCols[iCol] + iCol]);
-
-                                // And then remove the duplicates, from right to left
-                                Array.Sort(rgCols);
-                                for (int i = rgCols.Length - 1; i >= 0; i--)
-                                    gvFlightLogs.Columns.RemoveAt(rgCols[i] + iCol);
-                            }
-
-                            gvFlightLogs.DataBind();
-
-                            // now splice in all of the properties above
-                            // ?localecode and ?shortDate are already in the parameters, from above.
-                            comm.CommandText = "SELECT ELT(cpt.type + 1, cast(fdc.intValue as char), cast(FORMAT(fdc.decValue, 2, ?localecode) as char), if(fdc.intValue = 0, 'No', 'Yes'), DATE_FORMAT(fdc.DateValue, ?shortDate), cast(DateValue as char), StringValue, cast(fdc.decValue AS char))  AS PropVal, fdc.idFlight AS idFlight, cpt.title AS Title FROM flightproperties fdc INNER JOIN custompropertytypes cpt ON fdc.idPropType=cpt.idPropType INNER JOIN flights f ON f.idflight=fdc.idFlight WHERE username=?uName";
-
-                            // and parameters should still be valid!
-                            using (DataSet dsPropValues = new DataSet())
-                            {
-                                dsPropValues.Locale = CultureInfo.CurrentCulture;
-                                da.Fill(dsPropValues);
-                                foreach (GridViewRow gvr in gvFlightLogs.Rows)
-                                {
-                                    int idFlight = Convert.ToInt32(dsFlights.Tables[0].Rows[gvr.RowIndex]["idFlight"], CultureInfo.CurrentCulture);
-                                    foreach (DataRow dr in dsPropValues.Tables[0].Rows)
-                                    {
-                                        if (idFlight == Convert.ToInt32(dr["idFlight"], CultureInfo.CurrentCulture))
-                                            gvr.Cells[Convert.ToInt32(htProps[dr["Title"]], CultureInfo.CurrentCulture)].Text = dr["PropVal"].ToString();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    if (comm.Connection != null && comm.Connection.State != ConnectionState.Closed)
-                        comm.Connection.Close();
+                    if (!hscpt.Contains(cfp.PropertyType))
+                        hscpt.Add(cfp.PropertyType);
                 }
             }
+
+            // Now sort that alphabetically and add them
+            List<CustomPropertyType> lst = new List<CustomPropertyType>(hscpt);
+            lst.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
+            foreach (CustomPropertyType cpt in lst)
+            {
+                PropertyColumnMap[cpt.PropTypeID] = cColumns++;
+                BoundField bf = new BoundField()
+                {
+                    HeaderText = cpt.Title,
+                    HtmlEncode = false,
+                    DataField = string.Empty,
+                    DataFormatString = string.Empty
+                };
+                gvFlightLogs.Columns.Add(bf);
+            }
+
+            if (OrderString != null && OrderString.Length > 0)
+            {
+                char[] delimit = { ',' };
+                string[] rgszCols = OrderString.Split(delimit);
+                ArrayList alCols = new ArrayList();
+
+                // identify the requested front columns
+                foreach (string szcol in rgszCols)
+                {
+                    if (int.TryParse(szcol, NumberStyles.Integer, CultureInfo.InvariantCulture, out int col))
+                    {
+                        if (col < gvFlightLogs.Columns.Count)
+                            alCols.Add(col);
+                    }
+                }
+
+                int[] rgCols = (int[])alCols.ToArray(typeof(int));
+
+                // pull those columns to the left; this creates a duplicate column and shifts everything right by one...
+                int iCol = 0;
+                for (iCol = 0; iCol < rgCols.Length; iCol++)
+                    gvFlightLogs.Columns.Insert(iCol, gvFlightLogs.Columns[rgCols[iCol] + iCol]);
+
+                // And then remove the duplicates, from right to left
+                Array.Sort(rgCols);
+                for (int i = rgCols.Length - 1; i >= 0; i--)
+                    gvFlightLogs.Columns.RemoveAt(rgCols[i] + iCol);
+            }
+
+            gvFlightLogs.DataBind();
         }
     }
 
@@ -215,16 +184,31 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
             throw new ArgumentNullException(nameof(e));
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            int idFlight = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "idflight"), CultureInfo.InvariantCulture);
-            IEnumerable<CustomFlightProperty> rgProps = CustomFlightProperty.PropertiesFromJSONTuples((string) DataBinder.Eval(e.Row.DataItem, "CustomPropsJSON"), idFlight);
-            string szProperties = CustomFlightProperty.PropListDisplay(rgProps, false, "; ");
+            if (!(e.Row.DataItem is LogbookEntryBase le))
+                throw new InvalidCastException("DataItem is not a logbook entry!");
 
+            // Property summary
+            string szProperties = CustomFlightProperty.PropListDisplay(le.CustomProperties, false, "; ");
             if (szProperties.Length > 0)
             {
                 PlaceHolder plcProperties = (PlaceHolder)e.Row.FindControl("plcProperties");
                 TableCell tc = (TableCell) plcProperties.Parent;
                 tc.Text = szProperties;
             }
+
+            // Splice in the custom property types.
+            foreach (CustomFlightProperty cfp in le.CustomProperties)
+                e.Row.Cells[PropertyColumnMap[cfp.PropTypeID]].Text = cfp.ValueString;
+
+            // Add model attributes
+            MakeModel m = MakeModel.GetModel(AircraftForUser[le.AircraftID].ModelID);
+            ((Label) e.Row.FindControl("lblComplex")).Text = m.IsComplex.FormatBooleanInt();
+            ((Label)e.Row.FindControl("lblCSP")).Text = m.IsConstantProp.FormatBooleanInt();
+            ((Label)e.Row.FindControl("lblFlaps")).Text = m.HasFlaps.FormatBooleanInt();
+            ((Label)e.Row.FindControl("lblRetract")).Text = m.IsRetract.FormatBooleanInt();
+            ((Label)e.Row.FindControl("lblTailwheel")).Text = m.IsTailWheel.FormatBooleanInt();
+            ((Label)e.Row.FindControl("lblHP")).Text = m.IsHighPerf.FormatBooleanInt();
+            ((Label)e.Row.FindControl("lblTurbine")).Text = m.EngineType == MakeModel.TurbineLevel.Piston ? string.Empty : 1.FormatBooleanInt();
         }
     }
 
