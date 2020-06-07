@@ -171,6 +171,10 @@ namespace MyFlightbook.Lint
                 if (!String.IsNullOrEmpty(le.ErrorString))
                     currentIssues.Add(new FlightIssue() { IssueDescription = le.ErrorString });
 
+                // ignore deadhead flights
+                if (le.CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDeadhead))
+                    continue;
+
                 currentAircraft = userAircraft.GetUserAircraftByID(le.AircraftID);
 
                 if (currentAircraft == null)
