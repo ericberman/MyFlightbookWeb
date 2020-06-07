@@ -17,20 +17,26 @@
     <asp:HyperLink ID="lnkZoomOut" runat="server"
         Visible="False" Text="Zoom to fit all" 
         meta:resourcekey="lnkZoomOutResource1"></asp:HyperLink>
-    <asp:GridView ID="gvResults" runat="server" GridLines="None" Visible="false"  
+    <asp:GridView ID="gvResults" runat="server" GridLines="None" Visible="false" CellPadding="5"  
             AutoGenerateColumns="False" EnableModelValidation="True" OnPageIndexChanging="gridView_PageIndexChanging" 
+            ShowHeader="false"
             meta:resourcekey="gvResultsResource1" AllowPaging="True">
         <AlternatingRowStyle BackColor="#E0E0E0" />
         <Columns>
-            <asp:BoundField HeaderText="Facility Type" DataField="FacilityType" 
-                meta:resourcekey="BoundFieldResource1" />
-            <asp:TemplateField HeaderText="Code" meta:resourcekey="TemplateFieldResource1">
+            <asp:BoundField DataField="FacilityType" />
+            <asp:TemplateField>
                 <ItemTemplate>
                     <a href='javascript:clickAndZoom(<%# Eval("LatLong.LatitudeString") %>, <%# Eval("LatLong.LongitudeString") %>);'><%# Eval("Code") %></a>
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:BoundField HeaderText="Name" DataField="Name" 
-                meta:resourcekey="BoundFieldResource2" />
+            <asp:BoundField DataField="Name" />
+            <asp:TemplateField>
+                <ItemTemplate>
+                    <asp:HyperLink ID="lnkSvc" runat="server" Text="<%$ Resources:LocalizedText, AirportServiceAirportInformation %>" 
+                        Visible='<%# ((bool) Eval("IsPort")) %>'
+                        Target="_blank" NavigateUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "https://acukwik.com/Airport-Info/{0}", Eval("Code")) %>' />
+                </ItemTemplate>
+            </asp:TemplateField>
         </Columns>
         <EmptyDataTemplate>
             <asp:Label ID="lblNoResults" runat="server" Text="(No Airports Found)" 
