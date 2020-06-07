@@ -109,8 +109,8 @@
                                 Text="<%$ Resources:LogbookEntry, FlightHasData %>"></asp:Label>
                                 <asp:LinkButton ID="lnkUploadNewData" runat="server" 
                                 onclick="lnkUploadNewData_Click" Text="<%$ Resources:LogbookEntry, TelemetryAttachNew %>"></asp:LinkButton>&nbsp;&nbsp;
-                                <asp:LinkButton ID="lnkDeletedata" runat="server" CausesValidation="False"
-                                onclick="lnkDeletedata_Click" Text="<%$ Resources:LogbookEntry, TelemetryDelete %>"></asp:LinkButton>
+                                <asp:ImageButton ID="lnkDeletedata" runat="server" CausesValidation="false" ImageUrl="~/images/x.gif" ImageAlign="Bottom"
+                                onclick="lnkDeletedata_Click" AlternateText="<%$ Resources:LogbookEntry, TelemetryDelete %>" ToolTip="<%$ Resources:LogbookEntry, TelemetryDelete %>" />
                                 <cc1:ConfirmButtonExtender
                                     ID="ConfirmButtonExtender1" runat="server" 
                                 ConfirmText="<%$ Resources:LocalizedText, FlightInfoConfirmDelete %>" 

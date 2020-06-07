@@ -3086,7 +3086,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attach new data.
+        ///   Looks up a localized string similar to Replace.
         /// </summary>
         internal static string TelemetryAttachNew {
             get {

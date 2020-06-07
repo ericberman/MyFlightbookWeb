@@ -923,7 +923,7 @@
     <value>Set to highest previous tachometer value you've recorded in the selected aircraft</value>
   </data>
   <data name="TelemetryAttachNew" xml:space="preserve">
-    <value>Attach new data</value>
+    <value>Replace</value>
   </data>
   <data name="TelemetryDelete" xml:space="preserve">
     <value>Delete this data</value>
