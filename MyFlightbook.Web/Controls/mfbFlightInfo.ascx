@@ -104,9 +104,9 @@
                             <asp:HyperLink ID="lnkFlightData" Target="_blank" runat="server">
                                 <asp:Image ID="Image1" runat="server" ImageUrl="~/images/Clip.png" 
                                     ToolTip="<%$ Resources:LogbookEntry, FlightHasDataTooltip %>" /> 
+                                <asp:Label ID="lblFlightHasData" runat="server" 
+                                    Text="<%$ Resources:LogbookEntry, FlightHasData %>"></asp:Label>
                             </asp:HyperLink>
-                            <asp:Label ID="lblFlightHasData" runat="server" 
-                                Text="<%$ Resources:LogbookEntry, FlightHasData %>"></asp:Label>
                                 <asp:LinkButton ID="lnkUploadNewData" runat="server" 
                                 onclick="lnkUploadNewData_Click" Text="<%$ Resources:LogbookEntry, TelemetryAttachNew %>"></asp:LinkButton>&nbsp;&nbsp;
                                 <asp:ImageButton ID="lnkDeletedata" runat="server" CausesValidation="false" ImageUrl="~/images/x.gif" ImageAlign="Bottom"
