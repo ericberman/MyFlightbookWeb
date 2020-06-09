@@ -18,9 +18,9 @@
                 </asp:MultiView>
             </ItemTemplate>
         </asp:TemplateField>
-        <asp:HyperLinkField Text="<%$ Resources:LocalizedText, AirportServiceAirportInformation %>" DataNavigateUrlFormatString="https://acukwik.com/Airport-Info/{0}" DataNavigateUrlFields="Code" />
-        <asp:HyperLinkField Text="<%$ Resources:LocalizedText, AirportServiceFBO %>" DataNavigateUrlFields="Code" DataNavigateUrlFormatString="http://www.aopa.org/airports/{0}#businesses" />
-        <asp:HyperLinkField Text="<%$ Resources:LocalizedText, AirportServiceMetar %>" DataNavigateUrlFields="Code" DataNavigateUrlFormatString="http://www.checkwx.com/weather/{0}" />
+        <asp:HyperLinkField Text="<%$ Resources:LocalizedText, AirportServiceAirportInformation %>" DataNavigateUrlFormatString="https://acukwik.com/Airport-Info/{0}" DataNavigateUrlFields="Code" Target="_blank" />
+        <asp:HyperLinkField Text="<%$ Resources:LocalizedText, AirportServiceFBO %>" DataNavigateUrlFields="Code" DataNavigateUrlFormatString="http://www.aopa.org/airports/{0}#businesses" Target="_blank" />
+        <asp:HyperLinkField Text="<%$ Resources:LocalizedText, AirportServiceMetar %>" DataNavigateUrlFields="Code" DataNavigateUrlFormatString="http://www.checkwx.com/weather/{0}" Target="_blank" />
         <asp:TemplateField>
             <ItemTemplate>
                 <asp:HyperLink ID="lnkHotels" Target="_blank" runat="server"></asp:HyperLink>
