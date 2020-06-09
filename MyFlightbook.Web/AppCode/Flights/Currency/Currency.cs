@@ -904,10 +904,6 @@ namespace MyFlightbook.Currency
         #region Examine a flight for currency
         private static void ExamineFlightInContext(ExaminerFlightRow cfr, ComputeCurrencyContext ccc)
         {
-            // ignore deadhead flights
-            if (cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropDeadhead))
-                return;
-
             // keep running totals of PIC and Total time.
             ccc.totalTime += cfr.Total;
             ccc.picTime += cfr.PIC;
