@@ -24,7 +24,7 @@ namespace MyFlightbook.Telemetry
         {
             if (szData == null)
                 return false;
-            return IsXML(szData) && szData.Contains("<gpx");
+            return szData.StartsWith("<gpx xmlns", StringComparison.InvariantCulture) || (IsXML(szData) && szData.Contains("<gpx"));
         }
 
         public override FlightData.AltitudeUnitTypes AltitudeUnits
