@@ -473,7 +473,7 @@ namespace MyFlightbook.Airports
         /// <param name="dbh">Query that returns the relevant flights</param>
         /// <param name="action">Action that takes flight data, route, date, and comments.  DO NOT dispose of the FlightData - it's owned by THIS.</param>
         /// <returns>Any error string, empty or null for no error</returns>
-        private static string LookAtAllFlights(FlightQuery fq, LogbookEntryCore.LoadTelemetryOption lto, Action<LogbookEntry> action)
+        private static string LookAtAllFlights(FlightQuery fq, LogbookEntryCore.LoadTelemetryOption lto, Action<LogbookEntry> action, bool fForceLoad = false)
         {
             if (fq == null)
                 throw new ArgumentNullException(nameof(fq));
@@ -485,7 +485,7 @@ namespace MyFlightbook.Airports
                 (comm) => { },
                 (dr) =>
                 {
-                    LogbookEntry le = new LogbookEntry(dr, fq.UserName, lto);
+                    LogbookEntry le = new LogbookEntry(dr, fForceLoad ? (string) dr["username"] : fq.UserName, lto);
                     action(le);
                 });
             return dbh.LastError;
@@ -585,7 +585,8 @@ namespace MyFlightbook.Airports
                         // No path was found above.
                         AirportList al = alMaster.CloneSubset(le.Route);
                         kw.AddRoute(al.GetNormalizedAirports(), String.Format(CultureInfo.CurrentCulture, "{0:d} - {1}", le.Date, le.Route));
-                    });
+                    },
+                    lstIDs != null && lstIDs.Count() > 0);
                 kw.EndKML();
             }
         }

@@ -97,6 +97,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (All Aircraft).
+        /// </summary>
+        internal static string AllClubAircraft {
+            get {
+                return ResourceManager.GetString("AllClubAircraft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (All Members).
+        /// </summary>
+        internal static string AllClubMembers {
+            get {
+                return ResourceManager.GetString("AllClubMembers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         internal static string ButtonAddAircraft {
@@ -147,6 +165,15 @@ namespace Resources {
         internal static string ButtonNewMember {
             get {
                 return ResourceManager.GetString("ButtonNewMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aircraft:.
+        /// </summary>
+        internal static string ClubAircraftForReport {
+            get {
+                return ResourceManager.GetString("ClubAircraftForReport", resourceCulture);
             }
         }
         
@@ -274,11 +301,9 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;% Requestor %&gt; has invited you to join the club/FBO &quot;&lt;% ClubName %&gt;&quot; on %APP_NAME% (http://%APP_URL%), a free online logbook for pilots.
+        ///   Looks up a localized string similar to &lt;% Requestor %&gt; has invited you to join the club/FBO &quot;&lt;% ClubName %&gt;&quot; on [%APP_NAME%](https://%APP_URL%), a free online logbook for pilots.
         ///
-        ///If you know &lt;% Requestor %&gt; and/or are interested in joining, please confirm this by visiting:
-        ///
-        ///&lt;% ConfirmRoleLink %&gt;
+        ///If you know &lt;% Requestor %&gt; and/or are interested in joining, please confirm this by visiting [this page](&lt;% ConfirmRoleLink %&gt;).
         ///
         ///Thank-you
         ///
@@ -287,6 +312,15 @@ namespace Resources {
         internal static string ClubInviteJoin {
             get {
                 return ResourceManager.GetString("ClubInviteJoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Members:.
+        /// </summary>
+        internal static string ClubMembersForReport {
+            get {
+                return ResourceManager.GetString("ClubMembersForReport", resourceCulture);
             }
         }
         
@@ -351,11 +385,9 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;% Requestor %&gt; has requested membership in the club/FBO &quot;&lt;% ClubName %&gt;&quot; on %APP_NAME% (http://%APP_URL%).
+        ///   Looks up a localized string similar to &lt;% Requestor %&gt; has requested membership in the club/FBO &quot;&lt;% ClubName %&gt;&quot; on %APP_NAME% (https://%APP_URL%).
         ///
-        ///If you know &lt;% Requestor %&gt; and approve their membership, please confirm this by visiting:
-        ///
-        ///&lt;% ConfirmRoleLink %&gt;
+        ///If you know &lt;% Requestor %&gt; and approve their membership, please confirm this by visiting [this page](&lt;% ConfirmRoleLink %&gt;).
         ///
         ///Thank-you
         ///

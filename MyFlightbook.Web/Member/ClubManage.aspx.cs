@@ -62,6 +62,11 @@ public partial class Member_ClubManage : System.Web.UI.Page
                     gvMembers.DataBind();
                     vcEdit.ShowDelete = (cm.RoleInClub == ClubMember.ClubMemberRole.Owner);
 
+                    cmbClubAircraft.DataSource = CurrentClub.MemberAircraft;
+                    cmbClubAircraft.DataBind();
+                    cmbClubMembers.DataSource = CurrentClub.Members;
+                    cmbClubMembers.DataBind();
+
                     dateStart.Date = CurrentClub.CreationDate;
                     dateEnd.DefaultDate = dateEnd.Date = DateTime.Now;
                     RefreshAircraft();
@@ -359,7 +364,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
     #region Reporting
     protected void btnUpdate_Click(object sender, EventArgs e)
     {
-        FlyingReport.Refresh(CurrentClub.ID, dateStart.Date, dateEnd.Date);
+        FlyingReport.Refresh(CurrentClub.ID, dateStart.Date, dateEnd.Date, cmbClubMembers.SelectedValue, Convert.ToInt32(cmbClubAircraft.SelectedValue, CultureInfo.InvariantCulture));
         btnDownload.Visible = true;
     }
     protected void btnDownload_Click(object sender, EventArgs e)
@@ -381,7 +386,7 @@ public partial class Member_ClubManage : System.Web.UI.Page
         Response.ContentType = dst.Mimetype;
         Response.AddHeader("Content-Disposition", String.Format(CultureInfo.CurrentCulture, "attachment;filename={0}-AllFlights.{1}", Branding.CurrentBrand.AppName, dst.DefaultExtension));
 
-        FlyingReport.WriteKMLToStream(Response.OutputStream, CurrentClub.ID, dateStart.Date, dateEnd.Date);
+        FlyingReport.WriteKMLToStream(Response.OutputStream, CurrentClub.ID, dateStart.Date, dateEnd.Date, cmbClubMembers.SelectedValue, Convert.ToInt32(cmbClubAircraft.SelectedValue, CultureInfo.InvariantCulture));
 
         Response.End();
     }

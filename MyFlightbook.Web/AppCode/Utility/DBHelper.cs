@@ -314,15 +314,5 @@ namespace MyFlightbook
             return DoNonQuery(CommandArgs, initCommand);
         }
         #endregion
-
-        /// <summary>
-        /// Returns a MySql Date format from a C# date format.  E.g., "yyyy-mm-dd" becomes "%Y-%m-%d"
-        /// </summary>
-        /// <param name="szDateFormat">The date format to convert; pass empty or null to use the current default.</param>
-        /// <returns>A MySQL date format string with the same ordering and separator as the c# one.</returns>
-        public static string CSharpDateFormatToMySQLDateFormat(string szDateFormat = null)
-        {
-            return Regex.Replace(Regex.Replace(Regex.Replace(String.IsNullOrEmpty(szDateFormat) ? System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern : szDateFormat, "y+", "%Y", RegexOptions.Compiled), "M+", "%m", RegexOptions.Compiled), "d+", "%d", RegexOptions.Compiled);
-        }
     }
 }

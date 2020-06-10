@@ -337,6 +337,15 @@ public partial class Member_ClubManage
     protected global::Controls_mfbTypeInDate dateStart;
 
     /// <summary>
+    /// cmbClubMembers control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.DropDownList cmbClubMembers;
+
+    /// <summary>
     /// lnkViewKML control.
     /// </summary>
     /// <remarks>
@@ -398,6 +407,15 @@ public partial class Member_ClubManage
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_mfbTypeInDate dateEnd;
+
+    /// <summary>
+    /// cmbClubAircraft control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.DropDownList cmbClubAircraft;
 
     /// <summary>
     /// btnUpdate control.

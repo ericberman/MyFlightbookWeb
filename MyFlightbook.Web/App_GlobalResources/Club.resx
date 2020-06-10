@@ -710,4 +710,16 @@ Sender Email: {1}</value>
   <data name="RoleTreasurer" xml:space="preserve">
     <value>Treasurer</value>
   </data>
+  <data name="AllClubAircraft" xml:space="preserve">
+    <value>(All Aircraft)</value>
+  </data>
+  <data name="AllClubMembers" xml:space="preserve">
+    <value>(All Members)</value>
+  </data>
+  <data name="ClubAircraftForReport" xml:space="preserve">
+    <value>Aircraft:</value>
+  </data>
+  <data name="ClubMembersForReport" xml:space="preserve">
+    <value>Members:</value>
+  </data>
 </root>

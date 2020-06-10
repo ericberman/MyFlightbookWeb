@@ -38,8 +38,8 @@ public partial class Controls_ClubControls_FlyingReport : System.Web.UI.UserCont
     {
         if (o == null)
             return string.Empty;
-        if (o is DateTime)
-            return ((DateTime)o).UTCFormattedStringOrEmpty(false);
+        if (o is DateTime time)
+            return time.UTCFormattedStringOrEmpty(false);
         return string.Empty;
     }
     #endregion
@@ -49,21 +49,26 @@ public partial class Controls_ClubControls_FlyingReport : System.Web.UI.UserCont
         get { return gvFlyingReport.CSVFromData(); }
     }
 
-    protected void SetParams(int ClubID, DateTime dateStart, DateTime dateEnd)
+    protected void SetParams(int ClubID, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft)
     {
         sqlDSReports.SelectParameters.Clear();
-        sqlDSReports.SelectParameters.Add(new Parameter("idclub", System.Data.DbType.Int32, ClubID.ToString(CultureInfo.InvariantCulture)));
-        sqlDSReports.SelectParameters.Add(new Parameter("startDate", System.Data.DbType.Date, dateStart.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
-        sqlDSReports.SelectParameters.Add(new Parameter("endDate", System.Data.DbType.Date, dateEnd.Date.HasValue() ? dateEnd.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+        sqlDSReports.SelectParameters.Add(new Parameter("idclub", DbType.Int32, ClubID.ToString(CultureInfo.InvariantCulture)));
+        sqlDSReports.SelectParameters.Add(new Parameter("startDate", DbType.Date, dateStart.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+        sqlDSReports.SelectParameters.Add(new Parameter("endDate", DbType.Date, dateEnd.Date.HasValue() ? dateEnd.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+        if (!String.IsNullOrEmpty(szUser))
+            sqlDSReports.SelectParameters.Add(new Parameter("user", DbType.String, szUser));
+        if (idAircraft > 0)
+            sqlDSReports.SelectParameters.Add(new Parameter("aircraftid", DbType.Int32, idAircraft.ToString(CultureInfo.InvariantCulture)));
     }
 
-    public void WriteKMLToStream(Stream s, int ClubID, DateTime dateStart, DateTime dateEnd)
+    public void WriteKMLToStream(Stream s, int ClubID, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft)
     {
         if (s == null)
             throw new ArgumentNullException(nameof(s));
 
+        RefreshReportQuery(ClubID, dateStart, dateEnd, szUser, idAircraft);
+
         // Get the flight IDs that contribute to the report
-        SetParams(ClubID, dateStart, dateEnd);
         List<int> lstIds = new List<int>();
         using (DataView dv = (DataView)sqlDSReports.Select(DataSourceSelectArguments.Empty))
         {
@@ -88,9 +93,46 @@ public partial class Controls_ClubControls_FlyingReport : System.Web.UI.UserCont
         }
     }
 
-    public void Refresh(int ClubID, DateTime dateStart, DateTime dateEnd)
+    private void RefreshReportQuery(int ClubID, DateTime dateStart, DateTime dateEnd, string szUser, int idAircraft)
     {
-        SetParams(ClubID, dateStart, dateEnd);
+        const string szQTemplate = @"SELECT f.idflight, f.date AS Date, f.TotalFlightTime AS 'Total Time', f.Route, f.HobbsStart AS 'Hobbs Start', f.HobbsEnd AS 'Hobbs End', u.username AS 'Username', u.Firstname, u.LastName, u.Email, ac.Tailnumber AS 'Aircraft',  
+fp.decValue AS 'Tach Start', fp2.decValue AS 'Tach End',
+f.dtFlightStart AS 'Flight Start', f.dtFlightEnd AS 'Flight End', 
+f.dtEngineStart AS 'Engine Start', f.dtEngineEnd AS 'Engine End',
+IF (YEAR(f.dtFlightEnd) > 1 AND YEAR(f.dtFlightStart) > 1, (UNIX_TIMESTAMP(f.dtFlightEnd)-UNIX_TIMESTAMP(f.dtFlightStart))/3600, 0) AS 'Total Flight',
+IF (YEAR(f.dtEngineEnd) > 1 AND YEAR(f.dtEngineStart) > 1, (UNIX_TIMESTAMP(f.dtEngineEnd)-UNIX_TIMESTAMP(f.dtEngineStart))/3600, 0) AS 'Total Engine',
+f.HobbsEnd - f.HobbsStart AS 'Total Hobbs', 
+fp2.decValue - fp.decValue AS 'Total Tach',
+fp3.decValue AS 'Oil Added',
+fp4.decValue AS 'Fuel Added',
+fp5.decValue AS 'Fuel Cost',
+fp6.decValue AS 'Oil Level'
+FROM flights f 
+INNER JOIN clubmembers cm ON f.username = cm.username
+INNER JOIN users u ON u.username=cm.username
+INNER JOIN clubs c ON c.idclub=cm.idclub
+INNER JOIN clubaircraft ca ON (ca.idaircraft=f.idaircraft AND c.idclub=ca.idclub)
+INNER JOIN aircraft ac ON (ca.idaircraft=ac.idaircraft AND c.idclub=ca.idclub)
+LEFT JOIN flightproperties fp on (fp.idflight=f.idflight AND fp.idproptype=95)
+LEFT JOIN flightproperties fp2 on (fp2.idflight=f.idflight AND fp2.idproptype=96)
+LEFT JOIN flightproperties fp3 on (fp3.idflight=f.idflight AND fp3.idproptype=365)
+LEFT JOIN flightproperties fp4 on (fp4.idflight=f.idflight AND fp4.idproptype=94)
+LEFT JOIN flightproperties fp5 on (fp5.idflight=f.idflight AND fp5.idproptype=159)
+LEFT JOIN flightproperties fp6 on (fp6.idflight=f.idflight AND fp6.idproptype=650)
+WHERE
+c.idClub = ?idClub AND
+f.date >= GREATEST(?startDate, cm.joindate, c.creationDate) AND
+f.date <= ?endDate {0} {1}
+ORDER BY f.DATE ASC";
+
+        sqlDSReports.SelectCommand = String.Format(CultureInfo.InvariantCulture, szQTemplate, String.IsNullOrEmpty(szUser) ? string.Empty : " AND cm.username=?user ", idAircraft <= 0 ? string.Empty : " AND ca.idaircraft=?aircraftid");
+
+        SetParams(ClubID, dateStart, dateEnd, szUser, idAircraft);
+    }
+
+    public void Refresh(int ClubID, DateTime dateStart, DateTime dateEnd, string szUser = null, int idAircraft = Aircraft.idAircraftUnknown)
+    {
+        RefreshReportQuery(ClubID, dateStart, dateEnd, szUser, idAircraft);
         gvFlyingReport.DataSourceID = sqlDSReports.ID;
         gvFlyingReport.DataBind();
     }

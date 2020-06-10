@@ -191,6 +191,12 @@
                             <td>
                                 <uc1:mfbTypeInDate runat="server" ID="dateStart" DefaultType="Today" />
                             </td>
+                            <td><% =Resources.Club.ClubMembersForReport %></td>
+                            <td>
+                                <asp:DropDownList ID="cmbClubMembers" runat="server" AppendDataBoundItems="true" DataTextField="UserFullName" DataValueField="UserName">
+                                    <asp:ListItem Selected="True" Text="<%$ Resources:Club, AllClubMembers %>" Value=""></asp:ListItem>
+                                </asp:DropDownList>
+                            </td>
                             <td rowspan="2" style="padding-left: 50px">
                                 <asp:LinkButton ID="lnkViewKML" runat="server" onclick="lnkViewKML_Click">
                                     <asp:Image ID="imgDownloadKML" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
@@ -206,10 +212,16 @@
                             <td>
                                 <uc1:mfbTypeInDate runat="server" ID="dateEnd" DefaultType="Today" />
                             </td>
+                            <td><% =Resources.Club.ClubAircraftForReport %></td>
+                            <td>
+                                <asp:DropDownList ID="cmbClubAircraft" runat="server" AppendDataBoundItems="true" DataTextField="DisplayTailnumber" DataValueField="AircraftID">
+                                    <asp:ListItem Selected="True" Text="<%$ Resources:Club, AllClubAircraft %>" Value="-1"></asp:ListItem>
+                                </asp:DropDownList>
+                            </td>
                         </tr>
 
                         <tr>
-                            <td colspan="3">
+                            <td colspan="5">
                                 <asp:Button ID="btnUpdate" OnClick="btnUpdate_Click" runat="server" Text="<%$ Resources:Club, ReportUpdate %>" />
                                 <asp:Button ID="btnDownload" OnClick="btnDownload_Click" runat="server" Text="<%$ Resources:Club, ReportDownload %>" Visible="false" />
                             </td>
