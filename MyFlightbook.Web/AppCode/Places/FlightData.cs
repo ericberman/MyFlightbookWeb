@@ -1486,7 +1486,7 @@ namespace MyFlightbook.Telemetry
 
                 object o = dr[DateColumn];
 
-                DateTime dtSample = (o is DateTime) ? (DateTime)o : o.ToString().SafeParseDate(DateTime.MinValue);
+                DateTime dtSample = (o is DateTime time) ? time : o.ToString().SafeParseDate(DateTime.MinValue);
                 if (HasDateTimeKind)
                     dtSample = DateTime.SpecifyKind(dtSample, (DateTimeKind)dr[KnownColumnNames.TIMEKIND]);
 

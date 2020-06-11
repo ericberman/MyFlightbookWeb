@@ -42,9 +42,11 @@ namespace MyFlightbook.Telemetry
                 return flightData;
 
             MatchCollection mcTail = rGarminAc.Matches(mc[0].Groups["line1"].Value);
-            
+
             if (mcTail.Count == 1)
                 TailNumber = mcTail[0].Groups["aircraftid"].Value;
+            else if (mc[0].Groups["header1"].Value.StartsWith("#", StringComparison.Ordinal))   // next line is naked headers - can use directly
+                return flightData.Substring(mc[0].Groups["header2"].Index);
 
             string szTwoLineHeader = String.Format(CultureInfo.InvariantCulture, "{0}\r\n{1}", mc[0].Groups["header1"].Value, mc[0].Groups["header2"].Value);
 
