@@ -67,8 +67,9 @@ public partial class Member_ClubManage : System.Web.UI.Page
                     cmbClubMembers.DataSource = CurrentClub.Members;
                     cmbClubMembers.DataBind();
 
-                    dateStart.Date = CurrentClub.CreationDate;
-                    dateEnd.DefaultDate = dateEnd.Date = DateTime.Now;
+                    dateStart.Date = (Request.Cookies[szCookieLastStart] != null && DateTime.TryParse(Request.Cookies[szCookieLastStart].Value, out DateTime dtStart)) ? dtStart : CurrentClub.CreationDate;
+                    dateEnd.Date = (Request.Cookies[szCookieLastEnd] != null && DateTime.TryParse(Request.Cookies[szCookieLastEnd].Value, out DateTime dtEnd)) ? dtEnd : DateTime.Now;
+                    dateEnd.DefaultDate = DateTime.Now;
                     RefreshAircraft();
 
                     lblManageheader.Text = String.Format(CultureInfo.CurrentCulture, Resources.Club.LabelManageThisClub, CurrentClub.Name);
@@ -362,10 +363,17 @@ public partial class Member_ClubManage : System.Web.UI.Page
     #endregion
 
     #region Reporting
+    const string szCookieLastStart = "clubFlyingLastStart";
+    const string szCookieLastEnd = "clubFlyingLastEnd";
+
     protected void btnUpdate_Click(object sender, EventArgs e)
     {
         FlyingReport.Refresh(CurrentClub.ID, dateStart.Date, dateEnd.Date, cmbClubMembers.SelectedValue, Convert.ToInt32(cmbClubAircraft.SelectedValue, CultureInfo.InvariantCulture));
         btnDownload.Visible = true;
+
+        Response.Cookies[szCookieLastStart].Value = dateStart.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        Response.Cookies[szCookieLastEnd].Value = dateEnd.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        Response.Cookies[szCookieLastStart].Expires = Response.Cookies[szCookieLastEnd].Expires = DateTime.Now.AddYears(5);
     }
     protected void btnDownload_Click(object sender, EventArgs e)
     {
