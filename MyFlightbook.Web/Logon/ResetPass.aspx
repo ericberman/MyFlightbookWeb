@@ -28,6 +28,7 @@
         </asp:View>
         <asp:View ID="vwVerifyTFAPass" runat="server">
             <p><asp:Label ID="lblTFAReq" runat="server" Text="<%$ Resources:Profile, TFARequired %>"></asp:Label></p>
+            <p><asp:Label ID="lblUseApp" runat="server" Text="<%$ Resources:Profile, TFAUseYourApp %>"></asp:Label></p>
             <uc1:TwoFactorAuthVerifyCode runat="server" ID="tfaReset" OnTFACodeFailed="tfaReset_TFACodeFailed" OnTFACodeVerified="tfaReset_TFACodeVerified" />
             <div><asp:Label ID="lblTFAReset" runat="server" CssClass="error" EnableViewState="false" Text="<%$ Resources:Profile, TFACodeFailed %>" Visible="false"></asp:Label></div>
         </asp:View>

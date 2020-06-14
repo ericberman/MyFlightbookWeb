@@ -364,6 +364,15 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Label lblTFAReq;
 
     /// <summary>
+    /// lblUseApp control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblUseApp;
+
+    /// <summary>
     /// tfaChangePass control.
     /// </summary>
     /// <remarks>
@@ -605,6 +614,15 @@ public partial class Member_EditProfile
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Label lblTFA2;
+
+    /// <summary>
+    /// lblTFAUseApp2 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblTFAUseApp2;
 
     /// <summary>
     /// tfaChangeQA control.

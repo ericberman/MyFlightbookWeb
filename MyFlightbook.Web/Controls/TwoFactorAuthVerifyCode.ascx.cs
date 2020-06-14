@@ -49,11 +49,12 @@ namespace MyFlightbook.Web.Controls
                 throw new InvalidOperationException("Validation required but no authcode provided");
 
             TwoFactorAuthenticator tfa = new TwoFactorAuthenticator();
-            if (tfa.ValidateTwoFactorPIN(AuthCode, txtCode.Text))
+            if (tfa.ValidateTwoFactorPIN(AuthCode, txtCode.Text, new TimeSpan(0, 2, 0)))
                 TFACodeVerified?.Invoke(this, new EventArgs());
             else
             {
                 FailureCount++;
+                System.Threading.Thread.Sleep(1000); // pause for a second to thwart dictionary attacks.
                 TFACodeFailed?.Invoke(this, new EventArgs());
             }
         }

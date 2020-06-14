@@ -602,4 +602,7 @@
   <data name="TFAValidateCodePrompt" xml:space="preserve">
     <value>Once you have scanned the QR code or entered the secret key, enter and verify the 6-digit password below:</value>
   </data>
+  <data name="TFAUseYourApp" xml:space="preserve">
+    <value>Use the authenticator app on your phone/tablet to get a current code.</value>
+  </data>
 </root>

@@ -154,6 +154,7 @@
                                         </asp:View>
                                         <asp:View ID="vwVerifyTFAPass" runat="server">
                                             <p><asp:Label ID="lblTFAReq" runat="server" Text="<%$ Resources:Profile, TFARequired %>"></asp:Label></p>
+                                            <p><asp:Label ID="lblUseApp" runat="server" Text="<%$ Resources:Profile, TFAUseYourApp %>"></asp:Label></p>
                                             <uc1:TwoFactorAuthVerifyCode runat="server" ID="tfaChangePass" OnTFACodeFailed="tfaChangePass_TFACodeFailed" OnTFACodeVerified="tfaChangePass_TFACodeVerified" />
                                             <div><asp:Label ID="lblTFACheckPass" runat="server" CssClass="error" EnableViewState="false" Text="<%$ Resources:Profile, TFACodeFailed %>" Visible="false"></asp:Label></div>
                                         </asp:View>
@@ -215,13 +216,14 @@
                             <asp:Panel ID="pnlQandA" runat="server" DefaultButton="btnChangeQA" meta:resourceKey="pnlQandAResource1">
                                 <asp:UpdatePanel ID="updQA" runat="server">
                                     <ContentTemplate>
+                                        <% =Resources.LocalizedText.AccountQuestionHint %>
                                         <asp:MultiView ID="mvQA" runat="server" ActiveViewIndex="0">
                                             <asp:View ID="vwStaticQA" runat="server">
-                                                <% =Resources.LocalizedText.AccountQuestionHint %>
                                                 <div><asp:Button ID="btnChangeQA" runat="server" Text="<%$ Resources:Profile, ChangeQA %>" OnClick="btnChangeQA_Click1" /></div>
                                             </asp:View>
                                             <asp:View ID="vwVerifyTFAQA" runat="server">
                                                 <p><asp:Label ID="lblTFA2" runat="server" Text="<%$ Resources:Profile, TFARequired %>"></asp:Label></p>
+                                                <p><asp:Label ID="lblTFAUseApp2" runat="server" Text="<%$ Resources:Profile, TFAUseYourApp %>"></asp:Label></p>
                                                 <uc1:TwoFactorAuthVerifyCode runat="server" ID="tfaChangeQA" OnTFACodeFailed="tfaChangeQA_TFACodeFailed" OnTFACodeVerified="tfaChangeQA_TFACodeVerified" />
                                                 <div><asp:Label ID="lblTFAErrQA" runat="server" CssClass="error" EnableViewState="false" Text="<%$ Resources:Profile, TFACodeFailed %>" Visible="false"></asp:Label></div>
                                             </asp:View>

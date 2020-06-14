@@ -1423,6 +1423,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use the authenticator app on your phone/tablet to get a current code..
+        /// </summary>
+        internal static string TFAUseYourApp {
+            get {
+                return ResourceManager.GetString("TFAUseYourApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Validate code.
         /// </summary>
         internal static string TFAValidateCode {
