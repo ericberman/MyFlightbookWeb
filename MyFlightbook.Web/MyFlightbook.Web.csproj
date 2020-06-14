@@ -133,6 +133,9 @@
     <Reference Include="Dropbox.Api, Version=4.0.0.0, Culture=neutral, PublicKeyToken=310f0e82fbb45d01, processorArchitecture=MSIL">
       <HintPath>..\packages\Dropbox.Api.4.10.0\lib\net45\Dropbox.Api.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Authenticator, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GoogleAuthenticator.2.0.1\lib\net45\Google.Authenticator.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Protobuf, Version=3.12.3.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.12.3\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
@@ -170,6 +173,11 @@
     <Reference Include="NodaTime, Version=3.0.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
       <HintPath>..\packages\NodaTime.3.0.0\lib\netstandard2.0\NodaTime.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="QRCoder, Version=1.3.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QRCoder.1.3.9\lib\net40\QRCoder.dll</HintPath>
+    </Reference>
     <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
       <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
     </Reference>
@@ -182,6 +190,9 @@
     <Reference Include="System.ComponentModel" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.4.7.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -272,6 +283,7 @@
     <Reference Include="Ubiety.StyleCop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Ubiety.StyleCop.0.0.5\lib\netstandard2.0\Ubiety.StyleCop.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
     <Reference Include="Zstandard.Net, Version=1.1.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.8.0.20\lib\net452\Zstandard.Net.dll</HintPath>
     </Reference>
@@ -341,6 +353,7 @@
     <Content Include="App_GlobalResources\Content.en\TermsAndConditions.htm" />
     <Content Include="App_GlobalResources\Content.en\WhyStartingFlights.txt" />
     <Content Include="App_GlobalResources\Content.en\wkhtmlnote.htm" />
+    <Content Include="Controls\TwoFactorAuth.ascx" />
     <Content Include="Controls\AccountQuestions.ascx" />
     <Content Include="Controls\adminStats.ascx" />
     <Content Include="Controls\AircraftControls\AircraftList.ascx" />
@@ -452,6 +465,7 @@
     <Content Include="Controls\PrintOptions.ascx" />
     <Content Include="Controls\RSSCurrency.ascx" />
     <Content Include="Controls\SponsoredAd.ascx" />
+    <Content Include="Controls\TwoFactorAuthVerifyCode.ascx" />
     <Content Include="Controls\XMLNav.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="DefaultMini.aspx" />
@@ -1196,6 +1210,13 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>WebService.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TwoFactorAuth.ascx.cs">
+      <DependentUpon>TwoFactorAuth.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\TwoFactorAuth.ascx.designer.cs">
+      <DependentUpon>TwoFactorAuth.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\AccountQuestions.ascx.cs">
       <DependentUpon>AccountQuestions.ascx</DependentUpon>
@@ -1973,6 +1994,13 @@
     </Compile>
     <Compile Include="Controls\SponsoredAd.ascx.designer.cs">
       <DependentUpon>SponsoredAd.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TwoFactorAuthVerifyCode.ascx.cs">
+      <DependentUpon>TwoFactorAuthVerifyCode.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\TwoFactorAuthVerifyCode.ascx.designer.cs">
+      <DependentUpon>TwoFactorAuthVerifyCode.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\XMLNav.ascx.cs">
       <DependentUpon>XMLNav.ascx</DependentUpon>

@@ -412,6 +412,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change Password.
+        /// </summary>
+        internal static string ChangePassword {
+            get {
+                return ResourceManager.GetString("ChangePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change your question/answer.
+        /// </summary>
+        internal static string ChangeQA {
+            get {
+                return ResourceManager.GetString("ChangeQA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have authorized %APP_NAME% to work with CloudAhoy.
         /// </summary>
         internal static string CloudAhoyIsAuthed {
@@ -1266,6 +1284,159 @@ namespace Resources {
         internal static string SignInNewUserPrompt {
             get {
                 return ResourceManager.GetString("SignInNewUserPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incorrect code provided.
+        /// </summary>
+        internal static string TFACodeFailed {
+            get {
+                return ResourceManager.GetString("TFACodeFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code successfully validated.
+        /// </summary>
+        internal static string TFACodeValidated {
+            get {
+                return ResourceManager.GetString("TFACodeValidated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn off 2-Factor Authentication for my account.
+        /// </summary>
+        internal static string TFADisable {
+            get {
+                return ResourceManager.GetString("TFADisable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download an authenticator app from app to your iOS or Android device..
+        /// </summary>
+        internal static string TFADownloadGoogleAuthenticator {
+            get {
+                return ResourceManager.GetString("TFADownloadGoogleAuthenticator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add 2-Factor Authentication to my account.
+        /// </summary>
+        internal static string TFAEnable {
+            get {
+                return ResourceManager.GetString("TFAEnable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter 6-digit code.
+        /// </summary>
+        internal static string TFAEnterCodePrompt {
+            get {
+                return ResourceManager.GetString("TFAEnterCodePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code must be 6 digits.
+        /// </summary>
+        internal static string TFAErrCodeFormat {
+            get {
+                return ResourceManager.GetString("TFAErrCodeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2-Factor Authentication.
+        /// </summary>
+        internal static string TFAHeader {
+            get {
+                return ResourceManager.GetString("TFAHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2-Factor Authentication is active for your account..
+        /// </summary>
+        internal static string TFAIsSetUp {
+            get {
+                return ResourceManager.GetString("TFAIsSetUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more....
+        /// </summary>
+        internal static string TFALearnMore {
+            get {
+                return ResourceManager.GetString("TFALearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2-factor authentication (2FA) provides an additional layer of security for your account by requiring a second method in addition to your password to authenticate yourself, making it harder for a hacker to gain access to your account..
+        /// </summary>
+        internal static string TFAOverview {
+            get {
+                return ResourceManager.GetString("TFAOverview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Because your account has 2-factor authentication turned on, we need to first verify that you are in fact you..
+        /// </summary>
+        internal static string TFARequired {
+            get {
+                return ResourceManager.GetString("TFARequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Secret Key: .
+        /// </summary>
+        internal static string TFASecretKeyPrompt {
+            get {
+                return ResourceManager.GetString("TFASecretKeyPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using the authenticator app, scan the QR code below with your device&apos;s camera, or enter the &quot;secret key&quot; directly.
+        /// </summary>
+        internal static string TFATwoOptionsPrompt {
+            get {
+                return ResourceManager.GetString("TFATwoOptionsPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %APP_NAME% uses an authentication app that you download to your phone/tablet, such as Google Authenticator or Microsoft Authenticator, for 2-factor authentication.  The app provides a time-limited code to enter after providing your password.  If you enable 2-factor authentication for your account, then you MUST have access to the app on your phone in order to sign in..
+        /// </summary>
+        internal static string TFAUseGA {
+            get {
+                return ResourceManager.GetString("TFAUseGA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validate code.
+        /// </summary>
+        internal static string TFAValidateCode {
+            get {
+                return ResourceManager.GetString("TFAValidateCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Once you have scanned the QR code or entered the secret key, enter and verify the 6-digit password below:.
+        /// </summary>
+        internal static string TFAValidateCodePrompt {
+            get {
+                return ResourceManager.GetString("TFAValidateCodePrompt", resourceCulture);
             }
         }
         

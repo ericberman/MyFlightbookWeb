@@ -545,4 +545,61 @@
   <data name="ProfileBulkDeleteAircraftPrompt" xml:space="preserve">
     <value>Delete all unused aircraft from my account</value>
   </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="ChangeQA" xml:space="preserve">
+    <value>Change your question/answer</value>
+  </data>
+  <data name="TFACodeFailed" xml:space="preserve">
+    <value>Incorrect code provided</value>
+  </data>
+  <data name="TFACodeValidated" xml:space="preserve">
+    <value>Code successfully validated</value>
+  </data>
+  <data name="TFADisable" xml:space="preserve">
+    <value>Turn off 2-Factor Authentication for my account</value>
+  </data>
+  <data name="TFADownloadGoogleAuthenticator" xml:space="preserve">
+    <value>Download an authenticator app from app to your iOS or Android device.</value>
+  </data>
+  <data name="TFAEnable" xml:space="preserve">
+    <value>Add 2-Factor Authentication to my account</value>
+  </data>
+  <data name="TFAEnterCodePrompt" xml:space="preserve">
+    <value>Enter 6-digit code</value>
+  </data>
+  <data name="TFAErrCodeFormat" xml:space="preserve">
+    <value>Code must be 6 digits</value>
+  </data>
+  <data name="TFAHeader" xml:space="preserve">
+    <value>2-Factor Authentication</value>
+  </data>
+  <data name="TFAIsSetUp" xml:space="preserve">
+    <value>2-Factor Authentication is active for your account.</value>
+  </data>
+  <data name="TFALearnMore" xml:space="preserve">
+    <value>Learn more...</value>
+  </data>
+  <data name="TFAOverview" xml:space="preserve">
+    <value>2-factor authentication (2FA) provides an additional layer of security for your account by requiring a second method in addition to your password to authenticate yourself, making it harder for a hacker to gain access to your account.</value>
+  </data>
+  <data name="TFARequired" xml:space="preserve">
+    <value>Because your account has 2-factor authentication turned on, we need to first verify that you are in fact you.</value>
+  </data>
+  <data name="TFASecretKeyPrompt" xml:space="preserve">
+    <value>Secret Key: </value>
+  </data>
+  <data name="TFATwoOptionsPrompt" xml:space="preserve">
+    <value>Using the authenticator app, scan the QR code below with your device's camera, or enter the "secret key" directly</value>
+  </data>
+  <data name="TFAUseGA" xml:space="preserve">
+    <value>%APP_NAME% uses an authentication app that you download to your phone/tablet, such as Google Authenticator or Microsoft Authenticator, for 2-factor authentication.  The app provides a time-limited code to enter after providing your password.  If you enable 2-factor authentication for your account, then you MUST have access to the app on your phone in order to sign in.</value>
+  </data>
+  <data name="TFAValidateCode" xml:space="preserve">
+    <value>Validate code</value>
+  </data>
+  <data name="TFAValidateCodePrompt" xml:space="preserve">
+    <value>Once you have scanned the QR code or entered the secret key, enter and verify the 6-digit password below:</value>
+  </data>
 </root>

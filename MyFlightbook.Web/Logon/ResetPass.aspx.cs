@@ -57,7 +57,15 @@ public partial class ResetPass : System.Web.UI.Page
             {
                 PasswordResetRequest prr = CurrentRequest = new PasswordResetRequest(szResetID);
                 CheckStatus(prr);   // verify that it's an OK request.
-                mvResetPass.SetActiveView(vwVerify);
+                Profile pf = Profile.GetUser(prr.UserName);
+                if (pf.PreferenceExists(MFBConstants.keyTFASettings))
+                {
+                    tfaReset.AuthCode = pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string;
+                    mvResetPass.SetActiveView(vwVerifyTFAPass);
+                }
+                else
+                    mvResetPass.SetActiveView(vwVerify);
+
                 lblQuestion.Text = Membership.GetUser(prr.UserName).PasswordQuestion;
             }
             catch (Exception ex) when (ex is ArgumentOutOfRangeException)
@@ -107,7 +115,7 @@ public partial class ResetPass : System.Web.UI.Page
                 string szEmailBody = Branding.ReBrand(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ResetPassEmail)).Replace("<% RESET_LINK %>", szURL);
                 MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(szUser);
 
-                util.NotifyUser(Branding.ReBrand(Resources.LocalizedText.ResetPasswordSubjectNew), szEmailBody, new System.Net.Mail.MailAddress(pf.Email, pf.UserName), false, false);
+                util.NotifyUser(Branding.ReBrand(Resources.LocalizedText.ResetPasswordSubjectNew), szEmailBody, new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
             }
         }
     }
@@ -158,5 +166,15 @@ public partial class ResetPass : System.Web.UI.Page
                 lblErr.Text = ex.Message;
             }
         }
+    }
+
+    protected void tfaReset_TFACodeFailed(object sender, EventArgs e)
+    {
+        lblTFAReset.Visible = true;
+    }
+
+    protected void tfaReset_TFACodeVerified(object sender, EventArgs e)
+    {
+        mvResetPass.SetActiveView(vwVerify);
     }
 }

@@ -31,6 +31,7 @@ namespace MyFlightbook
         public const string keyNewUser = "IsNewUser";
         public const string keyEncryptMyFlights = "MyFlightsKey";
         public const string keyCookiePrivacy = "cookiesAccepted";
+        public const string keyTFASettings = "prefTFASettings"; // any 2-factor authentication settings.
     }
 
     public static class ShuntState
