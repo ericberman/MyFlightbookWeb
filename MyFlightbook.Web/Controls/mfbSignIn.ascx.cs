@@ -1,4 +1,5 @@
 using MyFlightbook;
+using MyFlightbook.Web.Controls;
 using System;
 using System.Web;
 using System.Web.Security;
@@ -34,6 +35,9 @@ public partial class Controls_mfbSignIn : System.Web.UI.UserControl
 
     protected void OnLoggingIn(object sender, LoginCancelEventArgs e)
     {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
         TextBox txtEmail = (TextBox)ctlSignIn.FindControl("txtEmail");
         TextBox txtUser = (TextBox)ctlSignIn.FindControl("UserName");
 
@@ -46,5 +50,41 @@ public partial class Controls_mfbSignIn : System.Web.UI.UserControl
         string szUser = Membership.GetUserNameByEmail(txtEmail.Text);
 
         txtUser.Text = HttpUtility.HtmlEncode(szUser);
+
+        // see if two-factor authentication is set up for this user
+        // But only if the password provided is correct.
+        Profile pf = Profile.GetUser(szUser);
+        if (pf.PreferenceExists(MFBConstants.keyTFASettings))
+        {
+            TextBox txtPass = (TextBox)ctlSignIn.FindControl("Password");
+
+            if (Membership.ValidateUser(szUser, txtPass.Text))
+            {
+                TwoFactorAuthVerifyCode tfavc = (TwoFactorAuthVerifyCode)ctlSignIn.FindControl("tfavc");
+                tfavc.AuthCode = pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string;
+                MultiView mv = (MultiView)ctlSignIn.FindControl("mvSignIn");
+                mv.SetActiveView((View)ctlSignIn.FindControl("vwTFA"));
+                e.Cancel = true;
+                return;
+            }
+
+            // password didn't validate...fall through to regular error handling.
+        }
+    }
+
+    protected void TwoFactorAuthVerifyCode_TFACodeFailed(object sender, EventArgs e)
+    {
+        Label lblCodeResult = (Label)ctlSignIn.FindControl("lblCodeResult");
+        lblCodeResult.Text = Resources.Profile.TFACodeFailed;
+        lblCodeResult.CssClass = "error";
+    }
+
+    protected void TwoFactorAuthVerifyCode_TFACodeVerified(object sender, EventArgs e)
+    {
+        // We already verified the password above.
+        TextBox txtUser = (TextBox)ctlSignIn.FindControl("UserName");
+        CheckBox ckRemember = (CheckBox) ctlSignIn.FindControl("RememberMe");
+        FormsAuthentication.SetAuthCookie(txtUser.Text, ckRemember.Checked);
+        Response.Redirect(String.IsNullOrEmpty(Request["ReturnUrl"]) ? ctlSignIn.DestinationPageUrl : Request["ReturnUrl"]);
     }
 }

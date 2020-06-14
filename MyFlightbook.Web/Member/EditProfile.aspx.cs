@@ -337,7 +337,10 @@ public partial class Member_EditProfile : System.Web.UI.Page
     protected void btnUpdatePass_Click(object sender, EventArgs e)
     {
         if (FCommitPass())
+        {
             lblPassChanged.Visible = true;
+            mvChangePass.SetActiveView(vwStaticPass);
+        }
     }
 
     public void ValidateCurrentPassword(object source, ServerValidateEventArgs args)
@@ -346,6 +349,22 @@ public partial class Member_EditProfile : System.Web.UI.Page
             throw new ArgumentNullException(nameof(args));
         if (CurrentPassword.Text.Length == 0 && NewPassword.Text.Length > 0)
             args.IsValid = false;
+    }
+
+    protected void btnChangePass_Click(object sender, EventArgs e)
+    {
+        mvChangePass.SetActiveView(m_pf.PreferenceExists(MFBConstants.keyTFASettings) ? vwVerifyTFAPass : vwChangePass);
+        tfaChangePass.AuthCode = m_pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string;
+    }
+
+    protected void tfaChangePass_TFACodeFailed(object sender, EventArgs e)
+    {
+        lblTFACheckPass.Visible = true;
+    }
+
+    protected void tfaChangePass_TFACodeVerified(object sender, EventArgs e)
+    {
+        mvChangePass.SetActiveView(vwChangePass);
     }
     #endregion
 
@@ -363,6 +382,22 @@ public partial class Member_EditProfile : System.Web.UI.Page
             lblQAChangeSuccess.Text = ex.Message;
             lblQAChangeSuccess.CssClass = "error";
         }
+    }
+
+    protected void btnChangeQA_Click1(object sender, EventArgs e)
+    {
+        mvQA.SetActiveView(m_pf.PreferenceExists(MFBConstants.keyTFASettings) ? vwVerifyTFAQA : vwChangeQA);
+        tfaChangeQA.AuthCode = m_pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string;
+    }
+
+    protected void tfaChangeQA_TFACodeFailed(object sender, EventArgs e)
+    {
+        lblTFAErrQA.Visible = true;
+    }
+
+    protected void tfaChangeQA_TFACodeVerified(object sender, EventArgs e)
+    {
+        mvQA.SetActiveView(vwChangeQA);
     }
     #endregion
 

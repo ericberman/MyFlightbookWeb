@@ -274,6 +274,33 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Localize locHeadPass;
 
     /// <summary>
+    /// updPass control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.UpdatePanel updPass;
+
+    /// <summary>
+    /// mvChangePass control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.MultiView mvChangePass;
+
+    /// <summary>
+    /// vwStaticPass control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwStaticPass;
+
+    /// <summary>
     /// lblLastLogin control.
     /// </summary>
     /// <remarks>
@@ -308,6 +335,60 @@ public partial class Member_EditProfile
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Label lblPasswordStatus;
+
+    /// <summary>
+    /// btnChangePass control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnChangePass;
+
+    /// <summary>
+    /// vwVerifyTFAPass control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwVerifyTFAPass;
+
+    /// <summary>
+    /// lblTFAReq control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblTFAReq;
+
+    /// <summary>
+    /// tfaChangePass control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::MyFlightbook.Web.Controls.TwoFactorAuthVerifyCode tfaChangePass;
+
+    /// <summary>
+    /// lblTFACheckPass control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblTFACheckPass;
+
+    /// <summary>
+    /// vwChangePass control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwChangePass;
 
     /// <summary>
     /// pnlPassword control.
@@ -472,6 +553,87 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Panel pnlQandA;
 
     /// <summary>
+    /// updQA control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.UpdatePanel updQA;
+
+    /// <summary>
+    /// mvQA control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.MultiView mvQA;
+
+    /// <summary>
+    /// vwStaticQA control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwStaticQA;
+
+    /// <summary>
+    /// btnChangeQA control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnChangeQA;
+
+    /// <summary>
+    /// vwVerifyTFAQA control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwVerifyTFAQA;
+
+    /// <summary>
+    /// lblTFA2 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblTFA2;
+
+    /// <summary>
+    /// tfaChangeQA control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::MyFlightbook.Web.Controls.TwoFactorAuthVerifyCode tfaChangeQA;
+
+    /// <summary>
+    /// lblTFAErrQA control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblTFAErrQA;
+
+    /// <summary>
+    /// vwChangeQA control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwChangeQA;
+
+    /// <summary>
     /// locPasswordPromptForQA control.
     /// </summary>
     /// <remarks>
@@ -562,13 +724,13 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator10;
 
     /// <summary>
-    /// btnChangeQA control.
+    /// Button1 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnChangeQA;
+    protected global::System.Web.UI.WebControls.Button Button1;
 
     /// <summary>
     /// lblQAChangeSuccess control.
@@ -578,6 +740,42 @@ public partial class Member_EditProfile
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Label lblQAChangeSuccess;
+
+    /// <summary>
+    /// acp2fa control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.AccordionPane acp2fa;
+
+    /// <summary>
+    /// loc2fa control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize loc2fa;
+
+    /// <summary>
+    /// UpdatePanel4 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.UpdatePanel UpdatePanel4;
+
+    /// <summary>
+    /// TwoFactorAuth control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::MyFlightbook.Web.Controls.TwoFActorAuth TwoFactorAuth;
 
     /// <summary>
     /// acpDeletion control.

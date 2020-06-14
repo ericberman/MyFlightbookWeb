@@ -157,6 +157,42 @@ public partial class ResetPass
     protected global::System.Web.UI.WebControls.HyperLink lnkContactUs;
 
     /// <summary>
+    /// vwVerifyTFAPass control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwVerifyTFAPass;
+
+    /// <summary>
+    /// lblTFAReq control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblTFAReq;
+
+    /// <summary>
+    /// tfaReset control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::MyFlightbook.Web.Controls.TwoFactorAuthVerifyCode tfaReset;
+
+    /// <summary>
+    /// lblTFAReset control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblTFAReset;
+
+    /// <summary>
     /// vwVerify control.
     /// </summary>
     /// <remarks>
@@ -220,6 +256,15 @@ public partial class ResetPass
     protected global::System.Web.UI.WebControls.Label lblQuestion;
 
     /// <summary>
+    /// pnlAnswer control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlAnswer;
+
+    /// <summary>
     /// txtAnswer control.
     /// </summary>
     /// <remarks>
@@ -263,6 +308,15 @@ public partial class ResetPass
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Label lblChangePassword;
+
+    /// <summary>
+    /// pnlNewPass control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlNewPass;
 
     /// <summary>
     /// lblNewPass control.
