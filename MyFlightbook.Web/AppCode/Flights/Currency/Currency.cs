@@ -1412,6 +1412,21 @@ namespace MyFlightbook.Currency
         }
     }
 
+    #region Timespan Types
+    /// <summary>
+    /// Different forms of time-spans for currency; only the first two (Days/CalendarMonths) are used by regulatory currencies, the rest are used by customcurrencies.
+    /// DO NOT RE-ORDER THESE as they are persisted in the database for custom currencies; that's why (for example), sliding months is at the end.
+    /// </summary>
+    public enum TimespanType
+    {
+        Days, CalendarMonths,
+        TwelveMonthJan, TwelveMonthFeb, TwelveMonthMar, TwelveMonthApr, TwelveMonthMay, TwelveMonthJun, TwelveMonthJul, TwelveMonthAug, TwelveMonthSep, TwelveMonthOct, TwelveMonthNov, TwelveMonthDec,
+        SixMonthJan, SixMonthFeb, SixMonthMar, SixMonthApr, SixMonthMay, SixMonthJun,
+        FourMonthJan, FourMonthFeb, FourMonthMar, FourMonthApr,
+        ThreeMonthJan, ThreeMonthFeb, ThreeMonthMar, SlidingMonths
+    }
+    #endregion
+
     #region Concrete flavors of CurrencyExaminers and other currencies
     /// <summary>
     /// Represents a basic flight currency where you need a certain number of events in a certain timeframe  E.g., nighttime currency
@@ -1441,10 +1456,7 @@ namespace MyFlightbook.Currency
         /// </summary>
         public Decimal RequiredEvents { get; set; }
 
-        /// <summary>
-        /// Is the timespan expressed in days (false) or calendar months (true)?
-        /// </summary>
-        public Boolean IsCalendarMonth { get; set; }
+        public TimespanType CurrencyTimespanType { get; set; } = TimespanType.Days;
 
         /// <summary>
         /// Timespan in which the required events must occur to apply to currency as of NOW.  Earlier events can be used to 
@@ -1456,7 +1468,19 @@ namespace MyFlightbook.Currency
             set
             {
                 m_ExpirationSpan = value;
-                m_dtEarliest = IsCalendarMonth ? DateTime.Now.AddCalendarMonths(-value) : DateTime.Now.AddDays(-value);
+                switch (CurrencyTimespanType)
+                {
+                    default:
+                    case TimespanType.Days:
+                        m_dtEarliest = DateTime.Now.AddDays(-value);
+                        break;
+                    case TimespanType.CalendarMonths:
+                        m_dtEarliest = DateTime.Now.AddCalendarMonths(-value);
+                        break;
+                    case TimespanType.SlidingMonths:
+                        m_dtEarliest = DateTime.Now.AddMonths(-value);
+                        break;
+                }
             }
         }
 
@@ -1472,7 +1496,6 @@ namespace MyFlightbook.Currency
             MostRecentEventDate = DateTime.MinValue;
             NumEvents = 0;
             ExpirationSpan = 0;
-            IsCalendarMonth = false;
             m_Discrepancy = RequiredEvents = 0;
             DisplayName = string.Empty;
             m_eventQueue = new Queue<CurrencyEvent>();
@@ -1484,11 +1507,11 @@ namespace MyFlightbook.Currency
         /// </summary>
         /// <param name="cThreshold"># of flight events required to achieve currency</param>
         /// <param name="Period"># of days or months before this aspect of flight currency expires</param>
-        /// <param name="fMonths">True if ExpirationSpan is in months; false if in days.</param>
+        /// <param name="fMonths">True if ExpirationSpan is in calendar months; false if in days.</param>
         /// <param name="szName">Display name for this currency object</param>
         public FlightCurrency(Decimal cThreshold, int Period, Boolean fMonths, string szName) : this()
         {
-            IsCalendarMonth = fMonths;
+            CurrencyTimespanType = fMonths ? TimespanType.CalendarMonths : TimespanType.Days;
             ExpirationSpan = Period;
             RequiredEvents = Discrepancy = cThreshold;
             DisplayName = szName;
@@ -1602,7 +1625,7 @@ namespace MyFlightbook.Currency
         {
             if (fc == null)
                 throw new ArgumentNullException(nameof(fc));
-            FlightCurrency fcNew = new FlightCurrency(NumEvents, ExpirationSpan, IsCalendarMonth, DisplayName) { m_lstValidCurrencies = MergeLists(m_lstValidCurrencies, fc.m_lstValidCurrencies, MergeOption.AND) };
+            FlightCurrency fcNew = new FlightCurrency(NumEvents, ExpirationSpan, CurrencyTimespanType == TimespanType.CalendarMonths, DisplayName) { m_lstValidCurrencies = MergeLists(m_lstValidCurrencies, fc.m_lstValidCurrencies, MergeOption.AND) };
             return fcNew;
         }
 
@@ -1615,7 +1638,7 @@ namespace MyFlightbook.Currency
         {
             if (fc == null)
                 throw new ArgumentNullException(nameof(fc));
-            FlightCurrency fcNew = new FlightCurrency(NumEvents, ExpirationSpan, IsCalendarMonth, DisplayName) { m_lstValidCurrencies = MergeLists(m_lstValidCurrencies, fc.m_lstValidCurrencies, MergeOption.OR) };
+            FlightCurrency fcNew = new FlightCurrency(NumEvents, ExpirationSpan, CurrencyTimespanType == TimespanType.CalendarMonths, DisplayName) { m_lstValidCurrencies = MergeLists(m_lstValidCurrencies, fc.m_lstValidCurrencies, MergeOption.OR) };
             return fcNew;
         }
         #endregion
@@ -1686,7 +1709,16 @@ namespace MyFlightbook.Currency
         /// <returns>The resulting date out (e.g., 90 days later or 6 calendar months later)</returns>
         private DateTime ExpirationFromDate(DateTime dt)
         {
-            return (IsCalendarMonth) ? dt.AddCalendarMonths(m_ExpirationSpan) : dt.AddDays(m_ExpirationSpan);
+            switch (CurrencyTimespanType)
+            {
+                default:
+                case TimespanType.Days:
+                    return dt.AddDays(m_ExpirationSpan);
+                case TimespanType.CalendarMonths:
+                    return dt.AddCalendarMonths(m_ExpirationSpan);
+                case TimespanType.SlidingMonths:
+                    return dt.AddMonths(m_ExpirationSpan);
+            }
         }
 
         /// <summary>

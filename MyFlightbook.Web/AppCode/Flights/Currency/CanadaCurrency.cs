@@ -52,7 +52,7 @@ namespace MyFlightbook.Currency
         public PassengerCurrencyCanada(string szName)
             : base(szName)
         {
-            IsCalendarMonth = true;
+            CurrencyTimespanType = TimespanType.CalendarMonths;
             ExpirationSpan = 6;
             RequiredEvents = Discrepancy = 5;
             fcCanada = new FlightExperienceCanada();
@@ -90,7 +90,7 @@ namespace MyFlightbook.Currency
         public NightCurrencyCanada(string szName)
             : base(szName)
         {
-            NightTakeoffCurrency.IsCalendarMonth = this.IsCalendarMonth = true;
+            NightTakeoffCurrency.CurrencyTimespanType = this.CurrencyTimespanType = TimespanType.CalendarMonths;
             NightTakeoffCurrency.ExpirationSpan = this.ExpirationSpan = TimeSpanCanada;
             this.RequiredEvents = this.Discrepancy = RequiredLandingsCanada;
             NightTakeoffCurrency.RequiredEvents = NightTakeoffCurrency.Discrepancy = RequiredTakeoffsCanada;

@@ -36,9 +36,9 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         }
     }
 
-    protected CustomCurrencyTimespanType SelectedTimespanType
+    protected TimespanType SelectedTimespanType
     {
-        get { return (CustomCurrencyTimespanType)Enum.Parse(typeof(CustomCurrencyTimespanType), cmbMonthsDays.SelectedValue); }
+        get { return (TimespanType)Enum.Parse(typeof(TimespanType), cmbMonthsDays.SelectedValue); }
         set { cmbMonthsDays.SelectedValue = value.ToString(); }
     }
 
@@ -52,8 +52,14 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
 
         m_fNeedsInit = false;
 
-        foreach (CustomCurrencyTimespanType t in Enum.GetValues(typeof(CustomCurrencyTimespanType)))
-            cmbMonthsDays.Items.Add(new ListItem(t.DisplayString(), t.ToString()));
+        List<TimespanType> lstTst = new List<TimespanType>();
+        foreach (TimespanType t in Enum.GetValues(typeof(TimespanType)))
+            lstTst.Add(t);
+        // Move sliding months up - we don't want an alphabetical sort.  Want days/calendar months/sliding months, then everything else.
+        lstTst.RemoveAll(tst =>  tst == TimespanType.Days || tst == TimespanType.CalendarMonths || tst == TimespanType.SlidingMonths);
+        lstTst.InsertRange(0, new TimespanType[] { TimespanType.Days, TimespanType.CalendarMonths, TimespanType.SlidingMonths });
+        foreach (TimespanType t in lstTst)
+            cmbMonthsDays.Items.Add(new ListItem(t.DisplayString().Substring(0, 1).ToUpper(CultureInfo.CurrentCulture) + t.DisplayString().Substring(1), t.ToString()));
 
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         IEnumerable<Aircraft> lstAc = ua.GetAircraftForUser();
@@ -134,7 +140,8 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         // clear the form
         txtRuleName.Text = string.Empty;
         cmbEventTypes.SelectedIndex = 0;
-        decMinEvents.Value = 1;
+        decMinEvents.EditingMode = Controls_mfbDecimalEdit.EditMode.Integer;
+        decMinEvents.Value = 0;
         txtTimeFrame.Text = txtAirport.Text = txtContainedText.Text = string.Empty;
         cmbMonthsDays.SelectedIndex = 0;
 
@@ -179,8 +186,8 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
         }
 
         cmbEventTypes.SelectedValue = ((int) cc.EventType).ToString(CultureInfo.InvariantCulture);
-        SelectedTimespanType = cc.TimespanType;
-        txtTimeFrame.Text = cc.TimespanType.IsAligned() ? string.Empty : cc.ExpirationSpan.ToString(CultureInfo.InvariantCulture);
+        SelectedTimespanType = cc.CurrencyTimespanType;
+        txtTimeFrame.Text = cc.CurrencyTimespanType.IsAligned() ? string.Empty : cc.ExpirationSpan.ToString(CultureInfo.InvariantCulture);
 
         foreach (ListItem li in lstModels.Items)
             li.Selected = cc.ModelsRestriction.Contains(Convert.ToInt32(li.Value, CultureInfo.InvariantCulture));
@@ -222,8 +229,8 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
             cc.CurrencyLimitType = lt;
         cc.RequiredEvents = decMinEvents.Value;
         cc.EventType = (CustomCurrency.CustomCurrencyEventType)Convert.ToInt32(cmbEventTypes.SelectedValue, CultureInfo.InvariantCulture);
-        cc.TimespanType = SelectedTimespanType;
-        cc.ExpirationSpan = cc.TimespanType.IsAligned() ? 0 : Convert.ToInt32(txtTimeFrame.Text, CultureInfo.CurrentCulture);
+        cc.CurrencyTimespanType = SelectedTimespanType;
+        cc.ExpirationSpan = cc.CurrencyTimespanType.IsAligned() ? 0 : Convert.ToInt32(txtTimeFrame.Text, CultureInfo.CurrentCulture);
 
         cc.ModelsRestriction = IDsFromList(lstModels);
         cc.AircraftRestriction = IDsFromList(lstAircraft);

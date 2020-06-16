@@ -987,4 +987,13 @@
   <data name="CustomCurrencyEventRestHours" xml:space="preserve">
     <value>rest hours</value>
   </data>
+  <data name="CustomCurrencyEventTakeoff" xml:space="preserve">
+    <value>Takeoff (in "Takeoffs (any)" property)</value>
+  </data>
+  <data name="CustomCurrencyEventTakeoffs" xml:space="preserve">
+    <value>Takeoffs (in "Takeoffs (any)" property)</value>
+  </data>
+  <data name="CustomCurrencySlidingMonths" xml:space="preserve">
+    <value>months (day-for-day)</value>
+  </data>
 </root>

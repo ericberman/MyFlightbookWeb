@@ -15,15 +15,6 @@ using System.Text;
 
 namespace MyFlightbook.Currency
 {
-    public enum CustomCurrencyTimespanType
-    {
-        Days, CalendarMonths,
-        TwelveMonthJan, TwelveMonthFeb, TwelveMonthMar, TwelveMonthApr, TwelveMonthMay, TwelveMonthJun, TwelveMonthJul, TwelveMonthAug, TwelveMonthSep, TwelveMonthOct, TwelveMonthNov, TwelveMonthDec,
-        SixMonthJan, SixMonthFeb, SixMonthMar, SixMonthApr, SixMonthMay, SixMonthJun,
-        FourMonthJan, FourMonthFeb, FourMonthMar, FourMonthApr,
-        ThreeMonthJan, ThreeMonthFeb, ThreeMonthMar
-    }
-
     public static class CustomCurrencyTimespanExtensions
     {
         #region extension methods for CustomCurrencyTimespanTypeTimespanType
@@ -33,51 +24,52 @@ namespace MyFlightbook.Currency
         /// <param name="tst"></param>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        public static int AlignmentMonth(this CustomCurrencyTimespanType tst)
+        public static int AlignmentMonth(this TimespanType tst)
         {
             switch (tst)
             {
                 default:
                     throw new ArgumentException("Unknown duration for TimeSpanType: {0}", tst.ToString());
-                case CustomCurrencyTimespanType.CalendarMonths:
-                case CustomCurrencyTimespanType.Days:
-                    throw new ArgumentException("CalendarMonths or days do not have an alignment date");
-                case CustomCurrencyTimespanType.ThreeMonthJan:
-                case CustomCurrencyTimespanType.FourMonthJan:
-                case CustomCurrencyTimespanType.SixMonthJan:
-                case CustomCurrencyTimespanType.TwelveMonthJan:
+                case TimespanType.CalendarMonths:
+                case TimespanType.Days:
+                case TimespanType.SlidingMonths:
+                    throw new ArgumentException("CalendarMonths, sliding months, and days do not have an alignment date");
+                case TimespanType.ThreeMonthJan:
+                case TimespanType.FourMonthJan:
+                case TimespanType.SixMonthJan:
+                case TimespanType.TwelveMonthJan:
                     return 1;
-                case CustomCurrencyTimespanType.ThreeMonthFeb:
-                case CustomCurrencyTimespanType.FourMonthFeb:
-                case CustomCurrencyTimespanType.SixMonthFeb:
-                case CustomCurrencyTimespanType.TwelveMonthFeb:
+                case TimespanType.ThreeMonthFeb:
+                case TimespanType.FourMonthFeb:
+                case TimespanType.SixMonthFeb:
+                case TimespanType.TwelveMonthFeb:
                     return 2;
-                case CustomCurrencyTimespanType.ThreeMonthMar:
-                case CustomCurrencyTimespanType.FourMonthMar:
-                case CustomCurrencyTimespanType.SixMonthMar:
-                case CustomCurrencyTimespanType.TwelveMonthMar:
+                case TimespanType.ThreeMonthMar:
+                case TimespanType.FourMonthMar:
+                case TimespanType.SixMonthMar:
+                case TimespanType.TwelveMonthMar:
                     return 3;
-                case CustomCurrencyTimespanType.FourMonthApr:
-                case CustomCurrencyTimespanType.SixMonthApr:
-                case CustomCurrencyTimespanType.TwelveMonthApr:
+                case TimespanType.FourMonthApr:
+                case TimespanType.SixMonthApr:
+                case TimespanType.TwelveMonthApr:
                     return 4;
-                case CustomCurrencyTimespanType.SixMonthMay:
-                case CustomCurrencyTimespanType.TwelveMonthMay:
+                case TimespanType.SixMonthMay:
+                case TimespanType.TwelveMonthMay:
                     return 5;
-                case CustomCurrencyTimespanType.SixMonthJun:
-                case CustomCurrencyTimespanType.TwelveMonthJun:
+                case TimespanType.SixMonthJun:
+                case TimespanType.TwelveMonthJun:
                     return 6;
-                case CustomCurrencyTimespanType.TwelveMonthJul:
+                case TimespanType.TwelveMonthJul:
                     return 7;
-                case CustomCurrencyTimespanType.TwelveMonthAug:
+                case TimespanType.TwelveMonthAug:
                     return 8;
-                case CustomCurrencyTimespanType.TwelveMonthSep:
+                case TimespanType.TwelveMonthSep:
                     return 9;
-                case CustomCurrencyTimespanType.TwelveMonthOct:
+                case TimespanType.TwelveMonthOct:
                     return 10;
-                case CustomCurrencyTimespanType.TwelveMonthNov:
+                case TimespanType.TwelveMonthNov:
                     return 11;
-                case CustomCurrencyTimespanType.TwelveMonthDec:
+                case TimespanType.TwelveMonthDec:
                     return 12;
             }
         }
@@ -88,44 +80,46 @@ namespace MyFlightbook.Currency
         /// <param name="tst"></param>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        public static int Duration(this CustomCurrencyTimespanType tst)
+        public static int Duration(this TimespanType tst)
         {
             switch (tst)
             {
                 default:
                     throw new ArgumentException("Unknown duration for TimeSpanType: {0}", tst.ToString());
-                case CustomCurrencyTimespanType.Days:
+                case TimespanType.SlidingMonths:
+                    throw new ArgumentException("Sliding months do not have a duration of whole months (ironically)");
+                case TimespanType.Days:
                     throw new ArgumentException("Days do not have a duration of months");
-                case CustomCurrencyTimespanType.CalendarMonths:
+                case TimespanType.CalendarMonths:
                     return 1;
-                case CustomCurrencyTimespanType.ThreeMonthJan:
-                case CustomCurrencyTimespanType.ThreeMonthFeb:
-                case CustomCurrencyTimespanType.ThreeMonthMar:
+                case TimespanType.ThreeMonthJan:
+                case TimespanType.ThreeMonthFeb:
+                case TimespanType.ThreeMonthMar:
                     return 3;
-                case CustomCurrencyTimespanType.FourMonthJan:
-                case CustomCurrencyTimespanType.FourMonthFeb:
-                case CustomCurrencyTimespanType.FourMonthMar:
-                case CustomCurrencyTimespanType.FourMonthApr:
+                case TimespanType.FourMonthJan:
+                case TimespanType.FourMonthFeb:
+                case TimespanType.FourMonthMar:
+                case TimespanType.FourMonthApr:
                     return 4;
-                case CustomCurrencyTimespanType.SixMonthJan:
-                case CustomCurrencyTimespanType.SixMonthFeb:
-                case CustomCurrencyTimespanType.SixMonthMar:
-                case CustomCurrencyTimespanType.SixMonthApr:
-                case CustomCurrencyTimespanType.SixMonthMay:
-                case CustomCurrencyTimespanType.SixMonthJun:
+                case TimespanType.SixMonthJan:
+                case TimespanType.SixMonthFeb:
+                case TimespanType.SixMonthMar:
+                case TimespanType.SixMonthApr:
+                case TimespanType.SixMonthMay:
+                case TimespanType.SixMonthJun:
                     return 6;
-                case CustomCurrencyTimespanType.TwelveMonthJan:
-                case CustomCurrencyTimespanType.TwelveMonthFeb:
-                case CustomCurrencyTimespanType.TwelveMonthMar:
-                case CustomCurrencyTimespanType.TwelveMonthApr:
-                case CustomCurrencyTimespanType.TwelveMonthMay:
-                case CustomCurrencyTimespanType.TwelveMonthJun:
-                case CustomCurrencyTimespanType.TwelveMonthJul:
-                case CustomCurrencyTimespanType.TwelveMonthAug:
-                case CustomCurrencyTimespanType.TwelveMonthSep:
-                case CustomCurrencyTimespanType.TwelveMonthOct:
-                case CustomCurrencyTimespanType.TwelveMonthNov:
-                case CustomCurrencyTimespanType.TwelveMonthDec:
+                case TimespanType.TwelveMonthJan:
+                case TimespanType.TwelveMonthFeb:
+                case TimespanType.TwelveMonthMar:
+                case TimespanType.TwelveMonthApr:
+                case TimespanType.TwelveMonthMay:
+                case TimespanType.TwelveMonthJun:
+                case TimespanType.TwelveMonthJul:
+                case TimespanType.TwelveMonthAug:
+                case TimespanType.TwelveMonthSep:
+                case TimespanType.TwelveMonthOct:
+                case TimespanType.TwelveMonthNov:
+                case TimespanType.TwelveMonthDec:
                     return 12;
             }
         }
@@ -136,7 +130,7 @@ namespace MyFlightbook.Currency
         /// <param name="tst"></param>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        public static string DisplayString(this CustomCurrencyTimespanType tst)
+        public static string DisplayString(this TimespanType tst)
         {
             bool isAligned = tst.IsAligned();
             int alignMonth = isAligned ? tst.AlignmentMonth() : 1;
@@ -149,38 +143,40 @@ namespace MyFlightbook.Currency
             {
                 default:
                     throw new ArgumentException("Unknown duration for TimeSpanType: {0}", tst.ToString());
-                case CustomCurrencyTimespanType.CalendarMonths:
+                case TimespanType.CalendarMonths:
                     return Resources.Currency.CustomCurrencyMonths;
-                case CustomCurrencyTimespanType.Days:
+                case TimespanType.Days:
                     return Resources.Currency.CustomCurrencyDays;
-                case CustomCurrencyTimespanType.ThreeMonthJan:
-                case CustomCurrencyTimespanType.ThreeMonthFeb:
-                case CustomCurrencyTimespanType.ThreeMonthMar:
+                case TimespanType.SlidingMonths:
+                    return Resources.Currency.CustomCurrencySlidingMonths;
+                case TimespanType.ThreeMonthJan:
+                case TimespanType.ThreeMonthFeb:
+                case TimespanType.ThreeMonthMar:
                     return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency3Month, dt1.ToString("MMM", CultureInfo.CurrentCulture), dt2.ToString("MMM", CultureInfo.CurrentCulture), dt3.ToString("MMM", CultureInfo.CurrentCulture), dt4.ToString("MMM", CultureInfo.CurrentCulture));
-                case CustomCurrencyTimespanType.FourMonthJan:
-                case CustomCurrencyTimespanType.FourMonthFeb:
-                case CustomCurrencyTimespanType.FourMonthMar:
-                case CustomCurrencyTimespanType.FourMonthApr:
+                case TimespanType.FourMonthJan:
+                case TimespanType.FourMonthFeb:
+                case TimespanType.FourMonthMar:
+                case TimespanType.FourMonthApr:
                     return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency4Month, dt1.ToString("MMM", CultureInfo.CurrentCulture), dt2.ToString("MMM", CultureInfo.CurrentCulture), dt3.ToString("MMM", CultureInfo.CurrentCulture));
-                case CustomCurrencyTimespanType.SixMonthJan:
-                case CustomCurrencyTimespanType.SixMonthFeb:
-                case CustomCurrencyTimespanType.SixMonthMar:
-                case CustomCurrencyTimespanType.SixMonthApr:
-                case CustomCurrencyTimespanType.SixMonthMay:
-                case CustomCurrencyTimespanType.SixMonthJun:
+                case TimespanType.SixMonthJan:
+                case TimespanType.SixMonthFeb:
+                case TimespanType.SixMonthMar:
+                case TimespanType.SixMonthApr:
+                case TimespanType.SixMonthMay:
+                case TimespanType.SixMonthJun:
                     return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency6Month, dt1.ToString("MMM", CultureInfo.CurrentCulture), dt2.ToString("MMM", CultureInfo.CurrentCulture));
-                case CustomCurrencyTimespanType.TwelveMonthJan:
-                case CustomCurrencyTimespanType.TwelveMonthFeb:
-                case CustomCurrencyTimespanType.TwelveMonthMar:
-                case CustomCurrencyTimespanType.TwelveMonthApr:
-                case CustomCurrencyTimespanType.TwelveMonthMay:
-                case CustomCurrencyTimespanType.TwelveMonthJun:
-                case CustomCurrencyTimespanType.TwelveMonthJul:
-                case CustomCurrencyTimespanType.TwelveMonthAug:
-                case CustomCurrencyTimespanType.TwelveMonthSep:
-                case CustomCurrencyTimespanType.TwelveMonthOct:
-                case CustomCurrencyTimespanType.TwelveMonthNov:
-                case CustomCurrencyTimespanType.TwelveMonthDec:
+                case TimespanType.TwelveMonthJan:
+                case TimespanType.TwelveMonthFeb:
+                case TimespanType.TwelveMonthMar:
+                case TimespanType.TwelveMonthApr:
+                case TimespanType.TwelveMonthMay:
+                case TimespanType.TwelveMonthJun:
+                case TimespanType.TwelveMonthJul:
+                case TimespanType.TwelveMonthAug:
+                case TimespanType.TwelveMonthSep:
+                case TimespanType.TwelveMonthOct:
+                case TimespanType.TwelveMonthNov:
+                case TimespanType.TwelveMonthDec:
                     return String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrency12Month, dt1.ToString("MMM", CultureInfo.CurrentCulture));
             }
         }
@@ -190,9 +186,9 @@ namespace MyFlightbook.Currency
         /// </summary>
         /// <param name="tst"></param>
         /// <returns></returns>
-        public static bool IsAligned(this CustomCurrencyTimespanType tst)
+        public static bool IsAligned(this TimespanType tst)
         {
-            return tst != CustomCurrencyTimespanType.Days && tst != CustomCurrencyTimespanType.CalendarMonths;
+            return tst != TimespanType.Days && tst != TimespanType.CalendarMonths && tst != TimespanType.SlidingMonths;
         }
         #endregion
     }
@@ -213,6 +209,7 @@ namespace MyFlightbook.Currency
                     {
                         { CustomCurrency.CustomCurrencyEventType.Flights, new string[] { Resources.Currency.CustomCurrencyEventFlight, Resources.Currency.CustomCurrencyEventFlights } },
                         { CustomCurrency.CustomCurrencyEventType.Landings, new string[] { Resources.Currency.CustomCurrencyEventLanding, Resources.Currency.CustomCurrencyEventLandings } },
+                        { CustomCurrency.CustomCurrencyEventType.TakeoffsAny, new string[] {Resources.Currency.CustomCurrencyEventTakeoff, Resources.Currency.CustomCurrencyEventTakeoffs} },
                         { CustomCurrency.CustomCurrencyEventType.Hours, new string[] { Resources.Currency.CustomCurrencyEventHour, Resources.Currency.CustomCurrencyEventHours } },
                         { CustomCurrency.CustomCurrencyEventType.IFRHours, new string[] { Resources.Currency.CustomCurrencyEventInstrumentHour, Resources.Currency.CustomCurrencyEventInstrumentHours } },
                         { CustomCurrency.CustomCurrencyEventType.IFRApproaches, new string[] { Resources.Currency.CustomCurrencyEventApproach, Resources.Currency.CustomCurrencyEventApproaches } },
@@ -279,6 +276,7 @@ namespace MyFlightbook.Currency
             {
                 case CustomCurrency.CustomCurrencyEventType.Flights:
                 case CustomCurrency.CustomCurrencyEventType.Landings:
+                case CustomCurrency.CustomCurrencyEventType.TakeoffsAny:
                 case CustomCurrency.CustomCurrencyEventType.IFRApproaches:
                 case CustomCurrency.CustomCurrencyEventType.BaseCheck:
                 case CustomCurrency.CustomCurrencyEventType.UASLaunch:
@@ -383,6 +381,7 @@ namespace MyFlightbook.Currency
             RestTime = 31,
             DutyTime = 32,
             FlightDutyTime = 33,
+            TakeoffsAny = 34,
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1, Properties = 2 };
@@ -405,7 +404,7 @@ namespace MyFlightbook.Currency
             AircraftRestriction = new List<int>();
             ID = ID_UNKNOWN;
             m_szTailNumbers = m_szModelNames = m_szCatClass = ErrorString = UserName = CategoryRestriction = string.Empty;
-            TimespanType = CustomCurrencyTimespanType.Days;
+            CurrencyTimespanType = TimespanType.Days;
             AlignedStartDate = null;
             CurrencyLimitType = LimitType.Minimum;
         }
@@ -421,15 +420,13 @@ namespace MyFlightbook.Currency
             Discrepancy = RequiredEvents = Convert.ToDecimal(dr["minEvents"], CultureInfo.InvariantCulture);
             CurrencyLimitType = (LimitType)Convert.ToInt32(dr["limitType"], CultureInfo.InvariantCulture);
 
-            // MUST do calendar month THEN set Expiration span property, NOT the member variable.  This sets dtEarliest.
-            TimespanType = (CustomCurrencyTimespanType)Convert.ToInt32(dr["timespanType"], CultureInfo.InvariantCulture);
-            IsCalendarMonth = (TimespanType == CustomCurrencyTimespanType.CalendarMonths);    // not entirely true if aligned
+            CurrencyTimespanType = (TimespanType) Convert.ToInt32(dr["timespanType"], CultureInfo.InvariantCulture);
 
-            if (TimespanType.IsAligned())
+            if (CurrencyTimespanType.IsAligned())
             {
                 int mNow = DateTime.Now.Month;
-                int mAlign = TimespanType.AlignmentMonth();
-                int d = TimespanType.Duration();
+                int mAlign = CurrencyTimespanType.AlignmentMonth();
+                int d = CurrencyTimespanType.Duration();
                 int y = DateTime.Now.Year;
 
                 if (mNow < mAlign)
@@ -515,14 +512,12 @@ namespace MyFlightbook.Currency
             {
                 if (CurrencyLimitType == LimitType.Maximum)
                     return string.Empty;    // no discrepancy to show
-                if (TimespanType.IsAligned())
+                if (CurrencyTimespanType.IsAligned())
                     return CurrentState == CurrencyState.OK ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyAlignedDueDate, AlignedDueDate.Value.ToShortDateString());
                 else
                     return IsCurrent() ? string.Empty : String.Format(CultureInfo.CurrentCulture, Resources.Currency.DiscrepancyTemplate, this.Discrepancy.ToString(EventType.IsIntegerOnly() ? "0" : "#,#.0#", CultureInfo.CurrentCulture), EventTypeLabel(this.Discrepancy, EventType));
             }
         }
-
-        public CustomCurrencyTimespanType TimespanType { get; set; }
 
         /// <summary>
         /// If this is an aligned property (e.g., 6 months April aligned), this is the start date based on today's date
@@ -533,7 +528,7 @@ namespace MyFlightbook.Currency
         {
             get
             {
-                return (AlignedStartDate.HasValue) ? AlignedStartDate.Value.AddMonths(TimespanType.Duration()).AddDays(-1) : (DateTime?)null;
+                return (AlignedStartDate.HasValue) ? AlignedStartDate.Value.AddMonths(CurrencyTimespanType.Duration()).AddDays(-1) : (DateTime?)null;
             }
         }
 
@@ -594,7 +589,7 @@ namespace MyFlightbook.Currency
             {
                 CurrencyState cs;
 
-                if (TimespanType.IsAligned())
+                if (CurrencyTimespanType.IsAligned())
                 {
                     if (NumEvents >= RequiredEvents)
                         cs = CurrencyState.OK;
@@ -643,7 +638,7 @@ namespace MyFlightbook.Currency
                 switch (CurrencyLimitType)
                 {
                     case LimitType.Minimum:
-                        if (TimespanType.IsAligned())
+                        if (CurrencyTimespanType.IsAligned())
                             return CurrentState == CurrencyState.OK ?
                                 String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyAlignedStatusCompleted, RequiredEvents, EventTypeLabel(RequiredEvents, EventType), AlignedDueDate.Value.ToShortDateString()) :
                                 String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyAlignedStatusIncomplete, NumEvents, RequiredEvents, EventTypeLabel(RequiredEvents, EventType));
@@ -651,7 +646,7 @@ namespace MyFlightbook.Currency
                             return base.StatusDisplay;
                     case LimitType.Maximum:
                         return CurrentState == CurrencyState.NotCurrent ?
-                            String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyStatusLimitExceeded, (TimespanType.IsAligned() ? AlignedDueDate.Value : ExpirationDate).ToShortDateString()) :
+                            String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyStatusLimitExceeded, (CurrencyTimespanType.IsAligned() ? AlignedDueDate.Value : ExpirationDate).ToShortDateString()) :
                             String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyStatusLimitOK, Discrepancy, RequiredEvents, EventTypeLabel(RequiredEvents, EventType));
                     default:
                         return Resources.Currency.FormatNeverCurrent;
@@ -663,7 +658,7 @@ namespace MyFlightbook.Currency
         {
             get
             {
-                return TimespanType.IsAligned() || CurrencyLimitType == LimitType.Maximum || EventType.IsDutyTimeEvent() || base.HasBeenCurrent;
+                return CurrencyTimespanType.IsAligned() || CurrencyLimitType == LimitType.Maximum || EventType.IsDutyTimeEvent() || base.HasBeenCurrent;
             }
         }
 
@@ -675,7 +670,7 @@ namespace MyFlightbook.Currency
             ErrorString = string.Empty;
             if (String.IsNullOrEmpty(DisplayName))
                 ErrorString = Resources.Currency.errCustomCurrencyNoName;
-            if (ExpirationSpan <= 0 && !TimespanType.IsAligned())
+            if (ExpirationSpan <= 0 && !CurrencyTimespanType.IsAligned())
                 ErrorString = Resources.Currency.errCusotmCurrencyBadTimeSpan;
             if (RequiredEvents <= 0)
                 ErrorString = Resources.Currency.errCustomCurrencyBadRequiredEvents;
@@ -710,7 +705,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     comm.Parameters.AddWithValue("minEvents", RequiredEvents);
                     comm.Parameters.AddWithValue("limit", (int)CurrencyLimitType);
                     comm.Parameters.AddWithValue("timespan", ExpirationSpan);
-                    comm.Parameters.AddWithValue("timespantype", (int)TimespanType);
+                    comm.Parameters.AddWithValue("timespantype", (int)CurrencyTimespanType);
                     comm.Parameters.AddWithValue("eventType", (int)EventType);
                     comm.Parameters.AddWithValue("categoryRestriction", String.IsNullOrEmpty(CategoryRestriction) ? string.Empty : CategoryRestriction);
                     comm.Parameters.AddWithValue("catClassrestriction", (int)CatClassRestriction);
@@ -773,9 +768,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             StringBuilder sb = new StringBuilder();
             string szLimit = (CurrencyLimitType == LimitType.Minimum) ? Resources.Currency.CustomCurrencyMinEventsPrompt : Resources.Currency.CustomCurrencyMaxEventsPrompt;
             string szMinEvents = String.Format(CultureInfo.CurrentCulture, EventType.IsIntegerOnly() ? "{0:0}" : "{0:#,#.0#}", RequiredEvents);
-            string szBase = TimespanType.IsAligned() ?
-                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescriptionAligned, szLimit, szMinEvents, EventTypeLabel(RequiredEvents, EventType), TimespanType.DisplayString()) :
-                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescription, szLimit, szMinEvents, EventTypeLabel(RequiredEvents, EventType), ExpirationSpan, TimespanType.DisplayString());
+            string szBase = CurrencyTimespanType.IsAligned() ?
+                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescriptionAligned, szLimit, szMinEvents, EventTypeLabel(RequiredEvents, EventType), CurrencyTimespanType.DisplayString()) :
+                String.Format(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyDescription, szLimit, szMinEvents, EventTypeLabel(RequiredEvents, EventType), ExpirationSpan, CurrencyTimespanType.DisplayString());
 
             if (ModelsRestriction.Any())
                 sb.AppendFormat(CultureInfo.CurrentCulture, Resources.Currency.CustomCurrencyModel, m_szModelNames);
@@ -817,12 +812,15 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
         #region Query Helpers
         private void UpdateQueryDate(FlightQuery fq)
         {
-            switch (TimespanType)
+            switch (CurrencyTimespanType)
             {
-                case CustomCurrencyTimespanType.CalendarMonths:
+                case TimespanType.CalendarMonths:
                     fq.DateMin = DateTime.Now.AddCalendarMonths(-ExpirationSpan);
                     break;
-                case CustomCurrencyTimespanType.Days:
+                case TimespanType.SlidingMonths:
+                    fq.DateMin = DateTime.Now.AddMonths(-ExpirationSpan);
+                    break;
+                case TimespanType.Days:
                     fq.DateMin = DateTime.Now.AddDays(-ExpirationSpan);
                     break;
                 default:
@@ -910,6 +908,9 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                         fq.HasLandings = true;
                         if (EventType == CustomCurrencyEventType.PICLandings)
                             fq.HasPIC = true;
+                        break;
+                    case CustomCurrencyEventType.TakeoffsAny:
+                        prop = CustomPropertyType.KnownProperties.IDPropTakeoffAny;
                         break;
                     case CustomCurrencyEventType.LandingsHighAltitude:
                         prop = CustomPropertyType.KnownProperties.IDPropHighAltitudeLandings;
@@ -1111,6 +1112,10 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 case CustomCurrencyEventType.Landings:
                     AddRecentFlightEvents(cfr.dtFlight, Convert.ToInt32(cfr.cLandingsThisFlight));
                     break;
+                case CustomCurrencyEventType.TakeoffsAny:
+                    if ((cfp = cfr.FlightProps.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTakeoffAny)) != null)
+                        AddRecentFlightEvents(cfr.dtFlight, cfp.IntValue);
+                    break;
                 case CustomCurrencyEventType.PICLandings:
                     AddRecentFlightEvents(cfr.dtFlight, cfr.PIC > 0 ? cfr.cLandingsThisFlight : 0);
                     break;
@@ -1226,7 +1231,7 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
             if (EventType.IsDutyTimeEvent())
             {
                 TimeSpan ts = DateTime.UtcNow.Subtract(EarliestDate);
-                if (!TimespanType.IsAligned())
+                if (!CurrencyTimespanType.IsAligned())
                     ts = new TimeSpan(ts.Days, 0, 0, 0);
 
                 switch (EventType)

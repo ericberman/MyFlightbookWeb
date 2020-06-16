@@ -967,6 +967,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Takeoff (in &quot;Takeoffs (any)&quot; property).
+        /// </summary>
+        internal static string CustomCurrencyEventTakeoff {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventTakeoff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Takeoffs (in &quot;Takeoffs (any)&quot; property).
+        /// </summary>
+        internal static string CustomCurrencyEventTakeoffs {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventTakeoffs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hour (total).
         /// </summary>
         internal static string CustomCurrencyEventTotalHour {
@@ -1188,6 +1206,15 @@ namespace Resources {
         internal static string CustomCurrencySelectEvent {
             get {
                 return ResourceManager.GetString("CustomCurrencySelectEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to months (day-for-day).
+        /// </summary>
+        internal static string CustomCurrencySlidingMonths {
+            get {
+                return ResourceManager.GetString("CustomCurrencySlidingMonths", resourceCulture);
             }
         }
         

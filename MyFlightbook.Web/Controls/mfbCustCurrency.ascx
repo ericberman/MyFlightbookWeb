@@ -94,7 +94,7 @@
         <tr style="vertical-align:top;">
             <td>
                 <asp:Localize ID="locCustCurrencyModelPrompt" runat="server"
-                    Text="<%$ Resources:Currency, CustomCurrencyRestrictModels %>"></asp:Localize></asp:Localize><uc1:mfbTooltip runat="server" ID="mfbTooltip2" BodyContent="<%$ Resources:Currency, CustomCurrencyMultipleSelectHint %>" />
+                    Text="<%$ Resources:Currency, CustomCurrencyRestrictModels %>"></asp:Localize><uc1:mfbTooltip runat="server" ID="mfbTooltip2" BodyContent="<%$ Resources:Currency, CustomCurrencyMultipleSelectHint %>" />
             </td>
             <td>
                 <asp:ListBox ID="lstModels" runat="server" ValidationGroup="vgAddCurrencyRule" SelectionMode="Multiple"
@@ -104,7 +104,7 @@
         <tr style="vertical-align:top;">
             <td>
                 <asp:Localize ID="locCustCurrencyAircraftPrompt" runat="server"
-                    Text="<%$ Resources:Currency, CustomCurrencyRestrictAircraft %>"></asp:Localize></asp:Localize><uc1:mfbTooltip runat="server" ID="mfbTooltip1" BodyContent="<%$ Resources:Currency, CustomCurrencyMultipleSelectHint %>" />
+                    Text="<%$ Resources:Currency, CustomCurrencyRestrictAircraft %>"></asp:Localize><uc1:mfbTooltip runat="server" ID="mfbTooltip1" BodyContent="<%$ Resources:Currency, CustomCurrencyMultipleSelectHint %>" />
             </td>
             <td>
                 <asp:ListBox ID="lstAircraft" runat="server"
