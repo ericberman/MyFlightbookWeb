@@ -15,24 +15,6 @@ namespace MyFlightbook.Web.Controls
     {
 
         /// <summary>
-        /// lblTFAover control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTFAover;
-
-        /// <summary>
-        /// lnkTFALearnMore control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkTFALearnMore;
-
-        /// <summary>
         /// mvTFAState control.
         /// </summary>
         /// <remarks>
@@ -58,6 +40,15 @@ namespace MyFlightbook.Web.Controls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label locDownload;
+
+        /// <summary>
+        /// locSaveSecret control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locSaveSecret;
 
         /// <summary>
         /// locPickOptions control.
@@ -123,6 +114,24 @@ namespace MyFlightbook.Web.Controls
         protected global::System.Web.UI.WebControls.View vwNoTFA;
 
         /// <summary>
+        /// lblTFAover control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTFAover;
+
+        /// <summary>
+        /// lnkTFALearnMore control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkTFALearnMore;
+
+        /// <summary>
         /// lnkEnableTFA control.
         /// </summary>
         /// <remarks>
@@ -157,6 +166,42 @@ namespace MyFlightbook.Web.Controls
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lnkDisableTFA;
+
+        /// <summary>
+        /// vwVerifyTFA control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.View vwVerifyTFA;
+
+        /// <summary>
+        /// lblTFA2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTFA2;
+
+        /// <summary>
+        /// lblTFAUseApp2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTFAUseApp2;
+
+        /// <summary>
+        /// tfaVerifyDisable control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::MyFlightbook.Web.Controls.TwoFactorAuthVerifyCode tfaVerifyDisable;
 
         /// <summary>
         /// lblCodeResult control.

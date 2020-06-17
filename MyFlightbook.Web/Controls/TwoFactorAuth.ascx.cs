@@ -18,7 +18,7 @@ namespace MyFlightbook.Web.Controls
             if (!Page.IsPostBack)
             {
                 Profile pf = Profile.GetUser(Page.User.Identity.Name);
-                TwoFactorAuthVerifyCode.AuthCode = pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string;
+                tfaVerifyDisable.AuthCode = TwoFactorAuthVerifyCode.AuthCode = pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string;
                 mvTFAState.SetActiveView(String.IsNullOrEmpty(TwoFactorAuthVerifyCode.AuthCode) ? vwNoTFA : vwTFAActive);
             }
         }
@@ -47,6 +47,12 @@ namespace MyFlightbook.Web.Controls
         }
 
         protected void lnkDisableTFA_Click(object sender, EventArgs e)
+        {
+            mvTFAState.SetActiveView(vwVerifyTFA);
+        }
+
+
+        protected void tfaVerifyDisable_TFACodeVerified(object sender, EventArgs e)
         {
             Profile pf = Profile.GetUser(Page.User.Identity.Name);
             pf.SetPreferenceForKey(MFBConstants.keyTFASettings, null, true);

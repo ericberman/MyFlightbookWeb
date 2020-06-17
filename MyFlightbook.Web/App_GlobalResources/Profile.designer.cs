@@ -1396,6 +1396,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You should also write down the secret key and keep it in a safe place SEPARATE from any other passwords, so that you can restore access in case you lose your device..
+        /// </summary>
+        internal static string TFASaveSecretKey {
+            get {
+                return ResourceManager.GetString("TFASaveSecretKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Secret Key: .
         /// </summary>
         internal static string TFASecretKeyPrompt {
@@ -1405,7 +1414,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using the authenticator app, scan the QR code below with your device&apos;s camera, or enter the &quot;secret key&quot; directly.
+        ///   Looks up a localized string similar to Using the authenticator app, scan the QR code below with your device&apos;s camera, or enter the &quot;secret key&quot; directly. .
         /// </summary>
         internal static string TFATwoOptionsPrompt {
             get {

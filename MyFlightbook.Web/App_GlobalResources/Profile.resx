@@ -591,7 +591,7 @@
     <value>Secret Key: </value>
   </data>
   <data name="TFATwoOptionsPrompt" xml:space="preserve">
-    <value>Using the authenticator app, scan the QR code below with your device's camera, or enter the "secret key" directly</value>
+    <value>Using the authenticator app, scan the QR code below with your device's camera, or enter the "secret key" directly. </value>
   </data>
   <data name="TFAUseGA" xml:space="preserve">
     <value>%APP_NAME% uses an authentication app that you download to your phone/tablet, such as Google Authenticator or Microsoft Authenticator, for 2-factor authentication.  The app provides a time-limited code to enter after providing your password.  If you enable 2-factor authentication for your account, then you MUST have access to the app on your phone in order to sign in.</value>
@@ -604,5 +604,8 @@
   </data>
   <data name="TFAUseYourApp" xml:space="preserve">
     <value>Use the authenticator app on your phone/tablet to get a current code.</value>
+  </data>
+  <data name="TFASaveSecretKey" xml:space="preserve">
+    <value>You should also write down the secret key and keep it in a safe place SEPARATE from any other passwords, so that you can restore access in case you lose your device.</value>
   </data>
 </root>
