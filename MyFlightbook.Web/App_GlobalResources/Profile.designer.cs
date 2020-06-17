@@ -412,6 +412,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change name and email.
+        /// </summary>
+        internal static string ChangeNameEmail {
+            get {
+                return ResourceManager.GetString("ChangeNameEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change Password.
         /// </summary>
         internal static string ChangePassword {

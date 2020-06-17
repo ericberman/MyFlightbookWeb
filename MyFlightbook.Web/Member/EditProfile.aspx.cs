@@ -116,9 +116,10 @@ public partial class Member_EditProfile : System.Web.UI.Page
         lblPasswordStatus.Text = m_pf.LastPasswordChange.CompareTo(m_pf.CreationDate) == 0 ? Resources.LocalizedText.MemberOriginalPassword : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastPassword, m_pf.LastPasswordChange);
         txtFirst.Text = m_pf.FirstName;
         txtLast.Text = m_pf.LastName;
-        txtEmail2.Text = txtEmail.Text = m_pf.Email;
+        lblStaticEmail.Text = txtEmail2.Text = txtEmail.Text = m_pf.Email;
+        lblFullName.Text = m_pf.UserFullName;
         lblQuestion.Text = m_pf.SecurityQuestion;
-        txtAddress.Text = m_pf.Address;
+        lblAddress.Text = txtAddress.Text = m_pf.Address;
         accordianAccount.SelectedIndex = (sidebarTab == tabID.pftQA) ? 2 : (sidebarTab == tabID.pftPass ? 1 : 0);
     }
 
@@ -311,6 +312,22 @@ public partial class Member_EditProfile : System.Web.UI.Page
             pf.Email = txtEmail.Text;
             args.IsValid = pf.IsValid();
         }
+    }
+
+    protected void tfaEmail_TFACodeFailed(object sender, EventArgs e)
+    {
+        lblInvalidTFAEmail.Visible = true;
+    }
+
+    protected void tfaEmail_TFACodeVerified(object sender, EventArgs e)
+    {
+        mvNameEmail.SetActiveView(vwChangeNameEmail);
+    }
+
+    protected void btnEditNameEmail_Click(object sender, EventArgs e)
+    {
+        mvNameEmail.SetActiveView(m_pf.PreferenceExists(MFBConstants.keyTFASettings) ? vwVerifyTFAEmail : vwChangeNameEmail);
+        tfaEmail.AuthCode = m_pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string;
     }
     #endregion
 

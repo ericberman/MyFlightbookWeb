@@ -605,6 +605,9 @@
   <data name="TFAUseYourApp" xml:space="preserve">
     <value>Use the authenticator app on your phone/tablet to get a current code.</value>
   </data>
+  <data name="ChangeNameEmail" xml:space="preserve">
+    <value>Change name and email</value>
+  </data>
   <data name="TFASaveSecretKey" xml:space="preserve">
     <value>You should also write down the secret key and keep it in a safe place SEPARATE from any other passwords, so that you can restore access in case you lose your device.</value>
   </data>

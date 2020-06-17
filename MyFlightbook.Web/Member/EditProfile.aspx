@@ -43,97 +43,113 @@
                             <asp:Localize ID="locaHeadName" runat="server" Text="<%$ Resources:Tabs, ProfileName %>" ></asp:Localize>
                         </Header>
                         <Content>
-                            <asp:Panel ID="pnlNameAndEmail" runat="server" DefaultButton="btnUpdatename" 
-                            meta:resourcekey="pnlNameAndEmailResource1">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <asp:Localize ID="locEmailPrompt" runat="server" Text="Email" 
-                                                meta:resourcekey="locEmailPromptResource1"></asp:Localize>
-                                            </td>
-                                        <td>
-                                            <asp:TextBox runat="server" ID="txtEmail" TextMode="Email"
-                                                AutoCompleteType="Email" ValidationGroup="valNameEmail" 
-                                                meta:resourcekey="txtEmailResource1" />
-                                            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
-                                                ControlToValidate="txtEmail" ValidationGroup="valNameEmail"
-                                                ErrorMessage="Please enter a valid email address" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
-                                                CssClass="error" SetFocusOnError="True" Display="Dynamic" 
-                                                meta:resourcekey="RegularExpressionValidator1Resource1"></asp:RegularExpressionValidator>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server"  ValidationGroup="valNameEmail"
-                                            ControlToValidate="txtEmail" CssClass="error" Display="Dynamic" 
-                                            ErrorMessage="An email address is required" 
-                                                meta:resourcekey="RequiredFieldValidator1Resource1"></asp:RequiredFieldValidator>
-                                            <asp:CustomValidator ID="ValidateEmailOK" runat="server" 
-                                                ErrorMessage="That email address is already in use by another account" ValidationGroup="valNameEmail"
-                                                ControlToValidate="txtEmail" CssClass="error" Display="Dynamic" 
-                                                OnServerValidate="VerifyEmailAvailable" 
-                                                meta:resourcekey="ValidateEmailOKResource1"></asp:CustomValidator>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><asp:Localize ID="locRetypeEmailPrompt" runat="server" 
-                                                Text="Retype Email" meta:resourcekey="locRetypeEmailPromptResource1"></asp:Localize>
-                                            </td>
-                                        <td>
-                                            <asp:TextBox runat="server" ID="txtEmail2" TextMode="Email"  
-                                                AutoCompleteType="Email" ValidationGroup="valNameEmail" 
-                                                meta:resourcekey="txtEmail2Resource1" />
-                                            <asp:CompareValidator ID="valCompareEmail" ControlToValidate="txtEmail2" 
-                                                ControlToCompare="txtEmail" ValidationGroup="valNameEmail"
-                                                Display="Dynamic" runat="server" 
-                                                ErrorMessage="Please type your e-mail twice (avoids typos)." 
-                                                meta:resourcekey="valCompareEmailResource1"></asp:CompareValidator>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" 
-                                                ControlToValidate="txtEmail2" Display="Dynamic" runat="server" 
-                                                ValidationGroup="valNameEmail" 
-                                                ErrorMessage="Please type your e-mail twice (avoids typos)" 
-                                                meta:resourcekey="RequiredFieldValidator2Resource1"></asp:RequiredFieldValidator>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><asp:Localize ID="locFirstNamePrompt" runat="server" 
-                                                Text="First Name" meta:resourcekey="locFirstNamePromptResource1"></asp:Localize>
-                                            </td>
-                                        <td>
-                                            <asp:TextBox ID="txtFirst" runat="server" AutoCompleteType="FirstName" Wrap="False"
-                                                ValidationGroup="valNameEmail" meta:resourcekey="txtFirstResource1"></asp:TextBox></td>
-                                    </tr>
-                                    <tr>
-                                        <td><asp:Localize ID="locLastNamePrompt" runat="server" 
-                                                Text="Last Name" meta:resourcekey="locLastNamePromptResource1"></asp:Localize>
-                                            </td>
-                                        <td>
-                                            <asp:TextBox ID="txtLast" runat="server" AutoCompleteType="LastName" 
-                                                Wrap="False" ValidationGroup="valNameEmail" 
-                                                meta:resourcekey="txtLastResource1"></asp:TextBox></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="vertical-align: text-top">
-                                            <asp:Localize ID="locAddress" runat="server" Text="Mailing Address" meta:resourcekey="locAddressResource1"></asp:Localize>
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtAddress" TextMode="MultiLine" Rows="4" runat="server" ValidationGroup="valPilotInfo" meta:resourcekey="txtAddressResource1" Width="300px"></asp:TextBox>
-                                            <br />
-                                            <asp:Label ID="lblAddressFinePrint" runat="server" CssClass="fineprint" 
-                                                Text="(Only used when printing your logbook)" meta:resourcekey="lblAddressFinePrintResource1"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            &nbsp;</td>
-                                        <td>
-                                            <asp:Button ID="btnUpdatename" runat="server" Text="Update Name and Email" 
-                                                ValidationGroup="valNameEmail" onclick="btnUpdatename_Click" 
-                                                meta:resourcekey="btnUpdatenameResource1" />
-                                            <br />
-                                            <asp:Label ID="lblNameUpdated" runat="server" CssClass="success" EnableViewState="False"
-                                                Text="Name and Email successfully updated" Visible="False" 
-                                                meta:resourcekey="lblNameUpdatedResource1"></asp:Label>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </asp:Panel>
+                            <asp:MultiView ID="mvNameEmail" runat="server" ActiveViewIndex="0">
+                                <asp:View ID="vwStaticNameEmail" runat="server">
+                                    <div><asp:Label Font-Bold="true" ID="lblFullName" runat="server"></asp:Label></div>
+                                    <div><asp:Label ID="lblStaticEmail" runat="server"></asp:Label></div>
+                                    <div style="white-space:pre-wrap"><asp:Label ID="lblAddress" runat="server"></asp:Label></div>
+                                    <div><asp:Button ID="btnEditNameEmail" runat="server" Text="<%$ Resources:Profile, ChangeNameEmail %>" OnClick="btnEditNameEmail_Click" /></div>
+                                </asp:View>
+                                <asp:View ID="vwVerifyTFAEmail" runat="server">
+                                    <p><asp:Label ID="lblChangeEmailTFA" runat="server" Text="<%$ Resources:Profile, TFARequired %>"></asp:Label></p>
+                                    <p><asp:Label ID="lblChangeEmailUseApp" runat="server" Text="<%$ Resources:Profile, TFAUseYourApp %>"></asp:Label></p>
+                                    <uc1:TwoFactorAuthVerifyCode runat="server" ID="tfaEmail" OnTFACodeFailed="tfaEmail_TFACodeFailed" OnTFACodeVerified="tfaEmail_TFACodeVerified" />
+                                    <div><asp:Label ID="lblInvalidTFAEmail" runat="server" CssClass="error" EnableViewState="false" Text="<%$ Resources:Profile, TFACodeFailed %>" Visible="false"></asp:Label></div>
+                                </asp:View>
+                                <asp:View ID="vwChangeNameEmail" runat="server">
+                                    <asp:Panel ID="pnlNameAndEmail" runat="server" DefaultButton="btnUpdatename" 
+                                    meta:resourcekey="pnlNameAndEmailResource1">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <asp:Localize ID="locEmailPrompt" runat="server" Text="Email" 
+                                                        meta:resourcekey="locEmailPromptResource1"></asp:Localize>
+                                                    </td>
+                                                <td>
+                                                    <asp:TextBox runat="server" ID="txtEmail" TextMode="Email"
+                                                        AutoCompleteType="Email" ValidationGroup="valNameEmail" 
+                                                        meta:resourcekey="txtEmailResource1" />
+                                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
+                                                        ControlToValidate="txtEmail" ValidationGroup="valNameEmail"
+                                                        ErrorMessage="Please enter a valid email address" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
+                                                        CssClass="error" SetFocusOnError="True" Display="Dynamic" 
+                                                        meta:resourcekey="RegularExpressionValidator1Resource1"></asp:RegularExpressionValidator>
+                                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server"  ValidationGroup="valNameEmail"
+                                                    ControlToValidate="txtEmail" CssClass="error" Display="Dynamic" 
+                                                    ErrorMessage="An email address is required" 
+                                                        meta:resourcekey="RequiredFieldValidator1Resource1"></asp:RequiredFieldValidator>
+                                                    <asp:CustomValidator ID="ValidateEmailOK" runat="server" 
+                                                        ErrorMessage="That email address is already in use by another account" ValidationGroup="valNameEmail"
+                                                        ControlToValidate="txtEmail" CssClass="error" Display="Dynamic" 
+                                                        OnServerValidate="VerifyEmailAvailable" 
+                                                        meta:resourcekey="ValidateEmailOKResource1"></asp:CustomValidator>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><asp:Localize ID="locRetypeEmailPrompt" runat="server" 
+                                                        Text="Retype Email" meta:resourcekey="locRetypeEmailPromptResource1"></asp:Localize>
+                                                    </td>
+                                                <td>
+                                                    <asp:TextBox runat="server" ID="txtEmail2" TextMode="Email"  
+                                                        AutoCompleteType="Email" ValidationGroup="valNameEmail" 
+                                                        meta:resourcekey="txtEmail2Resource1" />
+                                                    <asp:CompareValidator ID="valCompareEmail" ControlToValidate="txtEmail2" 
+                                                        ControlToCompare="txtEmail" ValidationGroup="valNameEmail"
+                                                        Display="Dynamic" runat="server" 
+                                                        ErrorMessage="Please type your e-mail twice (avoids typos)." 
+                                                        meta:resourcekey="valCompareEmailResource1"></asp:CompareValidator>
+                                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" 
+                                                        ControlToValidate="txtEmail2" Display="Dynamic" runat="server" 
+                                                        ValidationGroup="valNameEmail" 
+                                                        ErrorMessage="Please type your e-mail twice (avoids typos)" 
+                                                        meta:resourcekey="RequiredFieldValidator2Resource1"></asp:RequiredFieldValidator>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><asp:Localize ID="locFirstNamePrompt" runat="server" 
+                                                        Text="First Name" meta:resourcekey="locFirstNamePromptResource1"></asp:Localize>
+                                                    </td>
+                                                <td>
+                                                    <asp:TextBox ID="txtFirst" runat="server" AutoCompleteType="FirstName" Wrap="False"
+                                                        ValidationGroup="valNameEmail" meta:resourcekey="txtFirstResource1"></asp:TextBox></td>
+                                            </tr>
+                                            <tr>
+                                                <td><asp:Localize ID="locLastNamePrompt" runat="server" 
+                                                        Text="Last Name" meta:resourcekey="locLastNamePromptResource1"></asp:Localize>
+                                                    </td>
+                                                <td>
+                                                    <asp:TextBox ID="txtLast" runat="server" AutoCompleteType="LastName" 
+                                                        Wrap="False" ValidationGroup="valNameEmail" 
+                                                        meta:resourcekey="txtLastResource1"></asp:TextBox></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="vertical-align: text-top">
+                                                    <asp:Localize ID="locAddress" runat="server" Text="Mailing Address" meta:resourcekey="locAddressResource1"></asp:Localize>
+                                                </td>
+                                                <td>
+                                                    <asp:TextBox ID="txtAddress" TextMode="MultiLine" Rows="4" runat="server" ValidationGroup="valPilotInfo" meta:resourcekey="txtAddressResource1" Width="300px"></asp:TextBox>
+                                                    <br />
+                                                    <asp:Label ID="lblAddressFinePrint" runat="server" CssClass="fineprint" 
+                                                        Text="(Only used when printing your logbook)" meta:resourcekey="lblAddressFinePrintResource1"></asp:Label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    &nbsp;</td>
+                                                <td>
+                                                    <asp:Button ID="btnUpdatename" runat="server" Text="Update Name and Email" 
+                                                        ValidationGroup="valNameEmail" onclick="btnUpdatename_Click" 
+                                                        meta:resourcekey="btnUpdatenameResource1" />
+                                                    <br />
+                                                    <asp:Label ID="lblNameUpdated" runat="server" CssClass="success" EnableViewState="False"
+                                                        Text="Name and Email successfully updated" Visible="False" 
+                                                        meta:resourcekey="lblNameUpdatedResource1"></asp:Label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </asp:Panel>
+                                </asp:View>
+                            </asp:MultiView>
                         </Content>
                     </cc1:AccordionPane>
                     <cc1:AccordionPane ID="acpPassword" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpPasswordResource1">

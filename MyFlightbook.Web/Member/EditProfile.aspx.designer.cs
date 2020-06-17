@@ -85,6 +85,114 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Localize locaHeadName;
 
     /// <summary>
+    /// mvNameEmail control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.MultiView mvNameEmail;
+
+    /// <summary>
+    /// vwStaticNameEmail control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwStaticNameEmail;
+
+    /// <summary>
+    /// lblFullName control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblFullName;
+
+    /// <summary>
+    /// lblStaticEmail control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblStaticEmail;
+
+    /// <summary>
+    /// lblAddress control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblAddress;
+
+    /// <summary>
+    /// btnEditNameEmail control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnEditNameEmail;
+
+    /// <summary>
+    /// vwVerifyTFAEmail control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwVerifyTFAEmail;
+
+    /// <summary>
+    /// lblChangeEmailTFA control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblChangeEmailTFA;
+
+    /// <summary>
+    /// lblChangeEmailUseApp control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblChangeEmailUseApp;
+
+    /// <summary>
+    /// tfaEmail control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::MyFlightbook.Web.Controls.TwoFactorAuthVerifyCode tfaEmail;
+
+    /// <summary>
+    /// lblInvalidTFAEmail control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblInvalidTFAEmail;
+
+    /// <summary>
+    /// vwChangeNameEmail control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwChangeNameEmail;
+
+    /// <summary>
     /// pnlNameAndEmail control.
     /// </summary>
     /// <remarks>
