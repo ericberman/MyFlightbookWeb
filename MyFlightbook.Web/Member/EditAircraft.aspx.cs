@@ -163,7 +163,7 @@ public partial class Member_EditAircraft : System.Web.UI.Page
             return AircraftInstanceTypes.CertifiedATD;
         else if (Regex.IsMatch(szTail, "(D-?SIM)|FFS"))
             return AircraftInstanceTypes.CertifiedIFRAndLandingsSimulator;
-        else if (Regex.IsMatch(szTail, "FS|SIM|FTD|REDB|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF"))
+        else if (Regex.IsMatch(szTail, "FS|SIM|FTD|REDB|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX"))
             return AircraftInstanceTypes.CertifiedIFRSimulator;
         else
             return AircraftInstanceTypes.RealAircraft;
