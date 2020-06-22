@@ -46,7 +46,7 @@ public partial class BulkImportFromTelemetry : MyFlightbook.Web.WizardPage.MFBWi
             return;
 
         PendingFlight pf = new PendingFlight() { User = Page.User.Identity.Name };
-        pf.FlightData = System.Text.Encoding.UTF8.GetString(e.GetContents());
+        string szOriginal = pf.FlightData = System.Text.Encoding.UTF8.GetString(e.GetContents());
         using (FlightData fd = new FlightData())
         {
             fd.AutoFill(pf, (AutoFillOptions) Session[SessionKeyOpt]);
@@ -56,7 +56,7 @@ public partial class BulkImportFromTelemetry : MyFlightbook.Web.WizardPage.MFBWi
             if (!pf.IsEqualTo(leEmpty))
             {
                 pf.TailNumDisplay = fd.TailNumber ?? string.Empty;
-                // TODO: Save the flight data?  Perhaps de-sampled for size?
+                pf.FlightData = szOriginal;
                 pf.Commit();
             }
         }
