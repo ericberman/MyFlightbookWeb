@@ -135,7 +135,7 @@
                 Route
             </td>
             <td valign="top" >
-                List of airports visited.</td>
+                List of all airports visited.  If you prefer, you can alternatively have two columns: &quot;To&quot; and &quot;From&quot;, which contain the departure and arrival airport.  %APP_NAME% will splice these together into a route field.</td>
         </tr>
         <tr>
             <td valign="top" >
