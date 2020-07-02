@@ -404,6 +404,10 @@ namespace MyFlightbook.Lint
                 AddConditionalIssue(cfpBlockIn != null && le.EngineEnd.CompareTo(cfpBlockIn.DateValue) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningEngineEndBeforeBlockIn);
             }
 
+            CustomFlightProperty cfpTachStart = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachStart);
+            CustomFlightProperty cfpTachEnd = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachEnd);
+            AddConditionalIssue(cfpTachStart != null && cfpTachEnd != null && cfpTachEnd.DecValue < cfpTachStart.DecValue, LintOptions.DateTimeIssues, Resources.FlightLint.warningTachEndBeforeTachStart);
+
             const int MaxHoursDifference = 48;
             // Check that engine, flight, and block times are all roughly equal to date-of-flight
             AddConditionalIssue((le.EngineStart.HasValue() && Math.Abs(le.EngineStart.Subtract(le.Date).TotalHours) > MaxHoursDifference) ||

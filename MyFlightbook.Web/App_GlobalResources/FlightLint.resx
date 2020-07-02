@@ -347,6 +347,9 @@
   <data name="warningSIMTotalInSim" xml:space="preserve">
     <value>Total time logged in a training device - check that this is OK to do!</value>
   </data>
+  <data name="warningTachEndBeforeTachStart" xml:space="preserve">
+    <value>Tachometer end is less than tachometer start.</value>
+  </data>
   <data name="warningTimesCFIGreaterThanTotal" xml:space="preserve">
     <value>More CFI time recorded than total time.</value>
   </data>

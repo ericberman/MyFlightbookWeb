@@ -745,6 +745,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tachometer end is less than tachometer start..
+        /// </summary>
+        internal static string warningTachEndBeforeTachStart {
+            get {
+                return ResourceManager.GetString("warningTachEndBeforeTachStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to More CFI time recorded than total time..
         /// </summary>
         internal static string warningTimesCFIGreaterThanTotal {
