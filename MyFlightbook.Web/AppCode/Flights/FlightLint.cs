@@ -371,6 +371,26 @@ namespace MyFlightbook.Lint
             }
         }
 
+        private void CheckFlightLengthIssues(LogbookEntryBase le)
+        {
+            CustomFlightProperty cfpBlockOut = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockOut);
+            CustomFlightProperty cfpBlockIn = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockIn);
+
+            const int MaxHoursDifference = 48;
+            // Check that engine, flight, and block times are all roughly equal to date-of-flight
+            AddConditionalIssue((le.EngineStart.HasValue() && Math.Abs(le.EngineStart.Subtract(le.Date).TotalHours) > MaxHoursDifference) ||
+                (le.EngineEnd.HasValue() && Math.Abs(le.EngineEnd.Subtract(le.Date).TotalHours) > MaxHoursDifference),
+                LintOptions.DateTimeIssues, Resources.FlightLint.warningEngineTimeDiffersDate);
+
+            AddConditionalIssue((le.FlightStart.HasValue() && Math.Abs(le.FlightStart.Subtract(le.Date).TotalHours) > MaxHoursDifference) ||
+                (le.FlightEnd.HasValue() && Math.Abs(le.FlightEnd.Subtract(le.Date).TotalHours) > MaxHoursDifference),
+                LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightTimeDiffersDate);
+
+            AddConditionalIssue((cfpBlockOut != null && Math.Abs(cfpBlockOut.DateValue.Subtract(le.Date).TotalHours) > MaxHoursDifference) ||
+                (cfpBlockIn != null && Math.Abs(cfpBlockIn.DateValue.Subtract(le.Date).TotalHours) > MaxHoursDifference),
+                LintOptions.DateTimeIssues, Resources.FlightLint.warningBlockTimeDiffersDate);
+        }
+
         private void CheckDateTimeIssues(LogbookEntryBase le)
         {
             CustomFlightProperty cfpBlockOut = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDBlockOut);
@@ -404,19 +424,7 @@ namespace MyFlightbook.Lint
             CustomFlightProperty cfpTachEnd = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachEnd);
             AddConditionalIssue(cfpTachStart != null && cfpTachEnd != null && cfpTachEnd.DecValue < cfpTachStart.DecValue, LintOptions.DateTimeIssues, Resources.FlightLint.warningTachEndBeforeTachStart);
 
-            const int MaxHoursDifference = 48;
-            // Check that engine, flight, and block times are all roughly equal to date-of-flight
-            AddConditionalIssue((le.EngineStart.HasValue() && Math.Abs(le.EngineStart.Subtract(le.Date).TotalHours) > MaxHoursDifference) ||
-                (le.EngineEnd.HasValue() && Math.Abs(le.EngineEnd.Subtract(le.Date).TotalHours) > MaxHoursDifference),
-                LintOptions.DateTimeIssues, Resources.FlightLint.warningEngineTimeDiffersDate);
-
-            AddConditionalIssue((le.FlightStart.HasValue() && Math.Abs(le.FlightStart.Subtract(le.Date).TotalHours) > MaxHoursDifference) ||
-                (le.FlightEnd.HasValue() && Math.Abs(le.FlightEnd.Subtract(le.Date).TotalHours) > MaxHoursDifference),
-                LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightTimeDiffersDate);
-
-            AddConditionalIssue((cfpBlockOut != null && Math.Abs(cfpBlockOut.DateValue.Subtract(le.Date).TotalHours) > MaxHoursDifference) ||
-                (cfpBlockIn != null && Math.Abs(cfpBlockIn.DateValue.Subtract(le.Date).TotalHours) > MaxHoursDifference),
-                LintOptions.DateTimeIssues, Resources.FlightLint.warningBlockTimeDiffersDate);
+            CheckFlightLengthIssues(le);
 
             // Look for issues with sequential flights
             CheckSequentialFlightIssues(le);
