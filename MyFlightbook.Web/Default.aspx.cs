@@ -59,7 +59,7 @@ public partial class Public_Home : System.Web.UI.Page
 
             if (User.Identity.IsAuthenticated)
             {
-                lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageWelcomeBack, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFirstName);
+                lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.DefaultPageWelcomeBack, MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredGreeting);
                 pnlWelcome.Visible = false;
             }
             else

@@ -70,7 +70,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                     break;
                 case SignMode.Authenticated:
                     // Show the static fields and hide the editable ones.
-                    bool fValidCFIInfo = (CFIProfile == null) ? false : CFIProfile.CanSignFlights(out string _);
+                    bool fValidCFIInfo = CFIProfile != null && CFIProfile.CanSignFlights(out string _);
 
                     lblCFIDate.Visible = fValidCFIInfo;
                     lblCFICertificate.Visible = fValidCFIInfo;
@@ -137,7 +137,7 @@ public partial class Controls_mfbSignFlight : System.Web.UI.UserControl
                 lblCFIDate.Text = m_pfCFI.CertificateExpiration.ToShortDateString();
                 txtCFIEmail.Text = m_pfCFI.Email;
                 txtCFIName.Text = m_pfCFI.UserFullName;
-                lblPassPrompt.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, value.UserFirstName);
+                lblPassPrompt.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, value.PreferredGreeting);
                 SigningMode = SignMode.Authenticated;
             }
         }

@@ -319,6 +319,42 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.TextBox txtLast;
 
     /// <summary>
+    /// locPreferredGreeting control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locPreferredGreeting;
+
+    /// <summary>
+    /// locPrefGreetingNote control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locPrefGreetingNote;
+
+    /// <summary>
+    /// txtPreferredGreeting control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.TextBox txtPreferredGreeting;
+
+    /// <summary>
+    /// wmeGreeting control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.TextBoxWatermarkExtender wmeGreeting;
+
+    /// <summary>
     /// locAddress control.
     /// </summary>
     /// <remarks>
@@ -328,15 +364,6 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Localize locAddress;
 
     /// <summary>
-    /// txtAddress control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.TextBox txtAddress;
-
-    /// <summary>
     /// lblAddressFinePrint control.
     /// </summary>
     /// <remarks>
@@ -344,6 +371,15 @@ public partial class Member_EditProfile
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Label lblAddressFinePrint;
+
+    /// <summary>
+    /// txtAddress control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.TextBox txtAddress;
 
     /// <summary>
     /// btnUpdatename control.

@@ -492,12 +492,6 @@
   <data name="lblAddCustomCurrencyResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="lblAddressFinePrintResource1.Text" xml:space="preserve">
-    <value>(Only used when printing your logbook)</value>
-  </data>
-  <data name="lblAddressFinePrintResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="lblCurrencyPrefsResource1.Text" xml:space="preserve">
     <value>Currency/Totals</value>
   </data>
@@ -762,9 +756,6 @@
   <data name="lnkSetUpTwitterResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="locAddressResource1.Text" xml:space="preserve">
-    <value>Mailing Address</value>
-  </data>
   <data name="locBlackListedResource1.Text" xml:space="preserve">
     <value>...but not these</value>
   </data>
@@ -780,26 +771,17 @@
   <data name="locCustomCurrencyHeaderResource1.Text" xml:space="preserve">
     <value>Custom Currency Rules</value>
   </data>
-  <data name="locEmailPromptResource1.Text" xml:space="preserve">
-    <value>Email</value>
-  </data>
   <data name="locExpireCurrencyResource1.Text" xml:space="preserve">
     <value>When a currency is expired, display it:</value>
   </data>
   <data name="locFBIsAuthorizedResource1.Text" xml:space="preserve">
     <value />
   </data>
-  <data name="locFirstNamePromptResource1.Text" xml:space="preserve">
-    <value>First Name</value>
-  </data>
   <data name="locFlightTimesResource1.Text" xml:space="preserve">
     <value>Flight Entry</value>
   </data>
   <data name="locInstructionsResource1.Text" xml:space="preserve">
     <value>Drag and drop between the two lists below if using a mouse; if using touch, press-and-hold to move an item between lists.</value>
-  </data>
-  <data name="locLastNamePromptResource1.Text" xml:space="preserve">
-    <value>Last Name</value>
   </data>
   <data name="locNewAnswerResource1.Text" xml:space="preserve">
     <value>New Security Answer</value>
@@ -824,9 +806,6 @@
   </data>
   <data name="locQuestionPromptResource1.Text" xml:space="preserve">
     <value>New Security Question</value>
-  </data>
-  <data name="locRetypeEmailPromptResource1.Text" xml:space="preserve">
-    <value>Retype Email</value>
   </data>
   <data name="locShareAllFlightsDisclaimerResource1.Text" xml:space="preserve">
     <value>This will ONLY show flights for which you have allowed details to be visible.</value>

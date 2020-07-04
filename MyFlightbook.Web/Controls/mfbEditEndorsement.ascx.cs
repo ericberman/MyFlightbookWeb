@@ -104,7 +104,7 @@ public partial class Controls_mfbEditEndorsement : System.Web.UI.UserControl
             lblCFICert.Text = value.Certificate;
             lblCFIExp.Text = value.CertificateExpiration.ToShortDateString();
             ViewState[keyVSSourceUser] = value.UserName;
-            lblPassPrompt.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, value.UserFirstName);
+            lblPassPrompt.Text = String.Format(CultureInfo.CurrentCulture, Resources.SignOff.SignReEnterPassword, value.PreferredGreeting);
             mvCertExpiration.SetActiveView(Mode != EndorsementMode.StudentPullAdHoc && value.CertificateExpiration.HasValue() ? vwStaticCertExpiration : vwAdhocCertExpiration);
         }
     }

@@ -70,11 +70,92 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        internal static string accountEmailPrompt {
+            get {
+                return ResourceManager.GetString("accountEmailPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First (Given) Name.
+        /// </summary>
+        internal static string accountFirstNamePrompt {
+            get {
+                return ResourceManager.GetString("accountFirstNamePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} - Account is locked.
         /// </summary>
         internal static string AccountIsLockedSubject {
             get {
                 return ResourceManager.GetString("AccountIsLockedSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last (Family) Name.
+        /// </summary>
+        internal static string accountLastNamePrompt {
+            get {
+                return ResourceManager.GetString("accountLastNamePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mailing Address.
+        /// </summary>
+        internal static string accountMailingAddressPrompt {
+            get {
+                return ResourceManager.GetString("accountMailingAddressPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Only used when printing your logbook).
+        /// </summary>
+        internal static string accountMailingAddressPromptNote {
+            get {
+                return ResourceManager.GetString("accountMailingAddressPromptNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you leave this blank, your first name will be used.
+        /// </summary>
+        internal static string accountPreferredGreetingNote {
+            get {
+                return ResourceManager.GetString("accountPreferredGreetingNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What informal/short name do you prefer?.
+        /// </summary>
+        internal static string accountPreferredGreetingPrompt {
+            get {
+                return ResourceManager.GetString("accountPreferredGreetingPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (First Name).
+        /// </summary>
+        internal static string accountPreferredGreetingWatermark {
+            get {
+                return ResourceManager.GetString("accountPreferredGreetingWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retype Email.
+        /// </summary>
+        internal static string accountRetypeEmailPrompt {
+            get {
+                return ResourceManager.GetString("accountRetypeEmailPrompt", resourceCulture);
             }
         }
         

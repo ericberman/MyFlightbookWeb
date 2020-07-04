@@ -117,7 +117,18 @@ public partial class Member_EditProfile : System.Web.UI.Page
         txtFirst.Text = m_pf.FirstName;
         txtLast.Text = m_pf.LastName;
         lblStaticEmail.Text = txtEmail2.Text = txtEmail.Text = m_pf.Email;
-        lblFullName.Text = m_pf.UserFullName;
+        wmeGreeting.WatermarkText = String.IsNullOrEmpty(m_pf.FirstName) ? Resources.Profile.accountPreferredGreetingWatermark : m_pf.FirstName;
+        string szPreferredGreeting = m_pf.PreferredGreeting.Trim();
+        if (szPreferredGreeting.CompareCurrentCultureIgnoreCase(m_pf.UserFirstName.Trim()) == 0)
+        {
+            txtPreferredGreeting.Text = string.Empty;
+            lblFullName.Text = m_pf.UserFullName;
+        }
+        else
+        {
+            txtPreferredGreeting.Text = szPreferredGreeting;
+            lblFullName.Text = String.Format(CultureInfo.CurrentCulture, "{0} ({1})", m_pf.UserFullName, szPreferredGreeting);
+        }
         lblQuestion.Text = m_pf.SecurityQuestion;
         lblAddress.Text = txtAddress.Text = m_pf.Address;
         accordianAccount.SelectedIndex = (sidebarTab == tabID.pftQA) ? 2 : (sidebarTab == tabID.pftPass ? 1 : 0);
@@ -282,6 +293,8 @@ public partial class Member_EditProfile : System.Web.UI.Page
         {
             m_pf.ChangeNameAndEmail(txtFirst.Text, txtLast.Text, txtEmail.Text, txtAddress.Text);
             m_pf.FCommit();
+            m_pf.PreferredGreeting = txtPreferredGreeting.Text.Trim().CompareCurrentCultureIgnoreCase(m_pf.UserFirstName) == 0 ? string.Empty : txtPreferredGreeting.Text.Trim();
+            Response.Redirect("~/Member/EditProfile.aspx/pftAccount");
         }
         catch (MyFlightbookException ex)
         {

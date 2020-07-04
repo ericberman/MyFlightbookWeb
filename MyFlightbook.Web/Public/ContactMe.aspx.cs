@@ -27,7 +27,7 @@ public partial class Public_ContactMe : System.Web.UI.Page
             if (User.Identity.IsAuthenticated)
             {
                 Profile pf = MyFlightbook.Profile.GetUser(User.Identity.Name);
-                txtName.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, pf.FirstName, pf.LastName).Trim();
+                txtName.Text = pf.UserFullName;
                 txtEmail.Text = pf.Email;
             }
 

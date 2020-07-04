@@ -457,12 +457,12 @@ namespace MyFlightbook.Payments
                     return string.Empty;
                 case EarnedGratuity.EarnedGratuityStatus.ExpiringSoon:
                     if (eg.ReminderCount == 0)
-                        return String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.DropboxExpiring), pf.UserFullName);
+                        return String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.DropboxExpiring), pf.PreferredGreeting);
                     else
                         return string.Empty;
                 case EarnedGratuity.EarnedGratuityStatus.Expired:
                     if (eg.ReminderCount <= 1)
-                        return String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.DropboxExpired), pf.UserFullName);
+                        return String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.DropboxExpired), pf.PreferredGreeting);
                     else
                         return string.Empty;
             }

@@ -1,5 +1,4 @@
 using System;
-using System.Web;
 
 /******************************************************
  * 
@@ -15,7 +14,7 @@ public partial class Member_MiniLogbook : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            this.Master.Title = lblUserName.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFirstName);
+            this.Master.Title = lblUserName.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).PreferredGreeting);
 
             mfbEditFlight1.SetUpNewOrEdit(-1);
 

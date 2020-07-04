@@ -62,8 +62,7 @@
                                         <table>
                                             <tr>
                                                 <td>
-                                                    <asp:Localize ID="locEmailPrompt" runat="server" Text="Email" 
-                                                        meta:resourcekey="locEmailPromptResource1"></asp:Localize>
+                                                    <asp:Localize ID="locEmailPrompt" runat="server" Text="<%$ Resources:Profile, accountEmailPrompt %>" />
                                                     </td>
                                                 <td>
                                                     <asp:TextBox runat="server" ID="txtEmail" TextMode="Email"
@@ -86,8 +85,7 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td><asp:Localize ID="locRetypeEmailPrompt" runat="server" 
-                                                        Text="Retype Email" meta:resourcekey="locRetypeEmailPromptResource1"></asp:Localize>
+                                                <td><asp:Localize ID="locRetypeEmailPrompt" runat="server" Text="<%$ Resources:Profile, accountRetypeEmailPrompt %>" />
                                                     </td>
                                                 <td>
                                                     <asp:TextBox runat="server" ID="txtEmail2" TextMode="Email"  
@@ -106,31 +104,46 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td><asp:Localize ID="locFirstNamePrompt" runat="server" 
-                                                        Text="First Name" meta:resourcekey="locFirstNamePromptResource1"></asp:Localize>
+                                                <td><asp:Localize ID="locFirstNamePrompt" runat="server" Text="<%$ Resources:Profile, accountFirstNamePrompt %>" />
                                                     </td>
                                                 <td>
-                                                    <asp:TextBox ID="txtFirst" runat="server" AutoCompleteType="FirstName" Wrap="False"
+                                                    <script type="text/javascript">
+                                                        function updateGreeting(sender) {
+                                                            $find('wmeGreet').set_watermarkText(sender.value);
+                                                        }
+                                                    </script>
+                                                    <asp:TextBox ID="txtFirst" runat="server" AutoCompleteType="FirstName" Wrap="False" oninput="javascript:updateGreeting(this);"
                                                         ValidationGroup="valNameEmail" meta:resourcekey="txtFirstResource1"></asp:TextBox></td>
                                             </tr>
                                             <tr>
-                                                <td><asp:Localize ID="locLastNamePrompt" runat="server" 
-                                                        Text="Last Name" meta:resourcekey="locLastNamePromptResource1"></asp:Localize>
+                                                <td><asp:Localize ID="locLastNamePrompt" runat="server" Text="<%$ Resources:Profile, accountLastNamePrompt %>" />
                                                     </td>
                                                 <td>
                                                     <asp:TextBox ID="txtLast" runat="server" AutoCompleteType="LastName" 
                                                         Wrap="False" ValidationGroup="valNameEmail" 
                                                         meta:resourcekey="txtLastResource1"></asp:TextBox></td>
                                             </tr>
+                                            <tr style="vertical-align:top;">
+                                                <td>
+                                                    <asp:Localize ID="locPreferredGreeting" runat="server" Text=" <%$Resources:Profile, accountPreferredGreetingPrompt %>" /><br />
+                                                    <span class="fineprint">
+                                                        <asp:Localize ID="locPrefGreetingNote" runat="server" Text="<%$ Resources:Profile, accountPreferredGreetingNote %>" /></span>
+                                                </td>
+                                                <td>
+                                                    <asp:TextBox ID="txtPreferredGreeting" ValidationGroup="valNameEmail" AutoCompleteType="DisplayName" runat="server"></asp:TextBox>
+                                                    <cc1:TextBoxWatermarkExtender ID="wmeGreeting" TargetControlID="txtPreferredGreeting" WatermarkCssClass="watermark" BehaviorID="wmeGreet" runat="server" />
+                                                </td>
+                                            </tr>
+                                            <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
                                             <tr>
                                                 <td style="vertical-align: text-top">
-                                                    <asp:Localize ID="locAddress" runat="server" Text="Mailing Address" meta:resourcekey="locAddressResource1"></asp:Localize>
+                                                    <asp:Localize ID="locAddress" runat="server" Text="<%$ Resources:Profile, accountMailingAddressPrompt %>" />
+                                                    <br />
+                                                    <asp:Label ID="lblAddressFinePrint" runat="server" CssClass="fineprint" 
+                                                        Text="<%$ Resources:Profile, accountMailingAddressPromptNote %>" />
                                                 </td>
                                                 <td>
                                                     <asp:TextBox ID="txtAddress" TextMode="MultiLine" Rows="4" runat="server" ValidationGroup="valPilotInfo" meta:resourcekey="txtAddressResource1" Width="300px"></asp:TextBox>
-                                                    <br />
-                                                    <asp:Label ID="lblAddressFinePrint" runat="server" CssClass="fineprint" 
-                                                        Text="(Only used when printing your logbook)" meta:resourcekey="lblAddressFinePrintResource1"></asp:Label>
                                                 </td>
                                             </tr>
                                             <tr>

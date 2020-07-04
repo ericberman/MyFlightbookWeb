@@ -611,4 +611,31 @@
   <data name="TFASaveSecretKey" xml:space="preserve">
     <value>You should also write down the secret key and keep it in a safe place SEPARATE from any other passwords, so that you can restore access in case you lose your device.</value>
   </data>
+  <data name="accountEmailPrompt" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="accountFirstNamePrompt" xml:space="preserve">
+    <value>First (Given) Name</value>
+  </data>
+  <data name="accountLastNamePrompt" xml:space="preserve">
+    <value>Last (Family) Name</value>
+  </data>
+  <data name="accountMailingAddressPrompt" xml:space="preserve">
+    <value>Mailing Address</value>
+  </data>
+  <data name="accountMailingAddressPromptNote" xml:space="preserve">
+    <value>(Only used when printing your logbook)</value>
+  </data>
+  <data name="accountPreferredGreetingNote" xml:space="preserve">
+    <value>If you leave this blank, your first name will be used</value>
+  </data>
+  <data name="accountPreferredGreetingPrompt" xml:space="preserve">
+    <value>What informal/short name do you prefer?</value>
+  </data>
+  <data name="accountRetypeEmailPrompt" xml:space="preserve">
+    <value>Retype Email</value>
+  </data>
+  <data name="accountPreferredGreetingWatermark" xml:space="preserve">
+    <value>(First Name)</value>
+  </data>
 </root>

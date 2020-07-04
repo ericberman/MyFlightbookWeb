@@ -126,7 +126,7 @@ public partial class Public_PaypalIPNListener : System.Web.UI.Page
 
                     // Send a thank-you for payment to the donor
                     if (transType == Payment.TransactionType.Payment)
-                        util.NotifyUser(Branding.ReBrand(Resources.LocalizedText.DonateThankYouTitle), String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.DonationThankYou), pf.UserFullName), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
+                        util.NotifyUser(Branding.ReBrand(Resources.LocalizedText.DonateThankYouTitle), String.Format(CultureInfo.CurrentCulture, Branding.ReBrand(Resources.EmailTemplates.DonationThankYou), pf.PreferredGreeting), new System.Net.Mail.MailAddress(pf.Email, pf.UserFullName), false, false);
                 }
             }
         }

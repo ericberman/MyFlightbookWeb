@@ -776,6 +776,16 @@ namespace MyFlightbook
         /// </summary>
         [NonSerialized]
         private IDictionary<string, object> m_persistedPrefs = new Dictionary<string, object>();
+
+        private const string prefKeyPreferredGreeting = "preferredGreeting";
+        public string PreferredGreeting
+        {
+            get { return PreferenceExists(prefKeyPreferredGreeting) ? (string)GetPreferenceForKey(prefKeyPreferredGreeting) : UserFirstName; }
+            set
+            {
+                SetPreferenceForKey(prefKeyPreferredGreeting, value, String.IsNullOrEmpty(value));
+            }
+        }
         #endregion
 
         /// <summary>
@@ -1784,7 +1794,7 @@ namespace MyFlightbook
             pf.FCommit();
 
             // send welcome mail
-            util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName), Resources.EmailTemplates.Welcomeemailhtm, new MailAddress(pf.Email, pf.UserFirstName), false, true);
+            util.NotifyUser(String.Format(CultureInfo.CurrentCulture, Resources.Profile.WelcomeTitle, Branding.CurrentBrand.AppName), Resources.EmailTemplates.Welcomeemailhtm, new MailAddress(pf.Email, pf.UserFullName), false, true);
             util.NotifyAdminEvent("New user created" + (fWebService ? " - WebService" : ""), String.Format(CultureInfo.CurrentCulture, "User '{0}' was created at {1}", pf.UserName, DateTime.Now.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture)), ProfileRoles.maskCanReport);
         }
     }
