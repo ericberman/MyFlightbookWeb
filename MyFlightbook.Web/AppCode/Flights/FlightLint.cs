@@ -379,30 +379,26 @@ namespace MyFlightbook.Lint
             // Block out after block in
             AddConditionalIssue(cfpBlockIn != null && cfpBlockOut != null && cfpBlockOut.DateValue.CompareTo(cfpBlockIn.DateValue) > 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningDateTimeInvalidBlock);
 
-            if (le.EngineStart.HasValue())
-            {
-                // Engine start must be before flight.  Can be after block out, but not before block in
-                AddConditionalIssue(le.FlightStart.HasValue() && le.FlightStart.CompareTo(le.EngineStart) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningDateEngineAfterFlight);
-                AddConditionalIssue(le.FlightEnd.HasValue() && le.FlightEnd.CompareTo(le.EngineStart) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndBeforeEngineStart);
+            bool fHasEngineStart = le.EngineStart.HasValue();
+            bool fHasEngineEnd = le.EngineEnd.HasValue();
+            bool fHasFlightStart = le.FlightStart.HasValue();
+            bool fHasFlightEnd = le.FlightEnd.HasValue();
 
-                AddConditionalIssue(cfpBlockIn != null && cfpBlockIn.DateValue.CompareTo(le.EngineStart) <= 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningEngineStartAfterBlockIn);
-            }
+            // Engine start must be before flight.  Can be after block out, but not before block in
+            AddConditionalIssue(fHasEngineStart && fHasFlightStart && le.FlightStart.CompareTo(le.EngineStart) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningDateEngineAfterFlight);
+            AddConditionalIssue(fHasEngineStart && fHasFlightEnd && le.FlightEnd.CompareTo(le.EngineStart) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndBeforeEngineStart);
+
+            AddConditionalIssue(fHasEngineStart && cfpBlockIn != null && cfpBlockIn.DateValue.CompareTo(le.EngineStart) <= 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningEngineStartAfterBlockIn);
 
             // Flight start must be after engine start (checked above) and after block out
-            AddConditionalIssue(le.FlightStart.HasValue() && cfpBlockOut != null && le.FlightStart.CompareTo(cfpBlockOut.DateValue) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningDateBlockAfterFlight);
+            AddConditionalIssue(fHasFlightStart && cfpBlockOut != null && le.FlightStart.CompareTo(cfpBlockOut.DateValue) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningDateBlockAfterFlight);
 
             // Flight end must be after engine/flight start (checked in regular validation), after block out, and before block in
-            if (le.FlightEnd.HasValue())
-            {
-                AddConditionalIssue(cfpBlockOut != null && le.FlightEnd.CompareTo(cfpBlockOut.DateValue) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndBeforeBlockOut);
-                AddConditionalIssue(cfpBlockIn != null && le.FlightEnd.CompareTo(cfpBlockIn.DateValue) > 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndAfterBlockIn);
-                AddConditionalIssue(le.EngineEnd.HasValue() && le.FlightEnd.CompareTo(le.EngineEnd) > 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndAfterEngineEnd);
-            }
+            AddConditionalIssue(fHasFlightEnd && cfpBlockOut != null && le.FlightEnd.CompareTo(cfpBlockOut.DateValue) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndBeforeBlockOut);
+            AddConditionalIssue(fHasFlightEnd && cfpBlockIn != null && le.FlightEnd.CompareTo(cfpBlockIn.DateValue) > 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndAfterBlockIn);
+            AddConditionalIssue(fHasFlightEnd && fHasEngineEnd && le.FlightEnd.CompareTo(le.EngineEnd) > 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningFlightEndAfterEngineEnd);
 
-            if (le.EngineEnd.HasValue())
-            {
-                AddConditionalIssue(cfpBlockIn != null && le.EngineEnd.CompareTo(cfpBlockIn.DateValue) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningEngineEndBeforeBlockIn);
-            }
+            AddConditionalIssue(fHasEngineEnd && cfpBlockIn != null && le.EngineEnd.CompareTo(cfpBlockIn.DateValue) < 0, LintOptions.DateTimeIssues, Resources.FlightLint.warningEngineEndBeforeBlockIn);
 
             CustomFlightProperty cfpTachStart = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachStart);
             CustomFlightProperty cfpTachEnd = le.CustomProperties.GetEventWithTypeID(CustomPropertyType.KnownProperties.IDPropTachEnd);
