@@ -40,7 +40,7 @@ namespace MyFlightbook
         private static string WriteTelemetryStringToArchive(ZipArchive z, string szTelemetry, int idFlight)
         {
             DataSourceType dst = DataSourceType.BestGuessTypeFromText(szTelemetry);
-            string szFile = String.Format(CultureInfo.InvariantCulture, "Telemetry\\{0}.{1}", idFlight, dst.DefaultExtension);
+            string szFile = String.Format(CultureInfo.InvariantCulture, "{0}//{1}.{2}", szThumbTelemetry, idFlight, dst.DefaultExtension);
             ZipArchiveEntry ze = z.CreateEntry(szFile);
             using (StreamWriter writer = new StreamWriter(ze.Open()))
                 writer.Write(szTelemetry);
@@ -59,6 +59,7 @@ namespace MyFlightbook
         const string szThumbFolderEndorsements = "thumbsendorsement";
         const string szThumbFolderBasicMed = "thumbsbasicmed";
         const string szThumbFolderFlights = "thumbsFlights";
+        const string szThumbTelemetry = "Telemetry";
 
         private static void AddThumbnailToZip(MFBImageInfo mfbii, ZipArchive zip, string szFolder)
         {
@@ -79,7 +80,7 @@ namespace MyFlightbook
             // No need to add an S3PDF to the zip file; it's just a placeholder file on the disk, and it can 
             // potentially have a duplicate name with another PDF as well.
             if (mfbii.ImageType != MFBImageInfo.ImageFileType.S3PDF)
-                zip.CreateEntryFromFile(imgPath, szFolder + "\\" + mfbii.ThumbnailFile);
+                zip.CreateEntryFromFile(imgPath, szFolder + "//" + mfbii.ThumbnailFile);
         }
 
         private static void WriteFlightInfo(HtmlTextWriter tw, ZipArchive zip, LogbookEntry le)
