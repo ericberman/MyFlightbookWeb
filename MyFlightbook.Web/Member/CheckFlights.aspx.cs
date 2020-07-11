@@ -81,11 +81,12 @@ namespace MyFlightbook.Web.Member
             ckXC.Checked = (options & (UInt32)LintOptions.XCIssues) != 0;
         }
 
-        protected void BindFlights(IEnumerable<FlightWithIssues> rgf)
+        protected void BindFlights(IEnumerable<FlightWithIssues> rgf, int cFlightsChecked)
         {
             gvFlights.DataSource = CheckedFlights = rgf;
             gvFlights.DataBind();
-            lblSummary.Text = String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.SummaryFlightsFound, rgf.Count(), CheckedFlights.Count());
+            if (cFlightsChecked > 0)
+                lblSummary.Text = String.Format(CultureInfo.CurrentCulture, Resources.FlightLint.SummaryFlightsFound, cFlightsChecked, CheckedFlights.Count());
         }
 
         protected void btnCheckAll_Click(object sender, EventArgs e)
@@ -101,7 +102,7 @@ namespace MyFlightbook.Web.Member
             DBHelperCommandArgs dbhq = LogbookEntryBase.QueryCommand(fq, fAsc:true);
             IEnumerable<LogbookEntryBase> rgle = LogbookEntryDisplay.GetFlightsForQuery(dbhq, Page.User.Identity.Name, "Date", SortDirection.Ascending, false, false);
 
-            BindFlights(new FlightLint().CheckFlights(rgle, Page.User.Identity.Name, selectedOptions, mfbDateLastCheck.Date));
+            BindFlights(new FlightLint().CheckFlights(rgle, Page.User.Identity.Name, selectedOptions, mfbDateLastCheck.Date), rgle.Count());
 
             Response.Cookies[szCookieLastCheck].Value = DateTime.Now.YMDString();
             Response.Cookies[szCookieLastCheck].Expires = DateTime.Now.AddYears(5);
@@ -135,7 +136,7 @@ namespace MyFlightbook.Web.Member
             else
                 lst.RemoveAt(index);
 
-            BindFlights(lst);
+            BindFlights(lst, -1);
         }
 
         protected void lnkEditFlight_Click(object sender, EventArgs e)
