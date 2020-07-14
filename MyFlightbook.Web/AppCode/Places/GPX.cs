@@ -49,7 +49,6 @@ namespace MyFlightbook.Telemetry
                 return null;
 
             XNamespace ns = XNamespace.Get("http://www.topografix.com/GPX/1/0");
-            XNamespace ns11 = XNamespace.Get("http://www.topografix.com/GPX/1/1");
 
             IEnumerable<XElement> ele = null;
 
@@ -69,6 +68,8 @@ namespace MyFlightbook.Telemetry
                 {
                     try
                     {
+                        // XNamespace ns11 = XNamespace.Get("http://www.topografix.com/GPX/1/1");
+                        XNamespace ns11 = xml.Document.Root.Name.Namespace.NamespaceName;
                         ele = xml.Descendants(ns11 + "trk");
                         ele = ele.First().Descendants(ns11 + "trkseg");
                         if (ele != null)
