@@ -229,6 +229,42 @@ public partial class Member_PrintView
     protected global::System.Web.UI.WebControls.DropDownList cmbPageSize;
 
     /// <summary>
+    /// rowCustomPage control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.HtmlControls.HtmlGenericControl rowCustomPage;
+
+    /// <summary>
+    /// decCustWidth control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbDecimalEdit decCustWidth;
+
+    /// <summary>
+    /// decCustHeight control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbDecimalEdit decCustHeight;
+
+    /// <summary>
+    /// valCustWidth control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.CustomValidator valCustWidth;
+
+    /// <summary>
     /// rbLandscape control.
     /// </summary>
     /// <remarks>

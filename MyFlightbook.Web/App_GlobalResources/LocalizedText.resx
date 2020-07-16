@@ -1767,4 +1767,16 @@
   <data name="StudentSigningDefaultScribbleSaveSig" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="PDFPageSizeCustom" xml:space="preserve">
+    <value>(Custom)</value>
+  </data>
+  <data name="PDFPageSizeCustomHeight" xml:space="preserve">
+    <value>Height (mm):</value>
+  </data>
+  <data name="PDFPageSizeCustomWidth" xml:space="preserve">
+    <value>Width (mm):</value>
+  </data>
+  <data name="PDFPageSizeInvalidDimensions" xml:space="preserve">
+    <value>Invalid page dimensions.  Please choose a value between 50mm and 1,000mm</value>
+  </data>
 </root>

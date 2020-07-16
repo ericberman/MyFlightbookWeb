@@ -96,27 +96,41 @@
                         <uc1:SponsoredAd runat="server" id="SponsoredAd" SponsoredAdID="3" />
                     </div>
                     <table>
-                        <tr>
+                        <tr style="vertical-align:top;">
                             <td>
                                 <% =Resources.LocalizedText.PDFPageSizePrompt %>
                             </td>
                             <td>
-                                <asp:DropDownList ID="cmbPageSize" runat="server">
-                                    <asp:ListItem Selected="True" Value="Letter" Text="<%$ Resources:LocalizedText, PDFPageSizeLetter %>"></asp:ListItem>
-                                    <asp:ListItem Value="Legal" Text="<%$ Resources:LocalizedText, PDFPageSizeLegal %>"></asp:ListItem>
-                                    <asp:ListItem Value="A1" Text="<%$ Resources:LocalizedText, PDFPageSizeA1 %>"></asp:ListItem>
-                                    <asp:ListItem Value="A2" Text="<%$ Resources:LocalizedText, PDFPageSizeA2 %>"></asp:ListItem>
-                                    <asp:ListItem Value="A3" Text="<%$ Resources:LocalizedText, PDFPageSizeA3 %>"></asp:ListItem>
-                                    <asp:ListItem Value="A4" Text="<%$ Resources:LocalizedText, PDFPageSizeA4 %>"></asp:ListItem>
-                                    <asp:ListItem Value="A5" Text="<%$ Resources:LocalizedText, PDFPageSizeA5 %>"></asp:ListItem>
-                                    <asp:ListItem Value="B1" Text="<%$ Resources:LocalizedText, PDFPageSizeB1 %>"></asp:ListItem>
-                                    <asp:ListItem Value="B2" Text="<%$ Resources:LocalizedText, PDFPageSizeB2 %>"></asp:ListItem>
-                                    <asp:ListItem Value="B3" Text="<%$ Resources:LocalizedText, PDFPageSizeB3 %>"></asp:ListItem>
-                                    <asp:ListItem Value="B4" Text="<%$ Resources:LocalizedText, PDFPageSizeB4 %>"></asp:ListItem>
-                                    <asp:ListItem Value="B5" Text="<%$ Resources:LocalizedText, PDFPageSizeB5 %>"></asp:ListItem>
-                                    <asp:ListItem Value="Tabloid" Text="<%$ Resources:LocalizedText, PDFPageSizeTabloid %>"></asp:ListItem>
-                                    <asp:ListItem Value="Executive" Text="<%$ Resources:LocalizedText, PDFPageSizeExecutive %>"></asp:ListItem>
-                                </asp:DropDownList>
+                                <script type="text/javascript">
+                                    function pageSizeChanged(sender) {
+                                        var custSizeDiv = document.getElementById("<% =rowCustomPage.ClientID %>");
+                                        custSizeDiv.style.display = (sender.value === "Custom") ? "block" : "none";
+                                    }
+                                </script>
+                                <div>
+                                    <asp:DropDownList ID="cmbPageSize" runat="server" onchange="pageSizeChanged(this)">
+                                        <asp:ListItem Selected="True" Value="Letter" Text="<%$ Resources:LocalizedText, PDFPageSizeLetter %>"></asp:ListItem>
+                                        <asp:ListItem Value="Legal" Text="<%$ Resources:LocalizedText, PDFPageSizeLegal %>"></asp:ListItem>
+                                        <asp:ListItem Value="A1" Text="<%$ Resources:LocalizedText, PDFPageSizeA1 %>"></asp:ListItem>
+                                        <asp:ListItem Value="A2" Text="<%$ Resources:LocalizedText, PDFPageSizeA2 %>"></asp:ListItem>
+                                        <asp:ListItem Value="A3" Text="<%$ Resources:LocalizedText, PDFPageSizeA3 %>"></asp:ListItem>
+                                        <asp:ListItem Value="A4" Text="<%$ Resources:LocalizedText, PDFPageSizeA4 %>"></asp:ListItem>
+                                        <asp:ListItem Value="A5" Text="<%$ Resources:LocalizedText, PDFPageSizeA5 %>"></asp:ListItem>
+                                        <asp:ListItem Value="B1" Text="<%$ Resources:LocalizedText, PDFPageSizeB1 %>"></asp:ListItem>
+                                        <asp:ListItem Value="B2" Text="<%$ Resources:LocalizedText, PDFPageSizeB2 %>"></asp:ListItem>
+                                        <asp:ListItem Value="B3" Text="<%$ Resources:LocalizedText, PDFPageSizeB3 %>"></asp:ListItem>
+                                        <asp:ListItem Value="B4" Text="<%$ Resources:LocalizedText, PDFPageSizeB4 %>"></asp:ListItem>
+                                        <asp:ListItem Value="B5" Text="<%$ Resources:LocalizedText, PDFPageSizeB5 %>"></asp:ListItem>
+                                        <asp:ListItem Value="Tabloid" Text="<%$ Resources:LocalizedText, PDFPageSizeTabloid %>"></asp:ListItem>
+                                        <asp:ListItem Value="Executive" Text="<%$ Resources:LocalizedText, PDFPageSizeExecutive %>"></asp:ListItem>
+                                        <asp:ListItem Value="Custom" Text="<%$ Resources:LocalizedText, PDFPageSizeCustom %>"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div id="rowCustomPage" runat="server" style="display:none; vertical-align:middle; margin-top: 3px;">
+                                    <%=Resources.LocalizedText.PDFPageSizeCustomWidth %><uc1:mfbDecimalEdit runat="server" ID="decCustWidth" EditingMode="Integer" IntValue="200" Width="50px" />
+                                    <%=Resources.LocalizedText.PDFPageSizeCustomHeight %><uc1:mfbDecimalEdit runat="server" ID="decCustHeight" EditingMode="Integer" IntValue="280" Width="50px" />
+                                    <div><asp:CustomValidator ID="valCustWidth" runat="server" CssClass="error" ErrorMessage="<%$ Resources:LocalizedText, PDFPageSizeInvalidDimensions %>" OnServerValidate="valCustWidth_ServerValidate" ControlToValidate="cmbPageSize" Display="Dynamic"></asp:CustomValidator></div>
+                                </div>
                             </td>
                         </tr>
                         <tr style="vertical-align:middle">

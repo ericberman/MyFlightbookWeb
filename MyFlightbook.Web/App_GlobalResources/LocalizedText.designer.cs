@@ -2246,7 +2246,7 @@ namespace Resources {
         ///   Looks up a localized string similar to &lt;table class=&quot;featureTable&quot;&gt;
         ///    &lt;tr class=&quot;appHeader&quot;&gt;
         ///        &lt;td colspan=&quot;3&quot;&gt;&lt;/td&gt;
-        ///        &lt;td class=&quot;feature&quot; style=&quot;font-style:italic; font-size:small; border-bottom: 2px solid gray;&quot; colspan=&quot;2&quot;&gt;Compare to...&lt;/td&gt;
+        ///        &lt;td class=&quot;feature&quot; style=&quot;font-style:italic; font-size:small; border-bottom: 2px solid gray;&quot; colspan=&quot;3&quot;&gt;Compare to...&lt;/td&gt;
         ///    &lt;/tr&gt;
         ///    &lt;tr class=&quot;appHeader&quot;&gt;
         ///        &lt;td class=&quot;feature&quot;&gt;&lt;/td&gt;
@@ -3444,11 +3444,47 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (Custom).
+        /// </summary>
+        internal static string PDFPageSizeCustom {
+            get {
+                return ResourceManager.GetString("PDFPageSizeCustom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Height (mm):.
+        /// </summary>
+        internal static string PDFPageSizeCustomHeight {
+            get {
+                return ResourceManager.GetString("PDFPageSizeCustomHeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Width (mm):.
+        /// </summary>
+        internal static string PDFPageSizeCustomWidth {
+            get {
+                return ResourceManager.GetString("PDFPageSizeCustomWidth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Executive.
         /// </summary>
         internal static string PDFPageSizeExecutive {
             get {
                 return ResourceManager.GetString("PDFPageSizeExecutive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid page dimensions.  Please choose a value between 50mm and 1,000mm.
+        /// </summary>
+        internal static string PDFPageSizeInvalidDimensions {
+            get {
+                return ResourceManager.GetString("PDFPageSizeInvalidDimensions", resourceCulture);
             }
         }
         

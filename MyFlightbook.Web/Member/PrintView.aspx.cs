@@ -46,6 +46,8 @@ public partial class Member_PrintView : System.Web.UI.Page
             return new PDFOptions()
             {
                 PaperSize = (PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue),
+                PageHeight = decCustHeight.IntValue,
+                PageWidth = decCustWidth.IntValue,
                 Orientation = rbLandscape.Checked ? PDFOptions.PageOrientation.Landscape : PDFOptions.PageOrientation.Portrait,
                 FooterLeft = Resources.LogbookEntry.LogbookCertification,
                 FooterRight = PDFOptions.FooterPageCountArg,
@@ -139,6 +141,8 @@ public partial class Member_PrintView : System.Web.UI.Page
 
             RefreshLogbookData();
         }
+
+        rowCustomPage.Style["display"] = (PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue) == PDFOptions.PageSize.Custom ? "block" : "none";
     }
 
     protected void btnChangeQuery_Click(object sender, EventArgs e)
@@ -191,8 +195,12 @@ public partial class Member_PrintView : System.Web.UI.Page
 
     protected void lnkDownloadPDF_Click(object sender, EventArgs e)
     {
-        SuppressFooter = true;
-        OverrideRender = true;
+        Page.Validate();
+        if (Page.IsValid)
+        {
+            SuppressFooter = true;
+            OverrideRender = true;
+        }
         RefreshLogbookData();
     }
 
@@ -204,8 +212,6 @@ public partial class Member_PrintView : System.Web.UI.Page
 
             using (StringWriter swOut = new StringWriter(sbOut, CultureInfo.InvariantCulture))
             {
-                UTF8Encoding enc = new UTF8Encoding(true);
-                swOut.Write(Encoding.UTF8.GetString(enc.GetPreamble()));
                 using (HtmlTextWriter htwOut = new HtmlTextWriter(swOut))
                 {
                     base.Render(htwOut);
@@ -250,5 +256,15 @@ public partial class Member_PrintView : System.Web.UI.Page
         rptImages.Visible = ckIncludeEndorsementImages.Checked;
         pnlTotals.Visible = ckTotals.Checked;
         RefreshLogbookData();
+    }
+
+    protected void valCustWidth_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        if (args == null)
+            throw new ArgumentNullException(nameof(args));
+
+        if ((PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue) == PDFOptions.PageSize.Custom && 
+            (decCustWidth.IntValue < 50 || decCustWidth.IntValue > 1000 || decCustHeight.IntValue < 50 || decCustHeight.IntValue > 1000))
+            args.IsValid = false;
     }
 }
