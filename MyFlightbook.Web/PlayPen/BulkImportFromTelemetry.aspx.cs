@@ -32,6 +32,13 @@ public partial class BulkImportFromTelemetry : MyFlightbook.Web.WizardPage.MFBWi
         }
         else
         {
+            Profile pf = Profile.GetUser(Page.User.Identity.Name);
+            if (pf.PreferredTimeZone != null && Session[SessionKeyTZ] == null)
+                Session[SessionKeyTZ] = pf.PreferredTimeZone;
+
+            if (Session[SessionKeyTZ] != null)
+                TimeZone.SelectedTimeZone = (TimeZoneInfo)Session[SessionKeyTZ];
+
             AutoFillOptions afo = AutoFillOptions.DefaultOptionsForUser(Page.User.Identity.Name);
             afo.SaveForUser(Page.User.Identity.Name);
             Session[SessionKeyOpt] = afo;
