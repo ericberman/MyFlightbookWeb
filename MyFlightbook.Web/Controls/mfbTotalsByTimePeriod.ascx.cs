@@ -43,11 +43,12 @@ namespace MyFlightbook.Web.Controls
 
             if (fBind)
             {
-                UserTotals ut = new UserTotals(fq.UserName, fq, true);
+                UserTotals ut = new UserTotals(fq.UserName, fq, false);
                 ut.DataBind();
 
                 foreach (TotalsItem ti in ut.Totals)
-                    d[ti.Description] = ti;
+                    if (ti.Value > 0)
+                        d[ti.Description] = ti;
             }
 
             return d;
@@ -65,10 +66,10 @@ namespace MyFlightbook.Web.Controls
             }
         }
 
-        private void AddCellForTotalsItem(TableRow tr, TotalsItem ti, bool fInclude)
+        private decimal AddCellForTotalsItem(TableRow tr, TotalsItem ti, bool fInclude)
         {
             if (!fInclude)
-                return;
+                return 0.0M;
 
             TableCell tc = new TableCell();
             tr.Cells.Add(tc);
@@ -76,7 +77,7 @@ namespace MyFlightbook.Web.Controls
 
             // Empty totals item = empty cell.
             if (ti == null)
-                return;
+                return 0.0M;
 
             // Otherwise, add the cell to the table, following the design in mfbTotalSummary
             // Link the *value* here, not the description, since we will have multiple columns
@@ -96,6 +97,8 @@ namespace MyFlightbook.Web.Controls
             tc.Controls.Add(p);
             Label l = new Label() { CssClass = "fineprint", Text = ti.SubDescription };
             p.Controls.Add(l);
+
+            return ti.Value;    // Indicate if we actually had a non-zero value.  A row of all empty cells or zero cells should be deleted.
         }
 
         public void BindTotalsForUser(string szUser, bool fLast7Days, bool fMonthToDate, bool fPreviousMonth, bool fPreviousYear, bool fYearToDate, FlightQuery fqSupplied = null)
@@ -108,7 +111,7 @@ namespace MyFlightbook.Web.Controls
 
             // Get All time totals.  This will also give us the entire space of totals items
             FlightQuery fq = fqSupplied == null ? new FlightQuery(szUser) : new FlightQuery(fqSupplied);
-            UserTotals ut = new UserTotals(szUser, fq, true);
+            UserTotals ut = new UserTotals(szUser, fq, false);
             ut.DataBind();
 
             IEnumerable<TotalsItemCollection> allTotals = TotalsItemCollection.AsGroups(ut.Totals);
@@ -178,12 +181,16 @@ namespace MyFlightbook.Web.Controls
                     // Add the description
                     tr.Cells.Add(new TableCell() { Text = ti.Description });
 
-                    AddCellForTotalsItem(tr, ti, true);
-                    AddCellForTotalsItem(tr, dLast7.ContainsKey(ti.Description) ? dLast7[ti.Description] : null, fLast7Days);
-                    AddCellForTotalsItem(tr, dMonthToDate.ContainsKey(ti.Description) ? dMonthToDate[ti.Description] : null, fMonthToDate);
-                    AddCellForTotalsItem(tr, dPrevMonth.ContainsKey(ti.Description) ? dPrevMonth[ti.Description] : null, fPreviousMonth);
-                    AddCellForTotalsItem(tr, dYTD.ContainsKey(ti.Description) ? dYTD[ti.Description] : null, fYearToDate);
+                    decimal rowTotal = AddCellForTotalsItem(tr, ti, true) +
+                    AddCellForTotalsItem(tr, dLast7.ContainsKey(ti.Description) ? dLast7[ti.Description] : null, fLast7Days) +
+                    AddCellForTotalsItem(tr, dMonthToDate.ContainsKey(ti.Description) ? dMonthToDate[ti.Description] : null, fMonthToDate) +
+                    AddCellForTotalsItem(tr, dPrevMonth.ContainsKey(ti.Description) ? dPrevMonth[ti.Description] : null, fPreviousMonth) +
+                    AddCellForTotalsItem(tr, dYTD.ContainsKey(ti.Description) ? dYTD[ti.Description] : null, fYearToDate) +
                     AddCellForTotalsItem(tr, dPrevYear.ContainsKey(ti.Description) ? dPrevYear[ti.Description] : null, fPreviousYear);
+
+                    // Remove rows of empty data
+                    if (rowTotal == 0)
+                        tblTotals.Rows.Remove(tr);
                 }
             }
         }

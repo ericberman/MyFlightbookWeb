@@ -230,7 +230,7 @@
     <value>Visible to others</value>
   </data>
   <data name="FlightFeatureSIC" xml:space="preserve">
-    <value>SICtime</value>
+    <value>SIC time</value>
   </data>
   <data name="FlightFeatureSimIMC" xml:space="preserve">
     <value>Simulated IMC time</value>

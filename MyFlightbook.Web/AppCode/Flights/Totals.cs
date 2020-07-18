@@ -558,21 +558,21 @@ namespace MyFlightbook.Currency
             {
                 FlightQuery fq = ut.Restriction;
 
-                if (PIC == TotalTime)
+                if (PIC == TotalTime && ut.FilterEmptyTotals)
                 {
-                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SIC, SIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.PIC), Group = TotalsGroup.Capabilities });
                     ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PICTotal, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total), Group = TotalsGroup.Capabilities });
+                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SIC, SIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.SIC), Group = TotalsGroup.Capabilities });
                 }
-                else if (SIC == TotalTime)
+                else if (SIC == TotalTime && ut.FilterEmptyTotals)
                 {
                     ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SICTotal, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total), Group = TotalsGroup.Capabilities });
-                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PIC, PIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.SIC), Group = TotalsGroup.Capabilities });
+                    ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PIC, PIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.PIC), Group = TotalsGroup.Capabilities });
                 }
                 else
                 {
+                    ut.AddToList(new TotalsItem(Name, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total), Group = TotalsGroup.Capabilities });
                     ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.SIC, SIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.SIC), Group = TotalsGroup.Capabilities });
                     ut.AddToList(new TotalsItem(Name + " - " + Resources.Totals.PIC, PIC) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.PIC), Group = TotalsGroup.Capabilities });
-                    ut.AddToList(new TotalsItem(Name, TotalTime) { Query = QueryForModelFeatureTotal(fq, FeatureSubtotal.Total), Group = TotalsGroup.Capabilities });
                 }
             }
         }
@@ -838,7 +838,7 @@ namespace MyFlightbook.Currency
             foreach (ModelFeatureTotal mft in rgModelFeatureTotals)
             {
                 // skip over retract if it is the same as complex.
-                if (mft.ModelAttribute == ModelFeatureTotal.FeatureTotalType.Retract && mft == GetModelFeatureTotalByType(ModelFeatureTotal.FeatureTotalType.Complex))
+                if (FilterEmptyTotals && mft.ModelAttribute == ModelFeatureTotal.FeatureTotalType.Retract && mft == GetModelFeatureTotalByType(ModelFeatureTotal.FeatureTotalType.Complex))
                     continue;
                 mft.AddItems(this);
             }

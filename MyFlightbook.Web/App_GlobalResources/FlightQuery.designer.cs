@@ -655,7 +655,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SICtime.
+        ///   Looks up a localized string similar to SIC time.
         /// </summary>
         internal static string FlightFeatureSIC {
             get {
