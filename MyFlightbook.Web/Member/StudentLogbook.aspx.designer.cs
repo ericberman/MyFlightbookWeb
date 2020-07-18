@@ -94,6 +94,15 @@ public partial class Member_StudentLogbook
     protected global::Controls_mfbAccordionProxyControl apcAnalysis;
 
     /// <summary>
+    /// apcPrintView control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbAccordionProxyControl apcPrintView;
+
+    /// <summary>
     /// pnlFilter control.
     /// </summary>
     /// <remarks>
@@ -209,6 +218,87 @@ public partial class Member_StudentLogbook
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_mfbChartTotals mfbChartTotals;
+
+    /// <summary>
+    /// acpPrint control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::AjaxControlToolkit.AccordionPane acpPrint;
+
+    /// <summary>
+    /// printOptions control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_PrintOptions printOptions;
+
+    /// <summary>
+    /// lnkPrintView control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.HyperLink lnkPrintView;
+
+    /// <summary>
+    /// imgOpenPrintView control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgOpenPrintView;
+
+    /// <summary>
+    /// lnkDownloadCSV control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.LinkButton lnkDownloadCSV;
+
+    /// <summary>
+    /// imgDownloadCSV control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgDownloadCSV;
+
+    /// <summary>
+    /// imgCSVIcon control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgCSVIcon;
+
+    /// <summary>
+    /// locDownloadCSV control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locDownloadCSV;
+
+    /// <summary>
+    /// mfbDownload1 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbDownload mfbDownload1;
 
     /// <summary>
     /// lblErr control.

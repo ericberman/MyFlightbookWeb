@@ -10,6 +10,9 @@
 <%@ Register Src="~/Controls/mfbQueryDescriptor.ascx" TagPrefix="uc1" TagName="mfbQueryDescriptor" %>
 <%@ Register Src="~/Controls/mfbChartTotals.ascx" TagPrefix="uc1" TagName="mfbChartTotals" %>
 <%@ Register Src="~/Controls/mfbEditFlight.ascx" TagPrefix="uc1" TagName="mfbEditFlight" %>
+<%@ Register src="../Controls/PrintOptions.ascx" tagname="PrintOptions" tagprefix="uc11" %>
+<%@ Register Src="~/Controls/mfbDownload.ascx" TagPrefix="uc1" TagName="mfbDownload" %>
+
 
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <asp:Label ID="lblHeader" runat="server" Text=""></asp:Label>
@@ -18,13 +21,14 @@
     <div style="padding:5px">
         <asp:HyperLink ID="lnkReturn" runat="server" NavigateUrl="~/Member/Training.aspx/instStudents" Text="<%$ Resources:Profile, ReturnToProfile %>"></asp:HyperLink>
     </div>
-    <uc1:mfbAccordionProxyExtender runat="server" ID="mfbAccordionProxyExtender" AccordionControlID="AccordionCtrl" HeaderProxyIDs="apcNewFlight,apcFilter,apcTotals,apcCurrency,apcAnalysis" />
+    <uc1:mfbAccordionProxyExtender runat="server" ID="mfbAccordionProxyExtender" AccordionControlID="AccordionCtrl" HeaderProxyIDs="apcNewFlight,apcFilter,apcTotals,apcCurrency,apcAnalysis,apcPrintView" />
     <asp:Panel ID="pnlAccordionMenuContainer" CssClass="accordionMenuContainer" runat="server">
         <uc1:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:LocalizedText, LogTabNewFlight %>" ID="apcNewFlight" />
         <uc1:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:LocalizedText, LogTabFilter %>" ID="apcFilter" />
         <uc1:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:LocalizedText, LogTabTotals %>" ID="apcTotals" />
         <uc1:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:LocalizedText, LogTabCurrency %>" ID="apcCurrency" />
         <uc1:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:LocalizedText, LogTabAnalysis %>" ID="apcAnalysis" LazyLoad="true" OnControlClicked="apcAnalysis_ControlClicked" />
+        <uc1:mfbAccordionProxyControl runat="server" LabelText="<%$ Resources:LocalizedText, LogTabPrint %>" ID="apcPrintView" />
     </asp:Panel>
     <asp:Panel ID="pnlFilter" runat="server" CssClass="filterApplied" >
         <div style="display:inline-block;"><%=Resources.LocalizedText.ResultsFiltered %></div>
@@ -55,6 +59,28 @@
             <ajaxToolkit:AccordionPane runat="server" ID="acpPaneAnalysis">
                 <Content>
                     <uc1:mfbChartTotals runat="server" ID="mfbChartTotals" Visible="false" />
+                </Content>
+            </ajaxToolkit:AccordionPane>
+            <ajaxToolkit:AccordionPane ID="acpPrint" runat="server">
+                <Content>
+                    <div style="margin-left: auto; margin-right:auto; text-align:center">
+                        <div style="padding:5px; margin-left: auto; margin-right:auto; text-align:left; width: 50%">
+                            <h3><%=Resources.LocalizedText.PrintViewOptions %></h3>
+                            <uc11:PrintOptions ID="printOptions" runat="server" OnOptionsChanged="printOptions_OptionsChanged" />
+                        </div>
+                        <div>
+                            <asp:HyperLink ID="lnkPrintView" runat="server" Target="_blank">
+                                <asp:Image ID="imgOpenPrintView" ImageUrl="~/images/rightarrow.png" ImageAlign="Middle" runat="server" />&nbsp;<%=Resources.LocalizedText.OpenPrintView %></asp:HyperLink>
+                        </div>
+                        <div>
+                            <asp:LinkButton ID="lnkDownloadCSV" runat="server" OnClick="lnkDownloadCSV_Click" style="vertical-align:middle">
+                                <asp:Image ID="imgDownloadCSV" ImageUrl="~/images/download.png" runat="server" style="padding-right: 5px; vertical-align:middle" />
+                                <asp:Image ID="imgCSVIcon" ImageAlign="Middle" runat="server" ImageUrl="~/images/csvicon_sm.png" style="padding-right: 5px; vertical-align:middle;" />
+                                <span style="vertical-align:middle"><asp:Localize ID="locDownloadCSV" runat="server" Text="<%$ Resources:LocalizedText, DownloadFlyingStats %>"></asp:Localize></span>
+                            </asp:LinkButton>
+                        </div>
+                        <uc1:mfbDownload runat="server" ID="mfbDownload1" />
+                    </div>
                 </Content>
             </ajaxToolkit:AccordionPane>
         </Panes>

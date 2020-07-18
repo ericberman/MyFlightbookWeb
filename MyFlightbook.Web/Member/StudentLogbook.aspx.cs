@@ -1,6 +1,11 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Instruction;
+using MyFlightbook.Printing;
+using Newtonsoft.Json;
 using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.UI;
 
 /******************************************************
@@ -33,6 +38,7 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            hdnStudent.Value = Page.User.Identity.Name; //default
             string szStudent = util.GetStringParam(Request, "student");
             CFIStudentMap sm = new CFIStudentMap(Page.User.Identity.Name);
             InstructorStudent student = CFIStudentMap.GetInstructorStudent(sm.Students, szStudent);
@@ -57,7 +63,8 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
                     else
                         apcNewFlight.Visible = false;
 
-                    mfbSearchForm.Username = student.UserName;
+                    mfbSearchForm.Username = printOptions.UserName = student.UserName;
+                    ResolvePrintLink();
                 }
             }
 
@@ -96,6 +103,7 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
         mfbAccordionProxyExtender.SetJavascriptForControl(apcAnalysis, false, idx);
         mfbChartTotals.HistogramManager = LogbookEntryDisplay.GetHistogramManager(mfbLogbook1.Data, hdnStudent.Value);
         mfbChartTotals.Refresh();
+        ResolvePrintLink();
     }
 
     public void ClearForm(object sender, EventArgs e)
@@ -151,5 +159,34 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
         mfbEditFlight.SetUpNewOrEdit(LogbookEntry.idFlightNew);
         AccordionCtrl.SelectedIndex = -1;
         mfbLogbook1.RefreshData();
+    }
+
+    protected void ResolvePrintLink()
+    {
+        lnkPrintView.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "~/Member/PrintView.aspx?po={0}&fq={1}&u={2}",
+            HttpUtility.UrlEncode(Convert.ToBase64String(JsonConvert.SerializeObject(printOptions.Options, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore }).Compress())),
+            HttpUtility.UrlEncode(Restriction.ToBase64CompressedJSONString()),
+            hdnStudent.Value);
+    }
+
+    protected void printOptions_OptionsChanged(object sender, PrintingOptionsEventArgs e)
+    {
+        ResolvePrintLink();
+    }
+
+    protected void lnkDownloadCSV_Click(object sender, EventArgs e)
+    {
+        mfbDownload1.User = hdnStudent.Value;
+        mfbDownload1.UpdateData();
+
+        Response.Clear();
+        Response.ContentType = "text/csv";
+        // Give it a name that is the brand name, user's name, and date.  Convert spaces to dashes, and then strip out ANYTHING that is not alphanumeric or a dash.
+        string szFilename = String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, MyFlightbook.Profile.GetUser(hdnStudent.Value).UserFullName, DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Replace(" ", "-");
+        string szDisposition = String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.csv", Regex.Replace(szFilename, "[^0-9a-zA-Z-]", ""));
+        Response.AddHeader("Content-Disposition", szDisposition);
+        Response.Write('\uFEFF');   // UTF-8 BOM.
+        Response.Write(mfbDownload1.CSVData());
+        Response.End();
     }
 }
