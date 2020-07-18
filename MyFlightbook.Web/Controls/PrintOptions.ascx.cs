@@ -29,6 +29,21 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
         }
     }
 
+    const string szVSUser = "szvsActiveUser";
+    public string UserName
+    {
+        get
+        {
+            string szUser = (string)ViewState[szVSUser];
+            return String.IsNullOrEmpty(szUser) ? Page.User.Identity.Name : szUser;
+        }
+        set
+        {
+            ViewState[szVSUser] = value;
+            SetPropsForUser();
+        }
+    }
+
     private PrintingOptions m_options = null;
     public PrintingOptions Options
     {
@@ -135,29 +150,24 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
         throw new MyFlightbookException("Attempt to create unknown optional column: " + value);
     }
 
-    protected void Page_Init(object sender, EventArgs e)
+    protected void SetPropsForUser()
     {
-        if (!IsPostBack)
-        {
-            for (int i = 3; i <= 20; i++)
-                cmbFlightsPerPage.Items.Add(new ListItem(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewXPerPage, i), i.ToString(CultureInfo.InvariantCulture)) { Selected = (i == 15) });
+        MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(UserName);
+        List<CustomPropertyType> rgcptUser = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(pf.UserName));
+        rgcptUser.RemoveAll(cpt => !cpt.IsFavorite && !pf.BlacklistedProperties.Contains(cpt.PropTypeID));
+        List<CustomPropertyType> rgcptUserOptionalColumns = rgcptUser.FindAll(cpt => (cpt.Type == CFPPropertyType.cfpDecimal || cpt.Type == CFPPropertyType.cfpInteger) && !cpt.IsNoSum);
+        rgcptUser.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
+        cklProperties.DataSource = rgcptUser;
+        cklProperties.DataBind();
+        ckCheckAll.Visible = rgcptUser.Count > 4;
+        expPropertiesToExclude.Visible = rgcptUser.Count > 0;
 
-            MyFlightbook.Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
-            List<CustomPropertyType> rgcptUser = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.Name));
-            rgcptUser.RemoveAll(cpt => !cpt.IsFavorite && !pf.BlacklistedProperties.Contains(cpt.PropTypeID));
-            List<CustomPropertyType> rgcptUserOptionalColumns = rgcptUser.FindAll(cpt => (cpt.Type == CFPPropertyType.cfpDecimal || cpt.Type == CFPPropertyType.cfpInteger) && !cpt.IsNoSum);
-            rgcptUser.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
-            cklProperties.DataSource = rgcptUser;
-            cklProperties.DataBind();
-            ckCheckAll.Visible = rgcptUser.Count > 4;
-            expPropertiesToExclude.Visible = rgcptUser.Count > 0;
+        // By default, exclude "Additional flight remarks"
+        foreach (ListItem li in cklProperties.Items)
+            if (Convert.ToInt32(li.Value, CultureInfo.InvariantCulture) == (int)CustomPropertyType.KnownProperties.IDPropAdditionalFlightRemarks)
+                li.Selected = true;
 
-            // By default, exclude "Additional flight remarks"
-            foreach (ListItem li in cklProperties.Items)
-                if (Convert.ToInt32(li.Value, CultureInfo.InvariantCulture) == (int)CustomPropertyType.KnownProperties.IDPropAdditionalFlightRemarks)
-                    li.Selected = true;
-
-            List<ListItem> lstOptionalColumnDropdowns = new List<ListItem>()
+        List<ListItem> lstOptionalColumnDropdowns = new List<ListItem>()
             {
                 new ListItem(Resources.LocalizedText.PrintViewOptionalColumnNone, string.Empty),
                 new ListItem(Resources.Makes.IsComplex, OptionalColumnType.Complex.ToString()),
@@ -180,17 +190,27 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
                 new ListItem(OptionalColumn.TitleForType(OptionalColumnType.Helicopter), OptionalColumnType.Helicopter.ToString()),
                 new ListItem(OptionalColumn.TitleForType(OptionalColumnType.Glider), OptionalColumnType.Glider.ToString()),
             };
-            if (rgcptUserOptionalColumns.Count > 0)
-                lstOptionalColumnDropdowns.Add(new ListItem(Resources.LocalizedText.DropDownListSeparator, string.Empty));
-            rgcptUserOptionalColumns.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
-            foreach (CustomPropertyType cpt in rgcptUserOptionalColumns)
-                lstOptionalColumnDropdowns.Add(new ListItem(cpt.Title, cpt.PropTypeID.ToString(CultureInfo.InvariantCulture)));
+        if (rgcptUserOptionalColumns.Count > 0)
+            lstOptionalColumnDropdowns.Add(new ListItem(Resources.LocalizedText.DropDownListSeparator, string.Empty));
+        rgcptUserOptionalColumns.Sort((cpt1, cpt2) => { return cpt1.Title.CompareCurrentCultureIgnoreCase(cpt2.Title); });
+        foreach (CustomPropertyType cpt in rgcptUserOptionalColumns)
+            lstOptionalColumnDropdowns.Add(new ListItem(cpt.Title, cpt.PropTypeID.ToString(CultureInfo.InvariantCulture)));
 
-            foreach (DropDownList ddl in OptionalColumnDropDowns)
-            {
-                ddl.DataSource = lstOptionalColumnDropdowns;
-                ddl.DataBind();
-            }
+        foreach (DropDownList ddl in OptionalColumnDropDowns)
+        {
+            ddl.DataSource = lstOptionalColumnDropdowns;
+            ddl.DataBind();
+        }
+    }
+
+    protected void Page_Init(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            for (int i = 3; i <= 20; i++)
+                cmbFlightsPerPage.Items.Add(new ListItem(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewXPerPage, i), i.ToString(CultureInfo.InvariantCulture)) { Selected = (i == 15) });
+
+            SetPropsForUser();
         }
     }
 

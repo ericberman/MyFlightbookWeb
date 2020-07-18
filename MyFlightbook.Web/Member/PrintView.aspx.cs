@@ -1,5 +1,6 @@
 ﻿using MyFlightbook;
 using MyFlightbook.Image;
+using MyFlightbook.Instruction;
 using MyFlightbook.Printing;
 using Newtonsoft.Json;
 using System;
@@ -18,11 +19,84 @@ using System.Web.UI.WebControls;
  *
 *******************************************************/
 
-public partial class Member_PrintView : System.Web.UI.Page
+public partial class Member_PrintViewBase : Page
+{
+    protected Profile CurrentUser { get; set; }
+
+    protected bool OverrideRender { get; set; }
+
+    protected bool SuppressFooter { get; set; }
+
+    protected PDFOptions PageOptions { get; set; }
+
+    protected PrintingOptions PrintOptions { get; set; }
+
+    protected override void Render(HtmlTextWriter writer)
+    {
+        if (OverrideRender)
+        {
+            StringBuilder sbOut = new StringBuilder();
+
+            using (StringWriter swOut = new StringWriter(sbOut, CultureInfo.InvariantCulture))
+            {
+                using (HtmlTextWriter htwOut = new HtmlTextWriter(swOut))
+                {
+                    base.Render(htwOut);
+                }
+            }
+
+            PDFRenderer.RenderFile(sbOut.ToString(),
+                PageOptions,
+                () => // onError
+                {
+                    util.NotifyAdminEvent("Error saving PDF", String.Format(CultureInfo.CurrentCulture, "User: {0}\r\nOptions:\r\n{1}\r\n\r\nQuery:{2}\r\n",
+                        CurrentUser.UserName,
+                        JsonConvert.SerializeObject(PageOptions),
+                        JsonConvert.SerializeObject(PrintOptions)), ProfileRoles.maskSiteAdminOnly);
+
+                    Response.Redirect(Request.Url.PathAndQuery + (Request.Url.PathAndQuery.Contains("?") ? "&" : "?") + "pdfErr=1");
+                },
+                (szOutputPDF) => // onSuccess
+                {
+                    Page.Response.Clear();
+                    Page.Response.ContentType = "application/pdf";
+                    Response.AddHeader("content-disposition", String.Format(CultureInfo.CurrentCulture, @"attachment;filename=""{0}.pdf""", CurrentUser.UserFullName));
+                    Response.WriteFile(szOutputPDF);
+                    Page.Response.Flush();
+
+                    // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
+                    Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
+                    HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
+                });
+        }
+        else
+            base.Render(writer);
+    }
+
+    protected string GetUserName(out string szError)
+    {
+        szError = string.Empty;
+        string szUser = Page.User.Identity.Name;    // default value
+        string szStudent = util.GetStringParam(Request, "u");
+        if (!String.IsNullOrEmpty(szStudent))
+        {
+            // See if the current user is authorized to view print view of the specified user
+            CFIStudentMap sm = new CFIStudentMap(Page.User.Identity.Name);
+            InstructorStudent student = CFIStudentMap.GetInstructorStudent(sm.Students, szStudent);
+            if (student == null)
+                szError = Resources.SignOff.ViewStudentNoSuchStudent;
+            else if (!student.CanViewLogbook)
+                szError = Resources.SignOff.ViewStudentLogbookUnauthorized;
+            else
+                szUser = szStudent;     // all good - can view.
+        }
+        return szUser;
+    }
+}
+
+public partial class Member_PrintView : Member_PrintViewBase
 {
     #region properties
-    protected MyFlightbook.Profile CurrentUser { get; set; }
-
     protected IPrintingTemplate ActiveTemplate
     {
         get
@@ -35,33 +109,6 @@ public partial class Member_PrintView : System.Web.UI.Page
             return null;
         }
     }
-
-    /// <summary>
-    /// Gets the current page options as chosen by the user
-    /// </summary>
-    protected PDFOptions PageOptions
-    {
-        get
-        {
-            return new PDFOptions()
-            {
-                PaperSize = (PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue),
-                PageHeight = decCustHeight.IntValue,
-                PageWidth = decCustWidth.IntValue,
-                Orientation = rbLandscape.Checked ? PDFOptions.PageOrientation.Landscape : PDFOptions.PageOrientation.Portrait,
-                FooterLeft = Resources.LogbookEntry.LogbookCertification,
-                FooterRight = PDFOptions.FooterPageCountArg,
-                LeftMargin = decLeftMargin.IntValue,
-                RightMargin = decRightMargin.IntValue,
-                TopMargin = decTopMargin.IntValue,
-                BottomMargin = decBottomMargin.IntValue
-            };
-        }
-    }
-
-    protected bool OverrideRender { get; set; }
-
-    protected bool SuppressFooter { get; set; }
     #endregion
 
     private void InitializeRestriction()
@@ -69,7 +116,12 @@ public partial class Member_PrintView : System.Web.UI.Page
         string szFQParam = util.GetStringParam(Request, "fq");
         if (!String.IsNullOrEmpty(szFQParam))
         {
-            mfbSearchForm1.Restriction = FlightQuery.FromBase64CompressedJSON(szFQParam);
+            FlightQuery fq = FlightQuery.FromBase64CompressedJSON(szFQParam);
+
+            if (fq.UserName.CompareCurrentCultureIgnoreCase(CurrentUser.UserName) != 0)
+                return; // do nothing if this isn't for the current user
+
+            mfbSearchForm1.Restriction = fq;
             Master.HasFooter = Master.HasHeader = false;
             if (!mfbSearchForm1.Restriction.IsDefault)
                 TabContainer1.ActiveTab = tpFilter;
@@ -92,7 +144,7 @@ public partial class Member_PrintView : System.Web.UI.Page
 
     private void InitializeTitleAndQueryDescriptor()
     {
-        Master.Title = lblUserName.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, MyFlightbook.Profile.GetUser(User.Identity.Name).UserFullName);
+        Master.Title = lblUserName.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.LocalizedText.LogbookForUserHeader, CurrentUser.UserFullName);
         mfbQueryDescriptor.DataSource = mfbTotalSummary1.CustomRestriction = mfbSearchForm1.Restriction;
         mfbQueryDescriptor.DataBind();
         mfbTotalSummary1.DataBind();
@@ -114,11 +166,14 @@ public partial class Member_PrintView : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         // wire up the logbook to the current user
-        mfbSearchForm1.Username = Page.User.Identity.Name;
-
         Master.SelectedTab = tabID.lbtPrintView;
 
-        CurrentUser = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
+        string szUser = GetUserName(out string szError);
+        lblErr.Text = szError;
+
+        CurrentUser = Profile.GetUser(szUser);
+
+        mfbSearchForm1.Username = mfbTotalSummary1.Username = PrintOptions1.UserName = CurrentUser.UserName;
 
         pnlResults.Visible = false; // since we aren't saving viewstate, bind to nothing  (e.g., in case we're editing a flight query)
 
@@ -200,50 +255,22 @@ public partial class Member_PrintView : System.Web.UI.Page
         {
             SuppressFooter = true;
             OverrideRender = true;
+            PageOptions = new PDFOptions()
+            {
+                PaperSize = (PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue),
+                PageHeight = decCustHeight.IntValue,
+                PageWidth = decCustWidth.IntValue,
+                Orientation = rbLandscape.Checked ? PDFOptions.PageOrientation.Landscape : PDFOptions.PageOrientation.Portrait,
+                FooterLeft = Resources.LogbookEntry.LogbookCertification,
+                FooterRight = PDFOptions.FooterPageCountArg,
+                LeftMargin = decLeftMargin.IntValue,
+                RightMargin = decRightMargin.IntValue,
+                TopMargin = decTopMargin.IntValue,
+                BottomMargin = decBottomMargin.IntValue
+            };
+            PrintOptions = PrintOptions1.Options;
         }
         RefreshLogbookData();
-    }
-
-    protected override void Render(HtmlTextWriter writer)
-    {
-        if (OverrideRender)
-        {
-            StringBuilder sbOut = new StringBuilder();
-
-            using (StringWriter swOut = new StringWriter(sbOut, CultureInfo.InvariantCulture))
-            {
-                using (HtmlTextWriter htwOut = new HtmlTextWriter(swOut))
-                {
-                    base.Render(htwOut);
-                }
-            }
-
-            PDFRenderer.RenderFile(sbOut.ToString(),
-                PageOptions,
-                () => // onError
-                {
-                    util.NotifyAdminEvent("Error saving PDF", String.Format(CultureInfo.CurrentCulture, "User: {0}\r\nOptions:\r\n{1}\r\n\r\nQuery:{2}\r\n",
-                        CurrentUser.UserName,
-                        JsonConvert.SerializeObject(PageOptions),
-                        JsonConvert.SerializeObject(PrintOptions1.Options)), ProfileRoles.maskSiteAdminOnly);
-
-                    Response.Redirect(Request.Url.PathAndQuery + (Request.Url.PathAndQuery.Contains("?") ? "&" : "?") + "pdfErr=1");
-                }, 
-                (szOutputPDF) => // onSuccess
-                {
-                    Page.Response.Clear();
-                    Page.Response.ContentType = "application/pdf";
-                    Response.AddHeader("content-disposition", String.Format(CultureInfo.CurrentCulture, @"attachment;filename=""{0}.pdf""", CurrentUser.UserFullName));
-                    Response.WriteFile(szOutputPDF);
-                    Page.Response.Flush();
-
-                    // See http://stackoverflow.com/questions/20988445/how-to-avoid-response-end-thread-was-being-aborted-exception-during-the-exce for the reason for the next two lines.
-                    Page.Response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
-                    HttpContext.Current.ApplicationInstance.CompleteRequest(); // Causes ASP.NET to bypass all events and filtering in the HTTP pipeline chain of execution and directly execute the EndRequest event.
-                });
-        }
-        else
-            base.Render(writer);
     }
 
     protected void IncludeParamtersChanged(object sender, EventArgs e)

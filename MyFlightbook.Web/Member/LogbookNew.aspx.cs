@@ -1,5 +1,4 @@
-﻿using Amazon.AWSSupport.Model;
-using MyFlightbook;
+﻿using MyFlightbook;
 using MyFlightbook.Printing;
 using Newtonsoft.Json;
 using System;
