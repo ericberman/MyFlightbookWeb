@@ -765,14 +765,14 @@ namespace MyFlightbook.Currency
                     {
                         CustomPropertyType cpt = new CustomPropertyType(dr);
 
-                        // don't include blacklisted properties in totals.
-                        if (pf.BlacklistedProperties.Exists(i => i == cpt.PropTypeID))
+                        // don't include blocklisted properties in totals.
+                        if (pf.BlocklistedProperties.Exists(i => i == cpt.PropTypeID))
                             continue;
 
                         bool fPropIsInQuery = Restriction.PropertyTypes.Contains(cpt);
 
                         // Only do totals for Booleans if
-                        // (a) not in exclusion list.  Blacklisted is already handled above.
+                        // (a) not in exclusion list.  Blocklisted is already handled above.
                         // (b) ARE in query.
                         // (c) are NOT excluded from MRU (e.g., showing # of checkrides is silly.)
                         if (cpt.Type == CFPPropertyType.cfpBoolean && (cpt.IsExcludedFromMRU || !fPropIsInQuery))

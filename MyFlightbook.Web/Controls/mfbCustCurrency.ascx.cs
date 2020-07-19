@@ -208,9 +208,9 @@ public partial class Controls_mfbCustCurrency : System.Web.UI.UserControl
                 hsPropsChecked.Remove(propID);
             }
 
-            // Add in any properties that were not found above!  (I.e., blacklisted or otherwise not favorite)
-            IEnumerable<CustomPropertyType> rgBlackListProps = CustomPropertyType.GetCustomPropertyTypes(hsPropsChecked);
-            foreach (CustomPropertyType cpt in rgBlackListProps)
+            // Add in any properties that were not found above!  (I.e., blocklisted or otherwise not favorite)
+            IEnumerable<CustomPropertyType> rgBlockListProps = CustomPropertyType.GetCustomPropertyTypes(hsPropsChecked);
+            foreach (CustomPropertyType cpt in rgBlockListProps)
                 lstProps.Items.Add(new ListItem(cpt.Title, cpt.PropTypeID.ToString(CultureInfo.InvariantCulture)) { Selected = true });
         }
 

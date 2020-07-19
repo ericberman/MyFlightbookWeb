@@ -677,9 +677,9 @@ namespace MyFlightbook
         public string Address { get; set; }
 
         /// <summary>
-        /// List of properties ID's that the user has blacklisted from the previously-used list.
+        /// List of properties ID's that the user has blocklisted from the previously-used list.
         /// </summary>
-        public List<int> BlacklistedProperties { get; private set; } = new List<int>();
+        public List<int> BlocklistedProperties { get; private set; } = new List<int>();
 
         /// <summary>
         /// Current status of achievement computation for the user.  
@@ -931,8 +931,8 @@ namespace MyFlightbook
 
                 PreferredTimeZoneID = (string) util.ReadNullableField(dr, "timezone", null);
 
-                string szBlacklist = util.ReadNullableString(dr, "PropertyBlackList");
-                BlacklistedProperties.AddRange(szBlacklist.ToInts());
+                string szBlockList = util.ReadNullableString(dr, "PropertyBlackList");
+                BlocklistedProperties.AddRange(szBlockList.ToInts());
 
                 m_persistedPrefs.Clear();
                 PersistedPrefsAsJSon = util.ReadNullableString(dr, "prefs");
@@ -994,7 +994,7 @@ namespace MyFlightbook
             szQ = @"UPDATE users SET Email=?Email, FirstName=?FirstName, LastName=?LastName, Address=?address, 
             DropboxAccessToken=?dropboxAccesstoken, OnedriveAccessToken=?onedrive, GoogleDriveAccessToken=?gdrive, ICloudAccessToken=?icloud, DefaultCloudDriveID=?defcloud, OverwriteDropbox=?overwriteCloud, CloudAhoyAccessToken=?cloudAhoy,
             LastBFR = ?LastBFR, LastMedical=?LastMedical, MonthsToMedical=?MonthsToMedical, IsInstructor=?IsInstructor, UsesSIC=?UsesSIC, UsesHHMM=?UsesHHMM, UsesUTCDates=?useUTCDates, License=?license, CertificateNumber=?cert, CFIExpiration=?cfiExp, 
-            CurrencyFlags=?currencyFlags, ShowTimes=?showTimes, EnglishProficiencyExpiration=?engProfExpiration, EmailSubscriptions=?subscriptions, LastEmail=?lastemail, AchievementStatus=?achievementstatus, PropertyBlackList=?blacklist, timezone=?prefTimeZone,
+            CurrencyFlags=?currencyFlags, ShowTimes=?showTimes, EnglishProficiencyExpiration=?engProfExpiration, EmailSubscriptions=?subscriptions, LastEmail=?lastemail, AchievementStatus=?achievementstatus, PropertyBlackList=?blocklist, timezone=?prefTimeZone,
             prefs=?prefs
             WHERE PKID = ?PKID";
 
@@ -1031,7 +1031,7 @@ namespace MyFlightbook
                     comm.Parameters.AddWithValue("subscriptions", Subscriptions);
                     comm.Parameters.AddWithValue("lastemail", LastEmailDate);
                     comm.Parameters.AddWithValue("achievementstatus", (int)AchievementStatus);
-                    comm.Parameters.AddWithValue("blacklist", String.Join(",", BlacklistedProperties));
+                    comm.Parameters.AddWithValue("blocklist", String.Join(",", BlocklistedProperties));
                     comm.Parameters.AddWithValue("prefs", PersistedPrefsAsJSon = JsonConvert.SerializeObject(m_persistedPrefs));
                     comm.Parameters.AddWithValue("prefTimeZone", String.IsNullOrEmpty(PreferredTimeZoneID) || PreferredTimeZoneID.CompareCurrentCultureIgnoreCase("UTC") == 0 ? null : PreferredTimeZoneID);
                 });

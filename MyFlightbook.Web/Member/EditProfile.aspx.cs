@@ -185,8 +185,8 @@ public partial class Member_EditProfile : System.Web.UI.Page
         // features
         InitFeaturePrefs();
 
-        // Property blacklist
-        UpdateBlacklist();
+        // Property blocklist
+        UpdateBlocklist();
 
         // Social networking.
         InitSocialNetworking();
@@ -513,52 +513,52 @@ public partial class Member_EditProfile : System.Web.UI.Page
         }
     }
 
-    #region Property Blacklist
-    protected void UpdateBlacklist(bool fForceDB = false)
+    #region Property Blocklist
+    protected void UpdateBlocklist(bool fForceDB = false)
     {
         rptUsedProps.DataSource = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.Name, fForceDB)).FindAll(cpt => cpt.IsFavorite);
         rptUsedProps.DataBind();
-        List<CustomPropertyType> lstBlacklist = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(m_pf.BlacklistedProperties));
-        lstBlacklist.Sort((cpt1, cpt2) => { return cpt1.SortKey.CompareCurrentCultureIgnoreCase(cpt2.SortKey); });
-        rptBlackList.DataSource = lstBlacklist;
-        rptBlackList.DataBind();
+        List<CustomPropertyType> lstBlocklist = new List<CustomPropertyType>(CustomPropertyType.GetCustomPropertyTypes(m_pf.BlocklistedProperties));
+        lstBlocklist.Sort((cpt1, cpt2) => { return cpt1.SortKey.CompareCurrentCultureIgnoreCase(cpt2.SortKey); });
+        rptBlockList.DataSource = lstBlocklist;
+        rptBlockList.DataBind();
     }
 
-    protected void btnWhiteList_Click(object sender, EventArgs e)
+    protected void btnAllowList_Click(object sender, EventArgs e)
     {
         if (!String.IsNullOrEmpty(txtPropID.Text) && !String.IsNullOrEmpty(txtPropID.Text.Trim()))
         {
             try
             {
                 int idPropType = Convert.ToInt32(txtPropID.Text, CultureInfo.InvariantCulture);
-                m_pf.BlacklistedProperties.RemoveAll(id => id == idPropType);
+                m_pf.BlocklistedProperties.RemoveAll(id => id == idPropType);
                 m_pf.FCommit();
-                UpdateBlacklist(true);
+                UpdateBlocklist(true);
             }
             catch
             {
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Error Parsing proptype '{0}' for whitelist in invariant culture.  Current culture is {1}.", txtPropID.Text, CultureInfo.CurrentCulture.DisplayName));
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Error Parsing proptype '{0}' for allowlist in invariant culture.  Current culture is {1}.", txtPropID.Text, CultureInfo.CurrentCulture.DisplayName));
             }
         }
     }
 
-    protected void btnBlackList_Click(object sender, EventArgs e)
+    protected void btnBlockList_Click(object sender, EventArgs e)
     {
         if (!String.IsNullOrEmpty(txtPropID.Text) && !String.IsNullOrEmpty(txtPropID.Text.Trim()))
         {
             try
             {
                 int idPropType = Convert.ToInt32(txtPropID.Text, CultureInfo.InvariantCulture);
-                if (!m_pf.BlacklistedProperties.Contains(idPropType))
+                if (!m_pf.BlocklistedProperties.Contains(idPropType))
                 {
-                    m_pf.BlacklistedProperties.Add(idPropType);
+                    m_pf.BlocklistedProperties.Add(idPropType);
                     m_pf.FCommit();
-                    UpdateBlacklist(true);
+                    UpdateBlocklist(true);
                 }
             }
             catch
             {
-                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Error Parsing proptype '{0}' for whitelist in invariant culture.  Current culture is {1}.", txtPropID.Text, CultureInfo.CurrentCulture.DisplayName));
+                throw new MyFlightbookValidationException(String.Format(CultureInfo.CurrentCulture, "Error Parsing proptype '{0}' for blocklist in invariant culture.  Current culture is {1}.", txtPropID.Text, CultureInfo.CurrentCulture.DisplayName));
             }
     }
 }

@@ -419,17 +419,17 @@
                                 <asp:UpdatePanel runat="server" ID="UpdatePanel1">
                                     <ContentTemplate>
                                         <script>
-                                            var listDrop = new listDragger('<% =txtPropID.ClientID %>', '<% =btnWhiteList.ClientID %>', '<% =btnBlackList.ClientID %>');
+                                            var listDrop = new listDragger('<% =txtPropID.ClientID %>', '<% =btnAllowList.ClientID %>', '<% =btnBlockList.ClientID %>');
                                         </script>
                                         <div style="display:none">
                                             <asp:TextBox ID="txtPropID" runat="server" EnableViewState="False" meta:resourcekey="txtPropIDResource1"></asp:TextBox>
-                                            <asp:Button ID="btnBlackList" runat="server" OnClick="btnBlackList_Click" meta:resourcekey="btnBlackListResource1" />
-                                            <asp:Button ID="btnWhiteList" runat="server" OnClick="btnWhiteList_Click" meta:resourcekey="btnWhiteListResource1" />
+                                            <asp:Button ID="btnBlockList" runat="server" OnClick="btnBlockList_Click" />
+                                            <asp:Button ID="btnAllowList" runat="server" OnClick="btnAllowList_Click" />
                                         </div>
                                         <table>
                                             <tr>
                                                 <td style="width:50%"><asp:Localize ID="locPrevUsed" runat="server" Text="Show these..." meta:resourcekey="locPrevUsedResource1"></asp:Localize></td>
-                                                <td style="width:50%"><asp:Localize ID="locBlackListed" runat="server" Text="...but not these" meta:resourcekey="locBlackListedResource1"></asp:Localize></td>
+                                                <td style="width:50%"><asp:Localize ID="locBlockListed" runat="server" Text="...but not these" meta:resourcekey="locBlockListedResource1"></asp:Localize></td>
                                             </tr>
                                             <tr>
                                                 <td style="width:50%">
@@ -448,8 +448,8 @@
                                                     </div>
                                                 </td>
                                                 <td style="width:50%">
-                                                    <div id="divPropsToBlacklist" ondrop="javascript:listDrop.rightListDrop(event)" ondragover="javascript:listDrop.allowDrop(event)" class="dragTarget">
-                                                        <asp:Repeater ID="rptBlackList" runat="server">
+                                                    <div id="divPropsToBlocklist" ondrop="javascript:listDrop.rightListDrop(event)" ondragover="javascript:listDrop.allowDrop(event)" class="dragTarget">
+                                                        <asp:Repeater ID="rptBlockList" runat="server">
                                                             <ItemTemplate>
                                                                 <div draggable="true" id="cpt<%# Eval("PropTypeID") %>" class="draggableItem" ondragstart="javascript:listDrop.drag(event, <%# Eval("PropTypeID") %>)">
                                                                     <%# Eval("Title") %>

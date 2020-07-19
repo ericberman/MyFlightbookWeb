@@ -210,12 +210,6 @@
   <data name="btnAddBasicMedEventResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="btnBlackListResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="btnBlackListResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="btnChangeQAResource1.Text" xml:space="preserve">
     <value>Change Security Question</value>
   </data>
@@ -262,12 +256,6 @@
     <value>Update Preferences</value>
   </data>
   <data name="btnUpdatePrefsResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="btnWhiteListResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="btnWhiteListResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="ck6157c4PrefResource1.Text" xml:space="preserve">
@@ -756,7 +744,7 @@
   <data name="lnkSetUpTwitterResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="locBlackListedResource1.Text" xml:space="preserve">
+  <data name="locBlockListedResource1.Text" xml:space="preserve">
     <value>...but not these</value>
   </data>
   <data name="locCurrentQuestionResource1.Text" xml:space="preserve">

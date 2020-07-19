@@ -528,7 +528,7 @@ namespace MyFlightbook.Templates
 
             // Add in the automatic properties as well.
             // But do it in a NEW list so as not to affect what's in the cache
-            // We do this fresh every time, since MRUPropertyTemplate could have changed (due to blacklisting), but is itself cached.
+            // We do this fresh every time, since MRUPropertyTemplate could have changed (due to blocklisting), but is itself cached.
             List<PropertyTemplate> lstResult = new List<PropertyTemplate>(lst);
             if (fIncludeAutomatic)
                 lstResult.AddRange(AutomaticTemplatesForUser(szUser));

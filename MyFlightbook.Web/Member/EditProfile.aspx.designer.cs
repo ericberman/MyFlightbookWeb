@@ -1273,22 +1273,22 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.TextBox txtPropID;
 
     /// <summary>
-    /// btnBlackList control.
+    /// btnBlockList control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnBlackList;
+    protected global::System.Web.UI.WebControls.Button btnBlockList;
 
     /// <summary>
-    /// btnWhiteList control.
+    /// btnAllowList control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Button btnWhiteList;
+    protected global::System.Web.UI.WebControls.Button btnAllowList;
 
     /// <summary>
     /// locPrevUsed control.
@@ -1300,13 +1300,13 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Localize locPrevUsed;
 
     /// <summary>
-    /// locBlackListed control.
+    /// locBlockListed control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Localize locBlackListed;
+    protected global::System.Web.UI.WebControls.Localize locBlockListed;
 
     /// <summary>
     /// rptUsedProps control.
@@ -1318,13 +1318,13 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Repeater rptUsedProps;
 
     /// <summary>
-    /// rptBlackList control.
+    /// rptBlockList control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Repeater rptBlackList;
+    protected global::System.Web.UI.WebControls.Repeater rptBlockList;
 
     /// <summary>
     /// mfbEditPropTemplate control.

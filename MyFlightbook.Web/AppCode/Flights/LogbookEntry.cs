@@ -3481,7 +3481,7 @@ namespace MyFlightbook
             IEnumerable<CustomPropertyType> rgcpt = CustomPropertyType.GetCustomPropertyTypes(szUser);
             foreach (CustomPropertyType cpt in rgcpt)
             {
-                if (!cpt.IsFavorite || pf.BlacklistedProperties.Contains(cpt.PropTypeID))
+                if (!cpt.IsFavorite || pf.BlocklistedProperties.Contains(cpt.PropTypeID))
                     continue;
 
                 switch (cpt.Type)

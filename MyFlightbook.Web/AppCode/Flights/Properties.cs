@@ -724,7 +724,7 @@ ORDER BY IF(SortKey='', Title, SortKey) ASC";
             else
             {
                 Profile pf = Profile.GetUser(szUser);
-                szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["CustomPropsForUserQuery"], pf.BlacklistedProperties.Count == 0 ? string.Empty : String.Format(CultureInfo.InvariantCulture, " AND fp.idPropType NOT IN ('{0}') ", String.Join("', '", pf.BlacklistedProperties)));
+                szQ = String.Format(CultureInfo.InvariantCulture, ConfigurationManager.AppSettings["CustomPropsForUserQuery"], pf.BlocklistedProperties.Count == 0 ? string.Empty : String.Format(CultureInfo.InvariantCulture, " AND fp.idPropType NOT IN ('{0}') ", String.Join("', '", pf.BlocklistedProperties)));
             }
 
             DBHelper dbh = new DBHelper(szQ);
