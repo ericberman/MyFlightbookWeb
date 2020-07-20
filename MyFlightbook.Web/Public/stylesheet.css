@@ -105,7 +105,7 @@ H4
     margin-right: auto;
 }
 
-input[type=text],input[type=password], input[type=number],input[type=email] {
+input[type=text],input[type=password], input[type=number],input[type=email], input[type=text], textarea {
     border-radius: 5px;
     border: 1px solid #a0a0a0;
     padding: 2px;
@@ -320,7 +320,6 @@ input[type=text],input[type=password], input[type=number],input[type=email] {
     margin: 3px;
     padding: 3px;
     display: inline-block;
-    background-color: #F8F8F8;
 }
 
 .bordered .signatureBlock tr td {
@@ -1488,7 +1487,16 @@ table.dataDescription thead tr td
 /* Pop-up hover menus */
 .hoverPopMenu {
     background-color: #CCCCCC;
-    border-radius: 3px;
+    border-radius: 5px;
+}
+
+.popMenuContent {
+    background-color: white;
+    border: 1px solid black;
+    padding: 3px;
+}
+
+.popMenuAccess {
 }
 
 /* Tabs*/

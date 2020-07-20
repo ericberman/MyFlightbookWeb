@@ -20,7 +20,7 @@
                                 <asp:Image ID="imgProfile" runat="server" style="width:12pt; height:12pt; vertical-align:middle" ImageUrl="~/Public/tabimages/ProfileTab.png" />&nbsp;
                                 <asp:Label ID="lblUser" runat="server" style="vertical-align:middle;"></asp:Label>  
                             </asp:Panel>
-                            <asp:Panel ID="pnlMenuContent" runat="server" BackColor="#FAFAFA" BorderColor="Black" style="padding: 3px; display:none; width: 180px" BorderWidth="1px">
+                            <asp:Panel ID="pnlMenuContent" runat="server" CssClass="popMenuContent" style="padding: 3px; display:none; width: 180px">
                                 <div style="padding:4px; text-align:center;">
                                     <div><asp:Label ID="lblMemberSince" runat="server"></asp:Label></div>
                                     <div><asp:Label ID="lblLastLogin" runat="server"></asp:Label></div>
