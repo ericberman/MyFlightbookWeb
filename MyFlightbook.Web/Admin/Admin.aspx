@@ -175,9 +175,7 @@
             <asp:GridView ID="gvAircraftShouldBeSims" runat="server" AutoGenerateColumns="False" 
                 DataSourceID="sqlSimMakes" EnableModelValidation="True">
                 <Columns>
-                    <asp:BoundField DataField="idmodel" 
-                        DataFormatString="&lt;a href=&quot;EditMake.aspx?id={0}&quot; target=&quot;_blank&quot;&gt;Edit&lt;/a&gt;" 
-                        HtmlEncode="False" HtmlEncodeFormatString="False" ReadOnly="True" />
+                    <asp:HyperLinkField DataNavigateUrlFormatString="~/Member/EditMake.aspx?id={0}&a=1" DataNavigateUrlFields="idmodel" DataTextFormatString="Edit" DataTextField="model" />
                     <asp:BoundField DataField="manufacturer" HeaderText="manufacturer" 
                         SortExpression="manufacturer" />
                     <asp:BoundField DataField="model" HeaderText="model" SortExpression="model" />
