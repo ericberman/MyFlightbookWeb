@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Authentication;
 using System.ServiceModel;
 using System.Web;
 using System.Web.Security;
@@ -21,6 +22,53 @@ using System.Web.Services;
 
 namespace MyFlightbook
 {
+    public enum AuthStatus { Failed, TwoFactorCodeRequired, Success }
+
+    [Serializable]
+    public class AuthResult
+    {
+        public AuthStatus Result { get; set; } = AuthStatus.Failed;
+        public string AuthToken { get; set; } = null;
+
+        public AuthResult() { }
+
+        public AuthResult(string authToken)
+        {
+            AuthToken = authToken;
+        }
+
+        public static AuthResult ProcessResult(string authToken, string szUser, string sz2FactorAuth = null)
+        {
+            AuthResult result = new AuthResult();
+            if (String.IsNullOrEmpty(authToken) || String.IsNullOrEmpty(szUser))
+                return result;
+
+            Profile pf = Profile.GetUser(szUser);
+            if (String.IsNullOrEmpty(pf.UserName))
+                return result;
+
+            if (pf.PreferenceExists(MFBConstants.keyTFASettings))
+            {
+                if (String.IsNullOrEmpty(sz2FactorAuth))
+                {
+                    result.Result = AuthStatus.TwoFactorCodeRequired;
+                    return result;
+                }
+
+                Google.Authenticator.TwoFactorAuthenticator tfa = new Google.Authenticator.TwoFactorAuthenticator();
+                if (!tfa.ValidateTwoFactorPIN(pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string, sz2FactorAuth ?? string.Empty, new TimeSpan(0, 2, 0)))
+                {
+                    System.Threading.Thread.Sleep(1000); // pause for a second to thwart dictionary attacks.
+                    throw new AuthenticationException(Resources.Profile.TFACodeFailed);
+                }
+            }
+
+            result.AuthToken = authToken;
+            result.Result = AuthStatus.Success;
+            return result;
+        }
+    }
+
     public class PostingOptions
     {
         /// <summary>
@@ -1074,6 +1122,13 @@ namespace MyFlightbook
             }
 
             return null;
+        }
+
+        [WebMethod]
+        public AuthResult AuthTokenForUserNew(string szAppToken, string szUser, string szPass, string sz2FactorAuth = null)
+        {
+            string szAuth = AuthTokenForUser(szAppToken, szUser, szPass);
+            return AuthResult.ProcessResult(szAuth, GetEncryptedUser(szAuth), sz2FactorAuth);         
         }
 
         private readonly static System.Object lockObject = new System.Object();
