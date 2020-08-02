@@ -925,7 +925,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Average Speed: {0:#,#.0}kts.
+        ///   Looks up a localized string similar to Average Speed: {0:#,#.0}kts.
         /// </summary>
         internal static string FlightAverageSpeed {
             get {
@@ -970,7 +970,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Furthest distance from departure: {0:#,#.0}nm.
+        ///   Looks up a localized string similar to Furthest distance from departure: {0:#,#.0}nm.
         /// </summary>
         internal static string FlightDistanceFurthestFromDeparture {
             get {
@@ -979,7 +979,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Furthest points from each other: {0} and {1} ({2:#,#.0}nm).
+        ///   Looks up a localized string similar to Furthest points from each other: {0} and {1} ({2:#,#.0}nm).
         /// </summary>
         internal static string FlightDistanceFurthestPoints {
             get {
@@ -988,7 +988,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Longest Segment: {0:#,#.0}nm.
+        ///   Looks up a localized string similar to Longest Segment: {0:#,#.0}nm.
         /// </summary>
         internal static string FlightDistanceLongestSegment {
             get {
@@ -997,7 +997,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Path distance: {0:#,#.0}nm.
+        ///   Looks up a localized string similar to Path distance: {0:#,#.0}nm.
         /// </summary>
         internal static string FlightDistancePathOnly {
             get {
@@ -1006,7 +1006,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Route distance: {0:#,#.0}nm.
+        ///   Looks up a localized string similar to Route distance: {0:#,#.0}nm.
         /// </summary>
         internal static string FlightDistanceRouteOnly {
             get {

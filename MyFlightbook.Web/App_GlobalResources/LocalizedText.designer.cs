@@ -2762,6 +2762,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  ● .
+        /// </summary>
+        internal static string LocalizedSpaceWithBullet {
+            get {
+                return ResourceManager.GetString("LocalizedSpaceWithBullet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  - .
         /// </summary>
         internal static string LocalizedSpaceWithDash {

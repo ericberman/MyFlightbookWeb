@@ -2501,7 +2501,7 @@ namespace MyFlightbook
                     }
                 }
 
-                return String.Join(Resources.LocalizedText.LocalizedSpace, lst);
+                return String.Join(Resources.LocalizedText.LocalizedSpaceWithBullet, lst);
             }
             return string.Empty;
         }

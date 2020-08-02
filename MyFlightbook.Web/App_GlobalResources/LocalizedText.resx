@@ -1779,4 +1779,7 @@
   <data name="PDFPageSizeInvalidDimensions" xml:space="preserve">
     <value>Invalid page dimensions.  Please choose a value between 50mm and 1,000mm</value>
   </data>
+  <data name="LocalizedSpaceWithBullet" xml:space="preserve">
+    <value> ● </value>
+  </data>
 </root>

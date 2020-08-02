@@ -157,16 +157,16 @@
     <value>Cannot have more full stop landings than total landings.</value>
   </data>
   <data name="FlightDistanceLongestSegment" xml:space="preserve">
-    <value>● Longest Segment: {0:#,#.0}nm</value>
+    <value>Longest Segment: {0:#,#.0}nm</value>
   </data>
   <data name="FlightDistanceFurthestFromDeparture" xml:space="preserve">
-    <value>● Furthest distance from departure: {0:#,#.0}nm</value>
+    <value>Furthest distance from departure: {0:#,#.0}nm</value>
   </data>
   <data name="FlightDistancePathOnly" xml:space="preserve">
-    <value>● Path distance: {0:#,#.0}nm</value>
+    <value>Path distance: {0:#,#.0}nm</value>
   </data>
   <data name="FlightDistanceRouteOnly" xml:space="preserve">
-    <value>● Route distance: {0:#,#.0}nm</value>
+    <value>Route distance: {0:#,#.0}nm</value>
   </data>
   <data name="PropertyNo" xml:space="preserve">
     <value>No</value>
@@ -872,7 +872,7 @@
     <value>[All]</value>
   </data>
   <data name="FlightAverageSpeed" xml:space="preserve">
-    <value>● Average Speed: {0:#,#.0}kts</value>
+    <value>Average Speed: {0:#,#.0}kts</value>
   </data>
   <data name="errNightTakeoffPropertiesExceedNightTakeoffCount" xml:space="preserve">
     <value>Flight has {0} total night takeoff(s), but {1} night takeoffs at towered/untowered airports.</value>
@@ -1146,7 +1146,7 @@ Proceed with import?</value>
     <value>Default</value>
   </data>
   <data name="FlightDistanceFurthestPoints" xml:space="preserve">
-    <value>● Furthest points from each other: {0} and {1} ({2:#,#.0}nm)</value>
+    <value>Furthest points from each other: {0} and {1} ({2:#,#.0}nm)</value>
   </data>
   <data name="PrintFormatCASA" xml:space="preserve">
     <value>CASA (E.g., Australia)</value>
