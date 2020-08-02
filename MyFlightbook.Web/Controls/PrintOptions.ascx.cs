@@ -39,8 +39,10 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
         }
         set
         {
+            string priorUser = ((string)ViewState[szVSUser]) ?? string.Empty;
             ViewState[szVSUser] = value;
-            SetPropsForUser();
+            if (String.Compare(priorUser, value ?? string.Empty, StringComparison.OrdinalIgnoreCase) != 0)
+                SetPropsForUser();
         }
     }
 
