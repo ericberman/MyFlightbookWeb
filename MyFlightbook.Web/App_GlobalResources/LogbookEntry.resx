@@ -387,7 +387,7 @@
     <comment>Header for viewing a public flight.</comment>
   </data>
   <data name="PublicFlightKMLDownload" xml:space="preserve">
-    <value>View in Google Earth (Requires Google Earth)</value>
+    <value>View Flight Path</value>
   </data>
   <data name="PublicFlightPilotName" xml:space="preserve">
     <value>Pilot:</value>
@@ -1300,5 +1300,23 @@ Proceed with import?</value>
   </data>
   <data name="HeaderTimes" xml:space="preserve">
     <value>Times</value>
+  </data>
+  <data name="PublicFlightShowComponentAirports" xml:space="preserve">
+    <value>Airports</value>
+  </data>
+  <data name="PublicFlightShowComponentDetails" xml:space="preserve">
+    <value>Flight Details</value>
+  </data>
+  <data name="PublicFlightShowComponentMap" xml:space="preserve">
+    <value>Map</value>
+  </data>
+  <data name="PublicFlightShowComponentPictures" xml:space="preserve">
+    <value>Pictures</value>
+  </data>
+  <data name="PublicFlightShowComponentVideos" xml:space="preserve">
+    <value>Linked Videos</value>
+  </data>
+  <data name="PublicFlightShowOptions" xml:space="preserve">
+    <value>Display</value>
   </data>
 </root>

@@ -25,7 +25,9 @@
                 adaptiveHeight: true,
                 video: true,
                 useCSS: false,
-                captions: true
+                captions: true,
+                startSlide: 0,
+                touchEnabled: true
             });
         });
     </script>

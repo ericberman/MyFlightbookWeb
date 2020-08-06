@@ -73,6 +73,12 @@ namespace MyFlightbook.Web
             set { Page.Header.Title = value; }
         }
 
+        public bool HasTitle
+        {
+            get { return pnlTitle.Visible; }
+            set { pnlTitle.Visible = value; }
+        }
+
         public bool ShowSponsoredAd
         {
             get { /* return SponsoredAd1.Visible; */ return (Page.Header != null);  /* always true, but accesses page data to suppress CA1822 warning. */ }
