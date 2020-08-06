@@ -19,16 +19,16 @@
     <div style="float:right; text-align:left;">
         <uc1:popmenu runat="server" ID="popmenu" OffsetX="-160">
             <MenuContent>
-                <div runat="server" id="rowKML" visible="false"><asp:Image ID="imgDwn" runat="server" ImageUrl="~/images/download.png" />&nbsp;<asp:LinkButton ID="lnkViewKML" runat="server" onclick="lnkViewKML_Click" Text="<%$ Resources:LogbookEntry, PublicFlightKMLDownload %>" /></div>
+                <div runat="server" id="rowKML" visible="false" style="margin-top: 3px;">&nbsp;<asp:Image ID="imgDwn" ImageAlign="AbsMiddle" runat="server" ImageUrl="~/images/download.png" />&nbsp;&nbsp;<asp:LinkButton ID="lnkViewKML" runat="server" onclick="lnkViewKML_Click" Text="<%$ Resources:LogbookEntry, PublicFlightKMLDownload %>" style="vertical-align:middle" /></div>
                 <h3><% =Resources.LogbookEntry.PublicFlightShowOptions %></h3>
                 <div><asp:CheckBox ID="ckShowDetails" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowComponentDetails %>" AutoPostBack="true" Checked="true" OnCheckedChanged="ckShowDetails_CheckedChanged" /></div>
                 <div><asp:CheckBox ID="ckShowPictures" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowComponentPictures %>" AutoPostBack="true" Checked="true" OnCheckedChanged="ckShowPictures_CheckedChanged" /></div>
                 <div><asp:CheckBox ID="ckShowVids" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowComponentVideos %>" AutoPostBack="true" Checked="true" OnCheckedChanged="ckShowVids_CheckedChanged" /></div>
                 <div><asp:CheckBox ID="ckShowMaps" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowComponentMap %>" AutoPostBack="true" Checked="true" OnCheckedChanged="ckShowMaps_CheckedChanged" /></div>
-                <div>&nbsp;&nbsp;<asp:CheckBox ID="ckShowAirports" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowComponentAirports %>" AutoPostBack="true" Checked="true" OnCheckedChanged="ckShowAirports_CheckedChanged1" /></div>
-                <div>&nbsp;&nbsp;<asp:CheckBox ID="ckShowPath" runat="server" Checked="true" Text="<%$ Resources:Airports, mapShowPath %>" AutoPostBack="true" OnCheckedChanged="ckShowPath_CheckedChanged" /></div>
-                <div>&nbsp;&nbsp;<asp:CheckBox ID="ckShowRoute" runat="server" Checked="true" Text="<%$ Resources:Airports, mapShowRoute %>" AutoPostBack="true" OnCheckedChanged="ckShowRoute_CheckedChanged" /></div>
-                <div>&nbsp;&nbsp;<asp:CheckBox ID="ckShowImages" runat="server" Checked="true" Text="<%$ Resources:Airports, mapShowImages %>" AutoPostBack="true" OnCheckedChanged="ckShowImages_CheckedChanged" /></div>
+                <div>&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="ckShowAirports" runat="server" Text="<%$ Resources:LogbookEntry, PublicFlightShowComponentAirports %>" AutoPostBack="true" Checked="true" OnCheckedChanged="ckShowAirports_CheckedChanged1" /></div>
+                <div>&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="ckShowPath" runat="server" Checked="true" Text="<%$ Resources:Airports, mapShowPath %>" AutoPostBack="true" OnCheckedChanged="ckShowPath_CheckedChanged" /></div>
+                <div>&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="ckShowRoute" runat="server" Checked="true" Text="<%$ Resources:Airports, mapShowRoute %>" AutoPostBack="true" OnCheckedChanged="ckShowRoute_CheckedChanged" /></div>
+                <div>&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="ckShowImages" runat="server" Checked="true" Text="<%$ Resources:Airports, mapShowImages %>" AutoPostBack="true" OnCheckedChanged="ckShowImages_CheckedChanged" /></div>
             </MenuContent>
         </uc1:popmenu>
     </div>
