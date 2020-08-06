@@ -34,7 +34,9 @@ namespace MyFlightbook.RatingsProgress
                     new IFR6165E(),
                     new IFR6165F(),
                     new IFR141CAirplane(),
-                    new IFR141CHelicopter()
+                    new IFR141CHelicopter(),
+                    new IFRCanadaAirplane(),
+                    new IFRCanadaHelicopter()
                 };
             }
         }
@@ -47,13 +49,13 @@ namespace MyFlightbook.RatingsProgress
     [Serializable]
     public abstract class IFR6165Base : MilestoneProgress
     {
-        private MilestoneItem miMinXCTime { get; set; }
-        private MilestoneItem miMinTimeInCategory { get; set; }
-        private MilestoneItem miMinIMCTime { get; set; }
-        private MilestoneItem miMinIMCTestPrep { get; set; }
+        protected MilestoneItem miMinXCTime { get; set; }
+        protected MilestoneItem miMinTimeInCategory { get; set; }
+        protected MilestoneItem miMinIMCTime { get; set; }
+        protected MilestoneItem miMinIMCTestPrep { get; set; }
         protected MilestoneItem miIMCXC { get; set; }
 
-        private MilestoneItem miInstrumentTraining { get; set; }
+        protected MilestoneItem miInstrumentTraining { get; set; }
 
         // Per 61.57(h), can count 20 or 30 hours of FTD time, and per 61.57(i) can count 10 or 20 hours of ATD time
         // We use the smaller amount in both cases because we can't tell if it's performed under part 142 (for 61.57(h)) 
@@ -61,17 +63,11 @@ namespace MyFlightbook.RatingsProgress
         // These limits seem additive, though (can do both FTD and ATD), and since AddTrainingEvent can only accomodate
         // one limited, we have to manually do the FTD limit here.
         private const int MaxFTDTime = 20;
-        private const int MaxATDTime = 10;
+        protected int MaxATDTime { get; set; } = 10;
 
         private decimal FTDTimeRemaining { get; set; }
 
-        private int _MinXCDistance = 250;
-
-        protected int MinXCDistance
-        {
-            get { return _MinXCDistance; }
-            set { _MinXCDistance = value; }
-        }
+        protected int MinXCDistance { get; set; } = 250;
 
         /// <summary>
         /// Initializes an instrument rating object
@@ -79,7 +75,7 @@ namespace MyFlightbook.RatingsProgress
         /// <param name="szTitle">Title</param>
         /// <param name="szBaseFAR">Base FAR</param>
         /// <param name="ratingSought">Specific rating being sought</param>
-        protected void Init(string szTitle, string szBaseFAR, RatingType ratingSought)
+        protected virtual void Init(string szTitle, string szBaseFAR, RatingType ratingSought)
         {
             Title = szTitle;
             BaseFAR = szBaseFAR;
@@ -183,7 +179,7 @@ namespace MyFlightbook.RatingsProgress
         }
     }
 
-    #region Concreate IFR Classes
+    #region Concrete IFR Classes
     /// <summary>
     /// 61.65(d) - Instrument Airplane
     /// </summary>
@@ -209,6 +205,103 @@ namespace MyFlightbook.RatingsProgress
     public class IFR6165F : IFR6165Base
     {
         public IFR6165F() { Init(Resources.MilestoneProgress.Title6165F, "61.65(f)", RatingType.InstrumentPoweredLift); }
+    }
+
+    [Serializable]
+    public abstract class IFRCanadaBase : IFR6165Base
+    {
+        protected MilestoneItem miXCPIC { get; set; }
+        protected MilestoneItem miXCDualXC { get; set; }
+
+        protected MilestoneItem miIFRTrainingInCategory { get; set; }
+
+        protected override void Init(string szTitle, string szBaseFAR, RatingType ratingSought)
+        {
+            MaxATDTime = 20;    // can do 20 hours of FTD OR ATD time.
+            MinXCDistance = 100;
+
+            base.Init(szTitle, szBaseFAR, ratingSought);
+
+            miXCPIC = new MilestoneItem(Resources.MilestoneProgress.MinInstrumentPICXC, ResolvedFAR("i"), Resources.MilestoneProgress.NoteCanadaIRXC, MilestoneItem.MilestoneType.Time, 50.0M);
+            miXCDualXC = new MilestoneItem(String.Format(CultureInfo.InvariantCulture, Resources.MilestoneProgress.MinInstrumentXCCanada, MinXCDistance), ResolvedFAR("(ii)(D)"), Resources.MilestoneProgress.MinInstrumentXCCanadaNote, MilestoneItem.MilestoneType.AchieveOnce, 1.0M);
+            miIFRTrainingInCategory = new MilestoneItem(String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MinInstrumentTrainingInCategoryCanada, ratingSought == RatingType.InstrumentAirplane ? Resources.MilestoneProgress.CAATPAeroplanes : Resources.MilestoneProgress.CAATPHelicopters), ResolvedFAR("(ii)(B)"), string.Empty, MilestoneItem.MilestoneType.Time, 5.0M);
+
+            // fix up FAR references for inherited milestones
+            miMinTimeInCategory.FARRef = ResolvedFAR("(i)");
+            miMinIMCTime.FARRef = ResolvedFAR("(ii)");
+            miInstrumentTraining.FARRef = ResolvedFAR("(ii)(C)");
+
+            this.GeneralDisclaimer = Branding.ReBrand(Resources.MilestoneProgress.InstrumentCanadaGeneralDisclaimer);
+        }
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            base.ExamineFlight(cfr);
+
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            if (!cfr.fIsRealAircraft)
+                return;
+
+            switch (cfr.idCatClassOverride)
+            {
+                case CategoryClass.CatClassID.Helicopter:
+                case CategoryClass.CatClassID.ASEL:
+                case CategoryClass.CatClassID.ASES:
+                case CategoryClass.CatClassID.AMEL:
+                case CategoryClass.CatClassID.AMES:
+                    miXCPIC.AddEvent(Math.Min(cfr.PIC, cfr.XC));
+                    break;
+                default:
+                    break;
+            }
+
+            if (cfr.IMC + cfr.IMCSim > 0 && cfr.Dual > 0 && CatClassMatchesRatingSought(cfr.idCatClassOverride))
+                miIFRTrainingInCategory.AddEvent(Math.Min(cfr.Dual, cfr.IMC + cfr.IMCSim));
+
+            if (cfr.cApproaches >= 2 && cfr.Dual > 0 && cfr.IMC + cfr.IMCSim > 0)
+            {
+                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route);
+                if (al.DistanceForRoute() >= MinXCDistance)
+                {
+                    miXCDualXC.AddEvent(1.0M);
+                    miXCDualXC.MatchingEventText = String.Format(CultureInfo.CurrentCulture, Resources.MilestoneProgress.MatchingXCFlightTemplate, cfr.dtFlight.ToShortDateString(), cfr.Route);
+                    miXCDualXC.MatchingEventID = cfr.flightID;
+                }
+            }
+        }
+
+        public override Collection<MilestoneItem> Milestones
+        {
+            get { return new Collection<MilestoneItem>() { miXCPIC, miMinTimeInCategory, miMinIMCTime, miIFRTrainingInCategory, miInstrumentTraining, miXCDualXC }; }
+        }
+    }
+
+    /// <summary>
+    /// 421.46(2)(b) - Instrument airplane (Canada)
+    /// Essentially the same as 61.65, but a few minor differences
+    /// </summary>
+    [Serializable]
+    public class IFRCanadaAirplane : IFRCanadaBase
+    {
+        public IFRCanadaAirplane() : base()
+        {
+            Init(Resources.MilestoneProgress.Title42146Airplane, "421.46(2)(b)", RatingType.InstrumentAirplane);
+        }
+    }
+
+    /// <summary>
+    /// 421.46(2)(b) - Instrument airplane (Canada)
+    /// Essentially the same as 61.65, but a few minor differences
+    /// </summary>
+    [Serializable]
+    public class IFRCanadaHelicopter : IFRCanadaBase
+    {
+        public IFRCanadaHelicopter() : base()
+        {
+            Init(Resources.MilestoneProgress.Title42146Helicopter, "421.46(2)(b)", RatingType.InstrumentHelicopter);
+        }
     }
 
     [Serializable]
@@ -289,7 +382,6 @@ namespace MyFlightbook.RatingsProgress
             miIMCXC.FARRef = ResolvedFAR("(c)(2)");
         }
     }
-
     #endregion
     #endregion
 }

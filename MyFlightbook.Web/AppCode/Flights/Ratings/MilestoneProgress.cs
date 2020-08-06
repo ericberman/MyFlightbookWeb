@@ -278,6 +278,7 @@ namespace MyFlightbook.RatingsProgress
         CASRCommAirplaneWithoutCourse,
         CASRCommHelicopterWithCourse,
         CASRCommHelicopterWithoutCourse,
+        CommercialCanadaAeroplane,
 
         // ATP - 61.159, 61.161, 61.163
         ATPAirplane,
