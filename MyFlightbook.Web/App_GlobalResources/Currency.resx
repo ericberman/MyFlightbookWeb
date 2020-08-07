@@ -996,4 +996,16 @@
   <data name="CustomCurrencySlidingMonths" xml:space="preserve">
     <value>months (day-for-day)</value>
   </data>
+  <data name="CustomCurrencyEventEVApproach" xml:space="preserve">
+    <value>enhanced vision approach</value>
+  </data>
+  <data name="CustomCurrencyEventEVApproaches" xml:space="preserve">
+    <value>enhanced vision approaches</value>
+  </data>
+  <data name="CustomCurrencyEventSAApproach" xml:space="preserve">
+    <value>special authorization approach</value>
+  </data>
+  <data name="CustomCurrencyEventSAApproaches" xml:space="preserve">
+    <value>special authorization approaches</value>
+  </data>
 </root>

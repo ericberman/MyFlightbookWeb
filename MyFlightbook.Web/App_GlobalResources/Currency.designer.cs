@@ -535,6 +535,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to enhanced vision approach.
+        /// </summary>
+        internal static string CustomCurrencyEventEVApproach {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventEVApproach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enhanced vision approaches.
+        /// </summary>
+        internal static string CustomCurrencyEventEVApproaches {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventEVApproaches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to flight.
         /// </summary>
         internal static string CustomCurrencyEventFlight {
@@ -945,6 +963,24 @@ namespace Resources {
         internal static string CustomCurrencyEventRestHours {
             get {
                 return ResourceManager.GetString("CustomCurrencyEventRestHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to special authorization approach.
+        /// </summary>
+        internal static string CustomCurrencyEventSAApproach {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventSAApproach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to special authorization approaches.
+        /// </summary>
+        internal static string CustomCurrencyEventSAApproaches {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventSAApproaches", resourceCulture);
             }
         }
         

@@ -242,6 +242,8 @@ namespace MyFlightbook.Currency
                         { CustomCurrency.CustomCurrencyEventType.RestTime, new string[] {Resources.Currency.CustomCurrencyEventRestHour, Resources.Currency.CustomCurrencyEventRestHours } },
                         { CustomCurrency.CustomCurrencyEventType.DutyTime, new string[] { Resources.Currency.CustomCurrencyEventDutyHour, Resources.Currency.CustomCurrencyEventDutyHours } },
                         { CustomCurrency.CustomCurrencyEventType.FlightDutyTime, new string[] {Resources.Currency.CustomCurrencyEventFlightDutyHour, Resources.Currency.CustomCurrencyEventFlightDutyHours } },
+                        { CustomCurrency.CustomCurrencyEventType.SpecialAuthorizationApproach, new string[] { Resources.Currency.CustomCurrencyEventSAApproach, Resources.Currency.CustomCurrencyEventSAApproaches } },
+                        { CustomCurrency.CustomCurrencyEventType.EnhancedVisionApproach, new string[] { Resources.Currency.CustomCurrencyEventEVApproach, Resources.Currency.CustomCurrencyEventEVApproaches } }
                     };
             }
 
@@ -295,6 +297,8 @@ namespace MyFlightbook.Currency
                 case CustomCurrency.CustomCurrencyEventType.GliderTow:
                 case CustomCurrency.CustomCurrencyEventType.IPC:
                 case CustomCurrency.CustomCurrencyEventType.FlightReview:
+                case CustomCurrency.CustomCurrencyEventType.SpecialAuthorizationApproach:
+                case CustomCurrency.CustomCurrencyEventType.EnhancedVisionApproach:
                     return true;
                     /*
                 case CustomCurrency.CustomCurrencyEventType.TotalHours:
@@ -382,6 +386,8 @@ namespace MyFlightbook.Currency
             DutyTime = 32,
             FlightDutyTime = 33,
             TakeoffsAny = 34,
+            SpecialAuthorizationApproach = 35,
+            EnhancedVisionApproach = 36
         };
 
         public enum CurrencyRefType { Aircraft = 0, Models = 1, Properties = 2 };
@@ -978,6 +984,12 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                     case CustomCurrencyEventType.DutyTime:
                     case CustomCurrencyEventType.RestTime:
                         break;
+                    case CustomCurrencyEventType.SpecialAuthorizationApproach:
+                        prop = CustomPropertyType.KnownProperties.IDPropSpecialAuthorizationApproach;
+                        break;
+                    case CustomCurrencyEventType.EnhancedVisionApproach:
+                        prop = CustomPropertyType.KnownProperties.IDPropEnhancedVisionApproach;
+                        break;
                     default:
                         throw new InvalidOperationException("Unknown event type: " + EventType.ToString() + " in ToQuery()");
                 }
@@ -1220,6 +1232,12 @@ categoryRestriction=?categoryRestriction, catClassRestriction=?catClassRestricti
                 case CustomCurrencyEventType.FlightDutyTime:
                 case CustomCurrencyEventType.RestTime:
                     _DutyPeriodExaminer.ExamineFlight(cfr);
+                    break;
+                case CustomCurrencyEventType.EnhancedVisionApproach:
+                    AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropEnhancedVisionApproach));
+                    break;
+                case CustomCurrencyEventType.SpecialAuthorizationApproach:
+                    AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropSpecialAuthorizationApproach));
                     break;
             }
         }
