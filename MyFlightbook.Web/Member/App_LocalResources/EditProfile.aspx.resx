@@ -258,30 +258,6 @@
   <data name="btnUpdatePrefsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="ck6157c4PrefResource1.Text" xml:space="preserve">
-    <value>Use loose interpretation of 61.57(c)(4)</value>
-  </data>
-  <data name="ck6157c4PrefResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckCanadianCurrencyResource1.Text" xml:space="preserve">
-    <value>Use Canadian currency rules</value>
-  </data>
-  <data name="ckCanadianCurrencyResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckIncludeModelFeatureTotalsResource1.Text" xml:space="preserve">
-    <value>Include subtotals for model features like complex, turbine, tailwheel, etc.</value>
-  </data>
-  <data name="ckIncludeModelFeatureTotalsResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckLAPLCurrencyResource1.Text" xml:space="preserve">
-    <value>Use EASA/LAPL currency rules</value>
-  </data>
-  <data name="ckLAPLCurrencyResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="cklEmailSubscriptionsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
@@ -303,43 +279,7 @@
   <data name="ckTrackCFITimeResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="ckUse117DutyTimeResource1.Text" xml:space="preserve">
-    <value>Show FAR 117 Duty Time Status</value>
-  </data>
-  <data name="ckUse117DutyTimeResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckUse13526xCurrencyResource1.Text" xml:space="preserve">
-    <value>Show FAR 135.265/135.267 Progress</value>
-  </data>
-  <data name="ckUse13526xCurrencyResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckUse135CurrencyResource1.Text" xml:space="preserve">
-    <value>Show FAR 135.293, 297, 299 Status</value>
-  </data>
-  <data name="ckUse135CurrencyResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckUse135DutyTimeResource1.Text" xml:space="preserve">
-    <value>Show FAR 135 Duty Time Status</value>
-  </data>
-  <data name="ckUse135DutyTimeResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckUse61217CurrencyResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ckUseArmyCurrencyResource1.Text" xml:space="preserve">
-    <value>Show AR 95-1 (US Army) Currency</value>
-  </data>
-  <data name="ckUseArmyCurrencyResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="cmbDeadlineAircraftResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="cmbExpiredCurrencyResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="CommandFieldResource1.AccessibleHeaderText" xml:space="preserve">
@@ -660,24 +600,6 @@
   <data name="ListItemResource3.Value" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="ListItemResource30.Text" xml:space="preserve">
-    <value>Show totals by category/class (and type, for models that require a type rating)</value>
-  </data>
-  <data name="ListItemResource30.Value" xml:space="preserve">
-    <value>CatClass</value>
-  </data>
-  <data name="ListItemResource31.Text" xml:space="preserve">
-    <value>Show totals by model</value>
-  </data>
-  <data name="ListItemResource31.Value" xml:space="preserve">
-    <value>Model</value>
-  </data>
-  <data name="ListItemResource32.Text" xml:space="preserve">
-    <value>Show totals by model with common models grouped by family/ICAO Designator</value>
-  </data>
-  <data name="ListItemResource32.Value" xml:space="preserve">
-    <value>Family</value>
-  </data>
   <data name="ListItemResource33.Value" xml:space="preserve">
     <value>True</value>
   </data>
@@ -707,12 +629,6 @@
   </data>
   <data name="ListItemResource9.Value" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="lnkCurrencyNotesResource1.Text" xml:space="preserve">
-    <value>(See notes on currency computations for details)</value>
-  </data>
-  <data name="lnkCurrencyNotesResource1.ToolTip" xml:space="preserve">
-    <value />
   </data>
   <data name="lnkMyFlightsResource1.Text" xml:space="preserve">
     <value />
@@ -758,9 +674,6 @@
   </data>
   <data name="locCustomCurrencyHeaderResource1.Text" xml:space="preserve">
     <value>Custom Currency Rules</value>
-  </data>
-  <data name="locExpireCurrencyResource1.Text" xml:space="preserve">
-    <value>When a currency is expired, display it:</value>
   </data>
   <data name="locFBIsAuthorizedResource1.Text" xml:space="preserve">
     <value />
@@ -906,16 +819,10 @@
   <data name="rblCloudBackupAppendDateResource3.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="rblCurrencyPrefResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="rblDateEntryPreferencesResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="rblTimeEntryPreferenceResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="rblTotalsOptionsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="RegularExpressionValidator1Resource1.ErrorMessage" xml:space="preserve">

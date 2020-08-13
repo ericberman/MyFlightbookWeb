@@ -49,8 +49,8 @@ namespace MyFlightbook.Currency
     {
         private readonly FlightExperienceCanada fcCanada;
 
-        public PassengerCurrencyCanada(string szName)
-            : base(szName)
+        public PassengerCurrencyCanada(string szName, bool fRequireDayLandings)
+            : base(szName, fRequireDayLandings)
         {
             CurrencyTimespanType = TimespanType.CalendarMonths;
             ExpirationSpan = 6;
@@ -87,8 +87,7 @@ namespace MyFlightbook.Currency
         const int TimeSpanCanada = 6;
         private readonly FlightExperienceCanada fcCanada;
 
-        public NightCurrencyCanada(string szName)
-            : base(szName)
+        public NightCurrencyCanada(string szName) : base(szName, true)  // night touch-and-go landings count.
         {
             NightTakeoffCurrency.CurrencyTimespanType = this.CurrencyTimespanType = TimespanType.CalendarMonths;
             NightTakeoffCurrency.ExpirationSpan = this.ExpirationSpan = TimeSpanCanada;
@@ -103,9 +102,7 @@ namespace MyFlightbook.Currency
         {
             if (cfr == null)
                 throw new ArgumentNullException(nameof(cfr));
-            base.ExamineFlight(cfr);
-            // Add in night touch-and-go landings too, since they also count.
-            AddRecentFlightEvents(cfr.dtFlight, cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo));
+            base.ExamineFlight(cfr);    // Should handle touch-and-go landings regardless.
             fcCanada.ExamineFlight(cfr);
         }
 

@@ -39,7 +39,7 @@ namespace MyFlightbook.Currency
         private readonly FlightCurrency m_fc6157eiiTakeoffs = new FlightCurrency(MinTakeoffs6157eSim, 12, true, "Takeoffs per 61.57(e)(4)(ii)");
         private readonly FlightCurrency m_fc6157eTotalTime = new FlightCurrency(MinTime6157e, 12, true, "Total time");
         private readonly FlightCurrency m_fc6157TimeInType = new FlightCurrency(MinRecentTimeInType, MinRecencyInType, false, "Recent time in type");
-        private readonly PassengerCurrency m_fc6157Passenger = new PassengerCurrency("61.57(e)(4)(i)(B)"); // 61.57(e)(4)(i)(B) and (ii)(B) - regular passenger currency must have been met too
+        private readonly PassengerCurrency m_fc6157Passenger = new PassengerCurrency("61.57(e)(4)(i)(B)", false); // 61.57(e)(4)(i)(B) and (ii)(B) - regular passenger currency must have been met too.  This is a US regulation, so day or night counts.
 
         public string TypeDesignator { get; set; }
 
@@ -48,10 +48,12 @@ namespace MyFlightbook.Currency
         private CurrencyState m_csCurrent = CurrencyState.NotCurrent;
         private DateTime m_dtExpiration = DateTime.MinValue;
         private string m_szDiscrepancy = string.Empty;
+        protected bool AllowTouchAndGo { get; set; }
 
-        public NightCurrency(string szName) : base(RequiredLandings, TimeSpan, false, szName)
+        public NightCurrency(string szName, bool fAllowTouchAndGo) : base(RequiredLandings, TimeSpan, false, szName)
         {
             NightTakeoffCurrency = new FlightCurrency(RequiredTakeoffs, TimeSpan, false, szName);
+            AllowTouchAndGo = fAllowTouchAndGo;
 
             Query = new FlightQuery()
             {
@@ -62,7 +64,7 @@ namespace MyFlightbook.Currency
             Query.PropertyTypes.Add(CustomPropertyType.GetCustomPropertyType((int)CustomPropertyType.KnownProperties.IDPropPilotMonitoring));
         }
 
-        public NightCurrency(string szName, string szType) : this(szName)
+        public NightCurrency(string szName, string szType, bool fAllowTouchAndGo) : this(szName, fAllowTouchAndGo)
         {
             TypeDesignator = szType;
         }
@@ -225,15 +227,16 @@ namespace MyFlightbook.Currency
             if (!cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
             {
                 // we need to subtract out monitored landings, or ignore all if you were monitoring for the whole flight
-                int cMonitoredLandings = cfr.FlightProps.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
-                int cMonitoredTakeoffs = cfr.FlightProps.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightTakeoffs);
+                int cMonitoredLandings = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
+                int cMonitoredTakeoffs = cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropMonitoredNightTakeoffs);
+                int cNightLandings = cfr.cFullStopNightLandings + (AllowTouchAndGo ? cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo) : 0);
 
                 // 61.57(e)(4)(i/ii)(B) - passenger currency in this type
                 m_fc6157Passenger.ExamineFlight(cfr);
 
                 // 61.57(b), 61.57(e)(4)(i/ii)(D) - Night takeoffs/landings
-                if (cfr.cFullStopNightLandings > 0)
-                    AddNighttimeLandingEvent(cfr.dtFlight, Math.Max(cfr.cFullStopNightLandings - cMonitoredLandings, 0), nco);
+                if (cNightLandings > 0)
+                    AddNighttimeLandingEvent(cfr.dtFlight, Math.Max(cNightLandings - cMonitoredLandings, 0), nco);
 
                 // Night-time take-offs are also technically required for night currency
                 int cNightTakeoffs = cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropertyType.IsNightTakeOff);

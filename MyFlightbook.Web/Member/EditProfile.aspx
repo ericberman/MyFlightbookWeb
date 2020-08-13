@@ -112,7 +112,7 @@
                                                             $find('wmeGreet').set_watermarkText(sender.value);
                                                         }
                                                     </script>
-                                                    <asp:TextBox ID="txtFirst" runat="server" AutoCompleteType="FirstName" Wrap="False" oninput="javascript:updateGreeting(this);"
+                                                    <asp:TextBox ID="txtFirst" runat="server" AutoCompleteType="FirstName" Wrap="False"
                                                         ValidationGroup="valNameEmail" meta:resourcekey="txtFirstResource1"></asp:TextBox></td>
                                             </tr>
                                             <tr>
@@ -478,16 +478,16 @@
                         <Content>
                             <div class="prefSectionRow">
                                 <h3><%=Resources.Currency.CurrencyTotalsDisplayHeader %></h3>
-                                <asp:RadioButtonList ID="rblTotalsOptions" runat="server" meta:resourcekey="rblTotalsOptionsResource1">
-                                    <asp:ListItem Selected="True" Text="Show totals by category/class (and type, for models that require a type rating)" Value="CatClass" meta:resourcekey="ListItemResource30" />
-                                    <asp:ListItem Text="Show totals by model" Value="Model" meta:resourcekey="ListItemResource31" />
-                                    <asp:ListItem Text="Show totals by model with common models grouped by family/ICAO Designator" Value="Family" meta:resourcekey="ListItemResource32" />
+                                <asp:RadioButtonList ID="rblTotalsOptions" runat="server">
+                                    <asp:ListItem Selected="True" Text="<%$ Resources:Currency, CurrencyOptionsGroupCatClass %>" Value="CatClass" />
+                                    <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsGroupModel %>" Value="Model" />
+                                    <asp:ListItem Text="<%$ Resources:Currency, CurrencyOptionsGroupICAO %>" Value="Family" />
                                 </asp:RadioButtonList>
-                                <div><asp:CheckBox ID="ckIncludeModelFeatureTotals" runat="server" Text="Include subtotals for model features like complex, turbine, tailwheel, etc." meta:resourcekey="ckIncludeModelFeatureTotalsResource1" /></div>
-                                <div><asp:Localize ID="locExpireCurrency" Text="When a currency is expired, display it:" runat="server" meta:resourcekey="locExpireCurrencyResource1"></asp:Localize> <asp:DropDownList ID="cmbExpiredCurrency" runat="server" meta:resourcekey="cmbExpiredCurrencyResource1"></asp:DropDownList></div>
+                                <div><asp:CheckBox ID="ckIncludeModelFeatureTotals" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsTotalsModelFeatures %>" /></div>
+                                <div><asp:Localize ID="locExpireCurrency" Text="<%$ Resources:Currency, CurrencyOptionsExpiredCurrency %>" runat="server" /> <asp:DropDownList ID="cmbExpiredCurrency" runat="server" /></div>
                                 <h3><%=Resources.Currency.CurrencyPrefsHeader %></h3>
-                                <div><asp:CheckBox ID="ckUseArmyCurrency" runat="server" Text="Show AR 95-1 (US Army) Currency" meta:resourcekey="ckUseArmyCurrencyResource1" /></div>
-                                <div><asp:CheckBox ID="ckUse117DutyTime" runat="server" Text="Show FAR 117 Duty Time Status" meta:resourcekey="ckUse117DutyTimeResource1" /></div>
+                                <div><asp:CheckBox ID="ckUseArmyCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsArmyCurreny %>" /></div>
+                                <div><asp:CheckBox ID="ckUse117DutyTime" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsFAR117DutyTime %>" /></div>
                                 <div style="margin-left:2em;">
                                     <asp:RadioButtonList ID="rbl117Rules" runat="server">
                                         <asp:ListItem Value="0" Text="<%$ Resources:Currency, Currency117OnlyDutyTimeFlights %>"></asp:ListItem>
@@ -495,28 +495,22 @@
                                     </asp:RadioButtonList>
                                 </div>
                                 <div runat="server" id="div135DutyTime" visible="False">
-                                    <asp:CheckBox ID="ckUse135DutyTime" runat="server" Text="Show FAR 135 Duty Time Status" meta:resourcekey="ckUse135DutyTimeResource1" />
+                                    <asp:CheckBox ID="ckUse135DutyTime" runat="server" Text="Show FAR 135 Duty Time Status" />
                                 </div>
-                                <div><asp:CheckBox ID="ckUse13529xCurrency" runat="server" Text="Show FAR 135.293, 297, 299 Status" meta:resourcekey="ckUse135CurrencyResource1" /></div>
-                                <div><asp:CheckBox ID="ckUse13526xCurrency" runat="server" Text="Show FAR 135.265/135.267 Progress" meta:resourcekey="ckUse13526xCurrencyResource1" /></div>
-                                <div><asp:CheckBox ID="ckUse61217Currency" runat="server" Text="<%$ Resources:Currency, Part61217Option %>" meta:resourcekey="ckUse61217CurrencyResource1" /></div>
-                                <asp:Panel runat="server" ID="pnlLoose6157" meta:resourcekey="pnlLoose6157Resource1">
-                                    <asp:CheckBox ID="ck6157c4Pref" runat="server" meta:resourcekey="ck6157c4PrefResource1" Text="Use loose interpretation of 61.57(c)(4)" /> 
-                                    <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes" meta:resourcekey="lnkCurrencyNotesResource1" runat="server" Text="(See notes on currency computations for details)" Target="_blank" NavigateUrl="~/Public/CurrencyDisclaimer.aspx#instrument"></asp:HyperLink></span>
-                                </asp:Panel>
-                                <div><asp:CheckBox ID="ckCanadianCurrency" runat="server" meta:resourcekey="ckCanadianCurrencyResource1" Text="Use Canadian currency rules" /></div>
+                                <div><asp:CheckBox ID="ckUse13529xCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptions13529x %>" /></div>
+                                <div><asp:CheckBox ID="ckUse13526xCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptions13526x %>" /></div>
+                                <div><asp:CheckBox ID="ckUse61217Currency" runat="server" Text="<%$ Resources:Currency, Part61217Option %>" /></div>
+                                <div><asp:CheckBox ID="ckAllowNightTouchAndGo" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsNightTouchAndGo %>" /> <uc1:mfbTooltip runat="server" ID="ttNightTG" BodyContent="<%$ Resources:Currency, CurrencyOptionNoteNightTouchAndGo %>" /></div>
+                                <div><asp:CheckBox ID="ckDayLandingsForDayCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsDayLandings %>" /> <uc1:mfbTooltip runat="server" ID="ttDayLandings" BodyContent="<%$ Resources:Currency, CurrencyOptionNoteDayLandings %>" /></div>
+                                <div><asp:CheckBox ID="ckCanadianCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseCanada %>" /></div>
                                 <div>
-                                    <asp:CheckBox ID="ckLAPLCurrency" runat="server" Text="Use EASA/LAPL currency rules" meta:resourcekey="ckLAPLCurrencyResource1" />
-                                    <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes2" meta:resourcekey="lnkCurrencyNotesResource1" runat="server" Text="(See notes on currency computations for details)" Target="_blank" NavigateUrl="~/Public/CurrencyDisclaimer.aspx#instrument"></asp:HyperLink></span>
+                                    <asp:CheckBox ID="ckLAPLCurrency" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsUseEASA %>" />
+                                    <span class="fineprint"><asp:HyperLink ID="lnkCurrencyNotes2" runat="server" Text="<%$ Resources:Currency, CurrencyOptionsNotesRef %>" Target="_blank" NavigateUrl="~/Public/CurrencyDisclaimer.aspx#instrument"></asp:HyperLink></span>
                                 </div>
                                 <div>
-                                    <asp:RadioButtonList ID="rblCurrencyPref" runat="server" 
-                                        meta:resourcekey="rblCurrencyPrefResource1">
-                                        <asp:ListItem Selected="True" Value="0" 
-                                            Text="Show currency by Category/class/type" 
-                                            meta:resourcekey="ListItemResource3"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Show currency for each make/model I have flown" 
-                                            meta:resourcekey="ListItemResource4"></asp:ListItem>
+                                    <asp:RadioButtonList ID="rblCurrencyPref" runat="server">
+                                        <asp:ListItem Selected="True" Value="0" Text="<%$ Resources:Currency, CurrencyOptionsByCatClass %>" />
+                                        <asp:ListItem Value="1" Text="<%$ Resources:Currency, CurrencyOptionsByModel %>" />
                                     </asp:RadioButtonList>
                                 </div>
                             </div>

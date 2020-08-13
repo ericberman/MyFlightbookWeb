@@ -1462,31 +1462,40 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.CheckBox ckUse61217Currency;
 
     /// <summary>
-    /// pnlLoose6157 control.
+    /// ckAllowNightTouchAndGo control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Panel pnlLoose6157;
+    protected global::System.Web.UI.WebControls.CheckBox ckAllowNightTouchAndGo;
 
     /// <summary>
-    /// ck6157c4Pref control.
+    /// ttNightTG control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.CheckBox ck6157c4Pref;
+    protected global::Controls_mfbTooltip ttNightTG;
 
     /// <summary>
-    /// lnkCurrencyNotes control.
+    /// ckDayLandingsForDayCurrency control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink lnkCurrencyNotes;
+    protected global::System.Web.UI.WebControls.CheckBox ckDayLandingsForDayCurrency;
+
+    /// <summary>
+    /// ttDayLandings control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Controls_mfbTooltip ttDayLandings;
 
     /// <summary>
     /// ckCanadianCurrency control.

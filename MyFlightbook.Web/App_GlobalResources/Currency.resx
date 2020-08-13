@@ -1008,4 +1008,58 @@
   <data name="CustomCurrencyEventSAApproaches" xml:space="preserve">
     <value>special authorization approaches</value>
   </data>
+  <data name="CurrencyOptions13526x" xml:space="preserve">
+    <value>Show FAR 135.265/135.267 Progress</value>
+  </data>
+  <data name="CurrencyOptions13529x" xml:space="preserve">
+    <value>Show FAR 135.293, 297, 299 Status</value>
+  </data>
+  <data name="CurrencyOptionsArmyCurreny" xml:space="preserve">
+    <value>Show AR 95-1 (US Army) Currency</value>
+  </data>
+  <data name="CurrencyOptionsByCatClass" xml:space="preserve">
+    <value>Show currency by Category/class/type</value>
+  </data>
+  <data name="CurrencyOptionsByModel" xml:space="preserve">
+    <value>Show currency for each make/model I have flown</value>
+  </data>
+  <data name="CurrencyOptionsDayLandings" xml:space="preserve">
+    <value>Require day landings (not night) for day-passenger currency</value>
+  </data>
+  <data name="CurrencyOptionsExpiredCurrency" xml:space="preserve">
+    <value>When a currency is expired, display it:</value>
+  </data>
+  <data name="CurrencyOptionsFAR117DutyTime" xml:space="preserve">
+    <value>Show FAR 117 Duty Time Status</value>
+  </data>
+  <data name="CurrencyOptionsGroupCatClass" xml:space="preserve">
+    <value>Show totals by category/class (and type, for models that require a type rating)</value>
+  </data>
+  <data name="CurrencyOptionsGroupICAO" xml:space="preserve">
+    <value>Show totals by model with common models grouped by family/ICAO Designator</value>
+  </data>
+  <data name="CurrencyOptionsGroupModel" xml:space="preserve">
+    <value>Show totals by model</value>
+  </data>
+  <data name="CurrencyOptionsNightTouchAndGo" xml:space="preserve">
+    <value>Allow night touch-and-go landings for night currency</value>
+  </data>
+  <data name="CurrencyOptionsNotesRef" xml:space="preserve">
+    <value>(See notes on currency computations for details)</value>
+  </data>
+  <data name="CurrencyOptionsTotalsModelFeatures" xml:space="preserve">
+    <value>Include subtotals for model features like complex, turbine, tailwheel, etc.</value>
+  </data>
+  <data name="CurrencyOptionsUseCanada" xml:space="preserve">
+    <value>Use Canadian currency rules</value>
+  </data>
+  <data name="CurrencyOptionsUseEASA" xml:space="preserve">
+    <value>Use EASA/LAPL currency rules</value>
+  </data>
+  <data name="CurrencyOptionNoteDayLandings" xml:space="preserve">
+    <value>In some jurisdictions, day currency requires day landings.  Checking this option excludes night landings (full-stop or touch-and-go) from day (non-night) currency computations.</value>
+  </data>
+  <data name="CurrencyOptionNoteNightTouchAndGo" xml:space="preserve">
+    <value>In some jurisdictions, night landings do not need to be to a full stop to count for currency.  Note that this option is ignored if you use Canadian or EASA rules, since they already allow for night touch-and-go landings.</value>
+  </data>
 </root>
