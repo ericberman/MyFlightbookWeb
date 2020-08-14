@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using MyFlightbook.Geography;
 
@@ -18,13 +19,15 @@ namespace MyFlightbook.Telemetry
 {
     public class GPXParser : TelemetryParser
     {
+        private static readonly Regex rGPX = new Regex("^<gpx [^>]* xmlns:", RegexOptions.Compiled | RegexOptions.Multiline);
+
         public GPXParser() : base() { }
 
         public override bool CanParse(string szData)
         {
             if (szData == null)
                 return false;
-            return szData.StartsWith("<gpx xmlns", StringComparison.InvariantCulture) || (IsXML(szData) && szData.Contains("<gpx"));
+            return rGPX.IsMatch(szData) || (IsXML(szData) && szData.Contains("<gpx"));
         }
 
         public override FlightData.AltitudeUnitTypes AltitudeUnits
