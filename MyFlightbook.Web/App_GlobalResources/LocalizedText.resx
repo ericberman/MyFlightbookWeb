@@ -1782,4 +1782,34 @@
   <data name="LocalizedSpaceWithBullet" xml:space="preserve">
     <value> ● </value>
   </data>
+  <data name="GooglePhotosGetMore" xml:space="preserve">
+    <value>Show more...</value>
+  </data>
+  <data name="GooglePhotosNoneFound" xml:space="preserve">
+    <value>(No images found)</value>
+  </data>
+  <data name="GooglePhotosViewImages" xml:space="preserve">
+    <value>View images from Google Photos on the date of this flight</value>
+  </data>
+  <data name="PrefSharingGooglePhotos" xml:space="preserve">
+    <value>Google Photos</value>
+  </data>
+  <data name="PrefSharingGooglePhotosAuthorize" xml:space="preserve">
+    <value>Authorize %APP_NAME% to read from your Google Photos collection</value>
+  </data>
+  <data name="PrefSharingGooglePhotosDesc" xml:space="preserve">
+    <value>Set up %APP_NAME% to be able to selectively pull images from the date of your flight from your Google Photos collection </value>
+  </data>
+  <data name="PrefSharingGooglePhotosDisable" xml:space="preserve">
+    <value>Deauthorize %APP_NAME% to read from your Google Photos collection</value>
+  </data>
+  <data name="PrefSharingGooglePhotosEnabled" xml:space="preserve">
+    <value>You have authorized %APP_NAME% to read images from Google Photos</value>
+  </data>
+  <data name="PrefSharingHeader" xml:space="preserve">
+    <value>Sharing</value>
+  </data>
+  <data name="GooglePhotosAddToFlight" xml:space="preserve">
+    <value>Add this to your flight</value>
+  </data>
 </root>

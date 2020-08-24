@@ -1,10 +1,13 @@
 ﻿using MyFlightbook;
+using MyFlightbook.CloudStorage;
 using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 /******************************************************
  * 
@@ -25,7 +28,10 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
     private const string szFileTypesPdf = "pdf";
     private const string szFileTypesVideos = "avi,wmv,mp4,mov,m4v,m2p,mpeg,mpg,hdmov,flv,avchd,mpeg4,m2t,h264";
 
-    public enum UploadMode {Legacy, Ajax};
+    private const string keyVSGPhotos = "VSGPhotosResult";
+    private const string keyVSLastPhotosDate = "VSPhotosDate";
+
+    public enum UploadMode { Legacy, Ajax };
 
     #region properties
     /// <summary>
@@ -42,6 +48,39 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
     public event EventHandler UploadComplete = null;
 
     /// <summary>
+    /// Called before fetching images from GooglePhotos - allows setting of things like date to fetch
+    /// </summary>
+    public event EventHandler BeforeGooglePhotoFetch = null;
+
+    #region Google Photos import
+    private GoogleMediaResponse RetrievedGooglePhotos
+    {
+        get
+        {
+            GoogleMediaResponse gmr = (GoogleMediaResponse)ViewState[keyVSGPhotos];
+            if (gmr == null)
+                ViewState[keyVSGPhotos] = gmr = new GoogleMediaResponse();
+            return gmr;
+        }
+        set { ViewState[keyVSGPhotos] = value; }
+    }
+
+    private DateTime? RetrievedGooglePhotosDate
+    {
+        get { return (DateTime?)ViewState[keyVSLastPhotosDate]; }
+        set { ViewState[keyVSLastPhotosDate] = value; }
+    }
+
+    public DateTime GooglePhotosDateToRetrieve { get; set; }
+
+    public bool AllowGoogleImport
+    {
+        get { return lnkPullGoogle.Visible; }
+        set { lnkPullGoogle.Visible = value; }
+    }
+    #endregion
+
+    /// <summary>
     /// Set to true to force the whole page to refresh (via postback) on upload
     /// </summary>
     public bool RefreshOnUpload { get; set; }
@@ -56,7 +95,7 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
     /// </summary>
     public UploadMode Mode
     {
-        get { return (UploadMode) mvFileUpload.ActiveViewIndex; }
+        get { return (UploadMode)mvFileUpload.ActiveViewIndex; }
         set { mvFileUpload.ActiveViewIndex = (int)value; }
     }
 
@@ -162,6 +201,18 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
         UploadComplete?.Invoke(this, e);
     }
 
+    public void AddPostedFile(MFBPostedFile pf)
+    {
+        if (pf == null)
+            throw new ArgumentNullException(nameof(pf));
+
+        string szKey = FileObjectSessionKey(pf.FileID);
+        PendingIDs.Add(szKey);
+        Session[szKey] = new MFBPendingImage(pf, szKey);
+        UploadComplete?.Invoke(this, new EventArgs());
+        RefreshPreviewList();
+    }
+
     protected void RefreshPreviewList()
     {
         // Refresh the image list
@@ -246,7 +297,7 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
 
                 foreach (string szID in rgIDs)
                 {
-                    MFBPendingImage mfbpi = (MFBPendingImage) Session[szID];
+                    MFBPendingImage mfbpi = (MFBPendingImage)Session[szID];
                     if (mfbpi == null || mfbpi.PostedFile == null)
                         continue;
 
@@ -270,7 +321,7 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
 
         for (int i = 0; i < MaxFiles; i++)
         {
-            rgmfbFu[i] = (Controls_mfbFileUpload) LoadControl("~/Controls/mfbFileUpload.ascx");
+            rgmfbFu[i] = (Controls_mfbFileUpload)LoadControl("~/Controls/mfbFileUpload.ascx");
             rgmfbFu[i].ID = "mfbFu" + i.ToString(CultureInfo.InvariantCulture);
 
             // Hide all but the first one
@@ -318,4 +369,67 @@ return false;
     {
         Mode = UploadMode.Legacy;
     }
+
+    #region Processing Google Photos
+
+    protected void AppendMoreGoogleImages()
+    {
+        Profile pf = Profile.GetUser(Page.User.Identity.Name);
+        string szAuthJSon = pf.GetPreferenceForKey<string>(GooglePhoto.PrefKeyAuthToken);
+
+        // Get an update
+        BeforeGooglePhotoFetch?.Invoke(this, new EventArgs());
+
+        if (!GooglePhotosDateToRetrieve.HasValue())
+            return; // nothing to do.
+
+        DateTime? lastDate = RetrievedGooglePhotosDate;
+
+        // flush results if the requested date has changed because the "more results" link will break otherwise.
+        if (lastDate != null && lastDate.HasValue && lastDate.Value.CompareTo(GooglePhotosDateToRetrieve) != 0)
+            RetrievedGooglePhotos = new GoogleMediaResponse();
+
+        RetrievedGooglePhotosDate = GooglePhotosDateToRetrieve;
+
+        GoogleMediaResponse result = RetrievedGooglePhotos = GooglePhoto.AppendImagesForDate(szAuthJSon, GooglePhotosDateToRetrieve, IncludeVideos, RetrievedGooglePhotos).Result;
+
+        lnkMoreGPhotos.Visible = false;
+        if (result == null || !result.mediaItems.Any())
+        {
+            lblGPhotoResult.Text = Resources.LocalizedText.GooglePhotosNoneFound;
+            result = new GoogleMediaResponse();
+        }
+
+        rptGPhotos.DataSource = result.mediaItems;
+        rptGPhotos.DataBind();
+        lnkMoreGPhotos.Visible = !String.IsNullOrEmpty(result.nextPageToken);
+    }
+
+    protected void lnkPullGoogle_Click(object sender, EventArgs e)
+    {
+        RetrievedGooglePhotos = new GoogleMediaResponse();
+        AppendMoreGoogleImages();
+    }
+
+    protected void lnkMoreGPhotos_Click(object sender, EventArgs e)
+    {
+        AppendMoreGoogleImages();
+    }
+
+    protected void imgAdd_Command(object sender, CommandEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        MFBPostedFile pf = RetrievedGooglePhotos.ImportImage(e.CommandArgument.ToString());
+
+        if (pf == null)
+            return;
+
+        AddPostedFile(pf);
+
+        rptGPhotos.DataSource = RetrievedGooglePhotos.mediaItems;
+        rptGPhotos.DataBind();
+    }
+    #endregion
 }

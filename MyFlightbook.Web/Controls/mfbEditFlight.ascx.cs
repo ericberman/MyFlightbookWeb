@@ -1,4 +1,5 @@
 using MyFlightbook;
+using MyFlightbook.CloudStorage;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
@@ -162,7 +163,6 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
         get { return btnCancel.Visible; }
         set { btnCancel.Visible = value; }
     }
-
 
     #region internal settings - NOT PERSISTED
     protected bool UseLastTail { get; set; }
@@ -432,6 +432,8 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
 
         mfbEditPropSet1.CrossFillSourceClientID = decCFI.CrossFillSourceClientID = decDual.CrossFillSourceClientID = decGrndSim.CrossFillSourceClientID = decIMC.CrossFillSourceClientID = 
             decNight.CrossFillSourceClientID = decPIC.CrossFillSourceClientID = decSIC.CrossFillSourceClientID = decSimulatedIFR.CrossFillSourceClientID = decXC.CrossFillSourceClientID = decTotal.EditBox.ClientID;
+
+        mfbMFUFlightImages.AllowGoogleImport = pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken);
     }
 
     private void FinalizeSetupForFlight(LogbookEntry le)
@@ -581,7 +583,7 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
         le.Nighttime = decNight.Value;
         le.IMC = decIMC.Value;
         le.SimulatedIFR = decSimulatedIFR.Value;
-        le.GroundSim = decGrndSim.Value;;
+        le.GroundSim = decGrndSim.Value;
         le.Dual = decDual.Value;
         le.PIC = decPIC.Value;
         le.CFI = decCFI.Value;
@@ -825,6 +827,16 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
         if (!le.IsNewFlight)
             le.CFISignatureState = new LogbookEntry(le.FlightID, le.User).CFISignatureState;
         CheckFlight(pnlFlightLint, gvFlightLint, le);
+    }
+
+    protected void Fetch_GooglePhotos(object sender, EventArgs e)
+    {
+        mfbMFUFlightImages.GooglePhotosDateToRetrieve = mfbDate.Date;
+    }
+
+    protected void mfbMFUFlightImages_UploadComplete(object sender, EventArgs e)
+    {
+        ProcessImages(FlightID);
     }
 }
 

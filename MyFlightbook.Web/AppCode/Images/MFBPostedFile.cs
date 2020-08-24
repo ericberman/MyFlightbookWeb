@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Net;
 using System.Web;
 
 /******************************************************
@@ -34,6 +35,37 @@ namespace MyFlightbook.Image
 
             ContentType = pf.ContentType;
             ContentLength = pf.ContentLength;
+        }
+
+        public MFBPostedFile(Stream s, string fileName, string contentType, int contentLength) : this()
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+            if (fileName == null)
+                throw new ArgumentNullException(nameof(fileName));
+            WriteStreamToTempFile(s);
+
+            FileID = FileName = fileName;
+            ContentType = contentType ?? throw new ArgumentNullException(nameof(contentType));
+            ContentLength = contentLength;
+        }
+
+        public static MFBPostedFile PostedFileFromURL(Uri uri, string szFilename, string szContentType)
+        {
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+
+            if (szContentType == null)
+                throw new ArgumentNullException(szContentType);
+
+            using (WebClient wc = new WebClient())
+            {
+                byte[] rgb = wc.DownloadData(uri);
+                using (MemoryStream ms = new MemoryStream(rgb))
+                {
+                    return new MFBPostedFile(ms, szFilename, szContentType, rgb.Length);
+                }
+            }
         }
 
         public MFBPostedFile(AjaxControlToolkit.AjaxFileUploadEventArgs e) : this()

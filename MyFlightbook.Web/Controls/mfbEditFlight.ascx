@@ -267,7 +267,7 @@
                 Text="" meta:resourcekey="lblPixForFlightResource1"></asp:Label>
         </div>
         <div>
-            <uc5:mfbMultiFileUpload ID="mfbMFUFlightImages" Mode="Ajax" Class="Flight" IncludeDocs="true" RefreshOnUpload="true" runat="server"  />
+            <uc5:mfbMultiFileUpload ID="mfbMFUFlightImages" Mode="Ajax" Class="Flight" IncludeDocs="true" RefreshOnUpload="true" runat="server" OnBeforeGooglePhotoFetch="Fetch_GooglePhotos" OnUploadComplete="mfbMFUFlightImages_UploadComplete" />
             <br />
             <uc2:mfbImageList ID="mfbFlightImages" ImageClass="Flight" IncludeDocs="true"
                 runat="server" AltText="Images from flight" CanEdit="true" Columns="4" 
@@ -315,7 +315,7 @@
             document.getElementById('<% = pnlFlightLint.ClientID %>').style.display = "none";
         }
     </script>
-    <asp:UpdatePanel ID="updCheckFlights" runat="server" style="width:100%">
+    <asp:UpdatePanel ID="updCheckFlights" runat="server">
         <Triggers>
             <asp:AsyncPostBackTrigger ControlID="imgCheckFlights" />
         </Triggers>

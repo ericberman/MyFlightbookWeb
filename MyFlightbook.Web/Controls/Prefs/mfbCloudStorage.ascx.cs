@@ -1,4 +1,6 @@
-﻿using MyFlightbook.CloudStorage;
+﻿using DotNetOpenAuth.OAuth2;
+using MyFlightbook.CloudStorage;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -67,6 +69,16 @@ namespace MyFlightbook.Web.Controls.Prefs
                 }
 
                 Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=backup", Request.Path));
+            }
+            if (!String.IsNullOrEmpty(Request.Params[GooglePhoto.szParamGPhotoAuth])) // redirect from Google Photo oAuth request
+            {
+                if (String.IsNullOrEmpty(util.GetStringParam(Request, "error")))
+                {
+                    IAuthorizationState token = new GooglePhoto().ConvertToken(Request);
+                    string szTokenJSON = JsonConvert.SerializeObject(token);
+                    CurrentUser.SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, szTokenJSON);
+                }
+                Response.Redirect(String.Format(CultureInfo.InvariantCulture, "{0}?pane=social", Request.Path));
             }
             if (!String.IsNullOrEmpty(Request.Params[OneDrive.szParam1DriveAuth])) // redirect from OneDrive oAuth request.
             {
