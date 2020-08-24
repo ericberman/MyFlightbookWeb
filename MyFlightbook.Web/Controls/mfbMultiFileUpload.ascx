@@ -23,6 +23,26 @@
     </asp:View>
 </asp:MultiView>
 <span class="fineprint"><% =Resources.LocalizedText.ImageDisclaimer %></span>
-
+<div>
+    <asp:LinkButton ID="lnkPullGoogle" runat="server" Visible="false" OnClick="lnkPullGoogle_Click" Text="<%$ Resources:LocalizedText, GooglePhotosViewImages %>" />
+    <div><asp:Label ID="lblGPhotoResult" runat="server" EnableViewState="false" /></div>
+    <div>
+        <asp:Repeater ID="rptGPhotos" runat="server">
+            <ItemTemplate>
+                <div style="display: inline-block;">
+                    <asp:HyperLink ID="lIm" runat="server" Target="_blank" NavigateUrl='<%# Eval("productUrl") %>'>
+                            <asp:Image ID="img" runat="server" ImageUrl='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}=w150-h150", Eval("baseUrl")) %>' AlternateText='<%# Eval("filename") %>' />
+                    </asp:HyperLink>
+                    <div class="imageMenu" runat="server" id="divActions">
+                        <div><asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/images/add.png" CommandArgument='<%# Eval("productUrl") %>' OnCommand="imgAdd_Command" ToolTip="<%$ Resources:LocalizedText, GooglePhotosAddToFlight %>" AlternateText="<%$ Resources:LocalizedText, GooglePhotosAddToFlight %>" /></div>
+                    </div>
+                </div>
+            </ItemTemplate>
+        </asp:Repeater>
+    </div>
+    <div>
+        <asp:LinkButton ID="lnkMoreGPhotos" runat="server" Text="<%$ Resources:LocalizedText, GooglePhotosGetMore %>" Visible="false" OnClick="lnkMoreGPhotos_Click" />
+    </div>
+</div>
 
 

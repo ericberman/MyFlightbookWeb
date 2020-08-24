@@ -1,4 +1,5 @@
 using MyFlightbook;
+using MyFlightbook.CloudStorage;
 using MyFlightbook.Currency;
 using System;
 using System.Collections.Generic;
@@ -170,6 +171,15 @@ public partial class Member_EditProfile : System.Web.UI.Page
         lnkMyFlights.Text = HttpUtility.HtmlEncode(m_pf.PublicFlightsURL(Request.Url.Host).AbsoluteUri);
         ClientScript.RegisterClientScriptInclude("copytoClip", ResolveClientUrl("~/public/Scripts/CopyClipboard.js"));
         imgCopyMyFlights.OnClientClick = String.Format(CultureInfo.InvariantCulture, "javascript:copyClipboard(null, '{0}', true, '{1}');return false;", lnkMyFlights.ClientID, lblMyFlightsCopied.ClientID);
+
+        lblGPhotosDesc.Text = Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosDesc);
+        lnkAuthGPhotos.Text = Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosAuthorize);
+        lblGPhotosEnabled.Text = Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosEnabled);
+        lnkDeAuthGPhotos.Text = Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosDisable);
+
+        mvGPhotos.SetActiveView(m_pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken) ? vwGPhotosEnabled : vwGPhotosDisabled);
+
+        pnlGPhotos.Visible = m_pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken) || util.GetIntParam(Request, "GPhoto", 0) != 0;
     }
 
     private void InitDeadlinesAndCurrencies()
@@ -567,4 +577,17 @@ public partial class Member_EditProfile : System.Web.UI.Page
     #endregion
 
     #endregion // Preferences
+
+    #region Sharing
+    protected void lnkAuthGPhotos_Click(object sender, EventArgs e)
+    {
+        new GooglePhoto().Authorize(Request, Request.Url.AbsolutePath, GooglePhoto.szParamGPhotoAuth);
+    }
+
+    protected void lnkDeAuthGPhotos_Click(object sender, EventArgs e)
+    {
+        m_pf.SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, null, true);
+        mvGPhotos.SetActiveView(vwGPhotosDisabled);
+    }
+    #endregion
 }

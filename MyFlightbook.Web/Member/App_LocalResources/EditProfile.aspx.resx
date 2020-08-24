@@ -156,9 +156,6 @@
   <data name="acpQandAResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="acpSocialNetworkingResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="BoundFieldResource14.AccessibleHeaderText" xml:space="preserve">
     <value />
   </data>
@@ -532,18 +529,6 @@
     <value />
   </data>
   <data name="lblShowcurrencyResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblSocialNetworkingPromptResource1.Text" xml:space="preserve">
-    <value>Sharing</value>
-  </data>
-  <data name="lblSocialNetworkingPromptResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblSocNetworkPrefsUpdatedResource1.Text" xml:space="preserve">
-    <value>Preferences successfully updated</value>
-  </data>
-  <data name="lblSocNetworkPrefsUpdatedResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="ListItemResource1.Text" xml:space="preserve">

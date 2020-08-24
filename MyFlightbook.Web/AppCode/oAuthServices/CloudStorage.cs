@@ -1,5 +1,6 @@
 ﻿using DotNetOpenAuth.OAuth2;
 using Dropbox.Api;
+using MyFlightbook.Image;
 using MyFlightbook.OAuth;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -135,11 +137,10 @@ namespace MyFlightbook.CloudStorage
         }
     }
 
-    /// <summary>
-    /// Provides utilities for using GoogleDrive from MyFlightbook
-    /// </summary>
-    public class GoogleDrive : CloudStorageBase
+    public abstract class GoogleOAuthBase : CloudStorageBase
     {
+        protected string AuthParam { get; set; }
+
         #region response data
         protected class GoogleDriveFileMetadata
         {
@@ -147,7 +148,7 @@ namespace MyFlightbook.CloudStorage
             public string id { get; set; }
             public string name { get; set; }
             public string mimeType { get; set; }
-            public GoogleDriveFileMetadata() {  }
+            public GoogleDriveFileMetadata() { }
         }
 
         protected class GoogleFileList
@@ -155,28 +156,11 @@ namespace MyFlightbook.CloudStorage
             public GoogleFileList() { files = new Collection<GoogleDriveFileMetadata>(); }
 
             public string kind { get; set; }
-            public Collection<GoogleDriveFileMetadata> files {get; private set;}
+            public Collection<GoogleDriveFileMetadata> files { get; private set; }
         }
         #endregion
 
-        public const string szParamGDriveAuth = "gdOAuth";
-
-        private const string szURLUploadEndpoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
-        private const string szURLUpdateEndpointTemplate = "https://www.googleapis.com/upload/drive/v3/files/{0}?uploadType=multipart";
-        private const string szURLViewFilesEndpointTemplate = "https://www.googleapis.com/drive/v3/files?q={0}&access_token={1}";
-        private string RootFolderID { get; set; }
-
-        public GoogleDrive(string szRootPath = "")
-            : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/drive.appdata", "https://www.googleapis.com/auth/drive.file" })
-        {
-            RootPath = String.IsNullOrEmpty(szRootPath) ? Branding.CurrentBrand.AppName : szRootPath;
-            RootFolderID = string.Empty;
-        }
-
-        public GoogleDrive(IAuthorizationState authstate) : this(MyFlightbook.Branding.CurrentBrand.AppName)
-        {
-            AuthState = authstate;
-        }
+        protected GoogleOAuthBase(string szAppKeyKey, string szAppSecretKey, string szOAuth2AuthEndpoint, string szOAuth2TokenEndpoint, string[] scopes = null, string szUpgradeEndpoint = null, string szDisableEndpoint = null) : base(szAppKeyKey, szAppSecretKey, szOAuth2AuthEndpoint, szOAuth2TokenEndpoint, scopes, szUpgradeEndpoint, szDisableEndpoint) { }
 
         public override AuthorizationState ConvertToken(HttpRequest Request)
         {
@@ -191,7 +175,7 @@ namespace MyFlightbook.CloudStorage
                     Request["code"],
                     AppKey,
                     AppSecret,
-                    RedirectUri(Request, Request.Path, szParamGDriveAuth).ToString());
+                    RedirectUri(Request, Request.Path, AuthParam).ToString());
 
             byte[] rgbData = System.Text.Encoding.UTF8.GetBytes(szPostData);
             hr.ContentLength = rgbData.Length;
@@ -222,6 +206,32 @@ namespace MyFlightbook.CloudStorage
 
                 return authstate;
             }
+        }
+    }
+
+    /// <summary>
+    /// Provides utilities for using GoogleDrive from MyFlightbook
+    /// </summary>
+    public class GoogleDrive : GoogleOAuthBase
+    {
+        public const string szParamGDriveAuth = "gdOAuth";
+
+        private const string szURLUploadEndpoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
+        private const string szURLUpdateEndpointTemplate = "https://www.googleapis.com/upload/drive/v3/files/{0}?uploadType=multipart";
+        private const string szURLViewFilesEndpointTemplate = "https://www.googleapis.com/drive/v3/files?q={0}&access_token={1}";
+        private string RootFolderID { get; set; }
+
+        public GoogleDrive(string szRootPath = "")
+            : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/drive.appdata", "https://www.googleapis.com/auth/drive.file" })
+        {
+            AuthParam = szParamGDriveAuth;
+            RootPath = String.IsNullOrEmpty(szRootPath) ? Branding.CurrentBrand.AppName : szRootPath;
+            RootFolderID = string.Empty;
+        }
+
+        public GoogleDrive(IAuthorizationState authstate) : this(MyFlightbook.Branding.CurrentBrand.AppName)
+        {
+            AuthState = authstate;
         }
 
         protected async Task<string> CreateFolder(string szFolderName)
@@ -925,6 +935,230 @@ namespace MyFlightbook.CloudStorage
                 Dropbox.Api.Files.FileMetadata updated = await dbx.Files.UploadAsync("/" + szFileName, Dropbox.Api.Files.WriteMode.Overwrite.Instance, body: ms).ConfigureAwait(false);
                 return updated;
             }
+        }
+    }
+    #endregion
+
+    #region Google Photo
+    [Serializable]
+    public class GoogleImageDate
+    {
+        public int year { get; set; }
+        public int month { get; set; }
+        public int day { get; set; }
+
+        public GoogleImageDate() { }
+
+        public GoogleImageDate(DateTime dt) : this()
+        {
+            year = dt.Year;
+            month = dt.Month;
+            day = dt.Day;
+        }
+    }
+
+    [Serializable]
+    public class GoogleDateFilter
+    {
+        public IEnumerable<GoogleImageDate> dates { get; set; }
+
+        public GoogleDateFilter()
+        {
+            dates = new List<GoogleImageDate>();
+        }
+
+        public GoogleDateFilter(DateTime dt)
+        {
+            dates = new GoogleImageDate[] { new GoogleImageDate(dt) };
+        }
+    }
+
+    [Serializable]
+    public class GoogleMediaTypeFilter
+    {
+        public IEnumerable<string> mediaTypes { get; set; } = new string[] { GoogleMediaType.ALL_MEDIA.ToString() };
+    }
+
+    public enum GoogleMediaType { ALL_MEDIA, VIDEO, PHOTO };
+
+    [Serializable]
+    public class GoogleImageFilter
+    {
+        public GoogleDateFilter dateFilter { get; set; }
+
+        public GoogleMediaTypeFilter mediaTypeFilter { get; set; }
+    }
+
+    [Serializable]
+    public class GoogleImageRequest
+    {
+        public int pageSize { get; set; }
+        public string pageToken { get; set; }
+        public GoogleImageFilter filters { get; set; }
+
+
+        public GoogleImageRequest()
+        {
+            pageSize = 10;
+            pageToken = string.Empty;
+            filters = null;
+        }
+    }
+
+    [Serializable]
+    public class GoogleMediaItem
+    {
+        public string id { get; set; }
+        public string description { get; set; }
+#pragma warning disable CA1056 // Uri properties should not be strings
+        public string productUrl { get; set; }
+        public string baseUrl { get; set; }
+#pragma warning restore CA1056 // Uri properties should not be strings
+        public string mimeType { get; set; }
+        public string filename { get; set; }
+
+        public GoogleMediaMetaData mediaMetadata { get; set; }
+    }
+
+    [Serializable]
+    public class GoogleMediaMetaData
+    {
+        public string creationTime { get; set; }
+
+        public string width { get; set; }
+
+        public string height { get; set; }
+
+        public DateTime? CreationTime { get { return String.IsNullOrEmpty(creationTime) ? null : new DateTime?(DateTime.Parse(creationTime, CultureInfo.InvariantCulture)); } }
+
+        public int Width { get { return String.IsNullOrEmpty(width) ? 0 : int.Parse(width, CultureInfo.InvariantCulture); } }
+
+        public int Height { get { return String.IsNullOrEmpty(height) ? 0 : int.Parse(height, CultureInfo.InvariantCulture); } }
+    }
+
+    [Serializable]
+    public class GoogleMediaResponse
+    {
+        public IEnumerable<GoogleMediaItem> mediaItems { get; set; } = Array.Empty<GoogleMediaItem>();
+        public string nextPageToken { get; set; }
+
+        public GoogleMediaResponse AddResponse(GoogleMediaResponse gmr)
+        {
+            if (gmr == null)
+                return this;
+
+            nextPageToken = gmr.nextPageToken;
+
+            List<GoogleMediaItem> lst = (mediaItems == null) ? new List<GoogleMediaItem>() : new List<GoogleMediaItem>(mediaItems);
+            if (gmr.mediaItems != null)
+                lst.AddRange(gmr.mediaItems);
+            mediaItems = lst;
+            return this;
+        }
+
+        /// <summary>
+        /// Returns the media item matching the specified reference and removes it from the list.
+        /// </summary>
+        /// <param name="href"></param>
+        /// <returns></returns>
+        protected GoogleMediaItem RemoveByHRef(string href)
+        {
+            if (String.IsNullOrEmpty(href) || mediaItems == null || !mediaItems.Any())
+                return null;
+
+            List<GoogleMediaItem> lst = new List<GoogleMediaItem>(mediaItems);
+
+            GoogleMediaItem item = lst.Find(mi => mi.productUrl.CompareOrdinal(href) == 0);
+            if (item != null)
+            {
+                lst.Remove(item);
+                mediaItems = lst;
+            }
+            return item;
+        }
+
+        public MFBPostedFile ImportImage(string href)
+        {
+            GoogleMediaItem item = RemoveByHRef(href);
+            if (item == null)
+                return null;
+
+            Uri uri = new Uri(String.Format(CultureInfo.InvariantCulture, "{0}={1}", item.baseUrl, (item.mimeType.StartsWith("image/", StringComparison.CurrentCultureIgnoreCase)) ? "d" : "dv"));
+
+            return MFBPostedFile.PostedFileFromURL(uri, item.filename, item.mimeType);
+        }
+    }
+
+    public class GooglePhoto : GoogleOAuthBase
+    {
+        public const string szParamGPhotoAuth = "gPhotoOAuth";
+        public const string PrefKeyAuthToken = "googlePhotoAuthToken";
+
+        public GooglePhoto() : base("GoogleDriveAccessID", "GoogleDriveClientSecret", "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent", "https://www.googleapis.com/oauth2/v4/token", new string[] { "https://www.googleapis.com/auth/photoslibrary.readonly" })
+        {
+            AuthParam = szParamGPhotoAuth;
+        }
+
+        public GooglePhoto(IAuthorizationState authstate) : this()
+        {
+            AuthState = authstate;
+        }
+
+        public async Task<string> GetImagesForDate(DateTime dt, bool fIncludeVideos, string nextPageToken)
+        {
+            string szResult = string.Empty;
+            using (HttpClient httpClient = new HttpClient())
+            {
+                await RefreshAccessToken().ConfigureAwait(false);
+
+                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthState.AccessToken);
+                httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+                httpClient.DefaultRequestHeaders.Referrer = new Uri(String.Format(CultureInfo.InvariantCulture, "https://{0}", Branding.CurrentBrand.HostName));
+
+                GoogleImageRequest googleImageRequest = new GoogleImageRequest() { filters = new GoogleImageFilter() { dateFilter = new GoogleDateFilter(dt) }, pageToken = nextPageToken };
+                if (!fIncludeVideos)
+                    googleImageRequest.filters.mediaTypeFilter.mediaTypes = new string[] { GoogleMediaType.PHOTO.ToString() };
+
+                string imgReqJSON = JsonConvert.SerializeObject(googleImageRequest);
+
+                HttpResponseMessage response = null;
+                using (StringContent sc = new StringContent(imgReqJSON, System.Text.Encoding.UTF8))
+                {
+                    sc.Headers.ContentType = new MediaTypeHeaderValue("application/json") { CharSet = "UTF-8" };
+                    try
+                    {
+                        response = await httpClient.PostAsync(new Uri(String.Format(CultureInfo.InvariantCulture, "https://photoslibrary.googleapis.com/v1/mediaItems:search?key={0}", MyFlightbook.SocialMedia.GooglePlusConstants.MapsKey)), sc).ConfigureAwait(false);
+                        szResult = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        response.EnsureSuccessStatusCode();
+                        return szResult;
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        if (response == null)
+                            throw new MyFlightbookException("Unknown error in GetImagesForDate", ex);
+
+                        Dictionary<string, GoogleDriveError> d = String.IsNullOrEmpty(szResult) ? null : JsonConvert.DeserializeObject<Dictionary<string, GoogleDriveError>>(szResult);
+                        GoogleDriveError gde = (d == null || !d.ContainsKey("error")) ? null : d["error"];
+
+                        throw new MyFlightbookException(response.ReasonPhrase + " " + (szResult ?? string.Empty));
+                    }
+                    finally
+                    {
+                        if (response != null)
+                            response.Dispose();
+                    }
+                }
+            }
+        }
+
+        public async static Task<GoogleMediaResponse> AppendImagesForDate(string szAuthToken, DateTime dt, bool fCanDoVideo, GoogleMediaResponse priorResponse)
+        {
+            AuthorizationState auth = JsonConvert.DeserializeObject<AuthorizationState>(szAuthToken);
+
+            string szResult = await new GooglePhoto(auth).GetImagesForDate(dt, fCanDoVideo, priorResponse?.nextPageToken).ConfigureAwait(false);
+            GoogleMediaResponse result = JsonConvert.DeserializeObject<GoogleMediaResponse>(szResult);
+
+            return (priorResponse == null) ? result : priorResponse.AddResponse(result);
         }
     }
     #endregion

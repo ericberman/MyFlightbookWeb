@@ -565,10 +565,9 @@
                             </div>
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane ID="acpSocialNetworking" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpSocialNetworkingResource1">
+                    <cc1:AccordionPane ID="acpSocialNetworking" runat="server" ContentCssClass="" HeaderCssClass="">
                         <Header>
-                            <asp:Label ID="lblSocialNetworkingPrompt" runat="server" 
-                                Text="Sharing" meta:resourcekey="lblSocialNetworkingPromptResource1"></asp:Label>
+                            <asp:Label ID="lblSocialNetworkingPrompt" runat="server" Text="<%$ Resources:LocalizedText, PrefSharingHeader %>" />
                         </Header>
                         <Content>
                             <div class="prefSectionRow">
@@ -596,10 +595,19 @@
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
-                            <div class="prefSectionRow">
-                                <asp:Label ID="lblSocNetworkPrefsUpdated" runat="server" CssClass="success" EnableViewState="False"
-                                    Text="Preferences successfully updated" Visible="False" meta:resourcekey="lblSocNetworkPrefsUpdatedResource1"></asp:Label>
-                            </div>
+                            <asp:Panel ID="pnlGPhotos" runat="server" Visible="false" CssClass="prefSectionRow">
+                                <h2><asp:Localize ID="locShareGooglePhotos" runat="server" Text="<%$ Resources:LocalizedText, PrefSharingGooglePhotos %>"></asp:Localize></h2>
+                                <p><asp:Label ID="lblGPhotosDesc" runat="server" /></p>
+                                <asp:MultiView ID="mvGPhotos" runat="server" ActiveViewIndex="0">
+                                    <asp:View ID="vwGPhotosDisabled" runat="server">
+                                        <asp:LinkButton ID="lnkAuthGPhotos" runat="server" OnClick="lnkAuthGPhotos_Click" />
+                                    </asp:View>
+                                    <asp:View ID="vwGPhotosEnabled" runat="server">
+                                        <div><asp:Label ID="lblGPhotosEnabled" runat="server" /></div>
+                                        <div><asp:LinkButton ID="lnkDeAuthGPhotos" runat="server" OnClick="lnkDeAuthGPhotos_Click" /></div>
+                                    </asp:View>
+                                </asp:MultiView>
+                            </asp:Panel>
                         </Content>
                     </cc1:AccordionPane>
                     <cc1:AccordionPane ID="acpBackup" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpBackupResource1">
