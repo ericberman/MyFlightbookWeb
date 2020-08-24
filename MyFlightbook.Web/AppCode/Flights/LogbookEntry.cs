@@ -1679,6 +1679,11 @@ namespace MyFlightbook
                     // Load properties, if available.
                     CustomProperties.SetItems(CustomFlightProperty.PropertiesFromJSONTuples((string)util.ReadNullableField(dr, "CustomPropsJSON", string.Empty), FlightID));
 
+                    // Issue #646: if an aircraft is anonymous but it has a nose number or registration property specified, use that for the tail number
+                    string szRawTail = util.ReadNullableField(dr, "RawTailNumber", string.Empty).ToString();
+                    if (szRawTail.StartsWith(CountryCodePrefix.szAnonPrefix, StringComparison.OrdinalIgnoreCase) && CustomProperties.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropAircraftRegistration))
+                        TailNumDisplay = CustomProperties.StringValueForProperty(CustomPropertyType.KnownProperties.IDPropAircraftRegistration);
+
                     string szVids = dr["FlightVids"].ToString();
                     if (!String.IsNullOrEmpty(szVids))
                     {
