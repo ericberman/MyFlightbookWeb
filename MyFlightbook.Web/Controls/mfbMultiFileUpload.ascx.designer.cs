@@ -121,6 +121,15 @@ public partial class Controls_mfbMultiFileUpload
     protected global::System.Web.UI.WebControls.Label lblGPhotoResult;
 
     /// <summary>
+    /// pnlGPResult control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlGPResult;
+
+    /// <summary>
     /// rptGPhotos control.
     /// </summary>
     /// <remarks>

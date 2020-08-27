@@ -403,6 +403,7 @@ return false;
         rptGPhotos.DataSource = result.mediaItems;
         rptGPhotos.DataBind();
         lnkMoreGPhotos.Visible = !String.IsNullOrEmpty(result.nextPageToken);
+        pnlGPResult.Visible = RetrievedGooglePhotos.mediaItems.Any();
     }
 
     protected void lnkPullGoogle_Click(object sender, EventArgs e)
@@ -430,6 +431,8 @@ return false;
 
         rptGPhotos.DataSource = RetrievedGooglePhotos.mediaItems;
         rptGPhotos.DataBind();
+
+        pnlGPResult.Visible = RetrievedGooglePhotos.mediaItems.Any();
     }
     #endregion
 }

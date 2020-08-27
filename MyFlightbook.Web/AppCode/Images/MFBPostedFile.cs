@@ -60,11 +60,10 @@ namespace MyFlightbook.Image
 
             using (WebClient wc = new WebClient())
             {
-                byte[] rgb = wc.DownloadData(uri);
-                using (MemoryStream ms = new MemoryStream(rgb))
-                {
-                    return new MFBPostedFile(ms, szFilename, szContentType, rgb.Length);
-                }
+                string szTempFile = Path.GetTempFileName();
+                wc.DownloadFile(uri, szTempFile);
+                FileInfo fi = new FileInfo(szTempFile);
+                return new MFBPostedFile() { ContentLength = (int) fi.Length, ContentType = szContentType, FileID = szFilename, FileName = szFilename, TempFileName = szTempFile };
             }
         }
 
