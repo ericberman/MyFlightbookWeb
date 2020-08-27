@@ -842,6 +842,7 @@
     <Content Include="Public\PaypalIPNListener.aspx" />
     <Content Include="Public\PendingImg.aspx" />
     <Content Include="Public\Privacy.aspx" />
+    <Content Include="Public\PropertyTable.aspx" />
     <Content Include="Public\RSSCurrency.aspx" />
     <Content Include="Public\Scripts\CopyClipboard.js" />
     <Content Include="Public\Scripts\daypilot-all.min.js" />
@@ -2684,6 +2685,13 @@
     </Compile>
     <Compile Include="Public\Privacy.aspx.designer.cs">
       <DependentUpon>Privacy.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\PropertyTable.aspx.cs">
+      <DependentUpon>PropertyTable.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\PropertyTable.aspx.designer.cs">
+      <DependentUpon>PropertyTable.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\RSSCurrency.aspx.cs">
       <DependentUpon>RSSCurrency.aspx</DependentUpon>
