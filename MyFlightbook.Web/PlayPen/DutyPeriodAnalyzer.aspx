@@ -31,7 +31,11 @@
                         <%# ((DateTime) Eval("FlightDutyEnd")).UTCFormattedStringOrEmpty(false) %>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField HeaderText="Elapsed Flight Duty" SortExpression="ElapsedFlightDuty" DataField="ElapsedFlightDuty" DataFormatString="{0:#,##0.0}" />
+                <asp:TemplateField HeaderText="Elapsed Flight Duty" SortExpression="ElapsedFlightDuty">
+                    <ItemTemplate>
+                        <%# ((double) Eval("ElapsedFlightDuty")).ToString("#,##0.#", System.Globalization.CultureInfo.CurrentCulture) %> (<%# ((decimal) ((double) Eval("ElapsedFlightDuty"))).ToHHMM() %>)
+                    </ItemTemplate>
+                </asp:TemplateField>
                 <asp:BoundField HeaderText="Duty Start" SortExpression="AdditionalDutyStart" DataField="AdditionalDutyStart" DataFormatString="{0:yyyy-MM-dd HH:mm}" />
                 <asp:BoundField HeaderText="Duty End" SortExpression="AdditionalDutyEnd" DataField="AdditionalDutyEnd" DataFormatString="{0:yyyy-MM-dd HH:mm}" />
                 <asp:BoundField HeaderText="Non-rest Start" SortExpression="EffectiveDutyStart" DataField="EffectiveDutyStart" DataFormatString="{0:yyyy-MM-dd HH:mm}" />
