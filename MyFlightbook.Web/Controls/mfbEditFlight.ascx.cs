@@ -1,5 +1,6 @@
 using MyFlightbook;
 using MyFlightbook.CloudStorage;
+using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using MyFlightbook.Telemetry;
 using MyFlightbook.Templates;
@@ -837,6 +838,25 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
     protected void mfbMFUFlightImages_UploadComplete(object sender, EventArgs e)
     {
         ProcessImages(FlightID);
+    }
+
+    protected void mfbMFUFlightImages_GeotagPhoto(object sender, PositionEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(nameof(e));
+
+        if (e.TimeStamp == null || !e.TimeStamp.HasValue || e.ExpectedPosition != null)
+            return;
+
+        string szData = mfbFlightInfo1.Telemetry;
+        if (szData == null)
+            return;
+        
+        using (FlightData fd = new FlightData())
+        {
+            if (fd.ParseFlightData(szData) && fd.HasDateTime && fd.HasLatLongInfo)
+                e.ExpectedPosition = Position.Interpolate(e.TimeStamp.Value, fd.GetTrajectory());
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using MyFlightbook;
 using MyFlightbook.CloudStorage;
+using MyFlightbook.Geography;
 using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,11 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
     /// Called before fetching images from GooglePhotos - allows setting of things like date to fetch
     /// </summary>
     public event EventHandler BeforeGooglePhotoFetch = null;
+
+    /// <summary>
+    /// Called before importing an image from GooglePhotos - allows for geotagging, if possible.
+    /// </summary>
+    public event EventHandler<PositionEventArgs> BeforeImportGooglePhoto = null;
 
     #region Google Photos import
     private GoogleMediaResponse RetrievedGooglePhotos
@@ -201,16 +207,20 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
         UploadComplete?.Invoke(this, e);
     }
 
-    public void AddPostedFile(MFBPostedFile pf)
+    protected MFBPendingImage AddPostedFile(MFBPostedFile pf, LatLong ll)
     {
         if (pf == null)
             throw new ArgumentNullException(nameof(pf));
 
         string szKey = FileObjectSessionKey(pf.FileID);
         PendingIDs.Add(szKey);
-        Session[szKey] = new MFBPendingImage(pf, szKey);
+        MFBPendingImage result = new MFBPendingImage(pf, szKey);
+        if (ll != null)
+            result.Location = ll;
+        Session[szKey] = result;
         UploadComplete?.Invoke(this, new EventArgs());
         RefreshPreviewList();
+        return result;
     }
 
     protected void RefreshPreviewList()
@@ -422,12 +432,22 @@ return false;
         if (e == null)
             throw new ArgumentNullException(nameof(e));
 
+        // Find the appropriate image
+        List<GoogleMediaItem> items = new List<GoogleMediaItem>(RetrievedGooglePhotos.mediaItems);
+        GoogleMediaItem clickedItem = items.Find(i => i.productUrl.CompareOrdinal((string) e.CommandArgument) == 0);
+
+        if (clickedItem == null)
+            throw new ArgumentOutOfRangeException("Can't find item with id " + e.CommandArgument);
+
+        PositionEventArgs pea = new PositionEventArgs(null, clickedItem.mediaMetadata.CreationTime);
+        BeforeImportGooglePhoto?.Invoke(sender, pea);
+
         MFBPostedFile pf = RetrievedGooglePhotos.ImportImage(e.CommandArgument.ToString());
 
         if (pf == null)
             return;
 
-        AddPostedFile(pf);
+        MFBPendingImage pi = AddPostedFile(pf, pea.ExpectedPosition);
 
         rptGPhotos.DataSource = RetrievedGooglePhotos.mediaItems;
         rptGPhotos.DataBind();

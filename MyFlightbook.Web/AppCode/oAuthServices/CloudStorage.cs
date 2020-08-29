@@ -1,4 +1,5 @@
-﻿using DotNetOpenAuth.OAuth2;
+﻿using Amazon.IdentityManagement.Model;
+using DotNetOpenAuth.OAuth2;
 using Dropbox.Api;
 using MyFlightbook.Image;
 using MyFlightbook.OAuth;
@@ -1029,7 +1030,7 @@ namespace MyFlightbook.CloudStorage
 
         public string height { get; set; }
 
-        public DateTime? CreationTime { get { return String.IsNullOrEmpty(creationTime) ? null : new DateTime?(DateTime.Parse(creationTime, CultureInfo.InvariantCulture)); } }
+        public DateTime? CreationTime { get { return String.IsNullOrEmpty(creationTime) ? null : new DateTime?(creationTime.ParseUTCDateTime()); } }
 
         public int Width { get { return String.IsNullOrEmpty(width) ? 0 : int.Parse(width, CultureInfo.InvariantCulture); } }
 
