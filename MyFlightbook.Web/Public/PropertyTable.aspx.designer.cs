@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MyFlightbook.Web.Public
+namespace MyFlightbook.Web.PublicPages
 {
 
 

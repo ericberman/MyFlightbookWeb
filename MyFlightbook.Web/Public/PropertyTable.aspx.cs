@@ -8,7 +8,7 @@ using System.Web.UI;
  *
 *******************************************************/
 
-namespace MyFlightbook.Web.Public
+namespace MyFlightbook.Web.PublicPages
 {
     public partial class PropertyTable : System.Web.UI.Page
     {

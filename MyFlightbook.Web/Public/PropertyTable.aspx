@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" CodeBehind="PropertyTable.aspx.cs" Inherits="MyFlightbook.Web.Public.PropertyTable" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" CodeBehind="PropertyTable.aspx.cs" Inherits="MyFlightbook.Web.PublicPages.PropertyTable" %>
 <%@ MasterType VirtualPath="~/MasterPage.master" %>
 <asp:Content ID="ContentTitle" ContentPlaceHolderID="cpPageTitle" runat="server">
 </asp:Content>
