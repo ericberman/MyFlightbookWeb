@@ -184,6 +184,168 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In some jurisdictions, day currency requires day landings.  Checking this option excludes night landings (full-stop or touch-and-go) from day (non-night) currency computations..
+        /// </summary>
+        internal static string CurrencyOptionNoteDayLandings {
+            get {
+                return ResourceManager.GetString("CurrencyOptionNoteDayLandings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In some jurisdictions, night landings do not need to be to a full stop to count for currency.  Note that this option is ignored if you use Canadian or EASA rules, since they already allow for night touch-and-go landings..
+        /// </summary>
+        internal static string CurrencyOptionNoteNightTouchAndGo {
+            get {
+                return ResourceManager.GetString("CurrencyOptionNoteNightTouchAndGo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show FAR 135.265/135.267 Progress.
+        /// </summary>
+        internal static string CurrencyOptions13526x {
+            get {
+                return ResourceManager.GetString("CurrencyOptions13526x", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show FAR 135.293, 297, 299 Status.
+        /// </summary>
+        internal static string CurrencyOptions13529x {
+            get {
+                return ResourceManager.GetString("CurrencyOptions13529x", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show AR 95-1 (US Army) Currency.
+        /// </summary>
+        internal static string CurrencyOptionsArmyCurreny {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsArmyCurreny", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show currency by Category/class/type.
+        /// </summary>
+        internal static string CurrencyOptionsByCatClass {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsByCatClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show currency for each make/model I have flown.
+        /// </summary>
+        internal static string CurrencyOptionsByModel {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsByModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Require day landings (not night) for day-passenger currency.
+        /// </summary>
+        internal static string CurrencyOptionsDayLandings {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsDayLandings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When a currency is expired, display it:.
+        /// </summary>
+        internal static string CurrencyOptionsExpiredCurrency {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsExpiredCurrency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show FAR 117 Duty Time Status.
+        /// </summary>
+        internal static string CurrencyOptionsFAR117DutyTime {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsFAR117DutyTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show totals by category/class (and type, for models that require a type rating).
+        /// </summary>
+        internal static string CurrencyOptionsGroupCatClass {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsGroupCatClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show totals by model with common models grouped by family/ICAO Designator.
+        /// </summary>
+        internal static string CurrencyOptionsGroupICAO {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsGroupICAO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show totals by model.
+        /// </summary>
+        internal static string CurrencyOptionsGroupModel {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsGroupModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow night touch-and-go landings for night currency.
+        /// </summary>
+        internal static string CurrencyOptionsNightTouchAndGo {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsNightTouchAndGo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (See notes on currency computations for details).
+        /// </summary>
+        internal static string CurrencyOptionsNotesRef {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsNotesRef", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include subtotals for model features like complex, turbine, tailwheel, etc..
+        /// </summary>
+        internal static string CurrencyOptionsTotalsModelFeatures {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsTotalsModelFeatures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Canadian currency rules.
+        /// </summary>
+        internal static string CurrencyOptionsUseCanada {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsUseCanada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use EASA/LAPL currency rules.
+        /// </summary>
+        internal static string CurrencyOptionsUseEASA {
+            get {
+                return ResourceManager.GetString("CurrencyOptionsUseEASA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Currency computation:.
         /// </summary>
         internal static string CurrencyPrefsHeader {
@@ -531,6 +693,24 @@ namespace Resources {
         internal static string CustomCurrencyEventDutyHours {
             get {
                 return ResourceManager.GetString("CustomCurrencyEventDutyHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enhanced vision approach.
+        /// </summary>
+        internal static string CustomCurrencyEventEVApproach {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventEVApproach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enhanced vision approaches.
+        /// </summary>
+        internal static string CustomCurrencyEventEVApproaches {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventEVApproaches", resourceCulture);
             }
         }
         
@@ -945,6 +1125,24 @@ namespace Resources {
         internal static string CustomCurrencyEventRestHours {
             get {
                 return ResourceManager.GetString("CustomCurrencyEventRestHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to special authorization approach.
+        /// </summary>
+        internal static string CustomCurrencyEventSAApproach {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventSAApproach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to special authorization approaches.
+        /// </summary>
+        internal static string CustomCurrencyEventSAApproaches {
+            get {
+                return ResourceManager.GetString("CustomCurrencyEventSAApproaches", resourceCulture);
             }
         }
         

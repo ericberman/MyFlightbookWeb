@@ -1123,6 +1123,141 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 35 hours of dual instruction in aeroplanes (since PPL).
+        /// </summary>
+        internal static string CommCanadaMinDual {
+            get {
+                return ResourceManager.GetString("CommCanadaMinDual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 200 hours in aeroplanes.
+        /// </summary>
+        internal static string CommCanadaMinHours {
+            get {
+                return ResourceManager.GetString("CommCanadaMinHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 20 hours of instrument instruction in aeroplanes (since PPL).
+        /// </summary>
+        internal static string CommCanadaMinIFRDual {
+            get {
+                return ResourceManager.GetString("CommCanadaMinIFRDual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up to 10 hours of this time may be performed in approved simulators.
+        /// </summary>
+        internal static string CommCanadaMinIFRNote {
+            get {
+                return ResourceManager.GetString("CommCanadaMinIFRNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5 hours of night dual instruction in aeroplanes (since PPL).
+        /// </summary>
+        internal static string CommCanadaMinNightDual {
+            get {
+                return ResourceManager.GetString("CommCanadaMinNightDual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2 hours of night-cross-country instruction in aeroplanes (since PPL).
+        /// </summary>
+        internal static string CommCanadaMinNightDualXC {
+            get {
+                return ResourceManager.GetString("CommCanadaMinNightDualXC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 100 hours PIC time in aeroplanes.
+        /// </summary>
+        internal static string CommCanadaMinPIC {
+            get {
+                return ResourceManager.GetString("CommCanadaMinPIC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 20 hours of cross-country PIC time in aeroplanes.
+        /// </summary>
+        internal static string CommCanadaMinPICXC {
+            get {
+                return ResourceManager.GetString("CommCanadaMinPICXC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 30 hours of solo flight time (since PPL).
+        /// </summary>
+        internal static string CommCanadaMinSolo {
+            get {
+                return ResourceManager.GetString("CommCanadaMinSolo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5 hours of cross-country instruction in aeroplanes (since PPL).
+        /// </summary>
+        internal static string CommCanadaMinXCDual {
+            get {
+                return ResourceManager.GetString("CommCanadaMinXCDual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5 hours solo time at night (since PPL).
+        /// </summary>
+        internal static string CommCanadaSoloNight {
+            get {
+                return ResourceManager.GetString("CommCanadaSoloNight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10 solo landings at night (since PPL, circuits are assumed).
+        /// </summary>
+        internal static string CommCanadaSoloNightLandings {
+            get {
+                return ResourceManager.GetString("CommCanadaSoloNightLandings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10 solo takeoffs at night (since PPL) (circuits are assumed).
+        /// </summary>
+        internal static string CommCanadaSoloNightTakeoffs {
+            get {
+                return ResourceManager.GetString("CommCanadaSoloNightTakeoffs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The regs require an emphasis on &quot;the improvement of general flying skills&quot;; this is assumed..
+        /// </summary>
+        internal static string CommCanadaSoloNote {
+            get {
+                return ResourceManager.GetString("CommCanadaSoloNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Solo cross-country flight at least 300nm away from the point of departure, with at least 3 landings (since PPL).
+        /// </summary>
+        internal static string CommCanadaSoloXC {
+            get {
+                return ResourceManager.GetString("CommCanadaSoloXC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to %APP_NAME% cannot determine what ratings you held when a given flight was logged.  Per FAA interpretation (Google &quot;Theriault 61.129&quot; for details), activities displayed here that were done while still a student pilot may not actually count towards your rating..
         /// </summary>
         internal static string CommGeneralDisclaimer {
@@ -1834,6 +1969,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Note that 421.46(2)(b) also has requirements regarding the rating of your instructor; %APP_NAME% cannot determine this and thus does not measure it..
+        /// </summary>
+        internal static string InstrumentCanadaGeneralDisclaimer {
+            get {
+                return ResourceManager.GetString("InstrumentCanadaGeneralDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ADDITIONAL NOTES:
         ///&lt;ul&gt;&lt;li&gt;The regulations require that the experience below be all done in a single type of helicopter; %APP_NAME% is not enforcing this. Please ensure that you have met these requirements in a single type of helicopter. &lt;/li&gt;
         ///&lt;li&gt;The night qualification requirements cannot be deterministically computed and thus are omitted here.&lt;/li&gt;&lt;/ul&gt;.
@@ -2043,6 +2187,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 5 hours of instrument training in {0}.
+        /// </summary>
+        internal static string MinInstrumentTrainingInCategoryCanada {
+            get {
+                return ResourceManager.GetString("MinInstrumentTrainingInCategoryCanada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Any dual with IMC or Simulated IMC contributes to this, but %APP_NAME% cannot determine what rating your instructor held, so this may OVERSTATE your progress..
         /// </summary>
         internal static string MinInstrumentTrainingNote {
@@ -2057,6 +2210,24 @@ namespace Resources {
         internal static string MinInstrumentXC {
             get {
                 return ResourceManager.GetString("MinInstrumentXC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A cross-country flight of at least {0}nm with at least 2 approaches at 2 locations.
+        /// </summary>
+        internal static string MinInstrumentXCCanada {
+            get {
+                return ResourceManager.GetString("MinInstrumentXCCanada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assumes all approaches were done to minimums.
+        /// </summary>
+        internal static string MinInstrumentXCCanadaNote {
+            get {
+                return ResourceManager.GetString("MinInstrumentXCCanadaNote", resourceCulture);
             }
         }
         
@@ -2246,6 +2417,15 @@ namespace Resources {
         internal static string NoteBalloonAscent {
             get {
                 return ResourceManager.GetString("NoteBalloonAscent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only includes time in helicopters or airplanes.
+        /// </summary>
+        internal static string NoteCanadaIRXC {
+            get {
+                return ResourceManager.GetString("NoteCanadaIRXC", resourceCulture);
             }
         }
         
@@ -3292,6 +3472,33 @@ namespace Resources {
         internal static string Title141PPLSEL {
             get {
                 return ResourceManager.GetString("Title141PPLSEL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Canada - Aeroplane.
+        /// </summary>
+        internal static string Title42130Aeroplane {
+            get {
+                return ResourceManager.GetString("Title42130Aeroplane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Canada - Aeroplane.
+        /// </summary>
+        internal static string Title42146Airplane {
+            get {
+                return ResourceManager.GetString("Title42146Airplane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Canada - Helicopter.
+        /// </summary>
+        internal static string Title42146Helicopter {
+            get {
+                return ResourceManager.GetString("Title42146Helicopter", resourceCulture);
             }
         }
         

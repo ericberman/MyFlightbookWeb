@@ -205,9 +205,6 @@
   <data name="mapShowImages" xml:space="preserve">
     <value>Images</value>
   </data>
-  <data name="mapShowOptions" xml:space="preserve">
-    <value>Show on map (if present):</value>
-  </data>
   <data name="mapShowPath" xml:space="preserve">
     <value>Path of flight (as flown)</value>
   </data>

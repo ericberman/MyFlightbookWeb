@@ -1,4 +1,5 @@
 using MyFlightbook;
+using MyFlightbook.CloudStorage;
 using MyFlightbook.Currency;
 using System;
 using System.Collections.Generic;
@@ -115,6 +116,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
         itemLastActivity.Visible = m_pf.LastActivity.Date.CompareTo(m_pf.LastLogon.Date) != 0;
         lblPasswordStatus.Text = m_pf.LastPasswordChange.CompareTo(m_pf.CreationDate) == 0 ? Resources.LocalizedText.MemberOriginalPassword : String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastPassword, m_pf.LastPasswordChange);
         txtFirst.Text = m_pf.FirstName;
+        txtFirst.Attributes["oninput"] = "javascript:updateGreeting(this);";
         txtLast.Text = m_pf.LastName;
         lblStaticEmail.Text = txtEmail2.Text = txtEmail.Text = m_pf.Email;
         wmeGreeting.WatermarkText = String.IsNullOrEmpty(m_pf.FirstName) ? Resources.Profile.accountPreferredGreetingWatermark : m_pf.FirstName;
@@ -147,8 +149,8 @@ public partial class Member_EditProfile : System.Web.UI.Page
         ckUse13526xCurrency.Checked = m_pf.UsesFAR13526xCurrency;
         ckUse61217Currency.Checked = m_pf.UsesFAR61217Currency;
         ckLAPLCurrency.Checked = m_pf.UsesLAPLCurrency;
-        ck6157c4Pref.Checked = m_pf.UsesLooseIFRCurrency;
-        pnlLoose6157.Visible = DateTime.Now.CompareTo(ExaminerFlightRow.Nov2018Cutover) < 0;
+        ckAllowNightTouchAndGo.Checked = m_pf.AllowNightTouchAndGoes;
+        ckDayLandingsForDayCurrency.Checked = m_pf.OnlyDayLandingsForDayCurrency;
         ckCanadianCurrency.Checked = m_pf.UseCanadianCurrencyRules;
         rblTotalsOptions.SelectedValue = m_pf.TotalsGroupingMode.ToString();
         ckIncludeModelFeatureTotals.Checked = !m_pf.SuppressModelFeatureTotals;
@@ -169,6 +171,15 @@ public partial class Member_EditProfile : System.Web.UI.Page
         lnkMyFlights.Text = HttpUtility.HtmlEncode(m_pf.PublicFlightsURL(Request.Url.Host).AbsoluteUri);
         ClientScript.RegisterClientScriptInclude("copytoClip", ResolveClientUrl("~/public/Scripts/CopyClipboard.js"));
         imgCopyMyFlights.OnClientClick = String.Format(CultureInfo.InvariantCulture, "javascript:copyClipboard(null, '{0}', true, '{1}');return false;", lnkMyFlights.ClientID, lblMyFlightsCopied.ClientID);
+
+        lblGPhotosDesc.Text = Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosDesc);
+        lnkAuthGPhotos.Text = Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosAuthorize);
+        lblGPhotosEnabled.Text = Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosEnabled);
+        lnkDeAuthGPhotos.Text = Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosDisable);
+
+        mvGPhotos.SetActiveView(m_pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken) ? vwGPhotosEnabled : vwGPhotosDisabled);
+
+        pnlGPhotos.Visible = m_pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken) || util.GetIntParam(Request, "GPhoto", 0) != 0;
     }
 
     private void InitDeadlinesAndCurrencies()
@@ -492,9 +503,10 @@ public partial class Member_EditProfile : System.Web.UI.Page
         m_pf.UsesFAR13529xCurrency = ckUse13529xCurrency.Checked;
         m_pf.UsesFAR13526xCurrency = ckUse13526xCurrency.Checked;
         m_pf.UsesFAR61217Currency = ckUse61217Currency.Checked;
-        m_pf.UsesLooseIFRCurrency = ck6157c4Pref.Checked;
         m_pf.UseCanadianCurrencyRules = ckCanadianCurrency.Checked;
         m_pf.UsesLAPLCurrency = ckLAPLCurrency.Checked;
+        m_pf.AllowNightTouchAndGoes = ckAllowNightTouchAndGo.Checked;
+        m_pf.OnlyDayLandingsForDayCurrency = ckDayLandingsForDayCurrency.Checked;
         m_pf.UsesPerModelCurrency = (rblCurrencyPref.SelectedIndex > 0);
         m_pf.TotalsGroupingMode = (TotalsGrouping) Enum.Parse(typeof(TotalsGrouping), rblTotalsOptions.SelectedValue);
         m_pf.SuppressModelFeatureTotals = !ckIncludeModelFeatureTotals.Checked;
@@ -565,4 +577,17 @@ public partial class Member_EditProfile : System.Web.UI.Page
     #endregion
 
     #endregion // Preferences
+
+    #region Sharing
+    protected void lnkAuthGPhotos_Click(object sender, EventArgs e)
+    {
+        new GooglePhoto().Authorize(Request, Request.Url.AbsolutePath, GooglePhoto.szParamGPhotoAuth);
+    }
+
+    protected void lnkDeAuthGPhotos_Click(object sender, EventArgs e)
+    {
+        m_pf.SetPreferenceForKey(GooglePhoto.PrefKeyAuthToken, null, true);
+        mvGPhotos.SetActiveView(vwGPhotosDisabled);
+    }
+    #endregion
 }

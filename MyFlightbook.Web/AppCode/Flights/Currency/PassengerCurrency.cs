@@ -14,12 +14,16 @@ namespace MyFlightbook.Currency
     /// </summary>
     public class PassengerCurrency : FlightCurrency
     {
+        protected bool RequireDayLandings { get; set; }
+
         /// <summary>
         /// A currency object that requires 3 landings in the previous 90 days
         /// </summary>
         /// <param name="szName">the name for the currency</param>
-        public PassengerCurrency(string szName) : base(3, 90, false, szName)
+        /// <param name="fRequireDayLandings">True to require day landings for day currency</param>
+        public PassengerCurrency(string szName, bool fRequireDayLandings) : base(3, 90, false, szName)
         {
+            RequireDayLandings = fRequireDayLandings;
             Query = new FlightQuery()
             {
                 DateRange = FlightQuery.DateRanges.Trailing90,
@@ -37,8 +41,12 @@ namespace MyFlightbook.Currency
 
             // we need to subtract out monitored landings, or ignore all if you were monitoring for the whole flight
             int cMonitoredLandings = cfr.FlightProps.TotalCountForPredicate(p => p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredDayLandings || p.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropMonitoredNightLandings);
+
+            // Also need to subtract out night landings if day landings are required
+            int cNightLandings = RequireDayLandings ? cfr.cFullStopNightLandings + cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo) : 0;
+
             if (!cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropPilotMonitoring))
-                AddRecentFlightEvents(cfr.dtFlight, Math.Max(cfr.cLandingsThisFlight - cMonitoredLandings, 0));
+                AddRecentFlightEvents(cfr.dtFlight, Math.Max(cfr.cLandingsThisFlight - cMonitoredLandings - cNightLandings, 0));
         }
     }
 }

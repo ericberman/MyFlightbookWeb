@@ -6,7 +6,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2017 MyFlightbook LLC
+ * Copyright (c) 2017-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -36,7 +36,7 @@ public partial class Controls_imageSlider : System.Web.UI.UserControl
     {
         Page.ClientScript.RegisterClientScriptInclude("GoogleJQ", "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js");
         Page.ClientScript.RegisterClientScriptInclude("BXSliderVideo", ResolveClientUrl("~/Public/bxslider/jquery.fitvids.js"));
-        Page.ClientScript.RegisterClientScriptInclude("BXSlider", ResolveClientUrl("~/Public/bxslider/jquery.bxslider.min.js"));
-        Page.Header.Controls.Add(new LiteralControl("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + ResolveUrl("~/Public/bxslider/jquery.bxslider.min.css") + "\" />"));
+        Page.ClientScript.RegisterClientScriptInclude("BXSlider", ResolveClientUrl("~/Public/bxslider/jquery.bxslider.min.js?v4-4.2.12"));
+        Page.Header.Controls.Add(new LiteralControl("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + ResolveUrl("~/Public/bxslider/jquery.bxslider.min.css?v4-4.2.12") + "\" />"));
     }
 }

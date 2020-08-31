@@ -1462,4 +1462,73 @@ YOU ARE ULTIMATELY RESPONSIBLE FOR ENSURING THAT YOU HAVE THE REQUIRED AERONAUTI
   <data name="Title61411CFISportSEL" xml:space="preserve">
     <value>CFI-Sport - Airplane, Single-Engine Land</value>
   </data>
+  <data name="CommCanadaMinDual" xml:space="preserve">
+    <value>35 hours of dual instruction in aeroplanes (since PPL)</value>
+  </data>
+  <data name="CommCanadaMinHours" xml:space="preserve">
+    <value>200 hours in aeroplanes</value>
+  </data>
+  <data name="CommCanadaMinIFRDual" xml:space="preserve">
+    <value>20 hours of instrument instruction in aeroplanes (since PPL)</value>
+  </data>
+  <data name="CommCanadaMinIFRNote" xml:space="preserve">
+    <value>Up to 10 hours of this time may be performed in approved simulators</value>
+  </data>
+  <data name="CommCanadaMinNightDual" xml:space="preserve">
+    <value>5 hours of night dual instruction in aeroplanes (since PPL)</value>
+  </data>
+  <data name="CommCanadaMinNightDualXC" xml:space="preserve">
+    <value>2 hours of night-cross-country instruction in aeroplanes (since PPL)</value>
+  </data>
+  <data name="CommCanadaMinPIC" xml:space="preserve">
+    <value>100 hours PIC time in aeroplanes</value>
+  </data>
+  <data name="CommCanadaMinPICXC" xml:space="preserve">
+    <value>20 hours of cross-country PIC time in aeroplanes</value>
+  </data>
+  <data name="CommCanadaMinSolo" xml:space="preserve">
+    <value>30 hours of solo flight time (since PPL)</value>
+  </data>
+  <data name="CommCanadaMinXCDual" xml:space="preserve">
+    <value>5 hours of cross-country instruction in aeroplanes (since PPL)</value>
+  </data>
+  <data name="CommCanadaSoloNight" xml:space="preserve">
+    <value>5 hours solo time at night (since PPL)</value>
+  </data>
+  <data name="CommCanadaSoloNightLandings" xml:space="preserve">
+    <value>10 solo landings at night (since PPL, circuits are assumed)</value>
+  </data>
+  <data name="CommCanadaSoloNightTakeoffs" xml:space="preserve">
+    <value>10 solo takeoffs at night (since PPL) (circuits are assumed)</value>
+  </data>
+  <data name="CommCanadaSoloNote" xml:space="preserve">
+    <value>The regs require an emphasis on "the improvement of general flying skills"; this is assumed.</value>
+  </data>
+  <data name="CommCanadaSoloXC" xml:space="preserve">
+    <value>Solo cross-country flight at least 300nm away from the point of departure, with at least 3 landings (since PPL)</value>
+  </data>
+  <data name="InstrumentCanadaGeneralDisclaimer" xml:space="preserve">
+    <value>Note that 421.46(2)(b) also has requirements regarding the rating of your instructor; %APP_NAME% cannot determine this and thus does not measure it.</value>
+  </data>
+  <data name="MinInstrumentTrainingInCategoryCanada" xml:space="preserve">
+    <value>5 hours of instrument training in {0}</value>
+  </data>
+  <data name="MinInstrumentXCCanada" xml:space="preserve">
+    <value>A cross-country flight of at least {0}nm with at least 2 approaches at 2 locations</value>
+  </data>
+  <data name="MinInstrumentXCCanadaNote" xml:space="preserve">
+    <value>Assumes all approaches were done to minimums</value>
+  </data>
+  <data name="NoteCanadaIRXC" xml:space="preserve">
+    <value>Only includes time in helicopters or airplanes</value>
+  </data>
+  <data name="Title42130Aeroplane" xml:space="preserve">
+    <value>Canada - Aeroplane</value>
+  </data>
+  <data name="Title42146Airplane" xml:space="preserve">
+    <value>Canada - Aeroplane</value>
+  </data>
+  <data name="Title42146Helicopter" xml:space="preserve">
+    <value>Canada - Helicopter</value>
+  </data>
 </root>

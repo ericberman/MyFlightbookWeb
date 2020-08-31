@@ -133,6 +133,13 @@ public partial class Controls_mfbEditableImage : System.Web.UI.UserControl
         }
     }
 
+    protected void Page_PreRender(object sender, EventArgs e)
+    {
+        // We do this late in the cycle because our ID may have changed between databinding and now.
+        lnkAnnotate.Attributes["onclick"] = String.Format(CultureInfo.InvariantCulture, "javascript:EditComment('{0}', '{1}');", pnlStatic.ClientID, pnlEdit.ClientID);
+        pnlEdit.Visible = CanEdit;  // don't bother with any of the editing panel if you can't edit...
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         string szEditComment = @"
@@ -142,10 +149,6 @@ function EditComment(idStatic, idEdit) {
 }";
 
         Page.ClientScript.RegisterClientScriptBlock(GetType(), "EditComment", szEditComment, true);
-
-        pnlEdit.Visible = CanEdit;  // don't bother with any of the editing panel if you can't edit...
-
-        lnkAnnotate.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "javascript:EditComment('{0}', '{1}');", pnlStatic.ClientID, pnlEdit.ClientID);
 
         if (mfbii != null)
             divActions.Visible = lnkAnnotate.Visible || lnkDelete.Visible || lnkMakeDefault.Visible || lnkZoom.Visible;

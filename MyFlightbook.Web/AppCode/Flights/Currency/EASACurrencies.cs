@@ -16,7 +16,7 @@ namespace MyFlightbook.Currency
     /// </summary>
     public static class EASAPPLPassengerCurrency
     {
-        public static FlightCurrency CurrencyForCatClass(CategoryClass.CatClassID ccid, string szName)
+        public static FlightCurrency CurrencyForCatClass(CategoryClass.CatClassID ccid, string szName, bool fRequireDayLandings)
         {
             switch (ccid)
             {
@@ -24,7 +24,7 @@ namespace MyFlightbook.Currency
                 case CategoryClass.CatClassID.HotAirBalloon:
                 // TODO: implement EASA balloon FCL.060
                 default:
-                    return new PassengerCurrency(szName);
+                    return new PassengerCurrency(szName, fRequireDayLandings);
                 case CategoryClass.CatClassID.Airship:
                 case CategoryClass.CatClassID.AMEL:
                 case CategoryClass.CatClassID.AMES:
@@ -33,7 +33,7 @@ namespace MyFlightbook.Currency
                 case CategoryClass.CatClassID.Glider:
                 case CategoryClass.CatClassID.Helicopter:
                 case CategoryClass.CatClassID.PoweredLift:
-                    return new PassengerCurrency(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, szName, Resources.Currency.PassengersEASA));
+                    return new PassengerCurrency(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithSpace, szName, Resources.Currency.PassengersEASA), fRequireDayLandings);
             }
         }
     }
@@ -71,7 +71,7 @@ namespace MyFlightbook.Currency
                 return;
 
             int cNightTakeoffs = cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTakeoff);
-            int cNightLandings = cfr.cFullStopNightLandings + cfr.FlightProps.TotalCountForPredicate(cfp => cfp.PropTypeID == (int)CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
+            int cNightLandings = cfr.cFullStopNightLandings + cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo);
 
             if (cNightTakeoffs > 0)
                 fcNightTakeoff.AddRecentFlightEvents(cfr.dtFlight, cNightTakeoffs);

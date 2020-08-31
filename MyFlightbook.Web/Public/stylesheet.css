@@ -1702,6 +1702,20 @@ table.featureTable {
     background-color: #eeeeee;
 }
 
+/* Aircraft menu handle */
+.imageMenu {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: -3px;
+    background-color: #DDDDDD;
+    border-bottom-right-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.imageMenu div {
+    padding: 4px;
+}
+
 /* Printing */
 @media print {
     h1 {

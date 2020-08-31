@@ -73,6 +73,12 @@ namespace MyFlightbook.Web
             set { Page.Header.Title = value; }
         }
 
+        public bool HasTitle
+        {
+            get { return pnlTitle.Visible; }
+            set { pnlTitle.Visible = value; }
+        }
+
         public bool ShowSponsoredAd
         {
             get { /* return SponsoredAd1.Visible; */ return (Page.Header != null);  /* always true, but accesses page data to suppress CA1822 warning. */ }
@@ -196,7 +202,7 @@ namespace MyFlightbook.Web
                 lnkPrivacy.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrivacyPolicyHeader, Branding.CurrentBrand.AppName);
 
                 lnkAppleIcon.Href = ResolveUrl("~/images/apple-touch-icon.png");
-                cssMain.Href = "~/Public/stylesheet.css?v=24".ToAbsoluteURL(Request).ToString();    // to enable forced reload
+                cssMain.Href = "~/Public/stylesheet.css?v=25".ToAbsoluteURL(Request).ToString();    // to enable forced reload
                 cssMobile.Visible = mfbHeader.IsMobile = MfbFooter.IsMobile = IsMobileSession();
                 cssMobile.Href = ResolveUrl("~/Public/CSS/MobileSheet.css?v=8");
                 string szStyle = Branding.CurrentBrand.StyleSheet;

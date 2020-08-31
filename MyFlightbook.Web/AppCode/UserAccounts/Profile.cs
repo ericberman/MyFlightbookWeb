@@ -375,6 +375,7 @@ namespace MyFlightbook
         /// <summary>
         /// Use loose 61.57(c)(4) interpretation (i.e., mix/match of ATD/FTD/Real)
         /// </summary>
+        [Obsolete("61.57(c) has been revised; this is no longer valid")]
         public Boolean UsesLooseIFRCurrency
         {
             get { return hasFlag(CurrencyOptionFlags.flagUseLooseIFRCurrency); }
@@ -382,7 +383,7 @@ namespace MyFlightbook
         }
 
         /// <summary>
-        /// Should we use Canadian style currency rules?  See http://laws-lois.justice.gc.ca/eng/regulations/SOR-96-433/FullText.html#s-401.05 and https://www.tc.gc.ca/eng/civilaviation/publications/tp185-1-10-takefive-559.htm
+        /// Should we use Canadian currency rules?  See http://laws-lois.justice.gc.ca/eng/regulations/SOR-96-433/FullText.html#s-401.05 and https://www.tc.gc.ca/eng/civilaviation/publications/tp185-1-10-takefive-559.htm
         /// </summary>
         public Boolean UseCanadianCurrencyRules
         {
@@ -397,6 +398,24 @@ namespace MyFlightbook
         {
             get { return hasFlag(CurrencyOptionFlags.flagUseLAPLCurrency); }
             set { setCurrencyFlag(CurrencyOptionFlags.flagUseLAPLCurrency, value); }
+        }
+
+        /// <summary>
+        /// Determines if touch-and-go landings can qualify for night currency.  E.g., in NZ, night landings do not need to be to a full-stop.  See https://www.aviation.govt.nz/rules/rule-part/show/61/1/17
+        /// </summary>
+        public Boolean AllowNightTouchAndGoes
+        {
+            get { return hasFlag(CurrencyOptionFlags.flagAllowNightTouchAndGo); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagAllowNightTouchAndGo, value); }
+        }
+
+        /// <summary>
+        /// Determines if day currency requires day landings.  E.g., in NZ, day currency requires day landings.  See https://www.aviation.govt.nz/rules/rule-part/show/61/1/17
+        /// </summary>
+        public Boolean OnlyDayLandingsForDayCurrency
+        {
+            get { return hasFlag(CurrencyOptionFlags.flagRequireDayLandingsDayCurrency); }
+            set { setCurrencyFlag(CurrencyOptionFlags.flagRequireDayLandingsDayCurrency, value); }
         }
 
         /// <summary>

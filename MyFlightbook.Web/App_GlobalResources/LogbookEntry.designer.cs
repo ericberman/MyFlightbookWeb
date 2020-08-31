@@ -925,7 +925,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Average Speed: {0:#,#.0}kts.
+        ///   Looks up a localized string similar to Average Speed: {0:#,#.0}kts.
         /// </summary>
         internal static string FlightAverageSpeed {
             get {
@@ -970,7 +970,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Furthest distance from departure: {0:#,#.0}nm.
+        ///   Looks up a localized string similar to Furthest distance from departure: {0:#,#.0}nm.
         /// </summary>
         internal static string FlightDistanceFurthestFromDeparture {
             get {
@@ -979,7 +979,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Furthest points from each other: {0} and {1} ({2:#,#.0}nm).
+        ///   Looks up a localized string similar to Furthest points from each other: {0} and {1} ({2:#,#.0}nm).
         /// </summary>
         internal static string FlightDistanceFurthestPoints {
             get {
@@ -988,7 +988,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Longest Segment: {0:#,#.0}nm.
+        ///   Looks up a localized string similar to Longest Segment: {0:#,#.0}nm.
         /// </summary>
         internal static string FlightDistanceLongestSegment {
             get {
@@ -997,7 +997,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Path distance: {0:#,#.0}nm.
+        ///   Looks up a localized string similar to Path distance: {0:#,#.0}nm.
         /// </summary>
         internal static string FlightDistancePathOnly {
             get {
@@ -1006,7 +1006,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ● Route distance: {0:#,#.0}nm.
+        ///   Looks up a localized string similar to Route distance: {0:#,#.0}nm.
         /// </summary>
         internal static string FlightDistanceRouteOnly {
             get {
@@ -2772,7 +2772,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View in Google Earth (Requires Google Earth).
+        ///   Looks up a localized string similar to View Flight Path.
         /// </summary>
         internal static string PublicFlightKMLDownload {
             get {
@@ -2817,11 +2817,65 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Airports.
+        /// </summary>
+        internal static string PublicFlightShowComponentAirports {
+            get {
+                return ResourceManager.GetString("PublicFlightShowComponentAirports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flight Details.
+        /// </summary>
+        internal static string PublicFlightShowComponentDetails {
+            get {
+                return ResourceManager.GetString("PublicFlightShowComponentDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map.
+        /// </summary>
+        internal static string PublicFlightShowComponentMap {
+            get {
+                return ResourceManager.GetString("PublicFlightShowComponentMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pictures.
+        /// </summary>
+        internal static string PublicFlightShowComponentPictures {
+            get {
+                return ResourceManager.GetString("PublicFlightShowComponentPictures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linked Videos.
+        /// </summary>
+        internal static string PublicFlightShowComponentVideos {
+            get {
+                return ResourceManager.GetString("PublicFlightShowComponentVideos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Only Map.
         /// </summary>
         internal static string PublicFlightShowOnlyMap {
             get {
                 return ResourceManager.GetString("PublicFlightShowOnlyMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display.
+        /// </summary>
+        internal static string PublicFlightShowOptions {
+            get {
+                return ResourceManager.GetString("PublicFlightShowOptions", resourceCulture);
             }
         }
         

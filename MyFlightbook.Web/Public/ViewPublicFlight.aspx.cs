@@ -1,3 +1,4 @@
+using DotNetOpenAuth.Messaging;
 using MyFlightbook;
 using MyFlightbook.Airports;
 using MyFlightbook.Image;
@@ -24,21 +25,34 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
     const string szPix = "pictures";
     const string szVids = "videos";
 
-    private void ShowComponents(string[] rgComponents)
+    private void RedirectForComponents()
     {
-        foreach (string sz in rgComponents)
-        {
-            if (string.Compare(sz, szMap, StringComparison.OrdinalIgnoreCase) == 0)
-                divMap.Visible = true;
-            if (string.Compare(sz, szAirports, StringComparison.OrdinalIgnoreCase) == 0)
-                mfbAirportServices1.Visible = true;
-            if (string.Compare(sz, szPix, StringComparison.OrdinalIgnoreCase) == 0)
-                divImages.Visible = true;
-            if (string.Compare(sz, szVids, StringComparison.OrdinalIgnoreCase) == 0)
-                mfbVideoEntry1.Visible = true;
-            if (string.Compare(sz, szDetails, StringComparison.OrdinalIgnoreCase) == 0)
-                pnlDetails.Visible = true;
-        }
+        UriBuilder uriBuilder = new UriBuilder(String.Format(CultureInfo.InvariantCulture, "{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, Request.Url.AbsolutePath));
+
+        System.Collections.Specialized.NameValueCollection nvc = HttpUtility.ParseQueryString(Request.Url.Query);
+        nvc.Remove(szParamComponents);
+
+        List<string> lstParts = new List<string>();
+        if (ckShowMaps.Checked)
+            lstParts.Add(szMap);
+        if (ckShowAirports.Checked)
+            lstParts.Add(szAirports);
+        if (ckShowDetails.Checked)
+            lstParts.Add(szDetails);
+        if (ckShowPictures.Checked)
+            lstParts.Add(szPix);
+        if (ckShowVids.Checked)
+            lstParts.Add(szVids);
+
+        // Add the parameters for what to show
+        // But if *ALL* of the pieces are shown, just remove the query parameters and show everything.
+        if (lstParts.Any() && lstParts.Count != 5)
+            nvc.Add(szParamComponents, String.Join(",", lstParts));
+
+        foreach (string key in nvc.Keys)
+            uriBuilder.AppendQueryArgument(key, nvc[key]);
+
+        Response.Redirect(uriBuilder.Uri.ToString());
     }
 
     private const string szVSLogbook = "vsLEToView";
@@ -69,11 +83,8 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
             {
                 MfbGoogleMap1.Map.Path = le.Telemetry.Path();
                 distance = le.Telemetry.Distance();
-                lnkViewKML.Visible = true;
+                rowKML.Visible = true;
             }
-
-            string szURL = Request.Url.PathAndQuery;
-            lnkShowMapOnly.NavigateUrl = String.Format(CultureInfo.InvariantCulture, "{0}{1}{2}", szURL, szURL.Contains("?") ? "&" : "?", "show=map");
         }
 
         MfbGoogleMap1.Map.Images = ckShowImages.Checked ? mfbIlFlight.Images.ImageArray.ToArray() : Array.Empty<MFBImageInfo>();
@@ -111,12 +122,18 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
         if (!String.IsNullOrEmpty(szComponents))
         {
             // turn off the header/footer to display only the requested components
-            this.Master.HasFooter = this.Master.HasHeader = false;
-            FullPageBottom.Visible = FullPageTop.Visible = false;
+            Master.HasFooter = Master.HasHeader = Master.HasTitle = FullPageBottom.Visible = false;
 
-            divImages.Visible = pnlFB.Visible = pnlDetails.Visible = divMap.Visible = mfbAirportServices1.Visible = lnkShowMapOnly.Visible = imgsliderFlights.Visible = mfbVideoEntry1.Visible = false;
+            HashSet<string> hsComps = new HashSet<string>(szComponents.Split(','));
 
-            ShowComponents(szComponents.Split(','));
+            if (hsComps.Any())
+            {
+                divMap.Visible = ckShowMaps.Checked = hsComps.Contains(szMap);
+                mfbAirportServices1.Visible = ckShowAirports.Checked = hsComps.Contains(szAirports) && divMap.Visible;
+                divImages.Visible = ckShowPictures.Checked = hsComps.Contains(szPix);
+                mfbVideoEntry1.Visible = ckShowVids.Checked = hsComps.Contains(szVids);
+                pnlDetails.Visible = pnlFB.Visible = ckShowDetails.Checked = hsComps.Contains(szDetails);
+            }
         }
     }
 
@@ -187,7 +204,7 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
                 Profile pf = MyFlightbook.Profile.GetUser(le.User);
                 lnkUser.Text = pf.UserFullName;
                 lnkUser.NavigateUrl = pf.PublicFlightsURL(Request.Url.Host).AbsoluteUri;
-                btnEdit.Visible = (le.User == User.Identity.Name);
+                btnEdit.Visible = popmenu.Visible = (le.User == User.Identity.Name);
 
                 lblHeader.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LocalizedJoinWithDash, le.Date.ToShortDateString(), le.TailNumDisplay);
 
@@ -267,4 +284,29 @@ public partial class Public_ViewPublicFlight : System.Web.UI.Page
         ShowMap(PublicFlight);
     }
     #endregion
+
+    protected void ckShowDetails_CheckedChanged(object sender, EventArgs e)
+    {
+        RedirectForComponents();
+    }
+
+    protected void ckShowPictures_CheckedChanged(object sender, EventArgs e)
+    {
+        RedirectForComponents();
+    }
+
+    protected void ckShowVids_CheckedChanged(object sender, EventArgs e)
+    {
+        RedirectForComponents();
+    }
+
+    protected void ckShowAirports_CheckedChanged1(object sender, EventArgs e)
+    {
+        RedirectForComponents();
+    }
+
+    protected void ckShowMaps_CheckedChanged(object sender, EventArgs e)
+    {
+        RedirectForComponents();
+    }
 }

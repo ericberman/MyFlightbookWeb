@@ -2393,6 +2393,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add this to your flight.
+        /// </summary>
+        internal static string GooglePhotosAddToFlight {
+            get {
+                return ResourceManager.GetString("GooglePhotosAddToFlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show more....
+        /// </summary>
+        internal static string GooglePhotosGetMore {
+            get {
+                return ResourceManager.GetString("GooglePhotosGetMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (No images found).
+        /// </summary>
+        internal static string GooglePhotosNoneFound {
+            get {
+                return ResourceManager.GetString("GooglePhotosNoneFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View images from Google Photos on the date of this flight.
+        /// </summary>
+        internal static string GooglePhotosViewImages {
+            get {
+                return ResourceManager.GetString("GooglePhotosViewImages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your nightly cloud storage backups from %APP_NAME% have ended.
         /// </summary>
         internal static string gratuityCloudStorageExpired {
@@ -2758,6 +2794,15 @@ namespace Resources {
         internal static string LocalizedSpace {
             get {
                 return ResourceManager.GetString("LocalizedSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  ● .
+        /// </summary>
+        internal static string LocalizedSpaceWithBullet {
+            get {
+                return ResourceManager.GetString("LocalizedSpaceWithBullet", resourceCulture);
             }
         }
         
@@ -3548,6 +3593,60 @@ namespace Resources {
         internal static string PopMenuAltText {
             get {
                 return ResourceManager.GetString("PopMenuAltText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Photos.
+        /// </summary>
+        internal static string PrefSharingGooglePhotos {
+            get {
+                return ResourceManager.GetString("PrefSharingGooglePhotos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorize %APP_NAME% to read from your Google Photos collection.
+        /// </summary>
+        internal static string PrefSharingGooglePhotosAuthorize {
+            get {
+                return ResourceManager.GetString("PrefSharingGooglePhotosAuthorize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set up %APP_NAME% to be able to selectively pull images from the date of your flight from your Google Photos collection .
+        /// </summary>
+        internal static string PrefSharingGooglePhotosDesc {
+            get {
+                return ResourceManager.GetString("PrefSharingGooglePhotosDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deauthorize %APP_NAME% to read from your Google Photos collection.
+        /// </summary>
+        internal static string PrefSharingGooglePhotosDisable {
+            get {
+                return ResourceManager.GetString("PrefSharingGooglePhotosDisable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have authorized %APP_NAME% to read images from Google Photos.
+        /// </summary>
+        internal static string PrefSharingGooglePhotosEnabled {
+            get {
+                return ResourceManager.GetString("PrefSharingGooglePhotosEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sharing.
+        /// </summary>
+        internal static string PrefSharingHeader {
+            get {
+                return ResourceManager.GetString("PrefSharingHeader", resourceCulture);
             }
         }
         

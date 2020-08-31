@@ -45,7 +45,9 @@ namespace MyFlightbook.Currency
         flagUseFAR61217 = 0x4000,
         flagUseEASAMedical = 0x8000,
         flagsShowTotalsPerFamily = 0x00010000,
-        flagSuppressModelFeatureTotals = 0x00020000
+        flagSuppressModelFeatureTotals = 0x00020000,
+        flagAllowNightTouchAndGo = 0x00040000,
+        flagRequireDayLandingsDayCurrency = 0x00080000,
     }
 
     /// <summary>
@@ -691,7 +693,7 @@ namespace MyFlightbook.Currency
             if (!dictFlightCurrency.ContainsKey(catclasscontext.Name))
             {
                 string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", catclasscontext.Name, Resources.Currency.Passengers);
-                ICurrencyExaminer curr = pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new PassengerCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName) : (ICurrencyExaminer)new PassengerCurrency(szName));
+                ICurrencyExaminer curr = pf.UseCanadianCurrencyRules ? new PassengerCurrencyCanada(szName, pf.OnlyDayLandingsForDayCurrency) : (pf.UsesLAPLCurrency ? EASAPPLPassengerCurrency.CurrencyForCatClass(cfr.idCatClassOverride, szName, pf.OnlyDayLandingsForDayCurrency) : new PassengerCurrency(szName, pf.OnlyDayLandingsForDayCurrency));
                 catclasscontext.AddContextToQuery(curr.Query, pf.UserName);
                 dictFlightCurrency.Add(catclasscontext.Name, curr);
             }
@@ -716,7 +718,7 @@ namespace MyFlightbook.Currency
             if (!dictFlightCurrency.ContainsKey(szNightKey))
             {
                 string szName = String.Format(CultureInfo.InvariantCulture, "{0} - {1}", catclasscontext.Name, Resources.Currency.Night);
-                ICurrencyExaminer curr = pf.UseCanadianCurrencyRules ? (ICurrencyExaminer)new NightCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer)new EASAPPLNightPassengerCurrency(szName) : (ICurrencyExaminer)new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty));
+                ICurrencyExaminer curr = pf.UseCanadianCurrencyRules ? new NightCurrencyCanada(szName) : (pf.UsesLAPLCurrency ? (ICurrencyExaminer) new EASAPPLNightPassengerCurrency(szName) : new NightCurrency(szName, fIsTypeRatedCategory ? cfr.szType : string.Empty, pf.AllowNightTouchAndGoes));
                 catclasscontext.AddContextToQuery(curr.Query, pf.UserName);
                 dictFlightCurrency.Add(szNightKey, curr);
             }

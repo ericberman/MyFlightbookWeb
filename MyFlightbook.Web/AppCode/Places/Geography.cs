@@ -582,6 +582,48 @@ namespace MyFlightbook.Geography
             }
         }
 
+        /// <summary>
+        /// Interpolates a position based on the specified timestamp (should be UTC).
+        /// </summary>
+        /// <param name="dt">The timestamp</param>
+        /// <param name="l">An enumerable of positions.</param>
+        /// <returns>A LatLong representing the best guess of position at the specified time, null if it cannot be determined</returns>
+        public static LatLong Interpolate(DateTime dt, IEnumerable<Position> l)
+        {
+            if (l == null)
+                throw new ArgumentNullException(nameof(l));
+
+            Position pLatestBeforeTime = null;
+            Position pEarliestAfterTime = null;
+
+            foreach (Position p in l)
+            {
+                if (!p.HasTimeStamp)
+                    continue;
+
+                if (p.Timestamp.CompareTo(dt) <= 0 && (pLatestBeforeTime == null || p.Timestamp.CompareTo(pLatestBeforeTime.Timestamp) > 0))
+                    pLatestBeforeTime = p;
+                if (p.Timestamp.CompareTo(dt) >= 0 && (pEarliestAfterTime == null || p.Timestamp.CompareTo(pEarliestAfterTime.Timestamp) < 0))
+                    pEarliestAfterTime = p;
+            }
+
+            if (pLatestBeforeTime == null || pEarliestAfterTime == null)
+                return null;
+
+            TimeSpan straddle = pEarliestAfterTime.Timestamp.Subtract(pLatestBeforeTime.Timestamp);
+            if (straddle.TotalSeconds == 0) // exact hit, can return either one.
+                return pLatestBeforeTime;
+
+            double dLat = pEarliestAfterTime.Latitude - pLatestBeforeTime.Latitude;
+            double dLon = pEarliestAfterTime.Longitude - pLatestBeforeTime.Longitude;
+
+            TimeSpan tMid = dt.Subtract(pLatestBeforeTime.Timestamp);
+
+            double frac = tMid.TotalSeconds / straddle.TotalSeconds;  // how far between the two points that straddle the time is this?  Should be between 0 and 1!!
+
+            return new LatLong(pLatestBeforeTime.Latitude + dLat * frac, pLatestBeforeTime.Longitude + dLon * frac);
+        }
+
         #region IComparable
         /// <summary>
         /// Orders by date, if date is present; order is otherwise undefined
@@ -774,6 +816,18 @@ namespace MyFlightbook.Geography
 
             return lst;
         }        
+    }
+
+    public class PositionEventArgs : EventArgs
+    {
+        public LatLong ExpectedPosition { get; set; }
+        public DateTime? TimeStamp { get; set; }
+
+        public PositionEventArgs(LatLong ll, DateTime? dt) : base()
+        {
+            ExpectedPosition = ll;
+            TimeStamp = dt;
+        }
     }
 
     [Serializable]

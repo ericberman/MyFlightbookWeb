@@ -175,9 +175,7 @@
             <asp:GridView ID="gvAircraftShouldBeSims" runat="server" AutoGenerateColumns="False" 
                 DataSourceID="sqlSimMakes" EnableModelValidation="True">
                 <Columns>
-                    <asp:BoundField DataField="idmodel" 
-                        DataFormatString="&lt;a href=&quot;EditMake.aspx?id={0}&quot; target=&quot;_blank&quot;&gt;Edit&lt;/a&gt;" 
-                        HtmlEncode="False" HtmlEncodeFormatString="False" ReadOnly="True" />
+                    <asp:HyperLinkField DataNavigateUrlFormatString="~/Member/EditMake.aspx?id={0}&a=1" DataNavigateUrlFields="idmodel" DataTextFormatString="Edit" DataTextField="model" />
                     <asp:BoundField DataField="manufacturer" HeaderText="manufacturer" 
                         SortExpression="manufacturer" />
                     <asp:BoundField DataField="model" HeaderText="model" SortExpression="model" />
@@ -312,12 +310,8 @@ order by cc.idcatclass ASC, man.manufacturer asc, m.model asc, m.typename asc;"
             </asp:SqlDataSource>
             <asp:GridView ID="gvDupeModels" DataSourceID="SqlDataSourceDupeModels" runat="server" EnableModelValidation="True" AutoGenerateColumns="false">
                 <Columns>
-                    <asp:BoundField DataField="idmodel" 
-                        DataFormatString="&lt;a href=&quot;EditMake.aspx?id={0}&quot; target=&quot;_blank&quot;&gt;{0}&lt;/a&gt;" 
-                        HtmlEncode="False" HtmlEncodeFormatString="False" ReadOnly="True" />
-                    <asp:BoundField DataField="idmodel"
-                        DataFormatString="&lt;a href=&quot;Aircraft.aspx?a=1&m={0}&quot; target=&quot;_blank&quot;&gt;View Aircraft&lt;/a&gt;" 
-                        HtmlEncode="False" HtmlEncodeFormatString="False" ReadOnly="True" />
+                    <asp:HyperLinkField DataNavigateUrlFields="idmodel" DataNavigateUrlFormatString="~/Member/EditMake.aspx?id={0}" DataTextField="idmodel" DataTextFormatString="{0}" Target="_blank" />
+                    <asp:HyperLinkField DataNavigateUrlFields="idmodel" DataNavigateUrlFormatString="~/Member/Aircraft.aspx?a=1&m={0}" Text="View Aircraft" Target="_blank" />
                     <asp:BoundField DataField="Manufacturer" HeaderText="Manufacturer" SortExpression="Manufacturer" />
                     <asp:BoundField DataField="DisplayName" HeaderText="DisplayName" SortExpression="DisplayName" />
                     <asp:BoundField DataField="Family" HeaderText="Family" SortExpression="FamilyName" />

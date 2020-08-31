@@ -118,7 +118,7 @@ namespace MyFlightbook.RatingsProgress
             {
                 bool fIsFullSim = !cfr.fIsRealAircraft && cfr.fIsCertifiedLanding;
                 if (fIsAirplane && (cfr.fIsRealAircraft || fIsFullSim))
-                    miMinTimeInClass.AddTrainingEvent(cfr.Total, ATPMinTimeInClassFullSimulator, fIsFullSim);
+                    miMinTimeInClass.AddTrainingEvent(Math.Max(cfr.Total, cfr.GroundSim), ATPMinTimeInClassFullSimulator, fIsFullSim);
             }
 
             if (!cfr.fIsRealAircraft && fIsIFRSim)

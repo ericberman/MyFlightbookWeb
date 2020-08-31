@@ -375,15 +375,6 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show on map (if present):.
-        /// </summary>
-        internal static string mapShowOptions {
-            get {
-                return ResourceManager.GetString("mapShowOptions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Path of flight (as flown).
         /// </summary>
         internal static string mapShowPath {

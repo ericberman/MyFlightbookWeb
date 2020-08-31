@@ -44,7 +44,8 @@ namespace MyFlightbook.RatingsProgress
                 new CASRCommAirplaneApprovedTraining(),
                 new CASRCommAirplaneNoApprovedTraining(),
                 new CASRCommHelicopterApprovedTraining(),
-                new CASRCommHelicopterNoApprovedTraining()
+                new CASRCommHelicopterNoApprovedTraining(),
+                new CommCanadaAirplane()
                 };
             }
         }
@@ -1261,5 +1262,111 @@ namespace MyFlightbook.RatingsProgress
     }
     #endregion
     #endregion
+
+    #region Canada Commercial
+    [Serializable]
+    public class CommCanadaAirplane : MilestoneProgress
+    {
+        bool HasSeenPPL { get; set; }
+
+        protected const int MaxSim = 10;
+
+        #region Milestoneitems
+        protected MilestoneItem miMinHours { get; set; }
+        protected MilestoneItem miMinPIC { get; set; }
+        protected MilestoneItem miMinXCPIC { get; set; }
+        protected MilestoneItem miMinDual { get; set; }
+        protected MilestoneItem miMinNight { get; set; }
+        protected MilestoneItem miMinNightXC { get; set; }
+        protected MilestoneItem miMinXC { get; set; }
+        protected MilestoneItem miMinInstrument { get; set; }
+        protected MilestoneItem miMinSolo { get; set; }
+        protected MilestoneItem miMinSoloXC { get; set; }
+        protected MilestoneItem miMinSoloNight { get; set; }
+        protected MilestoneItem miMinSoloNightTakeoffs { get; set; }
+        protected MilestoneItem miMinSoloNightLandings { get; set; }
+        #endregion
+
+        public CommCanadaAirplane() : base()
+        {
+            BaseFAR = "421.30(4)(a)";
+            RatingSought = RatingType.CommercialCanadaAeroplane;
+            Title = Resources.MilestoneProgress.Title42130Aeroplane;
+
+            HasSeenPPL = false;
+
+            miMinHours = new MilestoneItem(Resources.MilestoneProgress.CommCanadaMinHours, ResolvedFAR("(i)"), string.Empty, MilestoneItem.MilestoneType.Time, 200);
+            miMinPIC = new MilestoneItem(Resources.MilestoneProgress.CommCanadaMinPIC, ResolvedFAR("(i)"), string.Empty, MilestoneItem.MilestoneType.Time, 100);
+            miMinXCPIC = new MilestoneItem(Resources.MilestoneProgress.CommCanadaMinPICXC, ResolvedFAR("(i)"), string.Empty, MilestoneItem.MilestoneType.Time, 20);
+
+            miMinDual = new MilestoneItem(Resources.MilestoneProgress.CommCanadaMinDual, ResolvedFAR("(ii)(A)"), string.Empty, MilestoneItem.MilestoneType.Time, 35);
+            miMinNight = new MilestoneItem(Resources.MilestoneProgress.CommCanadaMinNightDual, ResolvedFAR("(ii)(A)(I)"), string.Empty, MilestoneItem.MilestoneType.Time, 5);
+            miMinNightXC = new MilestoneItem(Resources.MilestoneProgress.CommCanadaMinNightDualXC, ResolvedFAR("(ii)(A)(I)"), string.Empty, MilestoneItem.MilestoneType.Time, 2);
+            miMinXC = new MilestoneItem(Resources.MilestoneProgress.CommCanadaMinXCDual, ResolvedFAR("(ii)(A)(II)"), string.Empty, MilestoneItem.MilestoneType.Time, 5);
+            miMinInstrument = new MilestoneItem(Resources.MilestoneProgress.CommCanadaMinIFRDual, ResolvedFAR("(ii)(A)(III)"), Resources.MilestoneProgress.CommCanadaMinIFRNote, MilestoneItem.MilestoneType.Time, 20);
+
+            miMinSolo = new MilestoneItem(Resources.MilestoneProgress.CommCanadaMinSolo, ResolvedFAR("(ii)(B)"), Resources.MilestoneProgress.CommCanadaSoloNote, MilestoneItem.MilestoneType.Time, 30);
+            miMinSoloXC = new MilestoneItem(Resources.MilestoneProgress.CommCanadaSoloXC, ResolvedFAR("(ii)(B)(I)"), string.Empty, MilestoneItem.MilestoneType.AchieveOnce, 1);
+            miMinSoloNight = new MilestoneItem(Resources.MilestoneProgress.CommCanadaSoloNight, ResolvedFAR("(ii)(B)(II)"), string.Empty, MilestoneItem.MilestoneType.Time, 5);
+            miMinSoloNightTakeoffs = new MilestoneItem(Resources.MilestoneProgress.CommCanadaSoloNightTakeoffs, ResolvedFAR("(ii)(B)(II)"), string.Empty, MilestoneItem.MilestoneType.Count, 10);
+            miMinSoloNightLandings = new MilestoneItem(Resources.MilestoneProgress.CommCanadaSoloNightLandings, ResolvedFAR("(ii)(B)(II)"), string.Empty, MilestoneItem.MilestoneType.Count, 10);
+        }
+
+        public override Collection<MilestoneItem> Milestones => new Collection<MilestoneItem>() { miMinHours, miMinPIC, miMinXCPIC, miMinDual, miMinNight, miMinNightXC, miMinXC, miMinInstrument, miMinSolo, miMinSoloXC, miMinSoloNight, miMinSoloNightTakeoffs, miMinSoloNightLandings};
+
+        public override void ExamineFlight(ExaminerFlightRow cfr)
+        {
+            if (cfr == null)
+                throw new ArgumentNullException(nameof(cfr));
+
+            if (!CategoryClass.IsAirplane(cfr.idCatClassOverride))
+                return;
+
+            if (!HasSeenPPL && cfr.fIsCertifiedIFR)
+                miMinInstrument.AddTrainingEvent(Math.Min(cfr.Dual, cfr.IMC + cfr.IMCSim), MaxSim, !cfr.fIsRealAircraft);
+
+            if (!cfr.fIsRealAircraft)
+                return;
+
+            // From here on, we can assume a real aircraft and an airplane
+            miMinHours.AddEvent(cfr.Total);
+            miMinPIC.AddEvent(cfr.PIC);
+            miMinXCPIC.AddEvent(Math.Min(cfr.PIC, cfr.XC));
+
+            // All of the remaining items MUST be post-PPL.  We are looking at flights in reverse-chronological order, so once we see the PPL in an airplane, we stop
+            if (HasSeenPPL)
+                return;
+
+            if (cfr.FlightProps.PropertyExistsWithID(CustomPropertyType.KnownProperties.IDPropCheckridePPL))
+            {
+                HasSeenPPL = true;
+                return;
+            }
+
+            miMinDual.AddEvent(cfr.Dual);
+            miMinNight.AddEvent(Math.Min(cfr.Dual, cfr.Night));
+            miMinNightXC.AddEvent(Math.Min(cfr.Dual, Math.Min(cfr.Night, cfr.XC)));
+            miMinXC.AddEvent(Math.Min(cfr.Dual, cfr.XC));
+
+            // Check for solo time; all remaining checks only apply to solo
+            decimal solo = cfr.FlightProps.TimeForProperty(CustomPropertyType.KnownProperties.IDPropSolo);
+            if (solo == 0)
+                return;
+
+            miMinSolo.AddEvent(solo);
+            miMinSoloNight.AddEvent(Math.Min(solo, cfr.Night));
+            miMinSoloNightTakeoffs.AddEvent(cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTakeoff));
+            miMinSoloNightLandings.AddEvent(cfr.cFullStopNightLandings + cfr.FlightProps.IntValueForProperty(CustomPropertyType.KnownProperties.IDPropNightTouchAndGo));
+
+            if (cfr.XC > 0 && cfr.cLandingsThisFlight >= 3)
+            {
+                AirportList al = AirportListOfRoutes.CloneSubset(cfr.Route, true);
+                if (al.MaxDistanceFromStartingAirport() > 300)
+                    miMinSoloXC.MatchFlightEvent(cfr);
+            }
+        }
+    }
+    #endregion
+
     #endregion
 }
