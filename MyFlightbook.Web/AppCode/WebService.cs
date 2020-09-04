@@ -1131,6 +1131,23 @@ namespace MyFlightbook
             return AuthResult.ProcessResult(szAuth, GetEncryptedUser(szAuth), sz2FactorAuth);         
         }
 
+        [WebMethod]
+        public string RefreshAuthToken(string szAppToken, string szUser, string szPass, string szPreviousToken)
+        {
+            if (szPreviousToken == null)
+                throw new ArgumentNullException(nameof(szPreviousToken));
+
+            string szUserOld = GetEncryptedUser(szPreviousToken);
+            if (szUserOld == null)
+                return null;
+
+            string szTokenNew = AuthTokenForUser(szAppToken, szUser, szPass);
+            if (szTokenNew == null)
+                return null;
+
+            return (GetEncryptedUser(szTokenNew).CompareOrdinal(szUserOld) == 0) ? szTokenNew : null;
+        }
+
         private readonly static System.Object lockObject = new System.Object();
 
         /// <summary>
