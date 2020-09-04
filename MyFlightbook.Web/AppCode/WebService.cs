@@ -37,13 +37,14 @@ namespace MyFlightbook
             AuthToken = authToken;
         }
 
-        public static AuthResult ProcessResult(string authToken, string szUser, string sz2FactorAuth = null)
+        public static AuthResult ProcessResult(string authToken, string szUser, string sz2FactorAuth, string szEmulator)
         {
             AuthResult result = new AuthResult();
             if (String.IsNullOrEmpty(authToken) || String.IsNullOrEmpty(szUser))
                 return result;
 
-            Profile pf = Profile.GetUser(szUser);
+            // Issue #654: Check for 2factor requirement on the user's account UNLESS emulating, in which case check for 2fa on the *emulator's* account.
+            Profile pf = Profile.GetUser(String.IsNullOrEmpty(szEmulator) ? szUser : szEmulator);
             if (String.IsNullOrEmpty(pf.UserName))
                 return result;
 
@@ -1065,6 +1066,12 @@ namespace MyFlightbook
         [WebMethod]
         public string AuthTokenForUser(string szAppToken, string szUser, string szPass)
         {
+            return AuthTokenForUser(szAppToken, szUser, szPass, out _);
+        } 
+
+        private static string AuthTokenForUser(string szAppToken, string szUser, string szPass, out string szEmulator)
+        {
+            szEmulator = string.Empty;
             // Only speak to authorized clients.
             if (String.IsNullOrEmpty(szAppToken) || !IsAuthorizedService(szAppToken))
                 return null;
@@ -1111,7 +1118,10 @@ namespace MyFlightbook
                         pf = Profile.GetUser(szEmulate);
                         if(!pf.IsValid())
                             throw new MyFlightbookException("No such user: " + szEmulate);
-                        szUser = szEmulate;
+
+                        // At this point, we have AUTHENTICATED on szUser, but we are signing in (returning an authtoken) as szEmulator, so capture that.
+                        szEmulator = szUser;    // The accountname of the user doing the emulation
+                        szUser = szEmulate;     // the resulting emulated account is szUser = szEmulate
                     }
                     else
                         throw new UnauthorizedAccessException();
@@ -1127,8 +1137,8 @@ namespace MyFlightbook
         [WebMethod]
         public AuthResult AuthTokenForUserNew(string szAppToken, string szUser, string szPass, string sz2FactorAuth = null)
         {
-            string szAuth = AuthTokenForUser(szAppToken, szUser, szPass);
-            return AuthResult.ProcessResult(szAuth, GetEncryptedUser(szAuth), sz2FactorAuth);         
+            string szAuth = AuthTokenForUser(szAppToken, szUser, szPass, out string szEmulator);
+            return AuthResult.ProcessResult(szAuth, GetEncryptedUser(szAuth), sz2FactorAuth, szEmulator);         
         }
 
         [WebMethod]
