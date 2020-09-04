@@ -638,4 +638,7 @@
   <data name="accountPreferredGreetingWatermark" xml:space="preserve">
     <value>(First Name)</value>
   </data>
+  <data name="BigRedButtonsHeader" xml:space="preserve">
+    <value>Here you can bulk delete unused aircraft, flights, or your entire account. </value>
+  </data>
 </root>

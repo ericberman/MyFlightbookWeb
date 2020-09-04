@@ -958,6 +958,78 @@ public partial class Member_EditProfile
     protected global::System.Web.UI.WebControls.Localize locHeadDeletion;
 
     /// <summary>
+    /// locRedButtons control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locRedButtons;
+
+    /// <summary>
+    /// mvBigRedButtons control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.MultiView mvBigRedButtons;
+
+    /// <summary>
+    /// vwStaticRedButtons control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwStaticRedButtons;
+
+    /// <summary>
+    /// lBRB1 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lBRB1;
+
+    /// <summary>
+    /// lBRB2 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lBRB2;
+
+    /// <summary>
+    /// tfaBRB control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::MyFlightbook.Web.Controls.TwoFactorAuthVerifyCode tfaBRB;
+
+    /// <summary>
+    /// lblBRB2faErr control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblBRB2faErr;
+
+    /// <summary>
+    /// vwRedButtons control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.View vwRedButtons;
+
+    /// <summary>
     /// locDeleteUnusedAircraft control.
     /// </summary>
     /// <remarks>

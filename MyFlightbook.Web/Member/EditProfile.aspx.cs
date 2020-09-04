@@ -134,6 +134,14 @@ public partial class Member_EditProfile : System.Web.UI.Page
         lblQuestion.Text = m_pf.SecurityQuestion;
         lblAddress.Text = txtAddress.Text = m_pf.Address;
         accordianAccount.SelectedIndex = (sidebarTab == tabID.pftQA) ? 2 : (sidebarTab == tabID.pftPass ? 1 : 0);
+
+        if (m_pf.PreferenceExists(MFBConstants.keyTFASettings))
+        {
+            mvBigRedButtons.SetActiveView(vwStaticRedButtons);
+            tfaBRB.AuthCode = m_pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string;
+        }
+        else
+            mvBigRedButtons.SetActiveView(vwRedButtons);
     }
 
     private void InitFeaturePrefs()
@@ -468,6 +476,16 @@ public partial class Member_EditProfile : System.Web.UI.Page
         int i = ProfileAdmin.DeleteUnusedAircraftForUser(Page.User.Identity.Name);
         lblDeleteErr.Text = String.Format(CultureInfo.CurrentCulture, Resources.Profile.ProfileBulkDeleteAircraftDeleted, i);
         lblDeleteErr.CssClass = "success";
+    }
+
+    protected void tfaBRB_TFACodeFailed(object sender, EventArgs e)
+    {
+        lblBRB2faErr.Visible = true;
+    }
+
+    protected void tfaBRB_TFACodeVerified(object sender, EventArgs e)
+    {
+        mvBigRedButtons.SetActiveView(vwRedButtons);
     }
     #endregion
 

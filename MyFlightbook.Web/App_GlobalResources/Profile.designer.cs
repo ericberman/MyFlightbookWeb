@@ -475,6 +475,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Here you can bulk delete unused aircraft, flights, or your entire account. .
+        /// </summary>
+        internal static string BigRedButtonsHeader {
+            get {
+                return ResourceManager.GetString("BigRedButtonsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (unknown).
         /// </summary>
         internal static string CFIExpirationUnknown {
