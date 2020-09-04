@@ -1,12 +1,14 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Codebehind="mfbImpersonate.ascx.cs" Inherits="Controls_mfbImpersonate" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Src="~/Controls/popmenu.ascx" TagPrefix="uc1" TagName="popmenu" %>
+
 <asp:Panel ID="pnlImpersonate" runat="server" DefaultButton="btnFindUsers">
     Find User: <asp:TextBox ID="txtImpersonate" runat="server" ></asp:TextBox>
     <asp:Button
         ID="btnFindUsers" runat="server" Text="Find" 
         ValidationGroup="ValidateImpersonate" onclick="btnFindUsers_Click" />
     <asp:GridView ID="gvUsers" runat="server" AutoGenerateColumns="False" 
-        EnableModelValidation="True" 
+        EnableModelValidation="True" GridLines="None" CellPadding="3"
         DataSourceID="sqlUsers" onrowcommand="gvUsers_RowCommand">
         <Columns>
             <asp:BoundField DataField="Username" HeaderText="User Name" />
@@ -17,19 +19,20 @@
             </asp:TemplateField>
             <asp:TemplateField HeaderText="Actions">
                 <ItemTemplate>
-                    <asp:Button ID="btnImpersonate" CommandName="Impersonate" runat="server" Text="Impersonate" CommandArgument='<%# Bind("PKID") %>' />
-                    <asp:Button ID="btnResetPass" CommandName="ResetPassword" runat="server" Text="Reset Password" CommandArgument='<%# Bind("PKID") %>' />
-                    <asp:Button ID="btnDeleteUser" runat="server" Text="Delete User" CommandName="DeleteUser" CommandArgument='<%# Bind("PKID") %>' />
-                    <cc1:ConfirmButtonExtender ID="btnDelete_ConfirmButtonExtender" runat="server" 
+                    <asp:LinkButton ID="btnImpersonate" CommandName="Impersonate" runat="server" Text="Impersonate" CommandArgument='<%# Bind("PKID") %>' /> | 
+                    <asp:LinkButton ID="btnResetPass" CommandName="ResetPassword" runat="server" Text="Reset Password" CommandArgument='<%# Bind("PKID") %>' /> | 
+                    <asp:LinkButton ID="btnDeleteUser" runat="server" Text="Delete User" CommandName="DeleteUser" CommandArgument='<%# Bind("PKID") %>' /> | 
+                    <cc1:ConfirmButtonExtender ID="cbeDeleteUser" runat="server" 
                         TargetControlID="btnDeleteUser" ConfirmOnFormSubmit="True" ConfirmText="Are you sure you want to DELETE THIS USER?  This action cannot be undone!">
                     </cc1:ConfirmButtonExtender>
-                    <asp:Button ID="btnDeleteFlights" runat="server" 
-                        Text="Delete only flights for user" CommandName="DeleteFlightsForUser" CommandArgument='<%# Bind("PKID") %>' />
-                    <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" 
+                    <asp:LinkButton ID="btnDeleteFlights" runat="server"
+                        Text="Delete only flights for user" CommandName="DeleteFlightsForUser" CommandArgument='<%# Bind("PKID") %>' /> | 
+                    <cc1:ConfirmButtonExtender ID="cbeDeleteFlights" runat="server" 
                         TargetControlID="btnDeleteFlights" ConfirmOnFormSubmit="True" ConfirmText="Are you sure you want to delete the FLIGHTS for this user?  This action cannot be undone!">
                     </cc1:ConfirmButtonExtender>
-                    <asp:Button ID="btnSendMessage" runat="server" Text="Send Message" CommandName="SendMessage" CommandArgument='<%# Bind("PKID") %>' />
-                    <asp:Button ID="btnEndowClub" runat="server" Text="Endow Club Creation" CommandName="EndowClub" CommandArgument='<%# Bind("PKID") %>' />
+                    <asp:LinkButton ID="btnTurnOffTFA" runat="server" Text="Disable 2FA" CommandName="Disable2FA" CommandArgument='<%# Bind("PKID") %>' /> | 
+                    <asp:LinkButton ID="btnSendMessage" runat="server" Text="Send Message" CommandName="SendMessage" CommandArgument='<%# Bind("PKID") %>' /> | 
+                    <asp:LinkButton ID="btnEndowClub" runat="server" Text="Endow Club Creation" CommandName="EndowClub" CommandArgument='<%# Bind("PKID") %>' />
                 </ItemTemplate>
             </asp:TemplateField>
         </Columns>

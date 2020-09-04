@@ -135,6 +135,19 @@ public partial class Controls_mfbImpersonate : System.Web.UI.UserControl
             DBHelper dbh = new DBHelper();
             dbh.DoNonQuery("INSERT INTO earnedgratuities SET idgratuitytype=3, username=?szUser, dateEarned=Now(), dateExpired=Date_Add(Now(), interval 30 day), reminderssent=0, dateLastReminder='0001-01-01 00:00:00'", (comm) => { comm.Parameters.AddWithValue("szUser", mu.UserName); });
         }
+        else if (e.CommandName.CompareCurrentCultureIgnoreCase("Disable2FA") == 0)
+        {
+            Profile pf = Profile.GetUser(szUser);
+            if (pf.PreferenceExists(MFBConstants.keyTFASettings))
+            {
+                pf.SetPreferenceForKey(MFBConstants.keyTFASettings, null, true);
+                lblResetErr.Text = "2fa turned off for user " + HttpUtility.HtmlEncode(szUser);
+            }
+            else
+            {
+                lblResetErr.Text = "2fa was not on for user " + HttpUtility.HtmlEncode(szUser);
+            }
+        }
     }
 
     protected void btnSend_OnClick(object sender, EventArgs e)
