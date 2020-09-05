@@ -3,7 +3,7 @@
 <asp:GridView ID="gvOAuthClients" DataKeyNames="ClientId" CellPadding="10" CellSpacing="10" OnRowDataBound="gvOAuthClients_RowDataBound" OnRowDeleting="gvOAuthClients_RowDeleting" AutoGenerateColumns="False" runat="server" GridLines="None" ShowHeader="False">
     <Columns>
         <asp:BoundField DataField="AuthorizationId" Visible="False" ItemStyle-VerticalAlign="Top" />
-        <asp:BoundField DataField="ClientId" ItemStyle-VerticalAlign="Top"  />
+        <asp:BoundField DataField="ClientName" ItemStyle-VerticalAlign="Top"  />
         <asp:TemplateField ItemStyle-VerticalAlign="Top">
             <ItemTemplate>
                 <asp:MultiView ID="mvScopesRequested" runat="server">

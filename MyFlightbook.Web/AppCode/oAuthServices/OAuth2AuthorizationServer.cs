@@ -368,12 +368,15 @@ namespace OAuthAuthorizationServer.Code
             UserId = Convert.ToString(dr["UserId"], CultureInfo.InvariantCulture);
             Scope = Convert.ToString(dr["Scope"], CultureInfo.InvariantCulture);
             ExpirationDateUtc = Convert.ToDateTime(dr["ExpirationDateUtc"], CultureInfo.InvariantCulture);
+            ClientName = (string)dr["ClientName"];
         }
 
         #region properties
         public int AuthorizationId { get; set; }
         public DateTime CreatedOnUtc { get; set; }
         public string ClientId { get; set; }
+
+        public string ClientName { get; set; }
         public string UserId { get; set; }
         public string Scope { get; set; }
         public DateTime ExpirationDateUtc { get; set; }
@@ -402,7 +405,7 @@ namespace OAuthAuthorizationServer.Code
         {
             List<MFBOauthClientAuth> lst = new List<MFBOauthClientAuth>();
 
-            DBHelper dbh = new DBHelper("SELECT * FROM oauthclientauthorization WHERE clientID=?clientId AND createdonUTC < ?issuedUtc AND (ExpirationDateUtc IS NULL OR ExpirationDateUtc > Now()) AND userID=?uname");
+            DBHelper dbh = new DBHelper("SELECT oca.*, aoc.ClientName FROM oauthclientauthorization oca INNER JOIN allowedoauthclients aoc ON oca.ClientId=aoc.clientid WHERE oca.clientID=?clientId AND createdonUTC < ?issuedUtc AND (ExpirationDateUtc IS NULL OR ExpirationDateUtc > Now()) AND userID=?uname");
             dbh.ReadRows((comm) =>
                 {
                     comm.Parameters.AddWithValue("clientId", clientID);
@@ -422,7 +425,7 @@ namespace OAuthAuthorizationServer.Code
         {
             List<MFBOauthClientAuth> lst = new List<MFBOauthClientAuth>();
 
-            DBHelper dbh = new DBHelper("SELECT * FROM oauthclientauthorization WHERE (ExpirationDateUtc IS NULL OR ExpirationDateUTC > UTC_TIMESTAMP()) AND userID=?uname GROUP BY clientID");
+            DBHelper dbh = new DBHelper("SELECT oca.*, aoc.ClientName FROM oauthclientauthorization oca INNER JOIN allowedoauthclients aoc ON oca.ClientId=aoc.clientid WHERE (ExpirationDateUtc IS NULL OR ExpirationDateUTC > UTC_TIMESTAMP()) AND userID=?uname GROUP BY clientID");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("uname", username); },
                 (dr) => { lst.Add(new MFBOauthClientAuth(dr)); });
             return lst;
