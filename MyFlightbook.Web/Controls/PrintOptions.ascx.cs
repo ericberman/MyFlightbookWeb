@@ -54,6 +54,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
             if (m_options == null)
                 m_options = new PrintingOptions();
 
+            m_options.IncludeCoverSheet = ckIncludeCoverSheet.Checked;
             m_options.FlightsPerPage = Convert.ToInt32(cmbFlightsPerPage.SelectedValue, CultureInfo.InvariantCulture);
             m_options.IncludeImages = ckIncludeImages.Checked;
             m_options.IncludeSignatures = ckIncludeSignatures.Checked;
@@ -84,6 +85,7 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
         {
             m_options = value ?? throw new ArgumentNullException(nameof(value));
             cmbFlightsPerPage.SelectedValue = m_options.FlightsPerPage.ToString(CultureInfo.InvariantCulture);
+            ckIncludeCoverSheet.Checked = m_options.IncludeCoverSheet;
             ckIncludeImages.Checked = m_options.IncludeImages;
             ckIncludeSignatures.Checked = m_options.IncludeSignatures;
             ckBreakAtMonth.Checked = m_options.BreakAtMonthBoundary;
@@ -305,6 +307,11 @@ public partial class Controls_PrintOptions : System.Web.UI.UserControl
     }
 
     protected void ckBreakAtMonth_CheckedChanged(object sender, EventArgs e)
+    {
+        NotifyDelegate();
+    }
+
+    protected void ckIncludeCoverSheet_CheckedChanged(object sender, EventArgs e)
     {
         NotifyDelegate();
     }

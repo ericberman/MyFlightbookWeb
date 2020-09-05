@@ -1812,4 +1812,13 @@
   <data name="GooglePhotosAddToFlight" xml:space="preserve">
     <value>Add this to your flight</value>
   </data>
+  <data name="PrintViewCoverSheetDateTemplate" xml:space="preserve">
+    <value>Prepared on {0:D}</value>
+  </data>
+  <data name="PrintViewCoverSheetNameTemplate" xml:space="preserve">
+    <value>Logbook for {0}</value>
+  </data>
+  <data name="PrintViewUseCoverSheet" xml:space="preserve">
+    <value>Include a cover page</value>
+  </data>
 </root>

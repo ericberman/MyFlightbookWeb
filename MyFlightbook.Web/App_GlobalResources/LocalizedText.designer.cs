@@ -3707,6 +3707,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Prepared on {0:D}.
+        /// </summary>
+        internal static string PrintViewCoverSheetDateTemplate {
+            get {
+                return ResourceManager.GetString("PrintViewCoverSheetDateTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logbook for {0}.
+        /// </summary>
+        internal static string PrintViewCoverSheetNameTemplate {
+            get {
+                return ResourceManager.GetString("PrintViewCoverSheetNameTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This page provides a more printer-friendly view of your logbook in a variety of layouts.  Landscape orientation is recommended.  Use your browser&apos;s preview function to see what the printed page will look like.  Or, download a PDF of your flights..
         /// </summary>
         internal static string PrintViewDescription {
@@ -4013,6 +4031,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Include a cover page.
+        /// </summary>
+        internal static string PrintViewUseCoverSheet {
+            get {
+                return ResourceManager.GetString("PrintViewUseCoverSheet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} flights/page.
         /// </summary>
         internal static string PrintViewXPerPage {
@@ -4023,13 +4050,13 @@ namespace Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;h2&gt;General policy around personal information and logbook data&lt;/h2&gt;
+        ///&lt;p&gt;&lt;span style=&quot;font-style:italic&quot;&gt;Last Updated Aug 24, 2020&lt;/span&gt;&lt;/p&gt;
         ///&lt;p&gt;
         ///    We don&apos;t really want your personal data, but an email address and password are
         ///    required to provide a degree of security
         ///    and a way to reach you for service-related issues. We are not going
         ///    to sell it, rent it, or otherwise disclose it. %APP_NAME% is hosted in a secure environment
-        ///    and adheres to common security best practices. We do need an email to contact you about site related stuff and for things
-        ///    like p [rest of string was truncated]&quot;;.
+        ///    and adheres to common security best practices. We do need an [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Privacy {
             get {

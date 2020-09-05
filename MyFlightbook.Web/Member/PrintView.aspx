@@ -186,6 +186,15 @@
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" Runat="Server">
     <asp:Panel ID="pnlResults" runat="server">
+        <asp:Panel ID="pnlCover" runat="server">
+            <div style="page-break-after:always; margin-left: auto; margin-right: auto; padding: 15px; text-align: center;" >
+                <div><asp:Image ID="imgLogo" runat="server" ImageUrl="~/images/1536xparent.png" style="max-width: 200px;" /></div>
+                <p><asp:Label ID="lblCoverName" Font-Bold="true" Font-Size="Large" runat="server" /></p>
+                <div style="white-space:pre-line"><% =CurrentUser.Address %></div>
+                <div><%=Resources.LogbookEntry.PrintHeaderLicense %> <% =CurrentUser.License %></div>
+                <p><asp:Label ID="lblCoverDate" runat="server" /></p>
+            </div>
+        </asp:Panel>
         <asp:MultiView ID="mvLayouts" runat="server" ActiveViewIndex="0">
             <asp:View ID="vwNative" runat="server">
                 <uc1:layoutNative runat="server" ID="layoutNative" />

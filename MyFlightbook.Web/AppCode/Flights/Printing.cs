@@ -342,6 +342,11 @@ namespace MyFlightbook.Printing
         public bool IncludePullForwardTotals { get; set; } = true;
 
         /// <summary>
+        /// Determines if a cover sheet should be shown.
+        /// </summary>
+        public bool IncludeCoverSheet { get; set; }
+
+        /// <summary>
         /// If true, stripes subtotals by category/class
         /// </summary>
         [System.ComponentModel.DefaultValue(true)]

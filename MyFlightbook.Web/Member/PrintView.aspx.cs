@@ -228,6 +228,9 @@ public partial class Member_PrintView : Member_PrintViewBase
     {
         mvLayouts.ActiveViewIndex = (int)PrintOptions1.Options.Layout;
         pnlResults.Visible = true;
+        pnlCover.Visible = PrintOptions1.Options.IncludeCoverSheet;
+        lblCoverName.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewCoverSheetNameTemplate, CurrentUser.UserFullName);
+        lblCoverDate.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewCoverSheetDateTemplate, DateTime.Now);
 
         IList<LogbookEntryDisplay> lstFlights = LogbookEntryDisplay.GetFlightsForQuery(LogbookEntry.QueryCommand(mfbSearchForm1.Restriction, fAsc: true), CurrentUser.UserName, string.Empty, SortDirection.Ascending, CurrentUser.UsesHHMM, CurrentUser.UsesUTCDateOfFlight);
         PrintLayout pl = LogbookPrintedPage.LayoutLogbook(CurrentUser, lstFlights, ActiveTemplate, PrintOptions1.Options, SuppressFooter);

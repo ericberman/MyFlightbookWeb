@@ -16,6 +16,7 @@
         <asp:ListItem Value="NZ" Text="<%$ Resources:LogbookEntry, PrintFormatNZ %>"></asp:ListItem>
         <asp:ListItem Value="Glider" Text="<%$ Resources:LogbookEntry, PrintFormatGlider %>"></asp:ListItem>
     </asp:DropDownList>
+    <div><asp:CheckBox ID="ckIncludeCoverSheet" runat="server" Text="<%$ Resources:LocalizedText, PrintViewUseCoverSheet %>" AutoPostBack="true" OnCheckedChanged="ckIncludeCoverSheet_CheckedChanged" /></div>
     <asp:Panel ID="pnlIncludeImages" runat="server">
         <asp:CheckBox ID="ckIncludeImages" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeImages %>" AutoPostBack="True" OnCheckedChanged="ckIncludeImages_CheckedChanged" />
     </asp:Panel>
