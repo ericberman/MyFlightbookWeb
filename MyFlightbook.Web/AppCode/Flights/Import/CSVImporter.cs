@@ -1063,7 +1063,7 @@ namespace MyFlightbook.ImportFlights
                 }
             }
 
-            return !HasErrors; ;
+            return !HasErrors;
         }
 
         /// <summary>

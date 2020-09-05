@@ -238,7 +238,7 @@ public partial class Controls_mfbDownload : System.Web.UI.UserControl, IDownload
             UTF8Encoding enc = new UTF8Encoding(true);    // to include the BOM
             byte[] preamble = enc.GetPreamble();
             string body = CSVData();
-            byte[] allBytes = new byte[preamble.Length + enc.GetByteCount(body)]; ;
+            byte[] allBytes = new byte[preamble.Length + enc.GetByteCount(body)];
             for (int i = 0; i < preamble.Length; i++)
                 allBytes[i] = preamble[i];
             enc.GetBytes(body, 0, body.Length, allBytes, preamble.Length);

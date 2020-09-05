@@ -512,7 +512,7 @@ namespace MyFlightbook.Geography
         public Position(string[] rgCoord)
         {
             if (rgCoord == null || rgCoord.Length < 2)
-                throw new MyFlightbookException("Error reading KML coordinate: need at least a latitude and a longitude, both were not provided"); ;
+                throw new MyFlightbookException("Error reading KML coordinate: need at least a latitude and a longitude, both were not provided");
 
             if (double.TryParse(rgCoord[0], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double lon) &&
                 double.TryParse(rgCoord[1], System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double lat))

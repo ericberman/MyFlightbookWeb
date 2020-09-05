@@ -214,7 +214,7 @@ public partial class Member_FlightDetailBase : Page
                     object o = drow[dc.ColumnName];
                     if (o != null)
                     {
-                        string sz = o.ToString(); ;
+                        string sz = o.ToString();
                         if (!String.IsNullOrEmpty(sz))
                             lstDesc.Add(String.Format(CultureInfo.InvariantCulture, "{0}: {1}<br />", dc.ColumnName, sz));
                     }

@@ -86,7 +86,7 @@ namespace MyFlightbook.Checklists
                 case "SKIN":
                     return new SkinRow(szContent);
                 case "TAB":
-                    return new TabContainer(szContent); ;
+                    return new TabContainer(szContent);
                 case "-":
                     return new HeaderContainer(szContent);
                 case "--":

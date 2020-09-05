@@ -416,7 +416,7 @@ namespace gma.Drawing.ImageInfo
                 }
                 catch (Exception ex) when (ex is ArgumentException) { }
                 Fraction[] f = (Fraction[])PropertyTag.getValue(_image.GetPropertyItem((int)PropertyTagId.GpsLongitude));
-                double fDeg = (double)f[0]; ;
+                double fDeg = (double)f[0];
                 double fMin = (double)f[1];
                 double fSec = (double)f[2];
 
