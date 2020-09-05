@@ -186,8 +186,6 @@ public partial class Member_EditProfile : System.Web.UI.Page
         lnkDeAuthGPhotos.Text = Branding.ReBrand(Resources.LocalizedText.PrefSharingGooglePhotosDisable);
 
         mvGPhotos.SetActiveView(m_pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken) ? vwGPhotosEnabled : vwGPhotosDisabled);
-
-        pnlGPhotos.Visible = m_pf.PreferenceExists(GooglePhoto.PrefKeyAuthToken) || util.GetIntParam(Request, "GPhoto", 0) != 0;
     }
 
     private void InitDeadlinesAndCurrencies()

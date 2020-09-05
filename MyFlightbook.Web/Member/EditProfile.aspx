@@ -606,7 +606,7 @@
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
-                            <asp:Panel ID="pnlGPhotos" runat="server" Visible="false" CssClass="prefSectionRow">
+                            <asp:Panel ID="pnlGPhotos" runat="server" CssClass="prefSectionRow">
                                 <h2><asp:Localize ID="locShareGooglePhotos" runat="server" Text="<%$ Resources:LocalizedText, PrefSharingGooglePhotos %>"></asp:Localize></h2>
                                 <p><asp:Label ID="lblGPhotosDesc" runat="server" /></p>
                                 <asp:MultiView ID="mvGPhotos" runat="server" ActiveViewIndex="0">

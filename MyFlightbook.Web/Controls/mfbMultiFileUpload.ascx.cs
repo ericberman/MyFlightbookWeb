@@ -81,8 +81,8 @@ public partial class Controls_mfbMultiFileUpload : System.Web.UI.UserControl
 
     public bool AllowGoogleImport
     {
-        get { return lnkPullGoogle.Visible; }
-        set { lnkPullGoogle.Visible = value; }
+        get { return imgPullGoogle.Visible; }
+        set { imgPullGoogle.Visible = value; }
     }
     #endregion
 
@@ -416,7 +416,7 @@ return false;
         pnlGPResult.Visible = RetrievedGooglePhotos.mediaItems.Any();
     }
 
-    protected void lnkPullGoogle_Click(object sender, EventArgs e)
+    protected void imgPullGoogle_Click(object sender, EventArgs e)
     {
         RetrievedGooglePhotos = new GoogleMediaResponse();
         AppendMoreGoogleImages();

@@ -8,8 +8,11 @@
     </asp:View>
     <asp:View ID="vwAjaxUpload" runat="server">
         <asp:Image ID="myThrobber" ImageUrl="~/images/ajax-loader.gif" runat="server" style="display:None" />
-        <asp:AjaxFileUpload ID="AjaxFileUpload1" runat="server" AutoStartUpload="true" CssClass="mfbDefault" MaxFileSize="300000"
-                ThrobberID="myThrobber" AllowedFileTypes="heic,jpg,jpeg,pdf,jpe,png" MaximumNumberOfFiles="10" OnUploadComplete="AjaxFileUpload1_UploadComplete" OnUploadCompleteAll="AjaxFileUpload1_UploadCompleteAll" />
+        <div>
+            <div style="float:left; margin-top: 15px; margin-right: 8px"><asp:ImageButton ID="imgPullGoogle" runat="server" ImageUrl="~/images/download.png" Visible="false" OnClick="imgPullGoogle_Click" ToolTip="<%$ Resources:LocalizedText, GooglePhotosViewImages %>" AlternateText="<%$ Resources:LocalizedText, GooglePhotosViewImages %>" /></div>
+            <asp:AjaxFileUpload ID="AjaxFileUpload1" runat="server" AutoStartUpload="true" CssClass="mfbDefault" MaxFileSize="300000"
+                    ThrobberID="myThrobber" AllowedFileTypes="heic,jpg,jpeg,pdf,jpe,png" MaximumNumberOfFiles="10" OnUploadComplete="AjaxFileUpload1_UploadComplete" OnUploadCompleteAll="AjaxFileUpload1_UploadCompleteAll" />
+        </div>
         <uc2:mfbImageList ID="mfbImageListPending" NoRequery="true" CanEdit="true" runat="server" Columns="4" MaxImage="-1" />
         <asp:Panel ID="pnlRefresh" runat="server" Visible="false">
             <script>
@@ -24,7 +27,6 @@
 </asp:MultiView>
 <span class="fineprint"><% =Resources.LocalizedText.ImageDisclaimer %></span>
 <div>
-    <asp:LinkButton ID="lnkPullGoogle" runat="server" Visible="false" OnClick="lnkPullGoogle_Click" Text="<%$ Resources:LocalizedText, GooglePhotosViewImages %>" />
     <div><asp:Label ID="lblGPhotoResult" runat="server" EnableViewState="false" /></div>
     <asp:Panel runat="server" ID="pnlGPResult" Visible="false" style="margin: 20px; border-radius: 8px; padding: 5px; background-color:lightgray; border: 1px solid darkgray;">
         <div>

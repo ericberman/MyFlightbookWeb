@@ -58,6 +58,15 @@ public partial class Controls_mfbMultiFileUpload
     protected global::System.Web.UI.WebControls.Image myThrobber;
 
     /// <summary>
+    /// imgPullGoogle control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.ImageButton imgPullGoogle;
+
+    /// <summary>
     /// AjaxFileUpload1 control.
     /// </summary>
     /// <remarks>
@@ -101,15 +110,6 @@ public partial class Controls_mfbMultiFileUpload
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.LinkButton lnkBtnForceLegacy;
-
-    /// <summary>
-    /// lnkPullGoogle control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.LinkButton lnkPullGoogle;
 
     /// <summary>
     /// lblGPhotoResult control.
