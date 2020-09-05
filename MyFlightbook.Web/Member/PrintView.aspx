@@ -41,7 +41,15 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <asp:CheckBox ID="ckFlights" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParamtersChanged" />
+                                        <asp:CheckBox ID="ckIncludeCoverSheet" runat="server" Checked="true" AutoPostBack="true"  OnCheckedChanged="IncludeParametersChanged" />
+                                    </td>
+                                    <td>
+                                        <asp:Label ID="lblCoverSheet" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeCoverSheet %>" AssociatedControlID="ckIncludeCoverSheet"></asp:Label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:CheckBox ID="ckFlights" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParametersChanged" />
                                     </td>
                                     <td>
                                         <asp:Label ID="lblIncludeFlights" AssociatedControlID="ckFlights" runat="server" Text="<%$ Resources:LocalizedText, PrintViewSelectedFlightsLabel %>" ></asp:Label>
@@ -56,7 +64,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:CheckBox ID="ckTotals" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParamtersChanged" />
+                                        <asp:CheckBox ID="ckTotals" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParametersChanged" />
                                     </td>
                                     <td>
                                         <asp:Label ID="lblIncludeTotals" AssociatedControlID="ckTotals" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeTotals %>"></asp:Label>
@@ -64,7 +72,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:CheckBox ID="ckEndorsements" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParamtersChanged" />
+                                        <asp:CheckBox ID="ckEndorsements" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParametersChanged" />
                                     </td>
                                     <td>
                                         <asp:Label ID="lblIncludeEndorsements" AssociatedControlID="ckEndorsements" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeEndorsements %>"></asp:Label>
@@ -74,7 +82,7 @@
                                     <td></td>
                                     <td>
                                         <div style="float: left">
-                                            <asp:CheckBox ID="ckIncludeEndorsementImages" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParamtersChanged" /></div>
+                                            <asp:CheckBox ID="ckIncludeEndorsementImages" runat="server" Checked="true" AutoPostBack="true" OnCheckedChanged="IncludeParametersChanged" /></div>
                                         <div style="float:left">
                                             <asp:Label ID="lblIncludeWhat" AssociatedControlID="ckIncludeEndorsementImages" runat="server" Text="<%$ Resources:LocalizedText, PrintViewIncludeJPEGEndorsements %>"></asp:Label>
                                             <div class="fineprint"><% =Resources.LocalizedText.PrintViewNoEmbeddedPDFsNote %></div>
@@ -108,7 +116,7 @@
                                     }
                                 </script>
                                 <div>
-                                    <asp:DropDownList ID="cmbPageSize" runat="server" onchange="pageSizeChanged(this)">
+                                    <asp:DropDownList ID="cmbPageSize" runat="server">
                                         <asp:ListItem Selected="True" Value="Letter" Text="<%$ Resources:LocalizedText, PDFPageSizeLetter %>"></asp:ListItem>
                                         <asp:ListItem Value="Legal" Text="<%$ Resources:LocalizedText, PDFPageSizeLegal %>"></asp:ListItem>
                                         <asp:ListItem Value="A1" Text="<%$ Resources:LocalizedText, PDFPageSizeA1 %>"></asp:ListItem>
@@ -188,11 +196,12 @@
     <asp:Panel ID="pnlResults" runat="server">
         <asp:Panel ID="pnlCover" runat="server">
             <div style="page-break-after:always; margin-left: auto; margin-right: auto; padding: 15px; text-align: center;" >
-                <div><asp:Image ID="imgLogo" runat="server" ImageUrl="~/images/1536xparent.png" style="max-width: 200px;" /></div>
-                <p><asp:Label ID="lblCoverName" Font-Bold="true" Font-Size="Large" runat="server" /></p>
+                <br /><br /><br />
+                <p><asp:Label ID="lblCoverName" Font-Bold="true" Font-Size="XX-Large" style="text-transform:uppercase;" runat="server" /></p>
                 <div style="white-space:pre-line"><% =CurrentUser.Address %></div>
                 <div><%=Resources.LogbookEntry.PrintHeaderLicense %> <% =CurrentUser.License %></div>
                 <p><asp:Label ID="lblCoverDate" runat="server" /></p>
+                <div><asp:Image ID="imgLogo" runat="server" style="max-width: 300px;" /></div>
             </div>
         </asp:Panel>
         <asp:MultiView ID="mvLayouts" runat="server" ActiveViewIndex="0">

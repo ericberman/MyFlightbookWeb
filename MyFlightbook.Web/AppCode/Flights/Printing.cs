@@ -342,11 +342,6 @@ namespace MyFlightbook.Printing
         public bool IncludePullForwardTotals { get; set; } = true;
 
         /// <summary>
-        /// Determines if a cover sheet should be shown.
-        /// </summary>
-        public bool IncludeCoverSheet { get; set; }
-
-        /// <summary>
         /// If true, stripes subtotals by category/class
         /// </summary>
         [System.ComponentModel.DefaultValue(true)]
@@ -427,6 +422,11 @@ namespace MyFlightbook.Printing
         /// </summary>
         public string FooterRight { get; set; }
 
+        /// <summary>
+        /// Uri for footer.  OVERRIDES FOOTER LEFT / FOOTER RIGHT
+        /// </summary>
+        public Uri FooterUri { get; set; }
+
         static public string FooterPageCountArg
         {
             get { return String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintedFooterPageCount, "[page]" /* , "[topage]" */); }
@@ -452,7 +452,7 @@ namespace MyFlightbook.Printing
                 throw new ArgumentNullException(nameof(inputFile));
             if (outputFile == null)
                 throw new ArgumentNullException(nameof(outputFile));
-            return String.Format(CultureInfo.InvariantCulture, "--orientation {0} --print-media-type --disable-javascript --footer-font-size 8 {1} {2} {3} {4} {5} {6} {7} {8} {9}",
+            return String.Format(CultureInfo.InvariantCulture, "--orientation {0} --print-media-type --disable-javascript --footer-font-size 8 {1} {2} {3} {4} {5} {6} {7} {8} {9} {10}",
                 Orientation.ToString(),
                 PaperSize == PageSize.Custom ? String.Format(CultureInfo.InvariantCulture, "--page-height {0} --page-width {1}", PageHeight, PageWidth) : String.Format(CultureInfo.InvariantCulture, "-s {0}", PaperSize.ToString()),
                 TopMargin.HasValue ? String.Format(CultureInfo.InvariantCulture, "--margin-top {0}", TopMargin.Value) : string.Empty,
@@ -461,6 +461,7 @@ namespace MyFlightbook.Printing
                 RightMargin.HasValue ? String.Format(CultureInfo.InvariantCulture, "--margin-right {0}", RightMargin.Value) : string.Empty,
                 String.IsNullOrEmpty(FooterLeft) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "--footer-left \"{0}\"", FooterLeft),
                 String.IsNullOrEmpty(FooterRight) ? string.Empty : String.Format(CultureInfo.InvariantCulture, "--footer-right \"{0}\"", FooterRight),
+                FooterUri == null ? string.Empty : String.Format(CultureInfo.InvariantCulture, "--footer-html {0}", FooterUri.ToString()),
                 inputFile,
                 outputFile);
         }

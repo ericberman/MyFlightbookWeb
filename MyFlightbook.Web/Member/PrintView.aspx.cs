@@ -182,6 +182,8 @@ public partial class Member_PrintView : Member_PrintViewBase
         string szURL = szPath.ToAbsoluteURL(Request.Url.Scheme, Request.Url.Host, Request.Url.Port).ToString();
         Master.Page.Header.Controls.Add(new LiteralControl(String.Format(CultureInfo.InvariantCulture, "<base href=\"{0}\" />", szURL)));
 
+        cmbPageSize.Attributes["onchange"] = "pageSizeChanged(this)";
+
         if (!IsPostBack)
         {
             InitializeRestriction();
@@ -195,6 +197,8 @@ public partial class Member_PrintView : Member_PrintViewBase
             InitializeEndorsements();
 
             RefreshLogbookData();
+
+            imgLogo.ImageUrl = Branding.CurrentBrand.LogoHRef;
         }
 
         rowCustomPage.Style["display"] = (PDFOptions.PageSize)Enum.Parse(typeof(PDFOptions.PageSize), cmbPageSize.SelectedValue) == PDFOptions.PageSize.Custom ? "block" : "none";
@@ -228,7 +232,6 @@ public partial class Member_PrintView : Member_PrintViewBase
     {
         mvLayouts.ActiveViewIndex = (int)PrintOptions1.Options.Layout;
         pnlResults.Visible = true;
-        pnlCover.Visible = PrintOptions1.Options.IncludeCoverSheet;
         lblCoverName.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewCoverSheetNameTemplate, CurrentUser.UserFullName);
         lblCoverDate.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.PrintViewCoverSheetDateTemplate, DateTime.Now);
 
@@ -264,8 +267,9 @@ public partial class Member_PrintView : Member_PrintViewBase
                 PageHeight = decCustHeight.IntValue,
                 PageWidth = decCustWidth.IntValue,
                 Orientation = rbLandscape.Checked ? PDFOptions.PageOrientation.Landscape : PDFOptions.PageOrientation.Portrait,
-                FooterLeft = Resources.LogbookEntry.LogbookCertification,
-                FooterRight = PDFOptions.FooterPageCountArg,
+                FooterUri = (VirtualPathUtility.ToAbsolute("~/Public/PrintFooter.aspx") + (ckIncludeCoverSheet.Checked ? "/Cover" : string.Empty)).ToAbsoluteURL(Request),
+                // FooterLeft = Resources.LogbookEntry.LogbookCertification,
+                // FooterRight = PDFOptions.FooterPageCountArg,
                 LeftMargin = decLeftMargin.IntValue,
                 RightMargin = decRightMargin.IntValue,
                 TopMargin = decTopMargin.IntValue,
@@ -276,7 +280,7 @@ public partial class Member_PrintView : Member_PrintViewBase
         RefreshLogbookData();
     }
 
-    protected void IncludeParamtersChanged(object sender, EventArgs e)
+    protected void IncludeParametersChanged(object sender, EventArgs e)
     {
         mvLayouts.Visible = ckFlights.Checked;
         pnlEndorsements.Visible = ckEndorsements.Checked;
@@ -285,6 +289,7 @@ public partial class Member_PrintView : Member_PrintViewBase
 
         rptImages.Visible = ckIncludeEndorsementImages.Checked;
         pnlTotals.Visible = ckTotals.Checked;
+        pnlCover.Visible = ckIncludeCoverSheet.Checked;
         RefreshLogbookData();
     }
 

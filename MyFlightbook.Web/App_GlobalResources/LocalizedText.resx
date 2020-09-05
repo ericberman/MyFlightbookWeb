@@ -1818,7 +1818,7 @@
   <data name="PrintViewCoverSheetNameTemplate" xml:space="preserve">
     <value>Logbook for {0}</value>
   </data>
-  <data name="PrintViewUseCoverSheet" xml:space="preserve">
-    <value>Include a cover page</value>
+  <data name="PrintViewIncludeCoverSheet" xml:space="preserve">
+    <value>Cover page</value>
   </data>
 </root>

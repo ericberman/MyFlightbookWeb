@@ -841,6 +841,7 @@
     <Content Include="Public\OpenSource\myflightbook.mwb" />
     <Content Include="Public\PaypalIPNListener.aspx" />
     <Content Include="Public\PendingImg.aspx" />
+    <Content Include="Public\PrintFooter.aspx" />
     <Content Include="Public\Privacy.aspx" />
     <Content Include="Public\PropertyTable.aspx" />
     <Content Include="Public\RSSCurrency.aspx" />
@@ -2678,6 +2679,13 @@
     </Compile>
     <Compile Include="Public\PendingImg.aspx.designer.cs">
       <DependentUpon>PendingImg.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Public\PrintFooter.aspx.cs">
+      <DependentUpon>PrintFooter.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Public\PrintFooter.aspx.designer.cs">
+      <DependentUpon>PrintFooter.aspx</DependentUpon>
     </Compile>
     <Compile Include="Public\Privacy.aspx.cs">
       <DependentUpon>Privacy.aspx</DependentUpon>

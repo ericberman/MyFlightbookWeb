@@ -3743,6 +3743,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cover page.
+        /// </summary>
+        internal static string PrintViewIncludeCoverSheet {
+            get {
+                return ResourceManager.GetString("PrintViewIncludeCoverSheet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Endorsements.
         /// </summary>
         internal static string PrintViewIncludeEndorsements {
@@ -4027,15 +4036,6 @@ namespace Resources {
         internal static string PrintViewTotalsHeader {
             get {
                 return ResourceManager.GetString("PrintViewTotalsHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Include a cover page.
-        /// </summary>
-        internal static string PrintViewUseCoverSheet {
-            get {
-                return ResourceManager.GetString("PrintViewUseCoverSheet", resourceCulture);
             }
         }
         
