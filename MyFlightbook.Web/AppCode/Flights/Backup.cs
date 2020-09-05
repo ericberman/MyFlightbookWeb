@@ -40,7 +40,7 @@ namespace MyFlightbook
         private static string WriteTelemetryStringToArchive(ZipArchive z, string szTelemetry, int idFlight)
         {
             DataSourceType dst = DataSourceType.BestGuessTypeFromText(szTelemetry);
-            string szFile = String.Format(CultureInfo.InvariantCulture, "{0}//{1}.{2}", szThumbTelemetry, idFlight, dst.DefaultExtension);
+            string szFile = String.Format(CultureInfo.InvariantCulture, "{0}/{1}.{2}", szThumbTelemetry, idFlight, dst.DefaultExtension);
             ZipArchiveEntry ze = z.CreateEntry(szFile);
             using (StreamWriter writer = new StreamWriter(ze.Open()))
                 writer.Write(szTelemetry);
