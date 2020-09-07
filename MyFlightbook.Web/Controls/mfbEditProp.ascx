@@ -5,7 +5,7 @@
 <%@ Register src="mfbTypeInDate.ascx" tagname="mfbTypeInDate" tagprefix="uc4" %>
 <%@ Register src="mfbTooltip.ascx" tagname="mfbTooltip" tagprefix="uc3" %>
 <div class="propItemFlow">
-    <asp:Label ID="lblPropName" runat="server" CssClass="itemlabel" EnableViewState="false"></asp:Label> <uc3:mfbTooltip ID="mfbTooltip" runat="server" EnableViewState="false" />
+    <asp:Label ID="lblPropName" runat="server" CssClass="itemlabel" Font-Size="Smaller" EnableViewState="false"></asp:Label> <uc3:mfbTooltip ID="mfbTooltip" runat="server" EnableViewState="false" />
     <br />
     <asp:MultiView ID="mvProp" runat="server">
         <asp:View ID="vwDecimal" runat="server">
@@ -15,7 +15,7 @@
         <asp:View ID="vwDateTime" runat="server"><uc1:mfbDateTime ID="mfbDateTime" runat="server" /></asp:View>
         <asp:View ID="vwDate" runat="server"><uc4:mfbTypeInDate ID="mfbTypeInDate" runat="server" DefaultType="None" /></asp:View>
         <asp:View ID="vwText" runat="server">
-            <asp:TextBox ID="txtString" runat="server"></asp:TextBox>
+            <asp:TextBox ID="txtString" runat="server" Width="100%"></asp:TextBox>
             <asp:AutoCompleteExtender ID="autocompleteStringProp" ServicePath="~/Public/WebService.asmx" ServiceMethod="PreviouslyUsedTextProperties"
                 CompletionListItemCssClass="AutoExtenderList" 
                 CompletionListHighlightedItemCssClass="AutoExtenderHighlight"
