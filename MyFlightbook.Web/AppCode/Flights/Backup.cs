@@ -29,11 +29,16 @@ namespace MyFlightbook
     /// </summary>
     public class LogbookBackup
     {
+        #region Properties
         private Profile User { get; set; }
 
-        public LogbookBackup(Profile user)
+        public bool IncludeImages { get; set; } = true;
+        #endregion
+
+        public LogbookBackup(Profile user, bool fIncludeIMages = true)
         {
             User = user ?? throw new ArgumentNullException(nameof(user));
+            IncludeImages = fIncludeIMages;
         }
 
         #region ZipFileHelpers
@@ -169,6 +174,15 @@ namespace MyFlightbook
         private static void WriteBasicMedForUser(HtmlTextWriter tw, string szUser, ZipArchive zip)
         {
             IEnumerable<BasicMedEvent> lstBMed = BasicMedEvent.EventsForUser(szUser);
+            if (!lstBMed.Any())
+                return;
+
+            tw.Write(String.Format(CultureInfo.CurrentCulture, "<p>{0}</p>", Resources.Profile.BasicMedHeader));
+            tw.RenderBeginTag(HtmlTextWriterTag.Ul);
+            foreach (BasicMedEvent bme in lstBMed)
+                tw.Write(String.Format(CultureInfo.InvariantCulture, "<li>{0} - {1} {2}</li>", bme.EventDate.YMDString(), bme.EventTypeDescription, bme.Description));
+            tw.RenderEndTag(); // Ul
+
             foreach (BasicMedEvent bme in lstBMed)
             {
                 string szZipFolder = String.Format(CultureInfo.InvariantCulture, "{0}-{1}", bme.ImageKey, szThumbFolderBasicMed);
@@ -183,7 +197,7 @@ namespace MyFlightbook
             }
         }
 
-        private static void WriteFlightImagesForUser(HtmlTextWriter tw, string szUserFullName, string szUser, ZipArchive zip)
+        private void WriteFlightImagesForUser(HtmlTextWriter tw, string szUserFullName, string szUser, ZipArchive zip)
         {
             tw.RenderBeginTag(HtmlTextWriterTag.H1);
             tw.Write(HttpUtility.HtmlEncode(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ImagesBackupFlightsHeader, szUserFullName)));
@@ -191,23 +205,26 @@ namespace MyFlightbook
 
             // We'll get images from the DB rather than slamming the disk
             // this is a bit of a hack, but limits our queries
-            const string szQ = @"SELECT f.idflight, img.*
+            Dictionary<int, Collection<MFBImageInfo>> dImages = new Dictionary<int, Collection<MFBImageInfo>>();
+            if (IncludeImages)
+            {
+                const string szQ = @"SELECT f.idflight, img.*
             FROM Images img INNER JOIN flights f ON f.idflight=img.ImageKey
             WHERE f.username=?user AND img.VirtPathID=0
             ORDER BY f.Date desc, f.idFlight desc";
-            DBHelper dbhImages = new DBHelper(szQ);
-            Dictionary<int, Collection<MFBImageInfo>> dImages = new Dictionary<int, Collection<MFBImageInfo>>();
-            dbhImages.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
-                (dr) =>
-                {
-                    int idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture);
-                    Collection<MFBImageInfo> lstMFBii;
-                    if (dImages.ContainsKey(idFlight))
-                        lstMFBii = dImages[idFlight];
-                    else
-                        dImages[idFlight] = lstMFBii = new Collection<MFBImageInfo>();
-                    lstMFBii.Add(MFBImageInfo.ImageFromDBRow(dr));
-                });
+                DBHelper dbhImages = new DBHelper(szQ);
+                dbhImages.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); },
+                    (dr) =>
+                    {
+                        int idFlight = Convert.ToInt32(dr["idflight"], CultureInfo.InvariantCulture);
+                        Collection<MFBImageInfo> lstMFBii;
+                        if (dImages.ContainsKey(idFlight))
+                            lstMFBii = dImages[idFlight];
+                        else
+                            dImages[idFlight] = lstMFBii = new Collection<MFBImageInfo>();
+                        lstMFBii.Add(MFBImageInfo.ImageFromDBRow(dr));
+                    });
+            }
 
             // Get all of the user's flights, including telemetry
             const int PageSize = 200;   // get 200 flights at a time.
@@ -245,7 +262,7 @@ namespace MyFlightbook
         /// <param name="activeBrand">The brand to use - null for current brand</param>
         /// <param name="ms">The stream to which to write</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        public void WriteZipOfImagesToStream(Stream ms, Brand activeBrand)
+        public void WriteZipOfImagesToStream(Stream ms, Brand activeBrand, Action<ZipArchive> finalize = null)
         {
             if (ms == null)
                 throw new ArgumentNullException(nameof(ms));
@@ -272,7 +289,7 @@ namespace MyFlightbook
                         // And any BasicMed stuff
                         WriteBasicMedForUser(tw, User.UserName, zip);
 
-                        // Write out flight images
+                        // Write out flight images and Telemetry
                         WriteFlightImagesForUser(tw, szUserFullName, User.UserName, zip);
                         
                         tw.RenderEndTag();  // Body
@@ -280,11 +297,15 @@ namespace MyFlightbook
                     }
 
                     ZipArchiveEntry zipArchiveEntry = zip.CreateEntry(Branding.ReBrand(String.Format(CultureInfo.InvariantCulture, "{0}.htm", Resources.LocalizedText.ImagesBackupFilename), activeBrand));
+
                     using (StreamWriter swHtm = new StreamWriter(zipArchiveEntry.Open()))
                     {
                         swHtm.Write(sw.ToString());
                     }
                 }
+
+                // Allow caller to add any additional items.
+                finalize?.Invoke(zip);
             }
         }
 
@@ -306,7 +327,7 @@ namespace MyFlightbook
             if (activeBrand == null)
                 throw new ArgumentNullException(nameof(activeBrand));
             string szBaseName = String.Format(CultureInfo.InvariantCulture, "{0}-{1}{2}", activeBrand.AppName, User.UserFullName, User.OverwriteCloudBackup ? string.Empty : String.Format(CultureInfo.InvariantCulture, "-{0}", DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))).Replace(" ", "-");
-            return String.Format(CultureInfo.InvariantCulture, "{0}.csv", System.Text.RegularExpressions.Regex.Replace(szBaseName, "[^0-9a-zA-Z-]", ""));
+            return String.Format(CultureInfo.InvariantCulture, "{0}.csv", System.Text.RegularExpressions.Regex.Replace(szBaseName, "[^0-9a-zA-Z-]", string.Empty));
         }
 
         /// <summary>

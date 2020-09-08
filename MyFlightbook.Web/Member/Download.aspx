@@ -52,6 +52,13 @@
                         <asp:Localize ID="locDownloadZIP" runat="server" Text="<%$ Resources:LocalizedText, ImagesBackupPrompt %>"></asp:Localize>
                     </asp:LinkButton>
                 </div>
+                <div style="vertical-align:middle;" runat="server" visible="false" id="divInsZip">
+                    <asp:LinkButton ID="lnkDownloadInsurance" runat="server" OnClick="lnkDownloadInsurance_Click">
+                        <asp:Image ID="Image1" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
+                        <asp:Image ID="Image2" runat="server" ImageAlign="Middle" ImageUrl="~/images/zip_med.png"  style="padding-right: 5px;"/>
+                        <asp:Localize ID="Localize1" runat="server" Text="<%$ Resources:LocalizedText, InsuranceBackupPrompt %>"></asp:Localize>
+                    </asp:LinkButton>
+                </div>
             </td>
             <td>
                 <asp:Localize ID="locCSVDesc" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookCSVDesc %>"></asp:Localize>

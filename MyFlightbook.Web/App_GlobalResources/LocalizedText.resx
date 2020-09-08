@@ -1821,4 +1821,10 @@
   <data name="PrintViewIncludeCoverSheet" xml:space="preserve">
     <value>Cover page</value>
   </data>
+  <data name="InsuranceBackupName" xml:space="preserve">
+    <value>Insurance Data</value>
+  </data>
+  <data name="InsuranceBackupPrompt" xml:space="preserve">
+    <value>ZIP of Insurance Data</value>
+  </data>
 </root>

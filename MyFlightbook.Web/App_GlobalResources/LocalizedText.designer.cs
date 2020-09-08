@@ -2744,6 +2744,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insurance Data.
+        /// </summary>
+        internal static string InsuranceBackupName {
+            get {
+                return ResourceManager.GetString("InsuranceBackupName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ZIP of Insurance Data.
+        /// </summary>
+        internal static string InsuranceBackupPrompt {
+            get {
+                return ResourceManager.GetString("InsuranceBackupPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Why can&apos;t I edit this aircraft?.
         /// </summary>
         internal static string LabelWhyCantEditSims {
