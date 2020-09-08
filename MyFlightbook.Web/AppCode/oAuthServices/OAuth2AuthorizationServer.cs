@@ -129,7 +129,7 @@ namespace OAuthAuthorizationServer.Code
             ClientName = name;
             ClientIdentifier = clientIdentifier;
             ClientSecret = clientSecret;
-            Callback = callback;
+            Callbacks = String.IsNullOrEmpty(callback) ? Array.Empty<string>() : AllowedCallbacksFromString(callback);
             ClientType = DotNetOpenAuth.OAuth2.ClientType.Public;
             Scope = scope;
             OwningUser = szuser;
@@ -179,17 +179,20 @@ namespace OAuthAuthorizationServer.Code
                 throw new MyFlightbookValidationException("Client secret cannot be empty");
             if (String.IsNullOrWhiteSpace(ClientIdentifier))
                 throw new MyFlightbookValidationException("Client identifier cannot be empty");
-            if (String.IsNullOrWhiteSpace(Callback))
+            if (Callbacks == null || !Callbacks.Any())
                 throw new MyFlightbookValidationException("Callback URL cannot be empty");
 
-            if (!Callback.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-                throw new MyFlightbookValidationException("Callback URL MUST be https");
+            foreach (string callback in Callbacks)
+            {
+                if (!callback.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                    throw new MyFlightbookValidationException(String.Format(CultureInfo.InvariantCulture, "Callback URL {0} is not https", callback));
+                if (!Uri.IsWellFormedUriString(callback, UriKind.Absolute))
+                    throw new MyFlightbookValidationException(String.Format(CultureInfo.InvariantCulture, "Callback URL {0} is not a valid https URL", callback));
+            }
 
-            if (!Uri.IsWellFormedUriString(Callback, UriKind.Absolute))
-                throw new MyFlightbookValidationException("Callback URL MUST be a valid https URL");
 
             if (String.IsNullOrWhiteSpace(Scope))
-                throw new MyFlightbookValidationException("No scopes provided - this client will not be userful!");
+                throw new MyFlightbookValidationException("No scopes provided - this client will not be useful!");
 
             if (String.IsNullOrWhiteSpace(OwningUser))
                 throw new MyFlightbookValidationException("No user provided!!!");
@@ -208,12 +211,12 @@ namespace OAuthAuthorizationServer.Code
             DBHelper dbh = new DBHelper("REPLACE INTO allowedoauthclients SET ClientID=?id, ClientSecret=?secret, CallBack=?callback, ClientName=?name, Scopes=?scopes, owningUserName=?user, ClientType=1");
             dbh.DoNonQuery((comm) =>
             {
-                comm.Parameters.AddWithValue("id", ClientIdentifier);
-                comm.Parameters.AddWithValue("secret", ClientSecret);
-                comm.Parameters.AddWithValue("callback", Callback);
-                comm.Parameters.AddWithValue("name", ClientName);
-                comm.Parameters.AddWithValue("scopes", Scope);
-                comm.Parameters.AddWithValue("user", OwningUser);
+                comm.Parameters.AddWithValue("id", ClientIdentifier.LimitTo(45));
+                comm.Parameters.AddWithValue("secret", ClientSecret.LimitTo(255));
+                comm.Parameters.AddWithValue("callback", CallbacksAsString.LimitTo(1024));
+                comm.Parameters.AddWithValue("name", ClientName.LimitTo(255));
+                comm.Parameters.AddWithValue("scopes", Scope.LimitTo(255));
+                comm.Parameters.AddWithValue("user", OwningUser.LimitTo(255));
             });
             OAuth2AuthorizationServer.RefreshClients();
         }
@@ -243,7 +246,17 @@ namespace OAuthAuthorizationServer.Code
         public string ClientIdentifier {get; set;}
         public string ClientName { get; set; }
         public string ClientSecret { get; set; }
-        public string Callback { get; set; }
+
+        /// <summary>
+        /// Allowed callbacks.  Each must be a valid URL
+        /// </summary>
+        public IEnumerable<string> Callbacks { get; set; }
+
+        public string CallbacksAsString
+        {
+            get { return Callbacks == null ? string.Empty : String.Join(" ", Callbacks); }
+        }
+
         public string Scope { get; set; }
         public ClientType ClientType { get; set; }
         public string OwningUser { get; set; }
@@ -260,7 +273,17 @@ namespace OAuthAuthorizationServer.Code
         /// </value>
         Uri IClientDescription.DefaultCallback
         {
-            get { return string.IsNullOrEmpty(this.Callback) ? null : new Uri(this.Callback); }
+            get {
+                if (Callbacks == null || !Callbacks.Any())
+                    return null;
+                string szDef = Callbacks.FirstOrDefault();
+                return string.IsNullOrEmpty(szDef) ? null : new Uri(szDef); }
+        }
+
+        private const char charCallBackSeparator = ' ';
+        public static IEnumerable<string> AllowedCallbacksFromString(string sz)
+        {
+            return sz?.Split(new char[] { charCallBackSeparator, '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>
@@ -309,7 +332,7 @@ namespace OAuthAuthorizationServer.Code
         /// </returns>
         bool IClientDescription.IsCallbackAllowed(Uri callback)
         {
-            if (string.IsNullOrEmpty(this.Callback))
+            if (Callbacks == null || !Callbacks.Any())
             {
                 // No callback rules have been set up for this client.
                 return true;
@@ -321,12 +344,13 @@ namespace OAuthAuthorizationServer.Code
             if (IsDeveloperCallback(callback))
                 return true;
 
-            // In this sample, it's enough of a callback URL match if the scheme and host match.
-            // In a production app, it is advisable to require a match on the path as well.
-            Uri acceptableCallbackPattern = new Uri(this.Callback);
-            if (string.Equals(acceptableCallbackPattern.GetLeftPart(UriPartial.Authority), callback.GetLeftPart(UriPartial.Authority), StringComparison.Ordinal))
+            foreach (string szcallback in Callbacks)
             {
-                return true;
+                // In this sample, it's enough of a callback URL match if the scheme and host match.
+                // In a production app, it is advisable to require a match on the path as well.
+                Uri acceptableCallbackPattern = new Uri(szcallback);
+                if (string.Equals(acceptableCallbackPattern.GetLeftPart(UriPartial.Authority), callback.GetLeftPart(UriPartial.Authority), StringComparison.Ordinal))
+                    return true;
             }
 
             return false;

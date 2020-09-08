@@ -37,7 +37,16 @@ public partial class Secure_oAuthAuthorize : System.Web.UI.Page
 
                 MFBOauth2Client client = (MFBOauth2Client)authorizationServer.AuthorizationServerServices.GetClient(m_pendingRequest.ClientIdentifier);
 
-                if (Uri.Compare(m_pendingRequest.Callback, new Uri(client.Callback), UriComponents.HostAndPort | UriComponents.PathAndQuery, UriFormat.UriEscaped, StringComparison.CurrentCultureIgnoreCase) != 0)
+                bool fIsValidCallback = false;
+                foreach (string callback in client.Callbacks)
+                {
+                    if (Uri.Compare(m_pendingRequest.Callback, new Uri(callback), UriComponents.HostAndPort | UriComponents.PathAndQuery, UriFormat.UriEscaped, StringComparison.CurrentCultureIgnoreCase) != 0)
+                    {
+                        fIsValidCallback = true;
+                        break;
+                    }
+                }
+                if (!fIsValidCallback)
                     throw new HttpException((int)HttpStatusCode.BadRequest, Resources.LocalizedText.oAuthErrBadRedirectURL);
 
                 HashSet<string> allowedScopes = OAuthUtilities.SplitScopes(client.Scope);

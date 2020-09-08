@@ -35,7 +35,7 @@
                             <tr style="vertical-align:top">
                                 <td>Client ID</td>
                                 <td>
-                                    <asp:TextBox ID="txtClient" runat="server" ValidationGroup="newClient"></asp:TextBox>
+                                    <asp:TextBox ID="txtClient" runat="server" MaxLength="45" ValidationGroup="newClient"></asp:TextBox>
                                     <asp:RequiredFieldValidator ValidationGroup="newClient" ID="valClient" ControlToValidate="txtClient" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must choose a unique ID for your client."></asp:RequiredFieldValidator>
                                 </td>
                                 <td>
@@ -45,7 +45,7 @@
                             <tr style="vertical-align:top">
                                 <td>Client Secret</td>
                                 <td>
-                                    <asp:TextBox ID="txtSecret" runat="server" ValidationGroup="newClient"></asp:TextBox>
+                                    <asp:TextBox ID="txtSecret" runat="server" MaxLength="255" ValidationGroup="newClient"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="valSecret" ValidationGroup="newClient" ControlToValidate="txtSecret" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must choose a secret for your client."></asp:RequiredFieldValidator>
                                 </td>
                                 <td>
@@ -55,7 +55,7 @@
                             <tr style="vertical-align:top">
                                 <td>Client Name</td>
                                 <td>
-                                    <asp:TextBox ID="txtName" runat="server" ValidationGroup="newClient"></asp:TextBox>
+                                    <asp:TextBox ID="txtName" runat="server" MaxLength="255" ValidationGroup="newClient"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="valName" ValidationGroup="newClient" ControlToValidate="txtName" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must choose a name for your client."></asp:RequiredFieldValidator>
                                 </td>
                                 <td>
@@ -63,13 +63,15 @@
                                 </td>
                             </tr>
                             <tr style="vertical-align:top">
-                                <td>Callback URL:</td>
-                                <td>
-                                    https://<asp:TextBox ID="txtCallback" runat="server" ValidationGroup="newClient"></asp:TextBox>
-                                    <asp:RequiredFieldValidator ID="valCallback" ValidationGroup="newClient" ControlToValidate="txtCallback" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must provide a valid callback URL for your client."></asp:RequiredFieldValidator>
+                                <td>Callback URL(s):
+                                    <br /><span class="fineprint">Separate multiple urls with a space or a newline.</span>
                                 </td>
                                 <td>
-                                    When authorizing a user, the redirect URL MUST match this.
+                                    <asp:TextBox ID="txtCallback" runat="server" MaxLength="1023" ValidationGroup="newClient" Text="https://" Rows="4" TextMode="MultiLine"></asp:TextBox>
+                                    <asp:RequiredFieldValidator ID="valCallback" ValidationGroup="newClient" ControlToValidate="txtCallback" CssClass="error" Display="Dynamic" runat="server" ErrorMessage="You must provide at least one valid callback URL for your client."></asp:RequiredFieldValidator>
+                                </td>
+                                <td>
+                                    When authorizing a user, the redirect URL MUST match this.  These MUST be https.
                                 </td>
                             </tr>
                             <tr style="vertical-align:top">
@@ -112,7 +114,21 @@
                     <asp:BoundField HeaderText="Client ID" DataField="ClientIdentifier" ReadOnly="true" ItemStyle-VerticalAlign="Top" />
                     <asp:BoundField HeaderText="Client Secret" DataField="ClientSecret" ItemStyle-VerticalAlign="Top" />
                     <asp:BoundField HeaderText="Client Name" DataField="ClientName" ItemStyle-VerticalAlign="Top" />
-                    <asp:BoundField HeaderText="Callback URL" DataField="Callback" ItemStyle-VerticalAlign="Top" />
+                    <asp:TemplateField HeaderText="Callback URL(s)" ItemStyle-VerticalAlign="Top">
+                        <ItemTemplate>
+                            <ul>
+                                <asp:Repeater ID="rptCallback" DataSource='<%# Eval("Callbacks") %>' runat="server">
+                                        <ItemTemplate>
+                                            <li><%# Container.DataItem %></li>
+                                        </ItemTemplate>
+                                </asp:Repeater>
+                            </ul>
+                        </ItemTemplate>
+                        <EditItemTemplate>
+                            <div class="fineprint">Enter urls, using spaces or new lines to divide multiple ones.</div>
+                            <asp:TextBox ID="txtCallbacks" MaxLength="1023" runat="server" Text='<%# Bind("CallbacksAsString") %>' Rows="4" TextMode="MultiLine"></asp:TextBox>
+                        </EditItemTemplate>
+                    </asp:TemplateField>
                     <asp:BoundField HeaderText="Scopes (space separated)" DataField="Scope" ItemStyle-VerticalAlign="Top" />
                     <asp:CommandField ButtonType="Link" ShowEditButton="true" ItemStyle-VerticalAlign="Top" />
                 </Columns>
