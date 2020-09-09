@@ -1816,7 +1816,7 @@
     <value>Prepared on {0:D}</value>
   </data>
   <data name="PrintViewCoverSheetNameTemplate" xml:space="preserve">
-    <value>Logbook for {0}</value>
+    <value>Pilot Logbook</value>
   </data>
   <data name="PrintViewIncludeCoverSheet" xml:space="preserve">
     <value>Cover page</value>

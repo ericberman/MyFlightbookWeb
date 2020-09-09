@@ -409,15 +409,6 @@ public partial class Member_PrintView
     protected global::System.Web.UI.WebControls.Label lblCoverName;
 
     /// <summary>
-    /// lblCoverDate control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label lblCoverDate;
-
-    /// <summary>
     /// imgLogo control.
     /// </summary>
     /// <remarks>
@@ -425,6 +416,15 @@ public partial class Member_PrintView
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Image imgLogo;
+
+    /// <summary>
+    /// lblCoverDate control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblCoverDate;
 
     /// <summary>
     /// mvLayouts control.

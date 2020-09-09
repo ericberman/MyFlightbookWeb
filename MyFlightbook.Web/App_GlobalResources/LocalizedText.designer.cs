@@ -3734,7 +3734,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Logbook for {0}.
+        ///   Looks up a localized string similar to Pilot Logbook.
         /// </summary>
         internal static string PrintViewCoverSheetNameTemplate {
             get {

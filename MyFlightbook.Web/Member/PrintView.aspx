@@ -197,11 +197,16 @@
         <asp:Panel ID="pnlCover" runat="server">
             <div style="page-break-after:always; margin-left: auto; margin-right: auto; padding: 15px; text-align: center;" >
                 <br /><br /><br />
-                <p><asp:Label ID="lblCoverName" Font-Bold="true" Font-Size="XX-Large" style="text-transform:uppercase;" runat="server" /></p>
+                <div style="text-transform:uppercase; font-weight:bold; font-size:xx-large">
+                    <p>
+                        <%= CurrentUser.UserFullName %><br />
+                        <asp:Label ID="lblCoverName" runat="server" Text="<%$ Resources:LocalizedText, PrintViewCoverSheetNameTemplate %>" />
+                    </p>
+                </div>
                 <div style="white-space:pre-line"><% =CurrentUser.Address %></div>
                 <div><%=Resources.LogbookEntry.PrintHeaderLicense %> <% =CurrentUser.License %></div>
-                <p><asp:Label ID="lblCoverDate" runat="server" /></p>
                 <div><asp:Image ID="imgLogo" runat="server" style="max-width: 300px;" /></div>
+                <p><asp:Label ID="lblCoverDate" runat="server" /></p>
             </div>
         </asp:Panel>
         <asp:MultiView ID="mvLayouts" runat="server" ActiveViewIndex="0">
