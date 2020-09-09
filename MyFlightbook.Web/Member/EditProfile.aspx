@@ -609,15 +609,18 @@
                             <asp:Panel ID="pnlGPhotos" runat="server" CssClass="prefSectionRow">
                                 <h2><asp:Localize ID="locShareGooglePhotos" runat="server" Text="<%$ Resources:LocalizedText, PrefSharingGooglePhotos %>"></asp:Localize></h2>
                                 <p><asp:Label ID="lblGPhotosDesc" runat="server" /></p>
-                                <asp:MultiView ID="mvGPhotos" runat="server" ActiveViewIndex="0">
-                                    <asp:View ID="vwGPhotosDisabled" runat="server">
-                                        <asp:LinkButton ID="lnkAuthGPhotos" runat="server" OnClick="lnkAuthGPhotos_Click" />
-                                    </asp:View>
-                                    <asp:View ID="vwGPhotosEnabled" runat="server">
-                                        <div><asp:Label ID="lblGPhotosEnabled" runat="server" /></div>
-                                        <div><asp:LinkButton ID="lnkDeAuthGPhotos" runat="server" OnClick="lnkDeAuthGPhotos_Click" /></div>
-                                    </asp:View>
-                                </asp:MultiView>
+                                <div>
+                                    <img src="https://ssl.gstatic.com/social/photosui/images/logo/favicon_alldp.ico" style="float:left; margin-right: 5px; max-width: 30px;" />
+                                    <asp:MultiView ID="mvGPhotos" runat="server" ActiveViewIndex="0">
+                                        <asp:View ID="vwGPhotosDisabled" runat="server">
+                                            <asp:LinkButton ID="lnkAuthGPhotos" runat="server" OnClick="lnkAuthGPhotos_Click" />
+                                        </asp:View>
+                                        <asp:View ID="vwGPhotosEnabled" runat="server">
+                                            <div><asp:Label ID="lblGPhotosEnabled" runat="server" /></div>
+                                            <div><asp:LinkButton ID="lnkDeAuthGPhotos" runat="server" OnClick="lnkDeAuthGPhotos_Click" /></div>
+                                        </asp:View>
+                                    </asp:MultiView>
+                                </div>
                             </asp:Panel>
                         </Content>
                     </cc1:AccordionPane>

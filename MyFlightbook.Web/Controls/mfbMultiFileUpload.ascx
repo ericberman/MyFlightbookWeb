@@ -9,7 +9,7 @@
     <asp:View ID="vwAjaxUpload" runat="server">
         <asp:Image ID="myThrobber" ImageUrl="~/images/ajax-loader.gif" runat="server" style="display:None" />
         <div>
-            <div style="float:left; margin-top: 15px; margin-right: 8px"><asp:ImageButton ID="imgPullGoogle" runat="server" ImageUrl="~/images/download.png" Visible="false" OnClick="imgPullGoogle_Click" ToolTip="<%$ Resources:LocalizedText, GooglePhotosViewImages %>" AlternateText="<%$ Resources:LocalizedText, GooglePhotosViewImages %>" /></div>
+            <div style="float:left; margin-top: 15px; margin-right: 8px"><asp:ImageButton ID="imgPullGoogle" runat="server" ImageUrl="https://ssl.gstatic.com/social/photosui/images/logo/favicon_alldp.ico" Width="30" Visible="false" OnClick="imgPullGoogle_Click" ToolTip="<%$ Resources:LocalizedText, GooglePhotosViewImages %>" AlternateText="<%$ Resources:LocalizedText, GooglePhotosViewImages %>" /></div>
             <asp:AjaxFileUpload ID="AjaxFileUpload1" runat="server" AutoStartUpload="true" CssClass="mfbDefault" MaxFileSize="300000"
                     ThrobberID="myThrobber" AllowedFileTypes="heic,jpg,jpeg,pdf,jpe,png" MaximumNumberOfFiles="10" OnUploadComplete="AjaxFileUpload1_UploadComplete" OnUploadCompleteAll="AjaxFileUpload1_UploadCompleteAll" />
         </div>

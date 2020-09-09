@@ -1118,7 +1118,7 @@ namespace MyFlightbook.CloudStorage
 
                 GoogleImageRequest googleImageRequest = new GoogleImageRequest() { filters = new GoogleImageFilter() { dateFilter = new GoogleDateFilter(dt) }, pageToken = nextPageToken };
                 if (!fIncludeVideos)
-                    googleImageRequest.filters.mediaTypeFilter.mediaTypes = new string[] { GoogleMediaType.PHOTO.ToString() };
+                    googleImageRequest.filters.mediaTypeFilter = new GoogleMediaTypeFilter() { mediaTypes = new string[] { GoogleMediaType.PHOTO.ToString() } };
 
                 string imgReqJSON = JsonConvert.SerializeObject(googleImageRequest);
 
