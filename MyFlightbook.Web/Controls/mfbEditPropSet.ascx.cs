@@ -19,8 +19,18 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
     private const string vsActiveProps = "vsActiveProps";
     private const string vsPropVals = "vsPropVals";
     private const string vsPropTemplates = "vsPropTemplates";
+    private const string vsPropUser = "vsPropUser";
 
     #region properties
+    /// <summary>
+    /// The username for whom we are showing properties and templates.  If unspecified, currently logged user is used.
+    /// </summary>
+    public string Username
+    {
+        get { return ((string)ViewState[vsPropUser]) ?? Page.User.Identity.Name; }
+        set { ViewState[vsPropUser] = value; }
+    }
+
     private List<CustomFlightProperty> m_cfpActive = null;
     /// <summary>
     /// These are the properties that are instantiated to edit
@@ -73,13 +83,13 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
                 HashSet<PropertyTemplate> hs = new HashSet<PropertyTemplate>();
                 if (Page.User.Identity.IsAuthenticated)
                 {
-                    IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name);
+                    IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(Username);
                     foreach (PropertyTemplate pt in rgpt)
                         if (pt.IsDefault)
                             hs.Add(pt);
 
                     if (hs.Count == 0)
-                        hs.Add(new MRUPropertyTemplate(Page.User.Identity.Name));
+                        hs.Add(new MRUPropertyTemplate(Username));
                 }
                 mfbSelectTemplates.AddTemplates(hs);
                 ViewState[vsPropTemplates] = hs;
@@ -178,7 +188,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
             });
 
             if (fPropsDeleted)
-                MyFlightbook.Profile.GetUser(Page.User.Identity.Name).SetAchievementStatus(MyFlightbook.Achievements.Achievement.ComputeStatus.NeedsComputing);
+                Profile.GetUser(Username).SetAchievementStatus(MyFlightbook.Achievements.Achievement.ComputeStatus.NeedsComputing);
 
             lst.RemoveAll(cfp => cfp.IsDefaultValue);
             return lst;
@@ -201,6 +211,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         RecreateControls(); // set them up for postback or initial
         Page.ClientScript.RegisterClientScriptInclude("filterDropdown", ResolveClientUrl("~/Public/Scripts/DropDownFilter.js?v=2"));
         txtFilter.Attributes["onkeyup"] = String.Format(CultureInfo.InvariantCulture, "FilterItems(this, '{0}', '{1}', '{2}')", cmbPropsToAdd.ClientID, lblFilterMessage.ClientID, Resources.LogbookEntry.PropertiesFound);
+        imgSearch.Attributes["onclick"] = "javascript:toggleSearchBox();";
     }
 
     protected void SegregateProperties(bool fStripDefault = false)
@@ -213,7 +224,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         PropertyTemplate ptMerged = PropertyTemplate.MergedTemplate(ActiveTemplates);
 
         // this is cached so we can do it on every call, postback or not
-        CustomPropertyType[] rgCptAll = CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.IsAuthenticated ? Page.User.Identity.Name : string.Empty);
+        CustomPropertyType[] rgCptAll = CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.IsAuthenticated ? Username : string.Empty);
 
         foreach (CustomPropertyType cpt in rgCptAll)
         {
@@ -260,6 +271,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         plcHolderProps.Controls.Add(ep);
         ep.CrossFillSourceClientID = CrossFillSourceClientID;
         ep.ID = IDForPropType(cfp.PropertyType);
+        ep.Username = Username;
         ep.FlightProperty = cfp;
     }
 
@@ -303,7 +315,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         Properties = PropertiesFromPropSet;             // Pick up any changes from the existing child controls, to preserve across postback
         if (cfp != null)
             Properties.Add(cfp);
-        SegregateProperties(fStripDefaults);                          // add the new property to the list
+        SegregateProperties(fStripDefaults);            // add the new property to the list
         PopulateControls();                             // And re-populate.
         txtFilter.Text = string.Empty;
         mfbSelectTemplates.Refresh();
@@ -322,7 +334,7 @@ public partial class Controls_mfbEditPropSet : System.Web.UI.UserControl
         if (String.IsNullOrEmpty(cmbPropsToAdd.SelectedValue))
             return;
         int idPropType = Convert.ToInt32(cmbPropsToAdd.SelectedValue, CultureInfo.InvariantCulture);
-        CustomPropertyType[] rgCptAll = CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.IsAuthenticated ? Page.User.Identity.Name : string.Empty);
+        CustomPropertyType[] rgCptAll = CustomPropertyType.GetCustomPropertyTypes(Page.User.Identity.IsAuthenticated ? Username : string.Empty);
         CustomPropertyType cpt = rgCptAll.First((cpt2) => {return cpt2.PropTypeID == idPropType;});
 
         if (cpt == null)

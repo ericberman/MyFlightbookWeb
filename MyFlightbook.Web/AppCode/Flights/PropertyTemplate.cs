@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 /******************************************************
  * 
- * Copyright (c) 2019 MyFlightbook LLC
+ * Copyright (c) 2019-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -18,7 +18,7 @@ namespace MyFlightbook.Templates
 {
     public enum PropertyTemplateGroup { Automatic, Training, Checkrides, Missions, Roles, Lessons }
 
-    public enum KnownTemplateIDs { None = 0, ID_NEW = -1, ID_MRU = -2, ID_SIM = -3, ID_ANON = -4 }
+    public enum KnownTemplateIDs { None = 0, ID_NEW = -1, ID_MRU = -2, ID_SIM = -3, ID_ANON = -4, ID_STUDENT = -5 }
 
     /// <summary>
     /// PropertyTemplate - basic functionality, base class for other templates
@@ -98,7 +98,7 @@ namespace MyFlightbook.Templates
 
         public bool ContainsProperty(int idproptype) { return m_propertyTypes.Contains(idproptype); }
 
-        public bool ContainsProperty(CustomPropertyType cpt) { return cpt == null ? false : m_propertyTypes.Contains(cpt.PropTypeID); }
+        public bool ContainsProperty(CustomPropertyType cpt) { return cpt != null && m_propertyTypes.Contains(cpt.PropTypeID); }
 
         public void AddProperty(int idProptype) { m_propertyTypes.Add(idProptype); }
 
@@ -318,6 +318,21 @@ namespace MyFlightbook.Templates
             Description = Resources.LogbookEntry.TemplateAnonymousBasicDesc;
             m_propertyTypes.Clear();
             m_propertyTypes.Add((int)CustomPropertyType.KnownProperties.IDPropAircraftRegistration);
+        }
+    }
+
+    [Serializable]
+    public class StudentPropertyTemplate : PropertyTemplate
+    {
+        public StudentPropertyTemplate() : base()
+        {
+            ID = (int)KnownTemplateIDs.ID_STUDENT;
+            Group = PropertyTemplateGroup.Automatic;
+            Name = Resources.LogbookEntry.TemplateStudent;
+            Description = Resources.LogbookEntry.TemplateStudentDesc;
+            m_propertyTypes.Clear();
+            m_propertyTypes.Add((int)CustomPropertyType.KnownProperties.IDPropGroundInstructionReceived);
+            m_propertyTypes.Add((int)CustomPropertyType.KnownProperties.IDPropInstructorName);
         }
     }
     #endregion
@@ -542,6 +557,11 @@ namespace MyFlightbook.Templates
             return lst;
         }
 
+        /// <summary>
+        /// Returns the automatic templates for the user, but NOT the student template, which is added only for CFI's creating an entry for a student.
+        /// </summary>
+        /// <param name="szUser"></param>
+        /// <returns></returns>
         public static IEnumerable<PropertyTemplate> AutomaticTemplatesForUser(string szUser)
         {
             return new PropertyTemplate[] { new MRUPropertyTemplate(szUser), new SimPropertyTemplate(), new AnonymousPropertyTemplate() };

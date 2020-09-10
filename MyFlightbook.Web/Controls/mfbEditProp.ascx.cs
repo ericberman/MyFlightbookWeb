@@ -5,7 +5,7 @@ using System.Web.UI;
 
 /******************************************************
  * 
- * Copyright (c) 2013-2019 MyFlightbook LLC
+ * Copyright (c) 2013-2020 MyFlightbook LLC
  * Contact myflightbook-at-gmail.com for more information
  *
 *******************************************************/
@@ -15,6 +15,8 @@ public partial class Controls_mfbEditProp : System.Web.UI.UserControl
     private CustomFlightProperty m_fp = null;
 
     #region properties
+    public string Username { get; set; }
+
     /// <summary>
     /// The flight property being edited
     /// </summary>
@@ -40,6 +42,7 @@ public partial class Controls_mfbEditProp : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        imgXFillTach.Attributes["onclick"] = "javascript:onTachAutofill();";
     }
 
     protected void FromForm()
@@ -164,7 +167,8 @@ public partial class Controls_mfbEditProp : System.Web.UI.UserControl
             case CFPPropertyType.cfpString:
                 txtString.Text = fp.TextValue;
                 mvProp.SetActiveView(vwText);
-                autocompleteStringProp.ContextKey = String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0};{1}", Page.User.Identity.Name, fp.PropTypeID.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                // Autocomplete uses the target user's previous values.
+                autocompleteStringProp.ContextKey = String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0};{1}", Username ?? Page.User.Identity.Name, fp.PropTypeID.ToString(System.Globalization.CultureInfo.InvariantCulture));
                 break;
             default:
                 throw new MyFlightbookException(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown property type: {0}", fp.PropertyType.Type));

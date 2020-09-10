@@ -3581,6 +3581,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Student.
+        /// </summary>
+        internal static string TemplateStudent {
+            get {
+                return ResourceManager.GetString("TemplateStudent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contains properties useful for students.
+        /// </summary>
+        internal static string TemplateStudentDesc {
+            get {
+                return ResourceManager.GetString("TemplateStudentDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ✓.
         /// </summary>
         internal static string TemplateYours {

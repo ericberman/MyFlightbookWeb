@@ -1319,4 +1319,10 @@ Proceed with import?</value>
   <data name="PublicFlightShowOptions" xml:space="preserve">
     <value>Display</value>
   </data>
+  <data name="TemplateStudent" xml:space="preserve">
+    <value>Student</value>
+  </data>
+  <data name="TemplateStudentDesc" xml:space="preserve">
+    <value>Contains properties useful for students</value>
+  </data>
 </root>

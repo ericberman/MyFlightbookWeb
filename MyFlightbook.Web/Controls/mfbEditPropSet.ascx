@@ -35,7 +35,7 @@
                     <table>
                         <tr style="vertical-align:top">
                             <td>
-                                <asp:Image ID="imgSearch" ImageUrl="~/images/Search.png" runat="server" onclick="javascript:toggleSearchBox();" />
+                                <asp:Image ID="imgSearch" ImageUrl="~/images/Search.png" runat="server" />
                             </td>
                             <td>
                                 <asp:Panel ID="pnlSearchProps" runat="server" EnableViewState="false">

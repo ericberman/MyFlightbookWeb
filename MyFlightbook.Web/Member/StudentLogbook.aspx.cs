@@ -59,7 +59,10 @@ public partial class Member_StudentLogbook : System.Web.UI.Page
                         UpdateForUser(hdnStudent.Value);
 
                     if (student.CanAddLogbook)
+                    {
+                        mfbEditFlight.FlightUser = student.UserName;
                         mfbEditFlight.SetUpNewOrEdit(LogbookEntry.idFlightNew);
+                    }
                     else
                         apcNewFlight.Visible = false;
 

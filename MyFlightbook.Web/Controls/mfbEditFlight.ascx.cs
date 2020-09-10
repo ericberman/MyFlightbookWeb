@@ -63,16 +63,16 @@ public partial class Controls_mfbEditFlightBase : UserControl
     #endregion
 
     #region Templates
-    protected void SetTemplatesForAircraft(Aircraft ac, Controls_mfbEditPropSet editPropSet)
+    protected static void SetTemplatesForAircraft(Aircraft ac, Controls_mfbEditPropSet editPropSet, string szUser, bool fAddStudentTemplate)
     {
         if (ac == null)
             return;
-
         if (editPropSet == null)
             throw new ArgumentNullException(nameof(editPropSet));
 
+        editPropSet.Username = szUser ?? throw new ArgumentNullException(nameof(szUser));
         editPropSet.RemoveAllTemplates();
-        IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(Page.User.Identity.Name, false);
+        IEnumerable<PropertyTemplate> rgpt = UserPropertyTemplate.TemplatesForUser(szUser, false);
 
         HashSet<PropertyTemplate> aircraftTemplates = new HashSet<PropertyTemplate>();
         foreach (int id in ac.DefaultTemplates)
@@ -82,14 +82,14 @@ public partial class Controls_mfbEditFlightBase : UserControl
                 aircraftTemplates.Add(pt);
         }
 
-        HashSet<PropertyTemplate> defaultTemplates = new HashSet<PropertyTemplate>(UserPropertyTemplate.DefaultTemplatesForUser(Page.User.Identity.Name));
+        HashSet<PropertyTemplate> defaultTemplates = new HashSet<PropertyTemplate>(UserPropertyTemplate.DefaultTemplatesForUser(szUser));
         // if the aircraft has valid templates specified, use those
         if (aircraftTemplates.Count > 0)
             editPropSet.AddTemplates(aircraftTemplates);
         else if (defaultTemplates.Count > 0)
             editPropSet.AddTemplates(defaultTemplates);
         else
-            editPropSet.AddTemplate(new MRUPropertyTemplate(Page.User.Identity.Name));
+            editPropSet.AddTemplate(new MRUPropertyTemplate(szUser));
 
         editPropSet.RemoveTemplate((int)KnownTemplateIDs.ID_ANON);
         editPropSet.RemoveTemplate((int)KnownTemplateIDs.ID_SIM);
@@ -101,6 +101,9 @@ public partial class Controls_mfbEditFlightBase : UserControl
         }
         else
             editPropSet.AddTemplate(new SimPropertyTemplate());
+
+        if (fAddStudentTemplate)
+            editPropSet.AddTemplate(new StudentPropertyTemplate());
 
         editPropSet.Refresh();
     }
@@ -142,9 +145,9 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
     }
 
     /// <summary>
-    /// Username for the flight.
+    /// Username for the flight.  If an admin or CFI is editing the flight, this preserves the original owner's username
     /// </summary>
-    private string FlightUser
+    public string FlightUser
     {
         get { return (string) ViewState[keyVSFlightUser]; }
         set { ViewState[keyVSFlightUser] = value; }
@@ -551,7 +554,10 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
             mfbFlightProperties1.SetFlightProperties(le.CustomProperties);
         }
         else
+        {
+            mfbEditPropSet1.Username = FlightUser;
             mfbEditPropSet1.SetFlightProperties(le.CustomProperties);
+        }
     }
 
     protected void SetTemplatesForAircraft(int idAircraft)
@@ -559,9 +565,7 @@ public partial class Controls_mfbEditFlight : Controls_mfbEditFlightBase
         UserAircraft ua = new UserAircraft(Page.User.Identity.Name);
         Aircraft ac = ua.GetUserAircraftByID(idAircraft);
         if (ac != null)
-        {
-            SetTemplatesForAircraft(ac, mfbEditPropSet1);
-        }
+            SetTemplatesForAircraft(ac, mfbEditPropSet1, FlightUser ?? Page.User.Identity.Name, FlightUser.CompareCurrentCultureIgnoreCase(Page.User.Identity.Name) != 0);
     }
 
     /// <summary>
