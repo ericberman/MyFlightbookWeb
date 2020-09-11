@@ -1639,11 +1639,8 @@ WHERE
             string szNew;
             Boolean fDelete;
 
-            if (o1 is Decimal && o2 is Decimal)
+            if (o1 is Decimal d1 && o2 is Decimal d2)
             {
-                Decimal d1 = (Decimal)o1;
-                Decimal d2 = (Decimal)o2;
-
                 if (d1 == d2)
                     return null;
 
@@ -1651,10 +1648,8 @@ WHERE
 
                 fDelete = (d2 == 0.0M);
             }
-            else if (o1 is DateTime && o2 is DateTime)
+            else if (o1 is DateTime dt1 && o2 is DateTime dt2)
             {
-                DateTime dt1 = (DateTime)o1;
-                DateTime dt2 = (DateTime)o2;
                 string szOld = dt1.ToShortDateString();
                 szNew = dt2.ToShortDateString();
 

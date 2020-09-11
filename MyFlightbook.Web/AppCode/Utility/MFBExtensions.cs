@@ -737,7 +737,7 @@ namespace MyFlightbook
         {
             if (o == null || o == System.DBNull.Value)
                 return string.Empty;
-            DateTime dt = (o is DateTime) ? (DateTime)o : DateTime.Parse(o.ToString(), CultureInfo.InvariantCulture);
+            DateTime dt = (o is DateTime time) ? time : DateTime.Parse(o.ToString(), CultureInfo.InvariantCulture);
             return dt.ToShortDateString();
         }
 
@@ -765,7 +765,7 @@ namespace MyFlightbook
         {
             if (o == null || o == System.DBNull.Value)
                 return string.Empty;
-            DateTime dt = (o is DateTime) ? (DateTime)o : DateTime.Parse(o.ToString(), CultureInfo.InvariantCulture);
+            DateTime dt = (o is DateTime time) ? time : DateTime.Parse(o.ToString(), CultureInfo.InvariantCulture);
             return dt.HasValue() ? dt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : string.Empty;
         }
 

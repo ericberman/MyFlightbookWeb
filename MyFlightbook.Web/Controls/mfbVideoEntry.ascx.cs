@@ -38,7 +38,7 @@ public partial class Controls_mfbVideoEntry : UserControl
     /// </summary>
     public bool CanAddVideos
     {
-        get { return String.IsNullOrEmpty(hdnCanEdit.Value) ? false : Convert.ToBoolean(hdnCanEdit.Value, CultureInfo.InvariantCulture); }
+        get { return !String.IsNullOrEmpty(hdnCanEdit.Value) && Convert.ToBoolean(hdnCanEdit.Value, CultureInfo.InvariantCulture); }
         set 
         { 
             hdnCanEdit.Value = value.ToString(CultureInfo.InvariantCulture);
@@ -52,7 +52,7 @@ public partial class Controls_mfbVideoEntry : UserControl
     /// </summary>
     public bool CanDelete
     {
-        get { return String.IsNullOrEmpty(hdnCanDelete.Value) ? false : Convert.ToBoolean(hdnCanDelete.Value, CultureInfo.InvariantCulture); }
+        get { return !string.IsNullOrEmpty(hdnCanDelete.Value) && Convert.ToBoolean(hdnCanDelete.Value, CultureInfo.InvariantCulture); }
         set { hdnCanDelete.Value = value.ToString(CultureInfo.InvariantCulture); }
     }
 

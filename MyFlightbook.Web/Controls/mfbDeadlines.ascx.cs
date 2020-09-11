@@ -56,7 +56,7 @@ public partial class Controls_mfbDeadlines : UserControl
     /// </summary>
     public bool CreateShared
     {
-        get { return String.IsNullOrEmpty(hdnCreateShared.Value) ? false : Convert.ToBoolean(hdnCreateShared.Value, CultureInfo.InvariantCulture); }
+        get { return !string.IsNullOrEmpty(hdnCreateShared.Value) && Convert.ToBoolean(hdnCreateShared.Value, CultureInfo.InvariantCulture); }
         set
         {
             hdnCreateShared.Value = value.ToString(CultureInfo.InvariantCulture);

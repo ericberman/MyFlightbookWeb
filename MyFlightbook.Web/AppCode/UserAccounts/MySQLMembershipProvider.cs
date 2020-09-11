@@ -906,8 +906,8 @@ namespace Andri.Web
             string email = reader.IsDBNull(2)                      ? "" :reader.GetString(2);
             string passwordQuestion = reader.IsDBNull(3)           ? "" : reader.GetString(3);
             string comment = reader.IsDBNull(4)                    ? "" : reader.GetString(4);
-            bool isApproved = reader.IsDBNull(5)                   ? false : reader.GetBoolean(5);
-            bool isLockedOut = reader.IsDBNull(6)                  ? false : reader.GetBoolean(6);
+            bool isApproved = !reader.IsDBNull(5) && reader.GetBoolean(5);
+            bool isLockedOut = !reader.IsDBNull(6) && reader.GetBoolean(6);
             DateTime creationDate = reader.IsDBNull(7)             ? DateTime.Now : reader.GetDateTime(7);
             DateTime lastLoginDate = reader.IsDBNull(8)            ? DateTime.Now : reader.GetDateTime(8);
             DateTime lastActivityDate = reader.IsDBNull(9)         ? DateTime.Now : reader.GetDateTime(9);

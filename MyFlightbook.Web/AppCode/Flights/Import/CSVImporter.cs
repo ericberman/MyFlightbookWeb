@@ -717,7 +717,7 @@ namespace MyFlightbook.ImportFlights
             #region GetMappedValues
             private Boolean GetMappedBoolean(int iCol)
             {
-                return (iCol < 0) ? false : m_rgszRow[iCol].SafeParseBoolean();
+                return iCol >= 0 && m_rgszRow[iCol].SafeParseBoolean();
             }
 
             private string GetMappedString(int iCol)

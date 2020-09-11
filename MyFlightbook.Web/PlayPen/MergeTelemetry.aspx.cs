@@ -38,7 +38,7 @@ public partial class PlayPen_MergeTelemetry : System.Web.UI.Page
 
     protected static bool FromObj(object o)
     {
-        return o == null ? true : Convert.ToBoolean(o, CultureInfo.InvariantCulture);
+        return o == null || Convert.ToBoolean(o, CultureInfo.InvariantCulture);
     }
 
     protected bool HasTime
