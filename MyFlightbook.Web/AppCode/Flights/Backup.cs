@@ -3,6 +3,7 @@ using MyFlightbook.CloudStorage;
 using MyFlightbook.Image;
 using MyFlightbook.Instruction;
 using MyFlightbook.Telemetry;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -65,6 +66,126 @@ namespace MyFlightbook
         const string szThumbFolderBasicMed = "thumbsbasicmed";
         const string szThumbFolderFlights = "thumbsFlights";
         const string szThumbTelemetry = "Telemetry";
+
+        protected static IDictionary<string, object> PilotInfo(Profile pf)
+        {
+            if (pf == null)
+                throw new ArgumentNullException(nameof(pf));
+
+            return new Dictionary<string, object>
+            {
+                ["Given Name"] = String.IsNullOrEmpty(pf.UserFirstName) ? string.Empty : pf.UserFirstName,
+                ["Family Name"] = String.IsNullOrEmpty(pf.UserLastName) ? string.Empty : pf.UserLastName,
+                ["Email"] = String.IsNullOrEmpty(pf.Email) ? string.Empty : pf.Email,
+                ["Address"] = String.IsNullOrEmpty(pf.Address) ? string.Empty : pf.Address,
+                ["CFICertificate"] = String.IsNullOrEmpty(pf.CFIDisplay) ? string.Empty : pf.CFIDisplay,
+                ["Certificate"] = String.IsNullOrEmpty(pf.LicenseDisplay) ? string.Empty : pf.LicenseDisplay,
+                ["Last Medical"] = pf.LastMedical.HasValue() ? pf.LastMedical.YMDString() : string.Empty,
+                ["Medical Duration (months)"] = pf.LastMedical.HasValue() ? pf.MonthsToMedical.ToString(CultureInfo.InvariantCulture) : string.Empty,
+                ["English Proficiency"] = pf.EnglishProficiencyExpiration.HasValue() ? pf.EnglishProficiencyExpiration.YMDString() : string.Empty,
+                ["Flight Reviews"] = ProfileEvent.AsPublicList(ProfileEvent.GetBFREvents(pf.UserName, pf.LastBFREvent)),
+                ["IPCs"] = ProfileEvent.AsPublicList(ProfileEvent.GetIPCEvents(pf.UserName)),
+                ["Ratings"] = new Achievements.UserRatings(pf.UserName).AsKeyValuePairs()
+            };
+        }
+
+        public static string PilotInfoAsJSon(Profile pf)
+        {
+            return JsonConvert.SerializeObject(PilotInfo(pf), new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore });
+        }
+
+        private static void WriteKeyValue(HtmlTextWriter tw, string szKey, string szValue, bool fBoldKey)
+        {
+            if (String.IsNullOrEmpty(szValue))
+                return;
+
+            tw.Write(String.Format(CultureInfo.InvariantCulture, "<div {0}>{1}: {2}</div>", fBoldKey ? "style=\"font-weight:bold\"" : string.Empty, szKey, szValue));
+        }
+
+        private static void WriteProfileEvent(HtmlTextWriter tw, IDictionary<string, object> d)
+        {
+            tw.RenderBeginTag(HtmlTextWriterTag.Li);
+            tw.Write(String.Format(CultureInfo.InvariantCulture, "<span style=\"font-weight: bold\">{0}</span>: {1} ({2})", d["Date"], d["Property Type"], String.Format(CultureInfo.CurrentCulture, "{0}, {1}, {2}", d["Model"], d["Category"], d["Type"]).Trim()));
+            tw.RenderEndTag();
+        }
+
+        private static void WritePilotInformation(HtmlTextWriter tw, Profile pf)
+        {
+            if (tw == null)
+                throw new ArgumentNullException(nameof(tw));
+            if (pf == null)
+                throw new ArgumentNullException(nameof(pf));
+
+            IDictionary<string, object> d = PilotInfo(pf);
+
+            if (d.Count == 0)
+                return;
+
+            tw.RenderBeginTag(HtmlTextWriterTag.H1);
+            tw.Write(String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.ImagesBackupPilotInfoHeader, pf.UserFullName));
+            tw.RenderEndTag();
+
+            // Write out the top line strings, ignoring empty values
+            foreach (string szkey in d.Keys)
+            {
+                if (d[szkey] is string szValue)
+                    WriteKeyValue(tw, szkey, szValue, true);
+            }
+
+            IEnumerable<IDictionary<string, object>> flightreviews = (IEnumerable<IDictionary<string, object>>) d["Flight Reviews"];
+            if (flightreviews.Any())
+            {
+                tw.RenderBeginTag(HtmlTextWriterTag.H2);
+                tw.Write(Resources.Preferences.PilotInfoBFRs);
+                tw.RenderEndTag();
+
+                tw.RenderBeginTag(HtmlTextWriterTag.Ul);
+                foreach (var review in flightreviews)
+                    WriteProfileEvent(tw, review);
+                tw.RenderEndTag();
+            }
+
+            IEnumerable<IDictionary<string, object>> ipcs = (IEnumerable<IDictionary<string, object>>)d["IPCs"];
+            if (ipcs.Any())
+            {
+                tw.RenderBeginTag(HtmlTextWriterTag.H2);
+                tw.Write(Resources.Preferences.PilotInfoIPCHeader);
+                tw.RenderEndTag();
+
+                tw.RenderBeginTag(HtmlTextWriterTag.Ul);
+                foreach (var ipc in ipcs)
+                    WriteProfileEvent(tw, ipc);
+                tw.RenderEndTag();
+            }
+
+            // Checkrides and ratings
+            IDictionary<string, object> ratings = (IDictionary<string, object>)d["Ratings"];
+            IEnumerable<IDictionary<string, object>> certificates = (IEnumerable<IDictionary<string, object>>)ratings["Certificates"];
+
+            if (certificates.Any())
+            {
+                tw.RenderBeginTag(HtmlTextWriterTag.H2);
+                tw.Write(Resources.Preferences.PilotInfoRatings);
+                tw.RenderEndTag();
+
+                foreach (var rating in certificates)
+                {
+                    tw.RenderBeginTag(HtmlTextWriterTag.P);
+                    tw.Write(rating["Certificate Name"]);
+                    tw.RenderEndTag();
+
+                    tw.RenderBeginTag(HtmlTextWriterTag.Ul);
+                    IEnumerable<string> rgPrivs = (IEnumerable<string>)rating["Privileges"];
+                    foreach (string sz in rgPrivs)
+                    {
+                        tw.RenderBeginTag(HtmlTextWriterTag.Li);
+                        tw.Write(sz);
+                        tw.RenderEndTag();
+                    }
+                    tw.RenderEndTag();
+                }
+            }
+        }
 
         private static void AddThumbnailToZip(MFBImageInfo mfbii, ZipArchive zip, string szFolder)
         {
@@ -279,6 +400,9 @@ namespace MyFlightbook
 
                         // Write header tags.  This leaves an open body tag and an open html tag.
                         WriteHtmlHeaders(tw, Branding.ReBrand("http://%APP_URL%%APP_ROOT%/public/stylesheet.css", activeBrand), szUserFullName);
+
+                        // Write out pilot information
+                        WritePilotInformation(tw, User);
 
                         // Write out profile images
                         WriteProfileImages(tw, szUserFullName, User.UserName, zip);

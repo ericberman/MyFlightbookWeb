@@ -1822,9 +1822,30 @@
     <value>Cover page</value>
   </data>
   <data name="InsuranceBackupName" xml:space="preserve">
-    <value>Insurance Data</value>
+    <value>Download Insurance Data</value>
   </data>
   <data name="InsuranceBackupPrompt" xml:space="preserve">
     <value>ZIP of Insurance Data</value>
+  </data>
+  <data name="InsurancePostDisclaimer" xml:space="preserve">
+    <value>This will send your logbook, any telemetry, and personal data such as your name, email, certificates, flight reviews, and so forth, to our partner SkyWatch.ai.  By clicking this, you consent to share this information.</value>
+  </data>
+  <data name="InsurancePostFailed" xml:space="preserve">
+    <value>An error occured trying to send your insuranceData</value>
+  </data>
+  <data name="InsurancePostPrompt" xml:space="preserve">
+    <value>Get an insurance quote based on your logbook</value>
+  </data>
+  <data name="DownloadLogbookZIPDesc" xml:space="preserve">
+    <value>Includes a zip file of your flight images, endorsements, basic med images, and telemetry.</value>
+  </data>
+  <data name="InsuranceDownloadDescription" xml:space="preserve">
+    <value>Includes your logbook, any telemetry, and personal data such as your name, email, certificates, flight reviews, and so forth.  No images.</value>
+  </data>
+  <data name="InsurancePostSuccessful" xml:space="preserve">
+    <value>Data successfully sent.</value>
+  </data>
+  <data name="ImagesBackupPilotInfoHeader" xml:space="preserve">
+    <value>Pilot Information for {0}</value>
   </data>
 </root>

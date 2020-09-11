@@ -1,6 +1,7 @@
 ﻿using MyFlightbook.Currency;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 
 /******************************************************
@@ -191,6 +192,27 @@ namespace MyFlightbook.Achievements
             return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
+
+        public IDictionary<string, object> AsKeyValuePairs()
+        {
+            return new Dictionary<string, object>
+            {
+                ["Certificate Name"] = LicenseName,
+                ["Privileges"] = Privileges
+            };
+        }
+
+        public static IEnumerable<IDictionary<string, object>> AsPublicList(IEnumerable<PilotLicense> lstIn)
+        {
+            List<IDictionary<string, object>> lst = new List<IDictionary<string, object>>();
+
+            if (lstIn != null)
+            {
+                foreach (PilotLicense pl in lstIn)
+                    lst.Add(pl.AsKeyValuePairs());
+            }
+            return lst;
+        }
     }
 
     /// <summary>
@@ -334,6 +356,31 @@ namespace MyFlightbook.Achievements
             return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
+
+        public IDictionary<string, object> AsKeyValuePairs()
+        {
+            return new Dictionary<string, object>
+            {
+                ["Date Earned"] = DateEarned.HasValue() ? DateEarned.YMDString() : null,
+                ["Flight ID"] = FlightID.ToString(CultureInfo.InvariantCulture),
+                ["Checkride Type"] = CheckrideType.ToString(),
+                ["Privilege"] = Privilege,
+                ["License Kind"] = LicenseKind.ToString(),
+                ["Level"] = Level.ToString()
+            };
+        }
+
+        public static IEnumerable<IDictionary<string, object>> AsPublicList(IEnumerable<Checkride> lstIn)
+        {
+            List<IDictionary<string, object>> lst = new List<IDictionary<string, object>>();
+
+            if (lstIn != null)
+            {
+                foreach (Checkride cr in lstIn)
+                    lst.Add(cr.AsKeyValuePairs());
+            }
+            return lst;
+        }
     }
 
     /// <summary>
@@ -679,6 +726,15 @@ namespace MyFlightbook.Achievements
         public UserRatings(string szUser)
         {
             Username = szUser;
+        }
+
+        public IDictionary<string, object> AsKeyValuePairs()
+        {
+            return new Dictionary<string, object>
+            {
+                ["Checkrides"] = Checkride.AsPublicList(Checkrides),
+                ["Certificates"] = PilotLicense.AsPublicList(Licenses)
+            };
         }
     }
 

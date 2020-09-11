@@ -44,6 +44,14 @@
                         <asp:Localize ID="locDownloadCSV" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookCSV %>"></asp:Localize>
                     </asp:LinkButton>
                 </div>
+            </td>
+            <td>
+                <asp:Localize ID="locCSVDesc" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookCSVDesc %>"></asp:Localize>
+            </td>
+        </tr>
+        <tr style="vertical-align: top; padding: 3px;">
+            <td>
+                <br />
                 <div style="vertical-align:middle;">
                     <asp:LinkButton ID="lnkDownloadImagesZip" runat="server"
                         onclick="lnkDownloadImagesZip_Click">
@@ -52,16 +60,26 @@
                         <asp:Localize ID="locDownloadZIP" runat="server" Text="<%$ Resources:LocalizedText, ImagesBackupPrompt %>"></asp:Localize>
                     </asp:LinkButton>
                 </div>
-                <div style="vertical-align:middle;" runat="server" visible="false" id="divInsZip">
+            </td>
+            <td>
+                <br />
+                <%=Resources.LocalizedText.DownloadLogbookZIPDesc %>
+            </td>
+        </tr>
+        <tr style="vertical-align: top; padding: 3px" runat="server" visible="false" id="rowInsDownload">
+            <td>
+                <br />
+                <div style="vertical-align:middle; " >
                     <asp:LinkButton ID="lnkDownloadInsurance" runat="server" OnClick="lnkDownloadInsurance_Click">
-                        <asp:Image ID="Image1" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
-                        <asp:Image ID="Image2" runat="server" ImageAlign="Middle" ImageUrl="~/images/zip_med.png"  style="padding-right: 5px;"/>
-                        <asp:Localize ID="Localize1" runat="server" Text="<%$ Resources:LocalizedText, InsuranceBackupPrompt %>"></asp:Localize>
+                        <asp:Image ID="imgDwnIns" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
+                        <asp:Image ID="imgDownZip" runat="server" ImageAlign="Middle" ImageUrl="~/images/zip_med.png"  style="padding-right: 5px;"/>
+                        <asp:Localize ID="locIns1" runat="server" Text="<%$ Resources:LocalizedText, InsuranceBackupPrompt %>"></asp:Localize>
                     </asp:LinkButton>
                 </div>
             </td>
             <td>
-                <asp:Localize ID="locCSVDesc" runat="server" Text="<%$ Resources:LocalizedText, DownloadLogbookCSVDesc %>"></asp:Localize>
+                <br />
+                <% =Resources.LocalizedText.InsuranceDownloadDescription %>
             </td>
         </tr>
         <tr>
@@ -125,6 +143,16 @@
             </td>
         </tr>
     </table>
+        <asp:Panel ID="pnlSkyWatch" runat="server" Visible="false" style="text-align:center; border-radius: 5px; border: 1px solid gray; margin-right:auto; margin-left: auto; margin-top: 40px; padding: 8px; max-width: 300px; box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);">
+            <div style="vertical-align:middle;">
+                <asp:LinkButton ID="lnkPostInsurance" runat="server" OnClick="lnkPostInsurance_Click">
+                    <asp:Image ID="imgPostIns" runat="server" ImageAlign="Middle" ImageUrl="~/images/SkyWatch_Logo_New2020.png" Width="250px" style="padding-right: 5px;"/><br />
+                    <asp:Localize ID="locIns2" runat="server" Text="<%$ Resources:LocalizedText, InsurancePostPrompt %>" />
+                </asp:LinkButton>
+            </div>
+            <div class="error"><asp:Label ID="lblInsErr" runat="server" EnableViewState="false" /></div>
+            <div class="fineprint"><% = Resources.LocalizedText.InsurancePostDisclaimer %></div>
+        </asp:Panel>
     </div>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="cpMain" runat="Server">

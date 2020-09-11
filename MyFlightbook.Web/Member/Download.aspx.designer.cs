@@ -103,6 +103,15 @@ public partial class Member_Download
     protected global::System.Web.UI.WebControls.Localize locDownloadCSV;
 
     /// <summary>
+    /// locCSVDesc control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locCSVDesc;
+
+    /// <summary>
     /// lnkDownloadImagesZip control.
     /// </summary>
     /// <remarks>
@@ -139,13 +148,13 @@ public partial class Member_Download
     protected global::System.Web.UI.WebControls.Localize locDownloadZIP;
 
     /// <summary>
-    /// divInsZip control.
+    /// rowInsDownload control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.HtmlControls.HtmlGenericControl divInsZip;
+    protected global::System.Web.UI.HtmlControls.HtmlTableRow rowInsDownload;
 
     /// <summary>
     /// lnkDownloadInsurance control.
@@ -157,40 +166,31 @@ public partial class Member_Download
     protected global::System.Web.UI.WebControls.LinkButton lnkDownloadInsurance;
 
     /// <summary>
-    /// Image1 control.
+    /// imgDwnIns control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Image Image1;
+    protected global::System.Web.UI.WebControls.Image imgDwnIns;
 
     /// <summary>
-    /// Image2 control.
+    /// imgDownZip control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Image Image2;
+    protected global::System.Web.UI.WebControls.Image imgDownZip;
 
     /// <summary>
-    /// Localize1 control.
+    /// locIns1 control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Localize Localize1;
-
-    /// <summary>
-    /// locCSVDesc control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Localize locCSVDesc;
+    protected global::System.Web.UI.WebControls.Localize locIns1;
 
     /// <summary>
     /// lblOR control.
@@ -362,6 +362,51 @@ public partial class Member_Download
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::Controls_mfbDownload mfbDownload1;
+
+    /// <summary>
+    /// pnlSkyWatch control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Panel pnlSkyWatch;
+
+    /// <summary>
+    /// lnkPostInsurance control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.LinkButton lnkPostInsurance;
+
+    /// <summary>
+    /// imgPostIns control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgPostIns;
+
+    /// <summary>
+    /// locIns2 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locIns2;
+
+    /// <summary>
+    /// lblInsErr control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label lblInsErr;
 
     /// <summary>
     /// Master property.

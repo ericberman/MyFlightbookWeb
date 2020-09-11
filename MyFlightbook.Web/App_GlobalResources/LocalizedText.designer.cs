@@ -1784,6 +1784,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Includes a zip file of your flight images, endorsements, basic med images, and telemetry..
+        /// </summary>
+        internal static string DownloadLogbookZIPDesc {
+            get {
+                return ResourceManager.GetString("DownloadLogbookZIPDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save a PDF of your flights in a variety of layouts.  You can also choose whether to include all flights or just a subset of your flights..
         /// </summary>
         internal static string DownloadPDFDescription {
@@ -2726,6 +2735,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pilot Information for {0}.
+        /// </summary>
+        internal static string ImagesBackupPilotInfoHeader {
+            get {
+                return ResourceManager.GetString("ImagesBackupPilotInfoHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ZIP file of images/telemetry.
         /// </summary>
         internal static string ImagesBackupPrompt {
@@ -2744,7 +2762,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insurance Data.
+        ///   Looks up a localized string similar to Download Insurance Data.
         /// </summary>
         internal static string InsuranceBackupName {
             get {
@@ -2758,6 +2776,51 @@ namespace Resources {
         internal static string InsuranceBackupPrompt {
             get {
                 return ResourceManager.GetString("InsuranceBackupPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Includes your logbook, any telemetry, and personal data such as your name, email, certificates, flight reviews, and so forth.  No images..
+        /// </summary>
+        internal static string InsuranceDownloadDescription {
+            get {
+                return ResourceManager.GetString("InsuranceDownloadDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This will send your logbook, any telemetry, and personal data such as your name, email, certificates, flight reviews, and so forth, to our partner SkyWatch.ai.  By clicking this, you consent to share this information..
+        /// </summary>
+        internal static string InsurancePostDisclaimer {
+            get {
+                return ResourceManager.GetString("InsurancePostDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occured trying to send your insuranceData.
+        /// </summary>
+        internal static string InsurancePostFailed {
+            get {
+                return ResourceManager.GetString("InsurancePostFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get an insurance quote based on your logbook.
+        /// </summary>
+        internal static string InsurancePostPrompt {
+            get {
+                return ResourceManager.GetString("InsurancePostPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data successfully sent..
+        /// </summary>
+        internal static string InsurancePostSuccessful {
+            get {
+                return ResourceManager.GetString("InsurancePostSuccessful", resourceCulture);
             }
         }
         

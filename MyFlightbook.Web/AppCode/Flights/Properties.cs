@@ -1604,6 +1604,30 @@ ORDER BY f.Date Desc";
         {
             return DisplayString;
         }
+
+        public IDictionary<string, object> AsKeyValuePairs()
+        {
+            Dictionary<string, object> d = new Dictionary<string, object>();
+            if (Date.HasValue())
+                d["Date"] = Date.YMDString();
+            d["Category"] = Category;
+            d["Model"] = Model;
+            d["Type"] = Type;
+            d["Flight ID"] = FlightID.ToString(CultureInfo.InvariantCulture);
+            d["Property Type"] = PropertyType == null ? PropTypeID.ToString(CultureInfo.InvariantCulture) : PropertyType.Title;
+            return d;
+        }
+
+        public static IEnumerable<IDictionary<string, object>> AsPublicList(IEnumerable<ProfileEvent> lstIn)
+        {
+            List<IDictionary<string, object>> lst = new List<IDictionary<string, object>>();
+            if (lstIn != null)
+            {
+                foreach (ProfileEvent pfe in lstIn)
+                    lst.Add(pfe.AsKeyValuePairs());
+            }
+            return lst;
+        }
     }
 
     [Serializable]
