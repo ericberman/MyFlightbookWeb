@@ -891,20 +891,20 @@ namespace MyFlightbook
                     if (int.TryParse(mcTrailing[0].Groups["quantity"].Value, out int count))
                     {
                         DateRange = DateRanges.Custom;
-                        DateMax = DateTime.Now.Date;
+                        DateMax = DateTime.MinValue;
                         switch (szType.ToUpperInvariant())
                         {
                             case "D":
-                                DateMin = DateMax.AddDays(-count);
+                                DateMin = DateTime.Now.Date.AddDays(-count);
                                 break;
                             case "CM":
-                                DateMin = DateMax.AddCalendarMonths(-count);
+                                DateMin = DateTime.Now.Date.AddCalendarMonths(-count);
                                 break;
                             case "M":
-                                DateMin = DateMax.AddMonths(-count);
+                                DateMin = DateTime.Now.Date.AddMonths(-count);
                                 break;
                             case "W":
-                                DateMin = DateMax.AddDays(-count * 7);
+                                DateMin = DateTime.Now.Date.AddDays(-count * 7);
                                 break;
                         }
 
