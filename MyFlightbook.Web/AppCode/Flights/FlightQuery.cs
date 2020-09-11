@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Microsoft.Win32.SafeHandles;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -848,6 +849,7 @@ namespace MyFlightbook
         private static Regex rQuotedExpressions = null;
         private static Regex rSplitWords = null;
         private static Regex rMergeOR = null;
+        private static Regex rTrailing = null;
 
         private void UpdateGeneralText(StringBuilder sbQuery)
         {
@@ -868,6 +870,8 @@ namespace MyFlightbook
                     This is nice because we can largely just look at prefixes
 
                     Searches are ALWAYS case insensitive, ALWAYS partial word search
+
+                    Finally - issue #662: add support for Trailing:##{D|CM|M} for trailing ## days, calendar months, or months.  Will adjust the date parameters.
                 */
 
                 if (rQuotedExpressions == null)
@@ -877,8 +881,42 @@ namespace MyFlightbook
                 if (rMergeOR == null)
                     rMergeOR = new Regex("\\sOR\\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+                // First, look for trailing ##.  If we find this, we will then strip it out.
+                if (rTrailing == null)
+                    rTrailing = new Regex("\\bTrailing:(?<quantity>\\d{1,3}?)(?<rangetype>D|CM|M|W?)\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                MatchCollection mcTrailing = rTrailing.Matches(GeneralText);
+                if (mcTrailing.Count > 0)
+                {
+                    string szType = mcTrailing[0].Groups["rangetype"].Value;
+                    if (int.TryParse(mcTrailing[0].Groups["quantity"].Value, out int count))
+                    {
+                        DateRange = DateRanges.Custom;
+                        DateMax = DateTime.Now.Date;
+                        switch (szType.ToUpperInvariant())
+                        {
+                            case "D":
+                                DateMin = DateMax.AddDays(-count);
+                                break;
+                            case "CM":
+                                DateMin = DateMax.AddCalendarMonths(-count);
+                                break;
+                            case "M":
+                                DateMin = DateMax.AddMonths(-count);
+                                break;
+                            case "W":
+                                DateMin = DateMax.AddDays(-count * 7);
+                                break;
+                        }
+
+                        // Now remove this from GeneralText because we're not actually searching for the text.
+                        GeneralText = rTrailing.Replace(GeneralText, string.Empty);
+                    }
+                }
+
                 // Convert " OR " pattern with "|" so that it survives string split at word boundaries; we'll separate them later
-                string szMerged = rMergeOR.Replace(GeneralText, "|");
+                string szMerged = rMergeOR.Replace(GeneralText.Trim(), "|");
+                if (String.IsNullOrEmpty(szMerged)) // we could have removed Trailing:## from the search string and now be left with nothing.
+                    return;
 
                 // Extract out the quoted expressions first
                 MatchCollection quoted = rQuotedExpressions.Matches(szMerged);
