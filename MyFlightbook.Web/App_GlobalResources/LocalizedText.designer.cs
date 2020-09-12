@@ -2789,7 +2789,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This will send your logbook, any telemetry, and personal data such as your name, email, certificates, flight reviews, and so forth, to our partner SkyWatch.ai.  By clicking this, you consent to share this information..
+        ///   Looks up a localized string similar to By clicking this, you consent to share your logbook, any telemetry, and personal data such as your name, email, certificates, flight reviews, and so forth, to our partner SkyWatch.ai for the purpose of generating a customized insurance quote..
         /// </summary>
         internal static string InsurancePostDisclaimer {
             get {

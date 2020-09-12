@@ -64,15 +64,16 @@ public partial class Member_Download : System.Web.UI.Page
         Response.Clear();
         Response.ContentType = "application/octet-stream";
         Response.AddHeader("Content-Disposition", String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}", Branding.ReBrand(String.Format(CultureInfo.InvariantCulture, "{0}.zip", Resources.LocalizedText.ImagesBackupFilename)).Replace(" ", "-")));
-        using (MemoryStream ms = new MemoryStream())
+        using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
         {
-            new LogbookBackup(pf).WriteZipOfImagesToStream(ms, Branding.CurrentBrand);
-            Response.BinaryWrite(ms.ToArray());
+            new LogbookBackup(pf).WriteZipOfImagesToStream(fs, Branding.CurrentBrand);
+            fs.Seek(0, SeekOrigin.Begin);
+            fs.CopyTo(Response.OutputStream);
         }
         Response.End();
     }
 
-    private void WriteInsurenceZip(Action<String, MemoryStream> dispatch)
+    private void WriteInsurenceZip(Action<String, Stream> dispatch)
     {
         if (dispatch == null)
             throw new ArgumentNullException(nameof(dispatch));
@@ -82,27 +83,27 @@ public partial class Member_Download : System.Web.UI.Page
         mfbDownload1.UpdateData();
 
         string szFile = Regex.Replace(Branding.ReBrand(String.Format(CultureInfo.InvariantCulture, "{0}-{1}-{2}", Branding.CurrentBrand.AppName, pf.UserFullName, Resources.LocalizedText.InsuranceBackupName)).Replace(" ", "-"), "[^0-9a-zA-Z-]", string.Empty);
-        using (MemoryStream ms = new MemoryStream())
+        using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
         {
             LogbookBackup lb = new LogbookBackup(pf) { IncludeImages = false };
-            lb.WriteZipOfImagesToStream(ms, Branding.CurrentBrand, (zip) => {
-                // Add the flights
-                ZipArchiveEntry zae = zip.CreateEntry(CSVFileName);
+            lb.WriteZipOfImagesToStream(fs, Branding.CurrentBrand, (zip) =>
+            {
+                    // Add the flights
+                    ZipArchiveEntry zae = zip.CreateEntry(CSVFileName);
                 using (StreamWriter sw = new StreamWriter(zae.Open()))
                 {
                     sw.Write('\uFEFF');   // UTF-8 BOM.
-                    sw.Write(mfbDownload1.CSVData());
+                        sw.Write(mfbDownload1.CSVData());
                 }
 
-                // And add the user's information, in JSON format.
-                zae = zip.CreateEntry("PilotInfo.JSON");
+                    // And add the user's information, in JSON format.
+                    zae = zip.CreateEntry("PilotInfo.JSON");
                 using (StreamWriter sw = new StreamWriter(zae.Open()))
                 {
                     sw.Write(LogbookBackup.PilotInfoAsJSon(pf));
                 }
             });
-
-            dispatch(szFile, ms);
+            dispatch(szFile, fs);
         }
     }
 
@@ -111,10 +112,11 @@ public partial class Member_Download : System.Web.UI.Page
         Response.Clear();
         Response.ContentType = "application/octet-stream";
 
-        WriteInsurenceZip((szFile, stream) =>
+        WriteInsurenceZip((szFile, fs) =>
         {
             Response.AddHeader("Content-Disposition", String.Format(CultureInfo.InvariantCulture, "attachment;filename={0}.zip", szFile));
-            Response.BinaryWrite(stream.ToArray());
+            fs.Seek(0, SeekOrigin.Begin);
+            fs.CopyTo(Response.OutputStream);
         });
         Response.End();
     }
@@ -124,7 +126,7 @@ public partial class Member_Download : System.Web.UI.Page
     {
         const string szSkywatchEndpoint = "https://user.skywatch.ai/aviation/analyze_logs";
 
-        WriteInsurenceZip((szFile, stream) =>
+        WriteInsurenceZip((szFile, fs) =>
         {
             List<IDisposable> objectsToDispose = new List<IDisposable>();
 
@@ -134,7 +136,8 @@ public partial class Member_Download : System.Web.UI.Page
                 {
                     using (MultipartFormDataContent formData = new MultipartFormDataContent())
                     {
-                        StreamContent strc = new StreamContent(stream);
+                        fs.Seek(0, SeekOrigin.Begin);
+                        StreamContent strc = new StreamContent(fs);
                         objectsToDispose.Add(strc);
                         formData.Add(strc, "Files", szFile);
 

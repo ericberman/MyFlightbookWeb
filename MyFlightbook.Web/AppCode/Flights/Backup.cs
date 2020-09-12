@@ -206,7 +206,7 @@ namespace MyFlightbook
             // No need to add an S3PDF to the zip file; it's just a placeholder file on the disk, and it can 
             // potentially have a duplicate name with another PDF as well.
             if (mfbii.ImageType != MFBImageInfo.ImageFileType.S3PDF)
-                zip.CreateEntryFromFile(imgPath, szFolder + "//" + mfbii.ThumbnailFile);
+                zip.CreateEntryFromFile(imgPath, szFolder + "/" + mfbii.ThumbnailFile);
         }
 
         private static void WriteFlightInfo(HtmlTextWriter tw, ZipArchive zip, LogbookEntry le)
@@ -483,10 +483,10 @@ namespace MyFlightbook
             if (String.IsNullOrEmpty(User.DropboxAccessToken))
                 throw new MyFlightbookException(Resources.Profile.errNotConfiguredDropBox);
 
-            using (MemoryStream ms = new MemoryStream())
+            using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
-                WriteZipOfImagesToStream(ms, activeBrand);
-                Dropbox.Api.Files.FileMetadata result = await MFBDropbox.PutFile(User.DropboxAccessToken, ms, BackupImagesFilename(activeBrand)).ConfigureAwait(true);
+                WriteZipOfImagesToStream(fs, activeBrand);
+                Dropbox.Api.Files.FileMetadata result = await MFBDropbox.PutFile(User.DropboxAccessToken, fs, BackupImagesFilename(activeBrand)).ConfigureAwait(true);
                 return result;
             }
         }
@@ -531,10 +531,10 @@ namespace MyFlightbook
             if (od == null)
                 od = new OneDrive(User.OneDriveAccessToken);
 
-            using (MemoryStream ms = new MemoryStream())
+            using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
-                WriteZipOfImagesToStream(ms, activeBrand);
-                return await od.PutFileDirect(BackupImagesFilename(activeBrand), ms, "application/zip").ConfigureAwait(true);
+                WriteZipOfImagesToStream(fs, activeBrand);
+                return await od.PutFileDirect(BackupImagesFilename(activeBrand), fs, "application/zip").ConfigureAwait(true);
             }
         }
 
@@ -580,10 +580,10 @@ namespace MyFlightbook
             if (User.GoogleDriveAccessToken == null)
                 throw new MyFlightbookException(Resources.Profile.errNotConfiguredGoogleDrive);
 
-            using (MemoryStream ms = new MemoryStream())
+            using (FileStream fs = new FileStream(Path.GetTempFileName(), FileMode.Open, FileAccess.ReadWrite, FileShare.None, Int16.MaxValue, FileOptions.DeleteOnClose))
             {
-                WriteZipOfImagesToStream(ms, activeBrand);
-                return await gd.PutFile(ms, BackupImagesFilename(activeBrand, true), "application/zip").ConfigureAwait(true);
+                WriteZipOfImagesToStream(fs, activeBrand);
+                return await gd.PutFile(fs, BackupImagesFilename(activeBrand, true), "application/zip").ConfigureAwait(true);
             }
         }
 
