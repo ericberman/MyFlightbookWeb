@@ -148,51 +148,6 @@ public partial class Member_Download
     protected global::System.Web.UI.WebControls.Localize locDownloadZIP;
 
     /// <summary>
-    /// rowInsDownload control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.HtmlControls.HtmlTableRow rowInsDownload;
-
-    /// <summary>
-    /// lnkDownloadInsurance control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.LinkButton lnkDownloadInsurance;
-
-    /// <summary>
-    /// imgDwnIns control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Image imgDwnIns;
-
-    /// <summary>
-    /// imgDownZip control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Image imgDownZip;
-
-    /// <summary>
-    /// locIns1 control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Localize locIns1;
-
-    /// <summary>
     /// lblOR control.
     /// </summary>
     /// <remarks>
@@ -407,6 +362,33 @@ public partial class Member_Download
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Label lblInsErr;
+
+    /// <summary>
+    /// lnkDownloadInsurance control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.LinkButton lnkDownloadInsurance;
+
+    /// <summary>
+    /// imgDwnIns control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Image imgDwnIns;
+
+    /// <summary>
+    /// locIns1 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Localize locIns1;
 
     /// <summary>
     /// Master property.

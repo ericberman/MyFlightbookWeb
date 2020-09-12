@@ -2771,20 +2771,11 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ZIP of Insurance Data.
+        ///   Looks up a localized string similar to View the data that will be sent.
         /// </summary>
         internal static string InsuranceBackupPrompt {
             get {
                 return ResourceManager.GetString("InsuranceBackupPrompt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Includes your logbook, any telemetry, and personal data such as your name, email, certificates, flight reviews, and so forth.  No images..
-        /// </summary>
-        internal static string InsuranceDownloadDescription {
-            get {
-                return ResourceManager.GetString("InsuranceDownloadDescription", resourceCulture);
             }
         }
         

@@ -1825,7 +1825,7 @@
     <value>Download Insurance Data</value>
   </data>
   <data name="InsuranceBackupPrompt" xml:space="preserve">
-    <value>ZIP of Insurance Data</value>
+    <value>View the data that will be sent</value>
   </data>
   <data name="InsurancePostDisclaimer" xml:space="preserve">
     <value>By clicking this, you consent to share your logbook, any telemetry, and personal data such as your name, email, certificates, flight reviews, and so forth, to our partner SkyWatch.ai for the purpose of generating a customized insurance quote.</value>
@@ -1838,9 +1838,6 @@
   </data>
   <data name="DownloadLogbookZIPDesc" xml:space="preserve">
     <value>Includes a zip file of your flight images, endorsements, basic med images, and telemetry.</value>
-  </data>
-  <data name="InsuranceDownloadDescription" xml:space="preserve">
-    <value>Includes your logbook, any telemetry, and personal data such as your name, email, certificates, flight reviews, and so forth.  No images.</value>
   </data>
   <data name="InsurancePostSuccessful" xml:space="preserve">
     <value>Data successfully sent.</value>

@@ -1,6 +1,5 @@
 ﻿using MyFlightbook;
 using MyFlightbook.CloudStorage;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,7 +7,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI;
 
 /******************************************************
@@ -34,7 +32,7 @@ public partial class Member_Download : System.Web.UI.Page
             lnkSaveOneDrive.Enabled = pf.OneDriveAccessToken != null && !String.IsNullOrEmpty(pf.OneDriveAccessToken.RefreshToken);
             lnkSaveGoogleDrive.Enabled = pf.GoogleDriveAccessToken != null && !String.IsNullOrEmpty(pf.GoogleDriveAccessToken.RefreshToken);
 
-            rowInsDownload.Visible = pnlSkyWatch.Visible = util.GetIntParam(Request, "ins", 0) != 0;
+            pnlSkyWatch.Visible = util.GetIntParam(Request, "ins", 0) != 0;
         }
     }
 

@@ -66,22 +66,6 @@
                 <%=Resources.LocalizedText.DownloadLogbookZIPDesc %>
             </td>
         </tr>
-        <tr style="vertical-align: top; padding: 3px" runat="server" visible="false" id="rowInsDownload">
-            <td>
-                <br />
-                <div style="vertical-align:middle; " >
-                    <asp:LinkButton ID="lnkDownloadInsurance" runat="server" OnClick="lnkDownloadInsurance_Click">
-                        <asp:Image ID="imgDwnIns" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
-                        <asp:Image ID="imgDownZip" runat="server" ImageAlign="Middle" ImageUrl="~/images/zip_med.png"  style="padding-right: 5px;"/>
-                        <asp:Localize ID="locIns1" runat="server" Text="<%$ Resources:LocalizedText, InsuranceBackupPrompt %>"></asp:Localize>
-                    </asp:LinkButton>
-                </div>
-            </td>
-            <td>
-                <br />
-                <% =Resources.LocalizedText.InsuranceDownloadDescription %>
-            </td>
-        </tr>
         <tr>
             <td style="vertical-align: middle;font-weight: bold; text-align: center;" colspan="2">
                 <hr />
@@ -152,6 +136,12 @@
             </div>
             <div class="error"><asp:Label ID="lblInsErr" runat="server" EnableViewState="false" /></div>
             <div class="fineprint"><% = Resources.LocalizedText.InsurancePostDisclaimer %></div>
+            <div style="vertical-align:middle; text-align:center;" class="fineprint" >
+                <asp:LinkButton ID="lnkDownloadInsurance" runat="server" OnClick="lnkDownloadInsurance_Click">
+                    <asp:Image ID="imgDwnIns" ImageUrl="~/images/download.png" runat="server" ImageAlign="Middle" style="padding-right: 5px;" />
+                    <asp:Localize ID="locIns1" runat="server" Text="<%$ Resources:LocalizedText, InsuranceBackupPrompt %>"></asp:Localize>
+                </asp:LinkButton>
+            </div>
         </asp:Panel>
     </div>
 </asp:Content>
