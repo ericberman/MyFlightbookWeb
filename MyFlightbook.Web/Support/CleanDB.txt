@@ -35,6 +35,7 @@ truncate models;
 truncate manufacturers;
 truncate airportlistachievement;
 truncate faq;
+truncate sharekeys;
 truncate pendingflights;
 truncate propertytemplate;
 delete from endorsementtemplates where id <> 1;
