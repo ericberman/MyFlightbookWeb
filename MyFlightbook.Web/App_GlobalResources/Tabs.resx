@@ -271,7 +271,7 @@
     <value>Instruction</value>
   </data>
   <data name="ProfileName" xml:space="preserve">
-    <value>Name/Email</value>
+    <value>Name, Email, and Personal Information</value>
   </data>
   <data name="ProfilePassword" xml:space="preserve">
     <value>Password</value>

@@ -70,6 +70,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mobile Number:.
+        /// </summary>
+        internal static string accountCellPhone {
+            get {
+                return ResourceManager.GetString("accountCellPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Optional; can help with password reset or if you are in a club).
+        /// </summary>
+        internal static string accountCellPhoneHint {
+            get {
+                return ResourceManager.GetString("accountCellPhoneHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         internal static string accountEmailPrompt {
@@ -84,6 +102,33 @@ namespace Resources {
         internal static string accountFirstNamePrompt {
             get {
                 return ResourceManager.GetString("accountFirstNamePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account Settings.
+        /// </summary>
+        internal static string accountHeader {
+            get {
+                return ResourceManager.GetString("accountHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add an image of yourself! .
+        /// </summary>
+        internal static string accountHeadShot {
+            get {
+                return ResourceManager.GetString("accountHeadShot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Optional; headshots work best.).
+        /// </summary>
+        internal static string accountHeadShotHint {
+            get {
+                return ResourceManager.GetString("accountHeadShotHint", resourceCulture);
             }
         }
         
@@ -120,6 +165,15 @@ namespace Resources {
         internal static string accountMailingAddressPromptNote {
             get {
                 return ResourceManager.GetString("accountMailingAddressPromptNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information successfully updated.
+        /// </summary>
+        internal static string accountPersonalInfoSuccess {
+            get {
+                return ResourceManager.GetString("accountPersonalInfoSuccess", resourceCulture);
             }
         }
         
@@ -871,6 +925,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please type your e-mail twice (avoids typos)..
+        /// </summary>
+        internal static string err2ndEmailRequired {
+            get {
+                return ResourceManager.GetString("err2ndEmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Security answer is too long..
         /// </summary>
         internal static string errAnswerTooLong {
@@ -921,6 +984,33 @@ namespace Resources {
         internal static string errEmailInUse {
             get {
                 return ResourceManager.GetString("errEmailInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to That email address is already in use by another account.
+        /// </summary>
+        internal static string errEmailInUse2 {
+            get {
+                return ResourceManager.GetString("errEmailInUse2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An email address is required.
+        /// </summary>
+        internal static string errEmailMissing {
+            get {
+                return ResourceManager.GetString("errEmailMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid email address.
+        /// </summary>
+        internal static string errEmailRequired {
+            get {
+                return ResourceManager.GetString("errEmailRequired", resourceCulture);
             }
         }
         
@@ -1374,6 +1464,15 @@ namespace Resources {
         internal static string ReturnToStudent {
             get {
                 return ResourceManager.GetString("ReturnToStudent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Changes.
+        /// </summary>
+        internal static string saveChanges {
+            get {
+                return ResourceManager.GetString("saveChanges", resourceCulture);
             }
         }
         

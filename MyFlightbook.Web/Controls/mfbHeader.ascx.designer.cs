@@ -67,13 +67,13 @@ public partial class Controls_mfbHeader
     protected global::System.Web.UI.WebControls.Panel pnlUser;
 
     /// <summary>
-    /// imgProfile control.
+    /// imgHdSht control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.Image imgProfile;
+    protected global::System.Web.UI.HtmlControls.HtmlImage imgHdSht;
 
     /// <summary>
     /// lblUser control.

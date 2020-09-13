@@ -1,6 +1,7 @@
 using MyFlightbook;
 using MyFlightbook.CloudStorage;
 using MyFlightbook.Currency;
+using MyFlightbook.Image;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -142,6 +143,10 @@ public partial class Member_EditProfile : System.Web.UI.Page
         }
         else
             mvBigRedButtons.SetActiveView(vwRedButtons);
+
+        fuHdSht.Attributes["onchange"] = "javascript:hdshtUpdated();";
+        SetHeadShot();
+        txtCell.Text = m_pf.MobilePhone;
     }
 
     private void InitFeaturePrefs()
@@ -311,6 +316,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
             m_pf.ChangeNameAndEmail(txtFirst.Text, txtLast.Text, txtEmail.Text, txtAddress.Text);
             m_pf.FCommit();
             m_pf.PreferredGreeting = txtPreferredGreeting.Text.Trim().CompareCurrentCultureIgnoreCase(m_pf.UserFirstName) == 0 ? string.Empty : txtPreferredGreeting.Text.Trim();
+            m_pf.MobilePhone = txtCell.Text.Trim();
             Response.Redirect("~/Member/EditProfile.aspx/pftAccount");
         }
         catch (MyFlightbookException ex)
@@ -358,6 +364,33 @@ public partial class Member_EditProfile : System.Web.UI.Page
     {
         mvNameEmail.SetActiveView(m_pf.PreferenceExists(MFBConstants.keyTFASettings) ? vwVerifyTFAEmail : vwChangeNameEmail);
         tfaEmail.AuthCode = m_pf.GetPreferenceForKey(MFBConstants.keyTFASettings) as string;
+    }
+
+    protected void SetHeadShot()
+    {
+        string szHead = m_pf.HeadShotHRef;
+        imgHdSht.Src = String.IsNullOrEmpty(szHead) ? "~/Public/tabimages/ProfileTab.png".ToAbsoluteURL(Request).ToString() : szHead;
+        imgDelHdSht.Visible = !String.IsNullOrEmpty(szHead);
+        Master.RefreshHeader();
+    }
+
+    protected void btnUpdHdSht_Click(object sender, EventArgs e)
+    {
+        if (fuHdSht.HasFile)
+        {
+            string szImgURL = MFBImageInfo.CreateCircleCroppedImageHref(fuHdSht.PostedFile.InputStream, 40, 40);
+            if (!String.IsNullOrEmpty(szImgURL))
+            {
+                m_pf.HeadShotHRef = szImgURL;
+                SetHeadShot();
+            }
+        }
+    }
+
+    protected void imgDelHdSht_Click(object sender, ImageClickEventArgs e)
+    {
+        m_pf.HeadShotHRef = null;
+        SetHeadShot();
     }
     #endregion
 
@@ -606,4 +639,5 @@ public partial class Member_EditProfile : System.Web.UI.Page
         mvGPhotos.SetActiveView(vwGPhotosDisabled);
     }
     #endregion
+
 }

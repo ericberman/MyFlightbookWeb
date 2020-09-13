@@ -1463,6 +1463,90 @@ namespace MyFlightbook.Image
             return result;
         }
 
+        public static string CreateCircleCroppedImageHref(Stream sIn, int width, int height)
+        {
+            if (sIn == null)
+                throw new ArgumentNullException(nameof(sIn));
+
+            string szResult = null;
+            if (sIn.Length == 0)
+                return szResult;
+
+            using (MagickImage image = new MagickImage(sIn))
+            {
+                // first, fix any orientation issues.
+                OrientationType ot = image.Orientation;
+                switch (ot)
+                {
+                    case OrientationType.TopLeft:
+                        break;
+                    case OrientationType.TopRight:
+                        image.Flop();
+                        break;
+                    case OrientationType.BottomRight:
+                        image.Rotate(180);
+                        break;
+                    case OrientationType.BottomLeft:
+                        image.Flop();
+                        image.Rotate(180);
+                        break;
+                    case OrientationType.LeftTop:
+                        image.Flop();
+                        image.Rotate(-90);
+                        break;
+                    case OrientationType.RightTop:
+                        image.Rotate(90);
+                        break;
+                    case OrientationType.RightBottom:
+                        image.Flop();
+                        image.Rotate(90);
+                        break;
+                    case OrientationType.LeftBotom:
+                        image.Rotate(-90);
+                        break;
+                    default:
+                        break;
+                }
+                image.Orientation = OrientationType.TopLeft;
+
+                image.Resize(new MagickGeometry(width, height) { FillArea = true });
+                image.Alpha(AlphaOption.Set);
+
+                // below is from https://github.com/dlemstra/Magick.NET/issues/57
+                using (MagickImage clone = image.Clone() as MagickImage)
+                {
+                    // -distort DePolar 0
+                    clone.Distort(DistortMethod.DePolar, 0);
+
+                    // -virtual-pixel HorizontalTile
+                    clone.VirtualPixelMethod = VirtualPixelMethod.HorizontalTile;
+
+                    // -background None
+                    clone.BackgroundColor = MagickColors.None;
+
+                    // -distort Polar 0
+                    clone.Distort(DistortMethod.Polar, 0);
+
+                    // -compose Dst_In -composite
+                    image.Composite(clone, CompositeOperator.DstIn);
+
+                    // -trime
+                    image.Trim();
+
+                    // +repage
+                    image.RePage();
+
+                    using (MemoryStream msOut = new MemoryStream())
+                    {
+                        image.Write(msOut, MagickFormat.Png);
+                        szResult = String.Format(CultureInfo.InvariantCulture, "data:image/png;base64,{0}", Convert.ToBase64String(msOut.GetBuffer()));
+                    }
+                }
+            }
+
+            return szResult;
+        }
+
         #region InitfileHelpers
         private void InitFileS3Mp4(MFBPostedFile myFile)
         {

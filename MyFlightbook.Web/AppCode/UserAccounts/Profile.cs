@@ -797,14 +797,30 @@ namespace MyFlightbook
         private IDictionary<string, object> m_persistedPrefs = new Dictionary<string, object>();
 
         private const string prefKeyPreferredGreeting = "preferredGreeting";
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
         public string PreferredGreeting
         {
             get { return PreferenceExists(prefKeyPreferredGreeting) ? (string)GetPreferenceForKey(prefKeyPreferredGreeting) : UserFirstName; }
-            set
-            {
-                SetPreferenceForKey(prefKeyPreferredGreeting, value, String.IsNullOrEmpty(value));
-            }
+            set { SetPreferenceForKey(prefKeyPreferredGreeting, value, String.IsNullOrEmpty(value)); }
         }
+
+        private const string prefKeyHeadshot = "headShot";
+
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public string HeadShotHRef
+        {
+            get { return (string)GetPreferenceForKey(prefKeyHeadshot); }
+            set { SetPreferenceForKey(prefKeyHeadshot, value, String.IsNullOrEmpty(value)); }
+        }
+
+        private const string prefKeyCell = "mobilePhone";
+
+        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        public string MobilePhone
+        {
+            get { return (string)GetPreferenceForKey(prefKeyCell); }
+            set { SetPreferenceForKey(prefKeyCell, value, String.IsNullOrEmpty(value)); }
+        }        
         #endregion
 
         /// <summary>

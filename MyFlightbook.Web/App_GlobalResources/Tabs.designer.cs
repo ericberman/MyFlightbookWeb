@@ -520,7 +520,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name/Email.
+        ///   Looks up a localized string similar to Name, Email, and Personal Information.
         /// </summary>
         internal static string ProfileName {
             get {

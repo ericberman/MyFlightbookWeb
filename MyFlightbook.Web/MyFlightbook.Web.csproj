@@ -2946,6 +2946,7 @@
     <Content Include="App_GlobalResources\Tabs.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>
       <LastGenOutput>Tabs.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="App_GlobalResources\Totals.fr.resx">
       <Generator>GlobalResourceProxyGenerator</Generator>

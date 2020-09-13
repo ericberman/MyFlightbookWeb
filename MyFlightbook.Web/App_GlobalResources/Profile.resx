@@ -641,4 +641,37 @@
   <data name="BigRedButtonsHeader" xml:space="preserve">
     <value>Here you can bulk delete unused aircraft, flights, or your entire account. </value>
   </data>
+  <data name="accountCellPhone" xml:space="preserve">
+    <value>Mobile Number:</value>
+  </data>
+  <data name="accountCellPhoneHint" xml:space="preserve">
+    <value>(Optional; can help with password reset or if you are in a club)</value>
+  </data>
+  <data name="accountHeader" xml:space="preserve">
+    <value>Account Settings</value>
+  </data>
+  <data name="accountHeadShot" xml:space="preserve">
+    <value>Add an image of yourself! </value>
+  </data>
+  <data name="accountHeadShotHint" xml:space="preserve">
+    <value>(Optional; headshots work best.)</value>
+  </data>
+  <data name="accountPersonalInfoSuccess" xml:space="preserve">
+    <value>Information successfully updated</value>
+  </data>
+  <data name="err2ndEmailRequired" xml:space="preserve">
+    <value>Please type your e-mail twice (avoids typos).</value>
+  </data>
+  <data name="errEmailInUse2" xml:space="preserve">
+    <value>That email address is already in use by another account</value>
+  </data>
+  <data name="errEmailMissing" xml:space="preserve">
+    <value>An email address is required</value>
+  </data>
+  <data name="errEmailRequired" xml:space="preserve">
+    <value>Please enter a valid email address</value>
+  </data>
+  <data name="saveChanges" xml:space="preserve">
+    <value>Save Changes</value>
+  </data>
 </root>

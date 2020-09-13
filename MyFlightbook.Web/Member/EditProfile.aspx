@@ -27,18 +27,18 @@
 <asp:Content ID="ContentHead" ContentPlaceHolderID="cpPageTitle" runat="server">
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src='<%= ResolveUrl("~/public/Scripts/jquery.json-2.4.min.js") %>'></script>
-    <asp:Label ID="lblName" runat="server" meta:resourcekey="lblNameResource1"></asp:Label>
+    <asp:Label ID="lblName" runat="server" />
 </asp:Content>
 <asp:Content ID="ContentTopForm" ContentPlaceHolderID="cpTopForm" runat="server">
     <asp:MultiView ID="mvProfile" runat="server">
         <asp:View runat="server" ID="vwAccount">
             <h2>
-                <asp:Localize ID="locAccountHeader" runat="server" meta:resourcekey="locAccountHeaderResource1" Text="Account Settings"></asp:Localize>
+                <asp:Localize ID="locAccountHeader" runat="server" Text="<%$ Resources:Profile, accountHeader %>"></asp:Localize>
             </h2>
             <p><asp:Label ID="lblMemberSince" runat="server"></asp:Label></p>
-            <cc1:Accordion ID="accordianAccount" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250" meta:resourcekey="accordianAccountResource1">
+            <cc1:Accordion ID="accordianAccount" runat="server" HeaderCssClass="accordianHeader" HeaderSelectedCssClass="accordianHeaderSelected" ContentCssClass="accordianContent" TransitionDuration="250">
                 <Panes>
-                    <cc1:AccordionPane runat="server" ID="acpName" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpNameResource1">
+                    <cc1:AccordionPane runat="server" ID="acpName">
                         <Header>
                             <asp:Localize ID="locaHeadName" runat="server" Text="<%$ Resources:Tabs, ProfileName %>" ></asp:Localize>
                         </Header>
@@ -57,8 +57,7 @@
                                     <div><asp:Label ID="lblInvalidTFAEmail" runat="server" CssClass="error" EnableViewState="false" Text="<%$ Resources:Profile, TFACodeFailed %>" Visible="false"></asp:Label></div>
                                 </asp:View>
                                 <asp:View ID="vwChangeNameEmail" runat="server">
-                                    <asp:Panel ID="pnlNameAndEmail" runat="server" DefaultButton="btnUpdatename" 
-                                    meta:resourcekey="pnlNameAndEmailResource1">
+                                    <asp:Panel ID="pnlNameAndEmail" runat="server" DefaultButton="btnUpdatename">
                                         <table>
                                             <tr>
                                                 <td>
@@ -66,22 +65,18 @@
                                                     </td>
                                                 <td>
                                                     <asp:TextBox runat="server" ID="txtEmail" TextMode="Email"
-                                                        AutoCompleteType="Email" ValidationGroup="valNameEmail" 
-                                                        meta:resourcekey="txtEmailResource1" />
+                                                        AutoCompleteType="Email" ValidationGroup="valNameEmail" />
                                                     <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
                                                         ControlToValidate="txtEmail" ValidationGroup="valNameEmail"
-                                                        ErrorMessage="Please enter a valid email address" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
-                                                        CssClass="error" SetFocusOnError="True" Display="Dynamic" 
-                                                        meta:resourcekey="RegularExpressionValidator1Resource1"></asp:RegularExpressionValidator>
+                                                        ErrorMessage="<%$ Resources:Profile, errEmailRequired %>" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
+                                                        CssClass="error" SetFocusOnError="True" Display="Dynamic" />
                                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server"  ValidationGroup="valNameEmail"
                                                     ControlToValidate="txtEmail" CssClass="error" Display="Dynamic" 
-                                                    ErrorMessage="An email address is required" 
-                                                        meta:resourcekey="RequiredFieldValidator1Resource1"></asp:RequiredFieldValidator>
+                                                    ErrorMessage="<%$ Resources:Profile, errEmailMissing %>" />
                                                     <asp:CustomValidator ID="ValidateEmailOK" runat="server" 
-                                                        ErrorMessage="That email address is already in use by another account" ValidationGroup="valNameEmail"
+                                                        ErrorMessage="<%$ Resources:Profile, errEmailInUse2 %>" ValidationGroup="valNameEmail"
                                                         ControlToValidate="txtEmail" CssClass="error" Display="Dynamic" 
-                                                        OnServerValidate="VerifyEmailAvailable" 
-                                                        meta:resourcekey="ValidateEmailOKResource1"></asp:CustomValidator>
+                                                        OnServerValidate="VerifyEmailAvailable" />
                                                 </td>
                                             </tr>
                                             <tr>
@@ -89,18 +84,15 @@
                                                     </td>
                                                 <td>
                                                     <asp:TextBox runat="server" ID="txtEmail2" TextMode="Email"  
-                                                        AutoCompleteType="Email" ValidationGroup="valNameEmail" 
-                                                        meta:resourcekey="txtEmail2Resource1" />
+                                                        AutoCompleteType="Email" ValidationGroup="valNameEmail"  />
                                                     <asp:CompareValidator ID="valCompareEmail" ControlToValidate="txtEmail2" 
                                                         ControlToCompare="txtEmail" ValidationGroup="valNameEmail"
-                                                        Display="Dynamic" runat="server" 
-                                                        ErrorMessage="Please type your e-mail twice (avoids typos)." 
-                                                        meta:resourcekey="valCompareEmailResource1"></asp:CompareValidator>
+                                                        Display="Dynamic" runat="server" CssClass="error"
+                                                        ErrorMessage="<%$ Resources:Profile, err2ndEmailRequired %>" />
                                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator2" 
                                                         ControlToValidate="txtEmail2" Display="Dynamic" runat="server" 
-                                                        ValidationGroup="valNameEmail" 
-                                                        ErrorMessage="Please type your e-mail twice (avoids typos)" 
-                                                        meta:resourcekey="RequiredFieldValidator2Resource1"></asp:RequiredFieldValidator>
+                                                        ValidationGroup="valNameEmail" CssClass="error"
+                                                        ErrorMessage="<%$ Resources:Profile, err2ndEmailRequired %>" />
                                                 </td>
                                             </tr>
                                             <tr>
@@ -113,15 +105,14 @@
                                                         }
                                                     </script>
                                                     <asp:TextBox ID="txtFirst" runat="server" AutoCompleteType="FirstName" Wrap="False"
-                                                        ValidationGroup="valNameEmail" meta:resourcekey="txtFirstResource1"></asp:TextBox></td>
+                                                        ValidationGroup="valNameEmail" /></td>
                                             </tr>
                                             <tr>
                                                 <td><asp:Localize ID="locLastNamePrompt" runat="server" Text="<%$ Resources:Profile, accountLastNamePrompt %>" />
                                                     </td>
                                                 <td>
                                                     <asp:TextBox ID="txtLast" runat="server" AutoCompleteType="LastName" 
-                                                        Wrap="False" ValidationGroup="valNameEmail" 
-                                                        meta:resourcekey="txtLastResource1"></asp:TextBox></td>
+                                                        Wrap="False" ValidationGroup="valNameEmail" /></td>
                                             </tr>
                                             <tr style="vertical-align:top;">
                                                 <td>
@@ -143,20 +134,49 @@
                                                         Text="<%$ Resources:Profile, accountMailingAddressPromptNote %>" />
                                                 </td>
                                                 <td>
-                                                    <asp:TextBox ID="txtAddress" TextMode="MultiLine" Rows="4" runat="server" ValidationGroup="valPilotInfo" meta:resourcekey="txtAddressResource1" Width="300px"></asp:TextBox>
+                                                    <asp:TextBox ID="txtAddress" TextMode="MultiLine" Rows="4" runat="server" ValidationGroup="valPilotInfo" Width="300px"></asp:TextBox>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="vertical-align:text-top">
+                                                    <div><asp:Localize ID="locCell" runat="server" Text="<%$ Resources:Profile, accountCellPhone %>" /></div>
+                                                    <div class="fineprint"><% =Resources.Profile.accountCellPhoneHint %></div>
+                                                </td>
+                                                <td>
+                                                    <asp:TextBox ID="txtCell" runat="server" ValidationGroup="valPilotInfo" Width="300px" TextMode="Phone" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="vertical-align:text-top">
+                                                    <div><asp:Localize ID="locHeadShot" runat="server" Text="<%$ Resources:Profile, accountHeadShot %>" /></div>
+                                                    <div class="fineprint"><asp:Localize ID="locHeadShtHint" runat="server" Text="<%$ Resources:Profile, accountHeadShotHint %>" /></div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <img runat="server" id="imgHdSht" style="width:40px; vertical-align:middle; height:40px;" src="~/Public/tabimages/ProfileTab.png" />&nbsp;<asp:ImageButton ID="imgDelHdSht" style="vertical-align:middle;" ImageUrl="~/images/x.gif" OnClick="imgDelHdSht_Click" runat="server" />
+                                                        <asp:FileUpload ID="fuHdSht" runat="server" />
+                                                    </div>
+                                                    <div>
+                                                        <asp:Image ID="afuThrb" ImageUrl="~/images/ajax-loader.gif" runat="server" style="display:None" />
+                                                        <script>
+                                                            function hdshtUpdated() {
+                                                                document.getElementById('<% =afuThrb.ClientID %>').style.display = "block";
+                                                                document.getElementById('<% =btnUpdHdSht.ClientID %>').click();
+                                                            }
+                                                        </script>
+                                                    </div>
+                                                    <asp:Button ID="btnUpdHdSht" runat="server" Text="(Refresh)" OnClick="btnUpdHdSht_Click" style="display:none" />
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     &nbsp;</td>
                                                 <td>
-                                                    <asp:Button ID="btnUpdatename" runat="server" Text="Update Name and Email" 
-                                                        ValidationGroup="valNameEmail" onclick="btnUpdatename_Click" 
-                                                        meta:resourcekey="btnUpdatenameResource1" />
+                                                    <asp:Button ID="btnUpdatename" runat="server" Text="<%$ Resources:Profile, saveChanges %>" 
+                                                        ValidationGroup="valNameEmail" onclick="btnUpdatename_Click" />
                                                     <br />
                                                     <asp:Label ID="lblNameUpdated" runat="server" CssClass="success" EnableViewState="False"
-                                                        Text="Name and Email successfully updated" Visible="False" 
-                                                        meta:resourcekey="lblNameUpdatedResource1"></asp:Label>
+                                                        Text="<%$ Resources:Profile, accountPersonalInfoSuccess %>" Visible="False" />
                                                 </td>
                                             </tr>
                                         </table>
@@ -165,7 +185,7 @@
                             </asp:MultiView>
                         </Content>
                     </cc1:AccordionPane>
-                    <cc1:AccordionPane ID="acpPassword" runat="server" ContentCssClass="" HeaderCssClass="" meta:resourcekey="acpPasswordResource1">
+                    <cc1:AccordionPane ID="acpPassword" runat="server">
                         <Header>
                             <asp:Localize ID="locHeadPass" runat="server" Text="<%$ Resources:Tabs, ProfilePassword %>" ></asp:Localize>
                         </Header>
@@ -188,7 +208,7 @@
                                             <div><asp:Label ID="lblTFACheckPass" runat="server" CssClass="error" EnableViewState="false" Text="<%$ Resources:Profile, TFACodeFailed %>" Visible="false"></asp:Label></div>
                                         </asp:View>
                                         <asp:View ID="vwChangePass" runat="server">
-                                            <asp:Panel ID="pnlPassword" runat="server" DefaultButton="btnUpdatePass" meta:resourceKey="pnlPasswordResource1">
+                                            <asp:Panel ID="pnlPassword" runat="server" DefaultButton="btnUpdatePass">
                                                 <table>
                                                     <tr>
                                                         <td>

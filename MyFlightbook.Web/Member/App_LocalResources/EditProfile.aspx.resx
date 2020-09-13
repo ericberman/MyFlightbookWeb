@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="accordianAccountResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="acpBackupResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
@@ -141,13 +138,7 @@
   <data name="acpLocalPrefsResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="acpNameResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="acpoAuthAppsResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="acpPasswordResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="acpPropertiesResource1.ToolTip" xml:space="preserve">
@@ -235,12 +226,6 @@
     <value />
   </data>
   <data name="btnUpdateLocalPrefsResource2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="btnUpdatenameResource1.Text" xml:space="preserve">
-    <value>Update Name and Email</value>
-  </data>
-  <data name="btnUpdatenameResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="btnUpdatePassResource1.Text" xml:space="preserve">
@@ -466,18 +451,6 @@
     <value />
   </data>
   <data name="lblLocalPrefsUpdatedResource2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblNameResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblNameResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="lblNameUpdatedResource1.Text" xml:space="preserve">
-    <value>Name and Email successfully updated</value>
-  </data>
-  <data name="lblNameUpdatedResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblNoRulesResource1.Text" xml:space="preserve">
@@ -759,18 +732,6 @@
   <data name="pnlLoose6157Resource1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="pnlNameAndEmailResource1.GroupingText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="pnlNameAndEmailResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="pnlPasswordResource1.GroupingText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="pnlPasswordResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="pnlQandAResource1.GroupingText" xml:space="preserve">
     <value />
   </data>
@@ -826,24 +787,6 @@
     <value />
   </data>
   <data name="RequiredFieldValidator10Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="RequiredFieldValidator1Resource1.ErrorMessage" xml:space="preserve">
-    <value>An email address is required</value>
-  </data>
-  <data name="RequiredFieldValidator1Resource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="RequiredFieldValidator1Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="RequiredFieldValidator2Resource1.ErrorMessage" xml:space="preserve">
-    <value>Please type your e-mail twice (avoids typos)</value>
-  </data>
-  <data name="RequiredFieldValidator2Resource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="RequiredFieldValidator2Resource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="RequiredFieldValidator5Resource1.ErrorMessage" xml:space="preserve">
@@ -909,40 +852,10 @@
   <data name="TemplateFieldResource5.HeaderText" xml:space="preserve">
     <value />
   </data>
-  <data name="txtAddressResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtAddressResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="txtAnswerResource1.Text" xml:space="preserve">
     <value />
   </data>
   <data name="txtAnswerResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtEmail2Resource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtEmail2Resource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtEmailResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtEmailResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtFirstResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtFirstResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtLastResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="txtLastResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="txtPassQAResource1.Text" xml:space="preserve">
@@ -955,15 +868,6 @@
     <value />
   </data>
   <data name="txtPropIDResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="valCompareEmailResource1.ErrorMessage" xml:space="preserve">
-    <value>Please type your e-mail twice (avoids typos).</value>
-  </data>
-  <data name="valCompareEmailResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="valCompareEmailResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="valCurrentPasswordRequiredResource1.ErrorMessage" xml:space="preserve">
@@ -983,18 +887,6 @@
   </data>
   <data name="valDeadlineNameResource1.ToolTip" xml:space="preserve">
     <value />
-  </data>
-  <data name="ValidateEmailOKResource1.ErrorMessage" xml:space="preserve">
-    <value>That email address is already in use by another account</value>
-  </data>
-  <data name="ValidateEmailOKResource1.Text" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ValidateEmailOKResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="locAccountHeaderResource1.Text" xml:space="preserve">
-    <value>Account Settings</value>
   </data>
   <data name="lblPrefTimeZoneExplanationResource1.Text" xml:space="preserve">
     <value>Use this if you prefer to enter times in your local timezone; all times will be converted to and displayed as UTC</value>

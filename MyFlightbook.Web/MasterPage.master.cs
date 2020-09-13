@@ -46,6 +46,11 @@ namespace MyFlightbook.Web
             }
         }
 
+        public void RefreshHeader()
+        {
+            mfbHeader.Refresh();
+        }
+
         /// <summary>
         /// Boolean representing whether or not the master page shows its header
         /// </summary>

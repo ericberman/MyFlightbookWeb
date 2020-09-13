@@ -57,13 +57,7 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
             mvLoginStatus.SetActiveView(Page.User.Identity.IsAuthenticated ? vwSignedIn : vwNotSignedIn);
             if (Page.User.Identity.IsAuthenticated)
             {
-                Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
-                lblUser.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LoginStatusWelcome, pf.PreferredGreeting);
-                lblMemberSince.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberSinceShort, pf.CreationDate);
-                lblLastLogin.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastLogonShort, pf.LastLogon);
-                lblLastActivity.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastActivityShort, pf.LastActivity);
-                itemLastActivity.Visible = pf.LastActivity.Date.CompareTo(pf.LastLogon.Date) != 0;
-
+                Refresh();
                 // see if we need to show an upcoming event; we repurpose a known GUID for this.  
                 // If it's in the database AND in the future, we show it.
                 // Since header is loaded on every page load, cache it, using a dummy expired one if there was none.
@@ -89,5 +83,19 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
     protected void btnSearch_Click(object sender, EventArgs e)
     {
         Response.Redirect("~/Member/LogbookNew.aspx?s=" + System.Web.HttpUtility.UrlEncode(mfbSearchbox.SearchText));
+    }
+
+    public void Refresh()
+    {
+        Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
+
+        string szHead = pf.HeadShotHRef;
+        imgHdSht.Src = (String.IsNullOrEmpty(szHead)) ? "~/Public/tabimages/ProfileTab.png".ToAbsoluteURL(Request).ToString() : szHead;
+
+        lblUser.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LoginStatusWelcome, pf.PreferredGreeting);
+        lblMemberSince.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberSinceShort, pf.CreationDate);
+        lblLastLogin.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastLogonShort, pf.LastLogon);
+        lblLastActivity.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberLastActivityShort, pf.LastActivity);
+        itemLastActivity.Visible = pf.LastActivity.Date.CompareTo(pf.LastLogon.Date) != 0;
     }
 }
