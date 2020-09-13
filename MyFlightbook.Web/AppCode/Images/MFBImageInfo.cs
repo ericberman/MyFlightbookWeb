@@ -1463,14 +1463,13 @@ namespace MyFlightbook.Image
             return result;
         }
 
-        public static string CreateCircleCroppedImageHref(Stream sIn, int width, int height)
+        public static byte[] ScaledImage(Stream sIn, int width, int height)
         {
             if (sIn == null)
                 throw new ArgumentNullException(nameof(sIn));
 
-            string szResult = null;
             if (sIn.Length == 0)
-                return szResult;
+                return Array.Empty<byte>();
 
             using (MagickImage image = new MagickImage(sIn))
             {
@@ -1509,10 +1508,28 @@ namespace MyFlightbook.Image
                 }
                 image.Orientation = OrientationType.TopLeft;
 
-                image.Resize(new MagickGeometry(width, height) { FillArea = true });
-                image.Alpha(AlphaOption.Set);
+                // Make it square and then resize.  Cut off from half of longer dimension on each end.
+                int curHeight = image.Height;
+                int curWidth = image.Width;
+                
+                if (curWidth > curHeight)
+                {
+                    int dWidth = (curWidth - curHeight) / 2;
+                    image.ChopHorizontal(0, dWidth);
+                    image.ChopHorizontal(image.Width - dWidth, dWidth);
+                }
+                else if (curHeight > curWidth)
+                {
+                    int dHeight = (curHeight - curWidth) / 2;
+                    image.ChopVertical(0, dHeight);
+                    image.ChopVertical(image.Height - dHeight, dHeight);
+                }
 
-                // below is from https://github.com/dlemstra/Magick.NET/issues/57
+                // Now it is square - resize it, maintaining aspect ratio
+                image.Resize(new MagickGeometry(width, height));
+
+                // below is from https://github.com/dlemstra/Magick.NET/issues/57 and puts the image into a circle.  We will keep it square and use CSS for the circle
+                /*
                 using (MagickImage clone = image.Clone() as MagickImage)
                 {
                     // -distort DePolar 0
@@ -1535,16 +1552,15 @@ namespace MyFlightbook.Image
 
                     // +repage
                     image.RePage();
+                }
+                */
 
-                    using (MemoryStream msOut = new MemoryStream())
-                    {
-                        image.Write(msOut, MagickFormat.Png);
-                        szResult = String.Format(CultureInfo.InvariantCulture, "data:image/png;base64,{0}", Convert.ToBase64String(msOut.GetBuffer()));
-                    }
+                using (MemoryStream msOut = new MemoryStream())
+                {
+                    image.Write(msOut, MagickFormat.Jpeg);
+                    return msOut.GetBuffer();
                 }
             }
-
-            return szResult;
         }
 
         #region InitfileHelpers

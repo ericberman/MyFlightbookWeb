@@ -153,7 +153,7 @@
                                                 </td>
                                                 <td>
                                                     <div>
-                                                        <img runat="server" id="imgHdSht" style="width:40px; vertical-align:middle; height:40px;" src="~/Public/tabimages/ProfileTab.png" />&nbsp;<asp:ImageButton ID="imgDelHdSht" style="vertical-align:middle;" ImageUrl="~/images/x.gif" OnClick="imgDelHdSht_Click" runat="server" />
+                                                        <img runat="server" id="imgHdSht" style="width:40px; border-radius: 50%; vertical-align:middle; height:40px;" src="~/Public/tabimages/ProfileTab.png" />&nbsp;<asp:ImageButton ID="imgDelHdSht" style="vertical-align:middle;" ImageUrl="~/images/x.gif" OnClick="imgDelHdSht_Click" runat="server" />
                                                         <asp:FileUpload ID="fuHdSht" runat="server" />
                                                     </div>
                                                     <div>

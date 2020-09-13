@@ -87,10 +87,9 @@ public partial class Controls_mfbHeader : System.Web.UI.UserControl
 
     public void Refresh()
     {
-        Profile pf = MyFlightbook.Profile.GetUser(Page.User.Identity.Name);
+        Profile pf = Profile.GetUser(Page.User.Identity.Name);
 
-        string szHead = pf.HeadShotHRef;
-        imgHdSht.Src = (String.IsNullOrEmpty(szHead)) ? "~/Public/tabimages/ProfileTab.png".ToAbsoluteURL(Request).ToString() : szHead;
+        imgHdSht.Src = pf.HeadShotHRef;
 
         lblUser.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.LoginStatusWelcome, pf.PreferredGreeting);
         lblMemberSince.Text = String.Format(CultureInfo.CurrentCulture, Resources.LocalizedText.MemberSinceShort, pf.CreationDate);

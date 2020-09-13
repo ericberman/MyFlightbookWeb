@@ -368,9 +368,9 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     protected void SetHeadShot()
     {
-        string szHead = m_pf.HeadShotHRef;
-        imgHdSht.Src = String.IsNullOrEmpty(szHead) ? "~/Public/tabimages/ProfileTab.png".ToAbsoluteURL(Request).ToString() : szHead;
-        imgDelHdSht.Visible = !String.IsNullOrEmpty(szHead);
+        bool fHasHeadshot = m_pf.HasHeadShot;
+        imgHdSht.Src = m_pf.HeadShotHRef;
+        imgDelHdSht.Visible = fHasHeadshot;
         Master.RefreshHeader();
     }
 
@@ -378,10 +378,10 @@ public partial class Member_EditProfile : System.Web.UI.Page
     {
         if (fuHdSht.HasFile)
         {
-            string szImgURL = MFBImageInfo.CreateCircleCroppedImageHref(fuHdSht.PostedFile.InputStream, 40, 40);
-            if (!String.IsNullOrEmpty(szImgURL))
+            byte[] rgb = MFBImageInfo.ScaledImage(fuHdSht.PostedFile.InputStream, 90, 90);
+            if (rgb != null && rgb.Length > 0)
             {
-                m_pf.HeadShotHRef = szImgURL;
+                m_pf.HeadShot = Convert.ToBase64String(rgb);
                 SetHeadShot();
             }
         }
@@ -389,7 +389,7 @@ public partial class Member_EditProfile : System.Web.UI.Page
 
     protected void imgDelHdSht_Click(object sender, ImageClickEventArgs e)
     {
-        m_pf.HeadShotHRef = null;
+        m_pf.HeadShot = null;
         SetHeadShot();
     }
     #endregion

@@ -1172,6 +1172,42 @@ namespace MyFlightbook.Clubs
         }
 
         /// <summary>
+        /// Determines if the two users are members of at least one club in common.  Users always share with themselves, so if both specified users are the same, this returns true.
+        /// </summary>
+        /// <param name="szUser1"></param>
+        /// <param name="szUser2"></param>
+        /// <returns></returns>
+        public static bool CheckUsersShareClub(string szUser1, string szUser2)
+        {
+            bool fResult = false;
+            if (String.IsNullOrEmpty(szUser1) || String.IsNullOrEmpty(szUser2))
+                return fResult;
+
+            // same user is always true, avoid the database hit.
+            if (szUser1.CompareOrdinal(szUser2) == 0)
+                return true;
+
+            DBHelper dbh = new DBHelper(@"SELECT 
+                cm1.*
+            FROM
+                clubmembers cm1
+                    INNER JOIN
+                clubmembers cm2 ON cm1.idclub = cm2.idclub
+                    AND cm1.username = ?u1
+                    AND cm2.username = ?u2");
+
+            dbh.ReadRow((comm) =>
+            {
+                comm.Parameters.AddWithValue("u1", szUser1);
+                comm.Parameters.AddWithValue("u2", szUser2);
+            }, (dr) =>
+            {
+                fResult = true;
+            });
+            return fResult;
+        }
+
+        /// <summary>
         /// Gets the list of all maintenance officers for the club
         /// </summary>
         /// <param name="idclub">The club</param>

@@ -797,7 +797,7 @@ namespace MyFlightbook
         private IDictionary<string, object> m_persistedPrefs = new Dictionary<string, object>();
 
         private const string prefKeyPreferredGreeting = "preferredGreeting";
-        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
+        [System.Runtime.Serialization.IgnoreDataMember]
         public string PreferredGreeting
         {
             get { return PreferenceExists(prefKeyPreferredGreeting) ? (string)GetPreferenceForKey(prefKeyPreferredGreeting) : UserFirstName; }
@@ -806,11 +806,36 @@ namespace MyFlightbook
 
         private const string prefKeyHeadshot = "headShot";
 
-        [System.Runtime.Serialization.IgnoreDataMemberAttribute]
-        public string HeadShotHRef
+        /// <summary>
+        /// Returns a base64 encoded JPEG of the user's headshot, if present
+        /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMember]
+        public string HeadShot
         {
             get { return (string)GetPreferenceForKey(prefKeyHeadshot); }
             set { SetPreferenceForKey(prefKeyHeadshot, value, String.IsNullOrEmpty(value)); }
+        }
+
+        /// <summary>
+        /// Determines if the user has a headshot
+        /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMember]
+        public bool HasHeadShot
+        {
+            get { return PreferenceExists(prefKeyHeadshot); }
+        }
+
+        /// <summary>
+        /// Returns a link to the user's headshot, if present - else default icon
+        /// </summary>
+        [System.Runtime.Serialization.IgnoreDataMember]
+        public string HeadShotHRef
+        {
+            get
+            {
+                bool fHasHeadshot = HasHeadShot;
+                return fHasHeadshot ? String.Format(CultureInfo.InvariantCulture, "~/Member/ViewUser.aspx/{0}?h={1}", UserName, HeadShot.GetHashCode()) : VirtualPathUtility.ToAbsolute("~/Public/tabimages/ProfileTab.png");
+            }
         }
 
         private const string prefKeyCell = "mobilePhone";

@@ -17,7 +17,7 @@
                     <asp:MultiView ID="mvLoginStatus" runat="server">
                         <asp:View ID="vwSignedIn" runat="server">
                             <asp:Panel runat="server" ID="pnlUser" style="padding: 2px; margin-top: 2px; width: 180px">
-                                <img runat="server" id="imgHdSht" style="width:20px; height:20px; vertical-align:middle" src="~/Public/tabimages/ProfileTab.png" />&nbsp;
+                                <img runat="server" id="imgHdSht" style="width:20px; height:20px; vertical-align:middle; border-radius:50%;" src="~/Public/tabimages/ProfileTab.png" />&nbsp;
                                 <asp:Label ID="lblUser" runat="server" style="vertical-align:middle;"></asp:Label>  
                             </asp:Panel>
                             <asp:Panel ID="pnlMenuContent" runat="server" CssClass="popMenuContent" style="padding: 3px; display:none; width: 180px">
